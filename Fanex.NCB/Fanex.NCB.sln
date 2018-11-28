@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.106
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Main", "Fanex.NCB.Main\Fanex.NCB.Main.csproj", "{04915B62-99BD-4D5B-AE6E-93B5C7FB9272}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Core", "Fanex.NCB.Core\Fanex.NCB.Core.csproj", "{5AEE61ED-E0A5-4A2B-B791-BBD1FC678CCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.SkypeBot", "Fanex.NCB.SkypeBot\Fanex.NCB.SkypeBot.csproj", "{BBD3A265-75D9-4061-92B4-9F54E19A4822}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{04915B62-99BD-4D5B-AE6E-93B5C7FB9272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04915B62-99BD-4D5B-AE6E-93B5C7FB9272}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04915B62-99BD-4D5B-AE6E-93B5C7FB9272}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04915B62-99BD-4D5B-AE6E-93B5C7FB9272}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AEE61ED-E0A5-4A2B-B791-BBD1FC678CCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AEE61ED-E0A5-4A2B-B791-BBD1FC678CCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AEE61ED-E0A5-4A2B-B791-BBD1FC678CCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AEE61ED-E0A5-4A2B-B791-BBD1FC678CCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBD3A265-75D9-4061-92B4-9F54E19A4822}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBD3A265-75D9-4061-92B4-9F54E19A4822}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBD3A265-75D9-4061-92B4-9F54E19A4822}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBD3A265-75D9-4061-92B4-9F54E19A4822}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {37A2AE26-EFD0-4EE5-89D6-E3D42A9AEF67}
+	EndGlobalSection
+EndGlobal
