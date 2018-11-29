@@ -13,10 +13,11 @@ namespace Fanex.NCB.Main.Controllers
 {
     public class AuthController : Controller
     {
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string returnUrl)
         {
             await HttpContext.SignOutAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme);
+            ViewBag.returnUrl = returnUrl;
             return View(new ApplicationUser());
         }
 
@@ -28,7 +29,6 @@ namespace Fanex.NCB.Main.Controllers
         [HttpPost]
         public async Task<IActionResult> SignIn(string userName, string password, string returnUrl)
         {
-
             if (ModelState.IsValid)
             {
 

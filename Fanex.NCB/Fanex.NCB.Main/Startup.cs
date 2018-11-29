@@ -47,7 +47,17 @@ namespace Fanex.NCB.Main
             });
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie();
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Auth/Index";
+                options.LogoutPath = "/Auth/SignOut";
+                options.Cookie = new CookieBuilder
+                {
+                    Name = "Fanex.NCB.Auth",
+                    Expiration = TimeSpan.FromMinutes(60),
+                    SecurePolicy = CookieSecurePolicy.SameAsRequest
+                };
+            });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }

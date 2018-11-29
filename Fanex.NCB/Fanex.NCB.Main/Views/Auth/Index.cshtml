@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Index";
 }
 
@@ -9,6 +8,7 @@
     UserName: <input name="userName" type="text" />
     <br />
     Pass:<input name="password" type="password" />
+    <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
     <br />
     <input type="submit" value="Submit" />
 </form>
