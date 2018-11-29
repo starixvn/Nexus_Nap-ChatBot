@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Fanex.NCB.Main.Models.DTO;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Fanex.NCB.Main.Controllers
 {
@@ -31,9 +33,14 @@ namespace Fanex.NCB.Main.Controllers
         {
             if (ModelState.IsValid)
             {
+                var client = new HttpClient();
+                //  var user = await  AuthenticateUser(userName, password);
+                var response = await client.PostAsJsonAsync(
+                "http://localhost:52085/Auth/Verify", new { userName, password });
+                response.EnsureSuccessStatusCode();
 
-                var user = await AuthenticateUser(userName, password);
-
+                // return URI of the created resource.
+                var user = await response.Content.ReadAsAsync<ApplicationUser>();
                 if (user == null)
                 {
                     return Json(new
@@ -47,7 +54,9 @@ namespace Fanex.NCB.Main.Controllers
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim("FullName", user.FullName),
-                    new Claim(ClaimTypes.Role, "Administrator"),
+                    new Claim(ClaimTypes.Role, "Administrator"),//> map to nap core user group
+                    new Claim("Permission", new List<string>().ToString()) // map to nap user permission
+
                 };
 
                 var claimsIdentity = new ClaimsIdentity(
