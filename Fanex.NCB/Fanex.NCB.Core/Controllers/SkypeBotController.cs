@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Fanex.NCB.Main.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [Authorize]
     public class SkypeBotController : Controller
     {
 
