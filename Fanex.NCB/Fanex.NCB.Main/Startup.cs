@@ -31,6 +31,20 @@ namespace Fanex.NCB.Main
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+            services.AddDistributedRedisCache(options =>
+            {
+                options.Configuration = "10.18.200.103:63799"; // move to app setting later
+                options.InstanceName = "Fanex.NCB.State";
+            });
+            services.AddSession(configure =>
+            {
+                configure.Cookie = new CookieBuilder
+                {
+                    Name = "Fanex.NCB.Session",
+                    Expiration = TimeSpan.FromMinutes(60),
+                    SecurePolicy = CookieSecurePolicy.SameAsRequest
+                };
+            });
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie();
@@ -55,6 +69,7 @@ namespace Fanex.NCB.Main
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
+            app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

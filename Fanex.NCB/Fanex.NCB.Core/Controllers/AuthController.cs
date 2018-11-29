@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Fanex.NCB.Main.Models.DTO;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fanex.NCB.Main.Controllers
@@ -82,7 +83,7 @@ namespace Fanex.NCB.Main.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
 
-
+                HttpContext.Session.SetString("name", userName);
                 return LocalRedirect(returnUrl ?? "~/Home");
             }
 

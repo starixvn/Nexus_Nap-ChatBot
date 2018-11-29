@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Fanex.NCB.Core.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fanex.NCB.Main.Controllers
@@ -13,7 +14,7 @@ namespace Fanex.NCB.Main.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
+            ViewData["Message"] = HttpContext.Session.GetString("name");
 
             return View();
         }
