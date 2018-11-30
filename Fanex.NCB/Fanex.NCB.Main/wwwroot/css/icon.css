@@ -1,0 +1,535 @@
+/* Header */
+/* Left Panel */
+/* Right panel */
+/* Auto Complete */
+/* Form */
+/* Grid */
+.base-icon {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+  }
+  .icon-client {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: 0 -2px;
+    width: 23px;
+  }
+  .icon-internal-user {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -24px 0;
+  }
+  .icon-notification-center {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -48px 0;
+  }
+  .icon-system-configuration {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -74px 0;
+  }
+  .icon-notify {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -168px 0;
+  }
+  .icon-toggle {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -100px 0;
+  }
+  .icon-clock {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -123px -3px;
+    height: 20px;
+  }
+  .icon-search {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -167px -32px;
+  }
+  .icon-chevron-up {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -190px 0px;
+  }
+  .icon-chevron-down {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    width: 20px;
+    background-position: -222px -53px;
+  }
+  .icon-plus {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -121px -30px;
+  }
+  .icon-minus {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -144px -30px;
+  }
+  .icon-datepicker {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -98px -32px;
+  }
+  .icon-full-detail {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: 0px -52px;
+  }
+  .icon-department-detail {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -25px -52px;
+  }
+  .icon-notify-list {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -47px -52px;
+  }
+  .icon-mail-list {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -72px -52px;
+  }
+  .icon-chevron-left {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -190px -52px;
+  }
+  .icon-chevron-right {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -140px -52px;
+  }
+  .icon-arrow-user {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -224px -5px;
+    height: 17px;
+    width: 18px;
+  }
+  .icon-userprofile {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -102px -73px;
+    vertical-align: middle;
+  }
+  .icon-changepass {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -146px -72px;
+    vertical-align: middle;
+  }
+  .icon-signout {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -123px -73px;
+    vertical-align: middle;
+  }
+  .icon-chevron-smaller {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -225px -30px;
+    height: 20px;
+    width: 20px;
+  }
+  .icon-chevron-greater {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -238px -40px;
+    height: 10px;
+    width: 20px;
+  }
+  .icon-client-info {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -47px -132px;
+    margin-left: 4px;
+  }
+  .icon-more {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -123px -30px;
+  }
+  .icon-remove {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -146px -30px;
+  }
+  .icon-language-en {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -123px -158px;
+    width: 16px;
+    height: 11px;
+  }
+  .icon-language-ch {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -81px -158px;
+    width: 16px;
+    height: 11px;
+  }
+  .icon-language-cs {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -102px -158px;
+    width: 16px;
+    height: 11px;
+  }
+  .icon-delete {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -188px -102px;
+    width: 18px;
+  }
+  .icon-edit {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -170px -102px;
+    width: 18px;
+  }
+  .icon-excel {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    height: 22px;
+    background-position: -204px -102px;
+    width: 22px;
+    height: 21px;
+  }
+  .icon-skype {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -124px -102px;
+    width: 20px;
+  }
+  .icon-mobile {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -141px -102px;
+    width: 14px;
+  }
+  .icon-landline {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -152px -102px;
+    width: 20px;
+  }
+  .icon-user-type {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -30px -102px;
+    width: 18px;
+  }
+  .icon-groupuser {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    height: 22px;
+    background-position: -47px -102px;
+    width: 22px;
+  }
+  .icon-active {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -167px -126px;
+    width: 20px;
+  }
+  .icon-view {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -168px -28px;
+    width: 20px;
+  }
+  .icon-contact-name {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -69px -122px;
+    width: 20px;
+  }
+  .icon-contact-position {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -86px -122px;
+    width: 20px;
+  }
+  .icon-contact-mail {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -104px -119px;
+    width: 20px;
+  }
+  .icon-contact-skype {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -122px -122px;
+    width: 20px;
+  }
+  .icon-contact-phone {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -139px -122px;
+    width: 20px;
+  }
+  .icon-all-expand {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -230px -158px;
+    width: 16px;
+    height: 16px;
+  }
+  .icon-all-collapse {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -210px -158px;
+    width: 16px;
+    height: 16px;
+  }
+  .icon-tree-expand {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -178px -150px;
+    width: 18px;
+    height: 18px;
+  }
+  .icon-tree-collapse {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -192px -150px;
+    width: 18px;
+    height: 18px;
+  }
+  .icon-tree-item {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    height: 22px;
+    background-position: -158px -152px;
+    width: 22px;
+    height: 18px;
+  }
+  .icon-view-detail {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -230px -130px;
+    width: 16px;
+    height: 16px;
+  }
+  .icon-expand {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -210px -130px;
+    width: 18px;
+    height: 18px;
+  }
+  .icon-collapse {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -188px -130px;
+    width: 18px;
+    height: 18px;
+  }
+  .icon-arrow-up {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -141px -152px;
+    width: 14px;
+    height: 18px;
+  }
+  .icon-arrow-down {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -140px -162px;
+    width: 14px;
+    height: 18px;
+  }
+  .icon-save-enable {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -60px -158px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+  .icon-save-disable {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -39px -158px;
+    width: 16px;
+    height: 16px;
+    cursor: default;
+  }
+  .icon-contact-new {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -211px -203px;
+    width: 15px;
+    height: 14px;
+  }
+  .icon-contact-edit {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -151px -203px;
+    width: 15px;
+    height: 14px;
+  }
+  .icon-client-edit {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    background-position: -185px -180px;
+    width: 22px;
+    height: 22px;
+  }
+  .icon-pdf {
+    background-image: url(/Images/sprites.png);
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-position: -112px -203px;
+    width: 14px;
+    height: 18px;
+    cursor: pointer;
+  }
+  .glyphicon.spinning {
+    animation: spin 1s infinite linear;
+    -webkit-animation: spin2 1s infinite linear;
+  }
+  .glyphicon-left {
+    margin-right: 7px;
+  }
+  @keyframes spin {
+    from {
+      transform: scale(1) rotate(0deg);
+    }
+    to {
+      transform: scale(1) rotate(360deg);
+    }
+  }
+  @-webkit-keyframes spin2 {
+    from {
+      -webkit-transform: rotate(0deg);
+    }
+    to {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  

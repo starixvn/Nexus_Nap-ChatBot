@@ -1,0 +1,55 @@
+<div role="tabpanel" class="leftmenu-tab" data-ng-cloak>
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+            <div role="tab" data-toggle="tab" data-target="#tab-menu">Menu</div>
+        </li>       
+    </ul>
+    <div class="tab-content">
+        <div role="tabpanel" class="menu-tab-content tab-pane active" id="tab-menu">
+            <ul class="list-unstyled">                
+                <li class="menu-item" data-ng-repeat="menu in vm.menus">
+                    <div class="menu-item-content" data-ng-click="vm.menuClick($index);">
+                        <span class="icon-client"></span>
+                        <span class="menu-title" data-ng-bind="::menu.Name">General</span>
+                        <span class="pull-right" data-ng-class="icon-chevron-down"></span>
+                    </div>
+                    <ul class="list-unstyled b-ul__submenu" data-ng-hide="!menu.selected && vm.expandAsideMenu">
+                        <li class="submenu-item" data-ng-class="{active: submenu.selected}"
+                            data-ng-repeat="submenu in menu.SubMenus">
+                            <div class="submenu-item-content" data-ng-click="vm.subMenuClick($parent.$index, $index)">
+                                Setting
+                            </div>
+                        </li>
+                        <li class="submenu-item" data-ng-class="{active: submenu.selected}"
+                            data-ng-repeat="submenu in menu.SubMenus">
+                            <div class="submenu-item-content" data-ng-click="vm.subMenuClick($parent.$index, $index)">
+                                Mapping
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-item" data-ng-repeat="menu in vm.menus">
+                    <div class="menu-item-content" data-ng-click="vm.menuClick($index);">
+                        <span class="icon-client"></span>
+                        <span class="menu-title" data-ng-bind="::menu.Name">SkypeBot</span>
+                        <span class="pull-right" data-ng-class="icon-chevron-down"></span>
+                    </div>
+                    <ul class="list-unstyled b-ul__submenu" data-ng-hide="!menu.selected && vm.expandAsideMenu">
+                        <li class="submenu-item" data-ng-class="{active: submenu.selected}"
+                            data-ng-repeat="submenu in menu.SubMenus">
+                            <div class="submenu-item-content" data-ng-click="vm.subMenuClick($parent.$index, $index)">
+                                Setting
+                            </div>
+                        </li>
+                        <li class="submenu-item" data-ng-class="{active: submenu.selected}"
+                            data-ng-repeat="submenu in menu.SubMenus">
+                            <div class="submenu-item-content" data-ng-click="vm.subMenuClick($parent.$index, $index)">
+                                Mapping
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>       
+    </div>
+</div>
