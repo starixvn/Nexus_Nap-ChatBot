@@ -1,14 +1,16 @@
 ﻿using Fanex.NAP.Core.Service.Impl;
 using Fanex.NAP.Core.Service.Interface;
-using System;
+using Fanex.NCB.AuthServer.Models;
+using Fanex.NCB.AuthServer.Models.MetalModel;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+using System.Web.Http;
+using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 
 namespace Fanex.NCB.AuthServer.Controllers
 {
-    public class AuthController : Controller
+
+    [CustomAuthorize]
+    public class AuthController : ApiController
     {
         private readonly IUserService _userService;
         public AuthController()
@@ -17,15 +19,17 @@ namespace Fanex.NCB.AuthServer.Controllers
         }
 
         // GET: Auth
-        public ActionResult Verify(string userName, string passWord)
+        [HttpPost]
+        public dynamic Verify(AuthenticationUser user)
         {
-            var user = _userService.Get(userName);
-            if (user != null)
+
+            var userInfo = _userService.Get(user.UserName);
+            if (userInfo != null)
             {
                 return Json(new
                 {
-                    UserName = user.Username,
-                    FullName = string.Join(" ", user.FirstName, user.LastName),
+                    UserName = userInfo.Username,
+                    FullName = string.Join(" ", userInfo.FirstName, userInfo.LastName),
                     Menu = new List<string>() { "menu1", "menu2" },
                     Permissions = new List<string>() { "key1", "key2" },
                     Group = "Administrator"

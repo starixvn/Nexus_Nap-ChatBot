@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Fanex.NCB.Core.Models.DataDomain;
+using Fanex.NCB.Core.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +33,9 @@ namespace Fanex.NCB.Main
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
             services.AddDistributedRedisCache(options =>
             {
                 options.Configuration = "10.18.200.103:63799"; // move to app setting later
@@ -60,6 +65,7 @@ namespace Fanex.NCB.Main
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IBridgeClientService, BridgeClientService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
