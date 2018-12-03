@@ -2,6 +2,7 @@
 using Fanex.NAP.Core.Service.Interface;
 using Fanex.NCB.AuthServer.Models;
 using Fanex.NCB.AuthServer.Models.MetalModel;
+using Fanex.NCB.AuthServer.Services;
 using System.Collections.Generic;
 using System.Web.Http;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
@@ -13,12 +14,15 @@ namespace Fanex.NCB.AuthServer.Controllers
     public class AuthController : ApiController
     {
         private readonly IUserService _userService;
+        private readonly IMenuService _menuService;
+
+
         public AuthController()
         {
             _userService = new UserService();
+            _menuService = new MenuService();
         }
 
-        // GET: Auth
         [HttpPost]
         public dynamic Verify(AuthenticationUser user)
         {
@@ -30,9 +34,8 @@ namespace Fanex.NCB.AuthServer.Controllers
                 {
                     UserName = userInfo.Username,
                     FullName = string.Join(" ", userInfo.FirstName, userInfo.LastName),
-                    Menu = new List<string>() { "menu1", "menu2" },
-                    Permissions = new List<string>() { "key1", "key2" },
-                    Group = "Administrator"
+                    Menu = _menuService.GetMenuMetaModels(userInfo.Id),
+                    Permissions = new List<string>() { "key1", "key2" }
                 });
             }
 

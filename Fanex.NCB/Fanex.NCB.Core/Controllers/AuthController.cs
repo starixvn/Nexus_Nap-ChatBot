@@ -58,7 +58,6 @@ namespace Fanex.NCB.Main.Controllers
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim("FullName", user.FullName),
-                    new Claim(ClaimTypes.Role, user.Group),
                     new Claim("Menu", JsonConvert.SerializeObject(user.Menu))// move to session
 
                 };
