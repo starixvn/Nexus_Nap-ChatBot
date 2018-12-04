@@ -1,0 +1,26 @@
+{
+  "jsFilters": [
+    "Scripts/**/*.js",
+    "www/js/source/**/*.js",
+    "!www/js/tests/**/*.js",
+    "!www/js/source/lib/**/*.js",
+    "!www/js/source/common/languages/*.js",
+    "!www/js/source/vendors/**/*.js",
+    "!www/js/source/reactpages/**/*.js",
+    "!www/js/tests/test-main.js",
+    "!*.min.js",
+    "!**/*.min.js",
+    "!**/*-vsdoc.js",
+    "!**/npm.js",
+    "!Scripts/Library/**/*.js",
+    "!Scripts/Plugin/**/*.js",
+    "!Scripts/Languages/**/*.js"
+  ],
+	"cssFilters": [
+		"Content/**/*.css",
+		"Scripts/**/*.css",
+		"Areas/**/*.css",
+		"!*.min.css",
+		"!**/*.min.css"
+	]
+}
