@@ -9,5 +9,6 @@ namespace Fanex.NCB.Core.Services
     public interface IBridgeClientService
     {
         Task<HttpResponseMessage> PostJsonAsync<T>(string url, T value);
+        Task<HttpResponseMessage> GetJsonAsync(string url);
     }
 }

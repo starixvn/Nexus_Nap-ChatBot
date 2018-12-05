@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <Folder Include="Models\Enum\" />
+    <Folder Include="Models\MetalModels\" />
+    <Folder Include="Models\ViewModels\" />
   </ItemGroup>
 
 </Project>

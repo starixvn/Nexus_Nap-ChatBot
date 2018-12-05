@@ -9,7 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Core", "Fanex.NCB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.SkypeBot", "Fanex.NCB.SkypeBot\Fanex.NCB.SkypeBot.csproj", "{BBD3A265-75D9-4061-92B4-9F54E19A4822}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.AuthServer", "Fanex.NCB.AuthServer\Fanex.NCB.AuthServer.csproj", "{CF86F84C-E0DA-4D33-B9C0-DF9AFA163D14}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Swagger", "Fanex.NCB.Swagger\Fanex.NCB.Swagger.csproj", "{96FB7E08-CBA6-423E-BBA2-6AABB90BD59C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Swagger.Tests", "Fanex.NCB.Swagger.Tests\Fanex.NCB.Swagger.Tests.csproj", "{796D11F8-59B3-4D33-898A-FC251642F2F3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Swagger", "Swagger", "{A9102C1F-1A38-4D02-86F4-6A07BCD565B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Common", "Fanex.NCB.Common\Fanex.NCB.Common.csproj", "{D53B9D9C-F2B4-47CD-8524-57B79C0C2A76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,13 +35,25 @@ Global
 		{BBD3A265-75D9-4061-92B4-9F54E19A4822}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBD3A265-75D9-4061-92B4-9F54E19A4822}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBD3A265-75D9-4061-92B4-9F54E19A4822}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF86F84C-E0DA-4D33-B9C0-DF9AFA163D14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF86F84C-E0DA-4D33-B9C0-DF9AFA163D14}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF86F84C-E0DA-4D33-B9C0-DF9AFA163D14}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF86F84C-E0DA-4D33-B9C0-DF9AFA163D14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96FB7E08-CBA6-423E-BBA2-6AABB90BD59C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96FB7E08-CBA6-423E-BBA2-6AABB90BD59C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96FB7E08-CBA6-423E-BBA2-6AABB90BD59C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96FB7E08-CBA6-423E-BBA2-6AABB90BD59C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{796D11F8-59B3-4D33-898A-FC251642F2F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{796D11F8-59B3-4D33-898A-FC251642F2F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{796D11F8-59B3-4D33-898A-FC251642F2F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{796D11F8-59B3-4D33-898A-FC251642F2F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D53B9D9C-F2B4-47CD-8524-57B79C0C2A76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D53B9D9C-F2B4-47CD-8524-57B79C0C2A76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D53B9D9C-F2B4-47CD-8524-57B79C0C2A76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D53B9D9C-F2B4-47CD-8524-57B79C0C2A76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{96FB7E08-CBA6-423E-BBA2-6AABB90BD59C} = {A9102C1F-1A38-4D02-86F4-6A07BCD565B7}
+		{796D11F8-59B3-4D33-898A-FC251642F2F3} = {A9102C1F-1A38-4D02-86F4-6A07BCD565B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37A2AE26-EFD0-4EE5-89D6-E3D42A9AEF67}

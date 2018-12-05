@@ -21,9 +21,12 @@ namespace Fanex.NCB.Main.Controllers
     {
 
         private readonly IBridgeClientService _bridgeClient;
-        public AuthController(IBridgeClientService bridgeClient)
+        private readonly AppSettings _options;
+
+        public AuthController(IBridgeClientService bridgeClient, IOptions<AppSettings> options)
         {
             _bridgeClient = bridgeClient;
+            _options = options.Value;
         }
         public async Task<IActionResult> Index(string returnUrl)
         {
@@ -56,15 +59,10 @@ namespace Fanex.NCB.Main.Controllers
 
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim("FullName", user.FullName),
-                    new Claim("Menu", JsonConvert.SerializeObject(user.Menu))// move to session
-
+                    new Claim(ClaimTypes.Name, user.FullName),
+                    new Claim(ClaimTypes.UserData,JsonConvert.SerializeObject(user))
                 };
-                foreach (var item in user.Permissions) //move to session
-                {
-                    claims.Add(new Claim(item, item));
-                }
+
                 var claimsIdentity = new ClaimsIdentity(
                     claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -88,8 +86,6 @@ namespace Fanex.NCB.Main.Controllers
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
-
-                HttpContext.Session.SetString("name", userName);
 
                 return LocalRedirect(returnUrl ?? "~/Home");
             }
@@ -115,7 +111,7 @@ namespace Fanex.NCB.Main.Controllers
         {
             var user = new { Username = userName, Password = password };
             var response = await _bridgeClient.PostJsonAsync(
-            "http://localhost:52085/api/Auth/Verify", user);
+            "http://localhost:63160/api/Auth/Verify", user);
 
             response.EnsureSuccessStatusCode();
 

@@ -66,6 +66,7 @@ namespace Fanex.NCB.Main
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IBridgeClientService, BridgeClientService>();
+            services.AddSingleton<ISessionService, SessionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

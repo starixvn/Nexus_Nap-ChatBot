@@ -1,0 +1,43 @@
+﻿using Fanex.NAP.Core.Service.Impl;
+using Fanex.NAP.Core.Service.Interface;
+using Fanex.NCB.AuthServer.Models.MetalModel;
+using Fanex.NCB.Swagger.Attributes;
+using System.Web.Http;
+using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
+
+namespace Fanex.NCB.Swagger.Controllers
+{
+
+    [CustomAuthorize]
+    public class AuthController : ApiController
+    {
+        private readonly IUserService _userService;
+
+
+        public AuthController()
+        {
+            _userService = new UserService(); // switch to using DI (Autofact)
+        }
+
+        [HttpPost]
+        public dynamic Verify(AuthenticationUser user)
+        {
+
+            var userInfo = _userService.Get(user.UserName);
+            if (userInfo != null)
+            {
+                //verify user
+                return new
+                {
+                    UserName = userInfo.Username,
+                    FullName = string.Join(" ", userInfo.FirstName, userInfo.LastName),
+                    UserId = userInfo.Id,
+                    userInfo.Group
+                };
+            }
+
+            return null;
+        }
+
+    }
+}

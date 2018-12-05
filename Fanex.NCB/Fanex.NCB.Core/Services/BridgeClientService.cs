@@ -19,6 +19,19 @@ namespace Fanex.NCB.Core.Services
         {
             _options = options.Value;
         }
+
+        public async Task<HttpResponseMessage> GetJsonAsync(string url)
+        {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("x-authKey", _options.Secret);
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var response = await client.GetAsync(url);
+
+            response.EnsureSuccessStatusCode();
+
+            return response;
+        }
+
         public async Task<HttpResponseMessage> PostJsonAsync<T>(string url, T value)
         {
             var client = new HttpClient();
