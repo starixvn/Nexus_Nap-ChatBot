@@ -9,5 +9,7 @@ namespace Fanex.NCB.Core.Models.DataDomain
         public string Secret { get; set; }
         public int SiteId { get; set; }
         public string Env { get; set; }
+        public string AuthApi { get; set; }
+        public string UserResourceApi { get; set; }
     }
 }

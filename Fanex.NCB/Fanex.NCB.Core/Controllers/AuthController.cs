@@ -111,7 +111,7 @@ namespace Fanex.NCB.Main.Controllers
         {
             var user = new { Username = userName, Password = password };
             var response = await _bridgeClient.PostJsonAsync(
-            "http://localhost:63160/api/Auth/Verify", user);
+            _options.AuthApi, user);
 
             response.EnsureSuccessStatusCode();
 
