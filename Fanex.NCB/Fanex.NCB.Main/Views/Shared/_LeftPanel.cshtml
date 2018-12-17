@@ -10,45 +10,42 @@
                 <li class="menu-item" data-ng-repeat="menu in vm.menus">
                     <div class="menu-item-content" data-ng-click="vm.menuClick($index);">
                         <span class="icon-client"></span>
-                        <span class="menu-title" data-ng-bind="::menu.Name">General</span>
+                        <span class="menu-title" data-ng-bind="::menu.Name">Skype Chatbot</span>
                         <span class="pull-right" data-ng-class="icon-chevron-down"></span>
                     </div>
-                    <ul class="list-unstyled b-ul__submenu" data-ng-hide="!menu.selected && vm.expandAsideMenu">
+                    <ul class="list-unstyled b-ul__submenu" data-ng-hide="!menu.selected && vm.expandAsideMenu">                                        
                         <li class="submenu-item" data-ng-class="{active: submenu.selected}"
                             data-ng-repeat="submenu in menu.SubMenus">
                             <div class="submenu-item-content" data-ng-click="vm.subMenuClick($parent.$index, $index)">
-                                Setting
+                                <a href="/NewNotification/Index">New Notification</a>
+                            </div>
+                        </li>
+                          <li class="submenu-item" data-ng-class="{active: submenu.selected}"
+                            data-ng-repeat="submenu in menu.SubMenus">
+                            <div class="submenu-item-content" data-ng-click="vm.subMenuClick($parent.$index, $index)">
+                                <a href="/NotificationList/Index">Notification List</a>
                             </div>
                         </li>
                         <li class="submenu-item" data-ng-class="{active: submenu.selected}"
                             data-ng-repeat="submenu in menu.SubMenus">
                             <div class="submenu-item-content" data-ng-click="vm.subMenuClick($parent.$index, $index)">
-                                Mapping
+                                <a href="/NotificationTemplate/Index">Notification Template</a>
+                            </div>
+                        </li>
+                        <li class="submenu-item" data-ng-class="{active: submenu.selected}"
+                            data-ng-repeat="submenu in menu.SubMenus">
+                            <div class="submenu-item-content" data-ng-click="vm.subMenuClick($parent.$index, $index)">
+                                <a href="/ChatGroupMapping/Index">Chat Group Mapping</a>
+                            </div>
+                        </li>
+                        <li class="submenu-item" data-ng-class="{active: submenu.selected}"
+                            data-ng-repeat="submenu in menu.SubMenus">
+                            <div class="submenu-item-content" data-ng-click="vm.subMenuClick($parent.$index, $index)">
+                                <a href="/NotificationType/Index">Notification Type</a>
                             </div>
                         </li>
                     </ul>
-                </li>
-                <li class="menu-item" data-ng-repeat="menu in vm.menus">
-                    <div class="menu-item-content" data-ng-click="vm.menuClick($index);">
-                        <span class="icon-client"></span>
-                        <span class="menu-title" data-ng-bind="::menu.Name">SkypeBot</span>
-                        <span class="pull-right" data-ng-class="icon-chevron-down"></span>
-                    </div>
-                    <ul class="list-unstyled b-ul__submenu" data-ng-hide="!menu.selected && vm.expandAsideMenu">
-                        <li class="submenu-item" data-ng-class="{active: submenu.selected}"
-                            data-ng-repeat="submenu in menu.SubMenus">
-                            <div class="submenu-item-content" data-ng-click="vm.subMenuClick($parent.$index, $index)">
-                                Setting
-                            </div>
-                        </li>
-                        <li class="submenu-item" data-ng-class="{active: submenu.selected}"
-                            data-ng-repeat="submenu in menu.SubMenus">
-                            <div class="submenu-item-content" data-ng-click="vm.subMenuClick($parent.$index, $index)">
-                                Mapping
-                            </div>
-                        </li>
-                    </ul>
-                </li>
+                </li>                
             </ul>
         </div>       
     </div>

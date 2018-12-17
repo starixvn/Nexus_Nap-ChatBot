@@ -27,6 +27,12 @@ body {
     margin: 15px;
 }
 
+.content iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     /* Hide captions */

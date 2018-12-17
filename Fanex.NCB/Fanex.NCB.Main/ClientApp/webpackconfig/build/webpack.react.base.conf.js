@@ -15,6 +15,12 @@ function generateConfig(environment) {
         entry: {
             /*js*/            
             [`${jsPath}/home`]: pathConfig.scriptPaths.home,          
+            [`${jsPath}/fetchdata`]: pathConfig.scriptPaths.fetchdata,          
+            [`${jsPath}/newnotification`]: pathConfig.scriptPaths.newnotification,          
+            [`${jsPath}/notificationlist`]: pathConfig.scriptPaths.notificationlist,          
+            [`${jsPath}/notificationtemplate`]: pathConfig.scriptPaths.notificationtemplate,          
+            [`${jsPath}/chatgroupmapping`]: pathConfig.scriptPaths.chatgroupmapping,          
+            [`${jsPath}/notificationtype`]: pathConfig.scriptPaths.notificationtype
 
             /*css*/
             /*[`${cssPath}/vendor`]: pathConfig.cssPaths.layout,*/            

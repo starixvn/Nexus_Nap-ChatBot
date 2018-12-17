@@ -64,26 +64,8 @@ namespace Fanex.NCB.Main.Controllers
                 Name = m["Name"].Value<string>(),
                 Parent = m["Parent"].HasValues ? ParserMenu(m["Parent"]) : null
             };
-        }
-
-        public IActionResult About()
-        {
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
+        }    
+       
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
