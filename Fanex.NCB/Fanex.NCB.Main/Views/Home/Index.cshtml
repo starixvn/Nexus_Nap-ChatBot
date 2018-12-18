@@ -1,4 +1,21 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
-    Layout = "_MainLayout";
+    Layout = null;
 }
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Fanex.NCB.Main</title>
+    <base href="%PUBLIC_URL%/" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />    
+    <link rel="stylesheet" href="/js/build/dev/pages/layout.css" />    
+</head>
+<body>   
+    <div id="layout">test</div>    
+    <script src="/js/build/dev/pages/layout.chunk.js"></script>
+    <script src="/js/build/dev/pages/lib/common.chunk.js"></script>   
+</body>
+</html>

@@ -15,7 +15,9 @@ var scriptPaths = {
     notificationlist: "./sources/pages/notificationlist/index.js",
     notificationtemplate: "./sources/pages/notificationtemplate/index.js",
     chatgroupmapping: "./sources/pages/chatgroupmapping/index.js",
-    notificationtype: "./sources/pages/notificationtype/index.js"
+    notificationtype: "./sources/pages/notificationtype/index.js",
+    layout: "./sources/pages/layout/index.js",
+    login: "./sources/pages/login/index.js"
 };
 module.exports = {
     projectRoot: projectRoot,

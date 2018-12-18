@@ -1,0 +1,81 @@
+input:focus {
+  outline: none; }
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #ebedef inset; }
+
+body {
+  background-color: #ebedef;
+  padding: 0;
+  margin: 0;
+  font-family: 'Roboto';
+  font-size: 15px; }
+
+.login-container {
+  width: 420px;
+  margin: auto; }
+
+.login-container .form-login {
+  border-radius: 6px;
+  border: 1px solid #b2b2b2;
+  margin-top: 200px;
+  box-shadow: 0 3px 9px 1px rgba(0, 0, 0, 0.25); }
+
+.login-container .header {
+  background: url(/Images/keymain.png) no-repeat 329px -37px #558ed5;
+  font-size: 16px;
+  color: #fff;
+  text-transform: uppercase;
+  padding: 18px 30px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px; }
+
+.login-container .field {
+  margin: 15px 30px; }
+
+.login-container .field .txtinput {
+  width: 91%;
+  height: 34px;
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid #b3b3b3;
+  padding-left: 30px;
+  display: block;
+  font-size: 15px;
+  font-family: 'Roboto';
+  color: #383838; }
+
+.login-container .field .txtinput.username {
+  background: url(/Images/username.png) no-repeat left center transparent; }
+
+.login-container .field .txtinput.password {
+  background: url(/Images/key.png) no-repeat left center transparent; }
+
+.login-container .field .btnSubmit {
+  width: 100%;
+  text-align: center;
+  background-color: #558ed5;
+  color: #ffffff;
+  border: none;
+  text-transform: uppercase;
+  border-radius: 6px;
+  padding: 6px 0;
+  font-family: 'Roboto medium';
+  font-size: 15px;
+  margin: 8px 0;
+  cursor: pointer; }
+
+.login-container .msgbox {
+  background: url(/Images/note.png) no-repeat 8px center #f5d3d3;
+  border: 1px solid #f67373;
+  border-radius: 6px;
+  margin-top: 20px;
+  padding: 10px 0;
+  text-align: center;
+  color: #f53b3b; }
+
+.login-container .hide {
+  display: none; }
+
+
+/*# sourceMappingURL=login.css.map*/

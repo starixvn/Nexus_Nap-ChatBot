@@ -241,6 +241,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 
+__webpack_require__(/*! ./NewNotification.scss */ "./sources/pages/newnotification/components/NewNotification.scss");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var NewNotification = function NewNotification(props) {
@@ -250,12 +252,28 @@ var NewNotification = function NewNotification(props) {
     _react2.default.createElement(
       'h1',
       null,
-      'New Notification'
+      'New Notification updated'
+    ),
+    _react2.default.createElement(
+      'div',
+      { className: 'content' },
+      'content'
     )
   );
 };
 
 exports.default = (0, _reactRedux.connect)()(NewNotification);
+
+/***/ }),
+
+/***/ "./sources/pages/newnotification/components/NewNotification.scss":
+/*!***********************************************************************!*\
+  !*** ./sources/pages/newnotification/components/NewNotification.scss ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
 
 /***/ }),
 
