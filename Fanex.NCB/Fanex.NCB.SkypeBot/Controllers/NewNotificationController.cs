@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Fanex.NCB.SkypeBot.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class NewNotificationController : Controller
     {
         [HttpGet]

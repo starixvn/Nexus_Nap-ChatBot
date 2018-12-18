@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Fanex.NCB.Main/bin/Debug/netcoreapp2.1/Fanex.NCB.Main.dll",
+            "program": "${workspaceFolder}/Fanex.NCB.Main/bin/Debug/netcoreapp2.2/Fanex.NCB.Main.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Fanex.NCB.Main",
             "stopAtEntry": false,

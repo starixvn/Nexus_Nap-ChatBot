@@ -19,7 +19,7 @@ using System.Net.Http;
 
 namespace Fanex.NCB.Main.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class HomeController : Controller
     {
         private readonly ISessionService _sessionService;
@@ -34,22 +34,22 @@ namespace Fanex.NCB.Main.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var userData = JsonConvert.DeserializeObject<ApplicationUser>(HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.UserData)?.Value);
+            //var userData = JsonConvert.DeserializeObject<ApplicationUser>(HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.UserData)?.Value);
             //fetch menu & permission
-            var apiUrl = $"{_options.UserResourceApi}/Query/{userData.UserId}?siteid={_options.SiteId}&env={_options.Env}";
-            var response = await _bridgeClient.GetJsonAsync(apiUrl);
+            //var apiUrl = $"{_options.UserResourceApi}/Query/{userData.UserId}?siteid={_options.SiteId}&env={_options.Env}";
+            //var response = await _bridgeClient.GetJsonAsync(apiUrl);
 
-            response.EnsureSuccessStatusCode();
+            //response.EnsureSuccessStatusCode();
 
             // return URI of the created resource.
-            var item = await response.Content.ReadAsStringAsync();
+            //var item = await response.Content.ReadAsStringAsync();
 
-            var jsonObj = JObject.Parse(item);
+            //var jsonObj = JObject.Parse(item);
             var menuList = new List<Menu>();
-            foreach (var m in jsonObj["Menu"])
-            {
-                menuList.Add(ParserMenu(m));
-            }
+            //foreach (var m in jsonObj["Menu"])
+            //{
+                //menuList.Add(ParserMenu(m));
+            //}
             ViewBag.Menu = menuList;
             return View();
         }
