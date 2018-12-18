@@ -1,1 +1,0 @@
-{"version":3,"sources":["webpack:///./sources/pages/newnotification/components/NewNotification.scss"],"names":[],"mappings":"AAAA;AACA,cAAc","file":"wwwroot/js/build/dev/pages/newnotification.css","sourcesContent":[".content {\n  color: blue; }\n"],"sourceRoot":""}
