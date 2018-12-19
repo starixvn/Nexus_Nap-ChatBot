@@ -14,9 +14,9 @@ namespace Fanex.NCB.Swagger.Controllers
         private readonly IUserService _userService;
 
 
-        public AuthController()
+        public AuthController(IUserService userService)
         {
-            _userService = new UserService(); // switch to using DI (Autofact)
+            _userService = userService;
         }
 
         [HttpPost]

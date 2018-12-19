@@ -1,8 +1,6 @@
 ﻿using Fanex.NAP.Core.Models;
 using Fanex.NAP.Core.Service.Impl;
 using Fanex.NAP.Core.Service.Interface;
-using Fanex.NCB.Swagger.Attributes;
-using Newtonsoft.Json;
 using System.Linq;
 using System.Web.Http;
 
@@ -13,9 +11,9 @@ namespace Fanex.NCB.Swagger.Controllers
     public class UserResourceController : ApiController
     {
         private readonly IUserService _userService;
-        public UserResourceController()
+        public UserResourceController(IUserService userService)
         {
-            _userService = new UserService();
+            _userService = userService;
         }
         // GET: api/ExcelHandler/5
         [HttpGet]
@@ -43,7 +41,8 @@ namespace Fanex.NCB.Swagger.Controllers
                     x.DisplayOrder,
                     x.Policy,
                     x.Name,
-                    Parent = CreateMenu(x.Parent)
+                    Parent = CreateMenu(x.Parent),
+                    x.Function.Key
                 };
             }
             return null;

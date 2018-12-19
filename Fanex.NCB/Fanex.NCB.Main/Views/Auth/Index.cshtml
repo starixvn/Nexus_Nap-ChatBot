@@ -11,7 +11,12 @@
     <title>@ViewData["Title"] - Fanex.NCB.Main</title>
     <base href="%PUBLIC_URL%/" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="/js/build/dev/pages/login.css" />
+    <environment include=""="Development">
+        <link rel="stylesheet" href="/js/build/dev/pages/login.css" asp-append-version="true" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="/js/build/PROD/pages/login.css" asp-append-version="true" />
+    </environment>
 </head>
 <body>   
    <div id="login">test</div>    

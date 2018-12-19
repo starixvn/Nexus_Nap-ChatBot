@@ -9,9 +9,13 @@ namespace Fanex.NCB.Main.Models.DTO
 {
     public class ApplicationUser
     {
-        public int UserId { get; set; }
         public string UserName { get; set; }
         public string FullName { get; set; }
-        public string Group { get; set; }
+        public int UserId { get; set; }
+        /// <summary>
+        /// Ex: Tkey = permission key
+        /// TValue = Policy (0= read, 1= host)
+        /// </summary>
+        public IDictionary<string, int> Permissions { get; set; }
     }
 }
