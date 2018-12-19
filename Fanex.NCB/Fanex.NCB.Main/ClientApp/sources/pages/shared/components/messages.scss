@@ -1,0 +1,8 @@
+@import "../variables";
+
+.msg-error {
+    width: 100%;
+    border: 1px solid $msg-error-border;
+    background-color: $msg-error-bg;
+    color: $msg-error-color;
+}

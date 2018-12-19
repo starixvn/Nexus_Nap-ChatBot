@@ -1,12 +1,16 @@
-$border-color: #CED4DA;
+
+@import "../../shared/variables";
 
 body {  
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  padding: 0;
+  margin: 0;
   background-color: #066896;
-  font-size: 13px;
+  font-size: $font-size;
+  font-family: $font-family;
 }
 
 .bold {
@@ -60,8 +64,8 @@ body {
 .input-group {
   display: grid;
   justify-content: stretch;
-  align-items: center;
   grid-template-columns: 34px 1fr;
+  grid-template-rows: 36px;
   height: 36px;
   margin-bottom: 16px;
   border: 1px solid $border-color;
@@ -70,9 +74,14 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 34px;
     border-right: 1px solid $border-color;
     background-color: #eee;
     color: #798388;
+
+    [class^="icon-"] {
+      font-size: 16px;
+    }
   }
 
   .form-control {
@@ -80,6 +89,7 @@ body {
     outline: none;
     padding: 0 10px;
     line-height: 34px;
+    height: 34px;
     color: #333;
     box-shadow: none;
   }
@@ -109,6 +119,7 @@ body {
 .list-inline {
   display: inline;
   margin: 0;
+  padding-left: 0;
 
   li {
     float: left;
@@ -127,6 +138,7 @@ body {
   margin-right: 4px;
   background-repeat: no-repeat;
 }
+
 .icon-chrome {
   @extend %icon;
   background-image: url("/Images/Chrome.svg");
@@ -137,3 +149,7 @@ body {
   background-image: url("/Images/Firefox.svg");
 }
 
+.msg-error {
+  padding: 12px 34px;
+  margin-bottom: 12px;
+}
