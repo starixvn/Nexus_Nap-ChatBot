@@ -40,14 +40,26 @@ function generateConfig(environment) {
                     exclude: /node_modules/               
                 },
                 {
-                    test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/,
+                    test: /\.(png|jpg|jpeg|gif|svg)$/,
                     use: [{
                         loader: 'url-loader',
                         options: { 
                             limit: 4000, // Convert images < 8kb to base64 strings
                             name: '[hash]-[name].[ext]',
-                            outputPath: '/wwwroot/assets/',
-                            publicPath: '/assets/'
+                            outputPath: '/wwwroot/images/',
+                            publicPath: '/images/'
+                        } 
+                    }]
+                },
+                {
+                    test: /\.(woff|woff2|eot|ttf)$/,
+                    use: [{
+                        loader: 'url-loader',
+                        options: { 
+                            limit: 4000, // Convert images < 8kb to base64 strings
+                            name: '[hash]-[name].[ext]',
+                            outputPath: '/wwwroot/fonts/',
+                            publicPath: '/fonts/'
                         } 
                     }]
                 }

@@ -43,7 +43,7 @@ body {
   height: 54px;
   width: 54px;
   margin: 0 auto;
-  background: url("/Images/Logo.svg") no-repeat;
+  background: url("../../../images/Logo.svg") no-repeat;
 }
 
 .header {
@@ -157,12 +157,12 @@ body {
 
 .icon-chrome {
   @extend %icon;
-  background-image: url("/Images/Chrome.svg");
+  background-image: url("../../../images/Chrome.svg");
 }
 
 .icon-firefox {
   @extend %icon;
-  background-image: url("/Images/Firefox.svg");
+  background-image: url("../../../images/Firefox.svg");
 }
 
 .msg-error {

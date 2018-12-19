@@ -30,7 +30,7 @@ class Menu extends Component {
                                   <span className="menu-title" data-ng-bind="::menu.Name">Skype Chatbot</span>
                                   <span className="pull-right" data-ng-class="icon-chevron-down"></span>
                               </div>
-                              <ul class="list-unstyled b-ul__submenu" data-ng-hide="!menu.selected && vm.expandAsideMenu">                                        
+                              <ul className="list-unstyled b-ul__submenu" data-ng-hide="!menu.selected && vm.expandAsideMenu">                                        
                                   <li className="submenu-item" data-ng-class="{active: submenu.selected}"
                                       data-ng-repeat="submenu in menu.SubMenus">
                                       <div className="submenu-item-content" data-ng-click="vm.subMenuClick($parent.$index, $index)">

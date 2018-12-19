@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import '../../shared/nap-chatbot/style.css';
+import '../../../fonts/style.css';
 import '../../shared/components/messages.scss';
 import './Login.scss';
 
