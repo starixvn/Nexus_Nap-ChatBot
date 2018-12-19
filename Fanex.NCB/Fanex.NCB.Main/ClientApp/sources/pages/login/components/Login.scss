@@ -1,80 +1,139 @@
-input:focus {
+$border-color: #CED4DA;
+
+body {  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #066896;
+  font-size: 13px;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+* {
+  box-sizing: border-box;
+}
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+.login-container {
+  display: grid;
+  justify-content: stretch;
+  grid-template-rows: 1fr 48px;
+  grid-template-columns: 1fr;
+  width: 400px;
+  min-height: 440px;  
+  border: 1px solid $border-color;
+  background-color: #fff;
+}
+
+// .logo { text-align: center; }
+
+.logo {
+  display: inline-block;
+  height: 54px;
+  width: 54px;
+  margin: 0 auto;
+  background: url("/Images/Logo.svg") no-repeat;
+}
+
+.header {
+  margin: 16px 0 36px 0;
+  font-size: 16px;
+  color: #066896;
+  text-align: center;
+  font-weight: bold;
+}
+
+.form-login {
+  display: flex;
+  justify-content: stretch;
+  flex-direction: column;
+  padding: 40px 30px;
+}
+
+.input-group {
+  display: grid;
+  justify-content: stretch;
+  align-items: center;
+  grid-template-columns: 34px 1fr;
+  height: 36px;
+  margin-bottom: 16px;
+  border: 1px solid $border-color;
+
+  .input-group-prepend {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid $border-color;
+    background-color: #eee;
+    color: #798388;
+  }
+
+  .form-control {
+    border: none;
     outline: none;
+    padding: 0 10px;
+    line-height: 34px;
+    color: #333;
+    box-shadow: none;
   }
-  input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px #ebedef inset;
+}
+
+.button {
+  height: 42px;
+  margin-top: 8px;
+  border: none;
+  background-color: #066896;
+  text-align: center;
+  text-transform: uppercase;
+  color: #fff;  
+}
+
+.form-footer {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  line-height: 48px;
+  border-bottom: 1px solid $border-color;
+  background-color: #eee;
+  color: #333;
+  padding: 0 30px;
+}
+
+.list-inline {
+  display: inline;
+  margin: 0;
+
+  li {
+    float: left;
+    display: flex;
+    align-items: center;
+    margin: 0 10px;
   }
-  body {
-    background-color: #ebedef;
-    padding: 0;
-    margin: 0;
-    font-family: 'Roboto';
-    font-size: 15px;
-  }
-  .login-container {
-    width: 420px;
-    margin: auto;
-  }
-  .login-container .form-login {
-    border-radius: 6px;
-    border: 1px solid #b2b2b2;
-    margin-top: 200px;
-    box-shadow: 0 3px 9px 1px rgba(0, 0, 0, 0.25);
-  }
-  .login-container .header {
-    background: url(/Images/keymain.png) no-repeat 329px -37px #558ed5;
-    font-size: 16px;
-    color: #fff;
-    text-transform: uppercase;
-    padding: 18px 30px;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-  }
-  .login-container .field {
-    margin: 15px 30px;
-  }
-  .login-container .field .txtinput {
-    width: 91%;
-    height: 34px;
-    border: none;
-    background: transparent;
-    border-bottom: 1px solid #b3b3b3;
-    padding-left: 30px;
-    display: block;
-    font-size: 15px;
-    font-family: 'Roboto';
-    color: #383838;
-  }
-  .login-container .field .txtinput.username {
-    background: url(/Images/username.png) no-repeat left center transparent;
-  }
-  .login-container .field .txtinput.password {
-    background: url(/Images/key.png) no-repeat left center transparent;
-  }
-  .login-container .field .btnSubmit {
-    width: 100%;
-    text-align: center;
-    background-color: #558ed5;
-    color: #ffffff;
-    border: none;
-    text-transform: uppercase;
-    border-radius: 6px;
-    padding: 6px 0;
-    font-family: 'Roboto medium';
-    font-size: 15px;
-    margin: 8px 0;
-    cursor: pointer;
-  }
-  .login-container .msgbox {
-    background: url(/Images/note.png) no-repeat 8px center #f5d3d3;
-    border: 1px solid #f67373;
-    border-radius: 6px;
-    margin-top: 20px;
-    padding: 10px 0;
-    text-align: center;
-    color: #f53b3b;
-  }
-  .login-container .hide {
-    display: none;
-  }
-  
+}
+
+// icons
+
+%icon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+  background-repeat: no-repeat;
+}
+.icon-chrome {
+  @extend %icon;
+  background-image: url("/Images/Chrome.svg");
+}
+
+.icon-firefox {
+  @extend %icon;
+  background-image: url("/Images/Firefox.svg");
+}
+
