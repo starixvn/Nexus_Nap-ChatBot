@@ -6,9 +6,22 @@
     <title>@ViewData["Title"] - Fanex.NCB.Main</title>
     <base href="%PUBLIC_URL%/" />      
     @RenderSection("Styles", required: false)
+
+    <environment include="Development">
+        <link rel="stylesheet" href="/css/common.css" asp-append-version="true" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="/css/common.css" asp-append-version="true" />
+    </environment>
 </head>
 <body>   
     @RenderBody()
     @RenderSection("Scripts", required: false)
+    <environment include="Development">
+        <script src="/js/build/dev/pages/lib/common.chunk.js" asp-append-version="true"></script>          
+    </environment>
+    <environment exclude="Development">
+        <script src="/js/build/dev/pro/lib/common.chunk.js" asp-append-version="true"></script>  
+    </environment>
 </body>
 </html>
