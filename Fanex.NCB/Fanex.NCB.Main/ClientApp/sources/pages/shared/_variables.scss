@@ -6,3 +6,14 @@ $font-size: 13px;
 $msg-error-border: #fdd5d8;
 $msg-error-bg: #fee5e6;
 $msg-error-color: #f96a74;
+
+// Login pages
+$login-bg: #066896;
+$login-header-color: #066896; 
+$login-button-bg: #066896;
+$login-button-bg-hover: darken($login-button-bg, 10%);
+
+$backup-login-bg: #304365;
+$backup-login-header-color: #545a6a; 
+$backup-login-button-bg: #304365;
+$backup-login-button-bg-hover: darken($backup-login-button-bg, 10%);

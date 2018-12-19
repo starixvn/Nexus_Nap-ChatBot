@@ -8,7 +8,7 @@ body {
   height: 100vh;
   padding: 0;
   margin: 0;
-  background-color: #066896;
+  background-color: $login-bg;
   font-size: $font-size;
   font-family: $font-family;
 }
@@ -49,7 +49,7 @@ body {
 .header {
   margin: 16px 0 36px 0;
   font-size: 16px;
-  color: #066896;
+  color: $login-header-color;
   text-align: center;
   font-weight: bold;
 }
@@ -110,13 +110,13 @@ body {
   height: 42px;
   margin-top: 8px;
   border: none;
-  background-color: #066896;
+  background-color: $login-button-bg;
   text-align: center;
   text-transform: uppercase;
   color: #fff;
   
   &:hover {
-    background-color: darken(#066896, 10%);
+    background-color: $login-button-bg-hover;
     cursor: pointer;
   }
 }

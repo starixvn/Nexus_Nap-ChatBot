@@ -1,0 +1,171 @@
+
+@import "../../shared/variables";
+
+body {  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+  background-color: $backup-login-bg;
+  font-size: $font-size;
+  font-family: $font-family;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+* {
+  box-sizing: border-box;
+}
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+.login-container {
+  display: grid;
+  justify-content: stretch;
+  grid-template-rows: 1fr 48px;
+  grid-template-columns: 1fr;
+  width: 400px;
+  min-height: 440px;  
+  border: 1px solid $border-color;
+  background-color: #fff;
+}
+
+// .logo { text-align: center; }
+
+.logo {
+  display: inline-block;
+  height: 54px;
+  width: 54px;
+  margin: 0 auto;
+  background: url("/Images/Logo.svg") no-repeat;
+}
+
+.header {
+  margin: 16px 0 36px 0;
+  font-size: 16px;
+  color: $backup-login-header-color;
+  text-align: center;
+  font-weight: bold;
+}
+
+.form-login {
+  display: flex;
+  justify-content: stretch;
+  flex-direction: column;
+  padding: 40px 30px;
+}
+
+.input-group {
+  position: relative;
+  display: flex;
+  justify-content: stretch;
+  height: 36px;
+  margin-bottom: 16px;
+
+  .input-group-prepend {
+    position: absolute;
+    left: 1px;
+    top: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 32px;
+    width: 34px;
+    border-right: 1px solid $border-color;
+    background-color: #eee;
+    color: #798388;
+
+    [class^="icon-"] {
+      font-size: 16px;
+    }
+  }
+
+  .form-control {
+    border: 1px solid $border-color;
+    outline: none;
+    padding: 0 10px 0 45px;
+    line-height: 34px;
+    height: 34px;
+    width: 100%;
+    color: #333;
+    box-shadow: none;
+
+    &:focus {
+      border-color: #1a87d3;
+    }
+  }
+
+  &.error .form-control {
+    border-color: #f9525f;
+  }
+}
+
+.button {
+  height: 42px;
+  margin-top: 8px;
+  border: none;
+  background-color: $backup-login-button-bg;
+  text-align: center;
+  text-transform: uppercase;
+  color: #fff;
+  
+  &:hover {
+    background-color: $backup-login-button-bg-hover;
+    cursor: pointer;
+  }
+}
+
+.form-footer {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  line-height: 48px;
+  border-bottom: 1px solid $border-color;
+  background-color: #eee;
+  color: #333;
+  padding: 0 30px;
+}
+
+.list-inline {
+  display: inline;
+  margin: 0;
+  padding-left: 0;
+
+  li {
+    float: left;
+    display: flex;
+    align-items: center;
+    margin: 0 10px;
+  }
+}
+
+// icons
+
+%icon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+  background-repeat: no-repeat;
+}
+
+.icon-chrome {
+  @extend %icon;
+  background-image: url("/Images/Chrome.svg");
+}
+
+.icon-firefox {
+  @extend %icon;
+  background-image: url("/Images/Firefox.svg");
+}
+
+.msg-error {
+  padding: 12px 34px;
+  margin-bottom: 12px;
+}
