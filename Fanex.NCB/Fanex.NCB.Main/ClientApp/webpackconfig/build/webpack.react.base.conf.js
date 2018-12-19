@@ -33,11 +33,25 @@ function generateConfig(environment) {
             chunkFilename: jsPath + '/lib/[name].chunk.js',
         },
         module: {
-            rules: [{
-                test: /\.(js|jsx)$/,
-                loader: ["babel-loader"],
-                exclude: /node_modules/               
-            }]
+            rules: [
+                {
+                    test: /\.(js|jsx)$/,
+                    loader: ["babel-loader"],
+                    exclude: /node_modules/               
+                },
+                {
+                    test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/,
+                    use: [{
+                        loader: 'url-loader',
+                        options: { 
+                            limit: 4000, // Convert images < 8kb to base64 strings
+                            name: '[hash]-[name].[ext]',
+                            outputPath: '/wwwroot/assets/',
+                            publicPath: '/assets/'
+                        } 
+                    }]
+                }
+            ]
         },
         plugins: pluginGenerator(environment),
         stats: {
