@@ -37,14 +37,8 @@ class Header extends Component {
                 <ul className="list-unstyled userinfo">
                         <li className="annoucement">
                             <div className="icon-bell"></div>
-                            <div className="number">
-                                <div className="call-action" id="divLinkTooltip">
-                                    <div className="pulse-box">
-                                        <div className="pulse-css"></div>
-                                    </div>
-                                    <div className="popover-simple arrow-left">Please link your Letstalk ID with our chatbot service to use the functions below.</div>
-                                </div>
-                            </div>
+                            <div className="pulse-css"></div>
+                            <div className="number">99+</div>
                         </li>
                         <li className="user-info">
                         <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>

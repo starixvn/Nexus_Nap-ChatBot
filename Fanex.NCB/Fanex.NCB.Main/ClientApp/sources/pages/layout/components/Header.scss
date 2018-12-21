@@ -47,7 +47,7 @@
 
   li {
     float: left;
-    margin-left: 20px;
+    margin-left: 36px;
   }
 }
 
@@ -56,9 +56,86 @@
   line-height: 32px;
   .icon-bell {
     font-size: 20px;
-    color: #798388;
+    color: #333;
     position: relative;
     top: 5px;
+    z-index: 2;
+  }
+}
+
+.number {
+  width: 26px;
+  height: 16px;
+  border-radius: 3px;
+  background: red;
+  position: absolute;
+  top: -4px;
+  right: -20px;
+  line-height: 0;
+  font-size: 11px;
+  color: #fff;
+  line-height: 16px;
+  text-align: center;
+  z-index: 1;
+
+  &:after {
+    animation-delay: 2s;
+  }
+}
+
+/* call action */
+.pulse-css {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: tomato;
+  position: absolute;
+  top: 11px;
+  right: 6px;
+  line-height: 0;
+  font-size: 11px;
+  color: #fff;
+  line-height: 16px;
+  text-align: center;
+  z-index: 1;
+
+  &:before,
+  &:after {    
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: tomato;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    transform: scale(0.5);
+    transform-origin: center center;
+    animation: pulse-me 3s linear infinite;
+    content: "";
+  }
+
+  &:after {
+    animation-delay: 2s;
+  }
+}
+
+@keyframes pulse-me {
+  0% {
+      transform: scale(0.5);
+      opacity: 0.1;
+  }
+  50% {
+      opacity: 0.5;
+  }
+  70% {
+      opacity: 0.2;
+  }
+  100% {
+        transform: scale(4);
+        opacity: 0;
   }
 }
 
@@ -88,6 +165,7 @@
   &:hover {
     color: #066896;
     cursor: pointer;
+    text-decoration: none;
   }
 
   &:after {
@@ -108,6 +186,7 @@
   margin-top: 10px;
 
   .dropdown-item {
+    display: block;
     line-height: 36px;
     padding: 0 8px;
     color: #333;
@@ -119,6 +198,7 @@
   .dropdown-item:hover {
     background-color: #ececec;
     color: #333;
+    text-decoration: none;
   }
 
   [class^="icon"] {
@@ -127,61 +207,4 @@
 }
 
 
-/* call action */
 
-.call-action {
-  display: inline-block;
-  position: relative;
-
-  .popover-simple {
-      left: 28px;
-      top: -13px;
-  }
-}
-
-
-.pulse-css {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: tomato;
-  position: relative;
-
-  &:before,
-  &:after {    
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: tomato;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    margin: auto;
-    transform: scale(0.5);
-    transform-origin: center center;
-    animation: pulse-me 3s linear infinite;
-    content: "";
-  }
-  &:after {
-    animation-delay: 2s;
-  }
-}
-
-@keyframes pulse-me {
-  0% {
-      transform: scale(0.5);
-      opacity: 0.1;
-  }
-  50% {
-      opacity: 0.5;
-  }
-  70% {
-      opacity: 0.2;
-  }
-  100% {
-      transform: scale(4);
-      opacity: 0;
-}
-}
