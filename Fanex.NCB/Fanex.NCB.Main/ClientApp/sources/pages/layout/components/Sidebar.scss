@@ -1,0 +1,73 @@
+
+.nav-top {
+    display: flex;
+    justify-content: stretch;
+    align-items: center;
+    margin-top: 12px;
+    margin-bottom: 30px;
+    color: #fff;
+}
+
+.logo {
+    height: 32px;
+    width: 32px;
+    margin-left: 14px;
+    margin-right: 8px;
+}
+
+.site-name {
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.nav {
+    .menu {        
+        text-transform: uppercase;
+        color: #fff;
+        font-weight: 500;
+    }
+
+    .submenu {
+        padding: 0;
+        margin: 14px 0 0;
+        width: 100%;
+    }
+
+    .menu-text {
+        display: block;
+        padding: 0 10px;
+        cursor: pointer;        
+    }
+
+    .menu-item {
+        display: inline-block;
+        width: 100%;
+    }
+
+    .menu-item a {
+        display: block;
+        padding: 0 20px;
+        line-height: 36px;
+        text-transform: capitalize;
+        color: #fff;
+
+        &:hover {
+            background-color: #044868;
+            color: #51e7ff;
+            
+            text-decoration: none;
+        }
+
+        [class^="icon"] {
+            margin-right: 16px;
+            font-size: 16px;
+        }
+
+        .icon-template {
+            font-size: 14px;
+            position: relative;
+            left: 1px;
+        }
+    }
+}

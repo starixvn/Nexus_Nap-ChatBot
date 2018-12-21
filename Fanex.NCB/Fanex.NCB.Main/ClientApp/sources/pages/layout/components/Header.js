@@ -1,21 +1,74 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import './Header.scss';
 
-const Header = props => (
-  <div className="header">
-      <div className="col-sm-12 col-xs-12 top-header">
-          <ul className="list-unstyled pull-right b-ul__userinfo">
-              <li className="datetime"><span className="icon-clock"></span>2:26:04 PM Nov 30, 2018 GMT+8</li>
-              <li className="user-info">
-                  <a data-toggle="dropdown"><span className="info-bar">Welcome Sa<span className="icon-arrow-user"></span></span></a>
-                  <ul className="dropdown-menu menu-user-info" role="menu">
-                      <li className="b-li__userinfo"><a className="userinfo-feature" href="/Auth/Index"><span className="icon-signout"></span>Sign out</a></li>
-                  </ul>
-              </li>
-          </ul>
-      </div>
-  </div>
-);
+import './Header.scss';
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+
+class Header extends Component {
+    constructor(props){
+        super(props);
+        
+        this.state = {
+          dropdownOpen: false
+        };
+
+        this.collapseExpandHandler = this.collapseExpandHandler.bind(this);
+        this.toggle = this.toggle.bind(this);
+      }
+    
+      toggle() {
+        this.setState(prevState => ({
+          dropdownOpen: !prevState.dropdownOpen
+        }));
+      }
+
+      collapseExpandHandler(){
+        this.props.collapseExpandHandler();
+      }
+    
+      render() {
+        return (
+            <div className="header">
+               <div class="line-wrapp" onClick={this.collapseExpandHandler}>
+                    <div class="line top"></div>
+                    <div class="line center"></div>
+                    <div class="line bottom"></div>
+                </div>
+                <ul className="list-unstyled userinfo">
+                        <li className="annoucement">
+                            <div className="icon-bell"></div>
+                            <div className="number">
+                                <div className="call-action" id="divLinkTooltip">
+                                    <div className="pulse-box">
+                                        <div className="pulse-css"></div>
+                                    </div>
+                                    <div className="popover-simple arrow-left">Please link your Letstalk ID with our chatbot service to use the functions below.</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li className="user-info">
+                        <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+                            <DropdownToggle 
+                                tag="a">
+                                <div className="profile-picture">
+                                    <span className="icon-username"></span>
+                                </div>
+                                Welcome Sa
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem tag="a" href="#">
+                                    <span className="icon-change-pass"></span>Change Password
+                                </DropdownItem>
+                                <DropdownItem tag="a" href="/Auth/Index">
+                                    <span className="icon-sign-out"></span>Sign Out
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                        </li>
+                    </ul>
+            </div>
+        )
+    }
+}
 
 export default connect()(Header);

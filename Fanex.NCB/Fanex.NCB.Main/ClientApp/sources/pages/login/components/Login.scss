@@ -36,14 +36,11 @@ body {
   background-color: #fff;
 }
 
-// .logo { text-align: center; }
-
-.logo {
-  display: inline-block;
+.logo { 
+  display: block;
+  margin: 0 auto;
   height: 54px;
   width: 54px;
-  margin: 0 auto;
-  background: url("../../../images/Logo.svg") no-repeat;
 }
 
 .header {

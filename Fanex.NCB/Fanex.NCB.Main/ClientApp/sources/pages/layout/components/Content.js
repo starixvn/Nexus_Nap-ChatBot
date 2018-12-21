@@ -1,33 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Menu from './Menu';
-import './Content.scss';
+import Header from './Header';
+import "./content.scss";
 
-class Content extends Component{
+class Content extends Component {
   constructor(props){
-    super(props);
-
-    this.state = {
-      currentUrl: "/NewNotification/Index"
-    }
-
-    this.onMenuChange = this.onMenuChange.bind(this);
-  }
-
-  onMenuChange(url){
-    this.setState({
-      currentUrl: url
-    })
-  }
+    super(props);   
+  }  
 
   render() {
     return (
-      <div className="body-content">
-            <div className="left-panel">
-                <Menu onChange={this.onMenuChange}></Menu>
-            </div>
+      <div className="main-container">
+            <Header collapseExpandHandler={this.props.collapseExpandHandler}></Header>
             <div className="content ">
-                <iframe src={this.state.currentUrl}>                
+                <iframe className="main-content" src={this.props.contentUrl}>                
                 </iframe>                           
             </div>
         </div>    

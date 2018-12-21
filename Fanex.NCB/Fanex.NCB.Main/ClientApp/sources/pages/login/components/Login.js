@@ -4,14 +4,13 @@ import { connect } from 'react-redux';
 import '../../../fonts/style.css';
 import '../../shared/components/messages.scss';
 import './Login.scss';
+import Logo from "../../../images/Logo.svg";
 
 
 const Login = props => (
   <div className="login-container">
       <form method="post" action="/auth/SignIn" className="form-login">
-          {/* <div className="logo"><img src={Logo} alt="Nap Chatbot" /></div> */}
-
-          <div className="logo"></div>
+          <a className="logo" href="#"><img src={Logo} alt="Nap Chatbot" /></a>
 
           <h1 className="header">Welcome to CHATBOT</h1>
           <div className="msg-error">Username or Password must not be empty</div>
