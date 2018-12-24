@@ -1,0 +1,37 @@
+@import "../variables";
+
+.form-label {
+    font-weight: normal;
+    text-align: left;
+
+    &.required:after {
+        content: "*";
+        color: #ff0101;
+        margin-left: 4px;
+    }
+}
+
+.form-control {
+    height: 32px;
+    padding: 5px 10px;
+    border-color: $border-color;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+// Validation
+.text-danger {
+    .form-label {
+        color: $text-color;
+    }
+
+    .form-control {
+        border-color: #ff0101;
+    }
+}
+
+.invalid-feedback {
+    grid-column-start: 2;
+    color: #ff0101;
+    padding-top: 8px;
+}

@@ -4,15 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Fanex.NCB.Main</title>
-    <base href="%PUBLIC_URL%/" />      
-    @RenderSection("Styles", required: false)
-
+    <base href="%PUBLIC_URL%/" />
     <environment include="Development">
         <link rel="stylesheet" href="/css/common.css" asp-append-version="true" />
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="/css/common.css" asp-append-version="true" />
     </environment>
+     @RenderSection("Styles", required: false)
 </head>
 <body>   
     @RenderBody()

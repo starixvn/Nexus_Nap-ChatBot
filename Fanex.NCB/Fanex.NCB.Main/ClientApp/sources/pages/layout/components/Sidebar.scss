@@ -71,3 +71,20 @@
         }
     }
 }
+
+.sidebar-collapsed .sidebar {
+    .nav-top {
+        margin-bottom: 10px;
+    }
+    
+    .site-name {
+        display: none;
+    }
+    .menu-text {
+        display: none;
+    }
+
+    .menu-item .text {
+        display: none;
+    }
+}

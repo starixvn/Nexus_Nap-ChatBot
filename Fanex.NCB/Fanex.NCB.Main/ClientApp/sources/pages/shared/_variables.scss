@@ -1,6 +1,12 @@
 $border-color: #CED4DA;
 $font-family: Roboto, Arial, Tahoma, sans-serif;
 $font-size: 13px;
+$text-color: #333;
+
+// sizes
+$sidebar-width: 261px;
+$sidebar-small-width: 61px;
+$header-height: 54px;
 
 // Messages
 $msg-error-border: #fdd5d8;
@@ -17,3 +23,10 @@ $backup-login-bg: #304365;
 $backup-login-header-color: #545a6a; 
 $backup-login-button-bg: #304365;
 $backup-login-button-bg-hover: darken($backup-login-button-bg, 10%);
+
+// Buttons
+
+$btn-submit-bg: #066896;
+$btn-submit-bg-hover: darken($btn-submit-bg, 10%);;
+$btn-submit-color: #fff;
+$btn-submit-color-hover: #fff;

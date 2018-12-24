@@ -11,10 +11,11 @@ class Content extends Component {
   render() {
     return (
       <div className="main-container">
-            <Header collapseExpandHandler={this.props.collapseExpandHandler}></Header>
+            <Header
+             collapseExpandHandler={this.props.collapseExpandHandler}
+             isSidebarExpanded={this.props.isSidebarExpanded}></Header>
             <div className="content ">
-                <iframe className="main-content" src={this.props.contentUrl}>                
-                </iframe>                           
+                <iframe className="main-content" src={this.props.contentUrl}></iframe>                           
             </div>
         </div>    
     );    

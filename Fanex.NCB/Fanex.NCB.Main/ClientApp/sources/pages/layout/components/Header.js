@@ -27,12 +27,13 @@ class Header extends Component {
       }
     
       render() {
+          const activeClass = this.props.isSidebarExpanded ? "line-wrapp" : 'line-wrapp collaped';
         return (
             <div className="header">
-               <div class="line-wrapp" onClick={this.collapseExpandHandler}>
-                    <div class="line top"></div>
-                    <div class="line center"></div>
-                    <div class="line bottom"></div>
+               <div className={activeClass}  onClick={this.collapseExpandHandler}>
+                    <div className="line top"></div>
+                    <div className="line center"></div>
+                    <div className="line bottom"></div>
                 </div>
                 <ul className="list-unstyled userinfo">
                         <li className="annoucement">

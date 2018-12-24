@@ -29,31 +29,31 @@ class Sidebar extends Component {
                         <li className="menu-item">
                             <a href="" className="link" onClick={(event) => this.onChange(event, "/NewNotification/Index")}>
                                 <span className="icon-new-notification"></span>
-                                New Notification
+                                <span className="text">New Notification</span>
                             </a>
                         </li>
                         <li className="menu-item">
                             <a href="" className="link" onClick={(event) => this.onChange(event, "/NotificationList/Index")}>
                                 <span className="icon-notification-list"></span>
-                                Notification List
+                                <span className="text">Notification List</span>
                             </a>
                         </li>
                         <li className="menu-item">
                             <a href="" className="link" onClick={() => this.onChange("/NotificationTemplate/Index")}>
                                 <span className="icon-template"></span>
-                                Notification Template
+                                <span className="text">Notification Template</span>
                             </a>
                         </li>
                         <li className="menu-item">
                             <a href="" className="link" onClick={() => this.onChange("/ChatGroupMapping/Index")}>
                                 <span className="icon-group-mapping"></span>
-                                Chat Group Mapping
+                                <span className="text">Chat Group Mapping</span>
                             </a>
                         </li>
                         <li className="menu-item">
                             <a href="" className="link" onClick={() => this.onChange("/NotificationType/Index")}>
                                 <span className="icon-notification-type"></span>
-                                Notification Type
+                                <span className="text">Notification Type</span>
                             </a>
                         </li>
                     </ul>

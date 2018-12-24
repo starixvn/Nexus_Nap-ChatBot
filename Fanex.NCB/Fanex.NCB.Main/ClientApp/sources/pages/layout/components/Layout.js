@@ -33,9 +33,12 @@ class Layout extends Component {
 
       render() {
         return (
-          <div className={`page ${this.state.isSidebarExpanded ? "sidebar-expanded" : ""}`}>    
+          <div className={`page ${this.state.isSidebarExpanded ? "sidebar-expanded" : "sidebar-collapsed"}`}>    
             <Sidebar onChange={this.onMenuChange}></Sidebar>
-            <Content contentUrl={this.state.currentUrl} collapseExpandHandler={this.collapseExpandHandler}></Content>
+            <Content 
+              contentUrl={this.state.currentUrl}
+              isSidebarExpanded={this.state.isSidebarExpanded}
+              collapseExpandHandler={this.collapseExpandHandler}></Content>
           </div>
         )
     }

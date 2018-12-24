@@ -5,13 +5,15 @@
   justify-content: space-between;
   flex-direction: row;
   align-items: center;
-  height: 54px;
+  height: $header-height;
   border-bottom: 1px solid #dadee3;
   padding: 0 10px;
+  background-color: #fff;
 }
 
 // Hambuger Icon
 .line-wrapp{
+  position: relative;
 	width: 20px;
 	height: 14px;
   transition: all 600ms ease-in-out;
@@ -19,27 +21,44 @@
   &:hover {
     cursor: pointer;
   }
-}
-.line-wrapp.active{
-	transform: rotate(180deg);
-}
-.line-wrapp .line{
-	width: 20px;
-	height: 2px;
-	background-color: #707070;
-	transition: all 600ms ease-in-out;
-}
-.line-wrapp .line.center {
-  margin: 4px 0;
-  width: 15px;
-}
-.line-wrapp.active .line.top{
-	width: 40px;
-	transform: translateX(30px) translateY(11px) rotate(45deg);
-}
-.line-wrapp.active .line.bottom{
-	width: 40px;
-	transform: translateX(30px) translateY(-11px) rotate(-45deg);
+
+  &::before, 
+  &::after {
+    content: "";
+    padding: 24px;
+    position: absolute;
+    left: -12px;
+    top: -18px;
+  }
+
+  &.collaped {
+    transform: rotate(180deg);
+
+    .line.top{
+      width: 12px;
+      transform: translateX(-2px) translateY(10px) rotate(45deg);
+    }
+
+    .line.center {
+      width: 20px;
+    }
+    
+    .line.bottom{
+      width: 12px;
+      transform: translateX(-2px) translateY(-10px) rotate(-45deg);
+    }
+  }
+
+  .line{
+    width: 20px;
+    height: 2px;
+    background-color: #707070;
+    transition: all 600ms ease-in-out;
+    &.center {
+      margin: 4px 0;
+      width: 15px;
+    }
+  }
 }
 
 .userinfo {

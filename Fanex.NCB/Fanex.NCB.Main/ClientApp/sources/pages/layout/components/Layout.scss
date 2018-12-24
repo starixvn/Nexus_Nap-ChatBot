@@ -1,18 +1,30 @@
 @import "../../shared/variables";
 
 body {
+  height: 100vh;
+  background-color: #fdfdfd;
   font-family: $font-family;
-  font-size: $font-size;
+  font-size: $font-size;  
 }
 
 .page {
   height: 100%;
-}
 
-.page.sidebar-expanded .sidebar {
-  width: 261px;
-  -webkit-transform: none;
-  transform: none;
+  &.sidebar-expanded .sidebar {
+    width: $sidebar-width;
+    -webkit-transform: none;
+    transform: none;
+  }
+
+  &.sidebar-expanded .main-container {
+    left: $sidebar-width;
+  }
+
+  &.sidebar-collapsed .sidebar {
+    width: $sidebar-small-width;
+    transform: translateX(0);
+    transition: transform 0.1s ease-out;
+  }
 }
 
 .sidebar {
@@ -34,11 +46,10 @@ body {
 }
 
 .main-container {
-  height: 100%;
-  min-height: 100%;
-  padding-left: 0;
-}
-
-.page.sidebar-expanded .main-container {
-  padding-left: 261px;
+  position: absolute;
+  top: 0;
+  left: $sidebar-small-width;
+  right: 0;
+  bottom: 0;
+  transition: left 0.275s ease-out;
 }

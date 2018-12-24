@@ -1,7 +1,14 @@
+
+@import "../../shared/variables";
+
 .content {
   overflow-y: hidden;
   background-color: #fdfdfd;
-  height: 800px;
+  position: absolute;
+  top: $header-height;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .main-content {
