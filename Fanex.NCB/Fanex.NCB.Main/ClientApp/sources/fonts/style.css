@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'nap-chatbot';
-  src:  url('fonts/nap-chatbot.eot?k9lz0l');
-  src:  url('fonts/nap-chatbot.eot?k9lz0l#iefix') format('embedded-opentype'),
-    url('fonts/nap-chatbot.ttf?k9lz0l') format('truetype'),
-    url('fonts/nap-chatbot.woff?k9lz0l') format('woff'),
-    url('fonts/nap-chatbot.svg?k9lz0l#nap-chatbot') format('svg');
+  src:  url('./fonts/nap-chatbot.eot?qou8kv');
+  src:  url('./fonts/nap-chatbot.eot?qou8kv#iefix') format('embedded-opentype'),
+    url('./fonts/nap-chatbot.ttf?qou8kv') format('truetype'),
+    url('./fonts/nap-chatbot.woff?qou8kv') format('woff'),
+    url('./fonts/nap-chatbot.svg?qou8kv#nap-chatbot') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,6 +24,33 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-close:before {
+  content: "\e90e";
+}
+.icon-collapse:before {
+  content: "\e911";
+}
+.icon-copy:before {
+  content: "\e912";
+}
+.icon-down:before {
+  content: "\e913";
+}
+.icon-expand:before {
+  content: "\e914";
+}
+.icon-right:before {
+  content: "\e915";
+}
+.icon-success:before {
+  content: "\e916";
+}
+.icon-view:before {
+  content: "\e917";
+}
+.icon-warning:before {
+  content: "\e918";
+}
 .icon-arrow-down:before {
   content: "\e90d";
 }

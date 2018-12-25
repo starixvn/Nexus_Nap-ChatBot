@@ -2,6 +2,7 @@
 @import "../../shared/common.scss";
 @import "../../shared/components/forms.scss";
 @import "../../shared/components/buttons.scss";
+@import "../../shared/components/modals.scss";
 
 .form-group {
     display: grid;
@@ -115,7 +116,7 @@
     }
 }
 
-.btn-submit {
+.content .btn-submit {
     margin-top: 15px;
     margin-left: 145px;
 }

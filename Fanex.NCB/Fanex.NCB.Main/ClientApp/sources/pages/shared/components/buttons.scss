@@ -4,7 +4,9 @@
     padding: 0 20px;
     height: 32px;
     line-height: 32px;
-    border-radius: 0;
+    border-radius: 2px;
+    border: none;
+    outline: none;
 }
 
 .btn-submit {
@@ -15,5 +17,16 @@
     &:hover {
         background-color: $btn-submit-bg-hover;
         color: $btn-submit-color-hover;
+    }
+}
+
+.btn-cancel {
+    @extend %button;
+    background-color: $btn-cancel-bg;
+    color: $btn-cancel-color;
+
+    &:hover {
+        background-color: $btn-cancel-bg-hover;
+        color: $btn-cancel-color-hover;
     }
 }

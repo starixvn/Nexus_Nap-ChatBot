@@ -1,5 +1,6 @@
 $border-color: #CED4DA;
 $font-family: Roboto, Arial, Tahoma, sans-serif;
+$font-icons: 'nap-chatbot';
 $font-size: 13px;
 $text-color: #333;
 
@@ -30,3 +31,8 @@ $btn-submit-bg: #066896;
 $btn-submit-bg-hover: darken($btn-submit-bg, 10%);;
 $btn-submit-color: #fff;
 $btn-submit-color-hover: #fff;
+
+$btn-cancel-bg: #888888;
+$btn-cancel-bg-hover: darken($btn-cancel-bg, 10%);;
+$btn-cancel-color: #fff;
+$btn-cancel-color-hover: #fff;
