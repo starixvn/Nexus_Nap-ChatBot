@@ -13,6 +13,12 @@ $header-height: 54px;
 $msg-error-border: #fdd5d8;
 $msg-error-bg: #fee5e6;
 $msg-error-color: #f96a74;
+$msg-error-icon: #F54F62;
+
+$msg-success-border: #aee6b9;
+$msg-success-bg: #d3f0d9;
+$msg-success-color: #135d23;
+$msg-success-icon: #0e942b;
 
 // Login pages
 $login-bg: #066896;
@@ -36,3 +42,15 @@ $btn-cancel-bg: #888888;
 $btn-cancel-bg-hover: darken($btn-cancel-bg, 10%);;
 $btn-cancel-color: #fff;
 $btn-cancel-color-hover: #fff;
+
+$btn-new-bg: #05b15b;
+$btn-new-bg-hover: darken($btn-new-bg, 10%);;
+$btn-new-color: #fff;
+$btn-new-color-hover: #fff;
+
+// Tables
+
+$table-header-bg: #a9cbdc;
+$table-border: $border-color;
+$table-tr-hover: #FFD8B1;
+$table-tr-even-bg: #eceff1;

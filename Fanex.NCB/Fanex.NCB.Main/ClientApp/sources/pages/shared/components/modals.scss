@@ -2,10 +2,6 @@
 
 .modal {
     background-color: rgba(0,0,0, .2);
-
-    &.show {
-        opacity: 1;
-    }
 }
 
 .modal-dialog {
@@ -28,6 +24,7 @@
         position: relative;
         top: 11px;
         opacity: 1;
+        outline: none;
 
         span {
             display: none;

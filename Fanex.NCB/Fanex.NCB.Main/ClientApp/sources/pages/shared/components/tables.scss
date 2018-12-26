@@ -1,0 +1,82 @@
+@import "../variables";
+
+.tbl {
+    border: 1px solid $table-border;
+    border-collapse: collapse;
+
+    th {
+        background-color: $table-header-bg;
+        text-align: center;
+    }
+
+    td, th {
+        min-height: 32px;
+        padding: 6px 10px;
+        border: 1px solid $table-border;
+    }
+
+    tbody {
+        tr:hover {
+            cursor: pointer;
+            background-color: $table-tr-hover;
+        }
+
+        tr:nth-child(2n) {
+            background-color: $table-tr-even-bg;
+        }
+
+        tr.active {
+            background-color: $table-tr-hover;
+        }
+    }
+
+    .col-order {
+        width: 40px;
+    }
+
+    .col-action {
+        width: 80px;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
+tbody {
+
+    [class^='icon'] {
+        display: inline-block;
+        height: 24px;
+        width: 24px;
+        border-radius: 50%;
+
+        &:before {
+            position: relative;
+            left: 0px;
+            top: 5px
+        }
+
+        &:hover {
+            color: #fff;
+        }        
+    }
+
+    .icon-edit:hover {
+        background-color: #ff9913;            
+    }
+
+    .icon-delete:hover {
+        background-color: #fe3a3a;
+    }
+
+    .icon-view {
+        &::before {
+            top: 4px;
+            left: 1px;
+            font-size: 9px;
+        }
+
+        &:hover {
+            background-color: #65acfe;
+        }
+    }
+}

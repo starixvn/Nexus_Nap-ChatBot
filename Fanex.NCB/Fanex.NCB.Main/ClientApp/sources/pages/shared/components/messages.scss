@@ -1,20 +1,43 @@
 @import "../variables";
 
-.msg-error {
+%msg {
     position: relative;
     width: 100%;
-    border: 1px solid $msg-error-border;
+    padding: 8px 40px;
+    border-width: 1px;
+    border-style: solid;
+
+    &:before {
+        position: absolute;
+        left: 10px;        
+        line-height: 0;
+        font-family: "nap-chatbot";
+        font-size: 18px;
+    }
+}
+
+.msg-error {
+    @extend %msg; 
+    border-color: $msg-error-border;
     background-color: $msg-error-bg;
     color: $msg-error-color;
 
     &:before {
-        position: absolute;
-        left: 10px;
-        top: 19px;
-        line-height: 0;
+        top: 16px;
         content: "\E901";
-        color: #F54F62;
-        font-family: "nap-chatbot";
-        font-size: 18px;
+        color: $msg-error-icon;
+    }
+}
+
+.msg-success {
+    @extend %msg; 
+    border-color: $msg-success-border;
+    background-color: $msg-success-bg;
+    color: $msg-success-color;
+
+    &:before {
+        top: 17px;
+        content: "\e916";
+        color: $msg-success-icon;
     }
 }

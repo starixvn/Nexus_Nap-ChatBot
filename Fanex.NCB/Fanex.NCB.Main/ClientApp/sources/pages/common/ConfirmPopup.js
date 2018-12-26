@@ -13,15 +13,17 @@ class ConfirmPopup extends Component {
   }
 
   render() {
+    const {isShowPopup, title, content} =  this.props;
+    const warningIcon = this.props.warningIcon ? <div className="icon-warning"></div> : null
 
     return (
       <div>
-        <Modal isOpen={this.props.isShowModal} toggle={this.toggle} wrapClassName="popup-confirm">
-          <ModalHeader toggle={this.toggle}>Edit Title & Content</ModalHeader>
+        <Modal isOpen={isShowPopup} toggle={this.toggle} wrapClassName="popup-confirm">
+          <ModalHeader toggle={this.toggle}>{title}</ModalHeader>
           <ModalBody>
-            <div className="icon-warning"></div>
+            {warningIcon}
             <div className="info">
-                You can <span className="bold">edit the Title & Content</span> but manually change the text in {} might cause the parameter replacing feature dysfunctional
+               {content}
             </div>
           </ModalBody>
           <ModalFooter>

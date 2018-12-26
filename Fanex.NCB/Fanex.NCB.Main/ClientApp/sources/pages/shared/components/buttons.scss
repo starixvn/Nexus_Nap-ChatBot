@@ -1,12 +1,17 @@
 @import "../variables";
 
 %button {
-    padding: 0 20px;
+    padding: 0 8px;
     height: 32px;
     line-height: 32px;
     border-radius: 2px;
     border: none;
     outline: none;
+
+    &:hover,
+    &:focus {
+        outline: none;
+    }
 }
 
 .btn-submit {
@@ -14,7 +19,8 @@
     background-color: $btn-submit-bg;
     color: $btn-submit-color;
 
-    &:hover {
+    &:hover,
+    &:focus {
         background-color: $btn-submit-bg-hover;
         color: $btn-submit-color-hover;
     }
@@ -25,8 +31,22 @@
     background-color: $btn-cancel-bg;
     color: $btn-cancel-color;
 
-    &:hover {
+    &:hover,
+    &:focus {
         background-color: $btn-cancel-bg-hover;
         color: $btn-cancel-color-hover;
+    }
+}
+
+
+.btn-new {
+    @extend %button;
+    background-color: $btn-new-bg;
+    color: $btn-new-color;
+
+    &:hover,
+    &:focus {
+        background-color: $btn-new-bg-hover;
+        color: $btn-new-color-hover;
     }
 }

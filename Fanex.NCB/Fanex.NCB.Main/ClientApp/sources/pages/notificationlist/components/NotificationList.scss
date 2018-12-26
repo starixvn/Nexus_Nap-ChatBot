@@ -1,0 +1,94 @@
+@import "../../shared/variables";
+@import "../../shared/common.scss";
+@import "../../shared/components/forms.scss";
+@import "../../shared/components/buttons.scss";
+@import "../../shared/components/modals.scss";
+@import "../../shared/components/messages.scss";
+@import "../../shared/components/tables.scss";
+
+.tbl {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.tooltip {
+    z-index: 10000;
+    position: fixed;
+    background: red;
+}
+
+.col-content {
+    position: relative !important;
+
+    .icon-expand {
+        position: absolute;
+        right: 10px;
+        top: 16px;
+        height: 24px;
+        width: 24px;
+        border-radius: 3px;
+        background-color: #066896;
+        color: #fff;
+
+        &:before {
+            font-size: 12px;
+            position: relative;
+            top: 5px;
+            font-weight: normal;
+        }
+
+        &:hover {
+            cursor: pointer;
+            background-color: darken(#066896, 10%);
+        }
+    }
+}
+
+tbody .col-content {
+    [class^="icon"] {
+        position: absolute;
+        top: 10px;
+        right: 0;
+        color: $text-color;
+
+        &:hover {
+            color: $text-color;
+        }
+    }
+
+    .icon-down {
+        font-size: 8px;
+    }
+
+    .icon-right {
+        right: -6px;
+    }
+}
+
+
+
+%badge {
+    padding: 4px 8px;
+    border-radius: 3px;
+    color: #fff;
+}
+
+.badge-sent {
+    @extend %badge;
+    background-color: #05b15b;    
+}
+
+.badge-planned {
+    @extend %badge;
+    background-color: #4879c1;
+}
+
+.badge-error {
+    @extend %badge;
+    background-color: #ff3e3e;
+}
+
+.badge-resolved {
+    @extend %badge;
+    background-color: #ef9047;
+}

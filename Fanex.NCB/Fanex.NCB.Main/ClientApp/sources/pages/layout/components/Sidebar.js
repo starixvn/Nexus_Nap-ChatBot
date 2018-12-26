@@ -39,19 +39,19 @@ class Sidebar extends Component {
                             </a>
                         </li>
                         <li className="menu-item">
-                            <a href="" className="link" onClick={() => this.onChange("/NotificationTemplate/Index")}>
+                            <a href="" className="link" onClick={(event) => this.onChange(event, "/NotificationTemplate/Index")}>
                                 <span className="icon-template"></span>
                                 <span className="text">Notification Template</span>
                             </a>
                         </li>
                         <li className="menu-item">
-                            <a href="" className="link" onClick={() => this.onChange("/ChatGroupMapping/Index")}>
+                            <a href="" className="link" onClick={(event) => this.onChange(event, "/ChatGroupMapping/Index")}>
                                 <span className="icon-group-mapping"></span>
                                 <span className="text">Chat Group Mapping</span>
                             </a>
                         </li>
                         <li className="menu-item">
-                            <a href="" className="link" onClick={() => this.onChange("/NotificationType/Index")}>
+                            <a href="" className="link" onClick={(event) => this.onChange(event, "/NotificationType/Index")}>
                                 <span className="icon-notification-type"></span>
                                 <span className="text">Notification Type</span>
                             </a>

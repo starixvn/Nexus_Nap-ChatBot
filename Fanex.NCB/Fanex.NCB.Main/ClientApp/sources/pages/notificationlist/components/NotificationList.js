@@ -1,10 +1,117 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import NCBBreadcrum from '../../common/breadcrumbs';
+import "../../../fonts/style.css";
+import './NotificationList.scss';
 
-const NotificationList = props => (
-  <div>
-    <h1>Notification List</h1>  
-  </div>
-);
+class NotificationList extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div>
+        <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification List"></NCBBreadcrum>
+
+        <table className="tbl w-100">
+          <thead>
+            <tr>
+              <th className="col-order">#</th>
+              <th>Sender/<br/> Notification Type</th>
+              <th>Send Date/Time<br/> (GMT+8)</th>
+              <th className="col-content">Title/Content <span className="icon-expand"></span></th>
+              <th>Status</th>
+              <th className="col-action">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="text-center">1</td>
+              <td>
+                <div>User1</div>
+                <div>UM Notification</div>
+              </td>
+              <td className="text-center">
+                <div>10:00:00 PM</div>
+                <div>12/26/2018</div>
+              </td>
+              <td className="col-content">
+                <span className="icon-down"></span>
+                To 4 recipient(s): ACBbet, XYZbet BBIN, BBIN2 <br/>
+                <strong>WEEKLY MAINTENENCE ANNOUNCEMENT - 11/26/2018</strong> <br/>
+                Good Day!<br/>
+
+                This is Shane, kindly take note of the below message [请注意以下公告]:<br/>
+
+                >> All services subscribed with us including Sportsbook, Gaming and Back Office are not available during maintenance on going<br/>
+
+                >> 在维护期间, 所有和我们订阅的服务, 包括体育, 娱乐厅和后台将无法使用<br/>
+
+                Thank you for your kind attention!<br/>
+              </td>
+              <td><span className="badge-sent">Sent</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td className="text-center">2</td>
+              <td>
+                <div>User1</div>
+                <div>UM Notification</div>
+              </td>
+              <td className="text-center">
+                <div>10:00:00 PM</div>
+                <div>12/26/2018</div>
+              </td>
+              <td className="col-content">
+                <span className="icon-right"></span>
+                To 4 recipient(s): ACBbet, XYZbet BBIN, BBIN2 <br/>
+                <strong>WEEKLY MAINTENENCE ANNOUNCEMENT - 11/26/2018</strong>
+              </td>
+              <td><span className="badge-planned">Planned</span></td>
+              <td className="text-center"><span className="icon-delete"></span></td>
+            </tr>
+            <tr>
+              <td className="text-center">3</td>
+              <td>
+                <div>User1</div>
+                <div>UM Notification</div>
+              </td>
+              <td className="text-center">
+                <div>10:00:00 PM</div>
+                <div>12/26/2018</div>
+              </td>
+              <td className="col-content">
+                <span className="icon-right"></span>
+                To 4 recipient(s): ACBbet, XYZbet BBIN, <span className="text-red">BBIN2, Gold Deluxe</span> <br/>
+                <strong>WEEKLY MAINTENENCE ANNOUNCEMENT - 11/26/2018</strong>
+              </td>
+              <td><span className="badge-error">Error</span></td>
+              <td className="text-center"><span className="icon-view"></span></td>
+            </tr>
+            <tr>
+              <td className="text-center">4</td>
+              <td>
+                <div>User1</div>
+                <div>UM Notification</div>
+              </td>
+              <td className="text-center">
+                <div>10:00:00 PM</div>
+                <div>12/26/2018</div>
+              </td>
+              <td className="col-content">
+                <span className="icon-right"></span>
+                To 4 recipient(s): ACBbet, XYZbet BBIN, <span className="text-red">BBIN2, Gold Deluxe</span> <br/>
+                <strong>WEEKLY MAINTENENCE ANNOUNCEMENT - 11/26/2018</strong>
+              </td>
+              <td><span className="badge-resolved">Resolved</span></td>
+              <td className="text-center"><span className="icon-view"></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+}
 
 export default connect()(NotificationList);

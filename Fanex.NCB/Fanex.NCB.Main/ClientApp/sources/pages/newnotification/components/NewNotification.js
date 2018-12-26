@@ -2,20 +2,37 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import { Button, Label } from 'reactstrap';
-import ConfirmPopup from "./ConfirmPopup";
-import "../../../fonts/style.css";
+import ConfirmPopup from "../../common/ConfirmPopup";
 import NCBBreadcrum from '../../common/breadcrumbs';
-
+import "../../../fonts/style.css";
 import './NewNotification.scss';
 
 class NewNotification extends Component {
   constructor(props) {
     super(props);
+    this.toggle = this.toggle.bind(this);
+    this.contentEditConfirmPopupHandler = this.contentEditConfirmPopupHandler.bind(this);
+    this.contentResetConfirmPopupHandler = this.contentResetConfirmPopupHandler.bind(this);
+  }
+
+  contentEditConfirmPopupHandler () {
+    this.props.contentEditConfirmPopupHandler();
+  }
+
+  contentResetConfirmPopupHandler () {
+    this.props.contentResetConfirmPopupHandler();
+  }
+
+  toggle() {
+    this.props.toggle();
   }
 
   render() {
     const templateContent = " Thank you for your kind attention!";
-
+    const {       
+        isShowPopup,
+        titlePopup,        
+        contentPopup } = this.props;
     return (
       <div>
         <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="New Notification"></NCBBreadcrum>
@@ -49,14 +66,14 @@ class NewNotification extends Component {
                   <option>Weekly UM 1</option>
                   <option>Weekly UM 2</option>
                 </AvField>
-                <div className="action" onClick={this.props.showHideModalHandler}>
+                <div className="action" onClick={this.contentEditConfirmPopupHandler}>
                   <div className="circle orange" >
                     <span className="icon-edit"></span>
                   </div>
                   
                   Edit Title & Content
                 </div>
-                <div className="action">
+                <div className="action" onClick={this.contentResetConfirmPopupHandler}>
                   <div className="circle blue">
                     <span className="icon-reset"></span>
                   </div>
@@ -127,8 +144,13 @@ class NewNotification extends Component {
                   <option>Send immediately</option>
                   <option>Send at</option>
                 </AvField>
-                <input type="text" name="dateTime" id="dateTime" className="form-control date-time" />
-                <span>(GMT +8)</span>
+                <div>
+                  <div className="calendar">
+                    <input type="text" name="dateTime" id="dateTime" className="form-control date-time" disabled />
+                  </div>
+                  <span>(GMT +8)</span>
+                </div>
+                
               </div>
               
               <Button className="btn-submit">Submit</Button>
@@ -138,8 +160,12 @@ class NewNotification extends Component {
                  
         </div>
         <ConfirmPopup 
-            showHideModalHandler={this.props.showHideModalHandler}
-            isShowModal={this.props.isShowModal}></ConfirmPopup>
+            showHideModalHandler={this.toggle}
+            isShowPopup={isShowPopup}
+            title={titlePopup}
+            content={contentPopup}
+            warningIcon={true}
+            ></ConfirmPopup>
       </div>
     )
   }

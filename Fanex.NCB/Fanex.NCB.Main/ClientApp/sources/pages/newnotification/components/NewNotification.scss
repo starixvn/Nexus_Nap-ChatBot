@@ -103,12 +103,28 @@
 
 .send-date-area {
     display: grid;
-    grid-template-columns: 293px 210px 1fr;
+    grid-template-columns: 293px 1fr;
     grid-gap: 15px;
     align-items: center;
 
+    .calendar {
+     position: relative; 
+     display: inline-block;
+     margin-right: 15px;
+
+     &:before {
+         position: absolute;
+         right: 8px;
+         top: 6px;
+         content: "\E909";
+         font-family: "nap-chatbot";
+         font-size: 15px;
+         color: #798388;
+     }
+    }
+
     .date-time {
-        width: 100%;
+        width: 212px;
     }
 
     .form-group {
