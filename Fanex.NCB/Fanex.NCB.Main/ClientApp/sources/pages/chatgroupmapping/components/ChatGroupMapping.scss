@@ -1,0 +1,52 @@
+@import "../../shared/variables";
+@import "../../shared/common.scss";
+@import "../../shared/components/forms.scss";
+@import "../../shared/components/buttons.scss";
+@import "../../shared/components/modals.scss";
+@import "../../shared/components/messages.scss";
+@import "../../shared/components/tables.scss";
+
+.edit-mapping-status {
+    width: 450px;
+}
+
+.col-status {
+    width: 114px;
+}
+
+.col-group-id {
+    width: 160px;
+}
+
+.col-recipient-type {
+    width: 160px;
+}
+
+.col-group-name {
+    width: 250px;
+}
+
+.col-bot-name {
+    width: 200px;
+}
+
+.col-recipient {
+    width: 300px;
+}
+
+.form-create {
+    overflow: hidden;
+
+    .form-group {
+        display: grid;
+        grid-template-columns: 112px 1fr;
+        grid-template-rows: 1fr;
+        align-items: center;
+        margin-bottom: 12px;
+    
+        .remark {
+            height: 90px;
+        }
+    }
+}
+

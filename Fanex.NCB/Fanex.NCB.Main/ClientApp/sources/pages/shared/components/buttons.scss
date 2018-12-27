@@ -3,6 +3,7 @@
 %button {
     padding: 0 8px;
     height: 32px;
+    min-width: 80px;
     line-height: 32px;
     border-radius: 2px;
     border: none;
@@ -48,5 +49,17 @@
     &:focus {
         background-color: $btn-new-bg-hover;
         color: $btn-new-color-hover;
+    }
+}
+
+.btn-mark {
+    @extend %button;
+    background-color: $btn-mark-bg;
+    color: $btn-mark-color;
+
+    &:hover,
+    &:focus {
+        background-color: $btn-mark-bg-hover;
+        color: $btn-mark-color-hover;
     }
 }

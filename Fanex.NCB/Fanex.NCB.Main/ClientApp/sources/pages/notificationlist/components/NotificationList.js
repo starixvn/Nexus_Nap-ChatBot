@@ -1,12 +1,30 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import NCBBreadcrum from '../../common/breadcrumbs';
+import ErrorReport from './ErrorReport';
+
 import "../../../fonts/style.css";
 import './NotificationList.scss';
 
 class NotificationList extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      isRemark: null
+    }
+    this.toggleHandler = this.toggleHandler.bind(this);
+    this.updateRemark = this.updateRemark.bind(this);
+  }
+
+  updateRemark(event) {
+    const remark = event.currentTarget.dataset.remark;
+
+    this.setState({ isRemark: remark });
+    this.props.toggleHandler();
+  }
+
+  toggleHandler() {
+    this.props.toggleHandler();
   }
 
   render() {
@@ -19,9 +37,11 @@ class NotificationList extends Component {
             <tr>
               <th className="col-order">#</th>
               <th>Sender/<br/> Notification Type</th>
-              <th>Send Date/Time<br/> (GMT+8)</th>
-              <th className="col-content">Title/Content <span className="icon-expand"></span></th>
-              <th>Status</th>
+              <th className="col-send-date">Send Date/Time<br/> (GMT+8)</th>
+              <th>
+                <div className="has-icons">Title/Content <span className="icon-expand"></span></div> 
+              </th>
+              <th className="col-status">Status</th>
               <th className="col-action">Action</th>
             </tr>
           </thead>
@@ -50,7 +70,7 @@ class NotificationList extends Component {
 
                 Thank you for your kind attention!<br/>
               </td>
-              <td><span className="badge-sent">Sent</span></td>
+              <td><span className="badge-green">Sent</span></td>
               <td></td>
             </tr>
             <tr>
@@ -68,7 +88,7 @@ class NotificationList extends Component {
                 To 4 recipient(s): ACBbet, XYZbet BBIN, BBIN2 <br/>
                 <strong>WEEKLY MAINTENENCE ANNOUNCEMENT - 11/26/2018</strong>
               </td>
-              <td><span className="badge-planned">Planned</span></td>
+              <td><span className="badge-blue">Planned</span></td>
               <td className="text-center"><span className="icon-delete"></span></td>
             </tr>
             <tr>
@@ -86,8 +106,8 @@ class NotificationList extends Component {
                 To 4 recipient(s): ACBbet, XYZbet BBIN, <span className="text-red">BBIN2, Gold Deluxe</span> <br/>
                 <strong>WEEKLY MAINTENENCE ANNOUNCEMENT - 11/26/2018</strong>
               </td>
-              <td><span className="badge-error">Error</span></td>
-              <td className="text-center"><span className="icon-view"></span></td>
+              <td><span className="badge-red">Error</span></td>
+              <td className="text-center"><span className="icon-view" data-remark={true} onClick={this.updateRemark}></span></td>
             </tr>
             <tr>
               <td className="text-center">4</td>
@@ -104,11 +124,16 @@ class NotificationList extends Component {
                 To 4 recipient(s): ACBbet, XYZbet BBIN, <span className="text-red">BBIN2, Gold Deluxe</span> <br/>
                 <strong>WEEKLY MAINTENENCE ANNOUNCEMENT - 11/26/2018</strong>
               </td>
-              <td><span className="badge-resolved">Resolved</span></td>
-              <td className="text-center"><span className="icon-view"></span></td>
+              <td><span className="badge-orange">Resolved</span></td>
+              <td className="text-center"><span className="icon-view" data-remark={false} onClick={this.updateRemark}></span></td>
             </tr>
           </tbody>
         </table>
+
+        <ErrorReport
+          isModal={this.props.isModal}
+          toggleHandler={this.toggleHandler}
+          isRemark={this.state.isRemark} />
       </div>
     );
   }

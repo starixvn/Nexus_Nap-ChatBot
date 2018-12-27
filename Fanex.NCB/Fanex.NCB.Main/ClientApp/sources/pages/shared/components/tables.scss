@@ -9,25 +9,22 @@
         text-align: center;
     }
 
+    th .has-icons {
+        position: relative;
+
+        [class^="icon"] {
+            position: absolute;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+
     td, th {
         min-height: 32px;
         padding: 6px 10px;
         border: 1px solid $table-border;
-    }
-
-    tbody {
-        tr:hover {
-            cursor: pointer;
-            background-color: $table-tr-hover;
-        }
-
-        tr:nth-child(2n) {
-            background-color: $table-tr-even-bg;
-        }
-
-        tr.active {
-            background-color: $table-tr-hover;
-        }
     }
 
     .col-order {
@@ -39,9 +36,43 @@
         padding-top: 0;
         padding-bottom: 0;
     }
+
+    .icon-expand {
+        right: 2px;
+        top: -2px;
+        height: 24px;
+        width: 24px;
+        border-radius: 3px;
+        background-color: #066896;
+        color: #fff;
+    
+        &:before {
+            font-size: 12px;
+            position: relative;
+            top: 5px;
+            font-weight: normal;
+        }
+    
+        &:hover {
+            background-color: darken(#066896, 10%);
+        }
+    }
 }
 
 tbody {
+
+    tr:hover {
+        cursor: pointer;
+        background-color: $table-tr-hover;
+    }
+
+    tr:nth-child(2n) {
+        background-color: $table-tr-even-bg;
+    }
+
+    tr.active {
+        background-color: $table-tr-hover;
+    }
 
     [class^='icon'] {
         display: inline-block;
@@ -78,5 +109,9 @@ tbody {
         &:hover {
             background-color: #65acfe;
         }
+    }
+
+    .col-content {
+        position: relative !important;
     }
 }

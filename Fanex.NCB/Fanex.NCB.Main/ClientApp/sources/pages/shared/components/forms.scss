@@ -42,3 +42,27 @@
         margin-top: 5px;
     }
 }
+
+// Filter
+
+.filter {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    
+    .form-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0;
+        margin-right: 15px;
+
+        label {
+            margin-right: 10px;
+            white-space: nowrap;
+        }
+    }
+
+    .form-control {
+        min-width: 160px;
+    }
+}

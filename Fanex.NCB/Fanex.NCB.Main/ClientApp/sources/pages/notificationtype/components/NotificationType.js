@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import NCBBreadcrum from '../../common/breadcrumbs';
 import { Tooltip } from 'reactstrap';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import NewNotificationType from "./NewNotificationType";
 import "../../../fonts/style.css";
 import './NotificationType.scss';
@@ -105,12 +104,11 @@ class NotificationType extends Component {
           </tbody>
         </table>
 
-        <Modal isOpen={this.state.modal} toggle={this.togglePopup} wrapClassName="new-notification-type">
-          <ModalHeader toggle={this.togglePopup}>Create New Notification Type</ModalHeader>
-          <ModalBody>
-            <NewNotificationType></NewNotificationType>
-          </ModalBody>
-        </Modal>
+        <NewNotificationType
+          isModal={this.state.modal}
+          togglePopup={this.togglePopup}
+        />
+        
       </div>
     );
   }

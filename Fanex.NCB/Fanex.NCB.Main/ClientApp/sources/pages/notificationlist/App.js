@@ -9,12 +9,24 @@ import { connect } from 'react-redux';
 class App extends Component {
   constructor(props) {
     super(props);      
+    this.state = {
+      modal: false
+    };
 
+    this.toggle = this.toggle.bind(this);
   }
  
+  toggle() {
+    this.setState({
+      modal: !this.state.modal
+    });
+  }
+
   render() { 
     return (      
-       <NotificationList />
+       <NotificationList
+          isModal={this.state.modal}
+          toggleHandler={this.toggle} />
     );
   }
 }

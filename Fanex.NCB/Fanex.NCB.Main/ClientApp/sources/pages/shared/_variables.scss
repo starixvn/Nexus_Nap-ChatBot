@@ -10,10 +10,10 @@ $sidebar-small-width: 61px;
 $header-height: 54px;
 
 // Messages
-$msg-error-border: #fdd5d8;
-$msg-error-bg: #fee5e6;
-$msg-error-color: #f96a74;
-$msg-error-icon: #F54F62;
+$msg-error-border: #FFBFC4;
+$msg-error-bg: #FCDBDC;
+$msg-error-color: #FB4754;
+$msg-error-icon: #FB4754;
 
 $msg-success-border: #aee6b9;
 $msg-success-bg: #d3f0d9;
@@ -47,6 +47,12 @@ $btn-new-bg: #05b15b;
 $btn-new-bg-hover: darken($btn-new-bg, 10%);;
 $btn-new-color: #fff;
 $btn-new-color-hover: #fff;
+
+$btn-mark-bg: #ef9047;
+$btn-mark-bg-hover: darken($btn-mark-bg, 10%);;
+$btn-mark-color: #fff;
+$btn-mark-color-hover: #fff;
+
 
 // Tables
 
