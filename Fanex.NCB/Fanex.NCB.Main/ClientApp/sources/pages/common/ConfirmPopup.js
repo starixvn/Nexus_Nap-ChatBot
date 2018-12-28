@@ -5,12 +5,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 class ConfirmPopup extends Component {
   constructor(props) {
     super(props);
-    this.toggle = this.toggle.bind(this);
-  }
-
-  toggle() {
-    this.props.showHideModalHandler();
-  }
+  }  
 
   render() {
     const {isShowPopup, title, content} =  this.props;
@@ -18,8 +13,8 @@ class ConfirmPopup extends Component {
 
     return (
       <div>
-        <Modal isOpen={isShowPopup} toggle={this.toggle} wrapClassName="popup-confirm">
-          <ModalHeader toggle={this.toggle}>{title}</ModalHeader>
+        <Modal isOpen={isShowPopup} toggle={this.props.confirmToggle} wrapClassName="popup-confirm">
+          <ModalHeader toggle={this.props.confirmToggle}>{title}</ModalHeader>
           <ModalBody>
             {warningIcon}
             <div className="info">
@@ -27,8 +22,8 @@ class ConfirmPopup extends Component {
             </div>
           </ModalBody>
           <ModalFooter>
-              <button className="btn-submit" onClick={this.toggle}>OK</button>
-              <button className="btn-cancel" onClick={this.toggle}>Cancel</button>
+              <button className="btn-submit" onClick={() => this.props.confirmHandler(true)}>OK</button>
+              <button className="btn-cancel" onClick={() => this.props.confirmHandler(false)}>Cancel</button>
           </ModalFooter>
         </Modal>
       </div>

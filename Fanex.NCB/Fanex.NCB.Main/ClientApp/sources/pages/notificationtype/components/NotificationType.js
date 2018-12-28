@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import NCBBreadcrum from '../../common/breadcrumbs';
-import { Tooltip } from 'reactstrap';
 import NewNotificationType from "./NewNotificationType";
+import ConfirmPopup from "../../common/ConfirmPopup";
+import { bindActionCreators } from 'redux';
+import * as NotificationTypeList  from '../store/NotificationTypeList';
+import * as DeleteNotificationType from '../store/DeleteNotificationType';
+
 import "../../../fonts/style.css";
 import './NotificationType.scss';
 
@@ -11,32 +15,45 @@ class NotificationType extends Component {
     super(props);
     
     this.state = {
-      tooltipOpen: false,
-      modal: false
-    };
-    this.togglePopup = this.togglePopup.bind(this);
-    this.toggle = this.toggle.bind(this);
+      isShowNewPopup: false,
+      isShowConfirm: false
+    };    
   }
 
-  togglePopup() {
+  newPopupToggle = () => {
     this.setState({
-      modal: !this.state.modal
+      isShowNewPopup: !this.state.isShowNewPopup
     });
   }
 
-  toggle() {
+  confirmHandler = (isYes) => {
+    if(isYes){
+      var id = 1;
+      this.props.deleteNotificationType(id);
+    }
+
+    this.confirmToggle();
+  }
+
+  confirmToggle = () => {
     this.setState({
-      tooltipOpen: !this.state.tooltipOpen
-    });
+      isShowConfirm: !this.state.isShowConfirm
+    })
+  }  
+
+  componentWillMount(){
+    this.props.getNotificationTypes();
+  }
+
+  componentWillReceiveProps(nextProps){
+    //this.props.getNotificationTypes();
   }
 
   render() {
     return (
       <div>
         <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Type"></NCBBreadcrum>
-        <button className="btn-new" onClick={this.togglePopup}>Create New</button>
-        
-
+        <button className="btn-new" onClick={this.newPopupToggle}>Create New</button>  
         <table className="tbl">
           <thead>
             <tr>
@@ -48,70 +65,48 @@ class NotificationType extends Component {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td className="text-center">1</td>
-              <td>UM</td>
-              <td>Licensee</td>
-              <td>I, Bot Site</td>
-              <td className="text-center col-action">
-                <span className="icon-edit" id="editTooltip1"></span>
-                <Tooltip placement="top" isOpen={this.state.tooltipOpen} target="editTooltip1" toggle={this.toggle}>
-                  Edit
-                </Tooltip>
-                <span className="icon-delete"></span>
-              </td>
-            </tr>
-            <tr>
-              <td className="text-center">1</td>
-              <td>UM 3rd</td>
-              <td>3rd Party</td>
-              <td>I, Bot Site</td>
-              <td className="text-center col-action">
-                <span className="icon-edit"></span>
-                <span className="icon-delete"></span>
-              </td>
-            </tr>
-            <tr>
-              <td className="text-center">1</td>
-              <td>Refund/Reject Match Message</td>
-              <td>Licensee</td>
-              <td>Admin Site</td>
-              <td className="text-center col-action">
-                <span className="icon-edit"></span>
-                <span className="icon-delete"></span>
-              </td>
-            </tr>
-            <tr>
-              <td className="text-center">1</td>
-              <td>Match Delay Payout/Suspend</td>
-              <td>Licensee</td>
-              <td>I, Bot Site</td>
-              <td className="text-center col-action">
-                <span className="icon-edit"></span>
-                <span className="icon-delete"></span>
-              </td>
-            </tr>
-            <tr>
-              <td className="text-center">1</td>
-              <td>Void Ticket Message</td>
-              <td>Licensee</td>
-              <td>Special Delete Site</td>
-              <td className="text-center col-action">
-                <span className="icon-edit"></span>
-                <span className="icon-delete"></span>
-              </td>
-            </tr>
+            {
+              this.props.notificationTypeList.notificationTypes.map((item, index) => 
+                <tr key={index}>
+                  <td className="text-center">{index + 1}</td>
+                  <td>{item.notificationTypeName}</td>
+                  <td>{item.recipientTypeName}</td>
+                  <td>{item.systemName}</td>
+                  <td className="text-center col-action">
+                    <span className="icon-edit"></span>                    
+                    <span className="icon-delete" onClick={this.confirmToggle}></span>
+                  </td>
+                </tr>
+              )
+            }            
           </tbody>
         </table>
 
         <NewNotificationType
-          isModal={this.state.modal}
-          togglePopup={this.togglePopup}
+          isShowPopup={this.state.isShowNewPopup}
+          popupToggle={this.newPopupToggle}
         />
         
+        <ConfirmPopup 
+            confirmHandler={this.confirmHandler}
+            confirmToggle={this.confirmToggle}
+            isShowPopup={this.state.isShowConfirm}
+            title={"Delete Notification Type"}
+            content={"Are you sure you want to delete this notification type?"}
+            warningIcon={false}
+        ></ConfirmPopup>
       </div>
     );
   }
 }
 
-export default connect()(NotificationType);
+export default connect(
+  state => {
+    const {notificationTypeList, deleteNotificationType} = state;
+    return {
+      notificationTypeList,
+      deleteNotificationType
+    };
+  },
+  dispatch => bindActionCreators(Object.assign({}, NotificationTypeList.actionCreators, DeleteNotificationType.actionCreators), dispatch)
+)(NotificationType);

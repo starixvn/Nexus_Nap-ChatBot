@@ -1,10 +1,15 @@
 ﻿import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { routerReducer, routerMiddleware } from 'react-router-redux';
+import * as NotificationTypeList from './NotificationTypeList';
+import * as DeleteNotificationType from './DeleteNotificationType';
+import * as AddNotificationType from './AddNotificationType';
 
 export default function configureStore(history, initialState) {
   const reducers = {
-    
+    notificationTypeList: NotificationTypeList.reducer,
+    deleteNotificationType: DeleteNotificationType.reducer,
+    addNotificationType: AddNotificationType.reducer
   };
 
   const middleware = [

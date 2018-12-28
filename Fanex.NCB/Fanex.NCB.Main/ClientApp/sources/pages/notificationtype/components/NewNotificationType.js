@@ -1,22 +1,26 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
-import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { AvForm, AvField } from 'availity-reactstrap-validation';
+import { bindActionCreators } from 'redux';
+import * as AddNotificationType from '../store/AddNotificationType';
 
 class NewNotificationType extends Component {
   constructor(props) {
-    super(props);
-    this.togglePopup = this.togglePopup.bind(this);
+    super(props);    
   }
 
-  togglePopup() {
-      this.props.togglePopup();
+  submitHandler = () => {      
+      var params = {};      
+      this.props.addNotificationType(params);
+
+      this.props.popupToggle();
   }
 
   render() {
     return (
-        <Modal isOpen={this.props.isModal} toggle={this.togglePopup} wrapClassName="new-notification-type">
-          <ModalHeader toggle={this.togglePopup}>Create New Notification Type</ModalHeader>
+        <Modal isOpen={this.props.isShowPopup} toggle={this.props.popupToggle} wrapClassName="new-notification-type">
+          <ModalHeader toggle={this.props.popupToggle}>Create New Notification Type</ModalHeader>
           <ModalBody>
             <div className="msg-success ">Create New Notification Type Successfully</div>
             <AvForm className="form-create">
@@ -48,7 +52,7 @@ class NewNotificationType extends Component {
                     <option>I, Bot site</option>
                     <option>Licensee</option>
                 </AvField>
-                <button className="btn-submit">Submit</button>
+                <button className="btn-submit" onClick={this.submitHandler}>Submit</button>
             </AvForm>
           </ModalBody>
         </Modal>
@@ -56,4 +60,7 @@ class NewNotificationType extends Component {
   }
 }
 
-export default connect()(NewNotificationType);
+export default connect(
+    state => state.addNotificationType,
+    dispatch => bindActionCreators(Object.assign({}, AddNotificationType.actionCreators), dispatch)
+)(NewNotificationType);

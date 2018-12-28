@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fanex.NCB.Core.Models.DataDomain;
 using Fanex.NCB.Core.Services;
+using Fanex.NCB.SkypeBot.App_Start;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -67,6 +68,11 @@ namespace Fanex.NCB.Main
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IBridgeClientService, BridgeClientService>();
             services.AddSingleton<ISessionService, SessionService>();
+            InitializeModules(services);
+        }
+
+        private static void InitializeModules(IServiceCollection services){
+            SkypeBotDependencyInitializer.Initialize(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
