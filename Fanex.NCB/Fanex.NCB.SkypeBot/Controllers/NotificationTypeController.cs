@@ -36,5 +36,20 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public IActionResult Add(object param){
             return Json(true);
         }
+
+        [HttpPost]
+        public IActionResult Edit(object param){
+            return Json(true);
+        }
+
+        [HttpGet]
+        public IActionResult GetSettings(){
+            var result = new {
+                recipientTypes = _notificationTypeService.GetRecipientTypes(),
+                notificationSystems = _notificationTypeService.GetNotificationSystems()
+            };
+
+            return Json(result);
+        }
     }
 }

@@ -16,23 +16,39 @@ class NotificationType extends Component {
     
     this.state = {
       isShowNewPopup: false,
-      isShowConfirm: false
+      editingItem: null,
+      isShowConfirm: false      
     };    
   }
 
   newPopupToggle = () => {
-    this.setState({
-      isShowNewPopup: !this.state.isShowNewPopup
-    });
+    this.setState(
+      {
+        isShowNewPopup: !this.state.isShowNewPopup
+      },
+      function(){
+        if(!this.state.isShowNewPopup){
+          this.props.getNotificationTypes();
+        }
+      }
+    );
   }
+
+  newEditPopup = (item) => {
+    this.setState({
+      editingItem: item,
+      isShowNewPopup: true
+    })
+  } 
 
   confirmHandler = (isYes) => {
     if(isYes){
       var id = 1;
-      this.props.deleteNotificationType(id);
+      this.props.deleteNotificationType(id).then(() => {
+        this.confirmToggle();
+        this.props.getNotificationTypes();
+      });
     }
-
-    this.confirmToggle();
   }
 
   confirmToggle = () => {
@@ -45,15 +61,11 @@ class NotificationType extends Component {
     this.props.getNotificationTypes();
   }
 
-  componentWillReceiveProps(nextProps){
-    //this.props.getNotificationTypes();
-  }
-
   render() {
     return (
       <div>
         <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Type"></NCBBreadcrum>
-        <button className="btn-new" onClick={this.newPopupToggle}>Create New</button>  
+        <button className="btn-new" onClick={() => this.newEditPopup()}>Create New</button>  
         <table className="tbl">
           <thead>
             <tr>
@@ -73,7 +85,7 @@ class NotificationType extends Component {
                   <td>{item.recipientTypeName}</td>
                   <td>{item.systemName}</td>
                   <td className="text-center col-action">
-                    <span className="icon-edit"></span>                    
+                    <span className="icon-edit" onClick={() => this.newEditPopup(item)}></span>                    
                     <span className="icon-delete" onClick={this.confirmToggle}></span>
                   </td>
                 </tr>
@@ -85,8 +97,9 @@ class NotificationType extends Component {
         <NewNotificationType
           isShowPopup={this.state.isShowNewPopup}
           popupToggle={this.newPopupToggle}
+          editingItem ={this.state.editingItem} 
         />
-        
+
         <ConfirmPopup 
             confirmHandler={this.confirmHandler}
             confirmToggle={this.confirmToggle}

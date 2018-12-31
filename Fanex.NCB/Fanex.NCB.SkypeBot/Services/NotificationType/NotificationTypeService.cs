@@ -38,5 +38,38 @@ namespace Fanex.NCB.SkypeBot.Services.NotificationType
                 }
             };
         }
+
+        public List<NotificationSystem> GetNotificationSystems()
+        {
+            return new List<NotificationSystem> 
+            {
+                new NotificationSystem {
+                    SystemId = 1,
+                    SystemName = "Bot site"
+                },
+                new NotificationSystem {
+                    SystemId = 2,
+                    SystemName = "Admin site"
+                },
+                new NotificationSystem {
+                    SystemId = 3,
+                    SystemName = "Special Delete site"
+                }
+            };
+        }
+
+        public List<RecipientType> GetRecipientTypes()
+        {
+            return new List<RecipientType>{
+                new RecipientType {
+                    RecipientTypeId = 1,
+                    RecipientTypeName = "Licensee"
+                },
+                new RecipientType {
+                    RecipientTypeId = 2,
+                    RecipientTypeName = "3rd party"
+                }
+            };
+        }
     }
 }

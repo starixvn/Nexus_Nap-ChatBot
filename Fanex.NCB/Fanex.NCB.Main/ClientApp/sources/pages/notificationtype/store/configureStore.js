@@ -4,12 +4,14 @@ import { routerReducer, routerMiddleware } from 'react-router-redux';
 import * as NotificationTypeList from './NotificationTypeList';
 import * as DeleteNotificationType from './DeleteNotificationType';
 import * as AddNotificationType from './AddNotificationType';
+import * as NotificationTypeSettings from './NotificationTypeSetting';
 
 export default function configureStore(history, initialState) {
   const reducers = {
     notificationTypeList: NotificationTypeList.reducer,
     deleteNotificationType: DeleteNotificationType.reducer,
-    addNotificationType: AddNotificationType.reducer
+    addNotificationType: AddNotificationType.reducer,
+    notificationTypeSettings: NotificationTypeSettings.reducer
   };
 
   const middleware = [
