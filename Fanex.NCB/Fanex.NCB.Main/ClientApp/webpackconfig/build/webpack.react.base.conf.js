@@ -22,7 +22,8 @@ function generateConfig(environment) {
             [`${jsPath}/chatgroupmapping`]: pathConfig.scriptPaths.chatgroupmapping,          
             [`${jsPath}/notificationtype`]: pathConfig.scriptPaths.notificationtype,
             [`${jsPath}/layout`]: pathConfig.scriptPaths.layout,
-            [`${jsPath}/login`]: pathConfig.scriptPaths.login
+            [`${jsPath}/login`]: pathConfig.scriptPaths.login,
+            [`${jsPath}/newnotificationtype`]: pathConfig.scriptPaths.newnotificationtype,
 
             /*css*/
             /*[`${cssPath}/vendor`]: pathConfig.cssPaths.layout,*/            

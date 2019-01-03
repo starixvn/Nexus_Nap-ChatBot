@@ -9,7 +9,7 @@ export const actionCreators = {
         });
         const data = await response.json();
 
-        dispatch({type: receivedNotificationTypes, data});
+        dispatch({type: receivedNotificationTypes, data: data});
     }
 };
 

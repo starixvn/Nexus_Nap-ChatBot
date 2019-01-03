@@ -56,6 +56,12 @@ class Sidebar extends Component {
                                 <span className="text">Notification Type</span>
                             </a>
                         </li>
+                        <li className="menu-item">
+                            <a href="" className="link" onClick={(event) => this.onChange(event, "/NewNotificationType/Index")}>
+                                <span className="icon-notification-type"></span>
+                                <span className="text">New Notification Type</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                </ul>
