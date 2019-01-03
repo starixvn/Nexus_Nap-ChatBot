@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { UncontrolledTooltip } from 'reactstrap';
 import NCBBreadcrum from '../../common/breadcrumbs';
 import NewNotificationType from "./NewNotificationType";
 import ConfirmPopup from "../../common/ConfirmPopup";
@@ -17,14 +18,17 @@ class NotificationType extends Component {
     this.state = {
       isShowNewPopup: false,
       editingItem: null,
-      isShowConfirm: false      
+      isShowConfirm: false,
+      activeRowIndex: -1,
+      deletingNotificationTypeName: ''
     };    
   }
 
   newPopupToggle = () => {
     this.setState(
       {
-        isShowNewPopup: !this.state.isShowNewPopup
+        isShowNewPopup: !this.state.isShowNewPopup,
+        activeRowIndex: this.state.isShowNewPopup ? -1 : this.state.activeRowIndex
       },
       function(){
         if(!this.state.isShowNewPopup){
@@ -34,9 +38,10 @@ class NotificationType extends Component {
     );
   }
 
-  newEditPopup = (item) => {
+  newEditPopup = (item, rowIndex) => {
     this.setState({
       editingItem: item,
+      activeRowIndex: rowIndex,
       isShowNewPopup: true
     })
   } 
@@ -51,9 +56,11 @@ class NotificationType extends Component {
     }
   }
 
-  confirmToggle = () => {
+  confirmToggle = (rowIndex, deletingNotificationTypeName) => {
     this.setState({
-      isShowConfirm: !this.state.isShowConfirm
+      isShowConfirm: !this.state.isShowConfirm,
+      activeRowIndex: rowIndex,
+      deletingNotificationTypeName: deletingNotificationTypeName
     })
   }  
 
@@ -62,6 +69,7 @@ class NotificationType extends Component {
   }
 
   render() {
+    console.log(this.state.activeRowIndex);
     return (
       <div>
         <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Type"></NCBBreadcrum>
@@ -79,14 +87,16 @@ class NotificationType extends Component {
           <tbody>
             {
               this.props.notificationTypeList.notificationTypes.map((item, index) => 
-                <tr key={index}>
+                <tr key={index} className={index == this.state.activeRowIndex ? 'active' : ''}>
                   <td className="text-center">{index + 1}</td>
                   <td>{item.notificationTypeName}</td>
                   <td>{item.recipientTypeName}</td>
                   <td>{item.systemName}</td>
                   <td className="text-center col-action">
-                    <span className="icon-edit" onClick={() => this.newEditPopup(item)}></span>                    
-                    <span className="icon-delete" onClick={this.confirmToggle}></span>
+                    <span className="icon-edit" id={"edit-" + index} onClick={() => this.newEditPopup(item, index)}></span>                    
+                    <UncontrolledTooltip placement="top" target={"edit-" + index}>Edit</UncontrolledTooltip>
+                    <span className="icon-delete" id={"delete-" + index} onClick={() => this.confirmToggle(index, item.notificationTypeName)}></span>
+                    <UncontrolledTooltip placement="top" target={"delete-" + index}>Delete</UncontrolledTooltip>
                   </td>
                 </tr>
               )
@@ -105,7 +115,7 @@ class NotificationType extends Component {
             confirmToggle={this.confirmToggle}
             isShowPopup={this.state.isShowConfirm}
             title={"Delete Notification Type"}
-            content={"Are you sure you want to delete this notification type?"}
+            content={this.state.deletingNotificationTypeName }
             warningIcon={false}
         ></ConfirmPopup>
       </div>

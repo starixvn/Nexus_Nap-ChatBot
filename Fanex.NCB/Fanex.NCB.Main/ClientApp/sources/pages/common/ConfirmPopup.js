@@ -18,7 +18,8 @@ class ConfirmPopup extends Component {
           <ModalBody>
             {warningIcon}
             <div className="info">
-               {content}
+               Are you sure you want to delete <br/>
+               <b>{content}?</b>
             </div>
           </ModalBody>
           <ModalFooter>
