@@ -37,6 +37,7 @@ class EditMappingStatus extends Component {
                     name="recipientType"
                     label="Recipient Type" 
                     labelClass="form-label required"
+                    errorMessage="This field is required"
                     required>
 
                     <option>Licensee</option>
@@ -47,6 +48,7 @@ class EditMappingStatus extends Component {
                     name="recipient"
                     label="Recipient"
                     labelClass="form-label required"
+                    errorMessage="This field is required"
                     required>
 
                     <option>CSDBET</option>
@@ -65,8 +67,7 @@ class EditMappingStatus extends Component {
                     label="Remark" 
                     labelClass="form-label"
                     inputClass="remark"
-                    placeholder="Input the remark here..."
-                    required></AvField>
+                    placeholder="Input the remark here..."></AvField>
 
                 <Button className="btn-submit">Submit</Button>
             </AvForm>

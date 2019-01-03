@@ -29,6 +29,7 @@ class NewNotificationTemplate extends Component {
                         label="Notification Type" 
                         labelClass="form-label required"
                         inputClass="notification-type"
+                        errorMessage="This field is required"
                         required>
 
                         <option>--- Please select ---</option>
@@ -39,6 +40,7 @@ class NewNotificationTemplate extends Component {
                         name="name" 
                         label="Template Name" 
                         labelClass="form-label required"
+                        errorMessage="This field is required"
                         required />
                 </div>
 
@@ -46,6 +48,7 @@ class NewNotificationTemplate extends Component {
                     name="name" 
                     label="Title" 
                     labelClass="form-label required"
+                    errorMessage="This field is required"
                     required />
 
                 <AvField 
@@ -54,6 +57,7 @@ class NewNotificationTemplate extends Component {
                     label="Content" 
                     labelClass="form-label content required"
                     inputClass="content"
+                    errorMessage="This field is required"
                     required></AvField>
 
                 <Button className="btn-submit">Submit</Button>

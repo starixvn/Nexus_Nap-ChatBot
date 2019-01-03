@@ -44,16 +44,21 @@ class NewNotification extends Component {
                 label="Notification Type" 
                 labelClass="form-label required"
                 inputClass="notification-type"
+                errorMessage="This field is required"
                 required>
 
                 <option>UM Licensee 1</option>
                 <option>UM Licensee 2</option>
               </AvField>
 
-              <AvGroup>
-                <Label for="recipient" className="form-label required">Recipient</Label>
-                <AvInput name="recipient" id="recipient" required />
-              </AvGroup>
+              <AvField 
+                name="recipient"
+                label="Recipient" 
+                labelClass="form-label required"
+                errorMessage="This field is required"
+                required>
+              </AvField>
+
               <div className="row-has-actions">
                 <AvField 
                   type="select"
@@ -61,6 +66,7 @@ class NewNotification extends Component {
                   label="Notification Template" 
                   labelClass="form-label required"
                   inputClass="notification-template"
+                  errorMessage="This field is required"
                   required>
 
                   <option>Weekly UM 1</option>
@@ -71,22 +77,24 @@ class NewNotification extends Component {
                     <span className="icon-edit"></span>
                   </div>
                   
-                  Edit Title & Content
+                  <span className="text">Edit Title & Content</span>
                 </div>
                 <div className="action" onClick={this.contentResetConfirmPopupHandler}>
                   <div className="circle blue">
                     <span className="icon-reset"></span>
                   </div>
 
-                  Reset Title & Content
+                  <span className="text">Reset Title & Content</span>
                 </div>
               </div>
               
-
-              <AvGroup>
-                <Label for="example" className="form-label required">Title</Label>
-                <AvInput name="title" id="title" required />
-              </AvGroup>
+              <AvField 
+                name="title"
+                label="Title" 
+                labelClass="form-label required"
+                errorMessage="This field is required"
+                required>
+              </AvField>
               
               <AvField 
                 type="textarea"
@@ -101,34 +109,41 @@ class NewNotification extends Component {
               <fieldset className="parameter-area">
                 <legend className="bold">Parameters</legend>
                 <div className="parameter-list">
-                  <AvGroup>
-                      <Label for="umDate" className="form-label">UM date</Label>
-                      <AvInput name="umDate" id="umDate" value="UM date" className="m-r-15px" required />
-                    </AvGroup>
+                  <AvField
+                    name="UMDate"
+                    label="{UM date}" 
+                    labelClass="form-label"
+                    inputClass="m-r-15px"
+                    value="UM date"></AvField>
 
-                    <AvGroup>
-                      <Label for="umWeekDateEN" className="form-label p-l-15px">UM Week Date - EN</Label>
-                      <AvInput name="umWeekDateEN" id="umWeekDateEN" value="UM Week Date - EN" required />
-                    </AvGroup>
-
-                    <div className="w-100"></div>
-
-                    <AvGroup>
-                      <Label for="startTime" className="form-label">Start time</Label>
-                      <AvInput name="startTime" id="startTime" className="m-r-15px" value="11:00" required />
-                    </AvGroup>
-
-                    <AvGroup>
-                      <Label for="endTime" className="form-label">End time</Label>
-                      <AvInput name="endTime" id="endTime" value="End time" required />
-                    </AvGroup>
+                  <AvField
+                    name="umWeekDateEN"
+                    label="{UM Week Date - EN}" 
+                    labelClass="form-label p-l-15px"
+                    inputClass="m-r-15px"
+                    value="UM Week Date - EN"></AvField>
 
                     <div className="w-100"></div>
 
-                    <AvGroup>
-                      <Label for="umWeekDateCN" className="form-label">UM Week Date - CN</Label>
-                      <AvInput name="umWeekDateCN" id="umWeekDateCN" value="hh:mm:ss AM/PM MM/DD/YYYY" required />
-                    </AvGroup>
+                    <AvField
+                      name="startTime"
+                      label="{Start time}" 
+                      labelClass="form-label"
+                      inputClass="m-r-15px"
+                      value="11:00"></AvField>
+
+                    <AvField
+                      name="endTime"
+                      label="{End time}" 
+                      labelClass="form-label"
+                      value="End time"></AvField>
+
+                    <div className="w-100"></div>
+                    <AvField
+                      name="umWeekDateCN"
+                      label="{UM Week Date - CN}" 
+                      labelClass="form-label"
+                      value="hh:mm:ss AM/PM MM/DD/YYYY"></AvField>
                 </div>            
               </fieldset>
 
@@ -140,7 +155,7 @@ class NewNotification extends Component {
                   label="Send Date/Time" 
                   required>
 
-                  <option>Please Select</option>
+                  <option>---Please select---</option>
                   <option>Send immediately</option>
                   <option>Send at</option>
                 </AvField>

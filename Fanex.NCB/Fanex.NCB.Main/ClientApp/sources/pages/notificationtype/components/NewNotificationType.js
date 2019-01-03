@@ -54,6 +54,7 @@ class NewNotificationType extends Component {
                     label="Notification Type Name" 
                     labelClass="form-label required"
                     value={currentNotificationTypeName}
+                    errorMessage="This field is required"
                     required />
 
                 <AvField 
@@ -63,9 +64,10 @@ class NewNotificationType extends Component {
                     labelClass="form-label required"
                     inputClass="notification-type"
                     value={currentRecipientTypeId}
+                    errorMessage="This field is required"
                     required>
 
-                    <option>Please select</option>
+                    <option>---Please select---</option>
                     {
                         
                         this.props.notificationTypeSettings.settings 
@@ -83,8 +85,9 @@ class NewNotificationType extends Component {
                     labelClass="form-label required"
                     label="System" 
                     value={currentSystemId}
+                    errorMessage="This field is required"
                     required>
-                    <option>Please select</option>
+                    <option>---Please select---</option>
                     {
                         
                         this.props.notificationTypeSettings.settings 

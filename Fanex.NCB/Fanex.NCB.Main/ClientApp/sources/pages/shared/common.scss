@@ -69,6 +69,9 @@ body {
     padding: 4px 8px;
     border-radius: 3px;
     color: #fff;
+    &:hover {
+        cursor: text;
+    }
 }
 
 .badge-green {

@@ -24,7 +24,7 @@
     display: grid;
     grid-template-columns: 685px 160px 1fr;
     grid-template-rows: 1fr;
-    align-items: center;
+    align-items: flex-start;
     grid-gap: 25px;
 
     .action {
@@ -33,6 +33,20 @@
         color: #066896;
         &:hover {
             cursor: pointer;
+        }
+    }
+
+    .action:hover {
+        .circle.orange {
+            background-color: darken(#ff9913, 10%);
+        }
+
+        .circle.blue {
+            background-color: darken(#58709a, 10%);
+        }
+
+        .text {
+            text-decoration: underline;
         }
     }
 
@@ -105,7 +119,7 @@
     display: grid;
     grid-template-columns: 293px 1fr;
     grid-gap: 15px;
-    align-items: center;
+    align-items: flex-start;
 
     .calendar {
      position: relative; 
@@ -133,7 +147,7 @@
 }
 
 .content .btn-submit {
+    float: right;
     margin-top: 15px;
-    margin-left: 145px;
 }
 
