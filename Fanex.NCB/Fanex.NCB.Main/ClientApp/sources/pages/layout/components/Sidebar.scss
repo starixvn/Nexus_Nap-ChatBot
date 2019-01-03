@@ -52,10 +52,10 @@
         text-transform: capitalize;
         color: #fff;
 
-        &:hover {
+        &:hover,
+        &:focus {
             background-color: #044868;
-            color: #51e7ff;
-            
+            color: #51e7ff;            
             text-decoration: none;
         }
 

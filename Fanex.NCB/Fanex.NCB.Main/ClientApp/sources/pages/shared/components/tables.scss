@@ -114,4 +114,24 @@ tbody {
     .col-content {
         position: relative !important;
     }
+
+    .col-content [class^="icon"] {
+        position: absolute;
+        top: 14px;
+        right: 0;
+        color: $text-color;
+
+        &:hover {
+            color: $text-color;
+        }
+
+        &.icon-down {
+            font-size: 6px;
+        }
+    
+        &.icon-right {
+            right: -6px;
+            font-size: 10px;
+        }
+    }
 }

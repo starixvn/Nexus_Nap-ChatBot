@@ -17,10 +17,7 @@ class ConfirmPopup extends Component {
           <ModalHeader toggle={this.props.confirmToggle}>{title}</ModalHeader>
           <ModalBody>
             {warningIcon}
-            <div className="info">
-               Are you sure you want to delete <br/>
-               <b>{content}?</b>
-            </div>
+            <div className="info" contentEditable='true' dangerouslySetInnerHTML={{ __html: this.props.content }}></div>
           </ModalBody>
           <ModalFooter>
               <button className="btn-submit" onClick={() => this.props.confirmHandler(true)}>OK</button>

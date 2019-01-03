@@ -115,7 +115,7 @@ class NotificationType extends Component {
             confirmToggle={this.confirmToggle}
             isShowPopup={this.state.isShowConfirm}
             title={"Delete Notification Type"}
-            content={this.state.deletingNotificationTypeName }
+            content={'<p>Are you sure you want to delete <br /> <strong>"' + this.state.deletingNotificationTypeName + '"</strong></p>' }
             warningIcon={false}
         ></ConfirmPopup>
       </div>

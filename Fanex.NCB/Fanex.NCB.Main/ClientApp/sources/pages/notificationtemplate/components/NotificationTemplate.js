@@ -63,7 +63,8 @@ class NotificationTemplate extends Component {
               <td className="text-center">1</td>
               <td>UM</td>
               <td>Weekly UM 1</td>
-              <td>
+              <td className="col-content">
+                <span className="icon-down"></span>
                 <p className="bold text-uppercase">Weekly maintenance announcement - <span className="text-red">UM DATE</span></p>
                 Good Day! <br/>
                 This is Shane, kindly take note of the below message <br/>
@@ -80,7 +81,8 @@ class NotificationTemplate extends Component {
               <td className="text-center">1</td>
               <td>UM</td>
               <td>Weekly UM 2</td>
-              <td>
+              <td className="col-content">
+                <span className="icon-right"></span>
                 <span className="bold text-uppercase">Weekly maintenance (complete) announcement - <span className="text-red">UM DATE</span></span>
               </td>
               <td className="text-center col-action">
@@ -92,8 +94,9 @@ class NotificationTemplate extends Component {
               <td className="text-center">1</td>
               <td>UM</td>
               <td>Extend UM</td>
-              <td>
-              <span className="bold text-uppercase">Extend maintenance announcement</span>
+              <td className="col-content">
+                <span className="icon-right"></span>
+                <span className="bold text-uppercase">Extend maintenance announcement</span>
               </td>
               <td className="text-center col-action">
                 <span className="icon-edit"></span>
@@ -104,8 +107,9 @@ class NotificationTemplate extends Component {
               <td className="text-center">1</td>
               <td>UM 3rd</td>
               <td>UM 3rd - Schedule</td>
-              <td>
-              <span className="bold text-uppercase">UM Confirmation - <span className="text-red">UM DATE</span></span>
+              <td className="col-content">
+                <span className="icon-right"></span>
+                <span className="bold text-uppercase">UM Confirmation - <span className="text-red">UM DATE</span></span>
               </td>
               <td className="text-center col-action">
                 <span className="icon-edit"></span>
@@ -116,8 +120,9 @@ class NotificationTemplate extends Component {
               <td className="text-center">1</td>
               <td>UM 3rd</td>
               <td>UM 3rd 1</td>
-              <td>
-              <span className="bold text-uppercase">maintenance announcement - <span className="text-red">UM DATE</span></span>
+              <td className="col-content">
+                <span className="icon-right"></span>
+                <span className="bold text-uppercase">maintenance announcement - <span className="text-red">UM DATE</span></span>
               </td>
               <td className="text-center col-action">
                 <span className="icon-edit"></span>
@@ -128,8 +133,9 @@ class NotificationTemplate extends Component {
               <td className="text-center">1</td>
               <td>UM 3rd</td>
               <td>UM 3rd 2</td>
-              <td>
-              <span className="bold text-uppercase">Match Suspend/Delay - Match Name</span>
+              <td className="col-content">
+                <span className="icon-right"></span>
+                <span className="bold text-uppercase">Match Suspend/Delay - Match Name</span>
               </td>
               <td className="text-center col-action">
                 <span className="icon-edit"></span>
