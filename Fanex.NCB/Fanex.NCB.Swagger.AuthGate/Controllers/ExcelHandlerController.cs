@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace Fanex.NCB.Swagger.Controllers
+namespace Fanex.NCB.Swagger.AuthGate.Controllers
 {
     public class ExcelHandlerController : ApiController
     {

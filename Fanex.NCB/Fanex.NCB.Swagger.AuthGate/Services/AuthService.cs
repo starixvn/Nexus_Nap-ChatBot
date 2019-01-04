@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Fanex.NCB.AuthServer.Models.MetalModel;
-using Fanex.NCB.Swagger.Models.DTO;
+using Fanex.NCB.Swagger.AuthGate.Models.DTO;
+using Fanex.NCB.Swagger.AuthGate.Models.MetalModel;
 
-namespace Fanex.NCB.Swagger.Services
+namespace Fanex.NCB.Swagger.AuthGate.Services
 {
     public class AuthService : IAuthService
     {

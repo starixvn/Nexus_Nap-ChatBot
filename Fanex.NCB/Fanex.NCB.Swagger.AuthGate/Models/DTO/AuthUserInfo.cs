@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Fanex.NCB.Swagger.Models.DTO
+namespace Fanex.NCB.Swagger.AuthGate.Models.DTO
 {
     [Serializable]
     public class AuthUserInfo

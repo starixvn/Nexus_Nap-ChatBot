@@ -4,7 +4,7 @@ using Fanex.NAP.Core.Service.Interface;
 using System.Linq;
 using System.Web.Http;
 
-namespace Fanex.NCB.Swagger.Controllers
+namespace Fanex.NCB.Swagger.AuthGate.Controllers
 {
     //[CustomAuthorize]
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 
-namespace Fanex.NCB.Swagger.Attributes
+namespace Fanex.NCB.Swagger.AuthGate.Attributes
 {
     public class CustomAuthorize : AuthorizeAttribute
     {

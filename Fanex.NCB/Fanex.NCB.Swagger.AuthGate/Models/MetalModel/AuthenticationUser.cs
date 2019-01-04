@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.AuthServer.Models.MetalModel
+﻿namespace Fanex.NCB.Swagger.AuthGate.Models.MetalModel
 {
     public class AuthenticationUser
     {

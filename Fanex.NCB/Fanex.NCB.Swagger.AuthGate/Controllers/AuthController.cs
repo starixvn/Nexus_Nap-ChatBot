@@ -1,11 +1,10 @@
-﻿using Fanex.NAP.Core.Service.Impl;
-using Fanex.NAP.Core.Service.Interface;
-using Fanex.NCB.AuthServer.Models.MetalModel;
-using Fanex.NCB.Swagger.Attributes;
+﻿using Fanex.NAP.Core.Service.Interface;
+using Fanex.NCB.Swagger.AuthGate.Attributes;
+using Fanex.NCB.Swagger.AuthGate.Models.MetalModel;
 using System.Web.Http;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 
-namespace Fanex.NCB.Swagger.Controllers
+namespace Fanex.NCB.Swagger.AuthGate.Controllers
 {
 
     [CustomAuthorize]
