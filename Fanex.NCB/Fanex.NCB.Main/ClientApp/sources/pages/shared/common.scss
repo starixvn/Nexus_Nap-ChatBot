@@ -69,6 +69,8 @@ body {
     padding: 4px 8px;
     border-radius: 3px;
     color: #fff;
+    white-space: nowrap;
+    
     &:hover {
         cursor: text;
     }
