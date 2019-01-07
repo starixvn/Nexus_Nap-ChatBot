@@ -19,33 +19,37 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.BackgroundService
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bot", "Bot", "{C38DCEDD-24AE-4F5F-A9A4-CE10F3C05BE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Bot.MySQLStorage", "Fanex.NCB.Bot.MySQLStorage\Fanex.NCB.Bot.MySQLStorage.csproj", "{2FA7704A-D695-41AD-94A4-E25FA2008B0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Bot.MySQLStorage", "Fanex.NCB.Bot.MySQLStorage\Fanex.NCB.Bot.MySQLStorage.csproj", "{2FA7704A-D695-41AD-94A4-E25FA2008B0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Bot.RedisStorage", "Fanex.NCB.Bot.RedisStorage\Fanex.NCB.Bot.RedisStorage.csproj", "{EF3684C6-570A-4F84-B235-D21FE89F07C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Bot.RedisStorage", "Fanex.NCB.Bot.RedisStorage\Fanex.NCB.Bot.RedisStorage.csproj", "{EF3684C6-570A-4F84-B235-D21FE89F07C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Bot.Skype", "Fanex.NCB.Bot.Skype\Fanex.NCB.Bot.Skype.csproj", "{39F3B29E-5D17-4366-A0F2-0163C20595BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Bot.Skype", "Fanex.NCB.Bot.Skype\Fanex.NCB.Bot.Skype.csproj", "{39F3B29E-5D17-4366-A0F2-0163C20595BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Bot.Main", "Fanex.NCB.Bot.Main\Fanex.NCB.Bot.Main.csproj", "{338041A5-A1D0-4F03-A2FE-1FA60C36FB1B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Bot.Main", "Fanex.NCB.Bot.Main\Fanex.NCB.Bot.Main.csproj", "{338041A5-A1D0-4F03-A2FE-1FA60C36FB1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Bot.MySQLStorage.UnitTests", "Fanex.NCB.Bot.MySQLStorage.UnitTests\Fanex.NCB.Bot.MySQLStorage.UnitTests.csproj", "{B0DE485A-D87D-43EC-B05A-79FB13F70786}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Bot.MySQLStorage.UnitTests", "Fanex.NCB.Bot.MySQLStorage.UnitTests\Fanex.NCB.Bot.MySQLStorage.UnitTests.csproj", "{B0DE485A-D87D-43EC-B05A-79FB13F70786}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Bot.Skype.UnitTests", "Fanex.NCB.Bot.Skype.UnitTests\Fanex.NCB.Bot.Skype.UnitTests.csproj", "{7E084C69-49AA-490B-A595-39F0AFAF1885}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Bot.Skype.UnitTests", "Fanex.NCB.Bot.Skype.UnitTests\Fanex.NCB.Bot.Skype.UnitTests.csproj", "{7E084C69-49AA-490B-A595-39F0AFAF1885}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.RedisStorage.UnitTests", "Fanex.NCB.RedisStorage.UnitTests\Fanex.NCB.RedisStorage.UnitTests.csproj", "{C33E0DFC-9DC5-419A-A05C-4FCD5193F5FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.RedisStorage.UnitTests", "Fanex.NCB.RedisStorage.UnitTests\Fanex.NCB.RedisStorage.UnitTests.csproj", "{C33E0DFC-9DC5-419A-A05C-4FCD5193F5FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Common.UnitTests", "Fanex.NCB.Common.UnitTests\Fanex.NCB.Common.UnitTests.csproj", "{DB4DAF8C-13CD-4B58-B84B-CAD4F2F6A826}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Common.UnitTests", "Fanex.NCB.Common.UnitTests\Fanex.NCB.Common.UnitTests.csproj", "{DB4DAF8C-13CD-4B58-B84B-CAD4F2F6A826}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Core.UnitTests", "Fanex.NCB.Core.UnitTests\Fanex.NCB.Core.UnitTests.csproj", "{F23451E7-CDF1-42D7-9B77-BD94DE9BC936}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Core.UnitTests", "Fanex.NCB.Core.UnitTests\Fanex.NCB.Core.UnitTests.csproj", "{F23451E7-CDF1-42D7-9B77-BD94DE9BC936}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.SkypeBot.UnitTests", "Fanex.NCB.SkypeBot.UnitTests\Fanex.NCB.SkypeBot.UnitTests.csproj", "{3C03A1AC-A457-4163-9AC6-02A91C9AA604}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.SkypeBot.UnitTests", "Fanex.NCB.SkypeBot.UnitTests\Fanex.NCB.SkypeBot.UnitTests.csproj", "{3C03A1AC-A457-4163-9AC6-02A91C9AA604}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Swagger.AuthGate", "Fanex.NCB.Swagger.AuthGate\Fanex.NCB.Swagger.AuthGate.csproj", "{96FB7E08-CBA6-423E-BBA2-6AABB90BD59C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Swagger.AuthGate.UnitTests", "Fanex.NCB.Swagger.AuthGate.UnitTests\Fanex.NCB.Swagger.AuthGate.UnitTests.csproj", "{39024E07-8277-4E5E-BBEA-D0B29FC9E92D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Swagger.AuthGate.UnitTests", "Fanex.NCB.Swagger.AuthGate.UnitTests\Fanex.NCB.Swagger.AuthGate.UnitTests.csproj", "{39024E07-8277-4E5E-BBEA-D0B29FC9E92D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Swagger.DataGate", "Fanex.NCB.Swagger.DataGate\Fanex.NCB.Swagger.DataGate.csproj", "{CA3803A7-5B79-49A0-9834-6800D5FCC850}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Swagger.DataGate", "Fanex.NCB.Swagger.DataGate\Fanex.NCB.Swagger.DataGate.csproj", "{CA3803A7-5B79-49A0-9834-6800D5FCC850}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Swagger.DataGate.UnitTests", "Fanex.NCB.Swagger.DataGate.UnitTests\Fanex.NCB.Swagger.DataGate.UnitTests.csproj", "{837B15F2-1C89-4EB1-8EA4-142DEEC02986}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Swagger.DataGate.UnitTests", "Fanex.NCB.Swagger.DataGate.UnitTests\Fanex.NCB.Swagger.DataGate.UnitTests.csproj", "{837B15F2-1C89-4EB1-8EA4-142DEEC02986}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Swagger.DataGate.MySQLStorage", "Fanex.NCB.Swagger.DataGate.MySQLStorage\Fanex.NCB.Swagger.DataGate.MySQLStorage.csproj", "{1023CC12-A386-495B-BAEF-BD543660B3B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.DataGate.CoreDataAccess", "Fanex.NCB.DataGate.CoreDataAccess\Fanex.NCB.DataGate.CoreDataAccess.csproj", "{566D9017-EF63-4FCA-BE51-02847E6C418D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -129,6 +133,14 @@ Global
 		{837B15F2-1C89-4EB1-8EA4-142DEEC02986}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{837B15F2-1C89-4EB1-8EA4-142DEEC02986}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{837B15F2-1C89-4EB1-8EA4-142DEEC02986}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1023CC12-A386-495B-BAEF-BD543660B3B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1023CC12-A386-495B-BAEF-BD543660B3B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1023CC12-A386-495B-BAEF-BD543660B3B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1023CC12-A386-495B-BAEF-BD543660B3B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{566D9017-EF63-4FCA-BE51-02847E6C418D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{566D9017-EF63-4FCA-BE51-02847E6C418D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{566D9017-EF63-4FCA-BE51-02847E6C418D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{566D9017-EF63-4FCA-BE51-02847E6C418D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -146,6 +158,8 @@ Global
 		{39024E07-8277-4E5E-BBEA-D0B29FC9E92D} = {A9102C1F-1A38-4D02-86F4-6A07BCD565B7}
 		{CA3803A7-5B79-49A0-9834-6800D5FCC850} = {A9102C1F-1A38-4D02-86F4-6A07BCD565B7}
 		{837B15F2-1C89-4EB1-8EA4-142DEEC02986} = {A9102C1F-1A38-4D02-86F4-6A07BCD565B7}
+		{1023CC12-A386-495B-BAEF-BD543660B3B8} = {A9102C1F-1A38-4D02-86F4-6A07BCD565B7}
+		{566D9017-EF63-4FCA-BE51-02847E6C418D} = {A9102C1F-1A38-4D02-86F4-6A07BCD565B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37A2AE26-EFD0-4EE5-89D6-E3D42A9AEF67}

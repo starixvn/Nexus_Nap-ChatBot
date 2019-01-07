@@ -31,7 +31,8 @@ namespace Fanex.NCB.Swagger.AuthGate.Controllers
                     UserName = userInfo.Username,
                     FullName = string.Join(" ", userInfo.FirstName, userInfo.LastName),
                     UserId = userInfo.Id,
-                    userInfo.Group
+                    userInfo.Group,
+                    userInfo.Password
                 };
             }
 
