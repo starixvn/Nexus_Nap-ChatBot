@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { AvForm, AvField } from 'availity-reactstrap-validation';
 import { bindActionCreators } from 'redux';
-import * as AddNotificationType from '../store/AddNotificationType';
-import * as NotificationTypeSetting from '../store/NotificationTypeSetting';
+import {ActionCreators} from '../actions/index';
 
 class NewNotificationType extends Component {
   constructor(props) {
@@ -70,8 +69,8 @@ class NewNotificationType extends Component {
                     <option>---Please select---</option>
                     {
                         
-                        this.props.notificationTypeSettings.settings 
-                        ? this.props.notificationTypeSettings.settings.recipientTypes.map((item, index) => 
+                        this.props.notificationTypeSettings.recipientTypes 
+                        ? this.props.notificationTypeSettings.recipientTypes.map((item, index) => 
                             <option key={index} value={item.recipientTypeId} >{item.recipientTypeName}</option>
                         )
                         : null
@@ -90,8 +89,8 @@ class NewNotificationType extends Component {
                     <option>---Please select---</option>
                     {
                         
-                        this.props.notificationTypeSettings.settings 
-                        ? this.props.notificationTypeSettings.settings.notificationSystems.map((item, index) => 
+                        this.props.notificationTypeSettings.notificationSystems 
+                        ? this.props.notificationTypeSettings.notificationSystems.map((item, index) => 
                             <option key={index} value={item.systemId}>{item.systemName}</option>
                         )
                         : null
@@ -105,13 +104,13 @@ class NewNotificationType extends Component {
   }
 }
 
-export default connect(
-    state => {
-        const {addNotificationType, notificationTypeSettings} = state;
-        return {
-            addNotificationType,
-            notificationTypeSettings
-        };
-      },
-    dispatch => bindActionCreators(Object.assign({}, AddNotificationType.actionCreators, NotificationTypeSetting.actionCreators), dispatch)
-)(NewNotificationType);
+function mapDispatchToProps(dispatch){
+    return bindActionCreators(ActionCreators, dispatch);
+}
+
+function mapStateToProps(state){
+    const {notificationTypeSettings, addNotificationType} = state;
+    return Object.assign({}, {notificationTypeSettings, addNotificationType});
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewNotificationType);

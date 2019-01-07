@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { UncontrolledTooltip } from 'reactstrap';
 import NCBBreadcrum from '../../common/breadcrumbs';
-import NewNotificationType from "./NewNotificationType";
 import ConfirmPopup from "../../common/ConfirmPopup";
 import { bindActionCreators } from 'redux';
-import * as NotificationTypeList  from '../store/NotificationTypeList';
-import * as DeleteNotificationType from '../store/DeleteNotificationType';
+import {ActionCreators} from '../actions/index';
+import NewNotificationType from './NewNotificationType';
 
 import "../../../fonts/style.css";
 import './NotificationType.scss';
+
 
 class NotificationType extends Component {
   constructor(props) {
@@ -68,8 +68,7 @@ class NotificationType extends Component {
     this.props.getNotificationTypes();
   }
 
-  render() {
-    console.log(this.state.activeRowIndex);
+  render() {    
     return (
       <div>
         <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Type"></NCBBreadcrum>
@@ -86,24 +85,26 @@ class NotificationType extends Component {
           </thead>
           <tbody>
             {
-              this.props.notificationTypeList.notificationTypes.map((item, index) => 
-                <tr key={index} className={index == this.state.activeRowIndex ? 'active' : ''}>
-                  <td className="text-center">{index + 1}</td>
-                  <td>{item.notificationTypeName}</td>
-                  <td>{item.recipientTypeName}</td>
-                  <td>{item.systemName}</td>
-                  <td className="text-center col-action">
-                    <span className="icon-edit" id={"edit-" + index} onClick={() => this.newEditPopup(item, index)}></span>                    
-                    <UncontrolledTooltip placement="top" target={"edit-" + index}>Edit</UncontrolledTooltip>
-                    <span className="icon-delete" id={"delete-" + index} onClick={() => this.confirmToggle(index, item.notificationTypeName)}></span>
-                    <UncontrolledTooltip placement="top" target={"delete-" + index}>Delete</UncontrolledTooltip>
-                  </td>
-                </tr>
-              )
+                this.props.notificationTypeList.length
+                ?  this.props.notificationTypeList.map((item, index) => 
+                    <tr key={index} className={index == this.state.activeRowIndex ? 'active' : ''}>
+                    <td className="text-center">{index + 1}</td>
+                    <td>{item.notificationTypeName}</td>
+                    <td>{item.recipientTypeName}</td>
+                    <td>{item.systemName}</td>
+                    <td className="text-center col-action">
+                        <span className="icon-edit" id={"edit-" + index} onClick={() => this.newEditPopup(item, index)}></span>                    
+                        <UncontrolledTooltip placement="top" target={"edit-" + index}>Edit</UncontrolledTooltip>
+                        <span className="icon-delete" id={"delete-" + index} onClick={() => this.confirmToggle(index, item.notificationTypeName)}></span>
+                        <UncontrolledTooltip placement="top" target={"delete-" + index}>Delete</UncontrolledTooltip>
+                    </td>
+                    </tr>                
+                )
+                : null
             }            
           </tbody>
         </table>
-
+       
         <NewNotificationType
           isShowPopup={this.state.isShowNewPopup}
           popupToggle={this.newPopupToggle}
@@ -123,13 +124,14 @@ class NotificationType extends Component {
   }
 }
 
-export default connect(
-  state => {
+function mapDispatchToProps(dispatch){
+    return bindActionCreators(ActionCreators, dispatch);
+}
+
+function mapStateToProps(state){
     const {notificationTypeList, deleteNotificationType} = state;
-    return {
-      notificationTypeList,
-      deleteNotificationType
-    };
-  },
-  dispatch => bindActionCreators(Object.assign({}, NotificationTypeList.actionCreators, DeleteNotificationType.actionCreators), dispatch)
-)(NotificationType);
+    return Object.assign({}, {notificationTypeList, deleteNotificationType});
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NotificationType);
+  
