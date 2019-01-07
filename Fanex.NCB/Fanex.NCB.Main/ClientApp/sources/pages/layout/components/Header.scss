@@ -6,7 +6,7 @@
   flex-direction: row;
   align-items: center;
   height: $header-height;
-  border-bottom: 1px solid #dadee3;
+  box-shadow: 0 0 3px 1px rgba(0,0,0, .2);
   padding: 0 10px;
   background-color: #fff;
 }

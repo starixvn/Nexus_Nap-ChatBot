@@ -27,7 +27,7 @@ class ChatGroupMapping extends Component {
         <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Chat Group Mapping"></NCBBreadcrum>
         <form className="filter">
           <div class="form-group">
-              <label htmlFor="chatbot" class="form-label">Chatbot</label>
+              <label htmlFor="chatbot" class="form-label">Bot Name</label>
               <select name="chatbot" required="" id="chatbot" class="form-control">
                 <option>All</option>
               </select>
@@ -72,7 +72,7 @@ class ChatGroupMapping extends Component {
               <td>7669657720736B79</td>
               <td>OneOnOne & ABCChet</td>
               <td>Licensee</td>
-              <td>ABCbet</td>
+              <td>12bet</td>
               <td><span className="badge-green">Mapped</span></td>
               <td></td>
               <td className="text-center col-action">
@@ -110,8 +110,8 @@ class ChatGroupMapping extends Component {
               <td>OWNNotify</td>
               <td>7669657720736B79</td>
               <td>CSD & BBIN</td>
-              <td>Licensee</td>
-              <td>Virtual Sports</td>
+              <td>3rd party product</td>
+              <td>Virtual Sport</td>
               <td><span className="badge-green">Mapped</span></td>
               <td></td>
               <td className="text-center col-action">
@@ -136,8 +136,8 @@ class ChatGroupMapping extends Component {
               <td>OWNNotify</td>
               <td>7669657720736B79</td>
               <td>CSD & BBIN</td>
-              <td>Licensee</td>
-              <td>Virtual Sports</td>
+              <td>3rd party product</td>
+              <td>Racing</td>
               <td><span className="badge-green">Mapped</span></td>
               <td></td>
               <td className="text-center col-action">
