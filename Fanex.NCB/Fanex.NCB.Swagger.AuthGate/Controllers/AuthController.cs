@@ -2,6 +2,7 @@
 using Fanex.NAP.Core.Service.Interface;
 using Fanex.NCB.Common.MetalModels;
 using Fanex.NCB.Swagger.AuthGate.Attributes;
+using Fanex.NCB.Swagger.AuthGate.Services;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 
 namespace Fanex.NCB.Swagger.AuthGate.Controllers
@@ -10,33 +11,18 @@ namespace Fanex.NCB.Swagger.AuthGate.Controllers
     [CustomAuthorize]
     public class AuthController : ApiController
     {
-        private readonly IUserService _userService;
+        private readonly IAuthService _authService;
 
 
-        public AuthController(IUserService userService)
+        public AuthController(IAuthService authService)
         {
-            _userService = userService;
+            _authService = authService;
         }
 
         [HttpPost]
         public dynamic Verify(AuthenticationUser user)
         {
-
-            var userInfo = _userService.Get(user.UserName);
-            if (userInfo != null)
-            {
-                //verify user
-                return new
-                {
-                    UserName = userInfo.Username,
-                    FullName = string.Join(" ", userInfo.FirstName, userInfo.LastName),
-                    UserId = userInfo.Id,
-                    userInfo.Group,
-                    userInfo.Password
-                };
-            }
-
-            return null;
+            return _authService.Authorize(user);
         }
 
     }
