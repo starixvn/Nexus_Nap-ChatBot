@@ -4,4 +4,8 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Fanex.NCB.Bot.StorageLayer\Fanex.NCB.Bot.StorageLayer.csproj" />
+  </ItemGroup>
+
 </Project>

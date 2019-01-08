@@ -8,8 +8,8 @@ var environment = "dev";
 var pathConfig = require('../config/pathReact');
 var baseConfigs = baseWebpackConfigGenerator(environment);
 
-var cssRootPath = `${pathConfig.cssPaths.build}/${environment}/reactpages`;
-var jsRootPath = `${pathConfig.scriptPaths.build}/${environment}/reactpages`;
+var cssRootPath = `${pathConfig.cssPaths.build}/${environment}/`;
+var jsRootPath = `${pathConfig.scriptPaths.build}/${environment}/`;
 module.exports = merge(baseConfigs,
     utils.setDefinePlugin('process.env.NODE_ENV', 'development'),
     {

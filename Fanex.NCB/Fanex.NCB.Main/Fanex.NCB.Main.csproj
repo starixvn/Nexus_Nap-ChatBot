@@ -14,6 +14,7 @@
   <ItemGroup>
     <Folder Include="ClientApp\sources\js\" />
     <Folder Include="ClientApp\sources\sass\" />
+    <Folder Include="wwwroot\js\build\dev\pages\newnotification\" />
   </ItemGroup>
 
   <ItemGroup>
