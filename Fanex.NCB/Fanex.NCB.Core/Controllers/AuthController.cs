@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Fanex.NCB.Common.DTO;
 using Fanex.NCB.Core.Models.DataDomain;
 using Fanex.NCB.Core.Services;
-using Fanex.NCB.Main.Models.DTO;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;

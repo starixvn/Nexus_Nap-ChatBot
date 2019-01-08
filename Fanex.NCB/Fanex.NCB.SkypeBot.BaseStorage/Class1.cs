@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Fanex.NCB.DataGate.CoreDataAccess
+namespace Fanex.NCB.SkypeBot.BaseStorage
 {
     public class Class1
     {

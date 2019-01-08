@@ -1,7 +1,7 @@
-﻿using Fanex.NAP.Core.Service.Interface;
+﻿using System.Web.Http;
+using Fanex.NAP.Core.Service.Interface;
+using Fanex.NCB.Common.MetalModels;
 using Fanex.NCB.Swagger.AuthGate.Attributes;
-using Fanex.NCB.Swagger.AuthGate.Models.MetalModel;
-using System.Web.Http;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 
 namespace Fanex.NCB.Swagger.AuthGate.Controllers

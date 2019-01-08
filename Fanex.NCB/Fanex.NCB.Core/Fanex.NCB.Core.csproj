@@ -16,4 +16,8 @@
     <Folder Include="Models\ViewModels\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Fanex.NCB.Common\Fanex.NCB.Common.csproj" />
+  </ItemGroup>
+
 </Project>

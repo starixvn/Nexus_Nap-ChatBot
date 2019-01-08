@@ -1,5 +1,9 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Fanex.NCB.Common.DTO;
 using Fanex.NCB.Core.Models;
 using Fanex.NCB.Core.Models.DataDomain;
 using Fanex.NCB.Core.Services;
@@ -7,15 +11,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Linq;
-using System.Security.Claims;
 using Newtonsoft.Json;
-using Fanex.NCB.Main.Models.DTO;
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using Fanex.NCB.Core.Models.DTO;
-using System;
-using System.Net.Http;
 
 namespace Fanex.NCB.Main.Controllers
 {

@@ -5,8 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="MetalModels\" />
-    <Folder Include="DTO\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
 

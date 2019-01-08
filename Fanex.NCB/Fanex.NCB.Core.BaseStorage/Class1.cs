@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Fanex.NCB.Swagger.DataGate.MySQLStorage
+namespace Fanex.NCB.Core.BaseStorage
 {
     public class Class1
     {

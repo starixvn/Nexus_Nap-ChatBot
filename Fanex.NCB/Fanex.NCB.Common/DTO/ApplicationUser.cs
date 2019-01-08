@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Fanex.NCB.Core.Models.DTO;
 
-namespace Fanex.NCB.Main.Models.DTO
+namespace Fanex.NCB.Common.DTO
 {
+    [Serializable]
     public class ApplicationUser
     {
         public string UserName { get; set; }

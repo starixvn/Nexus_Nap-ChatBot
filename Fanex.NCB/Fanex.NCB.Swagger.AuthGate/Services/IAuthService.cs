@@ -1,10 +1,10 @@
-﻿using Fanex.NCB.Swagger.AuthGate.Models.DTO;
-using Fanex.NCB.Swagger.AuthGate.Models.MetalModel;
+﻿using Fanex.NCB.Common.DTO;
+using Fanex.NCB.Common.MetalModels;
 
 namespace Fanex.NCB.Swagger.AuthGate.Services
 {
     public interface IAuthService
     {
-        AuthUserInfo Authorize(AuthenticationUser authenticationUser);
+        ApplicationUser Authorize(AuthenticationUser authenticationUser);
     }
 }

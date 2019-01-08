@@ -147,13 +147,10 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Attributes\CustomAuthorize.cs" />
     <Compile Include="Controllers\AuthController.cs" />
-    <Compile Include="Controllers\ExcelHandlerController.cs" />
     <Compile Include="Controllers\UserResourceController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\DTO\AuthUserInfo.cs" />
-    <Compile Include="Models\MetalModel\AuthenticationUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AuthService.cs" />
     <Compile Include="Services\IAuthService.cs" />
@@ -174,6 +171,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fanex.NCB.Common\Fanex.NCB.Common.csproj">
+      <Project>{d53b9d9c-f2b4-47cd-8524-57b79c0c2a76}</Project>
+      <Name>Fanex.NCB.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

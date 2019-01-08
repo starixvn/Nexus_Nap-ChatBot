@@ -1,8 +1,7 @@
-﻿using Fanex.NAP.Core.Models;
-using Fanex.NAP.Core.Service.Impl;
-using Fanex.NAP.Core.Service.Interface;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Http;
+using Fanex.NAP.Core.Models;
+using Fanex.NAP.Core.Service.Interface;
 
 namespace Fanex.NCB.Swagger.AuthGate.Controllers
 {
