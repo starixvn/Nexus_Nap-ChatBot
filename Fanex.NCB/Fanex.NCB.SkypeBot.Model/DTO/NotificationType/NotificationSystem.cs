@@ -1,4 +1,4 @@
-namespace Fanex.NCB.SkypeBot.Models.NotificationType
+namespace Fanex.NCB.SkypeBot.Model.DTO.NotificationType
 {
     public class NotificationSystem
     {

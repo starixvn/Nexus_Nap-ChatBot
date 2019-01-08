@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Fanex.NCB.SkypeBot.BaseStorage\Fanex.NCB.SkypeBot.BaseStorage.csproj" />
+    <ProjectReference Include="..\Fanex.NCB.SkypeBot.Model\Fanex.NCB.SkypeBot.Model.csproj" />
+  </ItemGroup>
+
 </Project>

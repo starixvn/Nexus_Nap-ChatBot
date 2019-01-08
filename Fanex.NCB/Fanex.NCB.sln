@@ -53,6 +53,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.SkypeBot.BaseStor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Bot.BaseStorage", "Fanex.NCB.Bot.BaseStorage\Fanex.NCB.Bot.BaseStorage.csproj", "{98B92367-909A-4617-B46B-F1685500D2C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.SkypeBot.Model", "Fanex.NCB.SkypeBot.Model\Fanex.NCB.SkypeBot.Model.csproj", "{DF4E8CD9-42D2-4DC5-9F61-5564588D9464}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -143,6 +145,10 @@ Global
 		{98B92367-909A-4617-B46B-F1685500D2C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98B92367-909A-4617-B46B-F1685500D2C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98B92367-909A-4617-B46B-F1685500D2C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF4E8CD9-42D2-4DC5-9F61-5564588D9464}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF4E8CD9-42D2-4DC5-9F61-5564588D9464}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF4E8CD9-42D2-4DC5-9F61-5564588D9464}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF4E8CD9-42D2-4DC5-9F61-5564588D9464}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,4 +8,16 @@
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\MetalModels\" />
+    <Folder Include="Models\DTO\" />
+    <Folder Include="Models\ViewModels\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fanex.NCB.SkypeBot.BaseStorage\Fanex.NCB.SkypeBot.BaseStorage.csproj" />
+    <ProjectReference Include="..\Fanex.NCB.SkypeBot.Model\Fanex.NCB.SkypeBot.Model.csproj" />
+    <ProjectReference Include="..\Fanex.NCB.SkypeBot.MySQLStorage\Fanex.NCB.SkypeBot.MySQLStorage.csproj" />
+  </ItemGroup>
+
 </Project>
