@@ -6,10 +6,10 @@
     <title>@ViewData["Title"] - Fanex.NCB.Main</title>
     <base href="%PUBLIC_URL%/" />
     <environment include="Development">
-        <link rel="stylesheet" href="/css/common.css" asp-append-version="true" />
+        <link rel="stylesheet" href="/dev/common/common.chunk.css" asp-append-version="true" />
     </environment>
     <environment exclude="Development">
-        <link rel="stylesheet" href="/css/common.css" asp-append-version="true" />
+        <link rel="stylesheet" href="/pro/common/common.chunk.css" asp-append-version="true" />
     </environment>
      @RenderSection("Styles", required: false)
 </head>
@@ -17,10 +17,10 @@
     @RenderBody()
     @RenderSection("Scripts", required: false)
     <environment include="Development">
-        <script src="/js/build/dev/pages/lib/common.chunk.js" asp-append-version="true"></script>          
+        <script src="/dev/common/common.chunk.js" asp-append-version="true"></script>          
     </environment>
     <environment exclude="Development">
-        <script src="/js/build/pro/pages/lib/common.chunk.js" asp-append-version="true"></script>  
+        <script src="/pro/common/common.chunk.js" asp-append-version="true"></script>  
     </environment>
 </body>
 </html>

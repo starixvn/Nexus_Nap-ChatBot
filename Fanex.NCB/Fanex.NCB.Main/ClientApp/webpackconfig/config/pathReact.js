@@ -2,12 +2,8 @@
 
 var projectRoot = path.resolve(__dirname, '../../../');
 
-var cssPaths = {
-    build: "wwwroot/css/build"
-};
-
-var scriptPaths = {
-    build: "wwwroot/js/build",
+var paths = {
+    build: "wwwroot",
    
     newnotification: "./sources/pages/newnotification/index.js",
     notificationlist: "./sources/pages/notificationlist/index.js",
@@ -19,6 +15,5 @@ var scriptPaths = {
 };
 module.exports = {
     projectRoot: projectRoot,
-    cssPaths: cssPaths,
-    scriptPaths: scriptPaths
+    paths: paths
 };

@@ -6,22 +6,16 @@ var pathConfig = require('../config/pathReact');
 var environment = "pro";
 var baseConfigs = baseWebpackConfigGenerator(environment);
 
-var cssRootPath = `${pathConfig.cssPaths.build}/${environment}`;
-var jsRootPath = `${pathConfig.scriptPaths.build}/${environment}`;
+var buildPath = `${pathConfig.paths.build}/${environment}`;
 module.exports = merge(baseConfigs,
     utils.setDefinePlugin('process.env.NODE_ENV', 'production'),
     {
         mode: 'production',
-        watch: false,
+        devtool: 'source-map',
+        watch: true,
         plugins: [
-            new CleanWebpackPlugin([`${jsRootPath}/`], {
+            new CleanWebpackPlugin([`${buildPath}/`], {
                 root: process.cwd()               
-            }),
-            new CleanWebpackPlugin([`${cssRootPath}/*.css`, `${cssRootPath}/*.map`, `${cssRootPath}/*.js`], {
-                root: process.cwd()               
-            }),
-            new CleanWebpackPlugin([`${cssRootPath}/pages/*/*.css`, `${cssRootPath}/pages/*/*.js`, `${cssRootPath}/pages/*/*.map`], {
-                root: process.cwd()             
             })
         ]
     },

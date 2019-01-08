@@ -1,31 +1,29 @@
 ﻿var pathConfig = require('../config/pathReact');
-var pluginGenerator = require('../config/pluginReact');
+//var pluginGenerator = require('../config/pluginReact');
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 
 function generateConfig(environment) {
-    var jsPath = `${pathConfig.scriptPaths.build}/${environment}/pages`;
-    var cssPath = `${pathConfig.cssPaths.build}/${environment}/pages`;
+    var buildPath = `${pathConfig.paths.build}/${environment}/pages`;
+    var commonPath = `${pathConfig.paths.build}/${environment}/common`;
     var commonConfigs = {
         resolve: {
             extensions: ['.js', '.jsx']
         },
         entry: {
-            /*js*/            
-            [`${jsPath}/newnotification`]: pathConfig.scriptPaths.newnotification,          
-            [`${jsPath}/notificationlist`]: pathConfig.scriptPaths.notificationlist,          
-            [`${jsPath}/notificationtemplate`]: pathConfig.scriptPaths.notificationtemplate,          
-            [`${jsPath}/chatgroupmapping`]: pathConfig.scriptPaths.chatgroupmapping,          
-            [`${jsPath}/notificationtype`]: pathConfig.scriptPaths.notificationtype,
-            [`${jsPath}/layout`]: pathConfig.scriptPaths.layout,
-            [`${jsPath}/login`]: pathConfig.scriptPaths.login,
-
-            /*css*/
-            /*[`${cssPath}/vendor`]: pathConfig.cssPaths.layout,*/            
+                     
+            [`${buildPath}/newnotification/newnotification`]: pathConfig.paths.newnotification,          
+            [`${buildPath}/notificationlist/notificationlist`]: pathConfig.paths.notificationlist,          
+            [`${buildPath}/notificationtemplate/notificationtemplate`]: pathConfig.paths.notificationtemplate,          
+            [`${buildPath}/chatgroupmapping/chatgroupmapping`]: pathConfig.paths.chatgroupmapping,          
+            [`${buildPath}/notificationtype/notificationtype`]: pathConfig.paths.notificationtype,
+            [`${buildPath}/layout/layout`]: pathConfig.paths.layout,
+            [`${buildPath}/login/login`]: pathConfig.paths.login,
+            
         },
         output: {
             path: pathConfig.projectRoot,
-            filename: "[name]/[name].chunk.js",
-            chunkFilename: jsPath + '/lib/[name].chunk.js',
+            filename: "[name].chunk.js",
+            chunkFilename: commonPath + '/[name].chunk.js',
         },
         module: {
             rules: [
@@ -60,7 +58,7 @@ function generateConfig(environment) {
                 }
             ]
         },
-        plugins: pluginGenerator(environment),
+        //plugins: pluginGenerator(environment),
         stats: {
             assets: false,
             colors: true,
@@ -99,7 +97,7 @@ function generateConfig(environment) {
                     vendors: false,
                     common: {
                         name: 'common',
-                        test: /(node_modules)/,
+                        //test: /(node_modules)/,
                         minChunks: 2,
                         priority: -10
                     }

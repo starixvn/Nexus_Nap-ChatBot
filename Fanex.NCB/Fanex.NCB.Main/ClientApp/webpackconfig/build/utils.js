@@ -1,5 +1,6 @@
 ﻿const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+var pathConfig = require('../config/pathReact');
 
 exports.setDefinePlugin = function(key, value) {
     const env = {};
@@ -13,9 +14,11 @@ exports.setDefinePlugin = function(key, value) {
 };
 
 exports.extractCSS = function(isProduction) {
+    var env = isProduction ? 'pro' : 'dev';
+    var commonPath = `${pathConfig.paths.build}/${env}/common`;
     return {
         plugins: [
-                new MiniCssExtractPlugin({ filename: "[name].css", chunkFilename: '[id].css'})
+                new MiniCssExtractPlugin({ filename: "[name].chunk.css", chunkFilename: commonPath + '/[id].chunk.css'})
         ],
         module: {
             rules: [

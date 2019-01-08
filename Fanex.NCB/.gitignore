@@ -45,5 +45,5 @@ Fanex.Athena.sln.GhostDoc.xml
 node_modules
 bower_components
 
-/Fanex.NCB.Main/wwwroot/js/build/dev/*
+/Fanex.NCB.Main/wwwroot/dev/*
 
