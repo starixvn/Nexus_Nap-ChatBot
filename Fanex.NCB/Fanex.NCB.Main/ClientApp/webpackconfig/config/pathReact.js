@@ -9,8 +9,6 @@ var cssPaths = {
 var scriptPaths = {
     build: "wwwroot/js/build",
    
-    home: "./sources/pages/home/index.js",
-    fetchdata: "./sources/pages/fetchdata/index.js",
     newnotification: "./sources/pages/newnotification/index.js",
     notificationlist: "./sources/pages/notificationlist/index.js",
     notificationtemplate: "./sources/pages/notificationtemplate/index.js",
