@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router';
 import NewNotification from './components/NewNotification';
 import { connect } from 'react-redux';
 

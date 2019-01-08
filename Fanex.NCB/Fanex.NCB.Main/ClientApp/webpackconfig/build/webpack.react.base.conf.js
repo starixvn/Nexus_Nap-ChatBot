@@ -1,6 +1,4 @@
-﻿var path = require('path');
-var alias = require('../config/aliasReact');
-var pathConfig = require('../config/pathReact');
+﻿var pathConfig = require('../config/pathReact');
 var pluginGenerator = require('../config/pluginReact');
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 
@@ -9,13 +7,10 @@ function generateConfig(environment) {
     var cssPath = `${pathConfig.cssPaths.build}/${environment}/pages`;
     var commonConfigs = {
         resolve: {
-            alias: alias,
             extensions: ['.js', '.jsx']
         },
         entry: {
             /*js*/            
-            [`${jsPath}/home`]: pathConfig.scriptPaths.home,          
-            [`${jsPath}/fetchdata`]: pathConfig.scriptPaths.fetchdata,          
             [`${jsPath}/newnotification`]: pathConfig.scriptPaths.newnotification,          
             [`${jsPath}/notificationlist`]: pathConfig.scriptPaths.notificationlist,          
             [`${jsPath}/notificationtemplate`]: pathConfig.scriptPaths.notificationtemplate,          
@@ -29,7 +24,7 @@ function generateConfig(environment) {
         },
         output: {
             path: pathConfig.projectRoot,
-            filename: "[name].chunk.js",
+            filename: "[name]/[name].chunk.js",
             chunkFilename: jsPath + '/lib/[name].chunk.js',
         },
         module: {

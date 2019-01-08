@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router';
-//import Layout from './components/Layout';
 import Login from './components/Login';
-//import FetchData from './components/FetchData';
 import { connect } from 'react-redux';
-//import Login from './components/Login';
 
 class App extends Component {
   constructor(props) {
