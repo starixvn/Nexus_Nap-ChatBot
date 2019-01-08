@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Fanex.NCB.Common.DTO;
+using Fanex.NCB.Common.MetalModels;
 using Fanex.NCB.Core.Models.DataDomain;
 using Fanex.NCB.Core.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -107,8 +108,8 @@ namespace Fanex.NCB.Main.Controllers
 
         private async Task<ApplicationUser> AuthenticateUser(string userName, string password)
         {
-            var user = new { Username = userName, Password = password };
-            var response = await _bridgeClient.PostJsonAsync(
+            var user = new AuthenticationUser { UserName = userName, Password = password };
+            var response = await _bridgeClient.PostJsonAsync<AuthenticationUser>(
             _options.AuthApi, user);
 
             response.EnsureSuccessStatusCode();

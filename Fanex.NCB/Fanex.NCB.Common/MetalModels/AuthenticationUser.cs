@@ -2,7 +2,6 @@
 
 namespace Fanex.NCB.Common.MetalModels
 {
-    [Serializable]
     public class AuthenticationUser
     {
         public string UserName { get; set; }

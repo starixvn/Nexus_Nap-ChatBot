@@ -2,6 +2,7 @@
 using Autofac.Integration.WebApi;
 using Fanex.NAP.Core.Service.Impl;
 using Fanex.NAP.Core.Service.Interface;
+using Fanex.NCB.Swagger.AuthGate.Services;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -29,6 +30,11 @@ namespace Fanex.NCB.Swagger
             // Get your HttpConfiguration.
             var config = GlobalConfiguration.Configuration;
 
+            //register NAP API
+            builder.Register(x => new UserService()).As<IUserService>();
+            builder.RegisterType<AuthService>().AsImplementedInterfaces();
+
+
             // Register your Web API controllers.
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
 
@@ -37,9 +43,6 @@ namespace Fanex.NCB.Swagger
 
             // OPTIONAL: Register the Autofac model binder provider.
             builder.RegisterWebApiModelBinderProvider();
-
-            //register NAP API
-            builder.Register(x => new UserService()).As<IUserService>();
 
             // Set the dependency resolver to be Autofac.
             var container = builder.Build();
