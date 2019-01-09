@@ -27,11 +27,12 @@ namespace Fanex.NCB.Main.Controllers
             _bridgeClient = bridgeClient;
             _options = options.Value;
         }
-        public async Task<IActionResult> Index(string returnUrl)
+        public async Task<IActionResult> Index(string returnUrl, bool invalidLogin)
         {
             await HttpContext.SignOutAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme);
             ViewBag.returnUrl = returnUrl;
+            ViewBag.invalidLogin = invalidLogin;
             return View(new ApplicationUser());
         }
 
@@ -49,11 +50,10 @@ namespace Fanex.NCB.Main.Controllers
 
                 if (user == null)
                 {
-                    return Json(new
-                    {
-                        IsOk = false,
-                        Msg = "Invalid login attempt."
-                    });
+                    return RedirectToAction("Index", new {
+                        returnUrl = returnUrl,
+                        invalidLogin = true
+                    });                    
                 }
 
                 var claims = new List<Claim>

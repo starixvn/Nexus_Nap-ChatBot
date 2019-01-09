@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import CryptoJS from '../../lib/cryptoJS';
+import AppData from '../../lib/AppData';
 
 import '../../../fonts/style.css';
 import '../../shared/components/messages.scss';
@@ -12,7 +13,8 @@ class Login extends Component {
         super(props);    
 
         this.state = {
-            password: ''
+            password: '',
+            invalidLogin: AppData.invalidLogin
         }
     }
 
@@ -45,7 +47,12 @@ class Login extends Component {
                     <a className="logo" href="#"><img src={Logo} alt="Nap Chatbot" /></a>
             
                     <h1 className="header">Welcome to CHATBOT</h1>
-                    <div className="msg-error">Username or Password must not be empty</div>
+                    
+                    {
+                        this.state.invalidLogin
+                        ? <div className="msg-error">Invalid Username or Password</div>
+                        : null
+                    }                    
                     <div className="input-group">
                         <div className="input-group-prepend">
                             <span className="icon-username"></span>

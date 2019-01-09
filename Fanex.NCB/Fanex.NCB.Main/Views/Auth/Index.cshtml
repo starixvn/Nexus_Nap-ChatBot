@@ -1,6 +1,9 @@
-﻿@{
+﻿@using Newtonsoft.Json
+
+@{
     ViewData["Title"] = "Login";
     Layout = null;
+    var invalidLogin = ViewBag.invalidLogin;
 }
 
 <!DOCTYPE html>
@@ -23,7 +26,13 @@
     </environment>
 </head>
 <body>   
-   <div id="login"></div>        
+   <div id="login"></div>     
+
+    <script>
+        window._AppData = {
+            invalidLogin: @Html.Raw(JsonConvert.SerializeObject(invalidLogin))
+        }
+    </script>   
 
    <partial name="_CookieConsentPartial" /> 
     
