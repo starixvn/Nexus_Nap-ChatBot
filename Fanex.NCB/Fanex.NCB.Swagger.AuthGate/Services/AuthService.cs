@@ -26,6 +26,7 @@ namespace Fanex.NCB.Swagger.AuthGate.Services
                     UserId=userInfo.Id,
                     UserName=userInfo.Username                   
                 };
+                return result;
                // var permission = _userService.
             }
 

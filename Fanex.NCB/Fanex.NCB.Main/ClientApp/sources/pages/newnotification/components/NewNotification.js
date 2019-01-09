@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
-import { Button, Label } from 'reactstrap';
+import { AvForm, AvField} from 'availity-reactstrap-validation';
+import { Button } from 'reactstrap';
 import ConfirmPopup from "../../common/ConfirmPopup";
 import NCBBreadcrum from '../../common/breadcrumbs';
 import "../../../fonts/style.css";

@@ -32,6 +32,7 @@ namespace Fanex.NCB.Swagger
 
             //register NAP API
             builder.Register(x => new UserService()).As<IUserService>();
+            builder.Register(x => new MenuService()).As<IMenuService>();
             builder.RegisterType<AuthService>().AsImplementedInterfaces();
 
 

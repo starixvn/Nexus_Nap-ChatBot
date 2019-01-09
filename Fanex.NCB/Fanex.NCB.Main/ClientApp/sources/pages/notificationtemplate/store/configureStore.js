@@ -1,7 +1,7 @@
 ﻿import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 
-export default function configureStore(history, initialState) {
+export default function configureStore(initialState) {
   const reducers = {
     
   };

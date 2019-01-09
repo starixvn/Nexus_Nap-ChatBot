@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Fanex.NCB.Common.DTO;
@@ -37,30 +38,10 @@ namespace Fanex.NCB.Main.Controllers
 
             response.EnsureSuccessStatusCode();
 
-           
-            var item = await response.Content.ReadAsStringAsync();
-
-            var jsonObj = JObject.Parse(item);
-            var menuList = new List<Menu>();
-            foreach (var m in jsonObj["Menu"])
-            {
-                menuList.Add(ParserMenu(m));
-            }
-            ViewBag.Menu = menuList;
+            ViewBag.Menu = await response.Content.ReadAsAsync<List<Menu>>();
             return View();
         }
 
-        private Menu ParserMenu(JToken m)
-        {
-            return new Menu
-            {
-                Url = m["Url"].Value<string>(),
-                DisplayOrder = m["DisplayOrder"].Value<short>(),
-                Policy = m["Policy"].Value<int>(),
-                Name = m["Name"].Value<string>(),
-                Parent = m["Parent"].HasValues ? ParserMenu(m["Parent"]) : null
-            };
-        }    
        
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

@@ -1,42 +1,81 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import CryptoJS from '../../lib/cryptoJS';
 
 import '../../../fonts/style.css';
 import '../../shared/components/messages.scss';
 import './Login.scss';
 import Logo from "../../../images/Logo.svg";
 
+class Login extends Component {
+    constructor(props) {
+        super(props);    
 
-const Login = props => (
-  <div className="login-container">
-      <form method="post" action="/auth/SignIn" className="form-login">
-          <a className="logo" href="#"><img src={Logo} alt="Nap Chatbot" /></a>
+        this.state = {
+            password: ''
+        }
+    }
 
-          <h1 className="header">Welcome to CHATBOT</h1>
-          <div className="msg-error">Username or Password must not be empty</div>
-          <div className="input-group">
-              <div className="input-group-prepend">
-                <span className="icon-username"></span>
-              </div>
-              <input name="userName" type="text" className="form-control"/>
-          </div>
-          <div className="input-group">
-              <div className="input-group-prepend">
-                <span className="icon-password"></span>
-              </div>
-              <input name="password" type="password" className="form-control"/>              
-          </div>
-          <input type="submit" value="SIGN IN" className="button"/>
-          <input type="hidden" name="returnUrl" value="/Home/Index" />
-      </form>
-      <div className="form-footer">
-            <span className="bold">Best view in:</span>
-            <ul className="list-inline">
-                <li><span className="icon-firefox"></span> Firefox 64+</li>
-                <li><span className="icon-chrome"></span> Chrome 71+</li>
-            </ul>
-      </div>
-  </div>
-);
+    handleSubmit = (event) => {
+        event.preventDefault();
+
+        this.setState(
+            {
+                password: CryptoJS.cfsEnCode(this.refs.password.value)
+        
+            },
+            this.submitForm
+        )
+
+        //this.refs.form.submit();
+    }
+
+    passwordChangedHandler = (event) => {        
+        this.setState({
+            password: event.target.value
+        })
+    }
+
+    submitForm = () => {
+        console.log(this.refs.password.value);
+        console.log("submit");
+        this.refs.form.submit()    ;
+    }
+
+    render(){
+        return(
+            <div className="login-container">
+                <form ref="form" method="post" action="/auth/SignIn" className="form-login" onSubmit={this.handleSubmit}>
+                    <a className="logo" href="#"><img src={Logo} alt="Nap Chatbot" /></a>
+            
+                    <h1 className="header">Welcome to CHATBOT</h1>
+                    <div className="msg-error">Username or Password must not be empty</div>
+                    <div className="input-group">
+                        <div className="input-group-prepend">
+                            <span className="icon-username"></span>
+                        </div>
+                        <input name="userName" type="text" className="form-control"/>
+                    </div>
+                    <div className="input-group">
+                        <div className="input-group-prepend">
+                            <span className="icon-password"></span>
+                        </div>
+                        <input ref="password" name="password" type="password" value={this.state.password} className="form-control" onChange={this.passwordChangedHandler}/>              
+                    </div>
+                    <input type="submit" value="SIGN IN" className="button"/>
+                    <input type="hidden" name="returnUrl" value="/Home/Index" />
+                </form>
+                <div className="form-footer">
+                        <span className="bold">Best view in:</span>
+                        <ul className="list-inline">
+                            <li><span className="icon-firefox"></span> Firefox 64+</li>
+                            <li><span className="icon-chrome"></span> Chrome 71+</li>
+                        </ul>
+                </div>
+            </div>
+        );
+    }
+}
+
 
 export default connect()(Login);

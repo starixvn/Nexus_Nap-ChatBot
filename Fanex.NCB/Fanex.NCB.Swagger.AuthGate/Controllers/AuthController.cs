@@ -8,7 +8,7 @@ using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 namespace Fanex.NCB.Swagger.AuthGate.Controllers
 {
 
-    [CustomAuthorize]
+    //[CustomAuthorize]
     public class AuthController : ApiController
     {
         private readonly IAuthService _authService;
