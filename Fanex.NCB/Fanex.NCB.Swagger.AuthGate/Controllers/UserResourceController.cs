@@ -1,13 +1,11 @@
-﻿using System.Linq;
-using System.Web.Http;
-using Fanex.NAP.Core.Models;
+﻿using System.Web.Http;
 using Fanex.NAP.Core.Service.Interface;
 using Fanex.NCB.Swagger.AuthGate.Attributes;
 using Fanex.NCB.Swagger.AuthGate.Services;
 
 namespace Fanex.NCB.Swagger.AuthGate.Controllers
 {
-    //[CustomAuthorize]
+    [CustomAuthorize]
     public class UserResourceController : ApiController
     {
         private readonly IUserService _userService;
