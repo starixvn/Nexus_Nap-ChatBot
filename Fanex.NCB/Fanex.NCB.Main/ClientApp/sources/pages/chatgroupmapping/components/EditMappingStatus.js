@@ -22,13 +22,13 @@ class EditMappingStatus extends Component {
           <ModalHeader toggle={this.toggleHandler}>Edit Mapping Status</ModalHeader>
           <ModalBody>
             <AvForm className="form-create">
-                <div class="form-group">
-                    <label class="form-label">Bot Name</label>
+                <div className="form-group">
+                    <label className="form-label">Bot Name</label>
                     <div>1on1Notify</div>
                 </div>
 
-                <div class="form-group">
-                    <label htmlFor="mappingStatus" class="form-label">Group Name</label>
+                <div className="form-group">
+                    <label htmlFor="mappingStatus" className="form-label">Group Name</label>
                     <div>OneOnOne & ABCChet</div>
                 </div>
 
@@ -54,8 +54,8 @@ class EditMappingStatus extends Component {
                     <option>CSDBET</option>
                 </AvField>
 
-                <div class="form-group">
-                    <label htmlFor="mappingStatus" class="form-label">Mapping Status</label>
+                <div className="form-group">
+                    <label htmlFor="mappingStatus" className="form-label">Mapping Status</label>
                     <div>
                         <span className="badge-green">Mapped</span>
                     </div>

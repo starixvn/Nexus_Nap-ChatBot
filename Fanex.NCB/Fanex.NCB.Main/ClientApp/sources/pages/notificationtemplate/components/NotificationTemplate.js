@@ -34,9 +34,9 @@ class NotificationTemplate extends Component {
       <div>
         <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Template"></NCBBreadcrum>
         <form className="filter">
-          <div class="form-group">
-              <label htmlFor="recipientType" class="form-label">Notification Type</label>
-              <select name="recipientType" required="" id="recipientType" class="notification-type form-control">
+          <div className="form-group">
+              <label htmlFor="recipientType" className="form-label">Notification Type</label>
+              <select name="recipientType" required="" id="recipientType" className="notification-type form-control">
                 <option>--- Please select ---</option>
                 <option>UM</option>
               </select>

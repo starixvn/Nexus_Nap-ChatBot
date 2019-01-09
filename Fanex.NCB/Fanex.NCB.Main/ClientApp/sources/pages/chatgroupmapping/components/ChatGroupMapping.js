@@ -21,30 +21,30 @@ class ChatGroupMapping extends Component {
     });
   }  
 
-  render() {
+  render() { 
     return (
       <div>
         <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Chat Group Mapping"></NCBBreadcrum>
         <form className="filter">
-          <div class="form-group">
-              <label htmlFor="chatbot" class="form-label">Bot Name</label>
-              <select name="chatbot" required="" id="chatbot" class="form-control">
+          <div className="form-group">
+              <label htmlFor="chatbot" className="form-label">Bot Name</label>
+              <select name="chatbot" required="" id="chatbot" className="form-control">
                 <option>All</option>
               </select>
           </div>
-          <div class="form-group">
-              <label htmlFor="recipientType" class="form-label">Recipient Type</label>
-              <select name="recipientType" required="" id="recipientType" class="form-control">
+          <div className="form-group">
+              <label htmlFor="recipientType" className="form-label">Recipient Type</label>
+              <select name="recipientType" required="" id="recipientType" className="form-control">
                 <option>All</option>
               </select>
           </div>
-          <div class="form-group">
-              <label htmlFor="recipient" class="form-label">Recipient</label>
-              <input type="text" name="recipient" id="recipient" class="form-control" />
+          <div className="form-group">
+              <label htmlFor="recipient" className="form-label">Recipient</label>
+              <input type="text" name="recipient" id="recipient" className="form-control" />
           </div>
-          <div class="form-group">
-              <label htmlFor="mappingStatus" class="form-label">Mapping Status</label>
-              <select name="mappingStatus" required="" id="mappingStatus" class="form-control">
+          <div className="form-group">
+              <label htmlFor="mappingStatus" className="form-label">Mapping Status</label>
+              <select name="mappingStatus" required="" id="mappingStatus" className="form-control">
                 <option>All</option>
               </select>
           </div>
