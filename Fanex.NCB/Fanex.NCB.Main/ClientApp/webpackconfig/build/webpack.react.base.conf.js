@@ -95,12 +95,18 @@ function generateConfig(environment) {
                     // disable default cache group
                     default: false,
                     vendors: false,
-                    common: {
-                        name: 'common',
-                        //test: /(node_modules)/,
+                    reactVendor: {
+                        name: 'reactvendor',
+                        test: /[\\/]node_modules[\\/](react|react-dom|redux|react-redux|redux-thunk|redux-logger|prop-types|axios)[\\/]/,
                         minChunks: 2,
                         priority: -10
-                    }
+                    },
+                    bootstrapVendor: {
+                        name: 'bootstrapvendor',
+                        test: /[\\/]node_modules[\\/](reactstrap|availity-reactstrap-validation|bootstrap)[\\/]/,
+                        minChunks: 2,
+                        priority: -10
+                    }                    
                 }
             }
         }

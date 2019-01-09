@@ -18,7 +18,7 @@ exports.extractCSS = function(isProduction) {
     var commonPath = `${pathConfig.paths.build}/${env}/common`;
     return {
         plugins: [
-                new MiniCssExtractPlugin({ filename: "[name].chunk.css", chunkFilename: commonPath + '/[id].chunk.css'})
+                new MiniCssExtractPlugin({ filename: "[name].chunk.css", chunkFilename: commonPath + '/[name].chunk.css'})
         ],
         module: {
             rules: [

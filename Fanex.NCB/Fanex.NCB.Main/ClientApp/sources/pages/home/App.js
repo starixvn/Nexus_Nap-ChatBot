@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-//import Layout from './components/Layout';
 import Layout from './components/Layout';
-//import FetchData from './components/FetchData';
 import { connect } from 'react-redux';
-//import Login from './components/Login';
 
 class App extends Component {
   constructor(props) {

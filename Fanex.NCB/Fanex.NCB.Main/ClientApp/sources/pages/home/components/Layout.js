@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import "../../../fonts/style.css";
-
 import Sidebar from './Sidebar';
 import Content from './Content';
 
+import "../../../fonts/style.css";
 import './Layout.scss';
+
 class Layout extends Component {
     constructor(props){
         super(props);

@@ -26,8 +26,6 @@ class Login extends Component {
             },
             this.submitForm
         )
-
-        //this.refs.form.submit();
     }
 
     passwordChangedHandler = (event) => {        
@@ -37,9 +35,7 @@ class Login extends Component {
     }
 
     submitForm = () => {
-        console.log(this.refs.password.value);
-        console.log("submit");
-        this.refs.form.submit()    ;
+        this.refs.form.submit();
     }
 
     render(){
