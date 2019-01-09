@@ -7908,7 +7908,7 @@ a.text-dark:hover, a.text-dark:focus {
 .icon-error:before {
   content: "\E901"; }
 
-.icon-group-mapping:before {
+.icon-chat-group-mapping:before {
   content: "\E902"; }
 
 .icon-new-notification:before {
@@ -7924,7 +7924,7 @@ a.text-dark:hover, a.text-dark:focus {
   content: "\E906";
   color: #798388; }
 
-.icon-template:before {
+.icon-notification-template:before {
   content: "\E907"; }
 
 .icon-password:before {
