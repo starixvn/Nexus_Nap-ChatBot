@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\js\**" />
+    <Content Remove="wwwroot\js\**" />
+    <EmbeddedResource Remove="wwwroot\js\**" />
+    <None Remove="wwwroot\js\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
@@ -14,7 +21,6 @@
   <ItemGroup>
     <Folder Include="ClientApp\sources\js\" />
     <Folder Include="ClientApp\sources\sass\" />
-    <Folder Include="wwwroot\js\build\dev\pages\newnotification\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Logo from "../../../images/Logo.svg";
+import AppData from '../../lib/AppData';
 
+import Logo from "../../../images/Logo.svg";
 import "./Sidebar.scss";
 
 class Sidebar extends Component {
@@ -10,9 +11,12 @@ class Sidebar extends Component {
         this.onChange = this.onChange.bind(this);
     }
 
+    getMenuClassName = (name) => {
+        return 'icon-' + name.replace(/ /g, '-').toLowerCase();
+    }
+
     onChange(e, url){
-        e.preventDefault();
-        console.log(url);
+        e.preventDefault();        
         this.props.onChange(url); 
     }
       render() {
@@ -25,39 +29,25 @@ class Sidebar extends Component {
                <ul className="nav">
 
                 <li className="menu">
-                    <span className="menu-text">SKype Chatbot</span>
-                    <ul className="submenu list-unstyled">
-                        <li className="menu-item">
-                            <a href="" className="link" onClick={(event) => this.onChange(event, "/NewNotification/Index")}>
-                                <span className="icon-new-notification"></span>
-                                <span className="text">New Notification</span>
-                            </a>
-                        </li>
-                        <li className="menu-item">
-                            <a href="" className="link" onClick={(event) => this.onChange(event, "/NotificationList/Index")}>
-                                <span className="icon-notification-list"></span>
-                                <span className="text">Notification List</span>
-                            </a>
-                        </li>
-                        <li className="menu-item">
-                            <a href="" className="link" onClick={(event) => this.onChange(event, "/NotificationTemplate/Index")}>
-                                <span className="icon-template"></span>
-                                <span className="text">Notification Template</span>
-                            </a>
-                        </li>
-                        <li className="menu-item">
-                            <a href="" className="link" onClick={(event) => this.onChange(event, "/ChatGroupMapping/Index")}>
-                                <span className="icon-group-mapping"></span>
-                                <span className="text">Chat Group Mapping</span>
-                            </a>
-                        </li>
-                        <li className="menu-item">
-                            <a href="" className="link" onClick={(event) => this.onChange(event, "/NotificationType/Index")}>
-                                <span className="icon-notification-type"></span>
-                                <span className="text">Notification Type</span>
-                            </a>
-                        </li>                      
-                    </ul>
+                    {
+                        AppData.menus.map((menu, menuIndex) => 
+                            <span className="menu" key={menuIndex}>
+                                <span className="menu-text">{menu.Name}</span>
+                                <ul className="submenu list-unstyled">
+                                    {
+                                        menu.SubMenus.map((submenu, submenuIndex ) => 
+                                            <li className="menu-item" key={submenuIndex}>
+                                                <a href="" className="link" onClick={(event) => this.onChange(event, submenu.Url)}>
+                                                    <span className={this.getMenuClassName(submenu.Name)}></span>
+                                                    <span className="text">{submenu.Name}</span>
+                                                </a>
+                                            </li>  
+                                        )
+                                    }
+                                </ul>                                
+                            </span> 
+                        )
+                    }                    
                 </li>
                </ul>
             </div>

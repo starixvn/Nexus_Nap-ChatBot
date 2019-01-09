@@ -76,7 +76,7 @@
 .icon-error:before {
   content: "\e901";
 }
-.icon-group-mapping:before {
+.icon-chat-group-mapping:before {
   content: "\e902";
 }
 .icon-new-notification:before {
@@ -92,7 +92,7 @@
   content: "\e906";
   color: #798388;
 }
-.icon-template:before {
+.icon-notification-template:before {
   content: "\e907";
 }
 .icon-password:before {
