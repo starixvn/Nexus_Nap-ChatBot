@@ -18,6 +18,11 @@
     border-radius: 0;
     box-shadow: none;
     font-size: $font-size;
+
+    &:focus {
+        color: $text-color;
+        box-shadow: 0 0 0 1px rgba(0, 123, 255, 0.25);
+    }
 }
 
 // Validation
@@ -31,10 +36,16 @@
     }
 }
 
+.was-validated .form-control:invalid,
+.form-control.is-invalid {
+    background: none;
+}
+
 .invalid-feedback {
-    grid-column-start: 2;
-    color: #ff0101;
+    grid-column-start: 2;    
     padding-top: 8px;
+    font-size: $font-size;
+    color: #ff0101;
 }
 
 .form-create {
