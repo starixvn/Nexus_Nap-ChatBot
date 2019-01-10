@@ -22,7 +22,7 @@ namespace Fanex.NCB.Bot.Main
               .ConfigureLogging((hostingContext, logging) =>
               {
                   // Add Azure Logging
-                  logging.AddAzureWebAppDiagnostics();
+                  // logging.AddAzureWebAppDiagnostics();
 
                   // Logging Options.
                   // There are other logging options available:
@@ -30,6 +30,18 @@ namespace Fanex.NCB.Bot.Main
                   // logging.AddDebug();
                   // logging.AddConsole();
               })
+            // .UseKestrel()
+                 .ConfigureAppConfiguration((builderContext, config) =>
+                 {
+                     var env = builderContext.HostingEnvironment;
+
+                     config.SetBasePath(env.ContentRootPath);
+                     config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                     config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                     config.AddEnvironmentVariables();
+                 })
+               // .UseIISIntegration()
+
 
                 // Logging Options.
                 // Consider using Application Insights for your logging and metrics needs.

@@ -1,0 +1,32 @@
+{
+  "name": "Fanex.NCB.Bot",
+  "description": "",
+  "services": [
+    {
+      "type": "endpoint",
+      "name": "bot1 development",
+      "endpoint": "http://localhost:56288/bot1",
+      "appId": "ea8d17a4-16c8-43b3-a1a8-ade5277dbd24",
+      "appPassword": "qoudDD4+$fdkQJTBU0646[?",
+      "id": "1"
+    },
+    {
+      "type": "endpoint",
+      "name": "bot2 development",
+      "endpoint": "http://localhost:56288/bot2",
+      "appId": "ea8d17a4-16c8-43b3-a1a8-ade5277dbd24",
+      "appPassword": "qoudDD4+$fdkQJTBU0646[?",
+      "id": "2"
+    },
+    {
+      "type": "endpoint",
+      "name": "bot3 development",
+      "endpoint": "http://localhost:56288/bot3",
+      "appId": "ea8d17a4-16c8-43b3-a1a8-ade5277dbd24",
+      "appPassword": "qoudDD4+$fdkQJTBU0646[?",
+      "id": "3"
+    }
+  ],
+  "padlock": "",
+  "version": "2.0"
+}
