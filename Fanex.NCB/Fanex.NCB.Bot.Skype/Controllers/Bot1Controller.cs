@@ -29,12 +29,12 @@ namespace Fanex.NCB.Bot.Skype.Controllers
 
         protected override async Task OnMessageActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            await turnContext.SendActivityAsync(MessageFactory.Text($"Echo '{turnContext.Activity.Text}' from bot 3."));
+            await turnContext.SendActivityAsync(MessageFactory.Text($"Echo '{turnContext.Activity.Text}' Licensee Bot1."));
         }
 
         protected override async Task OnMemberAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            await turnContext.SendActivityAsync(MessageFactory.Text($"Welcome {member.Name} to ASP MVC Bot 3."), cancellationToken);
+            await turnContext.SendActivityAsync(MessageFactory.Text($"Welcome {member.Name} to Licensee Bot1."), cancellationToken);
         }
 
     }
