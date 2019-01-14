@@ -9,7 +9,8 @@ namespace Fanex.NCB.Bot.SkypeClient
 {
     public interface IBotClient
     {
-        Task<HttpStatusCode> SendASync(string message, string conversationId);
+        Task<HttpStatusCode> SendAsync(string message, string conversationId);
+        Task<HttpStatusCode> SendAsync(IMessageActivity messageActivity);
         Task<HttpStatusCode> ReplyAsync(IMessageActivity activity, string message);
     }
 }

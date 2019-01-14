@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Fanex.NCB.Bot.SkypeClient;
 using Fanex.NCB.Core.Models.DataDomain;
 using Fanex.NCB.Core.Services;
 using Fanex.NCB.SkypeBot.App_Start;
@@ -68,6 +69,10 @@ namespace Fanex.NCB.Main
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IBridgeClientService, BridgeClientService>();
             services.AddSingleton<ISessionService, SessionService>();
+
+            var appSetting = Configuration.GetSection("AppSettings");
+            services.AddTransient<IBotClient, BotClient>(_ => 
+            new BotClient(appSetting["MicrosoftAppId"], appSetting["MicrosoftAppPassword"]));
             InitializeModules(services);
         }
 

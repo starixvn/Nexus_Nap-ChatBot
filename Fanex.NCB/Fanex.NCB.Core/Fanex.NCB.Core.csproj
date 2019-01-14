@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fanex.NCB.Bot.SkypeClient\Fanex.NCB.Bot.SkypeClient.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Common\Fanex.NCB.Common.csproj" />
   </ItemGroup>
 

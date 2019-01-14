@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Threading.Tasks;
+using Fanex.NCB.Bot.SkypeClient;
 using Fanex.NCB.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -9,11 +11,19 @@ namespace Fanex.NCB.Main.Controllers
     [Authorize]
     public class SkypeBotController : Controller
     {
-
-        public IActionResult Index()
+        private readonly IBotClient _botClient;
+        public SkypeBotController(IBotClient botClient)
         {
-            ViewData["Message"] = HttpContext.Session.GetString("name");
+            _botClient = botClient;
+        }
+        public async Task<IActionResult> Index(string message, string conversationid)
+        {
 
+
+            if (!string.IsNullOrEmpty(message) && !string.IsNullOrWhiteSpace(conversationid))
+            {
+                await _botClient.SendAsync(message, conversationid);
+            }
             return View();
         }
 
