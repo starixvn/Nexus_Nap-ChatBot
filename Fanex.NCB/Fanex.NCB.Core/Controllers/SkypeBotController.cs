@@ -16,15 +16,14 @@ namespace Fanex.NCB.Main.Controllers
         {
             _botClient = botClient;
         }
-        public async Task<IActionResult> Index(string message, string conversationid)
+        public async Task<string> Index(string message, string conversationid)
         {
-
 
             if (!string.IsNullOrEmpty(message) && !string.IsNullOrWhiteSpace(conversationid))
             {
                 await _botClient.SendAsync(message, conversationid);
             }
-            return View();
+            return "OK";
         }
 
     }
