@@ -19,7 +19,7 @@ export function setNotificationTypes(data){
     };
 }
 
-export function deleteNotificationType(id){ 
+ export function deleteNotificationType(id){ 
     const url = '/NotificationType/Delete';   
     var params = JSON.stringify({id: id});
 
@@ -28,7 +28,7 @@ export function deleteNotificationType(id){
         const data = await request.data; 
         dispatch(setDeleteNotificationType(data));        
     };
-}
+} 
 
 export function setDeleteNotificationType(data){    
     return {
@@ -54,7 +54,7 @@ export function setSettings(data){
     };
 }
 
-export function addNewNotificationType(params){
+ export function addNewNotificationType(params){
     const url = '/NotificationType/Add';
 
     var params = JSON.stringify(params);
@@ -64,9 +64,9 @@ export function addNewNotificationType(params){
         const data = await request.data; 
         dispatch(setAddNewNotificationType({addedresult: data}));        
     };
-}
+} 
 
-export function editNewNotificationType(params){
+ export function editNewNotificationType(params){
     const url = '/NotificationType/Edit';
 
     var params = JSON.stringify(params);
@@ -76,7 +76,7 @@ export function editNewNotificationType(params){
         const data = await request.data; 
         dispatch(setAddNewNotificationType({addedresult: data}));        
     };
-}
+} 
 
 export function setAddNewNotificationType(data){
     return {
@@ -86,5 +86,7 @@ export function setAddNewNotificationType(data){
 }
 
 export function refreshAddNotificationType(){
-    return (dispatch) => dispatch(setAddNewNotificationType({addedresult: false}));    
+    return (dispatch) => {
+        dispatch(setAddNewNotificationType({addedresult: false}));
+    };    
 }

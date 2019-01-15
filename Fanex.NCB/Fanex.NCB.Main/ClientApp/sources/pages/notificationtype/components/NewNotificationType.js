@@ -31,7 +31,7 @@ class NewNotificationType extends Component {
   
   render() {   
     let popupTitle = this.props.editingItem ? "Edit Notification Type" : "Create New Notification Type";
-    let showSucessMsg = this.props.addNotificationType && this.props.addNotificationType.addedresult;
+    let showSucessMsg = this.props.addNotificationTypeData && this.props.addNotificationTypeData.addedresult;
     let currentNotificationTypeName = this.props.editingItem ? this.props.editingItem.notificationTypeName : '';
     let currentRecipientTypeId = this.props.editingItem ? this.props.editingItem.recipientTypeId : -1;
     let currentSystemId = this.props.editingItem ? this.props.editingItem.systemId : -1;
@@ -69,8 +69,8 @@ class NewNotificationType extends Component {
                     <option>---Please select---</option>
                     {
                         
-                        this.props.notificationTypeSettings.recipientTypes 
-                        ? this.props.notificationTypeSettings.recipientTypes.map((item, index) => 
+                        this.props.notificationTypeSettingsData.recipientTypes 
+                        ? this.props.notificationTypeSettingsData.recipientTypes.map((item, index) => 
                             <option key={index} value={item.recipientTypeId} >{item.recipientTypeName}</option>
                         )
                         : null
@@ -89,8 +89,8 @@ class NewNotificationType extends Component {
                     <option>---Please select---</option>
                     {
                         
-                        this.props.notificationTypeSettings.notificationSystems 
-                        ? this.props.notificationTypeSettings.notificationSystems.map((item, index) => 
+                        this.props.notificationTypeSettingsData.notificationSystems 
+                        ? this.props.notificationTypeSettingsData.notificationSystems.map((item, index) => 
                             <option key={index} value={item.systemId}>{item.systemName}</option>
                         )
                         : null
@@ -109,8 +109,8 @@ function mapDispatchToProps(dispatch){
 }
 
 function mapStateToProps(state){
-    const {notificationTypeSettings, addNotificationType} = state;
-    return Object.assign({}, {notificationTypeSettings, addNotificationType});
+    const {notificationTypeSettingsData, addNotificationTypeData} = state;
+    return Object.assign({}, {notificationTypeSettingsData, addNotificationTypeData});
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewNotificationType);

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-class ConfirmPopup extends Component {
+export default class ConfirmPopup extends Component {
   constructor(props) {
     super(props);
   }  
@@ -29,4 +29,4 @@ class ConfirmPopup extends Component {
   }
 }
 
-export default connect()(ConfirmPopup);
+//export default connect()(ConfirmPopup);

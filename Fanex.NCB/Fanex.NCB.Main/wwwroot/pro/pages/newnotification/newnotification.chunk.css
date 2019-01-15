@@ -181,6 +181,9 @@ body {
   border-radius: 0;
   box-shadow: none;
   font-size: 13px; }
+  .form-control:focus {
+    color: #333;
+    box-shadow: 0 0 0 1px rgba(0, 123, 255, 0.25); }
 
 .text-danger .form-label {
   color: #333; }
@@ -188,10 +191,15 @@ body {
 .text-danger .form-control {
   border-color: #ff0101; }
 
+.was-validated .form-control:invalid,
+.form-control.is-invalid {
+  background: none; }
+
 .invalid-feedback {
   grid-column-start: 2;
-  color: #ff0101;
-  padding-top: 8px; }
+  padding-top: 8px;
+  font-size: 13px;
+  color: #ff0101; }
 
 .form-create .btn-submit {
   float: right;
@@ -223,6 +231,8 @@ body {
   font-family: inherit; }
   .btn-submit:hover, .btn-cancel:hover, .btn-new:hover, .btn-mark:hover, .btn-submit:focus, .btn-cancel:focus, .btn-new:focus, .btn-mark:focus {
     outline: none; }
+  .btn-submit:not([disabled]):hover, .btn-cancel:not([disabled]):hover, .btn-new:not([disabled]):hover, .btn-mark:not([disabled]):hover {
+    cursor: pointer; }
 
 .btn-submit {
   background-color: #066896;
@@ -269,11 +279,12 @@ body {
   line-height: 48px;
   background-color: #eef1f2; }
   .modal-header .close {
-    margin-top: 0;
-    position: relative;
-    top: 11px;
-    opacity: 1;
-    outline: none; }
+    position: absolute;
+    top: -6px;
+    right: 0;
+    margin: 0;
+    outline: none;
+    opacity: 1; }
     .modal-header .close span {
       display: none; }
     .modal-header .close:before {
@@ -285,7 +296,8 @@ body {
 .modal-title {
   margin: 0;
   line-height: inherit;
-  float: left; }
+  float: left;
+  font-size: 13px; }
 
 .popup-confirm .modal-dialog {
   width: 430px; }
@@ -314,7 +326,7 @@ body {
 .popup-confirm .modal-footer {
   padding: 24px 15px;
   border-top: none;
-  text-align: center; }
+  justify-content: center; }
 
 .form-group {
   display: grid;

@@ -85,8 +85,8 @@ class NotificationType extends Component {
           </thead>
           <tbody>
             {
-                this.props.notificationTypeList.length
-                ?  this.props.notificationTypeList.map((item, index) => 
+                this.props.notificationTypeListData.length
+                ?  this.props.notificationTypeListData.map((item, index) => 
                     <tr key={index} className={index == this.state.activeRowIndex ? 'active' : ''}>
                     <td className="text-center">{index + 1}</td>
                     <td>{item.notificationTypeName}</td>
@@ -129,8 +129,8 @@ function mapDispatchToProps(dispatch){
 }
 
 function mapStateToProps(state){
-    const {notificationTypeList, deleteNotificationType} = state;
-    return Object.assign({}, {notificationTypeList, deleteNotificationType});
+    const {notificationTypeListData, deleteNotificationTypeData} = state;
+    return Object.assign({}, {notificationTypeListData, deleteNotificationTypeData});
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotificationType);

@@ -56,5 +56,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fanex.NCB.Bot.SkypeClient\Fanex.NCB.Bot.SkypeClient.csproj">
+      <Project>{6e7da911-1546-4587-a7cb-0877877d0733}</Project>
+      <Name>Fanex.NCB.Bot.SkypeClient</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
