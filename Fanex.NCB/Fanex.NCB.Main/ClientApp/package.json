@@ -67,7 +67,7 @@
         "build-dev": "webpack --config webpackconfig/build/webpack.react.dev.conf.js",
         "build-pro": "webpack --config webpackconfig/build/webpack.react.pro.conf.js",
         "build-both": "webpack --config webpackconfig/build/webpack.react.pro.conf.js && webpack --config webpackconfig/build/webpack.react.dev.conf.js",
-        "test": "jest --coverage --config ./jest.config.js",
+        "test": "jest --coverage  --config ./jest.config.js",
         "test-one": "jest \".*1\\.test\\.js\" --watch --u  --setupTestFrameworkScriptFile=raf/polyfill",
         "test-watch": "jest --watch",
         "jest-install": "npm install jest-cli -g",

@@ -11,12 +11,13 @@ import "../../../fonts/style.css";
 import './NotificationType.scss';
 
 
-class NotificationType extends Component {
+export class NotificationType extends Component {
   constructor(props) {
+    console.log("constructor");
     super(props);
     
     this.state = {
-      isShowNewPopup: false,
+      isShowPopup: false,
       editingItem: null,
       isShowConfirm: false,
       activeRowIndex: -1,
@@ -24,25 +25,25 @@ class NotificationType extends Component {
     };    
   }
 
-  newPopupToggle = () => {
+  popupToggle = () => {
     this.setState(
       {
-        isShowNewPopup: !this.state.isShowNewPopup,
-        activeRowIndex: this.state.isShowNewPopup ? -1 : this.state.activeRowIndex
+        isShowPopup: !this.state.isShowPopup,
+        activeRowIndex: this.state.isShowPopup ? -1 : this.state.activeRowIndex
       },
       function(){
-        if(!this.state.isShowNewPopup){
+        if(!this.state.isShowPopup){
           this.props.getNotificationTypes();
         }
       }
     );
   }
 
-  newEditPopup = (item, rowIndex) => {
+  openPopup = (item, rowIndex) => {
     this.setState({
       editingItem: item,
       activeRowIndex: rowIndex,
-      isShowNewPopup: true
+      isShowPopup: true
     })
   } 
 
@@ -65,14 +66,16 @@ class NotificationType extends Component {
   }  
 
   componentWillMount(){
+    console.log("component will mount");
     this.props.getNotificationTypes();
   }
 
   render() {    
+    console.log("render");
     return (
       <div>
         <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Type"></NCBBreadcrum>
-        <button className="btn-new" onClick={() => this.newEditPopup()}>Create New</button>  
+        <button className="btn-new" onClick={() => this.openPopup()}>Create New</button>  
         <table className="tbl">
           <thead>
             <tr>
@@ -93,7 +96,7 @@ class NotificationType extends Component {
                     <td>{item.recipientTypeName}</td>
                     <td>{item.systemName}</td>
                     <td className="text-center col-action">
-                        <span className="icon-edit" id={"edit-" + index} onClick={() => this.newEditPopup(item, index)}></span>                    
+                        <span className="icon-edit" id={"edit-" + index} onClick={() => this.openPopup(item, index)}></span>                    
                         <UncontrolledTooltip placement="top" target={"edit-" + index}>Edit</UncontrolledTooltip>
                         <span className="icon-delete" id={"delete-" + index} onClick={() => this.confirmToggle(index, item.notificationTypeName)}></span>
                         <UncontrolledTooltip placement="top" target={"delete-" + index}>Delete</UncontrolledTooltip>
@@ -106,8 +109,8 @@ class NotificationType extends Component {
         </table>
        
         <NewNotificationType
-          isShowPopup={this.state.isShowNewPopup}
-          popupToggle={this.newPopupToggle}
+          isShowPopup={this.state.isShowPopup}
+          popupToggle={this.popupToggle}
           editingItem ={this.state.editingItem} 
         />
 

@@ -7,7 +7,7 @@ import configureMockStore from 'redux-mock-store';
 const mockStore = configureMockStore();
 configure({adapter: new Adapter()});
 
-describe('NotificationType', () => {
+describe('NotificationType redux', () => {
     let wrapper, store;
     beforeEach(() => {
         const initialState = {notificationTypeListData: 2, deleteNotificationTypeData: 3}
