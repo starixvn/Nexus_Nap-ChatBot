@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { AvForm, AvField} from 'availity-reactstrap-validation';
+import { Form, FormGroup, Label, Input, FormFeedback } from 'reactstrap';
 import { Button } from 'reactstrap';
 import ConfirmPopup from "../../common/ConfirmPopup";
 import NCBBreadcrum from '../../common/breadcrumbs';
@@ -37,41 +37,33 @@ class NewNotification extends Component {
       <div>
         <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="New Notification"></NCBBreadcrum>
         <div className="content form">
-          <AvForm>        
-              <AvField 
-                type="select"
-                name="notificationType"
-                label="Notification Type" 
-                labelClass="form-label required"
-                inputClass="notification-type"
-                errorMessage="This field is required"
-                required>
+          <Form>        
+              <FormGroup>
+                    <Label for="notificationType" className="form-label required">Notification Type</Label>
+                    <Input type="select" name="select" id="notificationType" className="notification-type" invalid>
+                        <option>---Please select---</option>
+                        <option>UM Licensee 1</option>
+                        <option>UM Licensee 2</option>
+                    </Input>
+                    <FormFeedback>This field is required</FormFeedback>
+              </FormGroup>
 
-                <option>UM Licensee 1</option>
-                <option>UM Licensee 2</option>
-              </AvField>
-
-              <AvField 
-                name="recipient"
-                label="Recipient" 
-                labelClass="form-label required"
-                errorMessage="This field is required"
-                required>
-              </AvField>
+              <FormGroup>
+                  <Label for="recipient" className="form-label required">Recipient</Label>
+                  <Input invalid id="recipient" />
+                  <FormFeedback>This field is required</FormFeedback>
+              </FormGroup>
 
               <div className="row-has-actions">
-                <AvField 
-                  type="select"
-                  name="notificationTemplate"
-                  label="Notification Template" 
-                  labelClass="form-label required"
-                  inputClass="notification-template"
-                  errorMessage="This field is required"
-                  required>
-
-                  <option>Weekly UM 1</option>
-                  <option>Weekly UM 2</option>
-                </AvField>
+                <FormGroup>
+                      <Label for="notificationTemplate" className="form-label required">Notification Template</Label>
+                      <Input type="select" name="select" id="notificationTemplate" invalid className="notification-template">
+                          <option>---Please select---</option>
+                          <option>Weekly UM 1</option>
+                          <option>Weekly UM 2</option>
+                      </Input>
+                      <FormFeedback>This field is required</FormFeedback>
+                </FormGroup>
                 <div className="action" onClick={this.contentEditConfirmPopupHandler}>
                   <div className="circle orange" >
                     <span className="icon-edit"></span>
@@ -88,77 +80,67 @@ class NewNotification extends Component {
                 </div>
               </div>
               
-              <AvField 
-                name="title"
-                label="Title" 
-                labelClass="form-label required"
-                errorMessage="This field is required"
-                required>
-              </AvField>
-              
-              <AvField 
-                type="textarea"
-                name="content"
-                label="Content" 
-                labelClass="form-label content required"
-                inputClass="content"
-                value={templateContent}
-                required></AvField>
+              <FormGroup>
+                  <Label for="title" className="form-label required">Title</Label>
+                  <Input invalid id="title" />
+                  <FormFeedback>This field is required</FormFeedback>
+              </FormGroup>
 
+              <FormGroup>
+                  <Label for="content" className="form-label content required">Content</Label>
+                  <Input type="textarea" invalid id="content" className="content" value={templateContent} />
+                  <FormFeedback>This field is required</FormFeedback>
+              </FormGroup>
 
               <fieldset className="parameter-area">
                 <legend className="bold">Parameters</legend>
                 <div className="parameter-list">
-                  <AvField
-                    name="UMDate"
-                    label="{UM date}" 
-                    labelClass="form-label"
-                    inputClass="m-r-15px"
-                    value="UM date"></AvField>
+                  <FormGroup>
+                    <Label for="UMDate" className="form-label">UM date</Label>
+                    <Input id="UMDate" className="m-r-15px" />
+                    <FormFeedback>This field is required</FormFeedback>
+                 </FormGroup>
 
-                  <AvField
-                    name="umWeekDateEN"
-                    label="{UM Week Date - EN}" 
-                    labelClass="form-label p-l-15px"
-                    inputClass="m-r-15px"
-                    value="UM Week Date - EN"></AvField>
+                 <FormGroup>
+                    <Label for="umWeekDateEN" className="form-label p-l-15px">UM Week Date - EN</Label>
+                    <Input id="umWeekDateEN" className="m-r-15px" />
+                    <FormFeedback>This field is required</FormFeedback>
+                 </FormGroup>
 
-                    <div className="w-100"></div>
+                  <div className="w-100"></div>
 
-                    <AvField
-                      name="startTime"
-                      label="{Start time}" 
-                      labelClass="form-label"
-                      inputClass="m-r-15px"
-                      value="11:00"></AvField>
+                  <FormGroup>
+                    <Label for="startTime" className="form-label p-l-15px">Start time</Label>
+                    <Input id="startTime" className="m-r-15px" value="11:00" />
+                    <FormFeedback>This field is required</FormFeedback>
+                 </FormGroup>
 
-                    <AvField
-                      name="endTime"
-                      label="{End time}" 
-                      labelClass="form-label"
-                      value="End time"></AvField>
+                 <FormGroup>
+                    <Label for="endTime" className="form-label p-l-15px">End time</Label>
+                    <Input id="endTime" className="m-r-15px" value="End time" />
+                    <FormFeedback>This field is required</FormFeedback>
+                 </FormGroup>
 
-                    <div className="w-100"></div>
-                    <AvField
-                      name="umWeekDateCN"
-                      label="{UM Week Date - CN}" 
-                      labelClass="form-label"
-                      value="hh:mm:ss AM/PM MM/DD/YYYY"></AvField>
+                 <div className="w-100"></div>
+
+                 <FormGroup>
+                    <Label for="umWeekDateCN" className="form-label p-l-15px">UM Week Date - CN</Label>
+                    <Input id="umWeekDateCN" className="m-r-15px" value="hh:mm:ss AM/PM MM/DD/YYYY" />
+                    <FormFeedback>This field is required</FormFeedback>
+                 </FormGroup>
                 </div>            
               </fieldset>
 
               <div className="send-date-area">
-                <AvField 
-                  type="select" 
-                  name="senDateTime"
-                  labelClass="form-label required"
-                  label="Send Date/Time" 
-                  required>
-
-                  <option>---Please select---</option>
-                  <option>Send immediately</option>
-                  <option>Send at</option>
-                </AvField>
+                <FormGroup>
+                  <Label for="senDateTime" className="form-label required">Send Date/Time</Label>
+                  <Input type="select" name="select" id="senDateTime" invalid>
+                      <option>---Please select---</option>
+                      <option>Send immediately</option>
+                      <option>Send at</option>
+                  </Input>
+                  <FormFeedback>This field is required</FormFeedback>
+                </FormGroup>
                 <div>
                   <div className="calendar">
                     <input type="text" name="dateTime" id="dateTime" className="form-control date-time" disabled />
@@ -170,7 +152,7 @@ class NewNotification extends Component {
               
               <Button className="btn-submit">Submit</Button>
 
-            </AvForm>
+            </Form>
 
                  
         </div>

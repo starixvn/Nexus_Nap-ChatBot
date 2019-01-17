@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
-import { AvForm, AvField } from 'availity-reactstrap-validation';
+import { Form, FormGroup, Label, Input, FormFeedback, FormText } from 'reactstrap';
 
 class NewNotificationTemplate extends Component {
   constructor(props) {
@@ -21,47 +21,37 @@ class NewNotificationTemplate extends Component {
           <Modal isOpen={isModal} toggle={this.toggleHandler} className="new-notification-template">
           <ModalHeader toggle={this.toggleHandler}>Create New Notification Template</ModalHeader>
           <ModalBody>
-            <AvForm className="form-create">
+            <Form className="form-create">
                 <div className="two-cols">
-                    <AvField 
-                        type="select"
-                        name="recipientType"
-                        label="Notification Type" 
-                        labelClass="form-label required"
-                        inputClass="notification-type"
-                        errorMessage="This field is required"
-                        required>
-
-                        <option>--- Please select ---</option>
-                        <option>UM</option>
-                    </AvField>
-
-                    <AvField 
-                        name="name" 
-                        label="Template Name" 
-                        labelClass="form-label required"
-                        errorMessage="This field is required"
-                        required />
+                    <FormGroup>
+                        <Label for="recipientType" className="form-label required">Notification Type</Label>
+                        <Input type="select" name="select" id="recipientType" invalid>
+                            <option>--- Please select ---</option>
+                            <option>UM</option>
+                        </Input>
+                        <FormFeedback>This field is required</FormFeedback>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="name" className="form-label required">Template Name</Label>
+                        <Input invalid id="name" />
+                        <FormFeedback>This field is required</FormFeedback>
+                    </FormGroup>
                 </div>
 
-                <AvField 
-                    name="name" 
-                    label="Title" 
-                    labelClass="form-label required"
-                    errorMessage="This field is required"
-                    required />
+                <FormGroup>
+                    <Label for="Title" className="form-label required">Title</Label>
+                    <Input invalid id="Title" />
+                    <FormFeedback>This field is required</FormFeedback>
+                </FormGroup>
 
-                <AvField 
-                    type="textarea"
-                    name="content"
-                    label="Content" 
-                    labelClass="form-label content required"
-                    inputClass="content"
-                    errorMessage="This field is required"
-                    required></AvField>
+                <FormGroup>
+                    <Label for="content" className="form-label required">Content</Label>
+                    <Input type="textarea" invalid  className="content" id="content" />
+                    <FormFeedback>This field is required</FormFeedback>
+                </FormGroup>
 
                 <Button className="btn-submit">Submit</Button>
-            </AvForm>
+            </Form>
           </ModalBody>
         </Modal>
       </div>

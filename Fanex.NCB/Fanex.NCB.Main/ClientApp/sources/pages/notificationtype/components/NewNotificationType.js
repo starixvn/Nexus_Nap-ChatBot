@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
-import { AvForm, AvField } from 'availity-reactstrap-validation';
+import { Form, FormGroup, Label, Input, FormFeedback } from 'reactstrap';
+
 import { bindActionCreators } from 'redux';
 import {ActionCreators} from '../actions/index';
 
@@ -47,57 +48,45 @@ class NewNotificationType extends Component {
                                : null
             }
             
-            <AvForm className="form-create">
-                <AvField 
-                    name="name" 
-                    label="Notification Type Name" 
-                    labelClass="form-label required"
-                    value={currentNotificationTypeName}
-                    errorMessage="This field is required"
-                    required />
+            <Form className="form-create">
+                <FormGroup>
+                    <Label for="name" className="form-label required">Notification Type Name</Label>
+                    <Input invalid value={currentNotificationTypeName} id="name" />
+                    <FormFeedback>This field is required</FormFeedback>
+                </FormGroup>
+                <FormGroup>
+                    <Label for="recipientType" className="form-label required">Recipient Type</Label>
+                    <Input type="select" name="select" id="recipientType" invalid>
+                        <option>---Please select---</option>
+                        {
+                            
+                            this.props.notificationTypeSettingsData.recipientTypes 
+                            ? this.props.notificationTypeSettingsData.recipientTypes.map((item, index) => 
+                                <option key={index} value={item.recipientTypeId} >{item.recipientTypeName}</option>
+                            )
+                            : null
+                        }
+                    </Input>
+                    <FormFeedback>This field is required</FormFeedback>
+                </FormGroup>
 
-                <AvField 
-                    type="select"
-                    name="recipientType"
-                    label="Recipient Type" 
-                    labelClass="form-label required"
-                    inputClass="notification-type"
-                    value={currentRecipientTypeId}
-                    errorMessage="This field is required"
-                    required>
-
-                    <option>---Please select---</option>
-                    {
-                        
-                        this.props.notificationTypeSettingsData.recipientTypes 
-                        ? this.props.notificationTypeSettingsData.recipientTypes.map((item, index) => 
-                            <option key={index} value={item.recipientTypeId} >{item.recipientTypeName}</option>
-                        )
-                        : null
-                    }
-                    
-                </AvField>
-
-                <AvField 
-                    type="select" 
-                    name="aystem"
-                    labelClass="form-label required"
-                    label="System" 
-                    value={currentSystemId}
-                    errorMessage="This field is required"
-                    required>
-                    <option>---Please select---</option>
-                    {
-                        
-                        this.props.notificationTypeSettingsData.notificationSystems 
-                        ? this.props.notificationTypeSettingsData.notificationSystems.map((item, index) => 
-                            <option key={index} value={item.systemId}>{item.systemName}</option>
-                        )
-                        : null
-                    }                    
-                </AvField>
+                <FormGroup>
+                    <Label for="system" className="form-label required">System</Label>
+                    <Input type="select" name="select" id="system" invalid>
+                        <option>---Please select---</option>
+                        {
+                            
+                            this.props.notificationTypeSettingsData.notificationSystems 
+                            ? this.props.notificationTypeSettingsData.notificationSystems.map((item, index) => 
+                                <option key={index} value={item.systemId}>{item.systemName}</option>
+                            )
+                            : null
+                        }   
+                    </Input>
+                    <FormFeedback>This field is required</FormFeedback>
+                </FormGroup>
                 <button className="btn-submit" onClick={this.submitHandler}>Submit</button>
-            </AvForm>
+            </Form>
           </ModalBody>
         </Modal>        
     )

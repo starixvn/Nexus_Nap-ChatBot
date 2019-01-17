@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
-import { AvForm, AvField } from 'availity-reactstrap-validation';
+import { Form, FormGroup, Label, Input, FormFeedback } from 'reactstrap';
 
 class EditMappingStatus extends Component {
   constructor(props) {
@@ -21,7 +21,7 @@ class EditMappingStatus extends Component {
           <Modal isOpen={isModal} toggle={this.toggleHandler} className="edit-mapping-status">
           <ModalHeader toggle={this.toggleHandler}>Edit Mapping Status</ModalHeader>
           <ModalBody>
-            <AvForm className="form-create">
+            <Form className="form-create">
                 <div className="form-group">
                     <label className="form-label">Bot Name</label>
                     <div>1on1Notify</div>
@@ -32,27 +32,23 @@ class EditMappingStatus extends Component {
                     <div>OneOnOne & ABCChet</div>
                 </div>
 
-                <AvField 
-                    type="select"
-                    name="recipientType"
-                    label="Recipient Type" 
-                    labelClass="form-label required"
-                    errorMessage="This field is required"
-                    required>
+                <FormGroup>
+                    <Label for="recipientType" className="form-label required">Recipient Type</Label>
+                    <Input type="select" name="select" id="recipientType" invalid>
+                        <option>---Please select---</option>
+                        <option>Licensee</option>
+                    </Input>
+                    <FormFeedback>This field is required</FormFeedback>
+                </FormGroup>
 
-                    <option>Licensee</option>
-                </AvField>
-
-                <AvField 
-                    type="select"
-                    name="recipient"
-                    label="Recipient"
-                    labelClass="form-label required"
-                    errorMessage="This field is required"
-                    required>
-
-                    <option>CSDBET</option>
-                </AvField>
+                <FormGroup>
+                    <Label for="recipient" className="form-label required">Recipient</Label>
+                    <Input type="select" name="select" id="recipient" invalid>
+                        <option>---Please select---</option>
+                        <option>CSDBET</option>
+                    </Input>
+                    <FormFeedback>This field is required</FormFeedback>
+                </FormGroup>
 
                 <div className="form-group">
                     <label htmlFor="mappingStatus" className="form-label">Mapping Status</label>
@@ -61,16 +57,14 @@ class EditMappingStatus extends Component {
                     </div>
                 </div>
 
-                <AvField 
-                    type="textarea"
-                    name="remark"
-                    label="Remark" 
-                    labelClass="form-label"
-                    inputClass="remark"
-                    placeholder="Input the remark here..."></AvField>
+                <FormGroup>
+                    <Label for="remark" className="form-label required">Remark</Label>
+                    <Input type="textarea" invalid className="remark" id="remark" />
+                    <FormFeedback>This field is required</FormFeedback>
+                </FormGroup>
 
                 <Button className="btn-submit">Submit</Button>
-            </AvForm>
+            </Form>
           </ModalBody>
         </Modal>
       </div>
