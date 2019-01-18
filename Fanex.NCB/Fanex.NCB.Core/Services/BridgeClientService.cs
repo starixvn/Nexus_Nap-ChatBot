@@ -22,27 +22,32 @@ namespace Fanex.NCB.Core.Services
 
         public async Task<HttpResponseMessage> GetJsonAsync(string url)
         {
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("x-authKey", _options.Secret);
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            var response = await client.GetAsync(url);
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("x-authKey", _options.Secret);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var response = await client.GetAsync(url);
 
-            response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode();
 
-            return response;
+                return response;
+            }
         }
 
         public async Task<HttpResponseMessage> PostJsonAsync<T>(string url, T value)
         {
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("x-authKey", _options.Secret);
-            var content = new StringContent(JsonConvert.SerializeObject(value),
-                Encoding.UTF8, "application/json");
-            var response = await client.PostAsync(url, content);
 
-            response.EnsureSuccessStatusCode();
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("x-authKey", _options.Secret);
+                var content = new StringContent(JsonConvert.SerializeObject(value),
+                    Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(url, content);
 
-            return response;
+                response.EnsureSuccessStatusCode();
+
+                return response;
+            }
         }
     }
 }
