@@ -266,7 +266,7 @@ body {
   background-color: rgba(0, 0, 0, 0.2); }
 
 .modal-dialog {
-  margin-top: 250px; }
+  margin-top: 105px; }
 
 .modal-content {
   border-color: #CED4DA;
@@ -462,7 +462,8 @@ tbody .col-content [class^="icon"] {
     width: 118px; }
 
 .error-report {
-  width: 980px; }
+  width: 980px;
+  max-width: 980px; }
   .error-report .msg-error {
     margin-top: 16px; }
   .error-report .icon-copy {

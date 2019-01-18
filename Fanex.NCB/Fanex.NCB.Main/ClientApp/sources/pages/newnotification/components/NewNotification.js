@@ -156,13 +156,15 @@ class NewNotification extends Component {
 
                  
         </div>
-        <ConfirmPopup 
-            showHideModalHandler={this.toggle}
-            isShowPopup={isShowPopup}
+        {
+          isShowPopup &&
+          <ConfirmPopup 
+            showHideModalHandler={this.toggle}            
             title={titlePopup}
             content={contentPopup}
             warningIcon={true}
             ></ConfirmPopup>
+        }
       </div>
     )
   }

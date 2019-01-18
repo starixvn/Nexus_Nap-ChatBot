@@ -10,10 +10,8 @@ import NewNotificationType from './NewNotificationType';
 import "../../../fonts/style.css";
 import './NotificationType.scss';
 
-
 export class NotificationType extends Component {
   constructor(props) {
-    console.log("constructor");
     super(props);
     
     this.state = {
@@ -32,9 +30,7 @@ export class NotificationType extends Component {
         activeRowIndex: this.state.isShowPopup ? -1 : this.state.activeRowIndex
       },
       function(){
-        if(!this.state.isShowPopup){
-          this.props.getNotificationTypes();
-        }
+        !this.state.isShowPopup && this.props.getNotificationTypes();        
       }
     );
   }
@@ -58,6 +54,7 @@ export class NotificationType extends Component {
   }
 
   confirmToggle = (rowIndex, deletingNotificationTypeName) => {
+    console.log("toggle");
     this.setState({
       isShowConfirm: !this.state.isShowConfirm,
       activeRowIndex: rowIndex,
@@ -66,15 +63,13 @@ export class NotificationType extends Component {
   }  
 
   componentWillMount(){
-    console.log("component will mount");
     this.props.getNotificationTypes();
   }
 
   render() {    
-    console.log("render");
     return (
       <div>
-        <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Type"></NCBBreadcrum>
+        <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Type 1"></NCBBreadcrum>
         <button className="btn-new" onClick={() => this.openPopup()}>Create New</button>  
         <table className="tbl">
           <thead>
@@ -88,8 +83,8 @@ export class NotificationType extends Component {
           </thead>
           <tbody>
             {
-                this.props.notificationTypeListData.length
-                ?  this.props.notificationTypeListData.map((item, index) => 
+                this.props.notificationTypeListData.length &&
+                  this.props.notificationTypeListData.map((item, index) => 
                     <tr key={index} className={index == this.state.activeRowIndex ? 'active' : ''}>
                     <td className="text-center">{index + 1}</td>
                     <td>{item.notificationTypeName}</td>
@@ -102,26 +97,29 @@ export class NotificationType extends Component {
                         <UncontrolledTooltip placement="top" target={"delete-" + index}>Delete</UncontrolledTooltip>
                     </td>
                     </tr>                
-                )
-                : null
+                  )                
             }            
           </tbody>
         </table>
        
-        <NewNotificationType
-          isShowPopup={this.state.isShowPopup}
-          popupToggle={this.popupToggle}
-          editingItem ={this.state.editingItem} 
-        />
+        {
+          this.state.isShowPopup && 
+            <NewNotificationType
+              isShowPopup={this.state.isShowPopup}
+              popupToggle={this.popupToggle}
+              editingItem ={this.state.editingItem} />
+        }
 
-        <ConfirmPopup 
-            confirmHandler={this.confirmHandler}
-            confirmToggle={this.confirmToggle}
-            isShowPopup={this.state.isShowConfirm}
-            title={"Delete Notification Type"}
-            content={'<p>Are you sure you want to delete <br /> <strong>"' + this.state.deletingNotificationTypeName + '"</strong></p>' }
-            warningIcon={false}
-        ></ConfirmPopup>
+        {
+          this.state.isShowConfirm &&
+            <ConfirmPopup 
+              confirmHandler={this.confirmHandler}
+              confirmToggle={this.confirmToggle}
+              isShowPopup={this.state.isShowConfirm}
+              title={"Delete Notification Type"}
+              content={'<p>Are you sure you want to delete <br /> <strong>"' + this.state.deletingNotificationTypeName + '"</strong></p>' }
+              warningIcon={false} ></ConfirmPopup>            
+        }
       </div>
     );
   }

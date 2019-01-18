@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 export default class ConfirmPopup extends Component {
@@ -7,14 +6,13 @@ export default class ConfirmPopup extends Component {
     super(props);
   }  
 
-  render() {
-    const {isShowPopup, title, content} =  this.props;
+  render() {    
     const warningIcon = this.props.warningIcon ? <div className="icon-warning"></div> : null
 
     return (
       <div>
-        <Modal isOpen={isShowPopup} toggle={this.props.confirmToggle} wrapClassName="popup-confirm">
-          <ModalHeader toggle={this.props.confirmToggle}>{title}</ModalHeader>
+        <Modal isOpen={true} toggle={this.props.confirmToggle} wrapClassName="popup-confirm">
+          <ModalHeader toggle={this.props.confirmToggle}>{this.props.title}</ModalHeader>
           <ModalBody>
             {warningIcon}
             <div className="info" contentEditable='true' dangerouslySetInnerHTML={{ __html: this.props.content }}></div>
@@ -28,5 +26,3 @@ export default class ConfirmPopup extends Component {
     )
   }
 }
-
-//export default connect()(ConfirmPopup);
