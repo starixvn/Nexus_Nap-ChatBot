@@ -7,25 +7,32 @@ import {Table, Row, Cell} from '../../common/fixed-table-header/index';
 import PropTypes from 'prop-types';
 
 const propTypes = {
-    onPaging: PropTypes.func.isRequired,
-    getData: PropTypes.func.isRequired,
-    openEditPopup: PropTypes.func.isRequired,
-    openDeletePopup: PropTypes.func.isRequired,
-    pageIndex: PropTypes.number.isRequired,
-    pageSize: PropTypes.number.isRequired
+    
 }
 
 export class DataGrid extends Component {
   constructor(props) {
     super(props);
-    
-    this.state = {
-      activeRowIndex: -1      
-    };    
   }
 
   onPaging = (pageIndex, pageSize) => {
-    this.props.getData(pageIndex, pageSize); 
+    let params = {
+        pageIndex: pageIndex, 
+        pageSize: pageSize
+    }
+
+    this.props.setGridParams(params); 
+    this.props.getNotificationTypes(pageIndex, pageSize);     
+  }
+
+  openEditPopup = (item, index) => {
+    this.props.updateActiveRowIndex(index);
+    this.props.openEditPopup(item);
+  }
+
+  openDeletePopup = (index, notificationTypeName) => {
+    this.props.updateActiveRowIndex(index);
+    this.props.openDeletePopup(notificationTypeName) ;
   }
 
   _buildHeader() {
@@ -38,20 +45,20 @@ export class DataGrid extends Component {
     </Row>);
   }
 
-  _buildBody(data) {
+  _buildBody(data, activeRowIndex) {
     let rows = []
     data.map((item, index) => 
     {
-      rows.push(<Row key={`body${index}`} className={index == this.state.activeRowIndex ? 'active' : ''}>
+      rows.push(<Row key={`body${index}`} className={index == activeRowIndex ? 'active' : ''}>
           <Cell className="text-center">{index + 1}</Cell>
           <Cell>{item.notificationTypeName}</Cell>
           <Cell>{item.recipientTypeName}</Cell>
           <Cell>{item.systemName}</Cell>
           <Cell className="text-center col-action">
             <div>
-                <span className="icon-edit" id={"edit-" + index} onClick={() => this.props.openEditPopup(item, index)}></span>                    
+                <span className="icon-edit" id={"edit-" + index} onClick={() => this.openEditPopup(item, index)}></span>                    
                 <UncontrolledTooltip placement="top" target={"edit-" + index}>Edit</UncontrolledTooltip>
-                <span className="icon-delete" id={"delete-" + index} onClick={() => this.props.openDeletePopup(index, item.notificationTypeName)}></span>
+                <span className="icon-delete" id={"delete-" + index} onClick={() => this.openDeletePopup(index, item.notificationTypeName)}></span>
                 <UncontrolledTooltip placement="top" target={"delete-" + index}>Delete</UncontrolledTooltip>
             </div>
           </Cell>
@@ -61,29 +68,37 @@ export class DataGrid extends Component {
     return rows;
   }
 
-  render() {       
+  render() {      
+    if(!this.props.notificationTypeListData || !this.props.notificationTypeListData.data){
+        return null;
+    }
+
+    const data = this.props.notificationTypeListData.data;
+    const activeRowIndex= this.props.activeRowIndex;
+    const count = this.props.notificationTypeListData.count;
+    const pageIndex = this.props.gridParams.pageIndex;
+    const pageSize = this.props.gridParams.pageSize;
+
     const pagingOption = {
-        PageIndex: this.props.pageIndex,
-        PageSize: this.props.PageSize,
-        TotalItem: this.props.notificationTypeListData.data ? this.props.notificationTypeListData.count : 0,
+        PageIndex: pageIndex,
+        PageSize: pageSize,
+        TotalItem: count,
         PageList: [10, 20, 50, 100, 500]
     };
 
     return (       
-            this.props.notificationTypeListData.data 
-            ?   <div className="table-container-div">
-                    <Table
-                            width={900}
-                            autoWidth={false}
-                            header={this._buildHeader()}
-                            body={this._buildBody(this.props.notificationTypeListData.data)}
-                            isPaging={true}
-                            pageOption={pagingOption}
-                            onPaging={this.props.onPaging}
-                            containerPadding={0}
-                        />
-                </div>
-            : null         
+        <div className="table-container-div">
+            <Table
+                    width={900}
+                    autoWidth={false}
+                    header={this._buildHeader()}
+                    body={this._buildBody(data, activeRowIndex)}
+                    isPaging={true}
+                    pageOption={pagingOption}
+                    onPaging={this.onPaging}
+                    containerPadding={0}
+                />
+        </div>     
     );
   }
 }
@@ -95,8 +110,8 @@ function mapDispatchToProps(dispatch){
 }
 
 function mapStateToProps(state){
-    const {notificationTypeListData, deleteNotificationTypeData} = state;
-    return Object.assign({}, {notificationTypeListData, deleteNotificationTypeData});    
+    const {notificationTypeListData, deleteNotificationTypeData, gridParams, activeRowIndex} = state;
+    return Object.assign({}, {notificationTypeListData, deleteNotificationTypeData, gridParams, activeRowIndex});    
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataGrid);

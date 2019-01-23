@@ -6,15 +6,15 @@ import { bindActionCreators } from 'redux';
 import {ActionCreators} from '../actions/index';
 import PropTypes from 'prop-types';
 
-class NewNotificationType extends Component {
-  constructor() {
+class NewEditPopup extends Component {
+  constructor(props) {
     super(props);   
     
     this.state = {        
         params: {
-            notificationTypeName: props.editingItem ? props.editingItem.notificationTypeName : '',
-            recipientTypeId: props.editingItem ? this.props.editingItem.recipientTypeId : -1,
-            systemId: props.editingItem ? this.props.editingItem.systemId : -1
+            notificationTypeName: props.newEditPopupData.editingItem.notificationTypeName,
+            recipientTypeId: props.newEditPopupData.editingItem.recipientTypeId,
+            systemId: props.newEditPopupData.editingItem.systemId
         },        
         isSummited: false
     }    
@@ -25,9 +25,7 @@ class NewNotificationType extends Component {
 
       this.setState({isSummited: true});      
       if(this.checkValidParams()){
-        this.props.editingItem 
-            ? this.props.editNewNotificationType(this.state.params).then(this.closePopup)
-            : this.props.addNewNotificationType(this.state.params).then(this.closePopup);       
+        this.props.updateNotificationType(this.state.params, this.props.newEditPopupData.isNew).then(this.closePopup);        
       }
   }  
 
@@ -45,8 +43,7 @@ class NewNotificationType extends Component {
 
   closePopup = () => {
     setTimeout(function(){
-        this.props.popupToggle();
-        this.props.refreshAddNotificationType();
+        this.props.closeNewEditPopupHandler();
     }.bind(this),
     1000);
   }
@@ -56,30 +53,34 @@ class NewNotificationType extends Component {
   }
 
   isValidNotificationTypeName = () => {
-    return this.state.params.notificationTypeName != '';
+    return this.state.params.notificationTypeName && this.state.params.notificationTypeName != '';
   }
 
   isValidRecipientType = () => {
-    return this.state.params.recipientTypeId != -1;
+    return this.state.params.recipientTypeId && this.state.params.recipientTypeId != -1;
   }
 
   isValidSystem = () => {
-    return this.state.params.systemId != -1;
+    return this.state.params.systemId && this.state.params.systemId != -1;
   }
   
   render() {   
     console.log("child rerender");
-    let popupTitle = this.props.editingItem ? "Edit Notification Type" : "Create New Notification Type";
+
+    if(!this.props.newEditPopupData.isShowed){
+        return null;
+    }
+
+    let popupTitle = this.props.newEditPopupData.popupTitle;
+    let successMsg = this.props.newEditPopupData.successMsg;
     let showSucessMsg = this.props.addNotificationTypeData && this.props.addNotificationTypeData.addedresult;    
 
     return (
-        <Modal isOpen={true} toggle={this.props.popupToggle} wrapClassName="new-notification-type">
-          <ModalHeader toggle={this.props.popupToggle}>{popupTitle}</ModalHeader>
+        <Modal isOpen={true} toggle={this.props.closeNewEditPopupHandler} wrapClassName="new-notification-type">
+          <ModalHeader toggle={this.props.closeNewEditPopupHandler}>{popupTitle}</ModalHeader>
           <ModalBody>
             {
-                showSucessMsg && (this.props.editingItem 
-                                    ? <div className="msg-success ">Edit Notification Type Successfully</div> 
-                                    : <div className="msg-success ">Create New Notification Type Successfully</div>)                                
+                showSucessMsg && <div className="msg-success ">{successMsg}</div> 
             }
             
             <Form className="form-create">
@@ -130,9 +131,8 @@ class NewNotificationType extends Component {
   }
 }
 
-NewNotificationType.propTypes = {
-    popupToggle: PropTypes.func.isRequired,
-    editingItem: PropTypes.object
+NewEditPopup.propTypes = {
+    closeNewEditPopupHandler: PropTypes.func.isRequired
 };
 
 function mapDispatchToProps(dispatch){
@@ -140,8 +140,8 @@ function mapDispatchToProps(dispatch){
 }
 
 function mapStateToProps(state){
-    const {notificationTypeSettingsData, addNotificationTypeData} = state;
-    return Object.assign({}, {notificationTypeSettingsData, addNotificationTypeData});
+    const {notificationTypeSettingsData, addNotificationTypeData, newEditPopupData} = state;
+    return Object.assign({}, {notificationTypeSettingsData, addNotificationTypeData, newEditPopupData});
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewNotificationType);
+export default connect(mapStateToProps, mapDispatchToProps)(NewEditPopup);

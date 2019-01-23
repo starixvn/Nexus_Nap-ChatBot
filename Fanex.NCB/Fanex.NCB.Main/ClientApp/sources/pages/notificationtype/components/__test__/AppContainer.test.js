@@ -1,13 +1,13 @@
 import React from 'react';
-import {NotificationType} from '../NotificationType';
+import {AppContainer} from '../AppContainer';
 import renderer from 'react-test-renderer';
 import ShallowRenderer from 'react-test-renderer/shallow';
 
-describe('NotificationType', () => {
+describe('AppContainer', () => {
     describe('constructor', () => {
         it('init state', () => {
             const props = {};
-            const notificationType = new NotificationType(props);
+            const notificationType = new AppContainer(props);
 
             expect(notificationType.state.isShowPopup).toBe(false);
             expect(notificationType.state.editingItem).toBe(null);
@@ -23,7 +23,7 @@ describe('NotificationType', () => {
                 notificationTypeListData: {},
                 getNotificationTypes: jest.fn()
             };
-            const notificationType = renderer.create(<NotificationType {...props} />);
+            const notificationType = renderer.create(<AppContainer {...props} />);
             const result = notificationType.toJSON();
 
             expect(result).toMatchSnapshot();
@@ -35,7 +35,7 @@ describe('NotificationType', () => {
                 notificationTypeListData: {},
                 getNotificationTypes: jest.fn()
             };
-            const notificationType = renderer.create(<NotificationType {...props} />);
+            const notificationType = renderer.create(<AppContainer {...props} />);
             const result = notificationType.toJSON();
 
             expect(result).toMatchSnapshot();
@@ -47,7 +47,7 @@ describe('NotificationType', () => {
                 getNotificationTypes: jest.fn(),
                 isShowPopup: true
             };
-            const notificationType = (new ShallowRenderer()).render(<NotificationType {...props} isShowPopup={true} />);            
+            const notificationType = (new ShallowRenderer()).render(<AppContainer {...props} isShowPopup={true} />);            
             
             expect(notificationType).toMatchSnapshot();
         })
