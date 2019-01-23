@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { UncontrolledTooltip } from 'reactstrap';
-import NCBBreadcrum from '../../common/breadcrumbs';
+import {NCBBreadcrum} from '../../common/breadcrumbs';
 import ConfirmPopup from "../../common/ConfirmPopup";
 import { bindActionCreators } from 'redux';
 import {ActionCreators} from '../actions/index';
@@ -12,13 +12,6 @@ import "../../../fonts/style.css";
 import './NotificationType.scss';
 import "../../common/fixed-table-header/style.css";
 
-const defaultPagingOption = {
-    PageIndex: 1,
-    PageSize: 10,
-    TotalItem: 20,
-    PageList: [10, 20, 50, 100, 500]
-};
-
 export class NotificationType extends Component {
   constructor(props) {
     super(props);
@@ -28,7 +21,9 @@ export class NotificationType extends Component {
       editingItem: null,
       isShowConfirm: false,
       activeRowIndex: -1,
-      deletingNotificationTypeName: ''
+      deletingNotificationTypeName: '',
+      pageIndex: 1,
+      PageSize: 10
     };    
   }
 
@@ -39,7 +34,7 @@ export class NotificationType extends Component {
         activeRowIndex: this.state.isShowPopup ? -1 : this.state.activeRowIndex
       },
       function(){
-        !this.state.isShowPopup && this.props.getNotificationTypes();        
+        !this.state.isShowPopup && this.getNotificationTypes();        
       }
     );
   }
@@ -57,13 +52,12 @@ export class NotificationType extends Component {
       var id = 1;
       this.props.deleteNotificationType(id).then(() => {
         this.confirmToggle();
-        this.props.getNotificationTypes();
+        this.getNotificationTypes();
       });
     }
   }
 
   confirmToggle = (rowIndex, deletingNotificationTypeName) => {
-    console.log("toggle");
     this.setState({
       isShowConfirm: !this.state.isShowConfirm,
       activeRowIndex: rowIndex,
@@ -72,7 +66,19 @@ export class NotificationType extends Component {
   }  
 
   componentWillMount(){
-    this.props.getNotificationTypes();
+    this.getNotificationTypes();
+  }
+
+  getNotificationTypes = () => {    
+    this.props.getNotificationTypes(this.state.pageIndex, this.state.PageSize);
+  }
+
+  onPaging = (pageIndex, pageSize) => {
+    this.setState({
+      pageIndex: pageIndex, 
+      pageSize: pageSize
+    },
+    this.getNotificationTypes);    
   }
 
   _buildHeader() {
@@ -108,22 +114,34 @@ export class NotificationType extends Component {
     return rows;
   }
 
-  render() {    
+  render() {   
+    
+    const pagingOption = {
+        PageIndex: this.state.pageIndex,
+        PageSize: this.state.PageSize,
+        TotalItem: this.props.notificationTypeListData.data ? this.props.notificationTypeListData.count : 0,
+        PageList: [10, 20, 50, 100, 500]
+    };
+
+    console.log("parent rerender");
+    console.log(this.state);
 
     return (
+      
       <div>
         <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Type 1"></NCBBreadcrum>
         <button className="btn-new" onClick={() => this.openPopup()}>Create New</button>          
         {
-          this.props.notificationTypeListData.length &&
+          this.props.notificationTypeListData.data &&
             <div className="table-container-div">
               <Table
                       width={900}
                       autoWidth={false}
                       header={this._buildHeader()}
-                      body={this._buildBody(this.props.notificationTypeListData)}
+                      body={this._buildBody(this.props.notificationTypeListData.data)}
                       isPaging={true}
-                      pageOption={defaultPagingOption}
+                      pageOption={pagingOption}
+                      onPaging={this.onPaging}
                       containerPadding={0}
                   />
             </div>
@@ -131,8 +149,7 @@ export class NotificationType extends Component {
         
         {
           this.state.isShowPopup && 
-            <NewNotificationType
-              isShowPopup={this.state.isShowPopup}
+            <NewNotificationType 
               popupToggle={this.popupToggle}
               editingItem ={this.state.editingItem} />
         }
@@ -159,6 +176,7 @@ function mapDispatchToProps(dispatch){
 function mapStateToProps(state){
     const {notificationTypeListData, deleteNotificationTypeData} = state;
     return Object.assign({}, {notificationTypeListData, deleteNotificationTypeData});
+    
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotificationType);

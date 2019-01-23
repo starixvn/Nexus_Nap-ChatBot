@@ -4,41 +4,44 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { Form, FormGroup, Label, Input, FormFeedback } from 'reactstrap';
 import { bindActionCreators } from 'redux';
 import {ActionCreators} from '../actions/index';
+import PropTypes from 'prop-types';
 
 class NewNotificationType extends Component {
-  constructor(props) {
+  constructor() {
     super(props);   
     
-    this.state = {
-        params: {},
-        validTypeName: true,
-        validRecipientType: true,
-        validSystem: true
-    }
+    this.state = {        
+        params: {
+            notificationTypeName: props.editingItem ? props.editingItem.notificationTypeName : '',
+            recipientTypeId: props.editingItem ? this.props.editingItem.recipientTypeId : -1,
+            systemId: props.editingItem ? this.props.editingItem.systemId : -1
+        },        
+        isSummited: false
+    }    
   }
 
   submitHandler = (e) => {     
       e.preventDefault();
-      
+
+      this.setState({isSummited: true});      
       if(this.checkValidParams()){
         this.props.editingItem 
             ? this.props.editNewNotificationType(this.state.params).then(this.closePopup)
             : this.props.addNewNotificationType(this.state.params).then(this.closePopup);       
       }
-  }
+  }  
 
-  checkValidParams = () => {
-      return this.state.validTypeName && this.state.validRecipientType && this.state.validSystem;
-  }
-
-  onFieldChanged = (e, invalidStateName, invalidValue) => {
+  onFieldChanged = (e, fieldName) => {
     var params = {...this.state.params};
-    params[e.target.name] = e.target.value;
+    params[fieldName] = e.target.value;
     this.setState({
-        params: params,
-        [invalidStateName]: e.target.value.trim() != invalidValue
+        params: params
     });
-  }
+  }  
+
+  componentWillMount(){
+    this.props.getSettings();
+  }  
 
   closePopup = () => {
     setTimeout(function(){
@@ -48,16 +51,26 @@ class NewNotificationType extends Component {
     1000);
   }
 
-  componentWillMount(){
-    this.props.getSettings();
-  }  
+  checkValidParams = () => {
+    return this.isValidNotificationTypeName() && this.isValidRecipientType() && this.isValidSystem();
+  }
+
+  isValidNotificationTypeName = () => {
+    return this.state.params.notificationTypeName != '';
+  }
+
+  isValidRecipientType = () => {
+    return this.state.params.recipientTypeId != -1;
+  }
+
+  isValidSystem = () => {
+    return this.state.params.systemId != -1;
+  }
   
   render() {   
+    console.log("child rerender");
     let popupTitle = this.props.editingItem ? "Edit Notification Type" : "Create New Notification Type";
-    let showSucessMsg = this.props.addNotificationTypeData && this.props.addNotificationTypeData.addedresult;
-    let currentNotificationTypeName = this.props.editingItem ? this.props.editingItem.notificationTypeName : '';
-    let currentRecipientTypeId = this.props.editingItem ? this.props.editingItem.recipientTypeId : -1;
-    let currentSystemId = this.props.editingItem ? this.props.editingItem.systemId : -1;
+    let showSucessMsg = this.props.addNotificationTypeData && this.props.addNotificationTypeData.addedresult;    
 
     return (
         <Modal isOpen={true} toggle={this.props.popupToggle} wrapClassName="new-notification-type">
@@ -71,18 +84,18 @@ class NewNotificationType extends Component {
             
             <Form className="form-create">
                 <FormGroup>
-                    <Label for="name" className="form-label required">Notification Type Name</Label>
-                    <Input invalid={!this.state.validTypeName} name="notificationTypeName" defaultValue={currentNotificationTypeName} id="name" 
-                        onChange={(e) => this.onFieldChanged(e, "validTypeName", "")}/>
-                    {
-                        !this.state.validTypeName && <FormFeedback>This field is required</FormFeedback>
-                    }                    
+                    <Label className="form-label required">Notification Type Name</Label>
+                    <Input value={this.state.params.notificationTypeName} 
+                        onChange={(e) => this.onFieldChanged(e, "notificationTypeName")}
+                        invalid={this.state.isSummited && !this.isValidNotificationTypeName()} />
+                    { this.state.isSummited && !this.isValidNotificationTypeName() && <FormFeedback>This field is required</FormFeedback> }                    
                 </FormGroup>
                 <FormGroup>
-                    <Label for="recipientType" className="form-label required">Recipient Type</Label>
-                    <Input type="select" name="recipientType" id="recipientType" defaultValue={currentRecipientTypeId} 
-                        invalid={!this.state.validRecipientType} 
-                        onChange={(e) => this.onFieldChanged(e, "validRecipientType", "-1")}>
+                    <Label className="form-label required">Recipient Type</Label>
+                    <Input type="select"
+                        value={this.state.params.recipientTypeId}
+                        onChange={(e) => this.onFieldChanged(e, "recipientTypeId")}
+                        invalid={this.state.isSummited && !this.isValidRecipientType()} >
                         <option value="-1">---Please select---</option>
                         {                            
                             this.props.notificationTypeSettingsData.recipientTypes &&
@@ -91,15 +104,14 @@ class NewNotificationType extends Component {
                                 )                            
                         }
                     </Input>
-                    {
-                        !this.state.validRecipientType && <FormFeedback>This field is required</FormFeedback>
-                    }                    
+                    { this.state.isSummited && !this.isValidRecipientType() &&  <FormFeedback>This field is required</FormFeedback> }                    
                 </FormGroup>
-
                 <FormGroup>
-                    <Label for="system" className="form-label required">System</Label>
-                    <Input type="select" name="system" id="system" defaultValue={currentSystemId} invalid={!this.state.validSystem}
-                        onChange={(e) => this.onFieldChanged(e, "validSystem", "-1")}>
+                    <Label className="form-label required">System</Label>
+                    <Input type="select"
+                        value={this.state.params.systemId}
+                        onChange={(e) => this.onFieldChanged(e, "systemId")}
+                        invalid={this.state.isSummited && !this.isValidSystem()}>
                         <option value="-1">---Please select---</option>
                         {                            
                             this.props.notificationTypeSettingsData.notificationSystems &&
@@ -108,9 +120,7 @@ class NewNotificationType extends Component {
                                 )                            
                         }   
                     </Input>
-                    {
-                        !this.validSystem && <FormFeedback>This field is required</FormFeedback>
-                    }                    
+                    { this.state.isSummited && !this.isValidSystem() &&  <FormFeedback>This field is required</FormFeedback>}                    
                 </FormGroup>
                 <button className="btn-submit" onClick={this.submitHandler}>Submit</button>
             </Form>
@@ -119,6 +129,11 @@ class NewNotificationType extends Component {
     )
   }
 }
+
+NewNotificationType.propTypes = {
+    popupToggle: PropTypes.func.isRequired,
+    editingItem: PropTypes.object
+};
 
 function mapDispatchToProps(dispatch){
     return bindActionCreators(ActionCreators, dispatch);

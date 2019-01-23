@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
 
-class NCBBreadcrum extends Component {
+export class NCBBreadcrum extends Component {
   constructor(props){
     super(props);   
   }  
@@ -18,5 +17,3 @@ class NCBBreadcrum extends Component {
     );    
   }
 } 
-
-export default connect()(NCBBreadcrum);

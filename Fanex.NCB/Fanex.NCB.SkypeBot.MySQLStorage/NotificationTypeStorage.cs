@@ -36,6 +36,78 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage
                     RecipientTypeName = "Licensee",
                     SystemId = 2,
                     SystemName = "Admin Site"
+                },
+                new NotificationTypeItem
+                {
+                    NotificationTypeId = 4,
+                    NotificationTypeName = "Type 4",
+                    RecipientTypeId = 4,
+                    RecipientTypeName = "Licensee",
+                    SystemId = 4,
+                    SystemName = "Admin Site"
+                },
+                new NotificationTypeItem
+                {
+                    NotificationTypeId = 5,
+                    NotificationTypeName = "Type 5",
+                    RecipientTypeId = 5,
+                    RecipientTypeName = "Licensee",
+                    SystemId = 5,
+                    SystemName = "Admin Site"
+                },
+                 new NotificationTypeItem
+                {
+                    NotificationTypeId = 6,
+                    NotificationTypeName = "Type 6",
+                    RecipientTypeId = 6,
+                    RecipientTypeName = "Licensee",
+                    SystemId = 6,
+                    SystemName = "Admin Site"
+                },
+                 new NotificationTypeItem
+                {
+                    NotificationTypeId = 7,
+                    NotificationTypeName = "Type 7",
+                    RecipientTypeId = 7,
+                    RecipientTypeName = "Licensee",
+                    SystemId = 7,
+                    SystemName = "Admin Site"
+                },
+                 new NotificationTypeItem
+                {
+                    NotificationTypeId = 8,
+                    NotificationTypeName = "Type 8",
+                    RecipientTypeId = 8,
+                    RecipientTypeName = "Licensee",
+                    SystemId = 8,
+                    SystemName = "Admin Site"
+                },
+                 new NotificationTypeItem
+                {
+                    NotificationTypeId = 9,
+                    NotificationTypeName = "Type 9",
+                    RecipientTypeId = 9,
+                    RecipientTypeName = "Licensee",
+                    SystemId = 9,
+                    SystemName = "Admin Site"
+                },
+                 new NotificationTypeItem
+                {
+                    NotificationTypeId = 10,
+                    NotificationTypeName = "Type 10",
+                    RecipientTypeId = 10,
+                    RecipientTypeName = "Licensee",
+                    SystemId = 10,
+                    SystemName = "Admin Site"
+                },
+                 new NotificationTypeItem
+                {
+                    NotificationTypeId = 11,
+                    NotificationTypeName = "Type 11",
+                    RecipientTypeId = 11,
+                    RecipientTypeName = "Licensee",
+                    SystemId = 11,
+                    SystemName = "Admin Site"
                 }
             };
         }

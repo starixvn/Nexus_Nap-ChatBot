@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Form, FormGroup, Label, Input, FormFeedback } from 'reactstrap';
 import { Button } from 'reactstrap';
 import ConfirmPopup from "../../common/ConfirmPopup";
-import NCBBreadcrum from '../../common/breadcrumbs';
+import {NCBBreadcrum} from '../../common/breadcrumbs';
 import "../../../fonts/style.css";
 import './NewNotification.scss';
 

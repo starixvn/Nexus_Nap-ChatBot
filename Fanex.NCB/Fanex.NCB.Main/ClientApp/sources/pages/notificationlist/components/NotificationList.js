@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import NCBBreadcrum from '../../common/breadcrumbs';
+import {NCBBreadcrum} from '../../common/breadcrumbs';
 import ErrorReport from './ErrorReport';
 
 import "../../../fonts/style.css";

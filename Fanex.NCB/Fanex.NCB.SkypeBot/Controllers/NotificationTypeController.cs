@@ -1,3 +1,4 @@
+using System.Linq;
 using Fanex.NCB.SkypeBot.Services.NotificationType;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,8 +22,12 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }    
 
         [HttpGet]
-        public IActionResult GetAll(){
-            var result = _notificationTypeService.GetAll();
+        public IActionResult GetAll(int pageIndex, int pageSize){
+            var data = _notificationTypeService.GetAll();
+            var result = new {
+                data = data.Skip((pageIndex  - 1)* pageSize).Take(pageSize).ToList(),
+                count = data.Count
+            };
 
             return Json(result);
         }

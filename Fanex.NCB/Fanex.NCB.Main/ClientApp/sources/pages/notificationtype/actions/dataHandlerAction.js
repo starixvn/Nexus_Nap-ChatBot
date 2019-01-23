@@ -2,11 +2,12 @@ import * as types from './types';
 import axios from 'axios';
 //import Site from '../../lib/site';
 
-export function getNotificationTypes(){
-    const url = '/NotificationType/GetAll';
+export function getNotificationTypes(pageIndex, pageSize){
+    const url = '/NotificationType/GetAll';    
+    var params = {pageIndex: pageIndex, pageSize: pageSize};
     
     return (dispatch) => {
-        axios.get(url).then(response => {
+        axios.get(url, {params: params}).then(response => {            
             dispatch(setNotificationTypes(response.data))
         });
     };

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import NCBBreadcrum from '../../common/breadcrumbs';
+import {NCBBreadcrum} from '../../common/breadcrumbs';
 import NewNotificationTemplate from './NewNotificationTemplate';
 import { Tooltip } from 'reactstrap';
 import "../../../fonts/style.css";
