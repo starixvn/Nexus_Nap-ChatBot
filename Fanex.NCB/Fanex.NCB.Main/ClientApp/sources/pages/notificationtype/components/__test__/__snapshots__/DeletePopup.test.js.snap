@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DeletePopup render when has data 1`] = `
+<ConfirmPopup
+  confirmHandler={[Function]}
+  confirmToggle={[MockFunction]}
+  content="<p>Are you sure you want to delete <br /> <strong>\\"some content\\"</strong></p>"
+  isShowPopup={true}
+  title="Delete Notification Type"
+  warningIcon={false}
+/>
+`;

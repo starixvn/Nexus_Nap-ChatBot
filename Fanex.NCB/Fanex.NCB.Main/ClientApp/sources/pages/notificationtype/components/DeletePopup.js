@@ -5,7 +5,7 @@ import {ActionCreators} from '../actions/index';
 import PropTypes from 'prop-types';
 import ConfirmPopup from "../../common/ConfirmPopup";
 
-class DeletePopup extends Component {
+export class DeletePopup extends Component {
   constructor(props) {
     super(props);    
   }
@@ -25,7 +25,7 @@ class DeletePopup extends Component {
     return (
         <ConfirmPopup 
         confirmHandler={this.confirmHandler}
-        confirmToggle={this.closeDeletePopupHandler}
+        confirmToggle={this.props.closeDeletePopupHandler}
         isShowPopup={this.props.deletePopupData.isShowed}
         title={"Delete Notification Type"}
         content={'<p>Are you sure you want to delete <br /> <strong>"' + this.props.deletePopupData.content + '"</strong></p>' }
