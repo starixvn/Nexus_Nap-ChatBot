@@ -10,6 +10,16 @@ export class DataGrid extends Component {
     super(props);
   }
 
+  componentWillMount(){
+    let params = {
+      pageIndex: 1, 
+      pageSize: 10
+    }
+
+    this.props.setGridParams(params);
+    this.props.getGridData(params);
+  }
+
   onPaging = (pageIndex, pageSize) => {
     let params = {
         pageIndex: pageIndex, 
@@ -17,7 +27,7 @@ export class DataGrid extends Component {
     }
 
     this.props.setGridParams(params); 
-    this.props.getGridData(pageIndex, pageSize);     
+    this.props.getGridData(params);     
   }
 
   openEditPopup = (item, index) => {
@@ -30,7 +40,7 @@ export class DataGrid extends Component {
     this.props.openDeletePopup(notificationTypeName) ;
   }
 
-  _buildHeader() {
+  buildHeader = () => {
     return (<Row style={{ height: 32 }}>
         <Cell colWidth={50} header={true}>#</Cell>
         <Cell colWidth={200} header={true}>Notification Type</Cell>
@@ -40,7 +50,7 @@ export class DataGrid extends Component {
     </Row>);
   }
 
-  _buildBody(data, activeRowIndex) {
+  buildBody = (data, activeRowIndex) => {
     let rows = []
     data.map((item, index) => 
     {
@@ -63,7 +73,7 @@ export class DataGrid extends Component {
     return rows;
   }
 
-  render() {      
+  render() {          
     if(!this.props.gridData || !this.props.gridData.data){
         return null;
     }
@@ -86,8 +96,8 @@ export class DataGrid extends Component {
             <Table
                     width={900}
                     autoWidth={false}
-                    header={this._buildHeader()}
-                    body={this._buildBody(data, activeRowIndex)}
+                    header={this.buildHeader()}
+                    body={this.buildBody(data, activeRowIndex)}
                     isPaging={true}
                     pageOption={pagingOption}
                     onPaging={this.onPaging}

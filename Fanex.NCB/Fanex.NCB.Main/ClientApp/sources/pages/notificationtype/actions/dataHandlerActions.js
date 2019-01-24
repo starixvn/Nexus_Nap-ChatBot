@@ -10,9 +10,8 @@ export function setGridParams(value){
     }
 }
 
-export function getGridData(pageIndex, pageSize){   
+export function getGridData(params){   
     const url = '/NotificationType/GetAll';    
-    var params = {pageIndex: pageIndex, pageSize: pageSize};
     
     return (dispatch) => {
         axios.get(url, {params: params}).then(response => {            

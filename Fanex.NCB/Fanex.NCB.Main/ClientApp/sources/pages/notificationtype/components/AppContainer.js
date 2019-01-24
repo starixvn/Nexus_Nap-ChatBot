@@ -20,32 +20,15 @@ export class AppContainer extends Component {
     this.props.closeNewEditPopup();
     this.props.refreshUpdateData();
     this.props.updateActiveRowIndex(-1);
-    !this.props.updatePopupData.isShowed && this.getGridData();
+    !this.props.updatePopupData.isShowed && this.props.getGridData(this.props.gridParams);
   }
 
   closeDeletePopupHandler = () => {
-    console.log("close delete");
     this.props.closeDeletePopup();
     this.props.updateActiveRowIndex(-1);
-    console.log("close delete xx");
-    console.log(this.props.deletePopupData.isShowed );
-    !this.props.deletePopupData.isShowed && this.getGridData();
-  }
-  
-  componentWillMount(){
-    let params = {
-      pageIndex: 1, 
-      pageSize: 10
-    }
+    !this.props.deletePopupData.isShowed && this.props.getGridData(this.props.gridParams);
+  }  
 
-    this.props.setGridParams(params);
-    this.props.getGridData(params.pageIndex, params.pageSize);
-  }
-
-  getGridData = () => {    
-    this.props.getGridData(this.props.gridParams.pageIndex, this.props.gridParams.pageSize);
-  }
-  
   render() {   
     return (      
       <div>

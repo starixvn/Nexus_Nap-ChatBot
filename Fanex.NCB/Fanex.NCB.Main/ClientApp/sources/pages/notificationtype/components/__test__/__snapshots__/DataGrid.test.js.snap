@@ -1,0 +1,245 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DataGrid render when has data 1`] = `
+<div
+  className="table-container-div"
+>
+  <Table
+    adjustedHeight={0}
+    autoHeight={true}
+    autoWidth={false}
+    body={
+      Array [
+        <Row
+          className=""
+        >
+          <Cell
+            asc={true}
+            className="text-center"
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            1
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            notificationTypeName 1
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            recipientTypeName 1
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            systemName 1
+          </Cell>
+          <Cell
+            asc={true}
+            className="text-center col-action"
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            <div>
+              <span
+                className="icon-edit"
+                id="edit-0"
+                onClick={[Function]}
+              />
+              <UncontrolledTooltip
+                placement="top"
+                target="edit-0"
+              >
+                Edit
+              </UncontrolledTooltip>
+              <span
+                className="icon-delete"
+                id="delete-0"
+                onClick={[Function]}
+              />
+              <UncontrolledTooltip
+                placement="top"
+                target="delete-0"
+              >
+                Delete
+              </UncontrolledTooltip>
+            </div>
+          </Cell>
+        </Row>,
+        <Row
+          className="active"
+        >
+          <Cell
+            asc={true}
+            className="text-center"
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            2
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            notificationTypeName 2
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            recipientTypeName 2
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            systemName 2
+          </Cell>
+          <Cell
+            asc={true}
+            className="text-center col-action"
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            <div>
+              <span
+                className="icon-edit"
+                id="edit-1"
+                onClick={[Function]}
+              />
+              <UncontrolledTooltip
+                placement="top"
+                target="edit-1"
+              >
+                Edit
+              </UncontrolledTooltip>
+              <span
+                className="icon-delete"
+                id="delete-1"
+                onClick={[Function]}
+              />
+              <UncontrolledTooltip
+                placement="top"
+                target="delete-1"
+              >
+                Delete
+              </UncontrolledTooltip>
+            </div>
+          </Cell>
+        </Row>,
+      ]
+    }
+    bodyHeight={0}
+    containerPadding={0}
+    header={
+      <Row
+        style={
+          Object {
+            "height": 32,
+          }
+        }
+      >
+        <Cell
+          asc={true}
+          colWidth={50}
+          header={true}
+          onClick={[Function]}
+          sortable={false}
+          sorting={false}
+        >
+          #
+        </Cell>
+        <Cell
+          asc={true}
+          colWidth={200}
+          header={true}
+          onClick={[Function]}
+          sortable={false}
+          sorting={false}
+        >
+          Notification Type
+        </Cell>
+        <Cell
+          asc={true}
+          colWidth={150}
+          header={true}
+          onClick={[Function]}
+          sortable={false}
+          sorting={false}
+        >
+          Recipient Type
+        </Cell>
+        <Cell
+          asc={true}
+          colWidth={150}
+          header={true}
+          onClick={[Function]}
+          sortable={false}
+          sorting={false}
+        >
+          System
+        </Cell>
+        <Cell
+          asc={true}
+          colWidth={150}
+          header={true}
+          onClick={[Function]}
+          sortable={false}
+          sorting={false}
+        >
+          Action
+        </Cell>
+      </Row>
+    }
+    isPaging={true}
+    maxWidth={-30}
+    onPaging={[Function]}
+    pageOption={
+      Object {
+        "PageIndex": 1,
+        "PageList": Array [
+          10,
+          20,
+          50,
+          100,
+          500,
+        ],
+        "PageSize": 10,
+        "TotalItem": 1,
+      }
+    }
+    width={900}
+  />
+</div>
+`;
