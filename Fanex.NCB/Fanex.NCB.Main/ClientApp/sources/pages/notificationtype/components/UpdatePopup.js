@@ -6,15 +6,15 @@ import { bindActionCreators } from 'redux';
 import {ActionCreators} from '../actions/index';
 import PropTypes from 'prop-types';
 
-class NewEditPopup extends Component {
+class UpdatePopup extends Component {
   constructor(props) {
     super(props);   
     
     this.state = {        
         params: {
-            notificationTypeName: props.newEditPopupData.editingItem.notificationTypeName,
-            recipientTypeId: props.newEditPopupData.editingItem.recipientTypeId,
-            systemId: props.newEditPopupData.editingItem.systemId
+            notificationTypeName: props.updatePopupData.editingItem.notificationTypeName,
+            recipientTypeId: props.updatePopupData.editingItem.recipientTypeId,
+            systemId: props.updatePopupData.editingItem.systemId
         },        
         isSummited: false
     }    
@@ -25,7 +25,7 @@ class NewEditPopup extends Component {
 
       this.setState({isSummited: true});      
       if(this.checkValidParams()){
-        this.props.updateNotificationType(this.state.params, this.props.newEditPopupData.isNew).then(this.closePopup);        
+        this.props.update(this.state.params, this.props.updatePopupData.isNew).then(this.closePopup);        
       }
   }  
 
@@ -43,7 +43,7 @@ class NewEditPopup extends Component {
 
   closePopup = () => {
     setTimeout(function(){
-        this.props.closeNewEditPopupHandler();
+        this.props.closeUpdatePopupHandler();
     }.bind(this),
     1000);
   }
@@ -65,19 +65,17 @@ class NewEditPopup extends Component {
   }
   
   render() {   
-    console.log("child rerender");
-
-    if(!this.props.newEditPopupData.isShowed){
+    if(!this.props.updatePopupData.isShowed){
         return null;
     }
 
-    let popupTitle = this.props.newEditPopupData.popupTitle;
-    let successMsg = this.props.newEditPopupData.successMsg;
-    let showSucessMsg = this.props.addNotificationTypeData && this.props.addNotificationTypeData.addedresult;    
+    let popupTitle = this.props.updatePopupData.popupTitle;
+    let successMsg = this.props.updatePopupData.successMsg;
+    let showSucessMsg = this.props.updateData && this.props.updateData.addedresult;    
 
     return (
-        <Modal isOpen={true} toggle={this.props.closeNewEditPopupHandler} wrapClassName="new-notification-type">
-          <ModalHeader toggle={this.props.closeNewEditPopupHandler}>{popupTitle}</ModalHeader>
+        <Modal isOpen={true} toggle={this.props.closeUpdatePopupHandler} wrapClassName="new-notification-type">
+          <ModalHeader toggle={this.props.closeUpdatePopupHandler}>{popupTitle}</ModalHeader>
           <ModalBody>
             {
                 showSucessMsg && <div className="msg-success ">{successMsg}</div> 
@@ -99,8 +97,8 @@ class NewEditPopup extends Component {
                         invalid={this.state.isSummited && !this.isValidRecipientType()} >
                         <option value="-1">---Please select---</option>
                         {                            
-                            this.props.notificationTypeSettingsData.recipientTypes &&
-                                this.props.notificationTypeSettingsData.recipientTypes.map((item, index) => 
+                            this.props.settingData.recipientTypes &&
+                                this.props.settingData.recipientTypes.map((item, index) => 
                                     <option key={index} value={item.recipientTypeId} >{item.recipientTypeName}</option>
                                 )                            
                         }
@@ -115,8 +113,8 @@ class NewEditPopup extends Component {
                         invalid={this.state.isSummited && !this.isValidSystem()}>
                         <option value="-1">---Please select---</option>
                         {                            
-                            this.props.notificationTypeSettingsData.notificationSystems &&
-                                this.props.notificationTypeSettingsData.notificationSystems.map((item, index) => 
+                            this.props.settingData.notificationSystems &&
+                                this.props.settingData.notificationSystems.map((item, index) => 
                                     <option key={index} value={item.systemId}>{item.systemName}</option>
                                 )                            
                         }   
@@ -131,8 +129,8 @@ class NewEditPopup extends Component {
   }
 }
 
-NewEditPopup.propTypes = {
-    closeNewEditPopupHandler: PropTypes.func.isRequired
+UpdatePopup.propTypes = {
+    closeUpdatePopupHandler: PropTypes.func.isRequired
 };
 
 function mapDispatchToProps(dispatch){
@@ -140,8 +138,8 @@ function mapDispatchToProps(dispatch){
 }
 
 function mapStateToProps(state){
-    const {notificationTypeSettingsData, addNotificationTypeData, newEditPopupData} = state;
-    return Object.assign({}, {notificationTypeSettingsData, addNotificationTypeData, newEditPopupData});
+    const {settingData, updatePopupData, updateData} = state;
+    return Object.assign({}, {settingData, updatePopupData, updateData});
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewEditPopup);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdatePopup);

@@ -7,20 +7,17 @@ import ConfirmPopup from "../../common/ConfirmPopup";
 
 class DeletePopup extends Component {
   constructor(props) {
-    super(props);      
-     
+    super(props);    
   }
 
   confirmHandler = (isYes) => {
     var id = 1;
     isYes 
-        ? this.props.deleteNotificationType(id).then(this.props.closeDeletePopupHandler)
+        ? this.props.deleteItem(id).then(this.props.closeDeletePopupHandler)
         : this.props.closeDeletePopupHandler();
   }
   
   render() {   
-    console.log("child rerender");
-
     if(!this.props.deletePopupData || !this.props.deletePopupData.isShowed) {
         return null;
     }

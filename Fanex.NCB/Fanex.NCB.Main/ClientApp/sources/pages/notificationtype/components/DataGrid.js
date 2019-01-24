@@ -4,11 +4,6 @@ import { UncontrolledTooltip } from 'reactstrap';
 import { bindActionCreators } from 'redux';
 import {ActionCreators} from '../actions/index';
 import {Table, Row, Cell} from '../../common/fixed-table-header/index';
-import PropTypes from 'prop-types';
-
-const propTypes = {
-    
-}
 
 export class DataGrid extends Component {
   constructor(props) {
@@ -22,7 +17,7 @@ export class DataGrid extends Component {
     }
 
     this.props.setGridParams(params); 
-    this.props.getNotificationTypes(pageIndex, pageSize);     
+    this.props.getGridData(pageIndex, pageSize);     
   }
 
   openEditPopup = (item, index) => {
@@ -69,13 +64,13 @@ export class DataGrid extends Component {
   }
 
   render() {      
-    if(!this.props.notificationTypeListData || !this.props.notificationTypeListData.data){
+    if(!this.props.gridData || !this.props.gridData.data){
         return null;
     }
 
-    const data = this.props.notificationTypeListData.data;
+    const data = this.props.gridData.data;
     const activeRowIndex= this.props.activeRowIndex;
-    const count = this.props.notificationTypeListData.count;
+    const count = this.props.gridData.count;
     const pageIndex = this.props.gridParams.pageIndex;
     const pageSize = this.props.gridParams.pageSize;
 
@@ -103,15 +98,13 @@ export class DataGrid extends Component {
   }
 }
 
-DataGrid.propTypes = propTypes;
-
 function mapDispatchToProps(dispatch){
     return bindActionCreators(ActionCreators, dispatch);
 }
 
 function mapStateToProps(state){
-    const {notificationTypeListData, deleteNotificationTypeData, gridParams, activeRowIndex} = state;
-    return Object.assign({}, {notificationTypeListData, deleteNotificationTypeData, gridParams, activeRowIndex});    
+    const {gridParams, gridData, activeRowIndex} = state;
+    return Object.assign({}, {gridParams, gridData, activeRowIndex});    
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataGrid);

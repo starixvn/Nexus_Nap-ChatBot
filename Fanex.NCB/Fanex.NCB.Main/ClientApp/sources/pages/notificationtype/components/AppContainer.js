@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {NCBBreadcrum} from '../../common/breadcrumbs';
 import { bindActionCreators } from 'redux';
 import {ActionCreators} from '../actions/index';
-import NewEditPopup from './NewEditPopup';
+import {NCBBreadcrum} from '../../common/breadcrumbs';
 import DataGrid from './DataGrid';
+import UpdatePopup from './UpdatePopup';
 import DeletePopup  from './DeletePopup';
 
 import "../../../fonts/style.css";
@@ -13,22 +13,23 @@ import "../../common/fixed-table-header/style.css";
 
 export class AppContainer extends Component {
   constructor(props) {
-    super(props);
-     
+    super(props);     
   }
 
-  closeNewEditPopupHandler = () => {
+  closeUpdatePopupHandler = () => {
     this.props.closeNewEditPopup();
-    this.props.refreshAddNotificationType();
+    this.props.refreshUpdateData();
     this.props.updateActiveRowIndex(-1);
-    !this.props.newEditPopupData.isShowed && this.getNotificationTypes();
+    !this.props.updatePopupData.isShowed && this.getGridData();
   }
 
   closeDeletePopupHandler = () => {
     console.log("close delete");
     this.props.closeDeletePopup();
     this.props.updateActiveRowIndex(-1);
-    !this.props.deletePopupData.isShowed && this.getNotificationTypes();
+    console.log("close delete xx");
+    console.log(this.props.deletePopupData.isShowed );
+    !this.props.deletePopupData.isShowed && this.getGridData();
   }
   
   componentWillMount(){
@@ -38,29 +39,22 @@ export class AppContainer extends Component {
     }
 
     this.props.setGridParams(params);
-    this.props.getNotificationTypes(params.pageIndex, params.pageSize);
+    this.props.getGridData(params.pageIndex, params.pageSize);
   }
 
-  getNotificationTypes = () => {    
-    this.props.getNotificationTypes(this.props.gridParams.pageIndex, this.props.gridParams.pageSize);
+  getGridData = () => {    
+    this.props.getGridData(this.props.gridParams.pageIndex, this.props.gridParams.pageSize);
   }
   
   render() {   
-    console.log("parent rerender");
-    console.log(this.state);
-
     return (      
       <div>
         <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Type 1"></NCBBreadcrum>
         <button className="btn-new" onClick={this.props.openNewPopup}>Create New</button>     
         <DataGrid />               
-        {
-          this.props.newEditPopupData.isShowed && <NewEditPopup closeNewEditPopupHandler={this.closeNewEditPopupHandler} />
-        }
 
-        {
-          this.props.deletePopupData.isShowed && <DeletePopup closeDeletePopupHandler={this.closeDeletePopupHandler} />
-        }      
+        { this.props.updatePopupData.isShowed && <UpdatePopup closeUpdatePopupHandler={this.closeUpdatePopupHandler} /> }
+        { this.props.deletePopupData.isShowed && <DeletePopup closeDeletePopupHandler={this.closeDeletePopupHandler} /> }      
       </div>
     );
   }
@@ -71,8 +65,8 @@ function mapDispatchToProps(dispatch){
 }
 
 function mapStateToProps(state){
-    const { deleteNotificationTypeData, gridParams, newEditPopupData, deletePopupData} = state;
-    return Object.assign({}, { deleteNotificationTypeData, gridParams, newEditPopupData, deletePopupData});    
+    const { gridParams, updatePopupData, deletePopupData} = state;
+    return Object.assign({}, { gridParams, updatePopupData, deletePopupData});    
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppContainer);
