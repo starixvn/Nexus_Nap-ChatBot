@@ -3,53 +3,42 @@ import {AppContainer} from '../AppContainer';
 import renderer from 'react-test-renderer';
 import ShallowRenderer from 'react-test-renderer/shallow';
 
-describe('AppContainer', () => {
-    describe('constructor', () => {
-        it('init state', () => {
-            const props = {};
-            const notificationType = new AppContainer(props);
-
-            expect(notificationType.state.isShowPopup).toBe(false);
-            expect(notificationType.state.editingItem).toBe(null);
-            expect(notificationType.state.isShowConfirm).toBe(false);
-            expect(notificationType.state.activeRowIndex).toBe(-1);
-            expect(notificationType.state.deletingNotificationTypeName).toBe('');
-        })
-    })
-
+describe('AppContainer', () => {   
     describe('render', () => {
-        it('notificationTypeListData - no data', () => {
-            const props = {
-                notificationTypeListData: {},
-                getNotificationTypes: jest.fn()
-            };
-            const notificationType = renderer.create(<AppContainer {...props} />);
-            const result = notificationType.toJSON();
+        it('hide UpdatePopup, DeletePopup', () => {
+            const props = {                
+                setGridParams: jest.fn(),
+                getGridData: jest.fn(),
+                updatePopupData: {isShowed: false},
+                deletePopupData: {isShowed: false}
+            };            
+            const appContainer = (new ShallowRenderer()).render(<AppContainer {...props} />);            
 
-            expect(result).toMatchSnapshot();
-        })
-        
-
-        it('isShowPopup - false', () => {
-            const props = {
-                notificationTypeListData: {},
-                getNotificationTypes: jest.fn()
-            };
-            const notificationType = renderer.create(<AppContainer {...props} />);
-            const result = notificationType.toJSON();
-
-            expect(result).toMatchSnapshot();
+            expect(appContainer).toMatchSnapshot();
         })
 
-        it('isShowPopup - true', () => {
-            const props = {
-                notificationTypeListData: {},
-                getNotificationTypes: jest.fn(),
-                isShowPopup: true
+        it('show UpdatePopup', () => {
+            const props = {                
+                setGridParams: jest.fn(),
+                getGridData: jest.fn(),
+                updatePopupData: {isShowed: true},
+                deletePopupData: {isShowed: false}
             };
-            const notificationType = (new ShallowRenderer()).render(<AppContainer {...props} isShowPopup={true} />);            
+            const appContainer = (new ShallowRenderer()).render(<AppContainer {...props} />);            
             
-            expect(notificationType).toMatchSnapshot();
+            expect(appContainer).toMatchSnapshot();
+        })
+
+        it('show DeletePopup', () => {
+            const props = {                
+                setGridParams: jest.fn(),
+                getGridData: jest.fn(),
+                updatePopupData: {isShowed: false},
+                deletePopupData: {isShowed: true}
+            };
+            const appContainer = (new ShallowRenderer()).render(<AppContainer {...props} />);            
+            
+            expect(appContainer).toMatchSnapshot();
         })
       
     })

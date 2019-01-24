@@ -1,5 +1,5 @@
 ﻿var pathConfig = require('../config/pathReact');
-//var pluginGenerator = require('../config/pluginReact');
+var pluginGenerator = require('../config/pluginReact');
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 
 function generateConfig(environment) {
@@ -58,7 +58,7 @@ function generateConfig(environment) {
                 }
             ]
         },
-        //plugins: pluginGenerator(environment),
+        plugins: pluginGenerator(environment),
         stats: {
             assets: false,
             colors: true,

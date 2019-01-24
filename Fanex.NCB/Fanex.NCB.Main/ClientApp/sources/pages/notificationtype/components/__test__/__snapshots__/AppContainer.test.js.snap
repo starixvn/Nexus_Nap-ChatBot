@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AppContainer render UpdatePopup - false 1`] = `
+<div>
+  <NCBBreadcrum
+    chatbotName="Skype Chatbot"
+    pageTitle="Notification Type 1"
+  />
+  <button
+    className="btn-new"
+  >
+    Create New
+  </button>
+  <Connect(DataGrid) />
+</div>
+`;
+
+exports[`AppContainer render UpdatePopup - true 1`] = `
+<div>
+  <NCBBreadcrum
+    chatbotName="Skype Chatbot"
+    pageTitle="Notification Type 1"
+  />
+  <button
+    className="btn-new"
+  >
+    Create New
+  </button>
+  <Connect(DataGrid) />
+  <Connect(UpdatePopup)
+    closeUpdatePopupHandler={[Function]}
+  />
+</div>
+`;
+
+exports[`AppContainer render hide UpdatePopup, DeletePopup 1`] = `
+<div>
+  <NCBBreadcrum
+    chatbotName="Skype Chatbot"
+    pageTitle="Notification Type 1"
+  />
+  <button
+    className="btn-new"
+  >
+    Create New
+  </button>
+  <Connect(DataGrid) />
+</div>
+`;
+
+exports[`AppContainer render show DeletePopup 1`] = `
+<div>
+  <NCBBreadcrum
+    chatbotName="Skype Chatbot"
+    pageTitle="Notification Type 1"
+  />
+  <button
+    className="btn-new"
+  >
+    Create New
+  </button>
+  <Connect(DataGrid) />
+  <Connect(DeletePopup)
+    closeDeletePopupHandler={[Function]}
+  />
+</div>
+`;
+
+exports[`AppContainer render show UpdatePopup 1`] = `
+<div>
+  <NCBBreadcrum
+    chatbotName="Skype Chatbot"
+    pageTitle="Notification Type 1"
+  />
+  <button
+    className="btn-new"
+  >
+    Create New
+  </button>
+  <Connect(DataGrid) />
+  <Connect(UpdatePopup)
+    closeUpdatePopupHandler={[Function]}
+  />
+</div>
+`;

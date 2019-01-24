@@ -11,7 +11,7 @@ configure({adapter: new Adapter()});
 describe('AppContainer redux', () => {
     let wrapper, store;
     beforeEach(() => {
-        const initialState = {notificationTypeListData: 2, deleteNotificationTypeData: 3, getNotificationTypes: jest.fn()}
+        const initialState = {gridParams: {pageIndex: 1}, updatePopupData: {isShowed: true}, deletePopupData: {isShowed: true}}
         store = mockStore(initialState);
 
         wrapper = shallow(
@@ -20,14 +20,8 @@ describe('AppContainer redux', () => {
     })
 
     it('should map state to props correctly', () => {
-        expect(wrapper.props().notificationTypeListData).toBe(2);
-        expect(wrapper.props().deleteNotificationTypeData).toBe(3);
-    })
-
-    it('shoud ok', () => {
-        //var wrapper = render( <NotificationType store={store}  />);
-       // wrapper.setState({isShowPopup: true});
-        //console.log(wrapper);
-        //expect(wrapper).toMatchSnapshot();
-    })
+        expect(wrapper.props().gridParams).toEqual({pageIndex: 1});
+        expect(wrapper.props().updatePopupData).toEqual({isShowed: true});
+        expect(wrapper.props().deletePopupData).toEqual({isShowed: true});
+    })   
 })
