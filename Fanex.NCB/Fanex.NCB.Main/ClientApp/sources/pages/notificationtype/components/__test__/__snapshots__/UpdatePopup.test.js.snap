@@ -1,0 +1,260 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UpdatePopup render when isShowed true and NOT showSucessMsg 1`] = `
+<Modal
+  autoFocus={true}
+  backdrop={true}
+  backdropTransition={
+    Object {
+      "mountOnEnter": true,
+      "timeout": 150,
+    }
+  }
+  centered={false}
+  fade={true}
+  isOpen={true}
+  keyboard={true}
+  modalTransition={
+    Object {
+      "timeout": 300,
+    }
+  }
+  onClosed={[Function]}
+  onOpened={[Function]}
+  role="dialog"
+  toggle={[MockFunction]}
+  wrapClassName="new-notification-type"
+  zIndex={1050}
+>
+  <ModalHeader
+    charCode={215}
+    closeAriaLabel="Close"
+    tag="h5"
+    toggle={[MockFunction]}
+    wrapTag="div"
+  >
+    title
+  </ModalHeader>
+  <ModalBody
+    tag="div"
+  >
+    <Form
+      className="form-create"
+      tag="form"
+    >
+      <FormGroup
+        tag="div"
+      >
+        <Label
+          className="form-label required"
+          tag="label"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
+          }
+        >
+          Notification Type Name
+        </Label>
+        <InputField
+          initialValue="abc"
+          isSummited={false}
+          onChange={[Function]}
+        />
+      </FormGroup>
+      <FormGroup
+        tag="div"
+      >
+        <Label
+          className="form-label required"
+          tag="label"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
+          }
+        >
+          Recipient Type
+        </Label>
+        <SelectField
+          data={Array []}
+          initialValue={2}
+          isSummited={false}
+          onChange={[Function]}
+        />
+      </FormGroup>
+      <FormGroup
+        tag="div"
+      >
+        <Label
+          className="form-label required"
+          tag="label"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
+          }
+        >
+          System
+        </Label>
+        <SelectField
+          data={Array []}
+          initialValue={3}
+          isSummited={false}
+          onChange={[Function]}
+        />
+      </FormGroup>
+      <button
+        className="btn-submit"
+        onClick={[Function]}
+      >
+        Submit
+      </button>
+    </Form>
+  </ModalBody>
+</Modal>
+`;
+
+exports[`UpdatePopup render when isShowed true and showSucessMsg 1`] = `
+<Modal
+  autoFocus={true}
+  backdrop={true}
+  backdropTransition={
+    Object {
+      "mountOnEnter": true,
+      "timeout": 150,
+    }
+  }
+  centered={false}
+  fade={true}
+  isOpen={true}
+  keyboard={true}
+  modalTransition={
+    Object {
+      "timeout": 300,
+    }
+  }
+  onClosed={[Function]}
+  onOpened={[Function]}
+  role="dialog"
+  toggle={[MockFunction]}
+  wrapClassName="new-notification-type"
+  zIndex={1050}
+>
+  <ModalHeader
+    charCode={215}
+    closeAriaLabel="Close"
+    tag="h5"
+    toggle={[MockFunction]}
+    wrapTag="div"
+  >
+    title
+  </ModalHeader>
+  <ModalBody
+    tag="div"
+  >
+    <div
+      className="msg-success "
+    >
+      sucess
+    </div>
+    <Form
+      className="form-create"
+      tag="form"
+    >
+      <FormGroup
+        tag="div"
+      >
+        <Label
+          className="form-label required"
+          tag="label"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
+          }
+        >
+          Notification Type Name
+        </Label>
+        <InputField
+          initialValue="abc"
+          isSummited={false}
+          onChange={[Function]}
+        />
+      </FormGroup>
+      <FormGroup
+        tag="div"
+      >
+        <Label
+          className="form-label required"
+          tag="label"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
+          }
+        >
+          Recipient Type
+        </Label>
+        <SelectField
+          data={Array []}
+          initialValue={2}
+          isSummited={false}
+          onChange={[Function]}
+        />
+      </FormGroup>
+      <FormGroup
+        tag="div"
+      >
+        <Label
+          className="form-label required"
+          tag="label"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
+          }
+        >
+          System
+        </Label>
+        <SelectField
+          data={Array []}
+          initialValue={3}
+          isSummited={false}
+          onChange={[Function]}
+        />
+      </FormGroup>
+      <button
+        className="btn-submit"
+        onClick={[Function]}
+      >
+        Submit
+      </button>
+    </Form>
+  </ModalBody>
+</Modal>
+`;

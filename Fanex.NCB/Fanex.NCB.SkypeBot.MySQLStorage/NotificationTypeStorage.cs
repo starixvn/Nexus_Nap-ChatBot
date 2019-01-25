@@ -117,16 +117,16 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage
             return new List<NotificationSystem>
             {
                 new NotificationSystem {
-                    SystemId = 1,
-                    SystemName = "Bot site"
+                    Id = 1,
+                    Name = "Bot site"
                 },
                 new NotificationSystem {
-                    SystemId = 2,
-                    SystemName = "Admin site"
+                    Id = 2,
+                    Name = "Admin site"
                 },
                 new NotificationSystem {
-                    SystemId = 3,
-                    SystemName = "Special Delete site"
+                    Id = 3,
+                    Name = "Special Delete site"
                 }
             };
         }
@@ -135,12 +135,12 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage
         {
             return new List<RecipientType>{
                 new RecipientType {
-                    RecipientTypeId = 1,
-                    RecipientTypeName = "Licensee"
+                    Id = 1,
+                    Name = "Licensee"
                 },
                 new RecipientType {
-                    RecipientTypeId = 2,
-                    RecipientTypeName = "3rd party"
+                    Id = 2,
+                    Name = "3rd party"
                 }
             };
         }

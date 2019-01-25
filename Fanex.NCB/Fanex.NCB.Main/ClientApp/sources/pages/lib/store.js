@@ -7,7 +7,7 @@ export default class Store {
         const enhancer = compose(
             applyMiddleware(
                 thunkMiddleware, // lets us dispatch() functions
-                loggerMiddleware
+                //loggerMiddleware
             )
         );
 

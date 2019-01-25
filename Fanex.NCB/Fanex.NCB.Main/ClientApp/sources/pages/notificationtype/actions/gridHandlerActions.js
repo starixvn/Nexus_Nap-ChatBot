@@ -40,7 +40,20 @@ export function closeDeletePopup(){
 export function openEditPopup(item){
     let newEditPopupData = {
         isShowed: true,
-        editingItem: item,
+        editingItem: {
+            notificationTypeName: {
+                value: item.notificationTypeName,
+                isValid: true
+            },
+            recipientTypeId: {
+                value: item.recipientTypeId,
+                isValid: true
+            },
+            systemId: {
+                value: item.systemId,
+                isValid: true
+            }
+        },
         popupTitle: "Edit Notification Type",
         successMsg: "Edit Notification Type Successfully",
         isNew: false
@@ -55,7 +68,20 @@ export function openEditPopup(item){
 export function openNewPopup(){
     let newEditPopupData = {
         isShowed: true,
-        editingItem: {},
+        editingItem: {
+            notificationTypeName: {
+                value: '',
+                isValid: false
+            },
+            recipientTypeId: {
+                value: -1,
+                isValid: false
+            },
+            systemId: {
+                value: -1,
+                isValid: false
+            }
+        },
         popupTitle: "Create New Notification Type",
         successMsg: "Create New Notification Type Successfully",
         isNew: true
