@@ -25,8 +25,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public IActionResult GetAll(int pageIndex, int pageSize){
             var data = _notificationTypeService.GetAll();
             var result = new {
-                data = data.Skip((pageIndex  - 1)* pageSize).Take(pageSize).ToList(),
-                count = data.Count
+                data = data.ToList(),//data.Skip((pageIndex  - 1)* pageSize).Take(pageSize).ToList(),
+                count = 1000 //data.Count
             };
 
             return Json(result);

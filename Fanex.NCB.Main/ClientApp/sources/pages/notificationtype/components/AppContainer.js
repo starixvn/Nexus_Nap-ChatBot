@@ -9,7 +9,6 @@ import DeletePopup  from './DeletePopup';
 
 import "../../../fonts/style.css";
 import './AppContainer.scss';
-import "../../common/fixed-table-header/style.css";
 
 export class AppContainer extends Component {
   constructor(props) {
