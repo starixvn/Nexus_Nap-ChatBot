@@ -4,7 +4,7 @@ exports[`AppContainer render hide UpdatePopup, DeletePopup 1`] = `
 <div>
   <NCBBreadcrum
     chatbotName="Skype Chatbot"
-    pageTitle="Notification Type 1"
+    pageTitle="Notification Type"
   />
   <button
     className="btn-new"
@@ -19,7 +19,7 @@ exports[`AppContainer render show DeletePopup 1`] = `
 <div>
   <NCBBreadcrum
     chatbotName="Skype Chatbot"
-    pageTitle="Notification Type 1"
+    pageTitle="Notification Type"
   />
   <button
     className="btn-new"
@@ -37,7 +37,7 @@ exports[`AppContainer render show UpdatePopup 1`] = `
 <div>
   <NCBBreadcrum
     chatbotName="Skype Chatbot"
-    pageTitle="Notification Type 1"
+    pageTitle="Notification Type"
   />
   <button
     className="btn-new"

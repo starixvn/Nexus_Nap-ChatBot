@@ -31,7 +31,7 @@ export class AppContainer extends Component {
   render() {   
     return (      
       <div>
-        <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Type 1"></NCBBreadcrum>
+        <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Type"></NCBBreadcrum>
         <button className="btn-new" onClick={this.props.openNewPopup}>Create New</button>     
         <DataGrid />               
 

@@ -15,7 +15,7 @@ describe('DataGrid', () => {
                 pageIndex: 1, 
                 pageSize: 10
             }
-            let dataGrid = new DataGrid(props);
+            let dataGrid = new DataGrid(props); 
 
             // Act
             dataGrid.componentWillMount();
