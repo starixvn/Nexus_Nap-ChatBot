@@ -12,4 +12,8 @@
     <CodeAnalysisRuleSet>Fanex.NCB.Bot.MySQLStorage.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="1.50.5" />
+  </ItemGroup>
+
 </Project>
