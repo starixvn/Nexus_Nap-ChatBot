@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\xunit.runner.visualstudio.2.4.1\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\packages\xunit.runner.visualstudio.2.4.1\build\net20\xunit.runner.visualstudio.props')" />
-  <Import Project="..\packages\xunit.core.2.4.1\build\xunit.core.props" Condition="Exists('..\packages\xunit.core.2.4.1\build\xunit.core.props')" />
+  <Import Project="..\..\packages\xunit.runner.visualstudio.2.4.1\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\..\packages\xunit.runner.visualstudio.2.4.1\build\net20\xunit.runner.visualstudio.props')" />
+  <Import Project="..\..\packages\xunit.core.2.4.1\build\xunit.core.props" Condition="Exists('..\..\packages\xunit.core.2.4.1\build\xunit.core.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -36,55 +36,55 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Couchbase, Version=1.0.0.0, Culture=neutral, PublicKeyToken=81137140da4e57ef, processorArchitecture=MSIL">
-      <HintPath>..\packages\Fanex.Caching.1.0.404.95\lib\net40\Couchbase.dll</HintPath>
+      <HintPath>..\..\packages\Fanex.Caching.1.0.404.95\lib\net40\Couchbase.dll</HintPath>
     </Reference>
     <Reference Include="Enyim.Caching, Version=2.12.0.0, Culture=neutral, PublicKeyToken=81137140da4e57ef, processorArchitecture=MSIL">
-      <HintPath>..\packages\Fanex.Caching.1.0.404.95\lib\net40\Enyim.Caching.dll</HintPath>
+      <HintPath>..\..\packages\Fanex.Caching.1.0.404.95\lib\net40\Enyim.Caching.dll</HintPath>
     </Reference>
     <Reference Include="Fanex.Caching, Version=1.0.404.95, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Fanex.Caching.1.0.404.95\lib\net40\Fanex.Caching.dll</HintPath>
+      <HintPath>..\..\packages\Fanex.Caching.1.0.404.95\lib\net40\Fanex.Caching.dll</HintPath>
     </Reference>
     <Reference Include="Fanex.Common, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Fanex.Common.1.1.0.1\lib\net40\Fanex.Common.dll</HintPath>
+      <HintPath>..\..\packages\Fanex.Common.1.1.0.1\lib\net40\Fanex.Common.dll</HintPath>
     </Reference>
     <Reference Include="Fanex.Data, Version=0.5.404.63, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Fanex.Data.0.5.404.63\lib\net40\Fanex.Data.dll</HintPath>
+      <HintPath>..\..\packages\Fanex.Data.0.5.404.63\lib\net40\Fanex.Data.dll</HintPath>
     </Reference>
     <Reference Include="Fanex.Logging, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Fanex.Logging.1.0.0.0\lib\net40\Fanex.Logging.dll</HintPath>
+      <HintPath>..\..\packages\Fanex.Logging.1.0.0.0\lib\net40\Fanex.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Fanex.NAP.Core, Version=1.2.1.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Fanex.NAP.Core.Client.1.2.1.4\lib\net40\Fanex.NAP.Core.dll</HintPath>
+      <HintPath>..\..\packages\Fanex.NAP.Core.Client.1.2.1.4\lib\net40\Fanex.NAP.Core.dll</HintPath>
     </Reference>
     <Reference Include="FluentAssertions, Version=5.6.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentAssertions.5.6.0\lib\net45\FluentAssertions.dll</HintPath>
+      <HintPath>..\..\packages\FluentAssertions.5.6.0\lib\net45\FluentAssertions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Caching, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\EnterpriseLibrary.Caching.5.0.414.0\lib\net40\Microsoft.Practices.EnterpriseLibrary.Caching.dll</HintPath>
+      <HintPath>..\..\packages\EnterpriseLibrary.Caching.5.0.414.0\lib\net40\Microsoft.Practices.EnterpriseLibrary.Caching.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\EnterpriseLibrary.Common.5.0.414.0\lib\net40\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+      <HintPath>..\..\packages\EnterpriseLibrary.Common.5.0.414.0\lib\net40\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\EnterpriseLibrary.Data.5.0.414.0\lib\net40\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
+      <HintPath>..\..\packages\EnterpriseLibrary.Data.5.0.414.0\lib\net40\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Logging, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\EnterpriseLibrary.Logging.5.0.414.0\lib\net40\Microsoft.Practices.EnterpriseLibrary.Logging.dll</HintPath>
+      <HintPath>..\..\packages\EnterpriseLibrary.Logging.5.0.414.0\lib\net40\Microsoft.Practices.EnterpriseLibrary.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\EnterpriseLibrary.Unity.5.0.414.0\lib\net40\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <HintPath>..\..\packages\EnterpriseLibrary.Unity.5.0.414.0\lib\net40\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Unity, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\EnterpriseLibrary.Unity.5.0.414.0\lib\net40\Microsoft.Practices.Unity.dll</HintPath>
+      <HintPath>..\..\packages\EnterpriseLibrary.Unity.5.0.414.0\lib\net40\Microsoft.Practices.Unity.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Unity.Interception, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\EnterpriseLibrary.Unity.5.0.414.0\lib\net40\Microsoft.Practices.Unity.Interception.dll</HintPath>
+      <HintPath>..\..\packages\EnterpriseLibrary.Unity.5.0.414.0\lib\net40\Microsoft.Practices.Unity.Interception.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -99,16 +99,16 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.abstractions.2.0.3\lib\net35\xunit.abstractions.dll</HintPath>
+      <HintPath>..\..\packages\xunit.abstractions.2.0.3\lib\net35\xunit.abstractions.dll</HintPath>
     </Reference>
     <Reference Include="xunit.assert, Version=2.4.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.assert.2.4.1\lib\netstandard1.1\xunit.assert.dll</HintPath>
+      <HintPath>..\..\packages\xunit.assert.2.4.1\lib\netstandard1.1\xunit.assert.dll</HintPath>
     </Reference>
     <Reference Include="xunit.core, Version=2.4.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.extensibility.core.2.4.1\lib\net452\xunit.core.dll</HintPath>
+      <HintPath>..\..\packages\xunit.extensibility.core.2.4.1\lib\net452\xunit.core.dll</HintPath>
     </Reference>
     <Reference Include="xunit.execution.desktop, Version=2.4.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.extensibility.execution.2.4.1\lib\net452\xunit.execution.desktop.dll</HintPath>
+      <HintPath>..\..\packages\xunit.extensibility.execution.2.4.1\lib\net452\xunit.execution.desktop.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -120,11 +120,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
+    <Analyzer Include="..\..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Fanex.NCB.Common\Fanex.NCB.Common.csproj">
-      <Project>{d53b9d9c-f2b4-47cd-8524-57b79c0c2a76}</Project>
+    <ProjectReference Include="..\..\Fanex.NCB.Shared\Fanex.NCB.Common\Fanex.NCB.Common.csproj">
+      <Project>{87dc7dc6-9e7a-45e1-99f6-8dd6585096ee}</Project>
       <Name>Fanex.NCB.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Fanex.NCB.Swagger.AuthGate\Fanex.NCB.Swagger.AuthGate.csproj">
@@ -137,9 +137,9 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\xunit.core.2.4.1\build\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.4.1\build\xunit.core.props'))" />
-    <Error Condition="!Exists('..\packages\xunit.core.2.4.1\build\xunit.core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.4.1\build\xunit.core.targets'))" />
-    <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.4.1\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.4.1\build\net20\xunit.runner.visualstudio.props'))" />
+    <Error Condition="!Exists('..\..\packages\xunit.core.2.4.1\build\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.core.2.4.1\build\xunit.core.props'))" />
+    <Error Condition="!Exists('..\..\packages\xunit.core.2.4.1\build\xunit.core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.core.2.4.1\build\xunit.core.targets'))" />
+    <Error Condition="!Exists('..\..\packages\xunit.runner.visualstudio.2.4.1\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.runner.visualstudio.2.4.1\build\net20\xunit.runner.visualstudio.props'))" />
   </Target>
-  <Import Project="..\packages\xunit.core.2.4.1\build\xunit.core.targets" Condition="Exists('..\packages\xunit.core.2.4.1\build\xunit.core.targets')" />
+  <Import Project="..\..\packages\xunit.core.2.4.1\build\xunit.core.targets" Condition="Exists('..\..\packages\xunit.core.2.4.1\build\xunit.core.targets')" />
 </Project>

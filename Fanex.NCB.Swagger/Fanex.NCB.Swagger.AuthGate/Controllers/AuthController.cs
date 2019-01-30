@@ -1,5 +1,4 @@
 ﻿using System.Web.Http;
-using Fanex.NAP.Core.Service.Interface;
 using Fanex.NCB.Common.MetalModels;
 using Fanex.NCB.Swagger.AuthGate.Attributes;
 using Fanex.NCB.Swagger.AuthGate.Services;

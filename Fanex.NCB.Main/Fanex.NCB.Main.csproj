@@ -32,18 +32,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fanex.NCB.Core\Fanex.NCB.Core.csproj" />
-    <ProjectReference Include="..\Fanex.NCB.SkypeBot\Fanex.NCB.SkypeBot.csproj" />
+    <ProjectReference Include="..\Fanex.NCB.Bot\Fanex.NCB.Bot.SkypeClient\Fanex.NCB.Bot.SkypeClient.csproj" />
+    <ProjectReference Include="..\Fanex.NCB.Core\Fanex.NCB.Core\Fanex.NCB.Core.csproj" />
+    <ProjectReference Include="..\Fanex.NCB.SkypeBot\Fanex.NCB.SkypeBot\Fanex.NCB.SkypeBot.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Update="Views\SkypeBot\Index.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-     
   </ItemGroup>
 
 </Project>

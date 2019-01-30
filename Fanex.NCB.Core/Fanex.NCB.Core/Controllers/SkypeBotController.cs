@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using Fanex.NCB.Bot.SkypeClient;
-using Fanex.NCB.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

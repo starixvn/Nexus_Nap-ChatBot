@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Fanex.NCB.Common.DTO;
+﻿using Fanex.NCB.Common.DTO;
+using System.Collections.Generic;
 
 namespace Fanex.NCB.Core.Models.DTO
 {
