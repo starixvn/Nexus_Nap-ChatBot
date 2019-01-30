@@ -14,9 +14,9 @@ pushd ..\
 set mypath=%cd%
 echo %mypath%
 
-call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.SkypeBot.UnitTests
-call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.Core.UnitTests
-call CodeCoverage\run_netframework.bat %build_number% Fanex.NCB.Swagger.AuthGate.UnitTests
+call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.SkypeBot\Fanex.NCB.SkypeBot.UnitTests
+call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.Core\Fanex.NCB.Core.UnitTests
+call CodeCoverage\run_netframework.bat %build_number% Fanex.NCB.Swagger\Fanex.NCB.Swagger.AuthGate.UnitTests\bin\Debug\Fanex.NCB.Swagger.AuthGate.UnitTests.dll
 
 REM ReportGenerator
 set command=CodeCoverage\tools\ReportGenerator.3.0.2\tools\reportgenerator.exe -reports:"UnitTestCoverage_%build_number%.xml" -targetdir:"cireport\testcoveragereport\"
