@@ -8,7 +8,7 @@ CREATE TABLE `BotConversation` (
   `ConversationID` smallint(5) NOT NULL,
   `Name` varchar(2048) CHARACTER SET utf8 NOT NULL,
   `IsBotActive` bit(1) NOT NULL,
-  `ChanelID` varchar(45) NOT NULL,
+  `ChannelID` varchar(45) NOT NULL,
   `BotName` varchar(50) CHARACTER SET utf8 NOT NULL,
   `LastUpdate` datetime NOT NULL,
   PRIMARY KEY (`ID`,`ConversationID`)
