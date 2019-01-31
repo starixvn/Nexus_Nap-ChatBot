@@ -3,10 +3,11 @@ $colorHyperlink: #147ccc;
 $white: #fff;
 $bgHeaderTableLevel1: #4C6375;
 $bgHeaderTableLevel2: #9eb4c3;
-$colorBorderTable: #d6d6d6;
+$colorBorderTable: #bdd0db;
 $colorTableHeader: $black;
 $bgSummaryTotal: #B8C3C9;
 $bgTotal: $bgSummaryTotal;
+
 .table {
     line-height: 1.15;
     table-layout: fixed;
@@ -26,7 +27,7 @@ $bgTotal: $bgSummaryTotal;
                 vertical-align: middle;
                 text-align: center;
                 background: $bgHeaderTableLevel2;
-                border: 1px solid $white;
+                border: 1px solid $colorBorderTable;
                 border-top: 1px solid $colorBorderTable;
                 color: $colorTableHeader;
                 font-weight: bold;
@@ -50,15 +51,22 @@ $bgTotal: $bgSummaryTotal;
                 background: $white;
                 vertical-align: middle;
             }
-            &:hover td {
-                background: #fcf4df;
-            }
+            
             &.total td {
                 background: $bgTotal;
             }
+
             &.highlight td {
                 background: #f7dbb6;
                 font-weight: bold;
+            }
+
+            &:nth-child(2n) td {
+              background: #eceff1;
+            }
+
+            &:hover td {
+                background: #ffd8b1;
             }
         }
     }
@@ -66,27 +74,23 @@ $bgTotal: $bgSummaryTotal;
 
 
 $colorLightGray: #ccc;
-$colorDisabledPgButton: #d1dae1;
+$colorDisabledPgButton: #919394;
 $bgPaging: #EFF3F8;
 $colorBorderPaging: #d1dae1;
+
 .page-container {
-    padding: 3px;
-    background-color: $bgPaging;
-    border: 1px solid $colorBorderPaging;
-    .icon {
-        position: relative;
-        top: 1px;
-        display: inline-block;
-        font-family: 'Icons';
+    padding-top: 8px;
+    
+    .icon {        
+        display: inline-block;        
         font-style: normal;
         font-weight: normal;
         line-height: 1;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         font-size: 12px;
-        color: #4c6375;
         cursor: pointer;
-        margin: 0 5px;
+
         &:focus {
             outline: none;
         }
@@ -97,25 +101,49 @@ $colorBorderPaging: #d1dae1;
     }
     .disable {
         color: $colorDisabledPgButton;
+        background: #eceff1;
         cursor: default;
         pointer-events: none;
     }
-    .page-first {
+    .page-first {    
         &:before {
             content: "\e097";
         }
     }
+
+    .page-prev, .page-next {
+      padding: 0 10px;
+      font-family: 'nap-chatbot' !important;
+      font-size: 10px;
+      height: 27px;
+      line-height: 27px;
+      border: 1px solid #ced4da;
+      color: #373737;
+      vertical-align: middle;
+
+      &:hover {
+        background: rgba(6, 104, 150, .5);
+      }
+    }
+
     .page-prev {
+        transform: scale(-1);
+        border-left: 0;
+
         &:before {
-            content: "\e02e";
+            content: "\e915";
         }
     }
-    .page-next {
+    .page-next {   
+      border-left: 0;
+
         &:before {
-            content: "\e02f";
+            content: "\e915";
         }
     }
     .page-last {
+      border-left: 0;
+
         &:before {
             content: "\e098";
         }
@@ -136,43 +164,59 @@ $colorBorderPaging: #d1dae1;
     }
     .page-input {
         display: inline;
+
         &:after,
         &:before {
             content: "";
             border: 1px solid #ccc;
         }
+
         &:after {
             margin-left: 5px;
         }
+
         &:before {
             margin-right: 5px;
         }
     }
+
     .pagesize-select {
-        height: auto;
-        font-size: inherit;
-        padding: 2px;
-        min-width: 65px;
-        border: 1px solid #e2d6d6;
-        margin-left: 5px;
+      display: inline-block;
+      height: 27px;
+      min-width: 65px;
+      margin: 0 8px;
+      padding: 2px;
+      font-size: inherit; 
+      border: 1px solid #ced4da;
+      vertical-align: middle;
     }
     .page-info {
         float: right;
         padding: 3px;
     }
 
-    .page-div{
+    .page-div {
         display: inline-block;
+        border: 1px solid #ced4da;
+        vertical-align: middle;
 
-        .page-span{
+        .page-span {
             display: inline-block;
-            padding: 0 6px;
-            border: solid 1px gray;
+            padding: 3px 9px;
+            border-right: solid 1px #ced4da;
             cursor: pointer;
-        }
 
-        .active{
-            background: cadetblue;
+            &:last-child {
+              border-right: 0;
+            }
+
+            &:hover {
+              background: rgba(6, 104, 150, .5);
+            }
+        }       
+
+        .active {
+            background: #066896;
             color: white;
         }
     }
@@ -249,10 +293,10 @@ $paddingRightContainer: 17px;
     .table>thead>tr {
         >th {
             border: none;
-            border-left: 1px solid #fff;
+            border-left: 1px solid $colorBorderTable;
         }
         &:nth-child(n + 3) {
-            border-top: 1px solid #fff;
+            border-top: 1px solid $colorBorderTable;
         }
     }
 }
