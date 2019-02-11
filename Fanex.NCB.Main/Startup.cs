@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fanex.NCB.Bot.SkypeClient;
+using Fanex.NCB.Common.DTO;
+using Fanex.NCB.Common.Services;
 using Fanex.NCB.Core.Models.DataDomain;
 using Fanex.NCB.Core.Services;
 using Fanex.NCB.SkypeBot.App_Start;
@@ -71,8 +73,15 @@ namespace Fanex.NCB.Main
             services.AddSingleton<ISessionService, SessionService>();
 
             var appSetting = Configuration.GetSection("AppSettings");
+
             services.AddTransient<IBotClient, BotClient>(_ => 
             new BotClient(appSetting["MicrosoftAppId"], appSetting["MicrosoftAppPassword"]));
+
+            
+            var connectionStrings  = Configuration.GetSection("AppSettings:ConnectionStrings").Get<ConnectionStrings>();
+            var storedProcedurePath = Configuration.GetValue<string>("AppSettings:StoredProcedurePath");
+            services.AddTransient<IDBConfigService, DBConfigService>(_ => new DBConfigService(storedProcedurePath, connectionStrings));
+
             InitializeModules(services);
         }
 
