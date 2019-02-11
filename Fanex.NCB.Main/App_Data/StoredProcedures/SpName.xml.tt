@@ -1,0 +1,29 @@
+﻿<#@ template debug="true" hostSpecific="true" #>
+<#@ output extension=".txt" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Xml.Linq" #>
+<#@ Assembly Name="System.Data" #>
+<#@ Import Namespace="System.Data" #>
+<#@ Import Namespace="System.Data.SqlClient" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Security" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Xml.Linq" #>
+<#@ import namespace="System.Windows.Forms" #>
+<#@ include file="$(SolutionDir)\packages\T4.TemplateFileManager\2.2.1\tools\ttinc\TemplateFilemanager.CS.ttinclude" #>
+<#@ include file="SpNameConfiguration.ttinclude" #>
+<#
+    var manager = TemplateFileManager.Create(this);	
+    foreach(var site in sites)
+    {        
+		var x = site.SiteEnvironment.ToString();
+        var fileName = string.Format("SpName.{0}.xml", site.SiteEnvironment);
+        manager.StartNewFile(fileName);
+#><#=site.GenerateSpName#>
+		<#
+    }
+    manager.Process();
+#>

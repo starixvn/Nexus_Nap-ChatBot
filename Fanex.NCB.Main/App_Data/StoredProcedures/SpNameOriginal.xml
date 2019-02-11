@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Functions SiteId="103" SiteName="Fanex.NCB">
+  <Function Name="SkypeBot">    
+    <Setting Key="ChatBot_NotificationType_Sel" SpName="ChatBot_NotificationType_Sel" DbName="ChatBotDB" />
+    <Setting Key="ChatBot_System_Sel" SpName="ChatBot_System_Sel" DbName="ChatBotDB" />
+    <Setting Key="ChatBot_RecipientType_Sel" SpName="ChatBot_RecipientType_Sel" DbName="ChatBotDB" />
+  </Function> 
+</Functions>
