@@ -42,15 +42,9 @@ namespace Fanex.NCB.Bot.SkypeClient
                 return HttpStatusCode.NoContent;
             }
 
-            var token = await GetToken();
-            if (token == null || string.IsNullOrEmpty(token.AccessToken))
-            {
-                return HttpStatusCode.Unauthorized;
-            }
             var messageInfo = CreateMessageActivity(message, conversationId);
-            var connector = await SetupClientConnection();
-            var result = await connector.Conversations.SendToConversationAsync((Activity)messageInfo);
-            return HttpStatusCode.OK;
+
+            return await SendAsync(messageInfo);
         }
 
         private static IMessageActivity CreateMessageActivity(string message, string conversationId)
@@ -93,9 +87,16 @@ namespace Fanex.NCB.Bot.SkypeClient
             throw new NotImplementedException();
         }
 
-        public Task<HttpStatusCode> SendAsync(IMessageActivity messageActivity)
+        public async Task<HttpStatusCode> SendAsync(IMessageActivity messageActivity)
         {
-            throw new NotImplementedException();
+            var token = await GetToken();
+            if (token == null || string.IsNullOrEmpty(token.AccessToken))
+            {
+                return HttpStatusCode.Unauthorized;
+            }
+            var connector = await SetupClientConnection();
+            var result = await connector.Conversations.SendToConversationAsync((Activity)messageActivity);
+            return HttpStatusCode.OK;
         }
     }
 }
