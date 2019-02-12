@@ -11,9 +11,10 @@ namespace Fanex.NCB.SkypeBot.Services.NotificationType
         {
             _notificationTypeStorage = notificationTypeStorage;
         }
-        public List<NotificationTypeItem> GetAll()
+
+        public NotificationTypeListResultModel GetNotificationTypeList(int pageIndex, int pageSize)
         {
-            return _notificationTypeStorage.GetAll();
+            return _notificationTypeStorage.GetNotificationTypeList(pageIndex, pageSize);
           
         }
 

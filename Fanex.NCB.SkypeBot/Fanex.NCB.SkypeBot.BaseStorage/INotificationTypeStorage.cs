@@ -5,7 +5,7 @@ namespace Fanex.NCB.SkypeBot.BaseStorage
 {
     public interface INotificationTypeStorage
     {
-        List<NotificationTypeItem> GetAll();
+        NotificationTypeListResultModel GetNotificationTypeList(int pageIndex, int pageSize);
 
         List<RecipientType> GetRecipientTypes();
 

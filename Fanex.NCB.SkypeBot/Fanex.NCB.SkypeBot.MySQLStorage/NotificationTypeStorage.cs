@@ -19,17 +19,20 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage
             _dBConfigService = dBConfigService;
         }
 
-        public List<NotificationTypeItem> GetAll()
+        public NotificationTypeListResultModel GetNotificationTypeList(int pageIndex, int pageSize)
         {
             var setting = _dBConfigService.Get("ChatBot_NotificationType_Sel");            
             using (var dbConnection = new MySqlConnection(setting.DBConnection))
             {
-                var data = dbConnection.Query<NotificationTypeItem>(
+                var reader = dbConnection.QueryMultiple(
                     setting.SPName,
-                    null,
+                    param: new { pageIndex, pageSize },
                     commandType: CommandType.StoredProcedure);
 
-                return data.ToList();
+                var total = reader.Read<int>().First();
+                var data = reader.Read<NotificationTypeItem>().ToList();
+
+                return new NotificationTypeListResultModel { Count = total, Data = data };
             }
         }
 

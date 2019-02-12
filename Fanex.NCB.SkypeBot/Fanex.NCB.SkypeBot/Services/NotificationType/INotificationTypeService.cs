@@ -5,7 +5,7 @@ namespace Fanex.NCB.SkypeBot.Services.NotificationType
 {
     public interface INotificationTypeService
     {
-        List<NotificationTypeItem> GetAll();
+        NotificationTypeListResultModel GetNotificationTypeList(int pageIndex, int pageSize);
 
         List<RecipientType> GetRecipientTypes();
 

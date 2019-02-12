@@ -14,9 +14,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ClientApp\sources\js\**" />
+    <Compile Remove="ClientApp\sources\sass\**" />
     <Compile Remove="wwwroot\js\**" />
+    <Content Remove="ClientApp\sources\js\**" />
+    <Content Remove="ClientApp\sources\sass\**" />
     <Content Remove="wwwroot\js\**" />
+    <EmbeddedResource Remove="ClientApp\sources\js\**" />
+    <EmbeddedResource Remove="ClientApp\sources\sass\**" />
     <EmbeddedResource Remove="wwwroot\js\**" />
+    <None Remove="ClientApp\sources\js\**" />
+    <None Remove="ClientApp\sources\sass\**" />
     <None Remove="wwwroot\js\**" />
   </ItemGroup>
 
@@ -25,11 +33,6 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
     <PackageReference Include="T4.TemplateFileManager" Version="2.2.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ClientApp\sources\js\" />
-    <Folder Include="ClientApp\sources\sass\" />
   </ItemGroup>
 
   <ItemGroup>

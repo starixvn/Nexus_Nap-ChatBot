@@ -13,8 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ViewModels\" />
-    <Folder Include="MetalModels\" />
+    <Compile Remove="MetalModels\**" />
+    <Compile Remove="ViewModels\**" />
+    <EmbeddedResource Remove="MetalModels\**" />
+    <EmbeddedResource Remove="ViewModels\**" />
+    <None Remove="MetalModels\**" />
+    <None Remove="ViewModels\**" />
   </ItemGroup>
 
 </Project>
