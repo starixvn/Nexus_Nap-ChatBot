@@ -35,9 +35,9 @@ export class DataGrid extends Component {
     this.props.openEditPopup(item);
   }
 
-  openDeletePopup = (index, notificationTypeName) => {
+  openDeletePopup = (index, notificationTypeId, notificationTypeName) => {
     this.props.updateActiveRowIndex(index);
-    this.props.openDeletePopup(notificationTypeName) ;
+    this.props.openDeletePopup(notificationTypeId, notificationTypeName);
   }
 
   buildHeader = () => {
@@ -50,20 +50,21 @@ export class DataGrid extends Component {
     </Row>);
   }
 
-  buildBody = (data, activeRowIndex) => {
-    let rows = []
+  buildBody = (data, pageIndex, pageSize, activeRowIndex) => {
+      let rows = [];
+      let startIndex = (pageIndex - 1) * pageSize + 1;
     data.map((item, index) => 
     {
       rows.push(<Row key={`body${index}`} className={index == activeRowIndex ? 'active' : ''}>
-          <Cell className="text-center">{index + 1}</Cell>
+          <Cell className="text-center">{index + startIndex}</Cell>
           <Cell>{item.notificationTypeName}</Cell>
           <Cell>{item.recipientTypeName}</Cell>
           <Cell>{item.systemName}</Cell>
           <Cell className="text-center col-action">
             <div>
                 <span className="icon-edit" id={"edit-" + index} onClick={() => this.openEditPopup(item, index)}></span>                    
-                <UncontrolledTooltip placement="top" target={"edit-" + index}>Edit</UncontrolledTooltip>
-                <span className="icon-delete" id={"delete-" + index} onClick={() => this.openDeletePopup(index, item.notificationTypeName)}></span>
+                  <UncontrolledTooltip placement="top" target={"edit-" + index}>Edit</UncontrolledTooltip>
+                  <span className="icon-delete" id={"delete-" + index} onClick={() => this.openDeletePopup(index, item.notificationTypeId, item.notificationTypeName)}></span>
                 <UncontrolledTooltip placement="top" target={"delete-" + index}>Delete</UncontrolledTooltip>
             </div>
           </Cell>
@@ -97,7 +98,7 @@ export class DataGrid extends Component {
                     width={900}
                     autoWidth={false}
                     header={this.buildHeader()}
-                    body={this.buildBody(data, activeRowIndex)}
+                    body={this.buildBody(data, pageIndex, pageSize, activeRowIndex)}
                     isPaging={true}
                     pageOption={pagingOption}
                     onPaging={this.onPaging}

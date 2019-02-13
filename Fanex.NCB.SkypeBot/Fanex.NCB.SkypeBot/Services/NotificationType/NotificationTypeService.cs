@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Fanex.NCB.SkypeBot.BaseStorage;
+using Fanex.NCB.SkypeBot.Model.DTO;
 using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 
 namespace Fanex.NCB.SkypeBot.Services.NotificationType
@@ -26,6 +27,21 @@ namespace Fanex.NCB.SkypeBot.Services.NotificationType
         public List<RecipientType> GetRecipientTypes()
         {
             return _notificationTypeStorage.GetRecipientTypes();
+        }
+
+        public ResultModel CreateNotificationType(NotificationTypeItem item)
+        {
+            return _notificationTypeStorage.CreateNotificationType(item);
+        }
+
+        public ResultModel UpdateNotificationType(NotificationTypeItem item)
+        {
+            return _notificationTypeStorage.UpdateNotificationType(item);
+        }
+
+        public ResultModel DeleteNotificationType(int notificationTypeId)
+        {
+            return _notificationTypeStorage.DeleteNotificationType(notificationTypeId);
         }
     }
 }

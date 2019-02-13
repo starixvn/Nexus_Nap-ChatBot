@@ -10,10 +10,11 @@ export function updateActiveRowIndex(value){
 }
 
 // Delete Popup
-export function openDeletePopup(content){
+export function openDeletePopup(notificationTypeId, notificationTypeName){
     let deletePopupData = {
         isShowed: true,        
-        content: content
+        notificationTypeId: notificationTypeId,
+        content: notificationTypeName
     };
 
     return {
@@ -36,10 +37,11 @@ export function closeDeletePopup(){
 }
 
 // Update Popup
-export function openEditPopup(item){
+export function openEditPopup(item) {
     let newEditPopupData = {
         isShowed: true,
         editingItem: {
+            notificationTypeId: item.notificationTypeId,
             notificationTypeName: {
                 value: item.notificationTypeName,
                 isValid: true

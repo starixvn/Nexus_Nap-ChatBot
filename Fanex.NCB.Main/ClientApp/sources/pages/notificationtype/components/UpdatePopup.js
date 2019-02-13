@@ -12,7 +12,8 @@ export class UpdatePopup extends Component {
   constructor(props) {
     super(props);   
     
-    this.state = {      
+      this.state = {    
+        notificationTypeId: this.props.updatePopupData.editingItem.notificationTypeId,
         notificationTypeName: {
             value: this.props.updatePopupData.editingItem.notificationTypeName.value,
             isValid: this.props.updatePopupData.editingItem.notificationTypeName.isValid
@@ -46,6 +47,7 @@ export class UpdatePopup extends Component {
 
   getParams = () => {
       return {
+        notificationTypeId: this.state.notificationTypeId,
         notificationTypeName: this.state.notificationTypeName.value,
         recipientTypeId: this.state.recipientTypeId.value,
         systemId: this.state.systemId.value,

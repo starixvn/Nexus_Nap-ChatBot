@@ -46,12 +46,13 @@ export function setSettings(data){
 }
 
 // Delete
-export function deleteItem(id){ 
-    const url = '/NotificationType/Delete';   
-    var params = JSON.stringify({id: id});
-
+export function deleteItem(notificationTypeId){ 
+    const url = '/NotificationType/Delete';
+    var headers = {
+        'Content-Type': 'application/json'
+    }
     return async(dispatch) => {
-        const request = await axios.post(url, params);
+        const request = await axios.post(url, notificationTypeId, { headers: headers });
         const data = await request.data; 
         dispatch(setDeleteData(data));        
     };
@@ -76,8 +77,11 @@ export function setUpdateParams(value){
 export function update(params, isNew){
     const url = isNew ? '/NotificationType/Add' : '/NotificationType/Edit';
 
+    var headers = {
+        'Content-Type': 'application/json'     
+    }
     return async(dispatch) => {
-        const request = await axios.post(url, JSON.stringify(params));
+        const request = await axios.post(url, JSON.stringify(params), { headers: headers });
         const data = await request.data; 
         dispatch(setUpdateData({addedresult: data}));        
     };

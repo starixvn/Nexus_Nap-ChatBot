@@ -5,6 +5,7 @@ using System.Linq;
 using Dapper;
 using Fanex.NCB.Common.Services;
 using Fanex.NCB.SkypeBot.BaseStorage;
+using Fanex.NCB.SkypeBot.Model.DTO;
 using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 using MySql.Data.MySqlClient;
 
@@ -52,7 +53,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage
 
         public List<RecipientType> GetRecipientTypes()
         {
-            var setting = _dBConfigService.Get("ChatBot_System_Sel");
+            var setting = _dBConfigService.Get("ChatBot_RecipientType_Sel");
             using (var dbConnection = new MySqlConnection(setting.DBConnection))
             {
                 var data = dbConnection.Query<RecipientType>(
@@ -62,6 +63,79 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage
 
                 return data.ToList();
             }            
+        }
+
+        public ResultModel CreateNotificationType(NotificationTypeItem item)
+        {
+            var setting = _dBConfigService.Get("ChatBot_NotificationType_Ins");
+            using (var dbConnection = new MySqlConnection(setting.DBConnection))
+            {
+                DynamicParameters param = new DynamicParameters();
+                param.Add("notificationTypeName", value: item.NotificationTypeName, dbType: DbType.String);
+                param.Add("recipientTypeId", value: item.RecipientTypeId, dbType: DbType.Int32);
+                param.Add("systemId", value: item.SystemId, dbType: DbType.Int32);
+                param.Add("errorCode", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                param.Add("errorMsg", dbType: DbType.String, direction: ParameterDirection.Output, size: int.MaxValue);
+               
+                dbConnection.Execute(
+                    setting.SPName,
+                    param: param,
+                    commandType: CommandType.StoredProcedure);
+
+                return new ResultModel {
+                    ErrorCode = param.Get<int>("errorCode"),
+                    ErrorMsg = param.Get<string>("errorMsg")
+                };
+            }
+        }
+
+        public ResultModel UpdateNotificationType(NotificationTypeItem item)
+        {
+            var setting = _dBConfigService.Get("ChatBot_NotificationType_Upd");
+            using (var dbConnection = new MySqlConnection(setting.DBConnection))
+            {
+                DynamicParameters param = new DynamicParameters();
+                param.Add("id", value: item.NotificationTypeId, dbType: DbType.Int32);
+                param.Add("notificationTypeName", value: item.NotificationTypeName, dbType: DbType.String);
+                param.Add("recipientTypeId", value: item.RecipientTypeId, dbType: DbType.Int32);
+                param.Add("systemId", value: item.SystemId, dbType: DbType.Int32);
+                param.Add("errorCode", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                param.Add("errorMsg", dbType: DbType.String, direction: ParameterDirection.Output, size: int.MaxValue);
+
+                dbConnection.Execute(
+                    setting.SPName,
+                    param: param,
+                    commandType: CommandType.StoredProcedure);
+
+                return new ResultModel
+                {
+                    ErrorCode = param.Get<int>("errorCode"),
+                    ErrorMsg = param.Get<string>("errorMsg")
+                };
+            }
+        }
+
+        public ResultModel DeleteNotificationType(int notificationTypeId)
+        {
+            var setting = _dBConfigService.Get("ChatBot_NotificationType_Del");
+            using (var dbConnection = new MySqlConnection(setting.DBConnection))
+            {
+                DynamicParameters param = new DynamicParameters();
+                param.Add("notificationTypeId", value: notificationTypeId, dbType: DbType.Int32);                
+                param.Add("errorCode", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                param.Add("errorMsg", dbType: DbType.String, direction: ParameterDirection.Output, size: int.MaxValue);
+
+                dbConnection.Execute(
+                    setting.SPName,
+                    param: param,
+                    commandType: CommandType.StoredProcedure);
+
+                return new ResultModel
+                {
+                    ErrorCode = param.Get<int>("errorCode"),
+                    ErrorMsg = param.Get<string>("errorMsg")
+                };
+            }
         }
     }
 }

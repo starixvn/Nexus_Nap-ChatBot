@@ -1,4 +1,5 @@
 using System.Linq;
+using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 using Fanex.NCB.SkypeBot.Services.NotificationType;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,18 +30,25 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpPost]
-        public IActionResult Delete(int id){
-            return Json(true);
+        public IActionResult Delete([FromBody] int notificationTypeId){
+            var result = _notificationTypeService.DeleteNotificationType(notificationTypeId);
+
+            return Json(result);
         }
 
         [HttpPost]
-        public IActionResult Add(object param){
-            return Json(true);
+        public IActionResult Add([FromBody] NotificationTypeItem item){
+            var result =_notificationTypeService.CreateNotificationType(item);
+
+            return Json(result);
         }
 
         [HttpPost]
-        public IActionResult Edit(object param){
-            return Json(true);
+        public IActionResult Edit([FromBody] NotificationTypeItem item)
+        {
+            var result = _notificationTypeService.UpdateNotificationType(item);
+
+            return Json(result);
         }
 
         [HttpGet]

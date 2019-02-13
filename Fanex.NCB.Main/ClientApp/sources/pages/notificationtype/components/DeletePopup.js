@@ -11,9 +11,8 @@ export class DeletePopup extends Component {
   }
 
   confirmHandler = (isYes) => {
-    var id = 1;
     isYes 
-        ? this.props.deleteItem(id).then(this.props.closeDeletePopupHandler)
+        ? this.props.deleteItem(this.props.deletePopupData.notificationTypeId).then(this.props.closeDeletePopupHandler)
         : this.props.closeDeletePopupHandler();
   }
   
