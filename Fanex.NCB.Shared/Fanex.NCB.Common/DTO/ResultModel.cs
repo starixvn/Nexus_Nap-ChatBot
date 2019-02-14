@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fanex.NCB.SkypeBot.Model.DTO
+namespace Fanex.NCB.Common.DTO
 {
     public class ResultModel
     {

@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Fanex.NCB.Shared\Fanex.NCB.Common\Fanex.NCB.Common.csproj" />
     <ProjectReference Include="..\Fanex.NCB.SkypeBot.Model\Fanex.NCB.SkypeBot.Model.csproj" />
   </ItemGroup>
 

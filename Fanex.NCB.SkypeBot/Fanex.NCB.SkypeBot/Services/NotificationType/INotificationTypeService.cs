@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Fanex.NCB.Common.DTO;
 using Fanex.NCB.SkypeBot.Model.DTO;
 using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 
