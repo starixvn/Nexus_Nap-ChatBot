@@ -144,7 +144,7 @@ body {
     text-decoration: none; }
 
 .badge-green, .badge-blue, .badge-red, .badge-orange, .badge-grey {
-  padding: 4px 8px;
+  padding: 1px 5px;
   border-radius: 3px;
   color: #fff;
   white-space: nowrap; }
