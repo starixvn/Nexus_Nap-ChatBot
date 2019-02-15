@@ -27,6 +27,7 @@ namespace Fanex.NCB.Main
                      config.SetBasePath(env.ContentRootPath);
                      config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
                      config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                     config.AddJsonFile($"App_Data\\StoredProcedures\\SpName.{env.EnvironmentName}.json", optional: false, reloadOnChange: true);
 
                      config.AddEnvironmentVariables();
                  })

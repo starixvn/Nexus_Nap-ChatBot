@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fanex.NCB.SkypeBot.MySQLStorage.DataDomain
+namespace Fanex.NCB.Shared.MySQLExtension.DataDomain
 {
-    class DataConfig
+    public class DataConfig
     {
-        public List<SPList> SPList { get; set; }
+        public string DBName { get; set; }
+
+        public string Connection { get; set; }
+
+        public List<SPConfig> SPList { get; set; }
+
     }
 }

@@ -7,6 +7,6 @@ namespace Fanex.NCB.Shared.MySQLExtension.Services
 {
     public interface IDBConfigService
     {
-        DBSetting Get(string key);
+        DBSetting GetSPConfig(string dbName, string spKey);
     }
 }

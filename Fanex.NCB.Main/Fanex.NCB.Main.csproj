@@ -48,27 +48,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="App_Data\StoredProcedures\SpName.DEV.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="App_Data\StoredProcedures\SpName.LOCAL.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="App_Data\StoredProcedures\SpName.MNL.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="App_Data\StoredProcedures\SpName.PRO.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="App_Data\StoredProcedures\SpName.SANDBOX.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="App_Data\StoredProcedures\SpName.SIT.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="App_Data\StoredProcedures\SpName.UAT.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="App_Data\StoredProcedures\SpName.xml.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>SpName.xml.txt</LastGenOutput>

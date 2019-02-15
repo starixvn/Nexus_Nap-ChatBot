@@ -1,0 +1,34 @@
+{
+  "SPName": [
+    {
+      "DBName": "ChatBotDB",
+      "Connection": "Server=10.18.200.236;Port=3307;Database=ChatBot;Uid=scofield.huynh;Pwd=1234AA;",
+      "SPList": [
+        {
+          "SPKey": "ChatBot_NotificationType_Sel",
+          "SPName": "ChatBot_NotificationType_Sel"
+        },
+        {
+          "SPKey": "ChatBot_System_Sel",
+          "SPName": "ChatBot_System_Sel"
+        },
+        {
+          "SPKey": "ChatBot_RecipientType_Sel",
+          "SPName": "ChatBot_RecipientType_Sel"
+        },
+        {
+          "SPKey": "ChatBot_NotificationType_Ins",
+          "SPName": "ChatBot_NotificationType_Ins"
+        },
+        {
+          "SPKey": "ChatBot_NotificationType_Upd",
+          "SPName": "ChatBot_NotificationType_Upd"
+        },
+        {
+          "SPKey": "ChatBot_NotificationType_Del",
+          "SPName": "ChatBot_NotificationType_Del"
+        }
+      ]
+    }
+  ]
+}

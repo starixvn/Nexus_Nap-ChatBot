@@ -10,10 +10,10 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
 {
     public interface IBaseStorage
     {
-        Task<List<T>> QueryAsync<T>(string key, object param = null);
+        Task<List<T>> QueryAsync<T>(string key, object param = null, string dbName = "ChatBotDB");
 
-        Task<Tuple<T1, List<T2>>> QueryMultipleAsync<T1, T2>(string key, object param = null);
+        Task<Tuple<T1, List<T2>>> QueryMultipleAsync<T1, T2>(string key, object param = null, string dbName = "ChatBotDB");
 
-        Task<ResultModel> ExecuteAsync(string key, DynamicParameters param);
+        Task<ResultModel> ExecuteAsync(string key, DynamicParameters param, string dbName = "ChatBotDB");
     }
 }

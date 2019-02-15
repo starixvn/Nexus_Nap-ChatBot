@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Fanex.NCB.Bot.SkypeClient;
 using Fanex.NCB.Core.Models.DataDomain;
 using Fanex.NCB.Core.Services;
+using Fanex.NCB.Shared.MySQLExtension.DataDomain;
 using Fanex.NCB.Shared.MySQLExtension.DTO;
 using Fanex.NCB.Shared.MySQLExtension.Services;
 using Fanex.NCB.SkypeBot.App_Start;
@@ -39,6 +40,8 @@ namespace Fanex.NCB.Main
             //});
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<List<DataConfig>>(Configuration.GetSection("SPName"));
+            //var spName = Configuration.GetSection("SPName").Get<List<DataConfig>>();
 
             services.AddDistributedRedisCache(options =>
             {
@@ -77,10 +80,11 @@ namespace Fanex.NCB.Main
             services.AddTransient<IBotClient, BotClient>(_ => 
             new BotClient(appSetting["MicrosoftAppId"], appSetting["MicrosoftAppPassword"]));
 
-            
-            var connectionStrings  = Configuration.GetSection("AppSettings:ConnectionStrings").Get<ConnectionStrings>();
-            var storedProcedurePath = Configuration.GetValue<string>("AppSettings:StoredProcedurePath");
-            services.AddTransient<IDBConfigService, DBConfigService>(_ => new DBConfigService(storedProcedurePath, connectionStrings));
+
+            //var spName = Configuration.GetSection("SPName").Get<List<DataConfig>>();
+            //var connectionStrings  = Configuration.GetSection("AppSettings:ConnectionStrings").Get<ConnectionStrings>();
+            //var storedProcedurePath = Configuration.GetValue<string>("AppSettings:StoredProcedurePath");
+            services.AddTransient<IDBConfigService, DBConfigService>();// (_ => new DBConfigService(storedProcedurePath, connectionStrings));
 
             InitializeModules(services);
         }
