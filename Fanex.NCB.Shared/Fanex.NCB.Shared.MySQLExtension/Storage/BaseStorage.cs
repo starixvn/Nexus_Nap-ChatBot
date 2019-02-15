@@ -7,14 +7,23 @@ using System.Threading.Tasks;
 using Dapper;
 using Fanex.NCB.Common.DTO;
 using Fanex.NCB.Shared.MySQLExtension.DTO;
+using Fanex.NCB.Shared.MySQLExtension.Services;
 using MySql.Data.MySqlClient;
 
 namespace Fanex.NCB.Shared.MySQLExtension.Storage
 {
     public class BaseStorage : IBaseStorage
     {
-        public async Task<ResultModel> ExecuteAsync(DynamicParameters param, DBSetting dbSetting)
+        private readonly IDBConfigService _dBConfigService;
+
+        public BaseStorage(IDBConfigService dBConfigService)
         {
+            _dBConfigService = dBConfigService;
+        }
+
+        public async Task<ResultModel> ExecuteAsync(string key, DynamicParameters param)
+        {
+            DBSetting dbSetting = _dBConfigService.Get(key);
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
             {
                 param.Add("errorCode", dbType: DbType.Int32, direction: ParameterDirection.Output);
@@ -33,8 +42,9 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
             }
         }
 
-        public async Task<List<T>> QueryAsync<T>(object param, DBSetting dbSetting)
+        public async Task<List<T>> QueryAsync<T>(string key, object param = null)
         {
+            DBSetting dbSetting = _dBConfigService.Get(key);
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
             {
                 var data = await dbConnection.QueryAsync<T>(
@@ -46,8 +56,9 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
             }
         }
       
-        public async Task<Tuple<T1, List<T2>>> QueryMultipleAsync<T1, T2>(object param, DBSetting dbSetting)
+        public async Task<Tuple<T1, List<T2>>> QueryMultipleAsync<T1, T2>(string key, object param = null)
         {
+            DBSetting dbSetting = _dBConfigService.Get(key);
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
             {
                 var reader = await dbConnection.QueryMultipleAsync(
