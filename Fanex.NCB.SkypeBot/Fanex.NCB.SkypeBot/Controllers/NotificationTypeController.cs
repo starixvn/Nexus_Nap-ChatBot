@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 using Fanex.NCB.SkypeBot.Services.NotificationType;
 using Microsoft.AspNetCore.Authorization;
@@ -18,44 +19,44 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpGet]
         public IActionResult Index()
-        {            
+        {
             return View("~/Views/SkypeBot/NotificationType/Index.cshtml");
-        }    
+        }
 
         [HttpGet]
-        public IActionResult GetAll(int pageIndex, int pageSize){
-            var data = _notificationTypeService.GetNotificationTypeList(pageIndex, pageSize);           
+        public async Task<IActionResult> GetAll(int pageIndex, int pageSize){
+            var data = await _notificationTypeService.GetNotificationTypeListAsync(pageIndex, pageSize);           
 
             return Json(data);
         }
 
         [HttpPost]
-        public IActionResult Delete([FromBody] int notificationTypeId){
-            var result = _notificationTypeService.DeleteNotificationType(notificationTypeId);
+        public async Task<IActionResult> Delete([FromBody] int notificationTypeId){
+            var result = await _notificationTypeService.DeleteNotificationTypeAsync(notificationTypeId);
 
             return Json(result);
         }
 
         [HttpPost]
-        public IActionResult Add([FromBody] NotificationTypeItem item){
-            var result =_notificationTypeService.CreateNotificationType(item);
+        public async Task<IActionResult> Add([FromBody] NotificationTypeItem item){
+            var result = await _notificationTypeService.CreateNotificationTypeAsync(item);
 
             return Json(result);
         }
 
         [HttpPost]
-        public IActionResult Edit([FromBody] NotificationTypeItem item)
+        public async Task<IActionResult> Edit([FromBody] NotificationTypeItem item)
         {
-            var result = _notificationTypeService.UpdateNotificationType(item);
+            var result = await _notificationTypeService.UpdateNotificationTypeAsync(item);
 
             return Json(result);
         }
 
         [HttpGet]
-        public IActionResult GetSettings(){
+        public async Task<IActionResult> GetSettings(){
             var result = new {
-                recipientTypes = _notificationTypeService.GetRecipientTypes(),
-                notificationSystems = _notificationTypeService.GetNotificationSystems()
+                recipientTypes = await _notificationTypeService.GetRecipientTypesAsync(),
+                notificationSystems = await _notificationTypeService.GetNotificationSystemsAsync()
             };
 
             return Json(result);

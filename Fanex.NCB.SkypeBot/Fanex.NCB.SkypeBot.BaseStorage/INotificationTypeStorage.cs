@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Fanex.NCB.Common.DTO;
 using Fanex.NCB.SkypeBot.Model.DTO;
 using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
@@ -7,16 +8,16 @@ namespace Fanex.NCB.SkypeBot.BaseStorage
 {
     public interface INotificationTypeStorage
     {
-        NotificationTypeListResultModel GetNotificationTypeList(int pageIndex, int pageSize);
+        Task<NotificationTypeListResultModel> GetNotificationTypeListAsync(int pageIndex, int pageSize);
 
-        List<RecipientType> GetRecipientTypes();
+        Task<List<RecipientType>> GetRecipientTypesAsync();
 
-        List<NotificationSystem> GetNotificationSystems();
+        Task<List<NotificationSystem>> GetNotificationSystemsAsync();
 
-        ResultModel CreateNotificationType(NotificationTypeItem item);
+        Task<ResultModel> CreateNotificationTypeAsync(NotificationTypeItem item);
 
-        ResultModel UpdateNotificationType(NotificationTypeItem item);
+        Task<ResultModel> UpdateNotificationTypeAsync(NotificationTypeItem item);
 
-        ResultModel DeleteNotificationType(int notificationTypeId);
+        Task<ResultModel> DeleteNotificationTypeAsync(int notificationTypeId);
     }
 }

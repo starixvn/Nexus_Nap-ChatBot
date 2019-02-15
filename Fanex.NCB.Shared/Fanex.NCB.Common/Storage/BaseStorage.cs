@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Dapper;
 using Fanex.NCB.Common.DTO;
 using MySql.Data.MySqlClient;
@@ -11,14 +12,14 @@ namespace Fanex.NCB.Common.Storage
 {
     public class BaseStorage : IBaseStorage
     {
-        public ResultModel Execute(DynamicParameters param, DBSetting dbSetting)
+        public async Task<ResultModel> ExecuteAsync(DynamicParameters param, DBSetting dbSetting)
         {
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
-            {               
+            {
                 param.Add("errorCode", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 param.Add("errorMsg", dbType: DbType.String, direction: ParameterDirection.Output, size: int.MaxValue);
 
-                dbConnection.Execute(
+                await dbConnection.ExecuteAsync(
                     dbSetting.SPName,
                     param: param,
                     commandType: CommandType.StoredProcedure);
@@ -31,11 +32,11 @@ namespace Fanex.NCB.Common.Storage
             }
         }
 
-        public List<T> Query<T>(object param, DBSetting dbSetting)
+        public async Task<List<T>> QueryAsync<T>(object param, DBSetting dbSetting)
         {
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
             {
-                var data = dbConnection.Query<T>(
+                var data = await dbConnection.QueryAsync<T>(
                     dbSetting.SPName,
                     param: param,
                     commandType: CommandType.StoredProcedure);
@@ -43,12 +44,12 @@ namespace Fanex.NCB.Common.Storage
                 return data.ToList();
             }
         }
-
-        public Tuple<T1, List<T2>> QueryMultiple<T1, T2>(object param, DBSetting dbSetting)
+      
+        public async Task<Tuple<T1, List<T2>>> QueryMultipleAsync<T1, T2>(object param, DBSetting dbSetting)
         {
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
             {
-                var reader = dbConnection.QueryMultiple(
+                var reader = await dbConnection.QueryMultipleAsync(
                     dbSetting.SPName,
                     param: param,
                     commandType: CommandType.StoredProcedure);

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Fanex.NCB.Common.DTO;
 using Fanex.NCB.SkypeBot.BaseStorage;
 using Fanex.NCB.SkypeBot.Model.DTO;
@@ -14,35 +15,34 @@ namespace Fanex.NCB.SkypeBot.Services.NotificationType
             _notificationTypeStorage = notificationTypeStorage;
         }
 
-        public NotificationTypeListResultModel GetNotificationTypeList(int pageIndex, int pageSize)
+        public async Task<NotificationTypeListResultModel> GetNotificationTypeListAsync(int pageIndex, int pageSize)
         {
-            return _notificationTypeStorage.GetNotificationTypeList(pageIndex, pageSize);
-          
+            return await _notificationTypeStorage.GetNotificationTypeListAsync(pageIndex, pageSize);          
         }
 
-        public List<NotificationSystem> GetNotificationSystems()
+        public async Task<List<NotificationSystem>> GetNotificationSystemsAsync()
         {
-            return _notificationTypeStorage.GetNotificationSystems();
+            return await _notificationTypeStorage.GetNotificationSystemsAsync();
         }
 
-        public List<RecipientType> GetRecipientTypes()
+        public async Task<List<RecipientType>> GetRecipientTypesAsync()
         {
-            return _notificationTypeStorage.GetRecipientTypes();
+            return await _notificationTypeStorage.GetRecipientTypesAsync();
         }
 
-        public ResultModel CreateNotificationType(NotificationTypeItem item)
+        public async Task<ResultModel> CreateNotificationTypeAsync(NotificationTypeItem item)
         {
-            return _notificationTypeStorage.CreateNotificationType(item);
+            return await _notificationTypeStorage.CreateNotificationTypeAsync(item);
         }
 
-        public ResultModel UpdateNotificationType(NotificationTypeItem item)
+        public async Task<ResultModel> UpdateNotificationTypeAsync(NotificationTypeItem item)
         {
-            return _notificationTypeStorage.UpdateNotificationType(item);
+            return await _notificationTypeStorage.UpdateNotificationTypeAsync(item);
         }
 
-        public ResultModel DeleteNotificationType(int notificationTypeId)
+        public async Task<ResultModel> DeleteNotificationTypeAsync(int notificationTypeId)
         {
-            return _notificationTypeStorage.DeleteNotificationType(notificationTypeId);
+            return await _notificationTypeStorage.DeleteNotificationTypeAsync(notificationTypeId);
         }
     }
 }

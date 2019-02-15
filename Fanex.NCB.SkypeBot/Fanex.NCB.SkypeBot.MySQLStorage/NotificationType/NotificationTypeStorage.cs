@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Fanex.NCB.SkypeBot.MySQLStorage.NotificationType
 {
@@ -22,30 +23,30 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.NotificationType
             _baseStorage = baseStorage;
         }
 
-        public NotificationTypeListResultModel GetNotificationTypeList(int pageIndex, int pageSize)
+        public async Task<NotificationTypeListResultModel> GetNotificationTypeListAsync(int pageIndex, int pageSize)
         {
             var dbSetting = _dBConfigService.Get("ChatBot_NotificationType_Sel");
             var param = new { pageIndex, pageSize };
-            var resultSets = _baseStorage.QueryMultiple<int, NotificationTypeItem>(param, dbSetting);
+            var resultSets = await _baseStorage.QueryMultipleAsync<int, NotificationTypeItem>(param, dbSetting);
 
             return new NotificationTypeListResultModel { Count = resultSets.Item1, Data = resultSets.Item2 };
         }
 
-        public List<NotificationSystem> GetNotificationSystems()
+        public async Task<List<NotificationSystem>> GetNotificationSystemsAsync()
         {
-            var dbSetting = _dBConfigService.Get("ChatBot_System_Sel");
+            var dbSetting =  _dBConfigService.Get("ChatBot_System_Sel");
 
-            return _baseStorage.Query<NotificationSystem>(null, dbSetting);
+            return await _baseStorage.QueryAsync<NotificationSystem>(null, dbSetting);
         }
 
-        public List<RecipientType> GetRecipientTypes()
+        public async Task<List<RecipientType>> GetRecipientTypesAsync()
         {
             var dbSetting = _dBConfigService.Get("ChatBot_RecipientType_Sel");
 
-            return _baseStorage.Query<RecipientType>(null, dbSetting);
+            return await _baseStorage.QueryAsync<RecipientType>(null, dbSetting);
         }
 
-        public ResultModel CreateNotificationType(NotificationTypeItem item)
+        public async Task<ResultModel> CreateNotificationTypeAsync(NotificationTypeItem item)
         {
             var dbSetting = _dBConfigService.Get("ChatBot_NotificationType_Ins");
             DynamicParameters param = new DynamicParameters();
@@ -53,10 +54,10 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.NotificationType
             param.Add("recipientTypeId", value: item.RecipientTypeId, dbType: DbType.Int32);
             param.Add("systemId", value: item.SystemId, dbType: DbType.Int32);
 
-            return _baseStorage.Execute(param, dbSetting);
+            return await _baseStorage.ExecuteAsync(param, dbSetting);
         }
 
-        public ResultModel UpdateNotificationType(NotificationTypeItem item)
+        public async Task<ResultModel> UpdateNotificationTypeAsync(NotificationTypeItem item)
         {
             var dbSetting = _dBConfigService.Get("ChatBot_NotificationType_Upd");
             DynamicParameters param = new DynamicParameters();
@@ -65,16 +66,16 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.NotificationType
             param.Add("recipientTypeId", value: item.RecipientTypeId, dbType: DbType.Int32);
             param.Add("systemId", value: item.SystemId, dbType: DbType.Int32);
 
-            return _baseStorage.Execute(param, dbSetting);
+            return await _baseStorage.ExecuteAsync(param, dbSetting);
         }
 
-        public ResultModel DeleteNotificationType(int notificationTypeId)
+        public async Task<ResultModel> DeleteNotificationTypeAsync(int notificationTypeId)
         {
             var dbSetting = _dBConfigService.Get("ChatBot_NotificationType_Del");
             DynamicParameters param = new DynamicParameters();
             param.Add("notificationTypeId", value: notificationTypeId, dbType: DbType.Int32);
 
-            return _baseStorage.Execute(param, dbSetting);
+            return await _baseStorage.ExecuteAsync(param, dbSetting);
         }
     }
 }
