@@ -48,18 +48,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="App_Data\StoredProcedures\SpName.xml.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SpName.xml.txt</LastGenOutput>
-    </None>
-    <None Update="App_Data\StoredProcedures\SpName.xml.txt">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SpName.xml.tt</DependentUpon>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
