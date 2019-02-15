@@ -1,4 +1,4 @@
-using Fanex.NCB.Common.Storage;
+using Fanex.NCB.Shared.MySQLExtension.Storage;
 using Fanex.NCB.SkypeBot.BaseStorage;
 using Fanex.NCB.SkypeBot.MySQLStorage;
 using Fanex.NCB.SkypeBot.MySQLStorage.NotificationType;
@@ -21,7 +21,7 @@ namespace Fanex.NCB.SkypeBot.App_Start
         {
             //dynamic loading DLL and register (implement later)
             services.AddTransient<INotificationTypeStorage, NotificationTypeStorage>();
-            services.AddTransient<IBaseStorage, Common.Storage.BaseStorage>();
+            services.AddTransient<IBaseStorage, Shared.MySQLExtension.Storage.BaseStorage>();
         }
     }
 }

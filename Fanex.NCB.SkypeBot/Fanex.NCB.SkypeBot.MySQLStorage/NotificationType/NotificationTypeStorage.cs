@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Fanex.NCB.Common.DTO;
-using Fanex.NCB.Common.Services;
-using Fanex.NCB.Common.Storage;
+using Fanex.NCB.Shared.MySQLExtension.Services;
+using Fanex.NCB.Shared.MySQLExtension.Storage;
 using Fanex.NCB.SkypeBot.BaseStorage;
 using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 using System;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
+using Fanex.NCB.Common.DTO;
 using Fanex.NCB.Shared.MySQLExtension.DTO;
 using MySql.Data.MySqlClient;
 

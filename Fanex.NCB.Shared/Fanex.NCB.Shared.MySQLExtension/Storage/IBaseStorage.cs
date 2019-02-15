@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Fanex.NCB.Common.DTO;
 using Fanex.NCB.Shared.MySQLExtension.DTO;
 using System;
 using System.Collections.Generic;
