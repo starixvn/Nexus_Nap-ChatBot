@@ -16,6 +16,7 @@ echo %mypath%
 
 call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.SkypeBot\Fanex.NCB.SkypeBot.UnitTests
 call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.Core\Fanex.NCB.Core.UnitTests
+call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.SkypeBot\Fanex.NCB.SkypeBot.MySQLStorage.UnitTests
 call CodeCoverage\run_netframework.bat %build_number% Fanex.NCB.Swagger\Fanex.NCB.Swagger.AuthGate.UnitTests\bin\Debug\Fanex.NCB.Swagger.AuthGate.UnitTests.dll
 
 REM ReportGenerator

@@ -63,9 +63,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest", "UnitTest", "{81
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Skype", "Skype", "{74BCECA2-2DDA-4827-B883-A0CF55DD6337}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Shared.MySQLExtension", "Fanex.NCB.Shared\Fanex.NCB.Shared.MySQLExtension\Fanex.NCB.Shared.MySQLExtension.csproj", "{1135E751-34D4-4013-A610-D541FFBD9AF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Shared.MySQLExtension", "Fanex.NCB.Shared\Fanex.NCB.Shared.MySQLExtension\Fanex.NCB.Shared.MySQLExtension.csproj", "{1135E751-34D4-4013-A610-D541FFBD9AF6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.SkypeBot.MySQLStorage.UnitTests", "Fanex.NCB.SkypeBot\Fanex.NCB.SkypeBot.MySQLStorage.UnitTests\Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.csproj", "{B76CFE07-7D5B-4663-9519-952EF1A9FAD3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.SkypeBot.MySQLStorage.UnitTests", "Fanex.NCB.SkypeBot\Fanex.NCB.SkypeBot.MySQLStorage.UnitTests\Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.csproj", "{8EA9313A-38A0-4CBC-BF33-F93831A9FBBD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -165,10 +165,10 @@ Global
 		{1135E751-34D4-4013-A610-D541FFBD9AF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1135E751-34D4-4013-A610-D541FFBD9AF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1135E751-34D4-4013-A610-D541FFBD9AF6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B76CFE07-7D5B-4663-9519-952EF1A9FAD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B76CFE07-7D5B-4663-9519-952EF1A9FAD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B76CFE07-7D5B-4663-9519-952EF1A9FAD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B76CFE07-7D5B-4663-9519-952EF1A9FAD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EA9313A-38A0-4CBC-BF33-F93831A9FBBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EA9313A-38A0-4CBC-BF33-F93831A9FBBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EA9313A-38A0-4CBC-BF33-F93831A9FBBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EA9313A-38A0-4CBC-BF33-F93831A9FBBD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -198,7 +198,7 @@ Global
 		{81AA8198-6DBC-434D-991A-59B5568DA59F} = {BB99D980-0EFC-43C6-85E6-D0F563281A9F}
 		{74BCECA2-2DDA-4827-B883-A0CF55DD6337} = {BB99D980-0EFC-43C6-85E6-D0F563281A9F}
 		{1135E751-34D4-4013-A610-D541FFBD9AF6} = {5DF83945-D47B-4DCC-AD98-8FF66442EE80}
-		{B76CFE07-7D5B-4663-9519-952EF1A9FAD3} = {C3563B54-7DED-4D4A-A349-6A8DB14956AC}
+		{8EA9313A-38A0-4CBC-BF33-F93831A9FBBD} = {C3563B54-7DED-4D4A-A349-6A8DB14956AC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37A2AE26-EFD0-4EE5-89D6-E3D42A9AEF67}
