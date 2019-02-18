@@ -5,7 +5,7 @@
     {
       "type": "endpoint",
       "name": "bot1 development",
-      "endpoint": "http://localhost:56288/bot1",
+      "endpoint": "https://licbot.nexdev.net/bot1",
       "appId": "ea8d17a4-16c8-43b3-a1a8-ade5277dbd24",
       "appPassword": "qoudDD4+$fdkQJTBU0646[?",
       "id": "1"
