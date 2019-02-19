@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace Fanex.NCB.Bot.Skype.UnitTests
+namespace Fanex.NCB.Bot.SkypeClient.UnitTests
 {
     public class UnitTest1
     {

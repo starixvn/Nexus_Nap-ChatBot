@@ -25,7 +25,7 @@ namespace Fanex.NCB.Shared.MySQLExtension.Services
             {
                 Key = spKey,
                 DBConnection = db.Connection,
-                SPName = db.SPList.FirstOrDefault(i => i.SPKey == spKey).SPName
+                SPName = db.SPList.Find(i => i.SPKey == spKey)?.SPName
             };
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Fanex.NCB.Bot.Skype;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Configuration;
@@ -51,7 +52,8 @@ namespace Fanex.NCB.Bot.Main
                 throw new InvalidOperationException(msg);
             }
 
-            services.AddSingleton(sp => botConfig);
+            services.AddSingleton(_ => botConfig);
+            DIConfiguration.Init(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

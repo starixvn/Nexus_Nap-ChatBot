@@ -20,4 +20,10 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Fanex.NCB.Bot.BaseStorage\Fanex.NCB.Bot.BaseStorage.csproj" />
+    <ProjectReference Include="..\Fanex.NCB.Bot.Models\Fanex.NCB.Bot.Models.csproj" />
+    <ProjectReference Include="..\Fanex.NCB.Bot.MySQLStorage\Fanex.NCB.Bot.MySQLStorage.csproj" />
+  </ItemGroup>
+
 </Project>

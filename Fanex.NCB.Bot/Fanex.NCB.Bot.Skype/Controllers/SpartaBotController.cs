@@ -13,11 +13,11 @@ using Microsoft.Bot.Schema;
 namespace Fanex.NCB.Bot.Skype.Controllers
 {
     [Route("bot1")]
-    public class Bot1Controller : ActivityControllerBase
+    public class SpartaBotController : ActivityControllerBase
     {
         private readonly BotConfiguration _botConfig;
 
-        public Bot1Controller(BotConfiguration botConfig)
+        public SpartaBotController(BotConfiguration botConfig)
         {
             _botConfig = botConfig;
         }
