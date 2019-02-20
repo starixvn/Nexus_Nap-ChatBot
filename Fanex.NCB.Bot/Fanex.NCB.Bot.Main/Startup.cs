@@ -53,7 +53,7 @@ namespace Fanex.NCB.Bot.Main
             }
 
             services.AddSingleton(_ => botConfig);
-            DIConfiguration.Init(services);
+            SkypeBotDI.Init(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -13,40 +13,115 @@ namespace Fanex.NCB.Bot.Skype.Controllers
     {
         protected override Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            if (turnContext.Activity.Type == ActivityTypes.Message)
+            switch (turnContext.Activity.Type)
             {
-                return OnMessageActivityAsync(turnContext, cancellationToken);
+                case ActivityTypes.Message:
+
+                    return OnMessageActivityAsync(turnContext, cancellationToken);
+                case ActivityTypes.ConversationUpdate:
+                    return OnConversationUpdateActivityAsync(turnContext, cancellationToken);
+                case ActivityTypes.ContactRelationUpdate:
+                    return OnContactRelationUpdateActivityAsync(turnContext, cancellationToken);
+                default:
+                    return OnOtherActivityAsync(turnContext, cancellationToken);
             }
-            else if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate)
+
+        }
+
+        protected virtual async Task OnContactRelationUpdateActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
+        {
+            if (turnContext.Activity.MembersAdded != null)
             {
-                return OnConversationUpdateActivityAsync(turnContext, cancellationToken);
+                foreach (var member in turnContext.Activity.MembersAdded)
+                {
+                    await OnContactBotAddedAsync(member, turnContext, cancellationToken);
+                }
             }
-            else if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate)
+
+            if (turnContext.Activity.MembersRemoved != null)
             {
-                return OnConversationUpdateActivityAsync(turnContext, cancellationToken);
-            }
-            else
-            {
-                return OnOtherActivityAsync(turnContext, cancellationToken);
+                foreach (var member in turnContext.Activity.MembersRemoved)
+                {
+                    await OnContactBotRemovedAsync(member, turnContext, cancellationToken);
+                }
             }
         }
+
+        private Task OnContactBotAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected virtual Task OnContactBotRemovedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
         protected virtual Task OnMessageActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
         }
-        protected virtual async Task OnConversationUpdateActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
+        private async Task OnConversationUpdateActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
+            var isUpdatedMember = false;
+            if (turnContext.Activity.MembersRemoved != null)
+            {
+                isUpdatedMember = true;
+                foreach (var member in turnContext.Activity.MembersRemoved)
+                {
+                    if (member.Id == turnContext.Activity.Recipient.Id)
+                    {
+                        await OnBotRemovedAsync(member, turnContext, cancellationToken);
+                    }
+                    else
+                    {
+                        await OnMembeRemovedAsync(member, turnContext, cancellationToken);
+                    }
+                }
+            }
+
             if (turnContext.Activity.MembersAdded != null)
             {
+                isUpdatedMember = true;
+
                 foreach (var member in turnContext.Activity.MembersAdded)
                 {
                     if (member.Id != turnContext.Activity.Recipient.Id)
                     {
                         await OnMemberAddedAsync(member, turnContext, cancellationToken);
                     }
+                    else
+                    {
+                        await OnBotAddedAsync(member, turnContext, cancellationToken);
+                    }
                 }
             }
+
+            if (!isUpdatedMember)
+            {
+               await OnUpdatedTopic(turnContext, cancellationToken);
+            }
         }
+
+        protected virtual Task OnUpdatedTopic(ITurnContext turnContext, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        private Task OnBotRemovedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        protected virtual Task OnBotAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+        protected virtual Task OnMembeRemovedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
         protected virtual Task OnMemberAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;

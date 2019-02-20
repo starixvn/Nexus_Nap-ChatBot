@@ -4,11 +4,15 @@
   "services": [
     {
       "type": "endpoint",
-      "name": "bot1 development",
-      "endpoint": "https://licbot.nexdev.net/bot1",
+      "name": "SpartaBot development",
+      "endpoint": "https://licbot.nexdev.net/SpartaBot",
       "appId": "ea8d17a4-16c8-43b3-a1a8-ade5277dbd24",
       "appPassword": "qoudDD4+$fdkQJTBU0646[?",
-      "id": "1"
+      "id": "1",
+      "Skype": {
+        "BotId": "28:ea8d17a4-16c8-43b3-a1a8-ade5277dbd24",
+        "Name": "SpartaBot"
+      }
     },
     {
       "type": "endpoint",

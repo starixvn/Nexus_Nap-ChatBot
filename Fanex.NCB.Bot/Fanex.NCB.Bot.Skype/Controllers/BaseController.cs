@@ -31,37 +31,44 @@ namespace Fanex.NCB.Bot.Skype.Controllers
         [HttpPost]
         public async Task PostAsync()
         {
-            var activity = default(Activity);
-
-            using (var bodyReader = new JsonTextReader(new StreamReader(Request.Body, Encoding.UTF8)))
+            try
             {
-                activity = BotMessageSerializer.Deserialize<Activity>(bodyReader);
-            }
+                var activity = default(Activity);
 
-            var botFrameworkAdapter = CreateAdapter();
+                using (var bodyReader = new JsonTextReader(new StreamReader(Request.Body, Encoding.UTF8)))
+                {                  
+                    activity = BotMessageSerializer.Deserialize<Activity>(bodyReader);
+                }
 
-            var invokeResponse = await botFrameworkAdapter.ProcessActivityAsync(
-                Request.Headers["Authorization"],
-                activity,
-                OnTurnAsync,
-                default(CancellationToken));
+                var botFrameworkAdapter = CreateAdapter();
 
-            if (invokeResponse == null)
-            {
-                Response.StatusCode = (int)HttpStatusCode.OK;
-            }
-            else
-            {
-                Response.ContentType = "application/json";
-                Response.StatusCode = invokeResponse.Status;
+                var invokeResponse = await botFrameworkAdapter.ProcessActivityAsync(
+                    Request.Headers["Authorization"],
+                    activity,
+                    OnTurnAsync,
+                    default(CancellationToken));
 
-                using (var writer = new StreamWriter(Response.Body))
+                if (invokeResponse == null)
                 {
-                    using (var jsonWriter = new JsonTextWriter(writer))
+                    Response.StatusCode = (int)HttpStatusCode.OK;
+                }
+                else
+                {
+                    Response.ContentType = "application/json";
+                    Response.StatusCode = invokeResponse.Status;
+
+                    using (var writer = new StreamWriter(Response.Body))
                     {
-                        BotMessageSerializer.Serialize(jsonWriter, invokeResponse.Body);
+                        using (var jsonWriter = new JsonTextWriter(writer))
+                        {
+                            BotMessageSerializer.Serialize(jsonWriter, invokeResponse.Body);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
