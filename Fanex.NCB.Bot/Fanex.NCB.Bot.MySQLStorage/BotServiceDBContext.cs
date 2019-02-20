@@ -36,6 +36,7 @@ namespace Fanex.NCB.Bot.MySQLStorage
                 entity.Property(e => e.ChannelID).HasColumnType("VARCHAR(45)").IsRequired(false);
                 entity.Property(e => e.GroupID).HasColumnType("INT(11)");
                 entity.Property(e => e.ConversationID).HasColumnType("VARCHAR(70)").IsRequired();
+                entity.Property(e => e.ServiceUrl).HasColumnType("VARCHAR(500)").IsRequired(false);
             });
 
             /* modelBuilder.Entity<BotConversationMember>(entity =>

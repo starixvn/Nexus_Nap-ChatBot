@@ -14,5 +14,7 @@ namespace Fanex.NCB.Bot.Models.DTO
         public string ChannelID { get; set; }
         public string BotName { get; set; }
         public DateTime LastUpdate { get; set; }
+
+        public string ServiceUrl { get; set; }
     }
 }
