@@ -13,7 +13,6 @@ namespace Fanex.NCB.Bot.SkypeClient
     public class BotClient : IBotClient
     {
         private readonly string _tokenUrl = "https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token";
-        private readonly string _serviceUrl = "https://smba.trafficmanager.net/apis/";
         private readonly string _clientId;
         private readonly string _password;
         public BotClient(string clientId, string password)
@@ -21,7 +20,7 @@ namespace Fanex.NCB.Bot.SkypeClient
             _clientId = clientId;
             _password = password;
         }
-        public BotClient(string clientId, string password, string botTokenUrl, string skypeServiceUrl)
+        public BotClient(string clientId, string password, string botTokenUrl, string serviceUrl)
         {
             _clientId = clientId;
             _password = password;
@@ -29,12 +28,12 @@ namespace Fanex.NCB.Bot.SkypeClient
             {
                 _tokenUrl = botTokenUrl;
             }
-            if (!string.IsNullOrEmpty(skypeServiceUrl))
+            if (!string.IsNullOrEmpty(serviceUrl))
             {
-                _serviceUrl = skypeServiceUrl;
+                this.ServiceUrl = serviceUrl;
             }
         }
-
+        public string ServiceUrl { get; set; } = "https://smba.trafficmanager.net/apis/";
         public async Task<HttpStatusCode> SendAsync(string message, string conversationId)
         {
             if (string.IsNullOrEmpty(message) || string.IsNullOrEmpty(conversationId))
@@ -59,7 +58,7 @@ namespace Fanex.NCB.Bot.SkypeClient
         {
             var account = new MicrosoftAppCredentials(_clientId, _password);
             var jwtToken = await account.GetTokenAsync(true);
-            return new ConnectorClient(new Uri(_serviceUrl), account, handlers: new BotDelegatingHandler(jwtToken));
+            return new ConnectorClient(new Uri(ServiceUrl), account, handlers: new BotDelegatingHandler(jwtToken));
         }
 
         private async Task<Token> GetToken()
