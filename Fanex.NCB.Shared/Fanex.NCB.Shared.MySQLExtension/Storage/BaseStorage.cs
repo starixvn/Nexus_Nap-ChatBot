@@ -32,7 +32,7 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
                 await dbConnection.ExecuteAsync(
                     dbSetting.SPName,
                     param: param,
-                    commandType: CommandType.StoredProcedure);
+                    commandType: CommandType.StoredProcedure).ConfigureAwait(false);
 
                 return new ResultModel
                 {
@@ -50,7 +50,7 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
                 var data = await dbConnection.QueryAsync<T>(
                     dbSetting.SPName,
                     param: param,
-                    commandType: CommandType.StoredProcedure);
+                    commandType: CommandType.StoredProcedure).ConfigureAwait(false);
 
                 return data.ToList();
             }
@@ -64,7 +64,7 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
                 var reader = await dbConnection.QueryMultipleAsync(
                     dbSetting.SPName,
                     param: param,
-                    commandType: CommandType.StoredProcedure);
+                    commandType: CommandType.StoredProcedure).ConfigureAwait(false);
 
                 var total = reader.Read<T1>().First();
                 var data = reader.Read<T2>().ToList();

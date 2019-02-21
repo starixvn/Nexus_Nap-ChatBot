@@ -33,11 +33,11 @@ namespace Fanex.NCB.Main.Controllers
         {
             var userData = JsonConvert.DeserializeObject<ApplicationUser>(HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.UserData)?.Value);
             var apiUrl = $"{_options.UserResourceApi}/Query/{userData.UserId}?siteid={_options.SiteId}&env={_options.Env}";
-            var response = await _bridgeClient.GetJsonAsync(apiUrl);
+            var response = await _bridgeClient.GetJsonAsync(apiUrl).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
 
-            ViewBag.Menu = await response.Content.ReadAsAsync<List<Menu>>();
+            ViewBag.Menu = await response.Content.ReadAsAsync<List<Menu>>().ConfigureAwait(false);
             return View();
         }
 

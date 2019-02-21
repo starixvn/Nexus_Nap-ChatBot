@@ -20,7 +20,7 @@ namespace Fanex.NCB.Main.Controllers
 
             if (!string.IsNullOrEmpty(message) && !string.IsNullOrWhiteSpace(conversationid))
             {
-                await _botClient.SendAsync(message, conversationid);
+                await _botClient.SendAsync(message, conversationid).ConfigureAwait(false);
             }
             return "OK";
         }

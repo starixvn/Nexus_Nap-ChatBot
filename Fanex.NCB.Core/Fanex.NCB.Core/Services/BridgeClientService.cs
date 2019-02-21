@@ -26,7 +26,7 @@ namespace Fanex.NCB.Core.Services
             {
                 client.DefaultRequestHeaders.Add("x-authKey", _options.Secret);
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var response = await client.GetAsync(url);
+                var response = await client.GetAsync(url).ConfigureAwait(false);
 
                 response.EnsureSuccessStatusCode();
 
@@ -42,7 +42,7 @@ namespace Fanex.NCB.Core.Services
                 client.DefaultRequestHeaders.Add("x-authKey", _options.Secret);
                 var content = new StringContent(JsonConvert.SerializeObject(value),
                     Encoding.UTF8, "application/json");
-                var response = await client.PostAsync(url, content);
+                var response = await client.PostAsync(url, content).ConfigureAwait(false);
 
                 response.EnsureSuccessStatusCode();
 

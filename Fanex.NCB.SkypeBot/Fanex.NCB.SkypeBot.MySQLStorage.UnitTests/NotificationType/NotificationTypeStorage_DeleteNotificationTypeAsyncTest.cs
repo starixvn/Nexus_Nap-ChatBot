@@ -31,7 +31,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationType
                 .Returns(Task.FromResult(fakeData));
 
             // Act
-            await storage.DeleteNotificationTypeAsync(notificationTypeId);
+            await storage.DeleteNotificationTypeAsync(notificationTypeId).ConfigureAwait(false);
 
             // Assert
             DynamicParameters expectedparam = new DynamicParameters();
@@ -54,7 +54,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationType
                 .Returns(Task.FromResult(fakeData));
 
             // Act
-            var result = await storage.DeleteNotificationTypeAsync(notificationTypeId);
+            var result = await storage.DeleteNotificationTypeAsync(notificationTypeId).ConfigureAwait(false);
 
             // Assert           
             result.Should().BeEquivalentTo(fakeData);

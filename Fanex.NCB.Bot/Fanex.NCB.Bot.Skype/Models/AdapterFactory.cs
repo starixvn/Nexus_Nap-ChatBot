@@ -25,7 +25,7 @@ namespace Fanex.NCB.Bot.Skype.Models
 
             adapter.OnTurnError = async (context, exception) =>
             {
-                await context.SendActivityAsync($"Sorry, it looks like something went wrong in {name}.");
+                await context.SendActivityAsync($"Sorry, it looks like something went wrong in {name}.").ConfigureAwait(false);
             };
             return adapter;
         }

@@ -27,7 +27,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationType
                 .Returns(Task.FromResult(fakeData));
 
             // Act
-            await storage.GetRecipientTypesAsync();
+            await storage.GetRecipientTypesAsync().ConfigureAwait(false);
 
             // Assert
             spKey.Should().Be("ChatBot_RecipientType_Sel");
@@ -45,7 +45,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationType
                 .Returns(Task.FromResult(fakeData));
 
             // Act
-            var result = await storage.GetRecipientTypesAsync();
+            var result = await storage.GetRecipientTypesAsync().ConfigureAwait(false);
 
             // Assert
             result.Should().BeEquivalentTo(fakeData);

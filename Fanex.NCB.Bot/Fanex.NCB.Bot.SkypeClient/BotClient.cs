@@ -43,7 +43,7 @@ namespace Fanex.NCB.Bot.SkypeClient
 
             var messageInfo = CreateMessageActivity(message, conversationId);
 
-            return await SendAsync(messageInfo);
+            return await SendAsync(messageInfo).ConfigureAwait(false);
         }
 
         private static IMessageActivity CreateMessageActivity(string message, string conversationId)
@@ -57,7 +57,7 @@ namespace Fanex.NCB.Bot.SkypeClient
         private async Task<ConnectorClient> SetupClientConnection()
         {
             var account = new MicrosoftAppCredentials(_clientId, _password);
-            var jwtToken = await account.GetTokenAsync(true);
+            var jwtToken = await account.GetTokenAsync(true).ConfigureAwait(false);
             return new ConnectorClient(new Uri(ServiceUrl), account, handlers: new BotDelegatingHandler(jwtToken));
         }
 
@@ -75,9 +75,9 @@ namespace Fanex.NCB.Bot.SkypeClient
 
 
                 });
-                var response = await client.PostAsync(_tokenUrl, content);
+                var response = await client.PostAsync(_tokenUrl, content).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsAsync<Token>();
+                return await response.Content.ReadAsAsync<Token>().ConfigureAwait(false);
             }
         }
 
@@ -88,13 +88,13 @@ namespace Fanex.NCB.Bot.SkypeClient
 
         public async Task<HttpStatusCode> SendAsync(IMessageActivity messageActivity)
         {
-            var token = await GetToken();
+            var token = await GetToken().ConfigureAwait(false);
             if (token == null || string.IsNullOrEmpty(token.AccessToken))
             {
                 return HttpStatusCode.Unauthorized;
             }
-            var connector = await SetupClientConnection();
-            var result = await connector.Conversations.SendToConversationAsync((Activity)messageActivity);
+            var connector = await SetupClientConnection().ConfigureAwait(false);
+            var result = await connector.Conversations.SendToConversationAsync((Activity)messageActivity).ConfigureAwait(false);
             return HttpStatusCode.OK;
         }
     }

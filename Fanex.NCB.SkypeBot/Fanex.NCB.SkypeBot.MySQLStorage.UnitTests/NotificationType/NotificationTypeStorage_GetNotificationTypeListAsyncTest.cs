@@ -31,7 +31,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationType
                 .Returns(Task.FromResult(fakeData));
 
             // Act
-           await storage.GetNotificationTypeListAsync(pageIndex, pageSize);
+           await storage.GetNotificationTypeListAsync(pageIndex, pageSize).ConfigureAwait(false);
 
             // Assert
             var expectedParam = new { pageIndex, pageSize };
@@ -53,7 +53,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationType
                 .Returns(Task.FromResult(fakeData));
 
             // Act
-            var result = await storage.GetNotificationTypeListAsync(1, 1);
+            var result = await storage.GetNotificationTypeListAsync(1, 1).ConfigureAwait(false);
 
             // Assert
             result.Should().BeEquivalentTo(expectedResult);

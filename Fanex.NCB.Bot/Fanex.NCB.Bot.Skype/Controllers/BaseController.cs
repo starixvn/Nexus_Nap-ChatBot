@@ -46,7 +46,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
                     Request.Headers["Authorization"],
                     activity,
                     OnTurnAsync,
-                    default(CancellationToken));
+                    default(CancellationToken)).ConfigureAwait(false);
 
                 if (invokeResponse == null)
                 {

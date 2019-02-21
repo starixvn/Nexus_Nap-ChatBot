@@ -113,11 +113,11 @@ namespace Fanex.NCB.Bot.Skype.Controllers
         protected virtual async Task OnUpdatedTopic(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             var item = await _botConversationRepository
-               .SingleAsync(x => x.ConversationID == turnContext.Activity.Conversation.Id);
+               .SingleAsync(x => x.ConversationID == turnContext.Activity.Conversation.Id).ConfigureAwait(false);
             if (item == null)
             {
                 item = NewBotConversation(turnContext);
-                await _botConversationRepository.InsertAsync(item);
+                await _botConversationRepository.InsertAsync(item).ConfigureAwait(false);
             }
             else
             {
@@ -127,7 +127,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
                 item.BotName = turnContext.Activity.Recipient.Name;
                 item.ChannelID = turnContext.Activity.ChannelId;
                 item.ServiceUrl = turnContext.Activity.ServiceUrl;
-                await _botConversationRepository.UpdateAsync(item);
+                await _botConversationRepository.UpdateAsync(item).ConfigureAwait(false);
             }
         }
 

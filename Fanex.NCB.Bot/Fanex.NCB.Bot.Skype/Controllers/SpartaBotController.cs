@@ -32,18 +32,18 @@ namespace Fanex.NCB.Bot.Skype.Controllers
 
         protected override async Task OnBotAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            await turnContext.SendActivityAsync(MessageFactory.Text("Hello, I'm Sparta Bot"));
+            await turnContext.SendActivityAsync(MessageFactory.Text("Hello, I'm Sparta Bot")).ConfigureAwait(false);
         }
 
 
         protected override async Task OnMessageActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            await turnContext.SendActivityAsync(MessageFactory.Text($"Echo '{turnContext.Activity.Text}' Hello, I'm Sparta Bot"));
+            await turnContext.SendActivityAsync(MessageFactory.Text($"Echo '{turnContext.Activity.Text}' Hello, I'm Sparta Bot")).ConfigureAwait(false);
         }
 
         protected override async Task OnMemberAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            await turnContext.SendActivityAsync(MessageFactory.Text($"Welcome {member.Name} to Sparta Team."), cancellationToken);
+            await turnContext.SendActivityAsync(MessageFactory.Text($"Welcome {member.Name} to Sparta Team."), cancellationToken).ConfigureAwait(false);
         }
 
 

@@ -30,7 +30,7 @@ namespace Fanex.NCB.Main.Controllers
         public async Task<IActionResult> Index(string returnUrl, bool invalidLogin)
         {
             await HttpContext.SignOutAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme);
+                CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
             ViewBag.returnUrl = returnUrl;
             ViewBag.invalidLogin = invalidLogin;
             return View(new ApplicationUser());
@@ -46,7 +46,7 @@ namespace Fanex.NCB.Main.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await AuthenticateUser(userName, password);
+                var user = await AuthenticateUser(userName, password).ConfigureAwait(false);
 
                 if (user == null)
                 {
@@ -84,7 +84,7 @@ namespace Fanex.NCB.Main.Controllers
                 await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity),
-                    authProperties);
+                    authProperties).ConfigureAwait(false);
 
                 return LocalRedirect(returnUrl ?? "~/Home");
             }
@@ -101,7 +101,7 @@ namespace Fanex.NCB.Main.Controllers
         public async Task<IActionResult> Logout()
         {
 
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
 
             return RedirectToAction("Index");
         }
@@ -110,12 +110,12 @@ namespace Fanex.NCB.Main.Controllers
         {
             var user = new AuthenticationUser { UserName = userName, Password = password };
             var response = await _bridgeClient.PostJsonAsync<AuthenticationUser>(
-            _options.AuthApi, user);
+            _options.AuthApi, user).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
 
             // return URI of the created resource.
-            return await response.Content.ReadAsAsync<ApplicationUser>();
+            return await response.Content.ReadAsAsync<ApplicationUser>().ConfigureAwait(false);
         }
     }
 }

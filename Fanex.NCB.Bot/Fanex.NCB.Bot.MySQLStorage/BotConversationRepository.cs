@@ -29,8 +29,8 @@ namespace Fanex.NCB.Bot.MySQLStorage
         {
             using (var context = new BotServiceDBContext(ChatBotConnection))
             {
-                await context.BotConversations.AddAsync(value);
-                var result = await context.SaveChangesAsync();
+                await context.BotConversations.AddAsync(value).ConfigureAwait(false);
+                var result = await context.SaveChangesAsync().ConfigureAwait(false);
                 return result > 0;
             }
         }
@@ -39,7 +39,7 @@ namespace Fanex.NCB.Bot.MySQLStorage
         {
             using (var context = new BotServiceDBContext(ChatBotConnection))
             {
-                return await Task.Run(() => context.BotConversations.FirstOrDefault(predicate));
+                return await Task.Run(() => context.BotConversations.FirstOrDefault(predicate)).ConfigureAwait(false);
             }
         }
 
@@ -48,7 +48,7 @@ namespace Fanex.NCB.Bot.MySQLStorage
             using (var context = new BotServiceDBContext(ChatBotConnection))
             {
                 context.BotConversations.Update(newValue);
-                var result = await context.SaveChangesAsync();
+                var result = await context.SaveChangesAsync().ConfigureAwait(false);
                 return result > 0;
             }
 
