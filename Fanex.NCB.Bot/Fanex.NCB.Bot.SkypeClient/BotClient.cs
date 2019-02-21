@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
 
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
+[assembly: InternalsVisibleTo("Fanex.NCB.Bot.SkypeClient.UnitTests")]
 namespace Fanex.NCB.Bot.SkypeClient
 {
     public class BotClient : IBotClient
@@ -54,14 +57,14 @@ namespace Fanex.NCB.Bot.SkypeClient
             return item;
         }
 
-        private async Task<ConnectorClient> SetupClientConnection()
+        internal virtual async Task<IConnectorClient> SetupClientConnection()
         {
             var account = new MicrosoftAppCredentials(_clientId, _password);
             var jwtToken = await account.GetTokenAsync(true).ConfigureAwait(false);
             return new ConnectorClient(new Uri(ServiceUrl), account, handlers: new BotDelegatingHandler(jwtToken));
         }
 
-        private async Task<Token> GetToken()
+        internal virtual async Task<Token> GetToken()
         {
             using (var client = new HttpClient())
             {
@@ -78,6 +81,7 @@ namespace Fanex.NCB.Bot.SkypeClient
                 var response = await client.PostAsync(_tokenUrl, content).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsAsync<Token>().ConfigureAwait(false);
+
             }
         }
 
@@ -86,7 +90,7 @@ namespace Fanex.NCB.Bot.SkypeClient
             throw new NotImplementedException();
         }
 
-        public async Task<HttpStatusCode> SendAsync(IMessageActivity messageActivity)
+        public virtual async Task<HttpStatusCode> SendAsync(IMessageActivity messageActivity)
         {
             var token = await GetToken().ConfigureAwait(false);
             if (token == null || string.IsNullOrEmpty(token.AccessToken))
@@ -97,5 +101,6 @@ namespace Fanex.NCB.Bot.SkypeClient
             var result = await connector.Conversations.SendToConversationAsync((Activity)messageActivity).ConfigureAwait(false);
             return HttpStatusCode.OK;
         }
+
     }
 }
