@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+using Fanex.NCB.Bot.BaseStorage;
+using Fanex.NCB.Bot.Models.DTO;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 
@@ -11,6 +10,12 @@ namespace Fanex.NCB.Bot.Skype.Controllers
 {
     public class ActivityControllerBase : BaseController
     {
+        private readonly IBotConversationRepository _botConversationRepository;
+
+        public ActivityControllerBase(IBotConversationRepository botConversationRepository)
+        {
+            _botConversationRepository = botConversationRepository;
+        }
         protected override Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             switch (turnContext.Activity.Type)
@@ -27,14 +32,14 @@ namespace Fanex.NCB.Bot.Skype.Controllers
             }
 
         }
-
+        #region  OnContactRelationUpdate
         protected virtual async Task OnContactRelationUpdateActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             if (turnContext.Activity.MembersAdded != null)
             {
                 foreach (var member in turnContext.Activity.MembersAdded)
                 {
-                    await OnContactBotAddedAsync(member, turnContext, cancellationToken);
+                    await OnContactBotAddedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
                 }
             }
 
@@ -42,12 +47,12 @@ namespace Fanex.NCB.Bot.Skype.Controllers
             {
                 foreach (var member in turnContext.Activity.MembersRemoved)
                 {
-                    await OnContactBotRemovedAsync(member, turnContext, cancellationToken);
+                    await OnContactBotRemovedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
                 }
             }
         }
 
-        private Task OnContactBotAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
+        protected virtual Task OnContactBotAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
@@ -56,11 +61,13 @@ namespace Fanex.NCB.Bot.Skype.Controllers
         {
             return Task.CompletedTask;
         }
-
+        #endregion
         protected virtual Task OnMessageActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
         }
+
+        #region  OnConversationUpdate
         private async Task OnConversationUpdateActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             var isUpdatedMember = false;
@@ -71,11 +78,11 @@ namespace Fanex.NCB.Bot.Skype.Controllers
                 {
                     if (member.Id == turnContext.Activity.Recipient.Id)
                     {
-                        await OnBotRemovedAsync(member, turnContext, cancellationToken);
+                        await OnBotRemovedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
                     }
                     else
                     {
-                        await OnMembeRemovedAsync(member, turnContext, cancellationToken);
+                        await OnMembeRemovedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -88,29 +95,54 @@ namespace Fanex.NCB.Bot.Skype.Controllers
                 {
                     if (member.Id != turnContext.Activity.Recipient.Id)
                     {
-                        await OnMemberAddedAsync(member, turnContext, cancellationToken);
+                        await OnMemberAddedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
                     }
                     else
                     {
-                        await OnBotAddedAsync(member, turnContext, cancellationToken);
+                        await OnBotAddedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
                     }
                 }
             }
 
             if (!isUpdatedMember)
             {
-               await OnUpdatedTopic(turnContext, cancellationToken);
+                await OnUpdatedTopic(turnContext, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        protected virtual Task OnUpdatedTopic(ITurnContext turnContext, CancellationToken cancellationToken)
+        protected virtual async Task OnUpdatedTopic(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            var item = await _botConversationRepository
+               .SingleAsync(x => x.ConversationID == turnContext.Activity.Conversation.Id);
+            if (item == null)
+            {
+                item = NewBotConversation(turnContext);
+                await _botConversationRepository.InsertAsync(item);
+            }
+            else
+            {
+                item.Name = turnContext.Activity.TopicName;
+                item.IsBotActive = true;
+                item.LastUpdate = DateTime.Now;
+                item.BotName = turnContext.Activity.Recipient.Name;
+                item.ChannelID = turnContext.Activity.ChannelId;
+                item.ServiceUrl = turnContext.Activity.ServiceUrl;
+                await _botConversationRepository.UpdateAsync(item);
+            }
         }
 
-        private Task OnBotRemovedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
+        private async Task OnBotRemovedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            var conversationInfo = await _botConversationRepository.SingleAsync(x => x.ConversationID == turnContext.Activity.Conversation.Id).ConfigureAwait(false);
+            if (conversationInfo == null)
+            {
+                conversationInfo = NewBotConversation(turnContext);
+                if (string.IsNullOrEmpty(conversationInfo.Name))
+                {
+                    conversationInfo.Name = "null";
+                }
+                await _botConversationRepository.InsertAsync(conversationInfo).ConfigureAwait(false);
+            }
         }
 
         protected virtual Task OnBotAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
@@ -126,9 +158,24 @@ namespace Fanex.NCB.Bot.Skype.Controllers
         {
             return Task.CompletedTask;
         }
+        #endregion
         protected virtual Task OnOtherActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
+        }
+
+        private static BotConversation NewBotConversation(ITurnContext turnContext)
+        {
+            return new BotConversation
+            {
+                BotName = turnContext.Activity.Recipient.Name,
+                IsBotActive = true,
+                ChannelID = turnContext.Activity.ChannelId,
+                ConversationID = turnContext.Activity.Conversation.Id,
+                LastUpdate = DateTime.Now,
+                Name = turnContext.Activity.TopicName,
+                ServiceUrl = turnContext.Activity.ServiceUrl
+            };
         }
     }
 }
