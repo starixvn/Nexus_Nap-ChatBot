@@ -61,14 +61,44 @@ namespace Fanex.NCB.Bot.MySQLStorage.UnitTests
             item.ConversationID = null;
             var repository = new BotConversationRepository(botServiceDBContext);
             // Act 
-            var ex = Assert.ThrowsAnyAsync<DbUpdateException>(async () => await repository.InsertAsync(item).ConfigureAwait(false));
+            var ex = await Assert.ThrowsAnyAsync<Exception>(async () => await repository.InsertAsync(item).ConfigureAwait(false)).ConfigureAwait(false);
 
             // Assert
 
-            Assert.Contains("property 'ConversationID' is null", ex.Exception.Message);
+            Assert.Contains("property 'ConversationID' is null", ex.Message);
 
         }
 
+        [Fact]
+        public async Task SingleAsync_WhenCall_ReturnNull()
+        {
+            //Arrange
+            var item = CreateBotConversation();
+            var repository = new BotConversationRepository(botServiceDBContext);
+
+            // Act
+            var result = await repository.SingleAsync(x => x.ConversationID == "noitem").ConfigureAwait(false);
+
+            // Assert
+
+            Assert.True(result == null);
+        }
+
+        [Fact]
+        public async Task SingleAsync_WhenCall_ReturnCorrectValue()
+        {
+            //Arrange
+            var item = CreateBotConversation();
+            var repository = new BotConversationRepository(botServiceDBContext);
+            var groupId = await repository.InsertAsync(item);
+
+            // Act
+            var result = await repository.SingleAsync(x => x.GroupID == groupId).ConfigureAwait(false);
+
+            // Assert
+
+            Assert.True(result != null && result.ConversationID == item.ConversationID);
+        }
         public void Dispose()
         {
             botServiceDBContext?.Dispose();
