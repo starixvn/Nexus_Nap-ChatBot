@@ -51,9 +51,11 @@ namespace Fanex.NCB.Bot.Main
     ";
                 throw new InvalidOperationException(msg);
             }
-
             services.AddSingleton(_ => botConfig);
-            SkypeBotDI.Init(services);
+
+            var chatBotConnection = Configuration.GetConnectionString("ChatBotConnection");
+
+            SkypeBotDI.Init(services, chatBotConnection);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
