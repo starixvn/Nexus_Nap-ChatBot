@@ -16,16 +16,16 @@
     },
     {
       "type": "endpoint",
-      "name": "bot2 development",
-      "endpoint": "http://localhost:56288/bot2",
+      "name": "1on1notify development",
+      "endpoint": "http://localhost:56288/1on1notify",
       "appId": "ea8d17a4-16c8-43b3-a1a8-ade5277dbd24",
       "appPassword": "qoudDD4+$fdkQJTBU0646[?",
       "id": "2"
     },
     {
       "type": "endpoint",
-      "name": "bot3 development",
-      "endpoint": "http://localhost:56288/bot3",
+      "name": "OWnotify development",
+      "endpoint": "http://localhost:56288/OWnotify",
       "appId": "ea8d17a4-16c8-43b3-a1a8-ade5277dbd24",
       "appPassword": "qoudDD4+$fdkQJTBU0646[?",
       "id": "3"
