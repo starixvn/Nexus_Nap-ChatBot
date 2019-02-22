@@ -57,13 +57,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Shared.MySQLExten
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.SkypeBot.MySQLStorage.UnitTests", "Fanex.NCB.SkypeBot\Fanex.NCB.SkypeBot.MySQLStorage.UnitTests\Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.csproj", "{8EA9313A-38A0-4CBC-BF33-F93831A9FBBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Bot.SkypeClient.UnitTests", "Fanex.NCB.Bot\UnitTests\Fanex.NCB.Bot.SkypeClient.UnitTests\Fanex.NCB.Bot.SkypeClient.UnitTests.csproj", "{57BF84F2-87A5-4EF4-8455-DF765D2DB649}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Bot.SkypeClient.UnitTests", "Fanex.NCB.Bot\UnitTests\Fanex.NCB.Bot.SkypeClient.UnitTests\Fanex.NCB.Bot.SkypeClient.UnitTests.csproj", "{57BF84F2-87A5-4EF4-8455-DF765D2DB649}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Bot.BaseStorage", "Fanex.NCB.Bot\Fanex.NCB.Bot.BaseStorage\Fanex.NCB.Bot.BaseStorage.csproj", "{D0A741BE-5BFF-4858-85E2-0CBEC8885D11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Bot.BaseStorage", "Fanex.NCB.Bot\Fanex.NCB.Bot.BaseStorage\Fanex.NCB.Bot.BaseStorage.csproj", "{D0A741BE-5BFF-4858-85E2-0CBEC8885D11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Bot.Models", "Fanex.NCB.Bot\Fanex.NCB.Bot.Models\Fanex.NCB.Bot.Models.csproj", "{1A989F74-87A5-4072-9877-185D67034085}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Bot.Models", "Fanex.NCB.Bot\Fanex.NCB.Bot.Models\Fanex.NCB.Bot.Models.csproj", "{1A989F74-87A5-4072-9877-185D67034085}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Bot.MySQLStorage", "Fanex.NCB.Bot\Fanex.NCB.Bot.MySQLStorage\Fanex.NCB.Bot.MySQLStorage.csproj", "{6A1AA483-B95C-48B6-BF6E-FD70FE53E07B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Bot.MySQLStorage", "Fanex.NCB.Bot\Fanex.NCB.Bot.MySQLStorage\Fanex.NCB.Bot.MySQLStorage.csproj", "{6A1AA483-B95C-48B6-BF6E-FD70FE53E07B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Bot.MySQLStorage.UnitTests", "Fanex.NCB.Bot.MySQLStorage.UnitTests\Fanex.NCB.Bot.MySQLStorage.UnitTests.csproj", "{13A51D34-1BD9-4A97-8461-4478C88797C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -163,6 +165,10 @@ Global
 		{6A1AA483-B95C-48B6-BF6E-FD70FE53E07B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A1AA483-B95C-48B6-BF6E-FD70FE53E07B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A1AA483-B95C-48B6-BF6E-FD70FE53E07B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13A51D34-1BD9-4A97-8461-4478C88797C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13A51D34-1BD9-4A97-8461-4478C88797C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13A51D34-1BD9-4A97-8461-4478C88797C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13A51D34-1BD9-4A97-8461-4478C88797C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -192,6 +198,7 @@ Global
 		{D0A741BE-5BFF-4858-85E2-0CBEC8885D11} = {BB99D980-0EFC-43C6-85E6-D0F563281A9F}
 		{1A989F74-87A5-4072-9877-185D67034085} = {BB99D980-0EFC-43C6-85E6-D0F563281A9F}
 		{6A1AA483-B95C-48B6-BF6E-FD70FE53E07B} = {BB99D980-0EFC-43C6-85E6-D0F563281A9F}
+		{13A51D34-1BD9-4A97-8461-4478C88797C7} = {81AA8198-6DBC-434D-991A-59B5568DA59F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37A2AE26-EFD0-4EE5-89D6-E3D42A9AEF67}
