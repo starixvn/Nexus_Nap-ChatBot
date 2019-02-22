@@ -8,7 +8,7 @@ namespace Fanex.NCB.Bot.BaseStorage
 {
     public interface IBaseRepository<T> where T : class
     {
-        Task<bool> InsertAsync(T value);
+        Task<int> InsertAsync(T value);
         Task<bool> UpdateAsync(T newValue);
         Task<T> SingleAsync(Expression<Func<T, bool>> predicate);
         Task<IEnumerable<T>> FetchAsync(Expression<Func<T, bool>> predicate);

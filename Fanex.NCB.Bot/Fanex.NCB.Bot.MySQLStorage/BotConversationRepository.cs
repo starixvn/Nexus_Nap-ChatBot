@@ -7,12 +7,19 @@ using Fanex.NCB.Bot.BaseStorage;
 using Fanex.NCB.Bot.Models.DTO;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
+[assembly: InternalsVisibleTo("Fanex.NCB.Bot.MySQLStorage.UnitTests")]
 namespace Fanex.NCB.Bot.MySQLStorage
 {
-    public class BotConversationRepository : BaseRepository, IBotConversationRepository
+    public class BotConversationRepository : IBotConversationRepository
     {
-        public BotConversationRepository(IConfiguration configuration) : base(configuration)
+        private readonly BotServiceDBContext _botServiceDBContext;
+        public BotConversationRepository(BotServiceDBContext botServiceDBContext)
         {
+            _botServiceDBContext = botServiceDBContext;
         }
 
         public IEnumerable<BotConversation> Fetch(Expression<Func<BotConversation, bool>> predicate)
@@ -24,34 +31,24 @@ namespace Fanex.NCB.Bot.MySQLStorage
         {
             throw new NotImplementedException();
         }
-
-        public async Task<bool> InsertAsync(BotConversation value)
+        public async Task<int> InsertAsync(BotConversation value)
         {
-            using (var context = new BotServiceDBContext(ChatBotConnection))
-            {
-                await context.BotConversations.AddAsync(value).ConfigureAwait(false);
-                var result = await context.SaveChangesAsync().ConfigureAwait(false);
-                return result > 0;
-            }
+
+            await _botServiceDBContext.BotConversations.AddAsync(value).ConfigureAwait(false);
+            await _botServiceDBContext.SaveChangesAsync().ConfigureAwait(false);
+            return value.GroupID;
         }
 
         public async Task<BotConversation> SingleAsync(Expression<Func<BotConversation, bool>> predicate)
         {
-            using (var context = new BotServiceDBContext(ChatBotConnection))
-            {
-                return await Task.Run(() => context.BotConversations.FirstOrDefault(predicate)).ConfigureAwait(false);
-            }
+            return await Task.Run(() => _botServiceDBContext.BotConversations.FirstOrDefault(predicate)).ConfigureAwait(false);
         }
 
         public async Task<bool> UpdateAsync(BotConversation newValue)
         {
-            using (var context = new BotServiceDBContext(ChatBotConnection))
-            {
-                context.BotConversations.Update(newValue);
-                var result = await context.SaveChangesAsync().ConfigureAwait(false);
-                return result > 0;
-            }
-
+            _botServiceDBContext.BotConversations.Update(newValue);
+            var result = await _botServiceDBContext.SaveChangesAsync().ConfigureAwait(false);
+            return result > 0;
         }
     }
 }
