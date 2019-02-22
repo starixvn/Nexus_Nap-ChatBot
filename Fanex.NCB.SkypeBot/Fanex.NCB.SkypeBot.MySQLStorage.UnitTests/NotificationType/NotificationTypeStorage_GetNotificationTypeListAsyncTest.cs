@@ -22,7 +22,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationType
 
             var pageIndex = 1;
             var pageSize = 5;
-            var fakeData = Tuple.Create(1, new List<NotificationTypeItem>() { new NotificationTypeItem { } });            
+            var fakeData = Tuple.Create(1, new List<NotificationTypeItem>() { new NotificationTypeItem() });
 
             string spKey = null;
             object param = null;            
@@ -46,7 +46,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationType
             var baseStorage = new Mock<IBaseStorage>();
             var storage = new NotificationTypeStorage(baseStorage.Object);
 
-            var fakeData = Tuple.Create(1, new List<NotificationTypeItem>() { new NotificationTypeItem { } });
+            var fakeData = Tuple.Create(1, new List<NotificationTypeItem>() { new NotificationTypeItem() });
             var expectedResult = new NotificationTypeListResultModel { Count = fakeData.Item1, Data = fakeData.Item2 };
 
             baseStorage.Setup(r => r.QueryMultipleAsync<int, NotificationTypeItem>(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()))

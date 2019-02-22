@@ -24,7 +24,7 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.NotificationType
             var fakeData = new NotificationTypeListResultModel {
                 Count = 2,
                 Data = new List<NotificationTypeItem>() {
-                    new NotificationTypeItem { }
+                    new NotificationTypeItem()
                 }
             };            
             storage.Setup(r => r.GetNotificationTypeListAsync(1,1)).Returns(Task.FromResult(fakeData));
@@ -44,7 +44,7 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.NotificationType
             var service = new NotificationTypeService(storage.Object);
 
             var fakeData = new List<NotificationSystem> {
-                new NotificationSystem { }
+                new NotificationSystem()
             };
             storage.Setup(r => r.GetNotificationSystemsAsync()).Returns(Task.FromResult(fakeData));
 
@@ -64,7 +64,7 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.NotificationType
 
             var fakeData = new List<RecipientType>
             {
-                new RecipientType { }
+                new RecipientType()
             };
             storage.Setup(r => r.GetRecipientTypesAsync()).Returns(Task.FromResult(fakeData));
 

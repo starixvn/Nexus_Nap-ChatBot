@@ -28,7 +28,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationType
             string spKey = null;
             DynamicParameters param = null;
             baseStorage.Setup(r => r.ExecuteAsync(It.IsAny<string>(), It.IsAny<DynamicParameters>(), It.IsAny<string>()))
-                .Callback<string, DynamicParameters, string>((m1, m2, m3) => { spKey = m1; param = m2; })
+                .Callback<string, DynamicParameters, string>((m1, m2, _) => { spKey = m1; param = m2; })
                 .Returns(Task.FromResult(fakeData));
 
             // Act

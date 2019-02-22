@@ -29,23 +29,14 @@ namespace Fanex.NCB.Main
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.Configure<CookiePolicyOptions>(options =>
-            //{
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-            //    options.CheckConsentNeeded = context => true;
-            //    options.MinimumSameSitePolicy = SameSiteMode.None;
-            //});
-
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<List<DataConfig>>(Configuration.GetSection("SPName"));
-            //var spName = Configuration.GetSection("SPName").Get<List<DataConfig>>();
 
             services.AddDistributedRedisCache(options =>
             {
-                options.Configuration = "10.18.200.103:63799"; // move to app setting later
+                options.Configuration = "10.18.200.103:63799";
                 options.InstanceName = "Fanex.NCB.State";
             });
             services.AddSession(configure =>
@@ -77,23 +68,19 @@ namespace Fanex.NCB.Main
 
             var appSetting = Configuration.GetSection("AppSettings");
 
-            services.AddTransient<IBotClient, BotClient>(_ => 
+            services.AddTransient<IBotClient, BotClient>(_ =>
             new BotClient(appSetting["MicrosoftAppId"], appSetting["MicrosoftAppPassword"]));
 
-
-            //var spName = Configuration.GetSection("SPName").Get<List<DataConfig>>();
-            //var connectionStrings  = Configuration.GetSection("AppSettings:ConnectionStrings").Get<ConnectionStrings>();
-            //var storedProcedurePath = Configuration.GetValue<string>("AppSettings:StoredProcedurePath");
-            services.AddTransient<IDBConfigService, DBConfigService>();// (_ => new DBConfigService(storedProcedurePath, connectionStrings));
+            services.AddTransient<IDBConfigService, DBConfigService>();
 
             InitializeModules(services);
         }
 
-        private static void InitializeModules(IServiceCollection services){
+        private static void InitializeModules(IServiceCollection services)
+        {
             SkypeBotDependencyInitializer.Initialize(services);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
