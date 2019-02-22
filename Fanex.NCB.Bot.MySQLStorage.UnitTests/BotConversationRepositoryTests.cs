@@ -99,6 +99,44 @@ namespace Fanex.NCB.Bot.MySQLStorage.UnitTests
 
             Assert.True(result != null && result.ConversationID == item.ConversationID);
         }
+
+        [Fact]
+        public async Task UpdateAsync_WhenCall_ReturnSuccessful()
+        {
+            //Arrange
+            var item = CreateBotConversation();
+            var repository = new BotConversationRepository(botServiceDBContext);
+            var groupId = await repository.InsertAsync(item);
+            const string newBotName = "updated Bot Name";
+            item.BotName = newBotName;
+            item.GroupID = groupId;
+            // Act
+            var result = await repository.UpdateAsync(item).ConfigureAwait(false);
+            var updatedItem = await repository.SingleAsync(x => x.GroupID == groupId).ConfigureAwait(false);
+            // Assert
+
+            Assert.True(result);
+            Assert.Equal(newBotName, updatedItem.BotName);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_WhenCall_ReturnFailed()
+        {
+            //Arrange
+            var item = CreateBotConversation();
+            var item2 = CreateBotConversation();
+            item2.ConversationID = "NotMatch";
+            var repository = new BotConversationRepository(botServiceDBContext);
+            await repository.InsertAsync(item).ConfigureAwait(false);
+            
+            // Act
+            var result = await repository.UpdateAsync(item2).ConfigureAwait(false);
+            // Assert
+
+            Assert.True(!result);
+
+        }
+
         public void Dispose()
         {
             botServiceDBContext?.Dispose();
