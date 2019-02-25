@@ -130,18 +130,9 @@ namespace Fanex.NCB.Bot.Skype.Controllers
             }
         }
 
-        private async Task OnBotRemovedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
+        private Task OnBotRemovedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            var conversationInfo = await _botConversationRepository.SingleAsync(x => x.ConversationID == turnContext.Activity.Conversation.Id).ConfigureAwait(false);
-            if (conversationInfo == null)
-            {
-                conversationInfo = NewBotConversation(turnContext);
-                if (string.IsNullOrEmpty(conversationInfo.Name))
-                {
-                    conversationInfo.Name = "null";
-                }
-                await _botConversationRepository.InsertAsync(conversationInfo).ConfigureAwait(false);
-            }
+            return Task.CompletedTask;
         }
 
         protected virtual async Task OnBotAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
@@ -157,8 +148,8 @@ namespace Fanex.NCB.Bot.Skype.Controllers
                 await _botConversationRepository.InsertAsync(conversationInfo).ConfigureAwait(false);
             }
 
-
         }
+
         protected virtual Task OnMembeRemovedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;

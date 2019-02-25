@@ -32,7 +32,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
 
         protected override async Task OnBotAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            await base.OnBotAddedAsync(member, turnContext, cancellationToken);
+            await base.OnBotAddedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
             await turnContext.SendActivityAsync(MessageFactory.Text($"Hello, I'm {_botConfig.Name}")).ConfigureAwait(false);
         }
 
@@ -44,6 +44,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
 
         protected override async Task OnMemberAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
+            await base.OnMemberAddedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
             await turnContext.SendActivityAsync(MessageFactory.Text($"Welcome {member.Name}."), cancellationToken).ConfigureAwait(false);
         }
 
