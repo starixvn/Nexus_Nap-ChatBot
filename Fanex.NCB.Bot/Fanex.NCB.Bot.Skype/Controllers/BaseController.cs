@@ -36,7 +36,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
                 var activity = default(Activity);
 
                 using (var bodyReader = new JsonTextReader(new StreamReader(Request.Body, Encoding.UTF8)))
-                {                  
+                {
                     activity = BotMessageSerializer.Deserialize<Activity>(bodyReader);
                 }
 

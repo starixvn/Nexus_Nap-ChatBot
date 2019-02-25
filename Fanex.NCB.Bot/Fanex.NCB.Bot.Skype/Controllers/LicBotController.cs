@@ -14,19 +14,20 @@ using Microsoft.Bot.Schema;
 
 namespace Fanex.NCB.Bot.Skype.Controllers
 {
-    [Route("SpartaBot")]
-    public class SpartaBotController : ActivityControllerBase
+    [Route("LicBot")]
+    public class LicBotController : ActivityControllerBase
     {
         private readonly BotConfiguration _botConfig;
-        public SpartaBotController(BotConfiguration botConfig, IBotConversationRepository botConversationRepository)
-            :base(botConversationRepository)
+        public LicBotController(BotConfiguration botConfig, IBotConversationRepository botConversationRepository)
+            : base(botConversationRepository)
         {
             _botConfig = botConfig;
         }
 
         protected override IAdapterIntegration CreateAdapter()
         {
-            return AdapterFactory.Create(_botConfig, "SpartaBot");
+            var botName = Request.Query["lb"];
+            return AdapterFactory.Create(_botConfig, botName);
         }
 
 
