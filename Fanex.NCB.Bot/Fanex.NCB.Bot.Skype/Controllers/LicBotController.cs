@@ -33,7 +33,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
         {
             var bot = BotConfig.Services.Find(x => x.Id == turnContext.Activity.Recipient.Id);
             await base.OnBotAddedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
-            await turnContext.SendActivityAsync(MessageFactory.Text($"Hello, I'm {bot.Name}")).ConfigureAwait(false);
+            await turnContext.SendActivityAsync(MessageFactory.Text($"Hello, I'm {bot?.Name ?? "Auto Bot"}")).ConfigureAwait(false);
         }
 
 

@@ -154,10 +154,6 @@ namespace Fanex.NCB.Bot.Skype.Controllers
             if (conversationInfo == null)
             {
                 conversationInfo = NewBotConversation(turnContext);
-                if (string.IsNullOrEmpty(conversationInfo.Name))
-                {
-                    conversationInfo.Name = "null";
-                }
                 await _botConversationRepository.InsertAsync(conversationInfo).ConfigureAwait(false);
             }
 

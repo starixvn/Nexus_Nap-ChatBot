@@ -12,5 +12,6 @@ namespace Fanex.NCB.Bot.SkypeClient
         Task<HttpStatusCode> SendAsync(string message, string conversationId);
         Task<HttpStatusCode> SendAsync(IMessageActivity messageActivity);
         Task<HttpStatusCode> ReplyAsync(IMessageActivity activity, string message);
+
     }
 }

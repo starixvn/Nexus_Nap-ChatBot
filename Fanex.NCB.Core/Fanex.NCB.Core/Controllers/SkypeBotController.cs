@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Fanex.NCB.Bot.SkypeClient;
+using Fanex.NCB.Core.Models.DataDomain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -23,6 +24,7 @@ namespace Fanex.NCB.Main.Controllers
             if (!string.IsNullOrEmpty(message) && !string.IsNullOrWhiteSpace(conversationid))
             {
                 await botClient.SendAsync(message, conversationid).ConfigureAwait(false);
+              
             }
             return "OK";
         }
