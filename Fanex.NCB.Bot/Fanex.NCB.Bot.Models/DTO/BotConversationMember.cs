@@ -11,5 +11,6 @@ namespace Fanex.NCB.Bot.Models.DTO
         public string Name { get; set; }
         public bool IsBot { get; set; }
         public DateTime LastUpdate { get; set; }
+        public bool IsActive { get; set; }
     }
 }

@@ -10,9 +10,8 @@ namespace Fanex.NCB.Bot.Models.DTO
         public int GroupID { get; set; }
         public string ConversationID { get; set; }
         public string Name { get; set; }
-        public bool IsBotActive { get; set; }
         public string ChannelID { get; set; }
-        public string BotName { get; set; }
+        public string UpdatedBy { get; set; }
         public DateTime LastUpdate { get; set; }
 
         public string ServiceUrl { get; set; }

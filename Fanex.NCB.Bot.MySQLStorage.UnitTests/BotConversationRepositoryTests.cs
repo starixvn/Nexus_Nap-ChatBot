@@ -43,7 +43,7 @@ namespace Fanex.NCB.Bot.MySQLStorage.UnitTests
         {
             return new BotConversation
             {
-                BotName = "sparta",
+                UpdatedBy = "sparta",
                 ServiceUrl = "test",
                 ChannelID = "test",
                 ConversationID = "test test",
@@ -108,7 +108,7 @@ namespace Fanex.NCB.Bot.MySQLStorage.UnitTests
             var repository = new BotConversationRepository(botServiceDBContext);
             var groupId = await repository.InsertAsync(item);
             const string newBotName = "updated Bot Name";
-            item.BotName = newBotName;
+            item.UpdatedBy = newBotName;
             item.GroupID = groupId;
             // Act
             var result = await repository.UpdateAsync(item).ConfigureAwait(false);
@@ -116,7 +116,7 @@ namespace Fanex.NCB.Bot.MySQLStorage.UnitTests
             // Assert
 
             Assert.True(result);
-            Assert.Equal(newBotName, updatedItem.BotName);
+            Assert.Equal(newBotName, updatedItem.UpdatedBy);
         }
 
         [Fact]

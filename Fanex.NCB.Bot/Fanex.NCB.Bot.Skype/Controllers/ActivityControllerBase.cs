@@ -11,10 +11,11 @@ namespace Fanex.NCB.Bot.Skype.Controllers
     public class ActivityControllerBase : BaseController
     {
         private readonly IBotConversationRepository _botConversationRepository;
-
-        public ActivityControllerBase(IBotConversationRepository botConversationRepository)
+        private readonly IBotConversationMemberRepository _botConversationMemberRepository;
+        public ActivityControllerBase(IBotConversationRepository botConversationRepository, IBotConversationMemberRepository botConversationMemberRepository)
         {
             _botConversationRepository = botConversationRepository;
+            _botConversationMemberRepository = botConversationMemberRepository;
         }
         protected override Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
@@ -93,14 +94,13 @@ namespace Fanex.NCB.Bot.Skype.Controllers
 
                 foreach (var member in turnContext.Activity.MembersAdded)
                 {
-                    if (member.Id != turnContext.Activity.Recipient.Id)
-                    {
-                        await OnMemberAddedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
-                    }
-                    else
+                    if (member.Id == turnContext.Activity.Recipient.Id)
                     {
                         await OnBotAddedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
                     }
+
+                    await OnMemberAddedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
+
                 }
             }
 
@@ -122,9 +122,8 @@ namespace Fanex.NCB.Bot.Skype.Controllers
             else
             {
                 item.Name = turnContext.Activity.TopicName;
-                item.IsBotActive = true;
                 item.LastUpdate = DateTime.Now;
-                item.BotName = turnContext.Activity.Recipient.Name;
+                item.UpdatedBy = turnContext.Activity.Recipient.Name;
                 item.ChannelID = turnContext.Activity.ChannelId;
                 item.ServiceUrl = turnContext.Activity.ServiceUrl;
                 await _botConversationRepository.UpdateAsync(item).ConfigureAwait(false);
@@ -157,15 +156,27 @@ namespace Fanex.NCB.Bot.Skype.Controllers
                 }
                 await _botConversationRepository.InsertAsync(conversationInfo).ConfigureAwait(false);
             }
+
+
         }
         protected virtual Task OnMembeRemovedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
         }
 
-        protected virtual Task OnMemberAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
+        protected virtual async Task OnMemberAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            var item = new BotConversationMember
+            {
+                ConversationID = turnContext.Activity.Conversation.Id,
+                IsActive = true,
+                IsBot = member.Id == turnContext.Activity.Recipient.Id,
+                LastUpdate = DateTime.Now,
+                MemberId = member.Id,
+                Name = member.Name
+            };
+
+            await _botConversationMemberRepository.InsertAsync(item).ConfigureAwait(false);
         }
         #endregion
         protected virtual Task OnOtherActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
@@ -177,12 +188,11 @@ namespace Fanex.NCB.Bot.Skype.Controllers
         {
             return new BotConversation
             {
-                BotName = turnContext.Activity.Recipient.Name,
-                IsBotActive = true,
+                UpdatedBy = turnContext.Activity.Recipient.Name,
                 ChannelID = turnContext.Activity.ChannelId,
                 ConversationID = turnContext.Activity.Conversation.Id,
                 LastUpdate = DateTime.Now,
-                Name = turnContext.Activity.TopicName,
+                Name = turnContext.Activity.TopicName ?? "null",
                 ServiceUrl = turnContext.Activity.ServiceUrl
             };
         }

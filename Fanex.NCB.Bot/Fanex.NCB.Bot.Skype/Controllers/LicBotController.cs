@@ -18,8 +18,8 @@ namespace Fanex.NCB.Bot.Skype.Controllers
     public class LicBotController : ActivityControllerBase
     {
         private readonly BotConfiguration _botConfig;
-        public LicBotController(BotConfiguration botConfig, IBotConversationRepository botConversationRepository)
-            : base(botConversationRepository)
+        public LicBotController(BotConfiguration botConfig, IBotConversationRepository botConversationRepository, IBotConversationMemberRepository botConversationMemberRepository)
+            : base(botConversationRepository, botConversationMemberRepository)
         {
             _botConfig = botConfig;
         }

@@ -12,6 +12,8 @@ namespace Fanex.NCB.Bot.Skype
         {
             services.AddDbContextPool<BotServiceDBContext>(x => x.UseMySQL(chatBotConnection));
             services.AddTransient<IBotConversationRepository, BotConversationRepository>();
+            services.AddTransient<IBotConversationMemberRepository, BotConversationMemberRepository>();
+
         }
     }
 }
