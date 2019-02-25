@@ -181,7 +181,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
                     IsBot = member.Id == turnContext.Activity.Recipient.Id,
                     LastUpdate = DateTime.Now,
                     MemberId = member.Id,
-                    Name = member.Id == turnContext.Activity.Recipient.Id ? turnContext.Activity.Recipient.Name : member.Name
+                    Name = member.Id == turnContext.Activity.Recipient.Id ? turnContext.Activity.Recipient.Name : member.Name ?? "null"
                 };
                 await _botConversationMemberRepository.InsertAsync(item).ConfigureAwait(false);
 
