@@ -33,7 +33,7 @@ namespace Fanex.NCB.Main
         {
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<List<DataConfig>>(Configuration.GetSection("SPName"));
-
+            services.Configure<List<SkypeBotSetting>>(Configuration.GetSection("SkypeBot"));
             services.AddDistributedRedisCache(options =>
             {
                 options.Configuration = "10.18.200.103:63799";
@@ -66,10 +66,6 @@ namespace Fanex.NCB.Main
             services.AddSingleton<IBridgeClientService, BridgeClientService>();
             services.AddSingleton<ISessionService, SessionService>();
 
-            var appSetting = Configuration.GetSection("AppSettings");
-
-            services.AddTransient<IBotClient, BotClient>(_ =>
-            new BotClient(appSetting["MicrosoftAppId"], appSetting["MicrosoftAppPassword"]));
 
             services.AddTransient<IDBConfigService, DBConfigService>();
 

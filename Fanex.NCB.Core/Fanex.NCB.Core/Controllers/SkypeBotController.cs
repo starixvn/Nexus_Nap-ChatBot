@@ -1,26 +1,31 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Fanex.NCB.Bot.SkypeClient;
+using Fanex.NCB.Core.Models.DataDomain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Extensions.Options;
+using System.Linq;
 namespace Fanex.NCB.Main.Controllers
 {
     [Authorize]
     public class SkypeBotController : Controller
     {
-        private readonly IBotClient _botClient;
-        public SkypeBotController(IBotClient botClient)
+        private readonly IList<SkypeBotSetting> _options;
+
+        public SkypeBotController(IOptions<List<SkypeBotSetting>> options)
         {
-            _botClient = botClient;
+            _options = options.Value;
         }
         public async Task<string> Index(string message, string conversationid)
         {
-
+            var spartaBot = _options.FirstOrDefault(i => i.Name == "SpartaBot");
+            var botClient = new BotClient(spartaBot.MicrosoftAppId, spartaBot.MicrosoftAppPassword) ;
             if (!string.IsNullOrEmpty(message) && !string.IsNullOrWhiteSpace(conversationid))
             {
-                await _botClient.SendAsync(message, conversationid).ConfigureAwait(false);
+                await botClient.SendAsync(message, conversationid).ConfigureAwait(false);
             }
             return "OK";
         }
