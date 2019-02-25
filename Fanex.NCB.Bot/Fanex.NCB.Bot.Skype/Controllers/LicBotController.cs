@@ -14,9 +14,7 @@ using Microsoft.Bot.Schema;
 
 namespace Fanex.NCB.Bot.Skype.Controllers
 {
-    [Route("LicBot/{lb}")]
-    [Route("LicBot/{lb}")]
-    [Route("LicBot/{lb}")]
+    [Route("LicBot")]
     public class LicBotController : ActivityControllerBase
     {
         private readonly BotConfiguration _botConfig;
@@ -26,9 +24,8 @@ namespace Fanex.NCB.Bot.Skype.Controllers
             _botConfig = botConfig;
         }
 
-        protected override IAdapterIntegration CreateAdapter()
+        protected override IAdapterIntegration CreateAdapter(string botName)
         {
-            var botName = Request.Query["lb"];
             return AdapterFactory.Create(_botConfig, botName);
         }
 

@@ -28,9 +28,12 @@ namespace Fanex.NCB.Bot.Skype.Controllers
             ContractResolver = new ReadOnlyJsonContractResolver(),
             Converters = new List<JsonConverter> { new FixedIsoDateTimeOffsetConverter() },
         });
-        [HttpPost]
-        public async Task PostAsync()
+        public async Task PostAsync(string lb)
         {
+            if(string.IsNullOrEmpty(lb))
+            {
+                throw new Exception("Invalid request!!!");
+            }
             try
             {
                 var activity = default(Activity);
@@ -40,7 +43,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
                     activity = BotMessageSerializer.Deserialize<Activity>(bodyReader);
                 }
 
-                var botFrameworkAdapter = CreateAdapter();
+                var botFrameworkAdapter = CreateAdapter(lb);
 
                 var invokeResponse = await botFrameworkAdapter.ProcessActivityAsync(
                     Request.Headers["Authorization"],
@@ -76,7 +79,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
         /// Override CreateAdapter to create your own custom adapter or set properties on a BotFrameworkAdapter instance.
         /// </summary>
         /// <returns>An adapter that will be used for the current request.</returns>
-        protected virtual IAdapterIntegration CreateAdapter() => new BotFrameworkAdapter(new SimpleCredentialProvider());
+        protected virtual IAdapterIntegration CreateAdapter(string botName) => new BotFrameworkAdapter(new SimpleCredentialProvider());
 
         /// <summary>
         /// Override OnTurnAsync to implement the bot specific logic. This is exactly the same as implementing
