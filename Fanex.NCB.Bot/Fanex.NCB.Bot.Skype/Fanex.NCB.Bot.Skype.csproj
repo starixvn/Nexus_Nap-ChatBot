@@ -24,6 +24,7 @@
     <ProjectReference Include="..\Fanex.NCB.Bot.BaseStorage\Fanex.NCB.Bot.BaseStorage.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Bot.Models\Fanex.NCB.Bot.Models.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Bot.MySQLStorage\Fanex.NCB.Bot.MySQLStorage.csproj" />
+    <ProjectReference Include="..\Fanex.NCB.Bot.SkypeClient\Fanex.NCB.Bot.SkypeClient.csproj" />
   </ItemGroup>
 
 </Project>

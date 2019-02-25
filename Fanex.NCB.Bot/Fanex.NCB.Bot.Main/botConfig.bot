@@ -4,7 +4,7 @@
   "services": [
     {
       "type": "endpoint",
-      "name": "SpartaBot development",
+      "name": "SpartaBot",
       "endpoint": "https://licbot.nexdev.net/LicBot?lb=SpartaBot",
       "appId": "ea8d17a4-16c8-43b3-a1a8-ade5277dbd24",
       "appPassword": "qoudDD4+$fdkQJTBU0646[?",
@@ -12,7 +12,7 @@
     },
     {
       "type": "endpoint",
-      "name": "1on1notify development",
+      "name": "1on1notify",
       "endpoint": "https://licbot.nexdev.net/LicBot?lb=1on1notify",
       "appId": "5de427b9-a7f0-497e-81d3-b3348721500a",
       "appPassword": "gscY457%{]koujCCMDDJ52^",
@@ -20,7 +20,7 @@
     },
     {
       "type": "endpoint",
-      "name": "OWnotify development",
+      "name": "OWnotify",
       "endpoint": "https://licbot.nexdev.net/LicBot?lb=OWnotify",
       "appId": "9d274edb-0a3d-4f00-a8bd-ff557276d61d",
       "appPassword": "fcomEG467cppHJVID66^%#@",

@@ -33,6 +33,7 @@ namespace Fanex.NCB.Bot.Main
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
             var secretKey = Configuration.GetSection("botFileSecret")?.Value;
             var botFilePath = Configuration.GetSection("botFilePath")?.Value;
             // Loads .bot configuration file and adds a singleton that your Bot can access through dependency injection.

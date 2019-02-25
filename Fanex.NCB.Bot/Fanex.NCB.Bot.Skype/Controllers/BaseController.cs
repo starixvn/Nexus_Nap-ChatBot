@@ -30,7 +30,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
         });
         public async Task PostAsync(string lb)
         {
-            if(string.IsNullOrEmpty(lb))
+            if (string.IsNullOrEmpty(lb))
             {
                 throw new Exception("Invalid request!!!");
             }

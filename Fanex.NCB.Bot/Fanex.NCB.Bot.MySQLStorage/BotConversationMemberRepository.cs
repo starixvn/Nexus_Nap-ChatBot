@@ -44,7 +44,7 @@ namespace Fanex.NCB.Bot.MySQLStorage
 
         public async Task<bool> UpdateAsync(BotConversationMember newValue)
         {
-            if (await SingleAsync(x => x.MemberId == newValue.MemberId && x.ConversationID == newValue.ConversationID) != null)
+            if (await SingleAsync(x => x.MemberId == newValue.MemberId && x.ConversationID == newValue.ConversationID).ConfigureAwait(false) != null)
             {
                 _botServiceDBContext.BotConversationMembers.Update(newValue);
                 var result = await _botServiceDBContext.SaveChangesAsync().ConfigureAwait(false);

@@ -4,7 +4,12 @@ using System.Threading.Tasks;
 using Fanex.NCB.Bot.BaseStorage;
 using Fanex.NCB.Bot.Models.DTO;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
+using System.Linq;
+using System.Collections.Generic;
+using Microsoft.Bot.Configuration;
+using Fanex.NCB.Bot.SkypeClient;
 
 namespace Fanex.NCB.Bot.Skype.Controllers
 {
@@ -12,11 +17,17 @@ namespace Fanex.NCB.Bot.Skype.Controllers
     {
         private readonly IBotConversationRepository _botConversationRepository;
         private readonly IBotConversationMemberRepository _botConversationMemberRepository;
-        public ActivityControllerBase(IBotConversationRepository botConversationRepository, IBotConversationMemberRepository botConversationMemberRepository)
+        public ActivityControllerBase(
+            BotConfiguration botConfiguration,
+            IBotConversationRepository botConversationRepository,
+            IBotConversationMemberRepository botConversationMemberRepository)
         {
             _botConversationRepository = botConversationRepository;
             _botConversationMemberRepository = botConversationMemberRepository;
+            BotConfig = botConfiguration;
         }
+        protected BotConfiguration BotConfig { get; }
+
         protected override Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             switch (turnContext.Activity.Type)
@@ -72,6 +83,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
         private async Task OnConversationUpdateActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             var isUpdatedMember = false;
+
             if (turnContext.Activity.MembersRemoved != null)
             {
                 isUpdatedMember = true;
@@ -91,6 +103,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
             if (turnContext.Activity.MembersAdded != null)
             {
                 isUpdatedMember = true;
+
 
                 foreach (var member in turnContext.Activity.MembersAdded)
                 {
@@ -137,7 +150,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
 
         protected virtual async Task OnBotAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            var conversationInfo = await _botConversationRepository.SingleAsync(x => x.ConversationID == turnContext.Activity.Conversation.Id);
+            var conversationInfo = await _botConversationRepository.SingleAsync(x => x.ConversationID == turnContext.Activity.Conversation.Id).ConfigureAwait(false);
             if (conversationInfo == null)
             {
                 conversationInfo = NewBotConversation(turnContext);
@@ -157,18 +170,31 @@ namespace Fanex.NCB.Bot.Skype.Controllers
 
         protected virtual async Task OnMemberAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            var item = new BotConversationMember
+            var memberInfo = await _botConversationMemberRepository.SingleAsync(x => x.ConversationID == turnContext.Activity.Conversation.Id
+            && x.MemberId == member.Id).ConfigureAwait(false);
+            if (memberInfo == null)
             {
-                ConversationID = turnContext.Activity.Conversation.Id,
-                IsActive = true,
-                IsBot = member.Id == turnContext.Activity.Recipient.Id,
-                LastUpdate = DateTime.Now,
-                MemberId = member.Id,
-                Name = member.Name
-            };
+                var item = new BotConversationMember
+                {
+                    ConversationID = turnContext.Activity.Conversation.Id,
+                    IsActive = true,
+                    IsBot = member.Id == turnContext.Activity.Recipient.Id,
+                    LastUpdate = DateTime.Now,
+                    MemberId = member.Id,
+                    Name = member.Id == turnContext.Activity.Recipient.Id ? turnContext.Activity.Recipient.Name : member.Name
+                };
+                await _botConversationMemberRepository.InsertAsync(item).ConfigureAwait(false);
 
-            await _botConversationMemberRepository.InsertAsync(item).ConfigureAwait(false);
+            }
+            else
+            {
+                memberInfo.LastUpdate = DateTime.Now;
+                memberInfo.IsActive = true;
+                await _botConversationMemberRepository.UpdateAsync(memberInfo).ConfigureAwait(false);
+
+            }
         }
+
         #endregion
         protected virtual Task OnOtherActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {

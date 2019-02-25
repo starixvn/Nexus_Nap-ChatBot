@@ -11,9 +11,9 @@ namespace Fanex.NCB.Bot.Skype.Models
     {
         public static IAdapterIntegration Create(BotConfiguration botConfig, string name)
         {
-            var endpointName = $"{name} development";
+            var endpointName = $"{name}";
 
-            var service = botConfig.Services.Where(s => s.Type == "endpoint" && s.Name == endpointName).FirstOrDefault();
+            var service = botConfig.Services.Find(s => s.Type == "endpoint" && s.Name == endpointName);
             if (!(service is EndpointService endpointService))
             {
                 throw new InvalidOperationException($"The .bot file does not contain an endpoint with name '{name}'.");

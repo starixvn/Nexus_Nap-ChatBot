@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Fanex.NCB.Bot.SkypeClient;
-using Fanex.NCB.Core.Models.DataDomain;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Linq;
 namespace Fanex.NCB.Main.Controllers
 {
     [Authorize]
