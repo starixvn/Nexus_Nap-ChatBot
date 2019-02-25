@@ -18,9 +18,9 @@ namespace Fanex.NCB.Bot.Skype.Controllers
     public class LicBotController : ActivityControllerBase
     {
         public LicBotController(BotConfiguration botConfig, IBotConversationRepository botConversationRepository, IBotConversationMemberRepository botConversationMemberRepository)
-            : base(botConfig,botConversationRepository, botConversationMemberRepository)
+            : base(botConfig, botConversationRepository, botConversationMemberRepository)
         {
-            
+
         }
 
         protected override IAdapterIntegration CreateAdapter(string botName)
@@ -31,14 +31,15 @@ namespace Fanex.NCB.Bot.Skype.Controllers
 
         protected override async Task OnBotAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
+            var bot = BotConfig.Services.Find(x => x.Id == turnContext.Activity.Recipient.Id);
             await base.OnBotAddedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
-            await turnContext.SendActivityAsync(MessageFactory.Text($"Hello, I'm {BotConfig.Name}")).ConfigureAwait(false);
+            await turnContext.SendActivityAsync(MessageFactory.Text($"Hello, I'm {bot.Name}")).ConfigureAwait(false);
         }
 
 
         protected override async Task OnMessageActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            await turnContext.SendActivityAsync(MessageFactory.Text($"Echo '{turnContext.Activity.Text}' Hello, I'm {BotConfig.Name}")).ConfigureAwait(false);
+            await turnContext.SendActivityAsync(MessageFactory.Text($"Echo '{turnContext.Activity.Text}'")).ConfigureAwait(false);
         }
 
         protected override async Task OnMemberAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
