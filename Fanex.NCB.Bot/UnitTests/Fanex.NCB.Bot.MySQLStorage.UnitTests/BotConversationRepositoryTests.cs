@@ -47,7 +47,6 @@ namespace Fanex.NCB.Bot.MySQLStorage.UnitTests
                 ServiceUrl = "test",
                 ChannelID = "test",
                 ConversationID = "test test",
-                IsBotActive = true,
                 LastUpdate = DateTime.Now,
                 Name = "test group"
             };
