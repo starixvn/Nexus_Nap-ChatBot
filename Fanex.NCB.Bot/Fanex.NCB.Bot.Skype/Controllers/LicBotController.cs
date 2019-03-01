@@ -31,9 +31,12 @@ namespace Fanex.NCB.Bot.Skype.Controllers
 
         protected override async Task OnBotAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            var bot = BotConfig.Services.Find(x => x.Id == turnContext.Activity.Recipient.Id);
+            var bot = BotConfig.Services.Find(x => x.Name == turnContext.Activity.Recipient.Name);
             await base.OnBotAddedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
-            await turnContext.SendActivityAsync(MessageFactory.Text($"{bot.Properties.GetValue("Intro")}")).ConfigureAwait(false);
+            if (bot != null)
+            {
+                await turnContext.SendActivityAsync(MessageFactory.Text($"{bot.Properties.GetValue("Intro")}")).ConfigureAwait(false);
+            }
         }
 
 
@@ -45,7 +48,10 @@ namespace Fanex.NCB.Bot.Skype.Controllers
         protected override async Task OnMemberAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
             await base.OnMemberAddedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
-            await turnContext.SendActivityAsync(MessageFactory.Text($"Hi {member.Name}."), cancellationToken).ConfigureAwait(false);
+            if (member.Id != turnContext.Activity.Recipient.Id)
+            {
+                await turnContext.SendActivityAsync(MessageFactory.Text($"Hi {member.Name}."), cancellationToken).ConfigureAwait(false);
+            }
         }
 
 
