@@ -33,7 +33,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
         {
             var bot = BotConfig.Services.Find(x => x.Id == turnContext.Activity.Recipient.Id);
             await base.OnBotAddedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
-            await turnContext.SendActivityAsync(MessageFactory.Text($"Hello, I'm {bot?.Name ?? "Auto Bot"}")).ConfigureAwait(false);
+            await turnContext.SendActivityAsync(MessageFactory.Text($"{bot.Properties.GetValue("Intro")}")).ConfigureAwait(false);
         }
 
 
@@ -45,7 +45,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
         protected override async Task OnMemberAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
             await base.OnMemberAddedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
-            await turnContext.SendActivityAsync(MessageFactory.Text($"Welcome {member.Name}."), cancellationToken).ConfigureAwait(false);
+            await turnContext.SendActivityAsync(MessageFactory.Text($"Hi {member.Name}."), cancellationToken).ConfigureAwait(false);
         }
 
 
