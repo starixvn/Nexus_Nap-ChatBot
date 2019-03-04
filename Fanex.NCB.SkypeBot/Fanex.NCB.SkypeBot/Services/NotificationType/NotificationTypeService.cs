@@ -17,7 +17,7 @@ namespace Fanex.NCB.SkypeBot.Services.NotificationType
 
         public async Task<NotificationTypeListResultModel> GetNotificationTypeListAsync(int pageIndex, int pageSize)
         {
-            return await _notificationTypeStorage.GetNotificationTypeListAsync(pageIndex, pageSize).ConfigureAwait(false);          
+            return await _notificationTypeStorage.GetNotificationTypeListAsync(pageIndex, pageSize).ConfigureAwait(false);
         }
 
         public async Task<List<NotificationSystem>> GetNotificationSystemsAsync()
