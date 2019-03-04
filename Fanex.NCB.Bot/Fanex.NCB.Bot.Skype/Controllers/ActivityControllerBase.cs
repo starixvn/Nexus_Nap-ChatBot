@@ -89,14 +89,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
                 isUpdatedMember = true;
                 foreach (var member in turnContext.Activity.MembersRemoved)
                 {
-                    if (member.Id == turnContext.Activity.Recipient.Id)
-                    {
-                        await OnBotRemovedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await OnMembeRemovedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
-                    }
+                    await OnMembeRemovedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
                 }
             }
 
@@ -143,11 +136,6 @@ namespace Fanex.NCB.Bot.Skype.Controllers
             }
         }
 
-        private Task OnBotRemovedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
         protected virtual async Task OnBotAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
             var conversationInfo = await _botConversationRepository.SingleAsync(x => x.ConversationID == turnContext.Activity.Conversation.Id).ConfigureAwait(false);
@@ -159,9 +147,16 @@ namespace Fanex.NCB.Bot.Skype.Controllers
 
         }
 
-        protected virtual Task OnMembeRemovedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
+        protected async virtual Task OnMembeRemovedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            var memberInfo = await _botConversationMemberRepository.SingleAsync(x => x.ConversationID == turnContext.Activity.Conversation.Id
+                  && x.MemberId == member.Id).ConfigureAwait(false);
+            if (memberInfo != null)
+            {
+                memberInfo.LastUpdate = DateTime.Now;
+                memberInfo.IsActive = false;
+                await _botConversationMemberRepository.UpdateAsync(memberInfo);
+            }
         }
 
         protected virtual async Task OnMemberAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
