@@ -20,12 +20,13 @@ namespace Fanex.NCB.Main.Controllers
         public async Task<string> Index(string message, string conversationid)
         {
             var spartaBot = _options.FirstOrDefault(i => i.Name == "SpartaBot");
-            var botClient = new BotClient(spartaBot.MicrosoftAppId, spartaBot.MicrosoftAppPassword) ;
+            var botClient = new BotClient(spartaBot.MicrosoftAppId, spartaBot.MicrosoftAppPassword);
             if (!string.IsNullOrEmpty(message) && !string.IsNullOrWhiteSpace(conversationid))
             {
                 await botClient.SendAsync(message, conversationid).ConfigureAwait(false);
-              
+
             }
+
             return "OK";
         }
 

@@ -189,6 +189,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
             }
         }
 
+
         #endregion
         protected virtual Task OnOtherActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {

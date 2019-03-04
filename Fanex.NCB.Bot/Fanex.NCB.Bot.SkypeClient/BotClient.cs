@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-
+using System.Linq;
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 [assembly: InternalsVisibleTo("Fanex.NCB.Bot.SkypeClient.UnitTests")]
 namespace Fanex.NCB.Bot.SkypeClient
@@ -92,15 +92,24 @@ namespace Fanex.NCB.Bot.SkypeClient
 
         public virtual async Task<HttpStatusCode> SendAsync(IMessageActivity messageActivity)
         {
+            return await PrepareStep(async (x) =>
+            {
+                await x.Conversations.SendToConversationAsync((Activity)messageActivity).ConfigureAwait(false);
+                return HttpStatusCode.OK;
+            }).ConfigureAwait(false);
+        }
+
+        private async Task<HttpStatusCode> PrepareStep(Func<IConnectorClient, Task<HttpStatusCode>> codeBlock)
+        {
             var token = await GetToken().ConfigureAwait(false);
             if (token == null || string.IsNullOrEmpty(token.AccessToken))
             {
                 return HttpStatusCode.Unauthorized;
             }
-            var connector = await SetupClientConnection().ConfigureAwait(false);
-            await connector.Conversations.SendToConversationAsync((Activity)messageActivity).ConfigureAwait(false);
-            return HttpStatusCode.OK;
-        }
 
+            var connector = await SetupClientConnection().ConfigureAwait(false);
+
+            return await codeBlock(connector).ConfigureAwait(false);
+        }
     }
 }
