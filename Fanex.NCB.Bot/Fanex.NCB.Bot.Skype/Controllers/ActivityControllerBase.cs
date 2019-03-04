@@ -155,6 +155,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
             {
                 memberInfo.LastUpdate = DateTime.Now;
                 memberInfo.IsActive = false;
+                memberInfo.UpdatedBy = turnContext.Activity.Recipient.Name;
                 await _botConversationMemberRepository.UpdateAsync(memberInfo);
             }
         }
@@ -172,7 +173,8 @@ namespace Fanex.NCB.Bot.Skype.Controllers
                     IsBot = member.Id == turnContext.Activity.Recipient.Id,
                     LastUpdate = DateTime.Now,
                     MemberId = member.Id,
-                    Name = member.Id == turnContext.Activity.Recipient.Id ? turnContext.Activity.Recipient.Name : member.Name ?? "null"
+                    Name = member.Id == turnContext.Activity.Recipient.Id ? turnContext.Activity.Recipient.Name : member.Name ?? "null",
+                    UpdatedBy = turnContext.Activity.Recipient.Name
                 };
                 await _botConversationMemberRepository.InsertAsync(item).ConfigureAwait(false);
 
@@ -181,6 +183,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
             {
                 memberInfo.LastUpdate = DateTime.Now;
                 memberInfo.IsActive = true;
+                memberInfo.UpdatedBy = turnContext.Activity.Recipient.Name;
                 await _botConversationMemberRepository.UpdateAsync(memberInfo).ConfigureAwait(false);
 
             }

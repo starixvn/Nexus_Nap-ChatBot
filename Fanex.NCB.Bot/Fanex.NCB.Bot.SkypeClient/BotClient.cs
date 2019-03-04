@@ -98,7 +98,7 @@ namespace Fanex.NCB.Bot.SkypeClient
                 return HttpStatusCode.Unauthorized;
             }
             var connector = await SetupClientConnection().ConfigureAwait(false);
-            var result = await connector.Conversations.SendToConversationAsync((Activity)messageActivity).ConfigureAwait(false);
+            await connector.Conversations.SendToConversationAsync((Activity)messageActivity).ConfigureAwait(false);
             return HttpStatusCode.OK;
         }
 
