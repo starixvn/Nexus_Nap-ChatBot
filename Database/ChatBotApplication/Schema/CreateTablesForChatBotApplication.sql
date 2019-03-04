@@ -6,17 +6,17 @@ CREATE TABLE `System` (
   PRIMARY KEY (`SystemID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `MessageType` (
-  `MessageTypeID` int NOT NULL AUTO_INCREMENT,  
-  `MessageTypeName` varchar(100) CHARACTER SET utf8 NOT NULL,  
+CREATE TABLE `NotificationType` (
+  `NotificationTypeID` int NOT NULL AUTO_INCREMENT,  
+  `NotificationTypeName` varchar(100) CHARACTER SET utf8 NOT NULL,  
   `SystemID` int NOT NULL,  
   PRIMARY KEY (`MessageTypeID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `MessageTemplate` (
-  `TemplateID` int NOT NULL AUTO_INCREMENT,  
-  `TemplateName` varchar(500) CHARACTER SET utf8 NOT NULL,  
-  `MessageTypeID` int NOT NULL,  
+CREATE TABLE `NotificationTemplate` (
+  `NotificationTemplateID` int NOT NULL AUTO_INCREMENT,  
+  `NotificationTemplateName` varchar(500) CHARACTER SET utf8 NOT NULL,  
+  `NotificationTypeID` int NOT NULL,  
   `Title` varchar(500) CHARACTER SET utf8 NOT NULL,  
   `Content` text(20000) CHARACTER SET utf8 NOT NULL,  
   `CreatorID` int NOT NULL,  
@@ -26,10 +26,10 @@ CREATE TABLE `MessageTemplate` (
   PRIMARY KEY (`TemplateID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `Message` (
-  `MessageID` int NOT NULL AUTO_INCREMENT,  
-  `TemplateID` int NOT NULL,  
-  `MessageTypeID` int NOT NULL,  
+CREATE TABLE `Notification` (
+  `NotificationID` int NOT NULL AUTO_INCREMENT,  
+  `NotificationTemplateID` int NOT NULL,  
+  `NotificationTypeID` int NOT NULL,  
   `Title` varchar(500) CHARACTER SET utf8 NOT NULL,  
   `Content` text(20000) CHARACTER SET utf8 NOT NULL,  
   `IsImmediate` bit NOT NULL,  
@@ -48,8 +48,8 @@ CREATE TABLE `RecipientType` (
   PRIMARY KEY (`RecipientTypeID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `MessageTypeConfig` (
-  `MessageTypeID` int NOT NULL,  
+CREATE TABLE `NotificationTypeRecipientType` (
+  `NotificationTypeID` int NOT NULL,  
   `RecipientTypeID`  int NOT NULL ,  
   PRIMARY KEY (`MessageTypeID`, `RecipientTypeID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
@@ -71,10 +71,10 @@ CREATE TABLE `ConversationRecipient` (
   PRIMARY KEY (`ConversationID`, `RecipientID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `RecipientMessage` (
+CREATE TABLE `NotificationRecipient` (
   `RecipientID` int NOT NULL,  
   `RecipientTypeID` int NOT NULL,  
-  `MessageID` int NOT NULL,  
+  `NotificationID` int NOT NULL,  
   `SentTime` datetime NOT NULL,
   `Status` varchar(50) CHARACTER SET utf8 NOT NULL,  
   `StatusID` tinyint NOT NULL,  
@@ -89,7 +89,7 @@ CREATE TABLE `LogAction` (
   PRIMARY KEY (`ActionID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `UserLog_Action` (
+CREATE TABLE `UserActionLog` (
   `LogID` bigint NOT NULL AUTO_INCREMENT,  
   `LogDate` datetime NOT NULL,
   `ActionID` int NOT NULL,  
@@ -129,9 +129,9 @@ CREATE TABLE `LicenseeProduct` (
   PRIMARY KEY (`LicenseeID`, `ProductID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `LicenseeMessageTypeConfig` (
+CREATE TABLE `LicenseeNotificationType` (
   `LicenseeID` int NOT NULL,  
-  `MessageTypeID` int NOT NULL,  
+  `NotificationTypeID` int NOT NULL,  
   `IsSkipped` bit NOT NULL,  
   PRIMARY KEY (`LicenseeID`, `MessageTypeID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
