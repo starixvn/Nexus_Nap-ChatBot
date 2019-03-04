@@ -21,8 +21,10 @@ CREATE TABLE `BotCoversationMember` (
   `LastUpdate` datetime NOT NULL,
   `IsBot` bit(1) NOT NULL,
   `IsActive` bit(1) NOT NULL,
+  `UpdatedBy` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`ConversationID`,`MemberId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+SELECT * FROM ChatBot.BotConversation;
 
 CREATE TABLE `Users` (
   `UserID` int(11) NOT NULL AUTO_INCREMENT,
@@ -34,3 +36,4 @@ CREATE TABLE `Users` (
   `LastUpdate` datetime NOT NULL,
   PRIMARY KEY (`UserID`,`UserName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
