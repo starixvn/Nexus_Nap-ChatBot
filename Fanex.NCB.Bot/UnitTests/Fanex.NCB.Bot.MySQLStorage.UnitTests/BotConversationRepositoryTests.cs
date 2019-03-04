@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Fanex.NCB.Bot.Models.DTO;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Moq;
 using Xunit;
 
 namespace Fanex.NCB.Bot.MySQLStorage.UnitTests
