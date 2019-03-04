@@ -68,7 +68,6 @@ namespace Fanex.NCB.Bot.MySQLStorage.UnitTests
         public async Task SingleAsync_WhenCall_ReturnNull()
         {
             //Arrange
-            var item = CreateBotConversation();
             var repository = new BotConversationRepository(botServiceDBContext);
 
             // Act

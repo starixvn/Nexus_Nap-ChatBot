@@ -18,8 +18,8 @@ call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.SkypeBot\Fanex.NCB.Sk
 call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.Core\Fanex.NCB.Core.UnitTests
 call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.SkypeBot\Fanex.NCB.SkypeBot.MySQLStorage.UnitTests
 call CodeCoverage\run_netframework.bat %build_number% Fanex.NCB.Swagger\Fanex.NCB.Swagger.AuthGate.UnitTests\bin\Debug\Fanex.NCB.Swagger.AuthGate.UnitTests.dll
-call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.Bot\UnitTests\Fanex.NCB.Bot.SkypeClient.UnitTests\bin\Debug\Fanex.NCB.Bot.SkypeClient.UnitTests.dll
-call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.Bot\UnitTests\Fanex.NCB.Bot.MySQLStorage.UnitTests\bin\Debug\FFanex.NCB.Bot.MySQLStorage.UnitTests.dll
+call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.Bot\UnitTests\Fanex.NCB.Bot.SkypeClient.UnitTests
+call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.Bot\UnitTests\Fanex.NCB.Bot.MySQLStorage.UnitTests
 
 REM ReportGenerator
 set command=CodeCoverage\tools\ReportGenerator.3.0.2\tools\reportgenerator.exe -reports:"UnitTestCoverage_%build_number%.xml" -targetdir:"cireport\testcoveragereport\"
