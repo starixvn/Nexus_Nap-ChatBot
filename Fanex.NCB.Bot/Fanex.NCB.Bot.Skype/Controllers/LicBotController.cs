@@ -30,8 +30,8 @@ namespace Fanex.NCB.Bot.Skype.Controllers
 
         protected override async Task OnBotAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            var bot = BotConfig.Services.Find(x => x.Name == turnContext.Activity.Recipient.Name);
             var botTask = base.OnBotAddedAsync(member, turnContext, cancellationToken);
+            var bot = BotConfig.Services.Find(x => x.Name == turnContext.Activity.Recipient.Name);
             var msgTask = bot != null ? turnContext.SendActivityAsync(MessageFactory.Text($"{bot.Properties.GetValue("Intro")}")) : Task.CompletedTask;
 
             await Task.WhenAll(botTask, msgTask).ConfigureAwait(false);

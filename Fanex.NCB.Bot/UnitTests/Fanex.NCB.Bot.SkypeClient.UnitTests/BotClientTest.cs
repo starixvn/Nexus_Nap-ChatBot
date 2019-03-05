@@ -28,11 +28,14 @@ namespace Fanex.NCB.Bot.SkypeClient.UnitTests
             connectorClient.Setup(x => x.Conversations).Returns(conversation.Object);
         }
 
-        [Fact]
-        public async Task SendAsync_MessageActivity_ReturnStatus_OK()
+        [Theory]
+        [InlineData("tokenurl", "botservice")]
+        [InlineData("tokenurl", null)]
+        [InlineData(null, null)]
+        public async Task SendAsync_MessageActivity_ReturnStatus_OK(string tokenUrl, string botService)
         {
             //Arrange
-            var botClient = new Mock<BotClient>("any", "any") { CallBase = true };
+            var botClient = new Mock<BotClient>("any", "any", botService, tokenUrl) { CallBase = true };
             botClient.Setup(x => x.GetToken()).Returns(Task.FromResult(new Token { AccessToken = "any" }));
             botClient.Setup(x => x.SetupClientConnection()).Returns(Task.FromResult(connectorClient.Object));
             //Action
@@ -44,11 +47,14 @@ namespace Fanex.NCB.Bot.SkypeClient.UnitTests
             Assert.True(result == HttpStatusCode.OK);
         }
 
-        [Fact]
-        public async Task SendAsync_MessageActivity_ReturnStatus_Unauthorized()
+        [Theory]
+        [InlineData("tokenurl", "botservice")]
+        [InlineData("tokenurl", null)]
+        [InlineData(null, null)]
+        public async Task SendAsync_MessageActivity_ReturnStatus_Unauthorized(string tokenUrl, string botService)
         {
             //Arrange - Fake Server
-            var botClient = new Mock<BotClient>("any", "any") { CallBase = true };
+            var botClient = new Mock<BotClient>("any", "any", botService, tokenUrl) { CallBase = true };
             botClient.Setup(x => x.GetToken()).Returns(Task.FromResult(new Token()));
 
             // Act
@@ -74,7 +80,7 @@ namespace Fanex.NCB.Bot.SkypeClient.UnitTests
             //Arrange
             var client = new BotClient("any", "any");
             // Act
-            var result = await client.SendAsync(message, conversationId);
+            var result = await client.SendAsync(message, conversationId).ConfigureAwait(false);
             // Assert
 
             Assert.True(result == HttpStatusCode.NoContent);

@@ -23,10 +23,8 @@ namespace Fanex.NCB.Bot.SkypeClient
             _clientId = clientId;
             _password = password;
         }
-        public BotClient(string clientId, string password, string botTokenUrl, string serviceUrl)
+        public BotClient(string clientId, string password, string botTokenUrl, string serviceUrl) : this(clientId, password)
         {
-            _clientId = clientId;
-            _password = password;
             if (!string.IsNullOrEmpty(botTokenUrl))
             {
                 _tokenUrl = botTokenUrl;
