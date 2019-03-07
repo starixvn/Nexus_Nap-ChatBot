@@ -6,7 +6,7 @@ namespace Fanex.NCB.SkypeBot.Model.DTO.NotificationType
 {
     public class NotificationTypeListResultModel
     {
-        public List<NotificationTypeItem> Data { get; set; }
+        public List<NotificationType> Data { get; set; }
         public int Count { get; set; }
     }
 }

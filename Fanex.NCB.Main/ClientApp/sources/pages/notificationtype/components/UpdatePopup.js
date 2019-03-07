@@ -6,7 +6,11 @@ import { bindActionCreators } from 'redux';
 import {ActionCreators} from '../actions/index';
 import PropTypes from 'prop-types';
 import {InputField} from '../../common/InputField';
-import {SelectField} from '../../common/SelectField';
+import { SelectField } from '../../common/SelectField';
+import MultipleSelect from '@9softstudio/react-multiselect';
+import { MultipleSelectField } from '../../common/MultipleSelectField';
+
+import '@9softstudio/react-multiselect/dist/style.css';
 
 export class UpdatePopup extends Component {
   constructor(props) {
@@ -18,9 +22,9 @@ export class UpdatePopup extends Component {
             value: this.props.updatePopupData.editingItem.notificationTypeName.value,
             isValid: this.props.updatePopupData.editingItem.notificationTypeName.isValid
         },
-        recipientTypeId: {
-            value: this.props.updatePopupData.editingItem.recipientTypeId.value,
-            isValid: this.props.updatePopupData.editingItem.recipientTypeId.isValid
+        recipientTypeIds: {
+            value: this.props.updatePopupData.editingItem.recipientTypeIds.value,
+            isValid: this.props.updatePopupData.editingItem.recipientTypeIds.isValid
         },
         systemId: {
             value: this.props.updatePopupData.editingItem.systemId.value,
@@ -49,13 +53,13 @@ export class UpdatePopup extends Component {
       return {
         notificationTypeId: this.state.notificationTypeId,
         notificationTypeName: this.state.notificationTypeName.value,
-        recipientTypeId: this.state.recipientTypeId.value,
+        recipientTypeIds: this.state.recipientTypeIds.value,
         systemId: this.state.systemId.value,
     };
   }
 
   checkValidParams = () => {
-    return this.state.notificationTypeName.isValid && this.state.recipientTypeId.isValid && this.state.systemId.isValid;
+    return this.state.notificationTypeName.isValid && this.state.recipientTypeIds.isValid && this.state.systemId.isValid;
   }  
  
   onChange = (fieldName, fieldValue) => {      
@@ -69,7 +73,11 @@ export class UpdatePopup extends Component {
         this.props.closeUpdatePopupHandler();
     }.bind(this),
     1000);
-  }  
+    }  
+
+    recipientTypeSelected = () => {
+
+    }
   
   render() {   
     if(!this.props.updatePopupData.isShowed){
@@ -78,7 +86,25 @@ export class UpdatePopup extends Component {
 
     let popupTitle = this.props.updatePopupData.popupTitle;
     let successMsg = this.props.updatePopupData.successMsg;
-    let showSucessMsg = this.props.updateData && this.props.updateData.addedresult;    
+      let showSucessMsg = this.props.updateData && this.props.updateData.addedresult;    
+
+      let statusList = [];
+      console.log(this.props.settingData.recipientTypes);
+
+      if (this.props.settingData.recipientTypes) {
+          this.props.settingData.recipientTypes.map((v, i) => {
+              console.log("loop");
+              console.log(v.id);
+              v['checked'] = false;
+              console.log(this.props.updatePopupData.editingItem.recipientTypeIds.value);
+              if (this.props.updatePopupData.editingItem.recipientTypeIds.value.split(",").includes(v.id.toString())) {
+                  v['checked'] = true;
+              }
+          });
+      }
+
+      console.log(this.props.settingData.recipientTypes);
+
     return (
         <Modal isOpen={true} toggle={this.props.closeUpdatePopupHandler} wrapClassName="new-notification-type">
           <ModalHeader toggle={this.props.closeUpdatePopupHandler}>{popupTitle}</ModalHeader>
@@ -92,11 +118,16 @@ export class UpdatePopup extends Component {
                                 onChange={(value) => this.onChange("notificationTypeName", value)}/>                                     
                 </FormGroup>
                 <FormGroup>
-                    <Label className="form-label required">Recipient Type</Label>
-                    <SelectField    initialValue={this.props.updatePopupData.editingItem.recipientTypeId.value}
-                                    data={this.props.settingData.recipientTypes}
-                                    isSummited={this.state.isSummited}
-                                    onChange={(value) => this.onChange("recipientTypeId", value)} />                                    
+                        <Label className="form-label required">Recipient Type</Label>                       
+                        <MultipleSelectField
+                            initialValue={this.props.updatePopupData.editingItem.recipientTypeIds.value}
+                            data={this.props.settingData.recipientTypes}
+                            keyField={"id"}
+                            valueField={"name"}
+                            statusField={"checked"}
+                            isSummited={this.state.isSummited}
+                            onChange={(value) => this.onChange("recipientTypeIds", value)}
+                        />                                                         
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label required">System</Label>

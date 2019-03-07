@@ -106,7 +106,13 @@ function generateConfig(environment) {
                         test: /[\\/]node_modules[\\/](reactstrap|availity-reactstrap-validation|bootstrap)[\\/]/,
                         minChunks: 2,
                         priority: -10
-                    }                    
+                    },
+                    libs: {
+                        name: 'libs',
+                        test: /[\\/]node_modules[\\/](react-multiselect)[\\/]/,
+                        minChunks: 2,
+                        priority: -10
+                    } 
                 }
             }
         }

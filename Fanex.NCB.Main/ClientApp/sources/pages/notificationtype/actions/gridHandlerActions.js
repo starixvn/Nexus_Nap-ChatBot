@@ -38,6 +38,7 @@ export function closeDeletePopup(){
 
 // Update Popup
 export function openEditPopup(item) {
+    console.log(item);
     let newEditPopupData = {
         isShowed: true,
         editingItem: {
@@ -46,8 +47,8 @@ export function openEditPopup(item) {
                 value: item.notificationTypeName,
                 isValid: true
             },
-            recipientTypeId: {
-                value: item.recipientTypeId,
+            recipientTypeIds: {
+                value: item.recipientTypes.map((v, i) => { return v.id;}).join(","),
                 isValid: true
             },
             systemId: {
@@ -74,8 +75,8 @@ export function openNewPopup(){
                 value: '',
                 isValid: false
             },
-            recipientTypeId: {
-                value: -1,
+            recipientTypeIds: {
+                value: "",
                 isValid: false
             },
             systemId: {

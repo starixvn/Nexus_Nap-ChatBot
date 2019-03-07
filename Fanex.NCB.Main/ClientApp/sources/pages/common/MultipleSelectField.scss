@@ -1,0 +1,15 @@
+﻿.invalid .multiple-select-container {
+    border: 1px solid #dc3545;
+}
+
+.multiple-select-container {
+    border: 1px solid #ced4da;
+
+    .multiple-select-label {
+        border-bottom: none;
+        
+        .text-display {
+            padding-left: 10px;
+        }
+    }
+}

@@ -28,10 +28,14 @@
 
 .new-notification-type {
     width: 450px;
+
+    .invalid .invalid-feedback {
+        display: block;
+    }
 }
 
 .form-create {
-    overflow: hidden;
+    //overflow: hidden;
 }
 
 .form-group {

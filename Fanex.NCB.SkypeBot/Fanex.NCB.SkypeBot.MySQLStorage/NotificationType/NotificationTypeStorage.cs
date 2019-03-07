@@ -3,6 +3,7 @@ using Fanex.NCB.Common.DTO;
 using Fanex.NCB.Shared.MySQLExtension.Services;
 using Fanex.NCB.Shared.MySQLExtension.Storage;
 using Fanex.NCB.SkypeBot.BaseStorage;
+using Fanex.NCB.SkypeBot.Model.Criteria.NotificationType;
 using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 using System;
 using System.Collections.Generic;
@@ -21,13 +22,13 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.NotificationType
             _baseStorage = baseStorage;
         }
 
-        public async Task<NotificationTypeListResultModel> GetNotificationTypeListAsync(int pageIndex, int pageSize)
+        public async Task<Tuple<int, List<NotificationTypeItem>>> GetNotificationTypeListAsync(int pageIndex, int pageSize)
         {
 
             var param = new { pageIndex, pageSize };
-            var resultSets = await _baseStorage.QueryMultipleAsync<int, NotificationTypeItem>("ChatBot_NotificationType_Sel", param).ConfigureAwait(false);
+            return await _baseStorage.QueryMultipleAsync<int, NotificationTypeItem>("ChatBot_NotificationType_Sel", param).ConfigureAwait(false);
 
-            return new NotificationTypeListResultModel { Count = resultSets.Item1, Data = resultSets.Item2 };
+            //return new NotificationTypeListResultModel { Count = resultSets.Item1, Data = resultSets.Item2 };
         }
 
         public async Task<List<NotificationSystem>> GetNotificationSystemsAsync()
@@ -40,22 +41,22 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.NotificationType
             return await _baseStorage.QueryAsync<RecipientType>("ChatBot_RecipientType_Sel").ConfigureAwait(false);
         }
 
-        public async Task<ResultModel> CreateNotificationTypeAsync(NotificationTypeItem item)
+        public async Task<ResultModel> CreateNotificationTypeAsync(CreateNotificationTypeCriteria item)
         {
             DynamicParameters param = new DynamicParameters();
             param.Add("notificationTypeName", value: item.NotificationTypeName, dbType: DbType.String);
-            param.Add("recipientTypeId", value: item.RecipientTypeId, dbType: DbType.Int32);
+            param.Add("recipientTypeIds", value: item.RecipientTypeIds, dbType: DbType.String);
             param.Add("systemId", value: item.SystemId, dbType: DbType.Int32);
 
             return await _baseStorage.ExecuteAsync("ChatBot_NotificationType_Ins", param).ConfigureAwait(false);
         }
 
-        public async Task<ResultModel> UpdateNotificationTypeAsync(NotificationTypeItem item)
+        public async Task<ResultModel> UpdateNotificationTypeAsync(CreateNotificationTypeCriteria item)
         {
             DynamicParameters param = new DynamicParameters();
             param.Add("id", value: item.NotificationTypeId, dbType: DbType.Int32);
             param.Add("notificationTypeName", value: item.NotificationTypeName, dbType: DbType.String);
-            param.Add("recipientTypeId", value: item.RecipientTypeId, dbType: DbType.Int32);
+            param.Add("recipientTypeIds", value: item.RecipientTypeIds, dbType: DbType.String);
             param.Add("systemId", value: item.SystemId, dbType: DbType.Int32);
 
             return await _baseStorage.ExecuteAsync("ChatBot_NotificationType_Upd", param).ConfigureAwait(false);

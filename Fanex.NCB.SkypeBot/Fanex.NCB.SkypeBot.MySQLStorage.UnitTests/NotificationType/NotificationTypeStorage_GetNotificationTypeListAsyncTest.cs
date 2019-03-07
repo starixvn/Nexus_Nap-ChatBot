@@ -47,7 +47,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationType
             var storage = new NotificationTypeStorage(baseStorage.Object);
 
             var fakeData = Tuple.Create(1, new List<NotificationTypeItem>() { new NotificationTypeItem() });
-            var expectedResult = new NotificationTypeListResultModel { Count = fakeData.Item1, Data = fakeData.Item2 };
+            var expectedResult = new NotificationTypeListResultModel { Count = fakeData.Item1, Data = new List<Model.DTO.NotificationType.NotificationType>() { new Model.DTO.NotificationType.NotificationType() } };
 
             baseStorage.Setup(r => r.QueryMultipleAsync<int, NotificationTypeItem>(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(fakeData));

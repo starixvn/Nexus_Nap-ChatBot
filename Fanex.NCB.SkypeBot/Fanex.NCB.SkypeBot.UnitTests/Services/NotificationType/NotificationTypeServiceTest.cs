@@ -21,12 +21,11 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.NotificationType
             var storage = new Mock<INotificationTypeStorage>();
             var service = new NotificationTypeService(storage.Object);
 
-            var fakeData = new NotificationTypeListResultModel {
-                Count = 2,
-                Data = new List<NotificationTypeItem>() {
-                    new NotificationTypeItem()
-                }
-            };            
+            var data = new List<NotificationTypeItem>() {
+                new NotificationTypeItem()
+            };
+            var fakeData = Tuple.Create(2, data);
+                      
             storage.Setup(r => r.GetNotificationTypeListAsync(1,1)).Returns(Task.FromResult(fakeData));
 
             // Act

@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Fanex.NCB.SkypeBot.Model.Criteria.NotificationType;
 using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 using Fanex.NCB.SkypeBot.Services.NotificationType;
 using Microsoft.AspNetCore.Authorization;
@@ -40,7 +41,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] NotificationTypeItem item)
+        public async Task<IActionResult> Add([FromBody] CreateNotificationTypeCriteria item)
         {
             var result = await _notificationTypeService.CreateNotificationTypeAsync(item).ConfigureAwait(false);
 
@@ -48,7 +49,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit([FromBody] NotificationTypeItem item)
+        public async Task<IActionResult> Edit([FromBody] CreateNotificationTypeCriteria item)
         {
             var result = _notificationTypeService.UpdateNotificationTypeAsync(item);
             return Json( await result);

@@ -55,10 +55,14 @@ export class DataGrid extends Component {
       let startIndex = (pageIndex - 1) * pageSize + 1;
     data.map((item, index) => 
     {
+        let recipientTypeNames = item.recipientTypes.map((r, i) => {
+            return r.name;
+        });
+
       rows.push(<Row key={`body${index}`} className={index == activeRowIndex ? 'active' : ''}>
           <Cell className="text-center">{index + startIndex}</Cell>
           <Cell>{item.notificationTypeName}</Cell>
-          <Cell>{item.recipientTypeName}</Cell>
+          <Cell>{recipientTypeNames.join(", ")}</Cell>
           <Cell>{item.systemName}</Cell>
           <Cell className="text-center col-action">
             <div>
