@@ -26,19 +26,19 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.NotificationType
         {
 
             var param = new { pageIndex, pageSize };
-            return await _baseStorage.QueryMultipleAsync<int, NotificationTypeItem>("ChatBot_NotificationType_Sel", param).ConfigureAwait(false);
+            return await _baseStorage.QueryMultipleAsync<int, NotificationTypeItem>("NCB_NotificationType_Sel", param).ConfigureAwait(false);
 
             //return new NotificationTypeListResultModel { Count = resultSets.Item1, Data = resultSets.Item2 };
         }
 
         public async Task<List<NotificationSystem>> GetNotificationSystemsAsync()
         {
-            return await _baseStorage.QueryAsync<NotificationSystem>("ChatBot_System_Sel").ConfigureAwait(false);
+            return await _baseStorage.QueryAsync<NotificationSystem>("NCB_System_Sel").ConfigureAwait(false);
         }
 
         public async Task<List<RecipientType>> GetRecipientTypesAsync()
         {
-            return await _baseStorage.QueryAsync<RecipientType>("ChatBot_RecipientType_Sel").ConfigureAwait(false);
+            return await _baseStorage.QueryAsync<RecipientType>("NCB_RecipientType_Sel").ConfigureAwait(false);
         }
 
         public async Task<ResultModel> CreateNotificationTypeAsync(CreateNotificationTypeCriteria item)
@@ -48,7 +48,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.NotificationType
             param.Add("recipientTypeIds", value: item.RecipientTypeIds, dbType: DbType.String);
             param.Add("systemId", value: item.SystemId, dbType: DbType.Int32);
 
-            return await _baseStorage.ExecuteAsync("ChatBot_NotificationType_Ins", param).ConfigureAwait(false);
+            return await _baseStorage.ExecuteAsync("NCB_NotificationType_Ins", param).ConfigureAwait(false);
         }
 
         public async Task<ResultModel> UpdateNotificationTypeAsync(CreateNotificationTypeCriteria item)
@@ -59,7 +59,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.NotificationType
             param.Add("recipientTypeIds", value: item.RecipientTypeIds, dbType: DbType.String);
             param.Add("systemId", value: item.SystemId, dbType: DbType.Int32);
 
-            return await _baseStorage.ExecuteAsync("ChatBot_NotificationType_Upd", param).ConfigureAwait(false);
+            return await _baseStorage.ExecuteAsync("NCB_NotificationType_Upd", param).ConfigureAwait(false);
         }
 
         public async Task<ResultModel> DeleteNotificationTypeAsync(int notificationTypeId)
@@ -67,7 +67,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.NotificationType
             DynamicParameters param = new DynamicParameters();
             param.Add("notificationTypeId", value: notificationTypeId, dbType: DbType.Int32);
 
-            return await _baseStorage.ExecuteAsync("ChatBot_NotificationType_Del", param).ConfigureAwait(false);
+            return await _baseStorage.ExecuteAsync("NCB_NotificationType_Del", param).ConfigureAwait(false);
         }
     }
 }
