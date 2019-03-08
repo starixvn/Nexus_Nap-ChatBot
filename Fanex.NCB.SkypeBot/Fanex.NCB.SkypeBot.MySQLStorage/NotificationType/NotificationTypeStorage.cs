@@ -24,11 +24,8 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.NotificationType
 
         public async Task<Tuple<int, List<NotificationTypeItem>>> GetNotificationTypeListAsync(int pageIndex, int pageSize)
         {
-
             var param = new { pageIndex, pageSize };
             return await _baseStorage.QueryMultipleAsync<int, NotificationTypeItem>("NCB_NotificationType_Sel", param).ConfigureAwait(false);
-
-            //return new NotificationTypeListResultModel { Count = resultSets.Item1, Data = resultSets.Item2 };
         }
 
         public async Task<List<NotificationSystem>> GetNotificationSystemsAsync()
