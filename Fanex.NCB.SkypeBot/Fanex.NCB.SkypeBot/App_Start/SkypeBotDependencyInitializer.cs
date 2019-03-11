@@ -1,8 +1,12 @@
 using Fanex.NCB.Shared.MySQLExtension.Storage;
 using Fanex.NCB.SkypeBot.BaseStorage;
 using Fanex.NCB.SkypeBot.MySQLStorage;
+using Fanex.NCB.SkypeBot.MySQLStorage.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.MySQLStorage.NotificationType;
+using Fanex.NCB.SkypeBot.MySQLStorage.Setting;
+using Fanex.NCB.SkypeBot.Services.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.NotificationType;
+using Fanex.NCB.SkypeBot.Services.Setting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fanex.NCB.SkypeBot.App_Start
@@ -14,13 +18,17 @@ namespace Fanex.NCB.SkypeBot.App_Start
 
             RegisterDIofMySQLStorageLayer(services);
             services.AddTransient<INotificationTypeService, NotificationTypeService>();
-              //  c => new NotificationTypeService(c.GetService<INotificationTypeStorage>()));
+            services.AddTransient<IChatGroupMappingService, ChatGroupMappingService>();
+            services.AddTransient<ISettingService, SettingService>();
+            //  c => new NotificationTypeService(c.GetService<INotificationTypeStorage>()));
         }
 
         private static void RegisterDIofMySQLStorageLayer(IServiceCollection services)
         {
             //dynamic loading DLL and register (implement later)
             services.AddTransient<INotificationTypeStorage, NotificationTypeStorage>();
+            services.AddTransient<IChatGroupMappingStorage, ChatGroupMappingStorage>();
+            services.AddTransient<ISettingStorage, SettingStorage>();
             services.AddTransient<IBaseStorage, Shared.MySQLExtension.Storage.BaseStorage>();
         }
     }

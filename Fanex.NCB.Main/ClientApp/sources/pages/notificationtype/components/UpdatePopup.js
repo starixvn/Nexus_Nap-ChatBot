@@ -7,7 +7,6 @@ import {ActionCreators} from '../actions/index';
 import PropTypes from 'prop-types';
 import {InputField} from '../../common/InputField';
 import { SelectField } from '../../common/SelectField';
-import MultipleSelect from '@9softstudio/react-multiselect';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
 
 import '@9softstudio/react-multiselect/dist/style.css';
@@ -86,15 +85,10 @@ export class UpdatePopup extends Component {
 
     let popupTitle = this.props.updatePopupData.popupTitle;
     let successMsg = this.props.updatePopupData.successMsg;
-      let showSucessMsg = this.props.updateData && this.props.updateData.addedresult;    
-
-      let statusList = [];
-      console.log(this.props.settingData.recipientTypes);
+      let showSucessMsg = this.props.updateData && this.props.updateData.addedresult;          
 
       if (this.props.settingData.recipientTypes) {
           this.props.settingData.recipientTypes.map((v, i) => {
-              console.log("loop");
-              console.log(v.id);
               v['checked'] = false;
               console.log(this.props.updatePopupData.editingItem.recipientTypeIds.value);
               if (this.props.updatePopupData.editingItem.recipientTypeIds.value.split(",").includes(v.id.toString())) {
@@ -102,8 +96,6 @@ export class UpdatePopup extends Component {
               }
           });
       }
-
-      console.log(this.props.settingData.recipientTypes);
 
     return (
         <Modal isOpen={true} toggle={this.props.closeUpdatePopupHandler} wrapClassName="new-notification-type">

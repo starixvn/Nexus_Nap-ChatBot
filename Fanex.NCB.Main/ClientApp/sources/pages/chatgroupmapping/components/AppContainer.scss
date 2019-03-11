@@ -34,16 +34,19 @@
     width: 300px;
 }
 
-.form-create {
-    overflow: hidden;
+.form-filter {
+    .form-label{
+        margin-right: 5px;
+    }
 
     .form-group {
-        display: grid;
+        display: inline-block;
         grid-template-columns: 112px 1fr;
         grid-template-rows: 1fr;
         align-items: center;
         margin-bottom: 12px;
-    
+        margin-right: 20px;
+
         .remark {
             height: 90px;
         }

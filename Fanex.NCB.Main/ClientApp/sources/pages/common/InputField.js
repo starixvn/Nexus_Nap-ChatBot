@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Input, FormFeedback } from 'reactstrap';
+import './InputField.scss';
 
 export class InputField extends Component {
   constructor(props) {
@@ -30,7 +31,7 @@ export class InputField extends Component {
 
   render() {
     return (
-      <div>
+      <div className="input-field">
         <Input  value={this.state.value} 
                 onChange={this.onChange}
                 invalid={this.props.isSummited && !this.isValid()} />

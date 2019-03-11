@@ -27,6 +27,10 @@
         {
           "SPKey": "NCB_NotificationType_Del",
           "SPName": "NCB_NotificationType_Del"
+        },
+        {
+          "SPKey": "NCB_BotName_Sel",
+          "SPName": "NCB_BotName_Sel"
         }
       ]
     }
