@@ -33,16 +33,17 @@ export class MultipleSelectField extends Component {
 
     render() {
         return (
-            <div className={this.props.isSummited && !this.isValid() ? "invalid" : ""}>
+            <div style={{ width: this.props.width ? this.props.width : 'auto' }}
+                className={this.props.isSummited && !this.isValid() ? "invalid multiple-select-field" : "multiple-select-field"}>
                 {
                     this.props.data &&
-                    <MultipleSelect id="StatusList"
+                    <MultipleSelect id={this.props.id}
                         dataSource={this.props.data}
                         keyField={"id"}
                         valueField={"name"}
                         statusField={"checked"}
                         optionAllLabel={"All"}
-                        noneSelectedLabel={"---Please select---"}
+                        noneSelectedLabel={this.props.noneSelectedLabel ? this.props.noneSelectedLabel : '---Please select---'}
                         onChange={(currentItem, selectedItemsKey) => this.onChange(selectedItemsKey)} />
                 }
                 

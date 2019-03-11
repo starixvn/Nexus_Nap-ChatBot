@@ -5,6 +5,7 @@ import { InputField } from '../../common/InputField';
 import { SelectField } from '../../common/SelectField';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
+import { MultipleSelectField } from '../../common/MultipleSelectField';
 
 class Filter extends Component {
     constructor(props) {
@@ -45,21 +46,39 @@ class Filter extends Component {
     }
   
     render() {
+        console.log(this.props.settingData);
+
         return (
             <Form className="form-filter">
                 <FormGroup>
                     <Label className="form-label">Bot Name</Label>
-                    <SelectField initialValue={this.state.botName.init}
-                        data={this.state.botName.data}
-                        isSummited={this.state.isSummited}
-                        onChange={(value) => this.onChange("botName", value)} />    
+                    <MultipleSelectField
+                        id={"botNames"}
+                        width={200}
+                        initialValue={this.state.botName.init}
+                        data={this.props.settingData.botNames}
+                        keyField={"id"}
+                        valueField={"name"}
+                        statusField={"checked"}
+                        isSummited={false}
+                        noneSelectedLabel={"All"}
+                        onChange={(value) => this.onChange("botNames", value)}
+                    />       
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label">Recipient Type</Label>
-                    <SelectField initialValue={this.state.recipientType.init}
-                        data={this.state.recipientType.data}
-                        isSummited={this.state.isSummited}
-                        onChange={(value) => this.onChange("recipientType", value)} />  
+                    <MultipleSelectField
+                        id={"recipientTypes"}
+                        width={200}
+                        initialValue={this.state.recipientType.init}
+                        data={this.props.settingData.recipientTypes}
+                        keyField={"id"}
+                        valueField={"name"}
+                        statusField={"checked"}
+                        isSummited={false}
+                        noneSelectedLabel={"All"}
+                        onChange={(value) => this.onChange("recipientTypes", value)}
+                    />       
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label">Recipient</Label>
@@ -69,10 +88,18 @@ class Filter extends Component {
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label">Mapping Status</Label>
-                    <SelectField initialValue={this.state.mappingStatus.init}
-                        data={this.state.mappingStatus.data}
-                        isSummited={this.state.isSummited}
-                        onChange={(value) => this.onChange("mappingStatus", value)} />  
+                    <MultipleSelectField
+                        id={"mappingStatuses"}
+                        width={200}
+                        initialValue={this.state.mappingStatus.init}
+                        data={this.props.settingData.mappingStatuses}
+                        keyField={"id"}
+                        valueField={"name"}
+                        statusField={"checked"}
+                        isSummited={false}
+                        noneSelectedLabel={"All"}
+                        onChange={(value) => this.onChange("mappingStatuses", value)}
+                        />
                 </FormGroup>
                 <button className="btn-submit" onClick={this.submitHandler}>Submit</button>
             </Form>            

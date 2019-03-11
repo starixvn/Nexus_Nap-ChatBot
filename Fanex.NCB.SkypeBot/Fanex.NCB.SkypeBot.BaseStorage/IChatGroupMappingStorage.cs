@@ -9,5 +9,6 @@ namespace Fanex.NCB.SkypeBot.BaseStorage
     public interface IChatGroupMappingStorage
     {
         Task<List<BotName>> GetBotNameAsync();
+        Task<List<MappingStatus>> GetMappingStatusAsync();
     }
 }

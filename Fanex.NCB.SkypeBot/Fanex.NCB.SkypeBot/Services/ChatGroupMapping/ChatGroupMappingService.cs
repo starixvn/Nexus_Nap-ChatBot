@@ -19,5 +19,10 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
         {
             return await _chatGroupMappingStorage.GetBotNameAsync().ConfigureAwait(false);            
         }
+
+        public async Task<List<MappingStatus>> GetMappingStatusAsync()
+        {
+            return await _chatGroupMappingStorage.GetMappingStatusAsync().ConfigureAwait(false);
+        }
     }
 }

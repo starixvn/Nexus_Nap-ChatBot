@@ -21,5 +21,10 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.ChatGroupMapping
         {
             return await _baseStorage.QueryAsync<BotName>("NCB_BotName_Sel").ConfigureAwait(false);
         }
+
+        public async Task<List<MappingStatus>> GetMappingStatusAsync()
+        {
+            return await _baseStorage.QueryAsync<MappingStatus>("NCB_MappingStatus_Sel").ConfigureAwait(false);
+        }
     }
 }

@@ -31,6 +31,10 @@
         {
           "SPKey": "NCB_BotName_Sel",
           "SPName": "NCB_BotName_Sel"
+        },
+        {
+          "SPKey": "NCB_MappingStatus_Sel",
+          "SPName": "NCB_MappingStatus_Sel"
         }
       ]
     }

@@ -137,10 +137,11 @@ CREATE TABLE `LicenseeNotificationType` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `SystemSetting` (
-  `SettingName` varchar(100) CHARACTER SET utf8 NOT NULL,
-  `SettingValue` varchar(100) CHARACTER SET utf8 NOT NULL,
-  `Description` varchar(500) CHARACTER SET utf8 NOT NULL,  
-  PRIMARY KEY (`SettingName`)
+  `SettingId` INT NOT NULL,
+  `SettingValue` varchar(500) CHARACTER SET utf8 NOT NULL,
+  `SettingType` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `Description` varchar(500) CHARACTER SET utf8,  
+  PRIMARY KEY (`SettingId`, `SettingType`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `Users` (
