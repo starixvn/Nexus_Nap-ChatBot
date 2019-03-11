@@ -1,31 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Fanex.NCB.Bot.BaseStorage;
-using Fanex.NCB.Bot.Models.DTO;
-using Fanex.NCB.Bot.Skype.Models;
+using Fanex.NCB.Bot.Core.Services;
+using Fanex.NCB.Bot.CoreControllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration;
 using Microsoft.Bot.Configuration;
 using Microsoft.Bot.Schema;
 
-namespace Fanex.NCB.Bot.Skype.Controllers
+namespace Fanex.NCB.Bot.Core.Controllers
 {
     [Route("LicBot")]
     public class LicBotController : ActivityControllerBase
     {
-        public LicBotController(BotConfiguration botConfig, IBotConversationRepository botConversationRepository, IBotConversationMemberRepository botConversationMemberRepository)
+        private readonly IBotAdapterFactory _adapterFactory;
+        public LicBotController(BotConfiguration botConfig,
+            IBotConversationRepository botConversationRepository,
+            IBotConversationMemberRepository botConversationMemberRepository,
+            IBotAdapterFactory adapterFactory
+            )
             : base(botConfig, botConversationRepository, botConversationMemberRepository)
         {
-
+            _adapterFactory = adapterFactory;
         }
 
         protected override IAdapterIntegration CreateAdapter(string botName)
         {
-            return AdapterFactory.Create(BotConfig, botName);
+            return _adapterFactory.Create(BotConfig, botName);
         }
 
         protected override async Task OnBotAddedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)

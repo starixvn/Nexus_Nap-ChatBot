@@ -25,10 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fanex.NCB.Bot.Skype\Fanex.NCB.Bot.Skype.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="botConfig.bot">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -36,6 +32,10 @@
 
   <ItemGroup>
     <Folder Include="BotServiceData\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fanex.NCB.Bot.Core\Fanex.NCB.Bot.Core.csproj" />
   </ItemGroup>
 
 </Project>

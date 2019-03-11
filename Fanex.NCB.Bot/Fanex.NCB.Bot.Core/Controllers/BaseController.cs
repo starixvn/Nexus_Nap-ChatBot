@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Fanex.NCB.Bot.Skype.Models;
+using Fanex.NCB.Bot.Core.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration;
@@ -14,7 +14,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Rest.Serialization;
 using Newtonsoft.Json;
 
-namespace Fanex.NCB.Bot.Skype.Controllers
+namespace Fanex.NCB.Bot.Core.Controllers
 {
     public abstract class BaseController : Controller
     {
@@ -28,12 +28,10 @@ namespace Fanex.NCB.Bot.Skype.Controllers
             ContractResolver = new ReadOnlyJsonContractResolver(),
             Converters = new List<JsonConverter> { new FixedIsoDateTimeOffsetConverter() },
         });
+
         public async Task PostAsync(string lb)
         {
-            if (string.IsNullOrEmpty(lb) || string.IsNullOrWhiteSpace(lb))
-            {
-                throw new ArgumentException("Invalid request!The bot name is null or empty");
-            }
+            Validate(lb);
             var activity = default(Activity);
 
             using (var bodyReader = new JsonTextReader(new StreamReader(Request.Body, Encoding.UTF8)))
@@ -65,6 +63,14 @@ namespace Fanex.NCB.Bot.Skype.Controllers
                         BotMessageSerializer.Serialize(jsonWriter, invokeResponse.Body);
                     }
                 }
+            }
+        }
+
+        private static void Validate(string lb)
+        {
+            if (string.IsNullOrWhiteSpace(lb))
+            {
+                throw new ArgumentException("Invalid request!The bot name is null or empty");
             }
         }
 

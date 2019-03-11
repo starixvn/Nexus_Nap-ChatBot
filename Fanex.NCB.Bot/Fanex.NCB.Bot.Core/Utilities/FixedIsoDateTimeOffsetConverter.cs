@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json.Converters;
 
-namespace Fanex.NCB.Bot.Skype.Models
+namespace Fanex.NCB.Bot.Core.Utilities
 {
     public class FixedIsoDateTimeOffsetConverter : IsoDateTimeConverter
     {

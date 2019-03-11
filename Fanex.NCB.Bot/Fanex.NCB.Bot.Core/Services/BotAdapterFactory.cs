@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration;
 using Microsoft.Bot.Configuration;
 using Microsoft.Bot.Connector.Authentication;
 
-namespace Fanex.NCB.Bot.Skype.Models
+namespace Fanex.NCB.Bot.Core.Services
 {
-    public static class AdapterFactory
+    public class BotAdapterFactory : IBotAdapterFactory
     {
-        public static IAdapterIntegration Create(BotConfiguration botConfig, string name)
+        public IAdapterIntegration Create(BotConfiguration botConfig, string name)
         {
             var endpointName = $"{name}";
 

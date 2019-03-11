@@ -2,16 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Fanex.NCB.Bot.BaseStorage;
+using Fanex.NCB.Bot.Core.Controllers;
 using Fanex.NCB.Bot.Models.DTO;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Connector;
-using Microsoft.Bot.Schema;
-using System.Linq;
-using System.Collections.Generic;
 using Microsoft.Bot.Configuration;
-using Fanex.NCB.Bot.SkypeClient;
+using Microsoft.Bot.Schema;
 
-namespace Fanex.NCB.Bot.Skype.Controllers
+namespace Fanex.NCB.Bot.CoreControllers
 {
     public class ActivityControllerBase : BaseController
     {
