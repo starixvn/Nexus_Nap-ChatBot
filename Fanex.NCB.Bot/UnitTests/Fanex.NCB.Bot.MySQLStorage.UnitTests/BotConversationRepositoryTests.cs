@@ -134,6 +134,7 @@ namespace Fanex.NCB.Bot.MySQLStorage.UnitTests
         public void Dispose()
         {
             botServiceDBContext?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

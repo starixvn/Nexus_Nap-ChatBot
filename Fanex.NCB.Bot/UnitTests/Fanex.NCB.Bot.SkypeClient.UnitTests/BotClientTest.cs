@@ -32,10 +32,10 @@ namespace Fanex.NCB.Bot.SkypeClient.UnitTests
         [InlineData("tokenurl", "botservice")]
         [InlineData("tokenurl", null)]
         [InlineData(null, null)]
-        public async Task SendAsync_MessageActivity_ReturnStatus_OK(string tokenUrl, string botService)
+        public async Task SendAsync_MessageActivity_ReturnStatus_OK(string tokenApi, string botService)
         {
             //Arrange
-            var botClient = new Mock<BotClient>("any", "any", botService, tokenUrl) { CallBase = true };
+            var botClient = new Mock<BotClient>("any", "any", botService, tokenApi) { CallBase = true };
             botClient.Setup(x => x.GetToken()).Returns(Task.FromResult(new Token { AccessToken = "any" }));
             botClient.Setup(x => x.SetupClientConnection()).Returns(Task.FromResult(connectorClient.Object));
             //Action
@@ -51,10 +51,10 @@ namespace Fanex.NCB.Bot.SkypeClient.UnitTests
         [InlineData("tokenurl", "botservice")]
         [InlineData("tokenurl", null)]
         [InlineData(null, null)]
-        public async Task SendAsync_MessageActivity_ReturnStatus_Unauthorized(string tokenUrl, string botService)
+        public async Task SendAsync_MessageActivity_ReturnStatus_Unauthorized(string tokenApi, string botService)
         {
             //Arrange - Fake Server
-            var botClient = new Mock<BotClient>("any", "any", botService, tokenUrl) { CallBase = true };
+            var botClient = new Mock<BotClient>("any", "any", botService, tokenApi) { CallBase = true };
             botClient.Setup(x => x.GetToken()).Returns(Task.FromResult(new Token()));
 
             // Act

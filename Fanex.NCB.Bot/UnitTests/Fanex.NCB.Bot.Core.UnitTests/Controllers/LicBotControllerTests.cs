@@ -110,6 +110,7 @@ namespace Fanex.NCB.Bot.Core.UnitTests.Controllers
             //Assert
             Assert.True(controller.Response.StatusCode == (int)HttpStatusCode.OK);
         }
+
         [Theory]
         [InlineData(200)]
         [InlineData(500)]
@@ -155,7 +156,7 @@ namespace Fanex.NCB.Bot.Core.UnitTests.Controllers
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Body = stream;
             httpContext.Request.ContentLength = stream.Length;
-            return new ControllerContext()
+            return new ControllerContext
             {
                 HttpContext = httpContext,
             };
