@@ -94,7 +94,7 @@ namespace Fanex.NCB.Bot.SkypeClient.UnitTests
             botClient.Setup(x => x.SendAsync(It.IsAny<IMessageActivity>())).Returns(Task.FromResult(HttpStatusCode.OK))
                 .Callback(() => call++);
             // Act
-            await botClient.Object.SendAsync("any", "any");
+            await botClient.Object.SendAsync("any", "any").ConfigureAwait(false);
             // Assert
 
             Assert.True(call == 1);

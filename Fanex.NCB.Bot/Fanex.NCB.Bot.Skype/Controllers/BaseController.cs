@@ -30,48 +30,41 @@ namespace Fanex.NCB.Bot.Skype.Controllers
         });
         public async Task PostAsync(string lb)
         {
-            if (string.IsNullOrEmpty(lb))
+            if (string.IsNullOrEmpty(lb) || string.IsNullOrWhiteSpace(lb))
             {
-                throw new Exception("Invalid request!!!");
+                throw new ArgumentException("Invalid request!The bot name is null or empty");
             }
-            try
+            var activity = default(Activity);
+
+            using (var bodyReader = new JsonTextReader(new StreamReader(Request.Body, Encoding.UTF8)))
             {
-                var activity = default(Activity);
+                activity = BotMessageSerializer.Deserialize<Activity>(bodyReader);
+            }
 
-                using (var bodyReader = new JsonTextReader(new StreamReader(Request.Body, Encoding.UTF8)))
+            var botFrameworkAdapter = CreateAdapter(lb);
+
+            var invokeResponse = await botFrameworkAdapter.ProcessActivityAsync(
+                Request.Headers["Authorization"],
+                activity,
+                OnTurnAsync,
+                default(CancellationToken)).ConfigureAwait(false);
+
+            if (invokeResponse == null)
+            {
+                Response.StatusCode = (int)HttpStatusCode.OK;
+            }
+            else
+            {
+                Response.ContentType = "application/json";
+                Response.StatusCode = invokeResponse.Status;
+
+                using (var writer = new StreamWriter(Response.Body))
                 {
-                    activity = BotMessageSerializer.Deserialize<Activity>(bodyReader);
-                }
-
-                var botFrameworkAdapter = CreateAdapter(lb);
-
-                var invokeResponse = await botFrameworkAdapter.ProcessActivityAsync(
-                    Request.Headers["Authorization"],
-                    activity,
-                    OnTurnAsync,
-                    default(CancellationToken)).ConfigureAwait(false);
-
-                if (invokeResponse == null)
-                {
-                    Response.StatusCode = (int)HttpStatusCode.OK;
-                }
-                else
-                {
-                    Response.ContentType = "application/json";
-                    Response.StatusCode = invokeResponse.Status;
-
-                    using (var writer = new StreamWriter(Response.Body))
+                    using (var jsonWriter = new JsonTextWriter(writer))
                     {
-                        using (var jsonWriter = new JsonTextWriter(writer))
-                        {
-                            BotMessageSerializer.Serialize(jsonWriter, invokeResponse.Body);
-                        }
+                        BotMessageSerializer.Serialize(jsonWriter, invokeResponse.Body);
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
 
@@ -84,7 +77,7 @@ namespace Fanex.NCB.Bot.Skype.Controllers
         /// <summary>
         /// Override OnTurnAsync to implement the bot specific logic. This is exactly the same as implementing
         /// the IBot OnTurnAsync except here we can have multiple independent bots in the same project in addition
-        /// to including arbitray other MVC Controllers.
+        /// to including arbitrary other MVC Controllers.
         /// </summary>
         /// <param name="turnContext">A <see cref="ITurnContext"/> containing all the data needed
         /// for processing this conversation turn. </param>

@@ -21,14 +21,13 @@ namespace Fanex.NCB.Bot.Skype.Models
 
             var credentialProvider = new SimpleCredentialProvider(endpointService.AppId, endpointService.AppPassword);
 
-            var adapter = new BotFrameworkAdapter(credentialProvider)
+            return new BotFrameworkAdapter(credentialProvider)
             {
                 OnTurnError = async (context, _) =>
                 {
                     await context.SendActivityAsync($"Sorry, it looks like something went wrong in {name}.").ConfigureAwait(false);
                 }
             };
-            return adapter;
         }
     }
 }

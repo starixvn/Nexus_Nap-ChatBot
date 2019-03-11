@@ -33,7 +33,6 @@ namespace Fanex.NCB.Bot.Skype.Controllers
             switch (turnContext.Activity.Type)
             {
                 case ActivityTypes.Message:
-
                     return OnMessageActivityAsync(turnContext, cancellationToken);
                 case ActivityTypes.ConversationUpdate:
                     return OnConversationUpdateActivityAsync(turnContext, cancellationToken);
