@@ -37,7 +37,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationType
             DynamicParameters expectedparam = new DynamicParameters();
             expectedparam.Add("notificationTypeId", value: notificationTypeId, dbType: DbType.Int32);
 
-            spKey.Should().Be("ChatBot_NotificationType_Del");
+            spKey.Should().Be("NCB_NotificationType_Del");
             param.Should().BeEquivalentTo(expectedparam);
         }
 

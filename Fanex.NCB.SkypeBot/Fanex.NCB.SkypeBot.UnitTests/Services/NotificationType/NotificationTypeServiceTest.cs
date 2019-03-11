@@ -1,5 +1,6 @@
 ﻿using Fanex.NCB.Common.DTO;
 using Fanex.NCB.SkypeBot.BaseStorage;
+using Fanex.NCB.SkypeBot.Model.Criteria.NotificationType;
 using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 using Fanex.NCB.SkypeBot.Services.NotificationType;
 using FluentAssertions;
@@ -32,7 +33,7 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.NotificationType
             var result = await service.GetNotificationTypeListAsync(1,1).ConfigureAwait(false);
 
             // Assert
-            result.Should().Be(fakeData);
+            result.Count.Should().Be(fakeData.Item1);
         }
 
         [Fact]
@@ -82,7 +83,7 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.NotificationType
             var service = new NotificationTypeService(storage.Object);
 
             var fakeData = new ResultModel();
-            storage.Setup(r => r.CreateNotificationTypeAsync(It.IsAny<NotificationTypeItem>())).Returns(Task.FromResult(fakeData));
+            storage.Setup(r => r.CreateNotificationTypeAsync(It.IsAny<CreateNotificationTypeCriteria>())).Returns(Task.FromResult(fakeData));
 
             // Act
             var result = await service.CreateNotificationTypeAsync(null).ConfigureAwait(false);
@@ -99,7 +100,7 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.NotificationType
             var service = new NotificationTypeService(storage.Object);
 
             var fakeData = new ResultModel();
-            storage.Setup(r => r.UpdateNotificationTypeAsync(It.IsAny<NotificationTypeItem>())).Returns(Task.FromResult(fakeData));
+            storage.Setup(r => r.UpdateNotificationTypeAsync(It.IsAny<CreateNotificationTypeCriteria>())).Returns(Task.FromResult(fakeData));
 
             // Act
             var result = await service.UpdateNotificationTypeAsync(null).ConfigureAwait(false);

@@ -30,7 +30,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationType
             await storage.GetNotificationSystemsAsync().ConfigureAwait(false);
 
             // Assert
-            spKey.Should().Be("ChatBot_System_Sel");
+            spKey.Should().Be("NCB_System_Sel");
         }
 
         [Fact]

@@ -35,7 +35,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationType
 
             // Assert
             var expectedParam = new { pageIndex, pageSize };
-            spKey.Should().Be("ChatBot_NotificationType_Sel");
+            spKey.Should().Be("NCB_NotificationType_Sel");
             param.Should().BeEquivalentTo(expectedParam);
         }
 
@@ -56,7 +56,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationType
             var result = await storage.GetNotificationTypeListAsync(1, 1).ConfigureAwait(false);
 
             // Assert
-            result.Should().BeEquivalentTo(expectedResult);
+            result.Item1.Should().Be(expectedResult.Count);
         }
     }
 }
