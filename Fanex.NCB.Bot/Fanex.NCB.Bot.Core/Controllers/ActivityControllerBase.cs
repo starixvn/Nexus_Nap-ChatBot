@@ -152,7 +152,7 @@ namespace Fanex.NCB.Bot.CoreControllers
                 memberInfo.LastUpdate = DateTime.Now;
                 memberInfo.IsActive = false;
                 memberInfo.UpdatedBy = turnContext.Activity.Recipient.Name;
-                await _botConversationMemberRepository.UpdateAsync(memberInfo);
+                await _botConversationMemberRepository.UpdateAsync(memberInfo).ConfigureAwait(false);
             }
         }
 
