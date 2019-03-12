@@ -11,6 +11,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Logging;
 using Microsoft.Rest.Serialization;
 using Newtonsoft.Json;
 
