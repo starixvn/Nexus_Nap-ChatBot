@@ -7,6 +7,7 @@ using Microsoft.Bot.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Logging;
 
 namespace Fanex.NCB.Bot.Main
 {
@@ -32,6 +33,7 @@ namespace Fanex.NCB.Bot.Main
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            IdentityModelEventSource.ShowPII = true;
             services.AddMvc();
 
             var secretKey = Configuration.GetSection("botFileSecret")?.Value;
