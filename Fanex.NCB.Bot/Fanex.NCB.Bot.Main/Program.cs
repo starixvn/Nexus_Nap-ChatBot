@@ -19,34 +19,20 @@ namespace Fanex.NCB.Bot.Main
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+             .ConfigureAppConfiguration((hostingContext, config) =>
+             {
+                 var env = hostingContext.HostingEnvironment;
+                 config.SetBasePath(env.ContentRootPath);
+                 config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                 config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                 config.AddEnvironmentVariables();
+             })
               .ConfigureLogging((hostingContext, logging) =>
               {
-                  // Add Azure Logging
-                  // logging.AddAzureWebAppDiagnostics();
-
-                  // Logging Options.
-                  // There are other logging options available:
-                  // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-2.1
-                  // logging.AddDebug();
-                  // logging.AddConsole();
-              })
-            // .UseKestrel()
-                 .ConfigureAppConfiguration((builderContext, config) =>
-                 {
-                     var env = builderContext.HostingEnvironment;
-
-                     config.SetBasePath(env.ContentRootPath);
-                     config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-                     config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
-                     config.AddEnvironmentVariables();
-                 })
-               // .UseIISIntegration()
-
-
-                // Logging Options.
-                // Consider using Application Insights for your logging and metrics needs.
-                // https://azure.microsoft.com/en-us/services/application-insights/
-                // .UseApplicationInsights()
-                .UseStartup<Startup>();
+                  logging.ClearProviders();
+                  logging.AddConsole();
+                  logging.AddDebug();
+                  logging.AddEventSourceLogger();
+              }).UseStartup<Startup>();
     }
 }
