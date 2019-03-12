@@ -57,9 +57,7 @@ CREATE TABLE `NotificationTypeRecipientType` (
 CREATE TABLE `Conversation` (
   `ConversationID` int NOT NULL,  
   `BotName` varchar(500) CHARACTER SET utf8 NOT NULL,  
-  `GroupName` varchar(500) CHARACTER SET utf8 NOT NULL,  
   `RecipientTypeID` int NOT NULL,  
-  `MappingStatus` INT NOT NULL,  
   `Remark` varchar(1000) CHARACTER SET utf8 NOT NULL,  
   PRIMARY KEY (`ConversationID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;

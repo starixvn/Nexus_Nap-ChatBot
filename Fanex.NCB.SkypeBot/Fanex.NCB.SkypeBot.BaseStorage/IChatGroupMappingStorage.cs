@@ -10,5 +10,7 @@ namespace Fanex.NCB.SkypeBot.BaseStorage
     {
         Task<List<BotName>> GetBotNameAsync();
         Task<List<MappingStatus>> GetMappingStatusAsync();
+
+        Task<Tuple<int, List<ChatGroupMappingItem>>> GetChatGroupMappingListAsync(int pageIndex, int pageSize);
     }
 }

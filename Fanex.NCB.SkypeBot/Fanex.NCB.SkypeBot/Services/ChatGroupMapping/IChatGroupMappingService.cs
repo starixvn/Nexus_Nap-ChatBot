@@ -11,5 +11,6 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
         Task<List<BotName>> GetBotNameAsync();
 
         Task<List<MappingStatus>> GetMappingStatusAsync();
+        Task<ChatGroupMappingResultModel> GetChatGroupMappingListAsync(int pageIndex, int pageSize);
     }
 }

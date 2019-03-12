@@ -35,6 +35,10 @@
         {
           "SPKey": "NCB_MappingStatus_Sel",
           "SPName": "NCB_MappingStatus_Sel"
+        },
+        {
+          "SPKey": "NCB_ChatGroupMapping_Sel",
+          "SPName": "NCB_ChatGroupMapping_Sel"
         }
       ]
     }
