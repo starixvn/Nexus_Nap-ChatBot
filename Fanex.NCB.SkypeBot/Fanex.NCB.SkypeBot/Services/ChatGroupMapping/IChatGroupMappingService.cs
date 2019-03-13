@@ -1,4 +1,5 @@
-﻿using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
+﻿using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
+using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,6 +12,6 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
         Task<List<BotName>> GetBotNameAsync();
 
         Task<List<MappingStatus>> GetMappingStatusAsync();
-        Task<ChatGroupMappingResultModel> GetChatGroupMappingListAsync(int pageIndex, int pageSize);
+        Task<ChatGroupMappingResultModel> GetChatGroupMappingListAsync(GetChapGroupMappingCriteria criteria);
     }
 }

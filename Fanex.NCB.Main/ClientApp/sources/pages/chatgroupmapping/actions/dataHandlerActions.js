@@ -19,3 +19,28 @@ export function setSettings(data) {
         data: data
     };
 }
+
+// Grid
+export function setGridParams(value) {
+    return {
+        type: types.GRID_PARAMS,
+        data: value
+    }
+}
+
+export function getGridData(params) {
+    const url = '/ChatGroupMapping/GetAll';
+
+    return (dispatch) => {
+        axios.get(url, { params: params }).then(response => {
+            dispatch(setGridData(response.data))
+        });
+    };
+}
+
+export function setGridData(data) {
+    return {
+        type: types.GRID_DATA,
+        data: data
+    };
+}

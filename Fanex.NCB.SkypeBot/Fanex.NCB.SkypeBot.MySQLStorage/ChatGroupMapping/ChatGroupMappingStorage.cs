@@ -1,5 +1,6 @@
 ﻿using Fanex.NCB.Shared.MySQLExtension.Storage;
 using Fanex.NCB.SkypeBot.BaseStorage;
+using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
 using System;
 using System.Collections.Generic;
@@ -22,10 +23,9 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.ChatGroupMapping
             return await _baseStorage.QueryAsync<BotName>("NCB_BotName_Sel").ConfigureAwait(false);
         }
 
-        public async Task<Tuple<int, List<ChatGroupMappingItem>>> GetChatGroupMappingListAsync(int pageIndex, int pageSize)
+        public async Task<Tuple<int, List<ChatGroupMappingItem>>> GetChatGroupMappingListAsync(GetChapGroupMappingCriteria criteria)
         {
-            var param = new { pageIndex, pageSize };
-            return await _baseStorage.QueryMultipleAsync<int, ChatGroupMappingItem>("NCB_ChatGroupMapping_Sel", param).ConfigureAwait(false);
+            return await _baseStorage.QueryMultipleAsync<int, ChatGroupMappingItem>("NCB_ChatGroupMapping_Sel", criteria).ConfigureAwait(false);
         }
 
         public async Task<List<MappingStatus>> GetMappingStatusAsync()

@@ -12,22 +12,10 @@ class Filter extends Component {
         super(props);
 
         this.state = {
-            botName: {
-                init: 1,
-                data: []
-            },
-            recipientType: {
-                init: 1,
-                data: []
-            },
-            recipient: {
-                init: "",
-                data: []
-            },
-            mappingStatus: {
-                init: 1,
-                data: []
-            }
+            botNames: "",
+            recipientTypes: "",
+            recipient: "",
+            mappingStatuses: ""
         };
     }
 
@@ -41,13 +29,26 @@ class Filter extends Component {
         });
     }
 
-    submitHandler = () => {
+    getParams = () => {              
+        return {
+            botNames: this.state.botNames,
+            recipientTypes: this.state.recipientTypes,
+            recipientName: this.state.recipient,
+            mappingStatuses: this.state.mappingStatuses,
+            pageIndex: 1,
+            pageSize: 10
+        };
+    }    
+
+    submitHandler = (e) => {
         e.preventDefault();
+
+        let params = this.getParams();
+        this.props.setGridParams(params);
+        this.props.getGridData(params);
     }
   
     render() {
-        console.log(this.props.settingData);
-
         return (
             <Form className="form-filter">
                 <FormGroup>
@@ -55,7 +56,7 @@ class Filter extends Component {
                     <MultipleSelectField
                         id={"botNames"}
                         width={200}
-                        initialValue={this.state.botName.init}
+                        initialValue={this.state.botNames}
                         data={this.props.settingData.botNames}
                         keyField={"id"}
                         valueField={"name"}
@@ -70,7 +71,7 @@ class Filter extends Component {
                     <MultipleSelectField
                         id={"recipientTypes"}
                         width={200}
-                        initialValue={this.state.recipientType.init}
+                        initialValue={this.state.recipientTypes}
                         data={this.props.settingData.recipientTypes}
                         keyField={"id"}
                         valueField={"name"}
@@ -82,7 +83,7 @@ class Filter extends Component {
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label">Recipient</Label>
-                    <InputField initialValue={this.state.recipient.init}
+                    <InputField initialValue={this.state.recipient}
                         isSummited={this.state.isSummited}
                         onChange={(value) => this.onChange("recipient", value)} /> 
                 </FormGroup>
@@ -91,7 +92,7 @@ class Filter extends Component {
                     <MultipleSelectField
                         id={"mappingStatuses"}
                         width={200}
-                        initialValue={this.state.mappingStatus.init}
+                        initialValue={this.state.mappingStatuses}
                         data={this.props.settingData.mappingStatuses}
                         keyField={"id"}
                         valueField={"name"}

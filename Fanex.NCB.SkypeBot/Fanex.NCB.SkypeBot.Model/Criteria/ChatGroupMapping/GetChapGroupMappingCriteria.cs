@@ -10,5 +10,7 @@ namespace Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping
         public string RecipientTypeID { get; set; }
         public string RecipientName { get; set; }
         public string MappingStatusIds { get; set; }
+        public int PageIndex { get; set; }
+        public int PageSize { get; set; }
     }
 }

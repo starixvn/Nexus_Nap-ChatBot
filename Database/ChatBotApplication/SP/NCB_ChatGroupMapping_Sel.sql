@@ -6,6 +6,9 @@ BEGIN
     declare LICENSEE_TYPE int default 1;
     declare PRODUCT_TYPE int default 2;
     
+    DECLARE rowStart INT;
+    SELECT 	pageSize * (pageIndex - 1) into rowStart; 
+    
 	create temporary table tmpResult
     select * From 
 	(
@@ -29,6 +32,8 @@ BEGIN
 		inner join ConversationRecipient cr on c.ConversationID = c.ConversationID
 	) as tmp;
     
+    select count(*) as Total From tmpResult;
+    
     select BotName, ConversationID, GroupName, tr.MappingStatusId, ss.SettingValue as MappingStatusName, tr.RecipientTypeID, rt.RecipientTypeName, 
 		Remark, RecipientID, 
 		case when tr.RecipientTypeId = LICENSEE_TYPE then l.LicenseeName
@@ -37,7 +42,8 @@ BEGIN
     inner join SystemSetting ss on tr.MappingStatusId = ss.SettingId and ss.SettingType = 'MappingStatus'
     left join RecipientType rt on tr.RecipientTypeID = rt.RecipientTypeID
     left join Licensee l on tr.RecipientID = l.LicenseeID and tr.RecipientTypeId = LICENSEE_TYPE
-    left join Product p on tr.RecipientID = p.ProductID and tr.RecipientTypeId = PRODUCT_TYPE;
+    left join Product p on tr.RecipientID = p.ProductID and tr.RecipientTypeId = PRODUCT_TYPE
+    LIMIT rowStart, pageSize;
     
     drop temporary table tmpResult;
 END

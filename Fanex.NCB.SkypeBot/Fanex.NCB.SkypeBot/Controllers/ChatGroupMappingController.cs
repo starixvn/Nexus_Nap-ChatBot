@@ -1,3 +1,4 @@
+using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.Setting;
 using Microsoft.AspNetCore.Authorization;
@@ -32,6 +33,14 @@ namespace Fanex.NCB.SkypeBot.Controllers
             var recipientTypes = _settingService.GetRecipientTypesAsync();
             var mappingStatuses = _chatGroupMappingService.GetMappingStatusAsync();
             return Json(new { botNames = await botNames, recipientTypes = await recipientTypes, mappingStatuses = await mappingStatuses });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll(GetChapGroupMappingCriteria criteria)
+        {
+            var data = await _chatGroupMappingService.GetChatGroupMappingListAsync(criteria).ConfigureAwait(false);
+
+            return Json(data);
         }
     }
 }

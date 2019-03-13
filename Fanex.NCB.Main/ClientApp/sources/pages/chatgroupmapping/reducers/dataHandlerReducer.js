@@ -8,4 +8,17 @@ export const settingData = createReducer({}, {
     }
 })
 
+// Grid
+export const gridParams = createReducer({}, {
+    [types.GRID_PARAMS](state, action) {
+        return action.data;
+    }
+})
+
+export const gridData = createReducer({}, {
+    [types.GRID_DATA](state, action) {
+        return action.data;
+    }
+})
+
 

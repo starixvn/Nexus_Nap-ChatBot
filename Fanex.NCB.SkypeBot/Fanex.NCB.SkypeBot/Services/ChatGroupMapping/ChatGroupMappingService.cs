@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Fanex.NCB.SkypeBot.BaseStorage;
+using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
 
 namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
@@ -21,9 +22,9 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
             return await _chatGroupMappingStorage.GetBotNameAsync().ConfigureAwait(false);            
         }
 
-        public async Task<ChatGroupMappingResultModel> GetChatGroupMappingListAsync(int pageIndex, int pageSize)
+        public async Task<ChatGroupMappingResultModel> GetChatGroupMappingListAsync(GetChapGroupMappingCriteria criteria)
         {
-            var data = await _chatGroupMappingStorage.GetChatGroupMappingListAsync(pageIndex, pageSize).ConfigureAwait(false);
+            var data = await _chatGroupMappingStorage.GetChatGroupMappingListAsync(criteria).ConfigureAwait(false);
             var result = new ChatGroupMappingResultModel
             {
                 Count = data.Item1,
