@@ -36,7 +36,7 @@ class Filter extends Component {
             recipientName: this.state.recipient,
             mappingStatuses: this.state.mappingStatuses,
             pageIndex: 1,
-            pageSize: 10
+            pageSize: 5
         };
     }    
 

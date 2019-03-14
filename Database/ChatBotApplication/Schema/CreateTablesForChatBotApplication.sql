@@ -108,6 +108,12 @@ CREATE TABLE `Licensee` (
   PRIMARY KEY (`LicenseeID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `LicenseeStatus` (
+  `LicenseeStatusID` int NOT NULL,  
+  `LicenseeStatusName` varchar(100) CHARACTER SET utf8 NOT NULL,    
+  PRIMARY KEY (`LicenseeStatusID`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `LicenseeType` (
   `LicenseeTypeID` int NOT NULL,  
   `LicenseeTypeName` varchar(100) CHARACTER SET utf8 NOT NULL,    

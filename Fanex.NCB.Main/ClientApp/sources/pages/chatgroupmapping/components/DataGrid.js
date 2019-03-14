@@ -14,17 +14,33 @@ class DataGrid extends Component {
 
     }
 
+    onPaging = (pageIndex, pageSize) => {
+        let params = { ...this.props.gridParams };
+        console.log(params);
+        params['pageIndex'] = pageIndex;
+        params['pageSize'] = pageSize;
+        console.log(params);
+
+        this.props.setGridParams(params);
+        this.props.getGridData(params);
+    }
+
+    openEditPopup = (item, index) => {
+        this.props.openEditPopup(item);
+    }
+
     buildHeader = () => {
         return (<Row style={{ height: 32 }}>
-            <Cell colWidth={50} header={true}>#</Cell>
-            <Cell colWidth={200} header={true}>Bot Name</Cell>
-            <Cell colWidth={150} header={true}>Group ID</Cell>
-            <Cell colWidth={150} header={true}>Group Name</Cell>
-            <Cell colWidth={150} header={true}>Recipient Type</Cell>
+            <Cell colWidth={30} header={true}>#</Cell>
+            <Cell colWidth={100} header={true}>Bot Name</Cell>
+            <Cell colWidth={300} header={true}>Group ID</Cell>
+            <Cell colWidth={200} header={true}>Group Name</Cell>
+            <Cell colWidth={100} header={true}>Recipient Type</Cell>
             <Cell colWidth={150} header={true}>Recipient</Cell>
-            <Cell colWidth={150} header={true}>Mapping Status</Cell>
+            <Cell colWidth={100} header={true}>Licensee Status</Cell>
+            <Cell colWidth={100} header={true}>Mapping Status</Cell>
             <Cell colWidth={150} header={true}>Remark</Cell>
-            <Cell colWidth={150} header={true}>Action</Cell>
+            <Cell colWidth={50} header={true}>Action</Cell>
         </Row>);
     }
 
@@ -39,6 +55,7 @@ class DataGrid extends Component {
                 <Cell>{item.groupName}</Cell>
                 <Cell>{item.recipientTypeName}</Cell>
                 <Cell>{item.recipientName}</Cell>
+                <Cell>{item.licenseeStatus}</Cell>
                 <Cell>{item.mappingStatusName}</Cell>
                 <Cell>{item.remark}</Cell>
                 <Cell className="text-center col-action">
@@ -68,13 +85,13 @@ class DataGrid extends Component {
             PageIndex: pageIndex,
             PageSize: pageSize,
             TotalItem: count,
-            PageList: [10, 20, 50, 100, 500]
+            PageList: [5, 10, 20, 50, 100, 500]
         };
 
         return (
             <div className="table-container-div">
                 <Table
-                    width={900}
+                    width={1400}
                     autoWidth={false}
                     header={this.buildHeader()}
                     body={this.buildBody(data, pageIndex, pageSize)}

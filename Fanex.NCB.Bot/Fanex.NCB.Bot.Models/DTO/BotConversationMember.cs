@@ -6,6 +6,7 @@ namespace Fanex.NCB.Bot.Models.DTO
 {
     public class BotConversationMember
     {
+        public int GroupID { get; set; }
         public string ConversationID { get; set; }
         public string MemberId { get; set; }
         public string Name { get; set; }

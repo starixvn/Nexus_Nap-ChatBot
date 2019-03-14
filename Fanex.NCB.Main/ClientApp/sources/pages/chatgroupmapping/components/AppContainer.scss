@@ -53,3 +53,20 @@
     }
 }
 
+.form-edit{
+    .form-group {
+        display: grid;
+        grid-template-columns: 154px 1fr;
+        grid-template-rows: 1fr;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+}
+
+.table-container-div {
+    width: 1400px;
+
+    table {
+        margin-bottom: 0;
+    }
+}

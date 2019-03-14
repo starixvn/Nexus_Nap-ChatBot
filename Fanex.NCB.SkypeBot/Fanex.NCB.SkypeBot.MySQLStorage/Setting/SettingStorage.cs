@@ -1,5 +1,6 @@
 ﻿using Fanex.NCB.Shared.MySQLExtension.Storage;
 using Fanex.NCB.SkypeBot.BaseStorage;
+using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,11 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.Setting
         public SettingStorage(IBaseStorage baseStorage)
         {
             _baseStorage = baseStorage;
+        }
+
+        public async Task<List<Recipient>> GetRecipientsAsync()
+        {
+            return await _baseStorage.QueryAsync<Recipient>("NCB_Recipient_Sel").ConfigureAwait(false);
         }
 
         public async Task<List<RecipientType>> GetRecipientTypesAsync()

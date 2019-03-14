@@ -30,15 +30,15 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
                 Count = data.Item1,
                 Data = data.Item2.GroupBy(i => i.ConversationID).Select(g =>
                 {
-                    return new ChatGroupMappingItem
+                    return new ChatGroupMappingResult
                     {
                         BotName = g.First().BotName,
                         ConversationID = g.Key,
                         GroupName = g.First().GroupName,
                         RecipientTypeID = g.First().RecipientTypeID,
                         RecipientTypeName = g.First().RecipientTypeName,
-                        RecipientID = g.First().RecipientID,
-                        RecipientName = String.Join(", ", g.Select(x => x.RecipientName).ToList()), 
+                        RecipientIDs = String.Join(",", g.Select(x => x.RecipientID).ToList()),
+                        RecipientNames = String.Join(", ", g.Select(x => x.RecipientName).ToList()), 
                         MappingStatusID = g.First().MappingStatusID,
                         MappingStatusName = g.First().MappingStatusName,
                         Remark = g.First().Remark

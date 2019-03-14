@@ -6,7 +6,7 @@ namespace Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping
 {
     public class ChatGroupMappingResultModel
     {
-        public List<ChatGroupMappingItem> Data { get; set; }
+        public List<ChatGroupMappingResult> Data { get; set; }
         public int Count { get; set; }
     }
 }

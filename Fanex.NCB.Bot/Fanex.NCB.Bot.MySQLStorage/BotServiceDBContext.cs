@@ -46,6 +46,7 @@ namespace Fanex.NCB.Bot.MySQLStorage
                 entity.Property(e => e.ConversationID).HasColumnType("VARCHAR(70)").IsRequired();
                 entity.Property(e => e.MemberId).HasColumnType("VARCHAR(70)").IsRequired();
                 entity.Property(e => e.UpdatedBy).HasColumnType("VARCHAR(50)");
+                entity.Property(e => e.GroupID).HasColumnType("INT(11)").IsRequired();
 
             });
         }
