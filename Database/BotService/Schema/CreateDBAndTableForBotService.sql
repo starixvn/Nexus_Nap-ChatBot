@@ -17,7 +17,7 @@ CREATE TABLE `BotConversation` (
 
 
 CREATE TABLE `BotCoversationMember` (
-  `ID` int(11) NOT NULL DEFAULT '1',
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `MemberId` varchar(70) CHARACTER SET latin1 NOT NULL,
   `ConversationID` varchar(70) CHARACTER SET latin1 NOT NULL,
   `Name` varchar(50) CHARACTER SET utf8 NOT NULL,
@@ -26,9 +26,9 @@ CREATE TABLE `BotCoversationMember` (
   `IsActive` bit(1) NOT NULL,
   `UpdatedBy` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  UNIQUE KEY `ID_UNIQUE` (`ID`),
   UNIQUE KEY `idx_BotCoversationMember_MemberId_ConversationID` (`MemberId`,`ConversationID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 CREATE TABLE `Users` (
