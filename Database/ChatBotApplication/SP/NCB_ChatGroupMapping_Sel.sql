@@ -1,4 +1,4 @@
-CREATE PROCEDURE `NCB_ChatGroupMapping_Sel`()
+CREATE DEFINER=`scofield.huynh`@`%` PROCEDURE `NCB_ChatGroupMapping_Sel`(IN pageIndex INT, IN pageSize INT)
 BEGIN
 	declare NOT_MAPPED_STATUS int default 1;
     declare MAPPED_STATUS int default 2;
@@ -15,7 +15,7 @@ BEGIN
         select min(bcm.Name) as BotName, bc.ConversationID, bc.Name as GroupName, 
 			NOT_MAPPED_STATUS as MappingStatusId, -1 as RecipientTypeID, '' as Remark, -1 as RecipientID
 		from BotConversation bc
-		inner join BotCoversationMember bcm on bc.GroupID = bcm.GroupID
+		inner join BotCoversationMember bcm on bc.ConversationID = bcm.ConversationID
 		where bcm.IsActive = 1 
 			and bcm.IsBot = 1
 			and bc.GroupID not in (select GroupID from Conversation)
@@ -28,7 +28,7 @@ BEGIN
 			c.RecipientTypeID, c.Remark, cr.RecipientID
 		from Conversation c
 		inner join BotConversation bc on c.GroupID = bc.GroupID
-		inner join BotCoversationMember bcm on c.GroupID = bcm.GroupID
+		inner join BotCoversationMember bcm on c.ConversationID = bcm.ConversationID
 		inner join ConversationRecipient cr on c.GroupID = c.GroupID
 	) as tmp;
     
