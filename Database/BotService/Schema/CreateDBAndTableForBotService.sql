@@ -10,21 +10,26 @@ CREATE TABLE `BotConversation` (
   `UpdatedBy` varchar(50) NOT NULL,
   `LastUpdate` datetime NOT NULL,
   `ServiceUrl` varchar(500) DEFAULT NULL,
-  PRIMARY KEY (`GroupID`,`ConversationID`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COMMENT='this table is used for bot service';
+  PRIMARY KEY (`GroupID`),
+  UNIQUE KEY `ConversationID_UNIQUE` (`ConversationID`),
+  UNIQUE KEY `GroupID_UNIQUE` (`GroupID`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COMMENT='this table is used for bot service';
 
 
 CREATE TABLE `BotCoversationMember` (
-  `ConversationID` varchar(70) CHARACTER SET latin1 NOT NULL,
+  `ID` int(11) NOT NULL DEFAULT '1',
   `MemberId` varchar(70) CHARACTER SET latin1 NOT NULL,
+  `ConversationID` varchar(70) CHARACTER SET latin1 NOT NULL,
   `Name` varchar(50) CHARACTER SET utf8 NOT NULL,
   `LastUpdate` datetime NOT NULL,
   `IsBot` bit(1) NOT NULL,
   `IsActive` bit(1) NOT NULL,
   `UpdatedBy` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`ConversationID`,`MemberId`)
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `ID_UNIQUE` (`ID`),
+  UNIQUE KEY `idx_BotCoversationMember_MemberId_ConversationID` (`MemberId`,`ConversationID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-SELECT * FROM ChatBot.BotConversation;
+
 
 CREATE TABLE `Users` (
   `UserID` int(11) NOT NULL AUTO_INCREMENT,
