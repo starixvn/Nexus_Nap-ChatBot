@@ -16,16 +16,15 @@ class DataGrid extends Component {
 
     onPaging = (pageIndex, pageSize) => {
         let params = { ...this.props.gridParams };
-        console.log(params);
         params['pageIndex'] = pageIndex;
         params['pageSize'] = pageSize;
-        console.log(params);
 
         this.props.setGridParams(params);
         this.props.getGridData(params);
     }
 
     openEditPopup = (item, index) => {
+        this.props.filterRecipients(this.props.settingData.recipients, item.recipientTypeID);
         this.props.openEditPopup(item);
     }
 
@@ -54,8 +53,8 @@ class DataGrid extends Component {
                 <Cell>{item.conversationID}</Cell>
                 <Cell>{item.groupName}</Cell>
                 <Cell>{item.recipientTypeName}</Cell>
-                <Cell>{item.recipientName}</Cell>
-                <Cell>{item.licenseeStatus}</Cell>
+                <Cell>{item.recipientNames}</Cell>
+                <Cell>{item.recipientStatusNames}</Cell>
                 <Cell>{item.mappingStatusName}</Cell>
                 <Cell>{item.remark}</Cell>
                 <Cell className="text-center col-action">
@@ -110,8 +109,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state) {
-    const { gridParams, gridData } = state;
-    return Object.assign({}, { gridParams, gridData });
+    const { gridParams, gridData, settingData } = state;
+    return Object.assign({}, { gridParams, gridData, settingData });
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataGrid);

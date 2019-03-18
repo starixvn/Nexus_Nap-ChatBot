@@ -43,5 +43,13 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
             return Json(data);
         }
+        
+
+        [HttpPost]
+        public async Task<IActionResult> Edit([FromBody] EditChatGroupMappingCriteria item)
+        {
+            var result = _chatGroupMappingService.UpdateChatGroupMappingAsync(item);
+            return Json(await result);
+        }
     }
 }

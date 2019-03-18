@@ -3,23 +3,36 @@ import * as types from './types';
 
 // Update Popup
 export function openEditPopup(item) {
+    console.log("openedit");
     console.log(item);
     let newEditPopupData = {
         isShowed: true,
         editingItem: {
-            conversationId: item.conversationId,
+            groupID: item.groupID,
+            conversationID: item.conversationID, 
             mappingStatusId: item.mappingStatusId,
             mappingStatusName: item.mappingStatusName,
             botName: item.botName,
             groupName: item.groupName,
-            recipientTypeId: item.recipientTypeId,
-            recipientIds: item.recipientIds,
+            recipientTypeId: {
+                value: item.recipientTypeID,
+                isValid: item.recipientTypeID != 0
+            },
+            recipientIds: {
+                value: item.recipientIDs,
+                isValid: item.recipientIDs != ""
+            }, 
             licenseeStatus: item.licenseeStatus,
-            remark: item.remark
+            remark: {
+                value: item.remark,
+                isValid: item.remark != null
+            }
         },
         popupTitle: "Edit Mapping Status",
         successMsg: "Edit Mapping Status Successfully"
     };
+
+    console.log(newEditPopupData);
 
     return {
         type: types.UPDATE_POPUP_DATA,

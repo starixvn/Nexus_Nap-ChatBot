@@ -21,6 +21,7 @@ class Filter extends Component {
 
     componentWillMount() {
         this.props.getSettings();
+        this.props.filterRecipients([], 0);
     }  
 
     onChange = (fieldName, fieldValue) => {

@@ -12,11 +12,19 @@ import './AppContainer.scss';
 class AppContainer extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            data: [{
+                id: 100,
+                name: 100
+            }
+            ]
+        }
     }
 
     togglePopup() {
-        
-    }
+
+    }   
 
     closeUpdatePopupHandler = () => {
         this.props.closeEditPopup();
@@ -25,13 +33,12 @@ class AppContainer extends Component {
         !this.props.updatePopupData.isShowed && this.props.getGridData(this.props.gridParams);
     }
 
-    render() {
+    render() {        
         return (
             <div>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Chat Group Mapping"></NCBBreadcrum>
                 <Filter />
-                <DataGrid />               
-
+                <DataGrid />
                 {this.props.updatePopupData.isShowed && <UpdatePopup closeUpdatePopupHandler={this.closeUpdatePopupHandler} />}
             </div>
         );

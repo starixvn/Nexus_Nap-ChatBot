@@ -43,6 +43,10 @@
         {
           "SPKey": "NCB_Recipient_Sel",
           "SPName": "NCB_Recipient_Sel"
+        },
+        {
+          "SPKey": "NCB_ChatGroupMapping_Upd",
+          "SPName": "NCB_ChatGroupMapping_Upd"
         }
       ]
     }

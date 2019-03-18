@@ -72,5 +72,24 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
                 return Tuple.Create(total, data);
             }
         }
+
+        public async Task<Tuple<T1, List<T2>, List<T3>, List<T4>>> QueryMultipleAsync<T1, T2, T3, T4>(string key, object param = null, string dbName = "ChatBotDB")
+        {
+            DBSetting dbSetting = _dBConfigService.GetSPConfig(dbName, key);
+            using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
+            {
+                var reader = await dbConnection.QueryMultipleAsync(
+                    dbSetting.SPName,
+                    param: param,
+                    commandType: CommandType.StoredProcedure).ConfigureAwait(false);
+
+                var total = reader.Read<T1>().First();
+                var data1 = reader.Read<T2>().ToList();
+                var data2 = reader.Read<T3>().ToList();
+                var data3 = reader.Read<T4>().ToList();
+
+                return Tuple.Create(total, data1, data2, data3);
+            }
+        }
     }
 }

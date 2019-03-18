@@ -63,7 +63,7 @@
         "redux": "^3.7.2",
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.2.0",
-        "@9softstudio/react-multiselect": "^1.0.4"
+        "@9softstudio/react-multiselect": "^1.0.11"
     },
     "scripts": {
         "stats": "webpack --config webpackconfig/build/webpack.dev.conf.js --json > stats.json",

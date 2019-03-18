@@ -44,3 +44,51 @@ export function setGridData(data) {
         data: data
     };
 }
+
+// Edit Popup
+export function filterRecipients(recipients, recipientTypeId) {
+    let filteredRecipients = [];
+    recipientTypeId && recipients.map((item, index) => {
+        if (item.recipientTypeId == recipientTypeId) {
+            filteredRecipients.push(item);
+        }
+    });  
+
+    return (dispatch) => {       
+        dispatch(setFilterRecipients(filteredRecipients));
+    };
+}
+
+export function setFilterRecipients(data) {
+    return {
+        type: types.FILTERED_RECIPIENT,
+        data: data
+    };
+}
+
+
+export function update(params, isNew) {
+    const url = '/ChatGroupMapping/Edit';
+
+    var headers = {
+        'Content-Type': 'application/json'
+    }
+    return async (dispatch) => {
+        const request = await axios.post(url, JSON.stringify(params), { headers: headers });
+        const data = await request.data;
+        dispatch(setUpdateData({ addedresult: data }));
+    };
+}
+
+export function setUpdateData(data) {
+    return {
+        type: types.UPDATE_DATA,
+        data: data
+    };
+}
+
+export function refreshUpdateData() {
+    return (dispatch) => {
+        dispatch(setUpdateData({ addedresult: false }));
+    };
+}

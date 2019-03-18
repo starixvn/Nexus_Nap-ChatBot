@@ -21,4 +21,17 @@ export const gridData = createReducer({}, {
     }
 })
 
+// Update Popup
+export const filteredRecipients = createReducer({}, {
+    [types.FILTERED_RECIPIENT](state, action) {
+        return action.data;
+    }
+})
+
+export const updateData = createReducer({}, {
+    [types.UPDATE_DATA](state, action) {
+        return action.data;
+    }
+})
+
 
