@@ -35,7 +35,7 @@ namespace Fanex.NCB.Bot.MySQLStorage
                 entity.Property(e => e.ServiceUrl).HasColumnType("VARCHAR(500)").IsRequired(false);
             });
 
-            modelBuilder.Entity<BotConversationMember>().ToTable("BotCoversationMember");
+            modelBuilder.Entity<BotConversationMember>().ToTable("BotConversationMember");
             modelBuilder.Entity<BotConversationMember>(entity =>
             {
                 entity.HasKey(e => e.ID);
