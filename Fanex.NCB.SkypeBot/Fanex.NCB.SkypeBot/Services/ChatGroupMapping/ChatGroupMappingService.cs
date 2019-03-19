@@ -34,6 +34,7 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
                 {
                     var botConversationMember = data.Item3.FirstOrDefault(i => i.ConversationID == g.ConversationID);
                     var conversationRecipients = data.Item4.Where(i => i.GroupID == g.GroupID).ToList();
+                    var mappingStatusID = GetMappingStatus(g.IsMapped, botConversationMember != null && botConversationMember.IsActive);
                     return new ChatGroupMappingResult
                     {
                         BotName = botConversationMember?.BotName,
@@ -45,7 +46,8 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
                         RecipientIDs = String.Join(",", conversationRecipients.Select(x => x.RecipientID).ToList()),
                         RecipientNames = String.Join(", ", conversationRecipients.Select(x => x.RecipientName).ToList()), 
                         RecipientStatusNames = String.Join(", ", conversationRecipients.Where(x => x.RecipientStatusName != string.Empty).Select(x => x.RecipientStatusName).ToList()),
-                        MappingStatusID = GetMappingStatus(g.IsMapped, botConversationMember != null && botConversationMember.IsActive),
+                        MappingStatusID = mappingStatusID,
+                        MappingStatusName = GetMappingStatusName(mappingStatusID),
                         Remark = g.Remark
                     };
                 }).ToList()
@@ -70,6 +72,20 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
             else
             {
                 return (int)Common.Constant.MappingStatus.BotRemoved;
+            }
+        }
+
+        private string GetMappingStatusName(int mappingStatusId)
+        {
+            switch (mappingStatusId) {
+                case (int)Common.Constant.MappingStatus.Mapped:
+                    return "Mapped";
+                case (int)Common.Constant.MappingStatus.NotMapped:
+                    return "Not Mapped";
+                case (int)Common.Constant.MappingStatus.BotRemoved:
+                    return "Bot Removed";
+                default:
+                    return string.Empty;
             }
         }
 
