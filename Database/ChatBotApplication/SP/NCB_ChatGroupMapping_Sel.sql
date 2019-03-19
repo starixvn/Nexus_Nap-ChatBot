@@ -18,7 +18,7 @@ BEGIN
     left join RecipientType rt on rt.RecipientTypeID = c.RecipientTypeID;    
     
     select bcm.Name as BotName, bcm.ConversationID, bcm.IsActive
-    from BotCoversationMember bcm
+    from BotConversationMember bcm
     inner join PagedBotConversation pbc on bcm.ConversationID = pbc.ConversationID
     where bcm.IsBot = 1;    
     

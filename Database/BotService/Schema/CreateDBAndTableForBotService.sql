@@ -16,7 +16,7 @@ CREATE TABLE `BotConversation` (
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COMMENT='this table is used for bot service';
 
 
-CREATE TABLE `BotCoversationMember` (
+CREATE TABLE `BotConversationMember` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `MemberId` varchar(70) CHARACTER SET latin1 NOT NULL,
   `ConversationID` varchar(70) CHARACTER SET latin1 NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE `BotCoversationMember` (
   `IsActive` bit(1) NOT NULL,
   `UpdatedBy` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  UNIQUE KEY `idx_BotCoversationMember_MemberId_ConversationID` (`MemberId`,`ConversationID`)
+  UNIQUE KEY `idx_BotConversationMember_MemberId_ConversationID` (`MemberId`,`ConversationID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 INE=InnoDB DEFAULT CHARSET=utf8mb4;
 
