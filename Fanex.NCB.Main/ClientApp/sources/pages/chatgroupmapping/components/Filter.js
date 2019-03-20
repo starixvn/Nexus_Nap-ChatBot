@@ -12,10 +12,18 @@ class Filter extends Component {
         super(props);
 
         this.state = {
-            botNames: "",
-            recipientTypes: "",
-            recipient: "",
-            mappingStatuses: ""
+            botNames: {
+                value: ""
+            },
+            recipientTypes: {
+                value: ""
+            },
+            recipient: {
+                value: ""
+            },
+            mappingStatuses: {
+                value: ""
+            },
         };
     }
 
@@ -32,10 +40,10 @@ class Filter extends Component {
 
     getParams = () => {              
         return {
-            botNames: this.state.botNames,
-            recipientTypes: this.state.recipientTypes,
-            recipientName: this.state.recipient,
-            mappingStatuses: this.state.mappingStatuses,
+            botNames: this.state.botNames.value,
+            recipientTypeIds: this.state.recipientTypes.value,
+            recipientName: this.state.recipient.value,
+            mappingStatusIds: this.state.mappingStatuses.value,
             pageIndex: 1,
             pageSize: 5
         };
@@ -57,7 +65,7 @@ class Filter extends Component {
                     <MultipleSelectField
                         id={"botNames"}
                         width={200}
-                        initialValue={this.state.botNames}
+                        initialValue={this.state.botNames.value}
                         data={this.props.settingData.botNames}
                         keyField={"id"}
                         valueField={"name"}
@@ -84,7 +92,7 @@ class Filter extends Component {
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label">Recipient</Label>
-                    <InputField initialValue={this.state.recipient}
+                    <InputField initialValue={this.state.recipient.value}
                         isSummited={this.state.isSummited}
                         onChange={(value) => this.onChange("recipient", value)} /> 
                 </FormGroup>

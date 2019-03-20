@@ -25,6 +25,7 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
 
         public async Task<ChatGroupMappingResultModel> GetChatGroupMappingListAsync(GetChapGroupMappingCriteria criteria)
         {
+            UpdateGetChapGroupMappingCriteria(criteria);
             var data = await _chatGroupMappingStorage.GetChatGroupMappingListAsync(criteria).ConfigureAwait(false);
             
             var result = new ChatGroupMappingResultModel
@@ -55,6 +56,30 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
 
             return result;
         }
+
+        private void UpdateGetChapGroupMappingCriteria(GetChapGroupMappingCriteria criteria)
+        {            
+            if (criteria.BotNames == null)
+            {
+                criteria.BotNames = string.Empty;
+            }
+
+            if (criteria.MappingStatusIds == null)
+            {
+                criteria.MappingStatusIds = string.Empty;
+            }
+
+            if (criteria.RecipientName == null)
+            {
+                criteria.RecipientName = string.Empty;
+            }
+
+            if (criteria.RecipientTypeIDs == null)
+            {
+                criteria.RecipientTypeIDs = string.Empty;
+            }
+        }
+
 
         private int GetMappingStatus(bool isConversationMapped, bool isBotActive)
         {
