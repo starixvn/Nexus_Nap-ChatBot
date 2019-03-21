@@ -42,8 +42,8 @@ export class MultipleSelectField extends Component {
                         keyField={"id"}
                         valueField={"name"}
                         statusField={"checked"}
-                        optionAllLabel={"All"}
-                        noneSelectedLabel={this.props.noneSelectedLabel ? this.props.noneSelectedLabel : '---Please select---'}
+                        texts={this.props.texts || { SelectOptions: "---Please select---", All: "All", SelectedItemCount: "# selected" }}
+                        isAllTextShown={this.props.isAllTextShown || true}
                         onChange={(currentItem, selectedItemsKey) => this.onChange(selectedItemsKey)} />
                 }
                 

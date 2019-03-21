@@ -71,7 +71,7 @@ class Filter extends Component {
                         valueField={"name"}
                         statusField={"checked"}
                         isSummited={false}
-                        noneSelectedLabel={"All"}
+                        texts={{ SelectOptions: "All", All: "All", SelectedItemCount: "# selected" }}
                         onChange={(value) => this.onChange("botNames", value)}
                     />       
                 </FormGroup>
@@ -86,7 +86,7 @@ class Filter extends Component {
                         valueField={"name"}
                         statusField={"checked"}
                         isSummited={false}
-                        noneSelectedLabel={"All"}
+                        texts={{ SelectOptions: "All", All: "All", SelectedItemCount: "# selected" }}
                         onChange={(value) => this.onChange("recipientTypes", value)}
                     />       
                 </FormGroup>
@@ -107,7 +107,7 @@ class Filter extends Component {
                         valueField={"name"}
                         statusField={"checked"}
                         isSummited={false}
-                        noneSelectedLabel={"All"}
+                        texts={{ SelectOptions: "All", All: "All", SelectedItemCount: "# selected" }}
                         onChange={(value) => this.onChange("mappingStatuses", value)}
                         />
                 </FormGroup>
