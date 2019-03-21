@@ -72,6 +72,7 @@ class Filter extends Component {
                         statusField={"checked"}
                         isSummited={false}
                         texts={{ SelectOptions: "All", All: "All", SelectedItemCount: "# selected" }}
+                        isAllTextShown={false}
                         onChange={(value) => this.onChange("botNames", value)}
                     />       
                 </FormGroup>
@@ -87,6 +88,7 @@ class Filter extends Component {
                         statusField={"checked"}
                         isSummited={false}
                         texts={{ SelectOptions: "All", All: "All", SelectedItemCount: "# selected" }}
+                        isAllTextShown={false}
                         onChange={(value) => this.onChange("recipientTypes", value)}
                     />       
                 </FormGroup>
@@ -108,6 +110,7 @@ class Filter extends Component {
                         statusField={"checked"}
                         isSummited={false}
                         texts={{ SelectOptions: "All", All: "All", SelectedItemCount: "# selected" }}
+                        isAllTextShown={false}
                         onChange={(value) => this.onChange("mappingStatuses", value)}
                         />
                 </FormGroup>

@@ -27,7 +27,8 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
         {
             UpdateGetChapGroupMappingCriteria(criteria);
             var data = await _chatGroupMappingStorage.GetChatGroupMappingListAsync(criteria).ConfigureAwait(false);
-            
+            var mappingStatuses = GetMappingStatus();
+
             var result = new ChatGroupMappingResultModel
             {
                 Count = data.Item1,
@@ -35,7 +36,7 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
                 {
                     var botConversationMember = data.Item3.FirstOrDefault(i => i.ConversationID == g.ConversationID);
                     var conversationRecipients = data.Item4.Where(i => i.GroupID == g.GroupID).ToList();
-                    var mappingStatusID = GetMappingStatus(g.IsMapped, botConversationMember != null && botConversationMember.IsActive);
+                    var mappingStatusID = CalculateMappingStatus(g.IsMapped, botConversationMember != null && botConversationMember.IsActive);
                     return new ChatGroupMappingResult
                     {
                         BotName = botConversationMember?.BotName,
@@ -48,13 +49,21 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
                         RecipientNames = String.Join(", ", conversationRecipients.Select(x => x.RecipientName).ToList()), 
                         RecipientStatusNames = String.Join(", ", conversationRecipients.Where(x => x.RecipientStatusName != string.Empty).Select(x => x.RecipientStatusName).ToList()),
                         MappingStatusID = mappingStatusID,
-                        MappingStatusName = GetMappingStatusName(mappingStatusID),
+                        MappingStatusName = mappingStatuses.First(x => x.Id == mappingStatusID).Name,
                         Remark = g.Remark
                     };
                 }).ToList()
             };
 
+            //result.Data = FilterMappingStatus(result.Data, criteria.MappingStatusIds);
+
             return result;
+        }
+
+        private List<ChatGroupMappingResult> FilterMappingStatus(List<ChatGroupMappingResult> data, string mappingStatusIds)
+        {
+            var statusIds = mappingStatusIds.Split(",").ToList();
+            return data.Where(i => statusIds.Contains(i.MappingStatusID.ToString())).ToList();
         }
 
         private void UpdateGetChapGroupMappingCriteria(GetChapGroupMappingCriteria criteria)
@@ -81,7 +90,7 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
         }
 
 
-        private int GetMappingStatus(bool isConversationMapped, bool isBotActive)
+        private int CalculateMappingStatus(bool isConversationMapped, bool isBotActive)
         {
             if (isBotActive)
             {
@@ -99,24 +108,16 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
                 return (int)Common.Constant.MappingStatus.BotRemoved;
             }
         }
-
-        private string GetMappingStatusName(int mappingStatusId)
+     
+        public List<MappingStatus> GetMappingStatus()
         {
-            switch (mappingStatusId) {
-                case (int)Common.Constant.MappingStatus.Mapped:
-                    return "Mapped";
-                case (int)Common.Constant.MappingStatus.NotMapped:
-                    return "Not Mapped";
-                case (int)Common.Constant.MappingStatus.BotRemoved:
-                    return "Bot Removed";
-                default:
-                    return string.Empty;
-            }
-        }
+            var data = new List<MappingStatus> {
+                new MappingStatus { Id = (int)Common.Constant.MappingStatus.NotMapped, Name = "Not Mapped" },
+                new MappingStatus { Id = (int)Common.Constant.MappingStatus.Mapped, Name = "Mapped" },
+                new MappingStatus { Id = (int)Common.Constant.MappingStatus.BotRemoved, Name = "Bot Removed" }
+            };
 
-        public async Task<List<MappingStatus>> GetMappingStatusAsync()
-        {
-            return await _chatGroupMappingStorage.GetMappingStatusAsync().ConfigureAwait(false);
+            return data;
         }
 
         public async Task<ResultModel> UpdateChatGroupMappingAsync(EditChatGroupMappingCriteria item)

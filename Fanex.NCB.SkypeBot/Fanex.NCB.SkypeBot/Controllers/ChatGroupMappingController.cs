@@ -31,9 +31,9 @@ namespace Fanex.NCB.SkypeBot.Controllers
         {
             var botNames = _chatGroupMappingService.GetBotNameAsync();
             var recipientTypes = _settingService.GetRecipientTypesAsync();
-            var mappingStatuses = _chatGroupMappingService.GetMappingStatusAsync();
+            var mappingStatuses = _chatGroupMappingService.GetMappingStatus();
             var recipients = _settingService.GetRecipientsAsync();
-            return Json(new { botNames = await botNames, recipientTypes = await recipientTypes, mappingStatuses = await mappingStatuses, recipients = await recipients });
+            return Json(new { botNames = await botNames, recipientTypes = await recipientTypes, mappingStatuses = mappingStatuses, recipients = await recipients });
         }
 
         [HttpGet]
