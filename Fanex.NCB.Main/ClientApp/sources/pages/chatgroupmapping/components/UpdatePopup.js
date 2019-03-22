@@ -66,14 +66,13 @@ export class UpdatePopup extends Component {
             return null;
         }
 
-        console.log("re render");
-
         let isSucessMsgShown = this.props.updateData && this.props.updateData.addedresult;          
 
         let popupTitle = this.props.updatePopupData.popupTitle;        
         let licenseeStatuses = [];
         let recipientIds = this.state.recipientIds.value.split(",");
-        this.props.filteredRecipients && this.props.filteredRecipients.map((v, i) => {
+        let filteredRecipients = this.props.filteredRecipients;
+        filteredRecipients && filteredRecipients.map((v, i) => {
             let isChecked = recipientIds.includes(v.id.toString());
             v['checked'] = isChecked ? true : false;
             isChecked && v.status != '' && licenseeStatuses.push(v.status);
@@ -104,8 +103,8 @@ export class UpdatePopup extends Component {
                             <Label className="form-label required">Recipient</Label>
                             <MultipleSelectField
                                 id={"recipient-id"}
-                                initialValue={this.props.updatePopupData.editingItem.recipientIds.value}
-                                data={this.props.filteredRecipients}
+                                selectedValue={this.state.recipientIds.value}
+                                data={filteredRecipients}
                                 keyField={"id"}
                                 valueField={"name"}
                                 statusField={"checked"}

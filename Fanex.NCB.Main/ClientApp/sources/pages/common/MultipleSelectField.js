@@ -7,38 +7,23 @@ import '@9softstudio/react-multiselect/dist/style.css';
 export class MultipleSelectField extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            value: this.props.initialValue
-        }
     }
 
     onChange = (value) => {
-        this.setState(
-            {
-                value: value
-            },
-            () => {
-                this.props.onChange({
-                    value: this.state.value,
-                    isValid: this.isValid()
-                })
-            }
-        );
+        this.props.onChange({
+            value: value,
+            isValid: this.isValid(value)
+        });
     }
 
-    isValid = () => {
-        console.log("isValid: select multiple");
-        console.log(this.state.value);
-        console.log("isValid: select multiple");
-        return this.state.value != "";
+    isValid = (value) => {
+        return value != "";
     }   
 
     render() {
-        console.log("rerender MultipleSelectField");
         return (
             <div style={{ width: this.props.width ? this.props.width : 'auto' }}
-                className={this.props.isSummited && !this.isValid() ? "invalid multiple-select-field" : "multiple-select-field"}>
+                className={this.props.isSummited && !this.isValid(this.props.selectedValue) ? "invalid multiple-select-field" : "multiple-select-field"}>
                 {
                     this.props.data &&
                     <MultipleSelect id={this.props.id}
@@ -51,7 +36,7 @@ export class MultipleSelectField extends Component {
                         onChange={(currentItem, selectedItemsKey) => this.onChange(selectedItemsKey)} />
                 }
                 
-                {this.props.isSummited && !this.isValid() && <FormFeedback>This field is required</FormFeedback>}
+                {this.props.isSummited && !this.isValid(this.props.selectedValue) && <FormFeedback>This field is required</FormFeedback>}
             </div>
         )
     }

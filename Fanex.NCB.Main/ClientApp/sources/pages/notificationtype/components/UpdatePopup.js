@@ -112,7 +112,7 @@ export class UpdatePopup extends Component {
                 <FormGroup>
                         <Label className="form-label required">Recipient Type</Label>                       
                         <MultipleSelectField
-                            initialValue={this.props.updatePopupData.editingItem.recipientTypeIds.value}
+                            selectedValue={this.state.recipientTypeIds.value}
                             data={this.props.settingData.recipientTypes}
                             keyField={"id"}
                             valueField={"name"}
