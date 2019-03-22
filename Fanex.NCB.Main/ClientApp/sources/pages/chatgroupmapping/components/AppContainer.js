@@ -28,7 +28,7 @@ class AppContainer extends Component {
 
     closeUpdatePopupHandler = () => {
         this.props.closeEditPopup();
-        //this.props.refreshUpdateData();
+        this.props.refreshUpdateData();
         //this.props.updateActiveRowIndex(-1);
         !this.props.updatePopupData.isShowed && this.props.getGridData(this.props.gridParams);
     }

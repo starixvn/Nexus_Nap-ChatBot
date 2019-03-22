@@ -76,7 +76,7 @@ export function update(params, isNew) {
     return async (dispatch) => {
         const request = await axios.post(url, JSON.stringify(params), { headers: headers });
         const data = await request.data;
-        dispatch(setUpdateData({ addedresult: data }));
+        dispatch(setUpdateData({ addedresult: true }));
     };
 }
 

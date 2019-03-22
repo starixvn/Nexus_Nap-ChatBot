@@ -68,6 +68,8 @@ export class UpdatePopup extends Component {
 
         console.log("re render");
 
+        let isSucessMsgShown = this.props.updateData && this.props.updateData.addedresult;          
+
         let popupTitle = this.props.updatePopupData.popupTitle;        
         let licenseeStatuses = [];
         let recipientIds = this.state.recipientIds.value.split(",");
@@ -81,6 +83,7 @@ export class UpdatePopup extends Component {
             <Modal isOpen={true} toggle={this.props.closeUpdatePopupHandler} wrapClassName="new-notification-type">
                 <ModalHeader toggle={this.props.closeUpdatePopupHandler}>{popupTitle}</ModalHeader>
                 <ModalBody>
+                    {isSucessMsgShown && <div className="msg-success ">{"Update Mapping Status Successfully"}</div>}            
                     <Form className="form-edit">
                         <FormGroup>
                             <Label className="form-label ">Bot Name</Label>
