@@ -23,6 +23,7 @@ export class UpdatePopup extends Component {
     }  
 
     submitHandler = (e) => {
+        console.log(this.state);
         e.preventDefault();
 
         !this.state.isSummited && this.setState({ isSummited: true });                
@@ -46,51 +47,36 @@ export class UpdatePopup extends Component {
         return this.state.recipientTypeId.isValid && this.state.recipientIds.isValid && this.state.remark.isValid;
     }
 
-    onChange = (fieldName, fieldValue) => {
-        this.setState({
-            [fieldName]: fieldValue
-        });
-    }
+    onChange = (fieldName, fieldValue) => this.setState({ [fieldName]: fieldValue });
 
-    closePopup = () => {
-        setTimeout(function () {
-            this.props.closeUpdatePopupHandler();
-        }.bind(this),
-            1000);
-    }
+    closePopup = () => setTimeout(function () { this.props.closeUpdatePopupHandler(); }.bind(this), 1000);
 
     filterRecipients = (recipientTypeId) => {
         this.props.filterRecipients(this.props.settingData.recipients, recipientTypeId);
+        this.setState({
+            recipientIds: {
+                value: '',
+                isValid: false
+            }
+        });
     }
 
-    render() {
+    render() {        
         if (!this.props.updatePopupData.isShowed || !this.props.filteredRecipients) {
             return null;
         }
 
-        let popupTitle = this.props.updatePopupData.popupTitle;
+        console.log("re render");
 
-        console.log("render popoup");
-        console.log(this.props.filteredRecipients);
-        console.log(this.props.updatePopupData.editingItem.recipientIds.value);
+        let popupTitle = this.props.updatePopupData.popupTitle;        
+        let licenseeStatuses = [];
+        let recipientIds = this.state.recipientIds.value.split(",");
+        this.props.filteredRecipients && this.props.filteredRecipients.map((v, i) => {
+            let isChecked = recipientIds.includes(v.id.toString());
+            v['checked'] = isChecked ? true : false;
+            isChecked && v.status != '' && licenseeStatuses.push(v.status);
+        });    
 
-        let filteredRecipients = [];
-        let recipientTypeId = this.props.updatePopupData.editingItem.recipientTypeId.value;
-        recipientTypeId && this.props.settingData.recipients.map((item, index) => {
-            if (item.recipientTypeId == recipientTypeId) {
-                filteredRecipients.push(item);
-            }
-        });  
-
-        if (this.props.filteredRecipients) {
-            this.props.filteredRecipients.map((v, i) => {
-                v['checked'] = false;
-                if (this.props.updatePopupData.editingItem.recipientIds.value.split(",").includes(v.id.toString())) {
-                    v['checked'] = true;
-                }
-            });
-        }
-        
         return (
             <Modal isOpen={true} toggle={this.props.closeUpdatePopupHandler} wrapClassName="new-notification-type">
                 <ModalHeader toggle={this.props.closeUpdatePopupHandler}>{popupTitle}</ModalHeader>
@@ -126,7 +112,7 @@ export class UpdatePopup extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label ">Licensee Status</Label>
-                            <Label className="form-label">{"N/A"}</Label>
+                            <Label className="form-label">{licenseeStatuses.join(",")}</Label>
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label ">Mapping Status</Label>

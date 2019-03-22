@@ -28,10 +28,14 @@ export class MultipleSelectField extends Component {
     }
 
     isValid = () => {
+        console.log("isValid: select multiple");
+        console.log(this.state.value);
+        console.log("isValid: select multiple");
         return this.state.value != "";
     }   
 
     render() {
+        console.log("rerender MultipleSelectField");
         return (
             <div style={{ width: this.props.width ? this.props.width : 'auto' }}
                 className={this.props.isSummited && !this.isValid() ? "invalid multiple-select-field" : "multiple-select-field"}>

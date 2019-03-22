@@ -22,7 +22,7 @@ export function openEditPopup(item) {
                 value: item.recipientIDs,
                 isValid: item.recipientIDs != ""
             }, 
-            licenseeStatus: item.licenseeStatus,
+            recipientStatusNames: item.recipientStatusNames,
             remark: {
                 value: item.remark,
                 isValid: item.remark != null

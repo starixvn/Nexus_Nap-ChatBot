@@ -17,3 +17,9 @@
 .multiple-select-field{
     display: inline-block;
 }
+
+.multiple-select-field.invalid {
+    .invalid-feedback {
+        display: block;
+    } 
+}
