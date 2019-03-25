@@ -3,8 +3,6 @@ import * as types from './types';
 
 // Update Popup
 export function openEditPopup(item) {
-    console.log("openedit");
-    console.log(item);
     let newEditPopupData = {
         isShowed: true,
         editingItem: {
@@ -27,12 +25,8 @@ export function openEditPopup(item) {
                 value: item.remark,
                 isValid: item.remark != null
             }
-        },
-        popupTitle: "Edit Mapping Status",
-        successMsg: "Edit Mapping Status Successfully"
+        }        
     };
-
-    console.log(newEditPopupData);
 
     return {
         type: types.UPDATE_POPUP_DATA,
@@ -43,9 +37,7 @@ export function openEditPopup(item) {
 export function closeEditPopup() {
     let newEditPopupData = {
         isShowed: false,
-        editingItem: {},
-        popupTitle: "",
-        successMsg: ""
+        editingItem: {}       
     };
 
     return {

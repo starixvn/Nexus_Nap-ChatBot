@@ -90,7 +90,6 @@ export class UpdatePopup extends Component {
       if (this.props.settingData.recipientTypes) {
           this.props.settingData.recipientTypes.map((v, i) => {
               v['checked'] = false;
-              console.log(this.props.updatePopupData.editingItem.recipientTypeIds.value);
               if (this.props.updatePopupData.editingItem.recipientTypeIds.value.split(",").includes(v.id.toString())) {
                   v['checked'] = true;
               }

@@ -2,10 +2,10 @@
 import { connect } from 'react-redux';
 import { Form, FormGroup, Label } from 'reactstrap';
 import { InputField } from '../../common/InputField';
-import { SelectField } from '../../common/SelectField';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
+import Labels from '../../common/Labels';
 
 class Filter extends Component {
     constructor(props) {
@@ -61,7 +61,7 @@ class Filter extends Component {
         return (
             <Form className="form-filter">
                 <FormGroup>
-                    <Label className="form-label">Bot Name</Label>
+                    <Label className="form-label">{Labels.BotName}</Label>
                     <MultipleSelectField
                         id={"botNames"}
                         width={200}
@@ -71,13 +71,13 @@ class Filter extends Component {
                         valueField={"name"}
                         statusField={"checked"}
                         isSummited={false}
-                        texts={{ SelectOptions: "All", All: "All", SelectedItemCount: "# selected" }}
+                        texts={{ SelectOptions: Labels.All, All: Labels.All, SelectedItemCount: "# selected" }}
                         isAllTextShown={false}
                         onChange={(value) => this.onChange("botNames", value)}
                     />       
                 </FormGroup>
                 <FormGroup>
-                    <Label className="form-label">Recipient Type</Label>
+                    <Label className="form-label">{Labels.RecipientType}</Label>
                     <MultipleSelectField
                         id={"recipientTypes"}
                         width={200}
@@ -87,19 +87,19 @@ class Filter extends Component {
                         valueField={"name"}
                         statusField={"checked"}
                         isSummited={false}
-                        texts={{ SelectOptions: "All", All: "All", SelectedItemCount: "# selected" }}
+                        texts={{ SelectOptions: Labels.All, All: Labels.All, SelectedItemCount: "# selected" }}
                         isAllTextShown={false}
                         onChange={(value) => this.onChange("recipientTypes", value)}
                     />       
                 </FormGroup>
                 <FormGroup>
-                    <Label className="form-label">Recipient</Label>
+                    <Label className="form-label">{Labels.Recipient}</Label>
                     <InputField initialValue={this.state.recipient.value}
                         isSummited={this.state.isSummited}
                         onChange={(value) => this.onChange("recipient", value)} /> 
                 </FormGroup>
                 <FormGroup>
-                    <Label className="form-label">Mapping Status</Label>
+                    <Label className="form-label">{Labels.MappingStatus}</Label>
                     <MultipleSelectField
                         id={"mappingStatuses"}
                         width={200}
@@ -109,12 +109,12 @@ class Filter extends Component {
                         valueField={"name"}
                         statusField={"checked"}
                         isSummited={false}
-                        texts={{ SelectOptions: "All", All: "All", SelectedItemCount: "# selected" }}
+                        texts={{ SelectOptions: Labels.All, All: Labels.All, SelectedItemCount: "# selected" }}
                         isAllTextShown={false}
                         onChange={(value) => this.onChange("mappingStatuses", value)}
                         />
                 </FormGroup>
-                <button className="btn-submit" onClick={this.submitHandler}>Submit</button>
+                <button className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
             </Form>            
         );
     }

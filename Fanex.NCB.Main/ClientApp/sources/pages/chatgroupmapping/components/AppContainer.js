@@ -8,35 +8,24 @@ import { ActionCreators } from '../actions/index';
 import UpdatePopup from './UpdatePopup';
 import "../../../fonts/style.css";
 import './AppContainer.scss';
+import Labels from '../../common/Labels';
 
 class AppContainer extends Component {
     constructor(props) {
-        super(props);
-
-        this.state = {
-            data: [{
-                id: 100,
-                name: 100
-            }
-            ]
-        }
+        super(props);       
     }
-
-    togglePopup() {
-
-    }   
+   
 
     closeUpdatePopupHandler = () => {
         this.props.closeEditPopup();
         this.props.refreshUpdateData();
-        //this.props.updateActiveRowIndex(-1);
         !this.props.updatePopupData.isShowed && this.props.getGridData(this.props.gridParams);
     }
 
     render() {        
         return (
             <div>
-                <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Chat Group Mapping"></NCBBreadcrum>
+                <NCBBreadcrum chatbotName={Labels.SkypeChatbot} pageTitle={Labels.ChatGroupMapping}></NCBBreadcrum>
                 <Filter />
                 <DataGrid />
                 {this.props.updatePopupData.isShowed && <UpdatePopup closeUpdatePopupHandler={this.closeUpdatePopupHandler} />}

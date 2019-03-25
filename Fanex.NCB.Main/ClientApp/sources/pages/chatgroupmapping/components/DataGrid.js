@@ -5,15 +5,12 @@ import { UncontrolledTooltip } from 'reactstrap';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import { getMappingClass } from '../../common/CommonFunctions';
+import Labels from '../../common/Labels';
 
 class DataGrid extends Component {
     constructor(props) {
         super(props);
-    }
-
-    togglePopup() {
-
-    }
+    }   
 
     onPaging = (pageIndex, pageSize) => {
         let params = { ...this.props.gridParams };
@@ -31,16 +28,16 @@ class DataGrid extends Component {
 
     buildHeader = () => {
         return (<Row style={{ height: 32 }}>
-            <Cell colWidth={30} header={true}>#</Cell>
-            <Cell colWidth={100} header={true}>Bot Name</Cell>
-            <Cell colWidth={300} header={true}>Group ID</Cell>
-            <Cell colWidth={200} header={true}>Group Name</Cell>
-            <Cell colWidth={100} header={true}>Recipient Type</Cell>
-            <Cell colWidth={150} header={true}>Recipient</Cell>
-            <Cell colWidth={100} header={true}>Licensee Status</Cell>
-            <Cell colWidth={100} header={true}>Mapping Status</Cell>
-            <Cell colWidth={150} header={true}>Remark</Cell>
-            <Cell colWidth={50} header={true}>Action</Cell>
+            <Cell colWidth={30} header={true}>{Labels.NumberCol}</Cell>
+            <Cell colWidth={100} header={true}>{Labels.BotName}</Cell>
+            <Cell colWidth={300} header={true}>{Labels.GroupID}</Cell>
+            <Cell colWidth={200} header={true}>{Labels.GroupName}</Cell>
+            <Cell colWidth={100} header={true}>{Labels.RecipientType}</Cell>
+            <Cell colWidth={150} header={true}>{Labels.Recipient}</Cell>
+            <Cell colWidth={100} header={true}>{Labels.LicenseeStatus}</Cell>
+            <Cell colWidth={100} header={true}>{Labels.MappingStatus}</Cell>
+            <Cell colWidth={150} header={true}>{Labels.Remark}</Cell>
+            <Cell colWidth={50} header={true}>{Labels.Action}</Cell>
         </Row>);
     }
 
@@ -61,7 +58,7 @@ class DataGrid extends Component {
                 <Cell className="text-center col-action">
                     <div>
                         <span className="icon-edit" id={"edit-" + index} onClick={() => this.openEditPopup(item, index)}></span>
-                        <UncontrolledTooltip placement="top" target={"edit-" + index}>Edit</UncontrolledTooltip>                        
+                        <UncontrolledTooltip placement="top" target={"edit-" + index}>{Labels.Edit}</UncontrolledTooltip>                        
                     </div>
                 </Cell>
             </Row>)

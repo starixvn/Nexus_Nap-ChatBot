@@ -24,7 +24,6 @@ export function openDeletePopup(notificationTypeId, notificationTypeName){
 }
 
 export function closeDeletePopup(){
-    console.log("close deelte popup");
     let deletePopupData = {
         isShowed: false,        
         content: ""
@@ -38,7 +37,6 @@ export function closeDeletePopup(){
 
 // Update Popup
 export function openEditPopup(item) {
-    console.log(item);
     let newEditPopupData = {
         isShowed: true,
         editingItem: {

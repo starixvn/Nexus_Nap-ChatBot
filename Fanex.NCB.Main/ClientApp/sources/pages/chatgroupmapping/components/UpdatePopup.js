@@ -8,6 +8,7 @@ import { InputField } from '../../common/InputField';
 import { SelectField } from '../../common/SelectField';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
 import { getMappingClass } from '../../common/CommonFunctions';
+import Labels from '../../common/Labels';
 
 export class UpdatePopup extends Component {
     constructor(props) {
@@ -24,7 +25,6 @@ export class UpdatePopup extends Component {
     }  
 
     submitHandler = (e) => {
-        console.log(this.state);
         e.preventDefault();
 
         !this.state.isSummited && this.setState({ isSummited: true });                
@@ -67,9 +67,9 @@ export class UpdatePopup extends Component {
             return null;
         }
 
-        let isSucessMsgShown = this.props.updateData && this.props.updateData.addedresult;          
+        let isSucessMsgShown = this.props.updateData && this.props.updateData.addedresult;    
+        let editingItem = this.props.updatePopupData.editingItem;
 
-        let popupTitle = this.props.updatePopupData.popupTitle;        
         let licenseeStatuses = [];
         let recipientIds = this.state.recipientIds.value.split(",");
         let filteredRecipients = this.props.filteredRecipients;
@@ -79,31 +79,29 @@ export class UpdatePopup extends Component {
             isChecked && v.status != '' && licenseeStatuses.push(v.status);
         });    
 
-        let editingItem = this.props.updatePopupData.editingItem;
-
         return (
             <Modal isOpen={true} toggle={this.props.closeUpdatePopupHandler} wrapClassName="new-notification-type">
-                <ModalHeader toggle={this.props.closeUpdatePopupHandler}>{popupTitle}</ModalHeader>
+                <ModalHeader toggle={this.props.closeUpdatePopupHandler}>{Labels.EditMappingStatus}</ModalHeader>
                 <ModalBody>
-                    {isSucessMsgShown && <div className="msg-success ">{"Update Mapping Status Successfully"}</div>}            
+                    {isSucessMsgShown && <div className="msg-success ">{Labels.UpdateMappingStatusSuccessfully}</div>}            
                     <Form className="form-edit">
                         <FormGroup>
-                            <Label className="form-label ">Bot Name</Label>
+                            <Label className="form-label ">{Labels.BotName}</Label>
                             <Label className="form-label">{editingItem.botName}</Label>                            
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label ">Group Name</Label>
+                            <Label className="form-label ">{Labels.GroupName}</Label>
                             <Label className="form-label">{editingItem.groupName}</Label>
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label required">Recipient Type</Label>
+                            <Label className="form-label required">{Labels.RecipientType}</Label>
                             <SelectField initialValue={editingItem.recipientTypeId.value}
                                 data={this.props.settingData.recipientTypes}
                                 isSummited={this.state.isSummited}
                                 onChange={(recipientTypeId) => { this.filterRecipients(recipientTypeId.value); this.onChange("recipientTypeId", recipientTypeId); }} />  
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label required">Recipient</Label>
+                            <Label className="form-label required">{Labels.Recipient}</Label>
                             <MultipleSelectField
                                 id={"recipient-id"}
                                 selectedValue={this.state.recipientIds.value}
@@ -116,20 +114,20 @@ export class UpdatePopup extends Component {
                             />
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label ">Licensee Status</Label>
+                            <Label className="form-label ">{Labels.LicenseeStatus}</Label>
                             <Label className="form-label">{licenseeStatuses.join(",")}</Label>
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label ">Mapping Status</Label>
+                            <Label className="form-label ">{Labels.MappingStatus}</Label>
                             <Label className="form-label"><span className={getMappingClass(editingItem.mappingStatusId)}>{editingItem.mappingStatusName}</span></Label>
                         </FormGroup>
                         <FormGroup>
-                            <Label className="form-label required">Remark</Label>
+                            <Label className="form-label required">{Labels.Remark}</Label>
                             <InputField initialValue={editingItem.remark.value}
                                 isSummited={this.state.isSummited}
                                 onChange={(value) => this.onChange("remark", value)} />                                     
                         </FormGroup>
-                        <button className="btn-submit" onClick={this.submitHandler}>Submit</button>
+                        <button className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
                     </Form>
                 </ModalBody>
             </Modal>

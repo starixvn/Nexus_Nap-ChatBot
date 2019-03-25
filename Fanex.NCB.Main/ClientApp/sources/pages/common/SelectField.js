@@ -26,9 +26,6 @@ export class SelectField extends Component {
   }  
 
   isValid = () => {
-      console.log("isValid: select field");
-      console.log(this.state.value );
-      console.log("isValid: select field");
     return this.state.value != -1;
   }
 
