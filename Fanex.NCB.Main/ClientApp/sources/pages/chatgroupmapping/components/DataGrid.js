@@ -4,6 +4,7 @@ import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 import { UncontrolledTooltip } from 'reactstrap';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
+import { getMappingClass } from '../../common/CommonFunctions';
 
 class DataGrid extends Component {
     constructor(props) {
@@ -55,7 +56,7 @@ class DataGrid extends Component {
                 <Cell>{item.recipientTypeName}</Cell>
                 <Cell>{item.recipientNames}</Cell>
                 <Cell>{item.recipientStatusNames}</Cell>
-                <Cell>{item.mappingStatusName}</Cell>
+                <Cell><span className={getMappingClass(item.mappingStatusID)}>{item.mappingStatusName}</span></Cell>
                 <Cell>{item.remark}</Cell>
                 <Cell className="text-center col-action">
                     <div>
@@ -67,8 +68,7 @@ class DataGrid extends Component {
         })
 
         return rows;
-    }
-
+    }   
 
     render() {
         if (!this.props.gridData || !this.props.gridData.data) {

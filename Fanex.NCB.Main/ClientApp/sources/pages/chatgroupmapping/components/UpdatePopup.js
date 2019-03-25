@@ -7,6 +7,7 @@ import { ActionCreators } from '../actions/index';
 import { InputField } from '../../common/InputField';
 import { SelectField } from '../../common/SelectField';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
+import { getMappingClass } from '../../common/CommonFunctions';
 
 export class UpdatePopup extends Component {
     constructor(props) {
@@ -78,6 +79,8 @@ export class UpdatePopup extends Component {
             isChecked && v.status != '' && licenseeStatuses.push(v.status);
         });    
 
+        let editingItem = this.props.updatePopupData.editingItem;
+
         return (
             <Modal isOpen={true} toggle={this.props.closeUpdatePopupHandler} wrapClassName="new-notification-type">
                 <ModalHeader toggle={this.props.closeUpdatePopupHandler}>{popupTitle}</ModalHeader>
@@ -86,15 +89,15 @@ export class UpdatePopup extends Component {
                     <Form className="form-edit">
                         <FormGroup>
                             <Label className="form-label ">Bot Name</Label>
-                            <Label className="form-label">{this.props.updatePopupData.editingItem.botName}</Label>                            
+                            <Label className="form-label">{editingItem.botName}</Label>                            
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label ">Group Name</Label>
-                            <Label className="form-label">{this.props.updatePopupData.editingItem.groupName}</Label>
+                            <Label className="form-label">{editingItem.groupName}</Label>
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label required">Recipient Type</Label>
-                            <SelectField initialValue={this.props.updatePopupData.editingItem.recipientTypeId.value}
+                            <SelectField initialValue={editingItem.recipientTypeId.value}
                                 data={this.props.settingData.recipientTypes}
                                 isSummited={this.state.isSummited}
                                 onChange={(recipientTypeId) => { this.filterRecipients(recipientTypeId.value); this.onChange("recipientTypeId", recipientTypeId); }} />  
@@ -118,11 +121,11 @@ export class UpdatePopup extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label ">Mapping Status</Label>
-                            <Label className="form-label">{this.props.updatePopupData.editingItem.mappingStatusName}</Label>
+                            <Label className="form-label"><span className={getMappingClass(editingItem.mappingStatusId)}>{editingItem.mappingStatusName}</span></Label>
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label required">Remark</Label>
-                            <InputField initialValue={this.props.updatePopupData.editingItem.remark.value}
+                            <InputField initialValue={editingItem.remark.value}
                                 isSummited={this.state.isSummited}
                                 onChange={(value) => this.onChange("remark", value)} />                                     
                         </FormGroup>

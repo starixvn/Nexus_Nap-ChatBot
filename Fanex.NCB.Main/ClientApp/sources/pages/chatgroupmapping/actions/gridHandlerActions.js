@@ -10,7 +10,7 @@ export function openEditPopup(item) {
         editingItem: {
             groupID: item.groupID,
             conversationID: item.conversationID, 
-            mappingStatusId: item.mappingStatusId,
+            mappingStatusId: item.mappingStatusID,
             mappingStatusName: item.mappingStatusName,
             botName: item.botName,
             groupName: item.groupName,
