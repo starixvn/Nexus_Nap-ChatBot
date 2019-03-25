@@ -3,7 +3,7 @@ import * as types from './types';
 
 // Update Popup
 export function openEditPopup(item) {
-    let newEditPopupData = {
+    let popupData = {
         isShowed: true,
         editingItem: {
             groupID: item.groupID,
@@ -30,18 +30,18 @@ export function openEditPopup(item) {
 
     return {
         type: types.UPDATE_POPUP_DATA,
-        data: newEditPopupData
+        data: popupData
     }
 }
 
 export function closeEditPopup() {
-    let newEditPopupData = {
+    let popupData = {
         isShowed: false,
         editingItem: {}       
     };
 
     return {
         type: types.UPDATE_POPUP_DATA,
-        data: newEditPopupData
+        data: popupData
     }
 }

@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AppContainer render hide updatePopup 1`] = `
+<div>
+  <NCBBreadcrum
+    chatbotName="Skype Chatbot"
+    pageTitle="Chat Group Mapping"
+  />
+  <Connect(Filter) />
+  <Connect(DataGrid) />
+</div>
+`;
+
+exports[`AppContainer render show updatePopup 1`] = `
+<div>
+  <NCBBreadcrum
+    chatbotName="Skype Chatbot"
+    pageTitle="Chat Group Mapping"
+  />
+  <Connect(Filter) />
+  <Connect(DataGrid) />
+  <Connect(UpdatePopup)
+    closeUpdatePopupHandler={[Function]}
+  />
+</div>
+`;

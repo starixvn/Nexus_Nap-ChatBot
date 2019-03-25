@@ -10,7 +10,7 @@ import "../../../fonts/style.css";
 import './AppContainer.scss';
 import Labels from '../../common/Labels';
 
-class AppContainer extends Component {
+export class AppContainer extends Component {
     constructor(props) {
         super(props);       
     }

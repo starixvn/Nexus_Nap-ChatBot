@@ -3,6 +3,13 @@ import axios from 'axios';
 //import Site from '../../lib/site';
 
 // Settings
+export function setSettings(data) {
+    return {
+        type: types.SETTING_DATA,
+        data: data
+    };
+}
+
 export function getSettings() {
     const url = '/ChatGroupMapping/GetSettings';
 
@@ -13,12 +20,6 @@ export function getSettings() {
     };
 }
 
-export function setSettings(data) {
-    return {
-        type: types.SETTING_DATA,
-        data: data
-    };
-}
 
 // Grid
 export function setGridParams(value) {
@@ -26,6 +27,13 @@ export function setGridParams(value) {
         type: types.GRID_PARAMS,
         data: value
     }
+}
+
+export function setGridData(data) {
+    return {
+        type: types.GRID_DATA,
+        data: data
+    };
 }
 
 export function getGridData(params) {
@@ -38,14 +46,14 @@ export function getGridData(params) {
     };
 }
 
-export function setGridData(data) {
+// Edit Popup
+export function setFilterRecipients(data) {
     return {
-        type: types.GRID_DATA,
+        type: types.FILTERED_RECIPIENT,
         data: data
     };
 }
 
-// Edit Popup
 export function filterRecipients(recipients, recipientTypeId) {
     let filteredRecipients = [];
     recipientTypeId && recipients.map((item, index) => {
@@ -59,15 +67,14 @@ export function filterRecipients(recipients, recipientTypeId) {
     };
 }
 
-export function setFilterRecipients(data) {
+export function setUpdateData(data) {
     return {
-        type: types.FILTERED_RECIPIENT,
+        type: types.UPDATE_DATA,
         data: data
     };
 }
 
-
-export function update(params, isNew) {
+export function update(params) {
     const url = '/ChatGroupMapping/Edit';
 
     var headers = {
@@ -77,13 +84,6 @@ export function update(params, isNew) {
         const request = await axios.post(url, JSON.stringify(params), { headers: headers });
         const data = await request.data;
         dispatch(setUpdateData({ addedresult: true }));
-    };
-}
-
-export function setUpdateData(data) {
-    return {
-        type: types.UPDATE_DATA,
-        data: data
     };
 }
 
