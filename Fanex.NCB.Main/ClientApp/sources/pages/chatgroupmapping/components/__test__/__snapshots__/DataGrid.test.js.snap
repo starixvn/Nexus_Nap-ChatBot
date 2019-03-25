@@ -1,0 +1,368 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DataGrid render when has data 1`] = `
+<div
+  className="table-container-div"
+>
+  <Table
+    adjustedHeight={0}
+    autoHeight={true}
+    autoWidth={false}
+    body={
+      Array [
+        <Row>
+          <Cell
+            asc={true}
+            className="text-center"
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            1
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            name 1
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            1
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            name 2
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            name 3
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            name 4
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            name 5
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            <span
+              className="badge-red"
+            >
+              name 6
+            </span>
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            name 7
+          </Cell>
+          <Cell
+            asc={true}
+            className="text-center col-action"
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            <div>
+              <span
+                className="icon-edit"
+                id="edit-0"
+                onClick={[Function]}
+              />
+              <UncontrolledTooltip
+                placement="top"
+                target="edit-0"
+              >
+                Edit
+              </UncontrolledTooltip>
+            </div>
+          </Cell>
+        </Row>,
+        <Row>
+          <Cell
+            asc={true}
+            className="text-center"
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            2
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            name 11
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            11
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            name 21
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            name 31
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            name 41
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            name 51
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            <span
+              className=""
+            >
+              name 61
+            </span>
+          </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            name 71
+          </Cell>
+          <Cell
+            asc={true}
+            className="text-center col-action"
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          >
+            <div>
+              <span
+                className="icon-edit"
+                id="edit-1"
+                onClick={[Function]}
+              />
+              <UncontrolledTooltip
+                placement="top"
+                target="edit-1"
+              >
+                Edit
+              </UncontrolledTooltip>
+            </div>
+          </Cell>
+        </Row>,
+      ]
+    }
+    bodyHeight={0}
+    containerPadding={0}
+    header={
+      <Row
+        style={
+          Object {
+            "height": 32,
+          }
+        }
+      >
+        <Cell
+          asc={true}
+          colWidth={30}
+          header={true}
+          onClick={[Function]}
+          sortable={false}
+          sorting={false}
+        >
+          #
+        </Cell>
+        <Cell
+          asc={true}
+          colWidth={100}
+          header={true}
+          onClick={[Function]}
+          sortable={false}
+          sorting={false}
+        >
+          Bot Namexx
+        </Cell>
+        <Cell
+          asc={true}
+          colWidth={300}
+          header={true}
+          onClick={[Function]}
+          sortable={false}
+          sorting={false}
+        >
+          GroupID
+        </Cell>
+        <Cell
+          asc={true}
+          colWidth={200}
+          header={true}
+          onClick={[Function]}
+          sortable={false}
+          sorting={false}
+        >
+          Group Name
+        </Cell>
+        <Cell
+          asc={true}
+          colWidth={100}
+          header={true}
+          onClick={[Function]}
+          sortable={false}
+          sorting={false}
+        >
+          Recipient Type
+        </Cell>
+        <Cell
+          asc={true}
+          colWidth={150}
+          header={true}
+          onClick={[Function]}
+          sortable={false}
+          sorting={false}
+        >
+          Recipient
+        </Cell>
+        <Cell
+          asc={true}
+          colWidth={100}
+          header={true}
+          onClick={[Function]}
+          sortable={false}
+          sorting={false}
+        >
+          Licensee Status
+        </Cell>
+        <Cell
+          asc={true}
+          colWidth={100}
+          header={true}
+          onClick={[Function]}
+          sortable={false}
+          sorting={false}
+        >
+          Mapping Status
+        </Cell>
+        <Cell
+          asc={true}
+          colWidth={150}
+          header={true}
+          onClick={[Function]}
+          sortable={false}
+          sorting={false}
+        >
+          Remark
+        </Cell>
+        <Cell
+          asc={true}
+          colWidth={50}
+          header={true}
+          onClick={[Function]}
+          sortable={false}
+          sorting={false}
+        >
+          Action
+        </Cell>
+      </Row>
+    }
+    isPaging={true}
+    maxWidth={-30}
+    onPaging={[Function]}
+    pageOption={
+      Object {
+        "PageIndex": 1,
+        "PageList": Array [
+          5,
+          10,
+          20,
+          50,
+          100,
+          500,
+        ],
+        "PageSize": 10,
+        "TotalItem": 2,
+      }
+    }
+    width={1400}
+  />
+</div>
+`;

@@ -7,7 +7,7 @@ import { ActionCreators } from '../actions/index';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
 import Labels from '../../common/Labels';
 
-class Filter extends Component {
+export class Filter extends Component {
     constructor(props) {
         super(props);
 

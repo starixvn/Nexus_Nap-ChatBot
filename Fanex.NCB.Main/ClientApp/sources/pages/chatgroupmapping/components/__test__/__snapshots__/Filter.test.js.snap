@@ -1,0 +1,160 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Filter render render correctly 1`] = `
+<Form
+  className="form-filter"
+  tag="form"
+>
+  <FormGroup
+    tag="div"
+  >
+    <Label
+      className="form-label"
+      tag="label"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+    >
+      Bot Namexx
+    </Label>
+    <MultipleSelectField
+      data="bot name"
+      id="botNames"
+      initialValue=""
+      isAllTextShown={false}
+      isSummited={false}
+      keyField="id"
+      onChange={[Function]}
+      statusField="checked"
+      texts={
+        Object {
+          "All": "All",
+          "SelectOptions": "All",
+          "SelectedItemCount": "# selected",
+        }
+      }
+      valueField="name"
+      width={200}
+    />
+  </FormGroup>
+  <FormGroup
+    tag="div"
+  >
+    <Label
+      className="form-label"
+      tag="label"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+    >
+      Recipient Type
+    </Label>
+    <MultipleSelectField
+      data="recipient Types"
+      id="recipientTypes"
+      initialValue={
+        Object {
+          "value": "",
+        }
+      }
+      isAllTextShown={false}
+      isSummited={false}
+      keyField="id"
+      onChange={[Function]}
+      statusField="checked"
+      texts={
+        Object {
+          "All": "All",
+          "SelectOptions": "All",
+          "SelectedItemCount": "# selected",
+        }
+      }
+      valueField="name"
+      width={200}
+    />
+  </FormGroup>
+  <FormGroup
+    tag="div"
+  >
+    <Label
+      className="form-label"
+      tag="label"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+    >
+      Recipient
+    </Label>
+    <InputField
+      initialValue=""
+      onChange={[Function]}
+    />
+  </FormGroup>
+  <FormGroup
+    tag="div"
+  >
+    <Label
+      className="form-label"
+      tag="label"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+    >
+      Mapping Status
+    </Label>
+    <MultipleSelectField
+      data="mapping Statuses"
+      id="mappingStatuses"
+      initialValue={
+        Object {
+          "value": "",
+        }
+      }
+      isAllTextShown={false}
+      isSummited={false}
+      keyField="id"
+      onChange={[Function]}
+      statusField="checked"
+      texts={
+        Object {
+          "All": "All",
+          "SelectOptions": "All",
+          "SelectedItemCount": "# selected",
+        }
+      }
+      valueField="name"
+      width={200}
+    />
+  </FormGroup>
+  <button
+    className="btn-submit"
+    onClick={[Function]}
+  >
+    Submit
+  </button>
+</Form>
+`;

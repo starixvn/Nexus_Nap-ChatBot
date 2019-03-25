@@ -7,7 +7,7 @@ import { ActionCreators } from '../actions/index';
 import { getMappingClass } from '../../common/CommonFunctions';
 import Labels from '../../common/Labels';
 
-class DataGrid extends Component {
+export class DataGrid extends Component {
     constructor(props) {
         super(props);
     }   
