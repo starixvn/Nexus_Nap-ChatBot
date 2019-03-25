@@ -22,10 +22,15 @@
     <PackageReference Include="Microsoft.Bot.Builder" Version="4.3.1" />
     <PackageReference Include="Microsoft.Bot.Configuration" Version="4.3.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
+    <PackageReference Include="NLog.Config" Version="4.6.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.1" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="botConfig.bot">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="C:\Users\alex.nguyen\.nuget\packages\nlog.config\4.6.0\contentFiles\any\any\NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

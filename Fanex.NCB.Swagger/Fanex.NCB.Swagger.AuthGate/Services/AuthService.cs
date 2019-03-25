@@ -24,7 +24,7 @@ namespace Fanex.NCB.Swagger.AuthGate.Services
                 {
                     FullName = string.Join(" ", userInfo.FirstName, userInfo.LastName),
                     UserId=userInfo.Id,
-                    UserName=userInfo.Username                   
+                    UserName=userInfo.Username
                 };
                 return result;
                // var permission = _userService.

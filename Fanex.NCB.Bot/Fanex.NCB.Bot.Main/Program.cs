@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
 
 namespace Fanex.NCB.Bot.Main
 {
@@ -27,12 +28,12 @@ namespace Fanex.NCB.Bot.Main
                  config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
                  config.AddEnvironmentVariables();
              })
-              .ConfigureLogging((hostingContext, logging) =>
+              .ConfigureLogging((_, logging) =>
               {
                   logging.ClearProviders();
-                  logging.AddConsole();
-                  logging.AddDebug();
-                  logging.AddEventSourceLogger();
-              }).UseStartup<Startup>();
+                  logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+              })
+            .UseNLog()
+            .UseStartup<Startup>();
     }
 }

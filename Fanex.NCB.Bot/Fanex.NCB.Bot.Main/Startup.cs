@@ -13,12 +13,13 @@ namespace Fanex.NCB.Bot.Main
 {
     public class Startup
     {
-        private ILoggerFactory _loggerFactory;
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        private readonly ILogger _logger;
+        public Startup(IConfiguration configuration, IHostingEnvironment env,
+            ILogger<Startup> logger)
         {
             Configuration = configuration;
-
             Environment = env;
+            _logger = logger;
         }
 
         /// <summary>
@@ -47,13 +48,15 @@ namespace Fanex.NCB.Bot.Main
             }
             catch (Exception ex)
             {
-                var msg = @"Error reading bot file. Please ensure you have valid botFilePath and botFileSecret set for your environment.
+                const string msg = @"Error reading bot file. Please ensure you have valid botFilePath and botFileSecret set for your environment.
     - You can find the botFilePath and botFileSecret in the Azure App Service application settings.
     - If you are running this bot locally, consider adding a appsettings.json file with botFilePath and botFileSecret.
     - See https://aka.ms/about-bot-file to learn more about .bot file its use and bot configuration.
     ";
+                _logger.LogCritical(msg, ex);
                 throw new InvalidOperationException(msg);
             }
+
             services.AddSingleton(_ => botConfig);
 
             var chatBotConnection = Configuration.GetConnectionString("ChatBotConnection");
@@ -62,9 +65,8 @@ namespace Fanex.NCB.Bot.Main
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            _loggerFactory = loggerFactory;
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
