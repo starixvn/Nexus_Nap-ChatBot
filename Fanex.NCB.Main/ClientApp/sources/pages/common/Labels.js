@@ -16,4 +16,4 @@
     Submit: "Submit",
     SkypeChatbot: "Skype Chatbot",
     UpdateMappingStatusSuccessfully: "Update Mapping Status Successfully"
-}
+};

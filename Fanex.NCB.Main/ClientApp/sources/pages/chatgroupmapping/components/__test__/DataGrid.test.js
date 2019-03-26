@@ -15,7 +15,7 @@ describe("DataGrid", () => {
 
             // Assert
             expect(result).toBe(null);
-        })
+        });
 
         it("when gridData.data null - return null", () => {
             // Arrange
@@ -28,7 +28,7 @@ describe("DataGrid", () => {
 
             // Assert
             expect(result).toBe(null);
-        })
+        });
 
         it("when has data", () => { 
             // Arrange
@@ -71,8 +71,8 @@ describe("DataGrid", () => {
 
             // Assert
             expect(dataGrid).toMatchSnapshot();
-        })
-    })
+        });
+    });
 
     describe("onPaging", () => {
         it("when paging - set params and get data", () => {
@@ -93,8 +93,8 @@ describe("DataGrid", () => {
             // Assert
             expect(props.setGridParams).toHaveBeenCalledWith(expectedParam);
             expect(props.getGridData).toHaveBeenCalledWith(expectedParam);
-        })
-    })
+        });
+    });
 
     describe("openEditPopup", () => {
         it("filter recipients and open edit poppup", () => {
@@ -117,6 +117,6 @@ describe("DataGrid", () => {
             // Assert
             expect(props.filterRecipients).toHaveBeenCalledWith("recipients", 12);
             expect(props.openEditPopup).toHaveBeenCalledWith(item);
-        })     
-    })
-})
+        });     
+    });
+});

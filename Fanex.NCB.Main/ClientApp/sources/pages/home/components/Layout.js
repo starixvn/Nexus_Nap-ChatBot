@@ -13,7 +13,7 @@ class Layout extends Component {
           expandedClass: "sidebar-expanded",
           currentUrl: "/NewNotification/Index",
           isSidebarExpanded: true
-        }
+        };
 
         this.onMenuChange = this.onMenuChange.bind(this);
         this.collapseExpandHandler = this.collapseExpandHandler.bind(this);
@@ -22,7 +22,7 @@ class Layout extends Component {
       onMenuChange(url){
         this.setState({
           currentUrl: url
-        })
+        });
       }
 
       collapseExpandHandler(){
@@ -34,13 +34,14 @@ class Layout extends Component {
       render() {
         return (
           <div className={`page ${this.state.isSidebarExpanded ? "sidebar-expanded" : "sidebar-collapsed"}`}>    
-            <Sidebar onChange={this.onMenuChange}></Sidebar>
+            <Sidebar onChange={this.onMenuChange} />
             <Content 
-              contentUrl={this.state.currentUrl}
-              isSidebarExpanded={this.state.isSidebarExpanded}
-              collapseExpandHandler={this.collapseExpandHandler}></Content>
+                contentUrl={this.state.currentUrl}
+                isSidebarExpanded={this.state.isSidebarExpanded}
+                collapseExpandHandler={this.collapseExpandHandler}
+            />
           </div>
-        )
+        );
     }
 }
 

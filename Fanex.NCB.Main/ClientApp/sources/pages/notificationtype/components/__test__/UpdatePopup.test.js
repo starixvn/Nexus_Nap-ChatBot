@@ -11,7 +11,7 @@ describe('UpdatePopup', () => {
                 systemId:{}
             }
         }
-    }
+    };
 
     describe("constructor", () => {
         it("init state", () => {
@@ -24,7 +24,7 @@ describe('UpdatePopup', () => {
                         systemId: {value: 3, isValid: true}
                     }
                 }
-            }            
+            };            
 
             // Act
             let updatePopup = new UpdatePopup(props);
@@ -37,8 +37,8 @@ describe('UpdatePopup', () => {
             expect(updatePopup.state.systemId.value).toEqual(3);
             expect(updatePopup.state.systemId.isValid).toBe(true);
             expect(updatePopup.state.isSummited).toBe(false);
-        })
-    })
+        });
+    });
 
     describe("mount", () => {
         it("componentWillMount", () => {
@@ -52,7 +52,7 @@ describe('UpdatePopup', () => {
                     }
                 },
                 getSettings: jest.fn()
-            }
+            };
             let updatePopup = new UpdatePopup(props);
 
             // Act
@@ -60,8 +60,8 @@ describe('UpdatePopup', () => {
 
             // Assert
             expect(props.getSettings).toHaveBeenCalled();
-        })
-    })
+        });
+    });
 
     describe("submitHandler", () => {        
 
@@ -76,7 +76,7 @@ describe('UpdatePopup', () => {
 
             // Assert
             expect(event.preventDefault).toHaveBeenCalled();
-        })
+        });
 
         it("when isSummited is false - set isSummited to true", () => {
             // Arrange            
@@ -89,7 +89,7 @@ describe('UpdatePopup', () => {
 
             // Assert
             expect(updatePopup.setState).toHaveBeenCalledWith({isSummited: true});
-        })
+        });
 
         it("when isSummited is false - not update isSummited", () => {
             // Arrange            
@@ -102,18 +102,18 @@ describe('UpdatePopup', () => {
 
             // Assert
             expect(updatePopup.setState).not.toHaveBeenCalledWith({isSummited: true});
-        })
+        });
 
         it("when valid params - call props.update then call closePopup", (done) => {
              // Arrange    
-             let response = {}
+             let response = {};
              let props =  {
                 ...defaultProps,
                 update: jest.fn(() => Promise.resolve(response))
-            }
+            };
              let updatePopup = new UpdatePopup(props);
 
-             let params = {data1: []}
+             let params = {data1: []};
              updatePopup.setState = jest.fn();
              updatePopup.closePopup = jest.fn();
              updatePopup.getParams = jest.fn(() => {return params;});
@@ -127,16 +127,16 @@ describe('UpdatePopup', () => {
              props.update().then(() => {
                 expect(updatePopup.closePopup).toHaveBeenCalled();
                 done();
-             })
-        })
+             });
+        });
 
         it("when not valid params - do not call props.update", () => {
             // Arrange    
-            let response = {}
+            let response = {};
             let props =  {
                ...defaultProps,
                update: jest.fn(() => Promise.resolve(response))
-           }
+           };
             let updatePopup = new UpdatePopup(props);
             
             updatePopup.setState = jest.fn();
@@ -147,8 +147,8 @@ describe('UpdatePopup', () => {
 
             // Assert
             expect(props.update).not.toHaveBeenCalled();
-        })
-    })
+        });
+    });
 
     describe("get Params", () => {
         it("get params from state", () => {
@@ -163,16 +163,16 @@ describe('UpdatePopup', () => {
             let params = {
                 notificationTypeName: "some name",
                 recipientTypeId: 2,
-                systemId: 3,
-            }
+                systemId: 3
+            };
 
             // Act
             var result = updatePopup.getParams();
 
             // Assert
             expect(result).toEqual(params);
-        })
-    })
+        });
+    });
 
     describe("checkValidParams", () => {
         it("valid params", () => {
@@ -190,7 +190,7 @@ describe('UpdatePopup', () => {
 
             // Assert
             expect(result).toBe(true);
-        })
+        });
 
         it("invalid notificationTypeName - return invalid", () => {
              // Arrange
@@ -207,7 +207,7 @@ describe('UpdatePopup', () => {
 
              // Assert
              expect(result).toBe(false);
-        })
+        });
 
         it("invalid recipientTypeId - return invalid", () => {
             // Arrange
@@ -224,7 +224,7 @@ describe('UpdatePopup', () => {
 
             // Assert
             expect(result).toBe(false);
-        })
+        });
 
         it("invalid systemId - return invalid", () => {
             // Arrange
@@ -241,8 +241,8 @@ describe('UpdatePopup', () => {
 
             // Assert
             expect(result).toBe(false);
-        })
-    })
+        });
+    });
 
     describe("onChange", () => {
         it("when called - setState", () => {
@@ -257,8 +257,8 @@ describe('UpdatePopup', () => {
 
             // Assert
             expect(updatePopup.setState).toHaveBeenCalledWith({[fieldName]: fieldValue});
-        })
-    })
+        });
+    });
 
     describe("closePopup", () => {
         it("call closeUpdatePopupHandler after 1000ms", (done) => {
@@ -266,7 +266,7 @@ describe('UpdatePopup', () => {
             let props = {
                 ...defaultProps,
                 closeUpdatePopupHandler: jest.fn()
-            }
+            };
             let updatePopup = new UpdatePopup(props);
 
             // Act
@@ -277,8 +277,8 @@ describe('UpdatePopup', () => {
                 expect(props.closeUpdatePopupHandler).toHaveBeenCalled();
                 done();
             }, 1000);
-        })
-    })
+        });
+    });
 
     describe("render", () => {
         const defaultProps = {
@@ -307,7 +307,7 @@ describe('UpdatePopup', () => {
                     ...defaultProps.updatePopupData,
                     isShowed: false
                 }
-            }
+            };
             let updatePopup = new UpdatePopup(props);
 
             // Act
@@ -315,21 +315,21 @@ describe('UpdatePopup', () => {
 
             // Assert
             expect(result).toBe(null);
-        })
+        });
 
         it("when isShowed true and NOT showSucessMsg", () => {
             // Arrange
             let props = {
                 ...defaultProps,
                 updateData: null
-            }    
+            };    
 
             // Act
             let result = (new ShallowRenderer()).render(<UpdatePopup {...props}/>);
 
             // Assert
             expect(result).toMatchSnapshot();
-        })
+        });
 
         it("when isShowed true and showSucessMsg", () => {
              // Arrange
@@ -338,13 +338,13 @@ describe('UpdatePopup', () => {
                 updateData: {
                     addedresult: true
                 }
-            }    
+            };    
 
             // Act
             let result = (new ShallowRenderer()).render(<UpdatePopup {...props}/>);
 
             // Assert
             expect(result).toMatchSnapshot();
-        })
-    })
-})
+        });
+    });
+});

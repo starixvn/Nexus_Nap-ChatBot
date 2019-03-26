@@ -1,7 +1,7 @@
-import React from 'react'
-import renderer from 'react-test-renderer'
+import React from 'react';
+import renderer from 'react-test-renderer';
 
-import { SCROLLBAR_WIDTH, MAX_WIDTH } from '../../constants'
+import { SCROLLBAR_WIDTH, MAX_WIDTH } from '../../constants';
 import createTableSection from '../tableSection';
 
 const defaultProps = {
@@ -11,12 +11,12 @@ const defaultProps = {
     minWidth: undefined,
     autoWidth: true,
     maxHeight: undefined
-}
+};
 
 describe('tableSection ', () => {
     afterAll(() => {
         jest.resetAllMocks();
-    })
+    });
 
     describe('containerWidth getter', () => {
         it('autoWidth = true - get maxWidth value', () => {
@@ -28,12 +28,12 @@ describe('tableSection ', () => {
             const result = instance.containerWidth;
 
             expect(result).toBe(expectedResult);
-        })
+        });
 
         it('autoWidth = false - get width value', () => {
             const width = 600,
                 autoWidth = false;
-            const props = Object.assign({}, defaultProps, { width, autoWidth })
+            const props = Object.assign({}, defaultProps, { width, autoWidth });
             const expectedResult = width;
             const TableSection = createTableSection();
 
@@ -41,8 +41,8 @@ describe('tableSection ', () => {
             const result = instance.containerWidth;
 
             expect(result).toBe(expectedResult);
-        })
-    })
+        });
+    });
 
     describe('containerStyle getter', () => {
         it('maxHeight props has value - contain maxHeight property', () => {
@@ -52,7 +52,7 @@ describe('tableSection ', () => {
                 width: props.maxWidth,
                 minWidth: props.minWidth,
                 maxHeight
-            }
+            };
 
             const TableSection = createTableSection();
             const instance = new TableSection(props);
@@ -60,13 +60,13 @@ describe('tableSection ', () => {
             const result = instance.containerStyle;
 
             expect(result).toEqual(expectedResult);
-        })
+        });
 
         it('maxHeight props is undefined - do not contain maxHeight property', () => {
             const expectedResult = {
                 width: defaultProps.maxWidth,
                 minWidth: defaultProps.minWidth
-            }
+            };
 
             const TableSection = createTableSection();
             const instance = new TableSection(defaultProps);
@@ -74,8 +74,8 @@ describe('tableSection ', () => {
             const result = instance.containerStyle;
 
             expect(result).toEqual(expectedResult);
-        })
-    })
+        });
+    });
 
     describe('tableStyle getter', () => {
         it('minWidth props is undefined - style object should be correct with width = containerWidth - scrollbarWidth', () => {
@@ -87,7 +87,7 @@ describe('tableSection ', () => {
             const result = instance.tableStyle;
 
             expect(result).toEqual(expectedResult);
-        })
+        });
 
         it('minWidth props - style object should be correct with width = containerWidth - scrollbarWidth', () => {
             const TableSection = createTableSection();
@@ -98,8 +98,8 @@ describe('tableSection ', () => {
             const result = instance.tableStyle;
 
             expect(result).toEqual(expectedResult);
-        })
-    })
+        });
+    });
 
     describe('render', () => {
         it('isHeader = true - content should render <thead> tag match with snapshot', () => {
@@ -110,7 +110,7 @@ describe('tableSection ', () => {
             const result = component.toJSON();
 
             expect(result).toMatchSnapshot();
-        })
+        });
 
         it('isHeader = false - content should render <tbody> tag match with snapshot', () => {
             const extendedContainerProps = { isHeader: false };
@@ -120,6 +120,6 @@ describe('tableSection ', () => {
             const result = component.toJSON();
 
             expect(result).toMatchSnapshot();
-        })
-    })
-})
+        });
+    });
+});

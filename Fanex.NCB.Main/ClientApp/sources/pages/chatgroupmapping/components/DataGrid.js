@@ -27,19 +27,20 @@ export class DataGrid extends Component {
     }
 
     buildHeader = () => {
-        return (<Row style={{ height: 32 }}>
-            <Cell colWidth={30} header={true}>{Labels.NumberCol}</Cell>
-            <Cell colWidth={100} header={true}>{Labels.BotName}</Cell>
-            <Cell colWidth={300} header={true}>{Labels.GroupID}</Cell>
-            <Cell colWidth={200} header={true}>{Labels.GroupName}</Cell>
-            <Cell colWidth={100} header={true}>{Labels.RecipientType}</Cell>
-            <Cell colWidth={150} header={true}>{Labels.Recipient}</Cell>
-            <Cell colWidth={100} header={true}>{Labels.LicenseeStatus}</Cell>
-            <Cell colWidth={100} header={true}>{Labels.MappingStatus}</Cell>
-            <Cell colWidth={150} header={true}>{Labels.Remark}</Cell>
-            <Cell colWidth={50} header={true}>{Labels.Action}</Cell>
-        </Row>);
-    }
+        return (
+            <Row style={{ height: 32 }}>
+                <Cell colWidth={30} header>{Labels.NumberCol}</Cell>
+                <Cell colWidth={100} header>{Labels.BotName}</Cell>
+                <Cell colWidth={300} header>{Labels.GroupID}</Cell>
+                <Cell colWidth={200} header>{Labels.GroupName}</Cell>
+                <Cell colWidth={100} header>{Labels.RecipientType}</Cell>
+                <Cell colWidth={150} header>{Labels.Recipient}</Cell>
+                <Cell colWidth={100} header>{Labels.LicenseeStatus}</Cell>
+                <Cell colWidth={100} header>{Labels.MappingStatus}</Cell>
+                <Cell colWidth={150} header>{Labels.Remark}</Cell>
+                <Cell colWidth={50} header>{Labels.Action}</Cell>
+            </Row>);
+    };
 
     buildBody = (data, pageIndex, pageSize) => {
         let rows = [];
@@ -57,12 +58,12 @@ export class DataGrid extends Component {
                 <Cell>{item.remark}</Cell>
                 <Cell className="text-center col-action">
                     <div>
-                        <span className="icon-edit" id={"edit-" + index} onClick={() => this.openEditPopup(item, index)}></span>
+                        <span className="icon-edit" id={"edit-" + index} onClick={() => this.openEditPopup(item, index)} />
                         <UncontrolledTooltip placement="top" target={"edit-" + index}>{Labels.Edit}</UncontrolledTooltip>                        
                     </div>
                 </Cell>
-            </Row>)
-        })
+            </Row>);
+        });
 
         return rows;
     }   
@@ -91,7 +92,7 @@ export class DataGrid extends Component {
                     autoWidth={false}
                     header={this.buildHeader()}
                     body={this.buildBody(data, pageIndex, pageSize)}
-                    isPaging={true}
+                    isPaging
                     pageOption={pagingOption}
                     onPaging={this.onPaging}
                     containerPadding={0}

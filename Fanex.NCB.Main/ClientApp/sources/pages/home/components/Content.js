@@ -12,10 +12,11 @@ class Content extends Component {
     return (
       <div className="main-container">
             <Header
-             collapseExpandHandler={this.props.collapseExpandHandler}
-             isSidebarExpanded={this.props.isSidebarExpanded}></Header>
+                collapseExpandHandler={this.props.collapseExpandHandler}
+                isSidebarExpanded={this.props.isSidebarExpanded}
+            />
             <div className="content ">
-                <iframe className="main-content" src={this.props.contentUrl}></iframe>                           
+                <iframe className="main-content" src={this.props.contentUrl} />                           
             </div>
         </div>    
     );    

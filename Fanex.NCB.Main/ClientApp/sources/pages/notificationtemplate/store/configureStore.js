@@ -7,7 +7,7 @@ export default function configureStore(initialState) {
   };
 
   const middleware = [
-    thunk,
+    thunk
   ];
 
   // In development, use the browser's Redux dev tools extension if installed

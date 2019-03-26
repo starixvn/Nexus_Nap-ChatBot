@@ -21,8 +21,9 @@ class App extends Component {
   render() { 
     return (      
        <NotificationList
-          isModal={this.state.modal}
-          toggleHandler={this.toggle} />
+           isModal={this.state.modal}
+           toggleHandler={this.toggle}
+       />
     );
   }
 }

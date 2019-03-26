@@ -1,9 +1,9 @@
-﻿import thunk from 'redux-thunk'
-import configureMockStore from 'redux-mock-store'
-import * as actions from '../dataHandlerActions'
-import * as types from '../types'
-import axios from 'axios'
-import "babel-polyfill"
+﻿import thunk from 'redux-thunk';
+import configureMockStore from 'redux-mock-store';
+import * as actions from '../dataHandlerActions';
+import * as types from '../types';
+import axios from 'axios';
+import "babel-polyfill";
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -23,8 +23,8 @@ describe("dataHanderActions", () => {
 
             // Assert
             expect(result).toEqual(expected);
-        })
-    })
+        });
+    });
 
     describe("getSettings", () => { 
         it("axios.get with correct params", () => { 
@@ -38,7 +38,7 @@ describe("dataHanderActions", () => {
 
             // Assert
             expect(axios.get).toHaveBeenCalledWith(expectedUrl);
-        })
+        });
 
         it("dispatch the correct action", (done) => {
             // Arrange
@@ -60,8 +60,8 @@ describe("dataHanderActions", () => {
                 expect(store.getActions()).toEqual(expectedAction);
                 done();
             });
-        })
-    })
+        });
+    });
 
     describe("setGridParams", () => {
         it("create the correct action", () => {
@@ -77,8 +77,8 @@ describe("dataHanderActions", () => {
 
             // Assert
             expect(result).toEqual(expected);
-        })
-    })
+        });
+    });
 
     describe("setGridData", () => {
         it("create the correct action", () => {
@@ -94,8 +94,8 @@ describe("dataHanderActions", () => {
 
             // Assert
             expect(result).toEqual(expected);
-        })
-    })
+        });
+    });
 
     describe("getGridData", () => {
         it("axios.get with correct params", () => {
@@ -110,7 +110,7 @@ describe("dataHanderActions", () => {
 
             // Assert
             expect(axios.get).toHaveBeenCalledWith(expectedUrl, {params: expectedParams});
-        })
+        });
 
         it("dispatch the correct action", (done) => {
             // Arrange
@@ -132,8 +132,8 @@ describe("dataHanderActions", () => {
                 expect(store.getActions()).toEqual(expectedAction);
                 done();
             });
-        })
-    })
+        });
+    });
 
     describe("setFilterRecipients", () => {
         it("create the correct action", () => {
@@ -149,8 +149,8 @@ describe("dataHanderActions", () => {
 
             // Assert
             expect(result).toEqual(expected);
-        })
-    })
+        });
+    });
 
     describe("filterRecipients", () => {
         it("dispatch the correct action", (done) => {
@@ -194,8 +194,8 @@ describe("dataHanderActions", () => {
             // Assert
             expect(store.getActions()).toEqual(expectedAction);
             done();
-        })
-    })
+        });
+    });
 
 
     describe("setUpdateData", () => {
@@ -212,8 +212,8 @@ describe("dataHanderActions", () => {
 
             // Assert
             expect(result).toEqual(expected);
-        })
-    })
+        });
+    });
 
     describe("update", () => {
         it("axios.post with correct params", (done) => {
@@ -228,8 +228,8 @@ describe("dataHanderActions", () => {
             store.dispatch(actions.update(expectedParams)).then(() => {
                 expect(axios.post).toHaveBeenCalledWith(expectedUrl, JSON.stringify(expectedParams), { "headers": { "Content-Type": "application/json" } });
                 done();
-            })
-        })
+            });
+        });
 
         it("dispatch the correct action", (done) => {
             // Arrange
@@ -242,15 +242,15 @@ describe("dataHanderActions", () => {
                     data: fakeResponse.data
                 }
             ];
-            let expectedParams = "data";;
+            let expectedParams = "data";
 
             // Act & Assert
             store.dispatch(actions.update(expectedParams)).then(() => {
                 expect(store.getActions()).toEqual(expectedAction);
                 done();
-            })
-        })
-    })
+            });
+        });
+    });
 
     describe("refreshUpdateData", () => {
         it("dispatch the correct action", (done) => {
@@ -272,6 +272,6 @@ describe("dataHanderActions", () => {
             // Assert
             expect(store.getActions()).toEqual(expectedAction);
             done();
-        })
-    })
-})
+        });
+    });
+});

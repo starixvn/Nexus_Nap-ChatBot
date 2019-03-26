@@ -32,7 +32,7 @@ class NotificationTemplate extends Component {
   render() {
     return (
       <div>
-        <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Template"></NCBBreadcrum>
+        <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Template" />
         <form className="filter">
           <div className="form-group">
               <label htmlFor="recipientType" className="form-label">Notification Type</label>
@@ -53,7 +53,7 @@ class NotificationTemplate extends Component {
               <th>Notification Type</th>
               <th>Notification Name</th>
               <th>
-                <div className="has-icons">Title/Content <span className="icon-expand"></span></div> 
+                <div className="has-icons">Title/Content <span className="icon-expand" /></div> 
               </th>
               <th className="col-action">Action</th>
             </tr>
@@ -64,17 +64,17 @@ class NotificationTemplate extends Component {
               <td>UM</td>
               <td>Weekly UM 1</td>
               <td className="col-content">
-                <span className="icon-down"></span>
+                <span className="icon-down" />
                 <p className="bold text-uppercase">Weekly maintenance announcement - <span className="text-red">UM DATE</span></p>
                 Good Day! <br/>
                 This is Shane, kindly take note of the below message <br/>
               </td>
               <td className="text-center col-action">
-                <span className="icon-edit" id="editTooltip1"></span>
+                <span className="icon-edit" id="editTooltip1" />
                 <Tooltip placement="top" isOpen={this.state.tooltipOpen} target="editTooltip1" toggle={this.toggle}>
                   Edit
                 </Tooltip>
-                <span className="icon-delete"></span>
+                <span className="icon-delete" />
               </td>
             </tr>
             <tr>
@@ -82,12 +82,12 @@ class NotificationTemplate extends Component {
               <td>UM</td>
               <td>Weekly UM 2</td>
               <td className="col-content">
-                <span className="icon-right"></span>
+                <span className="icon-right" />
                 <span className="bold text-uppercase">Weekly maintenance (complete) announcement - <span className="text-red">UM DATE</span></span>
               </td>
               <td className="text-center col-action">
-                <span className="icon-edit"></span>
-                <span className="icon-delete"></span>
+                <span className="icon-edit" />
+                <span className="icon-delete" />
               </td>
             </tr>
             <tr>
@@ -95,12 +95,12 @@ class NotificationTemplate extends Component {
               <td>UM</td>
               <td>Extend UM</td>
               <td className="col-content">
-                <span className="icon-right"></span>
+                <span className="icon-right" />
                 <span className="bold text-uppercase">Extend maintenance announcement</span>
               </td>
               <td className="text-center col-action">
-                <span className="icon-edit"></span>
-                <span className="icon-delete"></span>
+                <span className="icon-edit" />
+                <span className="icon-delete" />
               </td>
             </tr>
             <tr>
@@ -108,12 +108,12 @@ class NotificationTemplate extends Component {
               <td>UM 3rd</td>
               <td>UM 3rd - Schedule</td>
               <td className="col-content">
-                <span className="icon-right"></span>
+                <span className="icon-right" />
                 <span className="bold text-uppercase">UM Confirmation - <span className="text-red">UM DATE</span></span>
               </td>
               <td className="text-center col-action">
-                <span className="icon-edit"></span>
-                <span className="icon-delete"></span>
+                <span className="icon-edit" />
+                <span className="icon-delete" />
               </td>
             </tr>
             <tr>
@@ -121,12 +121,12 @@ class NotificationTemplate extends Component {
               <td>UM 3rd</td>
               <td>UM 3rd 1</td>
               <td className="col-content">
-                <span className="icon-right"></span>
+                <span className="icon-right" />
                 <span className="bold text-uppercase">maintenance announcement - <span className="text-red">UM DATE</span></span>
               </td>
               <td className="text-center col-action">
-                <span className="icon-edit"></span>
-                <span className="icon-delete"></span>
+                <span className="icon-edit" />
+                <span className="icon-delete" />
               </td>
             </tr>
             <tr>
@@ -134,19 +134,20 @@ class NotificationTemplate extends Component {
               <td>UM 3rd</td>
               <td>UM 3rd 2</td>
               <td className="col-content">
-                <span className="icon-right"></span>
+                <span className="icon-right" />
                 <span className="bold text-uppercase">Match Suspend/Delay - Match Name</span>
               </td>
               <td className="text-center col-action">
-                <span className="icon-edit"></span>
-                <span className="icon-delete"></span>
+                <span className="icon-edit" />
+                <span className="icon-delete" />
               </td>
             </tr>
           </tbody>
         </table>
         <NewNotificationTemplate
-          isModal={this.state.modal}
-          toggleHandler={this.togglePopup} />
+            isModal={this.state.modal}
+            toggleHandler={this.togglePopup}
+        />
       </div>
     );
   }

@@ -31,38 +31,39 @@ class Header extends Component {
         return (
             <div className="header">
                <div className={activeClass}  onClick={this.collapseExpandHandler}>
-                    <div className="line top"></div>
-                    <div className="line center"></div>
-                    <div className="line bottom"></div>
+                    <div className="line top" />
+                    <div className="line center" />
+                    <div className="line bottom" />
                 </div>
                 <ul className="list-unstyled userinfo">
                         <li className="annoucement">
-                            <div className="icon-bell"></div>
-                            <div className="pulse-css"></div>
+                            <div className="icon-bell" />
+                            <div className="pulse-css" />
                             <div className="number">99+</div>
                         </li>
                         <li className="user-info">
                         <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
                             <DropdownToggle 
-                                tag="a">
+                                tag="a"
+                            >
                                 <div className="profile-picture">
-                                    <span className="icon-username"></span>
+                                    <span className="icon-username" />
                                 </div>
                                 Welcome Sa
                             </DropdownToggle>
                             <DropdownMenu>
                                 <DropdownItem tag="a" href="#">
-                                    <span className="icon-change-pass"></span>Change Password
+                                    <span className="icon-change-pass" />Change Password
                                 </DropdownItem>
                                 <DropdownItem tag="a" href="/Auth/Index">
-                                    <span className="icon-sign-out"></span>Sign Out
+                                    <span className="icon-sign-out" />Sign Out
                                 </DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
                         </li>
                     </ul>
             </div>
-        )
+        );
     }
 }
 

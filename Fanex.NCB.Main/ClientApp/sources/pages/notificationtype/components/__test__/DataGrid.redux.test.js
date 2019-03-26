@@ -11,17 +11,17 @@ configure({adapter: new Adapter()});
 describe('DataGrid redux', () => {
     let wrapper, store;
     beforeEach(() => {
-        const initialState = {gridParams: {pageIndex: 1}, gridData: {data: []}, activeRowIndex: 2}
+        const initialState = {gridParams: {pageIndex: 1}, gridData: {data: []}, activeRowIndex: 2};
         store = mockStore(initialState);
 
         wrapper = shallow(
             <DataGrid store={store} />
-        )
-    })
+        );
+    });
 
     it('should map state to props correctly', () => {
         expect(wrapper.props().gridParams).toEqual({pageIndex: 1});
         expect(wrapper.props().gridData).toEqual({data: []});
         expect(wrapper.props().activeRowIndex).toEqual(2);
-    })   
-})
+    });   
+});

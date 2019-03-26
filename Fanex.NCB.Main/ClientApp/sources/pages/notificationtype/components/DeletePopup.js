@@ -23,13 +23,14 @@ export class DeletePopup extends Component {
 
     return (
         <ConfirmPopup 
-        confirmHandler={this.confirmHandler}
-        confirmToggle={this.props.closeDeletePopupHandler}
-        isShowPopup={this.props.deletePopupData.isShowed}
-        title={"Delete Notification Type"}
-        content={'<p>Are you sure you want to delete <br /> <strong>"' + this.props.deletePopupData.content + '"</strong></p>' }
-        warningIcon={false} ></ConfirmPopup>         
-    )
+            confirmHandler={this.confirmHandler}
+            confirmToggle={this.props.closeDeletePopupHandler}
+            isShowPopup={this.props.deletePopupData.isShowed}
+            title={"Delete Notification Type"}
+            content={'<p>Are you sure you want to delete <br /> <strong>"' + this.props.deletePopupData.content + '"</strong></p>'}
+            warningIcon={false}
+        />         
+    );
   }
 }
 

@@ -23,7 +23,7 @@ export class Filter extends Component {
             },
             mappingStatuses: {
                 value: ""
-            },
+            }
         };
     }
 
@@ -96,7 +96,8 @@ export class Filter extends Component {
                     <Label className="form-label">{Labels.Recipient}</Label>
                     <InputField initialValue={this.state.recipient.value}
                         isSummited={this.state.isSummited}
-                        onChange={(value) => this.onChange("recipient", value)} /> 
+                        onChange={(value) => this.onChange("recipient", value)}
+                    /> 
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label">{Labels.MappingStatus}</Label>
@@ -112,7 +113,7 @@ export class Filter extends Component {
                         texts={{ SelectOptions: Labels.All, All: Labels.All, SelectedItemCount: "# selected" }}
                         isAllTextShown={false}
                         onChange={(value) => this.onChange("mappingStatuses", value)}
-                        />
+                    />
                 </FormGroup>
                 <button className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
             </Form>            

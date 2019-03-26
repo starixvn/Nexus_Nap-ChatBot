@@ -17,8 +17,8 @@ describe("Filter", () => {
             expect(filter.state.recipientTypes.value).toEqual("");
             expect(filter.state.recipient.value).toEqual("");
             expect(filter.state.mappingStatuses.value).toEqual("");
-        })
-    })
+        });
+    });
 
     describe("mount", () => { 
         it("componentWillMount", () => { 
@@ -35,8 +35,8 @@ describe("Filter", () => {
             // Assert
             expect(props.getSettings).toHaveBeenCalled();
             expect(props.filterRecipients).toHaveBeenCalledWith([], 0);
-        })
-    })
+        });
+    });
 
     describe("onChange", () => { 
         it("when called - setState", () => { 
@@ -52,8 +52,8 @@ describe("Filter", () => {
 
             // Assert
             expect(filter.setState).toHaveBeenCalledWith({[fieldName]: fieldValue});
-        })
-    })
+        });
+    });
 
     describe("getParams", () => { 
         it("get params from state", () => { 
@@ -88,8 +88,8 @@ describe("Filter", () => {
 
             // Assert
             expect(result).toEqual(expectedParams);
-        })
-    })
+        });
+    });
 
     describe("submitHandler", () => { 
         it("when submit - call props functions", () => { 
@@ -110,8 +110,8 @@ describe("Filter", () => {
             expect(event.preventDefault).toHaveBeenCalled();
             expect(props.setGridParams).toHaveBeenCalledWith(params);
             expect(props.getGridData).toHaveBeenCalledWith(params);
-        })
-    })
+        });
+    });
 
 
     describe("render", () => { 
@@ -125,13 +125,13 @@ describe("Filter", () => {
                     recipientTypes: "recipient Types",
                     mappingStatuses: "mapping Statuses"
                 }
-            }
+            };
 
             // Act
             let filter = (new ShallowRenderer()).render(<Filter {...props} />);
 
             // Assert
             expect(filter).toMatchSnapshot();
-        })
-    })
-})
+        });
+    });
+});

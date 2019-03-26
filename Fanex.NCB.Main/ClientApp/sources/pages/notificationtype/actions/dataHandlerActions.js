@@ -7,7 +7,7 @@ export function setGridParams(value){
     return {
         type: types.GRID_PARAMS,
         data: value
-    }
+    };
 }
 
 export function getGridData(params){   
@@ -15,7 +15,7 @@ export function getGridData(params){
     
     return (dispatch) => {
         axios.get(url, {params: params}).then(response => {            
-            dispatch(setGridData(response.data))
+            dispatch(setGridData(response.data));
         });
     };
 }
@@ -33,7 +33,7 @@ export function getSettings(){
     
     return (dispatch) => {
         axios.get(url).then(response => {
-            dispatch(setSettings(response.data))
+            dispatch(setSettings(response.data));
         });
     };
 }
@@ -50,7 +50,7 @@ export function deleteItem(notificationTypeId){
     const url = '/NotificationType/Delete';
     var headers = {
         'Content-Type': 'application/json'
-    }
+    };
     return async(dispatch) => {
         const request = await axios.post(url, notificationTypeId, { headers: headers });
         const data = await request.data; 
@@ -71,7 +71,7 @@ export function setUpdateParams(value){
     return {
         type: types.UPDATE_PARAMS,
         data: value
-    }
+    };
 }
 
 export function update(params, isNew){
@@ -79,7 +79,7 @@ export function update(params, isNew){
 
     var headers = {
         'Content-Type': 'application/json'     
-    }
+    };
     return async(dispatch) => {
         const request = await axios.post(url, JSON.stringify(params), { headers: headers });
         const data = await request.data; 

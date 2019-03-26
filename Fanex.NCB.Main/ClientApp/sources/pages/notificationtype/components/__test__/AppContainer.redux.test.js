@@ -11,17 +11,17 @@ configure({adapter: new Adapter()});
 describe('AppContainer redux', () => {
     let wrapper, store;
     beforeEach(() => {
-        const initialState = {gridParams: {pageIndex: 1}, updatePopupData: {isShowed: true}, deletePopupData: {isShowed: true}}
+        const initialState = {gridParams: {pageIndex: 1}, updatePopupData: {isShowed: true}, deletePopupData: {isShowed: true}};
         store = mockStore(initialState);
 
         wrapper = shallow(
             <AppContainer store={store} />
-        )
-    })
+        );
+    });
 
     it('should map state to props correctly', () => {
         expect(wrapper.props().gridParams).toEqual({pageIndex: 1});
         expect(wrapper.props().updatePopupData).toEqual({isShowed: true});
         expect(wrapper.props().deletePopupData).toEqual({isShowed: true});
-    })   
-})
+    });   
+});

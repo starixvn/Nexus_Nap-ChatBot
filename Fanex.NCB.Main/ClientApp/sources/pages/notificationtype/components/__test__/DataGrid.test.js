@@ -14,7 +14,7 @@ describe('DataGrid', () => {
             let params = {
                 pageIndex: 1, 
                 pageSize: 10
-            }
+            };
             let dataGrid = new DataGrid(props); 
 
             // Act
@@ -23,8 +23,8 @@ describe('DataGrid', () => {
             // Assert
             expect(props.setGridParams).toHaveBeenCalledWith(params);
             expect(props.getGridData).toHaveBeenCalledWith(params);
-        })
-    })
+        });
+    });
 
     describe("onPaging", () => {
         it("when onPaging - setGridParams, getGridData", () => {
@@ -36,7 +36,7 @@ describe('DataGrid', () => {
             const params = {
                 pageIndex: 2, 
                 pageSize: 20
-            }
+            };
             let dataGrid = new DataGrid(props);
 
             // Act
@@ -45,8 +45,8 @@ describe('DataGrid', () => {
             // Assert
             expect(props.setGridParams).toHaveBeenCalledWith(params);
             expect(props.getGridData).toHaveBeenCalledWith(params);
-        })
-    })
+        });
+    });
 
     describe("openEditPopup", () => {
         it("when openEditPopup - updateActiveRowIndex, openEditPopup", () => {
@@ -54,7 +54,7 @@ describe('DataGrid', () => {
             let props = {
                 updateActiveRowIndex: jest.fn(),
                 openEditPopup: jest.fn()
-            }
+            };
             const item = {data: "some data"};
             const index = 3;
             let dataGrid = new DataGrid(props);
@@ -65,8 +65,8 @@ describe('DataGrid', () => {
             // Assert
             expect(props.updateActiveRowIndex).toHaveBeenCalledWith(index);
             expect(props.openEditPopup).toHaveBeenCalledWith(item);
-        })
-    })
+        });
+    });
 
     describe("openDeletePopup", () => {
         it("when openDeletePopup - updateActiveRowIndex, openDeletePopup", () => {
@@ -74,7 +74,7 @@ describe('DataGrid', () => {
             let props = {
                 updateActiveRowIndex: jest.fn(),
                 openDeletePopup: jest.fn()
-            }
+            };
             const notificationTypeName = "some data";
             const index = 3;
             let dataGrid = new DataGrid(props);
@@ -85,15 +85,15 @@ describe('DataGrid', () => {
             // Assert
             expect(props.updateActiveRowIndex).toHaveBeenCalledWith(index);
             expect(props.openDeletePopup).toHaveBeenCalledWith(notificationTypeName);
-        })
-    })    
+        });
+    });    
 
     describe("render", () => {
         it("when no data - return null", () => {
             // Arrange
             let props = {
                 gridData: null
-            }
+            };
             let dataGrid = new DataGrid(props);
 
             // Act
@@ -101,7 +101,7 @@ describe('DataGrid', () => {
 
             // Assert
             expect(result).toBe(null);
-        })
+        });
 
         it("when has data", () => {
             // Arrange
@@ -116,7 +116,7 @@ describe('DataGrid', () => {
                     recipientTypeName: "recipientTypeName 2",
                     systemName: "systemName 2"
                 }
-            ]
+            ];
             let props = {
                 activeRowIndex: 1,
                 gridData: {
@@ -129,13 +129,13 @@ describe('DataGrid', () => {
                 },
                 setGridParams: jest.fn(),
                 getGridData: jest.fn()
-            }
+            };
 
             // Act
             let dataGrid = (new ShallowRenderer()).render(<DataGrid {...props}/>);
 
             // Assert
             expect(dataGrid).toMatchSnapshot();
-        })
-    })
-})
+        });
+    });
+});

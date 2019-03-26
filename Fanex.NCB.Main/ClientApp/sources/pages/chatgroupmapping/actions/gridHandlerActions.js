@@ -14,16 +14,16 @@ export function openEditPopup(item) {
             groupName: item.groupName,
             recipientTypeId: {
                 value: item.recipientTypeID,
-                isValid: item.recipientTypeID != 0
+                isValid: item.recipientTypeID !== 0
             },
             recipientIds: {
                 value: item.recipientIDs,
-                isValid: item.recipientIDs != ""
+                isValid: item.recipientIDs !== ""
             }, 
             recipientStatusNames: item.recipientStatusNames,
             remark: {
                 value: item.remark,
-                isValid: item.remark != null
+                isValid: item.remark !== null
             }
         }        
     };
@@ -31,7 +31,7 @@ export function openEditPopup(item) {
     return {
         type: types.UPDATE_POPUP_DATA,
         data: popupData
-    }
+    };
 }
 
 export function closeEditPopup() {
@@ -43,5 +43,5 @@ export function closeEditPopup() {
     return {
         type: types.UPDATE_POPUP_DATA,
         data: popupData
-    }
+    };
 }

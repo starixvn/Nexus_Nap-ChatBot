@@ -21,7 +21,7 @@ export class UpdatePopup extends Component {
             recipientIds: this.props.updatePopupData.editingItem.recipientIds,
             remark: this.props.updatePopupData.editingItem.remark,            
             isSummited: false
-        }
+        };
     }  
 
     submitHandler = (e) => {
@@ -76,11 +76,11 @@ export class UpdatePopup extends Component {
         filteredRecipients && filteredRecipients.map((v, i) => {
             let isChecked = recipientIds.includes(v.id.toString());
             v['checked'] = isChecked ? true : false;
-            isChecked && v.status != '' && licenseeStatuses.push(v.status);
+            isChecked && v.status !== '' && licenseeStatuses.push(v.status);
         });    
 
         return (
-            <Modal isOpen={true} toggle={this.props.closeUpdatePopupHandler} wrapClassName="new-notification-type">
+            <Modal isOpen toggle={this.props.closeUpdatePopupHandler} wrapClassName="new-notification-type">
                 <ModalHeader toggle={this.props.closeUpdatePopupHandler}>{Labels.EditMappingStatus}</ModalHeader>
                 <ModalBody>
                     {isSucessMsgShown && <div className="msg-success ">{Labels.UpdateMappingStatusSuccessfully}</div>}            
@@ -98,7 +98,8 @@ export class UpdatePopup extends Component {
                             <SelectField initialValue={editingItem.recipientTypeId.value}
                                 data={this.props.settingData.recipientTypes}
                                 isSummited={this.state.isSummited}
-                                onChange={(recipientTypeId) => { this.filterRecipients(recipientTypeId.value); this.onChange("recipientTypeId", recipientTypeId); }} />  
+                                onChange={(recipientTypeId) => { this.filterRecipients(recipientTypeId.value); this.onChange("recipientTypeId", recipientTypeId); }}
+                            />  
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label required">{Labels.Recipient}</Label>
@@ -125,13 +126,14 @@ export class UpdatePopup extends Component {
                             <Label className="form-label required">{Labels.Remark}</Label>
                             <InputField initialValue={editingItem.remark.value}
                                 isSummited={this.state.isSummited}
-                                onChange={(value) => this.onChange("remark", value)} />                                     
+                                onChange={(value) => this.onChange("remark", value)}
+                            />                                     
                         </FormGroup>
                         <button className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
                     </Form>
                 </ModalBody>
             </Modal>
-        )
+        );
     }
 }
 

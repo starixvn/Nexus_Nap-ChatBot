@@ -6,7 +6,7 @@ export function updateActiveRowIndex(value){
     return {
         type: types.ACTIVE_ROW_INDEX,
         data: value
-    }
+    };
 }
 
 // Delete Popup
@@ -20,7 +20,7 @@ export function openDeletePopup(notificationTypeId, notificationTypeName){
     return {
         type: types.DELETE_POPUP_DATA,
         data: deletePopupData
-    }
+    };
 }
 
 export function closeDeletePopup(){
@@ -32,7 +32,7 @@ export function closeDeletePopup(){
     return {
         type: types.DELETE_POPUP_DATA,
         data: deletePopupData
-    }
+    };
 }
 
 // Update Popup
@@ -62,7 +62,7 @@ export function openEditPopup(item) {
     return {
         type: types.UPDATE_POPUP_DATA,
         data: newEditPopupData
-    }
+    };
 }
 
 export function openNewPopup(){
@@ -90,7 +90,7 @@ export function openNewPopup(){
     return {
         type: types.UPDATE_POPUP_DATA,
         data: newEditPopupData
-    }
+    };
 }
 
 export function closeNewEditPopup(){
@@ -104,5 +104,5 @@ export function closeNewEditPopup(){
     return {
         type: types.UPDATE_POPUP_DATA,
         data: newEditPopupData
-    }
+    };
 }

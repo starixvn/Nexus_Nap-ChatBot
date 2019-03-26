@@ -12,17 +12,17 @@ describe('DataGrid redux', () => {
     let wrapper, store;
     beforeEach(() => {
         const initialState = {
-            gridParams: "grid param", gridData: "grid data", settingData: "setting data" }
+            gridParams: "grid param", gridData: "grid data", settingData: "setting data" };
         store = mockStore(initialState);
 
         wrapper = shallow(
             <DataGrid store={store} />
-        )
-    })
+        );
+    });
 
     it('should map state to props correctly', () => {
         expect(wrapper.props().gridParams).toEqual("grid param");
         expect(wrapper.props().gridData).toEqual("grid data");
         expect(wrapper.props().settingData).toEqual("setting data");
-    })
-})
+    });
+});

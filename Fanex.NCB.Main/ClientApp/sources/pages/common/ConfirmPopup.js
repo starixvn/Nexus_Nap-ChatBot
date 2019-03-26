@@ -7,15 +7,15 @@ export default class ConfirmPopup extends Component {
   }  
 
   render() {    
-    const warningIcon = this.props.warningIcon ? <div className="icon-warning"></div> : null
+    const warningIcon = this.props.warningIcon ? <div className="icon-warning" /> : null;
 
     return (
       <div>
-        <Modal isOpen={true} toggle={this.props.confirmToggle} wrapClassName="popup-confirm">
+        <Modal isOpen toggle={this.props.confirmToggle} wrapClassName="popup-confirm">
           <ModalHeader toggle={this.props.confirmToggle}>{this.props.title}</ModalHeader>
           <ModalBody>
             {warningIcon}
-            <div className="info" contentEditable='true' dangerouslySetInnerHTML={{ __html: this.props.content }}></div>
+            <div className="info" contentEditable='true' dangerouslySetInnerHTML={{ __html: this.props.content }} />
           </ModalBody>
           <ModalFooter>
               <button className="btn-submit" onClick={() => this.props.confirmHandler(true)}>OK</button>
@@ -23,6 +23,6 @@ export default class ConfirmPopup extends Component {
           </ModalFooter>
         </Modal>
       </div>
-    )
+    );
   }
 }

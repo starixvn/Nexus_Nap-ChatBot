@@ -30,7 +30,7 @@ export class UpdatePopup extends Component {
             isValid: this.props.updatePopupData.editingItem.systemId.isValid
         },
         isSummited: false
-    }    
+    };    
   }
 
   componentWillMount(){
@@ -53,7 +53,7 @@ export class UpdatePopup extends Component {
         notificationTypeId: this.state.notificationTypeId,
         notificationTypeName: this.state.notificationTypeName.value,
         recipientTypeIds: this.state.recipientTypeIds.value,
-        systemId: this.state.systemId.value,
+        systemId: this.state.systemId.value
     };
   }
 
@@ -97,7 +97,7 @@ export class UpdatePopup extends Component {
       }
 
     return (
-        <Modal isOpen={true} toggle={this.props.closeUpdatePopupHandler} wrapClassName="new-notification-type">
+        <Modal isOpen toggle={this.props.closeUpdatePopupHandler} wrapClassName="new-notification-type">
           <ModalHeader toggle={this.props.closeUpdatePopupHandler}>{popupTitle}</ModalHeader>
           <ModalBody>
             { showSucessMsg && <div className="msg-success ">{successMsg}</div> }            
@@ -105,8 +105,9 @@ export class UpdatePopup extends Component {
                 <FormGroup>
                     <Label className="form-label required">Notification Type Name</Label>
                     <InputField initialValue={this.props.updatePopupData.editingItem.notificationTypeName.value} 
-                                isSummited={this.state.isSummited}
-                                onChange={(value) => this.onChange("notificationTypeName", value)}/>                                     
+                        isSummited={this.state.isSummited}
+                        onChange={(value) => this.onChange("notificationTypeName", value)}
+                    />                                     
                 </FormGroup>
                 <FormGroup>
                         <Label className="form-label required">Recipient Type</Label>                       
@@ -123,15 +124,16 @@ export class UpdatePopup extends Component {
                 <FormGroup>
                     <Label className="form-label required">System</Label>
                     <SelectField    initialValue={this.props.updatePopupData.editingItem.systemId.value}
-                                    data={this.props.settingData.notificationSystems}
-                                    isSummited={this.state.isSummited}
-                                    onChange={(value) => this.onChange("systemId", value)} />                                                                          
+                        data={this.props.settingData.notificationSystems}
+                        isSummited={this.state.isSummited}
+                        onChange={(value) => this.onChange("systemId", value)}
+                    />                                                                          
                 </FormGroup>
                 <button className="btn-submit" onClick={this.submitHandler}>Submit</button>
             </Form>
           </ModalBody>
         </Modal>        
-    )
+    );
   }
 }
 

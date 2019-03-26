@@ -11,14 +11,14 @@ describe("AppContainer", () => {
                 updatePopupData: {
                     isShowed: false
                 }
-            }
+            };
 
             // Act
             let appContainer = (new ShallowRenderer()).render(<AppContainer {...props} />);
 
             // Assert
             expect(appContainer).toMatchSnapshot();
-        })
+        });
 
         it("show updatePopup", () => {
             // Arrange
@@ -26,15 +26,15 @@ describe("AppContainer", () => {
                 updatePopupData: {
                     isShowed: true
                 }
-            }
+            };
 
             // Act
             let appContainer = (new ShallowRenderer()).render(<AppContainer {...props} />);
 
             // Assert
             expect(appContainer).toMatchSnapshot();
-        })
-    })
+        });
+    });
 
     describe("closeUpdatePopupHandler", () => { 
         it("when UpdatePopup is showed", () => { 
@@ -57,7 +57,7 @@ describe("AppContainer", () => {
             expect(props.closeEditPopup).toHaveBeenCalled();
             expect(props.refreshUpdateData).toHaveBeenCalled();
             expect(props.getGridData).toBeCalledTimes(0);
-        })
+        });
 
         it("when UpdatePopup is not showed", () => { 
             // Arrange
@@ -79,6 +79,6 @@ describe("AppContainer", () => {
             expect(props.closeEditPopup).toHaveBeenCalled();
             expect(props.refreshUpdateData).toHaveBeenCalled();
             expect(props.getGridData).toHaveBeenCalledWith(props.gridParams);
-        })
-    })
-})
+        });
+    });
+});

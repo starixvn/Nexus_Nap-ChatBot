@@ -11,15 +11,15 @@ configure({adapter: new Adapter()});
 describe('DeletePopup redux', () => {
     let wrapper, store;
     beforeEach(() => {
-        const initialState = {deletePopupData: {isShowed: true}}
+        const initialState = {deletePopupData: {isShowed: true}};
         store = mockStore(initialState);
 
         wrapper = shallow(
             <DeletePopup store={store} />
-        )
-    })
+        );
+    });
 
     it('should map state to props correctly', () => {
         expect(wrapper.props().deletePopupData).toEqual({isShowed: true});        
-    })   
-})
+    });   
+});

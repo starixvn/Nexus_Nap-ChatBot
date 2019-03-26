@@ -38,7 +38,7 @@ class Sidebar extends Component {
                                         menu.SubMenus.map((submenu, submenuIndex ) => 
                                             <li className="menu-item" key={submenuIndex}>
                                                 <a href="" className="link" onClick={(event) => this.onChange(event, submenu.Url)}>
-                                                    <span className={this.getMenuClassName(submenu.Name)}></span>
+                                                    <span className={this.getMenuClassName(submenu.Name)} />
                                                     <span className="text">{submenu.Name}</span>
                                                 </a>
                                             </li>  
@@ -51,7 +51,7 @@ class Sidebar extends Component {
                 </li>
                </ul>
             </div>
-        )
+        );
     }
 }
 

@@ -8,7 +8,7 @@ export class SelectField extends Component {
 
     this.state = {
         value: props.initialValue
-    }
+    };
   }  
 
   onChange = (e) => {    
@@ -20,13 +20,13 @@ export class SelectField extends Component {
             this.props.onChange({
                 value: this.state.value,
                 isValid: this.isValid()
-            })
+            });
         }
     );
   }  
 
   isValid = () => {
-    return this.state.value != -1;
+    return this.state.value !== -1;
   }
 
   render() {   
@@ -36,7 +36,8 @@ export class SelectField extends Component {
                 type="select"
                 value={this.state.value}
                 onChange={this.onChange}
-                invalid={this.props.isSummited && !this.isValid()} >
+                invalid={this.props.isSummited && !this.isValid()}
+            >
                 <option value="-1">---Please select---</option>
                 {                            
                     this.props.data &&
@@ -47,6 +48,6 @@ export class SelectField extends Component {
             </Input>
             { this.props.isSummited && !this.isValid() &&  <FormFeedback>This field is required</FormFeedback> }  
       </div>
-    )
+    );
   }
 }

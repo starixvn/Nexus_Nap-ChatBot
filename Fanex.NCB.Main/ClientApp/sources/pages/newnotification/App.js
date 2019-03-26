@@ -51,13 +51,13 @@ class App extends Component {
   render() { 
     return (      
        <NewNotification
-          isShowPopup={this.state.isShow}
-          titlePopup={this.state.titlePopup}
-          contentPopup={this.state.contentPopup}
-          toggle={this.toggle}
-          contentEditConfirmPopupHandler={this.contentEditConfirmPopup}
-          contentResetConfirmPopupHandler={this.contentResetConfirmPopup}
-          />
+           isShowPopup={this.state.isShow}
+           titlePopup={this.state.titlePopup}
+           contentPopup={this.state.contentPopup}
+           toggle={this.toggle}
+           contentEditConfirmPopupHandler={this.contentEditConfirmPopup}
+           contentResetConfirmPopupHandler={this.contentResetConfirmPopup}
+       />
     );
   }
 }

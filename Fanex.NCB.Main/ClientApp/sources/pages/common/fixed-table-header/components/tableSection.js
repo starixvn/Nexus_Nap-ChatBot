@@ -1,20 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { SCROLLBAR_WIDTH, MAX_WIDTH } from '../constants'
+import { SCROLLBAR_WIDTH, MAX_WIDTH } from '../constants';
 
 const createTableSection = (extendedContainerProps, extendedTableProps) => {
     return class TableSection extends Component {
-        constructor(props) {
-            super(props);
-        }
-
         static propTypes = {
-            tableClass: PropTypes.string,
-            width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+            autoWidth: PropTypes.bool,
+            maxHeight: PropTypes.number,
             maxWidth: PropTypes.number,
             minWidth: PropTypes.number,
-            autoWidth: PropTypes.bool,
-            maxHeight: PropTypes.number
+            tableClass: PropTypes.string,
+            width: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         };
 
         static defaultProps = {
@@ -23,6 +19,10 @@ const createTableSection = (extendedContainerProps, extendedTableProps) => {
             maxWidth: MAX_WIDTH,
             autoWidth: true
         };
+
+        constructor(props) {
+            super(props);
+        }
 
         get containerWidth() {
             const { autoWidth, maxWidth, width } = this.props;
@@ -47,7 +47,7 @@ const createTableSection = (extendedContainerProps, extendedTableProps) => {
 
             return {
                 width: tableWidth
-            }
+            };
         }
 
         render() {
@@ -68,7 +68,7 @@ const createTableSection = (extendedContainerProps, extendedTableProps) => {
                 </div>
             );
         }
-    }
-}
+    };
+};
 
 export default createTableSection;

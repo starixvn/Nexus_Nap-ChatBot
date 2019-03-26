@@ -1,6 +1,6 @@
-﻿import React from 'react'
-import renderer from 'react-test-renderer'
-import Pager from '../Pager'
+﻿import React from 'react';
+import renderer from 'react-test-renderer';
+import Pager from '../Pager';
 
 describe('Pager', () => {   
     describe('render', () => {
@@ -50,7 +50,7 @@ describe('Pager', () => {
           // Arrange
           let props = {
               goToPage: jest.fn()
-          }
+          };
           let pager = new Pager(props);
           let pageList = [10, 20, 50];
 
@@ -62,8 +62,8 @@ describe('Pager', () => {
           result.children.forEach((item, index) => {
             expect(item.props.value).toEqual(pageList[index]);
         });
-      })  
-    })
+      });  
+    });
 
     describe("renderPageIcon", () => {
         it("when has class name disable", () => {
@@ -75,7 +75,7 @@ describe('Pager', () => {
 
             // Assert
             expect(result.props.className).toEqual(expect.stringContaining("disable"));
-        })
+        });
 
         it("when not has class name disable", () => {
             // Arrange
@@ -86,8 +86,8 @@ describe('Pager', () => {
 
             // Assert
             expect(result.props.className).toEqual(expect.not.stringContaining("disable"));
-        })
-    })
+        });
+    });
 
     describe("renderPageInfo", () => {
         it("when viewTo > total item", () => {
@@ -99,7 +99,7 @@ describe('Pager', () => {
 
             // Assert
             expect(result.children[0]).toEqual("Displaying 11 to 15 of 15 item(s)");
-        })
+        });
 
         it("when viewTo <= total item", () => {
             // Arrange
@@ -110,8 +110,8 @@ describe('Pager', () => {
 
             // Assert
             expect(result.children[0]).toEqual("Displaying 11 to 20 of 25 item(s)");
-        })        
-    })
+        });        
+    });
 
     describe("renderPages", () => {
         it("when called - render span pages with active class at pageIndex", () => {
@@ -126,8 +126,8 @@ describe('Pager', () => {
             expect(result.children[0].props.className).toEqual(expect.not.stringContaining("active"));
             expect(result.children[1].props.className).toEqual(expect.stringContaining("active"));
             expect(result.children[2].props.className).toEqual(expect.not.stringContaining("active"));
-        })
-    })
+        });
+    });
 
     describe("calculatePages", () => {
         it("when totalPage < 10", () => {
@@ -139,7 +139,7 @@ describe('Pager', () => {
 
             // Assert
             expect(result).toEqual([1,2,3,4,5]);
-        })
+        });
 
         it("when totalPage >= 10", () => {
             // Arrange
@@ -150,8 +150,8 @@ describe('Pager', () => {
 
             // Assert
             expect(result).toEqual([1,7,8,9,10,11,12,13,20]);
-        })
-    })
+        });
+    });
 
     describe('goToPage', () => {
         it('call onPaging', () => {

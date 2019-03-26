@@ -8,7 +8,7 @@ export class InputField extends Component {
 
     this.state = {
         value: props.initialValue
-    }
+    };
   }  
 
   onChange = (e) => {    
@@ -20,23 +20,24 @@ export class InputField extends Component {
             this.props.onChange({
                 value: this.state.value,
                 isValid: this.isValid()
-            })
+            });
         }
     );
   }  
 
   isValid = () => {
-    return this.state.value != '';
+    return this.state.value !== '';
   }
 
   render() {
     return (
       <div className="input-field">
         <Input  value={this.state.value} 
-                onChange={this.onChange}
-                invalid={this.props.isSummited && !this.isValid()} />
+            onChange={this.onChange}
+            invalid={this.props.isSummited && !this.isValid()}
+        />
         { this.props.isSummited && !this.isValid() && <FormFeedback>This field is required</FormFeedback> }                    
       </div>
-    )
+    );
   }
 }

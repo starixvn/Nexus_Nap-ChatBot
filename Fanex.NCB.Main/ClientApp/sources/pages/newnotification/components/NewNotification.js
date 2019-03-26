@@ -35,7 +35,7 @@ class NewNotification extends Component {
         contentPopup } = this.props;
     return (
       <div>
-        <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="New Notification"></NCBBreadcrum>
+        <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="New Notification" />
         <div className="content form">
           <Form>        
               <FormGroup>
@@ -66,14 +66,14 @@ class NewNotification extends Component {
                 </FormGroup>
                 <div className="action" onClick={this.contentEditConfirmPopupHandler}>
                   <div className="circle orange" >
-                    <span className="icon-edit"></span>
+                    <span className="icon-edit" />
                   </div>
                   
                   <span className="text">Edit Title & Content</span>
                 </div>
                 <div className="action" onClick={this.contentResetConfirmPopupHandler}>
                   <div className="circle blue">
-                    <span className="icon-reset"></span>
+                    <span className="icon-reset" />
                   </div>
 
                   <span className="text">Reset Title & Content</span>
@@ -107,7 +107,7 @@ class NewNotification extends Component {
                     <FormFeedback>This field is required</FormFeedback>
                  </FormGroup>
 
-                  <div className="w-100"></div>
+                  <div className="w-100" />
 
                   <FormGroup>
                     <Label for="startTime" className="form-label p-l-15px">Start time</Label>
@@ -121,7 +121,7 @@ class NewNotification extends Component {
                     <FormFeedback>This field is required</FormFeedback>
                  </FormGroup>
 
-                 <div className="w-100"></div>
+                 <div className="w-100" />
 
                  <FormGroup>
                     <Label for="umWeekDateCN" className="form-label p-l-15px">UM Week Date - CN</Label>
@@ -159,14 +159,14 @@ class NewNotification extends Component {
         {
           isShowPopup &&
           <ConfirmPopup 
-            showHideModalHandler={this.toggle}            
-            title={titlePopup}
-            content={contentPopup}
-            warningIcon={true}
-            ></ConfirmPopup>
+              showHideModalHandler={this.toggle}            
+              title={titlePopup}
+              content={contentPopup}
+              warningIcon
+          />
         }
       </div>
-    )
+    );
   }
 }
 

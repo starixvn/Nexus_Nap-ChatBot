@@ -11,15 +11,15 @@ configure({ adapter: new Adapter() });
 describe('Filter redux', () => {
     let wrapper, store;
     beforeEach(() => {
-        const initialState = { settingData: { data: "some data" } }
+        const initialState = { settingData: { data: "some data" } };
         store = mockStore(initialState);
 
         wrapper = shallow(
             <Filter store={store} />
-        )
-    })
+        );
+    });
 
     it('should map state to props correctly', () => {
         expect(wrapper.props().settingData).toEqual({ data: "some data" });
-    })
-})
+    });
+});

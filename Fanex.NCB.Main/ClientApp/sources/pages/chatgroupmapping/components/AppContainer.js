@@ -25,7 +25,7 @@ export class AppContainer extends Component {
     render() {        
         return (
             <div>
-                <NCBBreadcrum chatbotName={Labels.SkypeChatbot} pageTitle={Labels.ChatGroupMapping}></NCBBreadcrum>
+                <NCBBreadcrum chatbotName={Labels.SkypeChatbot} pageTitle={Labels.ChatGroupMapping} />
                 <Filter />
                 <DataGrid />
                 {this.props.updatePopupData.isShowed && <UpdatePopup closeUpdatePopupHandler={this.closeUpdatePopupHandler} />}

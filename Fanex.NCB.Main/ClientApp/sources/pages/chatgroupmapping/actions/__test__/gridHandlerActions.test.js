@@ -1,9 +1,9 @@
-﻿import thunk from 'redux-thunk'
-import configureMockStore from 'redux-mock-store'
-import * as actions from '../gridHandlerActions'
-import * as types from '../types'
-import axios from 'axios'
-import "babel-polyfill"
+﻿import thunk from 'redux-thunk';
+import configureMockStore from 'redux-mock-store';
+import * as actions from '../gridHandlerActions';
+import * as types from '../types';
+import axios from 'axios';
+import "babel-polyfill";
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -35,16 +35,16 @@ describe("gridHandlerActions", () => {
                     groupName: item.groupName,
                     recipientTypeId: {
                         value: item.recipientTypeID,
-                        isValid: item.recipientTypeID != 0
+                        isValid: item.recipientTypeID !== 0
                     },
                     recipientIds: {
                         value: item.recipientIDs,
-                        isValid: item.recipientIDs != ""
+                        isValid: item.recipientIDs !== ""
                     },
                     recipientStatusNames: item.recipientStatusNames,
                     remark: {
                         value: item.remark,
-                        isValid: item.remark != null
+                        isValid: item.remark !== null
                     }
                 }
             };
@@ -58,8 +58,8 @@ describe("gridHandlerActions", () => {
 
             // Assert
             expect(result).toEqual(expected);
-        })
-    })
+        });
+    });
 
     describe("closeEditPopup", () => {
         it("create the correct action", () => {
@@ -78,6 +78,6 @@ describe("gridHandlerActions", () => {
 
             // Assert
             expect(result).toEqual(expected);
-        })
-    })
-})
+        });
+    });
+});

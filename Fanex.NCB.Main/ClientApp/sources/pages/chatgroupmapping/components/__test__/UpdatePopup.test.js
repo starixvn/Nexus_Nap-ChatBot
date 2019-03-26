@@ -14,14 +14,14 @@ describe("UpdatePopup", () => {
                 remark: { value: "remark 1" }
             }
         }
-    }
+    };
 
     describe("constructor", () => {
         it("get state from prop", () => {
             // Arrange
             let props = {
                 ...defaultProps
-            }
+            };
 
             // Act
             let updatePopup = new UpdatePopup(props);
@@ -33,8 +33,8 @@ describe("UpdatePopup", () => {
             expect(updatePopup.state.recipientIds).toEqual(props.updatePopupData.editingItem.recipientIds);
             expect(updatePopup.state.remark).toEqual(props.updatePopupData.editingItem.remark);
             expect(updatePopup.state.isSummited).toEqual(false);
-        })
-    })
+        });
+    });
 
     describe("render", () => {
         it("when isShowed is false - return null", () => {
@@ -52,7 +52,7 @@ describe("UpdatePopup", () => {
 
             // Assert
             expect(result).toBe(null);
-        })
+        });
 
         it("when filteredRecipients is null - return null", () => {
             // Arrange
@@ -70,7 +70,7 @@ describe("UpdatePopup", () => {
 
             // Assert
             expect(result).toBe(null);
-        })
+        });
 
         it("when SuccessMsg shown", () => {
             // Arrange
@@ -89,7 +89,7 @@ describe("UpdatePopup", () => {
 
             // Assert
             expect(result).toMatchSnapshot();
-        })
+        });
 
         it("when SuccessMsg is not shown", () => {
             // Arrange
@@ -108,15 +108,15 @@ describe("UpdatePopup", () => {
 
             // Assert
             expect(result).toMatchSnapshot();
-        })
-    })
+        });
+    });
 
     describe("submitHandler", () => {
         it("when not valid params - not call update", () => {
             // Arrange
             let props = {
                 ...defaultProps
-            }
+            };
             let updatePopup = new UpdatePopup(props);
             let event = { preventDefault: jest.fn() };
             updatePopup.setState = jest.fn();
@@ -129,15 +129,15 @@ describe("UpdatePopup", () => {
             // Assert
             expect(event.preventDefault).toHaveBeenCalled();
             expect(updatePopup.setState).toHaveBeenCalledWith({ isSummited: true });
-        })
+        });
 
         it("when valid params - call update", (done) => {
             // Arrange
-            let response = {}
+            let response = {};
             let props = {
                 ...defaultProps,
                 update: jest.fn(() => Promise.resolve(response))
-            }
+            };
             let updatePopup = new UpdatePopup(props);
             let event = { preventDefault: jest.fn() };
             updatePopup.setState = jest.fn();
@@ -157,16 +157,16 @@ describe("UpdatePopup", () => {
             props.update().then(() => {
                 expect(updatePopup.closePopup).toHaveBeenCalled();
                 done();
-            })
-        })
-    })
+            });
+        });
+    });
 
     describe("getParams", () => {
         it("get params from state", () => {
             // Arrange
             let props = {
                 ...defaultProps
-            }
+            };
             let updatePopup = new UpdatePopup(props);
             updatePopup.state = {
                 groupID: 1,
@@ -183,22 +183,22 @@ describe("UpdatePopup", () => {
                 recipientTypeId: 3,
                 recipientIds: "4,5",
                 remark: "remark"
-            }
+            };
 
             // Act
             let result = updatePopup.getParams();
 
             // Assert
             expect(result).toEqual(expectedParams);
-        })
-    })
+        });
+    });
 
     describe("checkValidParams", () => {
         it("when recipientTypeId valid and recipientIds valid and  remark valid - return true", () => {
             // Arrange
             let props = {
                 ...defaultProps
-            }
+            };
             let updatePopup = new UpdatePopup(props);
             updatePopup.state = {
                 recipientTypeId: { isValid: true },
@@ -211,13 +211,13 @@ describe("UpdatePopup", () => {
 
             // Assert
             expect(result).toBe(true);
-        })
+        });
 
         it("when recipientTypeId invalid and recipientIds valid and  remark valid - return false", () => {
             // Arrange
             let props = {
                 ...defaultProps
-            }
+            };
             let updatePopup = new UpdatePopup(props);
             updatePopup.state = {
                 recipientTypeId: { isValid: false },
@@ -230,13 +230,13 @@ describe("UpdatePopup", () => {
 
             // Assert
             expect(result).toBe(false);
-        })
+        });
 
         it("when recipientTypeId valid and recipientIds invalid and  remark valid - return false", () => {
             // Arrange
             let props = {
                 ...defaultProps
-            }
+            };
             let updatePopup = new UpdatePopup(props);
             updatePopup.state = {
                 recipientTypeId: { isValid: true },
@@ -249,13 +249,13 @@ describe("UpdatePopup", () => {
 
             // Assert
             expect(result).toBe(false);
-        })
+        });
 
         it("when recipientTypeId valid and recipientIds valid and  remark invalid - return false", () => {
             // Arrange
             let props = {
                 ...defaultProps
-            }
+            };
             let updatePopup = new UpdatePopup(props);
             updatePopup.state = {
                 recipientTypeId: { isValid: true },
@@ -268,15 +268,15 @@ describe("UpdatePopup", () => {
 
             // Assert
             expect(result).toBe(false);
-        })
-    })
+        });
+    });
 
     describe("onChange", () => {
         it("when called - setState", () => {
             // Arrange
             let props = {
                 ...defaultProps
-            }
+            };
             let updatePopup = new UpdatePopup(props);
             updatePopup.setState = jest.fn();
             var fieldName = "field name";
@@ -287,8 +287,8 @@ describe("UpdatePopup", () => {
 
             // Assert
             expect(updatePopup.setState).toHaveBeenCalledWith({ [fieldName]: fieldValue });
-        })
-    })
+        });
+    });
 
     describe("closePopup", () => {
         it("call closeUpdatePopupHandler after 1000ms", (done) => {
@@ -296,7 +296,7 @@ describe("UpdatePopup", () => {
             let props = {
                 ...defaultProps,
                 closeUpdatePopupHandler: jest.fn()
-            }
+            };
             let updatePopup = new UpdatePopup(props);
 
             // Act
@@ -307,8 +307,8 @@ describe("UpdatePopup", () => {
                 expect(props.closeUpdatePopupHandler).toHaveBeenCalled();
                 done();
             }, 1000);
-        })
-    })
+        });
+    });
 
     describe("filterRecipients", () => {
         it("call filterRecipients and update state", () => {
@@ -319,7 +319,7 @@ describe("UpdatePopup", () => {
                     recipients: [{}]
                 },
                 filterRecipients: jest.fn()
-            }
+            };
             let updatePopup = new UpdatePopup(props);
             updatePopup.setState = jest.fn();
             let recipientTypeId = 1;
@@ -330,6 +330,6 @@ describe("UpdatePopup", () => {
             // Assert
             expect(props.filterRecipients).toHaveBeenCalledWith(props.settingData.recipients, recipientTypeId);
             expect(updatePopup.setState).toHaveBeenCalledWith({ recipientIds: {value: '', isValid: false}});
-        })
-    })
-})
+        });
+    });
+});

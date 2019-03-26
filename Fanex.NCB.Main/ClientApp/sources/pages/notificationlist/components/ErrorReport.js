@@ -37,7 +37,7 @@ class ErrorReport extends Component {
               <thead>
                 <tr>
                   <th>
-                    <div className="has-icons">Recipient List <span className="icon-copy"></span></div> 
+                    <div className="has-icons">Recipient List <span className="icon-copy" /></div> 
                   </th>
                   <th>Recipient Type</th>
                   <th>Reason</th>
@@ -67,7 +67,7 @@ class ErrorReport extends Component {
               </tbody>
             </table>
 
-        { isRemark == "true" &&
+        { isRemark === "true" &&
             <div className="remark">
                 <span>Remark:</span>
                 <input type="text" className="form-control" />
@@ -75,7 +75,7 @@ class ErrorReport extends Component {
             </div>
         } 
 
-        { isRemark == "false" &&
+        { isRemark === "false" &&
              <div className="resolved-remark">
                 <p>Remark: <span className="text-italic">Manually sending the notification</span></p>
                 <p><span className="text-red">*</span> Resolved by: <strong>User01</strong></p>

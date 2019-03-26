@@ -18,7 +18,7 @@ export default class Site {
     }
 
     static asNull(text) {
-        if (text != null) {
+        if (text !== null) {
             text = text.trim();
             if (text === '') {
                 return null;

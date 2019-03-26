@@ -11,7 +11,7 @@ describe('DeletePopup', () => {
            let props = {
                 deleteItem: jest.fn((id) => Promise.resolve(response)),
                 closeDeletePopupHandler: jest.fn()
-           }
+           };
            let deletePopup = new DeletePopup(props);
 
            // Act
@@ -22,15 +22,15 @@ describe('DeletePopup', () => {
            props.deleteItem().then(() =>{
             expect(props.closeDeletePopupHandler).toHaveBeenCalled();
             done();
-           })
-        })
+           });
+        });
 
         it('when confirm is no', () => {
            // Arrange
            let props = {
                 deleteItem: jest.fn(),
                 closeDeletePopupHandler: jest.fn()
-           }
+           };
            let deletePopup = new DeletePopup(props);
 
            // Act
@@ -38,15 +38,15 @@ describe('DeletePopup', () => {
 
            // Assert
            expect(props.closeDeletePopupHandler).toHaveBeenCalled();
-        })
-    })
+        });
+    });
 
     describe("render", () => {
         it("when no data - return null", () => {
             // Arrange
             let props = {
                 deletePopupData: null
-            }
+            };
             let deletePopup = new DeletePopup(props);
 
             // Act
@@ -54,7 +54,7 @@ describe('DeletePopup', () => {
 
             // Assert
             expect(result).toBe(null);
-        })
+        });
 
         it("when has data", () => {
             // Arrange
@@ -64,13 +64,13 @@ describe('DeletePopup', () => {
                     content: "some content"
                 },
                 closeDeletePopupHandler: jest.fn()
-            }
+            };
           
             // Act
             let result = (new ShallowRenderer()).render(<DeletePopup {...props}/>);
 
             // Assert
             expect(result).toMatchSnapshot();
-        })
-    })     
-})
+        });
+    });     
+});

@@ -15,7 +15,7 @@ class Login extends Component {
         this.state = {
             password: '',
             invalidLogin: AppData.invalidLogin
-        }
+        };
     }
 
     handleSubmit = (event) => {
@@ -27,13 +27,13 @@ class Login extends Component {
         
             },
             this.submitForm
-        )
+        );
     }
 
     passwordChangedHandler = (event) => {        
         this.setState({
             password: event.target.value
-        })
+        });
     }
 
     submitForm = () => {
@@ -55,13 +55,13 @@ class Login extends Component {
                     }                    
                     <div className="input-group">
                         <div className="input-group-prepend">
-                            <span className="icon-username"></span>
+                            <span className="icon-username" />
                         </div>
                         <input name="userName" type="text" className="form-control"/>
                     </div>
                     <div className="input-group">
                         <div className="input-group-prepend">
-                            <span className="icon-password"></span>
+                            <span className="icon-password" />
                         </div>
                         <input ref="password" name="password" type="password" value={this.state.password} className="form-control" onChange={this.passwordChangedHandler}/>              
                     </div>
@@ -71,8 +71,8 @@ class Login extends Component {
                 <div className="form-footer">
                         <span className="bold">Best view in:</span>
                         <ul className="list-inline">
-                            <li><span className="icon-firefox"></span> Firefox 64+</li>
-                            <li><span className="icon-chrome"></span> Chrome 71+</li>
+                            <li><span className="icon-firefox" /> Firefox 64+</li>
+                            <li><span className="icon-chrome" /> Chrome 71+</li>
                         </ul>
                 </div>
             </div>

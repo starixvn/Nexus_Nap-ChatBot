@@ -1,5 +1,5 @@
-﻿import * as actions from '../gridHandlerActions'
-import * as types from '../types'
+﻿import * as actions from '../gridHandlerActions';
+import * as types from '../types';
 
 describe("gridHanderActions", () => {
     describe("updateActiveRowIndex", () => {
@@ -16,8 +16,8 @@ describe("gridHanderActions", () => {
 
             // Assert
             expect(result).toEqual(expected);
-        })
-    })
+        });
+    });
 
     describe("openDeletePopup", () => {
         it("create the correct action", () => {
@@ -36,8 +36,8 @@ describe("gridHanderActions", () => {
 
             // Assert
             expect(result).toEqual(expected);
-        })
-    })
+        });
+    });
 
     describe("closeDeletePopup", () => {
         it("create the correct action", () => {
@@ -56,8 +56,8 @@ describe("gridHanderActions", () => {
 
             // Assert
             expect(result).toEqual(expected);
-        })
-    })
+        });
+    });
 
     describe("openEditPopup", () => {
         it("create the correct action", () => {
@@ -90,15 +90,15 @@ describe("gridHanderActions", () => {
             let expected = {
                 type: types.UPDATE_POPUP_DATA,
                 data: newEditPopupData
-            }
+            };
 
             // Act
             let result = actions.openEditPopup(item);
 
             // Assert
             expect(result).toEqual(expected);
-        })
-    })
+        });
+    });
 
     describe("openNewPopup", () => {
         it("create the correct action", () => {
@@ -126,15 +126,15 @@ describe("gridHanderActions", () => {
             let expected = {
                 type: types.UPDATE_POPUP_DATA,
                 data: newEditPopupData
-            }
+            };
 
             // Act
             let result = actions.openNewPopup();
 
             // Assert
             expect(result).toEqual(expected);
-        })
-    })
+        });
+    });
 
     describe("closeNewEditPopup", () => {
         it("create the correct action", () => {
@@ -148,13 +148,13 @@ describe("gridHanderActions", () => {
             let expected = {
                 type: types.UPDATE_POPUP_DATA,
                 data: newEditPopupData
-            }
+            };
 
             // Act
             let result = actions.closeNewEditPopup();
 
             // Assert
             expect(result).toEqual(expected);
-        })
-    })
-})
+        });
+    });
+});

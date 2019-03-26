@@ -19,7 +19,7 @@ describe('AppContainer', () => {
 
             // Assert
             expect(appContainer).toMatchSnapshot();
-        })
+        });
 
         it('show UpdatePopup', () => {
             // Arrange
@@ -35,7 +35,7 @@ describe('AppContainer', () => {
             
             // Assert
             expect(appContainer).toMatchSnapshot();
-        })
+        });
 
         it('show DeletePopup', () => {
             // Arrange
@@ -51,9 +51,9 @@ describe('AppContainer', () => {
             
             // Assert
             expect(appContainer).toMatchSnapshot();
-        })
+        });
       
-    })
+    });
 
     describe("closeUpdatePopupHandler", () => {
         it("when UpdatePopup is showed", () => {
@@ -64,7 +64,7 @@ describe('AppContainer', () => {
                 updateActiveRowIndex: jest.fn(),
                 updatePopupData: {isShowed: true}
             };
-            let appContainer = new AppContainer(props) ;
+            let appContainer = new AppContainer(props);
 
             // Act
             appContainer.closeUpdatePopupHandler();
@@ -73,7 +73,7 @@ describe('AppContainer', () => {
             expect(props.closeNewEditPopup).toHaveBeenCalled();
             expect(props.refreshUpdateData).toHaveBeenCalled();
             expect(props.updateActiveRowIndex).toHaveBeenCalledWith(-1);            
-        })
+        });
 
         it("when UpdatePopup is not showed", () => {
             // Arrange
@@ -96,8 +96,8 @@ describe('AppContainer', () => {
             expect(props.refreshUpdateData).toHaveBeenCalled();
             expect(props.updateActiveRowIndex).toHaveBeenCalledWith(-1);
             expect(props.getGridData).toHaveBeenCalledWith(gridParams);
-        })
-    })
+        });
+    });
 
     describe("closeDeletePopupHandler", () => {
         it("when deletePopup is showed", () => {
@@ -107,7 +107,7 @@ describe('AppContainer', () => {
                 updateActiveRowIndex: jest.fn(),
                 deletePopupData: {isShowed: true}
             };
-            let appContainer = new AppContainer(props) ;
+            let appContainer = new AppContainer(props);
 
             // Act
             appContainer.closeDeletePopupHandler();
@@ -115,7 +115,7 @@ describe('AppContainer', () => {
             // Assert
             expect(props.closeDeletePopup).toHaveBeenCalled();
             expect(props.updateActiveRowIndex).toHaveBeenCalledWith(-1);
-        })
+        });
 
         it("when deletePopup is not showed", () => {
             // Arrange
@@ -127,7 +127,7 @@ describe('AppContainer', () => {
                 deletePopupData: {isShowed: false},
                 gridParams: gridParams
             };
-            let appContainer = new AppContainer(props) ;
+            let appContainer = new AppContainer(props);
 
             // Act
             appContainer.closeDeletePopupHandler();
@@ -136,6 +136,6 @@ describe('AppContainer', () => {
             expect(props.closeDeletePopup).toHaveBeenCalled();
             expect(props.updateActiveRowIndex).toHaveBeenCalledWith(-1);
             expect(props.getGridData).toHaveBeenCalledWith(gridParams);
-        })
-    })
-})
+        });
+    });
+});
