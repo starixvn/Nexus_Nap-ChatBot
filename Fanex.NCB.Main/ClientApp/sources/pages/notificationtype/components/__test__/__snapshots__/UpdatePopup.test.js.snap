@@ -84,11 +84,14 @@ exports[`UpdatePopup render when isShowed true and NOT showSucessMsg 1`] = `
         >
           Recipient Type
         </Label>
-        <SelectField
+        <MultipleSelectField
           data={Array []}
-          initialValue={2}
           isSummited={false}
+          keyField="id"
           onChange={[Function]}
+          selectedValue="2"
+          statusField="checked"
+          valueField="name"
         />
       </FormGroup>
       <FormGroup
@@ -216,11 +219,14 @@ exports[`UpdatePopup render when isShowed true and showSucessMsg 1`] = `
         >
           Recipient Type
         </Label>
-        <SelectField
+        <MultipleSelectField
           data={Array []}
-          initialValue={2}
           isSummited={false}
+          keyField="id"
           onChange={[Function]}
+          selectedValue="2"
+          statusField="checked"
+          valueField="name"
         />
       </FormGroup>
       <FormGroup

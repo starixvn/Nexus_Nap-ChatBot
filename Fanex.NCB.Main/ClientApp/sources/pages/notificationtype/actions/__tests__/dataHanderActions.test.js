@@ -157,11 +157,10 @@ describe("dataHanderActions", () => {
             axios.post = jest.fn(() => Promise.resolve(fakeResponse));
             let store = mockStore();
             let expectedUrl = '/NotificationType/Delete';
-            let expectedParams = JSON.stringify({ id: 1 });
 
             // Act & Assert
             store.dispatch(actions.deleteItem(1)).then(() => {
-                expect(axios.post).toHaveBeenCalledWith(expectedUrl, expectedParams);
+                expect(axios.post).toHaveBeenCalledWith(expectedUrl, 1, { "headers": { "Content-Type": "application/json" } });
                 done();
             });            
         });
@@ -248,7 +247,7 @@ describe("dataHanderActions", () => {
 
             // Act & Assert
             store.dispatch(actions.update(expectedParams, true)).then(() => {
-                expect(axios.post).toHaveBeenCalledWith(expectedUrl, JSON.stringify(expectedParams));
+                expect(axios.post).toHaveBeenCalledWith(expectedUrl, JSON.stringify(expectedParams), { "headers": { "Content-Type": "application/json" } });
                 done();
             });
         });
@@ -263,7 +262,7 @@ describe("dataHanderActions", () => {
 
             // Act & Assert
             store.dispatch(actions.update(expectedParams, false)).then(() => {
-                expect(axios.post).toHaveBeenCalledWith(expectedUrl, JSON.stringify(expectedParams));
+                expect(axios.post).toHaveBeenCalledWith(expectedUrl, JSON.stringify(expectedParams), { "headers": { "Content-Type": "application/json" } });
                 done();
             });
         });

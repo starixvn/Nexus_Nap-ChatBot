@@ -10,7 +10,8 @@ describe('DeletePopup', () => {
            const response = { data: [] };
            let props = {
                 deleteItem: jest.fn((id) => Promise.resolve(response)),
-                closeDeletePopupHandler: jest.fn()
+               closeDeletePopupHandler: jest.fn(),
+               deletePopupData: { notificationTypeId: 1}
            };
            let deletePopup = new DeletePopup(props);
 

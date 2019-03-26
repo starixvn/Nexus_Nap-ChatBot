@@ -7,7 +7,7 @@ describe('UpdatePopup', () => {
         updatePopupData: {
             editingItem: {
                 notificationTypeName: {},
-                recipientTypeId:{},
+                recipientTypeIds:{},
                 systemId:{}
             }
         }
@@ -19,8 +19,9 @@ describe('UpdatePopup', () => {
             let props = {
                 updatePopupData: {
                     editingItem: {
+                        notificationTypeId: 1,
                         notificationTypeName: {value: "abc", isValid: true},
-                        recipientTypeId: {value: 2, isValid: true},
+                        recipientTypeIds: {value: 2, isValid: true},
                         systemId: {value: 3, isValid: true}
                     }
                 }
@@ -30,10 +31,11 @@ describe('UpdatePopup', () => {
             let updatePopup = new UpdatePopup(props);
 
             // Assert
+            expect(updatePopup.state.notificationTypeId).toEqual(1);
             expect(updatePopup.state.notificationTypeName.value).toEqual("abc");
             expect(updatePopup.state.notificationTypeName.isValid).toBe(true);
-            expect(updatePopup.state.recipientTypeId.value).toEqual(2);
-            expect(updatePopup.state.recipientTypeId.isValid).toBe(true);
+            expect(updatePopup.state.recipientTypeIds.value).toEqual(2);
+            expect(updatePopup.state.recipientTypeIds.isValid).toBe(true);
             expect(updatePopup.state.systemId.value).toEqual(3);
             expect(updatePopup.state.systemId.isValid).toBe(true);
             expect(updatePopup.state.isSummited).toBe(false);
@@ -47,7 +49,8 @@ describe('UpdatePopup', () => {
                 updatePopupData: {
                     editingItem: {
                         notificationTypeName: {},
-                        recipientTypeId:{},
+                        notificationTypeId: {},
+                        recipientTypeIds:{},
                         systemId:{}
                     }
                 },
@@ -156,13 +159,15 @@ describe('UpdatePopup', () => {
             let updatePopup = new UpdatePopup(defaultProps);
             updatePopup.state = {
                 isSummited: true,
+                notificationTypeId: 1,
                 notificationTypeName: {value: "some name"},
-                recipientTypeId: {value: 2},
-                systemId: {value: 3}
+                recipientTypeIds: {value: "2"},
+                systemId: { value: 3 }                
             };
             let params = {
+                notificationTypeId: 1,
                 notificationTypeName: "some name",
-                recipientTypeId: 2,
+                recipientTypeIds: "2",
                 systemId: 3
             };
 
@@ -181,7 +186,7 @@ describe('UpdatePopup', () => {
             updatePopup.state = {
                 isSummited: true,
                 notificationTypeName: {isValid: true},
-                recipientTypeId: {isValid: true},
+                recipientTypeIds: {isValid: true},
                 systemId: {isValid: true}
             };
 
@@ -198,7 +203,7 @@ describe('UpdatePopup', () => {
              updatePopup.state = {
                  isSummited: true,
                  notificationTypeName: {isValid: false},
-                 recipientTypeId: {isValid: true},
+                 recipientTypeIds: {isValid: true},
                  systemId: {isValid: true}
              };
 
@@ -215,7 +220,7 @@ describe('UpdatePopup', () => {
             updatePopup.state = {
                 isSummited: true,
                 notificationTypeName: {isValid: true},
-                recipientTypeId: {isValid: false},
+                recipientTypeIds: {isValid: false},
                 systemId: {isValid: true}
             };
 
@@ -232,7 +237,7 @@ describe('UpdatePopup', () => {
             updatePopup.state = {
                 isSummited: true,
                 notificationTypeName: {isValid: true},
-                recipientTypeId: {isValid: true},
+                recipientTypeIds: {isValid: true},
                 systemId: {isValid: false}
             };
 
@@ -285,7 +290,7 @@ describe('UpdatePopup', () => {
             updatePopupData: {
                 editingItem: {
                     notificationTypeName: { value: "abc", isValid: true },
-                    recipientTypeId:{ value: 2, isValid: true },
+                    recipientTypeIds:{ value: "2", isValid: true },
                     systemId:{ value: 3, isValid: true }
                 },
                 popupTitle: "title",                    

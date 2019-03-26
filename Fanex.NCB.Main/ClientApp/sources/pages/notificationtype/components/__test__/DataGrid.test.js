@@ -75,16 +75,17 @@ describe('DataGrid', () => {
                 updateActiveRowIndex: jest.fn(),
                 openDeletePopup: jest.fn()
             };
+            let notificationTypeId = 1;
             const notificationTypeName = "some data";
             const index = 3;
             let dataGrid = new DataGrid(props);
 
             // Act
-            dataGrid.openDeletePopup(index, notificationTypeName);
+            dataGrid.openDeletePopup(index, notificationTypeId, notificationTypeName);
 
             // Assert
             expect(props.updateActiveRowIndex).toHaveBeenCalledWith(index);
-            expect(props.openDeletePopup).toHaveBeenCalledWith(notificationTypeName);
+            expect(props.openDeletePopup).toHaveBeenCalledWith(notificationTypeId, notificationTypeName);
         });
     });    
 
@@ -109,12 +110,14 @@ describe('DataGrid', () => {
                 {
                     notificationTypeName: "notificationTypeName 1",
                     recipientTypeName: "recipientTypeName 1",
-                    systemName: "systemName 1"
+                    systemName: "systemName 1",
+                    recipientTypes: [{ name: "a" }, { name: "b" }]
                 },
                 {
                     notificationTypeName: "notificationTypeName 2",
                     recipientTypeName: "recipientTypeName 2",
-                    systemName: "systemName 2"
+                    systemName: "systemName 2",
+                    recipientTypes: [{ name: "a" }, { name: "b" }]
                 }
             ];
             let props = {

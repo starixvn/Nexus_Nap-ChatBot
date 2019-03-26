@@ -22,17 +22,20 @@ describe("gridHanderActions", () => {
     describe("openDeletePopup", () => {
         it("create the correct action", () => {
             // Arrange
-            let data = ["some data"];
+            let notificationTypeId = 1;
+            let notificationTypeName = "abc";
+            let deletePopupData = {
+                isShowed: true,
+                notificationTypeId: 1,
+                content: "abc"
+            };
             let expected = {
                 type: types.DELETE_POPUP_DATA,
-                data: {
-                    isShowed: true,
-                    content: data
-                }
+                data: deletePopupData
             };
 
             // Act
-            let result = actions.openDeletePopup(data);
+            let result = actions.openDeletePopup(notificationTypeId, notificationTypeName);
 
             // Assert
             expect(result).toEqual(expected);
@@ -64,7 +67,7 @@ describe("gridHanderActions", () => {
             // Arrange
             let item = {
                 notificationTypeName: "name 1",
-                recipientTypeId: 1,
+                recipientTypes: [{ id: 1 }, {id: 2}],
                 systemId: 2
             };
             let newEditPopupData = {
@@ -74,8 +77,8 @@ describe("gridHanderActions", () => {
                         value: item.notificationTypeName,
                         isValid: true
                     },
-                    recipientTypeId: {
-                        value: item.recipientTypeId,
+                    recipientTypeIds: {
+                        value: "1,2",
                         isValid: true
                     },
                     systemId: {
@@ -110,8 +113,8 @@ describe("gridHanderActions", () => {
                         value: '',
                         isValid: false
                     },
-                    recipientTypeId: {
-                        value: -1,
+                    recipientTypeIds: {
+                        value: "",
                         isValid: false
                     },
                     systemId: {

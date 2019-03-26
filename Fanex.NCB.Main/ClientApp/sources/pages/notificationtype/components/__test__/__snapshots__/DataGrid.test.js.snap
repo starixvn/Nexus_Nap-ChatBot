@@ -39,7 +39,7 @@ exports[`DataGrid render when has data 1`] = `
             sortable={false}
             sorting={false}
           >
-            recipientTypeName 1
+            a, b
           </Cell>
           <Cell
             asc={true}
@@ -113,7 +113,7 @@ exports[`DataGrid render when has data 1`] = `
             sortable={false}
             sorting={false}
           >
-            recipientTypeName 2
+            a, b
           </Cell>
           <Cell
             asc={true}
