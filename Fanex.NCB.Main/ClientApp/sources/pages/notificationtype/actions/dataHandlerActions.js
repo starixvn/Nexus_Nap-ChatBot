@@ -48,7 +48,7 @@ export function setSettings(data){
 // Delete
 export function deleteItem(notificationTypeId){ 
     const url = '/NotificationType/Delete';
-    var headers = {
+    let headers = {
         'Content-Type': 'application/json'
     };
     return async(dispatch) => {
@@ -77,7 +77,7 @@ export function setUpdateParams(value){
 export function update(params, isNew){
     const url = isNew ? '/NotificationType/Add' : '/NotificationType/Edit';
 
-    var headers = {
+    let headers = {
         'Content-Type': 'application/json'     
     };
     return async(dispatch) => {

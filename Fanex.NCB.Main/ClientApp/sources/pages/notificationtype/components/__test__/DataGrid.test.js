@@ -97,7 +97,7 @@ describe('DataGrid', () => {
             let dataGrid = new DataGrid(props);
 
             // Act
-            var result = dataGrid.render();
+            let result = dataGrid.render();
 
             // Assert
             expect(result).toBe(null);

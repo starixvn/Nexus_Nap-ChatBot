@@ -7,7 +7,7 @@ import { MAX_WIDTH, DEFAULT_MILLISECOND_FOR_WAITING, DEFAULT_COLUMN_WIDTH, BODY_
 import Pager from './Pager';
 
 function scrollToTop(element, scrollDuration) {
-    var scrollStep = -element.scrollTop / (scrollDuration / 15),
+    let scrollStep = -element.scrollTop / (scrollDuration / 15),
         scrollInterval = setInterval(function(){
             if ( element.scrollTop != 0 ) {
                 element.scrollBy( 0, scrollStep );

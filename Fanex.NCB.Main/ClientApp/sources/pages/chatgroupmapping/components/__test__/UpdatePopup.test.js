@@ -48,7 +48,7 @@ describe("UpdatePopup", () => {
             let updatePopup = new UpdatePopup(props);
 
             // Act
-            var result = updatePopup.render();
+            let result = updatePopup.render();
 
             // Assert
             expect(result).toBe(null);
@@ -66,7 +66,7 @@ describe("UpdatePopup", () => {
             let updatePopup = new UpdatePopup(props);
 
             // Act
-            var result = updatePopup.render();
+            let result = updatePopup.render();
 
             // Assert
             expect(result).toBe(null);
@@ -279,8 +279,8 @@ describe("UpdatePopup", () => {
             };
             let updatePopup = new UpdatePopup(props);
             updatePopup.setState = jest.fn();
-            var fieldName = "field name";
-            var fieldValue = 123;
+            let fieldName = "field name";
+            let fieldValue = 123;
 
             // Act
             updatePopup.onChange(fieldName, fieldValue);

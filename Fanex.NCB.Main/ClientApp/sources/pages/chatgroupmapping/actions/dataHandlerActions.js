@@ -77,7 +77,7 @@ export function setUpdateData(data) {
 export function update(params) {
     const url = '/ChatGroupMapping/Edit';
 
-    var headers = {
+    let headers = {
         'Content-Type': 'application/json'
     };
     return async (dispatch) => {

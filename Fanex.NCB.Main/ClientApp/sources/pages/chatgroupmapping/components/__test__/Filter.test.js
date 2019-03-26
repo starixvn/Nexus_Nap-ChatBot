@@ -44,8 +44,8 @@ describe("Filter", () => {
             let props = {};
             let filter = new Filter(props);
             filter.setState = jest.fn();
-            var fieldName = "field name";
-            var fieldValue = 123; 
+            let fieldName = "field name";
+            let fieldValue = 123; 
 
             // Act
             filter.onChange(fieldName, fieldValue);
@@ -84,7 +84,7 @@ describe("Filter", () => {
             };
 
             // Act
-            var result = filter.getParams();
+            let result = filter.getParams();
 
             // Assert
             expect(result).toEqual(expectedParams);

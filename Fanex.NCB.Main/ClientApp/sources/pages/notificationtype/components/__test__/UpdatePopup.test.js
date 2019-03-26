@@ -167,7 +167,7 @@ describe('UpdatePopup', () => {
             };
 
             // Act
-            var result = updatePopup.getParams();
+            let result = updatePopup.getParams();
 
             // Assert
             expect(result).toEqual(params);
@@ -186,7 +186,7 @@ describe('UpdatePopup', () => {
             };
 
             // Act
-            var result = updatePopup.checkValidParams();
+            let result = updatePopup.checkValidParams();
 
             // Assert
             expect(result).toBe(true);
@@ -203,7 +203,7 @@ describe('UpdatePopup', () => {
              };
 
              // Act
-             var result = updatePopup.checkValidParams();
+             let result = updatePopup.checkValidParams();
 
              // Assert
              expect(result).toBe(false);
@@ -220,7 +220,7 @@ describe('UpdatePopup', () => {
             };
 
             // Act
-            var result = updatePopup.checkValidParams();
+            let result = updatePopup.checkValidParams();
 
             // Assert
             expect(result).toBe(false);
@@ -237,7 +237,7 @@ describe('UpdatePopup', () => {
             };
 
             // Act
-            var result = updatePopup.checkValidParams();
+            let result = updatePopup.checkValidParams();
 
             // Assert
             expect(result).toBe(false);
@@ -248,8 +248,8 @@ describe('UpdatePopup', () => {
         it("when called - setState", () => {
             // Arrange
             let updatePopup = new UpdatePopup(defaultProps);
-            var fieldName = "field name";
-            var fieldValue = 123;
+            let fieldName = "field name";
+            let fieldValue = 123;
             updatePopup.setState = jest.fn();
 
             // Act
