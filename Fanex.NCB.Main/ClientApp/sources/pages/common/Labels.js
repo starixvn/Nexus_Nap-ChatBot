@@ -1,7 +1,7 @@
 ﻿export default {    
     All: "All",
     Action: "Action",
-    BotName: "Bot Namexx",
+    BotName: "Bot Name",
     ChatGroupMapping: "Chat Group Mapping",
     Edit: "Edit",
     EditMappingStatus: "Edit Mapping Status",

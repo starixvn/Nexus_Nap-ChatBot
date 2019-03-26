@@ -36,6 +36,14 @@ exports[`UpdatePopup render when SuccessMsg is not shown 1`] = `
   <ModalBody
     tag="div"
   >
+    <ResponseMessage
+      responseData={
+        Object {
+          "addedresult": false,
+        }
+      }
+      successMsg="Update Mapping Status Successfully"
+    />
     <Form
       className="form-edit"
       tag="form"
@@ -298,11 +306,14 @@ exports[`UpdatePopup render when SuccessMsg shown 1`] = `
   <ModalBody
     tag="div"
   >
-    <div
-      className="msg-success "
-    >
-      Update Mapping Status Successfully
-    </div>
+    <ResponseMessage
+      responseData={
+        Object {
+          "addedresult": true,
+        }
+      }
+      successMsg="Update Mapping Status Successfully"
+    />
     <Form
       className="form-edit"
       tag="form"

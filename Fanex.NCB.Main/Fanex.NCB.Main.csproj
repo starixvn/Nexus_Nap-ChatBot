@@ -15,15 +15,19 @@
 
   <ItemGroup>
     <Compile Remove="ClientApp\sources\js\**" />
+    <Compile Remove="ClientApp\sources\pages\common\multiple-select\**" />
     <Compile Remove="ClientApp\sources\sass\**" />
     <Compile Remove="wwwroot\js\**" />
     <Content Remove="ClientApp\sources\js\**" />
+    <Content Remove="ClientApp\sources\pages\common\multiple-select\**" />
     <Content Remove="ClientApp\sources\sass\**" />
     <Content Remove="wwwroot\js\**" />
     <EmbeddedResource Remove="ClientApp\sources\js\**" />
+    <EmbeddedResource Remove="ClientApp\sources\pages\common\multiple-select\**" />
     <EmbeddedResource Remove="ClientApp\sources\sass\**" />
     <EmbeddedResource Remove="wwwroot\js\**" />
     <None Remove="ClientApp\sources\js\**" />
+    <None Remove="ClientApp\sources\pages\common\multiple-select\**" />
     <None Remove="ClientApp\sources\sass\**" />
     <None Remove="wwwroot\js\**" />
   </ItemGroup>
@@ -49,10 +53,6 @@
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ClientApp\sources\pages\common\multiple-select\" />
   </ItemGroup>
 
 </Project>

@@ -73,7 +73,7 @@ namespace Fanex.NCB.Bot.Core.UnitTests.Controllers
             var controller = new LicBotController(_botConfiguration,
                 _botConversationRepository.Object,
                 _botConversationMemberRepository.Object,
-                new BotAdapterFactory()
+                new BotAdapterFactory(null)
                 )
             {
                 ControllerContext = ArrangeControllerContext(new Activity { TopicName = "test topic" })

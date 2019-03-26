@@ -233,7 +233,7 @@ describe("dataHanderActions", () => {
 
         it("dispatch the correct action", (done) => {
             // Arrange
-            let fakeResponse = { data: { "addedresult": true } };
+            let fakeResponse = { data: { "errorCode": 1, "errorMsg": "error" } };
             axios.post = jest.fn(() => Promise.resolve(fakeResponse));
             let store = mockStore();
             let expectedAction = [
@@ -255,14 +255,11 @@ describe("dataHanderActions", () => {
     describe("refreshUpdateData", () => {
         it("dispatch the correct action", (done) => {
             // Arrange     
-            let fakeResponse = {
-                data: { addedresult: false }
-            };
             let store = mockStore();
             let expectedAction = [
                 {
                     type: types.UPDATE_DATA,
-                    data: fakeResponse.data
+                    data: null
                 }
             ];
 

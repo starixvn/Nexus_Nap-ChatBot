@@ -9,6 +9,7 @@ import { SelectField } from '../../common/SelectField';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
 import { getMappingClass } from '../../common/CommonFunctions';
 import Labels from '../../common/Labels';
+import { ResponseMessage } from '../../common/response-message/ResponseMessage';
 
 export class UpdatePopup extends Component {
     constructor(props) {
@@ -67,7 +68,7 @@ export class UpdatePopup extends Component {
             return null;
         }
 
-        let isSucessMsgShown = this.props.updateData && this.props.updateData.addedresult;    
+        console.log(this.props.updateData);
         let editingItem = this.props.updatePopupData.editingItem;
 
         let licenseeStatuses = [];
@@ -83,7 +84,7 @@ export class UpdatePopup extends Component {
             <Modal isOpen toggle={this.props.closeUpdatePopupHandler} wrapClassName="new-notification-type">
                 <ModalHeader toggle={this.props.closeUpdatePopupHandler}>{Labels.EditMappingStatus}</ModalHeader>
                 <ModalBody>
-                    {isSucessMsgShown && <div className="msg-success ">{Labels.UpdateMappingStatusSuccessfully}</div>}            
+                    <ResponseMessage responseData={this.props.updateData} successMsg={Labels.UpdateMappingStatusSuccessfully} />
                     <Form className="form-edit">
                         <FormGroup>
                             <Label className="form-label ">{Labels.BotName}</Label>

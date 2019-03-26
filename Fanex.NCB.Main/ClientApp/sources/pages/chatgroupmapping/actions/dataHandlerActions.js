@@ -83,12 +83,13 @@ export function update(params) {
     return async (dispatch) => {
         const request = await axios.post(url, JSON.stringify(params), { headers: headers });
         const data = await request.data;
-        dispatch(setUpdateData({ addedresult: true }));
+        console.log(data);
+        dispatch(setUpdateData(data));
     };
 }
 
 export function refreshUpdateData() {
     return (dispatch) => {
-        dispatch(setUpdateData({ addedresult: false }));
+        dispatch(setUpdateData(null));
     };
 }

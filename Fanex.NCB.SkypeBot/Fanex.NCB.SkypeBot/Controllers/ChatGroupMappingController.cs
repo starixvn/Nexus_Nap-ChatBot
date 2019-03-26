@@ -1,3 +1,4 @@
+using Fanex.NCB.Common.DTO;
 using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.Setting;
@@ -48,7 +49,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit([FromBody] EditChatGroupMappingCriteria item)
         {
-            var result = _chatGroupMappingService.UpdateChatGroupMappingAsync(item);
+            var result = _chatGroupMappingService.UpdateChatGroupMappingAsync(item);            
             return Json(await result);
         }
     }
