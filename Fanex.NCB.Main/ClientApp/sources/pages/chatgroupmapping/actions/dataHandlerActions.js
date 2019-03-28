@@ -1,6 +1,6 @@
 import * as types from './types';
 import axios from 'axios';
-//import Site from '../../lib/site';
+import Site from '../../lib/site';
 
 // Settings
 export function setSettings(data) {
@@ -78,7 +78,8 @@ export function update(params) {
     const url = '/ChatGroupMapping/EditAsync';
 
     let headers = {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'RequestVerificationToken': Site.getXsrfToken()
     };
     return async (dispatch) => {
         const request = await axios.post(url, JSON.stringify(params), { headers: headers });

@@ -46,6 +46,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }        
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAsync([FromBody] EditChatGroupMappingCriteria criteria)
         {
             var result = await _chatGroupMappingService.UpdateChatGroupMappingAsync(criteria);            

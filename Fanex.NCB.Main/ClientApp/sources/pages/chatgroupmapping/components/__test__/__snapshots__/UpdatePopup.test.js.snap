@@ -64,7 +64,7 @@ exports[`UpdatePopup render when SuccessMsg is not shown 1`] = `
             ]
           }
         >
-          Bot Namexx
+          Bot Name
         </Label>
         <Label
           className="form-label"
@@ -334,7 +334,7 @@ exports[`UpdatePopup render when SuccessMsg shown 1`] = `
             ]
           }
         >
-          Bot Namexx
+          Bot Name
         </Label>
         <Label
           className="form-label"

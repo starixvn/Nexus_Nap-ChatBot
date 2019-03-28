@@ -260,7 +260,7 @@ exports[`DataGrid render when has data 1`] = `
           sortable={false}
           sorting={false}
         >
-          Bot Namexx
+          Bot Name
         </Cell>
         <Cell
           asc={true}

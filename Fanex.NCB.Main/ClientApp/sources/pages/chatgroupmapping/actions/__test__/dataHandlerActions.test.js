@@ -4,6 +4,7 @@ import * as actions from '../dataHandlerActions';
 import * as types from '../types';
 import axios from 'axios';
 import "babel-polyfill";
+import Site from '../../../lib/site';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -31,7 +32,7 @@ describe("dataHanderActions", () => {
             // Arrange
             axios.get = jest.fn(() => Promise.resolve(""));
             let store = mockStore();
-            let expectedUrl = '/ChatGroupMapping/GetSettings';
+            let expectedUrl = '/ChatGroupMapping/GetSettingsAsync';
 
             // Act
             store.dispatch(actions.getSettings());
@@ -102,7 +103,7 @@ describe("dataHanderActions", () => {
             // Arrange
             axios.get = jest.fn(() => Promise.resolve(""));
             let store = mockStore();
-            let expectedUrl = '/ChatGroupMapping/GetAll';
+            let expectedUrl = '/ChatGroupMapping/GetAllAsync';
             let expectedParams = "some param";
 
             // Act
@@ -221,12 +222,15 @@ describe("dataHanderActions", () => {
             let fakeResponse = { data: "some data" };
             axios.post = jest.fn(() => Promise.resolve(fakeResponse));
             let store = mockStore();
-            let expectedUrl = '/ChatGroupMapping/Edit';
+            let expectedUrl = '/ChatGroupMapping/EditAsync';
             let expectedParams = "data";
+
+            let getXsrfToken = jest.fn(() => { return "token"; });
+            Site.getXsrfToken = getXsrfToken.bind(Site);
 
             // Act & Assert
             store.dispatch(actions.update(expectedParams)).then(() => {
-                expect(axios.post).toHaveBeenCalledWith(expectedUrl, JSON.stringify(expectedParams), { "headers": { "Content-Type": "application/json" } });
+                expect(axios.post).toHaveBeenCalledWith(expectedUrl, JSON.stringify(expectedParams), { "headers": { "Content-Type": "application/json", "RequestVerificationToken": "token" } });
                 done();
             });
         });
@@ -243,6 +247,9 @@ describe("dataHanderActions", () => {
                 }
             ];
             let expectedParams = "data";
+
+            let getXsrfToken = jest.fn(() => { return "token"; });
+            Site.getXsrfToken = getXsrfToken.bind(Site);
 
             // Act & Assert
             store.dispatch(actions.update(expectedParams)).then(() => {

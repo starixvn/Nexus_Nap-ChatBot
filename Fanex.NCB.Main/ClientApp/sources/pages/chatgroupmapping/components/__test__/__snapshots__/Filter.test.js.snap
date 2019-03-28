@@ -21,7 +21,7 @@ exports[`Filter render render correctly 1`] = `
         ]
       }
     >
-      Bot Namexx
+      Bot Name
     </Label>
     <MultipleSelectField
       data="bot name"
