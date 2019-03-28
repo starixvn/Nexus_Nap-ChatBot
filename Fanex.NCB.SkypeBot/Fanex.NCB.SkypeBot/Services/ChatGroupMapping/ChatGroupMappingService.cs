@@ -13,6 +13,7 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
     public class ChatGroupMappingService : IChatGroupMappingService
     {
         private readonly IChatGroupMappingStorage _chatGroupMappingStorage;
+
         public ChatGroupMappingService(IChatGroupMappingStorage chatGroupMappingStorage)
         {
             _chatGroupMappingStorage = chatGroupMappingStorage;
@@ -20,12 +21,12 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
 
         public async Task<List<BotName>> GetBotNameAsync()
         {
-            return await _chatGroupMappingStorage.GetBotNameAsync().ConfigureAwait(false);            
+            return await _chatGroupMappingStorage.GetBotNameAsync();            
         }
 
         public async Task<ChatGroupMappingResultModel> GetChatGroupMappingListAsync(GetChapGroupMappingCriteria criteria)
         {
-            var data = await _chatGroupMappingStorage.GetChatGroupMappingListAsync(criteria).ConfigureAwait(false);
+            var data = await _chatGroupMappingStorage.GetChatGroupMappingListAsync(criteria);
             var mappingStatuses = GetMappingStatus();
 
             var result = new ChatGroupMappingResultModel
@@ -54,15 +55,23 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
                 }).ToList()
             };
 
-            //result.Data = FilterMappingStatus(result.Data, criteria.MappingStatusIds);
-
             return result;
         }
-
-        private List<ChatGroupMappingResult> FilterMappingStatus(List<ChatGroupMappingResult> data, string mappingStatusIds)
+     
+        public List<MappingStatus> GetMappingStatus()
         {
-            var statusIds = mappingStatusIds.Split(",").ToList();
-            return data.Where(i => statusIds.Contains(i.MappingStatusID.ToString())).ToList();
+            var data = new List<MappingStatus> {
+                new MappingStatus { Id = (int)Common.Constant.MappingStatus.NotMapped, Name = "Not Mapped" },
+                new MappingStatus { Id = (int)Common.Constant.MappingStatus.Mapped, Name = "Mapped" },
+                new MappingStatus { Id = (int)Common.Constant.MappingStatus.BotRemoved, Name = "Bot Removed" }
+            };
+
+            return data;
+        }
+
+        public async Task<ResultModel> UpdateChatGroupMappingAsync(EditChatGroupMappingCriteria criteria)
+        {
+            return await _chatGroupMappingStorage.EditChatGroupMappingAsync(criteria);
         }
 
         private int CalculateMappingStatus(bool isConversationMapped, bool isBotActive)
@@ -82,22 +91,6 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
             {
                 return (int)Common.Constant.MappingStatus.BotRemoved;
             }
-        }
-     
-        public List<MappingStatus> GetMappingStatus()
-        {
-            var data = new List<MappingStatus> {
-                new MappingStatus { Id = (int)Common.Constant.MappingStatus.NotMapped, Name = "Not Mapped" },
-                new MappingStatus { Id = (int)Common.Constant.MappingStatus.Mapped, Name = "Mapped" },
-                new MappingStatus { Id = (int)Common.Constant.MappingStatus.BotRemoved, Name = "Bot Removed" }
-            };
-
-            return data;
-        }
-
-        public async Task<ResultModel> UpdateChatGroupMappingAsync(EditChatGroupMappingCriteria item)
-        {
-            return await _chatGroupMappingStorage.EditChatGroupMappingAsync(item).ConfigureAwait(false);
         }
     }
 }

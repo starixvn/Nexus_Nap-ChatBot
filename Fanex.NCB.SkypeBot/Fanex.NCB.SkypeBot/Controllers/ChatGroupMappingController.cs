@@ -12,7 +12,6 @@ namespace Fanex.NCB.SkypeBot.Controllers
     public class ChatGroupMappingController : Controller
     {
         private readonly IChatGroupMappingService _chatGroupMappingService;
-
         private readonly ISettingService _settingService;
 
         public ChatGroupMappingController(IChatGroupMappingService chatGroupMappingService, ISettingService settingService)
@@ -28,29 +27,30 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetSettings()
+        public async Task<IActionResult> GetSettingsAsync()
         {
-            var botNames = _chatGroupMappingService.GetBotNameAsync();
-            var recipientTypes = _settingService.GetRecipientTypesAsync();
+            var botNames = await _chatGroupMappingService.GetBotNameAsync();
+            var recipientTypes = await _settingService.GetRecipientTypesAsync();
             var mappingStatuses = _chatGroupMappingService.GetMappingStatus();
-            var recipients = _settingService.GetRecipientsAsync();
-            return Json(new { botNames = await botNames, recipientTypes = await recipientTypes, mappingStatuses = mappingStatuses, recipients = await recipients });
+            var recipients = await _settingService.GetRecipientsAsync();
+
+            return Json(new { botNames, recipientTypes, mappingStatuses, recipients });
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(GetChapGroupMappingCriteria criteria)
+        public async Task<IActionResult> GetAllAsync(GetChapGroupMappingCriteria criteria)
         {
-            var data = await _chatGroupMappingService.GetChatGroupMappingListAsync(criteria).ConfigureAwait(false);
+            var data = await _chatGroupMappingService.GetChatGroupMappingListAsync(criteria);
 
             return Json(data);
-        }
-        
+        }        
 
         [HttpPost]
-        public async Task<IActionResult> Edit([FromBody] EditChatGroupMappingCriteria item)
+        public async Task<IActionResult> EditAsync([FromBody] EditChatGroupMappingCriteria criteria)
         {
-            var result = _chatGroupMappingService.UpdateChatGroupMappingAsync(item);            
-            return Json(await result);
+            var result = await _chatGroupMappingService.UpdateChatGroupMappingAsync(criteria);            
+
+            return Json(result);
         }
     }
 }
