@@ -6,7 +6,9 @@ namespace Fanex.NCB.Common.DTO
     {
         public int Id {get; set;}
         public string Name { get; set; }
-        public string Url { get; set; } 
+#pragma warning disable S3996
+        public string Url { get; set; }
+#pragma warning restore S3996
         public int Policy { get; set; }
         public short DisplayOrder { get; set; }
         public List<Menu> SubMenus { get; set; }

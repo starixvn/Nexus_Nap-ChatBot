@@ -13,6 +13,6 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
         Task<List<BotName>> GetBotNameAsync();
         List<MappingStatus> GetMappingStatus();
         Task<ChatGroupMappingResultModel> GetChatGroupMappingListAsync(GetChapGroupMappingCriteria criteria);
-        Task<ResultModel> UpdateChatGroupMappingAsync(EditChatGroupMappingCriteria item);
+        Task<ResultModel> UpdateChatGroupMappingAsync(EditChatGroupMappingCriteria criteria);
     }
 }

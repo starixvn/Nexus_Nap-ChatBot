@@ -65,9 +65,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Bot.MySQLStorage"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Bot.MySQLStorage.UnitTests", "Fanex.NCB.Bot\UnitTests\Fanex.NCB.Bot.MySQLStorage.UnitTests\Fanex.NCB.Bot.MySQLStorage.UnitTests.csproj", "{D5826452-8CF9-4922-BC3E-2F91CF04E63B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Bot.Core", "Fanex.NCB.Bot\Fanex.NCB.Bot.Core\Fanex.NCB.Bot.Core.csproj", "{9319801C-79F3-448D-B95F-151047637025}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Bot.Core", "Fanex.NCB.Bot\Fanex.NCB.Bot.Core\Fanex.NCB.Bot.Core.csproj", "{9319801C-79F3-448D-B95F-151047637025}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Bot.Core.UnitTests", "Fanex.NCB.Bot\UnitTests\Fanex.NCB.Bot.Core.UnitTests\Fanex.NCB.Bot.Core.UnitTests.csproj", "{F82EACAB-4534-43DE-A13D-C05EC4847EE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Bot.Core.UnitTests", "Fanex.NCB.Bot\UnitTests\Fanex.NCB.Bot.Core.UnitTests\Fanex.NCB.Bot.Core.UnitTests.csproj", "{F82EACAB-4534-43DE-A13D-C05EC4847EE4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SonarQube", "SonarQube", "{4D1CE239-F640-49CE-A6D6-B4AA61719BD1}"
+	ProjectSection(SolutionItems) = preProject
+		SonarQube\FANEX.NCBCSharp.ruleset = SonarQube\FANEX.NCBCSharp.ruleset
+		SonarQube\SolutionBinding.sqconfig = SonarQube\SolutionBinding.sqconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

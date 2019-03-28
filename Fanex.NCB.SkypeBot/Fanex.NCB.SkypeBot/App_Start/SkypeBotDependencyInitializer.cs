@@ -20,7 +20,6 @@ namespace Fanex.NCB.SkypeBot.App_Start
             services.AddTransient<INotificationTypeService, NotificationTypeService>();
             services.AddTransient<IChatGroupMappingService, ChatGroupMappingService>();
             services.AddTransient<ISettingService, SettingService>();
-            //  c => new NotificationTypeService(c.GetService<INotificationTypeStorage>()));
         }
 
         private static void RegisterDIofMySQLStorageLayer(IServiceCollection services)

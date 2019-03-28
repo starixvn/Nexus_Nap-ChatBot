@@ -74,23 +74,14 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
             return await _chatGroupMappingStorage.EditChatGroupMappingAsync(criteria);
         }
 
-        private int CalculateMappingStatus(bool isConversationMapped, bool isBotActive)
+        private static int CalculateMappingStatus(bool isConversationMapped, bool isBotActive)
         {
-            if (isBotActive)
-            {
-                if (isConversationMapped)
-                {
-                    return (int)Common.Constant.MappingStatus.Mapped;
-                }
-                else
-                {
-                    return (int)Common.Constant.MappingStatus.NotMapped;
-                }
-            }
-            else
+            if (!isBotActive)
             {
                 return (int)Common.Constant.MappingStatus.BotRemoved;
             }
+
+            return isConversationMapped ? (int)Common.Constant.MappingStatus.Mapped : (int)Common.Constant.MappingStatus.NotMapped;            
         }
     }
 }
