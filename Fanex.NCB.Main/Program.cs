@@ -19,7 +19,6 @@ namespace Fanex.NCB.Main
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-            .UseKestrel()
                  .ConfigureAppConfiguration((builderContext, config) =>
                  {
                      var env = builderContext.HostingEnvironment;
@@ -31,7 +30,6 @@ namespace Fanex.NCB.Main
 
                      config.AddEnvironmentVariables();
                  })
-                .UseIISIntegration()
                 .UseStartup<Startup>();
     }
 }
