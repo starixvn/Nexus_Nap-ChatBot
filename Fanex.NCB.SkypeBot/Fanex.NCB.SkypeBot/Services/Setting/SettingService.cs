@@ -16,14 +16,11 @@ namespace Fanex.NCB.SkypeBot.Services.Setting
             _settingStorage = settingStorage;
         }
 
-        public async Task<List<Recipient>> GetRecipientsAsync()
-        {
-            return await _settingStorage.GetRecipientsAsync().ConfigureAwait(false);
-        }
+        public Task<List<Recipient>> GetRecipientsAsync() => _settingStorage.GetRecipientsAsync();
 
-        public async Task<List<RecipientType>> GetRecipientTypesAsync()
+        public Task<List<RecipientType>> GetRecipientTypesAsync()
         {
-            return await _settingStorage.GetRecipientTypesAsync().ConfigureAwait(false);
+            return _settingStorage.GetRecipientTypesAsync();
         }
     }
 }

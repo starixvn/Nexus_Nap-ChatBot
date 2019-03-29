@@ -55,7 +55,7 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
                 return data.ToList();
             }
         }
-      
+
         public async Task<Tuple<T1, List<T2>>> QueryMultipleAsync<T1, T2>(string key, object param = null, string dbName = "ChatBotDB")
         {
             DBSetting dbSetting = _dBConfigService.GetSPConfig(dbName, key);
@@ -66,14 +66,15 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
                     param: param,
                     commandType: CommandType.StoredProcedure).ConfigureAwait(false);
 
-                var total = reader.Read<T1>().First();
-                var data = reader.Read<T2>().ToList();
+                var total = await reader.ReadAsync<T1>().ConfigureAwait(false);
+                var data = await reader.ReadAsync<T2>().ConfigureAwait(false);
 
-                return Tuple.Create(total, data);
+                return Tuple.Create(total.First(), data.ToList());
             }
         }
 
-        public async Task<Tuple<T1, List<T2>, List<T3>, List<T4>>> QueryMultipleAsync<T1, T2, T3, T4>(string key, object param = null, string dbName = "ChatBotDB")
+        public async Task<Tuple<T1, List<T2>, List<T3>, List<T4>>>
+            QueryMultipleAsync<T1, T2, T3, T4>(string key, object param = null, string dbName = "ChatBotDB")
         {
             DBSetting dbSetting = _dBConfigService.GetSPConfig(dbName, key);
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
@@ -83,12 +84,12 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
                     param: param,
                     commandType: CommandType.StoredProcedure).ConfigureAwait(false);
 
-                var total = reader.Read<T1>().First();
-                var data1 = reader.Read<T2>().ToList();
-                var data2 = reader.Read<T3>().ToList();
-                var data3 = reader.Read<T4>().ToList();
+                var total = await reader.ReadAsync<T1>().ConfigureAwait(false);
+                var data1 = await reader.ReadAsync<T2>().ConfigureAwait(false);
+                var data2 = await reader.ReadAsync<T3>().ConfigureAwait(false);
+                var data3 = await reader.ReadAsync<T4>().ConfigureAwait(false);
 
-                return Tuple.Create(total, data1, data2, data3);
+                return Tuple.Create(total.First(), data1.ToList(), data2.ToList(), data3.ToList());
             }
         }
     }

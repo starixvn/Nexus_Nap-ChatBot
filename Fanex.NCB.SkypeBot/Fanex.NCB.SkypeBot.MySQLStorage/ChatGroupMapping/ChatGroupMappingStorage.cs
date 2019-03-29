@@ -21,7 +21,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.ChatGroupMapping
             _baseStorage = baseStorage;
         }
 
-        public async Task<ResultModel> EditChatGroupMappingAsync(EditChatGroupMappingCriteria item)
+        public Task<ResultModel> EditChatGroupMappingAsync(EditChatGroupMappingCriteria item)
         {
             DynamicParameters param = new DynamicParameters();
             param.Add("groupID", value: item.GroupID, dbType: DbType.Int32);
@@ -31,7 +31,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.ChatGroupMapping
             param.Add("creatorID", value: item.CreatorID, dbType: DbType.Int32);
             param.Add("remark", value: item.Remark, dbType: DbType.String);
 
-            return await _baseStorage.ExecuteAsync("NCB_ChatGroupMapping_Upd", param).ConfigureAwait(false);
+            return _baseStorage.ExecuteAsync("NCB_ChatGroupMapping_Upd", param);
         }
 
         public async Task<List<BotName>> GetBotNameAsync()

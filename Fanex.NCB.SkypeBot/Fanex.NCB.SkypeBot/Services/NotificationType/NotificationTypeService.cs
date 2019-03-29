@@ -20,7 +20,7 @@ namespace Fanex.NCB.SkypeBot.Services.NotificationType
         public async Task<NotificationTypeListResultModel> GetNotificationTypeListAsync(int pageIndex, int pageSize)
         {
             var data = await _notificationTypeStorage.GetNotificationTypeListAsync(pageIndex, pageSize).ConfigureAwait(false);
-            var result = new NotificationTypeListResultModel
+            return  new NotificationTypeListResultModel
             {
                 Count = data.Item1,
                 Data = data.Item2.GroupBy(i => i.NotificationTypeId).Select(g =>
@@ -36,32 +36,31 @@ namespace Fanex.NCB.SkypeBot.Services.NotificationType
                 }).ToList()
             };
 
-            return result;
         }
 
-        public async Task<List<NotificationSystem>> GetNotificationSystemsAsync()
+        public Task<List<NotificationSystem>> GetNotificationSystemsAsync()
         {
-            return await _notificationTypeStorage.GetNotificationSystemsAsync().ConfigureAwait(false);
+            return _notificationTypeStorage.GetNotificationSystemsAsync();
         }
 
-        public async Task<List<RecipientType>> GetRecipientTypesAsync()
+        public Task<List<RecipientType>> GetRecipientTypesAsync()
         {
-            return await _notificationTypeStorage.GetRecipientTypesAsync().ConfigureAwait(false);
+            return _notificationTypeStorage.GetRecipientTypesAsync();
         }
 
-        public async Task<ResultModel> CreateNotificationTypeAsync(CreateNotificationTypeCriteria item)
+        public Task<ResultModel> CreateNotificationTypeAsync(CreateNotificationTypeCriteria item)
         {
-            return await _notificationTypeStorage.CreateNotificationTypeAsync(item).ConfigureAwait(false);
+            return _notificationTypeStorage.CreateNotificationTypeAsync(item);
         }
 
-        public async Task<ResultModel> UpdateNotificationTypeAsync(CreateNotificationTypeCriteria item)
+        public Task<ResultModel> UpdateNotificationTypeAsync(CreateNotificationTypeCriteria item)
         {
-            return await _notificationTypeStorage.UpdateNotificationTypeAsync(item).ConfigureAwait(false);
+            return _notificationTypeStorage.UpdateNotificationTypeAsync(item);
         }
 
-        public async Task<ResultModel> DeleteNotificationTypeAsync(int notificationTypeId)
+        public Task<ResultModel> DeleteNotificationTypeAsync(int notificationTypeId)
         {
-            return await _notificationTypeStorage.DeleteNotificationTypeAsync(notificationTypeId).ConfigureAwait(false);
+            return _notificationTypeStorage.DeleteNotificationTypeAsync(notificationTypeId);
         }
     }
 }

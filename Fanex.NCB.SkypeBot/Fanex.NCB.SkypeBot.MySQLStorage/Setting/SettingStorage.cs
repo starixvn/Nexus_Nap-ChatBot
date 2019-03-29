@@ -18,14 +18,14 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.Setting
             _baseStorage = baseStorage;
         }
 
-        public async Task<List<Recipient>> GetRecipientsAsync()
+        public Task<List<Recipient>> GetRecipientsAsync()
         {
-            return await _baseStorage.QueryAsync<Recipient>("NCB_Recipient_Sel").ConfigureAwait(false);
+            return _baseStorage.QueryAsync<Recipient>("NCB_Recipient_Sel");
         }
 
-        public async Task<List<RecipientType>> GetRecipientTypesAsync()
+        public Task<List<RecipientType>> GetRecipientTypesAsync()
         {
-            return await _baseStorage.QueryAsync<RecipientType>("NCB_RecipientType_Sel").ConfigureAwait(false);
+            return _baseStorage.QueryAsync<RecipientType>("NCB_RecipientType_Sel");
         }
     }
 }
