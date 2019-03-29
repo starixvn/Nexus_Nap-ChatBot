@@ -7,7 +7,6 @@ import Site from '../../lib/site';
 import "../../shared/components/font.css";
 import '../../shared/components/messages.scss';
 import './Login.scss';
-import Logo from "../../../images/Logo.svg";
 
 class Login extends Component {
     constructor(props) {

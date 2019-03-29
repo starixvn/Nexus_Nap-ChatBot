@@ -39,8 +39,8 @@ function generateConfig(environment) {
                         options: { 
                             limit: 10, // Convert images < 8kb to base64 strings
                             name: '[hash]-[name].[ext]',
-                            outputPath: '/wwwroot/assets/images/',
-                            publicPath: '/assets/images/'
+                            outputPath: '/wwwroot/images/',
+                            publicPath: '/images/'
                         } 
                     }]
                 },
@@ -51,8 +51,8 @@ function generateConfig(environment) {
                         options: { 
                             limit: 10, // Convert images < 8kb to base64 strings
                             name: '[hash]-[name].[ext]',
-                            outputPath: '/wwwroot/assets/fonts/',
-                            publicPath: '/assets/fonts/'
+                            outputPath: '/wwwroot/fonts/',
+                            publicPath: '/fonts/'
                         } 
                     }]
                 }
