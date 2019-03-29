@@ -46,14 +46,15 @@ namespace Fanex.NCB.Main.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await AuthenticateUser(userName, password).ConfigureAwait(false);
+                var user = await AuthenticateUser(userName, password);
 
                 if (user == null)
                 {
-                    return RedirectToAction("Index", new {
-                        returnUrl = returnUrl,
+                    return RedirectToAction("Index", new
+                    {
+                        returnUrl,
                         invalidLogin = true
-                    });                    
+                    });
                 }
 
                 var claims = new List<Claim>
@@ -77,16 +78,16 @@ namespace Fanex.NCB.Main.Controllers
 
                     IssuedUtc = DateTimeOffset.UtcNow,
 
-                    RedirectUri = "~/Home"
+                    RedirectUri = Url.Action("index", "Home")
 
                 };
 
                 await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity),
-                    authProperties).ConfigureAwait(false);
+                    authProperties);
 
-                return LocalRedirect(returnUrl ?? "~/Home");
+                return LocalRedirect(returnUrl ?? Url.Action("index", "Home"));
             }
 
             return Json(new
