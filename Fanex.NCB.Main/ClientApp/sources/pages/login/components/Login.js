@@ -67,7 +67,7 @@ class Login extends Component {
                         <input ref="password" name="password" type="password" value={this.state.password} className="form-control" onChange={this.passwordChangedHandler}/>              
                     </div>
                     <input type="submit" value="SIGN IN" className="button"/>
-                    <input type="hidden" name="returnUrl" value="/Home/Index" />
+                    <input type="hidden" name="returnUrl" value={Site.resolveClientUrl("Home/Index")} />
                 </form>
                 <div className="form-footer">
                         <span className="bold">Best view in:</span>
