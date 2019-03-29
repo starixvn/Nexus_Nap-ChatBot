@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import CryptoJS from '../../lib/cryptoJS';
 import AppData from '../../lib/AppData';
+import Site from '../../lib/site';
 
 import '../../../fonts/style.css';
 import '../../shared/components/messages.scss';
@@ -43,7 +44,7 @@ class Login extends Component {
     render(){
         return(
             <div className="login-container">
-                <form ref="form" method="post" action="/auth/SignIn" className="form-login" onSubmit={this.handleSubmit}>
+                <form ref="form" method="post" action={Site.resolveClientUrl("auth/SignIn")} className="form-login" onSubmit={this.handleSubmit}>
                     <a className="logo" href="#"><img src={Logo} alt="Nap Chatbot" /></a>
             
                     <h1 className="header">Welcome to CHATBOT</h1>

@@ -29,7 +29,8 @@
     <script>
         window._AppData = {
             invalidLogin: @Html.Raw(JsonConvert.SerializeObject(invalidLogin))
-        }
+        };
+        window.rootUrl = '@Url.Content("~/")';
     </script>   
 
    <partial name="_CookieConsentPartial" /> 

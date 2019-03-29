@@ -11,7 +11,7 @@ export function setSettings(data) {
 }
 
 export function getSettings() {
-    const url = '/ChatGroupMapping/GetSettingsAsync';
+    const url = Site.resolveClientUrl('ChatGroupMapping/GetSettingsAsync');
 
     return (dispatch) => {        
         axios.get(url).then(response => {
@@ -37,7 +37,7 @@ export function setGridData(data) {
 }
 
 export function getGridData(params) {
-    const url = '/ChatGroupMapping/GetAllAsync';
+    const url = Site.resolveClientUrl('ChatGroupMapping/GetAllAsync');
 
     return (dispatch) => {
         axios.get(url, { params: params }).then(response => {
@@ -75,7 +75,7 @@ export function setUpdateData(data) {
 }
 
 export function update(params) {
-    const url = '/ChatGroupMapping/EditAsync';
+    const url = Site.resolveClientUrl('ChatGroupMapping/EditAsync');
 
     let headers = {
         'Content-Type': 'application/json',

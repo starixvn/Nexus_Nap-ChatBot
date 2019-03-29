@@ -33,6 +33,7 @@
         window._AppData = {
             menus: @Html.Raw(JsonConvert.SerializeObject(menus))
         }
+        window.rootUrl = '@Url.Content("~/")';
     </script>
 
     <environment include="Development">
