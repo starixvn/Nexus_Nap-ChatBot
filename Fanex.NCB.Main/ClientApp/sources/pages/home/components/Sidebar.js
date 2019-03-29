@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import AppData from '../../lib/AppData';
+import Site from '../../lib/site';
 
 import Logo from "../../../images/Logo.svg";
 import "./Sidebar.scss";
@@ -17,7 +18,7 @@ class Sidebar extends Component {
 
     onChange(e, url){
         e.preventDefault();        
-        this.props.onChange(url); 
+        this.props.onChange(Site.resolveClientUrl(url)); 
     }
       render() {
         return (
