@@ -24,7 +24,7 @@ class Sidebar extends Component {
         return (
             <div className="sidebar">
                <div className="nav-top">
-                    <img src={Logo} className="logo" />
+                    <img src="../../../images/Logo.svg" className="logo" />
                     <h1 className="site-name">Chatbot</h1>
                </div>
                <ul className="nav">

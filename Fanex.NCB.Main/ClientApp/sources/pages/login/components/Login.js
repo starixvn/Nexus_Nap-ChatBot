@@ -45,7 +45,7 @@ class Login extends Component {
         return(
             <div className="login-container">
                 <form ref="form" method="post" action={Site.resolveClientUrl("auth/SignIn")} className="form-login" onSubmit={this.handleSubmit}>
-                    <a className="logo" href="#"><img src={Logo} alt="Nap Chatbot" /></a>
+                    <a className="logo" href="#"><img src="../../../images/Logo.svg" alt="Nap Chatbot" /></a>
             
                     <h1 className="header">Welcome to CHATBOT</h1>
                     
