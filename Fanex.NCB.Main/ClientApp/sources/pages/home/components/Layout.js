@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Sidebar from './Sidebar';
 import Content from './Content';
+import Site from '../../lib/site';
 
 import "../../../fonts/style.css";
 import './Layout.scss';
@@ -10,9 +11,9 @@ class Layout extends Component {
     constructor(props){
         super(props);
         this.state = {
-          expandedClass: "sidebar-expanded",
-          currentUrl: "/NewNotification/Index",
-          isSidebarExpanded: true
+            expandedClass: "sidebar-expanded",
+            currentUrl: Site.resolveClientUrl("NewNotification/Index"),
+            isSidebarExpanded: true
         };
 
         this.onMenuChange = this.onMenuChange.bind(this);

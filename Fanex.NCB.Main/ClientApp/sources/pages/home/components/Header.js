@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Site from '../../lib/site';
 
 import './Header.scss';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
@@ -55,7 +56,7 @@ class Header extends Component {
                                 <DropdownItem tag="a" href="#">
                                     <span className="icon-change-pass" />Change Password
                                 </DropdownItem>
-                                <DropdownItem tag="a" href="/Auth/Index">
+                                <DropdownItem tag="a" href={Site.resolveClientUrl("Auth/Index")}>
                                     <span className="icon-sign-out" />Sign Out
                                 </DropdownItem>
                             </DropdownMenu>
