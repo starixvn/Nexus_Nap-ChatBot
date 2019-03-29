@@ -1,179 +1,201 @@
-Use ChatBot;
+CREATE DATABASE ChatBot CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci ;
 
-CREATE TABLE `System` (
-  `SystemID` int NOT NULL AUTO_INCREMENT,  
-  `SystemName` varchar(100) CHARACTER SET utf8 NOT NULL,  
-  PRIMARY KEY (`SystemID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `NotificationType` (
-  `NotificationTypeID` int NOT NULL AUTO_INCREMENT,  
-  `NotificationTypeName` varchar(100) CHARACTER SET utf8 NOT NULL,  
-  `SystemID` int NOT NULL,  
-  PRIMARY KEY (`MessageTypeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.BotConversation(
+		ID INT AUTO_INCREMENT NOT NULL
+		, ConversationID VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, Name VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
+		, ChannelID VARCHAR(45) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
+		, UpdatedBy VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
+		, LastUpdate DATETIME NULL
+		, ServiceUrl VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
+		, CONSTRAINT PK_ID  PRIMARY KEY (ID)
+		, UNIQUE INDEX UNIQUE_ConversationID USING BTREE (ConversationID)
+  );
 
-CREATE TABLE `NotificationTemplate` (
-  `NotificationTemplateID` int NOT NULL AUTO_INCREMENT,  
-  `NotificationTemplateName` varchar(500) CHARACTER SET utf8 NOT NULL,  
-  `NotificationTypeID` int NOT NULL,  
-  `Title` varchar(500) CHARACTER SET utf8 NOT NULL,  
-  `Content` text(20000) CHARACTER SET utf8 NOT NULL,  
-  `CreatorID` int NOT NULL,  
-  `CreatedDate` datetime NOT NULL,  
-  `LastModifiedDate` datetime NOT NULL,  
-  `LastModifiedBy` int NOT NULL,  
-  PRIMARY KEY (`TemplateID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.BotConversationMember(
+		 ID INT AUTO_INCREMENT NOT NULL
+		, MemberID VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, ConversationID VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, Name VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
+		, LastUpdate DATETIME NULL
+		, IsBot BIT NOT NULL
+		, IsActive BIT NOT NULL
+		, UpdatedBy VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
+        , CONSTRAINT PK_ID  PRIMARY KEY (ID)
+        , INDEX INDEX_ConversationID USING BTREE (ConversationID)
+        , UNIQUE INDEX UNIQUE_MemberID_ConversationID USING BTREE (ConversationID, MemberID)
+  );
+  
+CREATE TABLE ChatBot.System(
+		SystemID SMALLINT  AUTO_INCREMENT NOT NULL
+        , SystemName VARCHAR(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+        , CONSTRAINT PK_SystemID PRIMARY KEY (SystemID)
+        , UNIQUE INDEX UNIQUE_SystemName USING BTREE (SystemName)
+);
 
-CREATE TABLE `Notification` (
-  `NotificationID` int NOT NULL AUTO_INCREMENT,  
-  `NotificationTemplateID` int NOT NULL,  
-  `NotificationTypeID` int NOT NULL,  
-  `Title` varchar(500) CHARACTER SET utf8 NOT NULL,  
-  `Content` text(20000) CHARACTER SET utf8 NOT NULL,  
-  `IsImmediate` bit NOT NULL,  
-  `ConfigTime` datetime NOT NULL,  
-  `CreatorID` int NOT NULL,  
-  `CreatedDate` datetime NOT NULL,  
-  `Remark` varchar(1000) CHARACTER SET utf8 NOT NULL,  
-  `ResolvedBy` int NOT NULL,  
-  `ResolvedDate` datetime NOT NULL,
-  PRIMARY KEY (`MessageID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.RecipientType(
+		RecipientTypeID SMALLINT  AUTO_INCREMENT NOT NULL
+        , RecipientTypeName VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+        , CONSTRAINT PK_RecipientTypeID PRIMARY KEY (RecipientTypeID)
+        , UNIQUE INDEX UNIQUE_RecipientTypeName USING BTREE (RecipientTypeName)
+);
 
-CREATE TABLE `RecipientType` (
-  `RecipientTypeID` int NOT NULL AUTO_INCREMENT,  
-  `RecipientTypeName` varchar(500) CHARACTER SET utf8 NOT NULL,  
-  PRIMARY KEY (`RecipientTypeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.Recipient(
+		RecipientID INT  AUTO_INCREMENT NOT NULL
+        , RecipientName VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+        , RecipientTypeID SMALLINT NOT NULL
+        , SourceID INT NULL
+        , SourceDescription VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
+        , CONSTRAINT PK_RecipientID PRIMARY KEY (RecipientID)
+        , UNIQUE INDEX UNIQUE_RecipientName USING BTREE (RecipientName)
+        , INDEX INDEX_RecipientTypeID USING BTREE (RecipientTypeID)
+);
 
-CREATE TABLE `NotificationTypeRecipientType` (
-  `NotificationTypeID` int NOT NULL,  
-  `RecipientTypeID`  int NOT NULL ,  
-  PRIMARY KEY (`MessageTypeID`, `RecipientTypeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.BotConversationRecipient(
+		GroupID INT  NOT NULL
+        , RecipientID INT  NOT NULL
+        , CONSTRAINT PK_GroupID_RecipientID PRIMARY KEY (GroupID,RecipientID)
+);
 
-CREATE TABLE `Conversation` (
-  `ConversationID` int NOT NULL,  
-  `BotName` varchar(500) CHARACTER SET utf8 NOT NULL,  
-  `RecipientTypeID` int NOT NULL,  
-  `Remark` varchar(1000) CHARACTER SET utf8 NOT NULL,  
-  PRIMARY KEY (`ConversationID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.ChatGroupType(
+		ChatGroupTypeID SMALLINT  AUTO_INCREMENT NOT NULL
+        , ChatGroupTypeName VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+        , CONSTRAINT PK_ChatGroupTypeID PRIMARY KEY (ChatGroupTypeID)
+        , UNIQUE INDEX UNIQUE_ChatGroupTypeName USING BTREE (ChatGroupTypeName)
+);
 
-CREATE TABLE `ConversationRecipient` (
-  `ConversationID` int NOT NULL,  
-  `RecipientID` int NOT NULL,  
-  `CreatedDate` datetime NOT NULL,
-  `CreatorID` int NOT NULL,  
-  PRIMARY KEY (`ConversationID`, `RecipientID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.BotConversationExtraInfo(
+		GroupID INT  NOT NULL
+        , ChatGroupTypeID SMALLINT NOT NULL
+         , Remark VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
+        , CONSTRAINT PK_GroupID PRIMARY KEY (GroupID)
+);
 
-CREATE TABLE `NotificationRecipient` (
-  `RecipientID` int NOT NULL,  
-  `RecipientTypeID` int NOT NULL,  
-  `NotificationID` int NOT NULL,  
-  `SentTime` datetime NOT NULL,
-  `Status` varchar(50) CHARACTER SET utf8 NOT NULL,  
-  `StatusID` tinyint NOT NULL,  
-  `Remark` varchar(1000) CHARACTER SET utf8 NOT NULL,  
-  PRIMARY KEY (`RecipientID`, `RecipientTypeID`, `MessageID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.NotificationType(
+		NotificationTypeID SMALLINT  AUTO_INCREMENT NOT NULL
+        , NotificationTypeName VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+        , SystemID SMALLINT  NOT NULL
+        , CONSTRAINT PK_NotificationTypeID PRIMARY KEY (NotificationTypeID)
+        , UNIQUE INDEX UNIQUE_NotificationTypeName USING BTREE (NotificationTypeName)
+        , INDEX INDEX_SystemID USING BTREE (SystemID)
+);
 
-CREATE TABLE `LogAction` (
-  `ActionID` int NOT NULL AUTO_INCREMENT,  
-  `ActionName` varchar(500) CHARACTER SET utf8 NOT NULL,  
-  `SPName` varchar(200) CHARACTER SET utf8 NOT NULL,  
-  PRIMARY KEY (`ActionID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.NotificationChatGroupType(
+		NotificationTypeID SMALLINT  NOT NULL
+        , ChatGroupTypeID SMALLINT  NOT NULL
+        , CONSTRAINT PK_NotificationTypeID_ChatGroupTypeID PRIMARY KEY (NotificationTypeID,ChatGroupTypeID)
+);
 
-CREATE TABLE `UserActionLog` (
-  `LogID` bigint NOT NULL AUTO_INCREMENT,  
-  `LogDate` datetime NOT NULL,
-  `ActionID` int NOT NULL,  
-  `UserID` int NOT NULL,  
-  `TrackingValue` text(20000) CHARACTER SET utf8 NOT NULL,  
-  `TrackingValue2` text(20000) CHARACTER SET utf8 NOT NULL,  
-  `Duration` int NOT NULL,    
-  PRIMARY KEY (`LogID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.NotificationRecipientType(
+		NotificationTypeID SMALLINT  NOT NULL
+        , RecipientTypeID SMALLINT  NOT NULL
+        , CONSTRAINT PK_NotificationTypeID_RecipientTypeID PRIMARY KEY (NotificationTypeID,RecipientTypeID)
+);
 
-CREATE TABLE `Licensee` (
-  `LicenseeID` int NOT NULL,  
-  `LicenseeName` varchar(100) CHARACTER SET utf8 NOT NULL,  
-  `RegisteredLicenseeName` varchar(100) CHARACTER SET utf8 NOT NULL,  
-  `LicenseeStatusId` tinyint NOT NULL,  
-  `LicenseeTypeId` tinyint NOT NULL,  
-  PRIMARY KEY (`LicenseeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.NotificationTemplate(
+		 NotificationTemplateID INT AUTO_INCREMENT NOT NULL
+		, NotificationTemplateName  VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, NotificationTypeID SMALLINT NOT NULL
+		, Title  VARCHAR(300) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, Content MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, CreatorID INT NOT NULL
+		, CreatedDate DATETIME NOT NULL
+		, LastModifiedDate DATETIME NULL
+		, LastModifiedBy DATETIME NULL
+        , CONSTRAINT PK_NotificationTemplateID  PRIMARY KEY (NotificationTemplateID)
+        , INDEX INDEX_NotificationTypeID USING BTREE (NotificationTypeID)
+        , UNIQUE INDEX UNIQUE_NotificationTypeID_NotificationTemplateName USING BTREE (NotificationTypeID, NotificationTemplateName)
+  );
+  
+  CREATE TABLE ChatBot.Notification(
+		 NotificationID INT AUTO_INCREMENT NOT NULL
+		, NotificationTypeID SMALLINT NOT NULL
+		, Title VARCHAR(300) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, Content MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, ConfigSendTime DATETIME NOT NULL
+		, CreatorID INT NOT NULL
+		, CreatedDate INT NOT NULL
+		, ResolvedRemark VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
+		, ResolvedBy INT NULL
+		, ResolvedDate DATETIME NULL
+        , CONSTRAINT PK_NotificationID  PRIMARY KEY (NotificationID)
+  );
 
-CREATE TABLE `LicenseeStatus` (
-  `LicenseeStatusID` int NOT NULL,  
-  `LicenseeStatusName` varchar(100) CHARACTER SET utf8 NOT NULL,    
-  PRIMARY KEY (`LicenseeStatusID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.NotificationRecipientList(
+		NotificationID INT  NOT NULL
+        , GroupID INT  NOT NULL
+        , ChatGroupTypeID SMALLINT  NOT NULL
+        , RecipientID INT  NOT NULL
+		, SentTime DATETIME NULL
+		, Status VARCHAR(10) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
+		, StatusID TINYINT NOT NULL
+		, ErrMsg VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
+        , CONSTRAINT PK_GroupID_RecipientID_NotificationID PRIMARY KEY (NotificationID, GroupID, ChatGroupTypeID, RecipientID)
+);
 
-CREATE TABLE `LicenseeType` (
-  `LicenseeTypeID` int NOT NULL,  
-  `LicenseeTypeName` varchar(100) CHARACTER SET utf8 NOT NULL,    
-  PRIMARY KEY (`LicenseeTypeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.Licensee(
+		LicenseeId INT  NOT NULL
+		, LicenseeName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
+		, RegisteredLicenseeName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
+		, LicenseeStatusId TINYINT NULL
+		, LicenseeTypeId TINYINT NULL
+        , CONSTRAINT PK_LicenseeId PRIMARY KEY (LicenseeId)
+);
 
-CREATE TABLE `Product` (
-  `ProductID` int NOT NULL,  
-  `ProductName` varchar(100) CHARACTER SET utf8 NOT NULL,    
-  PRIMARY KEY (`ProductID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.LicenseeType(
+		LicenseeTypeId TINYINT  NOT NULL
+		, LicenseeTypeName VARCHAR(30) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
+        , CONSTRAINT PK_LicenseeTypeId PRIMARY KEY (LicenseeTypeId)
+);
 
-CREATE TABLE `LicenseeProduct` (
-  `LicenseeID` int NOT NULL,  
-  `ProductID` int NOT NULL,  
-  `LaunchDate` datetime NOT NULL,
-  `TerminationDate` datetime NOT NULL,
-  PRIMARY KEY (`LicenseeID`, `ProductID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.Product(
+		ProductId TINYINT  NOT NULL
+		, ProductName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
+        , CONSTRAINT PK_ProductId PRIMARY KEY (ProductId)
+);
 
-CREATE TABLE `LicenseeNotificationType` (
-  `LicenseeID` int NOT NULL,  
-  `NotificationTypeID` int NOT NULL,  
-  `IsSkipped` bit NOT NULL,  
-  PRIMARY KEY (`LicenseeID`, `MessageTypeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.LicenseeProduct(
+		LicenseeId INT  NOT NULL
+		, ProductId TINYINT  NOT NULL
+		, LaunchDate DATETIME NULL
+        , TerminationDate DATETIME NULL
+        , CONSTRAINT PK_LicenseeId_ProductId PRIMARY KEY (LicenseeId, ProductId)
+);
 
-CREATE TABLE `SystemSetting` (
-  `SettingId` INT NOT NULL,
-  `SettingValue` varchar(500) CHARACTER SET utf8 NOT NULL,
-  `SettingType` varchar(100) CHARACTER SET utf8 NOT NULL,
-  `Description` varchar(500) CHARACTER SET utf8,  
-  PRIMARY KEY (`SettingId`, `SettingType`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.LicenseeStatus(
+		LicenseeStatusId TINYINT  NOT NULL
+		, LicenseeStatusName VARCHAR(30) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
+        , CONSTRAINT PK_LicenseeStatusId PRIMARY KEY (LicenseeStatusId)
+);
 
-CREATE TABLE `Users` (
-  `UserID` int NOT NULL,  
-  `UserName` varchar(100) CHARACTER SET utf8 NOT NULL,
-  `AuthKey` varchar(100) CHARACTER SET utf8 NOT NULL,
-  `Claims` varchar(4000) CHARACTER SET utf8 NOT NULL,  
-  `LastUpdate` datetime NOT NULL,
-  `LoginProvider` varchar(100) CHARACTER SET utf8 NOT NULL,
-  `ProviderKey` varchar(100) CHARACTER SET utf8 NOT NULL,
-  PRIMARY KEY (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ChatBot.LogAction(
+		ActionID SMALLINT  NOT NULL
+		, ActionName VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NOT NULL
+        , SPName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NOT NULL
+        , CONSTRAINT PK_ActionID PRIMARY KEY (ActionID)
+);
 
-CREATE TABLE `ExternalSetting` (
-  `Provider` varchar(100) CHARACTER SET utf8 NOT NULL,
-  `ProviderKey` varchar(100) CHARACTER SET utf8 NOT NULL,
-  `SettingName` varchar(100) CHARACTER SET utf8 NOT NULL,
-  `SettingValue` varchar(4000) CHARACTER SET utf8 NOT NULL,
-  `Description` varchar(500) CHARACTER SET utf8 NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE `SystemLogs` (
-  `LogID` int NOT NULL AUTO_INCREMENT,  
-  `LogType` tinyint NOT NULL,  
-  `Message` text(20000) CHARACTER SET utf8 NOT NULL,
-  `LogDate` datetime NOT NULL,
-  `IssueBy` varchar(100) CHARACTER SET utf8 NOT NULL,
-  PRIMARY KEY (`LogID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
-
+CREATE TABLE ChatBot.UserLog_RunSP(
+		 LogID BIGINT AUTO_INCREMENT NOT NULL
+		, LogTime DATETIME NOT NULL
+		, ActionID SMALLINT  NOT NULL
+		, UserID INT NOT NULL
+        , LogContent TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
+        , Duration INT NOT NULL
+		, CONSTRAINT PK_LogID PRIMARY KEY (LogID)
+        , INDEX INDEX_LogTime USING BTREE (LogTime)
+ );        
+ 
+CREATE TABLE ChatBot.SystemLog(
+		LogID BIGINT AUTO_INCREMENT NOT NULL
+        , MachineName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NOT NULL
+        , LogTime DATETIME NOT NULL
+		, Level VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NOT NULL
+        , LogContent TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
+        , Logger VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NOT NULL
+		, Callsite TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
+        , Exception TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
+        , CONSTRAINT PK_LogID PRIMARY KEY (LogID)
+        , INDEX INDEX_LogTime USING BTREE (LogTime)
+);        
