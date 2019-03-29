@@ -4,7 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Fanex.NCB.Main</title>
-    <base href="%PUBLIC_URL%/" />
+    <base href="~/" />
+
     <environment include="Development">
         <link rel="stylesheet" href="~/dev/common/bootstrapvendor.chunk.css" asp-append-version="true" />
     </environment>
@@ -14,6 +15,7 @@
     @RenderSection("Styles", required: false)
    
 </head>
+
 <body>
     @Html.AntiForgeryToken()
     @RenderBody()

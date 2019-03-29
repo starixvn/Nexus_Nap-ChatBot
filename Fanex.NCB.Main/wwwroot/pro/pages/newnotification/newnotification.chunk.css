@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'nap-chatbot';
-  src: url(~/assets/fonts/9e68dc0de9bc5c96a44298130c12cf3a-nap-chatbot.eot);
-  src: url(~/assets/fonts/9e68dc0de9bc5c96a44298130c12cf3a-nap-chatbot.eot#iefix) format("embedded-opentype"), url(~/assets/fonts/5a73e05885e20b054f2825247716379f-nap-chatbot.ttf) format("truetype"), url(~/assets/fonts/899f06e76cb28656004dee973aa7b6f4-nap-chatbot.woff) format("woff"), url(~/assets/images/9758e7bf9361ff14c9e4ff76d876d049-nap-chatbot.svg#nap-chatbot) format("svg");
+  src: url(/assets/fonts/9e68dc0de9bc5c96a44298130c12cf3a-nap-chatbot.eot);
+  src: url(/assets/fonts/9e68dc0de9bc5c96a44298130c12cf3a-nap-chatbot.eot#iefix) format("embedded-opentype"), url(/assets/fonts/5a73e05885e20b054f2825247716379f-nap-chatbot.ttf) format("truetype"), url(/assets/fonts/899f06e76cb28656004dee973aa7b6f4-nap-chatbot.woff) format("woff"), url(/assets/images/9758e7bf9361ff14c9e4ff76d876d049-nap-chatbot.svg#nap-chatbot) format("svg");
   font-weight: normal;
   font-style: normal; }
 

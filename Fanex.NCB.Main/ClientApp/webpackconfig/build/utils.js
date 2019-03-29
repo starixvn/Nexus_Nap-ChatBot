@@ -26,8 +26,8 @@ exports.extractCSS = function(isProduction) {
                     test: /\.(sc|c)ss$/,
                     use: [
                         MiniCssExtractPlugin.loader,
-                          'css-loader',
-                          'sass-loader',
+                        'css-loader',
+                         'sass-loader'
                     ]
                 }
             ]
