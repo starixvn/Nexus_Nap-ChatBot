@@ -4,7 +4,7 @@ import CryptoJS from '../../lib/cryptoJS';
 import AppData from '../../lib/AppData';
 import Site from '../../lib/site';
 
-import '../../../fonts/style.css';
+import "../../shared/components/font.css";
 import '../../shared/components/messages.scss';
 import './Login.scss';
 import Logo from "../../../images/Logo.svg";

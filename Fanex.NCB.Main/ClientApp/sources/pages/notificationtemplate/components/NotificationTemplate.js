@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {NCBBreadcrum} from '../../common/breadcrumbs';
 import NewNotificationTemplate from './NewNotificationTemplate';
 import { Tooltip } from 'reactstrap';
-import "../../../fonts/style.css";
+import "../../shared/components/font.css";
 import './NotificationTemplate.scss';
 
 class NotificationTemplate extends Component {

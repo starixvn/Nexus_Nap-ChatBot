@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {NCBBreadcrum} from '../../common/breadcrumbs';
 import ErrorReport from './ErrorReport';
 
-import "../../../fonts/style.css";
+import "../../shared/components/font.css";
 import './NotificationList.scss';
 
 class NotificationList extends Component {

@@ -6,7 +6,7 @@ import { NCBBreadcrum } from '../../common/breadcrumbs';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import UpdatePopup from './UpdatePopup';
-import "../../../fonts/style.css";
+import "../../shared/components/font.css";
 import './AppContainer.scss';
 import Labels from '../../common/Labels';
 

@@ -7,7 +7,7 @@ import DataGrid from './DataGrid';
 import UpdatePopup from './UpdatePopup';
 import DeletePopup  from './DeletePopup';
 
-import "../../../fonts/style.css";
+import "../../shared/components/font.css";
 import './AppContainer.scss';
 
 export class AppContainer extends Component {

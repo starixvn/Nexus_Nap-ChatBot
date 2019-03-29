@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 import Content from './Content';
 import Site from '../../lib/site';
 
-import "../../../fonts/style.css";
+import "../../shared/components/font.css";
 import './Layout.scss';
 
 class Layout extends Component {
