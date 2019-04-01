@@ -129,7 +129,7 @@ CREATE TABLE ChatBot.NotificationRecipientList(
         , RecipientID INT  NOT NULL
 		, SentTime DATETIME NULL
 		, Status VARCHAR(10) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
-		, StatusID TINYINT NOT NULL
+		, StatusID TINYINT UNSIGNED NOT NULL
 		, ErrMsg VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
         , CONSTRAINT PK_GroupID_RecipientID_NotificationID PRIMARY KEY (NotificationID, GroupID, ChatGroupTypeID, RecipientID)
 );
@@ -138,33 +138,33 @@ CREATE TABLE ChatBot.Licensee(
 		LicenseeId INT  NOT NULL
 		, LicenseeName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
 		, RegisteredLicenseeName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
-		, LicenseeStatusId TINYINT NULL
-		, LicenseeTypeId TINYINT NULL
+		, LicenseeStatusId TINYINT UNSIGNED NULL
+		, LicenseeTypeId TINYINT UNSIGNED NULL
         , CONSTRAINT PK_LicenseeId PRIMARY KEY (LicenseeId)
 );
 
 CREATE TABLE ChatBot.LicenseeType(
-		LicenseeTypeId TINYINT  NOT NULL
+		LicenseeTypeId TINYINT UNSIGNED  NOT NULL
 		, LicenseeTypeName VARCHAR(30) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
         , CONSTRAINT PK_LicenseeTypeId PRIMARY KEY (LicenseeTypeId)
 );
 
 CREATE TABLE ChatBot.Product(
-		ProductId TINYINT  NOT NULL
+		ProductId TINYINT UNSIGNED NOT NULL
 		, ProductName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
         , CONSTRAINT PK_ProductId PRIMARY KEY (ProductId)
 );
 
 CREATE TABLE ChatBot.LicenseeProduct(
 		LicenseeId INT  NOT NULL
-		, ProductId TINYINT  NOT NULL
+		, ProductId TINYINT UNSIGNED NOT NULL
 		, LaunchDate DATETIME NULL
         , TerminationDate DATETIME NULL
         , CONSTRAINT PK_LicenseeId_ProductId PRIMARY KEY (LicenseeId, ProductId)
 );
 
 CREATE TABLE ChatBot.LicenseeStatus(
-		LicenseeStatusId TINYINT  NOT NULL
+		LicenseeStatusId TINYINT UNSIGNED NOT NULL
 		, LicenseeStatusName VARCHAR(30) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
         , CONSTRAINT PK_LicenseeStatusId PRIMARY KEY (LicenseeStatusId)
 );
