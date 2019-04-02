@@ -47,6 +47,10 @@
         {
           "SPKey": "NCB_ChatGroupMapping_Upd",
           "SPName": "NCB_ChatGroupMapping_Upd"
+        },
+        {
+          "SPKey": "NCB_ChatGroupType_Sel",
+          "SPName": "NCB_ChatGroupType_Sel"
         }
       ]
     }
