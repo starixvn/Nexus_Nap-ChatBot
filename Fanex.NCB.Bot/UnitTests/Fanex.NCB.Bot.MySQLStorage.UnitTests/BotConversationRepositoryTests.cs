@@ -87,7 +87,7 @@ namespace Fanex.NCB.Bot.MySQLStorage.UnitTests
             var groupId = await repository.InsertAsync(item);
 
             // Act
-            var result = await repository.SingleAsync(x => x.GroupID == groupId).ConfigureAwait(false);
+            var result = await repository.SingleAsync(x => x.ID == groupId).ConfigureAwait(false);
 
             // Assert
 
@@ -103,10 +103,10 @@ namespace Fanex.NCB.Bot.MySQLStorage.UnitTests
             var groupId = await repository.InsertAsync(item);
             const string newBotName = "updated Bot Name";
             item.UpdatedBy = newBotName;
-            item.GroupID = groupId;
+            item.ID = groupId;
             // Act
             var result = await repository.UpdateAsync(item).ConfigureAwait(false);
-            var updatedItem = await repository.SingleAsync(x => x.GroupID == groupId).ConfigureAwait(false);
+            var updatedItem = await repository.SingleAsync(x => x.ID == groupId).ConfigureAwait(false);
             // Assert
 
             Assert.True(result);

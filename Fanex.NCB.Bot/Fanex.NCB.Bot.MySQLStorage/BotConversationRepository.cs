@@ -36,7 +36,7 @@ namespace Fanex.NCB.Bot.MySQLStorage
 
             await _botServiceDBContext.BotConversations.AddAsync(value).ConfigureAwait(false);
             await _botServiceDBContext.SaveChangesAsync().ConfigureAwait(false);
-            return value.GroupID;
+            return value.ID;
         }
 
         public async Task<BotConversation> SingleAsync(Expression<Func<BotConversation, bool>> predicate)
@@ -46,7 +46,7 @@ namespace Fanex.NCB.Bot.MySQLStorage
 
         public async Task<bool> UpdateAsync(BotConversation newValue)
         {
-            if (await SingleAsync(x => x.GroupID == newValue.GroupID && x.ConversationID == newValue.ConversationID).ConfigureAwait(false) != null)
+            if (await SingleAsync(x => x.ID == newValue.ID && x.ConversationID == newValue.ConversationID).ConfigureAwait(false) != null)
             {
                 _botServiceDBContext.BotConversations.Update(newValue);
                 var result = await _botServiceDBContext.SaveChangesAsync().ConfigureAwait(false);

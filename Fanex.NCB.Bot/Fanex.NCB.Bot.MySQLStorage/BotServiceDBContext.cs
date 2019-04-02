@@ -24,12 +24,12 @@ namespace Fanex.NCB.Bot.MySQLStorage
             modelBuilder.Entity<BotConversation>().ToTable("BotConversation");
             modelBuilder.Entity<BotConversation>(entity =>
             {
-                entity.HasKey(e => new { e.GroupID });
+                entity.HasKey(e => new { e.ID });
                 entity.Property(e => e.Name).HasColumnType("VARCHAR(500)").IsRequired();
                 entity.Property(e => e.UpdatedBy).HasColumnType("VARCHAR(50)").IsRequired();
                 entity.Property(e => e.LastUpdate).IsRequired();
                 entity.Property(e => e.ChannelID).HasColumnType("VARCHAR(45)").IsRequired(false);
-                entity.Property(e => e.GroupID).HasColumnType("INT(11)")
+                entity.Property(e => e.ID).HasColumnType("INT(11)")
                 .ValueGeneratedOnAdd().IsRequired();
                 entity.Property(e => e.ConversationID).HasColumnType("VARCHAR(70)").IsRequired();
                 entity.Property(e => e.ServiceUrl).HasColumnType("VARCHAR(500)").IsRequired(false);
