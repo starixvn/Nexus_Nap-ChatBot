@@ -169,7 +169,7 @@ namespace Fanex.NCB.Bot.CoreControllers
                     IsBot = member.Id == turnContext.Activity.Recipient.Id,
                     LastUpdate = DateTime.Now,
                     MemberId = member.Id,
-                    Name = member.Id == turnContext.Activity.Recipient.Id ? turnContext.Activity.Recipient.Name : member.Name ?? "null",
+                    Name = member.Id == turnContext.Activity.Recipient.Id ? turnContext.Activity.Recipient.Name : member.Name,
                     UpdatedBy = turnContext.Activity.Recipient.Name
                 };
                 await _botConversationMemberRepository.InsertAsync(item).ConfigureAwait(false);
@@ -200,7 +200,7 @@ namespace Fanex.NCB.Bot.CoreControllers
                 ChannelID = turnContext.Activity.ChannelId,
                 ConversationID = turnContext.Activity.Conversation.Id,
                 LastUpdate = DateTime.Now,
-                Name = turnContext.Activity.TopicName ?? "null",
+                Name = turnContext.Activity.TopicName,
                 ServiceUrl = turnContext.Activity.ServiceUrl
             };
         }

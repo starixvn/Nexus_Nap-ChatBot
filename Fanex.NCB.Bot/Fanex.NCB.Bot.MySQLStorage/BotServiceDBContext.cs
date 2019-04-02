@@ -25,7 +25,7 @@ namespace Fanex.NCB.Bot.MySQLStorage
             modelBuilder.Entity<BotConversation>(entity =>
             {
                 entity.HasKey(e => new { e.ID });
-                entity.Property(e => e.Name).HasColumnType("VARCHAR(500)").IsRequired();
+                entity.Property(e => e.Name).HasColumnType("VARCHAR(500)").IsRequired(false);
                 entity.Property(e => e.UpdatedBy).HasColumnType("VARCHAR(50)").IsRequired();
                 entity.Property(e => e.LastUpdate).IsRequired();
                 entity.Property(e => e.ChannelID).HasColumnType("VARCHAR(45)").IsRequired(false);
@@ -40,7 +40,7 @@ namespace Fanex.NCB.Bot.MySQLStorage
             {
                 entity.HasKey(e => e.ID);
                 entity.Property(e => e.ID).HasColumnType("INT(11)").IsRequired();
-                entity.Property(e => e.Name).HasColumnType("VARCHAR(50)").IsRequired();
+                entity.Property(e => e.Name).HasColumnType("VARCHAR(50)").IsRequired(false);
                 entity.Property(e => e.LastUpdate).IsRequired();
                 entity.Property(e => e.IsBot).HasColumnType("BIT(1)").IsRequired();
                 entity.Property(e => e.IsActive).HasColumnType("BIT(1)").IsRequired();
