@@ -67,7 +67,7 @@ CREATE TABLE ChatBot.ChatGroupType(
 
 CREATE TABLE ChatBot.BotConversationExtraInfo(
 		GroupID INT  NOT NULL
-        , ChatGroupTypeID SMALLINT NOT NULL
+        , ChatGroupTypeID SMALLINT  NULL
          , Remark VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
         , CONSTRAINT PK_GroupID PRIMARY KEY (GroupID)
 );
