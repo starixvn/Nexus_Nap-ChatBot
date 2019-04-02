@@ -20,6 +20,7 @@ export class UpdatePopup extends Component {
             conversationID: this.props.updatePopupData.editingItem.conversationID,      
             recipientTypeId: this.props.updatePopupData.editingItem.recipientTypeId,
             recipientIds: this.props.updatePopupData.editingItem.recipientIds,
+            chatGroupTypeId: this.props.updatePopupData.editingItem.chatGroupTypeId,
             remark: this.props.updatePopupData.editingItem.remark,            
             isSummited: false
         };
@@ -41,12 +42,13 @@ export class UpdatePopup extends Component {
             conversationId: this.state.conversationID,
             recipientTypeId: this.state.recipientTypeId.value,
             recipientIds: this.state.recipientIds.value,
+            chatGroupTypeId: this.state.chatGroupTypeId.value,
             remark: this.state.remark.value
         };
     }
 
     checkValidParams = () => {
-        return this.state.recipientTypeId.isValid && this.state.recipientIds.isValid && this.state.remark.isValid;
+        return this.state.recipientTypeId.isValid && this.state.recipientIds.isValid && this.state.chatGroupTypeId.isValid && this.state.remark.isValid;
     }
 
     onChange = (fieldName, fieldValue) => this.setState({ [fieldName]: fieldValue });
@@ -68,7 +70,6 @@ export class UpdatePopup extends Component {
             return null;
         }
 
-        console.log(this.props.updateData);
         let editingItem = this.props.updatePopupData.editingItem;
 
         let licenseeStatuses = [];
@@ -93,6 +94,14 @@ export class UpdatePopup extends Component {
                         <FormGroup>
                             <Label className="form-label ">{Labels.GroupName}</Label>
                             <Label className="form-label">{editingItem.groupName}</Label>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label className="form-label required">{Labels.ChatGroupType}</Label>
+                            <SelectField initialValue={editingItem.chatGroupTypeId.value}
+                                data={this.props.settingData.chatGroupTypes}
+                                isSummited={this.state.isSummited}
+                                onChange={(chatGroupTypeId) => { this.onChange("chatGroupTypeId", chatGroupTypeId); }}
+                            />
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label required">{Labels.RecipientType}</Label>

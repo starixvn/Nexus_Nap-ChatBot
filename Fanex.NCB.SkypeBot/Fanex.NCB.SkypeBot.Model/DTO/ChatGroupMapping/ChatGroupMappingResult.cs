@@ -10,6 +10,8 @@ namespace Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping
         public int GroupID { get; set; }
         public string ConversationID { get; set; }
         public string GroupName { get; set; }
+        public int ChatGroupTypeID { get; set; }
+        public string ChatGroupTypeName { get; set; }
         public int RecipientTypeID { get; set; }
         public string RecipientTypeName { get; set; }
         public string RecipientIDs { get; set; }

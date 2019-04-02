@@ -33,6 +33,7 @@ export class DataGrid extends Component {
                 <Cell colWidth={100} header>{Labels.BotName}</Cell>
                 <Cell colWidth={300} header>{Labels.GroupID}</Cell>
                 <Cell colWidth={200} header>{Labels.GroupName}</Cell>
+                <Cell colWidth={200} header>{Labels.ChatGroupType}</Cell>
                 <Cell colWidth={100} header>{Labels.RecipientType}</Cell>
                 <Cell colWidth={150} header>{Labels.Recipient}</Cell>
                 <Cell colWidth={100} header>{Labels.LicenseeStatus}</Cell>
@@ -51,6 +52,7 @@ export class DataGrid extends Component {
                 <Cell>{item.botName}</Cell>
                 <Cell>{item.conversationID}</Cell>
                 <Cell>{item.groupName}</Cell>
+                <Cell>{item.chatGroupTypeName}</Cell>
                 <Cell>{item.recipientTypeName}</Cell>
                 <Cell>{item.recipientNames}</Cell>
                 <Cell>{item.recipientStatusNames}</Cell>

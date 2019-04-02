@@ -21,6 +21,10 @@ export function openEditPopup(item) {
                 isValid: item.recipientIDs !== ""
             }, 
             recipientStatusNames: item.recipientStatusNames,
+            chatGroupTypeId: {
+                value: item.chatGroupTypeID,
+                isValid: item.chatGroupTypeId !== 0
+            },
             remark: {
                 value: item.remark,
                 isValid: item.remark !== null

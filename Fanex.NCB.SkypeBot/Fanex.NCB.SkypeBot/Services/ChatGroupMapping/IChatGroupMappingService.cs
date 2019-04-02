@@ -11,6 +11,7 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
     public interface IChatGroupMappingService
     {
         Task<List<BotName>> GetBotNameAsync();
+        Task<List<ChatGroupType>> GetChatGroupTypeAsync();
         List<MappingStatus> GetMappingStatus();
         Task<ChatGroupMappingResultModel> GetChatGroupMappingListAsync(GetChapGroupMappingCriteria criteria);
         Task<ResultModel> UpdateChatGroupMappingAsync(EditChatGroupMappingCriteria criteria);

@@ -43,6 +43,8 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
                         GroupID = g.GroupID,
                         ConversationID = g.ConversationID,
                         GroupName = g.GroupName,
+                        ChatGroupTypeID = g.ChatGroupTypeID,
+                        ChatGroupTypeName = g.ChatGroupTypeName,
                         RecipientTypeID = g.RecipientTypeId,
                         RecipientTypeName = g.RecipientTypeName,
                         RecipientIDs = String.Join(",", conversationRecipients.Select(x => x.RecipientID).ToList()),
@@ -82,6 +84,11 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
             }
 
             return isConversationMapped ? (int)Common.Constant.MappingStatus.Mapped : (int)Common.Constant.MappingStatus.NotMapped;
+        }
+
+        public Task<List<ChatGroupType>> GetChatGroupTypeAsync()
+        {
+            return _chatGroupMappingStorage.GetChatGroupTypeAsync();
         }
     }
 }

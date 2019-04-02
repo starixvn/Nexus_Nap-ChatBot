@@ -57,11 +57,11 @@ export function setFilterRecipients(data) {
 export function filterRecipients(recipients, recipientTypeId) {
     let filteredRecipients = [];
     recipientTypeId && recipients.map((item, index) => {
-        if (item.recipientTypeId === recipientTypeId) {
+        if (item.recipientTypeId === parseInt(recipientTypeId)) {
             filteredRecipients.push(item);
         }
     });  
-
+    
     return (dispatch) => {       
         dispatch(setFilterRecipients(filteredRecipients));
     };
@@ -84,7 +84,6 @@ export function update(params) {
     return async (dispatch) => {
         const request = await axios.post(url, JSON.stringify(params), { headers: headers });
         const data = await request.data;
-        console.log(data);
         dispatch(setUpdateData(data));
     };
 }

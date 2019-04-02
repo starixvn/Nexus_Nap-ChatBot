@@ -11,8 +11,9 @@ namespace Fanex.NCB.SkypeBot.BaseStorage
     public interface IChatGroupMappingStorage
     {
         Task<List<BotName>> GetBotNameAsync();
+        Task<List<ChatGroupType>> GetChatGroupTypeAsync();
         Task<List<MappingStatus>> GetMappingStatusAsync();
-        Task<Tuple<int, List<BotConversation>, List<BotConversationMember>, List<ConversationRecipient>>> GetChatGroupMappingListAsync(GetChapGroupMappingCriteria criteria);
+        Task<Tuple<long, List<BotConversation>, List<BotConversationMember>, List<ConversationRecipient>>> GetChatGroupMappingListAsync(GetChapGroupMappingCriteria criteria);
         Task<ResultModel> EditChatGroupMappingAsync(EditChatGroupMappingCriteria item);
     }
 }

@@ -3,6 +3,7 @@
     Action: "Action",
     BotName: "Bot Name",
     ChatGroupMapping: "Chat Group Mapping",
+    ChatGroupType: "Chat Group Type",
     Edit: "Edit",
     EditMappingStatus: "Edit Mapping Status",
     GroupID: "GroupID",
