@@ -6,8 +6,8 @@ CREATE TABLE ChatBot.BotConversation(
 		, ConversationID VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
 		, Name VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
 		, ChannelID VARCHAR(45) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
-		, UpdatedBy VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
-		, LastUpdate DATETIME NULL
+		, UpdatedBy VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, LastUpdate DATETIME NOT NULL
 		, ServiceUrl VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
 		, CONSTRAINT PK_ID  PRIMARY KEY (ID)
 		, UNIQUE INDEX UNIQUE_ConversationID USING BTREE (ConversationID)
@@ -18,10 +18,10 @@ CREATE TABLE ChatBot.BotConversationMember(
 		, MemberID VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
 		, ConversationID VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
 		, Name VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
-		, LastUpdate DATETIME NULL
+		, LastUpdate DATETIME NOT NULL
 		, IsBot BIT NOT NULL
 		, IsActive BIT NOT NULL
-		, UpdatedBy VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
+		, UpdatedBy VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
         , CONSTRAINT PK_ID  PRIMARY KEY (ID)
         , INDEX INDEX_ConversationID USING BTREE (ConversationID)
         , UNIQUE INDEX UNIQUE_MemberID_ConversationID USING BTREE (ConversationID, MemberID)
@@ -91,6 +91,12 @@ CREATE TABLE ChatBot.NotificationRecipientType(
 		NotificationTypeID SMALLINT  NOT NULL
         , RecipientTypeID SMALLINT  NOT NULL
         , CONSTRAINT PK_NotificationTypeID_RecipientTypeID PRIMARY KEY (NotificationTypeID,RecipientTypeID)
+);
+
+CREATE TABLE ChatBot.NotificationTypeRecipientException(
+		NotificationTypeID SMALLINT  NOT NULL
+        , RecipientID INT  NOT NULL
+        , CONSTRAINT PK_NotificationTypeID_RecipientID PRIMARY KEY (NotificationTypeID,RecipientID)
 );
 
 CREATE TABLE ChatBot.NotificationTemplate(
