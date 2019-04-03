@@ -34,7 +34,7 @@ NCB_Notification_Ins:BEGIN
     DECLARE v_NotificationID 		INT;
     
     #Get Start Time to calcualte execution duration
-    SELECT  CURRENT_TIMESTAMP(3) INTO v_SPStartTime;
+    SET  v_SPStartTime = CURRENT_TIMESTAMP(3);
     
     SET out_ErrCode=0, out_ErrMsg='';
     
@@ -77,6 +77,11 @@ NCB_Notification_Ins:BEGIN
 		OR (TerminationDate IS NOT NULL AND in_ConfigSendTime > TerminationDate);
     END IF;
     
+    #Delete exception Recipient
+    DELETE main
+    FROM tbl_RecipientID main
+    WHERE RecipientID IN (SELECT RecipientID FROM NotificationTypeRecipientException WHERE NotificationTypeID = in_NotificationTypeID);
+    
     #Insert a new Notification
     INSERT INTO Notification(NotificationTypeID
 											,Title
@@ -96,17 +101,17 @@ NCB_Notification_Ins:BEGIN
     
     #Insert recipient list
     INSERT INTO NotificationRecipientList(NotificationID, BotConversationID, ChatGroupTypeID, RecipientID, Status, StatusID)
-    SELECT v_NotificationID, gri.BotConversationID, gri.ChatGroupTypeID, re.RecipientID, 'Planned', 0
+    SELECT v_NotificationID, IFNULL(gri.BotConversationID, -1), IFNULL(gri.ChatGroupTypeID,-1), re.RecipientID, 'Planned', 0
     FROM tbl_RecipientID re
-    INNER JOIN BotConversationRecipient gr ON re.RecipientID = gr.RecipientID
-    INNER JOIN BotConversationExtraInfo gri ON gri.BotConversationID = gr.BotConversationID
+    LEFT JOIN BotConversationRecipient gr ON re.RecipientID = gr.RecipientID
+    LEFT JOIN BotConversationExtraInfo gri ON gri.BotConversationID = gr.BotConversationID
     WHERE gri.ChatGroupTypeID IN (SELECT ChatGroupTypeID FROM NotificationChatGroupType WHERE NotificationTypeID = in_NotificationTypeID);
 	
     #Drop Unused temporary tables
     DROP TEMPORARY TABLE tbl_RecipientID;
     
      #Get Finish Time to calcualte execution duration
-    SELECT  CURRENT_TIMESTAMP(3) INTO v_SPFinishTime;
+    SET v_SPFinishTime = CURRENT_TIMESTAMP(3);
     SET v_SPDuration =  TIMESTAMPDIFF(MICROSECOND,v_SPStartTime,v_SPFinishTime)  / 1000; 	#miliseconds
     
     #Get Log Content, JSON format
