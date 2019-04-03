@@ -11,5 +11,7 @@ namespace Fanex.NCB.SkypeBot.BaseStorage
     {
         Task<List<RecipientType>> GetRecipientTypesAsync();
         Task<List<Recipient>> GetRecipientsAsync();
+        Task<List<BotName>> GetBotNameAsync();
+        Task<List<ChatGroupType>> GetChatGroupTypeAsync();
     }
 }

@@ -32,14 +32,9 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.ChatGroupMapping
             param.Add("in_Remark", value: item.Remark, dbType: DbType.String);
 
             return _baseStorage.ExecuteAsync("NCB_ChatGroupMapping_Upd", param);
-        }
+        }        
 
-        public async Task<List<BotName>> GetBotNameAsync()
-        {
-            return await _baseStorage.QueryAsync<BotName>("NCB_BotName_Sel").ConfigureAwait(false);
-        }
-
-        public async Task<Tuple<long, List<BotConversation>, List<BotConversationMember>, List<ConversationRecipient>>> GetChatGroupMappingListAsync(GetChapGroupMappingCriteria criteria)
+        public Task<Tuple<long, List<BotConversation>, List<BotConversationMember>, List<ConversationRecipient>>> GetChatGroupMappingListAsync(GetChapGroupMappingCriteria criteria)
         {
             DynamicParameters param = new DynamicParameters();
             param.Add("in_BotNames", value: criteria.BotNames, dbType: DbType.String);
@@ -49,17 +44,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.ChatGroupMapping
             param.Add("in_PageIndex", value: criteria.PageIndex, dbType: DbType.Int64);
             param.Add("in_PageSize", value: criteria.PageSize, dbType: DbType.Int64);
 
-            return await _baseStorage.QueryMultipleAsync<long, BotConversation, BotConversationMember, ConversationRecipient>("NCB_ChatGroupMapping_Sel", param).ConfigureAwait(false);
-        }
-
-        public async Task<List<ChatGroupType>> GetChatGroupTypeAsync()
-        {
-            return await _baseStorage.QueryAsync<ChatGroupType>("NCB_ChatGroupType_Sel");
-        }
-
-        public async Task<List<MappingStatus>> GetMappingStatusAsync()
-        {
-            return await _baseStorage.QueryAsync<MappingStatus>("NCB_MappingStatus_Sel").ConfigureAwait(false);
-        }
+            return _baseStorage.QueryMultipleAsync<long, BotConversation, BotConversationMember, ConversationRecipient>("NCB_ChatGroupMapping_Sel", param);
+        }  
     }
 }

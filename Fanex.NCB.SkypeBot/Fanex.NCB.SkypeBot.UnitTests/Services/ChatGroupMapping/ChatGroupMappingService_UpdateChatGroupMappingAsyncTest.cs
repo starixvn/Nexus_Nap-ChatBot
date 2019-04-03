@@ -3,6 +3,8 @@ using Fanex.NCB.Common.DTO;
 using Fanex.NCB.SkypeBot.BaseStorage;
 using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.ChatGroupMapping;
+using Fanex.NCB.SkypeBot.Services.ChatGroupMappingResultService;
+using Fanex.NCB.SkypeBot.Services.MappingStatusService;
 using FluentAssertions;
 using Moq;
 using System;
@@ -21,7 +23,8 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.ChatGroupMapping
             // Arrange
             var fixture = new Fixture();
             var chatGroupMappingStorage = new Mock<IChatGroupMappingStorage>();
-            var service = new ChatGroupMappingService(chatGroupMappingStorage.Object);
+            var chatGroupMappingResultService = new Mock<IChatGroupMappingResultService>();
+            var service = new ChatGroupMappingService(chatGroupMappingStorage.Object, chatGroupMappingResultService.Object);
 
             var criteria = fixture.Create<EditChatGroupMappingCriteria>();
             var resultModel = fixture.Create<ResultModel>();

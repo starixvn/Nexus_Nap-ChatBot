@@ -22,5 +22,15 @@ namespace Fanex.NCB.SkypeBot.Services.Setting
         {
             return _settingStorage.GetRecipientTypesAsync();
         }
+
+        public Task<List<BotName>> GetBotNameAsync()
+        {
+            return _settingStorage.GetBotNameAsync();
+        }
+
+        public Task<List<ChatGroupType>> GetChatGroupTypeAsync()
+        {
+            return _settingStorage.GetChatGroupTypeAsync();
+        }
     }
 }

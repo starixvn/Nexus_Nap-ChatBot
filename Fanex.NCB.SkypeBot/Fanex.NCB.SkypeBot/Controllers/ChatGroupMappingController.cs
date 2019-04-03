@@ -1,6 +1,7 @@
 using Fanex.NCB.Common.DTO;
 using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.ChatGroupMapping;
+using Fanex.NCB.SkypeBot.Services.MappingStatusService;
 using Fanex.NCB.SkypeBot.Services.Setting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,16 @@ namespace Fanex.NCB.SkypeBot.Controllers
     {
         private readonly IChatGroupMappingService _chatGroupMappingService;
         private readonly ISettingService _settingService;
+        private readonly IMappingStatusService _mappingStatusService;
 
-        public ChatGroupMappingController(IChatGroupMappingService chatGroupMappingService, ISettingService settingService)
+        public ChatGroupMappingController(
+            IChatGroupMappingService chatGroupMappingService, 
+            ISettingService settingService, 
+            IMappingStatusService mappingStatusService)
         {
             _chatGroupMappingService = chatGroupMappingService;
             _settingService = settingService;
+            _mappingStatusService = mappingStatusService;
         }
 
         [HttpGet]
@@ -29,11 +35,11 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSettingsAsync()
         {
-            var botNames = await _chatGroupMappingService.GetBotNameAsync().ConfigureAwait(false);
+            var botNames = await _settingService.GetBotNameAsync().ConfigureAwait(false);
             var recipientTypes = await _settingService.GetRecipientTypesAsync().ConfigureAwait(false);
-            var mappingStatuses = _chatGroupMappingService.GetMappingStatus();
+            var mappingStatuses = _mappingStatusService.GetMappingStatus();
             var recipients = await _settingService.GetRecipientsAsync().ConfigureAwait(false);
-            var chatGroupTypes = await _chatGroupMappingService.GetChatGroupTypeAsync();
+            var chatGroupTypes = await _settingService.GetChatGroupTypeAsync();
 
             return Json(new { botNames, recipientTypes, mappingStatuses, recipients, chatGroupTypes });
         }
