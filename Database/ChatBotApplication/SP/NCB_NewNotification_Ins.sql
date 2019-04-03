@@ -1,8 +1,8 @@
 DELIMITER //
 
-DROP PROCEDURE IF EXISTS NCB_Notification_Ins;
+DROP PROCEDURE IF EXISTS NCB_NewNotification_Ins;
 
-CREATE PROCEDURE  NCB_Notification_Ins(
+CREATE PROCEDURE  NCB_NewNotification_Ins(
 	IN in_NotificationTypeID SMALLINT
 	,IN in_ProductID INT
 	,IN in_RecipientIDLst VARCHAR(200)
@@ -21,7 +21,7 @@ CREATE PROCEDURE  NCB_Notification_Ins(
         
     */
 )
-NCB_Notification_Ins:BEGIN
+NCB_NewNotification_Ins:BEGIN
 
 	#Variables used to write User Logs
 	DECLARE v_SPStartTime 		DATETIME(3);
@@ -41,19 +41,19 @@ NCB_Notification_Ins:BEGIN
 	#Check param
 	IF  NOT EXISTS(SELECT 1 FROM ChatBot.NotificationType  WHERE NotificationTypeID = in_NotificationTypeID) THEN
 		SET out_ErrCode=1, out_ErrMsg='Invalid NotificationTypeID';
-        LEAVE NCB_Notification_Ins;
+        LEAVE NCB_NewNotification_Ins;
     ELSEIF IFNULL(in_Title,'') = '' OR IFNULL(in_Content,'') = '' THEN
 		SET out_ErrCode=2, out_ErrMsg='Title and Content must not be empty';
-        LEAVE NCB_Notification_Ins;
+        LEAVE NCB_NewNotification_Ins;
 	ELSEIF IFNULL(in_RecipientIDLst,'') = '' THEN
 		SET out_ErrCode=3, out_ErrMsg='Recipient list must not be empty';
-        LEAVE NCB_Notification_Ins;
+        LEAVE NCB_NewNotification_Ins;
 	ELSEIF in_Creator IS NULL THEN
 		SET out_ErrCode=4, out_ErrMsg='Creator can not be null';
-        LEAVE NCB_Notification_Ins;
+        LEAVE NCB_NewNotification_Ins;
 	ELSEIF in_ConfigSendTime IS NULL THEN
 		SET out_ErrCode=5, out_ErrMsg='ConfigSendTime can not be null';
-        LEAVE NCB_Notification_Ins;
+        LEAVE NCB_NewNotification_Ins;
 	END IF;
 	
     #Insert comma seperated list RecipientIDLst to temporary tables
