@@ -1,10 +1,10 @@
 DELIMITER //
 CREATE PROCEDURE `NCB_Recipient_Sel`()
 BEGIN
-	declare LICENSEE_TYPE INT = 1;
+	DECLARE LICENSEE_TYPE INT DEFAULT 1;
 	
-	select RecipientId as ID, RecipientName as Name, ls.LicenseeStatusName as Status, RecipientTypeID
-    from Recipient r
-	left join Licensee l on l.LicenseeId = r.SourceID and r.RecipientTypeID = LICENSEE_TYPE
-	left join LicenseeStatus ls on l.LicenseeStatusId = ls.LicenseeStatusId;
+	SELECT RecipientId AS ID, RecipientName AS Name, ls.LicenseeStatusName AS Status, RecipientTypeID
+    FROM Recipient r
+	LEFT JOIN Licensee l ON l.LicenseeId = r.SourceID AND r.RecipientTypeID = LICENSEE_TYPE
+	LEFT JOIN LicenseeStatus ls ON l.LicenseeStatusId = ls.LicenseeStatusId;
 END;
