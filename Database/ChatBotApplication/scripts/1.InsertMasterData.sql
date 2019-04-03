@@ -1,12 +1,12 @@
-INSERT INTO ChatBot.System(SystemName) 
+INSERT INTO ChatBot.System(SystemID, SystemName) 
 VALUES 
-('I, Bot Site')
-, ('Special Delete Site');
+(1, 'I, Bot Site')
+, (2, 'Special Delete Site');
 
-INSERT INTO ChatBot.RecipientType(RecipientTypeName) 
+INSERT INTO ChatBot.RecipientType(RecipientTypeID, RecipientTypeName) 
 VALUES 
-('Licensee')
-, ('3rd Party Product');
+(1, 'Licensee')
+, (2, '3rd Party Product');
 
 INSERT INTO ChatBot.ChatGroupType(ChatGroupTypeName) 
 VALUES 

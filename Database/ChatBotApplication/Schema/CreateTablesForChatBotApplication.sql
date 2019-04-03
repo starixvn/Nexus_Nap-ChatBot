@@ -53,9 +53,9 @@ CREATE TABLE ChatBot.Recipient(
 );
 
 CREATE TABLE ChatBot.BotConversationRecipient(
-		GroupID INT  NOT NULL
+		BotConversationID INT  NOT NULL
         , RecipientID INT  NOT NULL
-        , CONSTRAINT PK_GroupID_RecipientID PRIMARY KEY (GroupID,RecipientID)
+        , CONSTRAINT PK_BotConversationID_RecipientID PRIMARY KEY (BotConversationID,RecipientID)
 );
 
 CREATE TABLE ChatBot.ChatGroupType(
@@ -66,10 +66,10 @@ CREATE TABLE ChatBot.ChatGroupType(
 );
 
 CREATE TABLE ChatBot.BotConversationExtraInfo(
-		GroupID INT  NOT NULL
+		BotConversationID INT  NOT NULL
         , ChatGroupTypeID SMALLINT  NULL
          , Remark VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
-        , CONSTRAINT PK_GroupID PRIMARY KEY (GroupID)
+        , CONSTRAINT PK_BotConversationID PRIMARY KEY (BotConversationID)
 );
 
 CREATE TABLE ChatBot.NotificationType(
@@ -113,7 +113,7 @@ CREATE TABLE ChatBot.NotificationTemplate(
         , INDEX INDEX_NotificationTypeID USING BTREE (NotificationTypeID)
         , UNIQUE INDEX UNIQUE_NotificationTypeID_NotificationTemplateName USING BTREE (NotificationTypeID, NotificationTemplateName)
   );
-  
+
   CREATE TABLE ChatBot.Notification(
 		 NotificationID INT AUTO_INCREMENT NOT NULL
 		, NotificationTypeID SMALLINT NOT NULL
@@ -121,7 +121,8 @@ CREATE TABLE ChatBot.NotificationTemplate(
 		, Content MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
 		, ConfigSendTime DATETIME NOT NULL
 		, CreatorID INT NOT NULL
-		, CreatedDate INT NOT NULL
+		, CreatedDate DATETIME NOT NULL
+        , StatusID TINYINT UNSIGNED NOT NULL
 		, ResolvedRemark VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
 		, ResolvedBy INT NULL
 		, ResolvedDate DATETIME NULL
@@ -130,14 +131,14 @@ CREATE TABLE ChatBot.NotificationTemplate(
 
 CREATE TABLE ChatBot.NotificationRecipientList(
 		NotificationID INT  NOT NULL
-        , GroupID INT  NOT NULL
+        , BotConversationID  INT  NOT NULL
         , ChatGroupTypeID SMALLINT  NOT NULL
         , RecipientID INT  NOT NULL
 		, SentTime DATETIME NULL
 		, Status VARCHAR(10) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
 		, StatusID TINYINT UNSIGNED NOT NULL
 		, ErrMsg VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
-        , CONSTRAINT PK_GroupID_RecipientID_NotificationID PRIMARY KEY (NotificationID, GroupID, ChatGroupTypeID, RecipientID)
+        , CONSTRAINT PK_NotificationID_BotConversationID_RecipientID_ChatGroupTypeID PRIMARY KEY (NotificationID, BotConversationID, RecipientID, ChatGroupTypeID)
 );
 
 CREATE TABLE ChatBot.Licensee(
