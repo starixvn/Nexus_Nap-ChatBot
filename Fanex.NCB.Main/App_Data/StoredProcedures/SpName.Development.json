@@ -13,8 +13,8 @@
           "SPName": "NCB_System_Sel"
         },
         {
-          "SPKey": "NCB_RecipientType_Sel",
-          "SPName": "NCB_RecipientType_Sel"
+          "SPKey": "NCB_Setting_RecipientType_Sel",
+          "SPName": "NCB_Setting_RecipientType_Sel"
         },
         {
           "SPKey": "NCB_NotificationType_Ins",
@@ -29,8 +29,8 @@
           "SPName": "NCB_NotificationType_Del"
         },
         {
-          "SPKey": "NCB_BotName_Sel",
-          "SPName": "NCB_BotName_Sel"
+          "SPKey": "NCB_Setting_BotName_Sel",
+          "SPName": "NCB_Setting_BotName_Sel"
         },
         {
           "SPKey": "NCB_MappingStatus_Sel",
@@ -41,16 +41,16 @@
           "SPName": "NCB_ChatGroupMapping_Sel"
         },
         {
-          "SPKey": "NCB_Recipient_Sel",
-          "SPName": "NCB_Recipient_Sel"
+          "SPKey": "NCB_Setting_Recipient_Sel",
+          "SPName": "NCB_Setting_Recipient_Sel"
         },
         {
           "SPKey": "NCB_ChatGroupMapping_Upd",
           "SPName": "NCB_ChatGroupMapping_Upd"
         },
         {
-          "SPKey": "NCB_ChatGroupType_Sel",
-          "SPName": "NCB_ChatGroupType_Sel"
+          "SPKey": "NCB_Setting_ChatGroupType_Sel",
+          "SPName": "NCB_Setting_ChatGroupType_Sel"
         }
       ]
     }

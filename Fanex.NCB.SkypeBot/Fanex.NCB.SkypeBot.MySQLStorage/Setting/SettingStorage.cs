@@ -20,22 +20,22 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.Setting
 
         public Task<List<Recipient>> GetRecipientsAsync()
         {
-            return _baseStorage.QueryAsync<Recipient>("NCB_Recipient_Sel");
+            return _baseStorage.QueryAsync<Recipient>("NCB_Setting_Recipient_Sel");
         }
 
         public Task<List<RecipientType>> GetRecipientTypesAsync()
         {
-            return _baseStorage.QueryAsync<RecipientType>("NCB_RecipientType_Sel");
+            return _baseStorage.QueryAsync<RecipientType>("NCB_Setting_RecipientType_Sel");
         }
 
         public Task<List<BotName>> GetBotNameAsync()
         {
-            return _baseStorage.QueryAsync<BotName>("NCB_BotName_Sel");
+            return _baseStorage.QueryAsync<BotName>("NCB_Setting_BotName_Sel");
         }
 
         public Task<List<ChatGroupType>> GetChatGroupTypeAsync()
         {
-            return _baseStorage.QueryAsync<ChatGroupType>("NCB_ChatGroupType_Sel");
+            return _baseStorage.QueryAsync<ChatGroupType>("NCB_Setting_ChatGroupType_Sel");
         }
     }
 }

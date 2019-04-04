@@ -33,12 +33,12 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.ChatGroupMappingStorageTest
                 .Callback<string, object, string>((p1, p2, p3) => { spName = p1; param = p2; });
 
             DynamicParameters expectedParam = new DynamicParameters();
-            expectedParam.Add("in_BotNames", value: criteria.BotNames, dbType: DbType.String);
-            expectedParam.Add("in_RecipientTypeIDs", value: criteria.RecipientTypeIDs, dbType: DbType.String);
-            expectedParam.Add("in_RecipientName", value: criteria.RecipientName, dbType: DbType.String);
-            expectedParam.Add("in_MappingStatusIds", value: criteria.MappingStatusIds, dbType: DbType.String);
-            expectedParam.Add("in_PageIndex", value: criteria.PageIndex, dbType: DbType.Int64);
-            expectedParam.Add("in_PageSize", value: criteria.PageSize, dbType: DbType.Int64);
+            expectedParam.Add("botNames", value: criteria.BotNames, dbType: DbType.String);
+            expectedParam.Add("recipientTypeIDs", value: criteria.RecipientTypeIDs, dbType: DbType.String);
+            expectedParam.Add("recipientName", value: criteria.RecipientName, dbType: DbType.String);
+            expectedParam.Add("mappingStatusIds", value: criteria.MappingStatusIds, dbType: DbType.String);
+            expectedParam.Add("pageIndex", value: criteria.PageIndex, dbType: DbType.Int64);
+            expectedParam.Add("pageSize", value: criteria.PageSize, dbType: DbType.Int64);
 
             // Act
             storage.GetChatGroupMappingListAsync(criteria);

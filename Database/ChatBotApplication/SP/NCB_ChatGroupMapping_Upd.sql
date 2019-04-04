@@ -1,47 +1,56 @@
 DELIMITER //
 CREATE PROCEDURE `NCB_ChatGroupMapping_Upd`(
-	IN in_GroupID INT,
-    IN in_RecipientTypeID INT, 
-    IN in_RecipientIDs VARCHAR(1000), 
-    IN in_ChatGroupTypeID INT,
-    IN in_Remark VARCHAR(1000),
-    IN in_CreatorID INT,
-    OUT out_ErrorCode INT, 
-    OUT out_ErrorMsg VARCHAR(100)
+	IN groupID INT,
+    IN recipientTypeID INT, 
+    IN recipientIDs VARCHAR(1000), 
+    IN chatGroupTypeID INT,
+    IN remark VARCHAR(1000),
+    IN creatorID INT    
 )
+	/*
+		Creator: Scofield@20190404
+        Params:
+				- groupID: Bot Conversation ID
+                - recipientTypeID: Recipient Type ID
+                - recipientIDs: Recipient IDs, ex: "1,2"
+                - chatGroupTypeID: Chat Group Type ID
+                - remark: Bot Conversation Remark
+                - creatorID: Creator ID
+        Revisions:
+				- 20190404@Scofield: Create        
+    */
 BEGIN
 	DECLARE strLen    INT DEFAULT 0;
 	DECLARE subStrLen INT DEFAULT 0;
-    DECLARE recipientIDs VARCHAR(1000);
     
-	IF EXISTS(SELECT 1 FROM BotConversationExtraInfo bce WHERE bce.GroupID = in_GroupID) THEN
+	IF EXISTS(SELECT 1 FROM BotConversationExtraInfo bce WHERE bce.BotConversationID = groupID) THEN
 		UPDATE BotConversationExtraInfo bce
-        SET bce.ChatGroupTypeID = in_ChatGroupTypeID, bce.Remark = in_Remark
-        WHERE bce.GroupID = in_GroupID;
+        SET bce.ChatGroupTypeID = chatGroupTypeID, bce.Remark = remark
+        WHERE bce.GroupID = groupID;
     ELSE
 		INSERT INTO BotConversationExtraInfo(GroupID, ChatGroupTypeID, Remark)
-        VALUES (in_GroupID, in_ChatGroupTypeID, in_Remark);
+        VALUES (groupID, chatGroupTypeID, remark);
     END IF;    
     
-    DELETE FROM BotConversationRecipient
-    WHERE GroupID = in_GroupID;
+    #Insert comma seperated list RecipientIDLst to temporary tables
+    DROP TEMPORARY TABLE IF EXISTS tmp_RecipientID;
+	CREATE TEMPORARY TABLE tmp_RecipientID(RecipientID INT);
     
-    SET recipientIDs = in_RecipientIDs;
-    do_this:
-		  LOOP			
-            SET strLen = LENGTH(recipientIDs);            
-            
-            INSERT INTO BotConversationRecipient(GroupID, RecipientID)
-            VALUES (in_GroupID, SUBSTRING_INDEX(recipientIDs, ',', 1));			
-
-			SET subStrLen = LENGTH(SUBSTRING_INDEX(recipientIDs, ',', 1));
-			SET recipientIDs = MID(recipientIDs, subStrLen + 2, strLen);
-
-			IF recipientIDs = '' THEN
-			  LEAVE do_this;
-			END IF;
-		  END LOOP do_this;
-          
-	SELECT 0 INTO out_ErrorCode;
-	SELECT "" INTO out_ErrorMsg;
+	SET @SqlCommand = REPLACE(recipientIDs, ',', '),(');
+	SET @SqlCommand = CONCAT('(', @SqlCommand, ')');
+	SET @SqlCommand= CONCAT('INSERT INTO tmp_RecipientID VALUES'
+														, @SqlCommand); 
+	
+    PREPARE Stmt FROM  @SqlCommand;
+	EXECUTE Stmt;
+	DEALLOCATE PREPARE Stmt;
+    
+    DELETE FROM BotConversationRecipient 
+    WHERE BotConversationID = groupID;
+    
+    INSERT INTO BotConversationRecipient(BotConversationID, RecipientID)
+    SELECT groupID AS BotConversationID, tri.RecipientID
+    FROM tmp_RecipientID tri;
+    
+    DROP TEMPORARY TABLE IF EXISTS tmp_RecipientID;        
 END;

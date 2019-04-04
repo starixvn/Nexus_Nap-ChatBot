@@ -26,19 +26,20 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
             DBSetting dbSetting = _dBConfigService.GetSPConfig(dbName, key);
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
             {
-                param.Add("out_ErrorCode", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                param.Add("out_ErrorMsg", dbType: DbType.String, direction: ParameterDirection.Output, size: int.MaxValue);
+                //param.Add("out_ErrorCode", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                //param.Add("out_ErrorMsg", dbType: DbType.String, direction: ParameterDirection.Output, size: int.MaxValue);
 
                 await dbConnection.ExecuteAsync(
                     dbSetting.SPName,
                     param: param,
                     commandType: CommandType.StoredProcedure).ConfigureAwait(false);
 
-                return new ResultModel
-                {
-                    ErrorCode = param.Get<int>("out_ErrorCode"),
-                    ErrorMsg = param.Get<string>("out_ErrorMsg")
-                };
+                //return new ResultModel
+                // {
+                //     ErrorCode = param.Get<int>("out_ErrorCode"),
+                //     ErrorMsg = param.Get<string>("out_ErrorMsg")
+                // };
+                return new ResultModel { ErrorCode = 0, ErrorMsg = string.Empty };
             }
         }
 
