@@ -3,10 +3,10 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS NCB_UserLog_RunSP_Ins;
 
 CREATE PROCEDURE  NCB_UserLog_RunSP_Ins(
-	IN in_ActionID SMALLINT
-	,IN in_UserID INT
-    ,IN in_LogContent TEXT
-    ,IN in_Duration INT
+	IN ActionID SMALLINT
+	, IN UserID INT
+    , IN LogContent TEXT
+    , IN Duration INT
     /*
 		Creator: Dominic@20190401
         Param:
@@ -18,7 +18,7 @@ CREATE PROCEDURE  NCB_UserLog_RunSP_Ins(
 		
     */
 )
-NCB_UserLog_RunSP_Ins:BEGIN
+BEGIN
 	INSERT INTO UserLog_RunSP(LogTime, ActionID, UserID, LogContent, Duration)
     SELECT NOW() LogTime, in_ActionID, in_UserID, in_LogContent, in_Duration;
 END;

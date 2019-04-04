@@ -4,18 +4,20 @@ DROP PROCEDURE IF EXISTS NCB_NewNotification_Ins;
 
 CREATE PROCEDURE  NCB_NewNotification_Ins(
 	IN NotificationTypeID SMALLINT
-	,IN ProductID INT
-	,IN RecipientIDLst VARCHAR(200)
-	,IN Title VARCHAR(300)
-	,IN Content MEDIUMTEXT
-	,IN ConfigSendTime DATETIME
-	,IN Creator INT
-	,OUT ErrCode SMALLINT
-	,OUT ErrMsg VARCHAR(100)
+	, IN ProductID INT
+	, IN RecipientIDLst VARCHAR(200)
+	, IN Title VARCHAR(300)
+	, IN Content MEDIUMTEXT
+	, IN ConfigSendTime DATETIME
+	, IN Creator INT
+    , OUT NotificationID INT
+	, OUT ErrCode SMALLINT
+	, OUT ErrMsg VARCHAR(100)
     /*
 		Creator: Dominic@20190401
         Param:
 				- ProductID: Applied to filter licensees who are offered a specific product
+                - NotificationID: ID of created Notification
         Revisions:
 				- 20190401@Dominic: First Commit
         
@@ -29,9 +31,6 @@ NCB_NewNotification_Ins:BEGIN
     DECLARE SPDuration 			INT;							
     DECLARE SPLogContent 		TEXT;
     DECLARE ActionID 				INT DEFAULT 1;
-    
-    #New NotificationID 
-    DECLARE NotificationID 		INT;
     
     #Get Start Time to calcualte execution duration
     SET  SPStartTime = CURRENT_TIMESTAMP(3);
