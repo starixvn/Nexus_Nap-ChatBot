@@ -7,7 +7,6 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using NLog.Web;
 
 namespace Fanex.NCB.Bot.Main
 {
@@ -31,9 +30,13 @@ namespace Fanex.NCB.Bot.Main
               .ConfigureLogging((_, logging) =>
               {
                   logging.ClearProviders();
-                  logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                  // add built-in providers manually, as needed 
+                  logging.AddConsole();
+                  logging.AddDebug();
+                  logging.AddEventLog();
+                  logging.AddEventSourceLogger();
+                  logging.AddTraceSource("TraceSourceSwitch");
               })
-            .UseNLog()
             .UseStartup<Startup>();
     }
 }

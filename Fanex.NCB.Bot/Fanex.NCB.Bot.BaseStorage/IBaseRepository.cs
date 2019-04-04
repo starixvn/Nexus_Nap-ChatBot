@@ -11,6 +11,5 @@ namespace Fanex.NCB.Bot.BaseStorage
         Task<int> InsertAsync(T value);
         Task<bool> UpdateAsync(T newValue);
         Task<T> SingleAsync(Expression<Func<T, bool>> predicate);
-        Task<IEnumerable<T>> FetchAsync(Expression<Func<T, bool>> predicate);
     }
 }

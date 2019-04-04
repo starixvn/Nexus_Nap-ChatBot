@@ -19,24 +19,15 @@ namespace Fanex.NCB.Bot.MySQLStorage
             _botServiceDBContext = botServiceDBContext;
         }
 
-        public IEnumerable<BotConversationMember> Fetch(Expression<Func<BotConversationMember, bool>> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<BotConversationMember>> FetchAsync(Expression<Func<BotConversationMember, bool>> predicate)
-        {
-            throw new NotImplementedException();
-        }
         public async Task<int> InsertAsync(BotConversationMember value)
         {
             await _botServiceDBContext.BotConversationMembers.AddAsync(value).ConfigureAwait(false);
             return await _botServiceDBContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        public async Task<BotConversationMember> SingleAsync(Expression<Func<BotConversationMember, bool>> predicate)
+        public Task<BotConversationMember> SingleAsync(Expression<Func<BotConversationMember, bool>> predicate)
         {
-            return await Task.Run(() => _botServiceDBContext.BotConversationMembers.FirstOrDefault(predicate)).ConfigureAwait(false);
+            return Task.Run(() => _botServiceDBContext.BotConversationMembers.FirstOrDefault(predicate));
         }
 
         public async Task<bool> UpdateAsync(BotConversationMember newValue)
