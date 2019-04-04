@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
-using Fanex.NCB.Bot.Models.DataDomain;
-using Fanex.NCB.Bot.Models.DTO;
+﻿using Fanex.NCB.Bot.Models.DTO;
+
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace Fanex.NCB.Bot.MySQLStorage
 {

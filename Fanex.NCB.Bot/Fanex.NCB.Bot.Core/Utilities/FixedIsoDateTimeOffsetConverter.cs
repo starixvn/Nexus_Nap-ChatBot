@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Newtonsoft.Json.Converters;
 
 namespace Fanex.NCB.Bot.Core.Utilities
