@@ -11,6 +11,7 @@ namespace Fanex.NCB.SkypeBot.Services.Setting
     public class SettingService : ISettingService
     {
         private readonly ISettingStorage _settingStorage;
+
         public SettingService(ISettingStorage settingStorage)
         {
             _settingStorage = settingStorage;
@@ -18,19 +19,10 @@ namespace Fanex.NCB.SkypeBot.Services.Setting
 
         public Task<List<Recipient>> GetRecipientsAsync() => _settingStorage.GetRecipientsAsync();
 
-        public Task<List<RecipientType>> GetRecipientTypesAsync()
-        {
-            return _settingStorage.GetRecipientTypesAsync();
-        }
+        public Task<List<RecipientType>> GetRecipientTypesAsync() => _settingStorage.GetRecipientTypesAsync();        
 
-        public Task<List<BotName>> GetBotNameAsync()
-        {
-            return _settingStorage.GetBotNameAsync();
-        }
-
-        public Task<List<ChatGroupType>> GetChatGroupTypeAsync()
-        {
-            return _settingStorage.GetChatGroupTypeAsync();
-        }
+        public Task<List<BotName>> GetBotNameAsync() => _settingStorage.GetBotNameAsync();
+        
+        public Task<List<ChatGroupType>> GetChatGroupTypeAsync() => _settingStorage.GetChatGroupTypeAsync();        
     }
 }

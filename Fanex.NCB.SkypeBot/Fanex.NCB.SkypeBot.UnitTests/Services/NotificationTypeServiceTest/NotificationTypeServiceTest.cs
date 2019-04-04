@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Fanex.NCB.SkypeBot.UnitTests.Services.NotificationType
+namespace Fanex.NCB.SkypeBot.UnitTests.Services.NotificationTypeServiceTest
 {
     public class NotificationTypeServiceTest
     {

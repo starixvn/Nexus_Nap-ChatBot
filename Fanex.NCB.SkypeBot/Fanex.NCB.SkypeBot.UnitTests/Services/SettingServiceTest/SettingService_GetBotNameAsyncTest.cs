@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Fanex.NCB.SkypeBot.UnitTests.Services.Setting
+namespace Fanex.NCB.SkypeBot.UnitTests.Services.SettingServiceTest
 {
     public class SettingService_GetBotNameAsyncTest
     {

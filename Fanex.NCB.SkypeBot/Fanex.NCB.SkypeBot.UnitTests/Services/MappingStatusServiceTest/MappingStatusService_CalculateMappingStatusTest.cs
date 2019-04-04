@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace Fanex.NCB.SkypeBot.UnitTests.Services.MappingStatus
+namespace Fanex.NCB.SkypeBot.UnitTests.Services.MappingStatusServiceTest
 {
     public class MappingStatusService_CalculateMappingStatusTest
     {

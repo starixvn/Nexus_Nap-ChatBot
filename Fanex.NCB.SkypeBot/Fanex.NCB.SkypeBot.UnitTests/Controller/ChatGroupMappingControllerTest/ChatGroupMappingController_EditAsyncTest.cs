@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Fanex.NCB.SkypeBot.UnitTests.Controller.ChatGroupMapping
+namespace Fanex.NCB.SkypeBot.UnitTests.Controller.ChatGroupMappingControllerTest
 {
     public class ChatGroupMappingController_EditAsyncTest
     {

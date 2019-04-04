@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace Fanex.NCB.SkypeBot.UnitTests.Controller.ChatGroupMapping
+namespace Fanex.NCB.SkypeBot.UnitTests.Controller.ChatGroupMappingControllerTest
 {
     public class ChatGroupMappingController_IndexTest
     {

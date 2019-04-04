@@ -11,26 +11,26 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Fanex.NCB.SkypeBot.UnitTests.Services.Setting
+namespace Fanex.NCB.SkypeBot.UnitTests.Services.SettingServiceTest
 {
-    public class SettingService_GetChatGroupTypeAsyncTest
+    public class SettingService_GetRecipientsAsyncTest
     {
         [Fact]
-        public async Task GetChatGroupTypeAsync_WhenCalled_GetChatGroupTypeAsync()
+        public async Task GetRecipientsAsync_WhenCalled_GetRecipientsAsync()
         {
             // Arrange
             var fixture = new Fixture();
             var settingStorage = new Mock<ISettingStorage>();
             var service = new SettingService(settingStorage.Object);
-            
-            var chatGroupTypes = fixture.CreateMany<ChatGroupType>(2).ToList();
-            settingStorage.Setup(s => s.GetChatGroupTypeAsync()).Returns(Task.FromResult(chatGroupTypes));
+
+            var recipients = fixture.CreateMany<Recipient>(2).ToList();
+            settingStorage.Setup(s => s.GetRecipientsAsync()).Returns(Task.FromResult(recipients));
 
             // Act
-            var result = await service.GetChatGroupTypeAsync();
+            var result = await service.GetRecipientsAsync();
 
             // Assert
-            result.Should().BeEquivalentTo(chatGroupTypes);
+            result.Should().BeEquivalentTo(recipients);
         }
     }
 }

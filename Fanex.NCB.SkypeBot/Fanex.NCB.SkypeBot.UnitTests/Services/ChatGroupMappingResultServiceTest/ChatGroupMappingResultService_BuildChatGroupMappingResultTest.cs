@@ -9,13 +9,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
+using Xunit.Extensions;
 
-namespace Fanex.NCB.SkypeBot.UnitTests.Services.ChatGroupMappingResultTest
+namespace Fanex.NCB.SkypeBot.UnitTests.Services.ChatGroupMappingResultServiceTest
 {
     public class ChatGroupMappingResultService_BuildChatGroupMappingResultTest
     {
-        [Fact]
-        public void BuildChatGroupMappingResult_WhenCalled_BuildChatGroupMappingResultCorrectly()
+        [Theory]        
+        [MemberData(nameof(BotConversationMemberData))]
+        public void BuildChatGroupMappingResult_WhenCalled_BuildChatGroupMappingResultCorrectly(BotConversationMember botConversationMember)
         {
             // Arrange
             var fixture = new Fixture();
@@ -28,7 +30,6 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.ChatGroupMappingResultTest
             mappingStatusService.Setup(s => s.GetMappingStatusName(It.IsAny<int>())).Returns(mappingStatusName);
 
             var botConversation = fixture.Create<BotConversation>();
-            var botConversationMember = fixture.Create<BotConversationMember>();
             var conversationRecipients = fixture.CreateMany<ConversationRecipient>(2).ToList();
 
             var expectedResult = new Model.DTO.ChatGroupMapping.ChatGroupMappingResult
@@ -54,6 +55,18 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.ChatGroupMappingResultTest
 
             // Assert
             result.Should().BeEquivalentTo(expectedResult);
+        }
+
+        public static IEnumerable<object[]> BotConversationMemberData
+        {
+            get
+            {
+                return new[]
+                {
+                    new object[] {new BotConversationMember() },
+                    new object[] {null }
+                };
+            }
         }
     }
 }
