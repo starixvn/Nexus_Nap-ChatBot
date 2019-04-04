@@ -10,7 +10,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationType
+namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationTypeStorageTest
 {
     public class NotificationTypeStorage_CreateNotificationTypeAsyncTest
     {

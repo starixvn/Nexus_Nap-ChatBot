@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationType
+namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationTypeStorageTest
 {
     public class NotificationTypeStorage_GetNotificationTypeListAsyncTest
     {
