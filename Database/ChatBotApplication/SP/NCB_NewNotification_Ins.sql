@@ -15,7 +15,7 @@ CREATE PROCEDURE  NCB_NewNotification_Ins(
     /*
 		Creator: Dominic@20190401
         Param:
-				- ProductIDLst: Applied to filter licensees who are offered a specific product
+				- ProductID: Applied to filter licensees who are offered a specific product
         Revisions:
 				- 20190401@Dominic: First Commit
         
@@ -39,7 +39,9 @@ NCB_NewNotification_Ins:BEGIN
     SET ErrCode=0, ErrMsg='';
     
 	#Check param
-	IF  NOT EXISTS(SELECT 1 FROM ChatBot.NotificationType  WHERE NotificationTypeID = NotificationTypeID) THEN
+	IF  NOT EXISTS(SELECT 1 
+									FROM ChatBot.NotificationType  nt
+                                    WHERE nt.NotificationTypeID = NotificationTypeID ) THEN
 		SET ErrCode=1, ErrMsg='Invalid NotificationTypeID';
         LEAVE NCB_NewNotification_Ins;
     ELSEIF IFNULL(Title,'') = '' OR IFNULL(Content,'') = '' THEN
@@ -59,29 +61,45 @@ NCB_NewNotification_Ins:BEGIN
     #Insert comma seperated list RecipientIDLst to temporary tables
     DROP TEMPORARY TABLE IF EXISTS tmp_RecipientID;
 	CREATE TEMPORARY TABLE tmp_RecipientID(RecipientID INT);
+    
 	SET @SqlCommand = REPLACE(RecipientIDLst, ',', '),(');
 	SET @SqlCommand = CONCAT('(', @SqlCommand, ')');
-	SET @SqlCommand= CONCAT('INSERT INTO tmp_RecipientID VALUES', @SqlCommand); 
+	SET @SqlCommand= CONCAT('INSERT INTO tmp_RecipientID VALUES'
+														, @SqlCommand); 
 	
-    PREPARE stmt FROM  @SqlCommand;
-	EXECUTE stmt;
-	DEALLOCATE PREPARE stmt;
+    PREPARE Stmt FROM  @SqlCommand;
+	EXECUTE Stmt;
+	DEALLOCATE PREPARE Stmt;
     
     #Filter Recipient by offered products
     IF ProductID IS NOT NULL THEN
 		DELETE main
         FROM tmp_RecipientID main
-        INNER JOIN Recipient re ON re.RecipientID = main.RecipientID AND re.RecipientTypeID = 1 #RecipientType is Licensees
-        LEFT JOIN LicenseeProduct lp ON lp.LicenseeID = re.SourceID AND lp.ProductID = ProductID
-        WHERE LaunchDate IS NULL
-        OR (LaunchDate IS NOT NULL AND ConfigSendTime < LaunchDate)
-		OR (TerminationDate IS NOT NULL AND ConfigSendTime > TerminationDate);
+			INNER JOIN Recipient re 
+				ON re.RecipientID = main.RecipientID 
+					AND re.RecipientTypeID = 1 #RecipientType is Licensees
+			LEFT JOIN LicenseeProduct lp 
+				ON lp.LicenseeID = re.SourceID 
+					AND lp.ProductID = ProductID
+        WHERE  lp.LaunchDate IS NULL
+			OR (
+						 lp.LaunchDate IS NOT NULL 
+						AND ConfigSendTime <  lp.LaunchDate
+					)
+			OR (
+						lp.TerminationDate IS NOT NULL 
+                        AND ConfigSendTime > lp.TerminationDate
+					);
     END IF;
     
     #Delete exception Recipient
     DELETE main
     FROM tmp_RecipientID main
-    WHERE RecipientID IN (SELECT RecipientID FROM NotificationTypeRecipientException WHERE NotificationTypeID = NotificationTypeID);
+    WHERE main.RecipientID IN (
+					SELECT ex.RecipientID 
+					FROM NotificationTypeRecipientException ex
+					WHERE ex.NotificationTypeID = NotificationTypeID
+	);
     
     #Insert a new Notification
     INSERT INTO Notification(NotificationTypeID
@@ -101,19 +119,31 @@ NCB_NewNotification_Ins:BEGIN
     SET NotificationID = LAST_INSERT_ID();
     
     #Insert recipient list
-    INSERT INTO NotificationRecipientList(NotificationID, BotConversationID, ChatGroupTypeID, RecipientID, Status, StatusID)
-    SELECT NotificationID, IFNULL(gri.BotConversationID, -1), IFNULL(gri.ChatGroupTypeID,-1), re.RecipientID, 'Planned', 0
+    INSERT INTO NotificationRecipientList(NotificationID, BotConversationID
+                                                                    , ChatGroupTypeID, RecipientID
+                                                                    , Status, StatusID)
+    SELECT NotificationID, IFNULL(gri.BotConversationID, -1)
+					, IFNULL(gri.ChatGroupTypeID,-1), re.RecipientID
+                    , 'Planned', 0
     FROM tmp_RecipientID re
-    LEFT JOIN BotConversationRecipient gr ON re.RecipientID = gr.RecipientID
-    LEFT JOIN BotConversationExtraInfo gri ON gri.BotConversationID = gr.BotConversationID
-    WHERE gri.ChatGroupTypeID IN (SELECT ChatGroupTypeID FROM NotificationChatGroupType WHERE NotificationTypeID = NotificationTypeID);
+		LEFT JOIN BotConversationRecipient gr 
+			ON re.RecipientID = gr.RecipientID
+		LEFT JOIN BotConversationExtraInfo gri 
+			ON gri.BotConversationID = gr.BotConversationID
+    WHERE gri.ChatGroupTypeID IN (
+						SELECT cgt.ChatGroupTypeID 
+						FROM NotificationChatGroupType  cgt
+                        WHERE cgt.NotificationTypeID = NotificationTypeID
+	);
 	
     #Drop Unused temporary tables
      DROP TEMPORARY TABLE IF EXISTS tmp_RecipientID;
     
      #Get Finish Time to calcualte execution duration
     SET SPFinishTime = CURRENT_TIMESTAMP(3);
-    SET SPDuration =  TIMESTAMPDIFF(MICROSECOND,SPStartTime,SPFinishTime)  / 1000; 	#miliseconds
+    SET SPDuration =  TIMESTAMPDIFF(MICROSECOND
+																		, SPStartTime
+                                                                        , SPFinishTime)  / 1000; 	#miliseconds
     
     #Get Log Content, JSON format
     SET SPLogContent = json_object('NotificationTypeID', NotificationTypeID
