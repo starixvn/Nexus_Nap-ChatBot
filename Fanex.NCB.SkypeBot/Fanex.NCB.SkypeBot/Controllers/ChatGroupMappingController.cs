@@ -33,7 +33,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetSettingsAsync()
+        public async Task<IActionResult> GetSettings()
         {
             var botNames = await _settingService.GetBotNameAsync().ConfigureAwait(false);
             var recipientTypes = await _settingService.GetRecipientTypesAsync().ConfigureAwait(false);
@@ -45,7 +45,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync(GetChapGroupMappingCriteria criteria)
+        public async Task<IActionResult> GetAll(GetChapGroupMappingCriteria criteria)
         {
             var data = await _chatGroupMappingService.GetChatGroupMappingListAsync(criteria).ConfigureAwait(false);
 
@@ -54,7 +54,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditAsync([FromBody] EditChatGroupMappingCriteria criteria)
+        public async Task<IActionResult> Edit([FromBody] EditChatGroupMappingCriteria criteria)
         {
             var result = await _chatGroupMappingService.UpdateChatGroupMappingAsync(criteria).ConfigureAwait(false);
 

@@ -32,7 +32,11 @@ export class UpdatePopup extends Component {
         !this.state.isSummited && this.setState({ isSummited: true });                
         if (this.checkValidParams()) {
             let params = this.getParams();
-            this.props.update(params).then(this.closePopup);
+            this.props.update(params).then(() => {
+                if (this.props.updateData.errorCode === 0) {
+                    this.closePopup();
+                }              
+            });
         }
     }
 

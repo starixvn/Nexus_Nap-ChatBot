@@ -128,6 +128,30 @@ exports[`UpdatePopup render when SuccessMsg is not shown 1`] = `
             ]
           }
         >
+          Chat Group Type
+        </Label>
+        <SelectField
+          initialValue={1}
+          isSummited={false}
+          onChange={[Function]}
+        />
+      </FormGroup>
+      <FormGroup
+        tag="div"
+      >
+        <Label
+          className="form-label required"
+          tag="label"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
+          }
+        >
           Recipient Type
         </Label>
         <SelectField
@@ -380,6 +404,30 @@ exports[`UpdatePopup render when SuccessMsg shown 1`] = `
               "xl",
             ]
           }
+        />
+      </FormGroup>
+      <FormGroup
+        tag="div"
+      >
+        <Label
+          className="form-label required"
+          tag="label"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
+          }
+        >
+          Chat Group Type
+        </Label>
+        <SelectField
+          initialValue={1}
+          isSummited={false}
+          onChange={[Function]}
         />
       </FormGroup>
       <FormGroup

@@ -42,7 +42,7 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Controller.ChatGroupMappingControllerTest
             var expectedResult = new { botNames, recipientTypes, mappingStatuses, recipients };
 
             // Act
-            var result = await controller.GetSettingsAsync() as JsonResult;
+            var result = await controller.GetSettings() as JsonResult;
 
             // Assert
             result.Value.Should().BeEquivalentTo(expectedResult);

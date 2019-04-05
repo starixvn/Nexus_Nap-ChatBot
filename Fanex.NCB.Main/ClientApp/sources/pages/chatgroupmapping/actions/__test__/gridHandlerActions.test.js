@@ -20,6 +20,7 @@ describe("gridHandlerActions", () => {
                 botName: "Bot 1",
                 groupName: "Group 1",
                 recipientTypeID: 1,
+                chatGroupTypeID: 1,
                 recipientIDs: "1,2",
                 remark: "",
                 recipientStatusNames: ""
@@ -36,6 +37,10 @@ describe("gridHandlerActions", () => {
                     recipientTypeId: {
                         value: item.recipientTypeID,
                         isValid: item.recipientTypeID !== 0
+                    },
+                    chatGroupTypeId: {
+                        value: item.chatGroupTypeID,
+                        isValid: item.chatGroupTypeID !== 0
                     },
                     recipientIds: {
                         value: item.recipientIDs,

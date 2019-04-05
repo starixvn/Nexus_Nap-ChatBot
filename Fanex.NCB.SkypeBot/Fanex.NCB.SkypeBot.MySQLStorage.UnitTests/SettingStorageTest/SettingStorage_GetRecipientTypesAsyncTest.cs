@@ -24,7 +24,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.SettingStorageTest
             var storage = new SettingStorage(baseStorage.Object);
 
             var expectedData = fixture.CreateMany<RecipientType>().ToList();
-            baseStorage.Setup(s => s.QueryAsync<RecipientType>("NCB_RecipientType_Sel", It.IsAny<object>(), It.IsAny<string>()))
+            baseStorage.Setup(s => s.QueryAsync<RecipientType>("NCB_Setting_RecipientType_Sel", It.IsAny<object>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(expectedData));
 
             // Act

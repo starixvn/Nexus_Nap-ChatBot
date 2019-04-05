@@ -10,6 +10,7 @@ describe("UpdatePopup", () => {
                 groupID: 1,
                 conversationID: 2,
                 recipientTypeId: { value: 3 },
+                chatGroupTypeId: { value: 1 },
                 recipientIds: { value: "4,5" },
                 remark: { value: "remark 1" }
             }
@@ -131,12 +132,13 @@ describe("UpdatePopup", () => {
             expect(updatePopup.setState).toHaveBeenCalledWith({ isSummited: true });
         });
 
-        it("when valid params - call update", (done) => {
+        it("when valid params and updateData errorCode is 0 - call update", (done) => {
             // Arrange
             let response = {};
             let props = {
                 ...defaultProps,
-                update: jest.fn(() => Promise.resolve(response))
+                update: jest.fn(() => Promise.resolve(response)),
+                updateData: {errorCode: 0}
             };
             let updatePopup = new UpdatePopup(props);
             let event = { preventDefault: jest.fn() };
@@ -159,6 +161,36 @@ describe("UpdatePopup", () => {
                 done();
             });
         });
+
+        it("when valid params and updateData errorCode is NOT 0 - do not call closePopup", (done) => {
+            // Arrange
+            let response = {};
+            let props = {
+                ...defaultProps,
+                update: jest.fn(() => Promise.resolve(response)),
+                updateData: { errorCode: 1 }
+            };
+            let updatePopup = new UpdatePopup(props);
+            let event = { preventDefault: jest.fn() };
+            updatePopup.setState = jest.fn();
+            updatePopup.checkValidParams = jest.fn(() => { return true; });
+            updatePopup.state.isSummited = true;
+            let params = "params";
+            updatePopup.getParams = jest.fn(() => { return params; });
+            updatePopup.closePopup = jest.fn();
+
+            // Act
+            updatePopup.submitHandler(event);
+
+            // Assert
+            expect(event.preventDefault).toHaveBeenCalled();
+            expect(updatePopup.setState).not.toHaveBeenCalled();
+            expect(props.update).toHaveBeenCalledWith(params);
+            props.update().then(() => {
+                expect(updatePopup.closePopup).not.toHaveBeenCalled();
+                done();
+            });
+        });
     });
 
     describe("getParams", () => {
@@ -174,6 +206,9 @@ describe("UpdatePopup", () => {
                 recipientTypeId: {
                     value: 3
                 },
+                chatGroupTypeId: {
+                    value: 4
+                },
                 recipientIds: { value: "4,5" },
                 remark: { value: "remark" }
             };            
@@ -181,6 +216,7 @@ describe("UpdatePopup", () => {
                 groupID: 1,
                 conversationId: 2,
                 recipientTypeId: 3,
+                chatGroupTypeId: 4,
                 recipientIds: "4,5",
                 remark: "remark"
             };
@@ -194,7 +230,7 @@ describe("UpdatePopup", () => {
     });
 
     describe("checkValidParams", () => {
-        it("when recipientTypeId valid and recipientIds valid and  remark valid - return true", () => {
+        it("when all valid - return true", () => {
             // Arrange
             let props = {
                 ...defaultProps
@@ -203,7 +239,8 @@ describe("UpdatePopup", () => {
             updatePopup.state = {
                 recipientTypeId: { isValid: true },
                 recipientIds: { isValid: true },
-                remark: { isValid: true }
+                remark: { isValid: true },
+                chatGroupTypeId: {isValid: true}
             };    
 
             // Act
@@ -213,7 +250,7 @@ describe("UpdatePopup", () => {
             expect(result).toBe(true);
         });
 
-        it("when recipientTypeId invalid and recipientIds valid and  remark valid - return false", () => {
+        it("when recipientTypeId invalid - return false", () => {
             // Arrange
             let props = {
                 ...defaultProps
@@ -222,7 +259,8 @@ describe("UpdatePopup", () => {
             updatePopup.state = {
                 recipientTypeId: { isValid: false },
                 recipientIds: { isValid: true },
-                remark: { isValid: true }
+                remark: { isValid: true },
+                chatGroupTypeId: { isValid: true }
             };
 
             // Act
@@ -232,7 +270,7 @@ describe("UpdatePopup", () => {
             expect(result).toBe(false);
         });
 
-        it("when recipientTypeId valid and recipientIds invalid and  remark valid - return false", () => {
+        it("when recipientIds invalid - return false", () => {
             // Arrange
             let props = {
                 ...defaultProps
@@ -241,7 +279,8 @@ describe("UpdatePopup", () => {
             updatePopup.state = {
                 recipientTypeId: { isValid: true },
                 recipientIds: { isValid: false },
-                remark: { isValid: true }
+                remark: { isValid: true },
+                chatGroupTypeId: { isValid: true }
             };
 
             // Act
@@ -251,7 +290,7 @@ describe("UpdatePopup", () => {
             expect(result).toBe(false);
         });
 
-        it("when recipientTypeId valid and recipientIds valid and  remark invalid - return false", () => {
+        it("when remark invalid - return false", () => {
             // Arrange
             let props = {
                 ...defaultProps
@@ -260,7 +299,28 @@ describe("UpdatePopup", () => {
             updatePopup.state = {
                 recipientTypeId: { isValid: true },
                 recipientIds: { isValid: true },
-                remark: { isValid: false }
+                remark: { isValid: false },
+                chatGroupTypeId: { isValid: true }
+            };
+
+            // Act
+            let result = updatePopup.checkValidParams();
+
+            // Assert
+            expect(result).toBe(false);
+        });
+
+        it("when chatGroupTypeId invalid - return false", () => {
+            // Arrange
+            let props = {
+                ...defaultProps
+            };
+            let updatePopup = new UpdatePopup(props);
+            updatePopup.state = {
+                recipientTypeId: { isValid: true },
+                recipientIds: { isValid: true },
+                remark: { isValid: true },
+                chatGroupTypeId: { isValid: false }
             };
 
             // Act

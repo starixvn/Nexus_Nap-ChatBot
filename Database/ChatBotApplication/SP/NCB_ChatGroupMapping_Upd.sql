@@ -5,7 +5,9 @@ CREATE PROCEDURE `NCB_ChatGroupMapping_Upd`(
     IN recipientIDs VARCHAR(1000), 
     IN chatGroupTypeID INT,
     IN remark VARCHAR(1000),
-    IN creatorID INT    
+    IN creatorID INT,
+    OUT errorCode SMALLINT,
+	OUT errorMsg VARCHAR(100)
 )
 	/*
 		Creator: Scofield@20190404
@@ -19,16 +21,39 @@ CREATE PROCEDURE `NCB_ChatGroupMapping_Upd`(
         Revisions:
 				- 20190404@Scofield: Create        
     */
-BEGIN
+NCB_ChatGroupMapping_Upd:BEGIN
 	DECLARE strLen    INT DEFAULT 0;
 	DECLARE subStrLen INT DEFAULT 0;
+    
+    SET errorCode=0, errorMsg='';
+    
+    #Check param
+	IF  groupID IS NULL THEN
+		SET errorCode=101, errorMsg='Invalid GroupID';
+        LEAVE NCB_ChatGroupMapping_Upd;
+	ELSEIF recipientTypeID IS NULL THEN
+		SET errorCode=102, errorMsg='Invalid RecipientTypeID';
+        LEAVE NCB_ChatGroupMapping_Upd;
+	ELSEIF chatGroupTypeID IS NULL THEN
+		SET errorCode=103, errorMsg='Invalid ChatGroupTypeID';
+        LEAVE NCB_ChatGroupMapping_Upd;
+	ELSEIF creatorID IS NULL THEN
+		SET errorCode=104, errorMsg='Invalid CreatorID';
+        LEAVE NCB_ChatGroupMapping_Upd;
+	ELSEIF IFNULL(recipientIDs,'') = '' THEN
+		SET errorCode=105, errorMsg='Recipients can not be empty';
+        LEAVE NCB_ChatGroupMapping_Upd;
+	ELSEIF IFNULL(remark,'') = '' THEN
+		SET errorCode=106, errorMsg='Remark can not be empty';
+        LEAVE NCB_ChatGroupMapping_Upd;
+	END IF;   
     
 	IF EXISTS(SELECT 1 FROM BotConversationExtraInfo bce WHERE bce.BotConversationID = groupID) THEN
 		UPDATE BotConversationExtraInfo bce
         SET bce.ChatGroupTypeID = chatGroupTypeID, bce.Remark = remark
         WHERE bce.BotConversationID = groupID;
     ELSE
-		INSERT INTO BotConversationExtraInfo(GroupID, ChatGroupTypeID, Remark)
+		INSERT INTO BotConversationExtraInfo(BotConversationID, ChatGroupTypeID, Remark)
         VALUES (groupID, chatGroupTypeID, remark);
     END IF;    
     

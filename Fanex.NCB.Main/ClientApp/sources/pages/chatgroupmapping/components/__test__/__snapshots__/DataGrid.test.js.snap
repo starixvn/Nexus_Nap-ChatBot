@@ -54,6 +54,13 @@ exports[`DataGrid render when has data 1`] = `
             onClick={[Function]}
             sortable={false}
             sorting={false}
+          />
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
           >
             name 3
           </Cell>
@@ -158,6 +165,13 @@ exports[`DataGrid render when has data 1`] = `
           >
             name 21
           </Cell>
+          <Cell
+            asc={true}
+            header={false}
+            onClick={[Function]}
+            sortable={false}
+            sorting={false}
+          />
           <Cell
             asc={true}
             header={false}
@@ -281,6 +295,16 @@ exports[`DataGrid render when has data 1`] = `
           sorting={false}
         >
           Group Name
+        </Cell>
+        <Cell
+          asc={true}
+          colWidth={200}
+          header={true}
+          onClick={[Function]}
+          sortable={false}
+          sorting={false}
+        >
+          Chat Group Type
         </Cell>
         <Cell
           asc={true}

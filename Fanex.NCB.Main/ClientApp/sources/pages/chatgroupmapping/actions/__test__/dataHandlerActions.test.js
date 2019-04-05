@@ -32,7 +32,7 @@ describe("dataHanderActions", () => {
             // Arrange
             axios.get = jest.fn(() => Promise.resolve(""));
             let store = mockStore();
-            let expectedUrl = '/ChatGroupMapping/GetSettingsAsync';
+            let expectedUrl = '/ChatGroupMapping/GetSettings';
 
             // Act
             store.dispatch(actions.getSettings());
@@ -103,7 +103,7 @@ describe("dataHanderActions", () => {
             // Arrange
             axios.get = jest.fn(() => Promise.resolve(""));
             let store = mockStore();
-            let expectedUrl = '/ChatGroupMapping/GetAllAsync';
+            let expectedUrl = '/ChatGroupMapping/GetAll';
             let expectedParams = "some param";
 
             // Act
@@ -222,7 +222,7 @@ describe("dataHanderActions", () => {
             let fakeResponse = { data: "some data" };
             axios.post = jest.fn(() => Promise.resolve(fakeResponse));
             let store = mockStore();
-            let expectedUrl = '/ChatGroupMapping/EditAsync';
+            let expectedUrl = '/ChatGroupMapping/Edit';
             let expectedParams = "data";
 
             let getXsrfToken = jest.fn(() => { return "token"; });

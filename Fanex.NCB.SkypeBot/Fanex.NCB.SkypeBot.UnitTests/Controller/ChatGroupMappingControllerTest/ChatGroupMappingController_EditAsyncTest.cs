@@ -33,7 +33,7 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Controller.ChatGroupMappingControllerTest
             chatGroupMappingService.Setup(s => s.UpdateChatGroupMappingAsync(criteria)).Returns(Task.FromResult(resultModel));
 
             // Act
-            var result = await controller.EditAsync(criteria) as JsonResult;
+            var result = await controller.Edit(criteria) as JsonResult;
 
             // Assert
             result.Value.Should().BeEquivalentTo(resultModel);
