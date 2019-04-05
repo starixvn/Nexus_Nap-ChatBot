@@ -18,6 +18,7 @@ CREATE PROCEDURE  NCB_NewNotification_Ins(
         Param:
 				- ProductID: Applied to filter licensees who are offered a specific product
                 - NotificationID: ID of created Notification
+                - ConfigSendTime: GMT+8
                 - ErrCode:  101:
         Revisions:
 				- 20190401@Dominic: First Commit
