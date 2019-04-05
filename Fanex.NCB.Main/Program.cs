@@ -34,6 +34,7 @@ namespace Fanex.NCB.Main
                  {
                      logging.ClearProviders();
                      // add built-in providers manually, as needed 
+                     logging.AddFilter("NCB", LogLevel.Error);
                      logging.AddConsole();
                      logging.AddDebug();
                      logging.AddEventLog();

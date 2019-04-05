@@ -82,12 +82,6 @@ namespace Fanex.NCB.Bot.SkypeClient
 
             }
         }
-
-        public Task<HttpStatusCode> ReplyAsync(IMessageActivity activity, string message)
-        {
-            throw new NotImplementedException();
-        }
-
         public virtual async Task<HttpStatusCode> SendAsync(IMessageActivity messageActivity)
         {
             return await PrepareStep(async (x) =>
