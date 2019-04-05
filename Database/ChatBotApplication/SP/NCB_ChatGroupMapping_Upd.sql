@@ -26,7 +26,7 @@ BEGIN
 	IF EXISTS(SELECT 1 FROM BotConversationExtraInfo bce WHERE bce.BotConversationID = groupID) THEN
 		UPDATE BotConversationExtraInfo bce
         SET bce.ChatGroupTypeID = chatGroupTypeID, bce.Remark = remark
-        WHERE bce.GroupID = groupID;
+        WHERE bce.BotConversationID = groupID;
     ELSE
 		INSERT INTO BotConversationExtraInfo(GroupID, ChatGroupTypeID, Remark)
         VALUES (groupID, chatGroupTypeID, remark);

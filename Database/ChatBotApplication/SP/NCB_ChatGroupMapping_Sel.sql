@@ -42,7 +42,7 @@ BEGIN
 		AND (recipientTypeIds = '' OR find_in_set(r.RecipientTypeID, recipientTypeIds) > 0)
         AND (recipientName = '' OR r.RecipientName LIKE CONCAT('%', recipientName, '%'))
         AND (mappingStatusIds = '' OR find_in_set(CASE WHEN bcm.IsActive = 1 AND bce.BotConversationID IS NULL THEN 1
-										WHEN bcm.IsActive = 1 AND bce.GroupID IS NOT NULL THEN 2
+										WHEN bcm.IsActive = 1 AND bce.BotConversationID IS NOT NULL THEN 2
                                         ELSE 0 END, mappingStatusIds) > 0)
     GROUP BY bc.ID;        
     
@@ -54,7 +54,7 @@ BEGIN
     ORDER BY bc.Name
     LIMIT rowStart, pageSize;
     
-    SELECT COUNT(*) AS Total FROM AllBotConversation;    
+    SELECT COUNT(*) AS Total FROM tmp_AllBotConversation;    
     
     SELECT DISTINCT pbc.Name AS GroupName, 
 		pbc.ID AS GroupID, 
@@ -65,7 +65,7 @@ BEGIN
         r.RecipientTypeID, 
         rt.RecipientTypeName,
 		CASE WHEN bce.BotConversationID IS NOT NULL THEN 1 ELSE 0 END AS IsMapped
-    FROM PagedBotConversation pbc
+    FROM tmp_PagedBotConversation pbc
     LEFT JOIN BotConversationExtraInfo bce ON bce.BotConversationID = pbc.ID
     LEFT JOIN ChatGroupType cgt ON bce.ChatGroupTypeID = cgt.ChatGroupTypeID
     LEFT JOIN BotConversationRecipient bcr ON bce.BotConversationID = bcr.BotConversationID
@@ -77,7 +77,7 @@ BEGIN
 		bcm.ConversationID, 
         bcm.IsActive
     FROM BotConversationMember bcm
-    INNER JOIN PagedBotConversation pbc ON bcm.ConversationID = pbc.ConversationID
+    INNER JOIN tmp_PagedBotConversation pbc ON bcm.ConversationID = pbc.ConversationID
     WHERE bcm.IsBot = 1 
 		AND (botNames = '' OR find_in_set(bcm.Name, botNames) > 0);    
     
@@ -87,7 +87,7 @@ BEGIN
         ls.LicenseeStatusId AS RecipientStatusID,  
         ls.LicenseeStatusName AS RecipientStatusName
     FROM BotConversationRecipient bcr
-    INNER JOIN PagedBotConversation pbc ON bcr.BotConversationID = pbc.ID
+    INNER JOIN tmp_PagedBotConversation pbc ON bcr.BotConversationID = pbc.ID
     INNER JOIN Recipient r ON bcr.RecipientID = r.RecipientID
     LEFT JOIN Licensee l ON r.SourceId = l.LicenseeID AND r.RecipientTypeId = LICENSEE_TYPE
     LEFT JOIN LicenseeStatus ls ON l.LicenseeStatusId = ls.LicenseeStatusId

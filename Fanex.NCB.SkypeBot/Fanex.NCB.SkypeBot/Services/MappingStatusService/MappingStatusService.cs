@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Fanex.NCB.SkypeBot.Services.MappingStatusService
 {
-    public class MappingStatusService
+    public class MappingStatusService : IMappingStatusService
     {
         public int CalculateMappingStatus(bool isConversationMapped, BotConversationMember botConversationMember)
         {
