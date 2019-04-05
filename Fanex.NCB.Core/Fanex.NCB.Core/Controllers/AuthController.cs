@@ -36,11 +36,6 @@ namespace Fanex.NCB.Main.Controllers
             return View(new ApplicationUser());
         }
 
-        //public async Task<IActionResult> SSO()
-        //{
-        //    return null;
-        //}
-
         [HttpPost]
         public async Task<IActionResult> SignIn(string userName, string password, string returnUrl)
         {

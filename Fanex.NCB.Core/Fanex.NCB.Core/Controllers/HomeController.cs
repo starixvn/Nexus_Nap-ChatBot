@@ -19,12 +19,10 @@ namespace Fanex.NCB.Main.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly ISessionService _sessionService;
         private readonly IBridgeClientService _bridgeClient;
         private readonly AppSettings _options;
-        public HomeController(ISessionService sessionService, IBridgeClientService bridgeClient, IOptions<AppSettings> options)
+        public HomeController(IBridgeClientService bridgeClient, IOptions<AppSettings> options)
         {
-            _sessionService = sessionService;
             _bridgeClient = bridgeClient;
             _options = options.Value;
         }

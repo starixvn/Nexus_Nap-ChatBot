@@ -64,7 +64,7 @@ namespace Fanex.NCB.Main
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IBridgeClientService, BridgeClientService>();
-            services.AddSingleton<ISessionService, SessionService>();
+           // services.AddSingleton<ISessionService, SessionService>();
 
 
             services.AddTransient<IDBConfigService, DBConfigService>();
@@ -93,7 +93,7 @@ namespace Fanex.NCB.Main
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
-            app.UseSession();
+           // app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

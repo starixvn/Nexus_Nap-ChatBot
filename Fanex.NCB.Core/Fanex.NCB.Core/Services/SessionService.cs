@@ -15,7 +15,7 @@ namespace Fanex.NCB.Core.Services
         {
             _httpContextAccessor = httpContextAccessor;
         }
-        private HttpContext Context { get => _httpContextAccessor.HttpContext; }
+        private HttpContext Context => _httpContextAccessor.HttpContext;
         public ApplicationSession AppSession
         {
             get => JsonConvert.DeserializeObject<ApplicationSession>(Context.Session.GetString(AppSessionKey));
