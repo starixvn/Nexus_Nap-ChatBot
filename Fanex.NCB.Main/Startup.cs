@@ -39,15 +39,15 @@ namespace Fanex.NCB.Main
                 options.Configuration = "10.18.200.103:63799";
                 options.InstanceName = "Fanex.NCB.State";
             });
-            services.AddSession(configure =>
-            {
-                configure.Cookie = new CookieBuilder
-                {
-                    Name = "Fanex.NCB.Session",
-                    Expiration = TimeSpan.FromMinutes(60),
-                    SecurePolicy = CookieSecurePolicy.SameAsRequest
-                };
-            });
+            //services.AddSession(configure =>
+            //{
+            //    configure.Cookie = new CookieBuilder
+            //    {
+            //        Name = "Fanex.NCB.Session",
+            //        Expiration = TimeSpan.FromMinutes(60),
+            //        SecurePolicy = CookieSecurePolicy.SameAsRequest
+            //    };
+            //});
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
