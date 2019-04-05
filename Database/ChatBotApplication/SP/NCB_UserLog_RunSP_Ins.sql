@@ -20,6 +20,6 @@ CREATE PROCEDURE  NCB_UserLog_RunSP_Ins(
 )
 BEGIN
 	INSERT INTO UserLog_RunSP(LogTime, ActionID, UserID, LogContent, Duration)
-    SELECT NOW() LogTime, in_ActionID, in_UserID, in_LogContent, in_Duration;
+    SELECT NOW() LogTime, ActionID, UserID, LogContent, Duration;
 END;
 

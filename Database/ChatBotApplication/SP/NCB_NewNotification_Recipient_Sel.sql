@@ -15,47 +15,67 @@ CREATE PROCEDURE  NCB_NewNotification_Recipient_Sel(
     */
 )
 BEGIN
-	DROP TEMPORARY TABLE IF EXISTS tmp_Recipient;
-	CREATE TEMPORARY TABLE tmp_Recipient(
+	DROP TEMPORARY TABLE IF EXISTS tmp_recipientLst;
+	CREATE TEMPORARY TABLE tmp_recipientLst(
 																	RecipientTypeID SMALLINT
 																	, RecipientID INT
 																	, RecipientName VARCHAR(200)
+                                                                    , SourceID INT
 																);
     
-    #Get a list of Recipients by NotificationTypeID
-    INSERT INTO tmp_Recipient(RecipientTypeID
+    #Get a list of mapped-status Recipients by NotificationTypeID
+    INSERT INTO tmp_recipientLst(RecipientTypeID
 														, RecipientID
                                                         , RecipientName
+                                                        , SourceID
 													)
-    SELECT r.RecipientTypeID
+    SELECT DISTINCT r.RecipientTypeID
 					, r.RecipientID
                     , r.RecipientName
+                    , r.SourceID
     FROM Recipient r
-    WHERE r.RecipientTypeID IN (
-						SELECT nrt.RecipientTypeID 
-                        FROM NotificationRecipientType nrt 
-                        WHERE nrt.NotificationTypeID = NotificationTypeID
-	);
+		INNER JOIN BotConversationRecipient bcr
+				ON bcr.RecipientID = r.RecipientID
+		INNER JOIN BotConversationExtraInfo bcri
+				ON bcri.BotConversationID = bcr.BotConversationID
+		INNER JOIN BotConversation con
+				ON con.ID = bcr.BotConversationID
+		INNER JOIN BotConversationMember bot
+				ON bot.ConversationID = con.ConversationID
+					AND bot.IsBot = 1
+                    AND bot.IsActive = 1
+    WHERE bcri.ChatGroupTypeID IS NOT NULL
+		AND r.RecipientTypeID IN (
+							SELECT nrt.RecipientTypeID 
+							FROM NotificationRecipientType nrt 
+							WHERE nrt.NotificationTypeID = NotificationTypeID
+		);
+    
+    #Delete InActive Licensee
+    DELETE main
+	FROM tmp_recipientLst main
+	INNER JOIN Licensee l
+			ON l.LicenseeId = main.SourceID
+				AND main.RecipientTypeID = 1 #RecipientType is Licensees
+	WHERE  l.LicenseeStatusId <> 3;
                         
 	#Filter Recipient list by an offered product
     IF ProductID IS NOT NULL THEN
 		DELETE main
-        FROM tmp_Recipient main
-        INNER JOIN Recipient re 
-				ON re.RecipientID = main.RecipientID 
-					AND re.RecipientTypeID = 1 #RecipientType is Licensees
+        FROM tmp_recipientLst main
         LEFT JOIN LicenseeProduct lp 
-				ON lp.LicenseeID = re.SourceID 
+				ON lp.LicenseeID = main.SourceID 
 					AND lp.ProductID = ProductID
+                    AND main.RecipientTypeID = 1 #RecipientType is Licensees
         WHERE lp.LaunchDate IS NULL
-			OR (
-						 lp.LaunchDate IS NOT NULL 
-                        AND NOW() <  lp.LaunchDate
-					)
-			OR (
-						lp.TerminationDate IS NOT NULL 
-                        AND NOW()  > lp.TerminationDate
-					);
+					OR (
+								 lp.LaunchDate IS NOT NULL 
+								AND NOW() <  lp.LaunchDate
+							)
+					OR (
+								lp.TerminationDate IS NOT NULL 
+								AND NOW()  > lp.TerminationDate
+							);
     END IF;
     
     SELECT r.RecipientTypeID
@@ -65,10 +85,10 @@ BEGIN
 							ELSE 'All 3rd Parties' 
 					END  RecipientTypeName
 					, r.RecipientID, r.RecipientName
-    FROM tmp_Recipient r
+    FROM tmp_recipientLst r
     ORDER BY RecipientTypeID, RecipientName;
     
     #Drop Unused temporary tables
-     DROP TEMPORARY TABLE IF EXISTS tmp_Recipient;
+     DROP TEMPORARY TABLE IF EXISTS tmp_recipientLst;
     
 END;
