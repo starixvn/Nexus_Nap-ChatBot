@@ -206,3 +206,15 @@ CREATE TABLE ChatBot.SystemLog(
         , CONSTRAINT PK_LogID PRIMARY KEY (LogID)
         , INDEX INDEX_LogTime USING BTREE (LogTime)
 );        
+
+CREATE TABLE ChatBot.Users(
+		UserID INT NOT NULL
+        , UserName VARCHAR(100) NOT NULL
+		, AuthKey 	VARCHAR(40) NULL
+        , Claims 	TEXT NULL
+		, LastUpdate 	DATETIME NULL
+		, LoginProvider 	VARCHAR(25) NULL
+		, ProviderKey 	TEXT NULL
+        , CONSTRAINT PK_UserID PRIMARY KEY (UserID)
+        , UNIQUE INDEX UNIQUE_UserName USING BTREE (UserName)
+);       

@@ -3,8 +3,8 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS NCB_NewNotification_Recipient_Sel;
 
 CREATE PROCEDURE  NCB_NewNotification_Recipient_Sel(
-	IN NotificationTypeID SMALLINT
-	,IN ProductID INT
+	IN notificationTypeID SMALLINT
+	,IN productID INT
     /*
 		Creator: Dominic@20190401
         Param:
@@ -15,6 +15,9 @@ CREATE PROCEDURE  NCB_NewNotification_Recipient_Sel(
     */
 )
 BEGIN
+	DECLARE RECIPIENT_TYPE_LICENSEES 	SMALLINT DEFAULT 1;
+    DECLARE LICENSEE_STATUS_ACTIVE 		TINYINT UNSIGNED DEFAULT 3;
+    
 	DROP TEMPORARY TABLE IF EXISTS tmp_recipientLst;
 	CREATE TEMPORARY TABLE tmp_recipientLst(
 																	RecipientTypeID SMALLINT
@@ -48,7 +51,7 @@ BEGIN
 		AND r.RecipientTypeID IN (
 							SELECT nrt.RecipientTypeID 
 							FROM NotificationRecipientType nrt 
-							WHERE nrt.NotificationTypeID = NotificationTypeID
+							WHERE nrt.NotificationTypeID = notificationTypeID
 		);
     
     #Delete InActive Licensee
@@ -56,17 +59,17 @@ BEGIN
 	FROM tmp_recipientLst main
 	INNER JOIN Licensee l
 			ON l.LicenseeId = main.SourceID
-				AND main.RecipientTypeID = 1 #RecipientType is Licensees
-	WHERE  l.LicenseeStatusId <> 3;
+				AND main.RecipientTypeID = RECIPIENT_TYPE_LICENSEES
+	WHERE  l.LicenseeStatusId <> LICENSEE_STATUS_ACTIVE;
                         
 	#Filter Recipient list by an offered product
-    IF ProductID IS NOT NULL THEN
+    IF productID IS NOT NULL THEN
 		DELETE main
         FROM tmp_recipientLst main
         LEFT JOIN LicenseeProduct lp 
 				ON lp.LicenseeID = main.SourceID 
-					AND lp.ProductID = ProductID
-                    AND main.RecipientTypeID = 1 #RecipientType is Licensees
+					AND lp.ProductID = productID
+                    AND main.RecipientTypeID = RECIPIENT_TYPE_LICENSEES
         WHERE lp.LaunchDate IS NULL
 					OR (
 								 lp.LaunchDate IS NOT NULL 
@@ -80,7 +83,7 @@ BEGIN
     
     SELECT r.RecipientTypeID
 					,CASE 
-							WHEN r.RecipientTypeID =1 
+							WHEN r.RecipientTypeID = RECIPIENT_TYPE_LICENSEES
 									THEN 'All Licensees' 
 							ELSE 'All 3rd Parties' 
 					END  RecipientTypeName

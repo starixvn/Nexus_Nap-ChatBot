@@ -3,7 +3,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS NCB_Common_NotificationTemplate_Sel;
 
 CREATE PROCEDURE  NCB_Common_NotificationTemplate_Sel(
-	IN NotificationTypeID SMALLINT
+	IN notificationTypeID SMALLINT
     /*
 		Creator: Dominic@20190401
         Param:
@@ -18,7 +18,7 @@ BEGIN
 	SELECT nt.NotificationTemplateID, nt.NotificationTemplateName
 					, nt.Title, nt.Content
     FROM NotificationTemplate nt
-    WHERE nt.NotificationTypeID = NotificationTypeID
+    WHERE nt.NotificationTypeID = notificationTypeID
     ORDER BY nt.NotificationTemplateName;
     
 END;
