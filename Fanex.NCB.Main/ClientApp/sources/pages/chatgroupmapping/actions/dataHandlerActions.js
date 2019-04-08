@@ -1,6 +1,7 @@
 import * as types from './types';
 import axios from 'axios';
 import Site from '../../lib/site';
+import errorResponseHandler from '../../lib/errorResponseHandler';
 
 // Settings
 export function setSettings(data) {
@@ -16,7 +17,7 @@ export function getSettings() {
     return (dispatch) => {        
         axios.get(url).then(response => {
             dispatch(setSettings(response.data));
-        });
+        }).catch(() => { errorResponseHandler(); });
     };
 }
 
@@ -42,7 +43,7 @@ export function getGridData(params) {
     return (dispatch) => {
         axios.get(url, { params: params }).then(response => {
             dispatch(setGridData(response.data));
-        });
+        }).catch(() => { errorResponseHandler(); });
     };
 }
 
@@ -82,8 +83,13 @@ export function update(params) {
         'RequestVerificationToken': Site.getXsrfToken()
     };
     return async (dispatch) => {
-        const request = await axios.post(url, JSON.stringify(params), { headers: headers });
-        const data = await request.data;
+        try {
+            const request = await axios.post(url, JSON.stringify(params), { headers: headers });
+            const data = await request.data;
+        } catch (err) {
+            errorResponseHandler();
+        }
+
         dispatch(setUpdateData(data));
     };
 }
