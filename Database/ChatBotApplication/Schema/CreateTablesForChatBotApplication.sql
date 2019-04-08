@@ -207,7 +207,7 @@ CREATE TABLE ChatBot.SystemLog(
         , INDEX INDEX_LogTime USING BTREE (LogTime)
 );        
 
-CREATE TABLE ChatBot.Users(
+CREATE TABLE ChatBot.User(
 		UserID INT NOT NULL
         , UserName VARCHAR(100) NOT NULL
 		, AuthKey 	VARCHAR(40) NULL

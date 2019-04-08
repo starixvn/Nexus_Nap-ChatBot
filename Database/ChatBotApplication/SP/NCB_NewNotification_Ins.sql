@@ -9,7 +9,7 @@ CREATE PROCEDURE  NCB_NewNotification_Ins(
 	, IN title VARCHAR(300)
 	, IN content MEDIUMTEXT
 	, IN configSendTime DATETIME
-	, IN creator INT
+	, IN creatorID INT
     , OUT notificationID INT
 	, OUT errCode SMALLINT
 	, OUT errMsg VARCHAR(100)
@@ -54,8 +54,8 @@ NCB_NewNotification_Ins:BEGIN
 	ELSEIF IFNULL(recipientIDLst,'') = '' THEN
 		SET errCode=103, errMsg='Recipient list must not be empty';
         LEAVE NCB_NewNotification_Ins;
-	ELSEIF creator IS NULL THEN
-		SET errCode=104, errMsg='Creator can not be null';
+	ELSEIF creatorID IS NULL THEN
+		SET errCode=104, errMsg='CreatorID can not be null';
         LEAVE NCB_NewNotification_Ins;
 	ELSEIF configSendTime IS NULL THEN
 		SET errCode=105, errMsg='ConfigSendTime can not be null';
@@ -221,7 +221,7 @@ NCB_NewNotification_Ins:BEGIN
 					, title
                     , content
                     , configSendTime
-                    , creator
+                    , creatorID
                     , NOW()
                     , NEW_NOTIFICATION_STATUSID;
     SET NotificationID = LAST_INSERT_ID();
@@ -267,7 +267,7 @@ NCB_NewNotification_Ins:BEGIN
 		#Write User Log
         CALL NCB_UserLog_RunSP_Ins(
 											ACTION_ID #actionID
-											,creator #UserID
+											,creatorID #UserID
                                             ,logContent #LogContent
                                             ,duration	#Duration
                                             );
