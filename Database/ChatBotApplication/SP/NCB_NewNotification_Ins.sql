@@ -3,16 +3,16 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS NCB_NewNotification_Ins;
 
 CREATE PROCEDURE  NCB_NewNotification_Ins(
-	IN NotificationTypeID SMALLINT
-	, IN ProductID INT
-	, IN RecipientIDLst VARCHAR(200)
-	, IN Title VARCHAR(300)
-	, IN Content MEDIUMTEXT
-	, IN ConfigSendTime DATETIME
-	, IN Creator INT
-    , OUT NotificationID INT
-	, OUT ErrCode SMALLINT
-	, OUT ErrMsg VARCHAR(100)
+	IN notificationTypeID SMALLINT
+	, IN productID INT
+	, IN recipientIDLst VARCHAR(200)
+	, IN title VARCHAR(300)
+	, IN content MEDIUMTEXT
+	, IN configSendTime DATETIME
+	, IN creator INT
+    , OUT notificationID INT
+	, OUT errCode SMALLINT
+	, OUT errMsg VARCHAR(100)
     /*
 		Creator: Dominic@20190401
         Param:
@@ -27,34 +27,38 @@ CREATE PROCEDURE  NCB_NewNotification_Ins(
 NCB_NewNotification_Ins:BEGIN
 
 	#Variables used to write User Logs
-	DECLARE startTime 		DATETIME(3);
+	DECLARE startTime 			DATETIME(3);
     DECLARE finishTime 		DATETIME(3); 
     DECLARE duration 			INT;							
     DECLARE logContent 		TEXT;
-    DECLARE actionID 				INT DEFAULT 1;
+    DECLARE ACTION_ID 		INT DEFAULT 1;
+    DECLARE RECIPIENT_TYPE_LICENSEES 	SMALLINT DEFAULT 1;
+    DECLARE LICENSEE_STATUS_ACTIVE 		TINYINT UNSIGNED DEFAULT 3;
+    DECLARE NEW_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 0;
+    DECLARE NEW_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Planned';
     
     #Get Start Time to calcualte execution duration
     SET  startTime = CURRENT_TIMESTAMP(3);
     
-    SET ErrCode=0, ErrMsg='';
+    SET errCode=0, errMsg='';
     
 	#Check param
 	IF  NOT EXISTS(SELECT 1 
 									FROM ChatBot.NotificationType  nt
-                                    WHERE nt.NotificationTypeID = NotificationTypeID ) THEN
-		SET ErrCode=101, ErrMsg='Invalid NotificationTypeID';
+                                    WHERE nt.NotificationTypeID = notificationTypeID ) THEN
+		SET errCode=101, errMsg='Invalid NotificationTypeID';
         LEAVE NCB_NewNotification_Ins;
-    ELSEIF IFNULL(Title,'') = '' OR IFNULL(Content,'') = '' THEN
-		SET ErrCode=102, ErrMsg='Title and Content must not be empty';
+    ELSEIF IFNULL(title,'') = '' OR IFNULL(content,'') = '' THEN
+		SET errCode=102, errMsg='Title and Content must not be empty';
         LEAVE NCB_NewNotification_Ins;
-	ELSEIF IFNULL(RecipientIDLst,'') = '' THEN
-		SET ErrCode=103, ErrMsg='Recipient list must not be empty';
+	ELSEIF IFNULL(recipientIDLst,'') = '' THEN
+		SET errCode=103, errMsg='Recipient list must not be empty';
         LEAVE NCB_NewNotification_Ins;
-	ELSEIF Creator IS NULL THEN
-		SET ErrCode=104, ErrMsg='Creator can not be null';
+	ELSEIF creator IS NULL THEN
+		SET errCode=104, errMsg='Creator can not be null';
         LEAVE NCB_NewNotification_Ins;
-	ELSEIF ConfigSendTime IS NULL THEN
-		SET ErrCode=105, ErrMsg='ConfigSendTime can not be null';
+	ELSEIF configSendTime IS NULL THEN
+		SET errCode=105, errMsg='ConfigSendTime can not be null';
         LEAVE NCB_NewNotification_Ins;
 	END IF;
 	
@@ -62,7 +66,7 @@ NCB_NewNotification_Ins:BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_recipientIDLst;
 	CREATE TEMPORARY TABLE tmp_recipientIDLst(RecipientID INT);
     
-	SET @sqlCommand = REPLACE(RecipientIDLst, ',', '),(');
+	SET @sqlCommand = REPLACE(recipientIDLst, ',', '),(');
 	SET @sqlCommand = CONCAT('(', @sqlCommand, ')');
 	SET @sqlCommand= CONCAT('INSERT INTO tmp_recipientIDLst VALUES'
 														, @sqlCommand); 
@@ -90,10 +94,10 @@ NCB_NewNotification_Ins:BEGIN
                                 OR con.ConversationID IS NULL
                                 OR bot.MemberID IS NULL
 	) THEN
-		SET ErrCode=106;
+		SET errCode=106;
 
 		SELECT GROUP_CONCAT( DISTINCT re.RecipientName  ORDER BY re.RecipientName SEPARATOR ', ') 
-        INTO ErrMsg
+        INTO errMsg
         FROM Recipient re
         WHERE re.RecipientID IN (
 						SELECT main. RecipientID
@@ -123,73 +127,73 @@ NCB_NewNotification_Ins:BEGIN
 						FROM tmp_recipientIDLst main
                         INNER JOIN Recipient re 
 							ON re.RecipientID = main.RecipientID 
-								AND re.RecipientTypeID = 1 #RecipientType is Licensees
+								AND re.RecipientTypeID = RECIPIENT_TYPE_LICENSEES
                         INNER JOIN Licensee l
 							ON l.LicenseeId = re.SourceID
-						WHERE  l.LicenseeStatusId <> 3
+						WHERE  l.LicenseeStatusId <> LICENSEE_STATUS_ACTIVE
 	) THEN
-		SET ErrCode=107;
+		SET errCode=107;
         
         SELECT GROUP_CONCAT(re.RecipientName ORDER BY re.RecipientName  SEPARATOR ', ')  
-        INTO ErrMsg
+        INTO errMsg
         FROM Recipient re
         WHERE re.RecipientID IN (
 						SELECT main. RecipientID
 						FROM tmp_recipientIDLst main
                         INNER JOIN Recipient re 
 							ON re.RecipientID = main.RecipientID 
-								AND re.RecipientTypeID = 1 #RecipientType is Licensees
+								AND re.RecipientTypeID = RECIPIENT_TYPE_LICENSEES
                         INNER JOIN Licensee l
 							ON l.LicenseeId = re.SourceID
-						WHERE  l.LicenseeStatusId <> 3
+						WHERE  l.LicenseeStatusId <> LICENSEE_STATUS_ACTIVE
 			);
 
         LEAVE NCB_NewNotification_Ins;
     END IF;
     
     #Check Licensees do not offered a product
-    IF ProductID IS NOT NULL 
+    IF productID IS NOT NULL 
 		AND EXISTS(
 						SELECT 1 
 						FROM tmp_recipientIDLst main
 						INNER JOIN Recipient re 
 							ON re.RecipientID = main.RecipientID 
-								AND re.RecipientTypeID = 1 #RecipientType is Licensees
+								AND re.RecipientTypeID = RECIPIENT_TYPE_LICENSEES
 						LEFT JOIN LicenseeProduct lp 
 							ON lp.LicenseeID = re.SourceID 
-								AND lp.ProductID = ProductID
+								AND lp.ProductID = productID
 						WHERE  lp.LaunchDate IS NULL
 							OR (
 										 lp.LaunchDate IS NOT NULL 
-										AND ConfigSendTime <  lp.LaunchDate
+										AND configSendTime <  lp.LaunchDate
 									)
 							OR (
 										lp.TerminationDate IS NOT NULL 
-										AND ConfigSendTime > lp.TerminationDate
+										AND configSendTime > lp.TerminationDate
 									)
 	) THEN
-		SET ErrCode=108;
+		SET errCode=108;
         
 		SELECT GROUP_CONCAT(re.RecipientName ORDER BY re.RecipientName SEPARATOR ', ') 
-        INTO ErrMsg
+        INTO errMsg
         FROM Recipient re
         WHERE re.RecipientID IN (
 						SELECT main. RecipientID
 						FROM tmp_recipientIDLst main
 						INNER JOIN Recipient re 
 							ON re.RecipientID = main.RecipientID 
-								AND re.RecipientTypeID = 1 #RecipientType is Licensees
+								AND re.RecipientTypeID = RECIPIENT_TYPE_LICENSEES
 						LEFT JOIN LicenseeProduct lp 
 							ON lp.LicenseeID = re.SourceID 
-								AND lp.ProductID = ProductID
+								AND lp.ProductID = productID
 						WHERE  lp.LaunchDate IS NULL
 							OR (
 										 lp.LaunchDate IS NOT NULL 
-										AND ConfigSendTime <  lp.LaunchDate
+										AND configSendTime <  lp.LaunchDate
 									)
 							OR (
 										lp.TerminationDate IS NOT NULL 
-										AND ConfigSendTime > lp.TerminationDate
+										AND configSendTime > lp.TerminationDate
 									)
 			);
 
@@ -202,7 +206,7 @@ NCB_NewNotification_Ins:BEGIN
     WHERE main.RecipientID IN (
 					SELECT ex.RecipientID 
 					FROM NotificationTypeRecipientException ex
-					WHERE ex.NotificationTypeID = NotificationTypeID
+					WHERE ex.NotificationTypeID = notificationTypeID
 	);
     
     #Insert a new Notification
@@ -213,13 +217,13 @@ NCB_NewNotification_Ins:BEGIN
                                             ,CreatorID
                                             ,CreatedDate
                                             ,StatusID)
-    SELECT NotificationTypeID
-					, Title
-                    , Content
-                    , ConfigSendTime
-                    , Creator
+    SELECT notificationTypeID
+					, title
+                    , content
+                    , configSendTime
+                    , creator
                     , NOW()
-                    , 0;
+                    , NEW_NOTIFICATION_STATUSID;
     SET NotificationID = LAST_INSERT_ID();
     
     #Insert recipient list
@@ -228,7 +232,8 @@ NCB_NewNotification_Ins:BEGIN
                                                                     , Status, StatusID)
     SELECT NotificationID, IFNULL(gri.BotConversationID, -1)
 					, IFNULL(gri.ChatGroupTypeID,-1), re.RecipientID
-                    , 'Planned', 0
+                    , NEW_NOTIFICATION_STATUS
+                    , NEW_NOTIFICATION_STATUSID
     FROM tmp_recipientIDLst re
 		LEFT JOIN BotConversationRecipient gr 
 			ON re.RecipientID = gr.RecipientID
@@ -237,7 +242,7 @@ NCB_NewNotification_Ins:BEGIN
     WHERE gri.ChatGroupTypeID IN (
 						SELECT cgt.ChatGroupTypeID 
 						FROM NotificationChatGroupType  cgt
-                        WHERE cgt.NotificationTypeID = NotificationTypeID
+                        WHERE cgt.NotificationTypeID = notificationTypeID
 	);
 	
     #Drop Unused temporary tables
@@ -250,19 +255,19 @@ NCB_NewNotification_Ins:BEGIN
                                                                         , finishTime)  / 1000; 	#miliseconds
     
     #Get Log Content, JSON format
-    SET logContent = json_object('NotificationTypeID', NotificationTypeID
-										, 'ProductID', ProductID
-                                        , 'RecipientIDLst', RecipientIDLst
-										, 'Title', Title
-                                        , 'Content', Content
-                                        , 'ConfigSendTime', ConfigSendTime
-                                        , 'NotificationID', NotificationID
+    SET logContent = json_object('notificationTypeID', notificationTypeID
+										, 'productID', productID
+                                        , 'recipientIDLst', recipientIDLst
+										, 'title', title
+                                        , 'content', content
+                                        , 'configSendTime', configSendTime
+                                        , 'notificationID', notificationID
 					) ;
                     
 		#Write User Log
         CALL NCB_UserLog_RunSP_Ins(
-											actionID #actionID
-											,Creator #UserID
+											ACTION_ID #actionID
+											,creator #UserID
                                             ,logContent #LogContent
                                             ,duration	#Duration
                                             );
