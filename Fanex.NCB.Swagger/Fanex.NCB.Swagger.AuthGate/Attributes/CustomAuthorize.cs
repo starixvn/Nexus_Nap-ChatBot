@@ -1,4 +1,5 @@
 ﻿using Fanex.NAP.Core.Configuration;
+using System;
 using System.Configuration;
 using System.Linq;
 using System.Web.Http;
@@ -6,6 +7,7 @@ using System.Web.Http.Controllers;
 
 namespace Fanex.NCB.Swagger.AuthGate.Attributes
 {
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public class CustomAuthorize : AuthorizeAttribute
     {
         private static NapSettings _settings = ConfigurationManager.GetSection("NapSettings") as NapSettings;

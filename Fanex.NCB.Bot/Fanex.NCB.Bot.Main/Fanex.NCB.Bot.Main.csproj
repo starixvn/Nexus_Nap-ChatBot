@@ -44,6 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Fanex.NCB.Shared\Fanex.NCB.CustomAspNetCoreModule\Fanex.NCB.CustomAspNetCoreModule.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Bot.Core\Fanex.NCB.Bot.Core.csproj" />
   </ItemGroup>
 

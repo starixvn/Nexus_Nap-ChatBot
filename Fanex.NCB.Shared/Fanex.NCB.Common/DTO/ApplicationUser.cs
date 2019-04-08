@@ -8,7 +8,7 @@ namespace Fanex.NCB.Common.DTO
     {
         public string UserName { get; set; }
         public string FullName { get; set; }
-        public int UserId { get; set; }
+        public int UserId { get; set; }            
         /// <summary>
         /// Ex: Tkey = permission key
         /// TValue = Policy (0= read, 1= host)

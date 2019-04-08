@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Fanex.NCB.Bot.SkypeClient;
 using Fanex.NCB.Core.Models.DataDomain;
 using Fanex.NCB.Core.Services;
+using Fanex.NCB.CustomAspNetCoreModule;
 using Fanex.NCB.Shared.MySQLExtension.DataDomain;
-using Fanex.NCB.Shared.MySQLExtension.DTO;
 using Fanex.NCB.Shared.MySQLExtension.Services;
 using Fanex.NCB.SkypeBot.App_Start;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Fanex.NCB.Main
 {
@@ -64,7 +61,7 @@ namespace Fanex.NCB.Main
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IBridgeClientService, BridgeClientService>();
-           // services.AddSingleton<ISessionService, SessionService>();
+            // services.AddSingleton<ISessionService, SessionService>();
 
 
             services.AddTransient<IDBConfigService, DBConfigService>();
@@ -77,15 +74,16 @@ namespace Fanex.NCB.Main
             SkypeBotDependencyInitializer.Initialize(services);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseAspNetCoreExceptionHandler("NCB.Main");
                 app.UseHsts();
             }
 
@@ -93,7 +91,7 @@ namespace Fanex.NCB.Main
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
-           // app.UseSession();
+            // app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

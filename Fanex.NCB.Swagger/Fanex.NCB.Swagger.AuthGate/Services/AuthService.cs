@@ -17,17 +17,17 @@ namespace Fanex.NCB.Swagger.AuthGate.Services
         public ApplicationUser Authorize(AuthenticationUser authenticationUser)
         {
             var userInfo = _userService.Get(authenticationUser.UserName);
-            
+
             if (userInfo != null && authenticationUser.Password.Equals(userInfo.Password))
             {
                 var result = new ApplicationUser
                 {
                     FullName = string.Join(" ", userInfo.FirstName, userInfo.LastName),
-                    UserId=userInfo.Id,
-                    UserName=userInfo.Username
+                    UserId = userInfo.Id,
+                    UserName = userInfo.Username,
                 };
                 return result;
-               // var permission = _userService.
+                // var permission = _userService.
             }
 
             return null;

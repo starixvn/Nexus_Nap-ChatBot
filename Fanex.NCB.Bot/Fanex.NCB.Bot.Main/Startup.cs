@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Fanex.NCB.Bot.Core;
+using Fanex.NCB.CustomAspNetCoreModule;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Configuration;
@@ -74,7 +75,7 @@ namespace Fanex.NCB.Bot.Main
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseAspNetCoreExceptionHandler("NCB.Bot");
             }
             app.UseDefaultFiles();
             app.UseStaticFiles();

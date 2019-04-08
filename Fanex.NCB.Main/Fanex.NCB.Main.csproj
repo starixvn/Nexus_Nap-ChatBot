@@ -47,6 +47,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Fanex.NCB.Bot\Fanex.NCB.Bot.SkypeClient\Fanex.NCB.Bot.SkypeClient.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Core\Fanex.NCB.Core\Fanex.NCB.Core.csproj" />
+    <ProjectReference Include="..\Fanex.NCB.Shared\Fanex.NCB.CustomAspNetCoreModule\Fanex.NCB.CustomAspNetCoreModule.csproj" />
     <ProjectReference Include="..\Fanex.NCB.SkypeBot\Fanex.NCB.SkypeBot\Fanex.NCB.SkypeBot.csproj" />
   </ItemGroup>
 
