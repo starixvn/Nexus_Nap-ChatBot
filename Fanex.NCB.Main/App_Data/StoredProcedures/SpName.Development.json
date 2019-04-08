@@ -2,6 +2,7 @@
   "SPName": [
     {
       "DBName": "ChatBotDB",
+      //"Connection": "Server=10.18.200.236;Port=3306;Database=ChatBot;Uid=ncb.admin;Pwd=ncbadmin$2019;",
       "Connection": "Server=10.18.200.236;Port=3307;Database=ChatBot;Uid=scofield.huynh;Pwd=1234AA;",
       "SPList": [
         {

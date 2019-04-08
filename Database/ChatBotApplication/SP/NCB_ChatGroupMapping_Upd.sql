@@ -8,7 +8,6 @@ CREATE PROCEDURE `NCB_ChatGroupMapping_Upd`(
     IN creatorID INT,
     OUT errorCode SMALLINT,
 	OUT errorMsg VARCHAR(100)
-)
 	/*
 		Creator: Scofield@20190404
         Params:
@@ -21,13 +20,24 @@ CREATE PROCEDURE `NCB_ChatGroupMapping_Upd`(
         Revisions:
 				- 20190404@Scofield: Create        
     */
+)
 NCB_ChatGroupMapping_Upd:BEGIN
+	-- Declare variables
 	DECLARE strLen    INT DEFAULT 0;
 	DECLARE subStrLen INT DEFAULT 0;
-    
+	DECLARE ACTION_ID INT DEFAULT 2;
+	DECLARE startTime DATETIME(3);
+    DECLARE finishTime DATETIME(3); 
+	DECLARE duration INT;							
+	DECLARE logContent TEXT;
+	
+	-- Get Start Time to calcualte execution duration
+    SET  startTime = CURRENT_TIMESTAMP(3);
+
+	-- Set default values for errorCode and errorMsg
     SET errorCode=0, errorMsg='';
     
-    #Check param
+    -- Check if params are VALID
 	IF  groupID IS NULL THEN
 		SET errorCode=101, errorMsg='Invalid GroupID';
         LEAVE NCB_ChatGroupMapping_Upd;
@@ -48,6 +58,8 @@ NCB_ChatGroupMapping_Upd:BEGIN
         LEAVE NCB_ChatGroupMapping_Upd;
 	END IF;   
     
+	-- If groupID exists in BotConversationExtraInfo then Update BotConversationExtraInfo
+	-- Else Insert into BotConversationExtraInfo
 	IF EXISTS(SELECT 1 FROM BotConversationExtraInfo bce WHERE bce.BotConversationID = groupID) THEN
 		UPDATE BotConversationExtraInfo bce
         SET bce.ChatGroupTypeID = chatGroupTypeID, bce.Remark = remark
@@ -57,7 +69,7 @@ NCB_ChatGroupMapping_Upd:BEGIN
         VALUES (groupID, chatGroupTypeID, remark);
     END IF;    
     
-    #Insert comma seperated list RecipientIDLst to temporary tables
+    -- Split recipientIDs into temporary table tmp_RecipientID
     DROP TEMPORARY TABLE IF EXISTS tmp_RecipientID;
 	CREATE TEMPORARY TABLE tmp_RecipientID(RecipientID INT);
     
@@ -70,12 +82,29 @@ NCB_ChatGroupMapping_Upd:BEGIN
 	EXECUTE Stmt;
 	DEALLOCATE PREPARE Stmt;
     
+	-- Update BotConversationRecipient with values from tmp_RecipientID
     DELETE FROM BotConversationRecipient 
     WHERE BotConversationID = groupID;
     
     INSERT INTO BotConversationRecipient(BotConversationID, RecipientID)
     SELECT groupID AS BotConversationID, tri.RecipientID
-    FROM tmp_RecipientID tri;
-    
+    FROM tmp_RecipientID tri;    
+	
+	-- Drop temporary tables
     DROP TEMPORARY TABLE IF EXISTS tmp_RecipientID;        
+	
+	-- Get Finish Time to calcualte execution duration
+    SET finishTime = CURRENT_TIMESTAMP(3);
+    SET duration =  TIMESTAMPDIFF(MICROSECOND, startTime, finishTime)  / 1000;
+	
+	-- Get Log Content, JSON format
+    SET logContent = json_object('groupID', groupID
+								, 'recipientTypeID', recipientTypeID
+								, 'recipientIDs', recipientIDs
+								, 'chatGroupTypeID', chatGroupTypeID
+								, 'remark', remark
+								, 'creatorID', creatorID);
+										
+	-- Write User Log
+	CALL NCB_UserLog_RunSP_Ins(ACTION_ID, creatorID, logContent, duration);
 END;

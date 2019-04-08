@@ -6,29 +6,33 @@ CREATE PROCEDURE `NCB_ChatGroupMapping_Sel`(
         IN mappingStatusIds VARCHAR(1000),
 		IN pageIndex INT, 
         IN pageSize INT
+		 /*
+			Creator: Scofield@20190404
+			Params:
+					- botNames: Bot names, ex: "bot name 1,bot name 2"
+					- recipientTypeIds: Recipient Type Ids, ex: "1,2"
+					- recipientName: Recipient Name
+					- mappingStatusIds: Mapping Status Ids, ex: "1,2"
+					- pageIndex: Page Index for paging
+					- pageSize: Page Size for paging
+			Revisions:
+					- 20190404@Scofield: Create        
+		*/
     )
-     /*
-		Creator: Scofield@20190404
-        Params:
-				- botNames: Bot names, ex: "bot name 1,bot name 2"
-                - recipientTypeIds: Recipient Type Ids, ex: "1,2"
-                - recipientName: Recipient Name
-                - mappingStatusIds: Mapping Status Ids, ex: "1,2"
-                - pageIndex: Page Index for paging
-                - pageSize: Page Size for paging
-        Revisions:
-				- 20190404@Scofield: Create        
-    */
+    
 BEGIN
+	-- Delare variables
 	DECLARE LICENSEE_TYPE INT DEFAULT 1;
 	DECLARE rowStart INT;
     SELECT 	pageSize * (pageIndex - 1) INTO rowStart;   
     
+	-- Check if params are NULL
     IF botNames IS NULL THEN SET botNames = ''; END IF;
     IF recipientTypeIds IS NULL THEN SET recipientTypeIds = ''; END IF;
     IF recipientName IS NULL THEN SET recipientName = ''; END IF;
     IF mappingStatusIds IS NULL THEN SET mappingStatusIds = ''; END IF;    
     
+	-- Get all BotConversation IDs that satisfy filtering conditions
     DROP TEMPORARY TABLE IF EXISTS tmp_AllBotConversation;
     CREATE TEMPORARY TABLE tmp_AllBotConversation
     SELECT bc.ID
@@ -46,6 +50,7 @@ BEGIN
                                         ELSE 0 END, mappingStatusIds) > 0)
     GROUP BY bc.ID;        
     
+	-- Get BotConversations for current paging page
     DROP TEMPORARY TABLE IF EXISTS tmp_PagedBotConversation;
     CREATE TEMPORARY TABLE tmp_PagedBotConversation
     SELECT bc.* 
@@ -54,8 +59,11 @@ BEGIN
     ORDER BY bc.Name
     LIMIT rowStart, pageSize;
     
+	-- Get Total number of items
     SELECT COUNT(*) AS Total FROM tmp_AllBotConversation;    
     
+	-- Get BotConversations for current paging page with some extra infos
+	-- and satisfy RecipientTypeIds filtering condition
     SELECT DISTINCT pbc.Name AS GroupName, 
 		pbc.ID AS GroupID, 
         cgt.ChatGroupTypeID, 
@@ -73,6 +81,8 @@ BEGIN
     LEFT JOIN RecipientType rt ON r.RecipientTypeID = rt.RecipientTypeID
     WHERE (recipientTypeIds = '' OR find_in_set(r.RecipientTypeID, recipientTypeIds) > 0);    
     
+	-- Get BotConversation Members that belong to the current paging page of BotConversations 
+	-- and satisfy BotName filtering condition
     SELECT bcm.Name AS BotName, 
 		bcm.ConversationID, 
         bcm.IsActive
@@ -81,6 +91,8 @@ BEGIN
     WHERE bcm.IsBot = 1 
 		AND (botNames = '' OR find_in_set(bcm.Name, botNames) > 0);    
     
+	-- Get BotConversationRecipient that belongs to the current paging page of BotConversations
+	-- and satisfy RecipientName filtering condition
     SELECT bcr.BotConversationID AS GroupID, 
 		r.RecipientID, 
         r.RecipientName, 
@@ -93,6 +105,7 @@ BEGIN
     LEFT JOIN LicenseeStatus ls ON l.LicenseeStatusId = ls.LicenseeStatusId
     WHERE (recipientName = '' OR r.RecipientName LIKE CONCAT('%', recipientName, '%'));                 
     
+	-- Drop temporary tables
     DROP TEMPORARY TABLE IF EXISTS tmp_AllBotConversation;
     DROP TEMPORARY TABLE IF EXISTS tmp_PagedBotConversation;
 END;
