@@ -23,7 +23,8 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
 
         public async Task<ResultModel> ExecuteAsync(string key, DynamicParameters param, string dbName = "ChatBotDB")
         {
-            DBSetting dbSetting = _dBConfigService.GetSPConfig(dbName, key);
+            DBSetting dbSetting = _dBConfigService.GetSPConfig(dbName, key);            
+
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
             {
                 param.Add("errorCode", dbType: DbType.Int32, direction: ParameterDirection.Output);

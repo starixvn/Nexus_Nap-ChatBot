@@ -21,12 +21,19 @@ namespace Fanex.NCB.Shared.MySQLExtension.Services
         public DBSetting GetSPConfig(string dbName, string spKey)
         {
             var db = _spNames.First(s => s.DBName == dbName);
-            return new DBSetting
+            var dbsetting = new DBSetting
             {
                 Key = spKey,
                 DBConnection = db.Connection,
-                SPName = db.SPList.Find(i => i.SPKey == spKey).SPName
+                SPName = db.SPList.FirstOrDefault(i => i.SPKey == spKey).SPName
             };
+
+            if (dbsetting.SPName == null)
+            {
+                throw new ArgumentException($"DBName={dbName}, Key={spKey}, msg={"SP config not found"}");
+            }
+
+            return dbsetting;
         }
     }
 }
