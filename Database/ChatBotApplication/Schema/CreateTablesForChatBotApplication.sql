@@ -122,6 +122,7 @@ CREATE TABLE ChatBot.NotificationTemplate(
 		, ConfigSendTime DATETIME NOT NULL
 		, CreatorID INT NOT NULL
 		, CreatedDate DATETIME NOT NULL
+        , Status VARCHAR(10) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
         , StatusID TINYINT UNSIGNED NOT NULL
 		, ResolvedRemark VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
 		, ResolvedBy INT NULL

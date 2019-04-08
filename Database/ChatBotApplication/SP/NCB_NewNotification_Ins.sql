@@ -216,13 +216,15 @@ NCB_NewNotification_Ins:BEGIN
                                             ,ConfigSendTime
                                             ,CreatorID
                                             ,CreatedDate
-                                            ,StatusID)
+                                            ,Status
+                                            , StatusID)
     SELECT notificationTypeID
 					, title
                     , content
                     , configSendTime
                     , creatorID
                     , NOW()
+                    , NEW_NOTIFICATION_STATUS
                     , NEW_NOTIFICATION_STATUSID;
     SET NotificationID = LAST_INSERT_ID();
     
@@ -244,9 +246,6 @@ NCB_NewNotification_Ins:BEGIN
 						FROM NotificationChatGroupType  cgt
                         WHERE cgt.NotificationTypeID = notificationTypeID
 	);
-	
-    #Drop Unused temporary tables
-     DROP TEMPORARY TABLE IF EXISTS tmp_recipientIDLst;
     
      #Get Finish Time to calcualte execution duration
     SET finishTime = CURRENT_TIMESTAMP(3);
