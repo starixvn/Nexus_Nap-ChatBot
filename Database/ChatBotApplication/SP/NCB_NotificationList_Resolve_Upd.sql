@@ -27,9 +27,9 @@ NCB_NotificationList_Resolve_Upd:BEGIN
     DECLARE ACTION_ID 		INT DEFAULT 3;
     
     #Constants
-	DECLARE NOTIFICATION_STATUSID_CANCELLED	INT DEFAULT 4;
-	DECLARE NOTIFICATION_STATUS_CANCELLED	VARCHAR(10) DEFAULT 'Cancelled';
-	DECLARE NOTIFICATION_STATUSID_PLANNED	INT DEFAULT 0;
+	DECLARE NOTIFICATION_STATUSID_RESOLVED	INT DEFAULT 5;
+	DECLARE NOTIFICATION_STATUS_RESOLVED	VARCHAR(10) DEFAULT 'Resolved';
+	DECLARE NOTIFICATION_STATUSID_ERROR	INT DEFAULT 2;
      
     
     #Get Start Time to calcualte execution duration
@@ -48,21 +48,24 @@ NCB_NotificationList_Resolve_Upd:BEGIN
         LEAVE NCB_NotificationList_Resolve_Upd;
 	END IF;
 	
-    #Update Notification Status to 'Cancelled'
+    #Update Notification Status to 'Resolved'
     UPDATE Notification n
-    SET n.Status = NOTIFICATION_STATUS_CANCELLED
-			, n.StatusID = NOTIFICATION_STATUSID_CANCELLED
+    SET n.Status = NOTIFICATION_STATUS_RESOLVED
+			, n.StatusID = NOTIFICATION_STATUSID_RESOLVED
+            , n.ResolvedBy = userID
+            , n.ResolvedDate = startTime
+            , n.ResolvedRemark = resolvedRemark
 	WHERE n.NotificationID = notificationID
-		AND n.StatusID = NOTIFICATION_STATUSID_PLANNED;
+		AND n.StatusID = NOTIFICATION_STATUSID_ERROR;
 	
     IF ROW_COUNT()  = 0 THEN
-		SET errCode=303, errMsg='This Notification has been sent, can not cancel it';
+		SET errCode=303, errMsg='This Notification has been resolved by someone else, can not resolve it';
         LEAVE NCB_NotificationList_Resolve_Upd;
     END IF;
     
     UPDATE NotificationRecipientList rlst
-    SET rlst.Status = NOTIFICATION_STATUS_CANCELLED
-			, rlst.StatusID = NOTIFICATION_STATUSID_CANCELLED
+    SET rlst.Status = NOTIFICATION_STATUS_RESOLVED
+			, rlst.StatusID = NOTIFICATION_STATUSID_RESOLVED
     WHERE rlst.NotificationID = notificationID;
     
      #Get Finish Time to calcualte execution duration
@@ -74,6 +77,7 @@ NCB_NotificationList_Resolve_Upd:BEGIN
     #Get Log Content, JSON format
     SET logContent = json_object(
 							'notificationID', notificationID
+                            , 'resolvedRemark', resolvedRemark
 					) ;
                     
 		#Write User Log
