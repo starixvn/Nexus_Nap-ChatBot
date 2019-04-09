@@ -19,9 +19,11 @@ namespace Fanex.NCB.Main
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        ILogger<Startup> _logger;
+        public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
             Configuration = configuration;
+            _logger = logger;
         }
 
         public IConfiguration Configuration { get; }
@@ -74,9 +76,11 @@ namespace Fanex.NCB.Main
             SkypeBotDependencyInitializer.Initialize(services);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
 
+            _logger.LogInformation("start NCB.MAIN");
+            _logger.LogInformation($"NCB.MAIN in {env.EnvironmentName}");
             if (env.IsProduction())
             {
                 app.UseAspNetCoreExceptionHandler("NCB.Main");
