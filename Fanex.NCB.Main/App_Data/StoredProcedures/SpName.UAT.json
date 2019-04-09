@@ -1,0 +1,58 @@
+{
+  "SPName": [
+    {
+      "DBName": "ChatBotDB",
+      "Connection": "Server=10.18.200.236;Port=3306;Database=ChatBot;Uid=ncb.admin;Pwd=ncbadmin$2019;",
+      "SPList": [
+        {
+          "SPKey": "NCB_NotificationType_Sel",
+          "SPName": "NCB_NotificationType_Sel"
+        },
+        {
+          "SPKey": "NCB_System_Sel",
+          "SPName": "NCB_System_Sel"
+        },
+        {
+          "SPKey": "NCB_Setting_RecipientType_Sel",
+          "SPName": "NCB_Setting_RecipientType_Sel"
+        },
+        {
+          "SPKey": "NCB_NotificationType_Ins",
+          "SPName": "NCB_NotificationType_Ins"
+        },
+        {
+          "SPKey": "NCB_NotificationType_Upd",
+          "SPName": "NCB_NotificationType_Upd"
+        },
+        {
+          "SPKey": "NCB_NotificationType_Del",
+          "SPName": "NCB_NotificationType_Del"
+        },
+        {
+          "SPKey": "NCB_Setting_BotName_Sel",
+          "SPName": "NCB_Setting_BotName_Sel"
+        },
+        {
+          "SPKey": "NCB_MappingStatus_Sel",
+          "SPName": "NCB_MappingStatus_Sel"
+        },
+        {
+          "SPKey": "NCB_ChatGroupMapping_Sel",
+          "SPName": "NCB_ChatGroupMapping_Sel"
+        },
+        {
+          "SPKey": "NCB_Setting_Recipient_Sel",
+          "SPName": "NCB_Setting_Recipient_Sel"
+        },
+        {
+          "SPKey": "NCB_ChatGroupMapping_Upd",
+          "SPName": "NCB_ChatGroupMapping_Upd"
+        },
+        {
+          "SPKey": "NCB_Setting_ChatGroupType_Sel",
+          "SPName": "NCB_Setting_ChatGroupType_Sel"
+        }
+      ]
+    }
+  ]
+}
