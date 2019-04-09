@@ -21,9 +21,9 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
             _dBConfigService = dBConfigService;
         }
 
-        public async Task<ResultModel> ExecuteAsync(string key, DynamicParameters param, string dbName = "ChatBotDB")
+        public async Task<ResultModel> ExecuteAsync(string key, DynamicParameters param, string connectionName = "ChatBotDB")
         {
-            DBSetting dbSetting = _dBConfigService.GetSPConfig(dbName, key);            
+            DBSetting dbSetting = _dBConfigService.GetSPConfig(connectionName, key);            
 
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
             {
@@ -43,9 +43,9 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
             }
         }
 
-        public async Task<List<T>> QueryAsync<T>(string key, object param = null, string dbName = "ChatBotDB")
+        public async Task<List<T>> QueryAsync<T>(string key, object param = null, string connectionName = "ChatBotDB")
         {
-            DBSetting dbSetting = _dBConfigService.GetSPConfig(dbName, key);
+            DBSetting dbSetting = _dBConfigService.GetSPConfig(connectionName, key);
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
             {
                 var data = await dbConnection.QueryAsync<T>(
@@ -57,9 +57,9 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
             }
         }
 
-        public async Task<Tuple<T1, List<T2>>> QueryMultipleAsync<T1, T2>(string key, object param = null, string dbName = "ChatBotDB")
+        public async Task<Tuple<T1, List<T2>>> QueryMultipleAsync<T1, T2>(string key, object param = null, string connectionName = "ChatBotDB")
         {
-            DBSetting dbSetting = _dBConfigService.GetSPConfig(dbName, key);
+            DBSetting dbSetting = _dBConfigService.GetSPConfig(connectionName, key);
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
             {
                 var reader = await dbConnection.QueryMultipleAsync(
@@ -75,9 +75,9 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
         }
 
         public async Task<Tuple<T1, List<T2>, List<T3>, List<T4>>>
-            QueryMultipleAsync<T1, T2, T3, T4>(string key, object param = null, string dbName = "ChatBotDB")
+            QueryMultipleAsync<T1, T2, T3, T4>(string key, object param = null, string connectionName = "ChatBotDB")
         {
-            DBSetting dbSetting = _dBConfigService.GetSPConfig(dbName, key);
+            DBSetting dbSetting = _dBConfigService.GetSPConfig(connectionName, key);
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
             {
                 var reader = await dbConnection.QueryMultipleAsync(

@@ -1,8 +1,7 @@
 {
   "SPName": [
     {
-      "DBName": "ChatBotDB",
-      "Connection": "Server=10.18.200.236;Port=3306;Database=ChatBot;Uid=ncb.admin;Pwd=ncbadmin$2019;",
+      "ConnectionName": "ChatBotDB",
       "SPList": [
         {
           "SPKey": "NCB_NotificationType_Sel",

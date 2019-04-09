@@ -1,25 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Mime;
 using Fanex.NCB.Core.Models.DataDomain;
 using Fanex.NCB.Core.Services;
 using Fanex.NCB.CustomAspNetCoreModule;
+using Fanex.NCB.CustomAspNetCoreModule.HealthChecks;
 using Fanex.NCB.Shared.MySQLExtension.DataDomain;
 using Fanex.NCB.Shared.MySQLExtension.Services;
 using Fanex.NCB.SkypeBot.App_Start;
+using HealthChecks.System;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Fanex.NCB.Main
 {
     public class Startup
     {
-       private readonly ILogger<Startup> _logger;
+        private readonly ILogger<Startup> _logger;
         public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
             Configuration = configuration;
@@ -30,6 +38,13 @@ namespace Fanex.NCB.Main
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHealthChecks()
+                .AddCheck<RandomHealthCheck>("random")
+                  .AddMySql(Configuration.GetConnectionString("ChatBotDB"), "ChatBotDB", HealthStatus.Degraded,
+              tags: new string[] { "db", "sql", "myserver" });
+
+            services.AddHealthChecksUI();
+            services.AddSingleton<IConfiguration>(Configuration);
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<List<DataConfig>>(Configuration.GetSection("SPName"));
             services.Configure<List<SkypeBotSetting>>(Configuration.GetSection("SkypeBot"));
@@ -102,6 +117,17 @@ namespace Fanex.NCB.Main
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            app.UseHealthChecks("/health", new HealthCheckOptions()
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+            app.UseHealthChecks("/healthz", new HealthCheckOptions()
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+            app.UseHealthChecksUI();//healthchecks-ui
         }
     }
 }
