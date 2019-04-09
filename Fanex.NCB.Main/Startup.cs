@@ -77,14 +77,14 @@ namespace Fanex.NCB.Main
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
+            if (env.IsProduction())
             {
                 app.UseAspNetCoreExceptionHandler("NCB.Main");
                 app.UseHsts();
+            }
+            else
+            {
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();

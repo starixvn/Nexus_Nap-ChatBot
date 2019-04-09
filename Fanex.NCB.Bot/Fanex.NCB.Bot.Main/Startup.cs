@@ -68,14 +68,14 @@ namespace Fanex.NCB.Bot.Main
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
+            if (env.IsProduction())
             {
-                app.UseBrowserLink();
-                app.UseDeveloperExceptionPage();
+                app.UseAspNetCoreExceptionHandler("NCB.Bot");
             }
             else
             {
-                app.UseAspNetCoreExceptionHandler("NCB.Bot");
+                app.UseBrowserLink();
+                app.UseDeveloperExceptionPage();
             }
             app.UseDefaultFiles();
             app.UseStaticFiles();
