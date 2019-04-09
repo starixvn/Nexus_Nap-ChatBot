@@ -17,8 +17,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
         private readonly IMappingStatusService _mappingStatusService;
 
         public ChatGroupMappingController(
-            IChatGroupMappingService chatGroupMappingService, 
-            ISettingService settingService, 
+            IChatGroupMappingService chatGroupMappingService,
+            ISettingService settingService,
             IMappingStatusService mappingStatusService)
         {
             _chatGroupMappingService = chatGroupMappingService;
@@ -35,30 +35,33 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSettings()
         {
-            var botNames = await _settingService.GetBotNameAsync().ConfigureAwait(false);
-            var recipientTypes = await _settingService.GetRecipientTypesAsync().ConfigureAwait(false);
-            var mappingStatuses = _mappingStatusService.GetMappingStatus();
-            var recipients = await _settingService.GetRecipientsAsync().ConfigureAwait(false);
-            var chatGroupTypes = await _settingService.GetChatGroupTypeAsync();
+            var botNameTask = _settingService.GetBotNameAsync();
+            var recipientTypeTask = _settingService.GetRecipientTypesAsync();
+            var recipientTask = _settingService.GetRecipientsAsync();
+            var chatGroupTypeTask = _settingService.GetChatGroupTypeAsync();
+            await Task.WhenAll(botNameTask, recipientTask, chatGroupTypeTask, recipientTypeTask).ConfigureAwait(false);
+            return Json(new
+            {
+                botNames = await botNameTask,
+                recipientTypes = await recipientTypeTask,
+                recipients = await recipientTask,
+                chatGroupTypes = await chatGroupTypeTask,
+                mappingStatuses = _mappingStatusService.GetMappingStatus()
 
-            return Json(new { botNames, recipientTypes, mappingStatuses, recipients, chatGroupTypes });
+            });
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll(GetChapGroupMappingCriteria criteria)
         {
-            var data = await _chatGroupMappingService.GetChatGroupMappingListAsync(criteria).ConfigureAwait(false);
-
-            return Json(data);
+            return Json(await _chatGroupMappingService.GetChatGroupMappingListAsync(criteria).ConfigureAwait(false));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromBody] EditChatGroupMappingCriteria criteria)
         {
-            var result = await _chatGroupMappingService.UpdateChatGroupMappingAsync(criteria).ConfigureAwait(false);
-
-            return Json(result);
+            return Json(await _chatGroupMappingService.UpdateChatGroupMappingAsync(criteria).ConfigureAwait(false));
         }
     }
 }

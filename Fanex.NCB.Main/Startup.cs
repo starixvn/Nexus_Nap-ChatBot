@@ -19,7 +19,7 @@ namespace Fanex.NCB.Main
 {
     public class Startup
     {
-        ILogger<Startup> _logger;
+       private readonly ILogger<Startup> _logger;
         public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
             Configuration = configuration;
