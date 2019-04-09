@@ -75,10 +75,35 @@ export function getGridData(params) {
     return (dispatch) => dispatch(setSettings(fakeData));
 }
 
+// Delete
+export function deleteItem(notificationTypeId) {
+    const url = Site.resolveClientUrl('NotificationTemplate/Delete');
+    let headers = {
+        'Content-Type': 'application/json'
+    };
+
+    //return async (dispatch) => {
+    //    const request = await axios.post(url, notificationTypeId, { headers: headers });
+    //    const data = await request.data;
+    //    dispatch(setDeleteData(data));
+    //};
+
+    var fakeData = { errorCode: 0 };
+    return (dispatch) => dispatch(setSettings(fakeData));
+}
+
+export function setDeleteData(data) {
+    return {
+        type: types.DELETE_RESPONSE_DATA,
+        data: data
+    };
+}
+
+
 // Edit Popup
 export function setUpdateData(data) {
     return {
-        type: types.UPDATE_DATA,
+        type: types.UPDATE_RESPONSE_DATA,
         data: data
     };
 }

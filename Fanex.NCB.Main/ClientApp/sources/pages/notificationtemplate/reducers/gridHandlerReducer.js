@@ -6,3 +6,9 @@ export const updatePopupData = createReducer({}, {
         return action.data;
     }
 });
+
+export const deletePopupData = createReducer({}, {
+    [types.DELETE_POPUP_DATA](state, action) {
+        return action.data;
+    }
+});

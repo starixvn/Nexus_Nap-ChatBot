@@ -21,9 +21,17 @@ export const gridData = createReducer({}, {
     }
 });
 
+
+// Delete
+export const deleteResponseData = createReducer({}, {
+    [types.DELETE_RESPONSE_DATA](state, action) {
+        return action.data;
+    }
+});
+
 // Update Popup
-export const updateData = createReducer({}, {
-    [types.UPDATE_DATA](state, action) {
+export const updateResponseData = createReducer({}, {
+    [types.UPDATE_RESPONSE_DATA](state, action) {
         return action.data;
     }
 });
