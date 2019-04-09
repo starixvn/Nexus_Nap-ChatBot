@@ -1,4 +1,7 @@
 DELIMITER //
+
+DROP PROCEDURE IF EXISTS NCB_ChatGroupMapping_Upd;
+
 CREATE PROCEDURE `NCB_ChatGroupMapping_Upd`(
 	IN groupID INT,
     IN recipientTypeID INT, 
@@ -32,7 +35,7 @@ NCB_ChatGroupMapping_Upd:BEGIN
 	DECLARE logContent TEXT;
 	
 	-- Get Start Time to calcualte execution duration
-    SET  startTime = CURRENT_TIMESTAMP(3);
+    SET  startTime = UTC_TIMESTAMP(3);
 
 	-- Set default values for errorCode and errorMsg
     SET errorCode=0, errorMsg='';
@@ -94,7 +97,7 @@ NCB_ChatGroupMapping_Upd:BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_RecipientID;        
 	
 	-- Get Finish Time to calcualte execution duration
-    SET finishTime = CURRENT_TIMESTAMP(3);
+    SET finishTime = UTC_TIMESTAMP(3);
     SET duration =  TIMESTAMPDIFF(MICROSECOND, startTime, finishTime)  / 1000;
 	
 	-- Get Log Content, JSON format
@@ -106,5 +109,5 @@ NCB_ChatGroupMapping_Upd:BEGIN
 								, 'creatorID', creatorID);
 										
 	-- Write User Log
-	CALL NCB_UserLog_RunSP_Ins(ACTION_ID, creatorID, logContent, duration);
+	CALL NCB_UserLog_RunSP_Ins(ACTION_ID, creatorID, logContent, startTime, duration);
 END;
