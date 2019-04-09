@@ -24,7 +24,7 @@ NCB_NotificationList_Resolve_Upd:BEGIN
     DECLARE finishTime 		DATETIME(3); 
     DECLARE duration 			INT;							
     DECLARE logContent 		TEXT;
-    DECLARE ACTION_ID 		INT DEFAULT 3;
+    DECLARE ACTION_ID 		INT DEFAULT 4;
     
     #Constants
 	DECLARE NOTIFICATION_STATUSID_RESOLVED	INT DEFAULT 5;
@@ -41,10 +41,10 @@ NCB_NotificationList_Resolve_Upd:BEGIN
 	IF  NOT EXISTS(SELECT 1 
 									FROM Notification  n
                                     WHERE n.NotificationID = notificationID ) THEN
-		SET errCode=301, errMsg='Invalid NotificationID';
+		SET errCode=401, errMsg='Invalid NotificationID';
         LEAVE NCB_NotificationList_Resolve_Upd;
 	ELSEIF userID IS NULL THEN
-		SET errCode=302, errMsg='userID can not be null';
+		SET errCode=402, errMsg='userID can not be null';
         LEAVE NCB_NotificationList_Resolve_Upd;
 	END IF;
 	
@@ -59,7 +59,7 @@ NCB_NotificationList_Resolve_Upd:BEGIN
 		AND n.StatusID = NOTIFICATION_STATUSID_ERROR;
 	
     IF ROW_COUNT()  = 0 THEN
-		SET errCode=303, errMsg='This Notification has been resolved by someone else, can not resolve it';
+		SET errCode=403, errMsg='This Notification has been resolved by someone else, can not resolve it';
         LEAVE NCB_NotificationList_Resolve_Upd;
     END IF;
     

@@ -18,6 +18,9 @@ BEGIN
 	DECLARE RECIPIENT_TYPE_LICENSEES 	SMALLINT DEFAULT 1;
     DECLARE LICENSEE_STATUS_ACTIVE 		TINYINT UNSIGNED DEFAULT 3;
     
+    #Local variables
+    DECLARE nowGMTMinus4 DATETIME;
+    
 	DROP TEMPORARY TABLE IF EXISTS tmp_recipientLst;
 	CREATE TEMPORARY TABLE tmp_recipientLst(
 																	RecipientTypeID SMALLINT
@@ -61,9 +64,20 @@ BEGIN
 			ON l.LicenseeId = main.SourceID
 				AND main.RecipientTypeID = RECIPIENT_TYPE_LICENSEES
 	WHERE  l.LicenseeStatusId <> LICENSEE_STATUS_ACTIVE;
+    
+    #Delete exception cases
+	DELETE main
+	FROM tmp_recipientLst main
+    WHERE main.RecipientID IN (
+					SELECT ex.RecipientID 
+					FROM NotificationTypeRecipientException ex
+					WHERE ex.NotificationTypeID = notificationTypeID
+	);
                         
 	#Filter Recipient list by an offered product
     IF productID IS NOT NULL THEN
+		SET nowGMTMinus4 = CONVERT_TZ(UTC_TIMESTAMP(),'+00:00','-04:00');
+        
 		DELETE main
         FROM tmp_recipientLst main
         LEFT JOIN LicenseeProduct lp 
@@ -73,11 +87,11 @@ BEGIN
         WHERE lp.LaunchDate IS NULL
 					OR (
 								 lp.LaunchDate IS NOT NULL 
-								AND NOW() <  lp.LaunchDate
+								AND GMTPlus4Now <  lp.LaunchDate
 							)
 					OR (
 								lp.TerminationDate IS NOT NULL 
-								AND NOW()  > lp.TerminationDate
+								AND GMTPlus4Now  > lp.TerminationDate
 							);
     END IF;
     

@@ -39,6 +39,9 @@ NCB_NewNotification_Ins:BEGIN
     DECLARE NEW_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 0;
     DECLARE NEW_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Planned';
     
+     #Local variables
+    DECLARE configSendTimeGMTPlus4 DATETIME;
+    
     #Get Start Time to calcualte execution duration
     SET  startTime = UTC_TIMESTAMP(3);
     SET errCode=0, errMsg='';
@@ -153,6 +156,7 @@ NCB_NewNotification_Ins:BEGIN
     END IF;
     
     #Check Licensees do not offered a product
+    SET configSendTimeGMTPlus4 = CONVERT_TZ(UTC_TIMESTAMP(),'+00:00','-04:00');
     IF productID IS NOT NULL 
 		AND EXISTS(
 						SELECT 1 
@@ -166,11 +170,11 @@ NCB_NewNotification_Ins:BEGIN
 						WHERE  lp.LaunchDate IS NULL
 							OR (
 										 lp.LaunchDate IS NOT NULL 
-										AND configSendTime <  lp.LaunchDate
+										AND configSendTimeGMTPlus4 <  lp.LaunchDate
 									)
 							OR (
 										lp.TerminationDate IS NOT NULL 
-										AND configSendTime > lp.TerminationDate
+										AND configSendTimeGMTPlus4 > lp.TerminationDate
 									)
 	) THEN
 		SET errCode=108;
@@ -190,25 +194,44 @@ NCB_NewNotification_Ins:BEGIN
 						WHERE  lp.LaunchDate IS NULL
 							OR (
 										 lp.LaunchDate IS NOT NULL 
-										AND configSendTime <  lp.LaunchDate
+										AND configSendTimeGMTPlus4 <  lp.LaunchDate
 									)
 							OR (
 										lp.TerminationDate IS NOT NULL 
-										AND configSendTime > lp.TerminationDate
+										AND configSendTimeGMTPlus4 > lp.TerminationDate
 									)
 			);
 
         LEAVE NCB_NewNotification_Ins;
     END IF;
     
-    #Delete exception Recipient
-    DELETE main
-    FROM tmp_recipientIDLst main
-    WHERE main.RecipientID IN (
-					SELECT ex.RecipientID 
-					FROM NotificationTypeRecipientException ex
-					WHERE ex.NotificationTypeID = notificationTypeID
-	);
+    #Check exeption recipient
+    IF EXISTS(
+			SELECT 1
+			FROM tmp_recipientIDLst main
+			WHERE main.RecipientID IN (
+							SELECT ex.RecipientID 
+							FROM NotificationTypeRecipientException ex
+							WHERE ex.NotificationTypeID = notificationTypeID
+						)
+	)
+    THEN
+		SET errCode=109;
+        
+        SELECT GROUP_CONCAT(re.RecipientName ORDER BY re.RecipientName SEPARATOR ', ') 
+        INTO errMsg
+        FROM tmp_recipientIDLst main
+        INNER JOIN Recipient re 
+							ON re.RecipientID = main.RecipientID 
+		WHERE main.RecipientID IN (
+						SELECT ex.RecipientID 
+						FROM NotificationTypeRecipientException ex
+						WHERE ex.NotificationTypeID = notificationTypeID
+                        );
+                        
+		LEAVE NCB_NewNotification_Ins;
+    END IF;
+
     
     #Insert a new Notification
     INSERT INTO Notification(NotificationTypeID
@@ -224,7 +247,7 @@ NCB_NewNotification_Ins:BEGIN
                     , content
                     , configSendTime
                     , creatorID
-                    , NOW()
+                    , UTC_TIMESTAMP()
                     , NEW_NOTIFICATION_STATUS
                     , NEW_NOTIFICATION_STATUSID;
     SET NotificationID = LAST_INSERT_ID();
