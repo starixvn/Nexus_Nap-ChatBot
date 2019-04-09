@@ -1,12 +1,7 @@
 ﻿using Fanex.NCB.Swagger.AuthGate.Services;
 using FluentAssertions;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
-using Fanex.NCB.Common.DTO;
 using Fanex.NAP.Core.Models;
 
 namespace Fanex.NCB.Swagger.AuthGate.UnitTests
