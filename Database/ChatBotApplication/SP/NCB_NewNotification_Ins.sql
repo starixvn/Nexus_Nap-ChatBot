@@ -32,14 +32,15 @@ NCB_NewNotification_Ins:BEGIN
     DECLARE duration 			INT;							
     DECLARE logContent 		TEXT;
     DECLARE ACTION_ID 		INT DEFAULT 1;
+    
+    #constants
     DECLARE RECIPIENT_TYPE_LICENSEES 	SMALLINT DEFAULT 1;
     DECLARE LICENSEE_STATUS_ACTIVE 		TINYINT UNSIGNED DEFAULT 3;
     DECLARE NEW_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 0;
     DECLARE NEW_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Planned';
     
     #Get Start Time to calcualte execution duration
-    SET  startTime = CURRENT_TIMESTAMP(3);
-    
+    SET  startTime = UTC_TIMESTAMP(3);
     SET errCode=0, errMsg='';
     
 	#Check param
@@ -248,7 +249,7 @@ NCB_NewNotification_Ins:BEGIN
 	);
     
      #Get Finish Time to calcualte execution duration
-    SET finishTime = CURRENT_TIMESTAMP(3);
+    SET finishTime = UTC_TIMESTAMP(3);
     SET duration =  TIMESTAMPDIFF(MICROSECOND
 																		, startTime
                                                                         , finishTime)  / 1000; 	#miliseconds
@@ -266,8 +267,9 @@ NCB_NewNotification_Ins:BEGIN
 		#Write User Log
         CALL NCB_UserLog_RunSP_Ins(
 											ACTION_ID #actionID
-											,creatorID #UserID
-                                            ,logContent #LogContent
-                                            ,duration	#Duration
+											, creatorID #UserID
+                                            , logContent #LogContent
+                                            , startTime #logtime
+                                            , duration	#Duration
                                             );
 END;
