@@ -34,8 +34,6 @@ namespace Fanex.NCB.CustomAspNetCoreModule
                     {
                         context.Response.StatusCode = SERVER_ERROR;
                         await context.Response.WriteAsync("An unexpected fault happened. Try again later.");
-                        await context.Response.WriteAsync(exceptionHandlerFeature.Error.Message + "\n" + exceptionHandlerFeature.Error.StackTrace + "\n" + exceptionHandlerFeature.Error.InnerException);
-
                         return;
                     }
                     context.Response.Redirect($"/Error/Status/{context.Response.StatusCode}");
