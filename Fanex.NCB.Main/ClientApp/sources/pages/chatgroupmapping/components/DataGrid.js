@@ -31,7 +31,6 @@ export class DataGrid extends Component {
             <Row style={{ height: 32 }}>
                 <Cell colWidth={30} header>{Labels.NumberCol}</Cell>
                 <Cell colWidth={100} header>{Labels.BotName}</Cell>
-                <Cell colWidth={300} header>{Labels.GroupID}</Cell>
                 <Cell colWidth={200} header>{Labels.GroupName}</Cell>
                 <Cell colWidth={200} header>{Labels.ChatGroupType}</Cell>
                 <Cell colWidth={100} header>{Labels.RecipientType}</Cell>
@@ -39,7 +38,7 @@ export class DataGrid extends Component {
                 <Cell colWidth={100} header>{Labels.LicenseeStatus}</Cell>
                 <Cell colWidth={100} header>{Labels.MappingStatus}</Cell>
                 <Cell colWidth={150} header>{Labels.Remark}</Cell>
-                <Cell colWidth={50} header>{Labels.Action}</Cell>
+                <Cell colWidth={100} header>{Labels.Action}</Cell>
             </Row>);
     };
 
@@ -50,7 +49,6 @@ export class DataGrid extends Component {
             rows.push(<Row key={`body${index}`} >
                 <Cell className="text-center">{index + startIndex}</Cell>
                 <Cell>{item.botName}</Cell>
-                <Cell>{item.conversationID}</Cell>
                 <Cell>{item.groupName}</Cell>
                 <Cell>{item.chatGroupTypeName}</Cell>
                 <Cell>{item.recipientTypeName}</Cell>
