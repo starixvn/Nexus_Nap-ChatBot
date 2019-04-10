@@ -6,8 +6,8 @@ CREATE PROCEDURE  NCB_NewNotification_Ins(
 	IN notificationTypeID SMALLINT
 	, IN productID INT
 	, IN recipientIDLst VARCHAR(200)
-	, IN title VARCHAR(300)
-	, IN content MEDIUMTEXT
+	, IN title VARCHAR(300) CHARACTER SET utf8mb4
+	, IN content MEDIUMTEXT CHARACTER SET utf8mb4
 	, IN configSendTime DATETIME
 	, IN creatorID INT
     , OUT notificationID INT
@@ -30,7 +30,7 @@ NCB_NewNotification_Ins:BEGIN
 	DECLARE startTime 			DATETIME(3);
     DECLARE finishTime 		DATETIME(3); 
     DECLARE duration 			INT;							
-    DECLARE logContent 		TEXT;
+    DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
     DECLARE ACTION_ID 		INT DEFAULT 1;
     
     #constants
