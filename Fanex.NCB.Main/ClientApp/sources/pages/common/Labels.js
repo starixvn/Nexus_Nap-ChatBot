@@ -4,6 +4,7 @@
     BotName: "Bot Name",
     ChatGroupMapping: "Chat Group Mapping",
     ChatGroupType: "Chat Group Type",
+    CreateNewTemplate: "Create New Template",
     Edit: "Edit",
     EditMappingStatus: "Edit Mapping Status",
     GroupID: "GroupID",
@@ -11,10 +12,13 @@
     LicenseeStatus: "Licensee Status",
     MappingStatus: "Mapping Status",
     NumberCol: "#",
+    NotificationType: "Notification Type",
     RecipientType: "Recipient Type",
     Recipient: "Recipient",
     Remark: "Remark",
     Submit: "Submit",
     SkypeChatbot: "Skype Chatbot",
+    TemplateName: "Template Name",
+    TitleContent: "Title/Content",
     UpdateMappingStatusSuccessfully: "Update Mapping Status Successfully"
 };

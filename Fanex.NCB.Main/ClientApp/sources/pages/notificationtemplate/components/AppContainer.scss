@@ -1,2 +1,92 @@
-﻿body {
+﻿@import "../../shared/variables";
+@import "../../shared/common.scss";
+@import "../../shared/components/forms.scss";
+@import "../../shared/components/buttons.scss";
+@import "../../shared/components/modals.scss";
+@import "../../shared/components/messages.scss";
+@import "../../shared/components/tables.scss";
+@import "../../shared/components/font.css";
+
+.filter .notification-type {
+    width: 160px;
+}
+
+.tbl {
+    margin-top: 10px;
+
+    .icon-edit {
+        margin-right: 10px;
+    }
+
+    .icon-expand {
+        right: -4px;
+        top: -3px;
+    }
+
+    tbody .col-content [class^="icon"] {
+        top: 5px;
+    }
+}
+
+.new-notification-template {
+    width: 980px;
+    max-width: 980px;
+}
+
+.form-filter {
+    .form-group {
+        display: inline-block;
+    }
+
+    .form-label {
+        margin-right: 5px;
+    }
+
+    .btn-submit {
+        margin-left: 10px;
+    }
+
+    .btn-new {
+        display: block;
+        background-color: #05b15b;
+        color: #fff;
+    }
+
+    .btn-new:hover {
+        background-color: #047f42;
+        color: #fff;
+    }
+}
+
+.form-create {
+    overflow: hidden;
+
+    .form-group {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        grid-template-rows: 1fr;
+        align-items: center;
+        margin-bottom: 12px;
+
+        .content {
+            height: 260px;
+        }
+    }
+
+    .two-cols {
+        display: grid;
+        grid-template-columns: 380px 536px;
+        grid-template-rows: 1fr;
+        grid-gap: 30px;
+        align-items: start;
+    }
+}
+
+.table-container-div {
+    width: 1400px;
+    margin-top: 10px;
+
+    table {
+        margin-bottom: 0;
+    }
 }

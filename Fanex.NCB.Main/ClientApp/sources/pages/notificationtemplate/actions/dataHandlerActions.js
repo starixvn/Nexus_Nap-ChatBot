@@ -58,21 +58,22 @@ export function getGridData(params) {
             notificationTemplateId: 1,
             notificationTypeId: 1,
             notificationTypeName: "UM",
-            TemplateName: "Weekly UM1",
-            Title: "WEEKLY MAINTENANCEMENT - UM DATE",
-            Content: "Good day!\nThis is Shane, kindly take note of the below message"
+            templateName: "Weekly UM1",
+            title: "WEEKLY MAINTENANCEMENT - UM DATE",
+            content: "Good day!\nThis is Shane, kindly take note of the below message"
         },
         {
             notificationTemplateId: 2,
             notificationTypeId: 1,
             notificationTypeName: "UM",
-            TemplateName: "Weekly UM2",
-            Title: "WEEKLY MAINTENANCEMENT - UM DATE",
-            Content: "Good day!\nThis is Shane, kindly take note of the below message"
+            templateName: "Weekly UM2",
+            title: "WEEKLY MAINTENANCEMENT - UM DATE",
+            content: "Good day!\nThis is Shane, kindly take note of the below message"
         }
     ];
 
-    return (dispatch) => dispatch(setSettings(fakeData));
+    console.log("get grid data");
+    return (dispatch) => dispatch(setGridData({ data: fakeData, count: 3 }));
 }
 
 // Delete
@@ -89,7 +90,7 @@ export function deleteItem(notificationTypeId) {
     //};
 
     var fakeData = { errorCode: 0 };
-    return (dispatch) => dispatch(setSettings(fakeData));
+    return (dispatch) => dispatch(setDeleteData(fakeData));
 }
 
 export function setDeleteData(data) {
@@ -128,7 +129,7 @@ export function update(params, isNew) {
     //    dispatch(setUpdateData(data));
     //};
     var fakeData = { errorCode: 0 };
-    return (dispatch) => dispatch(setSettings(fakeData));
+    return (dispatch) => dispatch(setUpdateData(fakeData));
 }
 
 export function refreshUpdateData() {

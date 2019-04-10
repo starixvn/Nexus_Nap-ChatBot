@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import { NCBBreadcrum } from '../../common/breadcrumbs';
+import Filter from './Filter';
 import DataGrid from './DataGrid';
 import UpdatePopup from './UpdatePopup';
 import DeletePopup from './DeletePopup';
@@ -29,6 +30,7 @@ export class AppContainer extends Component {
         return (
             <div>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Template" />
+                <Filter />
                 <DataGrid />
 
                 {this.props.updatePopupData.isShowed && <UpdatePopup closeUpdatePopupHandler={this.closeUpdatePopupHandler} />}
