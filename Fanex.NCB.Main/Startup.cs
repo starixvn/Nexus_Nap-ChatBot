@@ -5,6 +5,7 @@ using System.Net.Mime;
 using Fanex.NCB.Core.Models.DataDomain;
 using Fanex.NCB.Core.Services;
 using Fanex.NCB.CustomAspNetCoreModule;
+using Fanex.NCB.CustomAspNetCoreModule.Extensions;
 using Fanex.NCB.CustomAspNetCoreModule.HealthChecks;
 using Fanex.NCB.Shared.MySQLExtension.DataDomain;
 using Fanex.NCB.Shared.MySQLExtension.Services;
@@ -18,7 +19,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection; 
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -39,9 +40,11 @@ namespace Fanex.NCB.Main
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHealthChecks()
-                .AddCheck<RandomHealthCheck>("random")
-                  .AddMySql(Configuration.GetConnectionString("ChatBotDB"), "ChatBotDB", HealthStatus.Degraded,
-              tags: new string[] { "db", "sql", "myserver" });
+                    .AddUriAvailable("https://github.com/", "Github")
+                    .AddUriAvailable("https://hrm2.nexcel.vn", "hrm_Unknow")
+                    .AddUriAvailable("https://hrm.nexcel.vn/C", "hrm_Unauthorized")
+                    .AddMySql(Configuration.GetConnectionString("ChatBotDB"), "ChatBotDB", HealthStatus.Degraded,
+              tags: new [] { "db", "sql", "myserver" });
 
             services.AddHealthChecksUI();
             services.AddSingleton<IConfiguration>(Configuration);
