@@ -39,10 +39,12 @@ namespace Fanex.NCB.Main
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
             services.AddHealthChecks()
-                    .AddUriAvailable("https://github.com/", "Github")
-                    .AddUriAvailable("https://hrm2.nexcel.vn", "hrm_Unknow")
-                    .AddUriAvailable("https://hrm.nexcel.vn/C", "hrm_Unauthorized")
+                    .AddUriAvailable(appSettings.AuthApi, "AuthApi")
+                    .AddUriAvailable(appSettings.UserResourceApi, "UserResourceApi")
+                    .AddUriAvailable(appSettings.TokenUrl, "TokenUrl")
+                    .AddUriAvailable(appSettings.SkypeServiceUrl, "SkypeServiceUrl")
                     .AddMySql(Configuration.GetConnectionString("ChatBotDB"), "ChatBotDB", HealthStatus.Degraded,
               tags: new [] { "db", "sql", "myserver" });
 
