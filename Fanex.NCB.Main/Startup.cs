@@ -45,6 +45,7 @@ namespace Fanex.NCB.Main
                     .AddUriAvailable(appSettings.UserResourceApi, "UserResourceApi")
                     .AddUriAvailable(appSettings.TokenUrl, "TokenUrl")
                     .AddUriAvailable(appSettings.SkypeServiceUrl, "SkypeServiceUrl")
+                    
                     .AddMySql(Configuration.GetConnectionString("ChatBotDB"), "ChatBotDB", HealthStatus.Degraded,
               tags: new [] { "db", "sql", "myserver" });
 
