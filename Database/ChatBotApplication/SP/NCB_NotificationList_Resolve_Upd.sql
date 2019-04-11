@@ -23,7 +23,7 @@ NCB_NotificationList_Resolve_Upd:BEGIN
 	DECLARE startTime 			DATETIME(3);
     DECLARE finishTime 		DATETIME(3); 
     DECLARE duration 			INT;							
-    DECLARE logContent 		TEXT;
+    DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
     DECLARE ACTION_ID 		INT DEFAULT 4;
     
     #Constants
