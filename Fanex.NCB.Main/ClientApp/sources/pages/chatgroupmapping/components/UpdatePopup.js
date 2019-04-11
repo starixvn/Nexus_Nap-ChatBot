@@ -7,7 +7,7 @@ import { ActionCreators } from '../actions/index';
 import { InputField } from '../../common/InputField';
 import { SelectField } from '../../common/SelectField';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
-import { getMappingClass } from '../../common/CommonFunctions';
+import { getLicenseeStatus } from '../../common/CommonFunctions';
 import Labels from '../../common/Labels';
 import { ResponseMessage } from '../../common/response-message/ResponseMessage';
 
@@ -52,7 +52,7 @@ export class UpdatePopup extends Component {
     }
 
     checkValidParams = () => {
-        return this.state.recipientTypeId.isValid && this.state.recipientIds.isValid && this.state.chatGroupTypeId.isValid && this.state.remark.isValid;
+        return this.state.recipientTypeId.isValid && this.state.recipientIds.isValid && this.state.chatGroupTypeId.isValid;
     }
 
     onChange = (fieldName, fieldValue) => this.setState({ [fieldName]: fieldValue });
@@ -82,7 +82,7 @@ export class UpdatePopup extends Component {
         filteredRecipients && filteredRecipients.map((v, i) => {
             let isChecked = recipientIds.includes(v.id.toString());
             v['checked'] = isChecked ? true : false;
-            isChecked && v.status !== '' && licenseeStatuses.push(v.status);
+            isChecked && v.status && licenseeStatuses.push(v.status);
         });    
 
         return (
@@ -130,14 +130,10 @@ export class UpdatePopup extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label ">{Labels.LicenseeStatus}</Label>
-                            <Label className="form-label">{licenseeStatuses.join(",")}</Label>
-                        </FormGroup>
+                            <Label className="form-label">{getLicenseeStatus(licenseeStatuses.join(","))}</Label>
+                        </FormGroup>                    
                         <FormGroup>
-                            <Label className="form-label ">{Labels.MappingStatus}</Label>
-                            <Label className="form-label"><span className={getMappingClass(editingItem.mappingStatusId)}>{editingItem.mappingStatusName}</span></Label>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label className="form-label required">{Labels.Remark}</Label>
+                            <Label className="form-label">{Labels.Remark}</Label>
                             <InputField initialValue={editingItem.remark.value}
                                 isSummited={this.state.isSummited}
                                 onChange={(value) => this.onChange("remark", value)}

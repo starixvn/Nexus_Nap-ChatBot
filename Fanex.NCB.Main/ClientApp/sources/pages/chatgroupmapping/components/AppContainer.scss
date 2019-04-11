@@ -74,5 +74,13 @@
     table {
         margin-bottom: 0;
     }
+
+    .edit-disabled{
+        color: grey;
+
+        :hover{
+            background: none;
+        }
+    }
 }
 

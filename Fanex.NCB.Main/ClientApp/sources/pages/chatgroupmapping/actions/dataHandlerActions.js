@@ -82,15 +82,15 @@ export function update(params) {
         'Content-Type': 'application/json',
         'RequestVerificationToken': Site.getXsrfToken()
     };
+
     return async (dispatch) => {
         try {
             const request = await axios.post(url, JSON.stringify(params), { headers: headers });
             const data = await request.data;
+            dispatch(setUpdateData(data));
         } catch (err) {
             errorResponseHandler();
         }
-
-        dispatch(setUpdateData(data));
     };
 }
 

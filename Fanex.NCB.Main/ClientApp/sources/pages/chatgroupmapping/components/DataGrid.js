@@ -4,7 +4,7 @@ import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 import { UncontrolledTooltip } from 'reactstrap';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
-import { getMappingClass } from '../../common/CommonFunctions';
+import { getMappingClass, isBotRemoved, getLicenseeStatus } from '../../common/CommonFunctions';
 import Labels from '../../common/Labels';
 
 export class DataGrid extends Component {
@@ -46,6 +46,7 @@ export class DataGrid extends Component {
         let rows = [];
         let startIndex = (pageIndex - 1) * pageSize + 1;
         data.map((item, index) => {
+            let botRemoved = isBotRemoved(item.mappingStatusID);
             rows.push(<Row key={`body${index}`} >
                 <Cell className="text-center">{index + startIndex}</Cell>
                 <Cell>{item.botName}</Cell>
@@ -53,13 +54,13 @@ export class DataGrid extends Component {
                 <Cell>{item.chatGroupTypeName}</Cell>
                 <Cell>{item.recipientTypeName}</Cell>
                 <Cell>{item.recipientNames}</Cell>
-                <Cell>{item.recipientStatusNames}</Cell>
+                <Cell>{getLicenseeStatus(item.recipientStatusNames)}</Cell>
                 <Cell><span className={getMappingClass(item.mappingStatusID)}>{item.mappingStatusName}</span></Cell>
                 <Cell>{item.remark}</Cell>
                 <Cell className="text-center col-action">
                     <div>
-                        <span className="icon-edit" id={"edit-" + index} onClick={() => this.openEditPopup(item, index)} />
-                        <UncontrolledTooltip placement="top" target={"edit-" + index}>{Labels.Edit}</UncontrolledTooltip>                        
+                        <span className={botRemoved ? "icon-edit edit-disabled" : "icon-edit"} id={"edit-" + index} onClick={() => !botRemoved && this.openEditPopup(item, index)} />
+                        {!botRemoved && <UncontrolledTooltip placement="top" target={"edit-" + index}>{Labels.Edit}</UncontrolledTooltip>}                        
                     </div>
                 </Cell>
             </Row>);
