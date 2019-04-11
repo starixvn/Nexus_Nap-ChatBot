@@ -23,13 +23,67 @@ export class Filter extends Component {
             },
             mappingStatuses: {
                 value: ""
+            },
+            settingData: {
+                botNames: [],
+                recipientTypes: [],
+                mappingStatuses: []
             }
         };
-    }
 
-    componentWillMount() {
         this.props.getSettings();
         this.props.filterRecipients([], 0);
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {       
+        if (prevState.settingData.botNames.length === 0 && nextProps.settingData.botNames) {
+            let botNames = nextProps.settingData.botNames;
+            let selectedBotNames = [];
+            botNames.map((v) => {
+                v['checked'] = true;
+                selectedBotNames.push(v['id']);
+            });
+
+            let recipientTypes = nextProps.settingData.recipientTypes;
+            let selectedRecipientTypes = [];
+            recipientTypes.map((v) => {
+                v['checked'] = true;
+                selectedRecipientTypes.push(v['id']);
+            });
+
+            let mappingStatuses = nextProps.settingData.mappingStatuses;
+            let selectedMappingStatuses = [];
+            mappingStatuses.map((v) => {
+                v['checked'] = true;
+                selectedMappingStatuses.push(v['id']);
+            });
+
+
+            let state = {
+                botNames: {
+                    value: selectedBotNames.join(",")
+                },
+                recipientTypes: {
+                    value: selectedRecipientTypes.join(",")
+                },
+                recipient: {
+                    value: ""
+                },
+                mappingStatuses: {
+                    value: selectedMappingStatuses.join(",")
+                },
+                settingData: {
+                    botNames: botNames,
+                    recipientTypes: recipientTypes,
+                    mappingStatuses: mappingStatuses
+                }
+            };
+
+            return state;
+        }
+
+        // Return null to indicate no change to state.
+        return null;
     }  
 
     onChange = (fieldName, fieldValue) => {
@@ -49,6 +103,10 @@ export class Filter extends Component {
         };
     }    
 
+    checkValidParams = () => {
+        return this.state.botNames.value !== '' && this.state.recipientTypes.value !== '' && this.state.mappingStatuses.value !== '';
+    }
+
     submitHandler = (e) => {
         e.preventDefault();
 
@@ -57,7 +115,7 @@ export class Filter extends Component {
         this.props.getGridData(params);
     }
   
-    render() {
+    render() {        
         return (
             <Form className="form-filter">
                 <FormGroup>
@@ -65,14 +123,14 @@ export class Filter extends Component {
                     <MultipleSelectField
                         id={"botNames"}
                         width={200}
-                        initialValue={this.state.botNames.value}
-                        data={this.props.settingData.botNames}
+                        initialValue={this.state.botNames}
+                        data={this.state.settingData.botNames}
                         keyField={"id"}
                         valueField={"name"}
                         statusField={"checked"}
                         isSummited={false}
-                        texts={{ SelectOptions: Labels.All, All: Labels.All, SelectedItemCount: "# selected" }}
-                        isAllTextShown={false}
+                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: "# selected" }}
+                        isAllTextShown
                         onChange={(value) => this.onChange("botNames", value)}
                     />       
                 </FormGroup>
@@ -82,13 +140,13 @@ export class Filter extends Component {
                         id={"recipientTypes"}
                         width={200}
                         initialValue={this.state.recipientTypes}
-                        data={this.props.settingData.recipientTypes}
+                        data={this.state.settingData.recipientTypes}
                         keyField={"id"}
                         valueField={"name"}
                         statusField={"checked"}
                         isSummited={false}
-                        texts={{ SelectOptions: Labels.All, All: Labels.All, SelectedItemCount: "# selected" }}
-                        isAllTextShown={false}
+                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: "# selected" }}
+                        isAllTextShown
                         onChange={(value) => this.onChange("recipientTypes", value)}
                     />       
                 </FormGroup>
@@ -105,17 +163,17 @@ export class Filter extends Component {
                         id={"mappingStatuses"}
                         width={200}
                         initialValue={this.state.mappingStatuses}
-                        data={this.props.settingData.mappingStatuses}
+                        data={this.state.settingData.mappingStatuses}
                         keyField={"id"}
                         valueField={"name"}
                         statusField={"checked"}
                         isSummited={false}
-                        texts={{ SelectOptions: Labels.All, All: Labels.All, SelectedItemCount: "# selected" }}
-                        isAllTextShown={false}
+                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: "# selected" }}
+                        isAllTextShown
                         onChange={(value) => this.onChange("mappingStatuses", value)}
                     />
                 </FormGroup>
-                <button className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
+                <button disabled={!this.checkValidParams()} className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
             </Form>            
         );
     }

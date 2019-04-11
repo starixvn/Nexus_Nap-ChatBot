@@ -13,6 +13,7 @@
     MappingStatus: "Mapping Status",
     NumberCol: "#",
     NotificationType: "Notification Type",
+    PleaseSelect: "---Please select---",
     RecipientType: "Recipient Type",
     Recipient: "Recipient",
     Remark: "Remark",
