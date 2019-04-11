@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -23,9 +24,16 @@ namespace Fanex.NCB.CustomAspNetCoreModule.HealthChecks
             {
                 var response = await client.GetAsync(_uri).ConfigureAwait(false);
 
-                return response.IsSuccessStatusCode ? HealthCheckResult.Healthy()
-                    : HealthCheckResult.Unhealthy(description: "Error occurred, the status code is:" + response.StatusCode);
+                return IsConnected(response) 
+                        ? HealthCheckResult.Healthy()
+                        : HealthCheckResult.Unhealthy(description: "Error occurred, the status code is:" + response.StatusCode);
             }
+        }
+
+        private static bool IsConnected(HttpResponseMessage response)
+        {
+            var statusCodesIndicateConnected = new [] { HttpStatusCode.Unauthorized, HttpStatusCode.MethodNotAllowed };
+            return response.IsSuccessStatusCode || Array.IndexOf(statusCodesIndicateConnected, response.StatusCode) != -1;
         }
     }
 }
