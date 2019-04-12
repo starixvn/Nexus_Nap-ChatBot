@@ -10,6 +10,7 @@ import { MultipleSelectField } from '../../common/MultipleSelectField';
 import { getLicenseeStatus } from '../../common/CommonFunctions';
 import Labels from '../../common/Labels';
 import { ResponseMessage } from '../../common/response-message/ResponseMessage';
+import { TextField } from '../../common/text-field/TextField';
 
 export class UpdatePopup extends Component {
     constructor(props) {
@@ -134,9 +135,10 @@ export class UpdatePopup extends Component {
                         </FormGroup>                    
                         <FormGroup>
                             <Label className="form-label">{Labels.Remark}</Label>
-                            <InputField initialValue={editingItem.remark.value}
+                            <TextField initialValue={editingItem.remark.value}
                                 isSummited={this.state.isSummited}
                                 onChange={(value) => this.onChange("remark", value)}
+                                maxLength="200"
                             />                                     
                         </FormGroup>
                         <button className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
