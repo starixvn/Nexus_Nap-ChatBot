@@ -55,10 +55,7 @@ NCB_ChatGroupMapping_Upd:BEGIN
         LEAVE NCB_ChatGroupMapping_Upd;
 	ELSEIF IFNULL(recipientIDs,'') = '' THEN
 		SET errorCode=105, errorMsg='Recipients can not be empty';
-        LEAVE NCB_ChatGroupMapping_Upd;
-	ELSEIF IFNULL(remark,'') = '' THEN
-		SET errorCode=106, errorMsg='Remark can not be empty';
-        LEAVE NCB_ChatGroupMapping_Upd;
+        LEAVE NCB_ChatGroupMapping_Upd;	
 	END IF;   
     
 	-- If groupID exists in BotConversationExtraInfo then Update BotConversationExtraInfo

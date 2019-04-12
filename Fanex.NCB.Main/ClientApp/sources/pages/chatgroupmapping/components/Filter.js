@@ -92,10 +92,15 @@ export class Filter extends Component {
         });
     }
 
-    getParams = () => {              
+    getParams = () => {           
+        let recipientTypes = '';
+        if (this.state.recipientTypes.value && this.state.recipientTypes.value.length < this.state.settingData.recipientTypes.length) {
+            recipientTypes = this.state.recipientTypes.value;
+        }
+
         return {
             botNames: this.state.botNames.value,
-            recipientTypeIds: this.state.recipientTypes.value,
+            recipientTypeIds: recipientTypes,
             recipientName: this.state.recipient.value,
             mappingStatusIds: this.state.mappingStatuses.value,
             pageIndex: 1,

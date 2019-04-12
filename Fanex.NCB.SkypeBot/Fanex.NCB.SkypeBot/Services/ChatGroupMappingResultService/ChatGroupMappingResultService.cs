@@ -50,7 +50,7 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMappingResultService
 
         private static string GetRecipientStatusNames(List<ConversationRecipient> conversationRecipients)
         {
-            return String.Join(", ", conversationRecipients.Where(x => x.RecipientStatusName != string.Empty).Select(x => x.RecipientStatusName).ToList());
+            return String.Join(", ", conversationRecipients.Where(x => !String.IsNullOrEmpty(x.RecipientStatusName)).Select(x => x.RecipientStatusName).ToList());
         }
     }
 }

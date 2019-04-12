@@ -70,6 +70,10 @@
     .btn-submit {
         float: right;
     }
+
+    button[disabled] {
+        background-color: grey;
+    }
 }
 
 .table-container-div {

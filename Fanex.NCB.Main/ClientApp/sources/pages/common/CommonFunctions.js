@@ -17,6 +17,10 @@ export function isBotRemoved(mappingStatusId) {
     return mappingStatusId === mappingStatus.BotRemoved;
 }
 
+export function isMapped(mappingStatusId) {
+    return mappingStatusId === mappingStatus.Mapped;
+}
+
 export function getLicenseeStatus(recipientStatusNames) {
     return recipientStatusNames === '' ? 'N/A' : recipientStatusNames;
 }

@@ -25,9 +25,9 @@ export class SelectField extends Component {
     );
   }  
 
-  isValid = () => {
-    return this.state.value !== -1;
-  }
+    isValid = () => {               
+        return parseInt(this.state.value) > 0;
+    }
 
   render() {   
       return (

@@ -59,8 +59,7 @@ export class DataGrid extends Component {
                 <Cell>{item.remark}</Cell>
                 <Cell className="text-center col-action">
                     <div>
-                        <span className={botRemoved ? "icon-edit edit-disabled" : "icon-edit"} id={"edit-" + index} onClick={() => !botRemoved && this.openEditPopup(item, index)} />
-                        {!botRemoved && <UncontrolledTooltip placement="top" target={"edit-" + index}>{Labels.Edit}</UncontrolledTooltip>}                        
+                        <span className={botRemoved ? "icon-edit edit-disabled" : "icon-edit"} id={"edit-" + index} onClick={() => !botRemoved && this.openEditPopup(item, index)} />                        
                     </div>
                 </Cell>
             </Row>);
