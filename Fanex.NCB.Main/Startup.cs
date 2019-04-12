@@ -100,8 +100,6 @@ namespace Fanex.NCB.Main
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
 
-            _logger.LogInformation("start NCB.MAIN");
-            _logger.LogInformation($"NCB.MAIN in {env.EnvironmentName}");
             if (env.IsProduction())
             {
                 app.UseAspNetCoreExceptionHandler("NCB.Main");

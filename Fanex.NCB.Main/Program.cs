@@ -30,7 +30,7 @@ namespace Fanex.NCB.Main
 
                      config.AddEnvironmentVariables();
                  })
-                 .ConfigureLogging((_, logging) =>
+                 .ConfigureLogging((_, logging) => //should be move to startup.cs and add providers by ENV
                  {
                      logging.ClearProviders();
                      // add built-in providers manually, as needed 
