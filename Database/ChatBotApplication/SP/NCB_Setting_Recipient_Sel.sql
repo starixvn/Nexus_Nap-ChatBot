@@ -1,4 +1,5 @@
 DELIMITER //
+DROP PROCEDURE `NCB_Setting_Recipient_Sel`;
 CREATE PROCEDURE `NCB_Setting_Recipient_Sel`(
 	/*
 		Creator: Scofield@20190404

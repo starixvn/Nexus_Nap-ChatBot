@@ -1,4 +1,5 @@
 DELIMITER //
+DROP PROCEDURE `NCB_Setting_LicenseeStatus_Sel`;
 CREATE PROCEDURE `NCB_Setting_LicenseeStatus_Sel`(
 	/*
 		Creator: Scofield@20190404
