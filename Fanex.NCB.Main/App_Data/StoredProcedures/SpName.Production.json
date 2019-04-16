@@ -50,6 +50,10 @@
         {
           "SPKey": "NCB_Setting_ChatGroupType_Sel",
           "SPName": "NCB_Setting_ChatGroupType_Sel"
+        },
+        {
+          "SPKey": "NCB_Setting_LicenseeStatus_Sel",
+          "SPName": "NCB_Setting_LicenseeStatus_Sel"
         }
       ]
     }

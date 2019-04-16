@@ -41,6 +41,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.ChatGroupMapping
             param.Add("recipientTypeIDs", value: criteria.RecipientTypeIDs, dbType: DbType.String);
             param.Add("recipientName", value: criteria.RecipientName, dbType: DbType.String);
             param.Add("mappingStatusIds", value: criteria.MappingStatusIds, dbType: DbType.String);
+            param.Add("licenseeStatusIds", value: criteria.LicenseeStatusIds, dbType: DbType.String);
             param.Add("pageIndex", value: criteria.PageIndex, dbType: DbType.Int64);
             param.Add("pageSize", value: criteria.PageSize, dbType: DbType.Int64);
 

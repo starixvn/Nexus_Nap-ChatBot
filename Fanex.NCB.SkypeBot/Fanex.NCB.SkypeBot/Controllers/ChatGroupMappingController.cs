@@ -39,13 +39,16 @@ namespace Fanex.NCB.SkypeBot.Controllers
             var recipientTypeTask = _settingService.GetRecipientTypesAsync();
             var recipientTask = _settingService.GetRecipientsAsync();
             var chatGroupTypeTask = _settingService.GetChatGroupTypeAsync();
-            await Task.WhenAll(botNameTask, recipientTask, chatGroupTypeTask, recipientTypeTask).ConfigureAwait(false);
+            var licenseeStatusTask = _settingService.GetLicenseeStatusAsync();
+
+            await Task.WhenAll(botNameTask, recipientTask, chatGroupTypeTask, recipientTypeTask, licenseeStatusTask).ConfigureAwait(false);
             return Json(new
             {
                 botNames = await botNameTask,
                 recipientTypes = await recipientTypeTask,
                 recipients = await recipientTask,
                 chatGroupTypes = await chatGroupTypeTask,
+                licenseeStatuses = await licenseeStatusTask,
                 mappingStatuses = _mappingStatusService.GetMappingStatus()
 
             });

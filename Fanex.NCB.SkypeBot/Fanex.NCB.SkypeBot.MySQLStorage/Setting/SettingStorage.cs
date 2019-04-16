@@ -37,5 +37,10 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.Setting
         {
             return _baseStorage.QueryAsync<ChatGroupType>("NCB_Setting_ChatGroupType_Sel");
         }
+
+        public Task<List<LicenseeStatus>> GetLicenseeStatusAsync()
+        {
+            return _baseStorage.QueryAsync<LicenseeStatus>("NCB_Setting_LicenseeStatus_Sel");            
+        }
     }
 }

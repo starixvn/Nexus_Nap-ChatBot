@@ -21,13 +21,17 @@ export class Filter extends Component {
             recipient: {
                 value: ""
             },
+            licenseeStatuses: {
+                value: ""
+            },
             mappingStatuses: {
                 value: ""
             },
             settingData: {
                 botNames: [],
                 recipientTypes: [],
-                mappingStatuses: []
+                mappingStatuses: [],
+                licenseeStatuses: []
             }
         };
 
@@ -58,6 +62,12 @@ export class Filter extends Component {
                 selectedMappingStatuses.push(v['id']);
             });
 
+            let licenseeStatuses = nextProps.settingData.licenseeStatuses;
+            let selectedlicenseeStatuses= [];
+            licenseeStatuses.map((v) => {
+                v['checked'] = true;
+                selectedlicenseeStatuses.push(v['id']);
+            });
 
             let state = {
                 botNames: {
@@ -69,13 +79,17 @@ export class Filter extends Component {
                 recipient: {
                     value: ""
                 },
+                licenseeStatuses: {
+                    value: selectedlicenseeStatuses.join(",")
+                },
                 mappingStatuses: {
                     value: selectedMappingStatuses.join(",")
                 },
                 settingData: {
                     botNames: botNames,
                     recipientTypes: recipientTypes,
-                    mappingStatuses: mappingStatuses
+                    mappingStatuses: mappingStatuses,
+                    licenseeStatuses: licenseeStatuses
                 }
             };
 
@@ -103,13 +117,14 @@ export class Filter extends Component {
             recipientTypeIds: recipientTypes,
             recipientName: this.state.recipient.value,
             mappingStatusIds: this.state.mappingStatuses.value,
+            licenseeStatusIds: this.state.licenseeStatuses.value,
             pageIndex: 1,
             pageSize: 5
         };
     }    
 
     checkValidParams = () => {
-        return this.state.botNames.value !== '' && this.state.recipientTypes.value !== '' && this.state.mappingStatuses.value !== '';
+        return this.state.botNames.value !== '' && this.state.recipientTypes.value !== '' && this.state.mappingStatuses.value !== '' && this.state.licenseeStatuses.value !== '';
     }
 
     submitHandler = (e) => {
@@ -161,6 +176,22 @@ export class Filter extends Component {
                         isSummited={this.state.isSummited}
                         onChange={(value) => this.onChange("recipient", value)}
                     /> 
+                </FormGroup>
+                <FormGroup>
+                    <Label className="form-label">{Labels.LicenseeStatus}</Label>
+                    <MultipleSelectField
+                        id={"licenseeStatuses"}
+                        width={200}
+                        initialValue={this.state.licenseeStatuses}
+                        data={this.state.settingData.licenseeStatuses}
+                        keyField={"id"}
+                        valueField={"name"}
+                        statusField={"checked"}
+                        isSummited={false}
+                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: "# selected" }}
+                        isAllTextShown
+                        onChange={(value) => this.onChange("licenseeStatuses", value)}
+                    />
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label">{Labels.MappingStatus}</Label>
