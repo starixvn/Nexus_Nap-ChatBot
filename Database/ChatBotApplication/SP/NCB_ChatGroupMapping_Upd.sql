@@ -106,5 +106,5 @@ NCB_ChatGroupMapping_Upd:BEGIN
 								, 'creatorID', creatorID);
 										
 	-- Write User Log
-	CALL NCB_UserLog_RunSP_Ins(ACTION_ID, creatorID, logContent, startTime, duration);
+	CALL NCB_UserLog_RunSP_Ins(ACTION_ID, groupID, creatorID, logContent, startTime, duration);
 END;
