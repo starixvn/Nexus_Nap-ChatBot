@@ -60,15 +60,17 @@ NCB_ChatGroupMapping_Upd:BEGIN
     
 	-- If groupID exists in BotConversationExtraInfo then Update BotConversationExtraInfo
 	-- Else Insert into BotConversationExtraInfo
-	IF EXISTS(SELECT 1 FROM BotConversationExtraInfo bce WHERE bce.BotConversationID = groupID) THEN
+	INSERT INTO BotConversationExtraInfo(BotConversationID, ChatGroupTypeID, Remark)
+	SELECT BotConversationID, ChatGroupTypeID, Remark
+	FROM (SELECT groupID AS BotConversationID, chatGroupTypeID AS ChatGroupTypeID, remark AS Remark) AS tmp
+	WHERE NOT EXISTS(SELECT 1 FROM BotConversationExtraInfo bce WHERE bce.BotConversationID = tmp.BotConversationID);
+	
+	IF ROW_COUNT() = 0 THEN
 		UPDATE BotConversationExtraInfo bce
         SET bce.ChatGroupTypeID = chatGroupTypeID, bce.Remark = remark
         WHERE bce.BotConversationID = groupID;
-    ELSE
-		INSERT INTO BotConversationExtraInfo(BotConversationID, ChatGroupTypeID, Remark)
-        VALUES (groupID, chatGroupTypeID, remark);
-    END IF;    
-    
+	END IF;
+	   
     -- Split recipientIDs into temporary table tmp_RecipientID
     DROP TEMPORARY TABLE IF EXISTS tmp_RecipientID;
 	CREATE TEMPORARY TABLE tmp_RecipientID(RecipientID INT);
