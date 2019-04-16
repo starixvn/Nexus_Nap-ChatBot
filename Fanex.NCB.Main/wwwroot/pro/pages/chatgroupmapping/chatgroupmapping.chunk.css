@@ -299,12 +299,16 @@
 .select-field {
   display: inline-block; }
 
+.text-field {
+  display: inline-block; }
+
 @font-face {
-  font-family: 'nap-chatbot';
-  src: url("../../../fonts/nap-chatbot.eot?qou8kv");
-  src: url("../../../fonts/nap-chatbot.eot?qou8kv#iefix") format("embedded-opentype"), url("../../../fonts/nap-chatbot.ttf?qou8kv") format("truetype"), url("../../../fonts/nap-chatbot.woff?qou8kv") format("woff"), url("../../../fonts/nap-chatbot.svg?qou8kv#nap-chatbot") format("svg");
-  font-weight: normal;
-  font-style: normal; }
+    font-family: 'nap-chatbot';
+    src: url('../../../fonts/nap-chatbot.eot?qou8kv');
+    src: url('../../../fonts/nap-chatbot.eot?qou8kv#iefix') format('embedded-opentype'), url('../../../fonts/nap-chatbot.ttf?qou8kv') format('truetype'), url('../../../fonts/nap-chatbot.woff?qou8kv') format('woff'), url('../../../fonts/nap-chatbot.svg?qou8kv#nap-chatbot') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
 
 [class^="icon-"], [class*=" icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
@@ -315,88 +319,91 @@
   font-variant: normal;
   text-transform: none;
   line-height: 1;
+
   /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; }
+  -moz-osx-font-smoothing: grayscale;
+}
 
 .icon-close:before {
-  content: "\E90E"; }
-
+  content: "\E90E";
+}
 .icon-collapse:before {
-  content: "\E911"; }
-
+  content: "\E911";
+}
 .icon-copy:before {
-  content: "\E912"; }
-
+  content: "\E912";
+}
 .icon-down:before {
-  content: "\E913"; }
-
+  content: "\E913";
+}
 .icon-expand:before {
-  content: "\E914"; }
-
+  content: "\E914";
+}
 .icon-right:before {
-  content: "\E915"; }
-
+  content: "\E915";
+}
 .icon-success:before {
-  content: "\E916"; }
-
+  content: "\E916";
+}
 .icon-view:before {
-  content: "\E917"; }
-
+  content: "\E917";
+}
 .icon-warning:before {
-  content: "\E918"; }
-
+  content: "\E918";
+}
 .icon-arrow-down:before {
-  content: "\E90D"; }
-
+  content: "\E90D";
+}
 .icon-bell:before {
-  content: "\E908"; }
-
+  content: "\E908";
+}
 .icon-calendar:before {
-  content: "\E909"; }
-
+  content: "\E909";
+}
 .icon-delete:before {
-  content: "\E90A"; }
-
+  content: "\E90A";
+}
 .icon-edit:before {
-  content: "\E90B"; }
-
+  content: "\E90B";
+}
 .icon-reset:before {
-  content: "\E90C"; }
-
+  content: "\E90C";
+}
 .icon-change-pass:before {
   content: "\E900";
-  color: #798388; }
-
+  color: #798388;
+}
 .icon-error:before {
-  content: "\E901"; }
-
+  content: "\E901";
+}
 .icon-chat-group-mapping:before {
-  content: "\E902"; }
-
+  content: "\E902";
+}
 .icon-new-notification:before {
-  content: "\E903"; }
-
+  content: "\E903";
+}
 .icon-notification-list:before {
-  content: "\E904"; }
-
+  content: "\E904";
+}
 .icon-notification-type:before {
-  content: "\E905"; }
-
+  content: "\E905";
+}
 .icon-sign-out:before {
   content: "\E906";
-  color: #798388; }
-
+  color: #798388;
+}
 .icon-notification-template:before {
-  content: "\E907"; }
-
+  content: "\E907";
+}
 .icon-password:before {
   content: "\E90F";
-  color: #798388; }
-
+  color: #798388;
+}
 .icon-username:before {
   content: "\E910";
-  color: #798388; }
+  color: #798388;
+}
 
 body {
   font-family: Roboto, Arial, Tahoma, sans-serif;
@@ -784,6 +791,9 @@ tbody .col-content [class^="icon"] {
   .form-filter .form-group .remark {
     height: 90px; }
 
+.form-filter button[disabled] {
+  background-color: grey; }
+
 .form-edit .form-group {
   display: grid;
   grid-template-columns: 154px 1fr;
@@ -794,10 +804,17 @@ tbody .col-content [class^="icon"] {
 .form-edit .btn-submit {
   float: right; }
 
+.form-edit button[disabled] {
+  background-color: grey; }
+
 .table-container-div {
   width: 1400px; }
   .table-container-div table {
     margin-bottom: 0; }
+  .table-container-div .edit-disabled {
+    color: grey; }
+    .table-container-div .edit-disabled :hover {
+      background: none; }
 
 
 /*# sourceMappingURL=chatgroupmapping.chunk.css.map*/
