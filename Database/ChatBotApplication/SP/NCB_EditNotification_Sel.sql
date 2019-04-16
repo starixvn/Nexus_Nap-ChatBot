@@ -9,7 +9,7 @@ CREATE PROCEDURE  NCB_EditNotification_Sel(
         Param:
         
 		Result Dataset:
-				- 1st dataset: Main info of Notification (NotificationTypeID, Title, Content)
+				- 1st dataset: Main info of Notification (NotificationTypeID, Title, Content, ProductID)
                 - 2nd dataset: List of recipientIDs
         Revisions:
 				- 20190408@Dominic: First Commit
@@ -18,12 +18,17 @@ CREATE PROCEDURE  NCB_EditNotification_Sel(
 )
 BEGIN
 	#1st dataset: Main info of Notification
-	SELECT n.NotificationTypeID,  n.Title, n.Content
+	SELECT n.NotificationTypeID,  n.ProductID, n.Title, n.Content
     FROM Notification n
     WHERE n.NotificationID = notificationID;
     
     #2nd dataset: List of recipients
-	SELECT rlst.RecipientID
+	SELECT   rt.RecipientTypeID, rt.RecipientTypeName, r.RecipientID, r.RecipientName
     FROM NotificationRecipientList rlst
-    WHERE rlst.NotificationID = notificationID;
+		INNER JOIN Recipient r
+			ON r.RecipientID = rlst.RecipientID
+        INNER JOIN RecipientType rt
+			ON rt.RecipientTypeID = r.RecipientTypeID
+    WHERE rlst.NotificationID = notificationID
+    ORDER BY rt.RecipientTypeID, r.RecipientID;
 END;

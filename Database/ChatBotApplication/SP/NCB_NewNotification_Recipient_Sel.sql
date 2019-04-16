@@ -4,7 +4,7 @@ DROP PROCEDURE IF EXISTS NCB_NewNotification_Recipient_Sel;
 
 CREATE PROCEDURE  NCB_NewNotification_Recipient_Sel(
 	IN notificationTypeID SMALLINT
-	,IN productID INT
+	,IN productID SMALLINT
     /*
 		Creator: Dominic@20190401
         Param:

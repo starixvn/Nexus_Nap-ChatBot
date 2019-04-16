@@ -4,7 +4,7 @@ DROP PROCEDURE IF EXISTS NCB_NewNotification_Ins;
 
 CREATE PROCEDURE  NCB_NewNotification_Ins(
 	IN notificationTypeID SMALLINT
-	, IN productID INT
+	, IN productID SMALLINT
 	, IN recipientIDLst VARCHAR(200)
 	, IN title VARCHAR(300) CHARACTER SET utf8mb4
 	, IN content MEDIUMTEXT CHARACTER SET utf8mb4
@@ -16,7 +16,7 @@ CREATE PROCEDURE  NCB_NewNotification_Ins(
     /*
 		Creator: Dominic@20190401
         Param:
-				- ProductID: Applied to filter licensees who are offered a specific product
+				- ProductID: Applied to filter licensees who are offered a specific product, NULL if not specified
                 - NotificationID: ID of created Notification
                 - ConfigSendTime: UTC (GMT +0)
         Revisions:
@@ -235,14 +235,16 @@ NCB_NewNotification_Ins:BEGIN
     
     #Insert a new Notification
     INSERT INTO Notification(NotificationTypeID
-											,Title
-                                            ,Content
-                                            ,ConfigSendTime
-                                            ,CreatorID
-                                            ,CreatedDate
-                                            ,Status
+											, ProductID
+											, Title
+                                            , Content
+                                            , ConfigSendTime
+                                            , CreatorID
+                                            , CreatedDate
+                                            , Status
                                             , StatusID)
     SELECT notificationTypeID
+					, productID
 					, title
                     , content
                     , configSendTime

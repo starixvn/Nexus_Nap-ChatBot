@@ -117,6 +117,7 @@ CREATE TABLE ChatBot.NotificationTemplate(
   CREATE TABLE ChatBot.Notification(
 		 NotificationID INT AUTO_INCREMENT NOT NULL
 		, NotificationTypeID SMALLINT NOT NULL
+        , ProductID SMALLINT NULL
 		, Title VARCHAR(300) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
 		, Content MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
 		, ConfigSendTime DATETIME NOT NULL
@@ -160,7 +161,7 @@ CREATE TABLE ChatBot.LicenseeType(
 );
 
 CREATE TABLE ChatBot.Product(
-		ProductId TINYINT UNSIGNED NOT NULL
+		ProductID SMALLINT NOT NULL
 		, ProductName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
         , CONSTRAINT PK_ProductId PRIMARY KEY (ProductId)
 );
