@@ -426,6 +426,7 @@ NCB_EditNotification_Upd:BEGIN
 		#Write User Log
         CALL NCB_UserLog_RunSP_Ins(
 											ACTION_ID #actionID
+                                            , notificationID #ReferenceID
 											, userID #UserID
                                             , logContent #LogContent
                                             , startTime #logtime

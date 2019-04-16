@@ -78,6 +78,7 @@ NCB_NotificationList_Cancel_Upd:BEGIN
 		#Write User Log
         CALL NCB_UserLog_RunSP_Ins(
 											ACTION_ID #actionID
+                                            , notificationID #referenceID
 											, userID #UserID
                                             , logContent #LogContent
                                             , startTime #logtime

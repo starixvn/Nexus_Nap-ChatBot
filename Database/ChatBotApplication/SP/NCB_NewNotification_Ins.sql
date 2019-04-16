@@ -292,6 +292,7 @@ NCB_NewNotification_Ins:BEGIN
 		#Write User Log
         CALL NCB_UserLog_RunSP_Ins(
 											ACTION_ID #actionID
+                                            , notificationID #referenceID
 											, creatorID #UserID
                                             , logContent #LogContent
                                             , startTime #logtime

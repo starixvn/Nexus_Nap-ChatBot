@@ -83,6 +83,7 @@ NCB_NotificationList_Resolve_Upd:BEGIN
 		#Write User Log
         CALL NCB_UserLog_RunSP_Ins(
 											ACTION_ID #actionID
+                                            , notificationID #ReferenceID
 											, userID #UserID
                                             , logContent #LogContent
                                             , startTime #logtime

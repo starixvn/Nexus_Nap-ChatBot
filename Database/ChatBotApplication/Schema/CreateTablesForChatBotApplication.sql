@@ -190,12 +190,14 @@ CREATE TABLE ChatBot.LogAction(
 CREATE TABLE ChatBot.UserLog_RunSP(
 		 LogID BIGINT AUTO_INCREMENT NOT NULL
 		, LogTime DATETIME(3) NOT NULL
+        , ReferenceID INT
 		, ActionID SMALLINT  NOT NULL
 		, UserID INT NOT NULL
         , LogContent TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
         , Duration INT NOT NULL
 		, CONSTRAINT PK_LogID PRIMARY KEY (LogID)
         , INDEX INDEX_LogTime USING BTREE (LogTime)
+        , INDEX INDEX_ReferenceID USING BTREE (ReferenceID)
  );        
  
 CREATE TABLE ChatBot.SystemLog(
