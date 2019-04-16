@@ -82,7 +82,7 @@ export class DataGrid extends Component {
             PageIndex: pageIndex,
             PageSize: pageSize,
             TotalItem: count,
-            PageList: [5, 10, 20, 50, 100, 500]
+            PageList: [20, 50, 100, 500]
         };
 
         return (
