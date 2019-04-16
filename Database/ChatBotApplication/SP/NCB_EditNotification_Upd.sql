@@ -263,6 +263,11 @@ NCB_EditNotification_Upd:BEGIN
         LEAVE NCB_EditNotification_Upd;
     END IF;
     
+	UPDATE NotificationRecipientList rlst
+    SET rlst.Status = NOTIFICATION_STATUS_EDITING
+			, rlst.StatusID = NOTIFICATION_STATUSID_EDITING
+    WHERE rlst.NotificationID = notificationID;
+    
     #Insert new recipient list
     DROP TEMPORARY TABLE IF EXISTS tmp_newNotificationRecipientList;
 	CREATE TEMPORARY TABLE tmp_newNotificationRecipientList(
