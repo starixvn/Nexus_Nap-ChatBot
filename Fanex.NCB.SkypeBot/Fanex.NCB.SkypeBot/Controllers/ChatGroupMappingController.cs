@@ -66,5 +66,11 @@ namespace Fanex.NCB.SkypeBot.Controllers
         {
             return Json(await _chatGroupMappingService.UpdateChatGroupMappingAsync(criteria).ConfigureAwait(false));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> SearchRecipient(string query)
+        {
+            return Json(await _settingService.SearchRecipientsAsync(query).ConfigureAwait(false));
+        }
     }
 }

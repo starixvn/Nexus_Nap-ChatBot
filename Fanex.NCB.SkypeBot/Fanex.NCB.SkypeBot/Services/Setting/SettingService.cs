@@ -26,5 +26,7 @@ namespace Fanex.NCB.SkypeBot.Services.Setting
         public Task<List<ChatGroupType>> GetChatGroupTypeAsync() => _settingStorage.GetChatGroupTypeAsync();
 
         public Task<List<LicenseeStatus>> GetLicenseeStatusAsync() => _settingStorage.GetLicenseeStatusAsync();
+
+        public Task<List<Recipient>> SearchRecipientsAsync(string query) => _settingStorage.SearchRecipientsAsync(query);
     }
 }

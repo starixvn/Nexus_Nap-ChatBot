@@ -6,6 +6,8 @@ import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
 import Labels from '../../common/Labels';
+import AutoComplete from '../../common/auto-complete';
+import Site from '../../lib/site';
 
 export class Filter extends Component {
     constructor(props) {
@@ -133,7 +135,7 @@ export class Filter extends Component {
         let params = this.getParams();
         this.props.setGridParams(params);
         this.props.getGridData(params);
-    }
+    }   
   
     render() {        
         return (
@@ -172,9 +174,11 @@ export class Filter extends Component {
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label">{Labels.Recipient}</Label>
-                    <InputField initialValue={this.state.recipient.value}
-                        isSummited={this.state.isSummited}
-                        onChange={(value) => this.onChange("recipient", value)}
+                    <AutoComplete
+                        url={Site.resolveClientUrl("ChatGroupMapping/SearchRecipient")}
+                        onSelect={(value) => this.onChange("recipient", { value: value })}
+                        onInput={(value) => this.onChange("recipient", { value: value })}
+                        htmlAttributes={{ placeholder: "" }}
                     /> 
                 </FormGroup>
                 <FormGroup>

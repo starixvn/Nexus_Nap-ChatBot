@@ -54,7 +54,11 @@
         {
           "SPKey": "NCB_Setting_LicenseeStatus_Sel",
           "SPName": "NCB_Setting_LicenseeStatus_Sel"
-        }
+        },
+        {
+          "SPKey": "NCB_Setting_SearchRecipient_Sel",
+          "SPName": "NCB_Setting_SearchRecipient_Sel"
+        }        
       ]
     }
   ]
