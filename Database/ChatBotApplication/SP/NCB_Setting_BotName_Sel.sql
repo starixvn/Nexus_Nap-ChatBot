@@ -11,5 +11,5 @@ CREATE PROCEDURE `NCB_Setting_BotName_Sel`(
 BEGIN
 	SELECT DISTINCT Name AS Id, Name AS Name
     FROM BotConversationMember
-    WHERE IsActive = 1 AND Name IS NOT NULL;
+    WHERE IsActive = 1 AND Name IS NOT NULL AND Name <> '';
 END;
