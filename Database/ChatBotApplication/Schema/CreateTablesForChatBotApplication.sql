@@ -131,6 +131,8 @@ CREATE TABLE ChatBot.NotificationTemplate(
 		, ResolvedBy INT NULL
 		, ResolvedDate DATETIME NULL
         , CONSTRAINT PK_NotificationID  PRIMARY KEY (NotificationID)
+        , INDEX INDEX_StatusID USING BTREE (StatusID, ConfigSendTime)
+        , INDEX INDEX_NotificationLst USING BTREE (ConfigSendTime, NotificationTypeID, StatusID, CreatorID)
   );
 
 CREATE TABLE ChatBot.NotificationRecipientList(
@@ -142,7 +144,8 @@ CREATE TABLE ChatBot.NotificationRecipientList(
 		, Status VARCHAR(10) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
 		, StatusID TINYINT UNSIGNED NOT NULL
 		, ErrMsg VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
-        , CONSTRAINT PK_NotificationID_BotConversationID_RecipientID_ChatGroupTypeID PRIMARY KEY (NotificationID, BotConversationID, RecipientID, ChatGroupTypeID)
+        , CONSTRAINT PK_NotificationID_BotConversationID_RecipientID_ChatGroupTypeID PRIMARY KEY (NotificationID, RecipientID, BotConversationID, ChatGroupTypeID)
+        , INDEX INDEX_RecipientID USING BTREE (RecipientID)
 );
 
 CREATE TABLE ChatBot.Licensee(

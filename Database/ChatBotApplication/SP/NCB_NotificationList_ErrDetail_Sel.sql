@@ -26,8 +26,8 @@ BEGIN
     DECLARE resolvedRemark VARCHAR(1000) CHARACTER SET utf8mb4;
     DECLARE resolvedByUsername VARCHAR(100);
     
-    SELECT n.title, IFNULL(n.ResolvedRemark, ''), IFNULL(u.UserName, '')
-    INTO title, resolvedRemark, resolvedByUsername
+  SELECT n.title, n.ConfigSendTime, IFNULL(n.ResolvedRemark, ''), IFNULL(u.UserName, '')
+    INTO title, sentTime, resolvedRemark, resolvedByUsername
     FROM Notification n
     LEFT JOIN User u ON u.UserID = n.ResolvedBy
     WHERE n.NotificationID = notificationID;
@@ -54,10 +54,6 @@ BEGIN
     INNER JOIN Recipient r ON r.RecipientID = rlst.RecipientID
     INNER JOIN RecipientType rt ON rt.RecipientTypeID = r.RecipientTypeID
     INNER JOIN BotConversation grp ON grp.ID = rlst.BotConversationID;
-    
-    SELECT MIN(SentTime)
-    INTO sentTime
-    FROM tmp_recipientLst;
     
     #1st dataset: Main Notification Info
     SELECT title, sentTime, resolvedRemark, resolvedByUsername;
