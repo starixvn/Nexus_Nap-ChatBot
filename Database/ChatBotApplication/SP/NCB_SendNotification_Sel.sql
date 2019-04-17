@@ -25,33 +25,37 @@ BEGIN
     
     DROP TEMPORARY TABLE IF EXISTS tmp_ConversationIDBot;
 	CREATE TEMPORARY TABLE tmp_ConversationIDBot(
-																					ConversationID VARCHAR(100)
+																					ChatGroupConversationID VARCHAR(100)
                                                                                     , BotID INT
 																		);
      
-     INSERT INTO tmp_ConversationIDBot (ConversationID, BotID)
-	SELECT tmp.ConversationID, MAX(tmp.BotID) BotID
+     INSERT INTO tmp_ConversationIDBot (ChatGroupConversationID, BotID)
+	SELECT tmp.ChatGroupConversationID, MAX(tmp.BotID) BotID
     FROM (
-		SELECT nrl.ConversationID AS ChatGroupConversationID , MIN(bot.ID) BotID
+		SELECT grp.ConversationID AS ChatGroupConversationID , MIN(bot.ID) BotID
 		FROM NotificationRecipientList nrl
+			INNER JOIN BotConversation grp
+				ON grp.ID = nrl.BotConversationID
 			INNER JOIN BotConversationMember bot
-				ON bot.ConversationID = nrl.ConversationID
+				ON bot.ConversationID = grp.ConversationID
 					AND bot.IsBot = 1
 		WHERE nrl.NotificationID = notificationID
-		GROUP BY nrl.ConversationID
-		UNION ALL
-		SELECT nrl.ConversationID AS ChatGroupConversationID , MIN(bot.ID) BotID
+		GROUP BY grp.ConversationID
+        UNION ALL
+        SELECT grp.ConversationID AS ChatGroupConversationID , MIN(bot.ID) BotID
 		FROM NotificationRecipientList nrl
+			INNER JOIN BotConversation grp
+				ON grp.ID = nrl.BotConversationID
 			INNER JOIN BotConversationMember bot
-				ON bot.ConversationID = nrl.ConversationID
+				ON bot.ConversationID = grp.ConversationID
 					AND bot.IsBot = 1 AND bot.IsActive = 1
 		WHERE nrl.NotificationID = notificationID
-		GROUP BY nrl.ConversationID
+		GROUP BY grp.ConversationID
     ) AS tmp
-    GROUP BY tmp.ConversationID;
+    GROUP BY tmp.ChatGroupConversationID;
 
 	#2nd dataset: List of ConversationID and Bot MemberID
-    SELECT tmp.ConversationID AS ChatGroupID
+    SELECT tmp.ChatGroupConversationID AS ChatGroupID
 				, bot.MemberID AS BotMemberID
     FROM tmp_ConversationIDBot tmp
 		INNER JOIN BotConversationMember bot
