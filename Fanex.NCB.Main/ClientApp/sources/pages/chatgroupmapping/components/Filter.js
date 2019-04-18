@@ -108,10 +108,10 @@ export class Filter extends Component {
         });
     }
 
-    getParams = () => {                  
+    getParams = () => {           
         return {
             botNames: this.state.botNames.value,
-            recipientTypeIds: recipientTypes,
+            recipientTypeIds: this.state.recipientTypes.value,
             recipientName: this.state.recipient.value,
             mappingStatusIds: this.state.mappingStatuses.value,
             licenseeStatusIds: this.state.licenseeStatuses.value,
@@ -206,7 +206,7 @@ export class Filter extends Component {
                         texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: "# selected" }}
                         isAllTextShown
                         onChange={(value) => this.onChange("botNames", value)}
-                    />
+                    />       
                 </FormGroup>
                 <button disabled={!this.checkValidParams()} className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
             </Form>            
