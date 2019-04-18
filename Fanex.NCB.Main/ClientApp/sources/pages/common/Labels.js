@@ -16,6 +16,7 @@
     MappingStatus: "Mapping Status",
     NumberCol: "#",
     NotificationType: "Notification Type",
+    NoInfo: "No information is available",
     PleaseSelect: "---Please select---",
     RecipientType: "Recipient Type",
     Recipient: "Recipient",

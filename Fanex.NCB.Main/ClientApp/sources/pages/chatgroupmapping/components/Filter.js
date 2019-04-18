@@ -139,23 +139,7 @@ export class Filter extends Component {
   
     render() {        
         return (
-            <Form className="form-filter">
-                <FormGroup>
-                    <Label className="form-label">{Labels.BotName}</Label>
-                    <MultipleSelectField
-                        id={"botNames"}
-                        width={200}
-                        initialValue={this.state.botNames}
-                        data={this.state.settingData.botNames}
-                        keyField={"id"}
-                        valueField={"name"}
-                        statusField={"checked"}
-                        isSummited={false}
-                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: "# selected" }}
-                        isAllTextShown
-                        onChange={(value) => this.onChange("botNames", value)}
-                    />       
-                </FormGroup>
+            <Form className="form-filter">                
                 <FormGroup>
                     <Label className="form-label">{Labels.RecipientType}</Label>
                     <MultipleSelectField
@@ -211,6 +195,22 @@ export class Filter extends Component {
                         texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: "# selected" }}
                         isAllTextShown
                         onChange={(value) => this.onChange("mappingStatuses", value)}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label className="form-label">{Labels.BotName}</Label>
+                    <MultipleSelectField
+                        id={"botNames"}
+                        width={200}
+                        initialValue={this.state.botNames}
+                        data={this.state.settingData.botNames}
+                        keyField={"id"}
+                        valueField={"name"}
+                        statusField={"checked"}
+                        isSummited={false}
+                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: "# selected" }}
+                        isAllTextShown
+                        onChange={(value) => this.onChange("botNames", value)}
                     />
                 </FormGroup>
                 <button disabled={!this.checkValidParams()} className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>

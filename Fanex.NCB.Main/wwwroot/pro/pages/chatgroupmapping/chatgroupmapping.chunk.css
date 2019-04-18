@@ -327,6 +327,14 @@
 *::after {
   box-sizing: border-box; }
 
+.no-info-row {
+  text-align: center;
+  border: 1px solid #ccc;
+  padding: 5px;
+  background: #fff;
+  margin-right: 75px;
+  margin-top: 20px; }
+
 .select-field {
   display: inline-block; }
 
@@ -839,7 +847,8 @@ tbody .col-content [class^="icon"] {
   background-color: grey; }
 
 .table-container-div {
-  width: 1400px; }
+  width: 1400px;
+  margin-top: 20px; }
   .table-container-div table {
     margin-bottom: 0; }
   .table-container-div .edit-disabled {

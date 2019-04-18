@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import { getMappingClass, isBotRemoved, getLicenseeStatus } from '../../common/CommonFunctions';
 import Labels from '../../common/Labels';
+import NoDataTitle from '../../common/no-data-title/NoDataTitle';
 
 export class DataGrid extends Component {
     constructor(props) {
@@ -64,7 +65,7 @@ export class DataGrid extends Component {
                 </Cell>
             </Row>);
         });
-
+       
         return rows;
     }   
 
@@ -84,6 +85,10 @@ export class DataGrid extends Component {
             TotalItem: count,
             PageList: [20, 50, 100, 500]
         };
+
+        if (data.length === 0) {
+            return <NoDataTitle />;
+        }
 
         return (
             <div className="table-container-div">
