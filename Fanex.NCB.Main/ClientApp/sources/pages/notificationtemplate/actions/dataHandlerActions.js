@@ -72,7 +72,6 @@ export function getGridData(params) {
         }
     ];
 
-    console.log("get grid data");
     return (dispatch) => dispatch(setGridData({ data: fakeData, count: 3 }));
 }
 

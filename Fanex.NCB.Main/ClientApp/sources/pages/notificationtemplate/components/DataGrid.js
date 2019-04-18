@@ -55,8 +55,6 @@ export class DataGrid extends Component {
     }   
     
     render() {      
-        console.log("render grids");
-        console.log(this.props);
         if (!this.props.gridData || !this.props.gridData.data) {
             return null;
         }

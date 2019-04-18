@@ -29,6 +29,7 @@ exports[`UpdatePopup render when SuccessMsg is not shown 1`] = `
     charCode={215}
     closeAriaLabel="Close"
     tag="h5"
+    toggle={[Function]}
     wrapTag="div"
   >
     Edit Mapping Status
@@ -220,27 +221,12 @@ exports[`UpdatePopup render when SuccessMsg is not shown 1`] = `
             ]
           }
         >
-          
+          N/A
         </Label>
       </FormGroup>
       <FormGroup
         tag="div"
       >
-        <Label
-          className="form-label "
-          tag="label"
-          widths={
-            Array [
-              "xs",
-              "sm",
-              "md",
-              "lg",
-              "xl",
-            ]
-          }
-        >
-          Mapping Status
-        </Label>
         <Label
           className="form-label"
           tag="label"
@@ -254,37 +240,19 @@ exports[`UpdatePopup render when SuccessMsg is not shown 1`] = `
             ]
           }
         >
-          <span
-            className=""
-          />
-        </Label>
-      </FormGroup>
-      <FormGroup
-        tag="div"
-      >
-        <Label
-          className="form-label required"
-          tag="label"
-          widths={
-            Array [
-              "xs",
-              "sm",
-              "md",
-              "lg",
-              "xl",
-            ]
-          }
-        >
           Remark
         </Label>
-        <InputField
+        <TextField
           initialValue="remark 1"
           isSummited={false}
+          maxLength="200"
           onChange={[Function]}
+          required={false}
         />
       </FormGroup>
       <button
         className="btn-submit"
+        disabled={true}
         onClick={[Function]}
       >
         Submit
@@ -323,6 +291,7 @@ exports[`UpdatePopup render when SuccessMsg shown 1`] = `
     charCode={215}
     closeAriaLabel="Close"
     tag="h5"
+    toggle={[Function]}
     wrapTag="div"
   >
     Edit Mapping Status
@@ -514,27 +483,12 @@ exports[`UpdatePopup render when SuccessMsg shown 1`] = `
             ]
           }
         >
-          
+          N/A
         </Label>
       </FormGroup>
       <FormGroup
         tag="div"
       >
-        <Label
-          className="form-label "
-          tag="label"
-          widths={
-            Array [
-              "xs",
-              "sm",
-              "md",
-              "lg",
-              "xl",
-            ]
-          }
-        >
-          Mapping Status
-        </Label>
         <Label
           className="form-label"
           tag="label"
@@ -548,37 +502,19 @@ exports[`UpdatePopup render when SuccessMsg shown 1`] = `
             ]
           }
         >
-          <span
-            className=""
-          />
-        </Label>
-      </FormGroup>
-      <FormGroup
-        tag="div"
-      >
-        <Label
-          className="form-label required"
-          tag="label"
-          widths={
-            Array [
-              "xs",
-              "sm",
-              "md",
-              "lg",
-              "xl",
-            ]
-          }
-        >
           Remark
         </Label>
-        <InputField
+        <TextField
           initialValue="remark 1"
           isSummited={false}
+          maxLength="200"
           onChange={[Function]}
+          required={false}
         />
       </FormGroup>
       <button
         className="btn-submit"
+        disabled={true}
         onClick={[Function]}
       >
         Submit

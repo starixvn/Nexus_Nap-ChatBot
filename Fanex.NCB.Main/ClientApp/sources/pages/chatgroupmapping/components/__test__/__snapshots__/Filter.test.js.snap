@@ -21,55 +21,17 @@ exports[`Filter render render correctly 1`] = `
         ]
       }
     >
-      Bot Name
-    </Label>
-    <MultipleSelectField
-      data="bot name"
-      id="botNames"
-      initialValue=""
-      isAllTextShown={false}
-      isSummited={false}
-      keyField="id"
-      onChange={[Function]}
-      statusField="checked"
-      texts={
-        Object {
-          "All": "All",
-          "SelectOptions": "All",
-          "SelectedItemCount": "# selected",
-        }
-      }
-      valueField="name"
-      width={200}
-    />
-  </FormGroup>
-  <FormGroup
-    tag="div"
-  >
-    <Label
-      className="form-label"
-      tag="label"
-      widths={
-        Array [
-          "xs",
-          "sm",
-          "md",
-          "lg",
-          "xl",
-        ]
-      }
-    >
       Recipient Type
     </Label>
     <MultipleSelectField
-      data="recipient Types"
+      data={Array []}
       id="recipientTypes"
       initialValue={
         Object {
           "value": "",
         }
       }
-      isAllTextShown={false}
+      isAllTextShown={true}
       isSummited={false}
       keyField="id"
       onChange={[Function]}
@@ -77,7 +39,7 @@ exports[`Filter render render correctly 1`] = `
       texts={
         Object {
           "All": "All",
-          "SelectOptions": "All",
+          "SelectOptions": "---Please select---",
           "SelectedItemCount": "# selected",
         }
       }
@@ -103,9 +65,59 @@ exports[`Filter render render correctly 1`] = `
     >
       Recipient
     </Label>
-    <InputField
-      initialValue=""
+    <AutoComplete
+      cache={true}
+      htmlAttributes={
+        Object {
+          "placeholder": "",
+        }
+      }
+      onInput={[Function]}
+      onSelect={[Function]}
+      queryParamName="query"
+      url="/ChatGroupMapping/SearchRecipient"
+    />
+  </FormGroup>
+  <FormGroup
+    tag="div"
+  >
+    <Label
+      className="form-label"
+      tag="label"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+    >
+      Licensee Status
+    </Label>
+    <MultipleSelectField
+      data={Array []}
+      id="licenseeStatuses"
+      initialValue={
+        Object {
+          "value": "",
+        }
+      }
+      isAllTextShown={true}
+      isSummited={false}
+      keyField="id"
       onChange={[Function]}
+      statusField="checked"
+      texts={
+        Object {
+          "All": "All",
+          "SelectOptions": "---Please select---",
+          "SelectedItemCount": "# selected",
+        }
+      }
+      valueField="name"
+      width={200}
     />
   </FormGroup>
   <FormGroup
@@ -127,14 +139,14 @@ exports[`Filter render render correctly 1`] = `
       Mapping Status
     </Label>
     <MultipleSelectField
-      data="mapping Statuses"
+      data={Array []}
       id="mappingStatuses"
       initialValue={
         Object {
           "value": "",
         }
       }
-      isAllTextShown={false}
+      isAllTextShown={true}
       isSummited={false}
       keyField="id"
       onChange={[Function]}
@@ -142,7 +154,49 @@ exports[`Filter render render correctly 1`] = `
       texts={
         Object {
           "All": "All",
-          "SelectOptions": "All",
+          "SelectOptions": "---Please select---",
+          "SelectedItemCount": "# selected",
+        }
+      }
+      valueField="name"
+      width={200}
+    />
+  </FormGroup>
+  <FormGroup
+    tag="div"
+  >
+    <Label
+      className="form-label"
+      tag="label"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+    >
+      Bot Name
+    </Label>
+    <MultipleSelectField
+      data={Array []}
+      id="botNames"
+      initialValue={
+        Object {
+          "value": "",
+        }
+      }
+      isAllTextShown={true}
+      isSummited={false}
+      keyField="id"
+      onChange={[Function]}
+      statusField="checked"
+      texts={
+        Object {
+          "All": "All",
+          "SelectOptions": "---Please select---",
           "SelectedItemCount": "# selected",
         }
       }
@@ -152,6 +206,7 @@ exports[`Filter render render correctly 1`] = `
   </FormGroup>
   <button
     className="btn-submit"
+    disabled={true}
     onClick={[Function]}
   >
     Submit

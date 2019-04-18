@@ -2,6 +2,9 @@
 import { UpdatePopup } from '../UpdatePopup';
 import renderer from 'react-test-renderer';
 import ShallowRenderer from 'react-test-renderer/shallow';
+//import { getLicenseeStatus, isMapped } from '../../../common/CommonFunctions';
+import CommonFunctions from '../../../common/CommonFunctions';
+
 
 describe("UpdatePopup", () => {
     const defaultProps = {
@@ -147,8 +150,11 @@ describe("UpdatePopup", () => {
             updatePopup.state.isSummited = true;
             let params = "params";
             updatePopup.getParams = jest.fn(() => { return params; });
-            updatePopup.closePopup = jest.fn();
+            updatePopup.closePopupOnSuccess = jest.fn();
 
+            let isMapped = jest.fn(() => { return false; });
+            CommonFunctions.isMapped = isMapped.bind(CommonFunctions);
+            
             // Act
             updatePopup.submitHandler(event);
 
@@ -157,7 +163,7 @@ describe("UpdatePopup", () => {
             expect(updatePopup.setState).not.toHaveBeenCalled();
             expect(props.update).toHaveBeenCalledWith(params);
             props.update().then(() => {
-                expect(updatePopup.closePopup).toHaveBeenCalled();
+                expect(updatePopup.closePopupOnSuccess).toHaveBeenCalled();
                 done();
             });
         });
@@ -239,7 +245,6 @@ describe("UpdatePopup", () => {
             updatePopup.state = {
                 recipientTypeId: { isValid: true },
                 recipientIds: { isValid: true },
-                remark: { isValid: true },
                 chatGroupTypeId: {isValid: true}
             };    
 
@@ -289,27 +294,7 @@ describe("UpdatePopup", () => {
             // Assert
             expect(result).toBe(false);
         });
-
-        it("when remark invalid - return false", () => {
-            // Arrange
-            let props = {
-                ...defaultProps
-            };
-            let updatePopup = new UpdatePopup(props);
-            updatePopup.state = {
-                recipientTypeId: { isValid: true },
-                recipientIds: { isValid: true },
-                remark: { isValid: false },
-                chatGroupTypeId: { isValid: true }
-            };
-
-            // Act
-            let result = updatePopup.checkValidParams();
-
-            // Assert
-            expect(result).toBe(false);
-        });
-
+        
         it("when chatGroupTypeId invalid - return false", () => {
             // Arrange
             let props = {
@@ -346,11 +331,11 @@ describe("UpdatePopup", () => {
             updatePopup.onChange(fieldName, fieldValue);
 
             // Assert
-            expect(updatePopup.setState).toHaveBeenCalledWith({ [fieldName]: fieldValue });
+            expect(updatePopup.setState).toHaveBeenCalledWith({ [fieldName]: fieldValue, isChanged: true  });
         });
     });
 
-    describe("closePopup", () => {
+    describe("closePopupOnSuccess", () => {
         it("call closeUpdatePopupHandler after 1000ms", (done) => {
             // Arrange
             let props = {
@@ -360,7 +345,7 @@ describe("UpdatePopup", () => {
             let updatePopup = new UpdatePopup(props);
 
             // Act
-            updatePopup.closePopup();
+            updatePopup.closePopupOnSuccess();
 
             // Assert
             setTimeout(() => {

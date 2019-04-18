@@ -37,15 +37,6 @@ exports[`DataGrid render when has data 1`] = `
             sortable={false}
             sorting={false}
           >
-            1
-          </Cell>
-          <Cell
-            asc={true}
-            header={false}
-            onClick={[Function]}
-            sortable={false}
-            sorting={false}
-          >
             name 2
           </Cell>
           <Cell
@@ -118,12 +109,6 @@ exports[`DataGrid render when has data 1`] = `
                 id="edit-0"
                 onClick={[Function]}
               />
-              <UncontrolledTooltip
-                placement="top"
-                target="edit-0"
-              >
-                Edit
-              </UncontrolledTooltip>
             </div>
           </Cell>
         </Row>,
@@ -146,15 +131,6 @@ exports[`DataGrid render when has data 1`] = `
             sorting={false}
           >
             name 11
-          </Cell>
-          <Cell
-            asc={true}
-            header={false}
-            onClick={[Function]}
-            sortable={false}
-            sorting={false}
-          >
-            11
           </Cell>
           <Cell
             asc={true}
@@ -235,12 +211,6 @@ exports[`DataGrid render when has data 1`] = `
                 id="edit-1"
                 onClick={[Function]}
               />
-              <UncontrolledTooltip
-                placement="top"
-                target="edit-1"
-              >
-                Edit
-              </UncontrolledTooltip>
             </div>
           </Cell>
         </Row>,
@@ -275,16 +245,6 @@ exports[`DataGrid render when has data 1`] = `
           sorting={false}
         >
           Bot Name
-        </Cell>
-        <Cell
-          asc={true}
-          colWidth={300}
-          header={true}
-          onClick={[Function]}
-          sortable={false}
-          sorting={false}
-        >
-          GroupID
         </Cell>
         <Cell
           asc={true}
@@ -358,7 +318,7 @@ exports[`DataGrid render when has data 1`] = `
         </Cell>
         <Cell
           asc={true}
-          colWidth={50}
+          colWidth={100}
           header={true}
           onClick={[Function]}
           sortable={false}
@@ -375,8 +335,6 @@ exports[`DataGrid render when has data 1`] = `
       Object {
         "PageIndex": 1,
         "PageList": Array [
-          5,
-          10,
           20,
           50,
           100,

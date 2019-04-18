@@ -6,7 +6,8 @@ import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import { SelectField } from '../../common/SelectField';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
-import { getLicenseeStatus, isMapped } from '../../common/CommonFunctions';
+import CommonFunctions from '../../common/CommonFunctions';
+
 import Labels from '../../common/Labels';
 import { ResponseMessage } from '../../common/response-message/ResponseMessage';
 import { TextField } from '../../common/text-field/TextField';
@@ -39,7 +40,7 @@ export class UpdatePopup extends Component {
 
         this.setSubmittedState();
         if (this.checkValidParams()) {
-            if (isMapped(this.props.updatePopupData.editingItem.mappingStatusId)) {
+            if (CommonFunctions.isMapped(this.props.updatePopupData.editingItem.mappingStatusId)) {
                 this.setState({
                     isShowedConfirm: true,
                     confirmTitle: Labels.Confirm,
@@ -178,7 +179,7 @@ export class UpdatePopup extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label ">{Labels.LicenseeStatus}</Label>
-                            <Label className="form-label">{getLicenseeStatus(licenseeStatuses.join(", "))}</Label>
+                            <Label className="form-label">{CommonFunctions.getLicenseeStatus(licenseeStatuses.join(", "))}</Label>
                         </FormGroup>                    
                         <FormGroup>
                             <Label className="form-label">{Labels.Remark}</Label>

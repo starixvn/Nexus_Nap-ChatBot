@@ -39,7 +39,6 @@ export class Filter extends Component {
         e.preventDefault();
 
         let params = this.getParams();
-        console.log(params);
         this.props.setGridParams(params);
         this.props.getGridData(params);
     }

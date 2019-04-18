@@ -7,7 +7,10 @@ describe("Filter", () => {
     describe("constructor", () => { 
         it("init state", () => { 
             // Arrange
-            let props = {};
+            let props = {
+                getSettings: jest.fn(),
+                filterRecipients: jest.fn()
+            };
 
             // Act
             let filter = new Filter(props);
@@ -19,29 +22,14 @@ describe("Filter", () => {
             expect(filter.state.mappingStatuses.value).toEqual("");
         });
     });
-
-    describe("mount", () => { 
-        it("componentWillMount", () => { 
-            // Arrange 
+   
+    describe("onChange", () => { 
+        it("when called - setState", () => { 
+            // Arrange
             let props = {
                 getSettings: jest.fn(),
                 filterRecipients: jest.fn()
             };
-            let filter = new Filter(props);
-
-            // Act
-            filter.componentWillMount();
-
-            // Assert
-            expect(props.getSettings).toHaveBeenCalled();
-            expect(props.filterRecipients).toHaveBeenCalledWith([], 0);
-        });
-    });
-
-    describe("onChange", () => { 
-        it("when called - setState", () => { 
-            // Arrange
-            let props = {};
             let filter = new Filter(props);
             filter.setState = jest.fn();
             let fieldName = "field name";
@@ -58,7 +46,10 @@ describe("Filter", () => {
     describe("getParams", () => { 
         it("get params from state", () => { 
             // Arrange
-            let props = {};
+            let props = {
+                getSettings: jest.fn(),
+                filterRecipients: jest.fn()
+            };
             let filter = new Filter(props);
             filter.state = {
                 botNames: {
@@ -72,6 +63,9 @@ describe("Filter", () => {
                 },
                 mappingStatuses: {
                     value: "mapping statuses"
+                },
+                licenseeStatuses: {
+                    value: "licensee statuses"
                 }
             };
             let expectedParams = {
@@ -79,6 +73,7 @@ describe("Filter", () => {
                 recipientTypeIds: "recipient types",
                 recipientName: "recipient 1",
                 mappingStatusIds: "mapping statuses",
+                licenseeStatusIds: "licensee statuses",
                 pageIndex: 1,
                 pageSize: 5
             };
@@ -96,7 +91,9 @@ describe("Filter", () => {
             // Arrange
             let props = {
                 setGridParams: jest.fn(),
-                getGridData: jest.fn()
+                getGridData: jest.fn(),
+                getSettings: jest.fn(),
+                filterRecipients: jest.fn()
             };
             let filter = new Filter(props);            
             let params = "some params";
@@ -121,9 +118,10 @@ describe("Filter", () => {
                 getSettings: jest.fn(),
                 filterRecipients: jest.fn(),
                 settingData: {
-                    botNames: "bot name",
-                    recipientTypes: "recipient Types",
-                    mappingStatuses: "mapping Statuses"
+                    botNames: [],
+                    recipientTypes: [],
+                    mappingStatuses: [],
+                    licenseeStatuses: []
                 }
             };
 
