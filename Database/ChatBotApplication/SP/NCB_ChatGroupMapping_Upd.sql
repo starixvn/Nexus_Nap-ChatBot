@@ -7,7 +7,7 @@ CREATE PROCEDURE `NCB_ChatGroupMapping_Upd`(
     IN recipientTypeID INT, 
     IN recipientIDs VARCHAR(1000), 
     IN chatGroupTypeID INT,
-    IN remark VARCHAR(1000) CHARACTER SET utf8mb4,
+    IN remark VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci',
     IN creatorID INT,
     OUT errorCode SMALLINT,
 	OUT errorMsg VARCHAR(100)
