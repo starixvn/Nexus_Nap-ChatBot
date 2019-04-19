@@ -32,7 +32,6 @@ BEGIN
 	DECLARE RECIPIENT_TYPE_LICENSEE INT DEFAULT 1;
 	DECLARE RECIPIENT_TYPE_3RD_PRODUCT INT DEFAULT 2;
 	DECLARE LICENSEE_STATUSID_NA INT DEFAULT -1000;
-    DECLARE LICENSEE_STATUS_NA VARCHAR(100) DEFAULT 'N/A';
     
     DECLARE MAPPING_STATUS_BOT_REMOVED INT DEFAULT 0;
     DECLARE MAPPING_STATUS_NOT_MAPPED INT DEFAULT 1;
@@ -41,7 +40,14 @@ BEGIN
     DECLARE rowStart INT;
     SET rowStart =  pageSize * (pageIndex - 1);
     
-    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED ;
+    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+    
+    #Init param
+    IF botNames IS NULL THEN SET botNames = ''; END IF;
+    IF recipientTypeIds IS NULL THEN SET recipientTypeIds = ''; END IF;
+    IF recipientName IS NULL THEN SET recipientName = ''; END IF;
+    IF mappingStatusIds IS NULL THEN SET mappingStatusIds = ''; END IF;    
+	IF licenseeStatusIds IS NULL THEN SET licenseeStatusIds = ''; END IF;
     
 	-- Split recipientTypeIds into temporary table tmp_RecipientTypeIds
     DROP TEMPORARY TABLE IF EXISTS tmp_BotNames;
@@ -257,8 +263,8 @@ BEGIN
     SELECT bcr.BotConversationID AS GroupID, 
 		r.RecipientID, 
         r.RecipientName, 
-        IFNULL(ls.LicenseeStatusId, LICENSEE_STATUSID_NA) AS RecipientStatusID,  
-        IFNULL(ls.LicenseeStatusName, LICENSEE_STATUS_NA) AS RecipientStatusName
+        ls.LicenseeStatusId AS RecipientStatusID,  
+        ls.LicenseeStatusName  AS RecipientStatusName
     FROM BotConversationRecipient bcr
 		INNER JOIN tmp_PagedBotConversation pbc ON bcr.BotConversationID = pbc.GroupID
 		INNER JOIN Recipient r ON bcr.RecipientID = r.RecipientID
@@ -269,4 +275,5 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_AllBotConversation;
     DROP TEMPORARY TABLE IF EXISTS tmp_PagedBotConversation;
     
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 END;
