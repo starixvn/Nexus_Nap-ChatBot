@@ -43,7 +43,7 @@ export class UpdatePopup extends Component {
             if (CommonFunctions.isMapped(this.props.updatePopupData.editingItem.mappingStatusId)) {
                 this.setState({
                     isShowedConfirm: true,
-                    confirmTitle: Labels.Confirm,
+                    confirmTitle: Labels.ConfirmMessage,
                     confirmContent: Labels.ConfirmUpdate,
                     confirmType: CONFIRM_UPDATE
                 });
@@ -90,7 +90,7 @@ export class UpdatePopup extends Component {
         if (this.state.isChanged) {
             this.setState({
                 isShowedConfirm: true,
-                confirmTitle: "Confirm",
+                confirmTitle: Labels.ConfirmMessage,
                 confirmType: CONFIRM_CLOSE,
                 confirmContent: Labels.ConfirmClose
             });

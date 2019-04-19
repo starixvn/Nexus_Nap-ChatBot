@@ -5,7 +5,7 @@
     ChatGroupMapping: "Chat Group Mapping",
     ChatGroupType: "Chat Group Type",
     CreateNewTemplate: "Create New Template",
-    Confirm: "Confirm",
+    ConfirmMessage: "Confirm Message",
     ConfirmUpdate: "Change setting will impact sending notification to a group. Are you sure to proceed?",
     ConfirmClose: "There might be some unsaved changes in the form. The changes shall not be saved if you close this form. Are you sure you want to close this form?",
     Edit: "Edit",
