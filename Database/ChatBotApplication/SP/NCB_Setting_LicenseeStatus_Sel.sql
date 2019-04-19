@@ -9,9 +9,9 @@ CREATE PROCEDURE `NCB_Setting_LicenseeStatus_Sel`(
     */
 )
 BEGIN
-	DECLARE PRODUCT_STATUS_ID INT DEFAULT 1000;
+	DECLARE PRODUCT_STATUS_ID INT DEFAULT -1000;
 	
-	SELECT LicenseeStatusId AS Id, LicenseeStatusName AS Name
+	SELECT CAST(LicenseeStatusId AS SIGNED) AS Id , LicenseeStatusName AS Name
 	FROM LicenseeStatus
 
 	UNION
