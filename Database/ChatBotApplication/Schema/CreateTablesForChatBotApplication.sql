@@ -10,6 +10,7 @@ CREATE TABLE ChatBot.BotConversation(
 		, LastUpdate DATETIME NOT NULL
 		, ServiceUrl VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
 		, CONSTRAINT PK_ID  PRIMARY KEY (ID)
+		, INDEX INDEX_Name USING BTREE (Name)
 		, UNIQUE INDEX UNIQUE_ConversationID USING BTREE (ConversationID)
   );
 
@@ -24,6 +25,7 @@ CREATE TABLE ChatBot.BotConversationMember(
 		, UpdatedBy VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
         , CONSTRAINT PK_ID  PRIMARY KEY (ID)
         , INDEX INDEX_ConversationID USING BTREE (ConversationID)
+        , INDEX INDEX_Name USING BTREE (Name)
         , UNIQUE INDEX UNIQUE_MemberID_ConversationID USING BTREE (ConversationID, MemberID)
   );
   
