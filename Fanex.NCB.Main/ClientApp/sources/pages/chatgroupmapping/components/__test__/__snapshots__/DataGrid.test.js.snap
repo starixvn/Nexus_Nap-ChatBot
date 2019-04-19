@@ -1,6 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DataGrid render when has data 1`] = `
+exports[`DataGrid render when gridData.data empty - render NoDataTitle 1`] = `<NoDataTitle />`;
+
+exports[`DataGrid render when has data - render table 1`] = `
 <div
   className="table-container-div"
 >

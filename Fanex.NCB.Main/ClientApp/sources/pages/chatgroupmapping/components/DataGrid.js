@@ -23,9 +23,11 @@ export class DataGrid extends Component {
         this.props.getGridData(params);
     }
 
-    openEditPopup = (item, index) => {
-        this.props.filterRecipients(this.props.settingData.recipients, item.recipientTypeID);
-        this.props.openEditPopup(item);
+    openEditPopup = (item) => {
+        if(!CommonFunctions.isBotRemoved(item.mappingStatusID)){
+            this.props.filterRecipients(this.props.settingData.recipients, item.recipientTypeID);
+            this.props.openEditPopup(item);
+        }
     }
 
     buildHeader = () => {
@@ -44,11 +46,18 @@ export class DataGrid extends Component {
             </Row>);
     };
 
+    getLicenseeStatus = (item) =>  {
+        return item.recipientTypeName ? CommonFunctions.getLicenseeStatus(item.recipientStatusNames) : '';
+    }
+
+    getEditClassNames = (item) =>  {
+        return CommonFunctions.isBotRemoved(item.mappingStatusID) ? "icon-edit edit-disabled" : "icon-edit";
+    }
+
     buildBody = (data, pageIndex, pageSize) => {
         let rows = [];
         let startIndex = (pageIndex - 1) * pageSize + 1;
         data.map((item, index) => {
-            let botRemoved = CommonFunctions.isBotRemoved(item.mappingStatusID);
             rows.push(<Row key={`body${index}`} >
                 <Cell className="text-center">{index + startIndex}</Cell>
                 <Cell>{item.botName}</Cell>
@@ -56,12 +65,12 @@ export class DataGrid extends Component {
                 <Cell>{item.chatGroupTypeName}</Cell>
                 <Cell>{item.recipientTypeName}</Cell>
                 <Cell>{item.recipientNames}</Cell>
-                <Cell>{CommonFunctions.getLicenseeStatus(item.recipientStatusNames)}</Cell>
+                <Cell>{this.getLicenseeStatus(item)}</Cell>
                 <Cell><span className={CommonFunctions.getMappingClass(item.mappingStatusID)}>{item.mappingStatusName}</span></Cell>
                 <Cell>{item.remark}</Cell>
                 <Cell className="text-center col-action">
                     <div>
-                        <span className={botRemoved ? "icon-edit edit-disabled" : "icon-edit"} id={"edit-" + index} onClick={() => !botRemoved && this.openEditPopup(item, index)} />                        
+                        <span className={this.getEditClassNames(item)} id={"edit-" + index} onClick={() => this.openEditPopup(item)} />                        
                     </div>
                 </Cell>
             </Row>);
