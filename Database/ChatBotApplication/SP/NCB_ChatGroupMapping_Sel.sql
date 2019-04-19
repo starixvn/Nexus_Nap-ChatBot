@@ -198,10 +198,7 @@ BEGIN
     LEFT JOIN Recipient r ON bcr.RecipientId = r.RecipientId
     LEFT JOIN RecipientType rt ON r.RecipientTypeID = rt.RecipientTypeID
     WHERE bcm.IsBot = 1
-        AND r.RecipientId IN (SELECT rbls.RecipientId FROM tmp_RecipientIDByLicenseeStatus rbls)
-		AND r.RecipientTypeID  IN (SELECT trt.RecipientTypeId FROM tmp_RecipientTypeIds trt)
-        AND r.RecipientName LIKE CONCAT(recipientName, '%')
-        AND EXISTS (
+		AND EXISTS (
 			SELECT 1 
             FROM tmp_MappingStatusIDs t1 
             WHERE t1.MappingStatusID = CASE 
@@ -212,7 +209,19 @@ BEGIN
 																	WHEN r.RecipientName IS NOT NULL  AND bce.ChatGroupTypeID IS NOT NULL 
 																		THEN MAPPING_STATUS_MAPPED
                                                             END
-		) ;
+		)
+        AND (
+					r.RecipientName IS NULL 
+					OR r.RecipientId IN (SELECT rbls.RecipientId FROM tmp_RecipientIDByLicenseeStatus rbls)
+		)
+		AND (
+					r.RecipientName IS NULL
+                    OR r.RecipientTypeID  IN (SELECT trt.RecipientTypeId FROM tmp_RecipientTypeIds trt)
+		)
+        AND (
+					r.RecipientName IS NULL
+                    OR r.RecipientName LIKE CONCAT(recipientName, '%') 
+		);
     
 	-- Get BotConversations for current paging page
     DROP TEMPORARY TABLE IF EXISTS tmp_PagedBotConversation;
@@ -277,3 +286,5 @@ BEGIN
     
     SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_ChatGroupMapping_Sel TO 'ncb.admin'@'%';
