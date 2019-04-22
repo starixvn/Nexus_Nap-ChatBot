@@ -32,7 +32,6 @@ class Sidebar extends Component {
                     {
                         AppData.menus.map((menu, menuIndex) => 
                             <span className="menu" key={menuIndex}>
-                                <span className="menu-text">{menu.Name}</span>
                                 <ul className="submenu list-unstyled">
                                     {
                                         menu.SubMenus.map((submenu, submenuIndex ) => 
