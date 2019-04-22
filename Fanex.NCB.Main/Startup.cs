@@ -54,21 +54,6 @@ namespace Fanex.NCB.Main
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<List<DataConfig>>(Configuration.GetSection("SPName"));
             services.Configure<List<SkypeBotSetting>>(Configuration.GetSection("SkypeBot"));
-            services.AddDistributedRedisCache(options =>
-            {
-                options.Configuration = "10.18.200.103:63799";
-                options.InstanceName = "Fanex.NCB.State";
-            });
-            //services.AddSession(configure =>
-            //{
-            //    configure.Cookie = new CookieBuilder
-            //    {
-            //        Name = "Fanex.NCB.Session",
-            //        Expiration = TimeSpan.FromMinutes(60),
-            //        SecurePolicy = CookieSecurePolicy.SameAsRequest
-            //    };
-            //});
-
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
@@ -84,8 +69,6 @@ namespace Fanex.NCB.Main
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IBridgeClientService, BridgeClientService>();
-            // services.AddSingleton<ISessionService, SessionService>();
-
 
             services.AddTransient<IDBConfigService, DBConfigService>();
 
@@ -114,7 +97,6 @@ namespace Fanex.NCB.Main
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
-            // app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
