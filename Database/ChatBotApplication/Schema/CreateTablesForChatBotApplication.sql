@@ -123,6 +123,7 @@ CREATE TABLE ChatBot.NotificationTemplate(
 		, Title VARCHAR(300) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
 		, Content MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
 		, ConfigSendTime DATETIME NOT NULL
+        , SendImmediately BIT NOT NULL
 		, CreatorID INT NOT NULL
 		, CreatedDate DATETIME NOT NULL
         , LastModifiedBy INT  NULL

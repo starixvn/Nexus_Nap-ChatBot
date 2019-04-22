@@ -9,6 +9,7 @@ CREATE PROCEDURE  NCB_NewNotification_Ins(
 	, IN title VARCHAR(300) CHARACTER SET utf8mb4
 	, IN content MEDIUMTEXT CHARACTER SET utf8mb4
 	, IN configSendTime DATETIME
+    , IN sendImmediately BIT
 	, IN creatorID INT
     , OUT notificationID INT
 	, OUT errCode SMALLINT
@@ -38,6 +39,8 @@ NCB_NewNotification_Ins:BEGIN
     DECLARE LICENSEE_STATUS_ACTIVE 		TINYINT UNSIGNED DEFAULT 3;
     DECLARE NEW_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 0;
     DECLARE NEW_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Planned';
+    DECLARE CREATING_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 7;
+    DECLARE CREATING_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Creating';
     
      #Local variables
     DECLARE configSendTimeGMTPlus4 DATETIME;
@@ -239,6 +242,7 @@ NCB_NewNotification_Ins:BEGIN
 											, Title
                                             , Content
                                             , ConfigSendTime
+                                            , SendImmediately
                                             , CreatorID
                                             , CreatedDate
                                             , Status
@@ -248,17 +252,19 @@ NCB_NewNotification_Ins:BEGIN
 					, title
                     , content
                     , configSendTime
+                    , sendImmediately
                     , creatorID
                     , UTC_TIMESTAMP()
-                    , NEW_NOTIFICATION_STATUS
-                    , NEW_NOTIFICATION_STATUSID;
-    SET NotificationID = LAST_INSERT_ID();
+                    , CREATING_NOTIFICATION_STATUS
+                    , CREATING_NOTIFICATION_STATUSID;
+    
+    SET notificationID = LAST_INSERT_ID();
     
     #Insert recipient list
     INSERT INTO NotificationRecipientList(NotificationID, BotConversationID
                                                                     , ChatGroupTypeID, RecipientID
                                                                     , Status, StatusID)
-    SELECT NotificationID, IFNULL(gri.BotConversationID, -1)
+    SELECT notificationID, IFNULL(gri.BotConversationID, -1)
 					, IFNULL(gri.ChatGroupTypeID,-1), re.RecipientID
                     , NEW_NOTIFICATION_STATUS
                     , NEW_NOTIFICATION_STATUSID
@@ -273,6 +279,11 @@ NCB_NewNotification_Ins:BEGIN
                         WHERE cgt.NotificationTypeID = notificationTypeID
 	);
     
+    UPDATE Notification n
+    SET	StatusID = NEW_NOTIFICATION_STATUSID 
+		, Status = NEW_NOTIFICATION_STATUS
+    WHERE n.NotificationID = notificationID;
+    
      #Get Finish Time to calcualte execution duration
     SET finishTime = UTC_TIMESTAMP(3);
     SET duration =  TIMESTAMPDIFF(MICROSECOND
@@ -286,6 +297,7 @@ NCB_NewNotification_Ins:BEGIN
 										, 'title', title
                                         , 'content', content
                                         , 'configSendTime', configSendTime
+                                        , 'sendImmediately', sendImmediately
                                         , 'notificationID', notificationID
 					) ;
                     
@@ -299,3 +311,5 @@ NCB_NewNotification_Ins:BEGIN
                                             , duration	#Duration
                                             );
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NewNotification_Ins TO 'ncb.admin'@'%';

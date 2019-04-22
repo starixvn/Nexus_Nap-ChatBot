@@ -20,5 +20,6 @@ BEGIN
 	SELECT n.NotificationID
 	FROM Notification n
 	WHERE n.StatusID = NOTIFICATION_STATUSID_PLANNED
-		AND n.ConfigSendTime <= UTC_TIMESTAMP();
+		AND n.ConfigSendTime <= UTC_TIMESTAMP()
+        AND n.SendImmediately = 0;
 END;
