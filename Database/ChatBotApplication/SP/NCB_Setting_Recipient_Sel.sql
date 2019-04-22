@@ -16,3 +16,5 @@ BEGIN
 	LEFT JOIN Licensee l ON l.LicenseeId = r.SourceID AND r.RecipientTypeID = LICENSEE_TYPE
 	LEFT JOIN LicenseeStatus ls ON l.LicenseeStatusId = ls.LicenseeStatusId;
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_Recipient_Sel TO 'ncb.admin'@'%';

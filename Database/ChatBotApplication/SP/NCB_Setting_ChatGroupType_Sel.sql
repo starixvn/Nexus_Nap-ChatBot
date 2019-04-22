@@ -11,3 +11,5 @@ BEGIN
   SELECT ChatGroupTypeID AS Id, ChatGroupTypeName AS Name
   FROM ChatGroupType;
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_ChatGroupType_Sel TO 'ncb.admin'@'%';

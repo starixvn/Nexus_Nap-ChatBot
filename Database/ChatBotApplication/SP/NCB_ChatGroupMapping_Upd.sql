@@ -110,3 +110,5 @@ NCB_ChatGroupMapping_Upd:BEGIN
 	-- Write User Log
 	CALL NCB_UserLog_RunSP_Ins(ACTION_ID, groupID, creatorID, logContent, startTime, duration);
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_ChatGroupMapping_Upd TO 'ncb.admin'@'%';

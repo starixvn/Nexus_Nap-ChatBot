@@ -12,3 +12,5 @@ BEGIN
   SELECT RecipientTypeID AS Id, RecipientTypeName AS Name
   FROM RecipientType;
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_RecipientType_Sel TO 'ncb.admin'@'%';

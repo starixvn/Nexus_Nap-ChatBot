@@ -15,3 +15,5 @@ BEGIN
 	WHERE RecipientName LIKE CONCAT('%', query, '%')
     ORDER BY RecipientName;
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_SearchRecipient_Sel TO 'ncb.admin'@'%';

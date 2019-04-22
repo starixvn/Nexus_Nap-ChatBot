@@ -13,3 +13,5 @@ BEGIN
     FROM BotConversationMember
     WHERE IsActive = 1 AND Name IS NOT NULL AND Name <> '';
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_BotName_Sel TO 'ncb.admin'@'%';

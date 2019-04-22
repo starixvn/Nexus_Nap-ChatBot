@@ -18,3 +18,5 @@ BEGIN
 
 	SELECT PRODUCT_STATUS_ID AS Id, 'N/A' AS Name;
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_LicenseeStatus_Sel TO 'ncb.admin'@'%';
