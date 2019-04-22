@@ -1,0 +1,1 @@
+export const SETTING_DATA = "SETTING_DATA";
