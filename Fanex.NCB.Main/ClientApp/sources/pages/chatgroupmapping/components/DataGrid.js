@@ -5,7 +5,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import CommonFunctions from '../../common/CommonFunctions';
-
+import { PAGING_SIZES } from '../../constants/constants';
 import Labels from '../../common/Labels';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';
 
@@ -93,7 +93,7 @@ export class DataGrid extends Component {
             PageIndex: pageIndex,
             PageSize: pageSize,
             TotalItem: count,
-            PageList: [20, 50, 100, 500]
+            PageList: PAGING_SIZES
         };
 
         if (data.length === 0) {

@@ -8,6 +8,7 @@ import { MultipleSelectField } from '../../common/MultipleSelectField';
 import Labels from '../../common/Labels';
 import AutoComplete from '../../common/auto-complete';
 import Site from '../../lib/site';
+import { PAGING_SIZES } from '../../constants/constants';
 
 export class Filter extends Component {
     constructor(props) {
@@ -116,7 +117,7 @@ export class Filter extends Component {
             mappingStatusIds: this.state.mappingStatuses.value,
             licenseeStatusIds: this.state.licenseeStatuses.value,
             pageIndex: 1,
-            pageSize: 5
+            pageSize: PAGING_SIZES[0]
         };
     }    
 
