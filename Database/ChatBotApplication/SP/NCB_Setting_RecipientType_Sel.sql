@@ -1,5 +1,6 @@
 DELIMITER //
-DROP PROCEDURE `NCB_Setting_RecipientType_Sel`;
+DROP PROCEDURE IF EXISTS `NCB_Setting_RecipientType_Sel`;
+
 CREATE PROCEDURE `NCB_Setting_RecipientType_Sel`(
 	/*
 		Creator: Scofield@20190404
@@ -10,7 +11,9 @@ CREATE PROCEDURE `NCB_Setting_RecipientType_Sel`(
 )
 BEGIN
   SELECT RecipientTypeID AS Id, RecipientTypeName AS Name
-  FROM RecipientType;
+  FROM RecipientType
+  UNION ALL
+  SELECT -1000 AS Id, 'Not Assigned' AS Name;
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_RecipientType_Sel TO 'ncb.admin'@'%';

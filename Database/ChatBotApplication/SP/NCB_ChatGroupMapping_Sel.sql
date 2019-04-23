@@ -36,6 +36,9 @@ BEGIN
     DECLARE MAPPING_STATUS_BOT_REMOVED INT DEFAULT 0;
     DECLARE MAPPING_STATUS_NOT_MAPPED INT DEFAULT 1;
     DECLARE MAPPING_STATUS_MAPPED INT DEFAULT 2;
+    
+    DECLARE RECIPIENT_TYPE_ID_NA INT DEFAULT -1000;
+    DECLARE RECIPIENT_ID_NA INT DEFAULT -1000;
 	
     DECLARE rowStart INT;
     SET rowStart =  pageSize * (pageIndex - 1);
@@ -131,6 +134,9 @@ BEGIN
 		SELECT r.RecipientID
 		FROM Recipient r
         WHERE r.RecipientTypeId = RECIPIENT_TYPE_3RD_PRODUCT;
+        
+        INSERT INTO tmp_RecipientIDByLicenseeStatus(RecipientID) 
+        SELECT RECIPIENT_ID_NA;
     END IF;
     
     DROP TEMPORARY TABLE IF EXISTS tmp_ConversationIDBot;
@@ -211,16 +217,13 @@ BEGIN
                                                             END
 		)
         AND (
-					r.RecipientName IS NULL 
-					OR r.RecipientId IN (SELECT rbls.RecipientId FROM tmp_RecipientIDByLicenseeStatus rbls)
+					IFNULL(r.RecipientId, RECIPIENT_ID_NA) IN (SELECT rbls.RecipientId FROM tmp_RecipientIDByLicenseeStatus rbls)
 		)
 		AND (
-					r.RecipientName IS NULL
-                    OR r.RecipientTypeID  IN (SELECT trt.RecipientTypeId FROM tmp_RecipientTypeIds trt)
+					IFNULL(r.RecipientTypeID, RECIPIENT_TYPE_ID_NA)  IN (SELECT trt.RecipientTypeId FROM tmp_RecipientTypeIds trt)
 		)
         AND (
-					r.RecipientName IS NULL
-                    OR r.RecipientName LIKE CONCAT(recipientName, '%') 
+					IFNULL(r.RecipientName,'') LIKE CONCAT(recipientName, '%') 
 		);
     
 	-- Get BotConversations for current paging page
