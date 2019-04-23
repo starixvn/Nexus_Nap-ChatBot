@@ -30,7 +30,7 @@
         {
           "SPKey": "NCB_Setting_BotName_Sel",
           "SPName": "NCB_Setting_BotName_Sel"
-        },      
+        },
         {
           "SPKey": "NCB_ChatGroupMapping_Sel",
           "SPName": "NCB_ChatGroupMapping_Sel"
@@ -54,7 +54,11 @@
         {
           "SPKey": "NCB_Setting_SearchRecipient_Sel",
           "SPName": "NCB_Setting_SearchRecipient_Sel"
-        }        
+        },
+        {
+          "SPKey": "NCB_Common_RecipientType_Sel",
+          "SPName": "NCB_Common_RecipientType_Sel"
+        }
       ]
     }
   ]

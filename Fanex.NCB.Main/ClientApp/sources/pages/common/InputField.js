@@ -32,10 +32,11 @@ export class InputField extends Component {
   render() {
     return (
       <div className="input-field">
-        <Input  value={this.state.value} 
-            onChange={this.onChange}
-            invalid={this.props.isSummited && !this.isValid()}
-        />
+            <Input value={this.state.value} 
+                maxLength={this.props.maxLength}
+                onChange={this.onChange}
+                invalid={this.props.isSummited && !this.isValid()}
+            />
         { this.props.isSummited && !this.isValid() && <FormFeedback>This field is required.</FormFeedback> }                    
       </div>
     );

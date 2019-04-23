@@ -10,6 +10,7 @@ namespace Fanex.NCB.SkypeBot.Services.Setting
     public interface ISettingService
     {
         Task<List<RecipientType>> GetRecipientTypesAsync();
+        Task<List<RecipientType>> GetFilterRecipientTypesAsync();
         Task<List<Recipient>> GetRecipientsAsync();
         Task<List<BotName>> GetBotNameAsync();
         Task<List<ChatGroupType>> GetChatGroupTypeAsync();

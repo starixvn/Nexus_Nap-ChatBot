@@ -27,7 +27,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.Setting
 
         public Task<List<RecipientType>> GetRecipientTypesAsync()
         {
-            return _baseStorage.QueryAsync<RecipientType>("NCB_Setting_RecipientType_Sel");
+            return _baseStorage.QueryAsync<RecipientType>("NCB_Common_RecipientType_Sel");
         }
 
         public Task<List<BotName>> GetBotNameAsync()
@@ -51,6 +51,11 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.Setting
             param.Add("query", value: query, dbType: DbType.String);
             
             return _baseStorage.QueryAsync<Recipient>("NCB_Setting_SearchRecipient_Sel", param);
+        }
+
+        public Task<List<RecipientType>> GetFilterRecipientTypesAsync()
+        {
+            return _baseStorage.QueryAsync<RecipientType>("NCB_Setting_RecipientType_Sel");
         }
     }
 }

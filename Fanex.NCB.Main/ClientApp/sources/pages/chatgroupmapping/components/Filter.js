@@ -43,6 +43,7 @@ export class Filter extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {       
+        console.log("getDerivedStateFromProps");
         if (prevState.settingData.botNames.length === 0 && nextProps.settingData.botNames) {
             let botNames = nextProps.settingData.botNames;
             let selectedBotNames = [];
@@ -51,7 +52,7 @@ export class Filter extends Component {
                 selectedBotNames.push(v['id']);
             });
 
-            let recipientTypes = nextProps.settingData.recipientTypes;
+            let recipientTypes = nextProps.settingData.filterRecipientTypes;
             let selectedRecipientTypes = [];
             recipientTypes.map((v) => {
                 v['checked'] = true;
@@ -158,7 +159,7 @@ export class Filter extends Component {
                         url={Site.resolveClientUrl("ChatGroupMapping/SearchRecipient")}
                         onSelect={(value) => this.onChange("recipient", { value: value })}
                         onInput={(value) => this.onChange("recipient", { value: value })}
-                        htmlAttributes={{ placeholder: "" }}
+                        htmlAttributes={{ maxLength: 50 }}
                     /> 
                 </FormGroup>
                 <FormGroup>

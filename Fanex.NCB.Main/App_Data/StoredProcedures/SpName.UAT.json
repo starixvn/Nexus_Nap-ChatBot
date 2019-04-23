@@ -58,6 +58,10 @@
         {
           "SPKey": "NCB_Setting_SearchRecipient_Sel",
           "SPName": "NCB_Setting_SearchRecipient_Sel"
+        },
+        {
+          "SPKey": "NCB_Common_RecipientType_Sel",
+          "SPName": "NCB_Common_RecipientType_Sel"
         }
       ]
     }

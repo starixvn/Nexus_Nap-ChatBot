@@ -36,6 +36,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> GetSettings()
         {
             var botNameTask = _settingService.GetBotNameAsync();
+            var filterRecipientTypeTask = _settingService.GetFilterRecipientTypesAsync();
             var recipientTypeTask = _settingService.GetRecipientTypesAsync();
             var recipientTask = _settingService.GetRecipientsAsync();
             var chatGroupTypeTask = _settingService.GetChatGroupTypeAsync();
@@ -46,6 +47,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
             {
                 botNames = await botNameTask,
                 recipientTypes = await recipientTypeTask,
+                filterRecipientTypes = await filterRecipientTypeTask,
                 recipients = await recipientTask,
                 chatGroupTypes = await chatGroupTypeTask,
                 licenseeStatuses = await licenseeStatusTask,

@@ -856,5 +856,17 @@ tbody .col-content [class^="icon"] {
     .table-container-div .edit-disabled :hover {
       background: none; }
 
+::-webkit-input-placeholder {
+  font-style: italic; }
+
+:-moz-placeholder {
+  font-style: italic; }
+
+::-moz-placeholder {
+  font-style: italic; }
+
+:-ms-input-placeholder {
+  font-style: italic; }
+
 
 /*# sourceMappingURL=chatgroupmapping.chunk.css.map*/
