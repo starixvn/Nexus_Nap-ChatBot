@@ -46,7 +46,7 @@ export class SelectField extends Component {
                         )                            
                 }
             </Input>
-            { this.props.isSummited && !this.isValid() &&  <FormFeedback>This field is required</FormFeedback> }  
+            { this.props.isSummited && !this.isValid() &&  <FormFeedback>This field is required.</FormFeedback> }  
       </div>
     );
   }

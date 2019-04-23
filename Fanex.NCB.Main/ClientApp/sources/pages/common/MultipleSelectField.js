@@ -38,7 +38,7 @@ export class MultipleSelectField extends Component {
                     />
                 }
                 
-                {this.props.isSummited && !this.isValid(this.props.selectedValue) && <FormFeedback>This field is required</FormFeedback>}
+                {this.props.isSummited && !this.isValid(this.props.selectedValue) && <FormFeedback>This field is required.</FormFeedback>}
             </div>
         );
     }

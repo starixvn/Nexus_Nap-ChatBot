@@ -41,8 +41,9 @@ export class TextField extends Component {
                     onChange={this.onChange}
                     invalid={this.isShowInvalid()}
                     maxLength={this.props.maxLength}
+                    placeholder={this.props.placeholder}
                 />
-                {this.isShowInvalid() && <FormFeedback>This field is required</FormFeedback>}
+                {this.isShowInvalid() && <FormFeedback>This field is required.</FormFeedback>}
             </div>
         );
     }

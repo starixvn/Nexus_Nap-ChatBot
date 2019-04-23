@@ -16,14 +16,15 @@
     MappingStatus: "Mapping Status",
     NumberCol: "#",
     NotificationType: "Notification Type",
-    NoInfo: "No information is available",
+    NoInfo: "No information is available.",
     PleaseSelect: "---Please select---",
     RecipientType: "Recipient Type",
     Recipient: "Recipient",
     Remark: "Remark",
+    RemarkPlaceHolder: "Input the remark here...",
     Submit: "Submit",
     SkypeChatbot: "Skype Chatbot",
     TemplateName: "Template Name",
     TitleContent: "Title/Content",
-    UpdateMappingStatusSuccessfully: "Update Mapping Status Successfully"
+    UpdateMappingStatusSuccessfully: "Update Mapping Status Successfully."
 };

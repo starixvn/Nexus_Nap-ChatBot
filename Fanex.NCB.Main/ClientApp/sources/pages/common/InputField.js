@@ -36,7 +36,7 @@ export class InputField extends Component {
             onChange={this.onChange}
             invalid={this.props.isSummited && !this.isValid()}
         />
-        { this.props.isSummited && !this.isValid() && <FormFeedback>This field is required</FormFeedback> }                    
+        { this.props.isSummited && !this.isValid() && <FormFeedback>This field is required.</FormFeedback> }                    
       </div>
     );
   }

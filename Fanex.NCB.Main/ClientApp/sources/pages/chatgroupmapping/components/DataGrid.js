@@ -36,13 +36,13 @@ export class DataGrid extends Component {
                 <Cell colWidth={30} header>{Labels.NumberCol}</Cell>
                 <Cell colWidth={100} header>{Labels.BotName}</Cell>
                 <Cell colWidth={200} header>{Labels.GroupName}</Cell>
-                <Cell colWidth={200} header>{Labels.ChatGroupType}</Cell>
+                <Cell colWidth={110} header>{Labels.ChatGroupType}</Cell>
                 <Cell colWidth={100} header>{Labels.RecipientType}</Cell>
-                <Cell colWidth={150} header>{Labels.Recipient}</Cell>
+                <Cell colWidth={130} header>{Labels.Recipient}</Cell>
                 <Cell colWidth={100} header>{Labels.LicenseeStatus}</Cell>
                 <Cell colWidth={100} header>{Labels.MappingStatus}</Cell>
-                <Cell colWidth={150} header>{Labels.Remark}</Cell>
-                <Cell colWidth={100} header>{Labels.Action}</Cell>
+                <Cell colWidth={250} header>{Labels.Remark}</Cell>
+                <Cell colWidth={80} header>{Labels.Action}</Cell>
             </Row>);
     };
 

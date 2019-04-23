@@ -17,7 +17,7 @@ const CONFIRM_CLOSE = 1;
 const CONFIRM_UPDATE = 2;
 export class UpdatePopup extends Component {
     constructor(props) {
-        super(props);
+        super(props);        
 
         this.state = {
             groupID: this.props.updatePopupData.editingItem.groupID,      
@@ -78,7 +78,7 @@ export class UpdatePopup extends Component {
         };
     }
 
-    checkValidParams = () => {
+    checkValidParams = () => {        
         return this.state.recipientTypeId.isValid && this.state.recipientIds.isValid && this.state.chatGroupTypeId.isValid;
     }
 
@@ -188,6 +188,7 @@ export class UpdatePopup extends Component {
                                 onChange={(value) => this.onChange("remark", value)}
                                 maxLength="200"
                                 required={false}
+                                placeholder={Labels.RemarkPlaceHolder}
                             />                                     
                         </FormGroup>
                         <button disabled={!this.state.isChanged} className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>

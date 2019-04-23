@@ -23,7 +23,7 @@ export function openEditPopup(item) {
             recipientStatusNames: item.recipientStatusNames,
             chatGroupTypeId: {
                 value: item.chatGroupTypeID,
-                isValid: item.chatGroupTypeId !== 0
+                isValid: item.chatGroupTypeID !== 0
             },
             remark: {
                 value: item.remark,
