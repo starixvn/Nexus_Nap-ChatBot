@@ -2,7 +2,8 @@
     "presets": ["@babel/preset-react",["@babel/preset-env",{
       "targets": {
         "chrome": "71",
-        "firefox": "64"
+        "firefox": "64",
+		"edge": "40",
         }}]
     ],
    "plugins": ["@babel/plugin-syntax-jsx","@babel/plugin-transform-react-jsx","@babel/plugin-transform-react-display-name","@babel/plugin-transform-react-jsx-source",
