@@ -55,9 +55,13 @@ BEGIN
     GROUP BY tmp.ChatGroupConversationID;
 
 	#2nd dataset: List of ConversationID and Bot MemberID
-    SELECT tmp.ChatGroupConversationID AS ChatGroupID
-				, bot.MemberID AS BotMemberID
+    SELECT grp.ID ChatGroupID
+				, tmp.ChatGroupConversationID AS ChatGroupConversationID
+				, bot.MemberID AS BotConversationID
     FROM tmp_ConversationIDBot tmp
+		INNER JOIN BotConversation grp ON grp.ConversationID = tmp.ChatGroupConversationID
 		INNER JOIN BotConversationMember bot
 			ON bot.ID = tmp.BotID;
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_SendNotification_Sel TO 'ncb.admin'@'%';

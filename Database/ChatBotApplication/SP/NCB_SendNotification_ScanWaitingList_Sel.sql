@@ -23,3 +23,5 @@ BEGIN
 		AND n.ConfigSendTime <= UTC_TIMESTAMP()
         AND n.SendImmediately = 0;
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_SendNotification_ScanWaitingList_Sel TO 'ncb.admin'@'%';

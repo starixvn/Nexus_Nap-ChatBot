@@ -11,7 +11,8 @@ CREATE PROCEDURE `NCB_Common_RecipientType_Sel`(
 )
 BEGIN
   SELECT RecipientTypeID AS Id, RecipientTypeName AS Name
-  FROM RecipientType;
+  FROM RecipientType
+  ORDER BY RecipientTypeID;
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Common_RecipientType_Sel TO 'ncb.admin'@'%';

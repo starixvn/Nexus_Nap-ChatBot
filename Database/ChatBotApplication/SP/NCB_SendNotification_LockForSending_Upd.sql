@@ -82,3 +82,5 @@ NCB_SendNotification_LockForSending_Upd:BEGIN
                                             , duration	#Duration
                                             );
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_SendNotification_LockForSending_Upd TO 'ncb.admin'@'%';
