@@ -9,7 +9,8 @@ CREATE PROCEDURE `NCB_Setting_ChatGroupType_Sel`(
 )	
 BEGIN
   SELECT ChatGroupTypeID AS Id, ChatGroupTypeName AS Name
-  FROM ChatGroupType;
+  FROM ChatGroupType
+  ORDER BY ChatGroupTypeID;
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_ChatGroupType_Sel TO 'ncb.admin'@'%';

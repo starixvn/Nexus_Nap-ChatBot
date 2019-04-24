@@ -14,7 +14,9 @@ BEGIN
 	SELECT RecipientId AS ID, RecipientName AS Name, ls.LicenseeStatusName AS Status, RecipientTypeID
     FROM Recipient r
 	LEFT JOIN Licensee l ON l.LicenseeId = r.SourceID AND r.RecipientTypeID = LICENSEE_TYPE
-	LEFT JOIN LicenseeStatus ls ON l.LicenseeStatusId = ls.LicenseeStatusId;
+	LEFT JOIN LicenseeStatus ls ON l.LicenseeStatusId = ls.LicenseeStatusId
+    ORDER BY RecipientName;
+    
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_Recipient_Sel TO 'ncb.admin'@'%';
