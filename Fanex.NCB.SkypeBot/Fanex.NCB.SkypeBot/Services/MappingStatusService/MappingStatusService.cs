@@ -21,10 +21,10 @@ namespace Fanex.NCB.SkypeBot.Services.MappingStatusService
 
         public List<MappingStatus> GetMappingStatus()
         {
-            var data = new List<MappingStatus> {
-                new MappingStatus { Id = (int)Common.Constant.MappingStatus.BotRemoved, Name = "Bot Removed" },
+            var data = new List<MappingStatus> {                
+                new MappingStatus { Id = (int)Common.Constant.MappingStatus.NotMapped, Name = "Not Mapped" },
                 new MappingStatus { Id = (int)Common.Constant.MappingStatus.Mapped, Name = "Mapped" },
-                new MappingStatus { Id = (int)Common.Constant.MappingStatus.NotMapped, Name = "Not Mapped" }
+                new MappingStatus { Id = (int)Common.Constant.MappingStatus.BotRemoved, Name = "Bot Removed" }
             };
 
             return data;

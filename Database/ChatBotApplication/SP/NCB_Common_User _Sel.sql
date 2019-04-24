@@ -13,7 +13,9 @@ CREATE PROCEDURE  NCB_Common_User_Sel(
     */
 )
 BEGIN
-	SELECT u.UserID, u.UserName
+	SELECT u.UserID AS ID, u.UserName AS Name
     FROM User u
     ORDER BY  u.UserName;
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Common_User_Sel TO 'ncb.admin'@'%';

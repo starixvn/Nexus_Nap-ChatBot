@@ -8,5 +8,13 @@ export const settingData = createReducer({}, {
     }
 });
 
+// Notification Type
+export const notificationTypes = createReducer({}, {
+    [types.NOTIFICATION_TYPE_DATA](state, action) {
+        return action.data;
+    }
+});
+
+
 
 

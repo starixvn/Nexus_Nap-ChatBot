@@ -15,10 +15,11 @@ CREATE PROCEDURE  NCB_Common_NotificationTemplate_Sel(
 )
 BEGIN
 
-	SELECT nt.NotificationTemplateID, nt.NotificationTemplateName
-					, nt.Title, nt.Content
+	SELECT nt.NotificationTemplateID AS ID, nt.NotificationTemplateName AS Name, nt.Title, nt.Content
     FROM NotificationTemplate nt
     WHERE nt.NotificationTypeID = notificationTypeID
     ORDER BY nt.NotificationTemplateName;
     
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Common_NotificationTemplate_Sel TO 'ncb.admin'@'%';

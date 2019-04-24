@@ -62,6 +62,10 @@
         {
           "SPKey": "NCB_Common_RecipientType_Sel",
           "SPName": "NCB_Common_RecipientType_Sel"
+        },
+        {
+          "SPKey": "NCB_Common_MappingStatus_Sel",
+          "SPName": "NCB_Common_MappingStatus_Sel"
         }
       ]
     }

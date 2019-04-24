@@ -15,19 +15,21 @@ CREATE PROCEDURE  NCB_Common_NotificationStatus_Sel(
 BEGIN
 	#Hard coding and not create any physical tables to store data because this kind of data
     # is rarely changed, we gonna consider later
-	SELECT StatusID, StatusName
+	SELECT StatusID AS ID, StatusName AS Name
     FROM (
-		SELECT 0 StatusID,  'Planned' StatusName
+		SELECT 1 StatusID,  'Planned' StatusName
 		UNION ALL
-		SELECT 1 StatusID,  'Sent' StatusName
+		SELECT 2 StatusID,  'Sent' StatusName
 		UNION ALL
-		SELECT 2 StatusID,  'Error' StatusName
+		SELECT 3 StatusID,  'Error' StatusName
 		UNION ALL
-		SELECT 3 StatusID,  'Sending' StatusName
+		SELECT 4 StatusID,  'Sending' StatusName
 		UNION ALL
-		SELECT 4 StatusID,  'Cancelled' StatusName
+		SELECT 5 StatusID,  'Cancelled' StatusName
 		UNION ALL
-		SELECT 5 StatusID,  'Resolved' StatusName
+		SELECT 6 StatusID,  'Resolved' StatusName
     ) AS tmp
     ORDER BY StatusID;
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Common_NotificationStatus_Sel TO 'ncb.admin'@'%';

@@ -14,8 +14,10 @@ CREATE PROCEDURE  NCB_Common_Product_Sel(
 )
 BEGIN
 
-	SELECT p.ProductId, p.ProductName
+	SELECT p.ProductId AS ID, p.ProductName AS Name
     FROM Product p
     ORDER BY p.ProductName;
     
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Common_Product_Sel TO 'ncb.admin'@'%';

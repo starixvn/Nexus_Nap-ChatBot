@@ -13,8 +13,10 @@ CREATE PROCEDURE  NCB_Common_NotificationType_Sel(
     */
 )
 BEGIN
-	SELECT nt.NotificationTypeID, nt.NotificationTypeName
+	SELECT nt.NotificationTypeID AS ID, nt.NotificationTypeName AS Name
     FROM NotificationType nt
     ORDER BY nt.NotificationTypeName;
     
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Common_NotificationType_Sel TO 'ncb.admin'@'%';

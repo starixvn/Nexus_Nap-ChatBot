@@ -21,4 +21,23 @@ export function getSettings() {
     };
 }
 
+// Notification Type
+export function setNotificationTypes(data) {
+    return {
+        type: types.NOTIFICATION_TYPE_DATA,
+        data: data
+    };
+}
 
+export function getNotificationTypes() {
+    const url = Site.resolveClientUrl('NewNotification/GetNotificationTypes');
+
+    let data = [{ id: 1, name: "a" }, { id: 2, name: "b" }];
+    return (dispatch) => dispatch(setNotificationTypes(data));
+
+    //return (dispatch) => {
+    //    axios.get(url).then(response => {
+    //        dispatch(setNotificationTypes(response.data));
+    //    }).catch(() => { errorResponseHandler(); });
+    //};
+}
