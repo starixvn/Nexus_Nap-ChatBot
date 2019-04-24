@@ -330,5 +330,8 @@ body {
   float: right;
   margin-top: 15px; }
 
+.select-field {
+  display: inline-block; }
+
 
 /*# sourceMappingURL=newnotification.chunk.css.map*/
