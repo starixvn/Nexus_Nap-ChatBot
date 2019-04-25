@@ -15,6 +15,16 @@ export const notificationTypes = createReducer({}, {
     }
 });
 
+// Notification Template 
+export const notificationTemplates = createReducer({}, {
+    [types.TEMPLATE_TYPE_DATA](state, action) {
+        return action.data;
+    }
+});
 
-
-
+// Template
+export const template = createReducer({}, {
+    [types.TEMPLATE_DATA](state, action) {
+        return action.data;
+    }
+});

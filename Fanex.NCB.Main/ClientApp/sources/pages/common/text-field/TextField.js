@@ -42,6 +42,7 @@ export class TextField extends Component {
                     invalid={this.isShowInvalid()}
                     maxLength={this.props.maxLength}
                     placeholder={this.props.placeholder}
+                    disabled={this.props.disabled}
                 />
                 {this.isShowInvalid() && <FormFeedback>This field is required.</FormFeedback>}
             </div>

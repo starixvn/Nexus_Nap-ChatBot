@@ -22,6 +22,7 @@
     Recipient: "Recipient",
     Remark: "Remark",
     RemarkPlaceHolder: "Input the remark here...",
+    Save: "Save",
     Submit: "Submit",
     SkypeChatbot: "Skype Chatbot",
     TemplateName: "Template Name",

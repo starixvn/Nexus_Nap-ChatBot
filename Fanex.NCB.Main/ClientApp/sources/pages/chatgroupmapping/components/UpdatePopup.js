@@ -191,7 +191,7 @@ export class UpdatePopup extends Component {
                                 placeholder={Labels.RemarkPlaceHolder}
                             />                                     
                         </FormGroup>
-                        <button disabled={!this.state.isChanged} className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
+                        <button disabled={!this.state.isChanged} className="btn-submit" onClick={this.submitHandler}>{Labels.Save}</button>
                     </Form>
                 </ModalBody>
 
