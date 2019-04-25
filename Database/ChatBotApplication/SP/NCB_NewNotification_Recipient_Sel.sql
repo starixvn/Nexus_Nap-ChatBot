@@ -109,3 +109,5 @@ BEGIN
      DROP TEMPORARY TABLE IF EXISTS tmp_recipientLst;
     
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NewNotification_Recipient_Sel TO 'ncb.admin'@'%';

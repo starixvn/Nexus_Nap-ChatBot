@@ -152,7 +152,6 @@ BEGIN
 			INNER JOIN BotConversationMember bot
 				ON bot.ConversationID = grp.ConversationID
 					AND bot.IsBot = 1
-	WHERE bot.Name IN (SELECT tbn.BotName FROM tmp_BotNames tbn)
     GROUP BY grp.ID;
         
 	INSERT INTO tmp_ConversationIDBot (ChatGroupConversationID, BotID)
@@ -161,7 +160,6 @@ BEGIN
 			INNER JOIN BotConversationMember bot
 				ON bot.ConversationID = grp.ConversationID
 					AND bot.IsBot = 1 AND bot.IsActive = 1
-	WHERE bot.Name IN (SELECT tbn.BotName FROM tmp_BotNames tbn)
     GROUP BY grp.ID;
         
 	
@@ -204,6 +202,7 @@ BEGIN
     LEFT JOIN Recipient r ON bcr.RecipientId = r.RecipientId
     LEFT JOIN RecipientType rt ON r.RecipientTypeID = rt.RecipientTypeID
     WHERE bcm.IsBot = 1
+		AND bcm.Name IN (SELECT tbn.BotName FROM tmp_BotNames tbn)
 		AND EXISTS (
 			SELECT 1 
             FROM tmp_MappingStatusIDs t1 

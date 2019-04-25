@@ -438,3 +438,5 @@ NCB_EditNotification_Upd:BEGIN
                                             , duration	#Duration
                                             );
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_EditNotification_Upd TO 'ncb.admin'@'%';
