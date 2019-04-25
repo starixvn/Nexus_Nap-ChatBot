@@ -81,15 +81,12 @@ export function setTemplate(data) {
 export function getTemplate() {
     const url = Site.resolveClientUrl('NewNotification/GetTemplate');
 
-    let data = {
-        title: "title {UM date}",
-        content: "good day! \n {UM time} something \n {UM time} and {End time}"
-    };
+
 
     return async (dispatch) => {
         let data1 = await {
             title: "title {UM date}",
-            content: "good day! \n {UM time} something \n {UM time} and {End time}"
+            content: "good day! \n {UM time} something \n {UM time} and {End time} <br/> {UM time} and {End time} <br/> {UM time} and {End time}"
         };
         dispatch(setTemplate(data1));
     };

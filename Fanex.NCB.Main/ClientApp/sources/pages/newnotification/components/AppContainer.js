@@ -2,6 +2,7 @@
 import { connect } from 'react-redux';
 import { Form, FormGroup, Label, Input, FormFeedback } from 'reactstrap';
 import { Button } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
 import { NCBBreadcrum } from '../../common/breadcrumbs';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
@@ -9,6 +10,8 @@ import './AppContainer.scss';
 import Labels from '../../common/Labels';
 import { SelectField } from '../../common/SelectField';
 import { TextField } from '../../common/text-field/TextField';
+import { InputField } from '../../common/InputField';
+import { TemplateTextField } from '../../common/template-text-field/TemplateTextField';
 
 export class AppContainer extends Component {
     constructor(props) {
@@ -49,7 +52,10 @@ export class AppContainer extends Component {
             let matchText = match[0];
             let regex = new RegExp(matchText, "g");
 
-            params.push({ name: matchText, value: matchText });            
+            console.log("copiedtext");
+            console.log(matchText);
+            console.log(copiedText);
+            params.push({ name: matchText, value: { value: matchText, isValid: false } });            
             copiedText = copiedText.replace(regex, "");
             match = paramRegex.exec(copiedText);
         }
@@ -74,11 +80,9 @@ export class AppContainer extends Component {
             console.log(this.props);
 
             let titleTemplate = this.props.template.title;            
-            let titleMiddleTemplate = this.createMiddleTemplate(titleTemplate);            
-
+            let titleMiddleTemplate = this.createMiddleTemplate(titleTemplate);  
             let contentTemplate = this.props.template.content;
-            let contentMiddleTemplate = this.createMiddleTemplate(contentTemplate);            
-
+            let contentMiddleTemplate = this.createMiddleTemplate(contentTemplate);          
             let params = this.detectParams(titleTemplate + contentTemplate);
 
             this.setState(
@@ -101,18 +105,76 @@ export class AppContainer extends Component {
         });
     }
 
-    render() {
-        let interTemplate = "<span class='red'>{UM time}</span>";
-        let parameters = {"UM time": "12 am"};
-        let processedTemplate = "<span class='red'>11 am</span>";
+    splitArrayIntoTwoColumns = (array) => {
+        let newArray = [];
+        let length = array.length;
+        for (let i = 0; i < length; i += 2) {
+            newArray.push(array.slice(i, i + 2));
+        }
 
-        
+        return newArray;
+    }
+
+    processTemplate = (text, params) => {
+        let copiedText = text.slice(0);
+        params.map((item) => {
+            let regex = new RegExp(item.name, "g");
+            copiedText = copiedText.replace(regex, item.value.value);            
+        });
+
+        return copiedText;
+    }
+
+    updateParam = (name, value) => {
+        let params = this.state.template.params.slice(0);
+        for (let i = 0; i < params.length; i++) {
+            if (params[i].name === name) {
+                params[i].value = value;
+                break;
+            }
+        }
+
+        return params;
+    }
+
+    updateTemplate = (name, value) => {
+        let params = this.updateParam(name, value);
+        let titleProcessedTemplate = this.processTemplate(this.state.template.title.middleTemplate, params);
+        let contentProcessedTemplate = this.processTemplate(this.state.template.content.middleTemplate, params);
+
+        this.setState(
+            prevState => ({
+                ...prevState,
+                template: {
+                    title: {
+                        ...prevState.template.title,
+                        processedTemplate: titleProcessedTemplate
+                    },
+                    content: {
+                        ...prevState.template.content,
+                        processedTemplate: contentProcessedTemplate
+                    },
+                    params: params
+                }
+            })
+        );
+    }
+
+    onChange = (name, value) => {
+        this.updateTemplate(name, value);
+    };
+
+    render() {        
         if (!this.props.settingData.notificationTypes) {
             return null;
         }
 
+        let splittedParams = this.splitArrayIntoTwoColumns(this.state.template.params);
+
         console.log("render");
-        console.log(this.props);
+        //console.log(splittedParams);
+
+        //console.log(this.props);
         console.log(this.state);
 
         
@@ -147,19 +209,43 @@ export class AppContainer extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label for="notificationType" className="form-label required">Title</Label>
-                            <TextField
-                                initialValue={this.state.template.title.processedTemplate}
-                                required={false}
-                                disabled
+                            <TemplateTextField
+                                value={this.state.template.title.processedTemplate}
                             />                                  
                         </FormGroup>
                         <FormGroup>
                             <Label for="notificationType" className="form-label required">Content</Label>
-                            <TextField
-                                initialValue={this.state.template.content.processedTemplate}
-                                required={false}
-                                disabled
-                            />       
+                            <TemplateTextField
+                                value={this.state.template.content.processedTemplate}
+                            />                                                                  
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="notificationType" className="form-label">&nbsp;</Label>
+                            <div>
+                                <div>Parameters</div>
+                                <Container>
+                                    {
+                                        splittedParams.map((items, rowIndex) => {
+                                            return <Row key={rowIndex}>
+                                                {
+                                                    items.map((item, colIndex) => {
+                                                        console.log(item);
+
+                                                        return <Col key={colIndex}>
+                                                            <Label className="form-label">{item.name}</Label>
+                                                            <InputField initialValue={item.value.value}
+                                                                isSummited={this.state.isSummited}
+                                                                onChange={(value) => this.onChange(item.name, value)}
+                                                            />
+                                                        </Col>;
+                                                    })
+                                                }
+                                            </Row>;
+                                        })
+                                    }
+                                    
+                                </Container>
+                            </div>
                         </FormGroup>
                         <FormGroup>
                             <Label for="notificationType" className="form-label required">Send Date/Time</Label>
