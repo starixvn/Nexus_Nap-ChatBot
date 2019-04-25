@@ -141,7 +141,7 @@ export class Filter extends Component {
                     <Label className="form-label">{Labels.RecipientType}</Label>
                     <MultipleSelectField
                         id={"recipientTypes"}
-                        width={200}
+                        width={150}
                         initialValue={this.state.recipientTypes}
                         data={this.state.settingData.recipientTypes}
                         keyField={"id"}
@@ -166,7 +166,7 @@ export class Filter extends Component {
                     <Label className="form-label">{Labels.LicenseeStatus}</Label>
                     <MultipleSelectField
                         id={"licenseeStatuses"}
-                        width={200}
+                        width={150}
                         initialValue={this.state.licenseeStatuses}
                         data={this.state.settingData.licenseeStatuses}
                         keyField={"id"}
@@ -182,7 +182,7 @@ export class Filter extends Component {
                     <Label className="form-label">{Labels.MappingStatus}</Label>
                     <MultipleSelectField
                         id={"mappingStatuses"}
-                        width={200}
+                        width={150}
                         initialValue={this.state.mappingStatuses}
                         data={this.state.settingData.mappingStatuses}
                         keyField={"id"}
@@ -198,7 +198,7 @@ export class Filter extends Component {
                     <Label className="form-label">{Labels.BotName}</Label>
                     <MultipleSelectField
                         id={"botNames"}
-                        width={200}
+                        width={150}
                         initialValue={this.state.botNames}
                         data={this.state.settingData.botNames}
                         keyField={"id"}

@@ -136,7 +136,7 @@ export class UpdatePopup extends Component {
 
         return (
             <Modal isOpen wrapClassName="new-notification-type">
-                <ModalHeader toggle={this.confirmThenClose}>{Labels.EditMappingStatus}</ModalHeader>
+                <ModalHeader toggle={this.confirmThenClose} className="bold-text">{Labels.EditMappingStatus}</ModalHeader>
                 <ModalBody>
                     <ResponseMessage responseData={this.props.updateData} successMsg={Labels.UpdateMappingStatusSuccessfully} />
                     <Form className="form-edit">
