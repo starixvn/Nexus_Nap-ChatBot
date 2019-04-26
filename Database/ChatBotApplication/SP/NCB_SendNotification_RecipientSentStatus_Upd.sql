@@ -71,8 +71,6 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
 		SET errCode=702, errMsg='SentStatus must not be empty';
         LEAVE NCB_SendNotification_RecipientSentStatus_Upd;
 	END IF;
-
-    SET sentStatus = REPLACE(sentStatus,'\\','\\\\');
     
     DROP TEMPORARY TABLE IF EXISTS tmp_ChatGroupSentStatus;
 	CREATE TEMPORARY TABLE tmp_ChatGroupSentStatus(
