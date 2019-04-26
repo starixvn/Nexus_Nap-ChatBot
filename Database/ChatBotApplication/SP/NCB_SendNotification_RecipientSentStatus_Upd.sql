@@ -70,6 +70,9 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
     ELSEIF IFNULL(SentStatus,'') = '' THEN
 		SET errCode=702, errMsg='SentStatus must not be empty';
         LEAVE NCB_SendNotification_RecipientSentStatus_Upd;
+	 ELSEIF  userID IS NULL THEN
+		SET errCode=703, errMsg='SentStatus must not be empty';
+        LEAVE NCB_SendNotification_RecipientSentStatus_Upd;
 	END IF;
     
     DROP TEMPORARY TABLE IF EXISTS tmp_ChatGroupSentStatus;
