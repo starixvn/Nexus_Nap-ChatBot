@@ -71,7 +71,7 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
 		SET errCode=702, errMsg='SentStatus must not be empty';
         LEAVE NCB_SendNotification_RecipientSentStatus_Upd;
 	 ELSEIF  userID IS NULL THEN
-		SET errCode=703, errMsg='SentStatus must not be empty';
+		SET errCode=703, errMsg='userID must be specified';
         LEAVE NCB_SendNotification_RecipientSentStatus_Upd;
 	END IF;
     
