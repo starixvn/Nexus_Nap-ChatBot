@@ -4,6 +4,7 @@ DROP PROCEDURE IF EXISTS NCB_SendNotification_LockForSending_Upd;
 
 CREATE PROCEDURE  NCB_SendNotification_LockForSending_Upd(
 	 IN notificationID INT
+	, IN userID INT
 	, OUT errCode SMALLINT
 	, OUT errMsg VARCHAR(100)
     /*
@@ -41,6 +42,9 @@ NCB_SendNotification_LockForSending_Upd:BEGIN
                                     WHERE n.NotificationID = notificationID ) THEN
 		SET errCode=601, errMsg='Invalid NotificationID';
         LEAVE NCB_SendNotification_LockForSending_Upd;
+     ELSEIF userID IS NULL THEN
+		SET errCode=602, errMsg='UserID can not be null';
+        LEAVE NCB_SendNotification_LockForSending_Upd;
 	END IF;
 	
     #Update Notification Status to 'Cancelled'
@@ -52,7 +56,7 @@ NCB_SendNotification_LockForSending_Upd:BEGIN
         AND n.SendImmediately = 0;
 	
     IF ROW_COUNT()  = 0 THEN
-		SET errCode=602, errMsg='This Notification has been updated by someone else';
+		SET errCode=603, errMsg='This Notification has been updated by someone else';
         LEAVE NCB_SendNotification_LockForSending_Upd;
     END IF;
     
@@ -76,7 +80,7 @@ NCB_SendNotification_LockForSending_Upd:BEGIN
         CALL NCB_UserLog_RunSP_Ins(
 											ACTION_ID #actionID
                                             , notificationID #referenceID
-											, 0 #UserID
+											, userID #UserID
                                             , logContent #LogContent
                                             , startTime #logtime
                                             , duration	#Duration

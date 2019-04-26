@@ -280,7 +280,8 @@ BEGIN
 		INNER JOIN tmp_PagedBotConversation pbc ON bcr.BotConversationID = pbc.GroupID
 		INNER JOIN Recipient r ON bcr.RecipientID = r.RecipientID
 		LEFT JOIN Licensee l ON r.SourceId = l.LicenseeID AND r.RecipientTypeId = RECIPIENT_TYPE_LICENSEE
-		LEFT JOIN LicenseeStatus ls ON l.LicenseeStatusId = ls.LicenseeStatusId;
+		LEFT JOIN LicenseeStatus ls ON l.LicenseeStatusId = ls.LicenseeStatusId
+	ORDER BY r.RecipientName;
     
 	-- Drop temporary tables
     DROP TEMPORARY TABLE IF EXISTS tmp_AllBotConversation;
