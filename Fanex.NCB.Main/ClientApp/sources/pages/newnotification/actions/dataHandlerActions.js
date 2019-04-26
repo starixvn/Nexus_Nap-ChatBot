@@ -85,8 +85,8 @@ export function getTemplate() {
 
     return async (dispatch) => {
         let data1 = await {
-            title: "title {UM date}",
-            content: "good day! \n {UM time} something \n {UM time} and {End time} <br/> {UM time} and {End time} <br/> {UM time} and {End time}"
+            title: "title hh {UM date}",
+            content: "good day! \n {UM time} something \n {UM time} and {End time} <br/> {UM time} and {End time} <br/> {UM time} and {End time} <br/> {a very long parameter here} {ha ha} cc"
         };
         dispatch(setTemplate(data1));
     };

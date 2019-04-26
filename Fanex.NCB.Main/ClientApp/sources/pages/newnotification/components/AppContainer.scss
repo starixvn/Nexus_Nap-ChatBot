@@ -3,6 +3,9 @@
 @import "../../shared/components/forms.scss";
 @import "../../shared/components/buttons.scss";
 @import "../../shared/components/modals.scss";
+@import "../../shared/components/tables.scss";
+@import "../../shared/components/font.css";
+
 
 .form-group {
     display: grid;
@@ -146,8 +149,69 @@
     }
 }
 
-.content .btn-submit {
-    float: right;
-    margin-top: 15px;
+.content {
+    .btn-submit {
+        float: right;
+    }
+
+    .btn-cancel {
+        float: right;
+        margin-right: 10px;
+    }
 }
 
+
+.new-notification-form {
+    width: 1000px;
+
+    .icon-edit {
+        display: inline-block;
+        float: right;
+        padding-right: 10px;
+        cursor: pointer;
+        padding-top: 5px;
+    }
+
+    .icon-edit:hover {
+        opacity: 0.8;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .template-content-div, .template-title-div {
+        .template-text-field, .text-field, .input-field {
+            width: 100%;
+        }
+
+        .text-field textarea {
+            height: 200px;
+        }
+
+        .template-text-field{
+            max-height: 200px;
+
+        }
+    }
+}
+
+.form-params {
+    .title-params {
+        font-weight: bold;
+    }
+
+    .row-params {
+        padding: 5px 0;
+
+        .form-label {
+            font-weight: bold;
+            padding-right: 5px;
+            width: 100px;
+        }
+
+        .input-field{
+            vertical-align: top;
+        }
+    }
+}
