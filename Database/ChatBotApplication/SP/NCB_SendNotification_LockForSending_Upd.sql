@@ -52,8 +52,7 @@ NCB_SendNotification_LockForSending_Upd:BEGIN
     SET n.Status = NOTIFICATION_STATUS_SENDING
 			, n.StatusID = NOTIFICATION_STATUSID_SENDING
 	WHERE n.NotificationID = notificationID
-		AND n.StatusID = NOTIFICATION_STATUSID_PLANNED
-        AND n.SendImmediately = 0;
+		AND n.StatusID = NOTIFICATION_STATUSID_PLANNED;
 	
     IF ROW_COUNT()  = 0 THEN
 		SET errCode=603, errMsg='This Notification has been updated by someone else';
