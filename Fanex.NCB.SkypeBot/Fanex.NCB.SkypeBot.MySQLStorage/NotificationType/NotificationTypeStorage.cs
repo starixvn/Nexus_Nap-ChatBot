@@ -1,15 +1,13 @@
-﻿using Dapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
+using Dapper;
 using Fanex.NCB.Common.DTO;
-using Fanex.NCB.Shared.MySQLExtension.Services;
 using Fanex.NCB.Shared.MySQLExtension.Storage;
 using Fanex.NCB.SkypeBot.BaseStorage;
 using Fanex.NCB.SkypeBot.Model.Criteria.NotificationType;
 using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Fanex.NCB.SkypeBot.MySQLStorage.NotificationType
 {

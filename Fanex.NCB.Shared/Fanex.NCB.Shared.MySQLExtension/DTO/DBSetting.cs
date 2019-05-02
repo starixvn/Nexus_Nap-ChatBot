@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Fanex.NCB.Shared.MySQLExtension.DTO
+﻿namespace Fanex.NCB.Shared.MySQLExtension.DTO
 {
     public class DBSetting
     {
