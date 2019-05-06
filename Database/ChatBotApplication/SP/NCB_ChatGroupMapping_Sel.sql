@@ -43,8 +43,6 @@ BEGIN
     DECLARE rowStart INT;
     SET rowStart =  pageSize * (pageIndex - 1);
     
-    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
-    
     #Init param
     IF botNames IS NULL THEN SET botNames = ''; END IF;
     IF recipientTypeIds IS NULL THEN SET recipientTypeIds = ''; END IF;
@@ -287,7 +285,6 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_AllBotConversation;
     DROP TEMPORARY TABLE IF EXISTS tmp_PagedBotConversation;
     
-    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_ChatGroupMapping_Sel TO 'ncb.admin'@'%';
