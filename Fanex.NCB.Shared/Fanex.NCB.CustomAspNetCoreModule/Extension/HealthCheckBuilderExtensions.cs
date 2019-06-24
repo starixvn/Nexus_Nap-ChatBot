@@ -7,8 +7,8 @@ namespace Fanex.NCB.CustomAspNetCoreModule.Extensions
 {
     public static class HealthCheckBuilderExtensions
     {
-        public static IHealthChecksBuilder AddUriAvailable
-            (this IHealthChecksBuilder builder, 
+        public static IHealthChecksBuilder AddUriAvailable(
+            this IHealthChecksBuilder builder, 
             string uri,
             string name = default,
             HealthStatus? failureStatus = default,
