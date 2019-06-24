@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Fanex.NCB.CustomAspNetCoreModule.HealthChecks
 {
     public class UriAvailableHealthCheck : IHealthCheck
     {
-        private string _uri;
+        private readonly string _uri;
 
         public UriAvailableHealthCheck(string uri)
         {
@@ -24,7 +22,7 @@ namespace Fanex.NCB.CustomAspNetCoreModule.HealthChecks
             {
                 var response = await client.GetAsync(_uri).ConfigureAwait(false);
 
-                return IsConnected(response) 
+                return IsConnected(response)
                         ? HealthCheckResult.Healthy()
                         : HealthCheckResult.Unhealthy(description: "Error occurred, the status code is:" + response.StatusCode);
             }
@@ -32,7 +30,7 @@ namespace Fanex.NCB.CustomAspNetCoreModule.HealthChecks
 
         private static bool IsConnected(HttpResponseMessage response)
         {
-            var statusCodesIndicateConnected = new [] { HttpStatusCode.Unauthorized, HttpStatusCode.MethodNotAllowed };
+            var statusCodesIndicateConnected = new[] { HttpStatusCode.Unauthorized, HttpStatusCode.MethodNotAllowed };
             return response.IsSuccessStatusCode || Array.IndexOf(statusCodesIndicateConnected, response.StatusCode) != -1;
         }
     }

@@ -1,13 +1,15 @@
-﻿using System;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System;
+
 namespace Fanex.NCB.CustomAspNetCoreModule
 {
     public static class AspNetCoreGlobalExceptionHandler
     {
         private const int SERVER_ERROR = 500;
+
         public static IApplicationBuilder UseAspNetCoreExceptionHandler(this IApplicationBuilder app, string logCategory)
         {
             var loggerFactory = app.ApplicationServices.GetService(typeof(ILoggerFactory)) as ILoggerFactory;

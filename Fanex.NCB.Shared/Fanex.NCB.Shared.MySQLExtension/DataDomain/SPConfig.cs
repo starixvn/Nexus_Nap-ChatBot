@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Fanex.NCB.Shared.MySQLExtension.DataDomain
+﻿namespace Fanex.NCB.Shared.MySQLExtension.DataDomain
 {
     public class SPConfig
     {

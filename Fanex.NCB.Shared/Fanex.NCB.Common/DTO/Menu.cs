@@ -4,7 +4,7 @@ namespace Fanex.NCB.Common.DTO
 {
     public class Menu
     {
-        public int Id {get; set;}
+        public int Id { get; set; }
         public string Name { get; set; }
 #pragma warning disable S3996
         public string Url { get; set; }

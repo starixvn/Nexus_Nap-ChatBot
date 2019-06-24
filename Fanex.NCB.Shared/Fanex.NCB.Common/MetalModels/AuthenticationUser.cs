@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fanex.NCB.Common.MetalModels
+﻿namespace Fanex.NCB.Common.MetalModels
 {
     public class AuthenticationUser
     {

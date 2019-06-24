@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Fanex.NCB.Shared.MySQLExtension.DataDomain
 {
@@ -9,6 +7,5 @@ namespace Fanex.NCB.Shared.MySQLExtension.DataDomain
         public string ConnectionName { get; set; }
 
         public List<SPConfig> SPList { get; set; }
-
     }
 }

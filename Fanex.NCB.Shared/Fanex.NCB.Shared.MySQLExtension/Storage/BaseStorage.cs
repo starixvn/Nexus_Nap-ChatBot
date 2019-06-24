@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dapper;
+﻿using Dapper;
+using Fanex.NCB.Common.Constant;
 using Fanex.NCB.Common.DTO;
 using Fanex.NCB.Shared.MySQLExtension.DTO;
 using Fanex.NCB.Shared.MySQLExtension.Services;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Fanex.NCB.Shared.MySQLExtension.Storage
 {
@@ -21,9 +21,9 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
             _dBConfigService = dBConfigService;
         }
 
-        public async Task<ResultModel> ExecuteAsync(string key, DynamicParameters param, string connectionName = "ChatBotDB")
+        public async Task<ResultModel> ExecuteAsync(string key, DynamicParameters param, string connectionName = Default.CONNECTION_NAME)
         {
-            DBSetting dbSetting = _dBConfigService.GetSPConfig(connectionName, key);            
+            DBSetting dbSetting = _dBConfigService.GetSPConfig(connectionName, key);
 
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
             {
@@ -36,14 +36,14 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
                     commandType: CommandType.StoredProcedure).ConfigureAwait(false);
 
                 return new ResultModel
-                 {
-                     ErrorCode = param.Get<int>("errorCode"),
-                     ErrorMsg = param.Get<string>("errorMsg")
-                 };
+                {
+                    ErrorCode = param.Get<int>("errorCode"),
+                    ErrorMsg = param.Get<string>("errorMsg")
+                };
             }
         }
 
-        public async Task<List<T>> QueryAsync<T>(string key, object param = null, string connectionName = "ChatBotDB")
+        public async Task<List<T>> QueryAsync<T>(string key, object param = null, string connectionName = Default.CONNECTION_NAME)
         {
             DBSetting dbSetting = _dBConfigService.GetSPConfig(connectionName, key);
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
@@ -57,7 +57,7 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
             }
         }
 
-        public async Task<Tuple<T1, List<T2>>> QueryMultipleAsync<T1, T2>(string key, object param = null, string connectionName = "ChatBotDB")
+        public async Task<Tuple<T1, List<T2>>> QueryMultipleAsync<T1, T2>(string key, object param = null, string connectionName = Default.CONNECTION_NAME)
         {
             DBSetting dbSetting = _dBConfigService.GetSPConfig(connectionName, key);
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))
@@ -75,7 +75,7 @@ namespace Fanex.NCB.Shared.MySQLExtension.Storage
         }
 
         public async Task<Tuple<T1, List<T2>, List<T3>, List<T4>>>
-            QueryMultipleAsync<T1, T2, T3, T4>(string key, object param = null, string connectionName = "ChatBotDB")
+            QueryMultipleAsync<T1, T2, T3, T4>(string key, object param = null, string connectionName = Default.CONNECTION_NAME)
         {
             DBSetting dbSetting = _dBConfigService.GetSPConfig(connectionName, key);
             using (var dbConnection = new MySqlConnection(dbSetting.DBConnection))

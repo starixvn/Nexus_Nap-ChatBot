@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Fanex.NCB.Common.Constant
+﻿namespace Fanex.NCB.Common.Constant
 {
     public enum MappingStatus
     {
         BotRemoved = 0,
         NotMapped = 1,
-        Mapped = 2        
+        Mapped = 2
     }
 }
