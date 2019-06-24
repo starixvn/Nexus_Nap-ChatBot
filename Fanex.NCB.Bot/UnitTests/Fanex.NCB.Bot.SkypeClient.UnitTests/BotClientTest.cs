@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Bot.Connector;
+using Microsoft.Bot.Schema;
+using Moq;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Connector;
-using Microsoft.Bot.Schema;
-using Moq;
-
 using Xunit;
 
 namespace Fanex.NCB.Bot.SkypeClient.UnitTests
@@ -14,6 +13,7 @@ namespace Fanex.NCB.Bot.SkypeClient.UnitTests
     {
         private readonly IMessageActivity _messageActivity;
         private readonly Mock<IConnectorClient> connectorClient;
+
         public BotClientTest()
         {
             _messageActivity = CreateTestActivityMessage("test message", "test id");
@@ -85,6 +85,7 @@ namespace Fanex.NCB.Bot.SkypeClient.UnitTests
 
             Assert.True(result == HttpStatusCode.NoContent);
         }
+
         [Fact]
         public async Task SendAsync_RawMessage_CallingSendAsyncWithMessageActivity()
         {
@@ -99,6 +100,5 @@ namespace Fanex.NCB.Bot.SkypeClient.UnitTests
 
             Assert.True(call == 1);
         }
-
     }
 }

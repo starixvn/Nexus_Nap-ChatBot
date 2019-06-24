@@ -1,14 +1,12 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-using Fanex.NCB.Bot.BaseStorage;
+﻿using Fanex.NCB.Bot.BaseStorage;
 using Fanex.NCB.Bot.Core.Controllers;
 using Fanex.NCB.Bot.Models.DTO;
-
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Configuration;
 using Microsoft.Bot.Schema;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Fanex.NCB.Bot.CoreControllers
 {
@@ -16,6 +14,7 @@ namespace Fanex.NCB.Bot.CoreControllers
     {
         private readonly IBotConversationRepository _botConversationRepository;
         private readonly IBotConversationMemberRepository _botConversationMemberRepository;
+
         public ActivityControllerBase(
             BotConfiguration botConfiguration,
             IBotConversationRepository botConversationRepository,
@@ -25,6 +24,7 @@ namespace Fanex.NCB.Bot.CoreControllers
             _botConversationMemberRepository = botConversationMemberRepository;
             BotConfig = botConfiguration;
         }
+
         protected BotConfiguration BotConfig { get; }
 
         protected override Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken)
@@ -33,16 +33,20 @@ namespace Fanex.NCB.Bot.CoreControllers
             {
                 case ActivityTypes.Message:
                     return OnMessageActivityAsync(turnContext, cancellationToken);
+
                 case ActivityTypes.ConversationUpdate:
                     return OnConversationUpdateActivityAsync(turnContext, cancellationToken);
+
                 case ActivityTypes.ContactRelationUpdate:
                     return OnContactRelationUpdateActivityAsync(turnContext, cancellationToken);
+
                 default:
                     return OnOtherActivityAsync(turnContext, cancellationToken);
             }
-
         }
-        #region  OnContactRelationUpdate
+
+        #region OnContactRelationUpdate
+
         protected virtual async Task OnContactRelationUpdateActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             if (turnContext.Activity.MembersAdded != null)
@@ -71,13 +75,16 @@ namespace Fanex.NCB.Bot.CoreControllers
         {
             return Task.CompletedTask;
         }
-        #endregion
+
+        #endregion OnContactRelationUpdate
+
         protected virtual Task OnMessageActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
         }
 
-        #region  OnConversationUpdate
+        #region OnConversationUpdate
+
         private async Task OnConversationUpdateActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             var isUpdatedMember = false;
@@ -95,7 +102,6 @@ namespace Fanex.NCB.Bot.CoreControllers
             {
                 isUpdatedMember = true;
 
-
                 foreach (var member in turnContext.Activity.MembersAdded)
                 {
                     if (member.Id == turnContext.Activity.Recipient.Id)
@@ -104,7 +110,6 @@ namespace Fanex.NCB.Bot.CoreControllers
                     }
 
                     await OnMemberAddedAsync(member, turnContext, cancellationToken).ConfigureAwait(false);
-
                 }
             }
 
@@ -142,7 +147,6 @@ namespace Fanex.NCB.Bot.CoreControllers
                 conversationInfo = NewBotConversation(turnContext);
                 await _botConversationRepository.InsertAsync(conversationInfo).ConfigureAwait(false);
             }
-
         }
 
         protected async virtual Task OnMembeRemovedAsync(ChannelAccount member, ITurnContext turnContext, CancellationToken cancellationToken)
@@ -175,7 +179,6 @@ namespace Fanex.NCB.Bot.CoreControllers
                     UpdatedBy = turnContext.Activity.Recipient.Name
                 };
                 await _botConversationMemberRepository.InsertAsync(item).ConfigureAwait(false);
-
             }
             else
             {
@@ -183,12 +186,11 @@ namespace Fanex.NCB.Bot.CoreControllers
                 memberInfo.IsActive = true;
                 memberInfo.UpdatedBy = turnContext.Activity.Recipient.Name;
                 await _botConversationMemberRepository.UpdateAsync(memberInfo).ConfigureAwait(false);
-
             }
         }
 
+        #endregion OnConversationUpdate
 
-        #endregion
         protected virtual Task OnOtherActivityAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;

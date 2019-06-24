@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Fanex.NCB.Bot.Core;
+﻿using Fanex.NCB.Bot.Core;
 using Fanex.NCB.CustomAspNetCoreModule;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,12 +7,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
+using System;
+using System.IO;
 
 namespace Fanex.NCB.Bot.Main
 {
     public class Startup
     {
         private readonly ILogger _logger;
+
         public Startup(IConfiguration configuration, IHostingEnvironment env,
             ILogger<Startup> logger)
         {
@@ -30,7 +31,9 @@ namespace Fanex.NCB.Bot.Main
         /// The <see cref="IConfiguration"/> that represents a set of key/value application configuration properties.
         /// </value>
         public IConfiguration Configuration { get; }
+
         public IHostingEnvironment Environment { get; }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)

@@ -14,7 +14,6 @@ namespace Fanex.NCB.Bot.Core
             services.AddTransient<IBotConversationRepository, BotConversationRepository>();
             services.AddTransient<IBotConversationMemberRepository, BotConversationMemberRepository>();
             services.AddTransient<IBotAdapterFactory, BotAdapterFactory>();
-
         }
     }
 }

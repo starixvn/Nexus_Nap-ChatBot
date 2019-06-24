@@ -38,6 +38,5 @@ namespace Fanex.NCB.Bot.Core.Controllers
 
             return Task.WhenAll(botTask, msgTask);
         }
-
     }
 }

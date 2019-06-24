@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Fanex.NCB.Bot.Main
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -30,7 +25,7 @@ namespace Fanex.NCB.Bot.Main
               .ConfigureLogging((_, logging) =>
               {
                   logging.ClearProviders();
-                  // add built-in providers manually, as needed 
+                  // add built-in providers manually, as needed
                   logging.AddConsole();
                   logging.AddDebug();
                   logging.AddEventLog();

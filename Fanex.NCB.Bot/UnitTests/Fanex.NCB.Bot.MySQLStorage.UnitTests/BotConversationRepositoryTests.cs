@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using Fanex.NCB.Bot.Models.DTO;
+﻿using Fanex.NCB.Bot.Models.DTO;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Fanex.NCB.Bot.MySQLStorage.UnitTests
@@ -9,6 +9,7 @@ namespace Fanex.NCB.Bot.MySQLStorage.UnitTests
     public class BotConversationRepositoryTests : IDisposable
     {
         private readonly BotServiceDBContext botServiceDBContext;
+
         public BotConversationRepositoryTests()
         {
             var dbOptions = new DbContextOptionsBuilder<BotServiceDBContext>()
@@ -32,7 +33,6 @@ namespace Fanex.NCB.Bot.MySQLStorage.UnitTests
             // Assert
 
             Assert.True(result > 0);
-
         }
 
         private static BotConversation CreateBotConversation()
@@ -55,13 +55,12 @@ namespace Fanex.NCB.Bot.MySQLStorage.UnitTests
             var item = CreateBotConversation();
             item.ConversationID = null;
             var repository = new BotConversationRepository(botServiceDBContext);
-            // Act 
+            // Act
             var ex = await Assert.ThrowsAnyAsync<Exception>(async () => await repository.InsertAsync(item).ConfigureAwait(false)).ConfigureAwait(false);
 
             // Assert
 
             Assert.Contains("property 'ConversationID' is null", ex.Message);
-
         }
 
         [Fact]
@@ -122,13 +121,12 @@ namespace Fanex.NCB.Bot.MySQLStorage.UnitTests
             item2.ConversationID = "NotMatch";
             var repository = new BotConversationRepository(botServiceDBContext);
             await repository.InsertAsync(item).ConfigureAwait(false);
-            
+
             // Act
             var result = await repository.UpdateAsync(item2).ConfigureAwait(false);
             // Assert
 
             Assert.True(!result);
-
         }
 
         public void Dispose()

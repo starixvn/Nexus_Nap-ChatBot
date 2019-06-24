@@ -10,7 +10,9 @@ namespace Fanex.NCB.Bot.MySQLStorage
              : base(options)
         {
         }
+
         public DbSet<BotConversation> BotConversations { get; set; }
+
         public DbSet<BotConversationMember> BotConversationMembers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -42,7 +44,6 @@ namespace Fanex.NCB.Bot.MySQLStorage
                 entity.Property(e => e.ConversationID).HasColumnType("VARCHAR(70)").IsRequired();
                 entity.Property(e => e.MemberId).HasColumnType("VARCHAR(70)").IsRequired();
                 entity.Property(e => e.UpdatedBy).HasColumnType("VARCHAR(50)");
-
             });
         }
     }

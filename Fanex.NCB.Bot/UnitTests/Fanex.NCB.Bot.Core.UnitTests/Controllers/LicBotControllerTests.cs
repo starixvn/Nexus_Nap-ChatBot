@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Fanex.NCB.Bot.BaseStorage;
 using Fanex.NCB.Bot.Core.Controllers;
 using Fanex.NCB.Bot.Core.Services;
@@ -16,6 +9,13 @@ using Microsoft.Bot.Configuration;
 using Microsoft.Bot.Schema;
 using Moq;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Fanex.NCB.Bot.Core.UnitTests.Controllers
@@ -26,6 +26,7 @@ namespace Fanex.NCB.Bot.Core.UnitTests.Controllers
         private readonly IMock<IBotConversationMemberRepository> _botConversationMemberRepository;
         private readonly BotConfiguration _botConfiguration;
         private readonly Mock<IBotAdapterFactory> _botAdapterFactory;
+
         public LicBotControllerTests()
         {
             _botConversationMemberRepository = new Mock<IBotConversationMemberRepository>();
@@ -60,7 +61,6 @@ namespace Fanex.NCB.Bot.Core.UnitTests.Controllers
             //Assert
 
             Assert.Contains("Invalid request!The bot name is null or empty", exception.Message);
-
         }
 
         [Fact]
@@ -85,8 +85,8 @@ namespace Fanex.NCB.Bot.Core.UnitTests.Controllers
             //Assert
             Assert.IsType<InvalidOperationException>(exception);
             Assert.Contains(expectedMessage, exception.Message);
-
         }
+
         [Fact]
         public async Task PostAsync_ReturnHttpStatus_WithOKValue()
         {
@@ -141,6 +141,7 @@ namespace Fanex.NCB.Bot.Core.UnitTests.Controllers
             Assert.True(controller.Response.StatusCode == statusCode);
             Assert.Equal("application/json", controller.Response.ContentType);
         }
+
         private void ArrangeAdapterIntegration(InvokeResponse invokeResponse)
         {
             var adapter = new Mock<IAdapterIntegration>();
@@ -161,6 +162,5 @@ namespace Fanex.NCB.Bot.Core.UnitTests.Controllers
                 HttpContext = httpContext,
             };
         }
-
     }
 }

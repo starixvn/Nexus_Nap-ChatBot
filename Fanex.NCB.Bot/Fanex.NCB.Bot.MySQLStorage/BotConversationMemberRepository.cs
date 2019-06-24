@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Fanex.NCB.Bot.BaseStorage;
+using Fanex.NCB.Bot.Models.DTO;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-
-using Fanex.NCB.Bot.BaseStorage;
-using Fanex.NCB.Bot.Models.DTO;
 
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 [assembly: InternalsVisibleTo("Fanex.NCB.Bot.MySQLStorage.UnitTests")]
@@ -14,6 +13,7 @@ namespace Fanex.NCB.Bot.MySQLStorage
     public class BotConversationMemberRepository : IBotConversationMemberRepository
     {
         private readonly BotServiceDBContext _botServiceDBContext;
+
         public BotConversationMemberRepository(BotServiceDBContext botServiceDBContext)
         {
             _botServiceDBContext = botServiceDBContext;

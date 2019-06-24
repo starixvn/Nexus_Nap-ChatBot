@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.Bot.Connector;
+using Microsoft.Bot.Connector.Authentication;
+using Microsoft.Bot.Schema;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -6,9 +9,6 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-using Microsoft.Bot.Connector;
-using Microsoft.Bot.Connector.Authentication;
-using Microsoft.Bot.Schema;
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 [assembly: InternalsVisibleTo("Fanex.NCB.Bot.SkypeClient.UnitTests")]
 namespace Fanex.NCB.Bot.SkypeClient
@@ -18,11 +18,13 @@ namespace Fanex.NCB.Bot.SkypeClient
         private readonly string _tokenUrl = "https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token";
         private readonly string _clientId;
         private readonly string _password;
+
         public BotClient(string clientId, string password)
         {
             _clientId = clientId;
             _password = password;
         }
+
         public BotClient(string clientId, string password, string botTokenUrl, string serviceUrl) : this(clientId, password)
         {
             if (!string.IsNullOrEmpty(botTokenUrl))
@@ -34,7 +36,9 @@ namespace Fanex.NCB.Bot.SkypeClient
                 this.ServiceUrl = serviceUrl;
             }
         }
+
         public string ServiceUrl { get; set; } = "https://smba.trafficmanager.net/apis/";
+
         public async Task<HttpStatusCode> SendAsync(string message, string conversationId)
         {
             if (string.IsNullOrEmpty(message) || string.IsNullOrEmpty(conversationId))
@@ -73,15 +77,13 @@ namespace Fanex.NCB.Bot.SkypeClient
                     new KeyValuePair<string, string>("client_id", _clientId),
                     new KeyValuePair<string, string>("client_secret", _password),
                     new KeyValuePair<string, string>("scope", $"{_clientId}/.default"),
-
-
                 });
                 var response = await client.PostAsync(_tokenUrl, content).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsAsync<Token>().ConfigureAwait(false);
-
             }
         }
+
         public virtual async Task<HttpStatusCode> SendAsync(IMessageActivity messageActivity)
         {
             return await PrepareStep(async (x) =>
