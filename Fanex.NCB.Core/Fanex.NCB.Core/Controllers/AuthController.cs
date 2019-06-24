@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Fanex.NCB.Common.DTO;
+﻿using Fanex.NCB.Common.DTO;
 using Fanex.NCB.Common.MetalModels;
 using Fanex.NCB.Core.Models.DataDomain;
 using Fanex.NCB.Core.Services;
@@ -13,12 +8,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Fanex.NCB.Main.Controllers
 {
     public class AuthController : Controller
     {
-
         private readonly IBridgeClientService _bridgeClient;
         private readonly AppSettings _options;
 
@@ -27,6 +26,7 @@ namespace Fanex.NCB.Main.Controllers
             _bridgeClient = bridgeClient;
             _options = options.Value;
         }
+
         public async Task<IActionResult> Index(string returnUrl, bool invalidLogin)
         {
             await HttpContext.SignOutAsync(
@@ -64,17 +64,10 @@ namespace Fanex.NCB.Main.Controllers
                 var authProperties = new AuthenticationProperties
                 {
                     AllowRefresh = true,
-
                     ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(60),
-
-
                     IsPersistent = true,
-
-
                     IssuedUtc = DateTimeOffset.UtcNow,
-
                     RedirectUri = Url.Action("index", "Home")
-
                 };
 
                 await HttpContext.SignInAsync(
@@ -82,7 +75,7 @@ namespace Fanex.NCB.Main.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
 
-                return LocalRedirect(returnUrl ?? Url.Action("index", "Home"));
+                return LocalRedirect(!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl) ? returnUrl : Url.Action("index", "Home"));
             }
 
             return Json(new
@@ -92,11 +85,9 @@ namespace Fanex.NCB.Main.Controllers
             });
         }
 
-
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
 
             return RedirectToAction("Index");

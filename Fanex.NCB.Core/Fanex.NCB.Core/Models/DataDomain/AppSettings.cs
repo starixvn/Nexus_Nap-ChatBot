@@ -1,9 +1,4 @@
-﻿using Fanex.NCB.Common.DTO;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Fanex.NCB.Core.Models.DataDomain
+﻿namespace Fanex.NCB.Core.Models.DataDomain
 {
     public class AppSettings
     {

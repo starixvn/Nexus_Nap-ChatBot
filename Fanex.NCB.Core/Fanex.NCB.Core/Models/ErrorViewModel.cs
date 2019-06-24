@@ -1,5 +1,3 @@
-using System;
-
 namespace Fanex.NCB.Core.Models
 {
     public class ErrorViewModel

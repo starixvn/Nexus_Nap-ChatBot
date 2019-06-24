@@ -1,10 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Fanex.NCB.Common.DTO;
+﻿using Fanex.NCB.Common.DTO;
 using Fanex.NCB.Core.Models;
 using Fanex.NCB.Core.Models.DataDomain;
 using Fanex.NCB.Core.Services;
@@ -13,6 +7,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net.Http;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Fanex.NCB.Main.Controllers
 {
@@ -21,11 +21,13 @@ namespace Fanex.NCB.Main.Controllers
     {
         private readonly IBridgeClientService _bridgeClient;
         private readonly AppSettings _options;
+
         public HomeController(IBridgeClientService bridgeClient, IOptions<AppSettings> options)
         {
             _bridgeClient = bridgeClient;
             _options = options.Value;
         }
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -39,7 +41,6 @@ namespace Fanex.NCB.Main.Controllers
             return View();
         }
 
-       
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -1,8 +1,6 @@
 ﻿using Fanex.NCB.Core.Models.DataDomain;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -12,7 +10,6 @@ namespace Fanex.NCB.Core.Services
 {
     public class BridgeClientService : IBridgeClientService
     {
-
         private readonly AppSettings _options;
 
         public BridgeClientService(IOptions<AppSettings> options)
@@ -36,7 +33,6 @@ namespace Fanex.NCB.Core.Services
 
         public async Task<HttpResponseMessage> PostJsonAsync<T>(string url, T value)
         {
-
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Add("x-authKey", _options.Secret);

@@ -24,7 +24,6 @@ namespace Fanex.NCB.Main.Controllers
             if (!string.IsNullOrEmpty(message) && !string.IsNullOrWhiteSpace(conversationid))
             {
                 await botClient.SendAsync(message, conversationid).ConfigureAwait(false);
-
             }
 
             return "OK";
