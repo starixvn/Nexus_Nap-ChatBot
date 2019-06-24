@@ -6,7 +6,6 @@ using Fanex.NCB.Swagger.AuthGate.Services;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Mvc;
-using System.Web.Optimization;
 using System.Web.Routing;
 
 namespace Fanex.NCB.Swagger
@@ -22,7 +21,8 @@ namespace Fanex.NCB.Swagger
 
             RegisterDI();
         }
-        void RegisterDI()
+
+        private void RegisterDI()
         {
             var builder = new ContainerBuilder();
 
@@ -33,7 +33,6 @@ namespace Fanex.NCB.Swagger
             builder.Register(x => new UserService()).As<IUserService>();
             builder.Register(x => new MenuService()).As<IMenuService>();
             builder.RegisterType<AuthService>().AsImplementedInterfaces();
-
 
             // Register your Web API controllers.
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
@@ -47,9 +46,6 @@ namespace Fanex.NCB.Swagger
             // Set the dependency resolver to be Autofac.
             var container = builder.Build();
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
-
-          
-
         }
     }
 }

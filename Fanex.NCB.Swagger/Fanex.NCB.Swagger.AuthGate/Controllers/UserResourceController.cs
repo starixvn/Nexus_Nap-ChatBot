@@ -1,7 +1,7 @@
-﻿using System.Web.Http;
-using Fanex.NAP.Core.Service.Interface;
+﻿using Fanex.NAP.Core.Service.Interface;
 using Fanex.NCB.Swagger.AuthGate.Attributes;
 using Fanex.NCB.Swagger.AuthGate.Services;
+using System.Web.Http;
 
 namespace Fanex.NCB.Swagger.AuthGate.Controllers
 {
@@ -36,7 +36,7 @@ namespace Fanex.NCB.Swagger.AuthGate.Controllers
         public dynamic Query(int id, [FromUri]int siteId, [FromUri] string env)
         {
             var menuItems = _userService.GetMenuItem(id, siteId, env, true);
-            return _menuService.GetMenus(menuItems);            
-        }        
+            return _menuService.GetMenus(menuItems);
+        }
     }
 }

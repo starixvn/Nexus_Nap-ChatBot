@@ -1,5 +1,4 @@
-﻿using System;
-using Fanex.NAP.Core.Service.Interface;
+﻿using Fanex.NAP.Core.Service.Interface;
 using Fanex.NCB.Common.DTO;
 using Fanex.NCB.Common.MetalModels;
 
@@ -9,11 +8,11 @@ namespace Fanex.NCB.Swagger.AuthGate.Services
     {
         private readonly IUserService _userService;
 
-
         public AuthService(IUserService userService)
         {
             _userService = userService;
         }
+
         public ApplicationUser Authorize(AuthenticationUser authenticationUser)
         {
             var userInfo = _userService.Get(authenticationUser.UserName);

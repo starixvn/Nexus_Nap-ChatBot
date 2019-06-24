@@ -1,7 +1,7 @@
-using System.Web.Http;
-using WebActivatorEx;
 using Fanex.NCB.Swagger.AuthGate;
 using Swashbuckle.Application;
+using System.Web.Http;
+using WebActivatorEx;
 
 [assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
 
@@ -11,8 +11,6 @@ namespace Fanex.NCB.Swagger.AuthGate
     {
         public static void Register()
         {
-            var thisAssembly = typeof(SwaggerConfig).Assembly;
-
             GlobalConfiguration.Configuration
                 .EnableSwagger(c =>
                     {

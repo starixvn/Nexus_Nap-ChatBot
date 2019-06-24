@@ -1,17 +1,15 @@
-﻿using System.Web.Http;
-using Fanex.NCB.Common.MetalModels;
+﻿using Fanex.NCB.Common.MetalModels;
 using Fanex.NCB.Swagger.AuthGate.Attributes;
 using Fanex.NCB.Swagger.AuthGate.Services;
+using System.Web.Http;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 
 namespace Fanex.NCB.Swagger.AuthGate.Controllers
 {
-
     [CustomAuthorize]
     public class AuthController : ApiController
     {
         private readonly IAuthService _authService;
-
 
         public AuthController(IAuthService authService)
         {
@@ -23,6 +21,5 @@ namespace Fanex.NCB.Swagger.AuthGate.Controllers
         {
             return _authService.Authorize(user);
         }
-
     }
 }

@@ -1,9 +1,7 @@
-﻿using System;
+﻿using Fanex.NAP.Core.Models;
+using Fanex.NCB.Common.DTO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Fanex.NAP.Core.Models;
-using Fanex.NCB.Common.DTO;
 
 namespace Fanex.NCB.Swagger.AuthGate.Services
 {
@@ -34,7 +32,7 @@ namespace Fanex.NCB.Swagger.AuthGate.Services
                     Policy = m.Policy,
                     SubMenus = GetSubMenus(menuItems, m.Id)
                 })
-                .ToList();            
+                .ToList();
         }
     }
 }
