@@ -1,8 +1,7 @@
-﻿using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
-using System;
+﻿using Fanex.NCB.Common.Constant;
+using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Fanex.NCB.SkypeBot.Services.MappingStatusService
 {
@@ -13,18 +12,31 @@ namespace Fanex.NCB.SkypeBot.Services.MappingStatusService
             var isBotActive = botConversationMember != null && botConversationMember.IsActive;
             if (!isBotActive)
             {
-                return (int)Common.Constant.MappingStatus.BotRemoved;
+                return (int)MappingStatusData.MappingStatus.BotRemoved;
             }
 
-            return isConversationMapped ? (int)Common.Constant.MappingStatus.Mapped : (int)Common.Constant.MappingStatus.NotMapped;
+            return isConversationMapped ? (int)MappingStatusData.MappingStatus.Mapped : (int)MappingStatusData.MappingStatus.NotMapped;
         }
 
         public List<MappingStatus> GetMappingStatus()
         {
-            var data = new List<MappingStatus> {                
-                new MappingStatus { Id = (int)Common.Constant.MappingStatus.NotMapped, Name = "Not Mapped" },
-                new MappingStatus { Id = (int)Common.Constant.MappingStatus.Mapped, Name = "Mapped" },
-                new MappingStatus { Id = (int)Common.Constant.MappingStatus.BotRemoved, Name = "Bot Removed" }
+            var data = new List<MappingStatus>
+            {
+                new MappingStatus
+                {
+                    Id = (int)MappingStatusData.MappingStatus.NotMapped,
+                    Name =  MappingStatusData.MappingStatusNames[(int)MappingStatusData.MappingStatus.NotMapped]
+                },
+                new MappingStatus
+                {
+                    Id = (int)MappingStatusData.MappingStatus.Mapped,
+                    Name =  MappingStatusData.MappingStatusNames[(int)MappingStatusData.MappingStatus.Mapped]
+                },
+                new MappingStatus
+                {
+                    Id = (int)MappingStatusData.MappingStatus.BotRemoved,
+                    Name =  MappingStatusData.MappingStatusNames[(int)MappingStatusData.MappingStatus.BotRemoved]
+                }
             };
 
             return data;

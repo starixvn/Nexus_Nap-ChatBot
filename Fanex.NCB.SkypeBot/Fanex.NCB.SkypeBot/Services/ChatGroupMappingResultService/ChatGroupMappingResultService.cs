@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
+using Fanex.NCB.SkypeBot.Services.MappingStatusService;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
-using Fanex.NCB.SkypeBot.Services.MappingStatusService;
 
 namespace Fanex.NCB.SkypeBot.Services.ChatGroupMappingResultService
 {
@@ -19,6 +18,7 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMappingResultService
         public ChatGroupMappingResult BuildChatGroupMappingResult(BotConversation botConversation, BotConversationMember botConversationMember, List<ConversationRecipient> conversationRecipients)
         {
             var mappingStatusID = _mappingStatusService.CalculateMappingStatus(botConversation.IsMapped, botConversationMember);
+
             return new ChatGroupMappingResult
             {
                 BotName = botConversationMember?.BotName,

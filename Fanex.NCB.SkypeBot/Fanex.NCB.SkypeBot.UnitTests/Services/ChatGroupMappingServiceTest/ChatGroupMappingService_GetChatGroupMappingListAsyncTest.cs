@@ -4,13 +4,11 @@ using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.ChatGroupMappingResultService;
-using Fanex.NCB.SkypeBot.Services.MappingStatusService;
 using FluentAssertions;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 

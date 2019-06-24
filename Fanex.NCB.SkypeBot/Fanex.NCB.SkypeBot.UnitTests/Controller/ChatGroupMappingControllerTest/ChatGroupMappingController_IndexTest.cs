@@ -5,9 +5,6 @@ using Fanex.NCB.SkypeBot.Services.Setting;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Fanex.NCB.SkypeBot.UnitTests.Controller.ChatGroupMappingControllerTest

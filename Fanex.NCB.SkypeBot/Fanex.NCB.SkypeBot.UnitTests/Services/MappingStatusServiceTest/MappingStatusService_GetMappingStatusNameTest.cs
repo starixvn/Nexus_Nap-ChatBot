@@ -1,8 +1,6 @@
 ﻿using Fanex.NCB.SkypeBot.Services.MappingStatusService;
 using FluentAssertions;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Fanex.NCB.SkypeBot.UnitTests.Services.MappingStatusServiceTest
@@ -29,9 +27,9 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.MappingStatusServiceTest
             {
                 return new[]
                 {
-                    new object[] { (int)Common.Constant.MappingStatus.NotMapped, "Not Mapped" },
-                    new object[] { (int)Common.Constant.MappingStatus.Mapped, "Mapped" },
-                    new object[] { (int)Common.Constant.MappingStatus.BotRemoved, "Bot Removed" }
+                    new object[] { (int)Common.Constant.MappingStatusData.MappingStatus.NotMapped, "Not Mapped" },
+                    new object[] { (int)Common.Constant.MappingStatusData.MappingStatus.Mapped, "Mapped" },
+                    new object[] { (int)Common.Constant.MappingStatusData.MappingStatus.BotRemoved, "Bot Removed" }
                 };
             }
         }

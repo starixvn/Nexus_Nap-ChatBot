@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fanex.NCB.Common.DTO;
+﻿using Fanex.NCB.Common.DTO;
 using Fanex.NCB.SkypeBot.BaseStorage;
 using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.ChatGroupMappingResultService;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
 {
@@ -20,7 +18,7 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
         {
             _chatGroupMappingStorage = chatGroupMappingStorage;
             _chatGroupMappingResultService = chatGroupMappingResultService;
-        }        
+        }
 
         public async Task<ChatGroupMappingResultModel> GetChatGroupMappingListAsync(GetChapGroupMappingCriteria criteria)
         {
@@ -38,13 +36,13 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
                     {
                         var botConversationMember = GetConversationMember(conversationMemberList, botConversation.ConversationID);
                         var conversationRecipients = GetConversationRecipients(conversationRecipientList, botConversation.GroupID);
-                        return _chatGroupMappingResultService.BuildChatGroupMappingResult(botConversation, botConversationMember, conversationRecipients);                   
+                        return _chatGroupMappingResultService.BuildChatGroupMappingResult(botConversation, botConversationMember, conversationRecipients);
                     })
                     .ToList()
             };
 
             return result;
-        }        
+        }
 
         public Task<ResultModel> UpdateChatGroupMappingAsync(EditChatGroupMappingCriteria criteria)
         {
@@ -54,11 +52,11 @@ namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
         private static List<ConversationRecipient> GetConversationRecipients(List<ConversationRecipient> conversationRecipientList, int groupID)
         {
             return conversationRecipientList.Where(i => i.GroupID == groupID).ToList();
-        }       
+        }
 
         private static BotConversationMember GetConversationMember(List<BotConversationMember> conversationMemberList, string conversationID)
         {
             return conversationMemberList.FirstOrDefault(i => i.ConversationID == conversationID);
-        }        
+        }
     }
 }

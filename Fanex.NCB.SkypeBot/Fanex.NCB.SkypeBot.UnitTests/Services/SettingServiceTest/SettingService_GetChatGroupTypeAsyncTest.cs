@@ -4,10 +4,7 @@ using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.Setting;
 using FluentAssertions;
 using Moq;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -22,7 +19,7 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.SettingServiceTest
             var fixture = new Fixture();
             var settingStorage = new Mock<ISettingStorage>();
             var service = new SettingService(settingStorage.Object);
-            
+
             var chatGroupTypes = fixture.CreateMany<ChatGroupType>(2).ToList();
             settingStorage.Setup(s => s.GetChatGroupTypeAsync()).Returns(Task.FromResult(chatGroupTypes));
 

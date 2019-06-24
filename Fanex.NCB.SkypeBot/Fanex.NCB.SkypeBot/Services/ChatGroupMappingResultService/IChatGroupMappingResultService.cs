@@ -1,7 +1,5 @@
 ﻿using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Fanex.NCB.SkypeBot.Services.ChatGroupMappingResultService
 {

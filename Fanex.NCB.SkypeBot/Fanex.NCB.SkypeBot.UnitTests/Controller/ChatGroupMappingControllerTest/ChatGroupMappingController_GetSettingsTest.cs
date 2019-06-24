@@ -8,10 +8,7 @@ using Fanex.NCB.SkypeBot.Services.Setting;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -31,7 +28,7 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Controller.ChatGroupMappingControllerTest
 
             var botNames = fixture.CreateMany<BotName>(2).ToList();
             var mappingStatuses = fixture.CreateMany<MappingStatus>(2).ToList();
-            var recipientTypes = fixture.CreateMany<RecipientType>(2).ToList();            
+            var recipientTypes = fixture.CreateMany<RecipientType>(2).ToList();
             var recipients = fixture.CreateMany<Recipient>(2).ToList();
 
             settingService.Setup(s => s.GetBotNameAsync()).Returns(Task.FromResult(botNames));

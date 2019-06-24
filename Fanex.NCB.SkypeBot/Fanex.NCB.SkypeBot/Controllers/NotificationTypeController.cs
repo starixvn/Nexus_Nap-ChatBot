@@ -1,10 +1,8 @@
-using System.Linq;
-using System.Threading.Tasks;
 using Fanex.NCB.SkypeBot.Model.Criteria.NotificationType;
-using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 using Fanex.NCB.SkypeBot.Services.NotificationType;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Fanex.NCB.SkypeBot.Controllers
 {
@@ -52,7 +50,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> Edit([FromBody] CreateNotificationTypeCriteria item)
         {
             var result = _notificationTypeService.UpdateNotificationTypeAsync(item);
-            return Json( await result);
+
+            return Json(await result);
         }
 
         [HttpGet]
@@ -60,6 +59,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         {
             var getRecipent = _notificationTypeService.GetRecipientTypesAsync();
             var getNotification = _notificationTypeService.GetNotificationSystemsAsync();
+
             return Json(new { recipientTypes = await getRecipent, notificationSystems = await getNotification });
         }
     }

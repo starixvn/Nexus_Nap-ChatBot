@@ -7,15 +7,13 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
-using Xunit.Extensions;
 
 namespace Fanex.NCB.SkypeBot.UnitTests.Services.ChatGroupMappingResultServiceTest
 {
     public class ChatGroupMappingResultService_BuildChatGroupMappingResultTest
     {
-        [Theory]        
+        [Theory]
         [MemberData(nameof(BotConversationMemberData))]
         public void BuildChatGroupMappingResult_WhenCalled_BuildChatGroupMappingResultCorrectly(BotConversationMember botConversationMember)
         {

@@ -1,11 +1,8 @@
 ﻿using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
-using Fanex.NCB.SkypeBot.Services.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.MappingStatusService;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
+using MappingStatusData = Fanex.NCB.Common.Constant.MappingStatusData;
 
 namespace Fanex.NCB.SkypeBot.UnitTests.Services.MappingStatusServiceTest
 {
@@ -23,7 +20,7 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.MappingStatusServiceTest
             var result = service.CalculateMappingStatus(isConversationMapped, botConversationMember);
 
             // Assert
-            result.Should().Be((int)Common.Constant.MappingStatus.BotRemoved);
+            result.Should().Be((int)MappingStatusData.MappingStatus.BotRemoved);
         }
 
         [Fact]
@@ -38,7 +35,7 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.MappingStatusServiceTest
             var result = service.CalculateMappingStatus(isConversationMapped, botConversationMember);
 
             // Assert
-            result.Should().Be((int)Common.Constant.MappingStatus.BotRemoved);
+            result.Should().Be((int)MappingStatusData.MappingStatus.BotRemoved);
         }
 
         [Fact]
@@ -53,7 +50,7 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.MappingStatusServiceTest
             var result = service.CalculateMappingStatus(isConversationMapped, botConversationMember);
 
             // Assert
-            result.Should().Be((int)Common.Constant.MappingStatus.Mapped);
+            result.Should().Be((int)MappingStatusData.MappingStatus.Mapped);
         }
 
         [Fact]
@@ -68,7 +65,7 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.MappingStatusServiceTest
             var result = service.CalculateMappingStatus(isConversationMapped, botConversationMember);
 
             // Assert
-            result.Should().Be((int)Common.Constant.MappingStatus.NotMapped);
+            result.Should().Be((int)MappingStatusData.MappingStatus.NotMapped);
         }
     }
 }

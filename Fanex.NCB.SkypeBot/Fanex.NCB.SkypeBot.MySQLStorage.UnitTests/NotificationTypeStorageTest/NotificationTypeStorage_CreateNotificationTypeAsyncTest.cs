@@ -1,13 +1,12 @@
-﻿using System.Data;
-using System.Threading.Tasks;
-using Dapper;
+﻿using Dapper;
 using Fanex.NCB.Common.DTO;
 using Fanex.NCB.Shared.MySQLExtension.Storage;
 using Fanex.NCB.SkypeBot.Model.Criteria.NotificationType;
-using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 using Fanex.NCB.SkypeBot.MySQLStorage.NotificationType;
 using FluentAssertions;
 using Moq;
+using System.Data;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationTypeStorageTest
@@ -50,14 +49,14 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationTypeStorageTest
             var storage = new NotificationTypeStorage(baseStorage.Object);
 
             var item = new CreateNotificationTypeCriteria { NotificationTypeName = "type name", RecipientTypeIds = "2", SystemId = 3 };
-            var fakeData = new ResultModel() { ErrorCode = 2, ErrorMsg = "abc"};
+            var fakeData = new ResultModel() { ErrorCode = 2, ErrorMsg = "abc" };
             baseStorage.Setup(r => r.ExecuteAsync(It.IsAny<string>(), It.IsAny<DynamicParameters>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(fakeData));
 
             // Act
             var result = await storage.CreateNotificationTypeAsync(item).ConfigureAwait(false);
 
-            // Assert           
+            // Assert
             result.Should().BeEquivalentTo(fakeData);
         }
     }

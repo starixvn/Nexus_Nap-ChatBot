@@ -1,7 +1,5 @@
 ﻿using AutoFixture;
-using Fanex.NCB.Common.DTO;
 using Fanex.NCB.SkypeBot.Controllers;
-using Fanex.NCB.SkypeBot.Model.Criteria.NotificationType;
 using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 using Fanex.NCB.SkypeBot.Services.NotificationType;
 using FluentAssertions;

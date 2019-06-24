@@ -3,9 +3,7 @@ using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 using Fanex.NCB.SkypeBot.MySQLStorage.NotificationType;
 using FluentAssertions;
 using Moq;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -49,6 +47,6 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationTypeStorageTest
 
             // Assert
             result.Should().BeEquivalentTo(fakeData);
-        }    
+        }
     }
 }

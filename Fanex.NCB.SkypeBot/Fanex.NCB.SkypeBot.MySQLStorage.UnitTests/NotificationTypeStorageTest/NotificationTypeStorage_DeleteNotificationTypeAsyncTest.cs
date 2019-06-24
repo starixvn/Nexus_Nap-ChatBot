@@ -4,10 +4,7 @@ using Fanex.NCB.Shared.MySQLExtension.Storage;
 using Fanex.NCB.SkypeBot.MySQLStorage.NotificationType;
 using FluentAssertions;
 using Moq;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -56,7 +53,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationTypeStorageTest
             // Act
             var result = await storage.DeleteNotificationTypeAsync(notificationTypeId).ConfigureAwait(false);
 
-            // Assert           
+            // Assert
             result.Should().BeEquivalentTo(fakeData);
         }
     }

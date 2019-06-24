@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Fanex.NCB.SkypeBot.Model.Criteria.NotificationType
+﻿namespace Fanex.NCB.SkypeBot.Model.Criteria.NotificationType
 {
     public class CreateNotificationTypeCriteria
     {

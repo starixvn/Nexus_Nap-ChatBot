@@ -1,6 +1,5 @@
 using Fanex.NCB.Shared.MySQLExtension.Storage;
 using Fanex.NCB.SkypeBot.BaseStorage;
-using Fanex.NCB.SkypeBot.MySQLStorage;
 using Fanex.NCB.SkypeBot.MySQLStorage.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.MySQLStorage.NotificationType;
 using Fanex.NCB.SkypeBot.MySQLStorage.Setting;
@@ -17,7 +16,6 @@ namespace Fanex.NCB.SkypeBot.App_Start
     {
         public static void Initialize(IServiceCollection services)
         {
-
             RegisterDIofMySQLStorageLayer(services);
             services.AddTransient<INotificationTypeService, NotificationTypeService>();
             services.AddTransient<IChatGroupMappingService, ChatGroupMappingService>();

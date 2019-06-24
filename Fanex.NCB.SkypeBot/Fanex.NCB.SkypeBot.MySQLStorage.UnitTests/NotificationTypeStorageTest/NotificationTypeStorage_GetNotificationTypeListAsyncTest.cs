@@ -5,7 +5,6 @@ using FluentAssertions;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -25,13 +24,13 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationTypeStorageTest
             var fakeData = Tuple.Create(1, new List<NotificationTypeItem>() { new NotificationTypeItem() });
 
             string spKey = null;
-            object param = null;            
+            object param = null;
             baseStorage.Setup(r => r.QueryMultipleAsync<int, NotificationTypeItem>(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()))
                 .Callback<string, object, string>((m1, m2, m3) => { spKey = m1; param = m2; })
                 .Returns(Task.FromResult(fakeData));
 
             // Act
-           await storage.GetNotificationTypeListAsync(pageIndex, pageSize).ConfigureAwait(false);
+            await storage.GetNotificationTypeListAsync(pageIndex, pageSize).ConfigureAwait(false);
 
             // Assert
             var expectedParam = new { pageIndex, pageSize };

@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Data;
-using System.Threading.Tasks;
-using Dapper;
+﻿using Dapper;
 using Fanex.NCB.Shared.MySQLExtension.Storage;
 using Fanex.NCB.SkypeBot.BaseStorage;
 using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
+using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
 
 namespace Fanex.NCB.SkypeBot.MySQLStorage.Setting
 {
@@ -40,14 +40,14 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.Setting
 
         public Task<List<LicenseeStatus>> GetLicenseeStatusAsync()
         {
-            return _baseStorage.QueryAsync<LicenseeStatus>("NCB_Setting_LicenseeStatus_Sel");            
+            return _baseStorage.QueryAsync<LicenseeStatus>("NCB_Setting_LicenseeStatus_Sel");
         }
 
         public Task<List<Recipient>> SearchRecipientsAsync(string query)
         {
             DynamicParameters param = new DynamicParameters();
             param.Add("query", value: query, dbType: DbType.String);
-            
+
             return _baseStorage.QueryAsync<Recipient>("NCB_Setting_SearchRecipient_Sel", param);
         }
 

@@ -1,17 +1,17 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Fanex.NCB.Common.DTO;
 using Fanex.NCB.SkypeBot.BaseStorage;
 using Fanex.NCB.SkypeBot.Model.Criteria.NotificationType;
-using Fanex.NCB.SkypeBot.Model.DTO;
 using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Fanex.NCB.SkypeBot.Services.NotificationType
 {
     public class NotificationTypeService : INotificationTypeService
     {
         private readonly INotificationTypeStorage _notificationTypeStorage;
+
         public NotificationTypeService(INotificationTypeStorage notificationTypeStorage)
         {
             _notificationTypeStorage = notificationTypeStorage;
@@ -20,7 +20,7 @@ namespace Fanex.NCB.SkypeBot.Services.NotificationType
         public async Task<NotificationTypeListResultModel> GetNotificationTypeListAsync(int pageIndex, int pageSize)
         {
             var data = await _notificationTypeStorage.GetNotificationTypeListAsync(pageIndex, pageSize).ConfigureAwait(false);
-            return  new NotificationTypeListResultModel
+            return new NotificationTypeListResultModel
             {
                 Count = data.Item1,
                 Data = data.Item2.GroupBy(i => i.NotificationTypeId).Select(g =>
@@ -35,7 +35,6 @@ namespace Fanex.NCB.SkypeBot.Services.NotificationType
                     };
                 }).ToList()
             };
-
         }
 
         public Task<List<NotificationSystem>> GetNotificationSystemsAsync()

@@ -1,4 +1,3 @@
-using Fanex.NCB.Common.DTO;
 using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.MappingStatusService;
@@ -52,7 +51,6 @@ namespace Fanex.NCB.SkypeBot.Controllers
                 chatGroupTypes = await chatGroupTypeTask,
                 licenseeStatuses = await licenseeStatusTask,
                 mappingStatuses = _mappingStatusService.GetMappingStatus()
-
             });
         }
 

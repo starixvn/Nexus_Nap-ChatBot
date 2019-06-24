@@ -7,7 +7,6 @@ using FluentAssertions;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -26,11 +25,11 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Services.NotificationTypeServiceTest
                 new NotificationTypeItem()
             };
             var fakeData = Tuple.Create(2, data);
-                      
-            storage.Setup(r => r.GetNotificationTypeListAsync(1,1)).Returns(Task.FromResult(fakeData));
+
+            storage.Setup(r => r.GetNotificationTypeListAsync(1, 1)).Returns(Task.FromResult(fakeData));
 
             // Act
-            var result = await service.GetNotificationTypeListAsync(1,1).ConfigureAwait(false);
+            var result = await service.GetNotificationTypeListAsync(1, 1).ConfigureAwait(false);
 
             // Assert
             result.Count.Should().Be(fakeData.Item1);

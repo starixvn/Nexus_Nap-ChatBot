@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping
+﻿namespace Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping
 {
     public class ChatGroupMappingItem
     {
@@ -16,6 +12,6 @@ namespace Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping
         public string LicenseeStatus { get; set; }
         public int MappingStatusID { get; set; }
         public string MappingStatusName { get; set; }
-        public string Remark { get; set; }     
+        public string Remark { get; set; }
     }
 }

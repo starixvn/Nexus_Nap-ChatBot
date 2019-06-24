@@ -4,10 +4,7 @@ using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 using Fanex.NCB.SkypeBot.MySQLStorage.Setting;
 using FluentAssertions;
 using Moq;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -24,7 +21,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.SettingStorageTest
             var storage = new SettingStorage(baseStorage.Object);
 
             var expectedData = fixture.CreateMany<RecipientType>().ToList();
-            baseStorage.Setup(s => s.QueryAsync<RecipientType>("NCB_Setting_RecipientType_Sel", It.IsAny<object>(), It.IsAny<string>()))
+            baseStorage.Setup(s => s.QueryAsync<RecipientType>("NCB_Common_RecipientType_Sel", It.IsAny<object>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(expectedData));
 
             // Act

@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Fanex.NCB.Common.DTO;
+using Fanex.NCB.SkypeBot.Model.Criteria.NotificationType;
+using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Fanex.NCB.Common.DTO;
-using Fanex.NCB.SkypeBot.Model.Criteria.NotificationType;
-using Fanex.NCB.SkypeBot.Model.DTO;
-using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 
 namespace Fanex.NCB.SkypeBot.BaseStorage
 {
