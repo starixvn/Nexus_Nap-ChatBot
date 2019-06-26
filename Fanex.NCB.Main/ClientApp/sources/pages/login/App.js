@@ -1,20 +1,17 @@
 import React, { Component } from 'react';
-import Login from './components/Login';
+import Login from './components/login';
 import { connect } from 'react-redux';
 
-class App extends Component {
+export class App extends Component {
   constructor(props) {
-    super(props);      
-
+    super(props)     
   }
- 
+
   render() { 
     return (      
        <Login />
-    );
+    )
   }
 }
 
-export default connect(
-  state => state.login
-)(App);
+export default connect()(App)
