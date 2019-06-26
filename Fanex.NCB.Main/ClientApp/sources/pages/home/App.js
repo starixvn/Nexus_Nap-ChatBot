@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import Layout from './components/Layout';
+import Layout from './components/layout';
 import { connect } from 'react-redux';
 
 class App extends Component {
   constructor(props) {
     super(props);      
-
   }
  
   render() { 
@@ -15,6 +14,4 @@ class App extends Component {
   }
 }
 
-export default connect(
-  state => state.login
-)(App);
+export default connect()(App)
