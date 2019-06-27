@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import CryptoJS from '../../../lib/cryptoJS';
 import AppData from '../../../lib/AppData';
 import Site from '../../../lib/site';
@@ -35,11 +34,10 @@ class Login extends Component {
     }
 
     render() {
-        
         return(
             <div className="login-container">
-                <form ref="form" method="post" action={Site.resolveClientUrl("auth/SignIn")} className="form-login" onSubmit={this.handleSubmit}>
-                    <a className="logo" href="#"><img src={Site.resolveClientUrl("images/Logo.svg")} alt="Nap Chatbot" /></a>
+                <form ref="form" method="post" action={Site.resolveClientUrl('auth/SignIn')} className="form-login" onSubmit={this.handleSubmit}>
+                    <a className="logo" href="#"><img src={Site.resolveClientUrl('images/Logo.svg')} alt="Nap Chatbot" /></a>
                     <h1 className="header">Welcome to CHATBOT</h1>
                     {
                         this.state.invalidLogin
@@ -59,7 +57,7 @@ class Login extends Component {
                         <input ref="password" name="password" type="password" value={this.state.password} className="form-control" onChange={this.handleChangePassword}/>              
                     </div>
                     <input type="submit" value="SIGN IN" className="button"/>
-                    <input type="hidden" name="returnUrl" value={Site.resolveClientUrl("Home/Index")} />
+                    <input type="hidden" name="returnUrl" value={Site.resolveClientUrl('Home/Index')} />
                 </form>
                 <div className="form-footer">
                         <span className="bold">Best view in:</span>

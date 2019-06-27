@@ -10,9 +10,9 @@ function setup(props, isShallow = true) {
     return wrap(<Login {...props} />)
 }
 
-describe("Login", () => {
-    describe("state", () => {
-        it("password is empty at first state", () => {
+describe('Login', () => {
+    describe('state', () => {
+        it('password is empty at first state', () => {
             // Arrange
             const props = {}
 
@@ -23,7 +23,7 @@ describe("Login", () => {
             expect(wrapper.state().password).toBe('')
         })
 
-        it("message error is correct", () => {
+        it('message error is correct', () => {
             // Arrange
             const props = {}
             const wrapper = setup(props)
@@ -36,8 +36,8 @@ describe("Login", () => {
         })
     })
 
-    describe("behavior", () => {
-        it("should call handleSubmit when submit form", () => {
+    describe('behavior', () => {
+        it('should call handleSubmit when submit form', () => {
             // Arrange
             const props = {}
             const wrapper = setup(props)
@@ -51,7 +51,7 @@ describe("Login", () => {
             expect(wrapper.instance().handleSubmit).toHaveBeenCalled()
         })
 
-        it("should call submitForm when handleSubmit is called", () => {
+        it('should call submitForm when handleSubmit is called', () => {
             // Arrange
             const props = {}
             const wrapper = setup(props, false)
