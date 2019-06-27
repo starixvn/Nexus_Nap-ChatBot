@@ -1,49 +1,57 @@
-﻿import React, { Component } from 'react';
+﻿import React from 'react';
 import { connect } from 'react-redux';
-import { Form, FormGroup, Label, Input, FormFeedback } from 'reactstrap';
-import { Button } from 'reactstrap';
+import { Form, FormGroup, Label, Button } from 'reactstrap';
 import { Container, Row, Col } from 'reactstrap';
 import { NCBBreadcrum } from '../../common/breadcrumbs';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
-import './AppContainer.scss';
-import Labels from '../../common/Labels';
 import { SelectField } from '../../common/SelectField';
 import { TextField } from '../../common/text-field/TextField';
 import { InputField } from '../../common/InputField';
 import { TemplateTextField } from '../../common/template-text-field/TemplateTextField';
 
-export class AppContainer extends Component {
+import './AppContainer.scss';
+
+export class AppContainer extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {
             isSummited: false,
             manuallyEditted: false,
             template: {
                 title: {
-                    originTemplate: "",
-                    middleTemplate: "",
-                    processedTemplate: "",
-                    finalTemplate: ""
-                    
+                    originTemplate: '',
+                    middleTemplate: '',
+                    processedTemplate: '',
+                    finalTemplate: ''
                 },
                 content: {
-                    originTemplate: "",
-                    middleTemplate: "",
-                    processedTemplate: "",
-                    finalTemplate: ""
+                    originTemplate: '',
+                    middleTemplate: '',
+                    processedTemplate: '',
+                    finalTemplate: ''
                 },
                 params: []
-            }            
-        };
-
-        this.props.getSettings();
-        this.props.getTemplateTypes();
-        
+            }           
+        }
     }
 
-    onChange = (fieldName, fieldValue) => this.setState({ [fieldName]: fieldValue, isChanged: true });    
+    componentDidMount() {
+        this.props.getSettings()
+        this.props.getTemplateTypes()
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.template !== this.props.template) 
+            this.changeTemplate(nextProps)
+    }
+
+    onChange = (fieldName, fieldValue) => {
+        this.setState({
+            [fieldName]: fieldValue,
+            isChanged: true 
+        })   
+    }
 
     detectParams = (text) => {
         let paramRegex = /{[^{}]+}/g;
@@ -64,35 +72,37 @@ export class AppContainer extends Component {
     }   
 
     createMiddleTemplate = (text) => {
-        return text.replace(/{/g, '<span class="red">{').replace(/}/g, '}</span>');
+        return text.replace(/{/g, '<span class="red">{').replace(/}/g, '}</span>')
     }
 
     getTemplate = () => {
-        this.props.getTemplate().then(() => {
-            let titleTemplate = this.props.template.title;            
-            let titleMiddleTemplate = this.createMiddleTemplate(titleTemplate);  
-            let contentTemplate = this.props.template.content;
-            let contentMiddleTemplate = this.createMiddleTemplate(contentTemplate);          
-            let params = this.detectParams(titleTemplate + contentTemplate);
+        this.props.getTemplate()
+    }
 
-            this.setState(
-                {
-                    template: {
-                        title: {
-                            originTemplate: titleTemplate,
-                            middleTemplate: titleMiddleTemplate,
-                            processedTemplate: titleMiddleTemplate                            
-                        },
-                        content: {
-                            originTemplate: contentTemplate,
-                            middleTemplate: contentMiddleTemplate,
-                            processedTemplate: contentMiddleTemplate                            
-                        },
-                        params: params
-                    }
+    changeTemplate(props) {
+        let titleTemplate = props.template.title;            
+        let titleMiddleTemplate = this.createMiddleTemplate(titleTemplate);  
+        let contentTemplate = props.template.content;
+        let contentMiddleTemplate = this.createMiddleTemplate(contentTemplate);          
+        let params = this.detectParams(titleTemplate + contentTemplate);
+
+        this.setState(
+            {
+                template: {
+                    title: {
+                        originTemplate: titleTemplate,
+                        middleTemplate: titleMiddleTemplate,
+                        processedTemplate: titleMiddleTemplate                            
+                    },
+                    content: {
+                        originTemplate: contentTemplate,
+                        middleTemplate: contentMiddleTemplate,
+                        processedTemplate: contentMiddleTemplate                            
+                    },
+                    params: params
                 }
-            );
-        });
+            }
+        )
     }
 
     splitArrayIntoTwoColumns = (array) => {
@@ -173,7 +183,7 @@ export class AppContainer extends Component {
     }
 
     render() {        
-        if (!this.props.settingData.notificationTypes) {
+        if (!this.props.settingData) {
             return null;
         }
 
@@ -276,23 +286,18 @@ export class AppContainer extends Component {
                                                             </Col>;
                                                         })
                                                     }
-                                                </Row>;
+                                                </Row>
                                             })
                                         }
-
                                     </Container>
                                 </div>
                             }                            
                         </FormGroup>
                         <FormGroup>
                             <Label for="notificationType" className="form-label required">Send Date/Time</Label>
-
                         </FormGroup>
-
-                        
                         <Button className="btn-submit">Save</Button>
                         <Button className="btn-cancel">Cancel</Button>
-
                     </Form>
                 </div>
             </div>
@@ -305,8 +310,11 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state) {
-    const { settingData, notificationTemplates, template  } = state;
-    return Object.assign({}, { settingData, notificationTemplates, template });
+    return {
+        settingData: state.settingData,
+        notificationTemplates: state.notificationTemplates,
+        template: state.template
+    }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(AppContainer)
