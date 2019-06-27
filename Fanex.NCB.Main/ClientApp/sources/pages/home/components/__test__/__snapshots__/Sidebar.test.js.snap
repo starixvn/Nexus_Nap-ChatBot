@@ -9,7 +9,7 @@ exports[`Sidebar render menu is empty 1`] = `
   >
     <img
       className="logo"
-      src="images/Logo.svg"
+      src="/images/Logo.svg"
     />
     <h1
       className="site-name"
@@ -36,7 +36,7 @@ exports[`Sidebar render menu is not empty 1`] = `
   >
     <img
       className="logo"
-      src="images/Logo.svg"
+      src="/images/Logo.svg"
     />
     <h1
       className="site-name"

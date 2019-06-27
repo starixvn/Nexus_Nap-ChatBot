@@ -9,7 +9,7 @@ exports[`Layout render sidebar is expanded as default 1`] = `
   />
   <Connect(Content)
     collapseExpandHandler={[Function]}
-    contentUrl="NewNotification/Index"
+    contentUrl="/NewNotification/Index"
     isSidebarExpanded={true}
   />
 </div>

@@ -27,6 +27,7 @@ exports[`UpdatePopup render when SuccessMsg is not shown 1`] = `
 >
   <ModalHeader
     charCode={215}
+    className="bold-text"
     closeAriaLabel="Close"
     tag="h5"
     toggle={[Function]}
@@ -43,7 +44,7 @@ exports[`UpdatePopup render when SuccessMsg is not shown 1`] = `
           "addedresult": false,
         }
       }
-      successMsg="Update Mapping Status Successfully"
+      successMsg="Update Mapping Status Successfully."
     />
     <Form
       className="form-edit"
@@ -247,6 +248,7 @@ exports[`UpdatePopup render when SuccessMsg is not shown 1`] = `
           isSummited={false}
           maxLength="200"
           onChange={[Function]}
+          placeholder="Input the remark here..."
           required={false}
         />
       </FormGroup>
@@ -255,7 +257,7 @@ exports[`UpdatePopup render when SuccessMsg is not shown 1`] = `
         disabled={true}
         onClick={[Function]}
       >
-        Submit
+        Save
       </button>
     </Form>
   </ModalBody>
@@ -289,6 +291,7 @@ exports[`UpdatePopup render when SuccessMsg shown 1`] = `
 >
   <ModalHeader
     charCode={215}
+    className="bold-text"
     closeAriaLabel="Close"
     tag="h5"
     toggle={[Function]}
@@ -305,7 +308,7 @@ exports[`UpdatePopup render when SuccessMsg shown 1`] = `
           "addedresult": true,
         }
       }
-      successMsg="Update Mapping Status Successfully"
+      successMsg="Update Mapping Status Successfully."
     />
     <Form
       className="form-edit"
@@ -509,6 +512,7 @@ exports[`UpdatePopup render when SuccessMsg shown 1`] = `
           isSummited={false}
           maxLength="200"
           onChange={[Function]}
+          placeholder="Input the remark here..."
           required={false}
         />
       </FormGroup>
@@ -517,7 +521,7 @@ exports[`UpdatePopup render when SuccessMsg shown 1`] = `
         disabled={true}
         onClick={[Function]}
       >
-        Submit
+        Save
       </button>
     </Form>
   </ModalBody>

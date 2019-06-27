@@ -159,7 +159,7 @@ describe("Filter", () => {
                 mappingStatusIds: "mapping statuses",
                 licenseeStatusIds: "licensee statuses",
                 pageIndex: 1,
-                pageSize: 5
+                pageSize: 20
             };
 
             // Act

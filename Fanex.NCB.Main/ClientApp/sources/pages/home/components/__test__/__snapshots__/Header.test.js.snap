@@ -77,7 +77,7 @@ exports[`Header render sidebar is expanded 1`] = `
           </a>
           <a
             className="dropdown-item"
-            href="Auth/Index"
+            href="/Auth/Index"
             onClick={[Function]}
             tabIndex="0"
           >
@@ -170,7 +170,7 @@ exports[`Header render sidebar is not expanded 1`] = `
           </a>
           <a
             className="dropdown-item"
-            href="Auth/Index"
+            href="/Auth/Index"
             onClick={[Function]}
             tabIndex="0"
           >

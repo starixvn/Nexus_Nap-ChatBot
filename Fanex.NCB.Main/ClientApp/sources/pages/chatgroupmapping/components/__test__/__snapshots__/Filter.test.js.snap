@@ -44,7 +44,7 @@ exports[`Filter render render correctly 1`] = `
         }
       }
       valueField="name"
-      width={200}
+      width={150}
     />
   </FormGroup>
   <FormGroup
@@ -69,7 +69,7 @@ exports[`Filter render render correctly 1`] = `
       cache={true}
       htmlAttributes={
         Object {
-          "placeholder": "",
+          "maxLength": 50,
         }
       }
       onInput={[Function]}
@@ -117,7 +117,7 @@ exports[`Filter render render correctly 1`] = `
         }
       }
       valueField="name"
-      width={200}
+      width={150}
     />
   </FormGroup>
   <FormGroup
@@ -159,7 +159,7 @@ exports[`Filter render render correctly 1`] = `
         }
       }
       valueField="name"
-      width={200}
+      width={150}
     />
   </FormGroup>
   <FormGroup
@@ -201,7 +201,7 @@ exports[`Filter render render correctly 1`] = `
         }
       }
       valueField="name"
-      width={200}
+      width={150}
     />
   </FormGroup>
   <button

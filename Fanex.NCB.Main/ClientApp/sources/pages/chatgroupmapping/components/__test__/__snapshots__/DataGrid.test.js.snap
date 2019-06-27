@@ -260,7 +260,7 @@ exports[`DataGrid render when has data - render table 1`] = `
         </Cell>
         <Cell
           asc={true}
-          colWidth={200}
+          colWidth={110}
           header={true}
           onClick={[Function]}
           sortable={false}
@@ -280,7 +280,7 @@ exports[`DataGrid render when has data - render table 1`] = `
         </Cell>
         <Cell
           asc={true}
-          colWidth={150}
+          colWidth={130}
           header={true}
           onClick={[Function]}
           sortable={false}
@@ -310,7 +310,7 @@ exports[`DataGrid render when has data - render table 1`] = `
         </Cell>
         <Cell
           asc={true}
-          colWidth={150}
+          colWidth={250}
           header={true}
           onClick={[Function]}
           sortable={false}
@@ -320,7 +320,7 @@ exports[`DataGrid render when has data - render table 1`] = `
         </Cell>
         <Cell
           asc={true}
-          colWidth={100}
+          colWidth={80}
           header={true}
           onClick={[Function]}
           sortable={false}
