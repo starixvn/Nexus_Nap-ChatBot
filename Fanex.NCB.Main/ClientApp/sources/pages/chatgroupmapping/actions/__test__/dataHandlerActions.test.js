@@ -32,7 +32,7 @@ describe("dataHanderActions", () => {
             // Arrange
             axios.get = jest.fn(() => Promise.resolve(""));
             let store = mockStore();
-            let expectedUrl = '/ChatGroupMapping/GetSettings';
+            let expectedUrl = Site.resolveClientUrl('ChatGroupMapping/GetSettings');
 
             // Act
             store.dispatch(actions.getSettings());

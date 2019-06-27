@@ -1,6 +1,5 @@
 ﻿import React from 'react';
 import { Filter } from '../Filter';
-import renderer from 'react-test-renderer';
 import ShallowRenderer from 'react-test-renderer/shallow';
 
 describe("Filter", () => { 
