@@ -4,15 +4,15 @@ import Sidebar from './../sidebar';
 import Content from './../content';
 import Site from '../../../lib/site';
 
-import "../../../shared/components/font.css";
+import '../../../shared/components/font.css';
 import './Layout.scss';
 
 export class Layout extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      expandedClass: "sidebar-expanded",
-      currentUrl: Site.resolveClientUrl("NewNotification/Index"),
+      expandedClass: 'sidebar-expanded',
+      currentUrl: Site.resolveClientUrl('NewNotification/Index'),
       isSidebarExpanded: true
     }
   }
@@ -31,7 +31,7 @@ export class Layout extends React.PureComponent {
 
   render() {
     return (
-      <div className={`page ${this.state.isSidebarExpanded ? "sidebar-expanded" : "sidebar-collapsed"}`}>
+      <div className={`page ${this.state.isSidebarExpanded ? 'sidebar-expanded' : 'sidebar-collapsed'}`}>
         <Sidebar onChange={this.onMenuChange} />
         <Content
           contentUrl={this.state.currentUrl}

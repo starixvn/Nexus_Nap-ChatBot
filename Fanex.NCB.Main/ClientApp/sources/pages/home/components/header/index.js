@@ -24,7 +24,7 @@ export class Header extends React.PureComponent {
     }
 
     render() {
-        const activeClass = this.props.isSidebarExpanded ? "line-wrapp" : 'line-wrapp collaped';
+        const activeClass = this.props.isSidebarExpanded ? 'line-wrapp' : 'line-wrapp collaped';
         return (
             <div className="header">
                 <div className={activeClass} onClick={this.collapseExpandHandler}>
@@ -60,7 +60,7 @@ export class Header extends React.PureComponent {
                     </li>
                 </ul>
             </div>
-        );
+        )
     }
 }
 

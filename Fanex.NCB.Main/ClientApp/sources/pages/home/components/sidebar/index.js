@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import AppData from '../../../lib/AppData';
 import Site from '../../../lib/site';
 
-import "./Sidebar.scss";
+import './Sidebar.scss';
 
 export class Sidebar extends React.Component {
     constructor(props) {
@@ -52,7 +52,7 @@ export class Sidebar extends React.Component {
         return (
             <div className="sidebar">
                 <div className="nav-top">
-                    <img src={Site.resolveClientUrl("images/Logo.svg")} className="logo" />
+                    <img src={Site.resolveClientUrl('images/Logo.svg')} className="logo" />
                     <h1 className="site-name">Chatbot</h1>
                 </div>
                 <ul className="nav">
