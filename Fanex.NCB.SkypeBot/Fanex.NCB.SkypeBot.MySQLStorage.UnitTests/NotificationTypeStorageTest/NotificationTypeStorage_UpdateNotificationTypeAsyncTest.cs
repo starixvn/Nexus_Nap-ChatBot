@@ -20,7 +20,12 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationTypeStorageTest
             var baseStorage = new Mock<IBaseStorage>();
             var storage = new NotificationTypeStorage(baseStorage.Object);
 
-            var item = new CreateNotificationTypeCriteria { NotificationTypeName = "type name", RecipientTypeIds = "2", SystemId = 3 };
+            var item = new CreateNotificationTypeCriteria
+            {
+                NotificationTypeName = "type name",
+                RecipientTypeIds = "2",
+                SystemId = 3
+            };
             var fakeData = new ResultModel();
             string spKey = null;
             DynamicParameters param = null;
@@ -50,7 +55,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationTypeStorageTest
             var storage = new NotificationTypeStorage(baseStorage.Object);
 
             var item = new CreateNotificationTypeCriteria { NotificationTypeName = "type name", RecipientTypeIds = "2", SystemId = 3 };
-            var fakeData = new ResultModel() { ErrorCode = 2, ErrorMsg = "abc" };
+            var fakeData = new ResultModel { ErrorCode = 2, ErrorMsg = "abc" };
             baseStorage.Setup(r => r.ExecuteAsync(It.IsAny<string>(), It.IsAny<DynamicParameters>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(fakeData));
 

@@ -26,7 +26,11 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.ChatGroupMappingStorageTest
             string spName = null;
             DynamicParameters param = null;
             baseStorage.Setup(s => s.ExecuteAsync(It.IsAny<string>(), It.IsAny<DynamicParameters>(), It.IsAny<string>()))
-                .Callback<string, DynamicParameters, string>((p1, p2, p3) => { spName = p1; param = p2; });
+                .Callback<string, DynamicParameters, string>((p1, p2, p3) => 
+                {
+                    spName = p1;
+                    param = p2;
+                });
 
             DynamicParameters expectedParam = new DynamicParameters();
             expectedParam.Add("groupID", value: criteria.GroupID, dbType: DbType.Int32);

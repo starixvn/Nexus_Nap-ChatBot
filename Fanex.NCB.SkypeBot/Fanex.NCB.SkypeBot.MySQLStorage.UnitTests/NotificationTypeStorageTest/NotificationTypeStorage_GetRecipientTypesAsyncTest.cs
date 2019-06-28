@@ -18,7 +18,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationTypeStorageTest
             var baseStorage = new Mock<IBaseStorage>();
             var storage = new NotificationTypeStorage(baseStorage.Object);
 
-            var fakeData = new List<RecipientType>() { new RecipientType() };
+            var fakeData = new List<RecipientType> { new RecipientType() };
             string spKey = null;
             baseStorage.Setup(r => r.QueryAsync<RecipientType>(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()))
                 .Callback<string, object, string>((m1, __, _) => spKey = m1)
@@ -38,7 +38,7 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationTypeStorageTest
             var baseStorage = new Mock<IBaseStorage>();
             var storage = new NotificationTypeStorage(baseStorage.Object);
 
-            var fakeData = new List<RecipientType>() { new RecipientType(), new RecipientType() };
+            var fakeData = new List<RecipientType> { new RecipientType(), new RecipientType() };
             baseStorage.Setup(r => r.QueryAsync<RecipientType>(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(fakeData));
 

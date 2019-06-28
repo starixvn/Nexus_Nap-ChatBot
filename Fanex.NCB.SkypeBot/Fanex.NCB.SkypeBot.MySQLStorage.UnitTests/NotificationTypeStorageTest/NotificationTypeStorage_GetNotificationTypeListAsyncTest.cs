@@ -26,7 +26,11 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationTypeStorageTest
             string spKey = null;
             object param = null;
             baseStorage.Setup(r => r.QueryMultipleAsync<int, NotificationTypeItem>(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()))
-                .Callback<string, object, string>((m1, m2, m3) => { spKey = m1; param = m2; })
+                .Callback<string, object, string>((m1, m2, m3) => 
+                {
+                    spKey = m1;
+                    param = m2;
+                })
                 .Returns(Task.FromResult(fakeData));
 
             // Act
@@ -45,8 +49,15 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.NotificationTypeStorageTest
             var baseStorage = new Mock<IBaseStorage>();
             var storage = new NotificationTypeStorage(baseStorage.Object);
 
-            var fakeData = Tuple.Create(1, new List<NotificationTypeItem>() { new NotificationTypeItem() });
-            var expectedResult = new NotificationTypeListResultModel { Count = fakeData.Item1, Data = new List<Model.DTO.NotificationType.NotificationType>() { new Model.DTO.NotificationType.NotificationType() } };
+            var fakeData = Tuple.Create(1, new List<NotificationTypeItem> { new NotificationTypeItem() });
+            var expectedResult = new NotificationTypeListResultModel
+            {
+                Count = fakeData.Item1,
+                Data = new List<Model.DTO.NotificationType.NotificationType>()
+                {
+                    new Model.DTO.NotificationType.NotificationType()
+                }
+            };
 
             baseStorage.Setup(r => r.QueryMultipleAsync<int, NotificationTypeItem>(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(fakeData));

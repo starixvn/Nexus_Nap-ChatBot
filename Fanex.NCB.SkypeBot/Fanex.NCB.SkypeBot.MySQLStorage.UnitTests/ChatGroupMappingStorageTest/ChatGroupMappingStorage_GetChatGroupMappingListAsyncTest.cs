@@ -29,7 +29,11 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.ChatGroupMappingStorageTest
             string spName = null;
             object param = null;
             baseStorage.Setup(s => s.QueryMultipleAsync<long, BotConversation, BotConversationMember, ConversationRecipient>(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()))
-                .Callback<string, object, string>((p1, p2, p3) => { spName = p1; param = p2; });
+                .Callback<string, object, string>((p1, p2, p3) => 
+                {
+                    spName = p1;
+                    param = p2;
+                });
 
             DynamicParameters expectedParam = new DynamicParameters();
             expectedParam.Add("botNames", value: criteria.BotNames, dbType: DbType.String);
@@ -61,7 +65,8 @@ namespace Fanex.NCB.SkypeBot.MySQLStorage.UnitTests.ChatGroupMappingStorageTest
             var botConversationList = fixture.CreateMany<BotConversation>().ToList();
             var botConversationMemberList = fixture.CreateMany<BotConversationMember>().ToList();
             var conversationRecipientList = fixture.CreateMany<ConversationRecipient>().ToList();
-            var expectedData = Tuple.Create<long, List<BotConversation>, List<BotConversationMember>, List<ConversationRecipient>>(count, botConversationList, botConversationMemberList, conversationRecipientList);
+            var expectedData = Tuple.Create<long, List<BotConversation>, List<BotConversationMember>, List<ConversationRecipient>>
+                (count, botConversationList, botConversationMemberList, conversationRecipientList);
 
             baseStorage.Setup(s => s.QueryMultipleAsync<long, BotConversation, BotConversationMember, ConversationRecipient>(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(expectedData));
