@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Fanex.NCB.Swagger.AuthGate.UnitTests.Services
 {
-    public class AuthServiceTest
+    public class AuthServiceTests
     {
         [Fact]
         public void Authorize_SameData_UserNameCorrectly()
@@ -20,8 +20,8 @@ namespace Fanex.NCB.Swagger.AuthGate.UnitTests.Services
 
             var userName = fixture.Create<string>();
             var password = fixture.Create<string>();
-            var userAuth = new AuthenticationUser() { UserName = userName, Password = password };
-            var user = new User() { Username = userName, Password = password };
+            var userAuth = new AuthenticationUser { UserName = userName, Password = password };
+            var user = new User { Username = userName, Password = password };
 
             userService.Setup(_ => _.Get(userName)).Returns(user);
 

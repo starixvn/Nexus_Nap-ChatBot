@@ -6,11 +6,11 @@ using Xunit;
 
 namespace Fanex.NCB.Swagger.AuthGate.UnitTests.Services
 {
-    public class MenuServiceTest
+    public class MenuServiceTests
     {
-        private readonly MenuService _menuService = null;
+        private readonly MenuService _menuService;
 
-        public MenuServiceTest()
+        public MenuServiceTests()
         {
             _menuService = new MenuService();
         }
@@ -44,11 +44,11 @@ namespace Fanex.NCB.Swagger.AuthGate.UnitTests.Services
 
         private List<List<MenuItem>> FakeMenus()
         {
-            var item1 = new MenuItem() { Id = 1 };
-            var item2 = new MenuItem() { Id = 2 };
-            var item3 = new MenuItem() { Id = 3 };
-            var item4 = new MenuItem() { Id = 4 };
-            var item5 = new MenuItem() { Id = 5 };
+            var item1 = new MenuItem { Id = 1 };
+            var item2 = new MenuItem { Id = 2 };
+            var item3 = new MenuItem { Id = 3 };
+            var item4 = new MenuItem { Id = 4 };
+            var item5 = new MenuItem { Id = 5 };
 
             var result = new List<List<MenuItem>>();
             result.Add(new List<MenuItem>()
@@ -60,11 +60,11 @@ namespace Fanex.NCB.Swagger.AuthGate.UnitTests.Services
                 item5
             });
 
-            var item6 = new MenuItem() { Id = 6, Parent = item1 };
-            var item7 = new MenuItem() { Id = 7, Parent = item2 };
-            var item8 = new MenuItem() { Id = 8 };
+            var item6 = new MenuItem { Id = 6, Parent = item1 };
+            var item7 = new MenuItem { Id = 7, Parent = item2 };
+            var item8 = new MenuItem { Id = 8 };
 
-            result.Add(new List<MenuItem>()
+            result.Add(new List<MenuItem>
             {
                 item1,
                 item2,
