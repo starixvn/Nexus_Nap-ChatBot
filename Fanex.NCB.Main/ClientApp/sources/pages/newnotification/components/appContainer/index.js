@@ -1,16 +1,16 @@
-﻿import React from 'react'
-import { connect } from 'react-redux'
-import { Form, FormGroup, Label, Button } from 'reactstrap'
-import { Container, Row, Col } from 'reactstrap'
-import { NCBBreadcrum } from '../../../common/breadcrumbs'
-import { bindActionCreators } from 'redux'
-import { ActionCreators } from '../../actions/index'
-import { SelectField } from '../../../common/SelectField'
-import { TextField } from '../../../common/text-field/TextField'
-import { InputField } from '../../../common/InputField'
-import { TemplateTextField } from '../../../common/template-text-field/TemplateTextField'
+﻿import React from 'react';
+import { connect } from 'react-redux';
+import { Form, FormGroup, Label, Button } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
+import { NCBBreadcrum } from '../../../common/breadcrumbs';
+import { bindActionCreators } from 'redux';
+import { ActionCreators } from '../../actions/index';
+import { SelectField } from '../../../common/SelectField';
+import { TextField } from '../../../common/text-field/TextField';
+import { InputField } from '../../../common/InputField';
+import { TemplateTextField } from '../../../common/template-text-field/TemplateTextField';
 
-import './AppContainer.scss'
+import './AppContainer.scss';
 
 export class AppContainer extends React.Component {
     constructor(props) {
@@ -32,59 +32,59 @@ export class AppContainer extends React.Component {
                     finalTemplate: ''
                 },
                 params: []
-            }           
-        }
+            }     
+        };
     }
 
     componentDidMount() {
-        this.props.getSettings()
-        this.props.getTemplateTypes()
+        this.props.getSettings();
+        this.props.getTemplateTypes();
     }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.template !== this.props.template) 
-            this.changeTemplate(nextProps)
+        if(nextProps.template !== this.props.template)  {
+            this.changeTemplate(nextProps);
+        }
     }
 
     onChange = (fieldName, fieldValue) => {
         this.setState({
             [fieldName]: fieldValue,
-            isChanged: true 
-        })   
+            isChanged: true
+        });
     }
 
-    detectParams = (text) => {
-        let paramRegex = /{[^{}]+}/g;
-        let params = [];        
+    detectParams = text => {
+        const paramRegex = /{[^{}]+}/g;
+        const params = [];        
 
         let copiedText = text.slice(0);
-        let match = copiedText.match(paramRegex);        
+        let match = copiedText.match(paramRegex);
+
         while (match) {
-            let matchText = match[0];
-            let regex = new RegExp(matchText, "g");
+            const matchText = match[0];
+            const regex = new RegExp(matchText, 'g');
             
-            params.push({ name: matchText, value: { value: matchText, isValid: false } });            
-            copiedText = copiedText.replace(regex, "");
-            match = copiedText.match(paramRegex);           
+            params.push({ name: matchText, value: { value: matchText, isValid: false } });        
+            copiedText = copiedText.replace(regex, '');
+            match = copiedText.match(paramRegex);    
         }
 
         return params;
     }   
 
-    createMiddleTemplate = (text) => {
-        return text.replace(/{/g, '<span class="red">{').replace(/}/g, '}</span>')
-    }
+    createMiddleTemplate = text=> text.replace(/{/g, '<span class="red">{').replace(/}/g, '}</span>');
 
     getTemplate = () => {
-        this.props.getTemplate()
+        this.props.getTemplate();
     }
 
     changeTemplate(props) {
-        let titleTemplate = props.template.title;            
-        let titleMiddleTemplate = this.createMiddleTemplate(titleTemplate);  
-        let contentTemplate = props.template.content;
-        let contentMiddleTemplate = this.createMiddleTemplate(contentTemplate);          
-        let params = this.detectParams(titleTemplate + contentTemplate);
+        const titleTemplate = props.template.title;   
+        const titleMiddleTemplate = this.createMiddleTemplate(titleTemplate);
+        const contentTemplate = props.template.content;
+        const contentMiddleTemplate = this.createMiddleTemplate(contentTemplate);        
+        const params = this.detectParams(titleTemplate + contentTemplate);
 
         this.setState(
             {
@@ -92,22 +92,22 @@ export class AppContainer extends React.Component {
                     title: {
                         originTemplate: titleTemplate,
                         middleTemplate: titleMiddleTemplate,
-                        processedTemplate: titleMiddleTemplate                            
+                        processedTemplate: titleMiddleTemplate                
                     },
                     content: {
                         originTemplate: contentTemplate,
                         middleTemplate: contentMiddleTemplate,
-                        processedTemplate: contentMiddleTemplate                            
+                        processedTemplate: contentMiddleTemplate              
                     },
                     params: params
                 }
             }
-        )
+        );
     }
 
-    splitArrayIntoTwoColumns = (array) => {
-        let newArray = [];
-        let length = array.length;
+    splitArrayIntoTwoColumns = array => {
+        const newArray = [];
+        const length = array.length;
         for (let i = 0; i < length; i += 2) {
             newArray.push(array.slice(i, i + 2));
         }
@@ -117,32 +117,32 @@ export class AppContainer extends React.Component {
 
     processTemplate = (text, params) => {
         let copiedText = text.slice(0);
-        params.map((item) => {
-            let regex = new RegExp(item.name, "g");
-            copiedText = copiedText.replace(regex, item.value.value);            
-        })
+        params.map(item => {
+            let regex = new RegExp(item.name, 'g');
+            copiedText = copiedText.replace(regex, item.value.value);         
+        });
 
-        return copiedText
+        return copiedText;
     }
 
     updateParam = (name, value) => {
-        let params = this.state.template.params.slice(0);
+        const params = this.state.template.params.slice(0);
         for (let i = 0; i < params.length; i++) {
             if (params[i].name === name) {
                 params[i].value = value;
-                break
+                break;
             }
         }
 
-        return params
+        return params;
     }
 
     updateTemplate = (name, value) => {
-        let params = this.updateParam(name, value);
-        let titleProcessedTemplate = this.processTemplate(this.state.template.title.middleTemplate, params);
-        let titleFinalTemplate = this.processTemplate(this.state.template.title.originTemplate, params);
-        let contentProcessedTemplate = this.processTemplate(this.state.template.content.middleTemplate, params);
-        let contentFinalTemplate = this.processTemplate(this.state.template.content.originTemplate, params);
+        const params = this.updateParam(name, value);
+        const titleProcessedTemplate = this.processTemplate(this.state.template.title.middleTemplate, params);
+        const titleFinalTemplate = this.processTemplate(this.state.template.title.originTemplate, params);
+        const contentProcessedTemplate = this.processTemplate(this.state.template.content.middleTemplate, params);
+        const contentFinalTemplate = this.processTemplate(this.state.template.content.originTemplate, params);
 
         this.setState(
             prevState => ({
@@ -161,33 +161,33 @@ export class AppContainer extends React.Component {
                     params: params
                 }
             })
-        )
+        );
     }
 
     editManually = () => {
         this.setState({
             manuallyEditted: true
-        })
+        });
     }
 
-    onChange = (name, value) => {
+    onChangeParam = (name, value) => {
         this.updateTemplate(name, value);
     }
 
-    editTitle = (value) => {
+    editTitle = value => {
         console.log(value)
     }
 
-    editContent = (value) => {
+    editContent = value => {
         console.log(value)
     }
 
-    render() {        
+    render() {
         if (!this.props.settingData || !this.props.notificationTemplates) {
-            return null
+            return null;
         }
 
-        let splittedParams = this.splitArrayIntoTwoColumns(this.state.template.params);        
+        const splittedParams = this.splitArrayIntoTwoColumns(this.state.template.params);
         
         return (
             <div>
@@ -196,10 +196,10 @@ export class AppContainer extends React.Component {
                     <Form>
                         <FormGroup>
                             <Label for="notificationType" className="form-label required">Notification Type</Label>
-                            <SelectField 
+                            <SelectField
                                 data={this.props.settingData.notificationTypes}
                                 isSummited={this.state.isSummited}
-                                onChange={(notificationTypeId) => { this.onChange("notificationTypeId", notificationTypeId); }}
+                                onChange={notificationTypeId => { this.onChange('notificationTypeId', notificationTypeId); }}
                             />
                         </FormGroup>
                         <FormGroup>
@@ -207,7 +207,7 @@ export class AppContainer extends React.Component {
                             <SelectField
                                 data={this.props.settingData.products}
                                 isSummited={this.state.isSummited}
-                                onChange={(notificationTypeId) => { this.onChange("notificationTypeId", notificationTypeId); }}
+                                onChange={notificationTypeId => { this.onChange('notificationTypeId', notificationTypeId); }}
                             />
                         </FormGroup>
                         <FormGroup>
@@ -215,7 +215,7 @@ export class AppContainer extends React.Component {
                             <SelectField
                                 data={this.props.notificationTemplates}
                                 isSummited={this.state.isSummited}
-                                onChange={(notificationTypeId) => { this.getTemplate(notificationTypeId); this.onChange("notificationTypeId", notificationTypeId); }}
+                                onChange={notificationTypeId => { this.getTemplate(notificationTypeId); this.onChange('notificationTypeId', notificationTypeId); }}
                             />
                         </FormGroup>
                         <FormGroup>
@@ -223,22 +223,22 @@ export class AppContainer extends React.Component {
                                 {
                                     !this.state.manuallyEditted &&
                                     <span className="icon-edit" onClick={() => !this.state.manuallyEditted && this.editManually()} />
-                                }                                
-                            </Label>                            
+                                }
+                            </Label>                      
                             <div className="template-title-div">
                                 {
                                     !this.state.manuallyEditted &&
                                     <TemplateTextField
                                         value={this.state.template.title.processedTemplate}
-                                    />         
+                                    />
                                 }
                                 {
                                     this.state.manuallyEditted &&
                                     <InputField initialValue={this.state.template.title.finalTemplate}
                                         isSummited={this.state.isSummited}
-                                        onChange={(value) => this.editTitle(value)}
+                                        onChange={value => this.editTitle(value)}
                                     />  
-                                }                                
+                                }
                             </div>
                         </FormGroup>
                         <FormGroup>
@@ -246,7 +246,7 @@ export class AppContainer extends React.Component {
                                 {
                                     !this.state.manuallyEditted &&
                                     <span className="icon-edit" onClick={() => !this.state.manuallyEditted && this.editManually()} />
-                                }                                
+                                }
                             </Label>
                             <div className="template-content-div">
                                 {
@@ -259,10 +259,10 @@ export class AppContainer extends React.Component {
                                     this.state.manuallyEditted &&
                                     <TextField initialValue={this.state.template.content.finalTemplate}
                                         isSummited={this.state.isSummited}
-                                        onChange={(value) => this.onChange("remark", value)}
+                                        onChange={value => this.onChange("remark", value)}
                                         required                                      
-                                    />                                    
-                                }                                
+                                    />
+                                }
                             </div>
                         </FormGroup>
                         <FormGroup>
@@ -281,7 +281,7 @@ export class AppContainer extends React.Component {
                                                                 <Label className="form-label">{item.name}</Label>
                                                                 <InputField initialValue={item.value.value}
                                                                     isSummited={this.state.isSummited}
-                                                                    onChange={(value) => this.onChange(item.name, value)}
+                                                                    onChange={(value) => this.onChangeParam(item.name, value)}
                                                                 />
                                                             </Col>;
                                                         })
@@ -291,7 +291,7 @@ export class AppContainer extends React.Component {
                                         }
                                     </Container>
                                 </div>
-                            }                            
+                            }
                         </FormGroup>
                         <FormGroup>
                             <Label for="notificationType" className="form-label required">Send Date/Time</Label>
@@ -301,20 +301,18 @@ export class AppContainer extends React.Component {
                     </Form>
                 </div>
             </div>
-        )
+        );
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators(ActionCreators, dispatch);
-}
+const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
-function mapStateToProps(state) {
+const mapStateToProps = state => {
     return {
         settingData: state.settingData,
         notificationTemplates: state.notificationTemplates,
         template: state.template
-    }
+    };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(AppContainer);

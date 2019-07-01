@@ -1,3 +1,4 @@
-import createReducer from '../../lib/createReducer';
-import * as types from '../actions/types';
+const reducers = {
+};
 
+export default reducers;
