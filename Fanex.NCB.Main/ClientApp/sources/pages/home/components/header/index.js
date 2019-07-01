@@ -7,20 +7,20 @@ import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap
 
 export class Header extends React.PureComponent {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             dropdownOpen: false
-        }
+        };
     }
 
     toggle = () => {
         this.setState(prevState => ({
             dropdownOpen: !prevState.dropdownOpen
-        }))
+        }));
     }
 
     collapseExpandHandler = () => {
-        this.props.collapseExpandHandler()
+        this.props.collapseExpandHandler();
     }
 
     render() {
@@ -52,7 +52,7 @@ export class Header extends React.PureComponent {
                                 <DropdownItem tag="a" href="#">
                                     <span className="icon-change-pass" />Change Password
                                 </DropdownItem>
-                                <DropdownItem tag="a" href={Site.resolveClientUrl("Auth/Index")}>
+                                <DropdownItem tag="a" href={Site.resolveClientUrl('Auth/Index')}>
                                     <span className="icon-sign-out" />Sign Out
                                 </DropdownItem>
                             </DropdownMenu>
@@ -60,8 +60,8 @@ export class Header extends React.PureComponent {
                     </li>
                 </ul>
             </div>
-        )
+        );
     }
 }
 
-export default connect()(Header)
+export default connect()(Header);

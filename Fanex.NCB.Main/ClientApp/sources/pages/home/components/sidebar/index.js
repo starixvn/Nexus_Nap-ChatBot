@@ -7,37 +7,38 @@ import './Sidebar.scss';
 
 export class Sidebar extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
     }
 
     getMenuClassName = (name) => {
-        return 'icon-' + name.replace(/ /g, '-').toLowerCase()
+        return 'icon-' + name.replace(/ /g, '-').toLowerCase();
     }
 
     getMenu() {
-        const menu = AppData ? AppData.menus : null
-        if (!menu || menu.length === 0)
-            return []
-        return menu
+        const menu = AppData ? AppData.menus : null;
+        if (!menu || menu.length === 0) {
+            return [];
+        }
+        return menu;
     }
 
     onChange = (e, url) => {
-        e.preventDefault()
-        this.props.onChange(Site.resolveClientUrl(url))
+        e.preventDefault();
+        this.props.onChange(url);
     }
 
     renderMenu() {
-        const menu = this.getMenu()
-        return menu.map((menuItem, menuIndex) => this.renderMenuItem(menuItem, menuIndex))
+        const menu = this.getMenu();
+        return menu.map((menuItem, menuIndex) => this.renderMenuItem(menuItem, menuIndex));
     }
 
     renderMenuItem(menuItem, menuIndex) {
-        return <span className="menu" key={menuIndex}>
+        return (<span className="menu" key={menuIndex}>
             <ul className="submenu list-unstyled">
                 {
                     menuItem.SubMenus.map((submenu, submenuIndex) =>
                         <li className="menu-item" key={submenuIndex}>
-                            <a href="" className="link" onClick={(event) => this.onChange(event, submenu.Url)}>
+                            <a href="" className="link" onClick={event => this.onChange(event, submenu.Url)}>
                                 <span className={this.getMenuClassName(submenu.Name)} />
                                 <span className="text">{submenu.Name}</span>
                             </a>
@@ -45,7 +46,7 @@ export class Sidebar extends React.Component {
                     )
                 }
             </ul>
-        </span>
+        </span>);
     }
 
     render() {
@@ -61,8 +62,8 @@ export class Sidebar extends React.Component {
                     </li>
                 </ul>
             </div>
-        )
+        );
     }
 }
 
-export default connect()(Sidebar)
+export default connect()(Sidebar);

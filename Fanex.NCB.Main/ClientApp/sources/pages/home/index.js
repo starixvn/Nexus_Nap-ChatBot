@@ -12,5 +12,5 @@ const rootElement = document.getElementById('layout');
 ReactDOM.render(
   <Provider store={store}>
       <App />
-  </Provider>, rootElement)
+  </Provider>, rootElement);
 

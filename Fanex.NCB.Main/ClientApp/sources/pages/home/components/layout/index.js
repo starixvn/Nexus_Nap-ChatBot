@@ -9,24 +9,24 @@ import './Layout.scss';
 
 export class Layout extends React.PureComponent {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       expandedClass: 'sidebar-expanded',
       currentUrl: Site.resolveClientUrl('NewNotification/Index'),
       isSidebarExpanded: true
-    }
+    };
   }
 
   onMenuChange = (url) => {
     this.setState({
       currentUrl: url
-    })
+    });
   }
 
   collapseExpandHandler = () => {
     this.setState({
       isSidebarExpanded: !this.state.isSidebarExpanded
-    })
+    });
   }
 
   render() {
@@ -39,8 +39,8 @@ export class Layout extends React.PureComponent {
           collapseExpandHandler={this.collapseExpandHandler}
         />
       </div>
-    )
+    );
   }
 }
 
-export default connect()(Layout)
+export default connect()(Layout);

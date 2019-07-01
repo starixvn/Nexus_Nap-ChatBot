@@ -70,14 +70,14 @@ describe('Sidebar', () => {
                 event: {
                     preventDefault: jest.fn()
                 },
-                url: 'any'
+                url: '/any'
             }
 
             // Act
             sidebar.onChange(fakeData.event, fakeData.url)
 
             // Assert
-            expect(props.onChange).toHaveBeenCalledWith(Site.resolveClientUrl(fakeData.url))
+            expect(props.onChange).toHaveBeenCalledWith(fakeData.url)
         })
     })
 })

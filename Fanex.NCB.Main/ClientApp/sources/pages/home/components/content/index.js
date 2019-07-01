@@ -5,9 +5,9 @@ import Header from './../header';
 import './Content.scss';
 
 export class Content extends React.PureComponent {
-  constructor(props){
-    super(props)   
-  }  
+  constructor(props) {
+    super(props);
+  }
 
   render() {
     return (
@@ -17,11 +17,11 @@ export class Content extends React.PureComponent {
                 isSidebarExpanded={this.props.isSidebarExpanded}
             />
             <div className="content">
-                <iframe className="main-content" src={this.props.contentUrl} />                           
+                <iframe className="main-content" src={this.props.contentUrl} />
             </div>
-        </div>    
-    )    
+        </div>
+    );
   }
-} 
+}
 
-export default connect()(Content)
+export default connect()(Content);
