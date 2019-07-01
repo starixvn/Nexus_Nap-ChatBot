@@ -10,10 +10,10 @@ export class Filter extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {           
+        this.state = {
             notificationTypeId: {
                 value: -1
-            }          
+            }
         };
     }
 
@@ -29,16 +29,15 @@ export class Filter extends Component {
 
     getParams = () => {
         return {
-            notificationTypeId: this.state.notificationTypeId.value,           
+            notificationTypeId: this.state.notificationTypeId.value,
             pageIndex: 1,
             pageSize: 5
         };
     }
 
-    submitHandler = (e) => {
+    submitHandler = e => {
         e.preventDefault();
-
-        let params = this.getParams();
+        const params = this.getParams();
         this.props.setGridParams(params);
         this.props.getGridData(params);
     }
@@ -51,8 +50,8 @@ export class Filter extends Component {
                     <SelectField initialValue={this.state.notificationTypeId.value}
                         data={this.props.settingData.notificationTypes}
                         isSummited={this.state.isSummited}
-                        onChange={(value) => this.onChange("notificationTypeId", value)}
-                    />   
+                        onChange={value => this.onChange('notificationTypeId', value)}
+                    />
                 </FormGroup>
                 <button className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
                 <button className="btn-new">{Labels.CreateNewTemplate}</button>
@@ -61,13 +60,13 @@ export class Filter extends Component {
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators(ActionCreators, dispatch);
-}
+const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
-function mapStateToProps(state) {
+const mapStateToProps = state => {
     const { settingData } = state;
-    return Object.assign({}, { settingData });
+    return {
+        settingData
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Filter);

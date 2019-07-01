@@ -1,9 +1,8 @@
-import * as types from './types';
-//import Site from '../../lib/site';
+import types from './types';
 
 // Delete Popup
-export function openDeletePopup(notificationTemplateId, notificationTemplateName) {
-    let deletePopupData = {
+export const openDeletePopup = (notificationTemplateId, notificationTemplateName) => {
+    const deletePopupData = {
         isShowed: true,
         notificationTemplateId: notificationTemplateId,
         content: notificationTemplateName
@@ -15,11 +14,11 @@ export function openDeletePopup(notificationTemplateId, notificationTemplateName
     };
 }
 
-export function closeDeletePopup() {
+export const closeDeletePopup = () => {
     let deletePopupData = {
         isShowed: false,
-        content: ""
-    };
+        content: ''
+    }
 
     return {
         type: types.DELETE_POPUP_DATA,
@@ -28,15 +27,15 @@ export function closeDeletePopup() {
 }
 
 // Update Popup
-export function openEditPopup(item) {
-    let popupData = {
+export const openEditPopup = item => {
+    const popupData = {
         isShowed: true,
         editingItem: {
             templateId: item.templateId,
             notificationTypeID: {
                 value: item.notificationTypeId,
                 isValid: true
-            },            
+            },
             templateName: {
                 value: item.templateName,
                 isValid: true
@@ -48,7 +47,7 @@ export function openEditPopup(item) {
             content: {
                 value: item.content,
                 isValid: true
-            } 
+            }
         },
         isNew: false
     };
@@ -59,8 +58,8 @@ export function openEditPopup(item) {
     };
 }
 
-export function openNewPopup() {
-    let newEditPopupData = {
+export const openNewPopup = item => {
+    const newEditPopupData = {
         isShowed: true,
         editingItem: {
             templateId: item.templateId,
@@ -90,10 +89,10 @@ export function openNewPopup() {
     };
 }
 
-export function closeEditPopup() {
-    let popupData = {
+export const closeEditPopup = () => {
+    const popupData = {
         isShowed: false,
-        editingItem: {}       
+        editingItem: {}
     };
 
     return {
@@ -101,3 +100,13 @@ export function closeEditPopup() {
         data: popupData
     };
 }
+
+const actions = {
+    openDeletePopup,
+    closeDeletePopup,
+    openEditPopup,
+    openNewPopup,
+    closeEditPopup
+};
+
+export default actions;

@@ -1,59 +1,53 @@
-import * as types from './types';
+import types from './types';
 import axios from 'axios';
 import Site from '../../lib/site';
 import errorResponseHandler from '../../lib/errorResponseHandler';
 
 // Settings
-export function setSettings(data) {
+export const setSettings = data => {
     return {
         type: types.SETTING_DATA,
         data: data
     };
 }
 
-export function getSettings() {
+export const getSettings = () => {
     const url = Site.resolveClientUrl('NotificationTemplate/GetSettings');
-
-    //return (dispatch) => {        
-    //    axios.get(url).then(response => {
-    //        dispatch(setSettings(response.data));
-    //    }).catch(() => { errorResponseHandler(); });
-    //};
-
-    var fakeData = {
+    const fakeData = {
         notificationTypes: [
             { id: 1, name: "UM" },
             { id: 2, name: "Something" }
         ]
     };
-    return (dispatch) => dispatch(setSettings(fakeData));
+
+    return dispatch => {
+        return axios.get(url).then(response => {
+            dispatch(setSettings(response.data));
+        }).catch(() => {
+            errorResponseHandler();
+            dispatch(setSettings(fakeData));
+        });
+    };
 }
 
-
 // Grid
-export function setGridParams(value) {
+export const setGridParams = value => {
     return {
         type: types.GRID_PARAMS,
         data: value
     };
 }
 
-export function setGridData(data) {
+export const setGridData = data => {
     return {
         type: types.GRID_DATA,
         data: data
     };
 }
 
-export function getGridData(params) {
+export const getGridData = params => {
     const url = Site.resolveClientUrl('NotificationTemplate/GetAll');
-
-    //return (dispatch) => {
-    //    axios.get(url, { params: params }).then(response => {
-    //        dispatch(setGridData(response.data));
-    //    }).catch(() => { errorResponseHandler(); });
-    //};
-    var fakeData = [
+    const fakeData = [
         {
             notificationTemplateId: 1,
             notificationTypeId: 1,
@@ -72,67 +66,91 @@ export function getGridData(params) {
         }
     ];
 
-    return (dispatch) => dispatch(setGridData({ data: fakeData, count: 3 }));
+    return dispatch => {
+        return axios.get(url, { params: params }).then(response => {
+            dispatch(setGridData(response.data));
+        }).catch(() => {
+            errorResponseHandler();
+            dispatch(setGridData({
+                data: fakeData,
+                count: 3
+            }));
+        });
+    };
 }
 
 // Delete
-export function deleteItem(notificationTypeId) {
+export const deleteItem = notificationTypeId => {
     const url = Site.resolveClientUrl('NotificationTemplate/Delete');
-    let headers = {
+    const headers = {
         'Content-Type': 'application/json'
     };
+    const fakeData = { errorCode: 0 };
 
-    //return async (dispatch) => {
-    //    const request = await axios.post(url, notificationTypeId, { headers: headers });
-    //    const data = await request.data;
-    //    dispatch(setDeleteData(data));
-    //};
-
-    var fakeData = { errorCode: 0 };
-    return (dispatch) => dispatch(setDeleteData(fakeData));
+    return async dispatch => {
+        try {
+            const request = await axios.post(url, notificationTypeId, { headers: headers });
+            const data = await request.data;
+            dispatch(setDeleteData(data));
+            return data;
+        } catch {
+            errorResponseHandler();
+            dispatch(setDeleteData(fakeData));
+        };
+    };
 }
 
-export function setDeleteData(data) {
+export const setDeleteData = data => {
     return {
         type: types.DELETE_RESPONSE_DATA,
         data: data
     };
 }
 
-
 // Edit Popup
-export function setUpdateData(data) {
+export const setUpdateData = data => {
     return {
         type: types.UPDATE_RESPONSE_DATA,
         data: data
     };
 }
 
-export function update(params, isNew) {
+export const update = (params, isNew) => {
     const url = isNew ? '/NotificationType/Add' : '/NotificationType/Edit';
     const resolvedUrl = Site.resolveClientUrl(url);
-
-    let headers = {
+    const headers = {
         'Content-Type': 'application/json',
         'RequestVerificationToken': Site.getXsrfToken()
     };
+    const fakeData = { errorCode: 0 };
 
-    //return async (dispatch) => {
-    //    try {
-    //        const request = await axios.post(resolvedUrl, JSON.stringify(params), { headers: headers });
-    //        const data = await request.data;
-    //    } catch (err) {
-    //        errorResponseHandler();
-    //    }
-    //
-    //    dispatch(setUpdateData(data));
-    //};
-    var fakeData = { errorCode: 0 };
-    return (dispatch) => dispatch(setUpdateData(fakeData));
+    return async dispatch => {
+       try {
+           const request = await axios.post(resolvedUrl, JSON.stringify(params), { headers: headers });
+           const data = await request.data;
+           dispatch(setUpdateData(data));
+       } catch (err) {
+           errorResponseHandler();
+           dispatch(setUpdateData(fakeData));
+       };
+    };
 }
 
-export function refreshUpdateData() {
-    return (dispatch) => {
+export const refreshUpdateData = () => {
+    return dispatch => {
         dispatch(setUpdateData(null));
     };
 }
+
+const actions = {
+    setSettings,
+    getSettings,
+    setGridParams,
+    getGridData,
+    deleteItem,
+    setUpdateData,
+    update,
+    refreshUpdateData
+};
+
+export default actions;

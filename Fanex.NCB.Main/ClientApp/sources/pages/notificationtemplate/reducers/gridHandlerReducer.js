@@ -1,5 +1,5 @@
 import createReducer from '../../lib/createReducer';
-import * as types from '../actions/types';
+import types from '../actions/types';
 
 export const updatePopupData = createReducer({}, {
     [types.UPDATE_POPUP_DATA](state, action) {
@@ -12,3 +12,10 @@ export const deletePopupData = createReducer({}, {
         return action.data;
     }
 });
+
+const reducers = {
+    updatePopupData,
+    deletePopupData
+};
+
+export default reducers;

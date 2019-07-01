@@ -3,27 +3,26 @@ import { connect } from 'react-redux';
 import {NCBBreadcrum} from '../../common/breadcrumbs';
 import NewNotificationTemplate from './NewNotificationTemplate';
 import { Tooltip } from 'reactstrap';
-import "../../shared/components/font.css";
+
+import '../../shared/components/font.css';
 import './NotificationTemplate.scss';
 
 class NotificationTemplate extends Component {
   constructor(props) {
-    super(props);  
+    super(props);
     this.state = {
       tooltipOpen: false,
       modal: false
     };
-    this.togglePopup = this.togglePopup.bind(this);
-    this.toggle = this.toggle.bind(this);  
   }
 
-  togglePopup() {
+  togglePopup = () => {
     this.setState({
       modal: !this.state.modal
     });
   }
 
-  toggle() {
+  toggle = () => {
     this.setState({
       tooltipOpen: !this.state.tooltipOpen
     });
@@ -53,7 +52,7 @@ class NotificationTemplate extends Component {
               <th>Notification Type</th>
               <th>Notification Name</th>
               <th>
-                <div className="has-icons">Title/Content <span className="icon-expand" /></div> 
+                <div className="has-icons">Title/Content <span className="icon-expand" /></div>
               </th>
               <th className="col-action">Action</th>
             </tr>

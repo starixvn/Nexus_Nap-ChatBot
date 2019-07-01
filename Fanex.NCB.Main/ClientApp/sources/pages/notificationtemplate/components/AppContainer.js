@@ -7,6 +7,7 @@ import Filter from './Filter';
 import DataGrid from './DataGrid';
 import UpdatePopup from './UpdatePopup';
 import DeletePopup from './DeletePopup';
+
 import './AppContainer.scss';
 
 export class AppContainer extends Component {
@@ -15,15 +16,11 @@ export class AppContainer extends Component {
     }
 
     closeUpdatePopupHandler = () => {
-        //this.props.closeNewEditPopup();
-        //this.props.refreshUpdateData();
-        //!this.props.updatePopupData.isShowed && this.props.getGridData(this.props.gridParams);
+        //todo
     }
 
     closeDeletePopupHandler = () => {
-        //this.props.closeDeletePopup();
-       // this.props.updateActiveRowIndex(-1);
-       // !this.props.deletePopupData.isShowed && this.props.getGridData(this.props.gridParams);
+        //todo
     }
 
     render() {
@@ -32,7 +29,6 @@ export class AppContainer extends Component {
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Template" />
                 <Filter />
                 <DataGrid />
-
                 {this.props.updatePopupData.isShowed && <UpdatePopup closeUpdatePopupHandler={this.closeUpdatePopupHandler} />}
                 {this.props.deletePopupData.isShowed && <DeletePopup closeDeletePopupHandler={this.closeDeletePopupHandler} />}
             </div>
@@ -40,13 +36,15 @@ export class AppContainer extends Component {
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators(ActionCreators, dispatch);
-}
+const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
-function mapStateToProps(state) {
+const mapStateToProps = state => {
     const { gridParams, updatePopupData, deletePopupData } = state;
-    return Object.assign({}, { gridParams, updatePopupData, deletePopupData });
+    return {
+        gridParams,
+        updatePopupData,
+        deletePopupData
+    };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppContainer);

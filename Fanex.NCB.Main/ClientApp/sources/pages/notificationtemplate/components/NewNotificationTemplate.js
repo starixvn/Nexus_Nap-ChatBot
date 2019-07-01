@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
-import { Form, FormGroup, Label, Input, FormFeedback, FormText } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input, FormFeedback  } from 'reactstrap';
 
 class NewNotificationTemplate extends Component {
   constructor(props) {
     super(props);
-    this.toggleHandler = this.toggleHandler.bind(this);
   }
 
-  toggleHandler() {
+  toggleHandler = () => {
       this.props.toggleHandler();
   }
 
