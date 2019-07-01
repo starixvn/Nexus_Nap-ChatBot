@@ -1,8 +1,7 @@
-import * as types from './types';
-//import Site from '../../lib/site';
+import types from './types';
 
 // Grid
-export function updateActiveRowIndex(value){
+export const updateActiveRowIndex = value => {
     return {
         type: types.ACTIVE_ROW_INDEX,
         data: value
@@ -10,9 +9,9 @@ export function updateActiveRowIndex(value){
 }
 
 // Delete Popup
-export function openDeletePopup(notificationTypeId, notificationTypeName){
-    let deletePopupData = {
-        isShowed: true,        
+export const openDeletePopup = (notificationTypeId, notificationTypeName) => {
+    const deletePopupData = {
+        isShowed: true,
         notificationTypeId: notificationTypeId,
         content: notificationTypeName
     };
@@ -23,10 +22,10 @@ export function openDeletePopup(notificationTypeId, notificationTypeName){
     };
 }
 
-export function closeDeletePopup(){
+export const closeDeletePopup = () => {
     let deletePopupData = {
-        isShowed: false,        
-        content: ""
+        isShowed: false,
+        content: ''
     };
 
     return {
@@ -36,8 +35,8 @@ export function closeDeletePopup(){
 }
 
 // Update Popup
-export function openEditPopup(item) {
-    let newEditPopupData = {
+export const openEditPopup = item => {
+    const newEditPopupData = {
         isShowed: true,
         editingItem: {
             notificationTypeId: item.notificationTypeId,
@@ -46,7 +45,7 @@ export function openEditPopup(item) {
                 isValid: true
             },
             recipientTypeIds: {
-                value: item.recipientTypes.map((v, i) => { return v.id;}).join(","),
+                value: item.recipientTypes.map(v => v.id).join(','),
                 isValid: true
             },
             systemId: {
@@ -54,8 +53,8 @@ export function openEditPopup(item) {
                 isValid: true
             }
         },
-        popupTitle: "Edit Notification Type",
-        successMsg: "Edit Notification Type Successfully",
+        popupTitle: 'Edit Notification Type',
+        successMsg: 'Edit Notification Type Successfully',
         isNew: false
     };
 
@@ -65,8 +64,8 @@ export function openEditPopup(item) {
     };
 }
 
-export function openNewPopup(){
-    let newEditPopupData = {
+export const openNewPopup = () => {
+    const newEditPopupData = {
         isShowed: true,
         editingItem: {
             notificationTypeName: {
@@ -74,7 +73,7 @@ export function openNewPopup(){
                 isValid: false
             },
             recipientTypeIds: {
-                value: "",
+                value: '',
                 isValid: false
             },
             systemId: {
@@ -82,8 +81,8 @@ export function openNewPopup(){
                 isValid: false
             }
         },
-        popupTitle: "Create New Notification Type",
-        successMsg: "Create New Notification Type Successfully",
+        popupTitle: 'Create New Notification Type',
+        successMsg: 'Create New Notification Type Successfully',
         isNew: true
     };
 
@@ -93,16 +92,27 @@ export function openNewPopup(){
     };
 }
 
-export function closeNewEditPopup(){
-    let newEditPopupData = {
+export const closeNewEditPopup = () => {
+    const newEditPopupData = {
         isShowed: false,
         editingItem: {},
-        popupTitle: "",
-        successMsg: ""
+        popupTitle: '',
+        successMsg: ''
     };
-
+    
     return {
         type: types.UPDATE_POPUP_DATA,
         data: newEditPopupData
     };
 }
+
+const actions = {
+    updateActiveRowIndex,
+    openDeletePopup,
+    closeDeletePopup,
+    openEditPopup,
+    openNewPopup,
+    closeNewEditPopup
+};
+
+export default actions;

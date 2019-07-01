@@ -1,7 +1,7 @@
-import * as dataHandlerActions from './dataHandlerActions';
-import * as gridHandlerActions from './gridHandlerActions';
+import dataHandlerActions from './dataHandlerActions';
+import gridHandlerActions from './gridHandlerActions';
 
-export const ActionCreators = Object.assign({}, 
-    dataHandlerActions,
-    gridHandlerActions
-);
+export const ActionCreators = {
+    ...dataHandlerActions,
+    ...gridHandlerActions
+};

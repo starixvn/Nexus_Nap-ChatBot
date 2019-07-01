@@ -1,61 +1,61 @@
-﻿import * as actions from '../gridHandlerActions';
-import * as types from '../types';
+﻿import actions from '../gridHandlerActions';
+import types from '../types';
 
-describe("gridHanderActions", () => {
-    describe("updateActiveRowIndex", () => {
-        it("create the correct action", () => {
+describe('gridHanderActions', () => {
+    describe('updateActiveRowIndex', () => {
+        it('create the correct action', () => {
             // Arrange
-            let data = ["some data"];
-            let expected = {
+            const data = ['some data'];
+            const expected = {
                 type: types.ACTIVE_ROW_INDEX,
                 data: data
             };
 
             // Act
-            let result = actions.updateActiveRowIndex(data);
+            const result = actions.updateActiveRowIndex(data);
 
             // Assert
             expect(result).toEqual(expected);
         });
     });
 
-    describe("openDeletePopup", () => {
-        it("create the correct action", () => {
+    describe('openDeletePopup', () => {
+        it('create the correct action', () => {
             // Arrange
-            let notificationTypeId = 1;
-            let notificationTypeName = "abc";
-            let deletePopupData = {
+            const notificationTypeId = 1;
+            const notificationTypeName = 'abc';
+            const deletePopupData = {
                 isShowed: true,
                 notificationTypeId: 1,
-                content: "abc"
+                content: 'abc'
             };
-            let expected = {
+            const expected = {
                 type: types.DELETE_POPUP_DATA,
                 data: deletePopupData
             };
 
             // Act
-            let result = actions.openDeletePopup(notificationTypeId, notificationTypeName);
+            const result = actions.openDeletePopup(notificationTypeId, notificationTypeName);
 
             // Assert
             expect(result).toEqual(expected);
         });
     });
 
-    describe("closeDeletePopup", () => {
-        it("create the correct action", () => {
+    describe('closeDeletePopup', () => {
+        it('create the correct action', () => {
             // Arrange
-            let data = ["some data"];
-            let expected = {
+            const data = ['some data'];
+            const expected = {
                 type: types.DELETE_POPUP_DATA,
                 data: {
                     isShowed: false,
-                    content: ""
+                    content: ''
                 }
             };
 
             // Act
-            let result = actions.closeDeletePopup();
+            const result = actions.closeDeletePopup();
 
             // Assert
             expect(result).toEqual(expected);
@@ -63,14 +63,14 @@ describe("gridHanderActions", () => {
     });
 
     describe("openEditPopup", () => {
-        it("create the correct action", () => {
+        it('create the correct action', () => {
             // Arrange
-            let item = {
-                notificationTypeName: "name 1",
+            const item = {
+                notificationTypeName: 'name 1',
                 recipientTypes: [{ id: 1 }, {id: 2}],
                 systemId: 2
             };
-            let newEditPopupData = {
+            const newEditPopupData = {
                 isShowed: true,
                 editingItem: {
                     notificationTypeName: {
@@ -86,27 +86,27 @@ describe("gridHanderActions", () => {
                         isValid: true
                     }
                 },
-                popupTitle: "Edit Notification Type",
-                successMsg: "Edit Notification Type Successfully",
+                popupTitle: 'Edit Notification Type',
+                successMsg: 'Edit Notification Type Successfully',
                 isNew: false
             };
-            let expected = {
+            const expected = {
                 type: types.UPDATE_POPUP_DATA,
                 data: newEditPopupData
             };
 
             // Act
-            let result = actions.openEditPopup(item);
+            const result = actions.openEditPopup(item);
 
             // Assert
             expect(result).toEqual(expected);
         });
     });
 
-    describe("openNewPopup", () => {
-        it("create the correct action", () => {
+    describe('openNewPopup', () => {
+        it('create the correct action', () => {
             // Arrange          
-            let newEditPopupData = {
+            const newEditPopupData = {
                 isShowed: true,
                 editingItem: {
                     notificationTypeName: {
@@ -122,39 +122,39 @@ describe("gridHanderActions", () => {
                         isValid: false
                     }
                 },
-                popupTitle: "Create New Notification Type",
-                successMsg: "Create New Notification Type Successfully",
+                popupTitle: 'Create New Notification Type',
+                successMsg: 'Create New Notification Type Successfully',
                 isNew: true
             };
-            let expected = {
+            const expected = {
                 type: types.UPDATE_POPUP_DATA,
                 data: newEditPopupData
             };
 
             // Act
-            let result = actions.openNewPopup();
+            const result = actions.openNewPopup();
 
             // Assert
             expect(result).toEqual(expected);
         });
     });
 
-    describe("closeNewEditPopup", () => {
-        it("create the correct action", () => {
+    describe('closeNewEditPopup', () => {
+        it('create the correct action', () => {
             // Arrange
-            let newEditPopupData = {
+            const newEditPopupData = {
                 isShowed: false,
                 editingItem: {},
-                popupTitle: "",
-                successMsg: ""
+                popupTitle: '',
+                successMsg: ''
             };
-            let expected = {
+            const expected = {
                 type: types.UPDATE_POPUP_DATA,
                 data: newEditPopupData
             };
 
             // Act
-            let result = actions.closeNewEditPopup();
+            const result = actions.closeNewEditPopup();
 
             // Assert
             expect(result).toEqual(expected);

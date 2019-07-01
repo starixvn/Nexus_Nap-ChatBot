@@ -1,5 +1,5 @@
 import createReducer from '../../lib/createReducer';
-import * as types from '../actions/types';
+import types from '../actions/types';
 
 // Grid
 export const gridParams = createReducer({}, {
@@ -42,3 +42,13 @@ export const updateData = createReducer({}, {
     }
 });
 
+const reducers = {
+    gridParams,
+    gridData,
+    settingData,
+    deleteData,
+    updateParams,
+    updateData
+};
+
+export default reducers;

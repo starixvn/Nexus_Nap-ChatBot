@@ -1,26 +1,25 @@
-import * as types from './types';
+import types from './types';
 import axios from 'axios';
-//import Site from '../../lib/site';
+import Site from '../../lib/site';
 
 // Grid
-export function setGridParams(value){  
+export const setGridParams = data => {  
     return {
         type: types.GRID_PARAMS,
-        data: value
+        data: data
     };
 }
 
-export function getGridData(params){   
-    const url = '/NotificationType/GetAll';    
-    
-    return (dispatch) => {
-        axios.get(url, {params: params}).then(response => {            
+export const getGridData = params => {   
+    const url = Site.resolveClientUrl('NotificationType/GetAll');
+    return dispatch => {
+        axios.get(url, {params: params}).then(response => {        
             dispatch(setGridData(response.data));
         });
     };
 }
 
-export function setGridData(data){
+export const setGridData = data => {
     return {
         type: types.GRID_DATA,
         data: data
@@ -28,17 +27,16 @@ export function setGridData(data){
 }
 
 // Settings
-export function getSettings(){
-    const url = '/NotificationType/GetSettings';
-    
-    return (dispatch) => {
+export const getSettings = () => {
+    const url = Site.resolveClientUrl('NotificationType/GetSettings');
+    return dispatch => {
         axios.get(url).then(response => {
             dispatch(setSettings(response.data));
         });
     };
 }
 
-export function setSettings(data){
+export const setSettings = data => {
     return {
         type: types.SETTING_DATA,
         data: data
@@ -46,17 +44,18 @@ export function setSettings(data){
 }
 
 // Delete
-export function deleteItem(notificationTypeId){ 
-    const url = '/NotificationType/Delete';
-    let headers = {
+export const deleteItem = notificationTypeId => { 
+    const url = Site.resolveClientUrl('NotificationType/Delete');
+    const headers = {
         'Content-Type': 'application/json'
     };
-    return async(dispatch) => {
+
+    return async dispatch => {
         const request = await axios.post(url, notificationTypeId, { headers: headers });
-        const data = await request.data; 
-        dispatch(setDeleteData(data));        
+        const data = await request.data;
+        dispatch(setDeleteData(data));
     };
-} 
+}
 
 export function setDeleteData(data){    
     return {
@@ -65,38 +64,54 @@ export function setDeleteData(data){
     };
 }
 
-
 // Update
-export function setUpdateParams(value){
+export const setUpdateParams = value => {
     return {
         type: types.UPDATE_PARAMS,
         data: value
     };
 }
 
-export function update(params, isNew){
+export const update = (params, isNew) => {
     const url = isNew ? '/NotificationType/Add' : '/NotificationType/Edit';
-
-    let headers = {
-        'Content-Type': 'application/json'     
+    const headers = {
+        'Content-Type': 'application/json'
     };
-    return async(dispatch) => {
+
+    return async dispatch => {
         const request = await axios.post(url, JSON.stringify(params), { headers: headers });
-        const data = await request.data; 
-        dispatch(setUpdateData({addedresult: data}));        
+        const data = await request.data;
+        dispatch(setUpdateData({addedresult: data}));
     };
-} 
+}
 
-export function setUpdateData(data){
+export const setUpdateData = data => {
     return {
         type: types.UPDATE_DATA,
         data: data
     };
 }
 
-export function refreshUpdateData(){
-    return (dispatch) => {
-        dispatch(setUpdateData({addedresult: false}));
-    };    
+export const refreshUpdateData = () => {
+    return dispatch => {
+        dispatch(setUpdateData({ addedresult: false }));
+    };
 }
+
+const actions = {
+    setGridParams,
+    getGridData,
+    setGridData,
+    getSettings,
+    setSettings,
+    deleteItem,
+    setDeleteData,
+    setUpdateParams,
+    update,
+    setUpdateData,
+    refreshUpdateData
+};
+
+export default actions;
+
 

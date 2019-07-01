@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {ActionCreators} from '../actions/index';
-import {NCBBreadcrum} from '../../common/breadcrumbs';
+import { ActionCreators } from '../actions/index';
+import { NCBBreadcrum } from '../../common/breadcrumbs';
 import DataGrid from './DataGrid';
 import UpdatePopup from './UpdatePopup';
-import DeletePopup  from './DeletePopup';
+import DeletePopup from './DeletePopup';
 
-import "../../shared/components/font.css";
+import '../../shared/components/font.css';
 import './AppContainer.scss';
 
 export class AppContainer extends Component {
   constructor(props) {
-    super(props);     
+    super(props);
   }
 
   closeUpdatePopupHandler = () => {
@@ -26,30 +26,30 @@ export class AppContainer extends Component {
     this.props.closeDeletePopup();
     this.props.updateActiveRowIndex(-1);
     !this.props.deletePopupData.isShowed && this.props.getGridData(this.props.gridParams);
-  }  
+  }
 
-  render() {   
-    return (      
+  render() {
+    return (
       <div>
         <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Type" />
-        <button className="btn-new" onClick={this.props.openNewPopup}>Create New</button>     
-        <DataGrid />               
-
-        { this.props.updatePopupData.isShowed && <UpdatePopup closeUpdatePopupHandler={this.closeUpdatePopupHandler} /> }
-        { this.props.deletePopupData.isShowed && <DeletePopup closeDeletePopupHandler={this.closeDeletePopupHandler} /> }      
+        <button className="btn-new" onClick={this.props.openNewPopup}>Create New</button>
+        <DataGrid />
+        {this.props.updatePopupData.isShowed && <UpdatePopup closeUpdatePopupHandler={this.closeUpdatePopupHandler} />}
+        {this.props.deletePopupData.isShowed && <DeletePopup closeDeletePopupHandler={this.closeDeletePopupHandler} />}
       </div>
     );
   }
 }
 
-function mapDispatchToProps(dispatch){
-    return bindActionCreators(ActionCreators, dispatch);
-}
+const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
-function mapStateToProps(state){
-    const { gridParams, updatePopupData, deletePopupData} = state;
-    return Object.assign({}, { gridParams, updatePopupData, deletePopupData});    
+const mapStateToProps = state => {
+  const { gridParams, updatePopupData, deletePopupData } = state;
+  return {
+    gridParams,
+    updatePopupData,
+    deletePopupData
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppContainer);
-  

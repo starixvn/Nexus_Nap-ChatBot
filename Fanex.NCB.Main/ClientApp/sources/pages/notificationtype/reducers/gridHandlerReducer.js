@@ -1,5 +1,5 @@
 import createReducer from '../../lib/createReducer';
-import * as types from '../actions/types';
+import types from '../actions/types';
 
 export const activeRowIndex = createReducer({}, {
     [types.ACTIVE_ROW_INDEX](state, action){
@@ -18,3 +18,11 @@ export const deletePopupData = createReducer({}, {
         return action.data;
     }
 });
+
+const reducers = {
+    activeRowIndex,
+    updatePopupData,
+    deletePopupData
+};
+
+export default reducers;
