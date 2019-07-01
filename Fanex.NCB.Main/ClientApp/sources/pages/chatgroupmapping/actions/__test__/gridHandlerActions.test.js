@@ -1,12 +1,6 @@
-﻿import thunk from 'redux-thunk';
-import configureMockStore from 'redux-mock-store';
-import * as actions from '../gridHandlerActions';
-import * as types from '../types';
-import axios from 'axios';
+﻿import actions from '../gridHandlerActions';
+import types from '../types';
 import "babel-polyfill";
-
-const middlewares = [thunk];
-const mockStore = configureMockStore(middlewares);
 
 describe("gridHandlerActions", () => { 
     describe("openEditPopup", () => {

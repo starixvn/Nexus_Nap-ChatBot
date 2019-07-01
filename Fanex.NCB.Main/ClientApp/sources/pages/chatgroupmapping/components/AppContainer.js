@@ -11,9 +11,8 @@ import Labels from '../../common/Labels';
 
 export class AppContainer extends Component {
     constructor(props) {
-        super(props);       
+        super(props);
     }
-   
 
     closeUpdatePopupHandler = () => {
         this.props.closeEditPopup();
@@ -21,7 +20,7 @@ export class AppContainer extends Component {
         !this.props.updatePopupData.isShowed && this.props.getGridData(this.props.gridParams);
     }
 
-    render() {        
+    render() {
         return (
             <div>
                 <NCBBreadcrum chatbotName={Labels.SkypeChatbot} pageTitle={Labels.ChatGroupMapping} />
@@ -33,13 +32,14 @@ export class AppContainer extends Component {
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators(ActionCreators, dispatch);
-}
+const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
-function mapStateToProps(state) {
+const mapStateToProps = state => {
     const { gridParams, updatePopupData } = state;
-    return Object.assign({}, { gridParams, updatePopupData });
+    return { 
+        gridParams,
+        updatePopupData 
+    };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppContainer);

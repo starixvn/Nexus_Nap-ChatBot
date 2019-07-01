@@ -1,7 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Form, FormGroup, Label } from 'reactstrap';
-import { InputField } from '../../common/InputField';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
@@ -16,19 +15,19 @@ export class Filter extends Component {
 
         this.state = {
             botNames: {
-                value: ""
+                value: ''
             },
             recipientTypes: {
-                value: ""
+                value: ''
             },
             recipient: {
-                value: ""
+                value: ''
             },
             licenseeStatuses: {
-                value: ""
+                value: ''
             },
             mappingStatuses: {
-                value: ""
+                value: ''
             },
             settingData: {
                 botNames: [],
@@ -42,51 +41,51 @@ export class Filter extends Component {
         this.props.filterRecipients([], 0);
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {       
+    static getDerivedStateFromProps(nextProps, prevState) {
         if (prevState.settingData.botNames.length === 0 && nextProps.settingData.botNames) {
-            let botNames = nextProps.settingData.botNames;
-            let selectedBotNames = [];
-            botNames.map((v) => {
+            const botNames = nextProps.settingData.botNames;
+            const selectedBotNames = [];
+            botNames.map(v => {
                 v['checked'] = true;
                 selectedBotNames.push(v['id']);
             });
 
-            let recipientTypes = nextProps.settingData.recipientTypes;
-            let selectedRecipientTypes = [];
-            recipientTypes.map((v) => {
+            const recipientTypes = nextProps.settingData.recipientTypes;
+            const selectedRecipientTypes = [];
+            recipientTypes.map(v => {
                 v['checked'] = true;
                 selectedRecipientTypes.push(v['id']);
             });
 
-            let mappingStatuses = nextProps.settingData.mappingStatuses;
-            let selectedMappingStatuses = [];
-            mappingStatuses.map((v) => {
+            const mappingStatuses = nextProps.settingData.mappingStatuses;
+            const selectedMappingStatuses = [];
+            mappingStatuses.map(v => {
                 v['checked'] = true;
                 selectedMappingStatuses.push(v['id']);
             });
 
-            let licenseeStatuses = nextProps.settingData.licenseeStatuses;
-            let selectedlicenseeStatuses= [];
-            licenseeStatuses.map((v) => {
+            const licenseeStatuses = nextProps.settingData.licenseeStatuses;
+            const selectedlicenseeStatuses= [];
+            licenseeStatuses.map(v => {
                 v['checked'] = true;
                 selectedlicenseeStatuses.push(v['id']);
             });
 
-            let state = {
+            const state = {
                 botNames: {
-                    value: selectedBotNames.join(",")
+                    value: selectedBotNames.join(',')
                 },
                 recipientTypes: {
-                    value: selectedRecipientTypes.join(",")
+                    value: selectedRecipientTypes.join(',')
                 },
                 recipient: {
-                    value: ""
+                    value: ''
                 },
                 licenseeStatuses: {
-                    value: selectedlicenseeStatuses.join(",")
+                    value: selectedlicenseeStatuses.join(',')
                 },
                 mappingStatuses: {
-                    value: selectedMappingStatuses.join(",")
+                    value: selectedMappingStatuses.join(',')
                 },
                 settingData: {
                     botNames: botNames,
@@ -101,7 +100,7 @@ export class Filter extends Component {
 
         // Return null to indicate no change to state.
         return null;
-    }  
+    }
 
     onChange = (fieldName, fieldValue) => {
         this.setState({
@@ -109,7 +108,7 @@ export class Filter extends Component {
         });
     }
 
-    getParams = () => {           
+    getParams = () => {
         return {
             botNames: this.state.botNames.value,
             recipientTypeIds: this.state.recipientTypes.value,
@@ -119,109 +118,107 @@ export class Filter extends Component {
             pageIndex: 1,
             pageSize: PAGING_SIZES[0]
         };
-    }    
-
-    checkValidParams = () => {
-        return this.state.botNames.value !== '' && this.state.recipientTypes.value !== '' && this.state.mappingStatuses.value !== '' && this.state.licenseeStatuses.value !== '';
     }
 
-    submitHandler = (e) => {
+    checkValidParams = () => this.state.botNames.value !== '' && this.state.recipientTypes.value !== '' && this.state.mappingStatuses.value !== '' && this.state.licenseeStatuses.value !== '';
+
+    submitHandler = e => {
         e.preventDefault();
 
-        let params = this.getParams();
+        const params = this.getParams();
         this.props.setGridParams(params);
         this.props.getGridData(params);
-    }   
+    }
   
-    render() {        
+    render() {     
         return (
-            <Form className="form-filter">                
+            <Form className="form-filter">         
                 <FormGroup>
                     <Label className="form-label">{Labels.RecipientType}</Label>
                     <MultipleSelectField
-                        id={"recipientTypes"}
+                        id={'recipientTypes'}
                         width={150}
                         initialValue={this.state.recipientTypes}
                         data={this.state.settingData.recipientTypes}
-                        keyField={"id"}
-                        valueField={"name"}
-                        statusField={"checked"}
+                        keyField={'id'}
+                        valueField={'name'}
+                        statusField={'checked'}
                         isSummited={false}
-                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: "# selected" }}
+                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: '# selected' }}
                         isAllTextShown
-                        onChange={(value) => this.onChange("recipientTypes", value)}
+                        onChange={(value) => this.onChange('recipientTypes', value)}
                     />       
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label">{Labels.Recipient}</Label>
                     <AutoComplete
-                        url={Site.resolveClientUrl("ChatGroupMapping/SearchRecipient")}
-                        onSelect={(value) => this.onChange("recipient", { value: value })}
-                        onInput={(value) => this.onChange("recipient", { value: value })}
+                        url={Site.resolveClientUrl('ChatGroupMapping/SearchRecipient')}
+                        onSelect={value => this.onChange('recipient', { value: value })}
+                        onInput={value => this.onChange('recipient', { value: value })}
                         htmlAttributes={{ maxLength: 50 }}
-                    /> 
+                    />
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label">{Labels.LicenseeStatus}</Label>
                     <MultipleSelectField
-                        id={"licenseeStatuses"}
+                        id={'licenseeStatuses'}
                         width={150}
                         initialValue={this.state.licenseeStatuses}
                         data={this.state.settingData.licenseeStatuses}
-                        keyField={"id"}
-                        valueField={"name"}
-                        statusField={"checked"}
+                        keyField={'id'}
+                        valueField={'name'}
+                        statusField={'checked'}
                         isSummited={false}
-                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: "# selected" }}
+                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: '# selected' }}
                         isAllTextShown
-                        onChange={(value) => this.onChange("licenseeStatuses", value)}
+                        onChange={value => this.onChange('licenseeStatuses', value)}
                     />
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label">{Labels.MappingStatus}</Label>
                     <MultipleSelectField
-                        id={"mappingStatuses"}
+                        id={'mappingStatuses'}
                         width={150}
                         initialValue={this.state.mappingStatuses}
                         data={this.state.settingData.mappingStatuses}
-                        keyField={"id"}
-                        valueField={"name"}
-                        statusField={"checked"}
+                        keyField={'id'}
+                        valueField={'name'}
+                        statusField={'checked'}
                         isSummited={false}
-                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: "# selected" }}
+                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: '# selected' }}
                         isAllTextShown
-                        onChange={(value) => this.onChange("mappingStatuses", value)}
+                        onChange={(value) => this.onChange('mappingStatuses', value)}
                     />
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label">{Labels.BotName}</Label>
                     <MultipleSelectField
-                        id={"botNames"}
+                        id={'botNames'}
                         width={150}
                         initialValue={this.state.botNames}
                         data={this.state.settingData.botNames}
-                        keyField={"id"}
-                        valueField={"name"}
-                        statusField={"checked"}
+                        keyField={'id'}
+                        valueField={'name'}
+                        statusField={'checked'}
                         isSummited={false}
-                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: "# selected" }}
+                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: '# selected' }}
                         isAllTextShown
-                        onChange={(value) => this.onChange("botNames", value)}
-                    />       
+                        onChange={value => this.onChange('botNames', value)}
+                    />
                 </FormGroup>
                 <button disabled={!this.checkValidParams()} className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
-            </Form>            
+            </Form>  
         );
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators(ActionCreators, dispatch);
-}
+const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch)
 
-function mapStateToProps(state) {
-    const { settingData} = state;
-    return Object.assign({}, { settingData });
+const mapStateToProps = state => {
+    const { settingData } = state;
+    return { 
+        settingData
+    };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Filter);

@@ -1,9 +1,8 @@
-import * as types from './types';
-//import Site from '../../lib/site';
+import types from './types';
 
 // Update Popup
-export function openEditPopup(item) {
-    let popupData = {
+export const openEditPopup = item => {
+    const popupData = {
         isShowed: true,
         editingItem: {
             groupID: item.groupID,
@@ -18,8 +17,8 @@ export function openEditPopup(item) {
             },
             recipientIds: {
                 value: item.recipientIDs,
-                isValid: item.recipientIDs !== ""
-            }, 
+                isValid: item.recipientIDs !== ''
+            },
             recipientStatusNames: item.recipientStatusNames,
             chatGroupTypeId: {
                 value: item.chatGroupTypeID,
@@ -29,7 +28,7 @@ export function openEditPopup(item) {
                 value: item.remark,
                 isValid: item.remark !== null
             }
-        }        
+        } 
     };
 
     return {
@@ -38,10 +37,10 @@ export function openEditPopup(item) {
     };
 }
 
-export function closeEditPopup() {
-    let popupData = {
+export const closeEditPopup = () => {
+    const popupData = {
         isShowed: false,
-        editingItem: {}       
+        editingItem: {}
     };
 
     return {
@@ -49,3 +48,10 @@ export function closeEditPopup() {
         data: popupData
     };
 }
+
+const actions = {
+    openEditPopup,
+    closeEditPopup
+}
+
+export default actions

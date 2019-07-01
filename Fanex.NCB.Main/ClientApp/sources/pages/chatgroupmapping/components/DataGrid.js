@@ -1,7 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Table, Row, Cell } from '../../common/fixed-table-header/index';
-import { UncontrolledTooltip } from 'reactstrap';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import CommonFunctions from '../../common/CommonFunctions';
@@ -15,7 +14,7 @@ export class DataGrid extends Component {
     }   
 
     onPaging = (pageIndex, pageSize) => {
-        let params = { ...this.props.gridParams };
+        const params = { ...this.props.gridParams };
         params['pageIndex'] = pageIndex;
         params['pageSize'] = pageSize;
 
@@ -23,7 +22,7 @@ export class DataGrid extends Component {
         this.props.getGridData(params);
     }
 
-    openEditPopup = (item) => {
+    openEditPopup = item => {
         if(!CommonFunctions.isBotRemoved(item.mappingStatusID)){
             this.props.filterRecipients(this.props.settingData.recipients, item.recipientTypeID);
             this.props.openEditPopup(item);
@@ -46,17 +45,13 @@ export class DataGrid extends Component {
             </Row>);
     };
 
-    getLicenseeStatus = (item) =>  {
-        return item.recipientTypeName ? CommonFunctions.getLicenseeStatus(item.recipientStatusNames) : '';
-    }
+    getLicenseeStatus = item => item.recipientTypeName ? CommonFunctions.getLicenseeStatus(item.recipientStatusNames) : '';
 
-    getEditClassNames = (item) =>  {
-        return CommonFunctions.isBotRemoved(item.mappingStatusID) ? "icon-edit edit-disabled" : "icon-edit";
-    }
+    getEditClassNames = item => CommonFunctions.isBotRemoved(item.mappingStatusID) ? 'icon-edit edit-disabled' : 'icon-edit';
 
     buildBody = (data, pageIndex, pageSize) => {
-        let rows = [];
-        let startIndex = (pageIndex - 1) * pageSize + 1;
+        const rows = [];
+        const startIndex = (pageIndex - 1) * pageSize + 1;
         data.map((item, index) => {
             rows.push(<Row key={`body${index}`} >
                 <Cell className="text-center">{index + startIndex}</Cell>
@@ -70,24 +65,22 @@ export class DataGrid extends Component {
                 <Cell>{item.remark}</Cell>
                 <Cell className="text-center col-action">
                     <div>
-                        <span className={this.getEditClassNames(item)} id={"edit-" + index} onClick={() => this.openEditPopup(item)} />                        
+                        <span className={this.getEditClassNames(item)} id={'edit-' + index} onClick={() => this.openEditPopup(item)} />                        
                     </div>
                 </Cell>
             </Row>);
         });
-       
+
         return rows;
-    }   
+    }
 
     render() {
         if (!this.props.gridData || !this.props.gridData.data) {
             return null;
         }
 
-        const data = this.props.gridData.data;
-        const count = this.props.gridData.count;
-        const pageIndex = this.props.gridParams.pageIndex;
-        const pageSize = this.props.gridParams.pageSize;
+        const { data, count } = this.props.gridData;
+        const { pageIndex, pageSize } = this.props.gridParams;
 
         const pagingOption = {
             PageIndex: pageIndex,
@@ -113,17 +106,19 @@ export class DataGrid extends Component {
                     containerPadding={0}
                 />
             </div>
-        );       
+        );   
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators(ActionCreators, dispatch);
-}
+const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
-function mapStateToProps(state) {
+const mapStateToProps = state => {
     const { gridParams, gridData, settingData } = state;
-    return Object.assign({}, { gridParams, gridData, settingData });
+    return {
+        gridParams,
+        gridData,
+        settingData
+    };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataGrid);

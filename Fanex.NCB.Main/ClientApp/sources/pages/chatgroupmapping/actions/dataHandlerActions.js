@@ -1,46 +1,43 @@
-import * as types from './types';
+import types from './types';
 import axios from 'axios';
 import Site from '../../lib/site';
 import errorResponseHandler from '../../lib/errorResponseHandler';
 
 // Settings
-export function setSettings(data) {
+export const setSettings = data => {
     return {
         type: types.SETTING_DATA,
         data: data
     };
 }
 
-export function getSettings() {
+export const getSettings = () => {
     const url = Site.resolveClientUrl('ChatGroupMapping/GetSettings');
-
-    return (dispatch) => {        
+    return dispatch => {
         axios.get(url).then(response => {
             dispatch(setSettings(response.data));
         }).catch(() => { errorResponseHandler(); });
     };
 }
 
-
 // Grid
-export function setGridParams(value) {
+export const setGridParams = value => {
     return {
         type: types.GRID_PARAMS,
         data: value
     };
 }
 
-export function setGridData(data) {
+export const setGridData = data => {
     return {
         type: types.GRID_DATA,
         data: data
     };
 }
 
-export function getGridData(params) {
+export const getGridData = params => {
     const url = Site.resolveClientUrl('ChatGroupMapping/GetAll');
-
-    return (dispatch) => {
+    return dispatch => {
         axios.get(url, { params: params }).then(response => {
             dispatch(setGridData(response.data));
         }).catch(() => { errorResponseHandler(); });
@@ -48,42 +45,41 @@ export function getGridData(params) {
 }
 
 // Edit Popup
-export function setFilterRecipients(data) {
+export const setFilterRecipients = data => {
     return {
         type: types.FILTERED_RECIPIENT,
         data: data
     };
 }
 
-export function filterRecipients(recipients, recipientTypeId) {
-    let filteredRecipients = [];
-    recipientTypeId && recipients.map((item, index) => {
+export const filterRecipients = (recipients, recipientTypeId) => {
+    const filteredRecipients = [];
+    recipientTypeId && recipients.map(item => {
         if (item.recipientTypeId === parseInt(recipientTypeId)) {
             filteredRecipients.push(item);
         }
-    });  
+    });
     
-    return (dispatch) => {       
+    return dispatch => {
         dispatch(setFilterRecipients(filteredRecipients));
     };
 }
 
-export function setUpdateData(data) {
+export const setUpdateData = data => {
     return {
         type: types.UPDATE_DATA,
         data: data
     };
 }
 
-export function update(params) {
+export const update = params => {
     const url = Site.resolveClientUrl('ChatGroupMapping/Edit');
-
-    let headers = {
+    const headers = {
         'Content-Type': 'application/json',
         'RequestVerificationToken': Site.getXsrfToken()
     };
 
-    return async (dispatch) => {
+    return async dispatch => {
         try {
             const request = await axios.post(url, JSON.stringify(params), { headers: headers });
             const data = await request.data;
@@ -94,8 +90,23 @@ export function update(params) {
     };
 }
 
-export function refreshUpdateData() {
-    return (dispatch) => {
+export const refreshUpdateData = () => {
+    return dispatch => {
         dispatch(setUpdateData(null));
     };
 }
+
+const actions = {
+    setSettings,
+    getSettings,
+    setGridParams,
+    setGridData,
+    getGridData,
+    setFilterRecipients,
+    filterRecipients,
+    setUpdateData,
+    update,
+    refreshUpdateData
+}
+
+export default actions

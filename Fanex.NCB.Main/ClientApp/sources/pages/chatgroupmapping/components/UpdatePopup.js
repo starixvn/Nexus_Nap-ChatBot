@@ -1,7 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
-import { Form, FormGroup, Label } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, Form, FormGroup, Label } from 'reactstrap';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import { SelectField } from '../../common/SelectField';
@@ -15,27 +14,28 @@ import ConfirmPopup from '../../common/ConfirmPopup';
 
 const CONFIRM_CLOSE = 1;
 const CONFIRM_UPDATE = 2;
+
 export class UpdatePopup extends Component {
     constructor(props) {
         super(props);        
 
         this.state = {
-            groupID: this.props.updatePopupData.editingItem.groupID,      
-            conversationID: this.props.updatePopupData.editingItem.conversationID,      
+            groupID: this.props.updatePopupData.editingItem.groupID,
+            conversationID: this.props.updatePopupData.editingItem.conversationID,
             recipientTypeId: this.props.updatePopupData.editingItem.recipientTypeId,
             recipientIds: this.props.updatePopupData.editingItem.recipientIds,
             chatGroupTypeId: this.props.updatePopupData.editingItem.chatGroupTypeId,
-            remark: this.props.updatePopupData.editingItem.remark,            
+            remark: this.props.updatePopupData.editingItem.remark,
             isSummited: false,
             isChanged: false,
             isShowedConfirm: false,
-            confirmTitle: "",
-            confirmContent: "",
+            confirmTitle: '',
+            confirmContent: '',
             confirmType: 0
         };
     }  
 
-    submitHandler = (e) => {
+    submitHandler = e => {
         e.preventDefault();
 
         this.setSubmittedState();
@@ -50,12 +50,12 @@ export class UpdatePopup extends Component {
             }
             else {
                 this.submitData();
-            }            
+            }       
         }
     }
 
     submitData = () => {
-        let params = this.getParams();
+        const params = this.getParams();
         this.props.update(params).then(() => {
             if (this.props.updateData.errorCode === 0) {
                 this.closePopupOnSuccess();
@@ -64,7 +64,7 @@ export class UpdatePopup extends Component {
     }
 
     setSubmittedState = () => {
-        !this.state.isSummited && this.setState({ isSummited: true });                
+        !this.state.isSummited && this.setState({ isSummited: true });
     }
 
     getParams = () => {
@@ -78,9 +78,7 @@ export class UpdatePopup extends Component {
         };
     }
 
-    checkValidParams = () => {        
-        return this.state.recipientTypeId.isValid && this.state.recipientIds.isValid && this.state.chatGroupTypeId.isValid;
-    }
+    checkValidParams = () => this.state.recipientTypeId.isValid && this.state.recipientIds.isValid && this.state.chatGroupTypeId.isValid;
 
     onChange = (fieldName, fieldValue) => this.setState({ [fieldName]: fieldValue, isChanged: true });
 
@@ -98,7 +96,7 @@ export class UpdatePopup extends Component {
         else {
             this.props.closeUpdatePopupHandler();
         }
-    }   
+    }
 
     confirmHandler = (isYes) => {
         if (isYes) {
@@ -109,7 +107,7 @@ export class UpdatePopup extends Component {
         this.setState({ isShowedConfirm: false });
     }
 
-    filterRecipients = (recipientTypeId) => {
+    filterRecipients = recipientTypeId => {
         this.props.filterRecipients(this.props.settingData.recipients, recipientTypeId);
         this.setState({
             recipientIds: {
@@ -119,15 +117,15 @@ export class UpdatePopup extends Component {
         });
     }
 
-    render() {       
+    render() {   
         if (!this.props.updatePopupData.isShowed || !this.props.filteredRecipients) {
             return null;
         }
 
-        let editingItem = this.props.updatePopupData.editingItem;
-        let licenseeStatuses = [];
-        let recipientIds = this.state.recipientIds.value.split(",");
-        let filteredRecipients = this.props.filteredRecipients;
+        const editingItem = this.props.updatePopupData.editingItem;
+        const licenseeStatuses = [];
+        const recipientIds = this.state.recipientIds.value.split(",");
+        const filteredRecipients = this.props.filteredRecipients;
         filteredRecipients && filteredRecipients.map((v, i) => {
             let isChecked = recipientIds.includes(v.id.toString());
             v['checked'] = isChecked ? true : false;
@@ -142,7 +140,7 @@ export class UpdatePopup extends Component {
                     <Form className="form-edit">
                         <FormGroup>
                             <Label className="form-label ">{Labels.BotName}</Label>
-                            <Label className="form-label">{editingItem.botName}</Label>                            
+                            <Label className="form-label">{editingItem.botName}</Label>      
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label ">{Labels.GroupName}</Label>
@@ -153,7 +151,7 @@ export class UpdatePopup extends Component {
                             <SelectField initialValue={editingItem.chatGroupTypeId.value}
                                 data={this.props.settingData.chatGroupTypes}
                                 isSummited={this.state.isSummited}
-                                onChange={(chatGroupTypeId) => { this.onChange("chatGroupTypeId", chatGroupTypeId); }}
+                                onChange={chatGroupTypeId => { this.onChange('chatGroupTypeId', chatGroupTypeId); }}
                             />
                         </FormGroup>
                         <FormGroup>
@@ -161,40 +159,39 @@ export class UpdatePopup extends Component {
                             <SelectField initialValue={editingItem.recipientTypeId.value}
                                 data={this.props.settingData.recipientTypes}
                                 isSummited={this.state.isSummited}
-                                onChange={(recipientTypeId) => { this.filterRecipients(recipientTypeId.value); this.onChange("recipientTypeId", recipientTypeId); }}
-                            />  
+                                onChange={recipientTypeId => { this.filterRecipients(recipientTypeId.value); this.onChange('recipientTypeId', recipientTypeId); }}
+                            />
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label required">{Labels.Recipient}</Label>
                             <MultipleSelectField
-                                id={"recipient-id"}
+                                id={'recipient-id'}
                                 selectedValue={this.state.recipientIds.value}
                                 data={filteredRecipients}
-                                keyField={"id"}
-                                valueField={"name"}
-                                statusField={"checked"}
+                                keyField={'id'}
+                                valueField={'name'}
+                                statusField={'checked'}
                                 isSummited={this.state.isSummited}
-                                onChange={(value) => this.onChange("recipientIds", value)}
+                                onChange={value => this.onChange('recipientIds', value)}
                             />
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label ">{Labels.LicenseeStatus}</Label>
-                            <Label className="form-label">{CommonFunctions.getLicenseeStatus(licenseeStatuses.join(", "))}</Label>
-                        </FormGroup>                    
+                            <Label className="form-label">{CommonFunctions.getLicenseeStatus(licenseeStatuses.join(', '))}</Label>
+                        </FormGroup>               
                         <FormGroup>
                             <Label className="form-label">{Labels.Remark}</Label>
                             <TextField initialValue={editingItem.remark.value ? editingItem.remark.value : ''}
                                 isSummited={this.state.isSummited}
-                                onChange={(value) => this.onChange("remark", value)}
-                                maxLength="200"
+                                onChange={value => this.onChange('remark', value)}
+                                maxLength='200'
                                 required={false}
                                 placeholder={Labels.RemarkPlaceHolder}
-                            />                                     
+                            />         
                         </FormGroup>
                         <button disabled={!this.state.isChanged} className="btn-submit" onClick={this.submitHandler}>{Labels.Save}</button>
                     </Form>
                 </ModalBody>
-
                 {this.state.isShowedConfirm &&
                     <ConfirmPopup
                         confirmHandler={this.confirmHandler}
@@ -209,13 +206,16 @@ export class UpdatePopup extends Component {
 }
 
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators(ActionCreators, dispatch);
-}
+const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
-function mapStateToProps(state) {
+const mapStateToProps = state => {
     const { settingData, updatePopupData, updateData, filteredRecipients } = state;
-    return Object.assign({}, { settingData, updatePopupData, updateData, filteredRecipients });
+    return {
+        settingData,
+        updatePopupData,
+        updateData,
+        filteredRecipients
+    };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UpdatePopup);

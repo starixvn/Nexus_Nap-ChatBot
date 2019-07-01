@@ -1,7 +1,7 @@
 ﻿import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import * as actions from '../dataHandlerActions';
-import * as types from '../types';
+import actions from '../dataHandlerActions';
+import types from '../types';
 import axios from 'axios';
 import "babel-polyfill";
 import Site from '../../../lib/site';
