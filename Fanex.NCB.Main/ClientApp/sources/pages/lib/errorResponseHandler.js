@@ -1,5 +1,5 @@
-﻿function errorResponseHandler() {
-    alert("Internal Errors Occur");
+﻿const errorResponseHandler = () => {
+    //alert('Internal Errors Occur');
 }
 
 export default errorResponseHandler;

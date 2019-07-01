@@ -1,9 +1,9 @@
-const _rootUrl = window.rootUrl || "/";
+const _rootUrl = window.rootUrl || '/';
 let _xsrfToken = null;
 export default class Site {
     static getXsrfToken() {
         if (!_xsrfToken) {
-            _xsrfToken = document.querySelector("input[name=__RequestVerificationToken]").value;
+            _xsrfToken = document.querySelector('input[name=__RequestVerificationToken]').value;
         }
 
         return _xsrfToken;
@@ -14,21 +14,22 @@ export default class Site {
     }
 
     static convertDateToString(date) {
-        return typeof date === "string" ? date : date.format("MM/DD/YYYY");
+        return typeof date === 'string' ? date : date.format('MM/DD/YYYY');
     }
 
     static asNull(text) {
-        if (text !== null) {
-            text = text.trim();
-            if (text === '') {
+        let _text = text;
+        if (_text !== null) {
+            _text = _text.trim();
+            if (_text === '') {
                 return null;
             }
         }
 
-        return text;
+        return _text;
     }
 
-    static downloadFile(data, fileName){
+    static downloadFile(data, fileName) {
         const url = window.URL.createObjectURL(new Blob([data]));
         const link = document.createElement('a');
         link.href = url;
