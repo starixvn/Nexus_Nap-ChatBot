@@ -1,5 +1,4 @@
 ﻿import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
 export default class SuggestionList extends Component {
@@ -7,7 +6,7 @@ export default class SuggestionList extends Component {
         dataList: PropTypes.array.isRequired,
         onSelect: PropTypes.func,
         selectedIndex: PropTypes.number,
-        width: PropTypes.number        
+        width: PropTypes.number
     }
 
     constructor(props) {
@@ -22,10 +21,10 @@ export default class SuggestionList extends Component {
 
     _renderDataList() {
         return this.props.dataList.map((item, index) => {
-            const className = index === this.props.selectedIndex ? "ac-item ac-item-active" : "ac-item";
+            const className = index === this.props.selectedIndex ? 'ac-item ac-item-active' : 'ac-item';
             return (
                 <li key={`ac-item-${index}`} className={className} onClick={this.onSelect.bind(this, item)}>
-                    {item && typeof item === "object" ? item.name : item}
+                    {item && typeof item === 'object' ? item.name : item}
                 </li>
             );
         });

@@ -3,9 +3,9 @@
 export default class Timer {
     static debounce(func, wait) {
         let timeout;
-        return function () {
+        return function (...theArgs) {
             const context = this,
-                args = arguments;
+            args = theArgs;
 
             const later = () => {
                 func.apply(context, args);

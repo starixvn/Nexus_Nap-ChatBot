@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 class RowLayout extends Component {
     constructor(props) {
-        super(props)
+        super(props);
     }
 
     static propTypes = {

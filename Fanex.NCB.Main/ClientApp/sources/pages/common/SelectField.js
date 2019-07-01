@@ -9,9 +9,9 @@ export class SelectField extends Component {
     this.state = {
         value: props.initialValue
     };
-  }  
+  }
 
-  onChange = (e) => {    
+  onChange = e => {
     this.setState(
         {
             value: e.target.value
@@ -25,28 +25,26 @@ export class SelectField extends Component {
     );
   }  
 
-    isValid = () => {               
-        return parseInt(this.state.value) > 0;
-    }
+  isValid = () => parseInt(this.state.value) > 0;
 
-  render() {   
+  render() {
       return (
         <div className="select-field">
-            <Input 
+            <Input
                 type="select"
                 value={this.state.value}
                 onChange={this.onChange}
                 invalid={this.props.isSummited && !this.isValid()}
             >
                 <option value="-1">---Please select---</option>
-                {                            
+                {              
                     this.props.data &&
-                        this.props.data.map((item, index) => 
+                        this.props.data.map((item, index) =>
                             <option key={index} value={item.id} >{item.name}</option>
-                        )                            
+                        )
                 }
             </Input>
-            { this.props.isSummited && !this.isValid() &&  <FormFeedback>This field is required.</FormFeedback> }  
+            { this.props.isSummited && !this.isValid() &&  <FormFeedback>This field is required.</FormFeedback> }
       </div>
     );
   }

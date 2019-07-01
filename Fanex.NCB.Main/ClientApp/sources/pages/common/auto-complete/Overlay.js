@@ -1,10 +1,9 @@
 ﻿import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
 const wrapperClasses = {
-    OVERLAY: "overlay",
-    OVERLAY_OPEN: "overlay-open"
+    OVERLAY: 'overlay',
+    OVERLAY_OPEN: 'overlay-open'
 };
 
 export default class Overlay extends Component {
@@ -12,7 +11,7 @@ export default class Overlay extends Component {
         closeOnOutsideClick: PropTypes.bool,
         isOpening: PropTypes.bool,
         onClose: PropTypes.func,
-        onOpen: PropTypes.func        
+        onOpen: PropTypes.func
     }
 
     static defaultProps = {
@@ -25,25 +24,25 @@ export default class Overlay extends Component {
 
         this.containerElement = null;
         this.refHandlers = {
-            container: (ref) => { this.containerElement = ref }
+            container: ref => { this.containerElement = ref; }
         };
 
         this.state = {
             isOpening: this.props.isOpening
         };
-    }   
+    }
 
     componentDidMount() {
         this._registerEvents();
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (this.props.isOpening !== prevProps.isOpening) {
             const { onOpen } = this.props;
             this.props.isOpening && onOpen && onOpen();
             this.setState({ isOpening: this.props.isOpening });
         }
-    }   
+    }
 
     componentWillUnmount() {
         this._unRegisterEvents();
@@ -65,7 +64,7 @@ export default class Overlay extends Component {
         }
     }
 
-    _handleClickOutSide = (event) => {
+    _handleClickOutSide = event => {
         const clickOutside = this.containerElement && !this.containerElement.contains(event.target);
 
         if (clickOutside && this.state.isOpening) {
@@ -79,10 +78,10 @@ export default class Overlay extends Component {
     }
 
     render() {
-        let { className, children } = this.props;
-        let mergedClassName = wrapperClasses.OVERLAY + ' ' + className;       
-        let style = {
-            display: this.state.isOpening ? "block" : "none"
+        const { className, children } = this.props;
+        const mergedClassName = wrapperClasses.OVERLAY + ' ' + className;       
+        const style = {
+            display: this.state.isOpening ? 'block' : 'none'
         };
 
         return (

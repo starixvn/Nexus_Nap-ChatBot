@@ -45,7 +45,7 @@ describe('Table ', () => {
     });
 
     describe('initial internal state', () => {
-        it('diffWidth should be correct value', () => {
+        it('diff width should be correct value', () => {
             const expectedResult = BODY_WIDTH - defaultProps.maxWidth;
 
             const table = new Table(defaultProps);

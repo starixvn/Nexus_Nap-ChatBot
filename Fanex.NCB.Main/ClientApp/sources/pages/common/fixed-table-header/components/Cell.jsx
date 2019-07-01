@@ -13,24 +13,32 @@ class Cell extends Component {
         asc: PropTypes.bool,
         onClick: PropTypes.func
     }
- 
+
     static defaultProps = {
         header: false,
         sortable: false,
         sorting: false,
         asc: true,
-        onClick: function() {}
+        onClick:  function() {} // nothing by default
+    }
+
+    renderSorting(sorting, asc) {
+        return <span className={`${sorting ? (asc ? 'asc' : 'desc' ) : ''}`}></span>
+    }
+
+    renderHeader(rest) {
+        const { sortable, sorting, asc, onClick } = this.props;
+        return sortable ? <th {...rest} className={`sortable ${sorting ? 'sorting' : ''}`} onClick={onClick}>                   
+                {this.props.children}
+                {this.renderSorting(sorting, asc)}
+              </th>
+            : <th {...rest}>{this.props.children}</th>
     }
 
     render() {
         const { header, colWidth, sortable, sorting, asc, onClick, ...rest } = this.props;
         return header
-            ? (sortable 
-                ? <th {...rest} className={`sortable ${sorting?'sorting':''}`} onClick={onClick}>                   
-                    {this.props.children}
-                    <span className={`${sorting?(asc?'asc':'desc'):''}`}></span>
-                  </th>
-                : <th {...rest}>{this.props.children}</th>)
+            ? this.renderHeader(rest)
             : <td {...rest}>{this.props.children}</td>;
     }
 }

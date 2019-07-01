@@ -2,7 +2,7 @@
 import renderer from 'react-test-renderer';
 import Pager from '../Pager';
 
-describe('Pager', () => {   
+describe('Pager', () => {
     describe('render', () => {
         it('component is rendered correctly', () => {
             // Arrange
@@ -45,14 +45,14 @@ describe('Pager', () => {
         });
     });
 
-    describe("renderPageSizeSelection", () => {
-      it("when called - create page size selection", () => {
+    describe('renderPageSizeSelection', () => {
+      it('when called - create page size selection', () => {
           // Arrange
-          let props = {
+          const props = {
               goToPage: jest.fn()
           };
-          let pager = new Pager(props);
-          let pageList = [10, 20, 50];
+          const pager = new Pager(props);
+          const pageList = [10, 20, 50];
 
           // Act
           const result = renderer.create(pager.renderPageSizeSelection(10, pageList)).toJSON();
@@ -62,16 +62,16 @@ describe('Pager', () => {
           result.children.forEach((item, index) => {
             expect(item.props.value).toEqual(pageList[index]);
         });
-      });  
+      });
     });
 
-    describe("renderPageIcon", () => {
-        it("when has class name disable", () => {
+    describe('renderPageIcon', () => {
+        it('when has class name disable', () => {
             // Arrange
             let pager = new Pager();
 
             // Act
-            const result = renderer.create(pager.renderPageIcon("icon-class", true, () => {})).toJSON();
+            const result = renderer.create(pager.renderPageIcon('icon-class', true, () => {})).toJSON();
 
             // Assert
             expect(result.props.className).toEqual(expect.stringContaining("disable"));

@@ -4,9 +4,9 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 export default class ConfirmPopup extends Component {
   constructor(props) {
     super(props);
-  }  
+  }
 
-  render() {    
+  render() {
     const warningIcon = this.props.warningIcon ? <div className="icon-warning" /> : null;
 
     return (

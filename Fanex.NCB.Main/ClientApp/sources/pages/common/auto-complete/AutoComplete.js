@@ -1,5 +1,4 @@
 ﻿import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import Overlay from './Overlay';
@@ -14,7 +13,7 @@ export default class AutoComplete extends Component {
         cache: PropTypes.bool,
         htmlAttributes: PropTypes.object,
         onInput: PropTypes.func,
-        onSelect: PropTypes.func,        
+        onSelect: PropTypes.func,
         queryParamName: PropTypes.string,
         responseDataField: PropTypes.string,
         url: PropTypes.string
@@ -23,7 +22,7 @@ export default class AutoComplete extends Component {
     static defaultProps = {
         url: null,
         cache: true,
-        queryParamName: "query"
+        queryParamName: 'query'
     }
 
     constructor(props) {
@@ -44,7 +43,7 @@ export default class AutoComplete extends Component {
         return this.state.suggestions && this.state.suggestions.length > 0;
     }
 
-    _onKeyDown = (event) => {
+    _onKeyDown = event => {
         if (!this.isShowSuggestionList) {
             return;
         }
@@ -85,28 +84,28 @@ export default class AutoComplete extends Component {
         this.setState({ suggestions: null, selectedIndex: -1 });
     }
 
-    _onSelect = (selectedItem) => {
+    _onSelect = selectedItem => {
         const { onSelect } = this.props;
         
-        this.input.value = typeof (selectedItem) === "object" ? selectedItem.name : selectedItem;
+        this.input.value = typeof (selectedItem) === 'object' ? selectedItem.name : selectedItem;
         onSelect && onSelect(this.input.value);
 
         this._clearState();
     }
 
     _getDataByUrl(url, value) {
-        const { responseDataField, queryParamName } = this.props;
+        const { queryParamName } = this.props;
         const apiUrl = `${url}?${queryParamName}=${value}`;
 
         axios.get(apiUrl, {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        }).then((response) => {
+        }).then(response => {
             this._setStateWithCaching(value, response.data);
         });
     }
 
-    _onChange = (event) => {
-        const value = (this.input.value || "").trim();
+    _onChange = _ => {
+        const value = (this.input.value || '').trim();
 
         const { onInput } = this.props;
         onInput && onInput(value);
@@ -133,7 +132,7 @@ export default class AutoComplete extends Component {
             <div className="ac-container">
                 <input type="text" className="input-text" {...this.props.htmlAttributes}
                     onChange={this.onChange} onKeyDown={this._onKeyDown}
-                    ref={(element) => this.input = element}
+                    ref={element => this.input = element}
                     autoFocus
                 />
 

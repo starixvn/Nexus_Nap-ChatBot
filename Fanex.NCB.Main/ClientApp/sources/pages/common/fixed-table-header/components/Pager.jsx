@@ -13,28 +13,24 @@ const propTypes = {
 
 export default class Pager extends Component {
     constructor(props) {
-        super(props);        
-    }    
+        super(props); 
+    }
 
-    goToPage = (pageIndex, pageSize) => {        
+    goToPage = (pageIndex, pageSize) => {
         this.props.onPaging(pageIndex, pageSize);
     }
-    
+
     renderPageSizeSelection = (pageSize, pageList) => {
         return (
-            <select className="pagesize-select" value={pageSize} onChange={(e) => this.goToPage(1, Number(e.target.value))}>
+            <select className="pagesize-select" value={pageSize} onChange={e => this.goToPage(1, Number(e.target.value))}>
                 {
-                    pageList.map((item, index) => {
-                        return (<option key={`pagesize${index}`} value={item}>{item}</option>);
-                    })
+                    pageList.map((item, index) => <option key={`pagesize${index}`} value={item}>{item}</option>)
                 }
             </select>
         );
     }
 
-    renderPageIcon = (iconClass, isDisable, onClickFunc) => {
-        return (<a href="javascript:;" className={`icon ${iconClass} ${isDisable ? "disable" : ""}`} onClick={() => {!isDisable && onClickFunc() }}></a>);
-    }   
+    renderPageIcon = (iconClass, isDisable, onClickFunc) => <a href='javascript:;' className={`icon ${iconClass} ${isDisable ? 'disable' : ''}`} onClick={() => !isDisable && onClickFunc()}></a>;
 
     renderPageInfo = (index, pageSize, totalItem) => {
         const viewFrom = ((index - 1) * pageSize) + 1;
@@ -43,27 +39,27 @@ export default class Pager extends Component {
     }
 
     calculatePages = (pageIndex, totalPage) => {
-        let pages = [];
-        if(totalPage < 10){
-            for(let i = 1; i <= totalPage; i++ ){            
+        const pages = [];
+        if(totalPage < 10) {
+            for(let i = 1; i <= totalPage; i++ ) {   
                 pages.push(i);
             }
         }
         else{
-            pages.push(1);   
+            pages.push(1);
             
             // left of pageIndex
             for(let i = 2; i < pageIndex; i++){
-                pageIndex - i < 4 && pages.push(i);                
+                pageIndex - i < 4 && pages.push(i);           
             }
 
-            if(pageIndex != 1 && pageIndex != totalPage){
+            if(pageIndex !== 1 && pageIndex !== totalPage){
                 pages.push(pageIndex);
             }
 
             // right of pageIndex
             for(let j = pageIndex + 1; j < totalPage; j++){
-                j - pageIndex < 4 && pages.push(j);                
+                j - pageIndex < 4 && pages.push(j);       
             }
 
             pages.push(totalPage);
@@ -73,14 +69,12 @@ export default class Pager extends Component {
     }
 
     renderPages = (pageIndex, pageSize, totalPage) => {
-        let pages = this.calculatePages(pageIndex, totalPage);
+        const pages = this.calculatePages(pageIndex, totalPage);
 
         return(
             <div className="page-div"> 
                 {
-                    pages.map((i) => {
-                        return (<span key={i} className={"page-span " + (i == pageIndex ? "active" : "" )} onClick={() => this.goToPage(i, pageSize)}>{i}</span>);
-                    })                    
+                    pages.map(i => <span key={i} className={"page-span " + (i == pageIndex ? "active" : "" )} onClick={() => this.goToPage(i, pageSize)}>{i}</span>)                
                 } 
             </div>
         );
@@ -95,9 +89,9 @@ export default class Pager extends Component {
             <div className="page-container" style={{ display: `${isShow ? 'block' : 'none'}` }}>
                 <span>Page size</span>
                 {this.renderPageSizeSelection(PageSize, PageList)}
-                {this.renderPageIcon("page-prev", PageIndex <= 1, () => this.goToPage(PageIndex - 1, PageSize))}
-                {this.renderPages(PageIndex, PageSize, totalPage)}                
-                {this.renderPageIcon("page-next", PageIndex >= totalPage, () => this.goToPage(PageIndex + 1, PageSize))}                
+                {this.renderPageIcon('page-prev', PageIndex <= 1, () => this.goToPage(PageIndex - 1, PageSize))}
+                {this.renderPages(PageIndex, PageSize, totalPage)}
+                {this.renderPageIcon('page-next', PageIndex >= totalPage, () => this.goToPage(PageIndex + 1, PageSize))}
                 {this.renderPageInfo(PageIndex, PageSize, TotalItem)}
             </div>);
     }

@@ -4,13 +4,13 @@ export default class CommonFunctions {
     static getMappingClass(mappingStatusId){
         switch (mappingStatusId) {
             case mappingStatus.BotRemoved:
-                return "badge-grey";
+                return 'badge-grey';
             case mappingStatus.NotMapped:
-                return "badge-red";
+                return 'badge-red';
             case mappingStatus.Mapped:
-                return "badge-green";
+                return 'badge-green';
             default:
-                return "";
+                return '';
         }
     }
 

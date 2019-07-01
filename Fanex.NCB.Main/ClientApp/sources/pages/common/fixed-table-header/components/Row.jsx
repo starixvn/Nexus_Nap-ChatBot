@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 class Row extends Component {
     constructor(props) {
-        super(props)
+        super(props);
     }
 
     render() {

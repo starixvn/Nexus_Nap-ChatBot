@@ -9,9 +9,9 @@ export class InputField extends Component {
     this.state = {
         value: props.initialValue
     };
-  }  
+  }
 
-  onChange = (e) => {    
+  onChange = e => {
     this.setState(
         {
             value: e.target.value
@@ -23,21 +23,19 @@ export class InputField extends Component {
             });
         }
     );
-  }  
-
-  isValid = () => {
-    return this.state.value !== '';
   }
+
+  isValid = () => this.state.value !== '';
 
   render() {
     return (
       <div className="input-field">
-            <Input value={this.state.value} 
+            <Input value={this.state.value}
                 maxLength={this.props.maxLength}
                 onChange={this.onChange}
                 invalid={this.props.isSummited && !this.isValid()}
             />
-        { this.props.isSummited && !this.isValid() && <FormFeedback>This field is required.</FormFeedback> }                    
+        { this.props.isSummited && !this.isValid() && <FormFeedback>This field is required.</FormFeedback> }
       </div>
     );
   }

@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { Input, FormFeedback } from 'reactstrap';
+
 import './TextField.scss';
 
 export class TextField extends Component {
@@ -11,7 +12,7 @@ export class TextField extends Component {
         };
     }
 
-    onChange = (e) => {
+    onChange = e => {
         this.setState(
             {
                 value: e.target.value
@@ -25,10 +26,8 @@ export class TextField extends Component {
         );
     }
 
-    isValid = () => {
-        return this.state.value !== '';
-    }
-
+    isValid = () => this.state.value !== '';
+    
     isShowInvalid = () => {
         this.props.required && this.props.isSummited && !this.isValid();
     }
