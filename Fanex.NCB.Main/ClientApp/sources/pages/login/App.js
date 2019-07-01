@@ -4,14 +4,14 @@ import { connect } from 'react-redux';
 
 export class App extends Component {
   constructor(props) {
-    super(props)     
+    super(props);
   }
 
-  render() { 
-    return (      
+  render() {
+    return (
        <Login />
-    )
+    );
   }
 }
 
-export default connect()(App)
+export default connect()(App);

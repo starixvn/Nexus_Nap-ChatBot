@@ -3,34 +3,34 @@ import CryptoJS from '../../../lib/cryptoJS';
 import AppData from '../../../lib/AppData';
 import Site from '../../../lib/site';
 
-import "../../../shared/components/font.css";
+import '../../../shared/components/font.css';
 import '../../../shared/components/messages.scss';
 import './Login.scss';
 
 class Login extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             password: '',
             invalidLogin: AppData.invalidLogin
-        }
+        };
     }
 
-    handleChangePassword = (event) => {        
+    handleChangePassword = event => {
         this.setState({
             password: event.target.value
-        })
+        });
     }
 
-    handleSubmit = (event) => {
-        event.preventDefault()
+    handleSubmit = event => {
+        event.preventDefault();
         this.setState({
-                password: CryptoJS.cfsEnCode(this.refs.password.value)
-            }, this.submitForm)
+            password: CryptoJS.cfsEnCode(this.refs.password.value)
+        }, this.submitForm);
     }
 
     submitForm = () => {
-        this.refs.form.submit()
+        this.refs.form.submit();
     }
 
     render() {
@@ -43,7 +43,7 @@ class Login extends Component {
                         this.state.invalidLogin
                         ? <div className="msg-error">Invalid Username or Password</div>
                         : null
-                    }                    
+                    }                
                     <div className="input-group">
                         <div className="input-group-prepend">
                             <span className="icon-username" />
@@ -54,7 +54,9 @@ class Login extends Component {
                         <div className="input-group-prepend">
                             <span className="icon-password" />
                         </div>
-                        <input ref="password" name="password" type="password" value={this.state.password} className="form-control" onChange={this.handleChangePassword}/>              
+                        <input ref="password" name="password" type="password" className="form-control"
+                         value={this.state.password} 
+                         onChange={this.handleChangePassword}/>         
                     </div>
                     <input type="submit" value="SIGN IN" className="button"/>
                     <input type="hidden" name="returnUrl" value={Site.resolveClientUrl('Home/Index')} />
@@ -67,8 +69,8 @@ class Login extends Component {
                         </ul>
                 </div>
             </div>
-        )
+        );
    }
 }
 
-export default Login
+export default Login;

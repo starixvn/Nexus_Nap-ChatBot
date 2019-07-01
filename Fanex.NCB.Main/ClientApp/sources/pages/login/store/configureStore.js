@@ -1,9 +1,8 @@
 ﻿import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 
-export default function configureStore(history, initialState) {
+const configureStore = (history, initialState) => {
   const reducers = {
-    
   };
 
   const middleware = [
@@ -27,3 +26,5 @@ export default function configureStore(history, initialState) {
     compose(applyMiddleware(...middleware), ...enhancers)
   );
 }
+
+export default configureStore;
