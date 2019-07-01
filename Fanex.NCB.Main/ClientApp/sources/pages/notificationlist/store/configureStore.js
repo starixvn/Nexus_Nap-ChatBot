@@ -1,9 +1,8 @@
 ﻿import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 
-export default function configureStore(initialState) {
+const configureStore = initialState => {
   const reducers = {
-    
   };
 
   const middleware = [
@@ -11,8 +10,8 @@ export default function configureStore(initialState) {
   ];
 
   // In development, use the browser's Redux dev tools extension if installed
-  const enhancers = [];
-  const isDevelopment = process.env.NODE_ENV === 'development';
+  const enhancers = []
+  const isDevelopment = process.env.NODE_ENV === 'development'
   if (isDevelopment && typeof window !== 'undefined' && window.devToolsExtension) {
     enhancers.push(window.devToolsExtension());
   }
@@ -27,3 +26,5 @@ export default function configureStore(initialState) {
     compose(applyMiddleware(...middleware), ...enhancers)
   );
 }
+
+export default configureStore;

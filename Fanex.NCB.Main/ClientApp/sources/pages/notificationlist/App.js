@@ -1,25 +1,23 @@
-import React, { Component } from 'react';
+import React from 'react';
 import NotificationList from './components/NotificationList';
 import { connect } from 'react-redux';
 
-class App extends Component {
+export class App extends React.PureComponent {
   constructor(props) {
-    super(props);      
+    super(props);
     this.state = {
       modal: false
     };
-
-    this.toggle = this.toggle.bind(this);
   }
  
-  toggle() {
+  toggle = () => {
     this.setState({
       modal: !this.state.modal
     });
   }
 
-  render() { 
-    return (      
+  render() {
+    return (
        <NotificationList
            isModal={this.state.modal}
            toggleHandler={this.toggle}
