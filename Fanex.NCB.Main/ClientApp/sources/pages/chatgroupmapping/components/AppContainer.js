@@ -36,10 +36,10 @@ const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispat
 
 const mapStateToProps = state => {
     const { gridParams, updatePopupData } = state;
-    return { 
+    return {
         gridParams,
-        updatePopupData 
+        updatePopupData
     };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppContainer);

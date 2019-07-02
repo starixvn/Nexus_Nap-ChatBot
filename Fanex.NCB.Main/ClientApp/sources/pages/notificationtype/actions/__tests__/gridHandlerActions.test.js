@@ -45,7 +45,6 @@ describe('gridHanderActions', () => {
     describe('closeDeletePopup', () => {
         it('create the correct action', () => {
             // Arrange
-            const data = ['some data'];
             const expected = {
                 type: types.DELETE_POPUP_DATA,
                 data: {
@@ -62,12 +61,12 @@ describe('gridHanderActions', () => {
         });
     });
 
-    describe("openEditPopup", () => {
+    describe('openEditPopup', () => {
         it('create the correct action', () => {
             // Arrange
             const item = {
                 notificationTypeName: 'name 1',
-                recipientTypes: [{ id: 1 }, {id: 2}],
+                recipientTypes: [{ id: 1 }, { id: 2 }],
                 systemId: 2
             };
             const newEditPopupData = {

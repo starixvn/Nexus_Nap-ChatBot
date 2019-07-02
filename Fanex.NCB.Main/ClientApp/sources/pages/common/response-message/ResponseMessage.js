@@ -5,9 +5,7 @@ export class ResponseMessage extends Component {
         super(props);
     }
 
-    isSuccess = () => {
-        return this.props.responseData.errorCode === 0;
-    }
+    isSuccess = () => this.props.responseData.errorCode === 0;
 
     getClassName = () => this.isSuccess() ? 'msg-success' : 'msg-error';
 

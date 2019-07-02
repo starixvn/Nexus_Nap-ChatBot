@@ -4,7 +4,7 @@ import renderer from 'react-test-renderer';
 import Table from '../Table';
 import Row from '../Row';
 import Cell from '../Cell';
-import { MAX_WIDTH, DEFAULT_MILLISECOND_FOR_WAITING, DEFAULT_COLUMN_WIDTH, BODY_WIDTH } from '../../constants';
+import { MAX_WIDTH, BODY_WIDTH } from '../../constants';
 
 const defaultHeader = [
     <Row>
@@ -93,7 +93,7 @@ describe('Table ', () => {
                 expect(result).toEqual(expectedResult);
             });
 
-        it('componentDidUpdate - columnsWidth should be updated with correct values', () => {
+            it('componentDidUpdate - columnsWidth should be updated with correct values', () => {
                 const header = [
                     <Row>
                         <Cell colWidth={200}>Cell 1</Cell>
@@ -103,15 +103,13 @@ describe('Table ', () => {
                 ];
                 const expectedResult = [200, 200];
 
-                const props = Object.assign({}, {...defaultProps});
+                const props = Object.assign({}, { ...defaultProps });
                 const table = new Table(props);
                 table.setState = jest.fn();
                 props.header = header;
                 table.componentDidUpdate(defaultProps);
-                
-                const result = table.state.columnsWidth;
 
-                expect(table.setState).toHaveBeenCalledWith({columnsWidth: expectedResult});
+                expect(table.setState).toHaveBeenCalledWith({ columnsWidth: expectedResult });
             });
         });
 
@@ -154,10 +152,10 @@ describe('Table ', () => {
 
         it('columnsWidth is an array of string - return null', () => {
             const header = <Row>
-                    <Cell colWidth="10%">Cell 1</Cell>
-                    <Cell colWidth="20%">Cell 2</Cell>
-                </Row>;            
-            
+                <Cell colWidth="10%">Cell 1</Cell>
+                <Cell colWidth="20%">Cell 2</Cell>
+            </Row>;
+
             const props = Object.assign({}, defaultProps, { header });
             const table = new Table(props);
 
@@ -170,12 +168,12 @@ describe('Table ', () => {
     describe('_getUpdatedColumnLayout', () => {
         it('autoWidth = true - sumOfColumnWidth is maxWidth - return correct value', () => {
             const expectedResult = [120, 180];
-            const header = 
+            const header =
                 <Row>
                     <Cell colWidth={80}>Cell 1</Cell>
                     <Cell colWidth={120}>Cell 2</Cell>
                 </Row>;
-            
+
 
             const props = Object.assign({}, defaultProps, { maxWidth: 319, header });
             const table = new Table(props);
@@ -187,12 +185,12 @@ describe('Table ', () => {
 
         it('autoWidth = false - sumOfColumnWidth is width - return correct value', () => {
             const expectedResult = [200, 200];
-            const header = 
+            const header =
                 <Row>
                     <Cell colWidth={100}>Cell 1</Cell>
                     <Cell colWidth={100}>Cell 2</Cell>
                 </Row>;
-            
+
 
             const props = Object.assign({}, defaultProps, { autoWidth: false, width: 419, header });
             const table = new Table(props);
@@ -220,7 +218,7 @@ describe('Table ', () => {
             const footer = [<Row key="footer"><Cell>Footer 1</Cell></Row>];
 
             const options = {
-                createNodeMock: (element) => {
+                createNodeMock: () => {
                     return {
                         offsetHeight: 1,
                         offsetTop: 1
@@ -251,7 +249,7 @@ describe('Table ', () => {
             };
 
             const options = {
-                createNodeMock: (element) => {
+                createNodeMock: () => {
                     return {
                         offsetHeight: 1,
                         offsetTop: 1
@@ -291,7 +289,7 @@ describe('Table ', () => {
 
             table._handleResize(event);
 
-            expect(table.setState).toHaveBeenCalledWith({contentHeight: calculatedBodyHeight});
+            expect(table.setState).toHaveBeenCalledWith({ contentHeight: calculatedBodyHeight });
         });
 
         it('maxWidth of state = document.body.clientWidth - this.diffWidth - do nothing', () => {
@@ -326,7 +324,7 @@ describe('Table ', () => {
             expect(table.setState).toHaveBeenCalledWith(expectedState);
         });
 
-        it("bodyWrapper = null - do not calculate body height", () => {
+        it('bodyWrapper = null - do not calculate body height', () => {
             const table = new Table(defaultProps);
             table.setState = jest.fn();
             table._calculateBodyHeight = jest.fn();

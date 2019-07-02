@@ -25,6 +25,6 @@ const configureStore = (history, initialState) => {
     initialState,
     compose(applyMiddleware(...middleware), ...enhancers)
   );
-}
+};
 
 export default configureStore;

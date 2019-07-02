@@ -13,7 +13,7 @@ const propTypes = {
 
 export default class Pager extends Component {
     constructor(props) {
-        super(props); 
+        super(props);
     }
 
     goToPage = (pageIndex, pageSize) => {
@@ -30,7 +30,9 @@ export default class Pager extends Component {
         );
     }
 
-    renderPageIcon = (iconClass, isDisable, onClickFunc) => <a href='javascript:;' className={`icon ${iconClass} ${isDisable ? 'disable' : ''}`} onClick={() => !isDisable && onClickFunc()}></a>;
+    renderPageIcon = (iconClass, isDisable, onClickFunc) => <a href='javascript:;'
+        className={`icon ${iconClass} ${isDisable ? 'disable' : ''}`}
+        onClick={() => !isDisable && onClickFunc()}></a>;
 
     renderPageInfo = (index, pageSize, totalItem) => {
         const viewFrom = ((index - 1) * pageSize) + 1;
@@ -40,26 +42,26 @@ export default class Pager extends Component {
 
     calculatePages = (pageIndex, totalPage) => {
         const pages = [];
-        if(totalPage < 10) {
-            for(let i = 1; i <= totalPage; i++ ) {   
+        if (totalPage < 10) {
+            for (let i = 1; i <= totalPage; i++) {
                 pages.push(i);
             }
         }
-        else{
+        else {
             pages.push(1);
-            
+
             // left of pageIndex
-            for(let i = 2; i < pageIndex; i++){
-                pageIndex - i < 4 && pages.push(i);           
+            for (let i = 2; i < pageIndex; i++) {
+                pageIndex - i < 4 && pages.push(i);
             }
 
-            if(pageIndex !== 1 && pageIndex !== totalPage){
+            if (pageIndex !== 1 && pageIndex !== totalPage) {
                 pages.push(pageIndex);
             }
 
             // right of pageIndex
-            for(let j = pageIndex + 1; j < totalPage; j++){
-                j - pageIndex < 4 && pages.push(j);       
+            for (let j = pageIndex + 1; j < totalPage; j++) {
+                j - pageIndex < 4 && pages.push(j);
             }
 
             pages.push(totalPage);
@@ -71,11 +73,11 @@ export default class Pager extends Component {
     renderPages = (pageIndex, pageSize, totalPage) => {
         const pages = this.calculatePages(pageIndex, totalPage);
 
-        return(
-            <div className="page-div"> 
+        return (
+            <div className="page-div">
                 {
-                    pages.map(i => <span key={i} className={"page-span " + (i == pageIndex ? "active" : "" )} onClick={() => this.goToPage(i, pageSize)}>{i}</span>)                
-                } 
+                    pages.map(i => <span key={i} className={'page-span ' + (i === pageIndex ? 'active' : '')} onClick={() => this.goToPage(i, pageSize)}>{i}</span>)
+                }
             </div>
         );
     }

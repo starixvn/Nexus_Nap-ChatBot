@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { SCROLLBAR_WIDTH, MAX_WIDTH } from '../constants';
 
-const TableSection = (extendedContainerProps, extendedTableProps) => {
+const tableSection = (extendedContainerProps, extendedTableProps) => {
     return class TableSection extends Component {
         static propTypes = {
             autoWidth: PropTypes.bool,
@@ -71,4 +71,4 @@ const TableSection = (extendedContainerProps, extendedTableProps) => {
     };
 };
 
-export default TableSection;
+export default tableSection;

@@ -70,10 +70,6 @@ export class UpdatePopup extends Component {
       1000);
   }
 
-  recipientTypeSelected = () => {
-
-  }
-
   render() {
     if (!this.props.updatePopupData.isShowed) {
       return null;
@@ -85,7 +81,7 @@ export class UpdatePopup extends Component {
     if (this.props.settingData.recipientTypes) {
       this.props.settingData.recipientTypes.map(v => {
         v['checked'] = false;
-        if (this.props.updatePopupData.editingItem.recipientTypeIds.value.split(",").includes(v.id.toString())) {
+        if (this.props.updatePopupData.editingItem.recipientTypeIds.value.split(',').includes(v.id.toString())) {
           v['checked'] = true;
         }
       });
@@ -101,7 +97,7 @@ export class UpdatePopup extends Component {
               <Label className="form-label required">Notification Type Name</Label>
               <InputField initialValue={this.props.updatePopupData.editingItem.notificationTypeName.value}
                 isSummited={this.state.isSummited}
-                onChange={(value) => this.onChange("notificationTypeName", value)}
+                onChange={value => this.onChange('notificationTypeName', value)}
               />
             </FormGroup>
             <FormGroup>
@@ -109,11 +105,11 @@ export class UpdatePopup extends Component {
               <MultipleSelectField
                 selectedValue={this.state.recipientTypeIds.value}
                 data={this.props.settingData.recipientTypes}
-                keyField={"id"}
-                valueField={"name"}
-                statusField={"checked"}
+                keyField={'id'}
+                valueField={'name'}
+                statusField={'checked'}
                 isSummited={this.state.isSummited}
-                onChange={(value) => this.onChange("recipientTypeIds", value)}
+                onChange={value => this.onChange('recipientTypeIds', value)}
               />
             </FormGroup>
             <FormGroup>
@@ -121,7 +117,7 @@ export class UpdatePopup extends Component {
               <SelectField initialValue={this.props.updatePopupData.editingItem.systemId.value}
                 data={this.props.settingData.notificationSystems}
                 isSummited={this.state.isSummited}
-                onChange={(value) => this.onChange("systemId", value)}
+                onChange={value => this.onChange('systemId', value)}
               />
             </FormGroup>
             <button className="btn-submit" onClick={this.submitHandler}>Submit</button>
@@ -145,6 +141,6 @@ const mapStateToProps = state => {
     updatePopupData,
     updateData
   };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(UpdatePopup);

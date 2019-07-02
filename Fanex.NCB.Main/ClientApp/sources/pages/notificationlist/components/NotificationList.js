@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { NCBBreadcrum } from '../../common/breadcrumbs'
-import ErrorReport from './ErrorReport'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { NCBBreadcrum } from '../../common/breadcrumbs';
+import ErrorReport from './ErrorReport';
 
-import '../../shared/components/font.css'
-import './NotificationList.scss'
+import '../../shared/components/font.css';
+import './NotificationList.scss';
 
 class NotificationList extends Component {
   constructor(props) {
@@ -14,7 +14,7 @@ class NotificationList extends Component {
     };
   }
 
-  updateRemark = (event) => {
+  updateRemark = event => {
     const remark = event.currentTarget.dataset.remark;
     this.setState({
       isRemark: remark
@@ -137,4 +137,4 @@ class NotificationList extends Component {
   }
 }
 
-export default connect()(NotificationList)
+export default connect()(NotificationList);

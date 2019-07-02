@@ -79,7 +79,7 @@ export default class Overlay extends Component {
 
     render() {
         const { className, children } = this.props;
-        const mergedClassName = wrapperClasses.OVERLAY + ' ' + className;       
+        const mergedClassName = wrapperClasses.OVERLAY + ' ' + className;
         const style = {
             display: this.state.isOpening ? 'block' : 'none'
         };

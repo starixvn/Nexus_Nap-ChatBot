@@ -1,7 +1,6 @@
 ﻿import React from 'react';
 import { connect } from 'react-redux';
-import { Form, FormGroup, Label, Button } from 'reactstrap';
-import { Container, Row, Col } from 'reactstrap';
+import { Form, FormGroup, Label, Button, Container, Row, Col } from 'reactstrap';
 import { NCBBreadcrum } from '../../../common/breadcrumbs';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../../actions/index';
@@ -32,7 +31,7 @@ export class AppContainer extends React.Component {
                     finalTemplate: ''
                 },
                 params: []
-            }     
+            }
         };
     }
 
@@ -42,7 +41,7 @@ export class AppContainer extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.template !== this.props.template)  {
+        if (nextProps.template !== this.props.template) {
             this.changeTemplate(nextProps);
         }
     }
@@ -56,7 +55,7 @@ export class AppContainer extends React.Component {
 
     detectParams = text => {
         const paramRegex = /{[^{}]+}/g;
-        const params = [];        
+        const params = [];
 
         let copiedText = text.slice(0);
         let match = copiedText.match(paramRegex);
@@ -64,26 +63,26 @@ export class AppContainer extends React.Component {
         while (match) {
             const matchText = match[0];
             const regex = new RegExp(matchText, 'g');
-            
-            params.push({ name: matchText, value: { value: matchText, isValid: false } });        
+
+            params.push({ name: matchText, value: { value: matchText, isValid: false } });
             copiedText = copiedText.replace(regex, '');
-            match = copiedText.match(paramRegex);    
+            match = copiedText.match(paramRegex);
         }
 
         return params;
-    }   
+    }
 
-    createMiddleTemplate = text=> text.replace(/{/g, '<span class="red">{').replace(/}/g, '}</span>');
+    createMiddleTemplate = text => text.replace(/{/g, '<span class="red">{').replace(/}/g, '}</span>');
 
     getTemplate = () => {
         this.props.getTemplate();
     }
 
     changeTemplate(props) {
-        const titleTemplate = props.template.title;   
+        const titleTemplate = props.template.title;
         const titleMiddleTemplate = this.createMiddleTemplate(titleTemplate);
         const contentTemplate = props.template.content;
-        const contentMiddleTemplate = this.createMiddleTemplate(contentTemplate);        
+        const contentMiddleTemplate = this.createMiddleTemplate(contentTemplate);
         const params = this.detectParams(titleTemplate + contentTemplate);
 
         this.setState(
@@ -92,12 +91,12 @@ export class AppContainer extends React.Component {
                     title: {
                         originTemplate: titleTemplate,
                         middleTemplate: titleMiddleTemplate,
-                        processedTemplate: titleMiddleTemplate                
+                        processedTemplate: titleMiddleTemplate
                     },
                     content: {
                         originTemplate: contentTemplate,
                         middleTemplate: contentMiddleTemplate,
-                        processedTemplate: contentMiddleTemplate              
+                        processedTemplate: contentMiddleTemplate
                     },
                     params: params
                 }
@@ -118,8 +117,8 @@ export class AppContainer extends React.Component {
     processTemplate = (text, params) => {
         let copiedText = text.slice(0);
         params.map(item => {
-            let regex = new RegExp(item.name, 'g');
-            copiedText = copiedText.replace(regex, item.value.value);         
+            const regex = new RegExp(item.name, 'g');
+            copiedText = copiedText.replace(regex, item.value.value);
         });
 
         return copiedText;
@@ -188,7 +187,7 @@ export class AppContainer extends React.Component {
         }
 
         const splittedParams = this.splitArrayIntoTwoColumns(this.state.template.params);
-        
+
         return (
             <div>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="New Notification" />
@@ -215,7 +214,10 @@ export class AppContainer extends React.Component {
                             <SelectField
                                 data={this.props.notificationTemplates}
                                 isSummited={this.state.isSummited}
-                                onChange={notificationTypeId => { this.getTemplate(notificationTypeId); this.onChange('notificationTypeId', notificationTypeId); }}
+                                onChange={notificationTypeId => {
+                                    this.getTemplate(notificationTypeId);
+                                    this.onChange('notificationTypeId', notificationTypeId);
+                                }}
                             />
                         </FormGroup>
                         <FormGroup>
@@ -224,7 +226,7 @@ export class AppContainer extends React.Component {
                                     !this.state.manuallyEditted &&
                                     <span className="icon-edit" onClick={() => !this.state.manuallyEditted && this.editManually()} />
                                 }
-                            </Label>                      
+                            </Label>
                             <div className="template-title-div">
                                 {
                                     !this.state.manuallyEditted &&
@@ -237,7 +239,7 @@ export class AppContainer extends React.Component {
                                     <InputField initialValue={this.state.template.title.finalTemplate}
                                         isSummited={this.state.isSummited}
                                         onChange={value => this.editTitle(value)}
-                                    />  
+                                    />
                                 }
                             </div>
                         </FormGroup>
@@ -259,8 +261,8 @@ export class AppContainer extends React.Component {
                                     this.state.manuallyEditted &&
                                     <TextField initialValue={this.state.template.content.finalTemplate}
                                         isSummited={this.state.isSummited}
-                                        onChange={value => this.onChange("remark", value)}
-                                        required                                      
+                                        onChange={value => this.onChange('remark', value)}
+                                        required
                                     />
                                 }
                             </div>
@@ -274,19 +276,19 @@ export class AppContainer extends React.Component {
                                     <Container>
                                         {
                                             splittedParams.map((items, rowIndex) => {
-                                                return <Row key={rowIndex} className="row-params">
+                                                return (<Row key={rowIndex} className="row-params">
                                                     {
                                                         items.map((item, colIndex) => {
                                                             return <Col key={colIndex} className="col-params">
                                                                 <Label className="form-label">{item.name}</Label>
                                                                 <InputField initialValue={item.value.value}
                                                                     isSummited={this.state.isSummited}
-                                                                    onChange={(value) => this.onChangeParam(item.name, value)}
+                                                                    onChange={value => this.onChangeParam(item.name, value)}
                                                                 />
                                                             </Col>;
                                                         })
                                                     }
-                                                </Row>
+                                                </Row>);
                                             })
                                         }
                                     </Container>
@@ -313,6 +315,6 @@ const mapStateToProps = state => {
         notificationTemplates: state.notificationTemplates,
         template: state.template
     };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppContainer);

@@ -27,7 +27,7 @@ export class TextField extends Component {
     }
 
     isValid = () => this.state.value !== '';
-    
+
     isShowInvalid = () => {
         this.props.required && this.props.isSummited && !this.isValid();
     }

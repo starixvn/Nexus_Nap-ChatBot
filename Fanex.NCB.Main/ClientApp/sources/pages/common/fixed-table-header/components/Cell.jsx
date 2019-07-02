@@ -19,20 +19,21 @@ class Cell extends Component {
         sortable: false,
         sorting: false,
         asc: true,
-        onClick:  function() {} // nothing by default
+        // nothing by default
+        onClick: function () { }
     }
 
     renderSorting(sorting, asc) {
-        return <span className={`${sorting ? (asc ? 'asc' : 'desc' ) : ''}`}></span>
+        return <span className={`${sorting ? (asc ? 'asc' : 'desc') : ''}`}></span>;
     }
 
     renderHeader(rest) {
         const { sortable, sorting, asc, onClick } = this.props;
-        return sortable ? <th {...rest} className={`sortable ${sorting ? 'sorting' : ''}`} onClick={onClick}>                   
-                {this.props.children}
-                {this.renderSorting(sorting, asc)}
-              </th>
-            : <th {...rest}>{this.props.children}</th>
+        return (sortable ? (<th {...rest} className={`sortable ${sorting ? 'sorting' : ''}`} onClick={onClick}>
+            {this.props.children}
+            {this.renderSorting(sorting, asc)}
+        </th>)
+            : <th {...rest}>{this.props.children}</th>);
     }
 
     render() {

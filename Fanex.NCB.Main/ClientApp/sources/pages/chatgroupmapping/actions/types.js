@@ -12,6 +12,6 @@ const types = {
     UPDATE_POPUP_DATA,
     FILTERED_RECIPIENT,
     UPDATE_DATA
-}
+};
 
-export default types
+export default types;

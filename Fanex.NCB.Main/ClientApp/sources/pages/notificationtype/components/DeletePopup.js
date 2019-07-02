@@ -44,7 +44,7 @@ const mapStateToProps = state => {
   const { deletePopupData } = state;
   return {
     deletePopupData
-  }
-}
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeletePopup);

@@ -6,7 +6,7 @@ export const openEditPopup = item => {
         isShowed: true,
         editingItem: {
             groupID: item.groupID,
-            conversationID: item.conversationID, 
+            conversationID: item.conversationID,
             mappingStatusId: item.mappingStatusID,
             mappingStatusName: item.mappingStatusName,
             botName: item.botName,
@@ -28,14 +28,14 @@ export const openEditPopup = item => {
                 value: item.remark,
                 isValid: item.remark !== null
             }
-        } 
+        }
     };
 
     return {
         type: types.UPDATE_POPUP_DATA,
         data: popupData
     };
-}
+};
 
 export const closeEditPopup = () => {
     const popupData = {
@@ -47,11 +47,11 @@ export const closeEditPopup = () => {
         type: types.UPDATE_POPUP_DATA,
         data: popupData
     };
-}
+};
 
 const actions = {
     openEditPopup,
     closeEditPopup
-}
+};
 
-export default actions
+export default actions;

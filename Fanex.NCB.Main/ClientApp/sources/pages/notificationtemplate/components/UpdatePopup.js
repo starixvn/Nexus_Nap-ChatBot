@@ -29,6 +29,6 @@ const mapStateToProps = state => {
         updatePopupData,
         updateResponseData
     };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(UpdatePopup);

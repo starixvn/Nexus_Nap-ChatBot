@@ -15,7 +15,7 @@ export const openDeletePopup = (notificationTemplateId, notificationTemplateName
 }
 
 export const closeDeletePopup = () => {
-    let deletePopupData = {
+    const deletePopupData = {
         isShowed: false,
         content: ''
     }
@@ -24,7 +24,7 @@ export const closeDeletePopup = () => {
         type: types.DELETE_POPUP_DATA,
         data: deletePopupData
     };
-}
+};
 
 // Update Popup
 export const openEditPopup = item => {
@@ -56,7 +56,7 @@ export const openEditPopup = item => {
         type: types.UPDATE_POPUP_DATA,
         data: popupData
     };
-}
+};
 
 export const openNewPopup = item => {
     const newEditPopupData = {
@@ -87,7 +87,7 @@ export const openNewPopup = item => {
         type: types.UPDATE_POPUP_DATA,
         data: newEditPopupData
     };
-}
+};
 
 export const closeEditPopup = () => {
     const popupData = {
@@ -99,7 +99,7 @@ export const closeEditPopup = () => {
         type: types.UPDATE_POPUP_DATA,
         data: popupData
     };
-}
+};
 
 const actions = {
     openDeletePopup,

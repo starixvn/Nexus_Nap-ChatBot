@@ -5,7 +5,7 @@ import { SCROLLBAR_WIDTH, MAX_WIDTH } from '../../constants';
 import createTableSection from '../tableSection';
 
 const defaultProps = {
-    tableClass: "table",
+    tableClass: 'table',
     width: MAX_WIDTH,
     maxWidth: MAX_WIDTH,
     minWidth: undefined,

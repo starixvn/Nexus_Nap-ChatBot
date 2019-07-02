@@ -15,7 +15,7 @@ const scrollToTop = (element, scrollDuration) => {
             clearInterval(scrollInterval);
         }
     }, 15);
-}
+};
 
 const debounce = (func, wait) => {
     let timeout;
@@ -30,7 +30,7 @@ const debounce = (func, wait) => {
         clearTimeout(timeout);
         timeout = setTimeout(later, wait || DEFAULT_MILLISECOND_FOR_WAITING);
     };
-}
+};
 
 class Table extends Component {
     constructor(props) {
@@ -84,7 +84,6 @@ class Table extends Component {
         bodyHeight: 0,
         autoHeight: true
     }
-
 
     _getColumnsWidth(headerRows) {
         const headerIsArray = Array.isArray(headerRows);
@@ -158,7 +157,7 @@ class Table extends Component {
             this.setState({ columnsWidth: this._getColumnsWidth(this.props.header) });
         }
 
-        if (prevProps.body != this.props.body) {
+        if (prevProps.body !== this.props.body) {
             scrollToTop(this.bodyWrapper, 200);
         }
     }
@@ -192,7 +191,7 @@ class Table extends Component {
         let sumOfColumnWidth = autoWidth ? this.state.maxWidth : width;
         sumOfColumnWidth = sumOfColumnWidth - SCROLLBAR_WIDTH;
 
-        const newColumnsWidth = this.columnWidthSum && this.state.columnsWidth.map(cellWidth => sumOfColumnWidth / this.columnWidthSum * cellWidth)
+        const newColumnsWidth = this.columnWidthSum && this.state.columnsWidth.map(cellWidth => sumOfColumnWidth / this.columnWidthSum * cellWidth);
 
         return newColumnsWidth;
     }

@@ -42,4 +42,4 @@ const reducers = {
     updateData
 };
 
-export default reducers
+export default reducers;

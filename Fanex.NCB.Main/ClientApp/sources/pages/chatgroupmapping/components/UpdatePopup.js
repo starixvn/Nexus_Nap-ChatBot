@@ -17,7 +17,7 @@ const CONFIRM_UPDATE = 2;
 
 export class UpdatePopup extends Component {
     constructor(props) {
-        super(props);        
+        super(props);
 
         this.state = {
             groupID: this.props.updatePopupData.editingItem.groupID,
@@ -33,7 +33,7 @@ export class UpdatePopup extends Component {
             confirmContent: '',
             confirmType: 0
         };
-    }  
+    }
 
     submitHandler = e => {
         e.preventDefault();
@@ -50,7 +50,7 @@ export class UpdatePopup extends Component {
             }
             else {
                 this.submitData();
-            }       
+            }
         }
     }
 
@@ -98,7 +98,7 @@ export class UpdatePopup extends Component {
         }
     }
 
-    confirmHandler = (isYes) => {
+    confirmHandler = isYes => {
         if (isYes) {
             this.state.confirmType === CONFIRM_CLOSE && this.props.closeUpdatePopupHandler();
             this.state.confirmType === CONFIRM_UPDATE && this.submitData();
@@ -117,20 +117,20 @@ export class UpdatePopup extends Component {
         });
     }
 
-    render() {   
+    render() {
         if (!this.props.updatePopupData.isShowed || !this.props.filteredRecipients) {
             return null;
         }
 
         const editingItem = this.props.updatePopupData.editingItem;
         const licenseeStatuses = [];
-        const recipientIds = this.state.recipientIds.value.split(",");
+        const recipientIds = this.state.recipientIds.value.split(',');
         const filteredRecipients = this.props.filteredRecipients;
-        filteredRecipients && filteredRecipients.map((v, i) => {
-            let isChecked = recipientIds.includes(v.id.toString());
+        filteredRecipients && filteredRecipients.map(v => {
+            const isChecked = recipientIds.includes(v.id.toString());
             v['checked'] = isChecked ? true : false;
             isChecked && v.status && licenseeStatuses.push(v.status);
-        });    
+        });
 
         return (
             <Modal isOpen wrapClassName="new-notification-type">
@@ -140,7 +140,7 @@ export class UpdatePopup extends Component {
                     <Form className="form-edit">
                         <FormGroup>
                             <Label className="form-label ">{Labels.BotName}</Label>
-                            <Label className="form-label">{editingItem.botName}</Label>      
+                            <Label className="form-label">{editingItem.botName}</Label>
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label ">{Labels.GroupName}</Label>
@@ -159,7 +159,10 @@ export class UpdatePopup extends Component {
                             <SelectField initialValue={editingItem.recipientTypeId.value}
                                 data={this.props.settingData.recipientTypes}
                                 isSummited={this.state.isSummited}
-                                onChange={recipientTypeId => { this.filterRecipients(recipientTypeId.value); this.onChange('recipientTypeId', recipientTypeId); }}
+                                onChange={recipientTypeId => {
+                                    this.filterRecipients(recipientTypeId.value);
+                                    this.onChange('recipientTypeId', recipientTypeId);
+                                }}
                             />
                         </FormGroup>
                         <FormGroup>
@@ -178,7 +181,7 @@ export class UpdatePopup extends Component {
                         <FormGroup>
                             <Label className="form-label ">{Labels.LicenseeStatus}</Label>
                             <Label className="form-label">{CommonFunctions.getLicenseeStatus(licenseeStatuses.join(', '))}</Label>
-                        </FormGroup>               
+                        </FormGroup>
                         <FormGroup>
                             <Label className="form-label">{Labels.Remark}</Label>
                             <TextField initialValue={editingItem.remark.value ? editingItem.remark.value : ''}
@@ -187,7 +190,7 @@ export class UpdatePopup extends Component {
                                 maxLength='200'
                                 required={false}
                                 placeholder={Labels.RemarkPlaceHolder}
-                            />         
+                            />
                         </FormGroup>
                         <button disabled={!this.state.isChanged} className="btn-submit" onClick={this.submitHandler}>{Labels.Save}</button>
                     </Form>
@@ -216,6 +219,6 @@ const mapStateToProps = state => {
         updateData,
         filteredRecipients
     };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(UpdatePopup);

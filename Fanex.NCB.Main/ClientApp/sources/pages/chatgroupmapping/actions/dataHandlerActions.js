@@ -9,7 +9,7 @@ export const setSettings = data => {
         type: types.SETTING_DATA,
         data: data
     };
-}
+};
 
 export const getSettings = () => {
     const url = Site.resolveClientUrl('ChatGroupMapping/GetSettings');
@@ -18,7 +18,7 @@ export const getSettings = () => {
             dispatch(setSettings(response.data));
         }).catch(() => { errorResponseHandler(); });
     };
-}
+};
 
 // Grid
 export const setGridParams = value => {
@@ -26,14 +26,14 @@ export const setGridParams = value => {
         type: types.GRID_PARAMS,
         data: value
     };
-}
+};
 
 export const setGridData = data => {
     return {
         type: types.GRID_DATA,
         data: data
     };
-}
+};
 
 export const getGridData = params => {
     const url = Site.resolveClientUrl('ChatGroupMapping/GetAll');
@@ -42,7 +42,7 @@ export const getGridData = params => {
             dispatch(setGridData(response.data));
         }).catch(() => { errorResponseHandler(); });
     };
-}
+};
 
 // Edit Popup
 export const setFilterRecipients = data => {
@@ -50,27 +50,27 @@ export const setFilterRecipients = data => {
         type: types.FILTERED_RECIPIENT,
         data: data
     };
-}
+};
 
 export const filterRecipients = (recipients, recipientTypeId) => {
     const filteredRecipients = [];
     recipientTypeId && recipients.map(item => {
-        if (item.recipientTypeId === parseInt(recipientTypeId)) {
+        if (item.recipientTypeId === parseInt(recipientTypeId, 10)) {
             filteredRecipients.push(item);
         }
     });
-    
+
     return dispatch => {
         dispatch(setFilterRecipients(filteredRecipients));
     };
-}
+};
 
 export const setUpdateData = data => {
     return {
         type: types.UPDATE_DATA,
         data: data
     };
-}
+};
 
 export const update = params => {
     const url = Site.resolveClientUrl('ChatGroupMapping/Edit');
@@ -88,13 +88,13 @@ export const update = params => {
             errorResponseHandler();
         }
     };
-}
+};
 
 export const refreshUpdateData = () => {
     return dispatch => {
         dispatch(setUpdateData(null));
     };
-}
+};
 
 const actions = {
     setSettings,
@@ -107,6 +107,6 @@ const actions = {
     setUpdateData,
     update,
     refreshUpdateData
-}
+};
 
-export default actions
+export default actions;

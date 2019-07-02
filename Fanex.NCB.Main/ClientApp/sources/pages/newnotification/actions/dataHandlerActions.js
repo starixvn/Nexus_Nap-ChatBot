@@ -9,7 +9,7 @@ export const setSettings = data => {
         type: types.SETTING_DATA,
         data: data
     };
-}
+};
 
 export const getSettings = () => {
     const url = Site.resolveClientUrl('NewNotification/GetSettings');
@@ -26,7 +26,7 @@ export const getSettings = () => {
             dispatch(setSettings(data)); //test
         });
     };
-}
+};
 
 // Notification Type
 export const setNotificationTypes = data => {
@@ -34,7 +34,7 @@ export const setNotificationTypes = data => {
         type: types.NOTIFICATION_TYPE_DATA,
         data: data
     };
-}
+};
 
 export const getNotificationTypes = () => {
     const url = Site.resolveClientUrl('NewNotification/GetNotificationTypes');
@@ -48,7 +48,7 @@ export const getNotificationTypes = () => {
             dispatch(setNotificationTypes(data));
         }); //test
     };
-}
+};
 
 // Notification Template
 export const setTemplateTypes = data => {
@@ -56,7 +56,7 @@ export const setTemplateTypes = data => {
         type: types.TEMPLATE_TYPE_DATA,
         data: data
     };
-}
+};
 
 export const getTemplateTypes = () => {
     const url = Site.resolveClientUrl('NewNotification/GetNotificationTemplate');
@@ -70,7 +70,7 @@ export const getTemplateTypes = () => {
             dispatch(setTemplateTypes(data));
         }) //test
     }
-}
+};
 
 // Template
 export const setTemplate = data => {
@@ -78,7 +78,7 @@ export const setTemplate = data => {
         type: types.TEMPLATE_DATA,
         data: data
     };
-}
+};
 
 export const getTemplate = () => {
     const url = Site.resolveClientUrl('NewNotification/GetTemplate');
@@ -97,7 +97,7 @@ export const getTemplate = () => {
             dispatch(setTemplate(data));
         });
     };
-}
+};
 
 const actions = {
     setSettings,

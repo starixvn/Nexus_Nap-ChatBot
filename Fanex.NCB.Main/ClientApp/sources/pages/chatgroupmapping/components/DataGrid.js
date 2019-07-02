@@ -11,7 +11,7 @@ import NoDataTitle from '../../common/no-data-title/NoDataTitle';
 export class DataGrid extends Component {
     constructor(props) {
         super(props);
-    }   
+    }
 
     onPaging = (pageIndex, pageSize) => {
         const params = { ...this.props.gridParams };
@@ -23,7 +23,7 @@ export class DataGrid extends Component {
     }
 
     openEditPopup = item => {
-        if(!CommonFunctions.isBotRemoved(item.mappingStatusID)){
+        if (!CommonFunctions.isBotRemoved(item.mappingStatusID)) {
             this.props.filterRecipients(this.props.settingData.recipients, item.recipientTypeID);
             this.props.openEditPopup(item);
         }
@@ -65,7 +65,7 @@ export class DataGrid extends Component {
                 <Cell>{item.remark}</Cell>
                 <Cell className="text-center col-action">
                     <div>
-                        <span className={this.getEditClassNames(item)} id={'edit-' + index} onClick={() => this.openEditPopup(item)} />                        
+                        <span className={this.getEditClassNames(item)} id={'edit-' + index} onClick={() => this.openEditPopup(item)} />
                     </div>
                 </Cell>
             </Row>);
@@ -106,7 +106,7 @@ export class DataGrid extends Component {
                     containerPadding={0}
                 />
             </div>
-        );   
+        );
     }
 }
 
@@ -119,6 +119,6 @@ const mapStateToProps = state => {
         gridData,
         settingData
     };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataGrid);

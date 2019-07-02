@@ -11,4 +11,4 @@ const reducers = {
     updatePopupData
 };
 
-export default reducers
+export default reducers;

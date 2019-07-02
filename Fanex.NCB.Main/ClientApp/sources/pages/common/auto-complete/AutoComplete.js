@@ -86,7 +86,7 @@ export default class AutoComplete extends Component {
 
     _onSelect = selectedItem => {
         const { onSelect } = this.props;
-        
+
         this.input.value = typeof (selectedItem) === 'object' ? selectedItem.name : selectedItem;
         onSelect && onSelect(this.input.value);
 
@@ -104,7 +104,7 @@ export default class AutoComplete extends Component {
         });
     }
 
-    _onChange = _ => {
+    _onChange = () => {
         const value = (this.input.value || '').trim();
 
         const { onInput } = this.props;

@@ -50,6 +50,6 @@ const mapStateToProps = state => {
     updatePopupData,
     deletePopupData
   };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppContainer);

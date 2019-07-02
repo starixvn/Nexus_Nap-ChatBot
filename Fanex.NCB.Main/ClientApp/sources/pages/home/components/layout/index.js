@@ -17,7 +17,7 @@ export class Layout extends React.PureComponent {
     };
   }
 
-  onMenuChange = (url) => {
+  onMenuChange = url => {
     this.setState({
       currentUrl: url
     });

@@ -65,7 +65,7 @@ export class Filter extends Component {
             });
 
             const licenseeStatuses = nextProps.settingData.licenseeStatuses;
-            const selectedlicenseeStatuses= [];
+            const selectedlicenseeStatuses = [];
             licenseeStatuses.map(v => {
                 v['checked'] = true;
                 selectedlicenseeStatuses.push(v['id']);
@@ -120,7 +120,10 @@ export class Filter extends Component {
         };
     }
 
-    checkValidParams = () => this.state.botNames.value !== '' && this.state.recipientTypes.value !== '' && this.state.mappingStatuses.value !== '' && this.state.licenseeStatuses.value !== '';
+    checkValidParams = () => this.state.botNames.value !== '' &&
+        this.state.recipientTypes.value !== '' &&
+        this.state.mappingStatuses.value !== '' &&
+        this.state.licenseeStatuses.value !== '';
 
     submitHandler = e => {
         e.preventDefault();
@@ -129,10 +132,10 @@ export class Filter extends Component {
         this.props.setGridParams(params);
         this.props.getGridData(params);
     }
-  
-    render() {     
+
+    render() {
         return (
-            <Form className="form-filter">         
+            <Form className="form-filter">
                 <FormGroup>
                     <Label className="form-label">{Labels.RecipientType}</Label>
                     <MultipleSelectField
@@ -146,8 +149,8 @@ export class Filter extends Component {
                         isSummited={false}
                         texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: '# selected' }}
                         isAllTextShown
-                        onChange={(value) => this.onChange('recipientTypes', value)}
-                    />       
+                        onChange={value => this.onChange('recipientTypes', value)}
+                    />
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label">{Labels.Recipient}</Label>
@@ -187,7 +190,7 @@ export class Filter extends Component {
                         isSummited={false}
                         texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: '# selected' }}
                         isAllTextShown
-                        onChange={(value) => this.onChange('mappingStatuses', value)}
+                        onChange={value => this.onChange('mappingStatuses', value)}
                     />
                 </FormGroup>
                 <FormGroup>
@@ -207,18 +210,18 @@ export class Filter extends Component {
                     />
                 </FormGroup>
                 <button disabled={!this.checkValidParams()} className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
-            </Form>  
+            </Form>
         );
     }
-}
+};
 
-const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch)
+const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
     const { settingData } = state;
-    return { 
+    return {
         settingData
     };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Filter);

@@ -1,4 +1,4 @@
-﻿export default {    
+﻿export default {
     All: 'All',
     Action: 'Action',
     BotName: 'Bot Name',

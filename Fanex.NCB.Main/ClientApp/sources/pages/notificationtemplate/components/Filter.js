@@ -66,7 +66,7 @@ const mapStateToProps = state => {
     const { settingData } = state;
     return {
         settingData
-    }
-}
+    };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Filter);

@@ -9,7 +9,7 @@ export class App extends React.PureComponent {
       modal: false
     };
   }
- 
+
   toggle = () => {
     this.setState({
       modal: !this.state.modal
@@ -18,10 +18,10 @@ export class App extends React.PureComponent {
 
   render() {
     return (
-       <NotificationList
-           isModal={this.state.modal}
-           toggleHandler={this.toggle}
-       />
+      <NotificationList
+        isModal={this.state.modal}
+        toggleHandler={this.toggle}
+      />
     );
   }
 }

@@ -10,9 +10,7 @@ export class Sidebar extends React.Component {
         super(props);
     }
 
-    getMenuClassName = (name) => {
-        return 'icon-' + name.replace(/ /g, '-').toLowerCase();
-    }
+    getMenuClassName = name => 'icon-' + name.replace(/ /g, '-').toLowerCase();
 
     getMenu() {
         const menu = AppData ? AppData.menus : null;

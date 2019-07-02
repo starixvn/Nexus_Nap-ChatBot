@@ -6,7 +6,7 @@ export const updateActiveRowIndex = value => {
         type: types.ACTIVE_ROW_INDEX,
         data: value
     };
-}
+};
 
 // Delete Popup
 export const openDeletePopup = (notificationTypeId, notificationTypeName) => {
@@ -20,10 +20,10 @@ export const openDeletePopup = (notificationTypeId, notificationTypeName) => {
         type: types.DELETE_POPUP_DATA,
         data: deletePopupData
     };
-}
+};
 
 export const closeDeletePopup = () => {
-    let deletePopupData = {
+    const deletePopupData = {
         isShowed: false,
         content: ''
     };
@@ -32,7 +32,7 @@ export const closeDeletePopup = () => {
         type: types.DELETE_POPUP_DATA,
         data: deletePopupData
     };
-}
+};
 
 // Update Popup
 export const openEditPopup = item => {
@@ -62,7 +62,7 @@ export const openEditPopup = item => {
         type: types.UPDATE_POPUP_DATA,
         data: newEditPopupData
     };
-}
+};
 
 export const openNewPopup = () => {
     const newEditPopupData = {
@@ -90,7 +90,7 @@ export const openNewPopup = () => {
         type: types.UPDATE_POPUP_DATA,
         data: newEditPopupData
     };
-}
+};
 
 export const closeNewEditPopup = () => {
     const newEditPopupData = {
@@ -99,12 +99,12 @@ export const closeNewEditPopup = () => {
         popupTitle: '',
         successMsg: ''
     };
-    
+
     return {
         type: types.UPDATE_POPUP_DATA,
         data: newEditPopupData
     };
-}
+};
 
 const actions = {
     updateActiveRowIndex,

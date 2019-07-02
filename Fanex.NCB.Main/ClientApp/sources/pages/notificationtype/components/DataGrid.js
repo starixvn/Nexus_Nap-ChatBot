@@ -54,8 +54,7 @@ export class DataGrid extends Component {
     const rows = [];
     const startIndex = (pageIndex - 1) * pageSize + 1;
     data.map((item, index) => {
-      const recipientTypeNames = item.recipientTypes.map(r => r.name)
-
+      const recipientTypeNames = item.recipientTypes.map(r => r.name);
       rows.push(<Row key={`body${index}`} className={index === activeRowIndex ? 'active' : ''}>
         <Cell className="text-center">{index + startIndex}</Cell>
         <Cell>{item.notificationTypeName}</Cell>
@@ -117,6 +116,6 @@ const mapStateToProps = state => {
     gridData,
     activeRowIndex
   };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataGrid);

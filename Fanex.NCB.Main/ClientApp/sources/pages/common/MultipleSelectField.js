@@ -16,7 +16,7 @@ export class MultipleSelectField extends Component {
         });
     }
 
-    isValid = value => value !== "";
+    isValid = value => value !== '';
 
     render() {
         return (

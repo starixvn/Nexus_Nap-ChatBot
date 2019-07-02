@@ -43,7 +43,7 @@ export class DataGrid extends Component {
                 <Cell className="text-center col-action">
                     <div>
                         <span className="icon-edit" id={'edit-' + index} onClick={() => this.openEditPopup(item, index)} />
-                        <UncontrolledTooltip placement="top" target={"edit-" + index}>{Labels.Edit}</UncontrolledTooltip>
+                        <UncontrolledTooltip placement="top" target={'edit-' + index}>{Labels.Edit}</UncontrolledTooltip>
                         <span className="icon-delete" id={'delete-' + index} onClick={() => this.openDeletePopup(index, item.templateId, item.templateName)} />
                         <UncontrolledTooltip placement="top" target={'delete-' + index}>Delete</UncontrolledTooltip>
                     </div>
@@ -94,6 +94,6 @@ const mapStateToProps = state => {
         gridParams,
         gridData
     };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataGrid);

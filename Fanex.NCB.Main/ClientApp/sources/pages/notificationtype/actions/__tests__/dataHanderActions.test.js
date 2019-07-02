@@ -58,7 +58,7 @@ describe('dataHanderActions', () => {
             expect(axios.get).toHaveBeenLastCalledWith(expectedUrl, { params: expectedParams });
         });
 
-        it('dispatch the correct action', (done) => {
+        it('dispatch the correct action', done => {
             // Arrange
             const fakeResponse = { data: 'some data' };
             axios.get = jest.fn(() => Promise.resolve(fakeResponse));
@@ -110,7 +110,7 @@ describe('dataHanderActions', () => {
             expect(axios.get).toHaveBeenCalledWith(expectedUrl);
         });
 
-        it('dispatch the correct action', (done) => {
+        it('dispatch the correct action', done => {
             // Arrange
             const fakeResponse = { data: "some data" };
             axios.get = jest.fn(() => Promise.resolve(fakeResponse));
@@ -165,7 +165,7 @@ describe('dataHanderActions', () => {
             });
         });
 
-        it('dispatch the correct action', (done) => {
+        it('dispatch the correct action', done => {
             // Arrange
             const fakeResponse = { data: 'some data' };
             axios.post = jest.fn(() => Promise.resolve(fakeResponse));
@@ -267,10 +267,10 @@ describe('dataHanderActions', () => {
             });
         });
 
-        it('dispatch the correct action', (done) => {
+        it('dispatch the correct action', done => {
             // Arrange
             const store = mockStore();
-            let fakeResponse = { data: 'some data' };
+            const fakeResponse = { data: 'some data' };
             axios.post = jest.fn(() => Promise.resolve(fakeResponse));
             const expectedAction = [
                 {
