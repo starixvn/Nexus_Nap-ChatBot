@@ -70,6 +70,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SonarQube", "SonarQube", "{4D1CE239-F640-49CE-A6D6-B4AA61719BD1}"
 	ProjectSection(SolutionItems) = preProject
 		SonarQube\FANEX.NCBCSharp.ruleset = SonarQube\FANEX.NCBCSharp.ruleset
+		SonarQube\NAPCHATBOTCSharp.ruleset = SonarQube\NAPCHATBOTCSharp.ruleset
 		SonarQube\SolutionBinding.sqconfig = SonarQube\SolutionBinding.sqconfig
 	EndProjectSection
 EndProject

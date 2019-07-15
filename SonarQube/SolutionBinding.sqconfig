@@ -1,7 +1,8 @@
 {
   "ServerUri": "http://sonarqube.nexdev.net/",
   "Organization": null,
-  "ProjectKey": "FANEX.NCB",
+  "ProjectKey": "NAPCHATBOT",
+  "ProjectName": "Nexus / NAP ChatBot",
   "Profiles": {
     "CSharp": {
       "ProfileKey": "cs-sonar-way-80515",

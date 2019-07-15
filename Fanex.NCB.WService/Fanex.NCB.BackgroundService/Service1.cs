@@ -19,10 +19,12 @@ namespace Fanex.NCB.BackgroundService
 
         protected override void OnStart(string[] args)
         {
+            throw new NotSupportedException();
         }
 
         protected override void OnStop()
         {
+            throw new NotSupportedException();
         }
     }
 }
