@@ -10,15 +10,13 @@ function generateConfig(environment) {
             extensions: ['.js', '.jsx']
         },
         entry: {
-                     
-            [`${buildPath}/newnotification/newnotification`]: pathConfig.paths.newnotification,          
-            [`${buildPath}/notificationlist/notificationlist`]: pathConfig.paths.notificationlist,          
-            [`${buildPath}/notificationtemplate/notificationtemplate`]: pathConfig.paths.notificationtemplate,          
-            [`${buildPath}/chatgroupmapping/chatgroupmapping`]: pathConfig.paths.chatgroupmapping,          
+            [`${buildPath}/newnotification/newnotification`]: pathConfig.paths.newnotification,
+            [`${buildPath}/notificationlist/notificationlist`]: pathConfig.paths.notificationlist,
+            [`${buildPath}/notificationtemplate/notificationtemplate`]: pathConfig.paths.notificationtemplate,
+            [`${buildPath}/chatgroupmapping/chatgroupmapping`]: pathConfig.paths.chatgroupmapping,
             [`${buildPath}/notificationtype/notificationtype`]: pathConfig.paths.notificationtype,
             [`${buildPath}/home/home`]: pathConfig.paths.home,
             [`${buildPath}/login/login`]: pathConfig.paths.login,
-            
         },
         output: {
             path: pathConfig.projectRoot,
@@ -30,30 +28,30 @@ function generateConfig(environment) {
                 {
                     test: /\.(js|jsx)$/,
                     loader: ["babel-loader"],
-                    exclude: /node_modules/               
+                    exclude: /node_modules/
                 },
                 {
                     test: /\.(png|jpg|jpeg|gif|svg)$/,
                     use: [{
                         loader: 'url-loader',
-                        options: { 
+                        options: {
                             limit: 10, // Convert images < 8kb to base64 strings
                             name: '[hash]-[name].[ext]',
                             outputPath: '/wwwroot/images/',
                             publicPath: '/images/'
-                        } 
+                        }
                     }]
                 },
                 {
                     test: /\.(woff|woff2|eot|ttf)$/,
                     use: [{
                         loader: 'url-loader',
-                        options: { 
+                        options: {
                             limit: 10, // Convert images < 8kb to base64 strings
                             name: '[hash]-[name].[ext]',
                             outputPath: '/wwwroot/fonts/',
                             publicPath: '/fonts/'
-                        } 
+                        }
                     }]
                 }
             ]
@@ -79,9 +77,9 @@ function generateConfig(environment) {
         ],
         optimization: {
             minimizer: [
-             new UglifyJsPlugin({
-                 sourceMap: true
-             })
+                new UglifyJsPlugin({
+                    sourceMap: true
+                })
             ],
             splitChunks: {
                 chunks: 'all',
@@ -97,7 +95,7 @@ function generateConfig(environment) {
                     vendors: false,
                     reactVendor: {
                         name: 'reactvendor',
-                        test: /[\\/]node_modules[\\/](react|react-dom|redux|react-redux|redux-thunk|redux-logger|prop-types|axios)[\\/]/,
+                        test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
                         minChunks: 2,
                         priority: -10
                     },
@@ -112,7 +110,7 @@ function generateConfig(environment) {
                         test: /[\\/]node_modules[\\/](react-multiselect)[\\/]/,
                         minChunks: 2,
                         priority: -10
-                    } 
+                    }
                 }
             }
         }

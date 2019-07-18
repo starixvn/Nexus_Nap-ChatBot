@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Layout render sidebar is expanded as default 1`] = `
+<div
+  className="page sidebar-expanded"
+>
+  <Connect(Sidebar)
+    onChange={[Function]}
+  />
+  <Connect(Content)
+    collapseExpandHandler={[Function]}
+    contentUrl="/NewNotification/Index"
+    isSidebarExpanded={true}
+  />
+</div>
+`;

@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection; 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -29,6 +29,7 @@ namespace Fanex.NCB.Main
     public class Startup
     {
         private readonly ILogger<Startup> _logger;
+
         public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
             Configuration = configuration;
@@ -45,9 +46,9 @@ namespace Fanex.NCB.Main
                     .AddUriAvailable(appSettings.UserResourceApi, "UserResourceApi")
                     .AddUriAvailable(appSettings.TokenUrl, "TokenUrl")
                     .AddUriAvailable(appSettings.SkypeServiceUrl, "SkypeServiceUrl")
-                    
+
                     .AddMySql(Configuration.GetConnectionString("ChatBotDB"), "ChatBotDB", HealthStatus.Degraded,
-              tags: new [] { "db", "sql", "myserver" });
+              tags: new[] { "db", "sql", "myserver" });
 
             services.AddHealthChecksUI();
             services.AddSingleton<IConfiguration>(Configuration);
@@ -82,7 +83,6 @@ namespace Fanex.NCB.Main
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-
             if (env.IsProduction())
             {
                 app.UseAspNetCoreExceptionHandler("NCB.Main");
@@ -101,7 +101,7 @@ namespace Fanex.NCB.Main
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=NewNotification}/{action=Index}/{id?}");
             });
             app.UseHealthChecks("/health", new HealthCheckOptions()
             {

@@ -1,4 +1,4 @@
-const _rootUrl = window.rootUrl || '/';
+const _rootUrl = document.getElementById('root-url').value;
 let _xsrfToken = null;
 export default class Site {
     static getXsrfToken() {

@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Content render sidebar is expanded 1`] = `
+<div
+  className="main-container"
+>
+  <Connect(Header)
+    isSidebarExpanded={true}
+  />
+  <div
+    className="content"
+  >
+    <iframe
+      className="main-content"
+    />
+  </div>
+</div>
+`;
+
+exports[`Content render sidebar is not expanded 1`] = `
+<div
+  className="main-container"
+>
+  <Connect(Header)
+    isSidebarExpanded={false}
+  />
+  <div
+    className="content"
+  >
+    <iframe
+      className="main-content"
+    />
+  </div>
+</div>
+`;

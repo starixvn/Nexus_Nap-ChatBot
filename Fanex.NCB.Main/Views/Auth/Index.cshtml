@@ -23,26 +23,25 @@
         <link rel="stylesheet" href="~/pro/pages/login/login.chunk.css" asp-append-version="true" />
     </environment>
 </head>
-<body>   
-   <div id="login"></div>     
+<body>
+    <div id="login"></div>
+    <input type="hidden" id="root-url" value="@Url.Content("~/")" />
 
     <script>
         window._AppData = {
             invalidLogin: @Html.Raw(JsonConvert.SerializeObject(invalidLogin))
         };
-        window.rootUrl = '@Url.Content("~/")';
-    </script>   
+    </script>
 
-   <partial name="_CookieConsentPartial" /> 
-    
+    <partial name="_CookieConsentPartial" />
+
     <environment include="Development">
-        <script src="~/dev/common/reactvendor.chunk.js" asp-append-version="true"></script>          
+        <script src="~/dev/common/reactvendor.chunk.js" asp-append-version="true"></script>
         <script src="~/dev/pages/login/login.chunk.js" asp-append-version="true"></script>
-        
     </environment>
     <environment exclude="Development">
-        <script src="~/pro/common/reactvendor.chunk.js" asp-append-version="true"></script>  
-        <script src="~/pro/pages/login/login.chunk.js" asp-append-version="true"></script>        
+        <script src="~/pro/common/reactvendor.chunk.js" asp-append-version="true"></script>
+        <script src="~/pro/pages/login/login.chunk.js" asp-append-version="true"></script>
     </environment>
 </body>
 </html>

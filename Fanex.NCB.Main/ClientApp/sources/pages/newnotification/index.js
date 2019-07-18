@@ -4,14 +4,13 @@ import { Provider } from 'react-redux';
 import Store from '../lib/store';
 import AppContainer from './components/appContainer';
 import reducer from './reducers';
-
+import { renderLayout } from '../shared/layout/layout/index';
 // Get the application-wide store instance, prepopulating with state from the server where available.
 const initialState = window.initialReduxState;
 const store = Store.createStore(reducer, initialState);
-const rootElement = document.getElementById('root');
 
-ReactDOM.render(
+renderLayout(
     <Provider store={store}>
         <AppContainer />
-    </Provider>,
-    rootElement);
+    </Provider>
+);
