@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import Store from '../lib/store';
 import AppContainer from './components/AppContainer';

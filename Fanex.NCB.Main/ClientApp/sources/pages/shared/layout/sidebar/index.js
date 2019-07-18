@@ -1,5 +1,5 @@
 import React from 'react';
-import AppData from '../../../lib/AppData';
+import axios from 'axios';
 import Site from '../../../lib/site';
 
 import './Sidebar.scss';
@@ -7,44 +7,39 @@ import './Sidebar.scss';
 export default class Sidebar extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            menuItems: []
+        };
+    }
+
+    componentDidMount() {
+        axios.get(Site.resolveClientUrl('Auth/GetMenu'))
+            .then(response => this.setState({ menuItems: response.data }));
     }
 
     getMenuClassName = name => 'icon-' + name.replace(/ /g, '-').toLowerCase();
 
-    getMenu() {
-        const menu = AppData ? AppData.menus : null;
-        if (!menu || menu.length === 0) {
-            return [];
-        }
-        return menu;
+    renderMenu = () => {
+        return this.state.menuItems.map(this.renderMenuItem);
     }
 
-    onChange = (e, url) => {
-        e.preventDefault();
-        this.props.onChange(url);
-    }
-
-    renderMenu() {
-        const menu = this.getMenu();
-        return menu.map((menuItem, menuIndex) => this.renderMenuItem(menuItem, menuIndex));
-    }
-
-    renderMenuItem(menuItem, menuIndex) {
+    renderMenuItem = (menuItem, menuIndex) => {
         return (<span className="menu" key={menuIndex}>
             <ul className="submenu list-unstyled">
-                {
-                    menuItem.SubMenus.map((submenu, submenuIndex) =>
-                        <li className="menu-item" key={submenuIndex}>
-                            <a href="" className="link" onClick={event => this.onChange(event, submenu.Url)}>
-                                <span className={this.getMenuClassName(submenu.Name)} />
-                                <span className="text">{submenu.Name}</span>
-                            </a>
-                        </li>
-                    )
-                }
+                {menuItem.subMenus.map(this.renderSubMenuItem)}
             </ul>
         </span>);
     }
+
+    renderSubMenuItem = (submenu, submenuIndex) => (
+        <li className="menu-item" key={submenuIndex}>
+            <a href={Site.resolveClientUrl(submenu.url)} className="link" onClick={event => this.onChange(event, submenu.Url)}>
+                <span className={this.getMenuClassName(submenu.name)} />
+                <span className="text">{submenu.name}</span>
+            </a>
+        </li>
+    )
 
     render() {
         return (

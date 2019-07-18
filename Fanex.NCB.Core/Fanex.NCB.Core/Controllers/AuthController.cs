@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -34,6 +35,18 @@ namespace Fanex.NCB.Main.Controllers
             ViewBag.returnUrl = returnUrl;
             ViewBag.invalidLogin = invalidLogin;
             return View(new ApplicationUser());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMenu()
+        {
+            var userData = JsonConvert.DeserializeObject<ApplicationUser>(HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.UserData)?.Value);
+            var apiUrl = $"{_options.UserResourceApi}/Query/{userData.UserId}?siteid={_options.SiteId}&env={_options.Env}";
+            var response = await _bridgeClient.GetJsonAsync(apiUrl).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            return Json(await response.Content.ReadAsAsync<List<Menu>>().ConfigureAwait(false));
         }
 
         [HttpPost]
@@ -75,7 +88,7 @@ namespace Fanex.NCB.Main.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
 
-                return LocalRedirect(!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl) ? returnUrl : Url.Action("index", "Home"));
+                return LocalRedirect(!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl) ? returnUrl : Url.Action("index", "NewNotification"));
             }
 
             return Json(new
