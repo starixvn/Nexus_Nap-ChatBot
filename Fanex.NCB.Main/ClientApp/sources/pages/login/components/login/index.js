@@ -36,7 +36,7 @@ class Login extends Component {
     render() {
         return (
             <div className="login-container">
-                <form ref="form" method="post" action={Site.resolveClientUrl('auth/SignIn')} className="form-login" onSubmit={this.handleSubmit}>
+                <form ref="form" method="post" action={Site.resolveClientUrl(`auth/SignIn${location.search}`)} className="form-login" onSubmit={this.handleSubmit}>
                     <a className="logo" href="#"><img src={Site.resolveClientUrl('images/Logo.svg')} alt="Nap Chatbot" /></a>
                     <h1 className="header">Welcome to CHATBOT</h1>
                     {
@@ -59,7 +59,6 @@ class Login extends Component {
                             onChange={this.handleChangePassword} />
                     </div>
                     <input type="submit" value="SIGN IN" className="button" />
-                    <input type="hidden" name="returnUrl" value={Site.resolveClientUrl('Home/Index')} />
                 </form>
                 <div className="form-footer">
                     <span className="bold">Best view in:</span>

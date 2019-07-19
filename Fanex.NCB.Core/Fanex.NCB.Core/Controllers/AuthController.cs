@@ -30,8 +30,6 @@ namespace Fanex.NCB.Main.Controllers
 
         public async Task<IActionResult> Index(string returnUrl, bool invalidLogin)
         {
-            await HttpContext.SignOutAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
             ViewBag.returnUrl = returnUrl;
             ViewBag.invalidLogin = invalidLogin;
             return View(new ApplicationUser());
@@ -77,7 +75,7 @@ namespace Fanex.NCB.Main.Controllers
                 var authProperties = new AuthenticationProperties
                 {
                     AllowRefresh = true,
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(60),
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(1),
                     IsPersistent = true,
                     IssuedUtc = DateTimeOffset.UtcNow,
                     RedirectUri = Url.Action("index", "Home")
@@ -88,7 +86,7 @@ namespace Fanex.NCB.Main.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
 
-                return LocalRedirect(!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl) ? returnUrl : Url.Action("index", "NewNotification"));
+                return LocalRedirect(!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl) ? returnUrl : Url.Action("Index", "NewNotification"));
             }
 
             return Json(new

@@ -4,7 +4,6 @@ import Sidebar from './../sidebar';
 import Content from './../content';
 import Site from '../../../lib/site';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../components/font.css';
 import './Layout.scss';
 
