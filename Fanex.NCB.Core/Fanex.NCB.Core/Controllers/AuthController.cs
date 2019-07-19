@@ -75,7 +75,7 @@ namespace Fanex.NCB.Main.Controllers
                 var authProperties = new AuthenticationProperties
                 {
                     AllowRefresh = true,
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(1),
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(60),
                     IsPersistent = true,
                     IssuedUtc = DateTimeOffset.UtcNow,
                     RedirectUri = Url.Action("index", "Home")

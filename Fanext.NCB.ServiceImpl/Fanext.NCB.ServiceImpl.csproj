@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fanex.NCB.Repository\Fanex.NCB.Repository.csproj" />
+    <ProjectReference Include="..\Fanex.NCB.Services\Fanex.NCB.Services.csproj" />
+  </ItemGroup>
+
+</Project>

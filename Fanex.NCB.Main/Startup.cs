@@ -7,6 +7,7 @@ using Fanex.NCB.Core.Services;
 using Fanex.NCB.CustomAspNetCoreModule;
 using Fanex.NCB.CustomAspNetCoreModule.Extensions;
 using Fanex.NCB.CustomAspNetCoreModule.HealthChecks;
+using Fanex.NCB.Main.AppConfig;
 using Fanex.NCB.Shared.MySQLExtension.DataDomain;
 using Fanex.NCB.Shared.MySQLExtension.Services;
 using Fanex.NCB.SkypeBot.App_Start;
@@ -72,6 +73,8 @@ namespace Fanex.NCB.Main
             services.AddSingleton<IBridgeClientService, BridgeClientService>();
 
             services.AddTransient<IDBConfigService, DBConfigService>();
+            services.RegisterServices();
+            services.RegisterRepositories();
 
             InitializeModules(services);
         }
