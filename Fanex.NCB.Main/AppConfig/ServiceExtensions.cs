@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Main.AppConfig
 {
+    using Fanex.Data.Repository;
     using Fanex.NCB.Repository.ChatGroupMapping;
     using Fanex.NCB.RepositoryImpl.ChatGroupMapping;
     using Fanex.NCB.Services;
@@ -15,6 +16,7 @@
 
         public static void RegisterRepositories(this IServiceCollection services)
         {
+            services.AddScoped<IDynamicRepository, DynamicRepository>();
             services.AddScoped<IChatGroupMappingRepository, ChatGroupMappingRepository>();
         }
     }

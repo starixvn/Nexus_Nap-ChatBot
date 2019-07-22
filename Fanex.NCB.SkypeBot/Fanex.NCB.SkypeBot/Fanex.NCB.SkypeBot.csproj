@@ -39,8 +39,4 @@
     <ProjectReference Include="..\Fanex.NCB.SkypeBot.MySQLStorage\Fanex.NCB.SkypeBot.MySQLStorage.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
