@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mime;
+using Fanex.Data;
+using Fanex.Data.MySql;
 using Fanex.NCB.Core.Models.DataDomain;
 using Fanex.NCB.Core.Services;
 using Fanex.NCB.CustomAspNetCoreModule;
 using Fanex.NCB.CustomAspNetCoreModule.Extensions;
-using Fanex.NCB.CustomAspNetCoreModule.HealthChecks;
 using Fanex.NCB.Main.AppConfig;
 using Fanex.NCB.Shared.MySQLExtension.DataDomain;
 using Fanex.NCB.Shared.MySQLExtension.Services;
 using Fanex.NCB.SkypeBot.App_Start;
-using HealthChecks.System;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -23,7 +22,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Fanex.NCB.Main
 {
@@ -52,6 +50,19 @@ namespace Fanex.NCB.Main
               tags: new[] { "db", "sql", "myserver" });
 
             services.AddHealthChecksUI();
+
+            Dictionary<string, ConnectionConfiguration> connections = Configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .ToDictionary(connection => connection.Key,
+                              connection => new ConnectionConfiguration(connection.Key, connection.Value));
+
+            DbSettingProviderManager
+               .StartNewSession()
+               .Use(connections)
+               .WithMySql(resourcePath: "~/App_Data")
+               .Run();
+
             services.AddSingleton<IConfiguration>(Configuration);
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<List<DataConfig>>(Configuration.GetSection("SPName"));

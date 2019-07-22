@@ -88,7 +88,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Repository", "Fan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.RepositoryImpl", "Fanex.NCB.RepositoryImpl\Fanex.NCB.RepositoryImpl.csproj", "{269757D9-9DA7-473B-9C63-80D5C0CB81A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Models", "Fanex.NCB.Models\Fanex.NCB.Models.csproj", "{89E56FE8-72AF-41E8-B2A8-1B9938CBC35A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Models", "Fanex.NCB.Models\Fanex.NCB.Models.csproj", "{89E56FE8-72AF-41E8-B2A8-1B9938CBC35A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Base", "Fanex.NCB.Base\Fanex.NCB.Base.csproj", "{83F243B2-4DB8-4F51-A8B0-6CBF795459AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -224,6 +226,10 @@ Global
 		{89E56FE8-72AF-41E8-B2A8-1B9938CBC35A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89E56FE8-72AF-41E8-B2A8-1B9938CBC35A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89E56FE8-72AF-41E8-B2A8-1B9938CBC35A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83F243B2-4DB8-4F51-A8B0-6CBF795459AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83F243B2-4DB8-4F51-A8B0-6CBF795459AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83F243B2-4DB8-4F51-A8B0-6CBF795459AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83F243B2-4DB8-4F51-A8B0-6CBF795459AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
