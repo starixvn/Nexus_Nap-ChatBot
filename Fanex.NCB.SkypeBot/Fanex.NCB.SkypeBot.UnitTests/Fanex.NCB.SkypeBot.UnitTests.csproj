@@ -28,8 +28,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
+  
   <ItemGroup>
+    <ProjectReference Include="..\..\Fanex.NCB.Main\Fanex.NCB.Main.csproj" />
     <ProjectReference Include="..\Fanex.NCB.SkypeBot\Fanex.NCB.SkypeBot.csproj" />
   </ItemGroup>
 
