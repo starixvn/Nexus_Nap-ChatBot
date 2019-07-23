@@ -10,6 +10,7 @@
     using Fanex.NAP.Client.AspNetCore.Session;
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
+    using Fanex.NAP.Client.Services;
     using Fanex.NAP.Client.Transport;
     using Fanex.NAP.Client.Web;
     using Fanex.NCB.Core.Models.DataDomain;
@@ -91,6 +92,7 @@
             services.AddSingleton<INapSettings>(new NapSettings(Configuration));
             services.AddSingleton<INapSession, NapSession>();
             services.AddSingleton<IRestClient, RestClient>();
+            services.AddSingleton<ISecurityService, SecurityService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IBridgeClientService, BridgeClientService>();
             services.AddTransient<IDBConfigService, DBConfigService>();
