@@ -48,15 +48,14 @@ class Login extends Component {
                         <div className="input-group-prepend">
                             <span className="icon-username" />
                         </div>
-                        <input name="userName" type="text" className="form-control" />
+                        <input name="userName" type="text" className="form-control" required />
                     </div>
                     <div className="input-group">
                         <div className="input-group-prepend">
                             <span className="icon-password" />
                         </div>
                         <input ref="password" name="password" type="password" className="form-control"
-                            value={this.state.password}
-                            onChange={this.handleChangePassword} />
+                            required />
                     </div>
                     <input type="submit" value="SIGN IN" className="button" />
                 </form>
