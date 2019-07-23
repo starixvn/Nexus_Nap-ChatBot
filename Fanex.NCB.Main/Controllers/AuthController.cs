@@ -4,7 +4,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Fanex.NAP.Client.Configuration;
+using Fanex.NAP.Client.Helpers.Common;
 using Fanex.NAP.Client.Helpers.Web;
+using Fanex.NAP.Client.Models;
 using Fanex.NAP.Client.Models.ParameterObject;
 using Fanex.NAP.Client.Services;
 using Fanex.NCB.Common.DTO;
@@ -47,6 +49,40 @@ namespace Fanex.NCB.Main.Controllers
             return View(new ApplicationUser());
         }
 
+        [HttpGet]
+        public IActionResult GetMenu()
+        {
+            var menu = GetMenus(napSession.MenuItemList);
+            return Json(menu);
+        }
+
+        private IEnumerable<Menu> GetMenus(IEnumerable<MenuItem> menuItems)
+        {
+            var rootMenus = menuItems.Where(m => m.Parent == null);
+
+            return BuildMenus(rootMenus, menuItems);
+        }
+
+        private IEnumerable<Menu> GetSubMenus(IEnumerable<MenuItem> menuItems, int parentId)
+        {
+            var childMenus = menuItems.Where(m => m.Parent != null && m.Parent.Id == parentId);
+
+            return BuildMenus(childMenus, menuItems);
+        }
+
+        private IEnumerable<Menu> BuildMenus(IEnumerable<MenuItem> selectedMenuItems, IEnumerable<MenuItem> menuItems)
+        {
+            return selectedMenuItems
+                .Select(m => new Menu
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    Url = m.Url,
+                    Policy = m.Policy,
+                    SubMenus = GetSubMenus(menuItems, m.Id)
+                });
+        }
+
         [HttpPost]
         public async Task<IActionResult> SignIn(string userName, string password, string returnUrl)
         {
@@ -65,7 +101,7 @@ namespace Fanex.NCB.Main.Controllers
         {
             var user = await userService.GetAsync(userName).ConfigureAwait(false);
 
-            if (user != null && password.Equals(user.Password))
+            if (user != null && user.Password == Cryptography.CfsEnCode(password))
             {
                 var siteLevelList = userService.GetSiteLevel(user.Id, napSettings.Environment);
 
@@ -86,7 +122,7 @@ namespace Fanex.NCB.Main.Controllers
                     napSession.UserId = user.Id;
                     napSession.OnUserId = onlineUserId;
                     napSession.MenuItemList = userService.GetMenuItem(user.Id, napSettings.SiteId,
-                        napSettings.Environment, true).ToList();
+                        napSettings.Environment, true).OrderBy(x => x.DisplayOrder).ToList();
 
                     var claims = new List<Claim>
                         {
@@ -98,14 +134,15 @@ namespace Fanex.NCB.Main.Controllers
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(identity));
 
-                    return LocalRedirect(!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl) ? returnUrl : Url.Action("Index", "NewNotification"));
+                    return Redirect(!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl) ? returnUrl :
+                        Url.Content($"~/{napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url}"));
                 }
             }
 
-            return Json(new
+            return RedirectToAction("Index", new
             {
-                IsOk = false,
-                Msg = "Username or password incorrected"
+                returnUrl,
+                invalidLogin = true
             });
         }
     }

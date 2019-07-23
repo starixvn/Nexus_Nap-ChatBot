@@ -24,17 +24,20 @@ export default class Sidebar extends React.Component {
         return this.state.menuItems.map(this.renderMenuItem);
     }
 
-    renderMenuItem = (menuItem, menuIndex) => {
-        return (<span className="menu" key={menuIndex}>
-            <ul className="submenu list-unstyled">
-                {menuItem.subMenus.map(this.renderSubMenuItem)}
-            </ul>
-        </span>);
+    renderMenuItem = (menuItem) => {
+        return (
+            <span className="menu" key={menuItem.id}>
+                <ul className="submenu list-unstyled">
+                    {menuItem.name}
+                    {menuItem.subMenus.map(this.renderSubMenuItem)}
+                </ul>
+            </span>
+        );
     }
 
-    renderSubMenuItem = (submenu, submenuIndex) => (
-        <li className="menu-item" key={submenuIndex}>
-            <a href={Site.resolveClientUrl(submenu.url)} className="link" onClick={event => this.onChange(event, submenu.Url)}>
+    renderSubMenuItem = (submenu) => (
+        <li className="menu-item" key={submenu.id}>
+            <a href={Site.resolveClientUrl(submenu.url)} className="link">
                 <span className={this.getMenuClassName(submenu.name)} />
                 <span className="text">{submenu.name}</span>
             </a>

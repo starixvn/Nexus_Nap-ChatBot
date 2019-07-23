@@ -1,9 +1,10 @@
+using Fanex.NAP.Client.AspNetCore.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fanex.NCB.SkypeBot.Controllers
 {
-    [Authorize]
+    [NapSuperAuth]
     public class NewNotificationController : Controller
     {
         [HttpGet]

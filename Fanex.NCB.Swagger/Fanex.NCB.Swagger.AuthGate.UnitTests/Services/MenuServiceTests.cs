@@ -38,7 +38,7 @@ namespace Fanex.NCB.Swagger.AuthGate.UnitTests.Services
             var menu = _menuService.GetMenus(menuItemsFake);
 
             //Assert
-            var numberOfHaveSubmenu = menu.Count(_ => _.SubMenus != null && _.SubMenus.Count > 0);
+            var numberOfHaveSubmenu = menu.Count(_ => _.SubMenus != null && _.SubMenus.Any());
             Assert.Equal(2, numberOfHaveSubmenu);
         }
 

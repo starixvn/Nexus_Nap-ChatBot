@@ -124,16 +124,19 @@
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseSession();
-            NapClientManager
-                 .UseConfig(app.ApplicationServices.GetService<INapSettings>())
-                 .UseRestClient(app.ApplicationServices.GetService<IRestClient>())
-                 .UseSession(app.ApplicationServices.GetService<INapSession>());
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=NewNotification}/{action=Index}/{id?}");
             });
+
+            NapClientManager
+               .UseConfig(app.ApplicationServices.GetService<INapSettings>())
+               .UseRestClient(app.ApplicationServices.GetService<IRestClient>())
+               .UseSession(app.ApplicationServices.GetService<INapSession>());
+
             app.UseHealthChecks("/health", new HealthCheckOptions
             {
                 Predicate = _ => true,

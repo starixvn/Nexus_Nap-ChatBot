@@ -11,6 +11,6 @@ namespace Fanex.NCB.Common.DTO
 #pragma warning restore S3996
         public int Policy { get; set; }
         public short DisplayOrder { get; set; }
-        public List<Menu> SubMenus { get; set; }
+        public IEnumerable<Menu> SubMenus { get; set; }
     }
 }
