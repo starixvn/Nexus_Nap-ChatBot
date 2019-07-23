@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.Main.AppConfig
 {
     using Fanex.Data.Repository;
+    using Fanex.NAP.Client.Services;
     using Fanex.NCB.Base.Repositories;
     using Fanex.NCB.Base.Services;
     using Fanex.NCB.Base.Services.Interfaces;
@@ -15,6 +16,7 @@
         public static void RegisterServices(this IServiceCollection services)
         {
             services.AddTransient<IBaseService, BaseService>();
+            services.AddTransient<IUserService, UserService>();
             services.AddScoped<IChatGroupMappingService, ChatGroupMappingService>();
         }
 

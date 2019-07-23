@@ -1,30 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Fanex.Data;
-using Fanex.Data.MySql;
-using Fanex.NCB.Core.Models.DataDomain;
-using Fanex.NCB.Core.Services;
-using Fanex.NCB.CustomAspNetCoreModule;
-using Fanex.NCB.CustomAspNetCoreModule.Extensions;
-using Fanex.NCB.Main.AppConfig;
-using Fanex.NCB.Shared.MySQLExtension.DataDomain;
-using Fanex.NCB.Shared.MySQLExtension.Services;
-using Fanex.NCB.SkypeBot.App_Start;
-using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Logging;
-
-namespace Fanex.NCB.Main
+﻿namespace Fanex.NCB.Main
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Fanex.Data;
+    using Fanex.Data.MySql;
+    using Fanex.NAP.Client;
+    using Fanex.NAP.Client.AspNetCore.Configuration;
+    using Fanex.NAP.Client.AspNetCore.Session;
+    using Fanex.NAP.Client.Configuration;
+    using Fanex.NAP.Client.Helpers.Web;
+    using Fanex.NAP.Client.Transport;
+    using Fanex.NAP.Client.Web;
+    using Fanex.NCB.Core.Models.DataDomain;
+    using Fanex.NCB.Core.Services;
+    using Fanex.NCB.CustomAspNetCoreModule;
+    using Fanex.NCB.CustomAspNetCoreModule.Extensions;
+    using Fanex.NCB.Main.AppConfig;
+    using Fanex.NCB.Shared.MySQLExtension.DataDomain;
+    using Fanex.NCB.Shared.MySQLExtension.Services;
+    using Fanex.NCB.SkypeBot.App_Start;
+    using HealthChecks.UI.Client;
+    using Microsoft.AspNetCore.Authentication.Cookies;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Diagnostics.HealthChecks;
+    using Microsoft.Extensions.Logging;
+
     public class Startup
     {
         private readonly ILogger<Startup> _logger;
@@ -80,9 +87,12 @@ namespace Fanex.NCB.Main
                 };
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSession();
+            services.AddSingleton<INapSettings>(new NapSettings(Configuration));
+            services.AddSingleton<INapSession, NapSession>();
+            services.AddSingleton<IRestClient, RestClient>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IBridgeClientService, BridgeClientService>();
-
             services.AddTransient<IDBConfigService, DBConfigService>();
             services.RegisterServices();
             services.RegisterRepositories();
@@ -111,18 +121,23 @@ namespace Fanex.NCB.Main
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
+            app.UseSession();
+            NapClientManager
+                 .UseConfig(app.ApplicationServices.GetService<INapSettings>())
+                 .UseRestClient(app.ApplicationServices.GetService<IRestClient>())
+                 .UseSession(app.ApplicationServices.GetService<INapSession>());
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=NewNotification}/{action=Index}/{id?}");
             });
-            app.UseHealthChecks("/health", new HealthCheckOptions()
+            app.UseHealthChecks("/health", new HealthCheckOptions
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
-            app.UseHealthChecks("/healthz", new HealthCheckOptions()
+            app.UseHealthChecks("/healthz", new HealthCheckOptions
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse

@@ -1,34 +1,35 @@
-﻿using Fanex.NCB.Common.DTO;
-using Fanex.NCB.Common.MetalModels;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Fanex.NAP.Client.Models;
+using Fanex.NAP.Client.Services;
+using Fanex.NCB.Common.DTO;
 using Fanex.NCB.Core.Models.DataDomain;
-using Fanex.NCB.Core.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Fanex.NCB.Main.Controllers
 {
     public class AuthController : Controller
     {
-        private readonly IBridgeClientService _bridgeClient;
+        private readonly IUserService userService;
         private readonly AppSettings _options;
 
-        public AuthController(IBridgeClientService bridgeClient, IOptions<AppSettings> options)
+        public AuthController(
+            IUserService userService,
+            IOptions<AppSettings> options)
         {
-            _bridgeClient = bridgeClient;
+            this.userService = userService;
             _options = options.Value;
         }
 
-        public async Task<IActionResult> Index(string returnUrl, bool invalidLogin)
+        public IActionResult Index(string returnUrl, bool invalidLogin)
         {
             ViewBag.returnUrl = returnUrl;
             ViewBag.invalidLogin = invalidLogin;
@@ -39,34 +40,68 @@ namespace Fanex.NCB.Main.Controllers
         public async Task<IActionResult> GetMenu()
         {
             var userData = JsonConvert.DeserializeObject<ApplicationUser>(HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.UserData)?.Value);
-            var apiUrl = $"{_options.UserResourceApi}/Query/{userData.UserId}?siteid={_options.SiteId}&env={_options.Env}";
-            var response = await _bridgeClient.GetJsonAsync(apiUrl).ConfigureAwait(false);
+            var menuItems = await userService.GetMenuItemAsync(userData.UserId, _options.SiteId, _options.Env).ConfigureAwait(false);
+            var menus = GetMenus(menuItems);
+            return Json(menus);
+        }
 
-            response.EnsureSuccessStatusCode();
+        private List<Menu> GetMenus(IEnumerable<MenuItem> menuItems)
+        {
+            var rootMenus = menuItems.Where(m => m.Parent == null).OrderBy(m => m.DisplayOrder);
 
-            return Json(await response.Content.ReadAsAsync<List<Menu>>().ConfigureAwait(false));
+            return BuildMenus(rootMenus, menuItems);
+        }
+
+        private List<Menu> GetSubMenus(IEnumerable<MenuItem> menuItems, int parentId)
+        {
+            var childMenus = menuItems.Where(m => m.Parent != null && m.Parent.Id == parentId).OrderBy(m => m.DisplayOrder);
+
+            return BuildMenus(childMenus, menuItems);
+        }
+
+        private List<Menu> BuildMenus(IEnumerable<MenuItem> selectedMenuItems, IEnumerable<MenuItem> menuItems)
+        {
+            return selectedMenuItems
+                .Select(m => new Menu
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    Url = m.Url,
+                    Policy = m.Policy,
+                    SubMenus = GetSubMenus(menuItems, m.Id)
+                })
+                .ToList();
         }
 
         [HttpPost]
         public async Task<IActionResult> SignIn(string userName, string password, string returnUrl)
         {
-            if (ModelState.IsValid)
+            return await AuthenticateUser(userName, password, returnUrl);
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
+
+            return RedirectToAction("Index");
+        }
+
+        private async Task<IActionResult> AuthenticateUser(string userName, string password, string returnUrl)
+        {
+            var user = await userService.GetAsync(userName).ConfigureAwait(false);
+
+            if (user != null && password.Equals(user.Password))
             {
-                var user = await AuthenticateUser(userName, password);
-
-                if (user == null)
+                var result = new ApplicationUser
                 {
-                    return RedirectToAction("Index", new
-                    {
-                        returnUrl,
-                        invalidLogin = true
-                    });
-                }
-
+                    FullName = string.Join(" ", user.FirstName, user.LastName),
+                    UserId = user.Id,
+                    UserName = user.Username,
+                };
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.FullName),
-                    new Claim(ClaimTypes.UserData,JsonConvert.SerializeObject(user))
+                    new Claim(ClaimTypes.UserData,JsonConvert.SerializeObject(result)),
+                    new Claim(ClaimTypes.Name, result.FullName)
                 };
 
                 var claimsIdentity = new ClaimsIdentity(
@@ -92,28 +127,8 @@ namespace Fanex.NCB.Main.Controllers
             return Json(new
             {
                 IsOk = false,
-                Msg = "Something failed"
+                Msg = "Username or password incorrected"
             });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
-
-            return RedirectToAction("Index");
-        }
-
-        private async Task<ApplicationUser> AuthenticateUser(string userName, string password)
-        {
-            var user = new AuthenticationUser { UserName = userName, Password = password };
-            var response = await _bridgeClient.PostJsonAsync<AuthenticationUser>(
-            _options.AuthApi, user).ConfigureAwait(false);
-
-            response.EnsureSuccessStatusCode();
-
-            // return URI of the created resource.
-            return await response.Content.ReadAsAsync<ApplicationUser>().ConfigureAwait(false);
         }
     }
 }
