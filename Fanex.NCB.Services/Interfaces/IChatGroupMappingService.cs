@@ -1,8 +1,8 @@
-﻿namespace Fanex.NCB.Services
+﻿namespace Fanex.NCB.Services.Interfaces
 {
-    using Fanex.NCB.Models;
-    using Fanex.NCB.Models.ChatGroupMapping;
     using System.Threading.Tasks;
+    using Fanex.NCB.Base.Models;
+    using Fanex.NCB.Models.ChatGroupMapping;
 
     public interface IChatGroupMappingService
     {

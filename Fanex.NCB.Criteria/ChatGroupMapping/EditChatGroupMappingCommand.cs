@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fanex.NCB.Criteria.ChatGroupMapping
+﻿namespace Fanex.NCB.Criteria.ChatGroupMapping
 {
+    using System;
+
     public class EditChatGroupMappingCommand : BaseCommand
     {
         public override string GetSettingKey()

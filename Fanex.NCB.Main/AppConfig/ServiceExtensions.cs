@@ -5,10 +5,10 @@
     using Fanex.NCB.Base.Repositories;
     using Fanex.NCB.Base.Services;
     using Fanex.NCB.Base.Services.Interfaces;
-    using Fanex.NCB.Repository.ChatGroupMapping;
-    using Fanex.NCB.RepositoryImpl.ChatGroupMapping;
-    using Fanex.NCB.Services;
-    using Fanext.NCB.ServiceImpl.ChatGroupMapping;
+    using Fanex.NCB.Repository;
+    using Fanex.NCB.Repository.Interfaces;
+    using Fanex.NCB.Services.Interfaces;
+    using Fanext.NCB.Services;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class ServiceExtensions
