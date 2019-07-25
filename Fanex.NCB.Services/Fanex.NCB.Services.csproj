@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fanex.NCB.Bot\Fanex.NCB.Bot.Models\Fanex.NCB.Bot.Models.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Models\Fanex.NCB.Models.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Repository\Fanex.NCB.Repository.csproj" />
   </ItemGroup>

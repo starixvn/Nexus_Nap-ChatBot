@@ -1,10 +1,10 @@
+using System.Threading.Tasks;
+using Fanex.NCB.Services.Interfaces;
 using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
-using Fanex.NCB.SkypeBot.Services.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.MappingStatusService;
 using Fanex.NCB.SkypeBot.Services.Setting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Fanex.NCB.SkypeBot.Controllers
 {
@@ -57,14 +57,26 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll(GetChapGroupMappingCriteria criteria)
         {
-            return Json(await _chatGroupMappingService.GetChatGroupMappingListAsync(criteria).ConfigureAwait(false));
+            var model = new Criteria.ChatGroupMapping.GetChapGroupMappingCriteria
+            {
+                BotNames = criteria.BotNames,
+                RecipientName = criteria.RecipientName,
+                RecipientTypeIDs = criteria.RecipientTypeIDs,
+                LicenseeStatusIds = criteria.LicenseeStatusIds,
+                MappingStatusIds = criteria.MappingStatusIds,
+                PageIndex = criteria.PageIndex,
+                PageSize = criteria.PageSize,
+            };
+
+            var result = await _chatGroupMappingService.GetChatGroupMappingListAsync(model).ConfigureAwait(false);
+            return Json(new { data = result.Item1, count = result.Item2 });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromBody] EditChatGroupMappingCriteria criteria)
         {
-            return Json(await _chatGroupMappingService.UpdateChatGroupMappingAsync(criteria).ConfigureAwait(false));
+            return Json(null);
         }
 
         [HttpGet]

@@ -8,6 +8,7 @@
     <ProjectReference Include="..\Fanex.NCB.Base\Fanex.NCB.Base.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Criteria\Fanex.NCB.Criteria.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Models\Fanex.NCB.Models.csproj" />
+    <ProjectReference Include="..\Fanex.NCB.SkypeBot\Fanex.NCB.SkypeBot.Model\Fanex.NCB.SkypeBot.Model.csproj" />
   </ItemGroup>
 
 </Project>

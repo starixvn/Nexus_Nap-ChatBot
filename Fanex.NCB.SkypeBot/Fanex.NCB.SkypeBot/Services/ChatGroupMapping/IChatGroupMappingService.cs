@@ -1,7 +1,7 @@
-﻿using Fanex.NCB.Common.DTO;
+﻿using System.Threading.Tasks;
+using Fanex.NCB.Common.DTO;
 using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
-using System.Threading.Tasks;
 
 namespace Fanex.NCB.SkypeBot.Services.ChatGroupMapping
 {
