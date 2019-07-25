@@ -6,7 +6,6 @@ using Fanex.NCB.Services.Interfaces;
 using Fanex.NCB.SkypeBot.Controllers;
 using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.MappingStatusService;
-using Fanex.NCB.SkypeBot.Services.Setting;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

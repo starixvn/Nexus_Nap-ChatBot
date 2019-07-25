@@ -1,4 +1,4 @@
-﻿namespace Fanext.NCB.Services
+﻿namespace Fanex.NCB.Services
 {
     using System;
     using System.Collections.Generic;
@@ -23,11 +23,6 @@
         {
             this.baseService = baseService;
             this.chatGroupMappingRepository = chatGroupMappingRepository;
-        }
-
-        public async Task<CommandResult> Edit(EditChatGroupMapping model)
-        {
-            return await chatGroupMappingRepository.Edit(model).ConfigureAwait(false);
         }
 
         public async Task<(IEnumerable<ChatGroupMappingResult>, long)> GetChatGroupMappingListAsync(GetChapGroupMappingCriteria criteria)
@@ -79,6 +74,21 @@
             }
 
             return isMapped ? MappingStatus.Mapped : MappingStatus.NotMapped;
+        }
+
+        public async Task<CommandResult> Update(EditChatGroupMapping model)
+        {
+            var command = new EditChatGroupMappingCommand
+            {
+                GroupID = model.GroupID,
+                ChatGroupTypeId = model.ChatGroupTypeId,
+                RecipientTypeID = model.RecipientTypeID,
+                RecipientIDs = model.RecipientIDs,
+                CreatorID = model.CreatorID,
+                Remark = model.Remark
+            };
+
+            return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
         }
     }
 }

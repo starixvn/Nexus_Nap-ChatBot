@@ -2,5 +2,15 @@
 <Functions>
   <Function Name="Chat Group Mapping">
     <Setting Key="NCB_ChatGroupMapping_Sel" SpName="NCB_ChatGroupMapping_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_ChatGroupMapping_Upd" SpName="NCB_ChatGroupMapping_Upd" DbName="ChatBot" Plain="0"></Setting>
+  </Function>
+  <Function Name="Setting">
+    <Setting Key="NCB_Setting_BotName_Sel" SpName="NCB_Setting_BotName_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Setting_ChatGroupType_Sel" SpName="NCB_Setting_ChatGroupType_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Setting_RecipientType_Sel" SpName="NCB_Setting_RecipientType_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Setting_LicenseeStatus_Sel" SpName="NCB_Setting_LicenseeStatus_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Setting_Recipient_Sel" SpName="NCB_Setting_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Common_RecipientType_Sel" SpName="NCB_Common_RecipientType_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Setting_SearchRecipient_Sel" SpName="NCB_Setting_SearchRecipient_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
 </Functions>

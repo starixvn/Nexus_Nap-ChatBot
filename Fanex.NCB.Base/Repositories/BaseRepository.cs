@@ -22,8 +22,8 @@ namespace Fanex.NCB.Base.Repositories
 
         private CommandResult GetCommandResult(Hashtable hash)
         {
-            var errCode = hash["errcode"];
-            var errMsg = hash["errmsg"];
+            var errCode = hash["errorCode"];
+            var errMsg = hash["errorMsg"];
 
             return new CommandResult
             {

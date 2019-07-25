@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
+using Fanex.NCB.Base.Models;
+using Fanex.NCB.Services.Interfaces;
 using Fanex.NCB.SkypeBot.Controllers;
 using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
-using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
 using Fanex.NCB.SkypeBot.Services.MappingStatusService;
-using Fanex.NCB.SkypeBot.Services.Setting;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -20,15 +20,15 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Controller.ChatGroupMappingControllerTest
         {
             // Arrange
             var fixture = new Fixture();
-            var chatGroupMappingService = new Mock<NCB.Services.Interfaces.IChatGroupMappingService>();
+            var chatGroupMappingService = new Mock<IChatGroupMappingService>();
             var settingService = new Mock<ISettingService>();
             var mappingStatusService = new Mock<IMappingStatusService>();
             var controller = new ChatGroupMappingController(chatGroupMappingService.Object, settingService.Object, mappingStatusService.Object);
 
-            var botNames = fixture.CreateMany<BotName>(2).ToList();
+            var botNames = fixture.CreateMany<Models.Setting.BotName>(2);
             var mappingStatuses = fixture.CreateMany<MappingStatus>(2).ToList();
-            var recipientTypes = fixture.CreateMany<RecipientType>(2).ToList();
-            var recipients = fixture.CreateMany<Recipient>(2).ToList();
+            var recipientTypes = fixture.CreateMany<BaseModel>(2);
+            var recipients = fixture.CreateMany<Models.Setting.Recipient>(2);
 
             settingService.Setup(s => s.GetBotNameAsync()).Returns(Task.FromResult(botNames));
             mappingStatusService.Setup(s => s.GetMappingStatus()).Returns(mappingStatuses);

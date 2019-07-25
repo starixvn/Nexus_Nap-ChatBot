@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -33,7 +28,7 @@ namespace Fanex.NCB.Main
                  .ConfigureLogging((_, logging) => //should be move to startup.cs and add providers by ENV
                  {
                      logging.ClearProviders();
-                     // add built-in providers manually, as needed 
+                     // add built-in providers manually, as needed
                      logging.AddFilter("NCB", LogLevel.Error);
                      logging.AddConsole();
                      logging.AddDebug();

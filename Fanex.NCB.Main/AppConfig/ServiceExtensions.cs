@@ -7,8 +7,8 @@
     using Fanex.NCB.Base.Services.Interfaces;
     using Fanex.NCB.Repository;
     using Fanex.NCB.Repository.Interfaces;
+    using Fanex.NCB.Services;
     using Fanex.NCB.Services.Interfaces;
-    using Fanext.NCB.Services;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class ServiceExtensions
@@ -18,6 +18,7 @@
             services.AddTransient<IBaseService, BaseService>();
             services.AddTransient<IUserService, UserService>();
             services.AddScoped<IChatGroupMappingService, ChatGroupMappingService>();
+            services.AddScoped<ISettingService, SettingService>();
         }
 
         public static void RegisterRepositories(this IServiceCollection services)

@@ -9,7 +9,7 @@
 
     public interface IChatGroupMappingService
     {
-        Task<CommandResult> Edit(EditChatGroupMapping model);
+        Task<CommandResult> Update(EditChatGroupMapping model);
 
         Task<ValueTuple<IEnumerable<ChatGroupMappingResult>, long>> GetChatGroupMappingListAsync(GetChapGroupMappingCriteria criteria);
     }

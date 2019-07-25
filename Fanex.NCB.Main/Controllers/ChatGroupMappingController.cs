@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
+using Fanex.NCB.Models.ChatGroupMapping;
 using Fanex.NCB.Services.Interfaces;
 using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.MappingStatusService;
-using Fanex.NCB.SkypeBot.Services.Setting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,8 +11,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
     [Authorize]
     public class ChatGroupMappingController : Controller
     {
-        private readonly IChatGroupMappingService _chatGroupMappingService;
-        private readonly ISettingService _settingService;
+        private readonly IChatGroupMappingService chatGroupMappingService;
+        private readonly ISettingService settingService;
         private readonly IMappingStatusService _mappingStatusService;
 
         public ChatGroupMappingController(
@@ -20,8 +20,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
             ISettingService settingService,
             IMappingStatusService mappingStatusService)
         {
-            _chatGroupMappingService = chatGroupMappingService;
-            _settingService = settingService;
+            this.chatGroupMappingService = chatGroupMappingService;
+            this.settingService = settingService;
             _mappingStatusService = mappingStatusService;
         }
 
@@ -34,12 +34,12 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSettings()
         {
-            var botNameTask = _settingService.GetBotNameAsync();
-            var filterRecipientTypeTask = _settingService.GetFilterRecipientTypesAsync();
-            var recipientTypeTask = _settingService.GetRecipientTypesAsync();
-            var recipientTask = _settingService.GetRecipientsAsync();
-            var chatGroupTypeTask = _settingService.GetChatGroupTypeAsync();
-            var licenseeStatusTask = _settingService.GetLicenseeStatusAsync();
+            var botNameTask = settingService.GetBotNameAsync();
+            var filterRecipientTypeTask = settingService.GetFilterRecipientTypesAsync();
+            var recipientTypeTask = settingService.GetRecipientTypesAsync();
+            var recipientTask = settingService.GetRecipientsAsync();
+            var chatGroupTypeTask = settingService.GetChatGroupTypeAsync();
+            var licenseeStatusTask = settingService.GetLicenseeStatusAsync();
 
             await Task.WhenAll(botNameTask, recipientTask, chatGroupTypeTask, recipientTypeTask, licenseeStatusTask).ConfigureAwait(false);
             return Json(new
@@ -68,21 +68,22 @@ namespace Fanex.NCB.SkypeBot.Controllers
                 PageSize = criteria.PageSize,
             };
 
-            var result = await _chatGroupMappingService.GetChatGroupMappingListAsync(model).ConfigureAwait(false);
+            var result = await chatGroupMappingService.GetChatGroupMappingListAsync(model).ConfigureAwait(false);
             return Json(new { data = result.Item1, count = result.Item2 });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([FromBody] EditChatGroupMappingCriteria criteria)
+        public async Task<IActionResult> Edit([FromBody] EditChatGroupMapping model)
         {
-            return Json(null);
+            var result = await chatGroupMappingService.Update(model).ConfigureAwait(false);
+            return Json(result);
         }
 
         [HttpGet]
         public async Task<IActionResult> SearchRecipient(string query)
         {
-            return Json(await _settingService.SearchRecipientsAsync(query).ConfigureAwait(false));
+            return Json(await settingService.SearchRecipientsAsync(query).ConfigureAwait(false));
         }
     }
 }

@@ -1,17 +1,21 @@
 ﻿namespace Fanex.NCB.Criteria.ChatGroupMapping
 {
-    using System;
-
     public class EditChatGroupMappingCommand : BaseCommand
     {
-        public override string GetSettingKey()
-        {
-            throw new NotImplementedException();
-        }
+        public int GroupID { get; set; }
 
-        public override bool IsValid()
-        {
-            throw new NotImplementedException();
-        }
+        public int RecipientTypeID { get; set; }
+
+        public string RecipientIDs { get; set; }
+
+        public int CreatorID { get; set; }
+
+        public int ChatGroupTypeId { get; set; }
+
+        public string Remark { get; set; }
+
+        public override string GetSettingKey() => "NCB_ChatGroupMapping_Upd";
+
+        public override bool IsValid() => GroupID > 0 && RecipientTypeID > 0 && CreatorID > 0 && ChatGroupTypeId > 0;
     }
 }
