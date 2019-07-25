@@ -1,15 +1,14 @@
-﻿using AutoFixture;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using AutoFixture;
 using Fanex.NCB.SkypeBot.Controllers;
 using Fanex.NCB.SkypeBot.Model.DTO.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
-using Fanex.NCB.SkypeBot.Services.ChatGroupMapping;
 using Fanex.NCB.SkypeBot.Services.MappingStatusService;
 using Fanex.NCB.SkypeBot.Services.Setting;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Fanex.NCB.SkypeBot.UnitTests.Controller.ChatGroupMappingControllerTest
@@ -21,7 +20,7 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Controller.ChatGroupMappingControllerTest
         {
             // Arrange
             var fixture = new Fixture();
-            var chatGroupMappingService = new Mock<IChatGroupMappingService>();
+            var chatGroupMappingService = new Mock<NCB.Services.Interfaces.IChatGroupMappingService>();
             var settingService = new Mock<ISettingService>();
             var mappingStatusService = new Mock<IMappingStatusService>();
             var controller = new ChatGroupMappingController(chatGroupMappingService.Object, settingService.Object, mappingStatusService.Object);
