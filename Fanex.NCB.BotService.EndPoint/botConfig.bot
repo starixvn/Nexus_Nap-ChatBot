@@ -1,0 +1,44 @@
+{
+  "name": "Fanex.NCB.BotService",
+  "description": "",
+  "services": [
+    {
+      "type": "endpoint",
+      "name": "1on1notify",
+      "endpoint": "https://licbot.nexdev.net/api/messages",
+      "appId": "5de427b9-a7f0-497e-81d3-b3348721500a",
+      "appPassword": "gscY457%{]koujCCMDDJ52^",
+      "id": "1",
+      "Intro": "Hi there!\nThis is \"ONE-ON-ONE Customer Support\"\nFrom now, we will show you the upcoming System Notifications.\n----\n您好！\n这里是 “ONE-ON-ONE 客户服务”。\n自今日开始，我方将在此提供您系统通知信息。"
+    },
+    {
+      "type": "endpoint",
+      "name": "OWnotify",
+      "endpoint": "https://licbot.nexdev.net/api/messages",
+      "appId": "9d274edb-0a3d-4f00-a8bd-ff557276d61d",
+      "appPassword": "fcomEG467cppHJVID66^%#@",
+      "id": "2",
+      "Intro": "Hi I'm OWnotify"
+    },
+    {
+      "type": "endpoint",
+      "name": "NexusBot",
+      "endpoint": "https://aa79478b.ngrok.io/api/messages",
+      "appId": "d344c27e-8463-4efc-8bf5-953eb266da05",
+      "appPassword": "0o9kI*s1DQh3bNusMm+NX=Sg-@VNeWA=",
+      "id": "3",
+      "Intro": "Hi I'm Nexus Bot"
+    },
+    {
+      "type": "endpoint",
+      "name": "ncb1",
+      "endpoint": "https://aa79478b.ngrok.io/api/messages",
+      "appId": "3b546454-c9a5-4cc8-9f2e-be8e1bfd4e9a",
+      "appPassword": "jcA0aW9d@Lk55RaUbCSCsBB*B/Szbnc.",
+      "id": "4",
+      "Intro": "Hi I'm Nexus Bot"
+    }
+  ],
+  "padlock": "",
+  "version": "2.0"
+}
