@@ -1,32 +1,33 @@
 CREATE DATABASE ChatBot CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci ;
 
 
-CREATE TABLE ChatBot.BotConversation(
-		ID INT AUTO_INCREMENT NOT NULL
+CREATE TABLE ChatBot.ConversationGroup(
+		ConversationGroupID INT AUTO_INCREMENT NOT NULL
 		, ConversationID VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
 		, Name VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
 		, ChannelID VARCHAR(45) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
 		, UpdatedBy VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
 		, LastUpdate DATETIME NOT NULL
 		, ServiceUrl VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
-		, CONSTRAINT PK_ID  PRIMARY KEY (ID)
+		, CONSTRAINT PK_ID  PRIMARY KEY (ConversationGroupID)
 		, INDEX INDEX_Name USING BTREE (Name)
 		, UNIQUE INDEX UNIQUE_ConversationID USING BTREE (ConversationID)
   );
 
-CREATE TABLE ChatBot.BotConversationMember(
-		 ID INT AUTO_INCREMENT NOT NULL
-		, MemberID VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+CREATE TABLE ChatBot.ConversationBot(
+		 ConversationBotID INT AUTO_INCREMENT NOT NULL
 		, ConversationID VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
 		, Name VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
-		, LastUpdate DATETIME NOT NULL
-		, IsBot BIT NOT NULL
-		, IsActive BIT NOT NULL
-		, UpdatedBy VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
-        , CONSTRAINT PK_ID  PRIMARY KEY (ID)
+        , CONSTRAINT PK_ID  PRIMARY KEY (ConversationBotID)
         , INDEX INDEX_ConversationID USING BTREE (ConversationID)
         , INDEX INDEX_Name USING BTREE (Name)
-        , UNIQUE INDEX UNIQUE_MemberID_ConversationID USING BTREE (ConversationID, MemberID)
+  );
+  
+  
+  CREATE TABLE ChatBot.ConversationGroupBot(
+		ConversationGroupID INT NOT NULL
+        , ConversationBotID INT NOT NULL
+        , CONSTRAINT PK_ID  PRIMARY KEY (ConversationGroupID, ConversationBotID)
   );
   
 CREATE TABLE ChatBot.System(
@@ -54,10 +55,10 @@ CREATE TABLE ChatBot.Recipient(
         , INDEX INDEX_RecipientTypeID USING BTREE (RecipientTypeID)
 );
 
-CREATE TABLE ChatBot.BotConversationRecipient(
-		BotConversationID INT  NOT NULL
+CREATE TABLE ChatBot.ConversationGroupRecipient(
+		ConversationGroupID INT  NOT NULL
         , RecipientID INT  NOT NULL
-        , CONSTRAINT PK_BotConversationID_RecipientID PRIMARY KEY (BotConversationID,RecipientID)
+        , CONSTRAINT PK_ConversationGroupID_RecipientID PRIMARY KEY (ConversationGroupID,RecipientID)
 );
 
 CREATE TABLE ChatBot.ChatGroupType(
@@ -67,11 +68,11 @@ CREATE TABLE ChatBot.ChatGroupType(
         , UNIQUE INDEX UNIQUE_ChatGroupTypeName USING BTREE (ChatGroupTypeName)
 );
 
-CREATE TABLE ChatBot.BotConversationExtraInfo(
-		BotConversationID INT  NOT NULL
+CREATE TABLE ChatBot.ConversationGroupExtraInfo(
+		ConversationGroupID INT  NOT NULL
         , ChatGroupTypeID SMALLINT  NULL
          , Remark VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
-        , CONSTRAINT PK_BotConversationID PRIMARY KEY (BotConversationID)
+        , CONSTRAINT PK_ConversationGroupID PRIMARY KEY (ConversationGroupID)
 );
 
 CREATE TABLE ChatBot.NotificationType(
@@ -140,14 +141,14 @@ CREATE TABLE ChatBot.NotificationTemplate(
 
 CREATE TABLE ChatBot.NotificationRecipientList(
 		NotificationID INT  NOT NULL
-        , BotConversationID  INT  NOT NULL
+        , ConversationGroupID  INT  NOT NULL
         , ChatGroupTypeID SMALLINT  NOT NULL
         , RecipientID INT  NOT NULL
 		, SentTime DATETIME NULL
 		, Status VARCHAR(10) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
 		, StatusID TINYINT UNSIGNED NOT NULL
 		, ErrMsg VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
-        , CONSTRAINT PK_NotificationID_BotConversationID_RecipientID_ChatGroupTypeID PRIMARY KEY (NotificationID, RecipientID, BotConversationID, ChatGroupTypeID)
+        , CONSTRAINT PK_NotificationID_BotConversationID_RecipientID_ChatGroupTypeID PRIMARY KEY (NotificationID, RecipientID, ConversationGroupID, ChatGroupTypeID)
         , INDEX INDEX_RecipientID USING BTREE (RecipientID)
 );
 
