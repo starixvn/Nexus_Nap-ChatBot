@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.Main.ViewModel.ChatGroupMapping
 {
     using System.Collections.Generic;
-    using Fanex.NCB.Base.Models;
+    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models.Setting;
 
     public class ChatGroupMappingFilterViewModel

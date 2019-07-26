@@ -2,9 +2,9 @@
 {
     using Fanex.Data.Repository;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Base.Repositories;
-    using Fanex.NCB.Base.Services;
-    using Fanex.NCB.Base.Services.Interfaces;
+    using Fanex.NCB.Core.Repositories;
+    using Fanex.NCB.Core.Services;
+    using Fanex.NCB.Core.Services.Interfaces;
     using Fanex.NCB.Repository;
     using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services;

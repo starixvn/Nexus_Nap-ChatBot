@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Models.Setting
 {
-    using Fanex.NCB.Base.Models;
+    using Fanex.NCB.Core.Models;
 
     public class Recipient : BaseModel
     {

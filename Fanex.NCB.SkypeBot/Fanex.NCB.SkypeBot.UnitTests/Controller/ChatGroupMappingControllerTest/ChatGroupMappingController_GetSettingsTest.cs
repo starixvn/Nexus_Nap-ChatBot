@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using Fanex.NCB.Base.Models;
+using Fanex.NCB.Core.Models;
 using Fanex.NCB.Services.Interfaces;
 using Fanex.NCB.SkypeBot.Controllers;
 using FluentAssertions;

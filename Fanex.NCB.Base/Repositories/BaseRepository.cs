@@ -3,9 +3,9 @@ using System.Collections;
 using System.Threading.Tasks;
 using Fanex.Data;
 using Fanex.Data.Repository;
-using Fanex.NCB.Base.Models;
+using Fanex.NCB.Core.Models;
 
-namespace Fanex.NCB.Base.Repositories
+namespace Fanex.NCB.Core.Repositories
 {
     public class BaseRepository : IBaseRepository
     {

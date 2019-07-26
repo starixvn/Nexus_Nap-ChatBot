@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Base.Enum
+﻿namespace Fanex.NCB.Core.Enum
 {
     using System.ComponentModel;
 

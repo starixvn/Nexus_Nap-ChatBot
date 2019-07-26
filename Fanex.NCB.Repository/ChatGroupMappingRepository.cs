@@ -1,8 +1,8 @@
 ﻿namespace Fanex.NCB.Repository
 {
     using System.Threading.Tasks;
-    using Fanex.NCB.Base.Models;
-    using Fanex.NCB.Base.Services.Interfaces;
+    using Fanex.NCB.Core.Models;
+    using Fanex.NCB.Core.Services.Interfaces;
     using Fanex.NCB.Criteria.ChatGroupMapping;
     using Fanex.NCB.Models.ChatGroupMapping;
     using Fanex.NCB.Repository.Interfaces;

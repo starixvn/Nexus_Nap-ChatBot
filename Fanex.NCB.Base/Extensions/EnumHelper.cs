@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Base.Extensions
+﻿namespace Fanex.NCB.Core.Extensions
 {
     using System;
     using System.ComponentModel;

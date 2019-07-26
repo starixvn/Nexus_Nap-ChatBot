@@ -13,7 +13,7 @@
     using Fanex.NAP.Client.Services;
     using Fanex.NAP.Client.Transport;
     using Fanex.NAP.Client.Web;
-    using Fanex.NCB.Base.Models;
+    using Fanex.NCB.Core.Models;
     using Fanex.NCB.CustomAspNetCoreModule;
     using Fanex.NCB.CustomAspNetCoreModule.Extensions;
     using Fanex.NCB.Main.AppConfig;

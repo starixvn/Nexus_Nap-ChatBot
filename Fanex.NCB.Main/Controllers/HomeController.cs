@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using Fanex.NCB.Base.Models;
+using Fanex.NCB.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

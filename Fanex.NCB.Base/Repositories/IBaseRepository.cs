@@ -1,8 +1,8 @@
-﻿namespace Fanex.NCB.Base.Repositories
+﻿namespace Fanex.NCB.Core.Repositories
 {
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
-    using Fanex.NCB.Base.Models;
+    using Fanex.NCB.Core.Models;
 
     public interface IBaseRepository
     {

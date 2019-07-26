@@ -1,12 +1,12 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint
 {
     using Fanex.Data.Repository;
-    using Fanex.NCB.Base.Repositories;
-    using Fanex.NCB.Base.Services;
-    using Fanex.NCB.Base.Services.Interfaces;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.BotService.EndPoint.Bots;
+    using Fanex.NCB.Core.Repositories;
+    using Fanex.NCB.Core.Services;
+    using Fanex.NCB.Core.Services.Interfaces;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Builder.Integration.AspNet.Core;
     using Microsoft.Extensions.DependencyInjection;

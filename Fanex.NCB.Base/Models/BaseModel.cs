@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Base.Models
+﻿namespace Fanex.NCB.Core.Models
 {
     public class BaseModel
     {

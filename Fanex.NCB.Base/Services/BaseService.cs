@@ -1,12 +1,12 @@
-﻿namespace Fanex.NCB.Base.Services
+﻿namespace Fanex.NCB.Core.Services
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
-    using Fanex.NCB.Base.Models;
-    using Fanex.NCB.Base.Repositories;
-    using Fanex.NCB.Base.Services.Interfaces;
+    using Fanex.NCB.Core.Models;
+    using Fanex.NCB.Core.Repositories;
+    using Fanex.NCB.Core.Services.Interfaces;
 
     public class BaseService : IBaseService
     {

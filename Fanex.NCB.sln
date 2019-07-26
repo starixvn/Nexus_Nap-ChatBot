@@ -70,7 +70,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Repository", "Fan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Models", "Fanex.NCB.Models\Fanex.NCB.Models.csproj", "{89E56FE8-72AF-41E8-B2A8-1B9938CBC35A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Base", "Fanex.NCB.Base\Fanex.NCB.Base.csproj", "{83F243B2-4DB8-4F51-A8B0-6CBF795459AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Core", "Fanex.NCB.Base\Fanex.NCB.Core.csproj", "{83F243B2-4DB8-4F51-A8B0-6CBF795459AB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fanex.NCB.BotService", "Fanex.NCB.BotService", "{6EF91A5A-3BF4-4CF4-ABF7-13B45E71C599}"
 EndProject

@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NCB.Base.Models;
+    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.ChatGroupMapping;
     using Fanex.NCB.Models.ChatGroupMapping;
 
