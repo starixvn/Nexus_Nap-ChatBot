@@ -27,6 +27,7 @@ CREATE TABLE ChatBot.ConversationBot(
   CREATE TABLE ChatBot.ConversationGroupBot(
 		ConversationGroupID INT NOT NULL
         , ConversationBotID INT NOT NULL
+        , CreatedTime DATETIME NOT NULL
         , CONSTRAINT PK_ID  PRIMARY KEY (ConversationGroupID, ConversationBotID)
   );
   
