@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Fanex.NCB.Base.Models;
 using Fanex.NCB.Bot.SkypeClient;
-using Fanex.NCB.Core.Models.DataDomain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+
 namespace Fanex.NCB.Main.Controllers
 {
     [Authorize]
@@ -17,6 +18,7 @@ namespace Fanex.NCB.Main.Controllers
         {
             _options = options.Value;
         }
+
         public async Task<string> Index(string message, string conversationid)
         {
             var spartaBot = _options.FirstOrDefault(i => i.Name == "SpartaBot");
@@ -28,6 +30,5 @@ namespace Fanex.NCB.Main.Controllers
 
             return "OK";
         }
-
     }
 }

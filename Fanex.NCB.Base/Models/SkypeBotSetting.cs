@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Core.Models.DataDomain
+﻿namespace Fanex.NCB.Base.Models
 {
     public class SkypeBotSetting
     {

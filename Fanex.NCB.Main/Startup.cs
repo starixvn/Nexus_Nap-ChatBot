@@ -13,8 +13,7 @@
     using Fanex.NAP.Client.Services;
     using Fanex.NAP.Client.Transport;
     using Fanex.NAP.Client.Web;
-    using Fanex.NCB.Core.Models.DataDomain;
-    using Fanex.NCB.Core.Services;
+    using Fanex.NCB.Base.Models;
     using Fanex.NCB.CustomAspNetCoreModule;
     using Fanex.NCB.CustomAspNetCoreModule.Extensions;
     using Fanex.NCB.Main.AppConfig;
@@ -94,7 +93,6 @@
             services.AddSingleton<IRestClient, RestClient>();
             services.AddSingleton<ISecurityService, SecurityService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<IBridgeClientService, BridgeClientService>();
             services.AddTransient<IDBConfigService, DBConfigService>();
             services.RegisterServices();
             services.RegisterRepositories();
