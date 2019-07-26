@@ -2,7 +2,7 @@
 {
     public class UpdateGroupTopicCommand : BaseCommand
     {
-        public string ConversatioId { get; set; }
+        public string ConversationId { get; set; }
 
         public string GroupName { get; set; }
 
@@ -10,7 +10,7 @@
 
         public override string GetSettingKey() => "NCB_Conversation_UpdateGroupTopic";
 
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(ConversatioId)
+        public override bool IsValid() => !string.IsNullOrWhiteSpace(ConversationId)
             && !string.IsNullOrWhiteSpace(GroupName);
     }
 }

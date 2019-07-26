@@ -49,7 +49,7 @@
             {
                 BotConversationId = turnContext.Activity.Recipient.Id,
                 BotName = turnContext.Activity.Recipient.Name,
-                ConversatioId = turnContext.Activity.Conversation.Id,
+                ConversationId = turnContext.Activity.Conversation.Id,
                 GroupName = turnContext.Activity.Conversation.Name,
                 ChannelId = turnContext.Activity.ChannelId,
                 ServiceUrl = turnContext.Activity.ServiceUrl,
@@ -64,7 +64,7 @@
             var command = new RemoveBotOutGroupCommand
             {
                 BotConversationId = turnContext.Activity.Recipient.Id,
-                ConversatioId = turnContext.Activity.Conversation.Id,
+                ConversationId = turnContext.Activity.Conversation.Id,
                 UpdatedBy = turnContext.Activity.From.Id
             };
 
@@ -75,7 +75,7 @@
         {
             var command = new UpdateGroupTopicCommand
             {
-                ConversatioId = turnContext.Activity.Conversation.Id,
+                ConversationId = turnContext.Activity.Conversation.Id,
                 GroupName = turnContext.Activity.TopicName,
                 UpdatedBy = turnContext.Activity.From.Id
             };

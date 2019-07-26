@@ -1,5 +1,7 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint
 {
+    using Fanex.Data;
+    using Fanex.Data.MySql;
     using Fanex.NCB.BotService.EndPoint.Bots;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -10,7 +12,9 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
 
     public class Startup
     {
@@ -29,6 +33,18 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
+            Dictionary<string, ConnectionConfiguration> connections = Configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .ToDictionary(connection => connection.Key,
+                              connection => new ConnectionConfiguration(connection.Key, connection.Value));
+
+            DbSettingProviderManager
+               .StartNewSession()
+               .Use(connections)
+               .WithMySql(resourcePath: "~/App_Data")
+               .Run();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             BotServiceDI.Init(services);
             LoadBotConfig(services);

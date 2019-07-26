@@ -6,7 +6,7 @@
 
         public string BotName { get; set; }
 
-        public string ConversatioId { get; set; }
+        public string ConversationId { get; set; }
 
         public string GroupName { get; set; }
 
@@ -19,6 +19,6 @@
         public override string GetSettingKey() => "NCB_Conversation_AddBotToGroup";
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(BotConversationId)
-            && !string.IsNullOrWhiteSpace(ConversatioId);
+            && !string.IsNullOrWhiteSpace(ConversationId);
     }
 }
