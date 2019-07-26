@@ -57,7 +57,7 @@ export class UpdatePopup extends Component {
     submitData = () => {
         const params = this.getParams();
         this.props.update(params).then(() => {
-            if (this.props.updateData.errorCode === 0) {
+            if (this.props.updateData.isSuccessful) {
                 this.closePopupOnSuccess();
             }
         });
@@ -207,7 +207,6 @@ export class UpdatePopup extends Component {
         );
     }
 }
-
 
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 

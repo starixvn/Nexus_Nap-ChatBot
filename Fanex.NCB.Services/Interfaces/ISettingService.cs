@@ -20,5 +20,7 @@
         Task<IEnumerable<Recipient>> GetRecipientsAsync();
 
         Task<IEnumerable<BaseModel>> GetFilterRecipientTypesAsync();
+
+        IEnumerable<BaseModel> GetAllMappingStatus();
     }
 }

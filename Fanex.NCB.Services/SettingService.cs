@@ -1,7 +1,11 @@
 ﻿namespace Fanex.NCB.Services
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.NCB.Base.Enum;
+    using Fanex.NCB.Base.Extensions;
     using Fanex.NCB.Base.Models;
     using Fanex.NCB.Base.Services.Interfaces;
     using Fanex.NCB.Criteria.Setting;
@@ -15,6 +19,16 @@
         public SettingService(IBaseService baseService)
         {
             this.baseService = baseService;
+        }
+
+        public IEnumerable<BaseModel> GetAllMappingStatus()
+        {
+            var status = Enum.GetValues(typeof(MappingStatus)).Cast<MappingStatus>().Select(v => new BaseModel
+            {
+                Id = (int)v,
+                Name = EnumHelper.GetDescription(v)
+            });
+            return status;
         }
 
         public async Task<IEnumerable<BotName>> GetBotNameAsync()

@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
+using Fanex.NCB.Main.ViewModel.ChatGroupMapping;
 using Fanex.NCB.Models.ChatGroupMapping;
 using Fanex.NCB.Services.Interfaces;
 using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
-using Fanex.NCB.SkypeBot.Services.MappingStatusService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,16 +13,13 @@ namespace Fanex.NCB.SkypeBot.Controllers
     {
         private readonly IChatGroupMappingService chatGroupMappingService;
         private readonly ISettingService settingService;
-        private readonly IMappingStatusService _mappingStatusService;
 
         public ChatGroupMappingController(
             IChatGroupMappingService chatGroupMappingService,
-            ISettingService settingService,
-            IMappingStatusService mappingStatusService)
+            ISettingService settingService)
         {
             this.chatGroupMappingService = chatGroupMappingService;
             this.settingService = settingService;
-            _mappingStatusService = mappingStatusService;
         }
 
         [HttpGet]
@@ -34,24 +31,18 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSettings()
         {
-            var botNameTask = settingService.GetBotNameAsync();
-            var filterRecipientTypeTask = settingService.GetFilterRecipientTypesAsync();
-            var recipientTypeTask = settingService.GetRecipientTypesAsync();
-            var recipientTask = settingService.GetRecipientsAsync();
-            var chatGroupTypeTask = settingService.GetChatGroupTypeAsync();
-            var licenseeStatusTask = settingService.GetLicenseeStatusAsync();
-
-            await Task.WhenAll(botNameTask, recipientTask, chatGroupTypeTask, recipientTypeTask, licenseeStatusTask).ConfigureAwait(false);
-            return Json(new
+            var viewModel = new ChatGroupMappingFilterViewModel
             {
-                botNames = await botNameTask,
-                recipientTypes = await recipientTypeTask,
-                filterRecipientTypes = await filterRecipientTypeTask,
-                recipients = await recipientTask,
-                chatGroupTypes = await chatGroupTypeTask,
-                licenseeStatuses = await licenseeStatusTask,
-                mappingStatuses = _mappingStatusService.GetMappingStatus()
-            });
+                BotNames = await settingService.GetBotNameAsync().ConfigureAwait(false),
+                RecipientTypes = await settingService.GetRecipientTypesAsync().ConfigureAwait(false),
+                FilterRecipientTypes = await settingService.GetFilterRecipientTypesAsync().ConfigureAwait(false),
+                Recipients = await settingService.GetRecipientsAsync().ConfigureAwait(false),
+                ChatGroupTypes = await settingService.GetChatGroupTypeAsync().ConfigureAwait(false),
+                LicenseeStatuses = await settingService.GetLicenseeStatusAsync().ConfigureAwait(false),
+                MappingStatuses = settingService.GetAllMappingStatus()
+            };
+
+            return Json(viewModel);
         }
 
         [HttpGet]
