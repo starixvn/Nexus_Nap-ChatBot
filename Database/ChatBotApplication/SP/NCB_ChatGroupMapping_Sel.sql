@@ -136,80 +136,60 @@ BEGIN
         INSERT INTO tmp_RecipientIDByLicenseeStatus(RecipientID) 
         SELECT RECIPIENT_ID_NA;
     END IF;
-    
-    DROP TEMPORARY TABLE IF EXISTS tmp_ConversationIDBot;
-	CREATE TEMPORARY TABLE tmp_ConversationIDBot(
-																					ChatGroupConversationID INT
-                                                                                    , BotID INT
-																		);
-     
-     
-	INSERT INTO tmp_ConversationIDBot (ChatGroupConversationID, BotID)
-	SELECT grp.ID AS ChatGroupConversationID , MIN(bot.ID) BotID
-	FROM BotConversation grp
-			INNER JOIN BotConversationMember bot
-				ON bot.ConversationID = grp.ConversationID
-					AND bot.IsBot = 1
-    GROUP BY grp.ID;
-        
-	INSERT INTO tmp_ConversationIDBot (ChatGroupConversationID, BotID)
-	SELECT grp.ID AS ChatGroupConversationID , MIN(bot.ID) BotID
-	FROM BotConversation grp
-			INNER JOIN BotConversationMember bot
-				ON bot.ConversationID = grp.ConversationID
-					AND bot.IsBot = 1 AND bot.IsActive = 1
-    GROUP BY grp.ID;
         
 	
     DROP TEMPORARY TABLE IF EXISTS tmp_ConversationID_FIRSTBot;
 	CREATE TEMPORARY TABLE tmp_ConversationID_FIRSTBot(
-																					ChatGroupConversationID INT
-                                                                                    , BotID INT
+																					ConversationGroupID INT
+                                                                                    , ConversationBotID INT
 																		);
      
-	INSERT INTO tmp_ConversationID_FIRSTBot (ChatGroupConversationID, BotID)
-	SELECT tmp.ChatGroupConversationID, MAX(tmp.BotID) BotID
-    FROM tmp_ConversationIDBot tmp
-    GROUP BY tmp.ChatGroupConversationID;
-    
+	INSERT INTO tmp_ConversationID_FIRSTBot (ConversationGroupID, ConversationBotID)
+	SELECT GroupBot.ConversationGroupID, GroupBot.ConversationBotID
+	FROM ConversationGroupBot GroupBot 
+	INNER JOIN (
+		SELECT grb.ConversationGroupID, MIN(grb.CreatedTime)  MaxTime
+		FROM ConversationGroupBot grb 
+		GROUP BY grb.ConversationGroupID
+	) tmp ON GroupBot.ConversationGroupID = tmp.ConversationGroupID
+	AND GroupBot.CreatedTime = tmp. MaxTime;
+
         
 	-- Get all BotConversation IDs that satisfy filtering conditions
     DROP TEMPORARY TABLE IF EXISTS tmp_AllBotConversation;
     CREATE TEMPORARY TABLE tmp_AllBotConversation
-    SELECT DISTINCT bc.Name AS GroupName
-				, bc.ID AS GroupID
+    SELECT DISTINCT cgrp.Name AS GroupName
+				, cgrp.ConversationGroupID AS GroupID
                 , cgt.ChatGroupTypeID
                 , cgt.ChatGroupTypeName
-                , bc.ConversationID
-                , bce.Remark
+                , cgrp.ConversationID
+                , grpinfo.Remark
                 , rt.RecipientTypeName
                 , CASE 
-						WHEN r.RecipientName IS NOT NULL  AND bce.ChatGroupTypeID IS NOT NULL THEN 1
+						WHEN r.RecipientName IS NOT NULL  AND grpinfo.ChatGroupTypeID IS NOT NULL THEN 1
                         ELSE 0
 					END IsMapped
-				, bcm.Name BotName
-                , bcm.MemberID BotMemberID
-                , bcm.IsActive
+				, bot.Name BotName
+                , bot.ConversationBotID BotMemberID
                 , r.RecipientTypeID
-    FROM BotConversation bc
-    INNER JOIN tmp_ConversationID_FIRSTBot  FirstBot ON bc.ID = FirstBot.ChatGroupConversationID
-    INNER JOIN BotConversationMember  bcm ON bcm.ID = FirstBot.BotID
-    LEFT JOIN BotConversationExtraInfo bce ON bc.ID = bce.BotConversationID
-    LEFT JOIN ChatGroupType cgt ON bce.ChatGroupTypeID = cgt.ChatGroupTypeID
-    LEFT JOIN BotConversationRecipient bcr ON bc.ID = bcr.BotConversationID
+    FROM ConversationGroup cgrp
+    LEFT JOIN tmp_ConversationID_FIRSTBot  FirstBot ON cgrp.ConversationGroupID = FirstBot.ConversationGroupID
+    LEFT JOIN ConversationBot  bot ON bot.ConversationBotID = FirstBot.ConversationBotID
+    LEFT JOIN ConversationGroupExtraInfo grpinfo ON cgrp.ConversationGroupID = grpinfo.ConversationGroupID
+    LEFT JOIN ChatGroupType cgt ON grpinfo.ChatGroupTypeID = cgt.ChatGroupTypeID
+    LEFT JOIN ConversationGroupRecipient bcr ON cgrp.ConversationGroupID = bcr.ConversationGroupID
     LEFT JOIN Recipient r ON bcr.RecipientId = r.RecipientId
     LEFT JOIN RecipientType rt ON r.RecipientTypeID = rt.RecipientTypeID
-    WHERE bcm.IsBot = 1
-		AND bcm.Name IN (SELECT tbn.BotName FROM tmp_BotNames tbn)
+    WHERE bot.Name IN (SELECT tbn.BotName FROM tmp_BotNames tbn)
 		AND EXISTS (
 			SELECT 1 
             FROM tmp_MappingStatusIDs t1 
             WHERE t1.MappingStatusID = CASE 
-																	WHEN bcm.IsActive = 0 
+																	WHEN FirstBot.ConversationBotID IS NULL 
 																		THEN MAPPING_STATUS_BOT_REMOVED
-																	 WHEN r.RecipientName IS NULL  OR  bce.ChatGroupTypeID IS NULL 
+																	 WHEN r.RecipientName IS NULL  OR  grpinfo.ChatGroupTypeID IS NULL 
 																		THEN MAPPING_STATUS_NOT_MAPPED
-																	WHEN r.RecipientName IS NOT NULL  AND bce.ChatGroupTypeID IS NOT NULL 
+																	WHEN r.RecipientName IS NOT NULL  AND grpinfo.ChatGroupTypeID IS NOT NULL 
 																		THEN MAPPING_STATUS_MAPPED
                                                             END
 		)
@@ -236,8 +216,7 @@ BEGIN
         tmp.RecipientTypeName,
 		tmp.IsMapped,
         tmp.BotName,
-        tmp.BotMemberID,
-        tmp.IsActive
+        tmp.BotMemberID
 	FROM tmp_AllBotConversation tmp
     ORDER BY tmp.GroupName
     LIMIT rowStart, pageSize;
@@ -263,19 +242,18 @@ BEGIN
 	-- Get BotConversation Members that belong to the current paging page of BotConversations 
 	-- and satisfy BotName filtering condition
     SELECT tmp.BotName, 
-		tmp.ConversationID, 
-        tmp.IsActive
+		tmp.ConversationID
     FROM tmp_PagedBotConversation tmp;
     
 	-- Get BotConversationRecipient that belongs to the current paging page of BotConversations
 	-- and satisfy RecipientName filtering condition
-    SELECT bcr.BotConversationID AS GroupID, 
+    SELECT bcr.ConversationGroupID AS GroupID, 
 		r.RecipientID, 
         r.RecipientName, 
         ls.LicenseeStatusId AS RecipientStatusID,  
         ls.LicenseeStatusName  AS RecipientStatusName
-    FROM BotConversationRecipient bcr
-		INNER JOIN tmp_PagedBotConversation pbc ON bcr.BotConversationID = pbc.GroupID
+    FROM ConversationGroupRecipient bcr
+		INNER JOIN tmp_PagedBotConversation pbc ON bcr.ConversationGroupID = pbc.GroupID
 		INNER JOIN Recipient r ON bcr.RecipientID = r.RecipientID
 		LEFT JOIN Licensee l ON r.SourceId = l.LicenseeID AND r.RecipientTypeId = RECIPIENT_TYPE_LICENSEE
 		LEFT JOIN LicenseeStatus ls ON l.LicenseeStatusId = ls.LicenseeStatusId

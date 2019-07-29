@@ -60,15 +60,15 @@ NCB_ChatGroupMapping_Upd:BEGIN
     
 	-- If groupID exists in BotConversationExtraInfo then Update BotConversationExtraInfo
 	-- Else Insert into BotConversationExtraInfo
-	INSERT INTO BotConversationExtraInfo(BotConversationID, ChatGroupTypeID, Remark)
-	SELECT BotConversationID, ChatGroupTypeID, Remark
-	FROM (SELECT groupID AS BotConversationID, chatGroupTypeID AS ChatGroupTypeID, remark AS Remark) AS tmp
-	WHERE NOT EXISTS(SELECT 1 FROM BotConversationExtraInfo bce WHERE bce.BotConversationID = tmp.BotConversationID);
+	INSERT INTO ConversationGroupExtraInfo(ConversationGroupID, ChatGroupTypeID, Remark)
+	SELECT ConversationGroupID, ChatGroupTypeID, Remark
+	FROM (SELECT groupID AS ConversationGroupID, chatGroupTypeID AS ChatGroupTypeID, remark AS Remark) AS tmp
+	WHERE NOT EXISTS(SELECT 1 FROM ConversationGroupExtraInfo bce WHERE bce.BotConversationID = tmp.BotConversationID);
 	
 	IF ROW_COUNT() = 0 THEN
-		UPDATE BotConversationExtraInfo bce
+		UPDATE ConversationGroupExtraInfo bce
         SET bce.ChatGroupTypeID = chatGroupTypeID, bce.Remark = remark
-        WHERE bce.BotConversationID = groupID;
+        WHERE bce.ConversationGroupID = groupID;
 	END IF;
 	   
     -- Split recipientIDs into temporary table tmp_RecipientID
@@ -85,11 +85,11 @@ NCB_ChatGroupMapping_Upd:BEGIN
 	DEALLOCATE PREPARE Stmt;
     
 	-- Update BotConversationRecipient with values from tmp_RecipientID
-    DELETE FROM BotConversationRecipient 
-    WHERE BotConversationID = groupID;
+    DELETE FROM ConversationGroupRecipient
+    WHERE ConversationGroupID = groupID;
     
-    INSERT INTO BotConversationRecipient(BotConversationID, RecipientID)
-    SELECT groupID AS BotConversationID, tri.RecipientID
+    INSERT INTO ConversationGroupRecipient(ConversationGroupID, RecipientID)
+    SELECT groupID AS ConversationGroupID, tri.RecipientID
     FROM tmp_RecipientID tri;    
 	
 	-- Drop temporary tables
