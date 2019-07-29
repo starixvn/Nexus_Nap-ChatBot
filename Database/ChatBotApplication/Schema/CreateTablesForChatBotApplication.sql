@@ -3,7 +3,7 @@ CREATE DATABASE ChatBot CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci ;
 
 CREATE TABLE ChatBot.ConversationGroup(
 		ConversationGroupID INT AUTO_INCREMENT NOT NULL
-		, ConversationID VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, ConversationID VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
 		, Name VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
 		, ChannelID VARCHAR(45) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
 		, UpdatedBy VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
@@ -16,7 +16,7 @@ CREATE TABLE ChatBot.ConversationGroup(
 
 CREATE TABLE ChatBot.ConversationBot(
 		 ConversationBotID INT AUTO_INCREMENT NOT NULL
-		, ConversationID VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, ConversationID VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
 		, Name VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
         , CONSTRAINT PK_ID  PRIMARY KEY (ConversationBotID)
         , INDEX INDEX_ConversationID USING BTREE (ConversationID)

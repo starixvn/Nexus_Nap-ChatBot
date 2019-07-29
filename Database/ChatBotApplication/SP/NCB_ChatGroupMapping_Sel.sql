@@ -3,7 +3,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS NCB_ChatGroupMapping_Sel;
 
 CREATE PROCEDURE `NCB_ChatGroupMapping_Sel`(
-		IN botNames VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' ,
+		IN botIDs VARCHAR(500) ,
         IN recipientTypeIds VARCHAR(1000),
         IN recipientName VARCHAR(100),
 		IN licenseeStatusIds VARCHAR(1000),
@@ -13,7 +13,7 @@ CREATE PROCEDURE `NCB_ChatGroupMapping_Sel`(
 		 /*
 			Creator: Scofield@20190404
 			Params:
-					- botNames: Bot names, ex: "bot name 1,bot name 2"
+					- botIDs: Bot names, ex: "bot name 1,bot name 2"
 					- recipientTypeIds: Recipient Type Ids, ex: "1,2"
 					- recipientName: Recipient Name
 					- licenseeStatusIds: Licensee Status Ids, ex: "1,2", | -1000 for N/A
@@ -44,22 +44,22 @@ BEGIN
     SET rowStart =  pageSize * (pageIndex - 1);
     
     #Init param
-    IF botNames IS NULL THEN SET botNames = ''; END IF;
+    IF botIDs IS NULL THEN SET botIDs = ''; END IF;
     IF recipientTypeIds IS NULL THEN SET recipientTypeIds = ''; END IF;
     IF recipientName IS NULL THEN SET recipientName = ''; END IF;
     IF mappingStatusIds IS NULL THEN SET mappingStatusIds = ''; END IF;    
 	IF licenseeStatusIds IS NULL THEN SET licenseeStatusIds = ''; END IF;
     
 	-- Split recipientTypeIds into temporary table tmp_RecipientTypeIds
-    DROP TEMPORARY TABLE IF EXISTS tmp_BotNames;
-	CREATE TEMPORARY TABLE tmp_BotNames(
-									BotName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' 
+    DROP TEMPORARY TABLE IF EXISTS tmp_BotIDs;
+	CREATE TEMPORARY TABLE tmp_BotIDs(
+									BotID INT
 							);
     
-    IF IFNULL(botNames, '') <> '' THEN
-		SET @SqlCommand = REPLACE(botNames, ',', '''),(''');
+    IF IFNULL(botIDs, '') <> '' THEN
+		SET @SqlCommand = REPLACE(botIDs, ',', '''),(''');
 		SET @SqlCommand = CONCAT('(''', @SqlCommand, ''')');
-		SET @SqlCommand= CONCAT('INSERT INTO tmp_BotNames VALUES', @SqlCommand); 
+		SET @SqlCommand= CONCAT('INSERT INTO tmp_BotIDs VALUES', @SqlCommand); 
 		
 		PREPARE Stmt FROM  @SqlCommand;
 		EXECUTE Stmt;
@@ -180,7 +180,7 @@ BEGIN
     LEFT JOIN ConversationGroupRecipient bcr ON cgrp.ConversationGroupID = bcr.ConversationGroupID
     LEFT JOIN Recipient r ON bcr.RecipientId = r.RecipientId
     LEFT JOIN RecipientType rt ON r.RecipientTypeID = rt.RecipientTypeID
-    WHERE bot.Name IN (SELECT tbn.BotName FROM tmp_BotNames tbn)
+    WHERE bot.ConversationBotID IN (SELECT tbn.BotID FROM tmp_BotIDs tbn)
 		AND EXISTS (
 			SELECT 1 
             FROM tmp_MappingStatusIDs t1 

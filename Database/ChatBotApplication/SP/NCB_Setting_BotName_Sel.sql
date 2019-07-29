@@ -9,10 +9,12 @@ CREATE PROCEDURE `NCB_Setting_BotName_Sel`(
     */
 ) 
 BEGIN
-	SELECT DISTINCT b.Name AS Id, b.Name AS Name
-    FROM BotConversationMember b
-    WHERE b.IsActive = 1 AND Name IS NOT NULL AND Name <> ''
+	SELECT DISTINCT b.ConversationBotID AS Id, b.Name AS Name
+    FROM ConversationBot b
+    WHERE Name IS NOT NULL AND Name <> ''
     ORDER BY b.Name;
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_BotName_Sel TO 'ncb.admin'@'%';
+
+

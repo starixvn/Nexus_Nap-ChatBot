@@ -3,7 +3,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS `NCB_Conversation_UpdateGroupTopic`;
 
 CREATE DEFINER=`ncb.admin`@`%` PROCEDURE `NCB_Conversation_UpdateGroupTopic`(
-    IN conversationId VARCHAR(70)
+    IN conversationId VARCHAR(200) CHARACTER SET 'utf8mb4' 
     , IN groupName VARCHAR(500)
 	, IN updatedBy VARCHAR(50)
 	, OUT errCode SMALLINT

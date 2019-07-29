@@ -3,9 +3,9 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS `NCB_Conversation_AddBotToGroup`;
 
 CREATE DEFINER=`ncb.admin`@`%` PROCEDURE `NCB_Conversation_AddBotToGroup`(
-	IN botConversationId VARCHAR(70)
+	IN botConversationId VARCHAR(200) CHARACTER SET 'utf8mb4' 
 	, IN botName VARCHAR(70)
-    , IN conversationId VARCHAR(70)
+    , IN conversationId VARCHAR(200) CHARACTER SET 'utf8mb4' 
 	, IN groupName VARCHAR(500)
 	, IN channelId VARCHAR(45)
     , IN serviceUrl VARCHAR(500)
