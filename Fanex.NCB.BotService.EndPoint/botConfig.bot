@@ -37,6 +37,15 @@
       "appPassword": "jcA0aW9d@Lk55RaUbCSCsBB*B/Szbnc.",
       "id": "4",
       "Intro": "Hi I'm Nexus Bot"
+    },
+    {
+      "type": "endpoint",
+      "name": "ncb2",
+      "endpoint": "https://aa79478b.ngrok.io/api/messages",
+      "appId": "33645da9-5fb8-4671-b65c-20711a95a20c",
+      "appPassword": "T@XOoAmmJfwlNfZzoeM9*0Y+wm=mPb86",
+      "id": "5",
+      "Intro": "Hi I'm Nexus Bot"
     }
   ],
   "padlock": "",

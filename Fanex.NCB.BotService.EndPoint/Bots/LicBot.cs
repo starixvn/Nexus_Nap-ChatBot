@@ -10,6 +10,10 @@
 
     public class LicBot : ActivityHandler
     {
+        private const string channelSkypeId = "skype";
+        private const string greetingMessage = "Hello, I am {0}";
+        private const string replyText = "You said: {0}";
+
         private readonly IConversationService conversationService;
 
         public LicBot(IConversationService conversationService)
@@ -19,28 +23,38 @@
 
         protected override async Task OnConversationUpdateActivityAsync(ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
-            if (turnContext.Activity.MembersAdded != null)
+            if (turnContext.Activity.ChannelId.Equals(channelSkypeId))
             {
-                if (turnContext.Activity.MembersAdded.Any(m => m.Id == turnContext.Activity.Recipient?.Id))
+                if (turnContext.Activity.MembersAdded != null)
                 {
-                    await OnBotAddedAsync(turnContext, cancellationToken).ConfigureAwait(false);
+                    if (turnContext.Activity.MembersAdded.Any(m => m.Id == turnContext.Activity.Recipient?.Id))
+                    {
+                        await OnBotAddedAsync(turnContext, cancellationToken).ConfigureAwait(false);
+                    }
+                }
+                else if (turnContext.Activity.MembersRemoved != null
+                    && turnContext.Activity.MembersRemoved.Any(m => m.Id == turnContext.Activity.Recipient?.Id))
+                {
+                    await OnBotRemovedAsync(turnContext, cancellationToken).ConfigureAwait(false);
+                }
+
+                if (!string.IsNullOrWhiteSpace(turnContext.Activity.TopicName))
+                {
+                    await OnUpdatedTopic(turnContext);
                 }
             }
-            else if (turnContext.Activity.MembersRemoved != null
-                && turnContext.Activity.MembersRemoved.Any(m => m.Id == turnContext.Activity.Recipient?.Id))
+            else
             {
-                await OnBotRemovedAsync(turnContext, cancellationToken).ConfigureAwait(false);
-            }
-
-            if (!string.IsNullOrWhiteSpace(turnContext.Activity.TopicName))
-            {
-                await OnUpdatedTopic(turnContext);
+                await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(greetingMessage, turnContext.Activity.Recipient.Name)), cancellationToken);
             }
         }
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            await turnContext.SendActivityAsync(MessageFactory.Text($"Echo: {turnContext.Activity.Text}"), cancellationToken);
+            var x = 0;
+            var y = 1 / x;
+
+            await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(replyText, turnContext.Activity.Text)), cancellationToken);
         }
 
         protected virtual async Task OnBotAddedAsync(ITurnContext turnContext, CancellationToken cancellationToken)

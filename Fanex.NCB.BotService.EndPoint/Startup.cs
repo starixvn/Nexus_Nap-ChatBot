@@ -18,13 +18,13 @@
 
     public class Startup
     {
-        private readonly ILogger _logger;
+        private readonly ILogger logger;
 
         public Startup(IConfiguration configuration, IHostingEnvironment env, ILogger<Startup> logger)
         {
             Configuration = configuration;
             Environment = env;
-            _logger = logger;
+            this.logger = logger;
         }
 
         public IConfiguration Configuration { get; }
@@ -87,15 +87,20 @@
                     - If you are running this bot locally, consider adding a appsettings.json file with botFilePath and botFileSecret.
                     - See https://aka.ms/about-bot-file to learn more about .bot file its use and bot configuration.";
 
-                _logger.LogCritical(msg, ex);
+                logger.LogCritical(msg, ex);
                 throw new InvalidOperationException(msg);
             }
 
             services.AddSingleton(_ => botConfig);
-            
+
             services.AddBot<LicBot>(options =>
             {
                 options.CredentialProvider = new MultiCredentialProvider(botConfig);
+                options.OnTurnError = async (turnContext, exception) =>
+                {
+                    logger.LogError($"Exception caught : {exception.Message}");
+                    await turnContext.SendActivityAsync("Sorry, it looks like something went wrong. Please contact Administrator.");
+                };
             });
         }
     }

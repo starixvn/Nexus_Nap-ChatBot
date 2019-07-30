@@ -2,14 +2,14 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS `NCB_Conversation_AddBotToGroup`;
 
-CREATE DEFINER=`ncb.admin`@`%` PROCEDURE `NCB_Conversation_AddBotToGroup`(
-	IN botConversationId VARCHAR(200) CHARACTER SET 'utf8mb4' 
+CREATE PROCEDURE `NCB_Conversation_AddBotToGroup`(
+	IN botConversationId VARCHAR(200)  
 	, IN botName VARCHAR(70)
-    , IN conversationId VARCHAR(200) CHARACTER SET 'utf8mb4' 
-	, IN groupName VARCHAR(500)
+    , IN conversationId VARCHAR(200)  
+	, IN groupName VARCHAR(500) CHARACTER SET 'utf8mb4'
 	, IN channelId VARCHAR(45)
     , IN serviceUrl VARCHAR(500)
-	, IN updatedBy VARCHAR(50)
+	, IN updatedBy VARCHAR(200)
 	, OUT errCode SMALLINT
 	, OUT errMsg VARCHAR(100)
     /*
@@ -34,14 +34,14 @@ BEGIN
     DECLARE finishTime 		DATETIME(3); 
     DECLARE duration 			INT;							
     DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
-    DECLARE ACTION_ID 		INT DEFAULT 1;
+    DECLARE ACTION_ID 		INT DEFAULT 9;
     
 	DECLARE conversationBotID INT;
     DECLARE conversationGroupId INT;
     DECLARE currentTime DATETIME(3);
     
     #Get Start Time to calcualte execution duration
-    SET  startTime = UTC_TIMESTAMP(3);
+    SET startTime = UTC_TIMESTAMP(3);
     SET currentTime = startTime;
     SET errCode=0, errMsg='';
     
@@ -103,10 +103,27 @@ BEGIN
     
      #Get Finish Time to calcualte execution duration
     SET finishTime = UTC_TIMESTAMP(3);
-    SET duration =  TIMESTAMPDIFF(MICROSECOND
-																		, startTime
-                                                                        , finishTime)  / 1000; 	#miliseconds
+    SET duration =  TIMESTAMPDIFF(MICROSECOND, startTime, finishTime)  / 1000; 	#miliseconds
     
     #Get Log Content, JSON format
+    SET logContent = json_object('conversationGroupId', conversationGroupId
+										, 'conversationBotID', conversationBotID
+                                        , 'botName', botName
+										, 'groupName', groupName
+                                        , 'channelId', channelId
+                                        , 'serviceUrl', serviceUrl
+                                        , 'updatedBy', updatedBy
+					);
+                    
+	#Write User Log
+	CALL NCB_UserLog_RunSP_Ins(
+										ACTION_ID #actionID
+										, conversationGroupId #referenceID
+										, -1 #UserID
+										, logContent #LogContent
+										, startTime #logtime
+										, duration	#Duration
+										);
+END;
 
-END
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Conversation_AddBotToGroup TO 'ncb.admin'@'%';

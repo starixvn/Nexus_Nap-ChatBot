@@ -8,15 +8,12 @@
     using Fanex.NCB.Core.Services;
     using Fanex.NCB.Core.Services.Interfaces;
     using Microsoft.Bot.Builder;
-    using Microsoft.Bot.Builder.Integration.AspNet.Core;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class BotServiceDI
     {
         public static void Init(IServiceCollection services)
         {
-            services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
-
             services.AddTransient<IBaseRepository, BaseRepository>();
             services.AddTransient<IDynamicRepository, DynamicRepository>();
             services.AddTransient<IBaseService, BaseService>();
