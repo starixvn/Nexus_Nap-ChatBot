@@ -19,6 +19,7 @@
             services.AddTransient<IUserService, UserService>();
             services.AddScoped<IChatGroupMappingService, ChatGroupMappingService>();
             services.AddScoped<ISettingService, SettingService>();
+            services.AddScoped<INotificationTypeService, NotificationTypeService>();
         }
 
         public static void RegisterRepositories(this IServiceCollection services)

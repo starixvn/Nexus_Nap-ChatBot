@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Fanex.NAP.Client.Configuration;
-using Fanex.NAP.Client.Helpers.Common;
-using Fanex.NAP.Client.Helpers.Web;
-using Fanex.NAP.Client.Models;
-using Fanex.NAP.Client.Models.ParameterObject;
-using Fanex.NAP.Client.Services;
-using Fanex.NCB.Common.DTO;
-using Fanex.NCB.Core.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-
-namespace Fanex.NCB.Main.Controllers
+﻿namespace Fanex.NCB.Main.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Security.Claims;
+    using System.Threading.Tasks;
+    using Fanex.NAP.Client.Configuration;
+    using Fanex.NAP.Client.Helpers.Common;
+    using Fanex.NAP.Client.Helpers.Web;
+    using Fanex.NAP.Client.Models;
+    using Fanex.NAP.Client.Models.ParameterObject;
+    using Fanex.NAP.Client.Services;
+    using Fanex.NCB.Common.DTO;
+    using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Authentication.Cookies;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+
     public class AuthController : Controller
     {
         private readonly IUserService userService;
@@ -26,20 +24,16 @@ namespace Fanex.NCB.Main.Controllers
         private readonly INapSettings napSettings;
         private readonly ISecurityService securityService;
 
-        private readonly AppSettings _options;
-
         public AuthController(
             IUserService userService,
             INapSession napSession,
             ISecurityService securityService,
-            INapSettings napSettings,
-            IOptions<AppSettings> options)
+            INapSettings napSettings)
         {
             this.userService = userService;
             this.napSession = napSession;
             this.napSettings = napSettings;
             this.securityService = securityService;
-            _options = options.Value;
         }
 
         public IActionResult Index(string returnUrl, bool invalidLogin)

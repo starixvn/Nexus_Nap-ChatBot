@@ -17,9 +17,6 @@
     using Fanex.NCB.CustomAspNetCoreModule;
     using Fanex.NCB.CustomAspNetCoreModule.Extensions;
     using Fanex.NCB.Main.AppConfig;
-    using Fanex.NCB.Shared.MySQLExtension.DataDomain;
-    using Fanex.NCB.Shared.MySQLExtension.Services;
-    using Fanex.NCB.SkypeBot.App_Start;
     using HealthChecks.UI.Client;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
@@ -72,7 +69,6 @@
 
             services.AddSingleton<IConfiguration>(Configuration);
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-            services.Configure<List<DataConfig>>(Configuration.GetSection("SPName"));
             services.Configure<List<SkypeBotSetting>>(Configuration.GetSection("SkypeBot"));
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
@@ -93,16 +89,8 @@
             services.AddSingleton<IRestClient, RestClient>();
             services.AddSingleton<ISecurityService, SecurityService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddTransient<IDBConfigService, DBConfigService>();
             services.RegisterServices();
             services.RegisterRepositories();
-
-            InitializeModules(services);
-        }
-
-        private static void InitializeModules(IServiceCollection services)
-        {
-            SkypeBotDependencyInitializer.Initialize(services);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

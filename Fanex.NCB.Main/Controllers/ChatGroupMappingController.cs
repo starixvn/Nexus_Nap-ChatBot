@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Fanex.NCB.Main.ViewModel.ChatGroupMapping;
 using Fanex.NCB.Models.ChatGroupMapping;
 using Fanex.NCB.Services.Interfaces;
-using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,8 +33,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
             var viewModel = new ChatGroupMappingFilterViewModel
             {
                 BotNames = await settingService.GetBotNameAsync().ConfigureAwait(false),
-                RecipientTypes = await settingService.GetRecipientTypesAsync().ConfigureAwait(false),
-                FilterRecipientTypes = await settingService.GetFilterRecipientTypesAsync().ConfigureAwait(false),
+                RecipientTypes = await settingService.GetFilterRecipientTypesAsync().ConfigureAwait(false),
                 Recipients = await settingService.GetRecipientsAsync().ConfigureAwait(false),
                 ChatGroupTypes = await settingService.GetChatGroupTypeAsync().ConfigureAwait(false),
                 LicenseeStatuses = await settingService.GetLicenseeStatusAsync().ConfigureAwait(false),
@@ -46,17 +44,17 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(GetChapGroupMappingViewModel mode)
+        public async Task<IActionResult> GetAll(GetChatGroupMappingParamsViewModel viewModel)
         {
             var model = new GetChapGroupMapping
             {
-                BotIDs = mode.BotNames,
-                RecipientName = mode.RecipientName,
-                RecipientTypeIDs = mode.RecipientTypeIDs,
-                LicenseeStatusIds = mode.LicenseeStatusIds,
-                MappingStatusIds = mode.MappingStatusIds,
-                PageIndex = mode.PageIndex,
-                PageSize = mode.PageSize,
+                BotIds = viewModel.BotIds,
+                RecipientName = viewModel.RecipientName,
+                RecipientTypeIDs = viewModel.RecipientTypeIds,
+                LicenseeStatusIds = viewModel.LicenseeStatusIds,
+                MappingStatusIds = viewModel.MappingStatusIds,
+                PageIndex = viewModel.PageIndex,
+                PageSize = viewModel.PageSize,
             };
 
             var result = await chatGroupMappingService.GetChatGroupMappingListAsync(model).ConfigureAwait(false);

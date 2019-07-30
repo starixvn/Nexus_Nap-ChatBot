@@ -1,19 +1,19 @@
-using Fanex.NCB.SkypeBot.Model.Criteria.NotificationType;
-using Fanex.NCB.SkypeBot.Services.NotificationType;
+using System.Threading.Tasks;
+using Fanex.NCB.Models.NotificationType;
+using Fanex.NCB.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Fanex.NCB.SkypeBot.Controllers
 {
     [Authorize]
     public class NotificationTypeController : Controller
     {
-        private readonly INotificationTypeService _notificationTypeService;
+        private readonly INotificationTypeService notificationTypeService;
 
         public NotificationTypeController(INotificationTypeService notificationTypeService)
         {
-            _notificationTypeService = notificationTypeService;
+            this.notificationTypeService = notificationTypeService;
         }
 
         [HttpGet]
@@ -25,31 +25,31 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll(int pageIndex, int pageSize)
         {
-            var data = await _notificationTypeService.GetNotificationTypeListAsync(pageIndex, pageSize).ConfigureAwait(false);
+            var data = await notificationTypeService.GetAllAsync(pageIndex, pageSize).ConfigureAwait(false);
 
-            return Json(data);
+            return Json(new { NotificationTypes = data.Item1, Count = data.Item2 });
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete([FromBody] int notificationTypeId)
         {
-            var result = await _notificationTypeService.DeleteNotificationTypeAsync(notificationTypeId).ConfigureAwait(false);
+            var result = await notificationTypeService.DeleteAsync(notificationTypeId).ConfigureAwait(false);
 
             return Json(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] CreateNotificationTypeCriteria item)
+        public async Task<IActionResult> Add([FromBody] NotificationType item)
         {
-            var result = await _notificationTypeService.CreateNotificationTypeAsync(item).ConfigureAwait(false);
+            var result = await notificationTypeService.InsertAsync(item).ConfigureAwait(false);
 
             return Json(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit([FromBody] CreateNotificationTypeCriteria item)
+        public async Task<IActionResult> Edit([FromBody] NotificationType item)
         {
-            var result = _notificationTypeService.UpdateNotificationTypeAsync(item);
+            var result = notificationTypeService.UpdateAsync(item);
 
             return Json(await result);
         }
@@ -57,10 +57,10 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSettings()
         {
-            var getRecipent = _notificationTypeService.GetRecipientTypesAsync();
-            var getNotification = _notificationTypeService.GetNotificationSystemsAsync();
+            var getRecipent = await notificationTypeService.GetRecipientType().ConfigureAwait(false);
+            var getNotification = await notificationTypeService.GetSystem().ConfigureAwait(false);
 
-            return Json(new { recipientTypes = await getRecipent, notificationSystems = await getNotification });
+            return Json(new { recipientTypes = getRecipent, notificationSystems = getNotification });
         }
     }
 }

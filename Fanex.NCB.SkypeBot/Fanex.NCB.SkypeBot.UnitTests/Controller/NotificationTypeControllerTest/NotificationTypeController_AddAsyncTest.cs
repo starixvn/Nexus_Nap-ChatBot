@@ -1,12 +1,12 @@
-﻿using AutoFixture;
-using Fanex.NCB.Common.DTO;
+﻿using System.Threading.Tasks;
+using AutoFixture;
+using Fanex.NCB.Core.Models;
+using Fanex.NCB.Models.NotificationType;
+using Fanex.NCB.Services.Interfaces;
 using Fanex.NCB.SkypeBot.Controllers;
-using Fanex.NCB.SkypeBot.Model.Criteria.NotificationType;
-using Fanex.NCB.SkypeBot.Services.NotificationType;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Fanex.NCB.SkypeBot.UnitTests.Controller.NotificationTypeControllerTest
@@ -21,9 +21,9 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Controller.NotificationTypeControllerTest
             var notificationTypeService = new Mock<INotificationTypeService>();
             var controller = new NotificationTypeController(notificationTypeService.Object);
 
-            var criteria = fixture.Create<CreateNotificationTypeCriteria>();
-            var resultModel = fixture.Create<ResultModel>();
-            notificationTypeService.Setup(s => s.CreateNotificationTypeAsync(criteria)).Returns(Task.FromResult(resultModel));
+            var criteria = fixture.Create<NotificationType>();
+            var resultModel = fixture.Create<CommandResult>();
+            notificationTypeService.Setup(s => s.InsertAsync(criteria)).Returns(Task.FromResult(resultModel));
 
             // Act
             var result = await controller.Add(criteria) as JsonResult;

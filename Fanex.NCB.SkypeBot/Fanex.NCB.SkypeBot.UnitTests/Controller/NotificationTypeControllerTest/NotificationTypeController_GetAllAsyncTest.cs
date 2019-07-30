@@ -1,15 +1,17 @@
-﻿using AutoFixture;
-using Fanex.NCB.SkypeBot.Controllers;
-using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
-using Fanex.NCB.SkypeBot.Services.NotificationType;
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using System.Threading.Tasks;
-using Xunit;
-
-namespace Fanex.NCB.SkypeBot.UnitTests.Controller.NotificationTypeControllerTest
+﻿namespace Fanex.NCB.SkypeBot.UnitTests.Controller.NotificationTypeControllerTest
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using AutoFixture;
+    using Fanex.NCB.Models.NotificationType;
+    using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.SkypeBot.Controllers;
+    using FluentAssertions;
+    using Microsoft.AspNetCore.Mvc;
+    using Moq;
+    using Xunit;
+
     public class NotificationTypeController_GetAllAsyncTest
     {
         [Fact]
@@ -22,8 +24,9 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Controller.NotificationTypeControllerTest
 
             var pageIndex = fixture.Create<int>();
             var pageSize = fixture.Create<int>();
-            var resultModel = fixture.Create<NotificationTypeListResultModel>();
-            notificationTypeService.Setup(s => s.GetNotificationTypeListAsync(pageIndex, pageSize)).Returns(Task.FromResult(resultModel));
+            var type = fixture.Create<IEnumerable<NotificationType>>();
+            var resultModel = new ValueTuple<IEnumerable<NotificationType>, long>(type, 10);
+            notificationTypeService.Setup(s => s.GetAllAsync(pageIndex, pageSize)).Returns(Task.FromResult(resultModel));
 
             // Act
             var result = await controller.GetAll(pageIndex, pageSize) as JsonResult;

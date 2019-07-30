@@ -1,12 +1,13 @@
-﻿using AutoFixture;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoFixture;
+using Fanex.NCB.Core.Models;
+using Fanex.NCB.Models.NotificationType;
+using Fanex.NCB.Services.Interfaces;
 using Fanex.NCB.SkypeBot.Controllers;
-using Fanex.NCB.SkypeBot.Model.DTO.NotificationType;
-using Fanex.NCB.SkypeBot.Services.NotificationType;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Fanex.NCB.SkypeBot.UnitTests.Controller.NotificationTypeControllerTest
@@ -21,11 +22,11 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Controller.NotificationTypeControllerTest
             var notificationTypeService = new Mock<INotificationTypeService>();
             var controller = new NotificationTypeController(notificationTypeService.Object);
 
-            var recipientTypesResult = fixture.Create<List<RecipientType>>();
-            var notificationSystemsResult = fixture.Create<List<NotificationSystem>>();
+            var recipientTypesResult = fixture.Create<IEnumerable<NotificationRecipientType>>();
+            var notificationSystemsResult = fixture.Create<IEnumerable<BaseModel>>();
 
-            notificationTypeService.Setup(s => s.GetRecipientTypesAsync()).Returns(Task.FromResult(recipientTypesResult));
-            notificationTypeService.Setup(s => s.GetNotificationSystemsAsync()).Returns(Task.FromResult(notificationSystemsResult));
+            notificationTypeService.Setup(s => s.GetRecipientType()).Returns(Task.FromResult(recipientTypesResult));
+            notificationTypeService.Setup(s => s.GetSystem()).Returns(Task.FromResult(notificationSystemsResult));
 
             // Act
             var result = await controller.GetSettings() as JsonResult;

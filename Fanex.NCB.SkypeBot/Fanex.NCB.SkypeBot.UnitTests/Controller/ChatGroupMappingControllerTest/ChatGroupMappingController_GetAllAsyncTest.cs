@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
+using Fanex.NCB.Main.ViewModel.ChatGroupMapping;
 using Fanex.NCB.Services.Interfaces;
 using Fanex.NCB.SkypeBot.Controllers;
-using Fanex.NCB.SkypeBot.Model.Criteria.ChatGroupMapping;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -23,7 +23,7 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Controller.ChatGroupMappingControllerTest
             var settingService = new Mock<ISettingService>();
             var controller = new ChatGroupMappingController(chatGroupMappingService.Object, settingService.Object);
 
-            var criteria = fixture.Create<GetChapGroupMappingCriteria>();
+            var criteria = fixture.Create<GetChatGroupMappingParamsViewModel>();
             var model = fixture.Create<Criteria.ChatGroupMapping.GetChapGroupMappingCriteria>();
             var resultModel = fixture.Create<ValueTuple<IEnumerable<Models.ChatGroupMapping.ChatGroupMappingResult>, long>>();
             chatGroupMappingService.Setup(s => s.GetChatGroupMappingListAsync(model)).Returns(Task.FromResult(resultModel));

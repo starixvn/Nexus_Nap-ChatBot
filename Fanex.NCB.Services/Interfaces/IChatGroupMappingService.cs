@@ -1,6 +1,5 @@
 ﻿namespace Fanex.NCB.Services.Interfaces
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
@@ -11,6 +10,6 @@
     {
         Task<CommandResult> Update(EditChatGroupMapping model);
 
-        Task<ValueTuple<IEnumerable<ChatGroupMappingResult>, long>> GetChatGroupMappingListAsync(GetChapGroupMapping model);
+        Task<(IEnumerable<ChatGroupMappingResult>, long)> GetChatGroupMappingListAsync(GetChapGroupMappingCriteria criteria);
     }
 }
