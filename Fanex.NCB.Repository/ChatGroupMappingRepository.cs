@@ -1,5 +1,8 @@
 ﻿namespace Fanex.NCB.Repository
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Extensions;
@@ -9,9 +12,6 @@
     using Fanex.NCB.Model.ChatGroupMapping;
     using Fanex.NCB.Models.ChatGroupMapping;
     using Fanex.NCB.Repository.Interfaces;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     public class ChatGroupMappingRepository : BaseRepository, IChatGroupMappingRepository
     {
@@ -26,7 +26,7 @@
         {
             var critera = new GetChapGroupMappingCriteria
             {
-                BotIDs = model.BotIDs,
+                BotIds = model.BotIDs,
                 RecipientName = model.RecipientName,
                 RecipientTypeIDs = model.RecipientTypeIDs,
                 LicenseeStatusIds = model.LicenseeStatusIds,

@@ -44,19 +44,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(GetChatGroupMappingParamsViewModel viewModel)
+        public async Task<IActionResult> GetAll(GetChapGroupMapping model)
         {
-            var model = new GetChapGroupMapping
-            {
-                BotIds = viewModel.BotIds,
-                RecipientName = viewModel.RecipientName,
-                RecipientTypeIDs = viewModel.RecipientTypeIds,
-                LicenseeStatusIds = viewModel.LicenseeStatusIds,
-                MappingStatusIds = viewModel.MappingStatusIds,
-                PageIndex = viewModel.PageIndex,
-                PageSize = viewModel.PageSize,
-            };
-
             var result = await chatGroupMappingService.GetChatGroupMappingListAsync(model).ConfigureAwait(false);
             return Json(new { data = result.Item1, count = result.Item2 });
         }
