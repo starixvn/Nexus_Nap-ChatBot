@@ -4,7 +4,7 @@
 
     public class GetChapGroupMappingCriteria : CriteriaBase
     {
-        public string BotNames { get; set; }
+        public string BotIDs { get; set; }
 
         public string RecipientTypeIDs { get; set; }
 

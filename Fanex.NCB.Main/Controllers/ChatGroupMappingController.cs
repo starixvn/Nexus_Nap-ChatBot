@@ -46,17 +46,17 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(GetChapGroupMappingCriteria criteria)
+        public async Task<IActionResult> GetAll(GetChapGroupMappingViewModel mode)
         {
-            var model = new Criteria.ChatGroupMapping.GetChapGroupMappingCriteria
+            var model = new GetChapGroupMapping
             {
-                BotNames = criteria.BotNames,
-                RecipientName = criteria.RecipientName,
-                RecipientTypeIDs = criteria.RecipientTypeIDs,
-                LicenseeStatusIds = criteria.LicenseeStatusIds,
-                MappingStatusIds = criteria.MappingStatusIds,
-                PageIndex = criteria.PageIndex,
-                PageSize = criteria.PageSize,
+                BotIDs = mode.BotNames,
+                RecipientName = mode.RecipientName,
+                RecipientTypeIDs = mode.RecipientTypeIDs,
+                LicenseeStatusIds = mode.LicenseeStatusIds,
+                MappingStatusIds = mode.MappingStatusIds,
+                PageIndex = mode.PageIndex,
+                PageSize = mode.PageSize,
             };
 
             var result = await chatGroupMappingService.GetChatGroupMappingListAsync(model).ConfigureAwait(false);

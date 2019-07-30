@@ -11,6 +11,6 @@
     {
         Task<CommandResult> Update(EditChatGroupMapping model);
 
-        Task<ValueTuple<IEnumerable<ChatGroupMappingResult>, long>> GetChatGroupMappingListAsync(GetChapGroupMappingCriteria criteria);
+        Task<ValueTuple<IEnumerable<ChatGroupMappingResult>, long>> GetChatGroupMappingListAsync(GetChapGroupMapping model);
     }
 }
