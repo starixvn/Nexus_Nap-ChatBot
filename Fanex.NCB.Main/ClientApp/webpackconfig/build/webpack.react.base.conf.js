@@ -1,6 +1,7 @@
 ﻿var pathConfig = require('../config/pathReact');
 var pluginGenerator = require('../config/pluginReact');
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 function generateConfig(environment) {
     var buildPath = `${pathConfig.paths.build}/${environment}/pages`;
@@ -78,8 +79,14 @@ function generateConfig(environment) {
         optimization: {
             minimizer: [
                 new UglifyJsPlugin({
-                    sourceMap: true
-                })
+                    sourceMap: true,
+                    uglifyOptions: {
+                        output: {
+                            comments: false
+                        }
+                    }
+                }),
+                new OptimizeCssAssetsPlugin()
             ],
             splitChunks: {
                 chunks: 'all',
