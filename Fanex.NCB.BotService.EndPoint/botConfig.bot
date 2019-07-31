@@ -6,17 +6,17 @@
       "type": "endpoint",
       "name": "1on1notify",
       "endpoint": "https://licbot.nexdev.net/api/messages",
-      "appId": "5de427b9-a7f0-497e-81d3-b3348721500a",
-      "appPassword": "gscY457%{]koujCCMDDJ52^",
+      "appId": "8e7cdcd3-a375-45eb-be44-da89e26aaa49",
+      "appPassword": "[14Z15g?rKmygZWNZQI-Mb.7bvaMlfzy",
       "id": "1",
-      "Intro": "Hi there!\nThis is \"ONE-ON-ONE Customer Support\"\nFrom now, we will show you the upcoming System Notifications.\n----\n您好！\n这里是 “ONE-ON-ONE 客户服务”。\n自今日开始，我方将在此提供您系统通知信息。"
+      "Intro": "Hello"
     },
     {
       "type": "endpoint",
       "name": "OWnotify",
       "endpoint": "https://licbot.nexdev.net/api/messages",
-      "appId": "9d274edb-0a3d-4f00-a8bd-ff557276d61d",
-      "appPassword": "fcomEG467cppHJVID66^%#@",
+      "appId": "56c9b606-4cd4-49e3-bdfe-24815ac7d7b4",
+      "appPassword": "G5Vh4qm06+-q[SK=I1o@L@iC]fGAymJ]",
       "id": "2",
       "Intro": "Hi I'm OWnotify"
     },
@@ -45,6 +45,15 @@
       "appId": "33645da9-5fb8-4671-b65c-20711a95a20c",
       "appPassword": "T@XOoAmmJfwlNfZzoeM9*0Y+wm=mPb86",
       "id": "5",
+      "Intro": "Hi I'm Nexus Bot"
+    },
+    {
+      "type": "endpoint",
+      "name": "ncb3",
+      "endpoint": "https://aa79478b.ngrok.io/api/messages",
+      "appId": "ef97ad96-3bc2-41f2-8b12-aa953217dec8",
+      "appPassword": "*48oXr7-?o4MdJYJtV=+953pob-8QE/x",
+      "id": "6",
       "Intro": "Hi I'm Nexus Bot"
     }
   ],
