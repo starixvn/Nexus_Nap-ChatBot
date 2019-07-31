@@ -51,9 +51,6 @@
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            var x = 0;
-            var y = 1 / x;
-
             await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(replyText, turnContext.Activity.Text)), cancellationToken);
         }
 
