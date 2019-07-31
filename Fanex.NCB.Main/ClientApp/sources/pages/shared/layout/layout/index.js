@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+import 'bootstrap/dist/css/bootstrap.css';
+import '../../components/font.css';
+import './Layout.scss';
+
 import Sidebar from './../sidebar';
 import Content from './../content';
 import Site from '../../../lib/site';
-
-import '../../components/font.css';
-import './Layout.scss';
 
 class Layout extends React.PureComponent {
     constructor(props) {
