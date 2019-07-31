@@ -87,10 +87,9 @@
             return chatGroupMappings;
         }
 
-        private MappingStatus CalculateMappingStatusId(bool isMapped, BotConversationMember member)
+        private MappingStatus CalculateMappingStatusId(bool isMapped, BotConversationMember members)
         {
-            var isBotActive = member != null && member.IsActive;
-            if (!isBotActive)
+            if (members == null)
             {
                 return MappingStatus.BotRemoved;
             }
