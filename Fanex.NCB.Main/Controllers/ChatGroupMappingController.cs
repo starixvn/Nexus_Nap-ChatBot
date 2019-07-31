@@ -1,9 +1,9 @@
+using System.Threading.Tasks;
 using Fanex.NCB.Main.ViewModel.ChatGroupMapping;
 using Fanex.NCB.Models.ChatGroupMapping;
 using Fanex.NCB.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Fanex.NCB.SkypeBot.Controllers
 {
@@ -32,7 +32,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         {
             var viewModel = new ChatGroupMappingFilterViewModel
             {
-                BotNames = await settingService.GetBotNameAsync().ConfigureAwait(false),
+                Bots = await settingService.GetBotNameAsync().ConfigureAwait(false),
                 RecipientTypes = await settingService.GetFilterRecipientTypesAsync().ConfigureAwait(false),
                 Recipients = await settingService.GetRecipientsAsync().ConfigureAwait(false),
                 ChatGroupTypes = await settingService.GetChatGroupTypeAsync().ConfigureAwait(false),

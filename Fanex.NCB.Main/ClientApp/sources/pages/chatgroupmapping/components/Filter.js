@@ -14,7 +14,7 @@ export class Filter extends Component {
         super(props);
 
         this.state = {
-            botNames: {
+            botIds: {
                 value: ''
             },
             recipientTypes: {
@@ -30,7 +30,7 @@ export class Filter extends Component {
                 value: ''
             },
             settingData: {
-                botNames: [],
+                bots: [],
                 recipientTypes: [],
                 mappingStatuses: [],
                 licenseeStatuses: []
@@ -42,12 +42,12 @@ export class Filter extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (prevState.settingData.botNames.length === 0 && nextProps.settingData.botNames) {
-            const botNames = nextProps.settingData.botNames;
-            const selectedBotNames = [];
-            botNames.map(v => {
+        if (prevState.settingData.bots.length === 0 && nextProps.settingData.bots) {
+            const bots = nextProps.settingData.bots;
+            const selectedbotIds = [];
+            bots.map(v => {
                 v['checked'] = true;
-                selectedBotNames.push(v['id']);
+                selectedbotIds.push(v['id']);
             });
 
             const recipientTypes = nextProps.settingData.recipientTypes;
@@ -72,8 +72,8 @@ export class Filter extends Component {
             });
 
             const state = {
-                botNames: {
-                    value: selectedBotNames.join(',')
+                botIds: {
+                    value: selectedbotIds.join(',')
                 },
                 recipientTypes: {
                     value: selectedRecipientTypes.join(',')
@@ -88,7 +88,7 @@ export class Filter extends Component {
                     value: selectedMappingStatuses.join(',')
                 },
                 settingData: {
-                    botNames: botNames,
+                    bots: bots,
                     recipientTypes: recipientTypes,
                     mappingStatuses: mappingStatuses,
                     licenseeStatuses: licenseeStatuses
@@ -110,7 +110,7 @@ export class Filter extends Component {
 
     getParams = () => {
         return {
-            botNames: this.state.botNames.value,
+            botIds: this.state.botIds.value,
             recipientTypeIds: this.state.recipientTypes.value,
             recipientName: this.state.recipient.value,
             mappingStatusIds: this.state.mappingStatuses.value,
@@ -120,7 +120,7 @@ export class Filter extends Component {
         };
     }
 
-    checkValidParams = () => this.state.botNames.value !== '' &&
+    checkValidParams = () => this.state.botIds.value !== '' &&
         this.state.recipientTypes.value !== '' &&
         this.state.mappingStatuses.value !== '' &&
         this.state.licenseeStatuses.value !== '';
@@ -196,17 +196,17 @@ export class Filter extends Component {
                 <FormGroup>
                     <Label className="form-label">{Labels.BotName}</Label>
                     <MultipleSelectField
-                        id={'botNames'}
+                        id={'botIds'}
                         width={150}
-                        initialValue={this.state.botNames}
-                        data={this.state.settingData.botNames}
+                        initialValue={this.state.botIds}
+                        data={this.state.settingData.bots}
                         keyField={'id'}
                         valueField={'name'}
                         statusField={'checked'}
                         isSummited={false}
                         texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: '# selected' }}
                         isAllTextShown
-                        onChange={value => this.onChange('botNames', value)}
+                        onChange={value => this.onChange('botIds', value)}
                     />
                 </FormGroup>
                 <button disabled={!this.checkValidParams()} className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>

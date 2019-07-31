@@ -6,7 +6,7 @@
 
     public class ChatGroupMappingFilterViewModel
     {
-        public IEnumerable<BotName> BotNames { get; set; }
+        public IEnumerable<BotName> Bots { get; set; }
 
         public IEnumerable<BaseModel> RecipientTypes { get; set; }
 
