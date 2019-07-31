@@ -1,9 +1,9 @@
-using System.Threading.Tasks;
 using Fanex.NCB.Main.ViewModel.ChatGroupMapping;
 using Fanex.NCB.Models.ChatGroupMapping;
 using Fanex.NCB.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Fanex.NCB.SkypeBot.Controllers
 {
@@ -52,9 +52,9 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([FromBody] EditChatGroupMapping model)
+        public async Task<IActionResult> Edit(EditChatGroupMapping model)
         {
-            var result = await chatGroupMappingService.Update(model).ConfigureAwait(false);
+            var result = await chatGroupMappingService.EditAsync(model).ConfigureAwait(false);
             return Json(result);
         }
 

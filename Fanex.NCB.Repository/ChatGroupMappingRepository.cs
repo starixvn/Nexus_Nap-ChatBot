@@ -40,9 +40,19 @@
             return (MappingData(result.Item1, result.Item2, result.Item3), critera.TotalItems);
         }
 
-        public async Task<CommandResult> Edit(EditChatGroupMapping model)
+        public async Task<CommandResult> EditAsync(EditChatGroupMapping model)
         {
-            return await ExecuteNonQueryAsync(new EditChatGroupMappingCommand()).ConfigureAwait(false);
+            var command = new EditChatGroupMappingCommand
+            {
+                GroupID = model.GroupID,
+                ChatGroupTypeId = model.ChatGroupTypeId,
+                RecipientTypeID = model.RecipientTypeID,
+                RecipientIDs = model.RecipientIDs,
+                CreatorID = model.CreatorID,
+                Remark = model.Remark
+            };
+
+            return await ExecuteNonQueryAsync(command).ConfigureAwait(false);
         }
 
         private IEnumerable<ChatGroupMappingResult> MappingData(IEnumerable<BotConversation> conversations, IEnumerable<BotConversationMember> members, IEnumerable<ConversationRecipient> conversationRecipients)

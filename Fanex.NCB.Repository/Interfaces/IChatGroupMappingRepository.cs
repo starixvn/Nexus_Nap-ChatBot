@@ -7,7 +7,7 @@
 
     public interface IChatGroupMappingRepository
     {
-        Task<CommandResult> Edit(EditChatGroupMapping model);
+        Task<CommandResult> EditAsync(EditChatGroupMapping model);
 
         Task<(IEnumerable<ChatGroupMappingResult>, long)> GetChatGroupMappingListAsync(GetChapGroupMapping model);
     }
