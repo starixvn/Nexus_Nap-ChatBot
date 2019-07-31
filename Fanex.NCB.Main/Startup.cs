@@ -26,7 +26,6 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Diagnostics.HealthChecks;
     using Microsoft.Extensions.Logging;
 
     public class Startup
@@ -45,13 +44,8 @@
         {
             var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
             services.AddHealthChecks()
-                    .AddUriAvailable(appSettings.AuthApi, "AuthApi")
-                    .AddUriAvailable(appSettings.UserResourceApi, "UserResourceApi")
                     .AddUriAvailable(appSettings.TokenUrl, "TokenUrl")
-                    .AddUriAvailable(appSettings.SkypeServiceUrl, "SkypeServiceUrl")
-
-                    .AddMySql(Configuration.GetConnectionString("ChatBotDB"), "ChatBotDB", HealthStatus.Degraded,
-              tags: new[] { "db", "sql", "myserver" });
+                    .AddUriAvailable(appSettings.SkypeServiceUrl, "SkypeServiceUrl");
 
             services.AddHealthChecksUI();
 
@@ -124,11 +118,6 @@
                .UseSession(app.ApplicationServices.GetService<INapSession>());
 
             app.UseHealthChecks("/health", new HealthCheckOptions
-            {
-                Predicate = _ => true,
-                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            });
-            app.UseHealthChecks("/healthz", new HealthCheckOptions
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse

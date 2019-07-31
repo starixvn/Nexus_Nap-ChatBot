@@ -7,4 +7,7 @@
     <ProjectReference Include="..\Fanex.NCB.Criteria\Fanex.NCB.Criteria.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Models\Fanex.NCB.Models.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
 </Project>

@@ -5,8 +5,6 @@
     using Fanex.NCB.Core.Repositories;
     using Fanex.NCB.Core.Services;
     using Fanex.NCB.Core.Services.Interfaces;
-    using Fanex.NCB.Repository;
-    using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +24,6 @@
         {
             services.AddScoped<IDynamicRepository, DynamicRepository>();
             services.AddTransient<IBaseRepository, BaseRepository>();
-            services.AddScoped<IChatGroupMappingRepository, ChatGroupMappingRepository>();
         }
     }
 }
