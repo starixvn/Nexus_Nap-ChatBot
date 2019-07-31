@@ -58,7 +58,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Fanex.NCB.Base\Fanex.NCB.Core.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Services\Fanex.NCB.Services.csproj" />
-    <ProjectReference Include="..\Fanex.NCB.Shared\Fanex.NCB.Common\Fanex.NCB.Common.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Shared\Fanex.NCB.CustomAspNetCoreModule\Fanex.NCB.CustomAspNetCoreModule.csproj" />
   </ItemGroup>
 

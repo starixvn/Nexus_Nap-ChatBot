@@ -14,8 +14,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DataDomain\**" />
     <Compile Remove="ViewModels\**" />
+    <EmbeddedResource Remove="DataDomain\**" />
     <EmbeddedResource Remove="ViewModels\**" />
+    <None Remove="DataDomain\**" />
     <None Remove="ViewModels\**" />
   </ItemGroup>
 
@@ -24,10 +27,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DataDomain\" />
   </ItemGroup>
 
 </Project>

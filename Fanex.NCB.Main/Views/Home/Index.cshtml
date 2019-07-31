@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Home Page";
     Layout = null;
-    var menus = ViewBag.Menu as List<Fanex.NCB.Common.DTO.Menu>;
+    var menus = ViewBag.Menu as List<Fanex.NCB.Core.Models.Menu>;
 }
 
 <!DOCTYPE html>
@@ -12,13 +12,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Fanex.NCB.Main</title>
-    <base href="~/" />   
+    <base href="~/" />
 
     <environment include="Development">
         <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
-        <link rel="stylesheet" href="~/dev/common/bootstrapvendor.chunk.css" asp-append-version="true" >
+        <link rel="stylesheet" href="~/dev/common/bootstrapvendor.chunk.css" asp-append-version="true">
         <link rel="stylesheet" href="~/dev/pages/home/home.chunk.css" asp-append-version="true" />
-        
     </environment>
     <environment exclude="Development">
         <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
@@ -26,8 +25,8 @@
         <link rel="stylesheet" href="~/pro/pages/home/home.chunk.css" asp-append-version="true" />
     </environment>
 </head>
-<body>   
-    <div id="layout">test</div>    
+<body>
+    <div id="layout">test</div>
 
     <script>
         window._AppData = {
@@ -38,14 +37,13 @@
 
     <environment include="Development">
         <script src="~/dev/common/reactvendor.chunk.js" asp-append-version="true"></script>
-        <script src="~/dev/common/bootstrapvendor.chunk.js" asp-append-version="true"></script>          
-        <script src="~/dev/pages/home/home.chunk.js" asp-append-version="true"></script>             
+        <script src="~/dev/common/bootstrapvendor.chunk.js" asp-append-version="true"></script>
+        <script src="~/dev/pages/home/home.chunk.js" asp-append-version="true"></script>
     </environment>
     <environment exclude="Development">
-        <script src="~/pro/common/reactvendor.chunk.js" asp-append-version="true"></script>  
-        <script src="~/pro/common/bootstrapvendor.chunk.js" asp-append-version="true"></script>          
-        <script src="~/pro/pages/home/home.chunk.js" asp-append-version="true"></script>        
-    </environment>    
-    
+        <script src="~/pro/common/reactvendor.chunk.js" asp-append-version="true"></script>
+        <script src="~/pro/common/bootstrapvendor.chunk.js" asp-append-version="true"></script>
+        <script src="~/pro/pages/home/home.chunk.js" asp-append-version="true"></script>
+    </environment>
 </body>
 </html>

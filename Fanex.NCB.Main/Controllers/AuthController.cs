@@ -11,7 +11,7 @@
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ParameterObject;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Common.DTO;
+    using Fanex.NCB.Core.Models;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;
@@ -40,7 +40,7 @@
         {
             ViewBag.returnUrl = returnUrl;
             ViewBag.invalidLogin = invalidLogin;
-            return View(new ApplicationUser());
+            return View();
         }
 
         [HttpGet]
