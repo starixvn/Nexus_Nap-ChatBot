@@ -4,10 +4,15 @@
     font-weight: normal;
     text-align: left;
 
-    &.required:after {
-        content: "*";
-        color: #ff0101;
-        margin-left: 4px;
+    &.required {
+        align-self: start;
+        padding-top: 7px;
+
+        &:after {
+            content: "*";
+            color: #ff0101;
+            margin-left: 4px;
+        }
     }
 }
 

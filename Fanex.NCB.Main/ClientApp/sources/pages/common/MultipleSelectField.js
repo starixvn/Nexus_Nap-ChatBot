@@ -1,8 +1,8 @@
 ﻿import React, { Component } from 'react';
 import { FormFeedback } from 'reactstrap';
 import MultipleSelect from '@9softstudio/react-multiselect';
-import './MultipleSelectField.scss';
 import '@9softstudio/react-multiselect/dist/style.css';
+import './MultipleSelectField.scss';
 
 export class MultipleSelectField extends Component {
     constructor(props) {
