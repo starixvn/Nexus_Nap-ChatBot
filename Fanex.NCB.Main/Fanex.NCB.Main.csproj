@@ -72,6 +72,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ClientApp\sources\pages\shared\backupnapchatbotfont\" />
     <Folder Include="wwwroot\dev\common\" />
   </ItemGroup>
 
