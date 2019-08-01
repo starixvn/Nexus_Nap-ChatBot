@@ -130,7 +130,7 @@ export default class AutoComplete extends Component {
     render() {
         return (
             <div className="ac-container">
-                <input type="text" className="input-text" {...this.props.htmlAttributes}
+                <input type="text" className="input-text form-control" {...this.props.htmlAttributes}
                     onChange={this.onChange} onKeyDown={this._onKeyDown}
                     ref={element => this.input = element}
                     autoFocus
