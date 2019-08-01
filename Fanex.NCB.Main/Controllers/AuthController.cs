@@ -52,28 +52,13 @@
 
         private IEnumerable<Menu> GetMenus(IEnumerable<MenuItem> menuItems)
         {
-            var rootMenus = menuItems.Where(m => m.Parent == null);
-
-            return BuildMenus(rootMenus, menuItems);
-        }
-
-        private IEnumerable<Menu> GetSubMenus(IEnumerable<MenuItem> menuItems, int parentId)
-        {
-            var childMenus = menuItems.Where(m => m.Parent != null && m.Parent.Id == parentId);
-
-            return BuildMenus(childMenus, menuItems);
-        }
-
-        private IEnumerable<Menu> BuildMenus(IEnumerable<MenuItem> selectedMenuItems, IEnumerable<MenuItem> menuItems)
-        {
-            return selectedMenuItems
+            return menuItems
                 .Select(m => new Menu
                 {
                     Id = m.Id,
                     Name = m.Name,
                     Url = m.Url,
                     Policy = m.Policy,
-                    SubMenus = GetSubMenus(menuItems, m.Id)
                 });
         }
 
@@ -116,7 +101,8 @@
                     napSession.UserId = user.Id;
                     napSession.OnUserId = onlineUserId;
                     napSession.MenuItemList = userService.GetMenuItem(user.Id, napSettings.SiteId,
-                        napSettings.Environment, true).OrderBy(x => x.DisplayOrder).ToList();
+                        napSettings.Environment, true).Where(x => !string.IsNullOrWhiteSpace(x.Url))
+                        .OrderBy(x => x.DisplayOrder).ToList();
 
                     var claims = new List<Claim>
                         {
