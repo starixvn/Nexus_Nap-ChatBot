@@ -8,8 +8,6 @@
 
         public string ConversationId { get; set; }
 
-        public string GroupName { get; set; }
-
         public string ChannelId { get; set; }
 
         public string ServiceUrl { get; set; }

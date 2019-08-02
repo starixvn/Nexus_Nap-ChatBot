@@ -12,7 +12,7 @@
     {
         private const string channelSkypeId = "skype";
         private const string greetingMessage = "Hello, I am {0}";
-        private const string replyText = "You said: {0}";
+        private const string helpCommand = "help";
 
         private readonly IConversationService conversationService;
 
@@ -51,7 +51,10 @@
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(replyText, turnContext.Activity.Text)), cancellationToken);
+            if (turnContext.Activity.Text.Equals(helpCommand))
+            {
+                await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(greetingMessage, turnContext.Activity.Recipient.Name)), cancellationToken);
+            }
         }
 
         protected virtual async Task OnBotAddedAsync(ITurnContext turnContext, CancellationToken cancellationToken)
@@ -61,7 +64,6 @@
                 BotConversationId = turnContext.Activity.Recipient.Id,
                 BotName = turnContext.Activity.Recipient.Name,
                 ConversationId = turnContext.Activity.Conversation.Id,
-                GroupName = turnContext.Activity.Conversation.Name,
                 ChannelId = turnContext.Activity.ChannelId,
                 ServiceUrl = turnContext.Activity.ServiceUrl,
                 UpdatedBy = turnContext.Activity.From.Id
