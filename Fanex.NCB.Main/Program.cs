@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-
-namespace Fanex.NCB.Main
+﻿namespace Fanex.NCB.Main
 {
+    using Microsoft.AspNetCore;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
+
     public class Program
     {
         public static void Main(string[] args)
@@ -21,7 +21,6 @@ namespace Fanex.NCB.Main
                      config.SetBasePath(env.ContentRootPath);
                      config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
                      config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
-                     config.AddJsonFile($"App_Data\\StoredProcedures\\SpName.{env.EnvironmentName}.json", optional: false, reloadOnChange: true);
 
                      config.AddEnvironmentVariables();
                  })

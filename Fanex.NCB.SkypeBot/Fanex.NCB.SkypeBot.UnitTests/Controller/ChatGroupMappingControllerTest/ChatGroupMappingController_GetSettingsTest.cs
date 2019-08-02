@@ -1,16 +1,17 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using AutoFixture;
-using Fanex.NCB.Core.Models;
-using Fanex.NCB.Services.Interfaces;
-using Fanex.NCB.SkypeBot.Controllers;
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using Xunit;
-
-namespace Fanex.NCB.SkypeBot.UnitTests.Controller.ChatGroupMappingControllerTest
+﻿namespace Fanex.NCB.SkypeBot.UnitTests.Controller.ChatGroupMappingControllerTest
 {
+    using System.Linq;
+    using System.Threading.Tasks;
+    using AutoFixture;
+    using Fanex.NAP.Client.Helpers.Web;
+    using Fanex.NCB.Core.Models;
+    using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.SkypeBot.Controllers;
+    using FluentAssertions;
+    using Microsoft.AspNetCore.Mvc;
+    using Moq;
+    using Xunit;
+
     public class ChatGroupMappingController_GetSettingsTest
     {
         [Fact]
@@ -20,7 +21,8 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Controller.ChatGroupMappingControllerTest
             var fixture = new Fixture();
             var chatGroupMappingService = new Mock<IChatGroupMappingService>();
             var settingService = new Mock<ISettingService>();
-            var controller = new ChatGroupMappingController(chatGroupMappingService.Object, settingService.Object);
+            var napSession = new Mock<INapSession>();
+            var controller = new ChatGroupMappingController(chatGroupMappingService.Object, settingService.Object, napSession.Object);
 
             var botNames = fixture.CreateMany<Models.Setting.BotName>(2);
             var mappingStatuses = fixture.CreateMany<BaseModel>(2).ToList();

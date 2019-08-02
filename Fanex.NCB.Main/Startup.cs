@@ -42,10 +42,11 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
+            var botSettings = Configuration.GetSection("AppSettings").Get<BotSettings>();
+
             services.AddHealthChecks()
-                    .AddUriAvailable(appSettings.TokenUrl, "TokenUrl")
-                    .AddUriAvailable(appSettings.SkypeServiceUrl, "SkypeServiceUrl");
+                    .AddUriAvailable(botSettings.TokenUrl, "TokenUrl")
+                    .AddUriAvailable(botSettings.BotDomain + botSettings.BotServiceUrl, "SkypeServiceUrl");
 
             services.AddHealthChecksUI();
 
@@ -63,7 +64,7 @@
 
             services.AddSingleton<IConfiguration>(Configuration);
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-            services.Configure<List<SkypeBotSetting>>(Configuration.GetSection("SkypeBot"));
+            services.Configure<BotSettings>(Configuration.GetSection("ChatBotConfigs"));
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
@@ -122,6 +123,7 @@
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
+
             app.UseHealthChecksUI();//healthchecks-ui
         }
     }

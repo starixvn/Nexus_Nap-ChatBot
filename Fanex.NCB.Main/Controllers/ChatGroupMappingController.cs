@@ -1,6 +1,7 @@
 namespace Fanex.NCB.SkypeBot.Controllers
 {
     using System.Threading.Tasks;
+    using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NCB.Main.ViewModel.ChatGroupMapping;
     using Fanex.NCB.Models.ChatGroupMapping;
     using Fanex.NCB.Services.Interfaces;
@@ -12,13 +13,16 @@ namespace Fanex.NCB.SkypeBot.Controllers
     {
         private readonly IChatGroupMappingService chatGroupMappingService;
         private readonly ISettingService settingService;
+        private readonly INapSession napSession;
 
         public ChatGroupMappingController(
             IChatGroupMappingService chatGroupMappingService,
-            ISettingService settingService)
+            ISettingService settingService,
+            INapSession napSession)
         {
             this.chatGroupMappingService = chatGroupMappingService;
             this.settingService = settingService;
+            this.napSession = napSession;
         }
 
         [HttpGet]
@@ -54,7 +58,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromBody]EditChatGroupMapping model)
         {
-            model.CreatorID = 8;
+            model.CreatorID = napSession.UserId;
             var result = await chatGroupMappingService.EditAsync(model).ConfigureAwait(false);
             return Json(result);
         }

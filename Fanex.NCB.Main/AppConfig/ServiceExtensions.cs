@@ -14,6 +14,7 @@
         public static void RegisterServices(this IServiceCollection services)
         {
             services.AddTransient<IBaseService, BaseService>();
+            services.AddTransient<IChatbotService, ChatbotService>();
             services.AddTransient<IUserService, UserService>();
             services.AddScoped<IChatGroupMappingService, ChatGroupMappingService>();
             services.AddScoped<ISettingService, SettingService>();

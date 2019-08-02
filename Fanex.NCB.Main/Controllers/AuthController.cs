@@ -95,7 +95,7 @@
                         LoginDate = DateTime.Now
                     };
 
-                    var onlineUserId = securityService.Login(loginParam);
+                    var onlineUserId = await securityService.LoginAsync(loginParam);
 
                     napSession.UserName = user.Username;
                     napSession.UserId = user.Id;
