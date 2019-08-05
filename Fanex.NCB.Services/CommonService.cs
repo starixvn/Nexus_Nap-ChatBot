@@ -1,11 +1,11 @@
 ﻿namespace Fanex.NCB.Services
 {
-    using Fanex.NCB.Core.Services.Interfaces;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Fanex.NCB.Criteria.Common;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Services.Interfaces;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
+    using Fanex.NCB.Shared.Services.Interfaces;
 
     public class CommonService : ICommonService
     {
