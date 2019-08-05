@@ -29,7 +29,7 @@ export class DataGrid extends Component {
         }
     }
 
-    buildHeader = () => {
+    buildHeader = (isHost) => {
         return (
             <Row style={{ height: 32 }}>
                 <Cell colWidth={30} header>{Labels.NumberCol}</Cell>
@@ -41,7 +41,10 @@ export class DataGrid extends Component {
                 <Cell colWidth={100} header>{Labels.LicenseeStatus}</Cell>
                 <Cell colWidth={100} header>{Labels.MappingStatus}</Cell>
                 <Cell colWidth={250} header>{Labels.Remark}</Cell>
-                <Cell colWidth={80} header>{Labels.Action}</Cell>
+                {
+                    isHost &&
+                    <Cell colWidth={80} header>{Labels.Action}</Cell>
+                }
             </Row>);
     };
 
@@ -49,7 +52,7 @@ export class DataGrid extends Component {
 
     getEditClassNames = item => CommonFunctions.isBotRemoved(item.mappingStatusID) ? 'icon-edit edit-disabled' : 'icon-edit';
 
-    buildBody = (data, pageIndex, pageSize) => {
+    buildBody = (data, pageIndex, pageSize, isHost) => {
         const rows = [];
         const startIndex = (pageIndex - 1) * pageSize + 1;
         data.map((item, index) => {
@@ -63,11 +66,15 @@ export class DataGrid extends Component {
                 <Cell>{this.getLicenseeStatus(item)}</Cell>
                 <Cell><span className={CommonFunctions.getMappingClass(item.mappingStatusID)}>{item.mappingStatusName}</span></Cell>
                 <Cell>{item.remark}</Cell>
-                <Cell className="text-center col-action">
-                    <div>
-                        <span className={this.getEditClassNames(item)} id={'edit-' + index} onClick={() => this.openEditPopup(item)} />
-                    </div>
-                </Cell>
+                {
+                    isHost &&
+                    <Cell className="text-center col-action">
+                        <div>
+                            <span className={this.getEditClassNames(item)} id={'edit-' + index} onClick={() => this.openEditPopup(item)} />
+                        </div>
+                    </Cell>
+                }
+
             </Row>);
         });
 
@@ -79,7 +86,7 @@ export class DataGrid extends Component {
             return null;
         }
 
-        const { data, count } = this.props.gridData;
+        const { data, count, isHost } = this.props.gridData;
         const { pageIndex, pageSize } = this.props.gridParams;
 
         const pagingOption = {
@@ -98,8 +105,8 @@ export class DataGrid extends Component {
                 <Table
                     width={1400}
                     autoWidth={false}
-                    header={this.buildHeader()}
-                    body={this.buildBody(data, pageIndex, pageSize)}
+                    header={this.buildHeader(isHost)}
+                    body={this.buildBody(data, pageIndex, pageSize, isHost)}
                     isPaging
                     pageOption={pagingOption}
                     onPaging={this.onPaging}

@@ -62,9 +62,11 @@
                .WithMySql(resourcePath: "~/App_Data")
                .Run();
 
-            services.AddSingleton<IConfiguration>(Configuration);
+            services.AddSingleton(Configuration);
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<BotSettings>(Configuration.GetSection("ChatBotConfigs"));
+            //string hangfireConnectionString = Cryptography.DecryptConnectionString(Configuration.GetConnectionString("Hangfire"));
+            //services.AddHangfire(x => x.UseStorage(new MySqlStorage(hangfireConnectionString)));
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
@@ -102,8 +104,20 @@
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            //#region hangfire
+
+            //app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            //{
+            //    Authorization = new[] { new HangfireAuthorization() }
+            //});
+            //app.UseHangfireServer();
+
+            //#endregion hangfire
+
             app.UseCookiePolicy();
             app.UseAuthentication();
+
             app.UseSession();
 
             app.UseMvc(routes =>

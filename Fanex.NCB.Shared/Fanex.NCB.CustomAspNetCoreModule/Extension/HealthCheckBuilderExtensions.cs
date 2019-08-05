@@ -1,14 +1,14 @@
-﻿using Fanex.NCB.CustomAspNetCoreModule.HealthChecks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.Collections.Generic;
-
-namespace Fanex.NCB.CustomAspNetCoreModule.Extensions
+﻿namespace Fanex.NCB.CustomAspNetCoreModule.Extensions
 {
+    using System.Collections.Generic;
+    using Fanex.NCB.CustomAspNetCoreModule.HealthChecks;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Diagnostics.HealthChecks;
+
     public static class HealthCheckBuilderExtensions
     {
         public static IHealthChecksBuilder AddUriAvailable(
-            this IHealthChecksBuilder builder, 
+            this IHealthChecksBuilder builder,
             string uri,
             string name = default,
             HealthStatus? failureStatus = default,

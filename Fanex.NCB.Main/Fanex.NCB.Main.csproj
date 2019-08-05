@@ -42,6 +42,8 @@
     <PackageReference Include="Fanex.NAP.Client.AspNetCore" Version="1.0.0-beta2" />
     <PackageReference Include="Fanex.NAP.Client.Transport" Version="1.0.0-beta2" />
     <PackageReference Include="Fanex.NAP.Core.Client" Version="2.0.0-beta1" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.5" />
+    <PackageReference Include="Hangfire.MySql.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.0" />
