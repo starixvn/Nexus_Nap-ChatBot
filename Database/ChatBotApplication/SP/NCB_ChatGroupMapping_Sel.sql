@@ -181,6 +181,7 @@ BEGIN
     LEFT JOIN Recipient r ON bcr.RecipientId = r.RecipientId
     LEFT JOIN RecipientType rt ON r.RecipientTypeID = rt.RecipientTypeID
     WHERE bot.ConversationBotID IN (SELECT tbn.BotID FROM tmp_BotIDs tbn)
+		AND IFNULL(cgrp.Name,'') <>  ''
 		AND EXISTS (
 			SELECT 1 
             FROM tmp_MappingStatusIDs t1 
