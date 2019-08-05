@@ -20,4 +20,7 @@
     <Setting Key="NCB_NotificationType_Del" SpName="NCB_NotificationType_Del" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_System_Sel" SpName="NCB_System_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
+  <Function Name="Common">
+    <Setting Key="NCB_Common_NotificationType_Sel" SpName="NCB_Common_NotificationType_Sel" DbName="ChatBot" Plain="0"></Setting>
+  </Function>
 </Functions>

@@ -36,7 +36,7 @@ export class AppContainer extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getSettings();
+        this.props.getNotificationTypes();
         this.props.getTemplateTypes();
     }
 
@@ -182,7 +182,7 @@ export class AppContainer extends React.Component {
     }
 
     render() {
-        if (!this.props.settingData || !this.props.notificationTemplates) {
+        if (!this.props.notificationTypes || !this.props.notificationTemplates) {
             return null;
         }
 
@@ -196,7 +196,7 @@ export class AppContainer extends React.Component {
                         <FormGroup>
                             <Label for="notificationType" className="form-label required">Notification Type</Label>
                             <SelectField
-                                data={this.props.settingData.notificationTypes}
+                                data={this.props.notificationTypes}
                                 isSummited={this.state.isSummited}
                                 onChange={notificationTypeId => { this.onChange('notificationTypeId', notificationTypeId); }}
                             />
@@ -204,7 +204,7 @@ export class AppContainer extends React.Component {
                         <FormGroup>
                             <Label for="notificationType" className="form-label">Product</Label>
                             <SelectField
-                                data={this.props.settingData.products}
+                                data={this.props.products}
                                 isSummited={this.state.isSummited}
                                 onChange={notificationTypeId => { this.onChange('notificationTypeId', notificationTypeId); }}
                             />
@@ -311,7 +311,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispat
 
 const mapStateToProps = state => {
     return {
-        settingData: state.settingData,
+        notificationTypes: state.notificationTypes,
         notificationTemplates: state.notificationTemplates,
         template: state.template
     };

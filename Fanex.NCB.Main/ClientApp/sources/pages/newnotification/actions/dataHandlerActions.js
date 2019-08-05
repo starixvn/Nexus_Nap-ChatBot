@@ -37,7 +37,7 @@ export const setNotificationTypes = data => {
 };
 
 export const getNotificationTypes = () => {
-    const url = Site.resolveClientUrl('NewNotification/GetNotificationTypes');
+    const url = Site.resolveClientUrl('Common/GetNotificationTypes');
     const data = [{ id: 1, name: 'a' }, { id: 2, name: 'b' }];
 
     return dispatch => {
