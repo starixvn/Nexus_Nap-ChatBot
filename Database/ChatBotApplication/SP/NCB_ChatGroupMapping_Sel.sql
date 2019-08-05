@@ -9,7 +9,8 @@ CREATE PROCEDURE `NCB_ChatGroupMapping_Sel`(
 		IN licenseeStatusIds VARCHAR(1000),
         IN mappingStatusIds VARCHAR(1000),
 		IN pageIndex INT, 
-        IN pageSize INT
+        IN pageSize INT,
+        OUT totalItems INT
 		 /*
 			Creator: Scofield@20190404
 			Params:
@@ -25,7 +26,6 @@ CREATE PROCEDURE `NCB_ChatGroupMapping_Sel`(
                     - 20190418@Dominic: Improve performance
 		*/
     )
-    
 BEGIN
 	
 	-- Constant
@@ -223,8 +223,8 @@ BEGIN
     LIMIT rowStart, pageSize;
     
 	-- Get Total number of items
-    SELECT COUNT(1) AS Total 
-    FROM tmp_AllBotConversation tmp;    
+    SET totalItems = (SELECT COUNT(1)
+    FROM tmp_AllBotConversation tmp);    
     
 	-- Get BotConversations for current paging page with some extra infos
 	-- and satisfy RecipientTypeIds filtering condition
