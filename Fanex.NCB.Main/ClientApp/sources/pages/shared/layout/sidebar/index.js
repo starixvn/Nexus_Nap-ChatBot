@@ -40,11 +40,11 @@ export default class Sidebar extends React.Component {
                     <img src={Site.resolveClientUrl('images/Logo.svg')} className="logo" />
                     <h1 className="site-name">Chatbot</h1>
                 </div>
-                <ul className="nav">
-                    <li className="menu" >
+                <div className="nav">
+                    <ul className="menu" >
                         {this.renderMenu()}
-                    </li>
-                </ul>
+                    </ul>
+                </div>
             </div>
         );
     }
