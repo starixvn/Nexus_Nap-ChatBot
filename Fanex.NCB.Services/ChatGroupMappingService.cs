@@ -5,12 +5,12 @@
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Extensions;
-    using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Core.Services.Interfaces;
     using Fanex.NCB.Criteria.ChatGroupMapping;
     using Fanex.NCB.Model.ChatGroupMapping;
     using Fanex.NCB.Models.ChatGroupMapping;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services.Interfaces;
 
     public class ChatGroupMappingService : IChatGroupMappingService
     {

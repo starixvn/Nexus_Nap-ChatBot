@@ -4,9 +4,9 @@
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.BotService.EndPoint.Bots;
-    using Fanex.NCB.Core.Repositories;
-    using Fanex.NCB.Core.Services;
-    using Fanex.NCB.Core.Services.Interfaces;
+    using Fanex.NCB.Shared.Repositories;
+    using Fanex.NCB.Shared.Services;
+    using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Bot.Builder;
     using Microsoft.Extensions.DependencyInjection;
 

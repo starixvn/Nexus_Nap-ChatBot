@@ -1,10 +1,10 @@
-﻿namespace Fanex.NCB.Core.Services.Interfaces
+﻿namespace Fanex.NCB.Shared.Services.Interfaces
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
-    using Fanex.NCB.Core.Models;
+    using Fanex.NCB.Shared.Models;
 
     public interface IBaseService
     {

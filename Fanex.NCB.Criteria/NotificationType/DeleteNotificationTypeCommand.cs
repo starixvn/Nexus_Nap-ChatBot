@@ -1,5 +1,7 @@
 ﻿namespace Fanex.NCB.Criteria.NotificationType
 {
+    using Fanex.NCB.Shared.Models;
+
     public class DeleteNotificationTypeCommand : BaseCommand
     {
         public int NotificationId { get; set; }

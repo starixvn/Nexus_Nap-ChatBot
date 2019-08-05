@@ -1,5 +1,7 @@
 ﻿namespace Fanex.NCB.Criteria.ChatGroupMapping
 {
+    using Fanex.NCB.Shared.Models;
+
     public class EditChatGroupMappingCommand : BaseCommand
     {
         public int GroupID { get; set; }

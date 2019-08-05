@@ -4,7 +4,9 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoFixture;
+    using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
+    using Fanex.NAP.Client.Services;
     using Fanex.NCB.Models.ChatGroupMapping;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.SkypeBot.Controllers;
@@ -23,7 +25,9 @@
             var chatGroupMappingService = new Mock<IChatGroupMappingService>();
             var settingService = new Mock<ISettingService>();
             var napSession = new Mock<INapSession>();
-            var controller = new ChatGroupMappingController(chatGroupMappingService.Object, settingService.Object, napSession.Object);
+            var napSettings = new Mock<INapSettings>();
+            var userService = new Mock<IUserService>();
+            var controller = new ChatGroupMappingController(chatGroupMappingService.Object, settingService.Object, napSettings.Object, napSession.Object, userService.Object);
 
             var model = fixture.Create<GetChapGroupMapping>();
             var resultModel = fixture.Create<ValueTuple<IEnumerable<ChatGroupMappingResult>, long>>();

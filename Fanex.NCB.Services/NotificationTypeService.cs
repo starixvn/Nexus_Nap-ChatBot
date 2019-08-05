@@ -5,10 +5,11 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Core.Services.Interfaces;
     using Fanex.NCB.Criteria.NotificationType;
     using Fanex.NCB.Models.NotificationType;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services.Interfaces;
 
     public class NotificationTypeService : INotificationTypeService
     {

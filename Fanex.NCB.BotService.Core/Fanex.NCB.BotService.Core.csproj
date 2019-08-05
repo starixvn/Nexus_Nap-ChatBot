@@ -10,6 +10,6 @@
     <PackageReference Include="Fanex.Data.MySql" Version="4.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Fanex.NCB.Base\Fanex.NCB.Core.csproj" />
+    <ProjectReference Include="..\Fanex.NCB.Base\Fanex.NCB.Shared.csproj" />
   </ItemGroup>
 </Project>

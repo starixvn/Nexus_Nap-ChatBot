@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Core.Models
+﻿namespace Fanex.NCB.Shared.Models
 {
     public class CommandResult
     {

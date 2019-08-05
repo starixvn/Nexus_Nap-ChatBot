@@ -1,7 +1,10 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture;
-using Fanex.NCB.Core.Models;
+using Fanex.NAP.Client.Configuration;
+using Fanex.NAP.Client.Helpers.Web;
+using Fanex.NAP.Client.Services;
 using Fanex.NCB.Services.Interfaces;
+using Fanex.NCB.Shared.Models;
 using Fanex.NCB.SkypeBot.Controllers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +21,10 @@ namespace Fanex.NCB.SkypeBot.UnitTests.Controller.NotificationTypeControllerTest
             // Arrange
             var fixture = new Fixture();
             var notificationTypeService = new Mock<INotificationTypeService>();
-            var controller = new NotificationTypeController(notificationTypeService.Object);
+            var napSession = new Mock<INapSession>();
+            var napSettings = new Mock<INapSettings>();
+            var userService = new Mock<IUserService>();
+            var controller = new NotificationTypeController(notificationTypeService.Object, napSession.Object, napSettings.Object, userService.Object);
 
             var notificationTypeId = fixture.Create<int>();
             var resultModel = fixture.Create<CommandResult>();

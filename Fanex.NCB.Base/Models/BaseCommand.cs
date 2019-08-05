@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Criteria
+﻿namespace Fanex.NCB.Shared.Models
 {
     using Fanex.Data.Repository;
 

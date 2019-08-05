@@ -7,10 +7,10 @@
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Core.Services.Interfaces;
     using Fanex.NCB.Criteria.Setting;
     using Fanex.NCB.Models.Setting;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Services.Interfaces;
 
     public class SettingService : ISettingService
     {

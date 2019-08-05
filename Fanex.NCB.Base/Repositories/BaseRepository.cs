@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Threading.Tasks;
-using Fanex.Data;
-using Fanex.Data.Repository;
-using Fanex.NCB.Core.Models;
-
-namespace Fanex.NCB.Core.Repositories
+﻿namespace Fanex.NCB.Shared.Repositories
 {
+    using System;
+    using System.Collections;
+    using System.Threading.Tasks;
+    using Fanex.Data;
+    using Fanex.Data.Repository;
+    using Fanex.NCB.Shared.Models;
+
     public class BaseRepository : IBaseRepository
     {
         public async Task<CommandResult> ExecuteNonQueryAsync(INonQueryCommand command)

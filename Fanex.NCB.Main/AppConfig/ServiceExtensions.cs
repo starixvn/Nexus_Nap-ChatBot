@@ -2,11 +2,11 @@
 {
     using Fanex.Data.Repository;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Core.Repositories;
-    using Fanex.NCB.Core.Services;
-    using Fanex.NCB.Core.Services.Interfaces;
     using Fanex.NCB.Services;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Repositories;
+    using Fanex.NCB.Shared.Services;
+    using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class ServiceExtensions

@@ -2,8 +2,8 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models.ChatGroupMapping;
+    using Fanex.NCB.Shared.Models;
 
     public interface IChatGroupMappingService
     {

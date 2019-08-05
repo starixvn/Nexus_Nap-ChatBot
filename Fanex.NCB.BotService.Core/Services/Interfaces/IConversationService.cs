@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
     using Fanex.NCB.BotService.Core.Criteria;
-    using Fanex.NCB.Core.Models;
+    using Fanex.NCB.Shared.Models;
 
     public interface IConversationService
     {
