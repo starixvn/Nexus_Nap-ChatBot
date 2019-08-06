@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.BotService.Core.Models
+﻿namespace Fanex.NCB.Shared.Models
 {
     public class ProactiveMessageError
     {

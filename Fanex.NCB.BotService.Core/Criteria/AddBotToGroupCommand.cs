@@ -1,5 +1,7 @@
 ﻿namespace Fanex.NCB.BotService.Core.Criteria
 {
+    using Fanex.NCB.Shared.Models;
+
     public class AddBotToGroupCommand : BaseCommand
     {
         public string BotConversationId { get; set; }
