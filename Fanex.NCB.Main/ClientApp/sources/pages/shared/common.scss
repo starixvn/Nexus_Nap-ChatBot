@@ -40,15 +40,20 @@ body {
     font-size: 16px;
     font-weight: 500;
 
-    > li + li:before {
+    .breadcrumb-item + .breadcrumb-item {
+        padding-left: 0;
+    }
+   
+    .breadcrumb-item + .breadcrumb-item:before {
         position: relative;
-        top: 2px;
-        padding: 0 5px;
+        top: -1px;
+        padding: 0 8px;
         line-height: 0;
         color: #232323;
-        content: "\203A";
-        font-size: 24px;
+        content: "\e915";
+        font-size: 10px;
         font-weight: normal;
+        font-family: 'nap-chatbot', sans-serif !important;
     }
 
     > .active {
@@ -58,8 +63,6 @@ body {
     a:hover {
         text-decoration: none;
     }
-
-    
 }
 
 // Badges
