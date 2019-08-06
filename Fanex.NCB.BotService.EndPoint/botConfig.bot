@@ -31,8 +31,8 @@
     },
     {
       "type": "endpoint",
-      "name": "ncb1",
-      "endpoint": "https://aa79478b.ngrok.io/api/messages",
+      "name": "NCB1",
+      "endpoint": "https://4bf792cb.ngrok.io/api/messages",
       "appId": "3b546454-c9a5-4cc8-9f2e-be8e1bfd4e9a",
       "appPassword": "jcA0aW9d@Lk55RaUbCSCsBB*B/Szbnc.",
       "id": "4",
