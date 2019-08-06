@@ -1,13 +1,17 @@
 ﻿namespace Fanex.NCB.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Text;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;
+    using Newtonsoft.Json.Linq;
     using RestSharp;
 
     public class ChatbotService : IChatbotService
@@ -19,6 +23,48 @@
         {
             webClient = new RestClient { Encoding = Encoding.UTF8 };
             this.botSettings = botSettings;
+        }
+
+        public async Task SendMessageToMultitpleAsync(IEnumerable<ProactiveMessage> proactiveMessages)
+        {
+            if (proactiveMessages.Any())
+            {
+                webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
+
+                var request = new RestRequest(botSettings.Value.BotServiceUrl, Method.POST);
+                request.AddJsonBody(proactiveMessages);
+
+                var response = await webClient.ExecutePostTaskAsync(request).ConfigureAwait(false);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    await OnSendMessageSuccess(response.Content);
+                }
+            }
+        }
+
+        private async Task OnSendMessageSuccess(string json)
+        {
+            var proactiveErrorMessages = HandleResponse(json);
+        }
+
+        private IList<ProactiveMessageError> HandleResponse(string json)
+        {
+            var messages = new List<ProactiveMessageError>();
+            JObject obj = JObject.Parse(json);
+            var results = obj["results"];
+            foreach (var result in results)
+            {
+                var proactiveMessage = new ProactiveMessageError
+                {
+                    ConversationId = (string)result["conversationId"],
+                    ErrorCode = (int)result["errorCode"],
+                    ErrorMessage = (string)result["errorMessage"]
+                };
+                messages.Add(proactiveMessage);
+            }
+
+            return messages;
         }
 
         public async Task SendMessageAsync(string botName, string conversationId, string message)

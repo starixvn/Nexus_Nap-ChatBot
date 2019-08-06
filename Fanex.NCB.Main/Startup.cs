@@ -15,12 +15,9 @@
     using Fanex.NAP.Client.Web;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.CustomAspNetCoreModule;
-    using Fanex.NCB.CustomAspNetCoreModule.Extensions;
     using Fanex.NCB.Main.AppConfig;
-    using HealthChecks.UI.Client;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Diagnostics.HealthChecks;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -30,26 +27,18 @@
 
     public class Startup
     {
-        private readonly ILogger<Startup> _logger;
+        private readonly ILogger<Startup> logger;
 
         public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
             Configuration = configuration;
-            _logger = logger;
+            this.logger = logger;
         }
 
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var botSettings = Configuration.GetSection("AppSettings").Get<BotSettings>();
-
-            services.AddHealthChecks()
-                    .AddUriAvailable(botSettings.TokenUrl, "TokenUrl")
-                    .AddUriAvailable(botSettings.BotDomain + botSettings.BotServiceUrl, "SkypeServiceUrl");
-
-            services.AddHealthChecksUI();
-
             Dictionary<string, ConnectionConfiguration> connections = Configuration
                 .GetSection("ConnectionStrings")
                 .GetChildren()
@@ -131,14 +120,6 @@
                .UseConfig(app.ApplicationServices.GetService<INapSettings>())
                .UseRestClient(app.ApplicationServices.GetService<IRestClient>())
                .UseSession(app.ApplicationServices.GetService<INapSession>());
-
-            app.UseHealthChecks("/health", new HealthCheckOptions
-            {
-                Predicate = _ => true,
-                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            });
-
-            app.UseHealthChecksUI();//healthchecks-ui
         }
     }
 }

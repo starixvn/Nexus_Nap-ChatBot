@@ -1,5 +1,10 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Mvc;
@@ -8,11 +13,6 @@
     using Microsoft.Bot.Configuration;
     using Microsoft.Bot.Connector.Authentication;
     using Microsoft.Bot.Schema;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
 
     [ApiController]
     public class NotifyController : ControllerBase
@@ -35,12 +35,13 @@
             var appId = GetAppId(botName);
             var conversationReference = await GetConversationReference(conversationId, botName);
 
-            var result = await SendMessage(appId, conversationReference, message);  
+            var result = await SendMessage(appId, conversationReference, message);
             return Ok(new List<ProactiveMessageError> { result });
         }
 
         [HttpPost]
         [Route("api/notifymulti")]
+        [HttpPost]
         public async Task<ObjectResult> SendMulti([FromBody]IList<ProactiveMessage> proactiveMessages)
         {
             string appId;
@@ -73,7 +74,7 @@
                     {
                         MicrosoftAppCredentials.TrustServiceUrl(conversationReference.ServiceUrl);
                         await context.SendActivityAsync(message);
-                    }, 
+                    },
                     new CancellationToken());
             }
             catch (Exception ex)
@@ -95,7 +96,7 @@
                 ServiceUrl = conversationGroup.ServiceUrl,
                 ChannelId = conversationGroup.ChannelId
             };
-            
+
             return coversation;
         }
 
