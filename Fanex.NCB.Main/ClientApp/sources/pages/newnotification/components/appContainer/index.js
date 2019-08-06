@@ -1,6 +1,8 @@
 ﻿import React from 'react';
 import { connect } from 'react-redux';
 import { Form, FormGroup, Label, Button, Container, Row, Col } from 'reactstrap';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 import { NCBBreadcrum } from '../../../common/breadcrumbs';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../../actions/index';
@@ -36,8 +38,8 @@ export class AppContainer extends React.Component {
     }
 
     componentDidMount() {
+        this.props.getProducts();
         this.props.getNotificationTypes();
-        this.props.getTemplateTypes();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -111,7 +113,7 @@ export class AppContainer extends React.Component {
             newArray.push(array.slice(i, i + 2));
         }
 
-        return newArray
+        return newArray;
     }
 
     processTemplate = (text, params) => {
@@ -174,133 +176,90 @@ export class AppContainer extends React.Component {
     }
 
     editTitle = value => {
-        console.log(value)
+        console.log(value);
     }
 
     editContent = value => {
-        console.log(value)
+        console.log(value);
+    }
+
+    schema = Yup.object().shape({
+        notificationTypeId: Yup.string().required(),
+        title: Yup.string().required(),
+        content: Yup.string().required()
+    })
+
+    renderForm = ({
+        values,
+        errors,
+        touched,
+        handleChange,
+        handleSubmit,
+        setFieldValue,
+        isSubmitting
+    }) => {
+        return (
+            <Form onSubmit={handleSubmit}>
+                <FormGroup>
+                    <Label for="notificationTypeId" className="form-label required">Notification Type</Label>
+                    <SelectField
+                        data={this.props.notificationTypes}
+                        invalid={touched.notificationTypeId && errors.notificationTypeId}
+                        name="notificationTypeId"
+                        onChange={handleChange}
+                        value={values.notificationTypeId}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="productId" className="form-label">Product</Label>
+                    <SelectField
+                        data={this.props.products}
+                        value={values.productId}
+                        name="productId"
+                        onChange={handleChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="title" className="form-label required">Title</Label>
+                    <InputField value={values.title} name="title"
+                        invalid={touched.title && errors.title}
+                        onChange={handleChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="content" className="form-label required">Content</Label>
+                    <TextField value={values.content} name="content"
+                        onChange={handleChange}
+                        invalid={touched.content && errors.content}
+                    />
+                </FormGroup>
+
+                <Button className="btn-submit" disabled={isSubmitting}>Save</Button>
+            </Form>
+        );
     }
 
     render() {
-        if (!this.props.notificationTypes || !this.props.notificationTemplates) {
+        if (!this.props.notificationTypes || !this.props.products) {
             return null;
         }
-
-        const splittedParams = this.splitArrayIntoTwoColumns(this.state.template.params);
 
         return (
             <div>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="New Notification" />
                 <div className="content form new-notification-form">
-                    <Form>
-                        <FormGroup>
-                            <Label for="notificationType" className="form-label required">Notification Type</Label>
-                            <SelectField
-                                data={this.props.notificationTypes}
-                                isSummited={this.state.isSummited}
-                                onChange={notificationTypeId => { this.onChange('notificationTypeId', notificationTypeId); }}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="notificationType" className="form-label">Product</Label>
-                            <SelectField
-                                data={this.props.products}
-                                isSummited={this.state.isSummited}
-                                onChange={notificationTypeId => { this.onChange('notificationTypeId', notificationTypeId); }}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="notificationType" className="form-label">Notification Template</Label>
-                            <SelectField
-                                data={this.props.notificationTemplates}
-                                isSummited={this.state.isSummited}
-                                onChange={notificationTypeId => {
-                                    this.getTemplate(notificationTypeId);
-                                    this.onChange('notificationTypeId', notificationTypeId);
-                                }}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="notificationType" className="form-label required">Title
-                                {
-                                    !this.state.manuallyEditted &&
-                                    <span className="icon-edit" onClick={() => !this.state.manuallyEditted && this.editManually()} />
-                                }
-                            </Label>
-                            <div className="template-title-div">
-                                {
-                                    !this.state.manuallyEditted &&
-                                    <TemplateTextField
-                                        value={this.state.template.title.processedTemplate}
-                                    />
-                                }
-                                {
-                                    this.state.manuallyEditted &&
-                                    <InputField initialValue={this.state.template.title.finalTemplate}
-                                        isSummited={this.state.isSummited}
-                                        onChange={value => this.editTitle(value)}
-                                    />
-                                }
-                            </div>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="notificationType" className="form-label required">Content
-                                {
-                                    !this.state.manuallyEditted &&
-                                    <span className="icon-edit" onClick={() => !this.state.manuallyEditted && this.editManually()} />
-                                }
-                            </Label>
-                            <div className="template-content-div">
-                                {
-                                    !this.state.manuallyEditted &&
-                                    <TemplateTextField
-                                        value={this.state.template.content.processedTemplate}
-                                    />
-                                }
-                                {
-                                    this.state.manuallyEditted &&
-                                    <TextField initialValue={this.state.template.content.finalTemplate}
-                                        isSummited={this.state.isSummited}
-                                        onChange={value => this.onChange('remark', value)}
-                                        required
-                                    />
-                                }
-                            </div>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="notificationType" className="form-label">&nbsp;</Label>
-                            {
-                                !this.state.manuallyEditted &&
-                                <div className="form-params">
-                                    <div className="title-params">Parameters</div>
-                                    <Container>
-                                        {
-                                            splittedParams.map((items, rowIndex) => {
-                                                return (<Row key={rowIndex} className="row-params">
-                                                    {
-                                                        items.map((item, colIndex) => {
-                                                            return <Col key={colIndex} className="col-params">
-                                                                <Label className="form-label">{item.name}</Label>
-                                                                <InputField initialValue={item.value.value}
-                                                                    isSummited={this.state.isSummited}
-                                                                    onChange={value => this.onChangeParam(item.name, value)}
-                                                                />
-                                                            </Col>;
-                                                        })
-                                                    }
-                                                </Row>);
-                                            })
-                                        }
-                                    </Container>
-                                </div>
-                            }
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="notificationType" className="form-label required">Send Date/Time</Label>
-                        </FormGroup>
-                        <Button className="btn-submit">Save</Button>
-                        <Button className="btn-cancel">Cancel</Button>
-                    </Form>
+                    <Formik
+                        initialValues={{
+                            notificationTypeId: '',
+                            productId: '',
+                            title: '',
+                            content: ''
+                        }}
+                        render={this.renderForm}
+                        validationSchema={this.schema}
+                        onSubmit={this.handleSubmit}
+                    />
+
                 </div>
             </div>
         );
@@ -311,9 +270,11 @@ const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispat
 
 const mapStateToProps = state => {
     return {
-        notificationTypes: state.notificationTypes,
-        notificationTemplates: state.notificationTemplates,
-        template: state.template
+        notificationTypes: state.notificationTypes && state.notificationTypes.map(x => ({
+            id: x.notificationTypeID,
+            name: x.notificationTypeName
+        })),
+        products: state.products
     };
 };
 

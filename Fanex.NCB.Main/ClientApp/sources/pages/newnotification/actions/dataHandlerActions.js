@@ -99,6 +99,25 @@ export const getTemplate = () => {
     };
 };
 
+// Product
+export const setProducts = data => {
+    return {
+        type: types.PRODUCT_DATA,
+        data: data
+    };
+};
+
+export const getProducts = () => {
+    const url = Site.resolveClientUrl('Common/GetProducts');
+    return dispatch => {
+        axios.get(url).then(response => {
+            dispatch(setProducts(response.data));
+        }).catch(() => {
+            errorResponseHandler();
+        });
+    };
+};
+
 const actions = {
     setSettings,
     getSettings,
@@ -107,7 +126,9 @@ const actions = {
     setTemplateTypes,
     getTemplateTypes,
     setTemplate,
-    getTemplate
+    getTemplate,
+    setProducts,
+    getProducts
 };
 
 export default actions;

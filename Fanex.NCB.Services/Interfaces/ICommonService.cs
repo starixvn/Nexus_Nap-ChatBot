@@ -7,5 +7,7 @@
     public interface ICommonService
     {
         Task<IEnumerable<NotificationType>> GetNotificationTypesAsync();
+
+        Task<IEnumerable<Product>> GetProductsAsync();
     }
 }

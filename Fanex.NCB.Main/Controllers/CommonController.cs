@@ -22,5 +22,13 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
             return Json(result);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProducts()
+        {
+            var result = await commonService.GetProductsAsync().ConfigureAwait(false);
+
+            return Json(result);
+        }
     }
 }

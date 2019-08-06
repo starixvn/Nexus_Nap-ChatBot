@@ -22,5 +22,6 @@
   </Function>
   <Function Name="Common">
     <Setting Key="NCB_Common_NotificationType_Sel" SpName="NCB_Common_NotificationType_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Common_Product_Sel" SpName="NCB_Common_Product_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
 </Functions>

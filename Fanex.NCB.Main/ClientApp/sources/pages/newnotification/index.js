@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { renderLayout } from '../shared/layout/layout/index';
 
 import { Provider } from 'react-redux';

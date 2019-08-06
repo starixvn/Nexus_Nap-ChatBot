@@ -1,52 +1,33 @@
 import React, { Component } from 'react';
 import { Input, FormFeedback } from 'reactstrap';
-import Labels from '../common/Labels'
+import Labels from '../common/Labels';
 
 import './SelectField.scss';
 
 export class SelectField extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            value: props.initialValue
-        };
     }
 
-    onChange = e => {
-        this.setState(
-            {
-                value: e.target.value
-            },
-            () => {
-                this.props.onChange({
-                    value: this.state.value,
-                    isValid: this.isValid()
-                });
-            }
-        );
-    }
-
-    isValid = () => parseInt(this.state.value, 10) > 0;
+    renderOption = (item) => <option key={item.id} value={item.id} >{item.name}</option>
 
     render() {
         return (
             <div className="select-field">
                 <Input
                     type="select"
-                    value={this.state.value}
-                    onChange={this.onChange}
-                    invalid={this.props.isSummited && !this.isValid()}
+                    value={this.props.value}
+                    name={this.props.name}
+                    onChange={this.props.onChange}
+                    invalid={this.props.invalid}
                 >
-                    <option value="-1">{Labels.PleaseSelect}</option>
+                    <option value="" />
                     {
                         this.props.data &&
-                        this.props.data.map((item, index) =>
-                            <option key={index} value={item.id} >{item.name}</option>
-                        )
+                        this.props.data.map(this.renderOption)
                     }
                 </Input>
-                {this.props.isSummited && !this.isValid() && <FormFeedback>This field is required.</FormFeedback>}
+                {this.props.invalid && <FormFeedback>{Labels.FieldRequired}</FormFeedback>}
             </div>
         );
     }

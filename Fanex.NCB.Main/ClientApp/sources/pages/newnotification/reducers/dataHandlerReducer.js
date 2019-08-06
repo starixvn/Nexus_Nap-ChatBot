@@ -29,11 +29,19 @@ export const template = createReducer(null, {
     }
 });
 
+// Product
+export const products = createReducer(null, {
+    [types.PRODUCT_DATA](state, action) {
+        return action.data;
+    }
+});
+
 const reducers = {
     settingData,
     notificationTypes,
     notificationTemplates,
-    template
+    template,
+    products
 };
 
 export default reducers;

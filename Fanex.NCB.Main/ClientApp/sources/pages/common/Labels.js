@@ -15,6 +15,7 @@
     LicenseeStatus: 'Licensee Status',
     MappingStatus: 'Mapping Status',
     NumberCol: '#',
+    None: 'None',
     NotificationType: 'Notification Type',
     NoInfo: 'No information is available.',
     PleaseSelect: '---Please select---',

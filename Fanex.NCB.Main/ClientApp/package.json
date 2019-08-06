@@ -59,6 +59,7 @@
     "availity-reactstrap-validation": "^2.5.0",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
+    "formik": "^1.5.8",
     "prop-types": "^15.5.10",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
@@ -66,7 +67,8 @@
     "reactstrap": "^6.5.0",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "yup": "^0.27.0"
   },
   "scripts": {
     "stats": "webpack --config webpackconfig/build/webpack.dev.conf.js --json > stats.json",

@@ -20,5 +20,10 @@
         {
             return await baseService.GetDataAsync<NotificationType>(new GetNotificationTypesCriteria()).ConfigureAwait(false);
         }
+
+        public async Task<IEnumerable<Product>> GetProductsAsync()
+        {
+            return await baseService.GetDataAsync<Product>(new GetProductsCriteria()).ConfigureAwait(false);
+        }
     }
 }
