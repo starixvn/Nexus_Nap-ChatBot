@@ -26,17 +26,18 @@
             if (!string.IsNullOrWhiteSpace(botName) && !string.IsNullOrWhiteSpace(conversationId))
             {
                 ChatbotToken token = await GetTokenAsync(botName).ConfigureAwait(false);
-                await ForwardToBotAsync(message, conversationId, token).ConfigureAwait(false);
+                await ForwardToBotAsync(botName, message, conversationId, token).ConfigureAwait(false);
             }
         }
 
-        private async Task ForwardToBotAsync(string message, string conversationId, ChatbotToken token)
+        private async Task ForwardToBotAsync(string botName, string message, string conversationId, ChatbotToken token)
         {
             webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
 
             var request = new RestRequest(botSettings.Value.BotServiceUrl, Method.POST);
             request.AddHeader("Authorization", $"Bearer {token.AccessToken}");
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
+            request.AddParameter("botName", botName);
             request.AddParameter("message", message);
             request.AddParameter("conversationId", conversationId);
 
