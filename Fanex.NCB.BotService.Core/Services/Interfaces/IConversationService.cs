@@ -1,9 +1,9 @@
 ﻿namespace Fanex.NCB.BotService.Core.Services.Interfaces
 {
-    using System.Threading.Tasks;
     using Fanex.NCB.BotService.Core.Criteria;
+    using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Core.Models;
+    using System.Threading.Tasks;
 
     public interface IConversationService
     {
