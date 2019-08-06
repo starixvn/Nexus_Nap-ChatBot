@@ -34,23 +34,14 @@
 
         public async Task<ConversationGroup> GetGroupConversation(string conversationId, string botName)
         {
-            try
+            var criteria = new GetConversationGroupCriteria
             {
-                var criteria = new GetConversationGroupCriteria
-                {
-                    ConversationId = conversationId,
-                    BotName = botName
-                };
+                ConversationId = conversationId,
+                BotName = botName
+            };
 
-                var conversationGroup = await baseService.GetDataEntityAsync<ConversationGroup>(criteria);
-                return conversationGroup;
-            }
-            catch (Exception ex)
-            {
-
-            }
-
-            return null;
+            var conversationGroup = await baseService.GetDataEntityAsync<ConversationGroup>(criteria);
+            return conversationGroup;
         }
     }
 }
