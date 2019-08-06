@@ -1,5 +1,5 @@
 DELIMITER //
-DROP PROCEDURE `NCB_Setting_SearchRecipient_Sel`;
+DROP PROCEDURE IF EXISTS `NCB_Setting_SearchRecipient_Sel`;
 CREATE PROCEDURE `NCB_Setting_SearchRecipient_Sel`(
 	IN query VARCHAR(200)
 	/*

@@ -1,5 +1,5 @@
 DELIMITER //
-DROP PROCEDURE `NCB_Setting_ChatGroupType_Sel`;
+DROP PROCEDURE IF EXISTS `NCB_Setting_ChatGroupType_Sel`;
 CREATE PROCEDURE `NCB_Setting_ChatGroupType_Sel`(
 	/*
 		Creator: Scofield@20190404        
