@@ -52,11 +52,18 @@
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            if (turnContext.Activity.Text.Equals(InteractedCommand.help, StringComparison.InvariantCultureIgnoreCase))
+            var message = turnContext.Activity.Text.Trim();
+            var botName = turnContext.Activity.Recipient.Name;
+            if (turnContext.Activity.Conversation.IsGroup == true)
             {
-                await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(greetingMessage, turnContext.Activity.Recipient.Name)), cancellationToken);
+                message = BotHelper.GetMessageInGroupByChannel(message, botName);
             }
-            else if (turnContext.Activity.Text.Equals(InteractedCommand.getid, StringComparison.InvariantCultureIgnoreCase))
+
+            if (message.Equals(InteractedCommand.help, StringComparison.InvariantCultureIgnoreCase))
+            {
+                await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(greetingMessage, botName)), cancellationToken);
+            }
+            else if (message.Equals(InteractedCommand.getid, StringComparison.InvariantCultureIgnoreCase))
             {
                 await turnContext.SendActivityAsync(MessageFactory.Text(turnContext.Activity.Conversation.Id), cancellationToken);
             }

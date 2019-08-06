@@ -28,6 +28,7 @@
             this.conversationService = conversationService;
         }
 
+        [HttpPost]
         [Route("api/notify")]
         public async Task<ObjectResult> Send(string botName, string conversationId, string message)
         {
@@ -38,6 +39,7 @@
             return Ok(new List<ProactiveMessageError> { result });
         }
 
+        [HttpPost]
         [Route("api/notifymulti")]
         public async Task<ObjectResult> SendMulti([FromBody]IList<ProactiveMessage> proactiveMessages)
         {
