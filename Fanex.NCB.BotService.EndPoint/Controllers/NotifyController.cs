@@ -112,7 +112,7 @@
 
         private string GetAppId(string botName)
         {
-            var appId = ((EndpointService)botConfig.Services.FirstOrDefault(t => t.Name.Equals(botName))).AppId;
+            var appId = ((EndpointService)botConfig.Services.FirstOrDefault(t => t.Name.Equals(botName, StringComparison.InvariantCultureIgnoreCase))).AppId;
             if (string.IsNullOrEmpty(appId))
             {
                 appId = Guid.NewGuid().ToString();

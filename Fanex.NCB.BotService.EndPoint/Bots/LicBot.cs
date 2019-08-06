@@ -1,9 +1,11 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Bots
 {
+    using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Schema;
+    using System;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -12,7 +14,6 @@
     {
         private const string channelSkypeId = "skype";
         private const string greetingMessage = "Hello, I am {0}";
-        private const string helpCommand = "help";
 
         private readonly IConversationService conversationService;
 
@@ -51,9 +52,13 @@
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            if (turnContext.Activity.Text.Equals(helpCommand))
+            if (turnContext.Activity.Text.Equals(InteractedCommand.help, StringComparison.InvariantCultureIgnoreCase))
             {
                 await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(greetingMessage, turnContext.Activity.Recipient.Name)), cancellationToken);
+            }
+            else if (turnContext.Activity.Text.Equals(InteractedCommand.getid, StringComparison.InvariantCultureIgnoreCase))
+            {
+                await turnContext.SendActivityAsync(MessageFactory.Text(turnContext.Activity.Conversation.Id), cancellationToken);
             }
         }
 
