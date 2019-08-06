@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import { connect } from 'react-redux';
-import { Form, FormGroup, Label, Button, Container, Row, Col } from 'reactstrap';
+import { Form, FormGroup, Label, Button, Container, Row, Col, Input, FormFeedback } from 'reactstrap';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { NCBBreadcrum } from '../../../common/breadcrumbs';
@@ -9,9 +9,22 @@ import { ActionCreators } from '../../actions/index';
 import { SelectField } from '../../../common/SelectField';
 import { TextField } from '../../../common/text-field/TextField';
 import { InputField } from '../../../common/InputField';
+import DatePicker from '../../../common/DatePicker/index';
 import { TemplateTextField } from '../../../common/template-text-field/TemplateTextField';
+import Labels from '../../../common/Labels';
 
 import './AppContainer.scss';
+
+const SendModeOptions = [
+    {
+        value: '1',
+        label: 'Send Immediately'
+    },
+    {
+        value: '2',
+        label: 'Send At'
+    }
+];
 
 export class AppContainer extends React.Component {
     constructor(props) {
@@ -184,10 +197,16 @@ export class AppContainer extends React.Component {
     }
 
     schema = Yup.object().shape({
-        notificationTypeId: Yup.string().required(),
-        title: Yup.string().required(),
-        content: Yup.string().required()
+        notificationTypeId: Yup.string().required(Labels.FieldRequired),
+        title: Yup.string().required(Labels.FieldRequired),
+        content: Yup.string().required(Labels.FieldRequired)
     })
+
+    renderNotificationTypeOption = (item) => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>
+
+    renderProductOption = (item) => <option key={item.id} value={item.id} >{item.name}</option>
+
+    renderSendModeOption = item => <option key={item.value} value={item.value} >{item.label}</option>
 
     renderForm = ({
         values,
@@ -202,40 +221,63 @@ export class AppContainer extends React.Component {
             <Form onSubmit={handleSubmit}>
                 <FormGroup>
                     <Label for="notificationTypeId" className="form-label required">Notification Type</Label>
-                    <SelectField
-                        data={this.props.notificationTypes}
+                    <Input type="select"
                         invalid={touched.notificationTypeId && errors.notificationTypeId}
                         name="notificationTypeId"
                         onChange={handleChange}
                         value={values.notificationTypeId}
-                    />
+                    >
+                        <option value="" />
+                        {this.props.notificationTypes.map(this.renderNotificationTypeOption)}
+                    </Input>
+                    {touched.notificationTypeId && errors.notificationTypeId && <FormFeedback>{errors.notificationTypeId}</FormFeedback>}
                 </FormGroup>
                 <FormGroup>
                     <Label for="productId" className="form-label">Product</Label>
-                    <SelectField
-                        data={this.props.products}
+                    <Input type="select"
                         value={values.productId}
                         name="productId"
                         onChange={handleChange}
-                    />
+                    >
+                        <option value="">{Labels.None}</option>
+                        {this.props.products.map(this.renderProductOption)}
+                    </Input>
                 </FormGroup>
                 <FormGroup>
                     <Label for="title" className="form-label required">Title</Label>
-                    <InputField value={values.title} name="title"
+                    <Input value={values.title} name="title"
                         invalid={touched.title && errors.title}
                         onChange={handleChange}
                     />
+                    {touched.title && errors.title && <FormFeedback>{errors.title}</FormFeedback>}
                 </FormGroup>
                 <FormGroup>
                     <Label for="content" className="form-label required">Content</Label>
-                    <TextField value={values.content} name="content"
-                        onChange={handleChange}
-                        invalid={touched.content && errors.content}
+                    <Input type="textarea" value={values.content} name="content"
+                        onChange={handleChange} invalid={touched.content && errors.content}
                     />
+                    {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
+                </FormGroup>
+                <FormGroup>
+                    <Label for="sendMode" className="form-label required">Send Date/Time</Label>
+                    <div>
+                        <Input type='select'
+                            value={values.sendMode}
+                            name="sendMode"
+                            onChange={handleChange}
+                        >
+                            {SendModeOptions.map(this.renderSendModeOption)}
+                        </Input>
+                        <DatePicker selected={values.sendDate} showTimeSelect disabled={values.sendMode === '1'}
+                            onChange={value => setFieldValue('sendDate', value)}
+                        />
+                        <span>(GMT +8)</span>
+                    </div>
+
                 </FormGroup>
 
                 <Button className="btn-submit" disabled={isSubmitting}>Save</Button>
-            </Form>
+            </Form >
         );
     }
 
@@ -253,7 +295,9 @@ export class AppContainer extends React.Component {
                             notificationTypeId: '',
                             productId: '',
                             title: '',
-                            content: ''
+                            content: '',
+                            sendDate: new Date(),
+                            sendMode: '1'
                         }}
                         render={this.renderForm}
                         validationSchema={this.schema}
@@ -270,10 +314,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispat
 
 const mapStateToProps = state => {
     return {
-        notificationTypes: state.notificationTypes && state.notificationTypes.map(x => ({
-            id: x.notificationTypeID,
-            name: x.notificationTypeName
-        })),
+        notificationTypes: state.notificationTypes,
         products: state.products
     };
 };
