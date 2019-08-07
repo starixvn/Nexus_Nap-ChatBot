@@ -22,8 +22,8 @@
 
         private CommandResult GetCommandResult(Hashtable hash)
         {
-            var errCode = hash["errorCode"];
-            var errMsg = hash["errorMsg"];
+            var errCode = hash["errCode"];
+            var errMsg = hash["errMsg"];
 
             return new CommandResult
             {

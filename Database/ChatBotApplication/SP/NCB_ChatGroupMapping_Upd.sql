@@ -9,8 +9,8 @@ CREATE PROCEDURE `NCB_ChatGroupMapping_Upd`(
     IN chatGroupTypeID INT,
     IN remark VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci',
     IN creatorID INT,
-    OUT errorCode SMALLINT,
-	OUT errorMsg VARCHAR(100)
+    OUT errCode SMALLINT,
+	OUT errMsg VARCHAR(100)
 	/*
 		Creator: Scofield@20190404
         Params:
@@ -37,24 +37,24 @@ NCB_ChatGroupMapping_Upd:BEGIN
 	-- Get Start Time to calcualte execution duration
     SET  startTime = UTC_TIMESTAMP(3);
 
-	-- Set default values for errorCode and errorMsg
-    SET errorCode=0, errorMsg='';
+	-- Set default values for errCode and errMsg
+    SET errCode=0, errMsg='';
     
     -- Check if params are VALID
 	IF  groupID IS NULL THEN
-		SET errorCode=101, errorMsg='Invalid GroupID';
+		SET errCode=101, errMsg='Invalid GroupID';
         LEAVE NCB_ChatGroupMapping_Upd;
 	ELSEIF recipientTypeID IS NULL THEN
-		SET errorCode=102, errorMsg='Invalid RecipientTypeID';
+		SET errCode=102, errMsg='Invalid RecipientTypeID';
         LEAVE NCB_ChatGroupMapping_Upd;
 	ELSEIF chatGroupTypeID IS NULL THEN
-		SET errorCode=103, errorMsg='Invalid ChatGroupTypeID';
+		SET errCode=103, errMsg='Invalid ChatGroupTypeID';
         LEAVE NCB_ChatGroupMapping_Upd;
 	ELSEIF creatorID IS NULL THEN
-		SET errorCode=104, errorMsg='Invalid CreatorID';
+		SET errCode=104, errMsg='Invalid CreatorID';
         LEAVE NCB_ChatGroupMapping_Upd;
 	ELSEIF IFNULL(recipientIDs,'') = '' THEN
-		SET errorCode=105, errorMsg='Recipients can not be empty';
+		SET errCode=105, errMsg='Recipients can not be empty';
         LEAVE NCB_ChatGroupMapping_Upd;	
 	END IF;   
     
@@ -63,7 +63,7 @@ NCB_ChatGroupMapping_Upd:BEGIN
 	INSERT INTO ConversationGroupExtraInfo(ConversationGroupID, ChatGroupTypeID, Remark)
 	SELECT ConversationGroupID, ChatGroupTypeID, Remark
 	FROM (SELECT groupID AS ConversationGroupID, chatGroupTypeID AS ChatGroupTypeID, remark AS Remark) AS tmp
-	WHERE NOT EXISTS(SELECT 1 FROM ConversationGroupExtraInfo bce WHERE bce.BotConversationID = tmp.BotConversationID);
+	WHERE NOT EXISTS(SELECT 1 FROM ConversationGroupExtraInfo bce WHERE bce.ConversationGroupID = tmp.ConversationGroupID);
 	
 	IF ROW_COUNT() = 0 THEN
 		UPDATE ConversationGroupExtraInfo bce
