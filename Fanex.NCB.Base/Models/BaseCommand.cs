@@ -4,8 +4,8 @@
 
     public abstract class BaseCommand : NonQueryCommand
     {
-        public int ErrorCode { get; set; }
+        public int ErrCode { get; set; }
 
-        public string ErrorMsg { get; set; }
+        public string ErrMsg { get; set; }
     }
 }
