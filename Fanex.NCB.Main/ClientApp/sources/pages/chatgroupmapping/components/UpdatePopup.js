@@ -55,11 +55,12 @@ export class UpdatePopup extends Component {
 
     submitData = () => {
         const params = this.getParams();
-        this.props.update(params).then(() => {
-            if (this.props.updateData.isSuccessful) {
-                this.closePopupOnSuccess();
-            }
-        });
+        console.log(params);
+        //this.props.update(params).then(() => {
+        //    if (this.props.updateData.isSuccessful) {
+        //        this.closePopupOnSuccess();
+        //    }
+        //});
     }
 
     setSubmittedState = () => {
@@ -67,6 +68,7 @@ export class UpdatePopup extends Component {
     }
 
     getParams = () => {
+        console.log(this.state);
         return {
             groupID: this.state.groupID,
             conversationId: this.state.conversationID,
@@ -79,7 +81,7 @@ export class UpdatePopup extends Component {
 
     checkValidParams = () => this.state.recipientTypeId.isValid && this.state.recipientIds.isValid && this.state.chatGroupTypeId.isValid;
 
-    onChange = (fieldName, fieldValue) => this.setState({ [fieldName]: fieldValue, isChanged: true });
+    onChange = (fieldName, fieldValue) => this.setState({ [fieldName]: fieldValue, isChanged: true }, () => console.log(fieldName + ":" + fieldValue));
 
     closePopupOnSuccess = () => setTimeout(function () { this.props.closeUpdatePopupHandler(); }.bind(this), 1000);
 
