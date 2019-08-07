@@ -1,0 +1,14 @@
+﻿.rc-tree-select {
+    height: auto;
+    min-height: 32px;
+    padding: 0;
+
+    .rc-tree-select-selection {
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .rc-tree-select-selection--multiple {
+        min-height: unset;
+    }
+}

@@ -6,13 +6,7 @@
 @import "../../../shared/components/tables.scss";
 @import "../../../shared/components/font.css";
 
-
 .form-group {
-    display: grid;
-    grid-template-columns: 145px 1fr;
-    grid-template-rows: 1fr;
-    align-items: center;
-
     .notification-type,
     .notification-template {
         width: 540px;
@@ -34,6 +28,7 @@
         margin-bottom: 15px;
         line-height: 32px;
         color: #066896;
+
         &:hover {
             cursor: pointer;
         }
@@ -83,7 +78,6 @@
     padding-top: 8px;
 }
 
-
 .parameter-area {
     margin-left: 145px;
     margin-bottom: 15px;
@@ -125,19 +119,19 @@
     align-items: flex-start;
 
     .calendar {
-     position: relative; 
-     display: inline-block;
-     margin-right: 15px;
+        position: relative;
+        display: inline-block;
+        margin-right: 15px;
 
-     &:before {
-         position: absolute;
-         right: 8px;
-         top: 6px;
-         content: "\E909";
-         font-family: "nap-chatbot";
-         font-size: 15px;
-         color: #798388;
-     }
+        &:before {
+            position: absolute;
+            right: 8px;
+            top: 6px;
+            content: "\E909";
+            font-family: "nap-chatbot";
+            font-size: 15px;
+            color: #798388;
+        }
     }
 
     .date-time {
@@ -159,7 +153,6 @@
         margin-right: 10px;
     }
 }
-
 
 .new-notification-form {
     width: 1000px;
@@ -189,9 +182,8 @@
             height: 200px;
         }
 
-        .template-text-field{
+        .template-text-field {
             max-height: 200px;
-
         }
     }
 }
@@ -210,7 +202,7 @@
             width: 100px;
         }
 
-        .input-field{
+        .input-field {
             vertical-align: top;
         }
     }

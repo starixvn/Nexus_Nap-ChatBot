@@ -28,4 +28,9 @@
     <Setting Key="NCB_SendNotification_ScanWaitingList_Sel" SpName="NCB_SendNotification_ScanWaitingList_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SendNotification_LockForSending_Upd" SpName="NCB_SendNotification_LockForSending_Upd" DbName="ChatBot" Plain="0"></Setting>
   </Function>
+
+  <Function Name="New Notification">
+    <Setting Key="NCB_NewNotification_Ins" SpName="NCB_NewNotification_Ins" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_NewNotification_Recipient_Sel" SpName="NCB_NewNotification_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
+  </Function>
 </Functions>

@@ -1,4 +1,6 @@
-﻿import React from 'react';
+﻿import './AppContainer.scss';
+
+import React from 'react';
 import { connect } from 'react-redux';
 import { Form, FormGroup, Label, Button, Container, Row, Col, Input, FormFeedback } from 'reactstrap';
 import { Formik } from 'formik';
@@ -6,14 +8,10 @@ import * as Yup from 'yup';
 import { NCBBreadcrum } from '../../../common/breadcrumbs';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../../actions/index';
-import { SelectField } from '../../../common/SelectField';
-import { TextField } from '../../../common/text-field/TextField';
-import { InputField } from '../../../common/InputField';
+import TreeSelect from '../../../common/TreeSelect/index';
 import DatePicker from '../../../common/DatePicker/index';
 import { TemplateTextField } from '../../../common/template-text-field/TemplateTextField';
 import Labels from '../../../common/Labels';
-
-import './AppContainer.scss';
 
 const SendModeOptions = [
     {
@@ -199,7 +197,8 @@ export class AppContainer extends React.Component {
     schema = Yup.object().shape({
         notificationTypeId: Yup.string().required(Labels.FieldRequired),
         title: Yup.string().required(Labels.FieldRequired),
-        content: Yup.string().required(Labels.FieldRequired)
+        content: Yup.string().required(Labels.FieldRequired),
+        recipients: Yup.array().required(Labels.FieldRequired)
     })
 
     renderNotificationTypeOption = (item) => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>
@@ -219,48 +218,69 @@ export class AppContainer extends React.Component {
     }) => {
         return (
             <Form onSubmit={handleSubmit}>
-                <FormGroup>
-                    <Label for="notificationTypeId" className="form-label required">Notification Type</Label>
-                    <Input type="select"
-                        invalid={touched.notificationTypeId && errors.notificationTypeId}
-                        name="notificationTypeId"
-                        onChange={handleChange}
-                        value={values.notificationTypeId}
-                    >
-                        <option value="" />
-                        {this.props.notificationTypes.map(this.renderNotificationTypeOption)}
-                    </Input>
-                    {touched.notificationTypeId && errors.notificationTypeId && <FormFeedback>{errors.notificationTypeId}</FormFeedback>}
+                <FormGroup row>
+                    <Label for="notificationTypeId" className="form-label required" sm={2}>Notification Type</Label>
+                    <Col sm={10}>
+                        <Input type="select"
+                            invalid={touched.notificationTypeId && errors.notificationTypeId}
+                            name="notificationTypeId"
+                            onChange={handleChange}
+                            value={values.notificationTypeId}
+                        >
+                            <option value="" />
+                            {this.props.notificationTypes.map(this.renderNotificationTypeOption)}
+                        </Input>
+                        {touched.notificationTypeId && errors.notificationTypeId && <FormFeedback>{errors.notificationTypeId}</FormFeedback>}
+                    </Col>
+
                 </FormGroup>
-                <FormGroup>
-                    <Label for="productId" className="form-label">Product</Label>
-                    <Input type="select"
-                        value={values.productId}
-                        name="productId"
-                        onChange={handleChange}
-                    >
-                        <option value="">{Labels.None}</option>
-                        {this.props.products.map(this.renderProductOption)}
-                    </Input>
+                <FormGroup row>
+                    <Label for="productId" className="form-label" sm={2}>Product</Label>
+
+                    <Col sm={10}>
+                        <Input type="select"
+                            value={values.productId}
+                            name="productId"
+                            onChange={handleChange}
+                        >
+                            <option value="">{Labels.None}</option>
+                            {this.props.products.map(this.renderProductOption)}
+                        </Input>
+                    </Col>
                 </FormGroup>
-                <FormGroup>
-                    <Label for="title" className="form-label required">Title</Label>
-                    <Input value={values.title} name="title"
-                        invalid={touched.title && errors.title}
-                        onChange={handleChange}
-                    />
-                    {touched.title && errors.title && <FormFeedback>{errors.title}</FormFeedback>}
+                <FormGroup row>
+                    <Label for="productId" className="form-label required" sm={2}>Recipients</Label>
+
+                    <Col sm={10}>
+                        <TreeSelect value={values.recipients} onChange={value => setFieldValue("recipients", value)}
+                            invalid={touched.recipients && errors.recipients}
+                        />
+                        {touched.recipients && errors.recipients && <FormFeedback>{errors.recipients}</FormFeedback>}
+                    </Col>
                 </FormGroup>
-                <FormGroup>
-                    <Label for="content" className="form-label required">Content</Label>
-                    <Input type="textarea" value={values.content} name="content"
-                        onChange={handleChange} invalid={touched.content && errors.content}
-                    />
-                    {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
+                <FormGroup row>
+                    <Label for="title" className="form-label required" sm={2}>Title</Label>
+                    <Col sm={10}>
+                        <Input value={values.title} name="title"
+                            invalid={touched.title && errors.title}
+                            onChange={handleChange}
+                        />
+                        {touched.title && errors.title && <FormFeedback>{errors.title}</FormFeedback>}
+                    </Col>
                 </FormGroup>
-                <FormGroup>
-                    <Label for="sendMode" className="form-label required">Send Date/Time</Label>
-                    <div>
+                <FormGroup row>
+                    <Label for="content" className="form-label required" sm={2}>Content</Label>
+
+                    <Col sm={10}>
+                        <Input type="textarea" value={values.content} name="content"
+                            onChange={handleChange} invalid={touched.content && errors.content}
+                        />
+                        {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
+                    </Col>
+                </FormGroup>
+                <FormGroup row>
+                    <Label for="sendMode" className="form-label required" sm={2}>Send Date/Time</Label>
+                    <Col sm={10}>
                         <Input type='select'
                             value={values.sendMode}
                             name="sendMode"
@@ -272,7 +292,7 @@ export class AppContainer extends React.Component {
                             onChange={value => setFieldValue('sendDate', value)}
                         />
                         <span>(GMT +8)</span>
-                    </div>
+                    </Col>
 
                 </FormGroup>
 
@@ -294,6 +314,7 @@ export class AppContainer extends React.Component {
                         initialValues={{
                             notificationTypeId: '',
                             productId: '',
+                            recipients: [],
                             title: '',
                             content: '',
                             sendDate: new Date(),

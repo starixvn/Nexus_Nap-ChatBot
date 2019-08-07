@@ -47,7 +47,6 @@
 }
 
 .invalid-feedback {
-    grid-column-start: 2;    
     padding-top: 8px;
     font-size: $font-size;
     color: #ff0101;
@@ -66,7 +65,7 @@
     display: flex;
     align-items: center;
     margin-bottom: 15px;
-    
+
     .form-group {
         display: flex;
         align-items: center;
