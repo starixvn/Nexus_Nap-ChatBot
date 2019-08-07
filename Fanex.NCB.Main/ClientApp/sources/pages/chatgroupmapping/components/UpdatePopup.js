@@ -147,7 +147,7 @@ export class UpdatePopup extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label required">{Labels.ChatGroupType}</Label>
-                            <SelectField value={editingItem.chatGroupTypeId.value}
+                            <SelectField initialValue={editingItem.chatGroupTypeId.value}
                                 data={this.props.settingData.chatGroupTypes}
                                 isSummited={this.state.isSummited}
                                 onChange={chatGroupTypeId => { this.onChange('chatGroupTypeId', chatGroupTypeId); }}
@@ -155,7 +155,7 @@ export class UpdatePopup extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label required">{Labels.RecipientType}</Label>
-                            <SelectField value={editingItem.recipientTypeId.value}
+                            <SelectField initialValue={editingItem.recipientTypeId.value}
                                 data={this.props.settingData.recipientTypes}
                                 isSummited={this.state.isSummited}
                                 onChange={recipientTypeId => {
