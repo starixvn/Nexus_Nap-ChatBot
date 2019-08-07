@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
     using System.Text;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
@@ -25,22 +24,14 @@
             this.botSettings = botSettings;
         }
 
-        public async Task SendMessageToMultitpleAsync(IEnumerable<ProactiveMessage> proactiveMessages)
+        public async Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<ProactiveMessage> proactiveMessages)
         {
-            if (proactiveMessages.Any())
-            {
-                webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
+            webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
 
-                var request = new RestRequest(botSettings.Value.BotServiceUrl, Method.POST);
-                request.AddJsonBody(proactiveMessages);
+            var request = new RestRequest(botSettings.Value.BotServiceUrl, Method.POST);
+            request.AddJsonBody(proactiveMessages);
 
-                var response = await webClient.ExecutePostTaskAsync(request).ConfigureAwait(false);
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    await OnSendMessageSuccess(response.Content);
-                }
-            }
+            return await webClient.ExecutePostTaskAsync(request).ConfigureAwait(false);
         }
 
         private async Task OnSendMessageSuccess(string json)
