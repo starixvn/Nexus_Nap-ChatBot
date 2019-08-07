@@ -55,28 +55,32 @@ export class DataGrid extends Component {
     buildBody = (data, pageIndex, pageSize, isHost) => {
         const rows = [];
         const startIndex = (pageIndex - 1) * pageSize + 1;
-        data.map((item, index) => {
-            rows.push(<Row key={`body${index}`} >
-                <Cell className="text-center">{index + startIndex}</Cell>
-                <Cell>{item.botName}</Cell>
-                <Cell>{item.groupName}</Cell>
-                <Cell>{item.chatGroupTypeName}</Cell>
-                <Cell>{item.recipientTypeName}</Cell>
-                <Cell>{item.recipientNames}</Cell>
-                <Cell>{this.getLicenseeStatus(item)}</Cell>
-                <Cell><span className={CommonFunctions.getMappingClass(item.mappingStatusID)}>{item.mappingStatusName}</span></Cell>
-                <Cell>{item.remark}</Cell>
-                {
-                    isHost &&
-                    <Cell className="text-center col-action">
-                        <div>
-                            <span className={this.getEditClassNames(item)} id={'edit-' + index} onClick={() => this.openEditPopup(item)} />
-                        </div>
-                    </Cell>
-                }
+        if (data.length > 0) {
+            data.map((item, index) => {
+                rows.push(<Row key={`body${index}`} >
+                    <Cell className="text-center">{index + startIndex}</Cell>
+                    <Cell>{item.botName}</Cell>
+                    <Cell>{item.groupName}</Cell>
+                    <Cell>{item.chatGroupTypeName}</Cell>
+                    <Cell>{item.recipientTypeName}</Cell>
+                    <Cell>{item.recipientNames}</Cell>
+                    <Cell>{this.getLicenseeStatus(item)}</Cell>
+                    <Cell><span className={CommonFunctions.getMappingClass(item.mappingStatusID)}>{item.mappingStatusName}</span></Cell>
+                    <Cell>{item.remark}</Cell>
+                    {
+                        isHost &&
+                        <Cell className="text-center col-action">
+                            <div>
+                                <span className={this.getEditClassNames(item)} id={'edit-' + index} onClick={() => this.openEditPopup(item)} />
+                            </div>
+                        </Cell>
+                    }
 
-            </Row>);
-        });
+                </Row>);
+            });
+        } else {
+            rows.push(<Row key={`body${1}`} ><Cell colSpan="10"><NoDataTitle /></Cell></Row >);
+        }
 
         return rows;
     }
@@ -95,10 +99,6 @@ export class DataGrid extends Component {
             TotalItem: count,
             PageList: PAGING_SIZES
         };
-
-        if (data.length === 0) {
-            return <NoDataTitle />;
-        }
 
         return (
             <div className="table-container-div">

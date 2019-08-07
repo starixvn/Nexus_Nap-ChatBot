@@ -16,6 +16,10 @@ export const getSettings = () => {
     return dispatch => {
         axios.get(url).then(response => {
             dispatch(setSettings(response.data));
+            const submitButton = document.getElementById('submit-button');
+            if (submitButton) {
+                submitButton.click();
+            };
         }).catch(() => { errorResponseHandler(); });
     };
 };

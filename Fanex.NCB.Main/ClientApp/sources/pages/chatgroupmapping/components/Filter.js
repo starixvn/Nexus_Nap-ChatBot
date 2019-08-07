@@ -135,7 +135,7 @@ export class Filter extends Component {
 
     render() {
         return (
-            <Form className="form-filter">
+            <Form className="form-filter" >
                 <FormGroup>
                     <Label className="form-label">{Labels.RecipientType}</Label>
                     <MultipleSelectField
@@ -209,7 +209,7 @@ export class Filter extends Component {
                         onChange={value => this.onChange('botIds', value)}
                     />
                 </FormGroup>
-                <button disabled={!this.checkValidParams()} className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
+                <button id="submit-button" disabled={!this.checkValidParams()} className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
             </Form>
         );
     }

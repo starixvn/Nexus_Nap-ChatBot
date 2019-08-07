@@ -113,7 +113,7 @@
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=NewNotification}/{action=Index}/{id?}");
+                    template: "{controller=Auth}/{action=Index}");
             });
 
             NapClientManager

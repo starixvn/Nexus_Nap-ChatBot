@@ -6,7 +6,6 @@ import { ActionCreators } from '../actions/index';
 import { SelectField } from '../../common/SelectField';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
 import CommonFunctions from '../../common/CommonFunctions';
-
 import Labels from '../../common/Labels';
 import { ResponseMessage } from '../../common/response-message/ResponseMessage';
 import { TextField } from '../../common/text-field/TextField';
@@ -148,7 +147,7 @@ export class UpdatePopup extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label required">{Labels.ChatGroupType}</Label>
-                            <SelectField initialValue={editingItem.chatGroupTypeId.value}
+                            <SelectField value={editingItem.chatGroupTypeId.value}
                                 data={this.props.settingData.chatGroupTypes}
                                 isSummited={this.state.isSummited}
                                 onChange={chatGroupTypeId => { this.onChange('chatGroupTypeId', chatGroupTypeId); }}
@@ -156,7 +155,7 @@ export class UpdatePopup extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label required">{Labels.RecipientType}</Label>
-                            <SelectField initialValue={editingItem.recipientTypeId.value}
+                            <SelectField value={editingItem.recipientTypeId.value}
                                 data={this.props.settingData.recipientTypes}
                                 isSummited={this.state.isSummited}
                                 onChange={recipientTypeId => {
