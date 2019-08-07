@@ -40,7 +40,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
                 RecipientIds = model.RecipientIds,
                 Title = model.Title,
                 Content = model.Content,
-                SenDate = model.SendDate,
+                SendDate = model.SendDate,
                 SendImmediately = model.SendImmediately,
                 CreatorId = napSession.UserId
             }).ConfigureAwait(false);

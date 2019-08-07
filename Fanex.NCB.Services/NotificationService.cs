@@ -28,7 +28,7 @@
                 RecipientIDLst = model.RecipientIds,
                 Title = model.Title,
                 Content = model.Content,
-                ConfigSendTime = model.SenDate,
+                ConfigSendTime = model.SendDate,
                 SendImmediately = model.SendImmediately,
                 CreatorId = model.CreatorId
             }).ConfigureAwait(false);
