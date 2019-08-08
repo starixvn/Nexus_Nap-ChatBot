@@ -1,4 +1,4 @@
-﻿import './AppContainer.scss';
+﻿
 
 import React from 'react';
 import { connect } from 'react-redux';
@@ -17,6 +17,7 @@ import { TemplateTextField } from '../../../common/template-text-field/TemplateT
 import Labels from '../../../common/Labels';
 import errorResponseHandler from '../../../lib/errorResponseHandler';
 import Site from '../../../lib/site';
+import './AppContainer.scss';
 
 const SendModeOptions = [
     {
@@ -308,7 +309,7 @@ export class AppContainer extends React.Component {
                     <Label for="content" className="form-label required" sm={2}>Content</Label>
 
                     <Col sm={10}>
-                        <Input type="textarea" value={values.content} name="content"
+                        <Input className="notification-content" type="textarea" value={values.content} name="content"
                             onChange={handleChange} invalid={touched.content && errors.content}
                         />
                         {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
@@ -317,19 +318,23 @@ export class AppContainer extends React.Component {
                 <FormGroup row>
                     <Label for="sendMode" className="form-label required" sm={2}>Send Date/Time</Label>
                     <Col sm={10}>
-                        <Input type='select'
-                            value={values.sendMode}
-                            name="sendMode"
-                            onChange={handleChange}
-                        >
-                            {SendModeOptions.map(this.renderSendModeOption)}
-                        </Input>
-                        <DatePicker selected={values.sendDate} showTimeSelect disabled={values.sendMode === '1'}
-                            onChange={value => setFieldValue('sendDate', value)}
-                            invalid={touched.sendDate && errors.sendDate}
-                        />
-                        <span>(GMT +8)</span>
-                        {touched.sendDate && errors.sendDate && <FormFeedback>{errors.sendDate}</FormFeedback>}
+                        <div className="send-date-area">
+                            <Input type='select'
+                                value={values.sendMode}
+                                name="sendMode"
+                                onChange={handleChange}
+                            >
+                                {SendModeOptions.map(this.renderSendModeOption)}
+                            </Input>
+                            <DatePicker selected={values.sendDate} showTimeSelect disabled={values.sendMode === '1'}
+                                onChange={value => setFieldValue('sendDate', value)}
+                                invalid={touched.sendDate && errors.sendDate}
+                            />
+                            <span>(GMT +8)</span>
+                            {touched.sendDate && errors.sendDate && <FormFeedback>{errors.sendDate}</FormFeedback>}
+                        </div>
+                        
+                       
                     </Col>
 
                 </FormGroup>

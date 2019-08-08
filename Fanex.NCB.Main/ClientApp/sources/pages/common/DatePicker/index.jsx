@@ -8,7 +8,7 @@ export default function DatePickerHOC(props) {
         <DatePicker
             className={`form-control datetime-picker ${props.invalid && 'is-invalid'}`}
             dateFormat={props.showTimeSelect ? 'MM/dd/yyyy hh:mm aa' : 'MM/dd/yyyy'}
-            timeFormat="HH:mm"
+            timeFormat="hh:mm aa"
             timeIntervals={5}
             {...props}
         />

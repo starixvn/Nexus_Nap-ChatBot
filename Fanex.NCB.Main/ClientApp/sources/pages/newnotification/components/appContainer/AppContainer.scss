@@ -12,12 +12,17 @@
         width: 540px;
     }
 
-    .content {
+    .notification-content {
         height: 260px;
+    }
+
+    &.row {
+        margin-left: 0;
+        margin-right: 0;
     }
 }
 
-.row-has-actions {
+/*.row-has-actions {
     display: grid;
     grid-template-columns: 685px 160px 1fr;
     grid-template-rows: 1fr;
@@ -112,18 +117,24 @@
     }
 }
 
+*/
 .send-date-area {
     display: grid;
-    grid-template-columns: 293px 1fr;
+    grid-template-columns: 293px 212px 1fr;
     grid-gap: 15px;
-    align-items: flex-start;
+    align-items: center;
 
-    .calendar {
+    .react-datepicker__input-container {
+        display: block !important;
+        margin-right: 0 !important;
+    }
+
+    .react-datepicker__input-container {
         position: relative;
         display: inline-block;
         margin-right: 15px;
 
-        &:before {
+        &:after {
             position: absolute;
             right: 8px;
             top: 6px;
@@ -132,32 +143,21 @@
             font-size: 15px;
             color: #798388;
         }
-    }
 
-    .date-time {
-        width: 212px;
-    }
-
-    .form-group {
-        margin-bottom: 0;
-    }
-}
-
-.content {
-    .btn-submit {
-        float: right;
-    }
-
-    .btn-cancel {
-        float: right;
-        margin-right: 10px;
+        .form-control {
+            padding-right: 16px;
+        }
     }
 }
 
 .new-notification-form {
     width: 1000px;
 
-    .icon-edit {
+    .btn-submit {
+        float: left;
+    }
+} 
+    /*.icon-edit {
         display: inline-block;
         float: right;
         padding-right: 10px;
@@ -206,4 +206,4 @@
             vertical-align: top;
         }
     }
-}
+}*/
