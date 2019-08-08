@@ -50,7 +50,7 @@ export class AppContainer extends React.Component {
                     finalTemplate: ''
                 },
                 params: []
-            }
+            },
         };
     }
 
@@ -200,6 +200,19 @@ export class AppContainer extends React.Component {
         console.log(value);
     }
 
+    getRecipientIds = (ids, collection) => {
+        for (let i = 0; i < collection.length; i++) {
+            const item = collection[i];
+            if (item.children && item.children.length > 0) {
+                this.getRecipientIds(ids, item.children);
+            } else {
+                ids.push(item.node.props.realValue);
+            }
+        }
+
+        return ids.toString();
+    }
+
     schema = Yup.object().shape({
         notificationTypeId: Yup.string().required(Labels.FieldRequired),
         title: Yup.string().required(Labels.FieldRequired),
@@ -223,7 +236,7 @@ export class AppContainer extends React.Component {
                 __RequestVerificationToken: document.getElementsByName('__RequestVerificationToken')[0].value,
                 notificationTypeId: values.notificationTypeId,
                 productId: values.productId,
-                recipientIds: '1,2,3',
+                recipientIds: this.getRecipientIds([], this.selectedNodes),
                 title: values.title,
                 content: values.content,
                 sendDate: values.sendMode === '1' ? new Date().toLocaleString('en', { timeZone: 'Asia/Shanghai' }) : values.sendDate,
@@ -235,13 +248,38 @@ export class AppContainer extends React.Component {
             }
         }).then(response => {
             if (data.isSuccessful) {
-                window.alert('123');
+                window.alert('success');
             } else {
                 //toast.error(data.message);
             }
 
             setSubmitting(false);
         }).catch(errorResponseHandler);
+    }
+
+    handleNotificationTypeChange = (event) => {
+        const formik = this.refs.form;
+        this.props.getRecipients(event.target.value, formik.state.values.productId);
+        formik.handleChange(event);
+        if (formik.state.values.recipients.length > 0) {
+            formik.setFieldValue('recipients', []);
+        }
+    }
+
+    handleProductChange = (event) => {
+        const formik = this.refs.form;
+        this.props.getRecipients(formik.state.values.notificationTypeId, event.target.value);
+        formik.handleChange(event);
+        if (formik.state.values.recipients.length > 0) {
+            formik.setFieldValue('recipients', []);
+        }
+    }
+
+    handleRecipientChange = (value, label, extra) => {
+        const formik = this.refs.form;
+        this.selectedNodes = extra.allCheckedNodes;
+        formik.setFieldValue('recipients', value);
+        console.log(this.getRecipientIds([], this.selectedNodes));
     }
 
     renderForm = ({
@@ -261,7 +299,7 @@ export class AppContainer extends React.Component {
                         <Input type="select"
                             invalid={touched.notificationTypeId && errors.notificationTypeId}
                             name="notificationTypeId"
-                            onChange={handleChange}
+                            onChange={this.handleNotificationTypeChange}
                             value={values.notificationTypeId}
                         >
                             <option value="" />
@@ -278,7 +316,7 @@ export class AppContainer extends React.Component {
                         <Input type="select"
                             value={values.productId}
                             name="productId"
-                            onChange={handleChange}
+                            onChange={this.handleProductChange}
                         >
                             <option value="">{Labels.None}</option>
                             {this.props.products.map(this.renderProductOption)}
@@ -289,8 +327,8 @@ export class AppContainer extends React.Component {
                     <Label for="productId" className="form-label required" sm={2}>Recipients</Label>
 
                     <Col sm={10}>
-                        <TreeSelect value={values.recipients} onChange={value => setFieldValue("recipients", value)}
-                            invalid={touched.recipients && errors.recipients}
+                        <TreeSelect value={values.recipients} onChange={this.handleRecipientChange}
+                            invalid={touched.recipients && errors.recipients} treeData={this.props.recipientOptions}
                         />
                         {touched.recipients && errors.recipients && <FormFeedback>{errors.recipients}</FormFeedback>}
                     </Col>
@@ -353,7 +391,7 @@ export class AppContainer extends React.Component {
             <div>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="New Notification" />
                 <div className="content form new-notification-form">
-                    <Formik
+                    <Formik ref="form"
                         initialValues={{
                             notificationTypeId: '',
                             productId: '',
@@ -379,7 +417,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispat
 const mapStateToProps = state => {
     return {
         notificationTypes: state.notificationTypes,
-        products: state.products
+        products: state.products,
+        recipientOptions: state.recipients
     };
 };
 

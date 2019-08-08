@@ -8,7 +8,6 @@ export default React.memo(function (props) {
     return (
         <TreeSelect
             className={`form-control ${props.invalid && 'is-invalid'}`}
-            treeData={data}
             treeCheckable
             labelInValue
             showCheckedStrategy={SHOW_PARENT}

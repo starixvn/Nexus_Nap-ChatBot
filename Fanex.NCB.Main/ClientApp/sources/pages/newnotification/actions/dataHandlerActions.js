@@ -118,6 +118,27 @@ export const getProducts = () => {
     };
 };
 
+// Recipient
+export const setRecipients = data => {
+    return {
+        type: types.RECIPIENT_DATA,
+        data: data
+    };
+};
+
+export const getRecipients = (notificationTypeId, productId) => {
+    const url = Site.resolveClientUrl('NewNotification/GetRecipients');
+    return dispatch => {
+        axios.get(url, {
+            params: { notificationTypeId, productId }
+        }).then(response => {
+            dispatch(setRecipients(response.data));
+        }).catch(() => {
+            errorResponseHandler();
+        });
+    };
+};
+
 const actions = {
     setSettings,
     getSettings,
@@ -128,7 +149,9 @@ const actions = {
     setTemplate,
     getTemplate,
     setProducts,
-    getProducts
+    getProducts,
+    setRecipients,
+    getRecipients
 };
 
 export default actions;

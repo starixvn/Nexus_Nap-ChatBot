@@ -5,9 +5,7 @@
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
-    using System;
     using System.Collections.Generic;
-    using System.Text;
     using System.Threading.Tasks;
 
     public class NotificationService : INotificationService
@@ -31,6 +29,15 @@
                 ConfigSendTime = model.SendDate,
                 SendImmediately = model.SendImmediately,
                 CreatorId = model.CreatorId
+            }).ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<Recipient>> GetRecipientsAsync(int notificationTypeId, int? productId)
+        {
+            return await baseService.GetDataAsync<Recipient>(new GetRecipientsCriteria
+            {
+                NotificationTypeId = notificationTypeId,
+                ProductId = productId,
             }).ConfigureAwait(false);
         }
     }
