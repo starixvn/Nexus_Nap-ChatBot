@@ -100,7 +100,7 @@ $colorBorderPaging: #d1dae1;
         }
     }
     .disable {
-        color: $colorDisabledPgButton;
+        color: $colorDisabledPgButton !important;
         background: #eceff1;
         cursor: default;
         pointer-events: none;
