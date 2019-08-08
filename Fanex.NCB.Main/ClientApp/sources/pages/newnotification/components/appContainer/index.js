@@ -3,6 +3,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Form, FormGroup, Label, Button, Container, Row, Col, Input, FormFeedback } from 'reactstrap';
+import axios from 'axios';
+import { stringify } from 'qs';
+
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { NCBBreadcrum } from '../../../common/breadcrumbs';
@@ -12,6 +15,8 @@ import TreeSelect from '../../../common/TreeSelect/index';
 import DatePicker from '../../../common/DatePicker/index';
 import { TemplateTextField } from '../../../common/template-text-field/TemplateTextField';
 import Labels from '../../../common/Labels';
+import errorResponseHandler from '../../../lib/errorResponseHandler';
+import Site from '../../../lib/site';
 
 const SendModeOptions = [
     {
@@ -198,7 +203,9 @@ export class AppContainer extends React.Component {
         notificationTypeId: Yup.string().required(Labels.FieldRequired),
         title: Yup.string().required(Labels.FieldRequired),
         content: Yup.string().required(Labels.FieldRequired),
-        recipients: Yup.array().required(Labels.FieldRequired)
+        recipients: Yup.array().required(Labels.FieldRequired),
+        sendMode: Yup.string(),
+        sendDate: Yup.date().when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired) : schema)
     })
 
     renderNotificationTypeOption = (item) => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>
@@ -206,6 +213,35 @@ export class AppContainer extends React.Component {
     renderProductOption = (item) => <option key={item.id} value={item.id} >{item.name}</option>
 
     renderSendModeOption = item => <option key={item.value} value={item.value} >{item.label}</option>
+
+    handleSubmit = (values, { setErrors, setSubmitting }) => {
+        axios({
+            url: Site.resolveClientUrl('NewNotification/Create'),
+            method: 'post',
+            data: stringify({
+                __RequestVerificationToken: document.getElementsByName('__RequestVerificationToken')[0].value,
+                notificationTypeId: values.notificationTypeId,
+                productId: values.productId,
+                recipientIds: '1,2,3',
+                title: values.title,
+                content: values.content,
+                sendDate: values.sendMode === '1' ? new Date().toLocaleString('en', { timeZone: 'Asia/Shanghai' }) : values.sendDate,
+                sendImmediately: values.sendMode === '1'
+            }),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        }).then(response => {
+            if (data.isSuccessful) {
+                window.alert('123');
+            } else {
+                //toast.error(data.message);
+            }
+
+            setSubmitting(false);
+        }).catch(errorResponseHandler);
+    }
 
     renderForm = ({
         values,
@@ -290,8 +326,10 @@ export class AppContainer extends React.Component {
                         </Input>
                         <DatePicker selected={values.sendDate} showTimeSelect disabled={values.sendMode === '1'}
                             onChange={value => setFieldValue('sendDate', value)}
+                            invalid={touched.sendDate && errors.sendDate}
                         />
                         <span>(GMT +8)</span>
+                        {touched.sendDate && errors.sendDate && <FormFeedback>{errors.sendDate}</FormFeedback>}
                     </Col>
 
                 </FormGroup>

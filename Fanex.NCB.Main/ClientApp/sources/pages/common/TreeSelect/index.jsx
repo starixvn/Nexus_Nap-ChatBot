@@ -12,7 +12,7 @@ export default React.memo(function (props) {
             treeCheckable
             labelInValue
             showCheckedStrategy={SHOW_PARENT}
-            treeNodeFilterProp="label"
+            treeNodeFilterProp="title"
             {...props}
         />
     );
