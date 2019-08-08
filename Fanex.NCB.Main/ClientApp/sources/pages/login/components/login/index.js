@@ -12,8 +12,9 @@ class Login extends Component {
         super(props);
         this.state = {
             password: '',
-            invalidLogin: AppData.invalidLogin
+            invalidLogin: AppData.invalidLogin,
         };
+        this.token = document.getElementsByName('__RequestVerificationToken')[0].value;
     }
 
     handleChangePassword = event => {
@@ -37,6 +38,7 @@ class Login extends Component {
         return (
             <div className="login-container">
                 <form ref="form" method="post" action={Site.resolveClientUrl(`auth/SignIn${location.search}`)} className="form-login" onSubmit={this.handleSubmit}>
+                    <input name="__RequestVerificationToken" type="hidden" value={this.token} />
                     <a className="logo" href="#"><img src={Site.resolveClientUrl('images/Logo.svg')} alt="Nap Chatbot" /></a>
                     <h1 className="header">Welcome to CHATBOT</h1>
                     {

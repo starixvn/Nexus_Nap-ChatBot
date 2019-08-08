@@ -26,7 +26,7 @@
 <body>
     <div id="login"></div>
     <input type="hidden" id="root-url" value="@Url.Content("~/")" />
-
+    @Html.AntiForgeryToken()
     <script>
         window._AppData = {
             invalidLogin: @Html.Raw(JsonConvert.SerializeObject(invalidLogin))
