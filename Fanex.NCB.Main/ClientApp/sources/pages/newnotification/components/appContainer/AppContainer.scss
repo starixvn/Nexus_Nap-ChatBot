@@ -153,6 +153,10 @@
 .new-notification-form {
     width: 1000px;
 
+    .list-buttons {
+        margin-left: 18px;
+    }
+
     .btn-submit {
         float: left;
     }

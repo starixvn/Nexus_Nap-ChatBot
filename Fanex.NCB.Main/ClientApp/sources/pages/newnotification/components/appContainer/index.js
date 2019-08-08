@@ -332,14 +332,14 @@ export class AppContainer extends React.Component {
                             />
                             <span>(GMT +8)</span>
                             {touched.sendDate && errors.sendDate && <FormFeedback>{errors.sendDate}</FormFeedback>}
-                        </div>
-                        
-                       
+                        </div>                       
                     </Col>
 
                 </FormGroup>
-
-                <Button className="btn-submit" disabled={isSubmitting}>Save</Button>
+                <FormGroup row className="list-buttons">
+                    <Button className="btn-submit offset-sm-2" disabled={isSubmitting}>Save</Button>
+                </FormGroup>
+                
             </Form >
         );
     }
