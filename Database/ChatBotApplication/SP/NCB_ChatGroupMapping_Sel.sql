@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_ChatGroupMapping_Sel;
 
-CREATE PROCEDURE `NCB_ChatGroupMapping_Sel`(
+CREATE PROCEDURE NCB_ChatGroupMapping_Sel (
 		IN botIDs VARCHAR(500) ,
         IN recipientTypeIds VARCHAR(1000),
         IN recipientName VARCHAR(100),
@@ -154,7 +154,6 @@ BEGIN
 	) tmp ON GroupBot.ConversationGroupID = tmp.ConversationGroupID
 	AND GroupBot.CreatedTime = tmp. MaxTime;
 
-        
 	-- Get all BotConversation IDs that satisfy filtering conditions
     DROP TEMPORARY TABLE IF EXISTS tmp_AllBotConversation;
     CREATE TEMPORARY TABLE tmp_AllBotConversation
@@ -166,9 +165,13 @@ BEGIN
                 , grpinfo.Remark
                 , rt.RecipientTypeName
                 , CASE 
-						WHEN r.RecipientName IS NOT NULL  AND grpinfo.ChatGroupTypeID IS NOT NULL THEN 1
-                        ELSE 0
-					END IsMapped
+							WHEN FirstBot.ConversationBotID IS NULL 
+								THEN MAPPING_STATUS_BOT_REMOVED
+							 WHEN r.RecipientName IS NULL  OR  grpinfo.ChatGroupTypeID IS NULL 
+								THEN MAPPING_STATUS_NOT_MAPPED
+							WHEN r.RecipientName IS NOT NULL  AND grpinfo.ChatGroupTypeID IS NOT NULL 
+								THEN MAPPING_STATUS_MAPPED
+					END MappingStatusCode
 				, bot.Name BotName
                 , bot.ConversationBotID BotMemberID
                 , r.RecipientTypeID
@@ -180,7 +183,7 @@ BEGIN
     LEFT JOIN ConversationGroupRecipient bcr ON cgrp.ConversationGroupID = bcr.ConversationGroupID
     LEFT JOIN Recipient r ON bcr.RecipientId = r.RecipientId
     LEFT JOIN RecipientType rt ON r.RecipientTypeID = rt.RecipientTypeID
-    WHERE bot.ConversationBotID IN (SELECT tbn.BotID FROM tmp_BotIDs tbn)
+    WHERE (FirstBot.ConversationBotID IS NULL  OR bot.ConversationBotID IN (SELECT tbn.BotID FROM tmp_BotIDs tbn))
 		AND IFNULL(cgrp.Name,'') <>  ''
 		AND EXISTS (
 			SELECT 1 
@@ -215,7 +218,7 @@ BEGIN
         tmp.Remark, 
         tmp.RecipientTypeID, 
         tmp.RecipientTypeName,
-		tmp.IsMapped,
+		tmp.MappingStatusCode,
         tmp.BotName,
         tmp.BotMemberID
 	FROM tmp_AllBotConversation tmp
@@ -236,7 +239,7 @@ BEGIN
         tmp.Remark, 
         tmp.RecipientTypeID, 
         tmp.RecipientTypeName,
-		tmp.IsMapped
+		tmp.MappingStatusCode
 	FROM tmp_PagedBotConversation tmp
     ORDER BY tmp.GroupName;
     

@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_NewNotification_Recipient_Sel;
 
-CREATE PROCEDURE  NCB_NewNotification_Recipient_Sel(
+CREATE  PROCEDURE NCB_NewNotification_Recipient_Sel (
 	IN notificationTypeID SMALLINT
 	,IN productID SMALLINT
     /*
@@ -40,16 +40,16 @@ BEGIN
                     , r.RecipientName
                     , r.SourceID
     FROM Recipient r
-		INNER JOIN BotConversationRecipient bcr
+		INNER JOIN ConversationGroupRecipient bcr
 				ON bcr.RecipientID = r.RecipientID
-		INNER JOIN BotConversationExtraInfo bcri
-				ON bcri.BotConversationID = bcr.BotConversationID
-		INNER JOIN BotConversation con
-				ON con.ID = bcr.BotConversationID
-		INNER JOIN BotConversationMember bot
-				ON bot.ConversationID = con.ConversationID
-					AND bot.IsBot = 1
-                    AND bot.IsActive = 1
+		INNER JOIN ConversationGroupExtraInfo bcri
+				ON bcri.ConversationGroupID = bcr.ConversationGroupID
+		INNER JOIN ConversationGroup con
+				ON con.ConversationGroupID = bcr.ConversationGroupID
+		INNER JOIN ConversationGroupBot cgb
+				ON cgb.ConversationGroupID = bcr.ConversationGroupID
+		INNER JOIN ConversationBot bot
+				ON bot.ConversationBotID = cgb.ConversationBotID
     WHERE bcri.ChatGroupTypeID IS NOT NULL
 		AND r.RecipientTypeID IN (
 							SELECT nrt.RecipientTypeID 
@@ -87,23 +87,27 @@ BEGIN
         WHERE lp.LaunchDate IS NULL
 					OR (
 								 lp.LaunchDate IS NOT NULL 
-								AND GMTPlus4Now <  lp.LaunchDate
+								AND nowGMTMinus4 <  lp.LaunchDate
 							)
 					OR (
 								lp.TerminationDate IS NOT NULL 
-								AND GMTPlus4Now  > lp.TerminationDate
+								AND nowGMTMinus4  > lp.TerminationDate
 							);
     END IF;
     
     SELECT r.RecipientTypeID
-					,CASE 
-							WHEN r.RecipientTypeID = RECIPIENT_TYPE_LICENSEES
-									THEN 'All Licensees' 
-							ELSE 'All 3rd Parties' 
-					END  RecipientTypeName
+					,rt.RecipientTypeName
+                    , lt.LicenseeTypeId, lt.LicenseeTypeName
 					, r.RecipientID, r.RecipientName
     FROM tmp_recipientLst r
-    ORDER BY RecipientTypeID, RecipientName;
+    INNER JOIN RecipientType rt
+			ON rt.RecipientTypeID = r.RecipientTypeID
+    LEFT JOIN Licensee lic 
+			ON r.RecipientTypeID = RECIPIENT_TYPE_LICENSEES
+				AND lic.LicenseeId = r.SourceID
+	LEFT JOIN LicenseeType lt
+			ON lt.LicenseeTypeId = lic.LicenseeTypeId
+    ORDER BY RecipientTypeID,  lt.LicenseeTypeName, RecipientName;
     
     #Drop Unused temporary tables
      DROP TEMPORARY TABLE IF EXISTS tmp_recipientLst;
