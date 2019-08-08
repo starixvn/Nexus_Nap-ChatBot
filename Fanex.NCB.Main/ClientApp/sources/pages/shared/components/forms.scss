@@ -59,26 +59,25 @@
     }
 }
 
-// Filter
-
-.filter {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
+.form-filter {
+    .form-label {
+        margin-right: 5px;
+    }
 
     .form-group {
-        display: flex;
+        display: inline-block;
+        grid-template-columns: 112px 1fr;
+        grid-template-rows: 1fr;
         align-items: center;
-        margin-bottom: 0;
-        margin-right: 15px;
+        margin-bottom: 12px;
+        margin-right: 20px;
 
-        label {
-            margin-right: 10px;
-            white-space: nowrap;
+        .remark {
+            height: 90px;
         }
     }
 
-    .form-control {
-        min-width: 160px;
+    button[disabled] {
+        background-color: grey;
     }
 }

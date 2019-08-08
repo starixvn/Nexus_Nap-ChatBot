@@ -39,28 +39,6 @@
     width: 300px;
 }
 
-.form-filter {
-    .form-label {
-        margin-right: 5px;
-    }
-
-    .form-group {
-        display: inline-block;
-        grid-template-columns: 112px 1fr;
-        grid-template-rows: 1fr;
-        align-items: center;
-        margin-bottom: 12px;
-        margin-right: 20px;
-
-        .remark {
-            height: 90px;
-        }
-    }
-
-    button[disabled]{
-        background-color: grey;
-    }
-}
 
 .form-edit {
     .form-group {

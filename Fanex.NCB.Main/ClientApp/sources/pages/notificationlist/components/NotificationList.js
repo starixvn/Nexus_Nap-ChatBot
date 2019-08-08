@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { NCBBreadcrum } from '../../common/breadcrumbs';
+import { Form, FormGroup, Label, Button, Container, Row, Col, Input, FormFeedback } from 'reactstrap';
 import ErrorReport from './ErrorReport';
 
 import '../../shared/components/font.css';
@@ -29,7 +30,35 @@ class NotificationList extends Component {
   render() {
     return (
       <div>
-        <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification List" />
+            <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification List" />
+
+            <Form className="form-filter" >
+                <FormGroup>
+                    <Label className="form-label">Notification Type</Label>
+                    <Input type="select">
+                        <option value="" />
+                    </Input>
+                </FormGroup>
+                <FormGroup>
+                    <Label className="form-label">From</Label>
+                    <Input type="text" />
+                </FormGroup>
+                <FormGroup>
+                    <Label className="form-label">To</Label>
+                    <Input type="text" />
+                </FormGroup>
+                <FormGroup>
+                    <Label className="form-label">Sender</Label>
+                    <Input type="select">
+                        <option value="" />
+                    </Input>
+                </FormGroup>
+                <FormGroup>
+                    <Label className="form-label">Recipient</Label>
+                    <Input type="text" />
+                </FormGroup>
+                <button id="submit-button" className="btn-submit">Submit</button>
+            </Form>
         <table className="tbl w-100">
           <thead>
             <tr>
