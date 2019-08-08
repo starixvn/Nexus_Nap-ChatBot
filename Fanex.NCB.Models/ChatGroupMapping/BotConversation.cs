@@ -1,4 +1,6 @@
-﻿namespace Fanex.NCB.Model.ChatGroupMapping
+﻿using Fanex.NCB.Core.Enum;
+
+namespace Fanex.NCB.Model.ChatGroupMapping
 {
     public class BotConversation
     {
@@ -18,6 +20,14 @@
 
         public string RecipientTypeName { get; set; }
 
-        public bool IsMapped { get; set; }
+        public int MappingStatusCode { get; set; }
+
+        public MappingStatus MappingStatus
+        {
+            get
+            {
+                return (MappingStatus)MappingStatusCode;
+            }
+        }
     }
 }

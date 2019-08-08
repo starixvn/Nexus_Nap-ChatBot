@@ -12,18 +12,21 @@ $bgTotal: $bgSummaryTotal;
     line-height: 1.15;
     table-layout: fixed;
     border-collapse: collapse;
+
     a {
         color: $colorHyperlink;
         text-decoration: none;
+
         &:hover,
         &:focus,
         &:active {
             text-decoration: none;
         }
     }
-    >thead {
-        >tr {
-            >th {
+
+    > thead {
+        > tr {
+            > th {
                 vertical-align: middle;
                 text-align: center;
                 background: $bgHeaderTableLevel2;
@@ -33,16 +36,19 @@ $bgTotal: $bgSummaryTotal;
                 font-weight: bold;
                 padding: 4px 5px;
                 border-radius: 0;
+
                 &:first-child {
                     border-left-color: $colorBorderTable;
                 }
+
                 &:last-child {
                     border-right-color: $colorBorderTable;
                 }
             }
         }
     }
-    >tbody {
+
+    > tbody {
         tr {
             td {
                 border: 1px solid $colorBorderTable;
@@ -51,7 +57,7 @@ $bgTotal: $bgSummaryTotal;
                 background: $white;
                 vertical-align: middle;
             }
-            
+
             &.total td {
                 background: $bgTotal;
             }
@@ -62,7 +68,7 @@ $bgTotal: $bgSummaryTotal;
             }
 
             &:nth-child(2n) td {
-              background: #eceff1;
+                background: #eceff1;
             }
 
             &:hover td {
@@ -72,7 +78,6 @@ $bgTotal: $bgSummaryTotal;
     }
 }
 
-
 $colorLightGray: #ccc;
 $colorDisabledPgButton: #919394;
 $bgPaging: #EFF3F8;
@@ -80,9 +85,9 @@ $colorBorderPaging: #d1dae1;
 
 .page-container {
     padding-top: 8px;
-    
-    .icon {        
-        display: inline-block;        
+
+    .icon {
+        display: inline-block;
         font-style: normal;
         font-weight: normal;
         line-height: 1;
@@ -94,36 +99,39 @@ $colorBorderPaging: #d1dae1;
         &:focus {
             outline: none;
         }
+
         &:hover,
         &:focus {
             text-decoration: none;
         }
     }
+
     .disable {
         color: $colorDisabledPgButton !important;
         background: #eceff1;
         cursor: default;
         pointer-events: none;
     }
-    .page-first {    
+
+    .page-first {
         &:before {
             content: "\e097";
         }
     }
 
     .page-prev, .page-next {
-      padding: 0 10px;
-      font-family: 'nap-chatbot' !important;
-      font-size: 10px;
-      height: 27px;
-      line-height: 27px;
-      border: 1px solid #ced4da;
-      color: #373737;
-      vertical-align: middle;
+        padding: 0 10px;
+        font-family: 'nap-chatbot' !important;
+        font-size: 10px;
+        height: 27px;
+        line-height: 27px;
+        border: 1px solid #ced4da;
+        color: #373737;
+        vertical-align: middle;
 
-      &:hover {
-        background: rgba(6, 104, 150, .5);
-      }
+        &:hover {
+            background: rgba(6, 104, 150, .5);
+        }
     }
 
     .page-prev {
@@ -134,20 +142,23 @@ $colorBorderPaging: #d1dae1;
             content: "\e915";
         }
     }
-    .page-next {   
-      border-left: 0;
+
+    .page-next {
+        border-left: 0;
 
         &:before {
             content: "\e915";
         }
     }
+
     .page-last {
-      border-left: 0;
+        border-left: 0;
 
         &:before {
             content: "\e098";
         }
     }
+
     .page-form {
         width: auto;
         height: auto;
@@ -155,6 +166,7 @@ $colorBorderPaging: #d1dae1;
         padding: 2px;
         text-align: center;
         margin: 0;
+
         &,
         &:focus {
             background: #fff;
@@ -162,6 +174,7 @@ $colorBorderPaging: #d1dae1;
             box-shadow: none;
         }
     }
+
     .page-input {
         display: inline;
 
@@ -181,15 +194,16 @@ $colorBorderPaging: #d1dae1;
     }
 
     .pagesize-select {
-      display: inline-block;
-      height: 27px;
-      min-width: 65px;
-      margin: 0 8px;
-      padding: 2px;
-      font-size: inherit; 
-      border: 1px solid #ced4da;
-      vertical-align: middle;
+        display: inline-block;
+        height: 27px;
+        min-width: 65px;
+        margin: 0 8px;
+        padding: 2px;
+        font-size: inherit;
+        border: 1px solid #ced4da;
+        vertical-align: middle;
     }
+
     .page-info {
         float: right;
         padding: 3px;
@@ -207,13 +221,13 @@ $colorBorderPaging: #d1dae1;
             cursor: pointer;
 
             &:last-child {
-              border-right: 0;
+                border-right: 0;
             }
 
             &:hover {
-              background: rgba(6, 104, 150, .5);
+                background: rgba(6, 104, 150, .5);
             }
-        }       
+        }
 
         .active {
             background: #066896;
@@ -222,8 +236,8 @@ $colorBorderPaging: #d1dae1;
     }
 }
 
-
 $paddingRightContainer: 17px;
+
 .table-container {
     overflow-x: auto;
 }
@@ -232,8 +246,10 @@ $paddingRightContainer: 17px;
 .body-content,
 .footer-content {
     border: solid 1px $colorBorderTable;
+
     .table {
         border-right: 1px solid $colorBorderTable;
+
         td {
             &:first-child {
                 border-left: none;
@@ -259,13 +275,13 @@ $paddingRightContainer: 17px;
     position: relative;
 }
 
-.header-content,
 .footer-content {
     padding-right: $paddingRightContainer;
 }
 
 .first-row {
     height: auto;
+
     td {
         height: 0;
         border: none !important;
@@ -278,9 +294,11 @@ $paddingRightContainer: 17px;
     overflow-y: auto;
     overflow-x: auto;
     border-top: none;
+
     &.hasScroll {
         padding-right: 0;
     }
+
     tr:last-child {
         td {
             border-bottom: none;
@@ -290,11 +308,13 @@ $paddingRightContainer: 17px;
 
 .header-content {
     border-bottom: none;
-    .table>thead>tr {
-        >th {
+
+    .table > thead > tr {
+        > th {
             border: none;
             border-left: 1px solid $colorBorderTable;
         }
+
         &:nth-child(n + 3) {
             border-top: 1px solid $colorBorderTable;
         }
@@ -303,14 +323,17 @@ $paddingRightContainer: 17px;
 
 .footer-content {
     border-top: none;
+
     .table {
         font-weight: bold;
+
         .fixed-table- {
             &total {
                 td {
                     border-bottom: none;
                 }
             }
+
             &grant-total {
                 td {
                     background: rgb(184, 195, 201);

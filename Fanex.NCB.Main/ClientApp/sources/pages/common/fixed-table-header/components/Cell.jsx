@@ -24,7 +24,7 @@ class Cell extends Component {
     }
 
     renderSorting(sorting, asc) {
-        return <span className={`${sorting ? (asc ? 'asc' : 'desc') : ''}`}></span>;
+        return <span className={`${sorting ? (asc ? 'asc' : 'desc') : ''}`} />;
     }
 
     renderHeader(rest) {

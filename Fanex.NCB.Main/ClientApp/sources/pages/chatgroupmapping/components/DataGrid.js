@@ -4,7 +4,7 @@ import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import CommonFunctions from '../../common/CommonFunctions';
-import { PAGING_SIZES } from '../../constants/constants';
+import { PAGING_SIZES, mappingStatus } from '../../constants/constants';
 import Labels from '../../common/Labels';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';
 
@@ -58,10 +58,9 @@ export class DataGrid extends Component {
         const startIndex = (pageIndex - 1) * pageSize + 1;
         if (data.length > 0) {
             data.map((item, index) => {
-                console.log(item);
                 rows.push(<Row key={`body${index}`} >
                     <Cell className="text-center">{index + startIndex}</Cell>
-                    <Cell>{item.botName}</Cell>
+                    <Cell>{item.mappingStatusID === mappingStatus.BotRemoved ? '' : item.botName}</Cell>
                     <Cell title={item.conversationID}>{item.conversationID}</Cell>
                     <Cell>{item.groupName}</Cell>
                     <Cell>{item.chatGroupTypeName}</Cell>
@@ -106,7 +105,7 @@ export class DataGrid extends Component {
         return (
             <div className="table-container-div">
                 <Table
-                    width={1600}
+                    width={"100%"}
                     autoWidth={false}
                     header={this.buildHeader(isHost)}
                     body={this.buildBody(data, pageIndex, pageSize, isHost)}

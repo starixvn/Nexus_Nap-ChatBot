@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Criteria.ChatGroupMapping;
     using Fanex.NCB.Model.ChatGroupMapping;
@@ -61,7 +60,6 @@
             {
                 var member = members.FirstOrDefault(m => m.ConversationID == conversation.ConversationID);
                 var recipients = conversationRecipients.Where(r => r.GroupID == conversation.GroupID);
-                var mappingStatus = CalculateMappingStatusId(conversation.IsMapped, member);
                 var chatGroupMapping = new ChatGroupMappingResult
                 {
                     BotName = member?.BotName,
@@ -76,24 +74,14 @@
                     RecipientNames = string.Join(", ", recipients.Select(x => x.RecipientName)),
                     RecipientStatusNames = string.Join(", ", recipients.Where(x => !string.IsNullOrEmpty(x.RecipientStatusName))
                                                                         .Select(r => r.RecipientStatusName)),
-                    MappingStatusID = (int)mappingStatus,
-                    MappingStatusName = EnumHelper.GetDescription(mappingStatus),
+                    MappingStatusID = (int)conversation.MappingStatus,
+                    MappingStatusName = EnumHelper.GetDescription(conversation.MappingStatus),
                     Remark = conversation.Remark
                 };
                 chatGroupMappings.Add(chatGroupMapping);
             }
 
             return chatGroupMappings;
-        }
-
-        private MappingStatus CalculateMappingStatusId(bool isMapped, BotConversationMember members)
-        {
-            if (members == null)
-            {
-                return MappingStatus.BotRemoved;
-            }
-
-            return isMapped ? MappingStatus.Mapped : MappingStatus.NotMapped;
         }
     }
 }

@@ -78,7 +78,7 @@
             //Handle send to recipients
             string message = string.Format("{0}\n{1}", notification.Title, notification.Content);
             var proactiveMessages = MappingProactiveMessage(recipients.Where(r => r.RecipientStatus == RecipientStatuses.ReadyToSend), message);
-            await SendMessageToRecipient(proactiveMessages).ConfigureAwait(false);
+            await SendMessageToRecipient(proactiveMessages, notification.NotificationId).ConfigureAwait(false);
         }
 
         private IEnumerable<ProactiveMessage> MappingProactiveMessage(IEnumerable<NotificationRecipient> recipients, string message)
@@ -96,31 +96,31 @@
             return proactiveMessages;
         }
 
-        private async Task SendMessageToRecipient(IEnumerable<ProactiveMessage> proactiveMessages)
+        private async Task SendMessageToRecipient(IEnumerable<ProactiveMessage> proactiveMessages, int notificationId)
         {
             if (proactiveMessages.Any())
             {
                 var response = await chatbotService.SendMessageToMultitpleAsync(proactiveMessages).ConfigureAwait(false);
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    await OnAfterSendMessage(response, proactiveMessages).ConfigureAwait(false);
+                    await OnAfterSendMessage(response, proactiveMessages, notificationId).ConfigureAwait(false);
                 }
                 else
                 {
-                    await SendMessageToRecipient(proactiveMessages).ConfigureAwait(false);
+                    await SendMessageToRecipient(proactiveMessages, notificationId).ConfigureAwait(false);
                 }
             }
         }
 
-        private async Task OnAfterSendMessage(IRestResponse response, IEnumerable<ProactiveMessage> proactiveMessages)
+        private async Task OnAfterSendMessage(IRestResponse response, IEnumerable<ProactiveMessage> proactiveMessages, int notificationId)
         {
             var errorMessages = ConvertJsonResponse(response.Content);
             var successedMsg = proactiveMessages.Where(m => errorMessages.Any(e => e.ErrorCode == 0 && e.ConversationId == m.ConversationId));
             var failedMsg = proactiveMessages.Where(m => errorMessages.Any(e => e.ErrorCode != 0 && e.ConversationId == m.ConversationId));
-            await UpdateSuccessSendNotificationRecipient(successedMsg).ConfigureAwait(false);
+            await UpdateSuccessSendNotificationRecipient(successedMsg, notificationId).ConfigureAwait(false);
         }
 
-        private Task UpdateSuccessSendNotificationRecipient(IEnumerable<ProactiveMessage> successedMsg)
+        private Task UpdateSuccessSendNotificationRecipient(IEnumerable<ProactiveMessage> successedMsg, int notificationId)
         {
             throw new NotImplementedException();
         }
