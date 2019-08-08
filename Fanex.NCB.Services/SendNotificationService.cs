@@ -98,14 +98,17 @@
 
         private async Task SendMessageToRecipient(IEnumerable<ProactiveMessage> proactiveMessages)
         {
-            var response = await chatbotService.SendMessageToMultitpleAsync(proactiveMessages).ConfigureAwait(false);
-            if (response.StatusCode == HttpStatusCode.OK)
+            if (proactiveMessages.Any())
             {
-                await OnAfterSendMessage(response, proactiveMessages).ConfigureAwait(false);
-            }
-            else
-            {
-                await SendMessageToRecipient(proactiveMessages).ConfigureAwait(false);
+                var response = await chatbotService.SendMessageToMultitpleAsync(proactiveMessages).ConfigureAwait(false);
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    await OnAfterSendMessage(response, proactiveMessages).ConfigureAwait(false);
+                }
+                else
+                {
+                    await SendMessageToRecipient(proactiveMessages).ConfigureAwait(false);
+                }
             }
         }
 

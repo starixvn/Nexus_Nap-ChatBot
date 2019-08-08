@@ -34,7 +34,7 @@ export class DataGrid extends Component {
             <Row style={{ height: 32 }}>
                 <Cell colWidth={30} header>{Labels.NumberCol}</Cell>
                 <Cell colWidth={100} header>{Labels.BotName}</Cell>
-                <Cell colWidth={200} header>{Labels.ConversationId}</Cell>
+                <Cell colWidth={200} header>{Labels.GroupID}</Cell>
                 <Cell colWidth={200} header>{Labels.GroupName}</Cell>
                 <Cell colWidth={110} header>{Labels.ChatGroupType}</Cell>
                 <Cell colWidth={100} header>{Labels.RecipientType}</Cell>
@@ -58,10 +58,11 @@ export class DataGrid extends Component {
         const startIndex = (pageIndex - 1) * pageSize + 1;
         if (data.length > 0) {
             data.map((item, index) => {
+                console.log(item);
                 rows.push(<Row key={`body${index}`} >
                     <Cell className="text-center">{index + startIndex}</Cell>
                     <Cell>{item.botName}</Cell>
-                    <Cell>{item.conversationId}</Cell>
+                    <Cell title={item.conversationID}>{item.conversationID}</Cell>
                     <Cell>{item.groupName}</Cell>
                     <Cell>{item.chatGroupTypeName}</Cell>
                     <Cell>{item.recipientTypeName}</Cell>

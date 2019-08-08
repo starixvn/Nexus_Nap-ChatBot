@@ -14,10 +14,6 @@ export class AppContainer extends Component {
         super(props);
     }
 
-    componentDidMount() {
-        console.log(this.props);
-    }
-
     closeUpdatePopupHandler = () => {
         this.props.closeEditPopup();
         this.props.refreshUpdateData();
