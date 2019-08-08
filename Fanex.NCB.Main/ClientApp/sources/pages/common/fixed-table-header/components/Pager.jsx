@@ -84,11 +84,10 @@ export default class Pager extends Component {
 
     render() {
         const { PageIndex, PageSize, TotalItem, PageList } = this.props.pageOption;
-        const isShow = TotalItem > PageList[0];
         const totalPage = Math.ceil(TotalItem / PageSize);
 
         return (
-            <div className="page-container" style={{ display: `${isShow ? 'block' : 'none'}` }}>
+            <div className="page-container">
                 <span>Page size</span>
                 {this.renderPageSizeSelection(PageSize, PageList)}
                 {this.renderPageIcon('page-prev', PageIndex <= 1, () => this.goToPage(PageIndex - 1, PageSize))}
