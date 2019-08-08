@@ -10,7 +10,6 @@
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;
-    using Newtonsoft.Json.Linq;
     using RestSharp;
 
     public class ChatbotService : IChatbotService
@@ -32,30 +31,6 @@
             request.AddJsonBody(proactiveMessages);
 
             return await webClient.ExecutePostTaskAsync(request).ConfigureAwait(false);
-        }
-
-        private async Task OnSendMessageSuccess(string json)
-        {
-            var proactiveErrorMessages = HandleResponse(json);
-        }
-
-        private IList<ProactiveMessageError> HandleResponse(string json)
-        {
-            var messages = new List<ProactiveMessageError>();
-            JObject obj = JObject.Parse(json);
-            var results = obj["results"];
-            foreach (var result in results)
-            {
-                var proactiveMessage = new ProactiveMessageError
-                {
-                    ConversationId = (string)result["conversationId"],
-                    ErrorCode = (int)result["errorCode"],
-                    ErrorMessage = (string)result["errorMessage"]
-                };
-                messages.Add(proactiveMessage);
-            }
-
-            return messages;
         }
 
         public async Task SendMessageAsync(string botName, string conversationId, string message)

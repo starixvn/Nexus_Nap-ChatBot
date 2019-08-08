@@ -174,6 +174,7 @@ export class UpdatePopup extends Component {
                                 valueField={'name'}
                                 statusField={'checked'}
                                 isSummited={this.state.isSummited}
+                                isSearchable
                                 onChange={value => this.onChange('recipientIds', value)}
                             />
                         </FormGroup>
