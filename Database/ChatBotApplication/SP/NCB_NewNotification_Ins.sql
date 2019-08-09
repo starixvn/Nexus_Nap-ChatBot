@@ -86,20 +86,15 @@ NCB_NewNotification_Ins:BEGIN
     IF EXISTS(
 						SELECT 1 
 						FROM tmp_recipientIDLst main
-                        LEFT JOIN BotConversationRecipient bcr
+                        LEFT JOIN ConversationGroupRecipient bcr
 								ON bcr.RecipientID = main.RecipientID
-						LEFT JOIN BotConversationExtraInfo bcri
-								ON bcri.BotConversationID = bcr.BotConversationID
-						LEFT JOIN BotConversation con
-								ON con.ID = bcr.BotConversationID
-						LEFT JOIN BotConversationMember bot
-								ON bot.ConversationID = con.ConversationID
-									AND bot.IsBot = 1
-									AND bot.IsActive = 1
-						WHERE bcr.BotConversationID IS NULL
+						LEFT JOIN ConversationGroupExtraInfo bcri
+								ON bcri.ConversationGroupID = bcr.ConversationGroupID
+						LEFT JOIN ConversationGroupBot cgb
+								ON cgb.ConversationGroupID = bcr.ConversationGroupID
+						WHERE bcr.ConversationGroupID IS NULL
 								OR bcri.ChatGroupTypeID IS  NULL
-                                OR con.ConversationID IS NULL
-                                OR bot.MemberID IS NULL
+                                OR cgb.ConversationBotID IS NULL
 	) THEN
 		SET errCode=106;
 
@@ -109,20 +104,15 @@ NCB_NewNotification_Ins:BEGIN
         WHERE re.RecipientID IN (
 						SELECT main. RecipientID
 						FROM tmp_recipientIDLst main
-                        LEFT JOIN BotConversationRecipient bcr
+                        LEFT JOIN ConversationGroupRecipient bcr
 								ON bcr.RecipientID = main.RecipientID
-						LEFT JOIN BotConversationExtraInfo bcri
-								ON bcri.BotConversationID = bcr.BotConversationID
-						LEFT JOIN BotConversation con
-								ON con.ID = bcr.BotConversationID
-						LEFT JOIN BotConversationMember bot
-								ON bot.ConversationID = con.ConversationID
-									AND IsBot = 1
-									AND IsActive = 1
-						WHERE bcr.BotConversationID IS NULL
+						LEFT JOIN ConversationGroupExtraInfo bcri
+								ON bcri.ConversationGroupID = bcr.ConversationGroupID
+						LEFT JOIN ConversationGroupBot cgb
+								ON cgb.ConversationGroupID = bcr.ConversationGroupID
+						WHERE bcr.ConversationGroupID IS NULL
 								OR bcri.ChatGroupTypeID IS  NULL
-                                OR con.ConversationID IS NULL
-                                OR bot.MemberID IS NULL
+                                OR cgb.ConversationBotID IS NULL
 			);
 
         LEAVE NCB_NewNotification_Ins;
@@ -261,18 +251,18 @@ NCB_NewNotification_Ins:BEGIN
     SET notificationID = LAST_INSERT_ID();
     
     #Insert recipient list
-    INSERT INTO NotificationRecipientList(NotificationID, BotConversationID
+    INSERT INTO NotificationRecipientList(NotificationID, ConversationGroupID
                                                                     , ChatGroupTypeID, RecipientID
                                                                     , Status, StatusID)
-    SELECT notificationID, IFNULL(gri.BotConversationID, -1)
+    SELECT notificationID, IFNULL(gri.ConversationGroupID, -1)
 					, IFNULL(gri.ChatGroupTypeID,-1), re.RecipientID
                     , NEW_NOTIFICATION_STATUS
                     , NEW_NOTIFICATION_STATUSID
     FROM tmp_recipientIDLst re
-		LEFT JOIN BotConversationRecipient gr 
+		LEFT JOIN ConversationGroupRecipient gr 
 			ON re.RecipientID = gr.RecipientID
-		LEFT JOIN BotConversationExtraInfo gri 
-			ON gri.BotConversationID = gr.BotConversationID
+		LEFT JOIN ConversationGroupExtraInfo gri 
+			ON gri.ConversationGroupID = gr.ConversationGroupID
     WHERE gri.ChatGroupTypeID IN (
 						SELECT cgt.ChatGroupTypeID 
 						FROM NotificationChatGroupType  cgt
