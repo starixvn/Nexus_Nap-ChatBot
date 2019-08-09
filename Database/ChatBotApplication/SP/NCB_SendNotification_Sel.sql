@@ -22,46 +22,27 @@ BEGIN
 	SELECT n.Title, n.Content
     FROM Notification n
     WHERE n.NotificationID = notificationID;
-    
-    DROP TEMPORARY TABLE IF EXISTS tmp_ConversationIDBot;
-	CREATE TEMPORARY TABLE tmp_ConversationIDBot(
-																					ChatGroupConversationID VARCHAR(100)
-                                                                                    , BotID INT
-																		);
-     
-     INSERT INTO tmp_ConversationIDBot (ChatGroupConversationID, BotID)
-	SELECT tmp.ChatGroupConversationID, MAX(tmp.BotID) BotID
-    FROM (
-		SELECT grp.ConversationID AS ChatGroupConversationID , MIN(bot.ID) BotID
-		FROM NotificationRecipientList nrl
-			INNER JOIN BotConversation grp
-				ON grp.ID = nrl.BotConversationID
-			INNER JOIN BotConversationMember bot
-				ON bot.ConversationID = grp.ConversationID
-					AND bot.IsBot = 1
-		WHERE nrl.NotificationID = notificationID
-		GROUP BY grp.ConversationID
-        UNION ALL
-        SELECT grp.ConversationID AS ChatGroupConversationID , MIN(bot.ID) BotID
-		FROM NotificationRecipientList nrl
-			INNER JOIN BotConversation grp
-				ON grp.ID = nrl.BotConversationID
-			INNER JOIN BotConversationMember bot
-				ON bot.ConversationID = grp.ConversationID
-					AND bot.IsBot = 1 AND bot.IsActive = 1
-		WHERE nrl.NotificationID = notificationID
-		GROUP BY grp.ConversationID
-    ) AS tmp
-    GROUP BY tmp.ChatGroupConversationID;
 
 	#2nd dataset: List of ConversationID and Bot MemberID
-    SELECT grp.ID ChatGroupID
-				, tmp.ChatGroupConversationID AS ChatGroupConversationID
-				, bot.MemberID AS BotConversationID
-    FROM tmp_ConversationIDBot tmp
-		INNER JOIN BotConversation grp ON grp.ConversationID = tmp.ChatGroupConversationID
-		INNER JOIN BotConversationMember bot
-			ON bot.ID = tmp.BotID;
+	SELECT r.RecipientID, r.RecipientName
+					, GroupBot.ConversationGroupID ChatGroupID
+					, grp.ConversationID AS ChatGroupConversationID 
+                    , bot.ConversationBotID BotID 
+                    , bot.ConversationID AS BotConversationID 
+	 FROM NotificationRecipientList nrl
+	 INNER JOIN ConversationGroup grp
+			ON grp.ConversationGroupID = nrl.ConversationGroupID
+     INNER JOIN Recipient r ON r.RecipientID = nrl.RecipientID
+     INNER JOIN ConversationGroupBot GroupBot 
+			ON GroupBot.ConversationGroupID = nrl.ConversationGroupID
+	 INNER JOIN (
+				SELECT grb.ConversationGroupID, MIN(grb.CreatedTime)  MaxTime
+				FROM ConversationGroupBot grb 
+				GROUP BY grb.ConversationGroupID
+			) tmp ON GroupBot.ConversationGroupID = tmp.ConversationGroupID AND GroupBot.CreatedTime = tmp. MaxTime
+	INNER JOIN ConversationBot bot ON bot.ConversationBotID = GroupBot.ConversationBotID
+	WHERE nrl.NotificationID = notificationID;
+    
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_SendNotification_Sel TO 'ncb.admin'@'%';

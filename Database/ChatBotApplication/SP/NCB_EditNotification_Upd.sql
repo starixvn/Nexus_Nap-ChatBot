@@ -102,20 +102,15 @@ NCB_EditNotification_Upd:BEGIN
     IF EXISTS(
 						SELECT 1 
 						FROM tmp_recipientIDLst main
-                        LEFT JOIN BotConversationRecipient bcr
+                        LEFT JOIN ConversationGroupRecipient bcr
 								ON bcr.RecipientID = main.RecipientID
-						LEFT JOIN BotConversationExtraInfo bcri
-								ON bcri.BotConversationID = bcr.BotConversationID
-						LEFT JOIN BotConversation con
-								ON con.ID = bcr.BotConversationID
-						LEFT JOIN BotConversationMember bot
-								ON bot.ConversationID = con.ConversationID
-									AND bot.IsBot = 1
-									AND bot.IsActive = 1
-						WHERE bcr.BotConversationID IS NULL
+						LEFT JOIN ConversationGroupExtraInfo bcri
+								ON bcri.ConversationGroupID = bcr.ConversationGroupID
+						LEFT JOIN ConversationGroupBot cgb
+								ON cgb.ConversationGroupID = bcr.ConversationGroupID
+						WHERE bcr.ConversationGroupID IS NULL
 								OR bcri.ChatGroupTypeID IS  NULL
-                                OR con.ConversationID IS NULL
-                                OR bot.MemberID IS NULL
+                                OR cgb.ConversationBotID IS NULL
 	) THEN
 		SET errCode=507;
 
@@ -125,20 +120,15 @@ NCB_EditNotification_Upd:BEGIN
         WHERE re.RecipientID IN (
 						SELECT main. RecipientID
 						FROM tmp_recipientIDLst main
-                        LEFT JOIN BotConversationRecipient bcr
+                        LEFT JOIN ConversationGroupRecipient bcr
 								ON bcr.RecipientID = main.RecipientID
-						LEFT JOIN BotConversationExtraInfo bcri
-								ON bcri.BotConversationID = bcr.BotConversationID
-						LEFT JOIN BotConversation con
-								ON con.ID = bcr.BotConversationID
-						LEFT JOIN BotConversationMember bot
-								ON bot.ConversationID = con.ConversationID
-									AND IsBot = 1
-									AND IsActive = 1
-						WHERE bcr.BotConversationID IS NULL
+						LEFT JOIN ConversationGroupExtraInfo bcri
+								ON bcri.ConversationGroupID = bcr.ConversationGroupID
+						LEFT JOIN ConversationGroupBot cgb
+								ON cgb.ConversationGroupID = bcr.ConversationGroupID
+						WHERE bcr.ConversationGroupID IS NULL
 								OR bcri.ChatGroupTypeID IS  NULL
-                                OR con.ConversationID IS NULL
-                                OR bot.MemberID IS NULL
+                                OR cgb.ConversationBotID IS NULL
 			);
 
         LEAVE NCB_EditNotification_Upd;
@@ -272,20 +262,20 @@ NCB_EditNotification_Upd:BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_newNotificationRecipientList;
 	CREATE TEMPORARY TABLE tmp_newNotificationRecipientList(
 																					NotificationID INT
-                                                                                    , BotConversationID INT
+                                                                                    , ConversationGroupID INT
                                                                                     , ChatGroupTypeID INT
                                                                                     , RecipientID INT
 																		);
     
-    INSERT INTO tmp_newNotificationRecipientList(NotificationID, BotConversationID
+    INSERT INTO tmp_newNotificationRecipientList(NotificationID, ConversationGroupID
                                                                     , ChatGroupTypeID, RecipientID)
-    SELECT notificationID, IFNULL(gri.BotConversationID, -1)
+    SELECT notificationID, IFNULL(gri.ConversationGroupID, -1)
 					, IFNULL(gri.ChatGroupTypeID,-1), re.RecipientID
     FROM tmp_recipientIDLst re
-		LEFT JOIN BotConversationRecipient gr 
+		LEFT JOIN ConversationGroupRecipient gr 
 			ON re.RecipientID = gr.RecipientID
-		LEFT JOIN BotConversationExtraInfo gri 
-			ON gri.BotConversationID = gr.BotConversationID
+		LEFT JOIN ConversationGroupExtraInfo gri 
+			ON gri.ConversationGroupID = gr.ConversationGroupID
     WHERE gri.ChatGroupTypeID IN (
 						SELECT cgt.ChatGroupTypeID 
 						FROM NotificationChatGroupType  cgt
@@ -296,20 +286,20 @@ NCB_EditNotification_Upd:BEGIN
 	DROP TEMPORARY TABLE IF EXISTS tmp_deletedNotificationRecipientList;
 	CREATE TEMPORARY TABLE tmp_deletedNotificationRecipientList(
 																					NotificationID INT
-                                                                                    , BotConversationID INT
+                                                                                    , ConversationGroupID INT
                                                                                     , ChatGroupTypeID INT
                                                                                     , RecipientID INT
 																		);
 	INSERT INTO tmp_deletedNotificationRecipientList(
-												NotificationID, BotConversationID
+												NotificationID, ConversationGroupID
 												, ChatGroupTypeID, RecipientID
 											)
-    SELECT nrl.NotificationID, nrl.BotConversationID
+    SELECT nrl.NotificationID, nrl.ConversationGroupID
 					, nrl.ChatGroupTypeID, nrl.RecipientID
     FROM NotificationRecipientList nrl
 		LEFT JOIN tmp_newNotificationRecipientList newnrl
 			ON newnrl.NotificationID = nrl.NotificationID
-				AND newnrl.BotConversationID = nrl.BotConversationID
+				AND newnrl.ConversationGroupID = nrl.ConversationGroupID
                 AND newnrl.ChatGroupTypeID = nrl.ChatGroupTypeID
                 AND newnrl.RecipientID = nrl.RecipientID
 	WHERE nrl.NotificationID = notificationID
@@ -320,14 +310,14 @@ NCB_EditNotification_Upd:BEGIN
     FROM NotificationRecipientList nrl
 		INNER JOIN tmp_deletedNotificationRecipientList tmpDel
 			ON tmpDel.NotificationID = nrl.NotificationID
-				AND tmpDel.BotConversationID = nrl.BotConversationID
+				AND tmpDel.ConversationGroupID = nrl.ConversationGroupID
                 AND tmpDel.ChatGroupTypeID = nrl.ChatGroupTypeID
                 AND tmpDel.RecipientID = nrl.RecipientID;
                 
      #Get log info for removed- recipients     
     SELECT  CONCAT('[' , GROUP_CONCAT(json_object(
 														'NotificationID', tmpDel.NotificationID
-                                                        , 'BotConversationID', tmpDel.BotConversationID
+                                                        , 'ConversationGroupID', tmpDel.ConversationGroupID
                                                         , 'ChatGroupTypeID', tmpDel.ChatGroupTypeID
                                                         , 'RecipientID', tmpDel.RecipientID
 									) SEPARATOR ', ') ,']') A
@@ -338,29 +328,29 @@ NCB_EditNotification_Upd:BEGIN
 	DROP TEMPORARY TABLE IF EXISTS tmp_insertedNotificationRecipientList;
 	CREATE TEMPORARY TABLE tmp_insertedNotificationRecipientList(
 																					NotificationID INT
-                                                                                    , BotConversationID INT
+                                                                                    , ConversationGroupID INT
                                                                                     , ChatGroupTypeID INT
                                                                                     , RecipientID INT
 																		);
 	INSERT INTO tmp_insertedNotificationRecipientList(
-												NotificationID, BotConversationID
+												NotificationID, ConversationGroupID
 												, ChatGroupTypeID, RecipientID
 											)
-    SELECT newnrl.NotificationID, newnrl.BotConversationID
+    SELECT newnrl.NotificationID, newnrl.ConversationGroupID
 					, newnrl.ChatGroupTypeID, newnrl.RecipientID
     FROM tmp_newNotificationRecipientList newnrl
 		LEFT JOIN NotificationRecipientList nrl
 			ON nrl.NotificationID = newnrl.NotificationID
-				AND nrl.BotConversationID = newnrl.BotConversationID
+				AND nrl.ConversationGroupID = newnrl.ConversationGroupID
                 AND nrl.ChatGroupTypeID = newnrl.ChatGroupTypeID
                 AND nrl.RecipientID = newnrl.RecipientID
 	WHERE nrl.StatusID IS NULL;
     
     #Insert new inserted-recipients     
-    INSERT INTO NotificationRecipientList(NotificationID, BotConversationID
+    INSERT INTO NotificationRecipientList(NotificationID, ConversationGroupID
                                                                     , ChatGroupTypeID, RecipientID
                                                                     , Status, StatusID)
-    SELECT tmpIns.NotificationID, tmpIns.BotConversationID
+    SELECT tmpIns.NotificationID, tmpIns.ConversationGroupID
 					, tmpIns.ChatGroupTypeID, tmpIns.RecipientID
                     , NEW_NOTIFICATION_STATUS
                     , NEW_NOTIFICATION_STATUSID
@@ -369,7 +359,7 @@ NCB_EditNotification_Upd:BEGIN
     #Get log info for inserted-recipients     
     SELECT  CONCAT('[' , GROUP_CONCAT(json_object(
 														'NotificationID', tmpIns.NotificationID
-                                                        , 'BotConversationID', tmpIns.BotConversationID
+                                                        , 'ConversationGroupID', tmpIns.ConversationGroupID
                                                         , 'ChatGroupTypeID', tmpIns.ChatGroupTypeID
                                                         , 'RecipientID', tmpIns.RecipientID
 									) SEPARATOR ', ') ,']') A
@@ -380,7 +370,7 @@ NCB_EditNotification_Upd:BEGIN
     UPDATE NotificationRecipientList nrl
 	INNER JOIN tmp_newNotificationRecipientList tmpDel
 			ON tmpDel.NotificationID = nrl.NotificationID
-				AND tmpDel.BotConversationID = nrl.BotConversationID
+				AND tmpDel.ConversationGroupID = nrl.ConversationGroupID
                 AND tmpDel.ChatGroupTypeID = nrl.ChatGroupTypeID
                 AND tmpDel.RecipientID = nrl.RecipientID
 	SET nrl.Status = NEW_NOTIFICATION_STATUS

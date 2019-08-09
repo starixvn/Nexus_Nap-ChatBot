@@ -53,7 +53,7 @@ BEGIN
     INNER JOIN NotificationRecipientList rlst ON rlst.NotificationID = n.NotificationID
     INNER JOIN Recipient r ON r.RecipientID = rlst.RecipientID
     INNER JOIN RecipientType rt ON rt.RecipientTypeID = r.RecipientTypeID
-    INNER JOIN BotConversation grp ON grp.ID = rlst.BotConversationID;
+    INNER JOIN ConversationGroup grp ON grp.ConversationGroupID = rlst.ConversationGroupID;
     
     #1st dataset: Main Notification Info
     SELECT title, sentTime, resolvedRemark, resolvedByUsername;

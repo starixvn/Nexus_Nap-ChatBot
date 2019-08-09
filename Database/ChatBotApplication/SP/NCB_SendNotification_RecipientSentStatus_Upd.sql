@@ -109,7 +109,7 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
 	
 	UPDATE NotificationRecipientList nrl
 		INNER JOIN tmp_ChatGroupSentStatus tmp
-			ON tmp.ChatGroupID = nrl.BotConversationID
+			ON tmp.ChatGroupID = nrl.ConversationGroupID
     SET nrl.SentTime = tmp.SentTime
 			, nrl.ErrMsg = tmp.ErrMsg
             , nrl.StatusID = CASE 
