@@ -34,20 +34,27 @@ export class DataGrid extends Component {
             <Row style={{ height: 32 }}>
                 <Cell colWidth={30} header>{Labels.NumberCol}</Cell>
                 <Cell colWidth={100} header>{Labels.BotName}</Cell>
-                <Cell colWidth={200} header>{Labels.GroupID}</Cell>
+                <Cell colWidth={300} header>{Labels.GroupID}</Cell>
                 <Cell colWidth={200} header>{Labels.GroupName}</Cell>
                 <Cell colWidth={110} header>{Labels.ChatGroupType}</Cell>
                 <Cell colWidth={100} header>{Labels.RecipientType}</Cell>
                 <Cell colWidth={130} header>{Labels.Recipient}</Cell>
                 <Cell colWidth={100} header>{Labels.LicenseeStatus}</Cell>
                 <Cell colWidth={100} header>{Labels.MappingStatus}</Cell>
-                <Cell colWidth={250} header>{Labels.Remark}</Cell>
+                <Cell colWidth={100} header>{Labels.Remark}</Cell>
                 {
                     isHost &&
-                    <Cell colWidth={80} header>{Labels.Action}</Cell>
+                    <Cell colWidth={60} header>{Labels.Action}</Cell>
                 }
             </Row>);
     };
+
+    copyGroupId = (text) => {
+        var input = document.createElement('textarea', value = text);
+        input.select();
+        document.execCommand("copy");
+        console.log(input.value);
+    }
 
     getLicenseeStatus = item => item.recipientTypeName ? CommonFunctions.getLicenseeStatus(item.recipientStatusNames) : '';
 
@@ -61,7 +68,11 @@ export class DataGrid extends Component {
                 rows.push(<Row key={`body${index}`} >
                     <Cell className="text-center">{index + startIndex}</Cell>
                     <Cell>{item.mappingStatusID === mappingStatus.BotRemoved ? '' : item.botName}</Cell>
-                    <Cell title={item.conversationID}>{item.conversationID}</Cell>
+                    <Cell title={item.conversationID}>
+                        <span
+                            onClick={() => this.copyGroupId(item.conversationID)}>
+                            {item.conversationID}</span>
+                    </Cell>
                     <Cell>{item.groupName}</Cell>
                     <Cell>{item.chatGroupTypeName}</Cell>
                     <Cell>{item.recipientTypeName}</Cell>
@@ -77,7 +88,6 @@ export class DataGrid extends Component {
                             </div>
                         </Cell>
                     }
-
                 </Row>);
             });
         } else {
@@ -105,7 +115,7 @@ export class DataGrid extends Component {
         return (
             <div className="table-container-div">
                 <Table
-                    width={"100%"}
+                    width={1620}
                     autoWidth={false}
                     header={this.buildHeader(isHost)}
                     body={this.buildBody(data, pageIndex, pageSize, isHost)}
