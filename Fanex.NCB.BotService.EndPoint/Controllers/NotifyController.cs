@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Builder.Integration.AspNet.Core;
@@ -14,7 +15,7 @@
     using Microsoft.Bot.Connector.Authentication;
     using Microsoft.Bot.Schema;
 
-    [ApiController]
+    [Authorize]
     public class NotifyController : ControllerBase
     {
         private readonly IBotFrameworkHttpAdapter adapter;
@@ -42,7 +43,7 @@
         [HttpPost]
         [Route("api/notifymulti")]
         [HttpPost]
-        public async Task<ObjectResult> SendMulti([FromBody]IList<ProactiveMessage> proactiveMessages)
+        public async Task<ObjectResult> SendMulti(IList<ProactiveMessage> proactiveMessages)
         {
             string appId;
             ProactiveMessageError result;

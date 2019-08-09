@@ -22,39 +22,12 @@
     },
     {
       "type": "endpoint",
-      "name": "NexusBot",
-      "endpoint": "https://aa79478b.ngrok.io/api/messages",
-      "appId": "d344c27e-8463-4efc-8bf5-953eb266da05",
-      "appPassword": "0o9kI*s1DQh3bNusMm+NX=Sg-@VNeWA=",
-      "id": "3",
-      "Intro": "Hi I'm Nexus Bot"
-    },
-    {
-      "type": "endpoint",
       "name": "NCB1",
       "endpoint": "https://4bf792cb.ngrok.io/api/messages",
       "appId": "3b546454-c9a5-4cc8-9f2e-be8e1bfd4e9a",
       "appPassword": "jcA0aW9d@Lk55RaUbCSCsBB*B/Szbnc.",
-      "id": "4",
-      "Intro": "Hi I'm Nexus Bot"
-    },
-    {
-      "type": "endpoint",
-      "name": "ncb2",
-      "endpoint": "https://aa79478b.ngrok.io/api/messages",
-      "appId": "33645da9-5fb8-4671-b65c-20711a95a20c",
-      "appPassword": "T@XOoAmmJfwlNfZzoeM9*0Y+wm=mPb86",
-      "id": "5",
-      "Intro": "Hi I'm Nexus Bot"
-    },
-    {
-      "type": "endpoint",
-      "name": "ncb3",
-      "endpoint": "https://aa79478b.ngrok.io/api/messages",
-      "appId": "ef97ad96-3bc2-41f2-8b12-aa953217dec8",
-      "appPassword": "*48oXr7-?o4MdJYJtV=+953pob-8QE/x",
-      "id": "6",
-      "Intro": "Hi I'm Nexus Bot"
+      "id": "3",
+      "Intro": "Hi I'm NCB1 Bot for testing."
     }
   ],
   "padlock": "",
