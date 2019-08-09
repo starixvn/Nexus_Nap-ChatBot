@@ -43,13 +43,20 @@ export const recipients = createReducer(null, {
     }
 });
 
+export const createNotificationResult = createReducer({}, {
+    [types.CREATENOTIFICATIONRESULT_DATA](state, action) {
+        return action.data;
+    }
+});
+
 const reducers = {
     settingData,
     notificationTypes,
     notificationTemplates,
     template,
     products,
-    recipients
+    recipients,
+    createNotificationResult
 };
 
 export default reducers;

@@ -1,11 +1,8 @@
-﻿
-
-import React from 'react';
+﻿import React from 'react';
 import { connect } from 'react-redux';
 import { Form, FormGroup, Label, Button, Container, Row, Col, Input, FormFeedback } from 'reactstrap';
-import axios from 'axios';
 import { stringify } from 'qs';
-
+import { isEmpty } from 'lodash';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { NCBBreadcrum } from '../../../common/breadcrumbs';
@@ -15,7 +12,7 @@ import TreeSelect from '../../../common/TreeSelect/index';
 import DatePicker from '../../../common/DatePicker/index';
 import { TemplateTextField } from '../../../common/template-text-field/TemplateTextField';
 import Labels from '../../../common/Labels';
-import errorResponseHandler from '../../../lib/errorResponseHandler';
+import ResponseMessage from '../../../common/response-message/ResponseMessage';
 import Site from '../../../lib/site';
 import './AppContainer.scss';
 
@@ -209,8 +206,6 @@ export class AppContainer extends React.Component {
                 ids.push(item.node.props.realValue);
             }
         }
-
-        return ids.toString();
     }
 
     schema = Yup.object().shape({
@@ -229,32 +224,25 @@ export class AppContainer extends React.Component {
     renderSendModeOption = item => <option key={item.value} value={item.value} >{item.label}</option>
 
     handleSubmit = (values, { setErrors, setSubmitting }) => {
-        axios({
-            url: Site.resolveClientUrl('NewNotification/Create'),
-            method: 'post',
-            data: stringify({
-                __RequestVerificationToken: document.getElementsByName('__RequestVerificationToken')[0].value,
-                notificationTypeId: values.notificationTypeId,
-                productId: values.productId,
-                recipientIds: this.getRecipientIds([], this.selectedNodes),
-                title: values.title,
-                content: values.content,
-                sendDate: values.sendMode === '1' ? new Date().toLocaleString('en', { timeZone: 'Asia/Shanghai' }) : values.sendDate,
-                sendImmediately: values.sendMode === '1'
-            }),
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        }).then(response => {
-            if (data.isSuccessful) {
-                window.alert('success');
-            } else {
-                //toast.error(data.message);
-            }
+        const recipientIds = [];
+        this.getRecipientIds(recipientIds, this.selectedNodes);
 
+        const data = stringify({
+            notificationTypeId: values.notificationTypeId,
+            productId: values.productId,
+            recipientIds: recipientIds.toString(),
+            title: values.title,
+            content: values.content,
+            sendDate: values.sendMode === '1' ? new Date().toLocaleString('en', { timeZone: 'Asia/Shanghai' }) : values.sendDate,
+            sendImmediately: values.sendMode === '1'
+        });
+
+        this.props.createNewNotification(data).then(() => {
             setSubmitting(false);
-        }).catch(errorResponseHandler);
+            setTimeout(function () {
+                window.location = Site.resolveClientUrl('NotificationList');
+            }, 3000);
+        });
     }
 
     handleNotificationTypeChange = (event) => {
@@ -279,7 +267,6 @@ export class AppContainer extends React.Component {
         const formik = this.refs.form;
         this.selectedNodes = extra.allCheckedNodes;
         formik.setFieldValue('recipients', value);
-        console.log(this.getRecipientIds([], this.selectedNodes));
     }
 
     renderForm = ({
@@ -292,7 +279,7 @@ export class AppContainer extends React.Component {
         isSubmitting
     }) => {
         return (
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} className="new-notification-form">
                 <FormGroup row>
                     <Label for="notificationTypeId" className="form-label required" sm={2}>Notification Type</Label>
                     <Col sm={10}>
@@ -370,14 +357,13 @@ export class AppContainer extends React.Component {
                             />
                             <span>(GMT +8)</span>
                             {touched.sendDate && errors.sendDate && <FormFeedback>{errors.sendDate}</FormFeedback>}
-                        </div>                       
+                        </div>
                     </Col>
 
                 </FormGroup>
                 <FormGroup row className="list-buttons">
                     <Button className="btn-submit offset-sm-2" disabled={isSubmitting}>Save</Button>
                 </FormGroup>
-                
             </Form >
         );
     }
@@ -388,10 +374,17 @@ export class AppContainer extends React.Component {
         }
 
         return (
-            <div>
+            <>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="New Notification" />
-                <div className="content form new-notification-form">
+
+                <div className="content new-notification">
+                    {!isEmpty(this.props.createNotificationResult) &&
+                        <ResponseMessage isSuccessful={this.props.createNotificationResult.isSuccessful}
+                            message={this.props.createNotificationResult.message || Labels.CreateNotificationSuccessfully} />
+                    }
+
                     <Formik ref="form"
+
                         initialValues={{
                             notificationTypeId: '',
                             productId: '',
@@ -407,7 +400,7 @@ export class AppContainer extends React.Component {
                     />
 
                 </div>
-            </div>
+            </>
         );
     }
 }
@@ -418,7 +411,8 @@ const mapStateToProps = state => {
     return {
         notificationTypes: state.notificationTypes,
         products: state.products,
-        recipientOptions: state.recipients
+        recipientOptions: state.recipients,
+        createNotificationResult: state.createNotificationResult
     };
 };
 

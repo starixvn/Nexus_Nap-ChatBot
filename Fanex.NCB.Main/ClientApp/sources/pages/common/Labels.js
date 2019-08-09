@@ -29,5 +29,6 @@
     SkypeChatbot: 'Skype Chatbot',
     TemplateName: 'Template Name',
     TitleContent: 'Title/Content',
-    UpdateMappingStatusSuccessfully: 'Update Mapping Status Successfully.'
+    UpdateMappingStatusSuccessfully: 'Update Mapping Status Successfully.',
+    CreateNotificationSuccessfully: 'Your request has been submitted successfully'
 };

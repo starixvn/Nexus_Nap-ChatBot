@@ -6,10 +6,11 @@
     padding: 8px 40px;
     border-width: 1px;
     border-style: solid;
+    margin-bottom: 16px;
 
     &:before {
         position: absolute;
-        left: 10px;        
+        left: 10px;
         line-height: 0;
         font-family: "nap-chatbot";
         font-size: 18px;
@@ -17,7 +18,7 @@
 }
 
 .msg-error {
-    @extend %msg; 
+    @extend %msg;
     border-color: $msg-error-border;
     background-color: $msg-error-bg;
     color: $msg-error-color;
@@ -30,7 +31,7 @@
 }
 
 .msg-success {
-    @extend %msg; 
+    @extend %msg;
     border-color: $msg-success-border;
     background-color: $msg-success-bg;
     color: $msg-success-color;

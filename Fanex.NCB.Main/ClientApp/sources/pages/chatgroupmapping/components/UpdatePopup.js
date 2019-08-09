@@ -7,7 +7,7 @@ import { SelectField } from '../../common/SelectField';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
 import CommonFunctions from '../../common/CommonFunctions';
 import Labels from '../../common/Labels';
-import { ResponseMessage } from '../../common/response-message/ResponseMessage';
+import ResponseMessage from '../../common/response-message/ResponseMessage';
 import { TextField } from '../../common/text-field/TextField';
 import ConfirmPopup from '../../common/ConfirmPopup';
 
@@ -135,7 +135,9 @@ export class UpdatePopup extends Component {
             <Modal isOpen wrapClassName="new-notification-type">
                 <ModalHeader toggle={this.confirmThenClose} className="bold-text">{Labels.EditMappingStatus}</ModalHeader>
                 <ModalBody>
-                    <ResponseMessage responseData={this.props.updateData} successMsg={Labels.UpdateMappingStatusSuccessfully} />
+                    {this.props.updateData &&
+                        <ResponseMessage message={this.props.updateData.message} isSuccessful={this.props.updateData.isSuccessful} />
+                    }
                     <Form className="form-edit">
                         <FormGroup>
                             <Label className="form-label ">{Labels.BotName}</Label>

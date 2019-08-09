@@ -5,6 +5,7 @@
 @import "../../../shared/components/modals.scss";
 @import "../../../shared/components/tables.scss";
 @import "../../../shared/components/font.css";
+@import "../../../shared/components/messages";
 
 .form-group {
     .notification-type,
@@ -150,18 +151,14 @@
     }
 }
 
-.new-notification-form {
+.new-notification {
     width: 1000px;
 
     .list-buttons {
         margin-left: 18px;
     }
-
-    .btn-submit {
-        float: left;
-    }
-} 
-    /*.icon-edit {
+}
+/*.icon-edit {
         display: inline-block;
         float: right;
         padding-right: 10px;

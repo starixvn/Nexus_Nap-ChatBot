@@ -139,6 +139,28 @@ export const getRecipients = (notificationTypeId, productId) => {
     };
 };
 
+export const setCreateNewNotificationResult = data => {
+    return {
+        type: types.CREATENOTIFICATIONRESULT_DATA,
+        data: data
+    };
+};
+
+export const createNewNotification = (data) => {
+    return async dispatch => axios({
+        url: Site.resolveClientUrl('NewNotification/Create'),
+        method: 'post',
+        data: data,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'RequestVerificationToken': Site.getXsrfToken()
+        }
+    }).then(response => {
+        dispatch(setCreateNewNotificationResult(response.data));
+    }).catch(errorResponseHandler);
+};
+
 const actions = {
     setSettings,
     getSettings,
@@ -151,7 +173,9 @@ const actions = {
     setProducts,
     getProducts,
     setRecipients,
-    getRecipients
+    getRecipients,
+    createNewNotification,
+    setCreateNewNotificationResult
 };
 
 export default actions;
