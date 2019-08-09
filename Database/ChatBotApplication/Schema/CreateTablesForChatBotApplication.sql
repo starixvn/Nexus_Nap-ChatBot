@@ -2,7 +2,7 @@ CREATE DATABASE ChatBot CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci ;
 
 
 CREATE TABLE ChatBot.ConversationGroup(
-		ConversationGroupID INT AUTO_INCREMENT NOT NULL
+		ConversationGroupID INT UNSIGNED AUTO_INCREMENT NOT NULL
 		, ConversationID VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
 		, Name VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
 		, ChannelID VARCHAR(45) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
@@ -15,7 +15,7 @@ CREATE TABLE ChatBot.ConversationGroup(
   );
 
 CREATE TABLE ChatBot.ConversationBot(
-		 ConversationBotID INT AUTO_INCREMENT NOT NULL
+		 ConversationBotID INT UNSIGNED AUTO_INCREMENT NOT NULL
 		, ConversationID VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
 		, Name VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
         , CONSTRAINT PK_ID  PRIMARY KEY (ConversationBotID)
@@ -32,21 +32,21 @@ CREATE TABLE ChatBot.ConversationBot(
   );
   
 CREATE TABLE ChatBot.System(
-		SystemID SMALLINT  AUTO_INCREMENT NOT NULL
+		SystemID SMALLINT UNSIGNED  AUTO_INCREMENT NOT NULL
         , SystemName VARCHAR(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
         , CONSTRAINT PK_SystemID PRIMARY KEY (SystemID)
         , UNIQUE INDEX UNIQUE_SystemName USING BTREE (SystemName)
 );
 
 CREATE TABLE ChatBot.RecipientType(
-		RecipientTypeID SMALLINT  AUTO_INCREMENT NOT NULL
+		RecipientTypeID SMALLINT UNSIGNED  AUTO_INCREMENT NOT NULL
         , RecipientTypeName VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
         , CONSTRAINT PK_RecipientTypeID PRIMARY KEY (RecipientTypeID)
         , UNIQUE INDEX UNIQUE_RecipientTypeName USING BTREE (RecipientTypeName)
 );
 
 CREATE TABLE ChatBot.Recipient(
-		RecipientID INT  AUTO_INCREMENT NOT NULL
+		RecipientID INT UNSIGNED  AUTO_INCREMENT NOT NULL
         , RecipientName VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
         , RecipientTypeID SMALLINT NOT NULL
         , SourceID INT NULL
@@ -63,7 +63,7 @@ CREATE TABLE ChatBot.ConversationGroupRecipient(
 );
 
 CREATE TABLE ChatBot.ChatGroupType(
-		ChatGroupTypeID SMALLINT  AUTO_INCREMENT NOT NULL
+		ChatGroupTypeID SMALLINT UNSIGNED  AUTO_INCREMENT NOT NULL
         , ChatGroupTypeName VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
         , CONSTRAINT PK_ChatGroupTypeID PRIMARY KEY (ChatGroupTypeID)
         , UNIQUE INDEX UNIQUE_ChatGroupTypeName USING BTREE (ChatGroupTypeName)
@@ -77,7 +77,7 @@ CREATE TABLE ChatBot.ConversationGroupExtraInfo(
 );
 
 CREATE TABLE ChatBot.NotificationType(
-		NotificationTypeID SMALLINT  AUTO_INCREMENT NOT NULL
+		NotificationTypeID SMALLINT UNSIGNED  AUTO_INCREMENT NOT NULL
         , NotificationTypeName VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
         , SystemID SMALLINT  NOT NULL
         , CONSTRAINT PK_NotificationTypeID PRIMARY KEY (NotificationTypeID)
@@ -104,7 +104,7 @@ CREATE TABLE ChatBot.NotificationTypeRecipientException(
 );
 
 CREATE TABLE ChatBot.NotificationTemplate(
-		 NotificationTemplateID INT AUTO_INCREMENT NOT NULL
+		 NotificationTemplateID INT UNSIGNED AUTO_INCREMENT NOT NULL
 		, NotificationTemplateName  VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
 		, NotificationTypeID SMALLINT NOT NULL
 		, Title  VARCHAR(300) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
@@ -119,7 +119,7 @@ CREATE TABLE ChatBot.NotificationTemplate(
   );
 
   CREATE TABLE ChatBot.Notification(
-		 NotificationID INT AUTO_INCREMENT NOT NULL
+		 NotificationID INT UNSIGNED AUTO_INCREMENT NOT NULL
 		, NotificationTypeID SMALLINT NOT NULL
         , ProductID SMALLINT NULL
 		, Title VARCHAR(300) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
@@ -196,7 +196,7 @@ CREATE TABLE ChatBot.LogAction(
 );
 
 CREATE TABLE ChatBot.UserLog_RunSP(
-		 LogID BIGINT AUTO_INCREMENT NOT NULL
+		 LogID BIGINT UNSIGNED AUTO_INCREMENT NOT NULL
 		, LogTime DATETIME(3) NOT NULL
         , ReferenceID INT
 		, ActionID SMALLINT  NOT NULL
@@ -209,7 +209,7 @@ CREATE TABLE ChatBot.UserLog_RunSP(
  );        
  
 CREATE TABLE ChatBot.SystemLog(
-		LogID BIGINT AUTO_INCREMENT NOT NULL
+		LogID BIGINT UNSIGNED AUTO_INCREMENT NOT NULL
         , MachineName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NOT NULL
         , LogTime DATETIME NOT NULL
 		, Level VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NOT NULL
