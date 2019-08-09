@@ -158,7 +158,7 @@ export const createNewNotification = (data) => {
             'RequestVerificationToken': Site.getXsrfToken()
         }
     }).then(response => {
-        const data = response.data
+        const data = response.data;
         if (!data.isSuccessful && data.code > 0) {
             data.message = `${ErrorCodeTempalteMessage.find(x => x.code === data.code).message} ${data.message}`;
         }

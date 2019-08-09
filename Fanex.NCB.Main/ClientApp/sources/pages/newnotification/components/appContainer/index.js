@@ -396,15 +396,13 @@ export class AppContainer extends React.Component {
         return (
             <>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="New Notification" />
-
                 <div className="content new-notification">
-                    {!isEmpty(this.props.createNotificationResult) &&
+                    {this.props.createNotificationResult &&
                         <ResponseMessage isSuccessful={this.props.createNotificationResult.isSuccessful}
                             message={this.props.createNotificationResult.message || Labels.CreateNotificationSuccessfully} />
                     }
 
                     <Formik ref="form"
-
                         initialValues={{
                             notificationTypeId: '',
                             productId: '',
