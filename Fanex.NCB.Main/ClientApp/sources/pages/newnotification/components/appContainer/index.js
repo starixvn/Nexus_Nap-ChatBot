@@ -1,4 +1,6 @@
-﻿import React from 'react';
+﻿import './AppContainer.scss';
+
+import React from 'react';
 import { connect } from 'react-redux';
 import { Form, FormGroup, Label, Button, Container, Row, Col, Input, FormFeedback } from 'reactstrap';
 import { stringify } from 'qs';
@@ -14,7 +16,7 @@ import { TemplateTextField } from '../../../common/template-text-field/TemplateT
 import Labels from '../../../common/Labels';
 import ResponseMessage from '../../../common/response-message/ResponseMessage';
 import Site from '../../../lib/site';
-import './AppContainer.scss';
+import ConfirmPopup from '../../../common/ConfirmPopup';
 
 const SendModeOptions = [
     {
@@ -197,6 +199,37 @@ export class AppContainer extends React.Component {
         console.log(value);
     }
 
+    handleToggleConfirmationPopup = () => this.props.toggleConfirmationPopup(!this.props.confimrationPopup.isOpen)
+
+    handleConfirm = () => {
+        const formik = this.refs.form;
+        const values = formik.state.values;
+
+        const recipientIds = [];
+        this.getRecipientIds(recipientIds, this.selectedNodes);
+
+        const data = stringify({
+            notificationTypeId: values.notificationTypeId,
+            productId: values.productId,
+            recipientIds: recipientIds.toString(),
+            title: values.title,
+            content: values.content,
+            sendDate: values.sendMode === '1' ? new Date().toLocaleString('en', { timeZone: 'Asia/Shanghai' }) : values.sendDate,
+            sendImmediately: values.sendMode === '1'
+        });
+
+        formik.setSubmitting(true);
+        this.props.createNewNotification(data).then(response => {
+            formik.setSubmitting(false);
+            this.props.toggleConfirmationPopup(false);
+            if (this.props.createNotificationResult.isSuccessful) {
+                setTimeout(function () {
+                    window.location = Site.resolveClientUrl('NotificationList');
+                }, 3000);
+            }
+        });
+    }
+
     getRecipientIds = (ids, collection) => {
         for (let i = 0; i < collection.length; i++) {
             const item = collection[i];
@@ -221,28 +254,15 @@ export class AppContainer extends React.Component {
 
     renderProductOption = (item) => <option key={item.id} value={item.id} >{item.name}</option>
 
-    renderSendModeOption = item => <option key={item.value} value={item.value} >{item.label}</option>
+    renderSendModeOption = item => <option key={item.value} value={item.value} >{item.label}</option>;
 
-    handleSubmit = (values, { setErrors, setSubmitting }) => {
-        const recipientIds = [];
-        this.getRecipientIds(recipientIds, this.selectedNodes);
+    handleSubmit = (values) => {
+        const formatDate = values.sendDate.toLocaleString('en-US',
+            { hour12: true, month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-        const data = stringify({
-            notificationTypeId: values.notificationTypeId,
-            productId: values.productId,
-            recipientIds: recipientIds.toString(),
-            title: values.title,
-            content: values.content,
-            sendDate: values.sendMode === '1' ? new Date().toLocaleString('en', { timeZone: 'Asia/Shanghai' }) : values.sendDate,
-            sendImmediately: values.sendMode === '1'
-        });
-
-        this.props.createNewNotification(data).then(() => {
-            setSubmitting(false);
-            setTimeout(function () {
-                window.location = Site.resolveClientUrl('NotificationList');
-            }, 3000);
-        });
+        const message = values.sendMode === '1' ? 'Do you want to send immediately the notification to the selected recipient?'
+            : `Do you want to send the notification at ${formatDate} to the selected recipient?`;
+        this.props.toggleConfirmationPopup(true, message);
     }
 
     handleNotificationTypeChange = (event) => {
@@ -400,6 +420,12 @@ export class AppContainer extends React.Component {
                     />
 
                 </div>
+                <ConfirmPopup
+                    onConfirm={this.handleConfirm}
+                    onToggle={this.handleToggleConfirmationPopup}
+                    isOpen={this.props.confimrationPopup.isOpen}
+                    content={this.props.confimrationPopup.content}
+                />}
             </>
         );
     }
@@ -412,7 +438,8 @@ const mapStateToProps = state => {
         notificationTypes: state.notificationTypes,
         products: state.products,
         recipientOptions: state.recipients,
-        createNotificationResult: state.createNotificationResult
+        createNotificationResult: state.createNotificationResult,
+        confimrationPopup: state.confimrationPopup
     };
 };
 

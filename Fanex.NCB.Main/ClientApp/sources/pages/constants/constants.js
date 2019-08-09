@@ -5,3 +5,10 @@
 };
 
 export const PAGING_SIZES = [20, 50, 100, 500];
+
+export const ErrorCodeTempalteMessage = [
+    {
+        code: 106,
+        message: 'Recipient is not mapped or removed:'
+    }
+];

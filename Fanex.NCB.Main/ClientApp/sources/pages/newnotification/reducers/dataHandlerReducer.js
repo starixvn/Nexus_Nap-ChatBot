@@ -49,6 +49,12 @@ export const createNotificationResult = createReducer({}, {
     }
 });
 
+export const confimrationPopup = createReducer({}, {
+    [types.CONFIRMATIONPOPUP_DATA](state, action) {
+        return action.data;
+    }
+});
+
 const reducers = {
     settingData,
     notificationTypes,
@@ -56,7 +62,8 @@ const reducers = {
     template,
     products,
     recipients,
-    createNotificationResult
+    createNotificationResult,
+    confimrationPopup
 };
 
 export default reducers;

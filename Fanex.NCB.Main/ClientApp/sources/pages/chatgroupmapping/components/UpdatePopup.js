@@ -97,14 +97,14 @@ export class UpdatePopup extends Component {
         }
     }
 
-    confirmHandler = isYes => {
-        if (isYes) {
-            this.state.confirmType === CONFIRM_CLOSE && this.props.closeUpdatePopupHandler();
-            this.state.confirmType === CONFIRM_UPDATE && this.submitData();
-        }
+    confirmHandler = () => {
+        this.state.confirmType === CONFIRM_CLOSE && this.props.closeUpdatePopupHandler();
+        this.state.confirmType === CONFIRM_UPDATE && this.submitData();
 
-        this.setState({ isShowedConfirm: false });
+        this.handleCloseConfirmPopup();
     }
+
+    handleCloseConfirmPopup = () => this.setState({ isShowedConfirm: false });
 
     filterRecipients = recipientTypeId => {
         this.props.filterRecipients(this.props.settingData.recipients, recipientTypeId);
@@ -136,7 +136,7 @@ export class UpdatePopup extends Component {
                 <ModalHeader toggle={this.confirmThenClose} className="bold-text">{Labels.EditMappingStatus}</ModalHeader>
                 <ModalBody>
                     {this.props.updateData &&
-                        <ResponseMessage message={this.props.updateData.message} isSuccessful={this.props.updateData.isSuccessful} />
+                        <ResponseMessage message={this.props.updateData.message || Labels.UpdateMappingStatusSuccessfully} isSuccessful={this.props.updateData.isSuccessful} />
                     }
                     <Form className="form-edit">
                         <FormGroup>
@@ -199,8 +199,9 @@ export class UpdatePopup extends Component {
                 </ModalBody>
                 {this.state.isShowedConfirm &&
                     <ConfirmPopup
-                        confirmHandler={this.confirmHandler}
-                        isShowPopup={this.state.isShowedConfirm}
+                        onConfirm={this.confirmHandler}
+                        onToggle={this.handleCloseConfirmPopup}
+                        isOpen={this.state.isShowedConfirm}
                         title={this.state.confirmTitle}
                         content={this.state.confirmContent}
                         warningIcon={false}

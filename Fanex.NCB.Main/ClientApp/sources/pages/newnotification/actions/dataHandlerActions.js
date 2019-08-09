@@ -2,6 +2,7 @@ import types from './types';
 import axios from 'axios';
 import Site from '../../lib/site';
 import errorResponseHandler from '../../lib/errorResponseHandler';
+import { ErrorCodeTempalteMessage } from '../../constants/constants';
 
 // Settings
 export const setSettings = data => {
@@ -157,8 +158,25 @@ export const createNewNotification = (data) => {
             'RequestVerificationToken': Site.getXsrfToken()
         }
     }).then(response => {
-        dispatch(setCreateNewNotificationResult(response.data));
+        const data = response.data
+        if (!data.isSuccessful && data.code > 0) {
+            data.message = `${ErrorCodeTempalteMessage.find(x => x.code === data.code).message} ${data.message}`;
+        }
+
+        dispatch(setCreateNewNotificationResult(data));
     }).catch(errorResponseHandler);
+};
+
+export const toggleConfirmationPopup = (isOpen, content) => {
+    const popupData = {
+        isOpen,
+        content
+    };
+
+    return {
+        type: types.CONFIRMATIONPOPUP_DATA,
+        data: popupData
+    };
 };
 
 const actions = {
@@ -175,7 +193,8 @@ const actions = {
     setRecipients,
     getRecipients,
     createNewNotification,
-    setCreateNewNotificationResult
+    setCreateNewNotificationResult,
+    toggleConfirmationPopup
 };
 
 export default actions;
