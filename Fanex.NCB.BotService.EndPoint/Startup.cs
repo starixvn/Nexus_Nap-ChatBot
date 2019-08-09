@@ -72,7 +72,7 @@
             });
 
             BotServiceDI.Init(services);
-            LoadBotConfig(services);
+            LoadBotConfig(services, appSettings);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -94,17 +94,14 @@
             app.UseMvc();
         }
 
-        private void LoadBotConfig(IServiceCollection services)
+        private void LoadBotConfig(IServiceCollection services, AppSettings appSettings)
         {
-            var secretKey = Configuration.GetSection("botFileSecret")?.Value;
-            var botFilePath = Configuration.GetSection("botFilePath")?.Value;
-
             // Loads .bot configuration file and adds a singleton that your Bot can access through dependency injection.
             BotConfiguration botConfig = null;
             try
             {
-                var realPath = Path.Combine(Environment.ContentRootPath, botFilePath);
-                botConfig = BotConfiguration.Load(realPath, secretKey);
+                var realPath = Path.Combine(Environment.ContentRootPath, appSettings.BotFilePath);
+                botConfig = BotConfiguration.Load(realPath, appSettings.BotFileSecret);
             }
             catch (Exception ex)
             {

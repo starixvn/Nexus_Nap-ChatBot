@@ -43,7 +43,7 @@
         [HttpPost]
         [Route("api/notifymulti")]
         [HttpPost]
-        public async Task<ObjectResult> SendMulti(IList<ProactiveMessage> proactiveMessages)
+        public async Task<ObjectResult> SendMulti([FromBody]IList<ProactiveMessage> proactiveMessages)
         {
             string appId;
             ProactiveMessageError result;
