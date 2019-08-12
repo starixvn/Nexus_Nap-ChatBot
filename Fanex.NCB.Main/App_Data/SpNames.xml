@@ -32,5 +32,7 @@
   <Function Name="New Notification">
     <Setting Key="NCB_NewNotification_Ins" SpName="NCB_NewNotification_Ins" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_NewNotification_Recipient_Sel" SpName="NCB_NewNotification_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Common_NotificationStatus_Sel" SpName="NCB_Common_NotificationStatus_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Common_Recipient_Sel" SpName="NCB_Common_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
 </Functions>

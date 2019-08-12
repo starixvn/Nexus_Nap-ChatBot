@@ -25,5 +25,15 @@
         {
             return await baseService.GetDataAsync<Product>(new GetProductsCriteria()).ConfigureAwait(false);
         }
+
+        public async Task<IEnumerable<NotificationStatus>> GetNotificationStatusesAsync()
+        {
+            return await baseService.GetDataAsync<NotificationStatus>(new GetNotificationStatusCriteria()).ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<Recipient>> GetRecipientsAsync()
+        {
+            return await baseService.GetDataAsync<Recipient>(new GetRecipientsCriteria()).ConfigureAwait(false);
+        }
     }
 }

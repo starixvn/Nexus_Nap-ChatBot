@@ -1,8 +1,7 @@
 import React from 'react';
 import NotificationList from './components/NotificationList';
-import { connect } from 'react-redux';
 
-export class App extends React.PureComponent {
+export default class App extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -25,7 +24,3 @@ export class App extends React.PureComponent {
         );
     }
 }
-
-export default connect(
-    state => state
-)(App);

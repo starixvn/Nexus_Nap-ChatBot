@@ -9,5 +9,9 @@
         Task<IEnumerable<NotificationType>> GetNotificationTypesAsync();
 
         Task<IEnumerable<Product>> GetProductsAsync();
+
+        Task<IEnumerable<Recipient>> GetRecipientsAsync();
+
+        Task<IEnumerable<NotificationStatus>> GetNotificationStatusesAsync();
     }
 }

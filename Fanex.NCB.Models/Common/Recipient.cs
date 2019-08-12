@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Models.Notification
+﻿namespace Fanex.NCB.Models.Common
 {
     public class Recipient
     {

@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.Services
 {
     using Fanex.NCB.Criteria.Notification;
+    using Fanex.NCB.Models.Common;
     using Fanex.NCB.Models.Notification;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
