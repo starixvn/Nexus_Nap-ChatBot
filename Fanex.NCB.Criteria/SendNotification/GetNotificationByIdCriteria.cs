@@ -2,7 +2,7 @@
 {
     using Fanex.Data.Repository;
 
-    public class GetRecipientsToSendMessageCriteria : CriteriaBase
+    public class GetNotificationByIdCriteria : CriteriaBase
     {
         public int NotifictaionId { get; set; }
 

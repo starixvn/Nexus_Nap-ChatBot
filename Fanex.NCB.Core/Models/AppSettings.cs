@@ -8,6 +8,6 @@
 
         public string Env { get; set; }
 
-        public int BatchSendNotification { get; set; }
+        public int ItemEachBatchSendNotification { get; set; }
     }
 }

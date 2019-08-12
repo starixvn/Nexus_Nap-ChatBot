@@ -6,9 +6,13 @@ namespace Fanex.NCB.Models.NotifictaionSendMessage
     {
         public int NotificationId { get; set; }
 
+        public int RecipientId { get; set; }
+
         public int ChatGroupId { get; set; }
 
         public string ChatGroupConversation { get; set; }
+
+        public int BotId { get; set; }
 
         public string BotName { get; set; }
 

@@ -4,14 +4,10 @@
 
     public class UpdateRecipientSendNotifiactionStatusCommand : BaseCommand
     {
-        public int NotificationId { get; set; }
+        public string SentStatus { get; set; }
 
-        public string RecipientConversationId { get; set; }
+        public override string GetSettingKey() => "NCB_SendNotification_RecipientSentStatus_Upd";
 
-        public int SendNotifiactionStatus { get; set; }
-
-        public override string GetSettingKey() => "NCB_SendNotification_UpdateRecipientSendNotiStatus";
-
-        public override bool IsValid() => NotificationId > 0 && !string.IsNullOrWhiteSpace(RecipientConversationId);
+        public override bool IsValid() => !string.IsNullOrWhiteSpace(SentStatus);
     }
 }
