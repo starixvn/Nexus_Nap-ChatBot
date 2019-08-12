@@ -17,17 +17,17 @@ BEGIN
     # is rarely changed, we gonna consider later
 	SELECT StatusID AS ID, StatusName AS Name
     FROM (
-		SELECT 1 StatusID,  'Planned' StatusName
+		SELECT 0 StatusID,  'Planned' StatusName
 		UNION ALL
-		SELECT 2 StatusID,  'Sent' StatusName
+		SELECT 1 StatusID,  'Sent' StatusName
 		UNION ALL
-		SELECT 3 StatusID,  'Error' StatusName
+		SELECT 2 StatusID,  'Error' StatusName
 		UNION ALL
-		SELECT 4 StatusID,  'Sending' StatusName
+		SELECT 3 StatusID,  'Sending' StatusName
 		UNION ALL
-		SELECT 5 StatusID,  'Cancelled' StatusName
+		SELECT 4 StatusID,  'Cancelled' StatusName
 		UNION ALL
-		SELECT 6 StatusID,  'Resolved' StatusName
+		SELECT 5 StatusID,  'Resolved' StatusName
     ) AS tmp
     ORDER BY StatusID;
 END;

@@ -3,32 +3,32 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS NCB_SendNotification_RecipientSentStatus_Upd;
 
 CREATE PROCEDURE  NCB_SendNotification_RecipientSentStatus_Upd(
-	IN notificationID INT
-    , IN sentStatus MEDIUMTEXT CHARACTER SET utf8mb4
+    IN sentStatus MEDIUMTEXT CHARACTER SET utf8mb4
     , IN userID INT
 	, OUT errCode SMALLINT
 	, OUT errMsg VARCHAR(100)
     /*
 		Creator: Dominic@20190401
         Param:
-                - notificationID: ID of Notification
                 - sentStatus: in JSON format
 						[  
 							{  
-								"ChatGroupID":1,
-								"ChatGroupConversationID":"19:I2NyNy5uZ3V5ZW4vJDljN2RhZjU5OGQ0ZTc4ODg=@p2p.thread.skype",
-								"BotMemberID":"28:ea8d17a4-16c8-43b3-a1a8-ade5277dbd24",
+								"NotificationID":1,
+								"RecipientID":1,
+                                "ConversationGroupID":1,
+								"ConversationBotID":1,
 								"SentTime":"2019-04-01 12:23:22.000000",
 								"IsSuccess":0,
 								"ErrMsg":"Bot Is Removed"
 							},
 							{  
-								"ChatGroupID":2,
-								"ChatGroupConversationID":"19:636032a5293849c59f06c8403a24b2e9@thread.skype",
-								"BotMemberID":"28:5de427b9-a7f0-497e-81d3-b3348721500a",
+								"NotificationID":1,
+								"RecipientID":2,
+                                "ConversationGroupID":2,
+								"ConversationBotID":1,
 								"SentTime":"2019-04-01 12:23:22.000000",
-								"IsSuccess":0,
-								"ErrMsg":"Bot Is Removed"
+								"IsSuccess":1,
+								"ErrMsg":""
 							}
 						]
         Revisions:
@@ -57,37 +57,21 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
     
     SET  startTime = UTC_TIMESTAMP(3);
     SET errCode=0, errMsg='';
-
-	#Check param
-	IF  NOT EXISTS(	SELECT 1 
-									FROM Notification n
-                                    WHERE n.NotificationID = notificationID
-										AND n.StatusID = NOTIFICATION_STATUSID_SENDING
-                                        AND n.SendImmediately = 0
-                                    ) THEN
-		SET errCode=701, errMsg='Invalid NotificationID';
-        LEAVE NCB_SendNotification_RecipientSentStatus_Upd;
-    ELSEIF IFNULL(SentStatus,'') = '' THEN
-		SET errCode=702, errMsg='SentStatus must not be empty';
-        LEAVE NCB_SendNotification_RecipientSentStatus_Upd;
-	 ELSEIF  userID IS NULL THEN
-		SET errCode=703, errMsg='userID must be specified';
-        LEAVE NCB_SendNotification_RecipientSentStatus_Upd;
-	END IF;
-    
+	
     DROP TEMPORARY TABLE IF EXISTS tmp_ChatGroupSentStatus;
 	CREATE TEMPORARY TABLE tmp_ChatGroupSentStatus(
-																	ChatGroupID INT
-																	, ChatGroupConversationID VARCHAR(70)  CHARACTER SET utf8mb4
-                                                                    , BotMemberID VARCHAR(70)  CHARACTER SET utf8mb4
+																	NotificationID INT
+                                                                    , RecipientID INT
+																	, ConversationGroupID INT
+                                                                    , ConversationBotID INT
                                                                     , SentTime DATETIME
                                                                     , IsSuccess TINYINT
                                                                     , ErrMsg VARCHAR(1000) CHARACTER SET utf8mb4
-                                                                    , INDEX INDEX_ChatGroupID USING BTREE (ChatGroupID)
+                                                                    , INDEX INDEX_ChatGroupID USING BTREE (NotificationID, RecipientID, ConversationGroupID)
 																);
 
 	SET iLoop = 0;
-	WHILE (JSON_EXTRACT(SentStatus, CONCAT('$[',iLoop, '].ChatGroupID'))  IS NOT NULL) DO
+	WHILE (JSON_EXTRACT(SentStatus, CONCAT('$[',iLoop, '].NotificationID'))  IS NOT NULL) DO
 		INSERT INTO tmp_ChatGroupSentStatus(
 																		ChatGroupID
                                                                         , ChatGroupConversationID
@@ -106,6 +90,26 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
 		SET iLoop = iLoop +1;
         
 	END WHILE;
+    
+    
+	#Check param
+	IF  NOT EXISTS(	SELECT 1 
+									FROM Notification n
+                                    WHERE n.NotificationID = notificationID
+										AND n.StatusID = NOTIFICATION_STATUSID_SENDING
+                                        AND n.SendImmediately = 0
+                                    ) THEN
+		SET errCode=701, errMsg='Invalid NotificationID';
+        LEAVE NCB_SendNotification_RecipientSentStatus_Upd;
+    ELSEIF IFNULL(SentStatus,'') = '' THEN
+		SET errCode=702, errMsg='SentStatus must not be empty';
+        LEAVE NCB_SendNotification_RecipientSentStatus_Upd;
+	 ELSEIF  userID IS NULL THEN
+		SET errCode=703, errMsg='userID must be specified';
+        LEAVE NCB_SendNotification_RecipientSentStatus_Upd;
+	END IF;
+    
+    
 	
 	UPDATE NotificationRecipientList nrl
 		INNER JOIN tmp_ChatGroupSentStatus tmp

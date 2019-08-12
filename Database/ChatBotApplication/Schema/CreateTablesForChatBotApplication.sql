@@ -148,9 +148,11 @@ CREATE TABLE ChatBot.NotificationRecipientList(
 		, SentTime DATETIME NULL
 		, Status VARCHAR(10) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
 		, StatusID TINYINT UNSIGNED NOT NULL
+        , RetryTime TINYINT UNSIGNED NULL
 		, ErrMsg VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
         , CONSTRAINT PK_NotificationID_BotConversationID_RecipientID_ChatGroupTypeID PRIMARY KEY (NotificationID, RecipientID, ConversationGroupID, ChatGroupTypeID)
         , INDEX INDEX_RecipientID USING BTREE (RecipientID)
+        , INDEX INDEX_StatusID USING BTREE (StatusID, NotificationID, RecipientID, ConversationGroupID)
 );
 
 CREATE TABLE ChatBot.Licensee(
