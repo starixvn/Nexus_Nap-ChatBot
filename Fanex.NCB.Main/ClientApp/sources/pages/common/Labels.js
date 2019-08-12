@@ -18,7 +18,7 @@
     None: 'None',
     NotificationType: 'Notification Type',
     NoInfo: 'No information is available.',
-    PleaseSelect: '---Please select---',
+    PleaseSelect: 'Please select ...',
     FieldRequired: 'This field is required',
     RecipientType: 'Recipient Type',
     Recipient: 'Recipient',

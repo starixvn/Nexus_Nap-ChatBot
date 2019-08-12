@@ -308,7 +308,7 @@ export class AppContainer extends React.Component {
                             onChange={this.handleNotificationTypeChange}
                             value={values.notificationTypeId}
                         >
-                            <option value="" />
+                            <option value="" disabled hidden>{Labels.PleaseSelect}</option>
                             {this.props.notificationTypes.map(this.renderNotificationTypeOption)}
                         </Input>
                         {touched.notificationTypeId && errors.notificationTypeId && <FormFeedback>{errors.notificationTypeId}</FormFeedback>}
@@ -333,7 +333,7 @@ export class AppContainer extends React.Component {
                     <Label for="productId" className="form-label required" sm={2}>Recipients</Label>
 
                     <Col sm={10}>
-                        <TreeSelect value={values.recipients} onChange={this.handleRecipientChange}
+                        <TreeSelect value={values.recipients} onChange={this.handleRecipientChange} placeholder={Labels.PleaseSelect}
                             invalid={touched.recipients && errors.recipients} treeData={this.props.recipientOptions}
                         />
                         {touched.recipients && errors.recipients && <FormFeedback>{errors.recipients}</FormFeedback>}

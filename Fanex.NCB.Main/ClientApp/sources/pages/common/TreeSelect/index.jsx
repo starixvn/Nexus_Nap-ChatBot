@@ -1,5 +1,4 @@
 ﻿import React from 'react';
-import data from "./data.json";
 import TreeSelect, { SHOW_PARENT } from 'rc-tree-select';
 import "rc-tree-select/assets/index.css";
 import "./TreeSelect.scss";
