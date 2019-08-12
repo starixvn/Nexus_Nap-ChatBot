@@ -1,7 +1,7 @@
-﻿import { mappingStatus } from '../constants/constants';
+﻿import { mappingStatus, ErrorCodeTemplateMessage } from '../constants/constants';
 
 export default class CommonFunctions {
-    static getMappingClass(mappingStatusId){
+    static getMappingClass(mappingStatusId) {
         switch (mappingStatusId) {
             case mappingStatus.BotRemoved:
                 return 'badge-grey';
@@ -25,4 +25,8 @@ export default class CommonFunctions {
     static getLicenseeStatus(recipientStatusNames) {
         return recipientStatusNames === '' ? 'N/A' : recipientStatusNames;
     }
+}
+
+export function getErrorTemplateMessage(code) {
+    return ErrorCodeTempalteMessage.find(x => x.code === code).message;
 }

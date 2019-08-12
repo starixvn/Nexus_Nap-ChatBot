@@ -2,7 +2,7 @@ import types from './types';
 import axios from 'axios';
 import Site from '../../lib/site';
 import errorResponseHandler from '../../lib/errorResponseHandler';
-import { ErrorCodeTempalteMessage } from '../../constants/constants';
+import { getErrorTemplateMessage } from '../../common/CommonFunctions';
 
 // Settings
 export const setSettings = data => {
@@ -160,7 +160,10 @@ export const createNewNotification = (data) => {
     }).then(response => {
         const data = response.data;
         if (!data.isSuccessful && data.code > 0) {
-            data.message = `${ErrorCodeTempalteMessage.find(x => x.code === data.code).message} ${data.message}`;
+            const message = getErrorTemplateMessage(data.code);
+            if (message) {
+                data.message = `${message} ${data.message}`;
+            }
         }
 
         dispatch(setCreateNewNotificationResult(data));

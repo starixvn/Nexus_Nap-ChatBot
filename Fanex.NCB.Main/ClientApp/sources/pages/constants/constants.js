@@ -6,9 +6,21 @@
 
 export const PAGING_SIZES = [20, 50, 100, 500];
 
-export const ErrorCodeTempalteMessage = [
+export const ErrorCodeTemplateMessage = [
     {
         code: 106,
         message: 'Recipient is not mapped or removed:'
+    },
+    {
+        code: 107,
+        message: 'Licensee is Inactive:'
+    },
+    {
+        code: 108,
+        message: 'Licensee is not offered:'
+    },
+    {
+        code: 109,
+        message: 'There are recipients in the exception list:'
     }
 ];
