@@ -23,7 +23,7 @@
             this.botSettings = botSettings;
         }
 
-        public async Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<ProactiveMessage> proactiveMessages)
+        public async Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<ReciveProactiveMessage> proactiveMessages)
         {
             webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
 

@@ -4,6 +4,8 @@
 
     public interface ISendNotificationService
     {
-        Task SendMessageToRecipients(int creatorId);
+        Task ScanAndSendNotification(int creatorId);
+
+        Task SendNotificationImediately(int notifiactionId, int creatorId);
     }
 }

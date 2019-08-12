@@ -2,8 +2,10 @@
 {
     using Fanex.Data.Repository;
 
-    public class GetNotificationIdsToSendCriteria : CriteriaBase
+    public class GetNotificationsToSendCriteria : CriteriaBase
     {
+        public int CreatorId { get; set; }
+
         public override string GetSettingKey() => "NCB_SendNotification_ScanWaitingList_Sel";
 
         public override bool IsValid() => true;

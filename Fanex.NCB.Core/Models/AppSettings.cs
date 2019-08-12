@@ -8,8 +8,6 @@
 
         public string Env { get; set; }
 
-        public string TokenUrl { get; set; }
-
-        public string SkypeServiceUrl { get; set; }
+        public int BatchSendNotification { get; set; }
     }
 }

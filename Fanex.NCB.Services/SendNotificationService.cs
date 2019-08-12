@@ -3,126 +3,87 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
     using System.Threading.Tasks;
-    using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Enum;
+    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SendNotification;
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Microsoft.Extensions.Options;
     using Newtonsoft.Json.Linq;
-    using RestSharp;
 
     public class SendNotificationService : ISendNotificationService
     {
         private readonly IChatbotService chatbotService;
         private readonly IBaseService baseService;
+        private readonly IOptionsSnapshot<AppSettings> appSettings;
 
-        private const int RetryTimes = 5; //Time to Retry send message if error
-
-        public SendNotificationService(IChatbotService chatbotService, IBaseService baseService)
+        public SendNotificationService(IChatbotService chatbotService,
+            IBaseService baseService,
+            IOptionsSnapshot<AppSettings> appSettings)
         {
             this.chatbotService = chatbotService;
             this.baseService = baseService;
+            this.appSettings = appSettings;
         }
 
-        public async Task SendMessageToRecipients(int creatorId)
+        public async Task ScanAndSendNotification(int creatorId)
         {
-            var notifications = await GetNotificationIdsToSend().ConfigureAwait(false);
-            foreach (var notificationId in notifications)
+            var notifications = await GetNotificationIdsToSend(creatorId).ConfigureAwait(false);
+
+            await UpdateFailedRecipientStatus(notifications.Item2.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
+
+            var proactiveMsgs = GenerateProactiveMessage(notifications.Item1, notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
+
+            await SendNotificationToRecipients(proactiveMsgs).ConfigureAwait(false);
+        }
+
+        private async Task SendNotificationToRecipients(IEnumerable<ReciveProactiveMessage> proactiveMsgs)
+        {
+            int totalBatch = (int)Math.Ceiling((double)proactiveMsgs.Count() / appSettings.Value.BatchSendNotification);
+            for (int i = 0; i < totalBatch; i++)
             {
-                var result = await LockForSendingStatus(notificationId, creatorId).ConfigureAwait(false);
-                if (result.IsSuccessful)
-                {
-                    var tuple = await GetNotificationRecipients(notificationId).ConfigureAwait(false);
-                    await HandleListRecipients(tuple.Item1, tuple.Item2).ConfigureAwait(false);
-                }
+                var currentMsgs = proactiveMsgs.Skip(i * appSettings.Value.BatchSendNotification).Take(appSettings.Value.BatchSendNotification);
+                var response = await chatbotService.SendMessageToMultitpleAsync(currentMsgs).ConfigureAwait(false);
             }
         }
 
-        public async Task<CommandResult> LockForSendingStatus(int notificationId, int creatorId)
+        private IEnumerable<ReciveProactiveMessage> GenerateProactiveMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
-            var command = new UpdateNotificationSendingStatusCommand
+            var proactiveMsgs = new List<ReciveProactiveMessage>();
+            foreach (var noti in notifications)
             {
-                NotificationId = notificationId,
-                Creator = creatorId <= 0 ? Constants.SystemId : creatorId
-            };
-
-            return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
-        }
-
-        private async Task<IEnumerable<int>> GetNotificationIdsToSend()
-        {
-            var criteria = new GetNotificationIdsToSendCriteria();
-            return await baseService.GetDataAsync<int>(criteria).ConfigureAwait(false);
-        }
-
-        private async Task<(NotificationSendMessage, IEnumerable<NotificationRecipient>)> GetNotificationRecipients(int notificationId)
-        {
-            var criteria = new GetRecipientsToSendMessageCriteria
-            {
-                NotifictaionId = notificationId
-            };
-
-            var tuple = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria).ConfigureAwait(false);
-            return new ValueTuple<NotificationSendMessage, IEnumerable<NotificationRecipient>>(tuple.Item1.FirstOrDefault(), tuple.Item2);
-        }
-
-        private async Task HandleListRecipients(NotificationSendMessage notification, IEnumerable<NotificationRecipient> recipients)
-        {
-            // Update error if not mapped, bot removed or changed group
-            await UpdateRecipientUnableSend(notification.NotificationId, recipients.Where(r => r.RecipientStatus != RecipientStatuses.ReadyToSend)).ConfigureAwait(false);
-
-            //Handle send to recipients
-            string message = string.Format("{0}\n{1}", notification.Title, notification.Content);
-            var proactiveMessages = MappingProactiveMessage(recipients.Where(r => r.RecipientStatus == RecipientStatuses.ReadyToSend), message);
-            await SendMessageToRecipient(proactiveMessages, notification.NotificationId).ConfigureAwait(false);
-        }
-
-        private IEnumerable<ProactiveMessage> MappingProactiveMessage(IEnumerable<NotificationRecipient> recipients, string message)
-        {
-            var proactiveMessages = recipients.Select(r => new ProactiveMessage
-            {
-                BotConversationId = r.BotConversationId,
-                ConversationId = r.ChatGroupConversation,
-                BotName = r.BotName,
-                ChannelId = r.ChannelId,
-                ServiceUrl = r.ServiceUrl,
-                Message = message
-            });
-
-            return proactiveMessages;
-        }
-
-        private async Task SendMessageToRecipient(IEnumerable<ProactiveMessage> proactiveMessages, int notificationId)
-        {
-            if (proactiveMessages.Any())
-            {
-                var response = await chatbotService.SendMessageToMultitpleAsync(proactiveMessages).ConfigureAwait(false);
-                if (response.StatusCode == HttpStatusCode.OK)
+                var proactiveMsg = new ReciveProactiveMessage
                 {
-                    await OnAfterSendMessage(response, proactiveMessages, notificationId).ConfigureAwait(false);
-                }
-                else
-                {
-                    await SendMessageToRecipient(proactiveMessages, notificationId).ConfigureAwait(false);
-                }
+                    NotifictaionId = noti.NotificationId,
+                    Message = string.Format("{0}\n{1}", noti.Title, noti.Content),
+                    Recipients = recipients.Where(r => noti.NotificationId == noti.NotificationId)
+                            .Select(r => new ProactiveMessage
+                            {
+                                BotConversationId = r.BotConversationId,
+                                ServiceUrl = r.ServiceUrl,
+                                ChannelId = r.ChannelId,
+                                ConversationId = r.ChatGroupConversation,
+                                BotName = r.BotName
+                            })
+                };
+                proactiveMsgs.Add(proactiveMsg);
             }
+
+            return proactiveMsgs;
         }
 
-        private async Task OnAfterSendMessage(IRestResponse response, IEnumerable<ProactiveMessage> proactiveMessages, int notificationId)
-        {
-            var errorMessages = ConvertJsonResponse(response.Content);
-            var successedMsg = proactiveMessages.Where(m => errorMessages.Any(e => e.ErrorCode == 0 && e.ConversationId == m.ConversationId));
-            var failedMsg = proactiveMessages.Where(m => errorMessages.Any(e => e.ErrorCode != 0 && e.ConversationId == m.ConversationId));
-            await UpdateSuccessSendNotificationRecipient(successedMsg, notificationId).ConfigureAwait(false);
-        }
-
-        private Task UpdateSuccessSendNotificationRecipient(IEnumerable<ProactiveMessage> successedMsg, int notificationId)
+        private Task UpdateFailedRecipientStatus(IEnumerable<NotificationRecipient> item2)
         {
             throw new NotImplementedException();
+        }
+
+        private async Task<(IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>)> GetNotificationIdsToSend(int creatorId)
+        {
+            var criteria = new GetNotificationsToSendCriteria { CreatorId = creatorId };
+            return await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria).ConfigureAwait(false);
         }
 
         private IList<ProactiveMessageError> ConvertJsonResponse(string json)
@@ -144,22 +105,9 @@
             return messages;
         }
 
-        private async Task UpdateRecipientUnableSend(int notifiactionId, IEnumerable<NotificationRecipient> recipients)
+        public Task SendNotificationImediately(int notifiactionId, int creatorId)
         {
-            if (recipients.Any())
-            {
-                foreach (var recipient in recipients)
-                {
-                    var command = new UpdateRecipientSendNotifiactionStatusCommand
-                    {
-                        NotificationId = notifiactionId,
-                        RecipientConversationId = recipient.ChatGroupConversation,
-                        SendNotifiactionStatus = (int)recipient.RecipientStatus
-                    };
-
-                    await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
-                }
-            }
+            throw new NotImplementedException();
         }
     }
 }
