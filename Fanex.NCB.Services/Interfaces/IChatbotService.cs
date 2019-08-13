@@ -9,6 +9,6 @@
     {
         Task SendMessageAsync(string botName, string conversationId, string message);
 
-        Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<ReciveProactiveMessage> proactiveMessages);
+        Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> proactiveMessages);
     }
 }

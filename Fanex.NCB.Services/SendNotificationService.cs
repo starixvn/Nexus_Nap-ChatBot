@@ -143,17 +143,17 @@
             await UpdateSentNotificationStatus(updateNotiModels).ConfigureAwait(false);
         }
 
-        private IEnumerable<ReciveProactiveMessage> GenerateProactiveMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
+        private IEnumerable<NotificationMessage> GenerateProactiveMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
-            var proactiveMsgs = new List<ReciveProactiveMessage>();
+            var proactiveMsgs = new List<NotificationMessage>();
             foreach (var noti in notifications)
             {
-                var proactiveMsg = new ReciveProactiveMessage
+                var proactiveMsg = new NotificationMessage
                 {
                     NotifictaionId = noti.NotificationId,
                     Message = string.Format("{0}\n{1}", noti.Title, noti.Content),
                     Recipients = recipients.Where(r => noti.NotificationId == noti.NotificationId)
-                            .Select(r => new ProactiveMessage
+                            .Select(r => new ConversationInfo
                             {
                                 BotConversationId = r.BotConversationId,
                                 ServiceUrl = r.ServiceUrl,

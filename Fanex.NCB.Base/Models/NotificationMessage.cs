@@ -2,12 +2,12 @@
 {
     using System.Collections.Generic;
 
-    public class ReciveProactiveMessage
+    public class NotificationMessage
     {
         public int NotifictaionId { get; set; }
 
         public string Message { get; set; }
 
-        public IEnumerable<ProactiveMessage> Recipients { get; set; }
+        public IEnumerable<ConversationInfo> Recipients { get; set; }
     }
 }

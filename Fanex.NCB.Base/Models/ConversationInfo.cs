@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Shared.Models
 {
-    public class ProactiveMessage
+    public class ConversationInfo
     {
         public string ConversationId { get; set; }
 

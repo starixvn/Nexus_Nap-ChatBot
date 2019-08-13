@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Shared.Models
 {
-    public class ProactiveMessageError
+    public class NotificationMessageError
     {
         public int NotificationId { get; set; }
 

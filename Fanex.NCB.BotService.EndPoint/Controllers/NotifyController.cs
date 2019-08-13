@@ -37,17 +37,17 @@
             var conversationReference = await GetConversationReference(conversationId, botName);
 
             var result = await SendMessage(appId, conversationReference, message);
-            return Ok(new List<ProactiveMessageError> { result });
+            return Ok(new List<NotificationMessageError> { result });
         }
 
         [HttpPost]
         [Route("api/notifymulti")]
         [HttpPost]
-        public async Task<ObjectResult> SendMulti([FromBody]IList<ProactiveMessage> proactiveMessages)
+        public async Task<ObjectResult> SendMulti([FromBody]IList<ConversationInfo> proactiveMessages)
         {
             string appId;
-            ProactiveMessageError result;
-            var results = new List<ProactiveMessageError>();
+            NotificationMessageError result;
+            var results = new List<NotificationMessageError>();
             ConversationReference conversationReference;
 
             foreach (var proactiveMessage in proactiveMessages)
@@ -61,9 +61,9 @@
             return Ok(results);
         }
 
-        private async Task<ProactiveMessageError> SendMessage(string appId, ConversationReference conversationReference, string message)
+        private async Task<NotificationMessageError> SendMessage(string appId, ConversationReference conversationReference, string message)
         {
-            var result = new ProactiveMessageError
+            var result = new NotificationMessageError
             {
                 ConversationId = conversationReference.Conversation.Id
             };
@@ -101,7 +101,7 @@
             return coversation;
         }
 
-        private ConversationReference GetConversationReference(ProactiveMessage proactiveMessage)
+        private ConversationReference GetConversationReference(ConversationInfo proactiveMessage)
         {
             var coversation = new ConversationReference
             {
