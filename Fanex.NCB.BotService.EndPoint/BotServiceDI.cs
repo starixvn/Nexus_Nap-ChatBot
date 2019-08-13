@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint
 {
     using Fanex.Data.Repository;
+    using Fanex.Logging;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.BotService.EndPoint.Bots;
@@ -23,6 +24,7 @@
             services.AddTransient<ICredentialProvider, MultiCredentialProvider>();
             services.AddTransient<IBotFrameworkHttpAdapter, BotFrameworkHttpAdapter>();
             services.AddTransient<IBot, LicBot>();
+            services.AddTransient<ILogger, Logger>();
         }
     }
 }

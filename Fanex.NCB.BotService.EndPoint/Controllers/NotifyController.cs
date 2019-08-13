@@ -67,6 +67,8 @@
                     appId = GetAppId(conversationInfo.BotName);
                     result = await SendMessageNotification(appId, notificationMessage.NotifictaionId, conversationReference, notificationMessage.Message);
                     results.Add(result);
+
+                    await Task.Run(() => AddMessageLog(result).ConfigureAwait(false));
                 }
             }
 
@@ -103,6 +105,11 @@
                         await context.SendActivityAsync(message);
                     },
                     new CancellationToken());
+        }
+
+        private async Task AddMessageLog(SendMessageResult result)
+        {
+            
         }
 
         private async Task<ConversationReference> GetConversationReference(string conversationId, string botName)

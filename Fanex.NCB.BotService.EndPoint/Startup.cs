@@ -1,7 +1,13 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
     using Fanex.Data;
     using Fanex.Data.MySql;
+    using Fanex.Logging.Sentry;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.EndPoint.Bots;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,11 +20,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.IdentityModel.Tokens;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
+    using Sentry;
 
     public class Startup
     {
@@ -51,6 +53,17 @@
                .WithMySql(resourcePath: "~/App_Data")
                .Run();
 
+            Logging.LogManager
+            .SetDefaultLogCategory(Configuration.GetSection("LogCategory").Value)
+            .Use(new List<Logging.ILogEngine>
+            {
+                new SentryLogging(new SentryEngineOptions
+                {
+                    Dsn = new Dsn(Configuration.GetSection("SentryEngineOptions:Dsn").Value),
+                    FrontEndDsn = new Dsn(Configuration.GetSection("SentryEngineOptions:FrontEndDsn").Value)
+                })
+            });
+
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
 
@@ -77,12 +90,15 @@
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
+                app.UseMiddleware<ErrorHandlingMiddleware>();
                 app.UseHsts();
             }
 
