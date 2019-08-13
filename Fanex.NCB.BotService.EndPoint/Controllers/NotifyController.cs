@@ -45,7 +45,7 @@
             {
                 errorMessage = ex.Message;
             }
-            
+
             return Ok(errorMessage);
         }
 
@@ -55,8 +55,8 @@
         public async Task<ObjectResult> SendMulti([FromBody]IList<NotificationMessage> notificationMessages)
         {
             string appId;
-            NotificationMessageError result;
-            var results = new List<NotificationMessageError>();
+            SendMessageResult result;
+            var results = new List<SendMessageResult>();
             ConversationReference conversationReference;
 
             foreach (var notificationMessage in notificationMessages)
@@ -73,9 +73,9 @@
             return Ok(results);
         }
 
-        private async Task<NotificationMessageError> SendMessageNotification(string appId, int notificationId, ConversationReference conversationReference, string message)
+        private async Task<SendMessageResult> SendMessageNotification(string appId, int notificationId, ConversationReference conversationReference, string message)
         {
-            var result = new NotificationMessageError
+            var result = new SendMessageResult
             {
                 ConversationId = conversationReference.Conversation.Id,
                 NotificationId = notificationId

@@ -1,10 +1,14 @@
 ﻿namespace Fanex.NCB.Shared.Models
 {
-    public class NotificationMessageError
+    using System;
+
+    public class SendMessageResult
     {
         public int NotificationId { get; set; }
 
         public string ConversationId { get; set; }
+
+        public DateTime SentTime { get; set; }
 
         public int ErrorCode { get; set; }
 

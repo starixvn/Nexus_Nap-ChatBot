@@ -68,14 +68,14 @@
             return await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria).ConfigureAwait(false);
         }
 
-        private IList<NotificationMessageError> ConvertJsonResponse(string json)
+        private IList<SendMessageResult> ConvertJsonResponse(string json)
         {
-            var messages = new List<NotificationMessageError>();
+            var messages = new List<SendMessageResult>();
             JObject obj = JObject.Parse(json);
             var results = obj["results"];
             foreach (var result in results)
             {
-                var errorMsg = new NotificationMessageError
+                var errorMsg = new SendMessageResult
                 {
                     NotificationId = (int)result["notificationId"],
                     ConversationId = (string)result["conversationId"],
@@ -120,22 +120,22 @@
             }
         }
 
-        private async Task UpdateStatusAfterSendNotification(IEnumerable<NotificationRecipient> recipients, IList<NotificationMessageError> responseMsgs)
+        private async Task UpdateStatusAfterSendNotification(IEnumerable<NotificationRecipient> recipients, IEnumerable<SendMessageResult> responseMsgs)
         {
             var updateNotiModels = new List<UpdateNotificationModel>();
             foreach (var recipient in recipients)
             {
-                int code = responseMsgs.FirstOrDefault().ErrorCode;
+                var result = responseMsgs.FirstOrDefault(r => r.NotificationId == recipient.NotificationId && r.ConversationId == recipient.ChatGroupConversation);
                 var model = new UpdateNotificationModel
                 {
                     NotificationId = recipient.NotificationId,
                     RecipientId = recipient.RecipientId,
-                    SentTime = DateTime.Now,
+                    SentTime = result.SentTime,
                     ConversationGroupId = recipient.ChatGroupId,
                     ConversationBotId = recipient.BotId,
-                    IsSuccess = code == 0,
-                    SentStatus = code == 0 ? RecipientStatuses.ReadyToSend : RecipientStatuses.BotServiceError,
-                    ErrMsg = code == 0 ? string.Empty : EnumHelper.GetDescription((RecipientStatuses)code)
+                    IsSuccess = result.ErrorCode == 0,
+                    SentStatus = result.ErrorCode == 0 ? RecipientStatuses.ReadyToSend : RecipientStatuses.BotServiceError,
+                    ErrMsg = result.ErrorCode == 0 ? string.Empty : EnumHelper.GetDescription((RecipientStatuses)result.ErrorCode)
                 };
                 updateNotiModels.Add(model);
             }
