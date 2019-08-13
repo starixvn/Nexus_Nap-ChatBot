@@ -12,6 +12,7 @@
     using Fanex.NAP.Client.Models.ParameterObject;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Models;
+    using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;
@@ -23,17 +24,20 @@
         private readonly INapSession napSession;
         private readonly INapSettings napSettings;
         private readonly ISecurityService securityService;
+        private readonly ISendNotificationService sendNotification;
 
         public AuthController(
             IUserService userService,
             INapSession napSession,
             ISecurityService securityService,
-            INapSettings napSettings)
+            INapSettings napSettings,
+            ISendNotificationService sendNotification)
         {
             this.userService = userService;
             this.napSession = napSession;
             this.napSettings = napSettings;
             this.securityService = securityService;
+            this.sendNotification = sendNotification;
         }
 
         public IActionResult Index(string returnUrl, bool invalidLogin)

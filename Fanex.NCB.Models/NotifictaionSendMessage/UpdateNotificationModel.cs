@@ -1,23 +1,20 @@
 ﻿namespace Fanex.NCB.Models.NotifictaionSendMessage
 {
-    using System;
-    using Fanex.NCB.Core.Enum;
-
     public class UpdateNotificationModel
     {
-        public int NotificationId { get; set; }
+        public int NotificationID { get; set; }
 
-        public int RecipientId { get; set; }
+        public int RecipientID { get; set; }
 
-        public int ConversationGroupId { get; set; }
+        public int ConversationGroupID { get; set; }
 
-        public int ConversationBotId { get; set; }
+        public int ConversationBotID { get; set; }
 
-        public DateTime SentTime { get; set; }
+        public string SentTime { get; set; }
 
         public bool IsSuccess { get; set; }
 
-        public RecipientStatuses SentStatus { get; set; }
+        public bool Retry { get; set; }
 
         public string ErrMsg { get; set; }
     }

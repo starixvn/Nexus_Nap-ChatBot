@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
@@ -23,48 +22,47 @@
             this.botSettings = botSettings;
         }
 
-        public async Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> proactiveMessages)
+        public async Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages)
         {
-            webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
+            ChatbotToken token = await GetTokenAsync().ConfigureAwait(false);
 
+            webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
             var request = new RestRequest(botSettings.Value.BotServiceUrl, Method.POST);
-            request.AddJsonBody(proactiveMessages);
+            request.AddHeader("Authorization", $"Bearer {token.AccessToken}");
+            //request.AddHeader("content-type", "application/x-www-form-urlencoded");
+            request.AddJsonBody(messages);
 
             return await webClient.ExecutePostTaskAsync(request).ConfigureAwait(false);
         }
 
-        public async Task SendMessageAsync(string botName, string conversationId, string message)
+        public async Task SendMessageAsync(string conversationId, string message)
         {
-            if (!string.IsNullOrWhiteSpace(botName) && !string.IsNullOrWhiteSpace(conversationId))
+            if (!string.IsNullOrWhiteSpace(conversationId))
             {
-                ChatbotToken token = await GetTokenAsync(botName).ConfigureAwait(false);
-                await ForwardToBotAsync(botName, message, conversationId, token).ConfigureAwait(false);
+                ChatbotToken token = await GetTokenAsync().ConfigureAwait(false);
+                await ForwardToBotAsync(message, conversationId, token).ConfigureAwait(false);
             }
         }
 
-        private async Task ForwardToBotAsync(string botName, string message, string conversationId, ChatbotToken token)
+        private async Task ForwardToBotAsync(string message, string conversationId, ChatbotToken token)
         {
             webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
 
             var request = new RestRequest(botSettings.Value.BotServiceUrl, Method.POST);
-            request.AddHeader("Authorization", $"Bearer {token.AccessToken}");
+            request.AddHeader("Authorization", $"{token.TokenType} {token.AccessToken}");
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
-            request.AddParameter("botName", botName);
             request.AddParameter("message", message);
             request.AddParameter("conversationId", conversationId);
 
             await webClient.ExecutePostTaskAsync(request).ConfigureAwait(false);
         }
 
-        private async Task<ChatbotToken> GetTokenAsync(string botName)
+        private async Task<ChatbotToken> GetTokenAsync()
         {
-            webClient.BaseUrl = new Uri(botSettings.Value.TokenUrl);
-            var botSelected = botSettings.Value.Bots.FirstOrDefault(bot => bot.Name.Equals(botName));
-            var request = new RestRequest(Method.POST);
-            request.AddParameter("grant_type", "client_credentials");
-            request.AddParameter("client_id", botSelected.AppId);
-            request.AddParameter("client_secret", botSelected.AppPassword);
-            request.AddParameter("scope", $"{botSelected.AppId}/.default");
+            webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
+            var request = new RestRequest(botSettings.Value.AuthenticateUrl, Method.POST);
+            request.AddParameter("username", botSettings.Value.AppCredentialId);
+            request.AddParameter("password", botSettings.Value.AppCredentialPassword);
 
             request.AddHeader("Content-type", "application/x-www-form-urlencoded");
 

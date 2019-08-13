@@ -1,7 +1,5 @@
 ﻿namespace Fanex.NCB.Core.Models
 {
-    using System.Collections.Generic;
-
     public class BotSettings
     {
         public string BotDomain { get; set; }
@@ -10,6 +8,10 @@
 
         public string TokenUrl { get; set; }
 
-        public List<BotInfo> Bots { get; set; }
+        public string AuthenticateUrl { get; set; }
+
+        public string AppCredentialId { get; set; }
+
+        public string AppCredentialPassword { get; set; }
     }
 }

@@ -15,7 +15,6 @@
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using RestSharp;
 
     public class SendNotificationService : ISendNotificationService
@@ -48,13 +47,13 @@
             {
                 var updateNoti = recipients.Select(r => new UpdateNotificationModel
                 {
-                    NotificationId = r.NotificationId,
-                    RecipientId = r.RecipientId,
-                    SentTime = DateTime.Now,
-                    ConversationGroupId = r.ChatGroupId,
-                    ConversationBotId = r.BotId,
+                    NotificationID = r.NotificationId,
+                    RecipientID = r.RecipientId,
+                    SentTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    ConversationGroupID = r.ChatGroupId,
+                    ConversationBotID = r.BotId,
+                    Retry = false,
                     IsSuccess = false,
-                    SentStatus = r.RecipientStatus,
                     ErrMsg = EnumHelper.GetDescription(r.RecipientStatus)
                 });
 
@@ -70,20 +69,7 @@
 
         private IList<SendMessageResult> ConvertJsonResponse(string json)
         {
-            var messages = new List<SendMessageResult>();
-            JObject obj = JObject.Parse(json);
-            var results = obj["results"];
-            foreach (var result in results)
-            {
-                var errorMsg = new SendMessageResult
-                {
-                    NotificationId = (int)result["notificationId"],
-                    ConversationId = (string)result["conversationId"],
-                    ErrorCode = (int)result["errorCode"],
-                    ErrorMessage = (string)result["errorMessage"]
-                };
-                messages.Add(errorMsg);
-            }
+            var messages = JsonConvert.DeserializeObject<List<SendMessageResult>>(json);
 
             return messages;
         }
@@ -113,7 +99,7 @@
             {
                 foreach (var recipient in recipients)
                 {
-                    recipient.SendingError = (int)RecipientStatuses.BotServiceError;
+                    recipient.ErrCode = (int)RecipientStatuses.BotServiceError;
                 }
 
                 await UpdateFailedRecipientStatus(recipients).ConfigureAwait(false);
@@ -128,13 +114,13 @@
                 var result = responseMsgs.FirstOrDefault(r => r.NotificationId == recipient.NotificationId && r.ConversationId == recipient.ChatGroupConversationId);
                 var model = new UpdateNotificationModel
                 {
-                    NotificationId = recipient.NotificationId,
-                    RecipientId = recipient.RecipientId,
-                    SentTime = result.SentTime,
-                    ConversationGroupId = recipient.ChatGroupId,
-                    ConversationBotId = recipient.BotId,
+                    NotificationID = recipient.NotificationId,
+                    RecipientID = recipient.RecipientId,
+                    SentTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    ConversationGroupID = recipient.ChatGroupId,
+                    ConversationBotID = recipient.BotId,
+                    Retry = true,
                     IsSuccess = result.ErrorCode == 0,
-                    SentStatus = result.ErrorCode == 0 ? RecipientStatuses.ReadyToSend : RecipientStatuses.BotServiceError,
                     ErrMsg = result.ErrorCode == 0 ? string.Empty : EnumHelper.GetDescription((RecipientStatuses)result.ErrorCode)
                 };
                 updateNotiModels.Add(model);
@@ -186,12 +172,13 @@
         {
             var criteria = new GetNotificationByIdCriteria
             {
-                NotifictaionId = notifiactionId
+                NotificationId = notifiactionId
             };
             var notifications = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria)
                 .ConfigureAwait(false);
 
-            await UpdateFailedRecipientStatus(notifications.Item2.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
+            await UpdateFailedRecipientStatus(notifications.Item2.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)
+            && !r.RecipientStatus.Equals(RecipientStatuses.BotServiceError)));
 
             await SendNotificationToRecipients(notifications.Item1, notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend))).ConfigureAwait(false);
         }

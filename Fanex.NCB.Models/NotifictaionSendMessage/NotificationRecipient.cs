@@ -24,13 +24,13 @@ namespace Fanex.NCB.Models.NotifictaionSendMessage
 
         public string ServiceUrl { get; set; }
 
-        public int SendingError { get; set; }
+        public int ErrCode { get; set; }
 
         public RecipientStatuses RecipientStatus
         {
             get
             {
-                return (RecipientStatuses)SendingError;
+                return (RecipientStatuses)ErrCode;
             }
         }
     }
