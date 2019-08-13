@@ -21,6 +21,7 @@
             services.AddScoped<INotificationTypeService, NotificationTypeService>();
             services.AddScoped<ICommonService, CommonService>();
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<ISendNotificationService, SendNotificationService>();
         }
 
         public static void RegisterRepositories(this IServiceCollection services)

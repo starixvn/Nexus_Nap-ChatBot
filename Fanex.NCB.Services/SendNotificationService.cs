@@ -125,7 +125,7 @@
             var updateNotiModels = new List<UpdateNotificationModel>();
             foreach (var recipient in recipients)
             {
-                var result = responseMsgs.FirstOrDefault(r => r.NotificationId == recipient.NotificationId && r.ConversationId == recipient.ChatGroupConversation);
+                var result = responseMsgs.FirstOrDefault(r => r.NotificationId == recipient.NotificationId && r.ConversationId == recipient.ChatGroupConversationId);
                 var model = new UpdateNotificationModel
                 {
                     NotificationId = recipient.NotificationId,
@@ -158,7 +158,7 @@
                                 BotConversationId = r.BotConversationId,
                                 ServiceUrl = r.ServiceUrl,
                                 ChannelId = r.ChannelId,
-                                ConversationId = r.ChatGroupConversation,
+                                ConversationId = r.ChatGroupConversationId,
                                 BotName = r.BotName
                             })
                 };

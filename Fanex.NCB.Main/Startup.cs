@@ -82,7 +82,7 @@
             services.RegisterRepositories();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsProduction())
             {

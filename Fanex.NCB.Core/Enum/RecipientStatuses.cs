@@ -16,10 +16,10 @@
         [Description("Recipient is changed group")]
         RecipientChangedGroup = 3,
 
-        [Description("Group Type is changed.")]
-        GroupTypeChanged = 4,
-
         [Description("Error occured on chatbot service.")]
-        BotServiceError = 5
+        BotServiceError = 4,
+
+        [Description("Group Type is changed.")]
+        GroupTypeChanged = 5
     }
 }
