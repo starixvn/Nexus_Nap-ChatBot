@@ -25,6 +25,10 @@ export default class CommonFunctions {
     static getLicenseeStatus(recipientStatusNames) {
         return recipientStatusNames === '' ? 'N/A' : recipientStatusNames;
     }
+
+    static isEmptyObject(obj) {
+        return Object.keys(obj).length === 0;
+    }
 }
 
 export function getErrorTemplateMessage(code) {

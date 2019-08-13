@@ -75,14 +75,14 @@
             var results = obj["results"];
             foreach (var result in results)
             {
-                var proactiveMessage = new NotificationMessageError
+                var errorMsg = new NotificationMessageError
                 {
                     NotificationId = (int)result["notificationId"],
                     ConversationId = (string)result["conversationId"],
                     ErrorCode = (int)result["errorCode"],
                     ErrorMessage = (string)result["errorMessage"]
                 };
-                messages.Add(proactiveMessage);
+                messages.Add(errorMsg);
             }
 
             return messages;
@@ -91,12 +91,12 @@
         private async Task SendNotificationToRecipients(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
             int itemEachBatch = appSettings.Value.ItemEachBatchSendNotification;
-            var proactiveMsgs = GenerateProactiveMessage(notifications, recipients);
+            var notiMsgs = GenerateNotificationMessage(notifications, recipients);
 
-            int totalBatch = (int)Math.Ceiling((double)proactiveMsgs.Count() / itemEachBatch);
+            int totalBatch = (int)Math.Ceiling((double)notiMsgs.Count() / itemEachBatch);
             for (int i = 0; i < totalBatch; i++)
             {
-                var currentMsgs = proactiveMsgs.Skip(i * itemEachBatch).Take(itemEachBatch);
+                var currentMsgs = notiMsgs.Skip(i * itemEachBatch).Take(itemEachBatch);
                 var response = await chatbotService.SendMessageToMultitpleAsync(currentMsgs).ConfigureAwait(false);
                 await HandleResponse(response, recipients).ConfigureAwait(false);
             }
@@ -143,7 +143,7 @@
             await UpdateSentNotificationStatus(updateNotiModels).ConfigureAwait(false);
         }
 
-        private IEnumerable<NotificationMessage> GenerateProactiveMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
+        private IEnumerable<NotificationMessage> GenerateNotificationMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
             var proactiveMsgs = new List<NotificationMessage>();
             foreach (var noti in notifications)
