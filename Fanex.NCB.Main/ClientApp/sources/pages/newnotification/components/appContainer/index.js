@@ -334,7 +334,7 @@ export class AppContainer extends React.Component {
 
                     <Col sm={10}>
                         <TreeSelect value={values.recipients} onChange={this.handleRecipientChange} placeholder={Labels.PleaseSelect}
-                            invalid={touched.recipients && errors.recipients} treeData={this.props.recipientOptions}
+                            treeData={this.props.recipientOptions} className={touched.recipients && errors.recipients && 'is-invalid'}
                         />
                         {touched.recipients && errors.recipients && <FormFeedback>{errors.recipients}</FormFeedback>}
                     </Col>
@@ -372,7 +372,7 @@ export class AppContainer extends React.Component {
                             </Input>
                             <DatePicker selected={values.sendDate} showTimeSelect disabled={values.sendMode === '1'}
                                 onChange={value => setFieldValue('sendDate', value)}
-                                invalid={touched.sendDate && errors.sendDate}
+                                className={touched.sendDate && errors.sendDate && 'is-invalid'}
                             />
                             <span>(GMT +8)</span>
                             {touched.sendDate && errors.sendDate && <FormFeedback>{errors.sendDate}</FormFeedback>}

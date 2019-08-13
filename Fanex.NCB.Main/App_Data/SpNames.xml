@@ -23,6 +23,8 @@
   <Function Name="Common">
     <Setting Key="NCB_Common_NotificationType_Sel" SpName="NCB_Common_NotificationType_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_Common_Product_Sel" SpName="NCB_Common_Product_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Common_NotificationStatus_Sel" SpName="NCB_Common_NotificationStatus_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Common_Recipient_Sel" SpName="NCB_Common_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
   <Function Name="Send Notification">
     <Setting Key="NCB_SendNotification_GetWaitingNotificationForSending" SpName="NCB_SendNotification_GetWaitingNotificationForSending" DbName="ChatBot" Plain="0"></Setting>
@@ -33,7 +35,8 @@
   <Function Name="New Notification">
     <Setting Key="NCB_NewNotification_Ins" SpName="NCB_NewNotification_Ins" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_NewNotification_Recipient_Sel" SpName="NCB_NewNotification_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_Common_NotificationStatus_Sel" SpName="NCB_Common_NotificationStatus_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_Common_Recipient_Sel" SpName="NCB_Common_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
+  </Function>
+  <Function Name="Notification List">
+    <Setting Key="NCB_NotificationList_Sel" SpName="NCB_NotificationList_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
 </Functions>

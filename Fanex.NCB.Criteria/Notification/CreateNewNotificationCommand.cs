@@ -21,6 +21,8 @@
 
         public int CreatorId { get; set; }
 
+        public int NotificationId { get; set; }
+
         public override string GetSettingKey() => "NCB_NewNotification_Ins";
 
         public override bool IsValid() => NotificationTypeId > 0 && !string.IsNullOrWhiteSpace(RecipientIDLst) && !string.IsNullOrWhiteSpace(Title)

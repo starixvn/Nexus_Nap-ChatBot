@@ -11,5 +11,7 @@
         Task<CommandResult> CreateAsync(CreateNotification model);
 
         Task<IEnumerable<Recipient>> GetRecipientsAsync(int notificationTypeId, int? productId);
+
+        Task<(long, IEnumerable<Notification>)> GetNotificationsAsync(GetNotifications model);
     }
 }

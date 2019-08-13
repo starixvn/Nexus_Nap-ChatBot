@@ -1,3 +1,6 @@
+import '../../shared/components/font.css';
+import './NotificationList.scss';
+
 import React, { Component } from 'react';
 import axios from 'axios';
 import { NCBBreadcrum } from '../../common/breadcrumbs';
@@ -6,18 +9,18 @@ import ErrorReport from './ErrorReport';
 import DatePicker from '../../common/DatePicker/index';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
 import Labels from '../../common/Labels';
-import TreeSelect from '../../common/TreeSelect/index';
+import TreeSelect, { getRealValuesFromExtra } from '../../common/TreeSelect/index';
 import errorResponseHandler from '../../lib/errorResponseHandler';
 import Site from '../../lib/site';
-
-import '../../shared/components/font.css';
-import './NotificationList.scss';
+import DataGrid from './DataGrid';
 
 export default class NotificationList extends Component {
     constructor(props) {
         super(props);
 
-        const today = new Date();
+        const toDate = new Date();
+        let fromDate = new Date();
+        fromDate.setDate(fromDate.getDate() - 7);
 
         this.state = {
             isRemark: null,
@@ -25,23 +28,28 @@ export default class NotificationList extends Component {
                 notificationTypes: {
                     value: ''
                 },
-                fromDate: new Date().setDate(today.getDate() - 7),
-                toDate: today,
+                fromDate: fromDate,
+                toDate: toDate,
                 creatorId: '',
-                recipients: []
+                recipients: [],
+                statuses: ''
             },
             notificationTypeOptions: [],
-            recipientOptions: []
+            recipientOptions: [],
+            statusOptions: [],
+            tableData: null
         };
     }
     componentDidMount() {
         const promises = [
             axios(Site.resolveClientUrl('Common/GetNotificationTypes')),
-            axios(Site.resolveClientUrl('Common/GetRecipients'))
+            axios(Site.resolveClientUrl('Common/GetRecipients')),
+            axios(Site.resolveClientUrl('Common/GetNotificationStatuses'))
+
         ];
 
         Promise.all(promises)
-            .then(([notificationTypeResponse, recipientResponse]) => {
+            .then(([notificationTypeResponse, recipientResponse, statusResponse]) => {
                 const notificationTypeIds = [];
                 const notificationTypeOptions = notificationTypeResponse.data.map(x => {
                     notificationTypeIds.push(x.notificationTypeID);
@@ -52,27 +60,56 @@ export default class NotificationList extends Component {
                     };
                 });
 
+                statusResponse.data.forEach(status => status.checked = true);
+
                 this.setState(prevState => ({
                     notificationTypeOptions,
-                    recipientOptions: [{
-                        title: Labels.All,
-                        value: Labels.All,
-                        children: recipientResponse.data
-                    }],
+                    recipientOptions: recipientResponse.data,
+                    statusOptions: statusResponse.data,
                     filter: {
                         ...prevState.filter,
                         ...{
                             notificationTypes: {
                                 value: notificationTypeIds.toString()
                             },
-                            recipients: [{
-                                title: Labels.All,
-                                value: Labels.All
-                            }]
+                            statuses: {
+                                value: statusResponse.data.map(x => x.id).toString()
+                            },
+                            recipients: {
+                                value: recipientResponse.data.map(r => ({ value: r.value, label: r.title })),
+                                extra: recipientResponse.data
+                            }
                         }
                     }
-                }));
+                }), this.getNotifications);
             }).catch(errorResponseHandler);
+    }
+
+    getNotifications = (pageIndex = 1, pageSize = 20) => {
+        const filter = this.state.filter;
+        const recipientIds = [];
+
+        getRealValuesFromExtra(recipientIds, filter.recipients.extra);
+        axios.get(Site.resolveClientUrl('NotificationList/Get'), {
+            params: {
+                notificationTypeIds: filter.notificationTypes.value,
+                fromDate: filter.fromDate,
+                toDate: filter.toDate,
+                creatorId: filter.creatorId,
+                recipientIds: recipientIds.toString(),
+                notificationStatusIds: filter.statuses.value,
+                pageIndex: pageIndex,
+                pageSize: pageSize
+            }
+        }).then(response => {
+            this.setState({
+                tableData: {
+                    pageIndex,
+                    pageSize,
+                    ...response.data
+                }
+            });
+        }).catch(errorResponseHandler);
     }
 
     handleFilterChange = (name, value) => {
@@ -89,9 +126,10 @@ export default class NotificationList extends Component {
 
     handleCreatorChange = e => this.handleFilterChange('creatorId', e.target.value)
 
+    handleStatusChange = value => this.handleFilterChange('statuses', value)
+
     handleRecipientChange = (value, label, extra) => {
-        debugger;
-        this.handleFilterChange('recipients', value);
+        this.handleFilterChange('recipients', { value, extra });
     }
 
     updateRemark = event => {
@@ -106,17 +144,24 @@ export default class NotificationList extends Component {
         this.props.toggleHandler();
     }
 
+    renderStatus = status => <option key={status.id} value={status.id}>{status.name}</option>
+
+    handleSearch = event => {
+        event.preventDefault();
+        this.getNotifications();
+    }
+
     render() {
         return (
             <div>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification List" />
 
-                <Form className="form-filter" >
+                <Form className="form-filter" onSubmit={this.handleSearch} >
                     <FormGroup>
                         <Label className="form-label">Notification Type</Label>
                         <MultipleSelectField
                             width={182}
-                            initialValue={this.state.notificationTypes}
+                            initialValue={this.state.filter.notificationTypes}
                             data={this.state.notificationTypeOptions}
                             keyField="id"
                             valueField="name"
@@ -143,14 +188,34 @@ export default class NotificationList extends Component {
 
                         </Input>
                     </FormGroup>
+
                     <FormGroup>
                         <Label className="form-label">Recipient</Label>
-                        <TreeSelect value={this.state.filter.recipients} onChange={this.handleRecipientChange}
+                        <TreeSelect value={this.state.filter.recipients.value} onChange={this.handleRecipientChange}
                             placeholder={Labels.PleaseSelect} maxTagCount={2} treeData={this.state.recipientOptions}
                         />
                     </FormGroup>
-                    <button id="submit-button" className="btn-submit">Submit</button>
+                    <FormGroup>
+                        <Label className="form-label">Status</Label>
+                        <MultipleSelectField
+                            width={182}
+                            initialValue={this.state.filter.statusIds}
+                            data={this.state.statusOptions}
+                            keyField="id"
+                            valueField="name"
+                            statusField="checked"
+                            isSummited={false}
+                            isAllTextShown
+                            onChange={this.handleNotificationTypeChange}
+                        />
+                    </FormGroup>
+                    <button id="submit-button" className="btn-submit" type="submit">Submit</button>
                 </Form>
+                {this.state.tableData &&
+                    <DataGrid tableData={this.state.tableData}
+                        onPaging={this.getNotifications}
+                    />
+                }
                 <table className="tbl w-100">
                     <thead>
                         <tr>

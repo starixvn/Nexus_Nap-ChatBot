@@ -1,0 +1,73 @@
+﻿import React, { Component } from 'react';
+import { Table, Row, Cell } from '../../common/fixed-table-header/index';
+
+import { PAGING_SIZES } from '../../constants/constants';
+import Labels from '../../common/Labels';
+import NoDataTitle from '../../common/no-data-title/NoDataTitle';
+
+export default class DataGrid extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    onPaging = (pageIndex, pageSize) => {
+        this.props.onPaging(pageIndex, pageSize);
+    }
+
+    buildHeader = () => {
+        return (
+            <Row style={{ height: 32 }}>
+                <Cell className="col-order" header>{Labels.NumberCol}</Cell>
+                <Cell  header>Sender/Notification Type</Cell>
+                <Cell  header>Send Date/Time (GMT+8)</Cell>
+                <Cell  header><div className="has-icons">Title/Content <span className="icon-expand" /></div></Cell>
+                <Cell  header>Status</Cell>
+                <Cell header>{Labels.Action}</Cell>
+            </Row>);
+    };
+
+    buildBody = () => {
+        const rows = [];
+        const { data, pageIndex, pageSize } = this.props.tableData;
+        const startIndex = (pageIndex - 1) * pageSize + 1;
+        if (data.length > 0) {
+            data.map((item, index) => {
+                rows.push(<Row key={item.notificationId} >
+                    <Cell className="text-center">{index + startIndex}</Cell>
+                    <Cell>{item.notificationTypeName}</Cell>
+                    <Cell></Cell>
+
+                    <Cell><strong>{item.title}</strong></Cell>
+                    <Cell><span className="badge badge-primary">{item.status}</span></Cell>
+                    <Cell></Cell>
+                </Row>);
+            });
+        } else {
+            rows.push(<Row key={`body${1}`} ><Cell colSpan="10"><NoDataTitle /></Cell></Row >);
+        }
+
+        return rows;
+    }
+
+    render() {
+        const pagingOption = {
+            PageIndex: this.props.tableData.pageIndex,
+            PageSize: this.props.tableData.pageSize,
+            TotalItem: this.props.tableData.total,
+            PageList: PAGING_SIZES
+        };
+
+        return (
+            <Table
+                width={1620}
+                autoWidth={false}
+                header={this.buildHeader()}
+                body={this.buildBody()}
+                isPaging
+                pageOption={pagingOption}
+                onPaging={this.onPaging}
+                containerPadding={0}
+            />
+        );
+    }
+}

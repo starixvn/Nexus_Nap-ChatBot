@@ -2,8 +2,8 @@
 {
     public class NotificationStatus
     {
-        public int StatusId { get; set; }
+        public int Id { get; set; }
 
-        public string StatusName { get; set; }
+        public string Name { get; set; }
     }
 }
