@@ -35,48 +35,55 @@
         {
             var appId = GetAppId(botName);
             var conversationReference = await GetConversationReference(conversationId, botName);
+            var errorMessage = string.Empty;
 
-            var result = await SendMessage(appId, conversationReference, message);
-            return Ok(new List<NotificationMessageError> { result });
+            try
+            {
+                await SendMessage(appId, conversationReference, message);
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+            }
+            
+            return Ok(errorMessage);
         }
 
         [HttpPost]
         [Route("api/notifymulti")]
         [HttpPost]
-        public async Task<ObjectResult> SendMulti([FromBody]IList<ConversationInfo> proactiveMessages)
+        public async Task<ObjectResult> SendMulti([FromBody]IList<NotificationMessage> notificationMessages)
         {
             string appId;
             NotificationMessageError result;
             var results = new List<NotificationMessageError>();
             ConversationReference conversationReference;
 
-            foreach (var proactiveMessage in proactiveMessages)
+            foreach (var notificationMessage in notificationMessages)
             {
-                conversationReference = GetConversationReference(proactiveMessage);
-                appId = GetAppId(proactiveMessage.BotName);
-                result = await SendMessage(appId, conversationReference, proactiveMessage.Message);
-                results.Add(result);
+                foreach (var conversationInfo in notificationMessage.Recipients)
+                {
+                    conversationReference = GetConversationReference(conversationInfo);
+                    appId = GetAppId(conversationInfo.BotName);
+                    result = await SendMessageNotification(appId, notificationMessage.NotifictaionId, conversationReference, notificationMessage.Message);
+                    results.Add(result);
+                }
             }
 
             return Ok(results);
         }
 
-        private async Task<NotificationMessageError> SendMessage(string appId, ConversationReference conversationReference, string message)
+        private async Task<NotificationMessageError> SendMessageNotification(string appId, int notificationId, ConversationReference conversationReference, string message)
         {
             var result = new NotificationMessageError
             {
-                ConversationId = conversationReference.Conversation.Id
+                ConversationId = conversationReference.Conversation.Id,
+                NotificationId = notificationId
             };
 
             try
             {
-                await ((BotFrameworkAdapter)adapter).ContinueConversationAsync(appId, conversationReference,
-                    async (context, token) =>
-                    {
-                        MicrosoftAppCredentials.TrustServiceUrl(conversationReference.ServiceUrl);
-                        await context.SendActivityAsync(message);
-                    },
-                    new CancellationToken());
+                await SendMessage(appId, conversationReference, message);
             }
             catch (Exception ex)
             {
@@ -85,6 +92,17 @@
             }
 
             return result;
+        }
+
+        private async Task SendMessage(string appId, ConversationReference conversationReference, string message)
+        {
+            await ((BotFrameworkAdapter)adapter).ContinueConversationAsync(appId, conversationReference,
+                    async (context, token) =>
+                    {
+                        MicrosoftAppCredentials.TrustServiceUrl(conversationReference.ServiceUrl);
+                        await context.SendActivityAsync(message);
+                    },
+                    new CancellationToken());
         }
 
         private async Task<ConversationReference> GetConversationReference(string conversationId, string botName)
@@ -101,14 +119,14 @@
             return coversation;
         }
 
-        private ConversationReference GetConversationReference(ConversationInfo proactiveMessage)
+        private ConversationReference GetConversationReference(ConversationInfo conversationInfo)
         {
             var coversation = new ConversationReference
             {
-                Bot = new ChannelAccount { Id = proactiveMessage.BotConversationId, Name = proactiveMessage.BotName, Role = "bot" },
-                Conversation = new ConversationAccount() { Id = proactiveMessage.ConversationId },
-                ServiceUrl = proactiveMessage.ServiceUrl,
-                ChannelId = proactiveMessage.ChannelId
+                Bot = new ChannelAccount { Id = conversationInfo.BotConversationId, Name = conversationInfo.BotName, Role = "bot" },
+                Conversation = new ConversationAccount() { Id = conversationInfo.ConversationId },
+                ServiceUrl = conversationInfo.ServiceUrl,
+                ChannelId = conversationInfo.ChannelId
             };
 
             return coversation;
