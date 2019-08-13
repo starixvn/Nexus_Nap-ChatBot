@@ -68,14 +68,14 @@
             return await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria).ConfigureAwait(false);
         }
 
-        private IList<ProactiveMessageError> ConvertJsonResponse(string json)
+        private IList<NotificationMessageError> ConvertJsonResponse(string json)
         {
-            var messages = new List<ProactiveMessageError>();
+            var messages = new List<NotificationMessageError>();
             JObject obj = JObject.Parse(json);
             var results = obj["results"];
             foreach (var result in results)
             {
-                var proactiveMessage = new ProactiveMessageError
+                var proactiveMessage = new NotificationMessageError
                 {
                     NotificationId = (int)result["notificationId"],
                     ConversationId = (string)result["conversationId"],
@@ -120,7 +120,7 @@
             }
         }
 
-        private async Task UpdateStatusAfterSendNotification(IEnumerable<NotificationRecipient> recipients, IList<ProactiveMessageError> responseMsgs)
+        private async Task UpdateStatusAfterSendNotification(IEnumerable<NotificationRecipient> recipients, IList<NotificationMessageError> responseMsgs)
         {
             var updateNotiModels = new List<UpdateNotificationModel>();
             foreach (var recipient in recipients)
