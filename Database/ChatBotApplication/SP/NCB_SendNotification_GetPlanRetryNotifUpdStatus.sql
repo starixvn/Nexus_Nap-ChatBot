@@ -15,12 +15,24 @@ CREATE PROCEDURE  NCB_SendNotification_GetPlanRetryNotifUpdStatus(
     */
 )
 NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
+	#Variables used to write User Logs
+	DECLARE startTime 			DATETIME(3);
+    DECLARE finishTime 		DATETIME(3); 
+    DECLARE duration 			INT;							
+    DECLARE logContent 		TEXT;
+    DECLARE ACTION_ID 		INT DEFAULT 8;
+     DECLARE plannedNotifIDLst TEXT  CHARACTER SET utf8mb4;
+    DECLARE tryingNotifRecipChatGrpIDLst TEXT  CHARACTER SET utf8mb4;
+    
 	#Constant
 	DECLARE NOTIFICATION_STATUSID_PLANNED	TINYINT UNSIGNED DEFAULT 0;  #Planned
     DECLARE NOTIFICATION_STATUSID_SENDING	INT DEFAULT 3;
 	DECLARE NOTIFICATION_STATUS_SENDING	VARCHAR(10) DEFAULT 'Sending';
     DECLARE NOTIFICATION_STATUSID_RETRYING	INT DEFAULT 8;
 	DECLARE NOTIFICATION_STATUS_RETRYING	VARCHAR(10) DEFAULT 'Retrying';
+    
+	#Get Start Time to calcualte execution duration
+    SET  startTime = UTC_TIMESTAMP(3);
     
 	DROP TEMPORARY TABLE IF EXISTS tmp_PlannedNotification;
 	CREATE TEMPORARY TABLE tmp_PlannedNotification(NotificationID INT, LockSuccess BIT);
@@ -138,6 +150,52 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 			ON cgr.ConversationGroupID = nrl.ConversationGroupID 
 				AND cgr.RecipientID = nrl.RecipientID;
     
+     #Get Finish Time to calcualte execution duration
+    SET finishTime = UTC_TIMESTAMP(3);
+    SET duration =  TIMESTAMPDIFF(MICROSECOND
+																		, startTime
+                                                                        , finishTime)  / 1000; 	#miliseconds
+    
+	SELECT  CONCAT('[' , GROUP_CONCAT(json_object(
+														'NotificationID', t.NotificationID
+									) SEPARATOR ', ') ,']') A
+	INTO plannedNotifIDLst
+	FROM tmp_PlannedNotification t
+    WHERE t.LockSuccess = 1;
+    
+    
+    SELECT  CONCAT('[' , GROUP_CONCAT(json_object(
+														'NotificationID', t.NotificationID
+                                                        , 'RecipientID', t.RecipientID
+                                                        , 'ConversationGroupID', t.ConversationGroupID
+									) SEPARATOR ', ') ,']') A
+	INTO tryingNotifRecipChatGrpIDLst
+	FROM tmp_TryingNotification t
+    WHERE t.LockSuccess = 1;
+    
+    
+	 #Get Log Content, JSON format
+    SET logContent = json_object(
+										 'plannedNotifIDLst', '#plannedNotifIDLst#'
+                                        , 'tryingNotifRecipChatGrpIDLst',  '#tryingNotifRecipChatGrpIDLst#'
+					) ;
+    
+     SET logContent = REPLACE(logContent, '"#plannedNotifIDLst#"', IFNULL(plannedNotifIDLst, '[]'));
+	 SET logContent = REPLACE(logContent, '"#tryingNotifRecipChatGrpIDLst#"', IFNULL(tryingNotifRecipChatGrpIDLst, '[]'));
+         
+	#Write User Log
+    IF EXISTS(SELECT 1 FROM tmp_PlannedNotification WHERE LockSuccess = 1)
+		OR EXISTS(SELECT 1 FROM tmp_TryingNotification WHERE LockSuccess = 1)
+	THEN
+			CALL NCB_UserLog_RunSP_Ins(
+													ACTION_ID #actionID
+													, 0 #referenceID
+													, 0 #UserID
+													, logContent #LogContent
+													, startTime #logtime
+													, duration	#Duration
+													);
+	END IF;
     
 END;
 

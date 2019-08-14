@@ -27,7 +27,7 @@ CREATE PROCEDURE  NCB_SendNotification_RecipientSentStatus_Upd(
                                 "ConversationGroupID":2,
 								"ConversationBotID":1,
 								"SentTime":"2019-04-01 12:23:22.000000",
-								"Retry":false:false,
+								"Retry":false,
 								"ErrMsg":""
 							}
 						]
@@ -177,7 +177,17 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
     SET duration =  TIMESTAMPDIFF(MICROSECOND
 																		, startTime
                                                                         , finishTime)  / 1000; 	#miliseconds
-    
+                                                                        
+     SET logContent = sentStatus;
+     
+    CALL NCB_UserLog_RunSP_Ins(
+													ACTION_ID #actionID
+													, 0 #referenceID
+													, 0 #UserID
+													, logContent #LogContent
+													, startTime #logtime
+													, duration	#Duration
+													);
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_SendNotification_RecipientSentStatus_Upd TO 'ncb.admin'@'%';

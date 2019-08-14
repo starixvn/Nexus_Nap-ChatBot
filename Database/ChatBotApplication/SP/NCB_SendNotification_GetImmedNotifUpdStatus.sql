@@ -63,13 +63,6 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
 			, rlst.StatusID = NOTIFICATION_STATUSID_SENDING
     WHERE rlst.NotificationID = notificationID;
     
-     #Get Finish Time to calcualte execution duration
-    SET finishTime = UTC_TIMESTAMP(3);
-    SET duration =  TIMESTAMPDIFF(MICROSECOND
-																		, startTime
-                                                                        , finishTime)  / 1000; 	#miliseconds
-    
-    
     #1st dataset: Main Notification Info such as title, content
 	SELECT n.NotificationID, n.Title, n.Content
     FROM Notification n
@@ -109,6 +102,28 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
 			ON cgr.ConversationGroupID = nrl.ConversationGroupID 
 				AND cgr.RecipientID = nrl.RecipientID 
 	WHERE nrl.NotificationID = notificationID;
+    
+     #Get Finish Time to calcualte execution duration
+    SET finishTime = UTC_TIMESTAMP(3);
+    SET duration =  TIMESTAMPDIFF(MICROSECOND
+																		, startTime
+                                                                        , finishTime)  / 1000; 	#miliseconds
+                                                                        
+    
+    #Get Log Content, JSON format
+    SET logContent = json_object(
+							'notificationID', notificationID
+					) ;
+                    
+	#Write User Log
+	CALL NCB_UserLog_RunSP_Ins(
+											ACTION_ID #actionID
+                                            , notificationID #referenceID
+											, 0 #UserID
+                                            , logContent #LogContent
+                                            , startTime #logtime
+                                            , duration	#Duration
+                                            );
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_SendNotification_GetImmedNotifUpdStatus TO 'ncb.admin'@'%';
