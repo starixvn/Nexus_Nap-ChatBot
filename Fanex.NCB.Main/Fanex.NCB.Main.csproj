@@ -76,6 +76,7 @@
   <ItemGroup>
     <Folder Include="ClientApp\sources\pages\newnotification\store\" />
     <Folder Include="ClientApp\sources\pages\shared\backupnapchatbotfont\" />
+    <Folder Include="logs\" />
     <Folder Include="wwwroot\dev\common\" />
   </ItemGroup>
 

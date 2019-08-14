@@ -38,6 +38,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Core", "Fanex.NCB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.AutoJobs", "Fanex.NCB.AutoJobs\Fanex.NCB.AutoJobs.csproj", "{2DB2CAE0-6F34-4241-9D78-ECB1EB96A261}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.AutoService", "Fanex.NCB.AutoService\Fanex.NCB.AutoService.csproj", "{F3698BF1-0A27-454C-B7CC-15AFDC216CF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -88,6 +90,10 @@ Global
 		{2DB2CAE0-6F34-4241-9D78-ECB1EB96A261}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DB2CAE0-6F34-4241-9D78-ECB1EB96A261}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DB2CAE0-6F34-4241-9D78-ECB1EB96A261}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3698BF1-0A27-454C-B7CC-15AFDC216CF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3698BF1-0A27-454C-B7CC-15AFDC216CF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3698BF1-0A27-454C-B7CC-15AFDC216CF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3698BF1-0A27-454C-B7CC-15AFDC216CF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,6 +104,7 @@ Global
 		{17079036-B35E-4DF3-839A-44B4CA9DBFC2} = {6EF91A5A-3BF4-4CF4-ABF7-13B45E71C599}
 		{F21E72E3-CAF2-45E6-BBC1-0C7187EE3692} = {6EF91A5A-3BF4-4CF4-ABF7-13B45E71C599}
 		{2DB2CAE0-6F34-4241-9D78-ECB1EB96A261} = {C765879E-B820-46B3-AE53-37F5D614E630}
+		{F3698BF1-0A27-454C-B7CC-15AFDC216CF5} = {C765879E-B820-46B3-AE53-37F5D614E630}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37A2AE26-EFD0-4EE5-89D6-E3D42A9AEF67}
