@@ -17,12 +17,12 @@ export default class DataGrid extends Component {
     buildHeader = () => {
         return (
             <Row style={{ height: 32 }}>
-                <Cell className="col-order" header>{Labels.NumberCol}</Cell>
-                <Cell  header>Sender/Notification Type</Cell>
-                <Cell  header>Send Date/Time (GMT+8)</Cell>
-                <Cell  header><div className="has-icons">Title/Content <span className="icon-expand" /></div></Cell>
-                <Cell  header>Status</Cell>
-                <Cell header>{Labels.Action}</Cell>
+                <Cell colWidth={5} header>{Labels.NumberCol}</Cell>
+                <Cell colWidth={20}   header>Sender/Notification Type</Cell>
+                <Cell colWidth={18}  header>Send Date/Time (GMT+8)</Cell>
+                <Cell colWidth={100} header><div className="has-icons">Title/Content <span className="icon-expand" /></div></Cell>
+                <Cell colWidth={15} className="col-status" header>Status</Cell>
+                <Cell colWidth={10} className="col-action" header>{Labels.Action}</Cell>
             </Row>);
     };
 
@@ -33,17 +33,17 @@ export default class DataGrid extends Component {
         if (data.length > 0) {
             data.map((item, index) => {
                 rows.push(<Row key={item.notificationId} >
-                    <Cell className="text-center">{index + startIndex}</Cell>
+                    <Cell className="col-order text-center">{index + startIndex}</Cell>
                     <Cell>{item.notificationTypeName}</Cell>
                     <Cell></Cell>
 
                     <Cell><strong>{item.title}</strong></Cell>
-                    <Cell><span className="badge badge-primary">{item.status}</span></Cell>
-                    <Cell></Cell>
+                    <Cell><span className="badge-green">{item.status}</span></Cell>
+                    <Cell className="col-action"></Cell>
                 </Row>);
             });
         } else {
-            rows.push(<Row key={`body${1}`} ><Cell colSpan="10"><NoDataTitle /></Cell></Row >);
+            rows.push(<Row key={`body${1}`} ><Cell colSpan="6"><NoDataTitle /></Cell></Row >);
         }
 
         return rows;

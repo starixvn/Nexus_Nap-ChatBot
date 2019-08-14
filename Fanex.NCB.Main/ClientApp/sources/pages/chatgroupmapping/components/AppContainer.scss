@@ -57,23 +57,6 @@
     }
 }
 
-.table-container-div {
-    margin-top: 20px;
-
-    table {
-        margin-bottom: 0;
-    }
-
-    .edit-disabled {
-        color: grey;
-        cursor: not-allowed;
-
-        :hover {
-            background: none;
-        }
-    }
-}
-
 ::-webkit-input-placeholder {
     font-style: italic;
 }
