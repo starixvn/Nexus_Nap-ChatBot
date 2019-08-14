@@ -4,8 +4,8 @@ DROP PROCEDURE IF EXISTS NCB_NotificationList_Sel;
 
 CREATE PROCEDURE  NCB_NotificationList_Sel(
      IN notificationTypeIDLst VARCHAR(200)
-    , IN recipientIDLst VARCHAR(200)
-	, IN creatorIDLst VARCHAR(200)
+    , IN recipientIDLst VARCHAR(5000)
+	, IN creatorIDLst VARCHAR(2000)
     , IN notificationStatusIDLst VARCHAR(200)
 	, IN configSendTimeFrom DATETIME
     , IN configSendTimeTo DATETIME

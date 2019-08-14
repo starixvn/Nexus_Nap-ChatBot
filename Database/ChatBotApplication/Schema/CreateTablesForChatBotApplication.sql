@@ -24,6 +24,16 @@ CREATE TABLE ChatBot.ConversationBot(
   );
   
   
+  CREATE TABLE ChatBot.ConversationMessageLog(
+		FromConversationID VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, ToConversationID VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, Content MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+        , SentTime DATETIME NOT NULL
+        , IsSuccessfull BIT NOT NULL
+        , ErrorMessage VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
+  );
+  
+  
   CREATE TABLE ChatBot.ConversationGroupBot(
 		ConversationGroupID INT NOT NULL
         , ConversationBotID INT NOT NULL
