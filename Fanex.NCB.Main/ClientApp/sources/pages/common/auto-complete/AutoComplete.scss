@@ -13,7 +13,7 @@
 
     .suggestion-list {
         background-color: #fff;
-        margin: 5px 0 0 0;
+        margin: 0;
         min-width: 100px;
         max-height: 650px;
         overflow-y: auto;
@@ -24,10 +24,10 @@
     }
 
     .ac-item {
-        padding: 10px;
+        padding: 0 10px;
         color: black;
         cursor: pointer;
-        min-height: 30px;
+        line-height: 30px;
         width: 100%;
         display: inline-block;
         vertical-align: middle;
@@ -37,7 +37,7 @@
         }
 
         &:hover {
-            background-color: #9eb4c3;
+            background-color: #FFD8B1;
         }
     }
 }
