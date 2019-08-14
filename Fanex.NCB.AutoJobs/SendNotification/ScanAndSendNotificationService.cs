@@ -1,7 +1,7 @@
-﻿using Fanex.NCB.Services.Interfaces;
-
-namespace Fanex.NCB.AutoJobs.SendNotification
+﻿namespace Fanex.NCB.AutoJobs.SendNotification
 {
+    using Fanex.NCB.Services.Interfaces;
+
     public class ScanAndSendNotificationService
     {
         private readonly ISendNotificationService sendNotificationService;
