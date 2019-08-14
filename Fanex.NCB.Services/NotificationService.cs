@@ -45,13 +45,6 @@
             return result;
         }
 
-        private void SendNotificationImediately(int notificationId)
-        {
-            Task.Run(
-                () => sendNotificationService.SendNotificationImmediately(notificationId)
-                ).ConfigureAwait(false);
-        }
-
         public async Task<IEnumerable<Recipient>> GetRecipientsAsync(int notificationTypeId, int? productId)
         {
             return await baseService.GetDataAsync<Recipient>(new GetRecipientsCriteria
@@ -76,6 +69,42 @@
             }).ConfigureAwait(false);
 
             return (result.Item1.FirstOrDefault(), result.Item2);
+        }
+
+        public async Task<CommandResult> CancelAsync(int notificationId, int userId)
+        {
+            var command = new CancelNotificationCommand
+            {
+                NotificationId = notificationId,
+                UserId = userId
+            };
+
+            return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+        }
+
+        public async Task<NotificationErrorReport> GetNotificationErrorAsync(int notificationId)
+        {
+            var result = await baseService.FetchMultipleAsync<NotificationErrorReport, string, NotificationErrorDetail>(new GetNotificationErrorDetailCriteria
+            {
+                NotificationId = notificationId
+            }).ConfigureAwait(false);
+
+            var report = result.Item1.FirstOrDefault();
+
+            if (report != null)
+            {
+                report.SuccessRecipients = result.Item2;
+                report.ErrorDetails = result.Item3;
+            }
+
+            return report;
+        }
+
+        private void SendNotificationImediately(int notificationId)
+        {
+            Task.Run(
+                () => sendNotificationService.SendNotificationImmediately(notificationId)
+                ).ConfigureAwait(false);
         }
     }
 }

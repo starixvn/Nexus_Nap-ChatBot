@@ -2,12 +2,13 @@ namespace Fanex.NCB.SkypeBot.Controllers
 {
     using Fanex.NAP.Client.AspNetCore.Attributes;
     using Fanex.NAP.Client.Helpers.Web;
+    using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Main.ViewModel.Notification;
     using Fanex.NCB.Models.Notification;
     using Fanex.NCB.Services.Interfaces;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using System.Threading.Tasks;
+    using static Fanex.NAP.Core.Business.Constant;
 
     [NapSuperAuth]
     public class NotificationListController : Controller
@@ -22,12 +23,14 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
+        [NapAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host)]
         public IActionResult Index()
         {
             return View("~/Views/SkypeBot/NotificationList/Index.cshtml");
         }
 
         [HttpGet]
+        [NapAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host)]
         public async Task<IActionResult> Get(GetNotificationViewModel filter)
         {
             var result = await notificationService.GetNotificationsAsync(new GetNotifications
@@ -43,6 +46,24 @@ namespace Fanex.NCB.SkypeBot.Controllers
             }).ConfigureAwait(false);
 
             return Json(new { total = result.Item1, data = result.Item2 });
+        }
+
+        [HttpPost]
+        [NapAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host)]
+        public async Task<IActionResult> Cancel(int notificationId)
+        {
+            var result = await notificationService.CancelAsync(notificationId, napSession.UserId).ConfigureAwait(false);
+
+            return Json(result);
+        }
+
+        [HttpGet]
+        [NapAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host)]
+        public async Task<IActionResult> GetNotificationError(int notificationId)
+        {
+            var result = await notificationService.GetNotificationErrorAsync(notificationId).ConfigureAwait(false);
+
+            return Json(result);
         }
     }
 }

@@ -2,10 +2,10 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_NotificationList_Sel;
 
-CREATE PROCEDURE  NCB_NotificationList_Sel(
+CREATE DEFINER=`dominic.dao`@`%` PROCEDURE `NCB_NotificationList_Sel`(
      IN notificationTypeIDLst VARCHAR(1000)
     , IN recipientIDLst VARCHAR(5000)
-	, IN creatorIDLst VARCHAR(3000)
+	, IN creatorID	INT
     , IN notificationStatusIDLst VARCHAR(1000)
 	, IN configSendTimeFrom DATETIME
     , IN configSendTimeTo DATETIME
@@ -24,7 +24,7 @@ CREATE PROCEDURE  NCB_NotificationList_Sel(
 									Ex: RecipientSentStatusJSON = [{"IsError": 0, "RecipientName": "Happy8"}, {"IsError": 0, "RecipientName": "SALONCS"}]
         Revisions:
 				- 20190408@Dominic: First Commit
-        
+				- 20190814@Elton: change RecipientSentStatusJSON
     */
 )
 BEGIN
@@ -64,21 +64,6 @@ BEGIN
 		DEALLOCATE PREPARE stmt;
 	END IF;
     
-	#Insert comma seperated list creatorIDLst to temporary tables
-    DROP TEMPORARY TABLE IF EXISTS tmp_creatorIDLst;
-	CREATE TEMPORARY TABLE tmp_creatorIDLst(UserID INT);
-    
-	IF IFNULL(creatorIDLst,'') <> ''THEN
-		SET @sqlCommand = REPLACE(creatorIDLst, ',', '),(');
-		SET @sqlCommand = CONCAT('(', @sqlCommand, ')');
-		SET @sqlCommand = CONCAT('INSERT INTO tmp_creatorIDLst VALUES'
-															, @sqlCommand); 
-                                                            
-		PREPARE stmt FROM  @sqlCommand;
-		EXECUTE stmt;
-		DEALLOCATE PREPARE stmt;
-	END IF;
-    
 	#Insert comma seperated list notificationStatusIDLst to temporary tables
     DROP TEMPORARY TABLE IF EXISTS tmp_notificationStatusIDLst;
 	CREATE TEMPORARY TABLE tmp_notificationStatusIDLst(StatusID TINYINT UNSIGNED);
@@ -103,10 +88,7 @@ BEGIN
 								)
 	AND n.ConfigSendTime >= configSendTimeFrom
     AND n.ConfigSendTime <= configSendTimeTo
-	AND n.CreatorID IN (
-									SELECT	tmp_user.UserID
-                                    FROM tmp_creatorIDLst tmp_user
-								)
+	AND (creatorID IS NULL OR n.CreatorID = creatorID)
     AND n.StatusID IN (
 									SELECT	tmp_stt.StatusID
                                     FROM tmp_notificationStatusIDLst tmp_stt
@@ -125,6 +107,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Notification;
 	CREATE TEMPORARY TABLE tmp_Notification(
 													NotificationID INT
+                                                    ,NotificationTypeName VARCHAR(50)
                                                     , CreatorID INT
                                                     , ConfigSendTime DATETIME
                                                     , Title VARCHAR(300) CHARACTER SET utf8mb4
@@ -136,6 +119,7 @@ BEGIN
     #Get data based on Page Index and Page Size
     INSERT INTO tmp_Notification (	
 													NotificationID
+                                                    ,NotificationTypeName
                                                     , CreatorID
                                                     , ConfigSendTime
                                                     , Title
@@ -143,18 +127,16 @@ BEGIN
                                                     , Status
                                                     , StatusID
 												)
-    SELECT n.NotificationID, n.CreatorID, n.ConfigSendTime, n.Title, n.Content, n.Status, n.StatusID
+    SELECT n.NotificationID, nt.NotificationTypeName, n.CreatorID, n.ConfigSendTime, n.Title, n.Content, n.Status, n.StatusID
     FROM Notification n
+		INNER JOIN NotificationType nt ON n.NotificationTypeID = nt.NotificationTypeID
     WHERE n.NotificationTypeID IN (
 									SELECT	tmp_nt.NotificationTypeID
                                     FROM tmp_notificationTypeIDLst tmp_nt
 								)
 	AND n.ConfigSendTime >= configSendTimeFrom
     AND n.ConfigSendTime <= configSendTimeTo
-	AND n.CreatorID IN (
-									SELECT	tmp_user.UserID
-                                    FROM tmp_creatorIDLst tmp_user
-								)
+	AND (creatorID IS NULL OR n.CreatorID = creatorID)
     AND n.StatusID IN (
 									SELECT	tmp_stt.StatusID
                                     FROM tmp_notificationStatusIDLst tmp_stt
@@ -175,17 +157,12 @@ BEGIN
     UPDATE tmp_Notification n
     SET n.RecipientSentStatusJSON = (
 				SELECT CONCAT('[' , GROUP_CONCAT(
-										json_object('RecipientName', r.RecipientName
-										, 'IsError', CASE 
-																	WHEN n.StatusID NOT IN (
-																				SENT_STATUSID_ERROR
-                                                                                , SENT_STATUSID_RESOLVED
-																			) THEN 0 #Not error
-																	ELSE 
-																			CASE WHEN nrl.StatusID > 0 THEN 1
-																						ELSE 0
-																			END
-														END
+										json_object('recipientName', r.RecipientName
+										, 'isError', CASE 
+														WHEN nrl.StatusID NOT IN (SENT_STATUSID_ERROR, SENT_STATUSID_RESOLVED)
+															THEN 0 #Not error
+														ELSE 1
+													END
                                         )
 							SEPARATOR ', ') ,']') 
 				FROM NotificationRecipientList nrl

@@ -13,5 +13,9 @@
         Task<IEnumerable<Recipient>> GetRecipientsAsync(int notificationTypeId, int? productId);
 
         Task<(long, IEnumerable<Notification>)> GetNotificationsAsync(GetNotifications model);
+
+        Task<CommandResult> CancelAsync(int notificationId, int userId);
+
+        Task<NotificationErrorReport> GetNotificationErrorAsync(int notificationId);
     }
 }

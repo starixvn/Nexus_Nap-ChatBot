@@ -30,5 +30,6 @@
     TemplateName: 'Template Name',
     TitleContent: 'Title/Content',
     UpdateMappingStatusSuccessfully: 'Update Mapping Status Successfully.',
-    CreateNotificationSuccessfully: 'Your request has been submitted successfully'
+    CreateNotificationSuccessfully: 'Your request has been submitted successfully',
+    CancelNotificationSuccessfully: 'Cancel notification successfully'
 };

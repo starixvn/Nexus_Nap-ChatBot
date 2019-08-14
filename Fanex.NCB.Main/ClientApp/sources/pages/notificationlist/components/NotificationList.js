@@ -15,6 +15,7 @@ import TreeSelect, { getRealValuesFromExtra } from '../../common/TreeSelect/inde
 import errorResponseHandler from '../../lib/errorResponseHandler';
 import Site from '../../lib/site';
 import DataGrid from './DataGrid';
+import NotificationCancellation from './NotificationCancellation';
 
 export default class NotificationList extends Component {
     constructor(props) {
@@ -39,7 +40,10 @@ export default class NotificationList extends Component {
             notificationTypeOptions: [],
             recipientOptions: [],
             statusOptions: [],
-            tableData: null
+            tableData: null,
+            notificationCancellation: {
+                show: false
+            }
         };
     }
     componentDidMount() {
@@ -87,6 +91,15 @@ export default class NotificationList extends Component {
             }).catch(errorResponseHandler);
     }
 
+    handleOpenNotificationCancellation = notificationId => this.setState({ notificationCancellation: { show: true, notificationId: notificationId } });
+
+    handleCloseNotificationCancellation = () => this.setState({ notificationCancellation: { show: false } });
+
+    handleCancellationSuccess = () => {
+        this.handleCloseNotificationCancellation();
+        this.getNotifications(this.state.tableData.pageIndex, this.state.tableData.pageSize);
+    }
+
     getNotifications = (pageIndex = 1, pageSize = 20) => {
         const filter = this.state.filter;
         const recipientIds = [];
@@ -104,7 +117,10 @@ export default class NotificationList extends Component {
                 pageSize: pageSize
             }
         }).then(response => {
-            response.data.data.forEach(notification => notification.configSendTime = DateTime.fromISO(notification.configSendTime));
+            response.data.data.forEach(notification => {
+                notification.configSendTime = DateTime.fromISO(notification.configSendTime);
+                notification.recipientSentStatusJson = JSON.parse(notification.recipientSentStatusJson);
+            });
 
             this.setState({
                 tableData: {
@@ -218,105 +234,15 @@ export default class NotificationList extends Component {
                 {this.state.tableData &&
                     <DataGrid tableData={this.state.tableData}
                         onPaging={this.getNotifications}
+                        cancelNotification={this.handleOpenNotificationCancellation}
                     />
                 }
-                <table className="tbl w-100">
-                    <thead>
-                        <tr>
-                            <th className="col-order">#</th>
-                            <th>Sender/<br /> Notification Type</th>
-                            <th className="col-send-date">Send Date/Time<br /> (GMT+8)</th>
-                            <th>
-                                <div className="has-icons">Title/Content <span className="icon-expand" /></div>
-                            </th>
-                            <th className="col-status">Status</th>
-                            <th className="col-action">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td className="text-center">1</td>
-                            <td>
-                                <div>User1</div>
-                                <div>UM Notification</div>
-                            </td>
-                            <td className="text-center">
-                                <div>10:00:00 PM</div>
-                                <div>12/26/2018</div>
-                            </td>
-                            <td className="col-content">
-                                <span className="icon-down" />
-                                To 4 recipient(s): ACBbet, XYZbet BBIN, BBIN2 <br />
-                                <strong>WEEKLY MAINTENENCE ANNOUNCEMENT - 11/26/2018</strong> <br />
-                                Good Day!<br />
-
-                                This is Shane, kindly take note of the below message [请注意以下公告]:<br />
-
-                                >> All services subscribed with us including Sportsbook, Gaming and Back Office are not available during maintenance on going<br />
-
-                                >> 在维护期间, 所有和我们订阅的服务, 包括体育, 娱乐厅和后台将无法使用<br />
-
-                                Thank you for your kind attention!<br />
-                            </td>
-                            <td><span className="badge-green">Sent</span></td>
-                            <td />
-                        </tr>
-                        <tr>
-                            <td className="text-center">2</td>
-                            <td>
-                                <div>User1</div>
-                                <div>UM Notification</div>
-                            </td>
-                            <td className="text-center">
-                                <div>10:00:00 PM</div>
-                                <div>12/26/2018</div>
-                            </td>
-                            <td className="col-content">
-                                <span className="icon-right" />
-                                To 4 recipient(s): ACBbet, XYZbet BBIN, BBIN2 <br />
-                                <strong>WEEKLY MAINTENENCE ANNOUNCEMENT - 11/26/2018</strong>
-                            </td>
-                            <td><span className="badge-blue">Planned</span></td>
-                            <td className="text-center"><span className="icon-delete" /></td>
-                        </tr>
-                        <tr>
-                            <td className="text-center">3</td>
-                            <td>
-                                <div>User1</div>
-                                <div>UM Notification</div>
-                            </td>
-                            <td className="text-center">
-                                <div>10:00:00 PM</div>
-                                <div>12/26/2018</div>
-                            </td>
-                            <td className="col-content">
-                                <span className="icon-right" />
-                                To 4 recipient(s): ACBbet, XYZbet BBIN, <span className="text-red">BBIN2, Gold Deluxe</span> <br />
-                                <strong>WEEKLY MAINTENENCE ANNOUNCEMENT - 11/26/2018</strong>
-                            </td>
-                            <td><span className="badge-red">Error</span></td>
-                            <td className="text-center"><span className="icon-view" data-remark onClick={this.updateRemark} /></td>
-                        </tr>
-                        <tr>
-                            <td className="text-center">4</td>
-                            <td>
-                                <div>User2</div>
-                                <div>UM Notification</div>
-                            </td>
-                            <td className="text-center">
-                                <div>10:00:00 PM</div>
-                                <div>12/26/2018</div>
-                            </td>
-                            <td className="col-content">
-                                <span className="icon-right" />
-                                To 4 recipient(s): ACBbet, XYZbet BBIN, <span className="text-red">BBIN2, Gold Deluxe</span> <br />
-                                <strong>WEEKLY MAINTENENCE ANNOUNCEMENT - 11/26/2018</strong>
-                            </td>
-                            <td><span className="badge-orange">Resolved</span></td>
-                            <td className="text-center"><span className="icon-view" data-remark={false} onClick={this.updateRemark} /></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <NotificationCancellation
+                    isOpen={this.state.notificationCancellation.show}
+                    notificationId={this.state.notificationCancellation.notificationId}
+                    onToggle={this.handleCloseNotificationCancellation}
+                    onCancellationSuccess={this.handleCancellationSuccess}
+                />
                 <ErrorReport
                     isModal={this.props.isModal}
                     toggleHandler={this.toggleHandler}
