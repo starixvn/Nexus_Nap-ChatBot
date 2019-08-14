@@ -84,6 +84,12 @@ body {
     background-color: #05b15b;    
 }
 
+.badge-outline-green {
+    @extend %badge;
+    border: 1px solid #05b15b;
+    color: #05b15b;
+}
+
 .badge-blue {
     @extend %badge;
     background-color: #4879c1;
