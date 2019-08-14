@@ -14,5 +14,7 @@
         Task<CommandResult> UpdateGroupTopic(UpdateGroupTopicCommand command);
 
         Task<ConversationGroup> GetGroupConversation(string conversationId, string botName);
+
+        Task<CommandResult> AddMessageLog(AddMessageLogCommand command);
     }
 }

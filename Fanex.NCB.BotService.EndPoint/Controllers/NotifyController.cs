@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authorization;
@@ -68,7 +69,8 @@
                     result = await SendMessageNotification(appId, notificationMessage.NotifictaionId, conversationReference, notificationMessage.Message);
                     results.Add(result);
 
-                    await Task.Run(() => AddMessageLog(result).ConfigureAwait(false));
+                    var thread = new Thread(async () => await AddMessageLog(conversationReference, notificationMessage.Message, result));
+                    thread.Start();
                 }
             }
 
@@ -107,9 +109,18 @@
                     new CancellationToken());
         }
 
-        private async Task AddMessageLog(SendMessageResult result)
+        private async Task AddMessageLog(ConversationReference conversationReference, string messageContent, SendMessageResult result)
         {
-            
+            var command = new AddMessageLogCommand
+            {
+                FromConversationId = conversationReference.Bot.Id,
+                ToConversationId = conversationReference.Conversation.Id,
+                Content = messageContent,
+                IsSuccessfull = result.ErrorCode == 0,
+                ErrorMessage = result.ErrorMessage
+            };
+
+            await conversationService.AddMessageLog(command);
         }
 
         private async Task<ConversationReference> GetConversationReference(string conversationId, string botName)

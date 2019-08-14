@@ -36,7 +36,7 @@
                     {
                         new Claim(ClaimTypes.Name, username)
                     }),
-                    Expires = DateTime.UtcNow.AddMinutes(1),
+                    Expires = DateTime.UtcNow.AddMinutes(20),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
                 var sercurityToken = tokenHandler.CreateToken(tokenDescriptor);

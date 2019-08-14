@@ -43,5 +43,10 @@
             var conversationGroup = await baseService.GetDataEntityAsync<ConversationGroup>(criteria);
             return conversationGroup;
         }
+
+        public async Task<CommandResult> AddMessageLog(AddMessageLogCommand command)
+        {
+            return await baseService.ExecuteNonQueryAsync(command);
+        }
     }
 }
