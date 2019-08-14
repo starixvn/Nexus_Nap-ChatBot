@@ -138,7 +138,7 @@
                 {
                     NotifictaionId = noti.NotificationId,
                     Message = string.Format("{0}\n{1}", noti.Title, noti.Content),
-                    Recipients = recipients.Where(r => noti.NotificationId == noti.NotificationId)
+                    Recipients = recipients.Where(r => noti.NotificationId == r.NotificationId)
                             .Select(r => new ConversationInfo
                             {
                                 BotConversationId = r.BotConversationId,
