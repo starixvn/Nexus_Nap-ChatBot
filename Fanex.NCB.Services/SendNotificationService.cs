@@ -168,7 +168,7 @@
             }
         }
 
-        public async Task SendNotificationImediately(int notifiactionId)
+        public async Task SendNotificationImmediately(int notifiactionId)
         {
             var criteria = new GetNotificationByIdCriteria
             {

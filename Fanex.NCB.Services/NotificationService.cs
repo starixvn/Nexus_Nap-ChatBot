@@ -47,7 +47,8 @@
 
         private void SendNotificationImediately(int notificationId)
         {
-            Task.Run(() => sendNotificationService.SendNotificationImediately(notificationId)
+            Task.Run(
+                () => sendNotificationService.SendNotificationImmediately(notificationId)
                 ).ConfigureAwait(false);
         }
 

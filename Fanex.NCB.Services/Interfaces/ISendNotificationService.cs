@@ -6,6 +6,6 @@
     {
         Task ScanAndSendNotification();
 
-        Task SendNotificationImediately(int notifiactionId);
+        Task SendNotificationImmediately(int notifiactionId);
     }
 }
