@@ -27,26 +27,26 @@ export default class DataGrid extends Component {
     };
 
     buildBody = () => {
-        const rows = [];
         const { data, pageIndex, pageSize } = this.props.tableData;
         const startIndex = (pageIndex - 1) * pageSize + 1;
         if (data.length > 0) {
-            data.map((item, index) => {
-                rows.push(<Row key={item.notificationId} >
+            return data.map((item, index) => {
+                return (<Row key={item.notificationId} >
                     <Cell className="col-order text-center">{index + startIndex}</Cell>
                     <Cell>{item.notificationTypeName}</Cell>
-                    <Cell></Cell>
+                    <Cell className="text-center">
+                        {item.configSendTime.toFormat('hh:mm:ss a')}
+                        <div>{item.configSendTime.toFormat('MM/dd/yyyy')}</div>
+                    </Cell>
 
                     <Cell><strong>{item.title}</strong></Cell>
                     <Cell><span className="badge-green">{item.status}</span></Cell>
                     <Cell className="col-action"></Cell>
                 </Row>);
             });
-        } else {
-            rows.push(<Row key={`body${1}`} ><Cell colSpan="6"><NoDataTitle /></Cell></Row >);
         }
 
-        return rows;
+        return [<Row key={`body${1}`} ><Cell colSpan="6"><NoDataTitle /></Cell></Row >];
     }
 
     render() {

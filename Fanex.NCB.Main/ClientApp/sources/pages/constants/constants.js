@@ -24,3 +24,12 @@ export const ErrorCodeTemplateMessage = [
         message: 'There are recipients in the exception list:'
     }
 ];
+
+export const NotificationStatus = {
+    Planned: 0,
+    Sent: 1,
+    Error: 2,
+    Sending: 3,
+    Cancelled: 4,
+    Resolved: 5
+}

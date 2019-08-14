@@ -3,6 +3,8 @@ import './NotificationList.scss';
 
 import React, { Component } from 'react';
 import axios from 'axios';
+import { DateTime } from 'luxon';
+
 import { NCBBreadcrum } from '../../common/breadcrumbs';
 import { Form, FormGroup, Label, Button, Container, Row, Col, Input, FormFeedback } from 'reactstrap';
 import ErrorReport from './ErrorReport';
@@ -102,6 +104,8 @@ export default class NotificationList extends Component {
                 pageSize: pageSize
             }
         }).then(response => {
+            response.data.data.forEach(notification => notification.configSendTime = DateTime.fromISO(notification.configSendTime));
+
             this.setState({
                 tableData: {
                     pageIndex,

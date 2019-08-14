@@ -4,7 +4,7 @@ import './NoDataTitle.scss';
 
 const noDataTitle = () => {
     return (
-        <p className="no-info-row center-align">{Labels.NoInfo}</p>
+        <div className="no-info-row center-align">{Labels.NoInfo}</div>
     );
 };
 
