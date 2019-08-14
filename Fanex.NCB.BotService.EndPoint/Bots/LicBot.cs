@@ -33,10 +33,13 @@
                         await OnBotAddedAsync(turnContext, cancellationToken).ConfigureAwait(false);
                     }
                 }
-                else if (turnContext.Activity.MembersRemoved != null
-                    && turnContext.Activity.MembersRemoved.Any(m => m.Id == turnContext.Activity.Recipient?.Id))
+                else
                 {
-                    await OnBotRemovedAsync(turnContext, cancellationToken).ConfigureAwait(false);
+                    if (turnContext.Activity.MembersRemoved != null
+                    && turnContext.Activity.MembersRemoved.Any(m => m.Id == turnContext.Activity.Recipient?.Id))
+                    {
+                        await OnBotRemovedAsync(turnContext, cancellationToken).ConfigureAwait(false);
+                    }
                 }
 
                 if (!string.IsNullOrWhiteSpace(turnContext.Activity.TopicName))
@@ -63,10 +66,13 @@
             {
                 await turnContext.SendActivityAsync(MessageFactory.Text(string.Format(greetingMessage, botName)), cancellationToken);
             }
-            else if (message.Equals(InteractedCommand.getid, StringComparison.InvariantCultureIgnoreCase))
+            else
             {
-                await turnContext.SendActivityAsync(MessageFactory.Text(turnContext.Activity.Conversation.Id), cancellationToken);
-            }
+                if (message.Equals(InteractedCommand.getid, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    await turnContext.SendActivityAsync(MessageFactory.Text(turnContext.Activity.Conversation.Id), cancellationToken);
+                }
+            } 
         }
 
         protected virtual async Task OnBotAddedAsync(ITurnContext turnContext, CancellationToken cancellationToken)

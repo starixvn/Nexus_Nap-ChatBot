@@ -88,7 +88,7 @@
             LoadBotConfig(services, appSettings);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             
 
