@@ -121,7 +121,7 @@
                     ConversationBotID = recipient.BotId,
                     Retry = true,
                     IsSuccess = result.ErrorCode == 0,
-                    ErrMsg = result.ErrorCode == 0 ? string.Empty : EnumHelper.GetDescription((RecipientStatuses)result.ErrorCode)
+                    ErrMsg = result.ErrorCode == 0 ? string.Empty : result.ErrorMessage
                 };
                 updateNotiModels.Add(model);
             }
