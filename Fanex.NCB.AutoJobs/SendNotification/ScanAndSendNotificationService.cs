@@ -22,9 +22,10 @@
             this.cronOptions = cronOptions;
         }
 
+        [AutomaticRetry(Attempts = 0)]
         public void Initialize()
         {
-            recurringJob.AddOrUpdate("Auto Scan & Send Notification",
+            recurringJob.AddOrUpdate("Auto Scan Send Notification",
                 Job.FromExpression(() => sendNotificationService.ScanAndSendNotification()),
                 cronOptions.Value.ScanNotifcationToSend,
                 TimeZoneInfo.Local);
