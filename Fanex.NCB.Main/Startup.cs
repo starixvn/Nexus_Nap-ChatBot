@@ -16,6 +16,8 @@
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.CustomAspNetCoreModule;
     using Fanex.NCB.Main.AppConfig;
+    using Hangfire;
+    using Hangfire.MySql.Core;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -54,8 +56,8 @@
             services.AddSingleton(Configuration);
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<BotSettings>(Configuration.GetSection("ChatBotConfigs"));
-            //string hangfireConnectionString = Cryptography.DecryptConnectionString(Configuration.GetConnectionString("Hangfire"));
-            //services.AddHangfire(x => x.UseStorage(new MySqlStorage(hangfireConnectionString)));
+            string hangfireConnectionString = Cryptography.DecryptConnectionString(Configuration.GetConnectionString("Hangfire"));
+            services.AddHangfire(x => x.UseStorage(new MySqlStorage(hangfireConnectionString)));
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
@@ -97,15 +99,15 @@
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            //#region hangfire
+            #region hangfire
 
-            //app.UseHangfireDashboard("/hangfire", new DashboardOptions
-            //{
-            //    Authorization = new[] { new HangfireAuthorization() }
-            //});
-            //app.UseHangfireServer();
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new HangfireAuthorization() }
+            });
+            app.UseHangfireServer();
 
-            //#endregion hangfire
+            #endregion hangfire
 
             app.UseCookiePolicy();
             app.UseAuthentication();
