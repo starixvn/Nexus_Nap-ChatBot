@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.Services
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NCB.Criteria.Notification;
     using Fanex.NCB.Models.Common;
@@ -8,7 +9,6 @@
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
-    using System.Linq;
 
     public class NotificationService : INotificationService
     {
@@ -39,13 +39,16 @@
 
             if (model.SendImmediately)
             {
-                Task.Run(() =>
-                {
-                    sendNotificationService.SendNotificationImediately(command.NotificationId);
-                }).ConfigureAwait(false);
+                SendNotificationImediately(command.NotificationId);
             }
 
             return result;
+        }
+
+        private void SendNotificationImediately(int notificationId)
+        {
+            Task.Run(() => sendNotificationService.SendNotificationImediately(notificationId)
+                ).ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<Recipient>> GetRecipientsAsync(int notificationTypeId, int? productId)
