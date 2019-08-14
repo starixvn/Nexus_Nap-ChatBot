@@ -49,7 +49,6 @@
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
-    <PackageReference Include="MySql.Data" Version="8.0.16" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -58,6 +57,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fanex.NCB.AutoJobs\Fanex.NCB.AutoJobs.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Base\Fanex.NCB.Shared.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Services\Fanex.NCB.Services.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Shared\Fanex.NCB.CustomAspNetCoreModule\Fanex.NCB.CustomAspNetCoreModule.csproj" />

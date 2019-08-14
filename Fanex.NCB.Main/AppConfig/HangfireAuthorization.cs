@@ -17,6 +17,6 @@
             this.napSession = napSession;
         }
 
-        public bool Authorize([NotNull] DashboardContext context) => napSession.UserId > 0;
+        public bool Authorize([NotNull] DashboardContext context) => true;
     }
 }

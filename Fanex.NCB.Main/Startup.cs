@@ -56,6 +56,7 @@
             services.AddSingleton(Configuration);
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<BotSettings>(Configuration.GetSection("ChatBotConfigs"));
+            services.Configure<HangfireCronJob>(Configuration.GetSection("HangfireCronJob"));
             string hangfireConnectionString = Cryptography.DecryptConnectionString(Configuration.GetConnectionString("Hangfire"));
             services.AddHangfire(x => x.UseStorage(new MySqlStorage(hangfireConnectionString)));
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -82,6 +83,9 @@
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.RegisterServices();
             services.RegisterRepositories();
+
+            services.InjectAutoJobService();
+            services.InitAutoJobs();
         }
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
