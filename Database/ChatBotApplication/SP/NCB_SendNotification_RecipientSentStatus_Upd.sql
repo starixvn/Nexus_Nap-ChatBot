@@ -4,7 +4,6 @@ DROP PROCEDURE IF EXISTS NCB_SendNotification_RecipientSentStatus_Upd;
 
 CREATE PROCEDURE  NCB_SendNotification_RecipientSentStatus_Upd(
     IN sentStatus MEDIUMTEXT CHARACTER SET utf8mb4
-    , IN userID INT
 	, OUT errCode SMALLINT
 	, OUT errMsg VARCHAR(100)
     /*
@@ -18,7 +17,8 @@ CREATE PROCEDURE  NCB_SendNotification_RecipientSentStatus_Upd(
                                 "ConversationGroupID":1,
 								"ConversationBotID":1,
 								"SentTime":"2019-04-01 12:23:22.000000",
-								"IsSuccess":0,
+								"IsSuccess":false,
+                                "Retry":false,
 								"ErrMsg":"Bot Is Removed"
 							},
 							{  
@@ -27,7 +27,7 @@ CREATE PROCEDURE  NCB_SendNotification_RecipientSentStatus_Upd(
                                 "ConversationGroupID":2,
 								"ConversationBotID":1,
 								"SentTime":"2019-04-01 12:23:22.000000",
-								"IsSuccess":1,
+								"Retry":false:false,
 								"ErrMsg":""
 							}
 						]
@@ -48,12 +48,16 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
     
     #Constants
     DECLARE NOTIFICATION_STATUSID_SENDING	INT DEFAULT 3;
+	DECLARE NOTIFICATION_STATUS_SENDING	VARCHAR(10) DEFAULT 'Sending';
     
-    DECLARE SENT_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 1;
-    DECLARE SENT_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Sent ';
+    DECLARE NOTIFICATION_STATUSID_SENT	TINYINT UNSIGNED DEFAULT 1;
+    DECLARE NOTIFICATION_STATUS_SENT	VARCHAR(10) DEFAULT 'Sent ';
     
-    DECLARE ERROR_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 2;
-    DECLARE ERROR_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Error';
+    DECLARE NOTIFICATION_STATUSID_ERROR	TINYINT UNSIGNED DEFAULT 2;
+    DECLARE NOTIFICATION_STATUS_ERROR	VARCHAR(10) DEFAULT 'Error';
+    
+    DECLARE NOTIFICATION_STATUSID_RETRYING	INT DEFAULT 8;
+	DECLARE NOTIFICATION_STATUS_RETRYING	VARCHAR(10) DEFAULT 'Retrying';
     
     SET  startTime = UTC_TIMESTAMP(3);
     SET errCode=0, errMsg='';
@@ -66,6 +70,7 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
                                                                     , ConversationBotID INT
                                                                     , SentTime DATETIME
                                                                     , IsSuccess TINYINT
+																	, Retry TINYINT
                                                                     , ErrMsg VARCHAR(1000) CHARACTER SET utf8mb4
                                                                     , INDEX INDEX_ChatGroupID USING BTREE (NotificationID, RecipientID, ConversationGroupID)
 																);
@@ -73,58 +78,99 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
 	SET iLoop = 0;
 	WHILE (JSON_EXTRACT(SentStatus, CONCAT('$[',iLoop, '].NotificationID'))  IS NOT NULL) DO
 		INSERT INTO tmp_ChatGroupSentStatus(
-																		ChatGroupID
-                                                                        , ChatGroupConversationID
-                                                                        , BotMemberID
-                                                                        , SentTime
-                                                                        , IsSuccess
-                                                                        , ErrMsg
+																		NotificationID 
+																		, RecipientID 
+																		, ConversationGroupID 
+																		, ConversationBotID 
+																		, SentTime 
+																		, IsSuccess 
+                                                                        , Retry
+																		, ErrMsg
 																	)
-		SELECT JSON_EXTRACT(SentStatus, CONCAT('$[', iLoop, '].ChatGroupID')) 
-						, JSON_UNQUOTE(JSON_EXTRACT(SentStatus, CONCAT('$[', iLoop, '].ChatGroupConversationID')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(SentStatus, CONCAT('$[', iLoop, '].BotMemberID')))
+		SELECT JSON_EXTRACT(SentStatus, CONCAT('$[', iLoop, '].NotificationID')) 
+						, JSON_UNQUOTE(JSON_EXTRACT(SentStatus, CONCAT('$[', iLoop, '].RecipientID')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(SentStatus, CONCAT('$[', iLoop, '].ConversationGroupID')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(SentStatus, CONCAT('$[', iLoop, '].ConversationBotID')))
                         , JSON_UNQUOTE(JSON_EXTRACT(SentStatus, CONCAT('$[', iLoop, '].SentTime')))
-                       ,  JSON_EXTRACT(SentStatus, CONCAT('$[', iLoop, '].IsSuccess'))
+                        , JSON_EXTRACT(SentStatus, CONCAT('$[', iLoop, '].IsSuccess'))
+                        , JSON_EXTRACT(SentStatus, CONCAT('$[', iLoop, '].Retry'))
                         , JSON_UNQUOTE(JSON_EXTRACT(SentStatus, CONCAT('$[', iLoop, '].ErrMsg')));
                         
 		SET iLoop = iLoop +1;
         
 	END WHILE;
     
-    
-	#Check param
-	IF  NOT EXISTS(	SELECT 1 
-									FROM Notification n
-                                    WHERE n.NotificationID = notificationID
-										AND n.StatusID = NOTIFICATION_STATUSID_SENDING
-                                        AND n.SendImmediately = 0
-                                    ) THEN
-		SET errCode=701, errMsg='Invalid NotificationID';
-        LEAVE NCB_SendNotification_RecipientSentStatus_Upd;
-    ELSEIF IFNULL(SentStatus,'') = '' THEN
-		SET errCode=702, errMsg='SentStatus must not be empty';
-        LEAVE NCB_SendNotification_RecipientSentStatus_Upd;
-	 ELSEIF  userID IS NULL THEN
-		SET errCode=703, errMsg='userID must be specified';
-        LEAVE NCB_SendNotification_RecipientSentStatus_Upd;
-	END IF;
-    
-    
-	
 	UPDATE NotificationRecipientList nrl
 		INNER JOIN tmp_ChatGroupSentStatus tmp
-			ON tmp.ChatGroupID = nrl.ConversationGroupID
+			ON tmp.ConversationGroupID = nrl.ConversationGroupID
+				AND  tmp.NotificationID = nrl.NotificationID
+                AND  tmp.RecipientID = nrl.RecipientID
     SET nrl.SentTime = tmp.SentTime
 			, nrl.ErrMsg = tmp.ErrMsg
+            , nrl.SentTime = tmp.SentTime
+            , nrl.RetryTime = CASE WHEN nrl.RetryTime IS NULL THEN 0  ELSE nrl.RetryTime + 1 END
             , nrl.StatusID = CASE 
-										WHEN tmp.IsSuccess = 1 THEN SENT_NOTIFICATION_STATUSID
-                                        ELSE ERROR_NOTIFICATION_STATUSID
+										WHEN tmp.Retry = 1 AND tmp.IsSuccess = 0 AND IFNULL(nrl.RetryTime, 0) < 5 THEN NOTIFICATION_STATUSID_RETRYING
+										WHEN tmp.IsSuccess = 0 THEN NOTIFICATION_STATUSID_ERROR
+										WHEN tmp.IsSuccess = 1 THEN NOTIFICATION_STATUSID_SENT
 									END
 			 , nrl.Status = CASE 
-										WHEN tmp.IsSuccess = 1 THEN SENT_NOTIFICATION_STATUS
-                                        ELSE ERROR_NOTIFICATION_STATUS
-									END
-	WHERE nrl.NotificationID = notificationID;
+										WHEN tmp.Retry = 1 AND tmp.IsSuccess = 0 AND IFNULL(nrl.RetryTime, 0) < 5 THEN NOTIFICATION_STATUS_RETRYING
+										WHEN tmp.IsSuccess = 0 THEN NOTIFICATION_STATUS_ERROR
+										WHEN tmp.IsSuccess = 1 THEN NOTIFICATION_STATUS_SENT
+									END;
+    
+    DROP TEMPORARY TABLE IF EXISTS tmp_NotificationIDs;
+	CREATE TEMPORARY TABLE tmp_NotificationIDs(
+																	NotificationID INT
+                                                                    , StatusID INT
+                                                                    , Status	VARCHAR(10) CHARACTER SET utf8mb4
+    );
+    
+    INSERT INTO tmp_NotificationIDs(NotificationID, StatusID, Status)                                                            
+    SELECT DISTINCT t.NotificationID, -1, ''
+    FROM tmp_ChatGroupSentStatus t;
+    
+    #Check if a notification is under sending
+    UPDATE tmp_NotificationIDs t
+    SET t.StatusID = NOTIFICATION_STATUSID_SENDING
+			, t.Status = NOTIFICATION_STATUS_SENDING
+    WHERE EXISTS (
+								SELECT 1 
+                                FROM NotificationRecipientList nrl 
+                                WHERE nrl.NotificationID = t.NotificationID 
+										AND nrl.StatusID IN (
+																NOTIFICATION_STATUSID_SENDING
+																, NOTIFICATION_STATUSID_RETRYING
+														)
+							);
+	
+    #Check if a notification has any errors
+    UPDATE tmp_NotificationIDs t
+    SET t.StatusID = NOTIFICATION_STATUSID_ERROR
+			, t.Status = NOTIFICATION_STATUS_ERROR
+    WHERE  t.StatusID = -1
+				AND EXISTS (
+								SELECT 1 
+                                FROM NotificationRecipientList nrl 
+                                WHERE nrl.NotificationID = t.NotificationID 
+										AND nrl.StatusID = NOTIFICATION_STATUSID_ERROR
+							);
+                            
+	#Check if a notification is sent successfully
+    UPDATE tmp_NotificationIDs t
+    SET t.StatusID = NOTIFICATION_STATUSID_SENT
+			, t.Status = NOTIFICATION_STATUS_SENT
+    WHERE  t.StatusID = -1;
+    
+    #Update status for notification
+    UPDATE Notification n
+		INNER JOIN tmp_NotificationIDs t
+				ON n.NotificationID = t.NotificationID 
+					AND t.StatusID <> NOTIFICATION_STATUSID_SENDING
+                    AND n.StatusID = NOTIFICATION_STATUSID_SENDING
+	SET n.StatusID = t.StatusID, n.Status = t.Status;
+
     
     #Get Finish Time to calcualte execution duration
     SET finishTime = UTC_TIMESTAMP(3);
@@ -132,23 +178,6 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
 																		, startTime
                                                                         , finishTime)  / 1000; 	#miliseconds
     
-    #Get Log Content, JSON format
-    SET logContent = json_object(
-                                         'notificationID', notificationID
-                                        , 'sentStatus', '#logsentStatus#'
-					) ;
-     
-     SET logContent = REPLACE(logContent, '"#logsentStatus#"', IFNULL(sentStatus, '[]'));
-	
-	#Write User Log
-       CALL NCB_UserLog_RunSP_Ins(
-											ACTION_ID #actionID
-                                            , notificationID #referenceID
-											, userID #UserID
-                                            , logContent #LogContent
-                                            , startTime #logtime
-                                            , duration	#Duration
-                                            );
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_SendNotification_RecipientSentStatus_Upd TO 'ncb.admin'@'%';

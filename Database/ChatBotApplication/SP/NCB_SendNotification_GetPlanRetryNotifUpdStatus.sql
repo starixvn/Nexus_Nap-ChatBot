@@ -77,18 +77,29 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
                     , bot.ConversationBotID AS BotID 
                     , bot.Name AS BotName
                     , bot.ConversationID AS BotConversationID 
+                    , CASE 
+								WHEN gri.ChatGroupTypeID IS NULL  OR cgr.RecipientID IS NULL THEN 1 #Not Mapped
+                                WHEN gri.ChatGroupTypeID <> nrl.ChatGroupTypeID THEN 5 #Chat Group Type has been changed
+                                WHEN cgr.RecipientID <> nrl.RecipientID THEN 3 #Recipient is changed group
+                                WHEN bot.ConversationBotID IS NULL THEN 2 #Bot Removed
+                                ELSE 0 #Ready to send
+						END
 	 FROM NotificationRecipientList nrl
 	 INNER JOIN ConversationGroup grp
 			ON grp.ConversationGroupID = nrl.ConversationGroupID
      INNER JOIN Recipient r ON r.RecipientID = nrl.RecipientID
-     INNER JOIN ConversationGroupBot GroupBot 
+     LEFT JOIN ConversationGroupBot GroupBot 
 			ON GroupBot.ConversationGroupID = nrl.ConversationGroupID
-	 INNER JOIN (
+	 LEFT JOIN (
 				SELECT grb.ConversationGroupID, MIN(grb.CreatedTime)  MaxTime
 				FROM ConversationGroupBot grb 
 				GROUP BY grb.ConversationGroupID
 			) tmp ON GroupBot.ConversationGroupID = tmp.ConversationGroupID AND GroupBot.CreatedTime = tmp. MaxTime
-	INNER JOIN ConversationBot bot ON bot.ConversationBotID = GroupBot.ConversationBotID
+	LEFT JOIN ConversationBot bot ON bot.ConversationBotID = GroupBot.ConversationBotID
+	LEFT JOIN ConversationGroupExtraInfo gri ON gri.ConversationGroupID = nrl.ConversationGroupID
+    LEFT JOIN ConversationGroupRecipient cgr 
+			ON cgr.ConversationGroupID = nrl.ConversationGroupID 
+				AND cgr.RecipientID = nrl.RecipientID 
 	WHERE nrl.NotificationID IN (SELECT t1.NotificationID FROM tmp_PlannedNotification t1)
     #Trying Nofitication List
     UNION ALL
@@ -96,23 +107,36 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 					, r.RecipientID, r.RecipientName
 					, GroupBot.ConversationGroupID AS ChatGroupID
 					, grp.ConversationID AS ChatGroupConversationID 
+                    , grp.ServiceUrl
+                    , grp.ChannelID
                     , bot.ConversationBotID AS BotID 
                     , bot.Name AS BotName
                     , bot.ConversationID AS BotConversationID 
+                    , CASE 
+								WHEN gri.ChatGroupTypeID IS NULL  OR cgr.RecipientID IS NULL THEN 1 #Not Mapped
+                                WHEN gri.ChatGroupTypeID <> nrl.ChatGroupTypeID THEN 5 #Chat Group Type has been changed
+                                WHEN cgr.RecipientID <> nrl.RecipientID THEN 3 #Recipient is changed group
+                                WHEN bot.ConversationBotID IS NULL THEN 2 #Bot Removed
+                                ELSE 0 #Ready to send
+						END ErrCode
 	 FROM NotificationRecipientList nrl
      INNER JOIN tmp_TryingNotification tnlst
 			ON nrl.NotificationID = tnlst.NotificationID AND nrl.RecipientID = tnlst.RecipientID  AND nrl.ConversationGroupID = tnlst.ConversationGroupID
 	 INNER JOIN ConversationGroup grp
 			ON grp.ConversationGroupID = nrl.ConversationGroupID
      INNER JOIN Recipient r ON r.RecipientID = nrl.RecipientID
-     INNER JOIN ConversationGroupBot GroupBot 
+     LEFT JOIN ConversationGroupBot GroupBot 
 			ON GroupBot.ConversationGroupID = nrl.ConversationGroupID
-	 INNER JOIN (
+	 LEFT JOIN (
 				SELECT grb.ConversationGroupID, MIN(grb.CreatedTime)  MaxTime
 				FROM ConversationGroupBot grb 
 				GROUP BY grb.ConversationGroupID
 			) tmp ON GroupBot.ConversationGroupID = tmp.ConversationGroupID AND GroupBot.CreatedTime = tmp. MaxTime
-	INNER JOIN ConversationBot bot ON bot.ConversationBotID = GroupBot.ConversationBotID;
+	LEFT JOIN ConversationBot bot ON bot.ConversationBotID = GroupBot.ConversationBotID
+	LEFT JOIN ConversationGroupExtraInfo gri ON gri.ConversationGroupID = nrl.ConversationGroupID
+    LEFT JOIN ConversationGroupRecipient cgr 
+			ON cgr.ConversationGroupID = nrl.ConversationGroupID 
+				AND cgr.RecipientID = nrl.RecipientID;
     
     
 END;

@@ -4,7 +4,6 @@ DROP PROCEDURE IF EXISTS NCB_SendNotification_GetImmedNotifUpdStatus;
 
 CREATE PROCEDURE  NCB_SendNotification_GetImmedNotifUpdStatus(
 	 IN notificationID INT
-	, IN userID INT
 	, OUT errCode SMALLINT
 	, OUT errMsg VARCHAR(100)
     /*
@@ -45,9 +44,6 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
                                     WHERE n.NotificationID = notificationID ) THEN
 		SET errCode=601, errMsg='Invalid NotificationID';
         LEAVE NCB_SendNotification_GetImmedNotifUpdStatus;
-     ELSEIF userID IS NULL THEN
-		SET errCode=602, errMsg='UserID can not be null';
-        LEAVE NCB_SendNotification_GetImmedNotifUpdStatus;
 	END IF;
 	
     #Update Notification Status to 'Cancelled'
@@ -58,7 +54,7 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
 		AND n.StatusID = NOTIFICATION_STATUSID_PLANNED;
 	
     IF ROW_COUNT()  = 0 THEN
-		SET errCode=603, errMsg='This Notification has been updated by someone else';
+		SET errCode=602, errMsg='This Notification has been updated by someone else';
         LEAVE NCB_SendNotification_GetImmedNotifUpdStatus;
     END IF;
     
@@ -84,6 +80,8 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
 					, r.RecipientID, r.RecipientName
 					, GroupBot.ConversationGroupID AS ChatGroupID
 					, grp.ConversationID AS ChatGroupConversationID 
+                    , grp.ServiceUrl
+                    , grp.ChannelID
                     , bot.ConversationBotID AS BotID 
                     , bot.Name AS BotName
                     , bot.ConversationID AS BotConversationID 
@@ -93,7 +91,7 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
                                 WHEN cgr.RecipientID <> nrl.RecipientID THEN 3 #Recipient is changed group
                                 WHEN bot.ConversationBotID IS NULL THEN 2 #Bot Removed
                                 ELSE 0 #Ready to send
-						END
+						END ErrCode
 	 FROM NotificationRecipientList nrl
 	 INNER JOIN ConversationGroup grp
 			ON grp.ConversationGroupID = nrl.ConversationGroupID
@@ -111,22 +109,6 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
 			ON cgr.ConversationGroupID = nrl.ConversationGroupID 
 				AND cgr.RecipientID = nrl.RecipientID 
 	WHERE nrl.NotificationID = notificationID;
-    
-    
-    #Get Log Content, JSON format
-    SET logContent = json_object(
-							'notificationID', notificationID
-					) ;
-                    
-		#Write User Log
-        CALL NCB_UserLog_RunSP_Ins(
-											ACTION_ID #actionID
-                                            , notificationID #referenceID
-											, userID #UserID
-                                            , logContent #LogContent
-                                            , startTime #logtime
-                                            , duration	#Duration
-                                            );
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_SendNotification_GetImmedNotifUpdStatus TO 'ncb.admin'@'%';
