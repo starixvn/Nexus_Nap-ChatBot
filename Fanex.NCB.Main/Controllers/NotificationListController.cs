@@ -75,5 +75,14 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        [NapAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host)]
+        public async Task<IActionResult> Resolve([FromBody]ResolveNotificationViewModel data)
+        {
+            var result = await notificationService.ResolveAsync(data.NotificationId, data.ResolvedRemark, napSession.UserId).ConfigureAwait(false);
+
+            return Json(result);
+        }
     }
 }

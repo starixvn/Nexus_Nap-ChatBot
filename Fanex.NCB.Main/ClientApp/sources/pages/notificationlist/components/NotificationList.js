@@ -155,24 +155,35 @@ export default class NotificationList extends Component {
     handleRecipientChange = (value, label, extra) => {
         this.handleFilterChange('recipients', { value, extra });
     }
-
-    updateRemark = event => {
-        const remark = event.currentTarget.dataset.remark;
-        this.setState({
-            isRemark: remark
-        });
-        this.props.toggleHandler();
-    }
-
-    toggleHandler = () => {
-        this.props.toggleHandler();
-    }
-
     renderStatus = status => <option key={status.id} value={status.id}>{status.name}</option>
 
     handleSearch = event => {
         event.preventDefault();
         this.getNotifications();
+    }
+
+    handleResolveNotification = resolvedRemark => {
+        axios({
+            url: Site.resolveClientUrl('NotificationList/Resolve'),
+            method: 'post',
+            data: {
+                notificationId: this.state.errorReport.notificationId,
+                resolvedRemark: resolvedRemark
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': Site.getXsrfToken()
+            }
+        }).then(response => {
+            const data = response.data;
+            if (data.isSuccessful) {
+                this.getNotifications(this.state.tableData.pageIndex, this.state.tableData.pageSize);
+
+                this.setState({ errorReport: { show: false } });
+            } else {
+                this.setState(prevState => ({ errorReport: { ...prevState.errorReport, responseMessage: data } }));
+            }
+        }).catch(errorResponseHandler);
     }
 
     handleShowErrorReport = notificationId => {
@@ -274,6 +285,8 @@ export default class NotificationList extends Component {
                     isOpen={this.state.errorReport.show}
                     toggle={this.handleCloseErrorReport}
                     report={this.state.errorReport.report}
+                    onResolveNotification={this.handleResolveNotification}
+                    responseMessage={this.state.errorReport.responseMessage}
                 />
             </div>
         );

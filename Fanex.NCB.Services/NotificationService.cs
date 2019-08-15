@@ -107,6 +107,18 @@
             return report;
         }
 
+        public async Task<CommandResult> ResolveAsync(int notificationId, string resolvedRemark, int userId)
+        {
+            var command = new ResolveNotificationCommand
+            {
+                NotificationId = notificationId,
+                ResolvedRemark = resolvedRemark,
+                UserId = userId
+            };
+
+            return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+        }
+
         private void SendNotificationImediately(int notificationId)
         {
             Task.Run(

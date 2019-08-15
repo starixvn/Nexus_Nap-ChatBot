@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { DateFormat, DateTimeFormat, NotificationStatus } from '../../constants/constants';
+import ResponseMessage from '../../common/response-message/ResponseMessage';
 
 import './ErrorReport.scss';
 
@@ -34,9 +35,9 @@ export default class ErrorReport extends Component {
         document.body.removeChild(input);
     }
 
-    onResolveNotification = () => {
+    handleResolveNotification = () => {
         if (this.state.remark !== '') {
-            this.props.handleResolveNotification(this.state.remark);
+            this.props.onResolveNotification(this.state.remark);
         } else {
             if (!this.state.remarkTouched) {
                 this.setState({ remarkTouched: true });
@@ -45,13 +46,18 @@ export default class ErrorReport extends Component {
     }
 
     render() {
-        const { isOpen, report, toggle } = this.props;
+        const { isOpen, report, toggle, responseMessage } = this.props;
 
         if (report) {
             return (
                 <Modal isOpen={isOpen} toggle={toggle} className="error-report" backdrop="static">
                     <ModalHeader toggle={toggle}>Notification Sending Error Report</ModalHeader>
                     <ModalBody>
+                        {responseMessage &&
+                            <ResponseMessage isSuccessful={responseMessage.isSuccessful}
+                                message={responseMessage.message}
+                            />
+                        }
                         <p>
                             Error report for the notification titled:<br />
                             <span className="bold text-uppercase">{report.title} - {report.configSendTime.toFormat(DateFormat)}</span>
@@ -89,7 +95,7 @@ export default class ErrorReport extends Component {
                                 onChange={this.handleRemarkChange}
                                 value={this.state.remark}
                             />
-                            <button className="btn-mark" onClick={this.onResolveNotification}>Mark As Resolved</button>
+                            <button className="btn-mark" onClick={this.handleResolveNotification}>Mark As Resolved</button>
                         </div>
                         <div className="resolved-remark">
                             <p>Remark: <span className="text-italic">Remark Text{report.resolvedRemark}</span></p>

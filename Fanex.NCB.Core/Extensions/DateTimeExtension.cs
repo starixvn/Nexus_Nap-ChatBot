@@ -1,8 +1,8 @@
-﻿using System;
-using System.Runtime.InteropServices;
-
-namespace Fanex.NCB.Core.Extensions
+﻿namespace Fanex.NCB.Core.Extensions
 {
+    using System;
+    using System.Runtime.InteropServices;
+
     public static class DateTimeExtension
     {
         public static DateTime ConvertToUTC(this DateTime dateTime)

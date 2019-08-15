@@ -17,5 +17,7 @@
         Task<CommandResult> CancelAsync(int notificationId, int userId);
 
         Task<NotificationErrorReport> GetNotificationErrorAsync(int notificationId);
+
+        Task<CommandResult> ResolveAsync(int notificationId, string resolvedRemark, int userId);
     }
 }
