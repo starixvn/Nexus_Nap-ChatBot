@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_ChatGroupMapping_Upd;
 
-CREATE PROCEDURE `NCB_ChatGroupMapping_Upd`(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_ChatGroupMapping_Upd`(
 	IN groupID INT,
     IN recipientTypeID INT, 
     IN recipientIDs VARCHAR(1000), 
@@ -24,6 +24,7 @@ CREATE PROCEDURE `NCB_ChatGroupMapping_Upd`(
 				- 20190404@Scofield: Create        
     */
 )
+SQL SECURITY DEFINER
 NCB_ChatGroupMapping_Upd:BEGIN
 	-- Declare variables
 	DECLARE strLen    INT DEFAULT 0;

@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_ChatGroupMapping_Sel;
 
-CREATE PROCEDURE NCB_ChatGroupMapping_Sel (
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_ChatGroupMapping_Sel (
 		IN botIDs VARCHAR(500) ,
         IN recipientTypeIds VARCHAR(1000),
         IN recipientName VARCHAR(100),
@@ -26,6 +26,7 @@ CREATE PROCEDURE NCB_ChatGroupMapping_Sel (
                     - 20190418@Dominic: Improve performance
 		*/
     )
+SQL SECURITY DEFINER
 BEGIN
 	
 	-- Constant

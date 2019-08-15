@@ -84,8 +84,7 @@ BEGIN
         LEFT JOIN LicenseeProduct lp 
 				ON lp.LicenseeID = main.SourceID 
 					AND lp.ProductID = productID
-                    AND main.RecipientTypeID = RECIPIENT_TYPE_LICENSEES
-        WHERE lp.LaunchDate IS NULL
+        WHERE main.RecipientTypeID = RECIPIENT_TYPE_LICENSEES AND lp.LaunchDate IS NULL
 					OR (
 								 lp.LaunchDate IS NOT NULL 
 								AND nowGMTMinus4 <  lp.LaunchDate
