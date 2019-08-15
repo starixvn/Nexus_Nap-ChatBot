@@ -12,7 +12,7 @@
     <Folder Include="Repositories\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Fanex.Data.MySql" Version="4.0.1" />
+    <PackageReference Include="Fanex.Data.MySql" Version="4.1.0-beta1" />
     <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">
       <PrivateAssets>all</PrivateAssets>
