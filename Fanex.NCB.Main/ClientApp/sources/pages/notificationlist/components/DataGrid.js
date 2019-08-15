@@ -56,7 +56,12 @@ export default class DataGrid extends Component {
                 <Cell colWidth={5} header>{Labels.NumberCol}</Cell>
                 <Cell colWidth={20} header>Sender/Notification Type</Cell>
                 <Cell colWidth={18} header>Send Date/Time (GMT+8)</Cell>
-                <Cell colWidth={100} header><div className="has-icons">Title/Content <span className="icon-expand" onClick={this.toggleExpandPanels} /></div></Cell>
+                <Cell colWidth={100} header>
+                    <div className="has-icons">
+                        Title/Content
+                    <span className={this.state.expandPanels ? 'icon-collapse' : 'icon-expand'} onClick={this.toggleExpandPanels} />
+                    </div>
+                </Cell>
                 <Cell colWidth={12} className="col-status" header>Status</Cell>
                 <Cell colWidth={10} className="col-action" header>{Labels.Action}</Cell>
             </Row>);
