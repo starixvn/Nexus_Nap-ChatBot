@@ -53,7 +53,9 @@
             return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
         }
 
-        private IEnumerable<ChatGroupMappingResult> MappingData(IEnumerable<BotConversation> conversations, IEnumerable<BotConversationMember> members, IEnumerable<ConversationRecipient> conversationRecipients)
+        private IEnumerable<ChatGroupMappingResult> MappingData(IEnumerable<BotConversation> conversations,
+            IEnumerable<BotConversationMember> members,
+            IEnumerable<ConversationRecipient> conversationRecipients)
         {
             var chatGroupMappings = new List<ChatGroupMappingResult>();
             foreach (var conversation in conversations)

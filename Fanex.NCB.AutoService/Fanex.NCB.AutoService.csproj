@@ -109,5 +109,11 @@
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fanex.NCB.Services\Fanex.NCB.Services.csproj">
+      <Project>{4cbb6b50-1976-41d3-aab7-0a9337a0a8e9}</Project>
+      <Name>Fanex.NCB.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

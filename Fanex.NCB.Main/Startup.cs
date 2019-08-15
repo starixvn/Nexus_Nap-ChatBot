@@ -17,8 +17,6 @@
     using Fanex.NAP.Client.Web;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Main.AppConfig;
-    using Hangfire;
-    using Hangfire.MySql.Core;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -30,9 +28,11 @@
 
     public class Startup
     {
+        private const int CookieExpiration = 60;
+
         public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
+        {            
+        	Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -65,9 +65,6 @@
             services.AddSingleton(Configuration);
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<BotSettings>(Configuration.GetSection("ChatBotConfigs"));
-            services.Configure<HangfireCronJob>(Configuration.GetSection("HangfireCronJob"));
-            string hangfireConnectionString = Cryptography.DecryptConnectionString(Configuration.GetConnectionString("Hangfire"));
-            services.AddHangfire(x => x.UseStorage(new MySqlStorage(hangfireConnectionString)));
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
@@ -76,7 +73,7 @@
                 options.Cookie = new CookieBuilder
                 {
                     Name = "Fanex.NCB.Auth",
-                    Expiration = TimeSpan.FromMinutes(60),
+                    Expiration = TimeSpan.FromMinutes(CookieExpiration),
                     SecurePolicy = CookieSecurePolicy.SameAsRequest
                 };
             });
@@ -93,9 +90,6 @@
             services.AddTransient<ILogger, Logger>();
             services.RegisterServices();
             services.RegisterRepositories();
-
-            services.InjectAutoJobService();
-            services.InitAutoJobs();
         }
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -113,16 +107,6 @@
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
-            #region hangfire
-
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions
-            {
-                Authorization = new[] { new HangfireAuthorization() }
-            });
-            app.UseHangfireServer();
-
-            #endregion hangfire
 
             app.UseCookiePolicy();
             app.UseAuthentication();

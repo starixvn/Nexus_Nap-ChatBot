@@ -1,5 +1,6 @@
 namespace Fanex.NCB.SkypeBot.Controllers
 {
+    using System.Threading.Tasks;
     using Fanex.NAP.Client.AspNetCore.Attributes;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
@@ -8,7 +9,6 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using Fanex.NCB.Models.Notification;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
-    using System.Threading.Tasks;
     using static Fanex.NAP.Core.Business.Constant;
 
     [NapSuperAuth]

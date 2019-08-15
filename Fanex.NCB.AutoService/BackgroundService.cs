@@ -10,6 +10,8 @@
     {
         private BackgroundJobServer server;
 
+        private readonly
+
         public BackgroundService()
         {
             InitializeComponent();

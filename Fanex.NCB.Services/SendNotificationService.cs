@@ -67,7 +67,7 @@
             return await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria).ConfigureAwait(false);
         }
 
-        private IList<SendMessageResult> ConvertJsonResponse(string json)
+        private static IList<SendMessageResult> ConvertJsonResponse(string json)
         {
             var messages = JsonConvert.DeserializeObject<List<SendMessageResult>>(json);
 
@@ -146,7 +146,7 @@
                                 ChannelId = r.ChannelId,
                                 ConversationId = r.ChatGroupConversationId,
                                 BotName = r.BotName
-                            })
+                            }).Distinct()
                 };
                 proactiveMsgs.Add(proactiveMsg);
             }
