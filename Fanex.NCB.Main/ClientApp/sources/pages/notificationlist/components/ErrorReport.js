@@ -66,8 +66,8 @@ export default class ErrorReport extends Component {
                             Send at:<br />
                             <span className="bold">{report.configSendTime.toFormat(DateTimeFormat)}</span>
                         </p>
-                        <div>Notification has been successfully sent to the following recipient(s): <strong>{report.successRecipients.join(', ')}</strong></div>
-                        <div>Error(s) occoured while sending the notification to the following recipient(s)</div>
+                        <div className="msg-success">Notification has been successfully sent to the following recipient(s): <strong>{report.successRecipients.join(', ')}</strong></div>
+                        <div className="msg-error">Error(s) occoured while sending the notification to the following recipient(s)</div>
                         <table className="tbl w-100">
                             <thead>
                                 <tr>
