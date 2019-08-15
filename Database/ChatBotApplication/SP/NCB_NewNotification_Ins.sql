@@ -19,7 +19,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_NewNotification_Ins(
         Param:
 				- ProductID: Applied to filter licensees who are offered a specific product, NULL if not specified
                 - NotificationID: ID of created Notification
-                - ConfigSendTime: UTC (GMT +0)
+                - ConfigSendTime: UTC
         Revisions:
 				- 20190401@Dominic: First Commit
         
@@ -150,7 +150,7 @@ NCB_NewNotification_Ins:BEGIN
     END IF;
     
     #Check Licensees do not offered a product
-    SET configSendTimeGMTPlus4 = CONVERT_TZ(UTC_TIMESTAMP(),'+00:00','-04:00');
+    SET configSendTimeGMTPlus4 = CONVERT_TZ(configSendTime,'+00:00','-04:00');
     IF productID IS NOT NULL 
 		AND EXISTS(
 						SELECT 1 
