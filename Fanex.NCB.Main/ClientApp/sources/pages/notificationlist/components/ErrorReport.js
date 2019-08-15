@@ -89,19 +89,23 @@ export default class ErrorReport extends Component {
                                 {report.errorDetails.map(this.renderFailedRecipient)}
                             </tbody>
                         </table>
-                        <div className="remark">
-                            <span>Remark:</span>
-                            <input type="text" className={`form-control ${this.state.remarkTouched && this.state.remark === '' && 'is-invalid'}`}
-                                onChange={this.handleRemarkChange}
-                                value={this.state.remark}
-                                placeholder="Add Remark"
-                            />
-                            <button className="btn-mark" onClick={this.handleResolveNotification}>Mark As Resolved</button>
-                        </div>
-                        <div className="resolved-remark">
-                            <p>Remark: <span className="text-italic">Remark Text{report.resolvedRemark}</span></p>
-                            <p><span className="text-red">*</span> Resolved by: <strong>{report.resolvedByUsername}</strong></p>
-                        </div>
+                        {report.statusId === NotificationStatus.Error &&
+                            <div className="remark">
+                                <span>Remark:</span>
+                                <input type="text" className={`form-control ${this.state.remarkTouched && this.state.remark === '' && 'is-invalid'}`}
+                                    onChange={this.handleRemarkChange}
+                                    value={this.state.remark}
+                                    placeholder="Add Remark"
+                                />
+                                <button className="btn-mark" onClick={this.handleResolveNotification}>Mark As Resolved</button>
+                            </div>
+                        }
+                        {report.statusId === NotificationStatus.Resolved &&
+                            <div className="resolved-remark">
+                                <p>Remark: <span className="text-italic">Remark Text{report.resolvedRemark}</span></p>
+                                <p><span className="text-red">*</span> Resolved by: <strong>{report.resolvedByUsername}</strong></p>
+                            </div>
+                        }
                     </ModalBody>
                 </Modal>
             );
