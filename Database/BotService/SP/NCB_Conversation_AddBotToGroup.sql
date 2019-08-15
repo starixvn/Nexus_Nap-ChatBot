@@ -122,4 +122,4 @@ BEGIN
 										);
 END;
 
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Conversation_AddBotToGroup TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Conversation_AddBotToGroup TO 'ncb.bot'@'%';

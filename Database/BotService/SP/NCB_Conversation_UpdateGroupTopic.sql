@@ -26,7 +26,7 @@ BEGIN
     DECLARE finishTime 		DATETIME(3); 
     DECLARE duration 			INT;							
     DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
-    DECLARE ACTION_ID 		INT DEFAULT 1;
+    DECLARE ACTION_ID 		INT DEFAULT 11;
     
 	DECLARE conversationGroupId INT;
 	

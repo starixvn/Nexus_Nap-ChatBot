@@ -90,8 +90,6 @@
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -139,6 +137,7 @@
                 {
                     logger.LogError($"Exception caught : {exception.Message}");
                     await turnContext.SendActivityAsync("Sorry, it looks like something went wrong. Please contact Administrator.");
+                    throw exception;
                 };
             });
         }

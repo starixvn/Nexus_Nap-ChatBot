@@ -34,6 +34,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="logs\log.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="logs\log.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.MySql" Version="2.2.0" />
     <PackageReference Include="AspNetCore.HealthChecks.System" Version="2.2.1" />
     <PackageReference Include="AspNetCore.HealthChecks.UI" Version="2.2.27" />
