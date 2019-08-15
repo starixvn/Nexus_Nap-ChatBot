@@ -5,6 +5,8 @@
     using System.Linq;
     using Fanex.Data;
     using Fanex.Data.MySql;
+    using Fanex.Logging;
+    using Fanex.Logging.Sentry;
     using Fanex.NAP.Client;
     using Fanex.NAP.Client.AspNetCore.Configuration;
     using Fanex.NAP.Client.AspNetCore.Session;
@@ -14,7 +16,6 @@
     using Fanex.NAP.Client.Transport;
     using Fanex.NAP.Client.Web;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.CustomAspNetCoreModule;
     using Fanex.NCB.Main.AppConfig;
     using Hangfire;
     using Hangfire.MySql.Core;
@@ -25,16 +26,13 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Logging;
+    using Sentry;
 
     public class Startup
     {
-        private readonly ILogger<Startup> logger;
-
-        public Startup(IConfiguration configuration, ILogger<Startup> logger)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            this.logger = logger;
         }
 
         public IConfiguration Configuration { get; }
@@ -52,6 +50,17 @@
                .Use(connections)
                .WithMySql(resourcePath: "~/App_Data")
                .Run();
+
+            LogManager
+            .SetDefaultLogCategory(Configuration.GetSection("LogCategory").Value)
+            .Use(new List<ILogEngine>
+            {
+                new SentryLogging(new SentryEngineOptions
+                {
+                    Dsn = new Dsn(Configuration.GetSection("SentryEngineOptions:Dsn").Value),
+                    FrontEndDsn = new Dsn(Configuration.GetSection("SentryEngineOptions:FrontEndDsn").Value)
+                })
+            });
 
             services.AddSingleton(Configuration);
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
@@ -81,6 +90,7 @@
             services.AddSingleton<IRestClient, RestClient>();
             services.AddSingleton<ISecurityService, SecurityService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<ILogger, Logger>();
             services.RegisterServices();
             services.RegisterRepositories();
 
@@ -92,12 +102,13 @@
         {
             if (env.IsProduction())
             {
-                app.UseAspNetCoreExceptionHandler("NCB.Main");
+                app.UseMiddleware<ErrorHandlingMiddleware>();
                 app.UseHsts();
             }
             else
             {
-                app.UseDeveloperExceptionPage();
+                app.UseMiddleware<ErrorHandlingMiddleware>();
+                //app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();
