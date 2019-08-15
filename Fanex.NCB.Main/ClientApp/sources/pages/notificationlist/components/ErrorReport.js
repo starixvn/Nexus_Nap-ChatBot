@@ -94,6 +94,7 @@ export default class ErrorReport extends Component {
                             <input type="text" className={`form-control ${this.state.remarkTouched && this.state.remark === '' && 'is-invalid'}`}
                                 onChange={this.handleRemarkChange}
                                 value={this.state.remark}
+                                placeholder="Add Remark"
                             />
                             <button className="btn-mark" onClick={this.handleResolveNotification}>Mark As Resolved</button>
                         </div>

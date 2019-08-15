@@ -4,6 +4,19 @@
     border: 1px solid $table-border;
     border-collapse: collapse;
 
+    th .has-icons {
+        position: relative;
+
+        [class^="icon"] {
+            position: absolute;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+
+
     th {
         background-color: $table-header-bg;
         text-align: center;
