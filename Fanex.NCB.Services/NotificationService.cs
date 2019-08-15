@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -9,6 +10,7 @@
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Fanex.NCB.Core.Extensions;
 
     public class NotificationService : INotificationService
     {
@@ -30,7 +32,7 @@
                 RecipientIDLst = model.RecipientIds,
                 Title = model.Title,
                 Content = model.Content,
-                ConfigSendTime = model.SendDate,
+                ConfigSendTime = model.SendImmediately ? DateTime.UtcNow : model.SendDate.ConvertToUTC(),
                 SendImmediately = model.SendImmediately,
                 CreatorId = model.CreatorId
             };
@@ -67,6 +69,11 @@
                 PageIndex = model.PageIndex,
                 PageSize = model.PageSize
             }).ConfigureAwait(false);
+
+            foreach (var notification in result.Item2)
+            {
+                notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();
+            }
 
             return (result.Item1.FirstOrDefault(), result.Item2);
         }

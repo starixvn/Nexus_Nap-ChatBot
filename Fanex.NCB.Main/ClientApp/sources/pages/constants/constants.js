@@ -32,4 +32,10 @@ export const NotificationStatus = {
     Sending: 3,
     Cancelled: 4,
     Resolved: 5
-}
+};
+
+export const DateFormat = 'MM/dd/yyyy';
+
+export const TimeFormat = 'hh:mm:ss a';
+
+export const DateTimeFormat = 'MM/dd/yyyy hh:mm:ss a';

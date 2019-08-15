@@ -4,9 +4,8 @@ import './NotificationList.scss';
 import React, { Component } from 'react';
 import axios from 'axios';
 import { DateTime } from 'luxon';
-
 import { NCBBreadcrum } from '../../common/breadcrumbs';
-import { Form, FormGroup, Label, Button, Container, Row, Col, Input, FormFeedback } from 'reactstrap';
+import { Form, FormGroup, Label, Input } from 'reactstrap';
 import ErrorReport from './ErrorReport';
 import DatePicker from '../../common/DatePicker/index';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
@@ -42,6 +41,11 @@ export default class NotificationList extends Component {
             statusOptions: [],
             tableData: null,
             notificationCancellation: {
+                show: false
+            },
+            errorReport: {
+                notificationId: null,
+                report: null,
                 show: false
             }
         };
@@ -108,8 +112,8 @@ export default class NotificationList extends Component {
         axios.get(Site.resolveClientUrl('NotificationList/Get'), {
             params: {
                 notificationTypeIds: filter.notificationTypes.value,
-                fromDate: filter.fromDate,
-                toDate: filter.toDate,
+                fromDate: filter.fromDate.toDateString(),
+                toDate: filter.toDate.toDateString(),
                 creatorId: filter.creatorId,
                 recipientIds: recipientIds.toString(),
                 notificationStatusIds: filter.statuses.value,
@@ -170,6 +174,27 @@ export default class NotificationList extends Component {
         event.preventDefault();
         this.getNotifications();
     }
+
+    handleShowErrorReport = notificationId => {
+        axios.get(Site.resolveClientUrl('NotificationList/GetNotificationError'), {
+            params: {
+                notificationId
+            }
+        }).then(response => {
+            const data = response.data;
+            data.configSendTime = DateTime.fromISO(data.configSendTime);
+
+            this.setState({
+                errorReport: {
+                    show: true,
+                    notificationId: notificationId,
+                    report: data
+                }
+            });
+        }).catch(errorResponseHandler);
+    }
+
+    handleCloseErrorReport = () => this.setState({ errorReport: { show: false } });
 
     render() {
         return (
@@ -234,7 +259,9 @@ export default class NotificationList extends Component {
                 {this.state.tableData &&
                     <DataGrid tableData={this.state.tableData}
                         onPaging={this.getNotifications}
-                        cancelNotification={this.handleOpenNotificationCancellation}
+                        onCancelNotification={this.handleOpenNotificationCancellation}
+                        onShowErrorReport={this.handleShowErrorReport}
+
                     />
                 }
                 <NotificationCancellation
@@ -244,9 +271,9 @@ export default class NotificationList extends Component {
                     onCancellationSuccess={this.handleCancellationSuccess}
                 />
                 <ErrorReport
-                    isModal={this.props.isModal}
-                    toggleHandler={this.toggleHandler}
-                    isRemark={this.state.isRemark}
+                    isOpen={this.state.errorReport.show}
+                    toggle={this.handleCloseErrorReport}
+                    report={this.state.errorReport.report}
                 />
             </div>
         );

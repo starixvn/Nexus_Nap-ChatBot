@@ -2,8 +2,10 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import { DateTime } from 'luxon';
 import { Form, FormGroup, Label, Button, Container, Row, Col, Input, FormFeedback } from 'reactstrap';
 import { stringify } from 'qs';
+
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { NCBBreadcrum } from '../../../common/breadcrumbs';
@@ -13,6 +15,7 @@ import TreeSelect from '../../../common/TreeSelect/index';
 import DatePicker from '../../../common/DatePicker/index';
 import { TemplateTextField } from '../../../common/template-text-field/TemplateTextField';
 import Labels from '../../../common/Labels';
+import { DateTimeFormat } from '../../../constants/constants';
 import ResponseMessage from '../../../common/response-message/ResponseMessage';
 import Site from '../../../lib/site';
 import ConfirmPopup from '../../../common/ConfirmPopup';
@@ -213,7 +216,7 @@ export class AppContainer extends React.Component {
             recipientIds: recipientIds.toString(),
             title: values.title,
             content: values.content,
-            sendDate: values.sendMode === '1' ? new Date().toLocaleString('en', { timeZone: 'Asia/Shanghai' }) : values.sendDate,
+            sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
             sendImmediately: values.sendMode === '1'
         });
 

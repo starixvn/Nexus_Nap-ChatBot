@@ -1,7 +1,7 @@
-﻿import React, { Component } from 'react';
+﻿import React, { Component, Fragment } from 'react';
 import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 
-import { PAGING_SIZES, NotificationStatus } from '../../constants/constants';
+import { PAGING_SIZES, NotificationStatus, DateFormat, TimeFormat } from '../../constants/constants';
 import Labels from '../../common/Labels';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';
 
@@ -12,7 +12,12 @@ export default class DataGrid extends Component {
 
     handleCancelNotification = e => {
         var id = parseInt(e.target.dataset.notificationid);
-        this.props.cancelNotification(id);
+        this.props.onCancelNotification(id);
+    }
+
+    handleShowErrorReport = e => {
+        var id = parseInt(e.target.dataset.notificationid);
+        this.props.onShowErrorReport(id);
     }
 
     onPaging = (pageIndex, pageSize) => {
@@ -52,16 +57,26 @@ export default class DataGrid extends Component {
         return [<Row key={`body${1}`} ><Cell colSpan="6"><NoDataTitle /></Cell></Row >];
     }
 
+    renderRecipient = (recipient, index) => (
+        <Fragment key={index}>
+            {index > 0 && ', '}
+            <span className={recipient.isError === 1 ? 'text-red' : ''} > {recipient.recipientName}</span>
+        </Fragment>
+    )
+
     renderRow = (item, index) => {
         return (<Row key={item.notificationId} >
             <Cell className="col-order text-center">{index + this.startIndex}</Cell>
             <Cell>{item.notificationTypeName}</Cell>
             <Cell className="text-center">
-                {item.configSendTime.toFormat('hh:mm:ss a')}
-                <div>{item.configSendTime.toFormat('MM/dd/yyyy')}</div>
+                {item.configSendTime.toFormat(TimeFormat)}
+                <div>{item.configSendTime.toFormat(DateFormat)}</div>
             </Cell>
 
-            <Cell><strong>{item.title} - {item.configSendTime.toFormat('MM/dd/yyyy')}</strong></Cell>
+            <Cell>
+                <div>To {item.recipientSentStatusJson.length} recipient(s): {item.recipientSentStatusJson.map(this.renderRecipient)}</div>
+                <strong>{item.title} - {item.configSendTime.toFormat('MM/dd/yyyy')}</strong>
+            </Cell>
             <Cell className="text-center"><span className={this.getNotificationStatusClass(item.statusId)}>{item.status}</span></Cell>
             <Cell className="col-action text-center">{this.renderAction(item)}</Cell>
         </Row>);
@@ -71,12 +86,12 @@ export default class DataGrid extends Component {
         switch (notification.statusId) {
             case NotificationStatus.Error:
             case NotificationStatus.Resolved:
-                return (<span className="icon-view" data-notificationid={notification.notificationId} onClick={this.props.showErrorReport} />);
+                return (<span className="icon-view" data-notificationid={notification.notificationId} onClick={this.handleShowErrorReport} />);
             case NotificationStatus.Planned:
                 return (<span className="icon-delete" data-notificationid={notification.notificationId} onClick={this.handleCancelNotification} />);
             case NotificationStatus.Cancelled:
                 return (<a className="icon-edit" href={`EditNotification/${notification.notificationId}`} />);
-            default: return '';
+            default: return (<span className="icon-view" data-notificationid={notification.notificationId} onClick={this.handleShowErrorReport} />);
         }
     }
 

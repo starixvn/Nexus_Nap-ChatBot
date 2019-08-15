@@ -2,6 +2,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
 {
     using Fanex.NAP.Client.AspNetCore.Attributes;
     using Fanex.NAP.Client.Helpers.Web;
+    using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Main.ViewModel.Notification;
     using Fanex.NCB.Models.Notification;
@@ -15,11 +16,13 @@ namespace Fanex.NCB.SkypeBot.Controllers
     {
         private readonly INotificationService notificationService;
         private readonly INapSession napSession;
+        private readonly IUserService userService;
 
-        public NotificationListController(INotificationService notificationService, INapSession napSession)
+        public NotificationListController(INotificationService notificationService, INapSession napSession, IUserService userService)
         {
             this.notificationService = notificationService;
             this.napSession = napSession;
+            this.userService = userService;
         }
 
         [HttpGet]
@@ -62,6 +65,13 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> GetNotificationError(int notificationId)
         {
             var result = await notificationService.GetNotificationErrorAsync(notificationId).ConfigureAwait(false);
+
+            if (result.ResolvedBy.HasValue)
+            {
+                var user = await userService.GetAsync(result.ResolvedBy.Value);
+
+                result.ResolvedByUserName = user.Username;
+            }
 
             return Json(result);
         }
