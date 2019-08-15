@@ -55,26 +55,36 @@
         [HttpPost]
         public async Task<ObjectResult> SendMulti([FromBody]IList<NotificationMessage> notificationMessages)
         {
-            string appId;
-            SendMessageResult result;
             var results = new List<SendMessageResult>();
-            ConversationReference conversationReference;
+            var tasks = new List<Task>();
 
-            foreach (var notificationMessage in notificationMessages)
+            if(notificationMessages != null && notificationMessages.Any())
             {
-                foreach (var conversationInfo in notificationMessage.Recipients)
+                foreach (var notificationMessage in notificationMessages)
                 {
-                    conversationReference = GetConversationReference(conversationInfo);
-                    appId = GetAppId(conversationInfo.BotName);
-                    result = await SendMessageNotification(appId, notificationMessage.NotifictaionId, conversationReference, notificationMessage.Message);
-                    results.Add(result);
-
-                    var thread = new Thread(async () => await AddMessageLog(conversationReference, notificationMessage.Message, result));
-                    thread.Start();
+                    foreach (var conversationInfo in notificationMessage.Recipients)
+                    {
+                        tasks.Add(
+                            Task.Run(async () => results.Add(await SendNotification(conversationInfo, notificationMessage.NotifictaionId, notificationMessage.Message)))
+                            );
+                    }
                 }
-            }
 
+                await Task.WhenAll(tasks.ToArray());
+            }
+            
             return Ok(results);
+        }
+
+        private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo, int notifictaionId, string message)
+        {
+            var conversationReference = GetConversationReference(conversationInfo);
+            var appId = GetAppId(conversationInfo.BotName);
+            var result = await SendMessageNotification(appId, notifictaionId, conversationReference, message);
+            var thread = new Thread(async () => await AddMessageLog(conversationReference, message, result));
+            thread.Start();
+
+            return result;
         }
 
         private async Task<SendMessageResult> SendMessageNotification(string appId, int notificationId, ConversationReference conversationReference, string message)
@@ -95,6 +105,7 @@
                 result.ErrorMessage = ex.Message;
             }
 
+            result.SentTime = DateTime.UtcNow;
             return result;
         }
 

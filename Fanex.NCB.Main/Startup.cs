@@ -101,8 +101,7 @@
             }
             else
             {
-                app.UseMiddleware<ErrorHandlingMiddleware>();
-                //app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();
