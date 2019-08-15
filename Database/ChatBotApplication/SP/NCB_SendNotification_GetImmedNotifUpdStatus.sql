@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_SendNotification_GetImmedNotifUpdStatus;
 
-CREATE PROCEDURE  NCB_SendNotification_GetImmedNotifUpdStatus(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_GetImmedNotifUpdStatus(
 	 IN notificationID INT
 	, OUT errCode SMALLINT
 	, OUT errMsg VARCHAR(100)
@@ -18,6 +18,7 @@ CREATE PROCEDURE  NCB_SendNotification_GetImmedNotifUpdStatus(
         
     */
 )
+SQL SECURITY DEFINER
 NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
 
 	#Variables used to write User Logs

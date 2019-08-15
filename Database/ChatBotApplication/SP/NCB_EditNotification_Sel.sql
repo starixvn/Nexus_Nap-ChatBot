@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_EditNotification_Sel;
 
-CREATE PROCEDURE  NCB_EditNotification_Sel(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_EditNotification_Sel(
      IN notificationID INT
     /*
 		Creator: Dominic@20190408
@@ -16,6 +16,7 @@ CREATE PROCEDURE  NCB_EditNotification_Sel(
         
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 	#1st dataset: Main info of Notification
 	SELECT n.NotificationTypeID,  n.ProductID, n.Title, n.Content

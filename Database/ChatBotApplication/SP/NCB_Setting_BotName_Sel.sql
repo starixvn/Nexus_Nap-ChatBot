@@ -1,6 +1,7 @@
 DELIMITER //
 DROP PROCEDURE IF EXISTS `NCB_Setting_BotName_Sel`;
-CREATE PROCEDURE `NCB_Setting_BotName_Sel`(
+
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_Setting_BotName_Sel`(
 	/*
 		Creator: Scofield@20190404       
         Revisions:
@@ -8,6 +9,7 @@ CREATE PROCEDURE `NCB_Setting_BotName_Sel`(
         
     */
 ) 
+SQL SECURITY DEFINER
 BEGIN
 	SELECT DISTINCT b.ConversationBotID AS Id, b.Name AS Name
     FROM ConversationBot b

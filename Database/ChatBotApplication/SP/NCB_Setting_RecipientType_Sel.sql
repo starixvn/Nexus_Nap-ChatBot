@@ -1,7 +1,7 @@
 DELIMITER //
 DROP PROCEDURE IF EXISTS `NCB_Setting_RecipientType_Sel`;
 
-CREATE PROCEDURE `NCB_Setting_RecipientType_Sel`(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_Setting_RecipientType_Sel`(
 	/*
 		Creator: Scofield@20190404
         Description: Get list of all recipient types
@@ -9,6 +9,7 @@ CREATE PROCEDURE `NCB_Setting_RecipientType_Sel`(
 				- 20190404@Scofield: Create        
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 	SELECT tmp.Id, tmp.Name
     FROM (

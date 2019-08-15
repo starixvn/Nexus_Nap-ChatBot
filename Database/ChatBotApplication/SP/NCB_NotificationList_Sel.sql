@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_NotificationList_Sel;
 
-CREATE DEFINER=`dominic.dao`@`%` PROCEDURE `NCB_NotificationList_Sel`(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_NotificationList_Sel`(
      IN notificationTypeIDLst VARCHAR(1000)
     , IN recipientIDLst VARCHAR(5000)
 	, IN creatorID	INT
@@ -27,6 +27,7 @@ CREATE DEFINER=`dominic.dao`@`%` PROCEDURE `NCB_NotificationList_Sel`(
 				- 20190814@Elton: change RecipientSentStatusJSON
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 	DECLARE SENT_STATUSID_ERROR TINYINT UNSIGNED DEFAULT 2;
     DECLARE SENT_STATUSID_RESOLVED TINYINT UNSIGNED DEFAULT 5;

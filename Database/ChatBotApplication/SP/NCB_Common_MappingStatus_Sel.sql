@@ -1,7 +1,7 @@
 DELIMITER //
 DROP PROCEDURE IF EXISTS `NCB_Common_MappingStatus_Sel`;
 
-CREATE PROCEDURE `NCB_Common_MappingStatus_Sel`(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_Common_MappingStatus_Sel`(
 	/*
 		Creator: Dominic@20190423
         Description: Get list of chat group mapping status
@@ -9,6 +9,7 @@ CREATE PROCEDURE `NCB_Common_MappingStatus_Sel`(
 				- 20190423@Dominic: Create        
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 	SELECT tmp.Id, tmp.Name
     FROM (

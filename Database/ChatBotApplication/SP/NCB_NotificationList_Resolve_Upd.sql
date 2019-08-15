@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_NotificationList_Resolve_Upd;
 
-CREATE PROCEDURE  NCB_NotificationList_Resolve_Upd(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_NotificationList_Resolve_Upd(
 	 IN notificationID INT
 	, IN userID INT
     , IN resolvedRemark VARCHAR(1000) CHARACTER SET utf8mb4
@@ -17,6 +17,7 @@ CREATE PROCEDURE  NCB_NotificationList_Resolve_Upd(
         
     */
 )
+SQL SECURITY DEFINER
 NCB_NotificationList_Resolve_Upd:BEGIN
 
 	#Variables used to write User Logs

@@ -1,6 +1,7 @@
 DELIMITER //
 DROP PROCEDURE IF EXISTS  `NCB_Setting_Recipient_Sel`;
-CREATE PROCEDURE `NCB_Setting_Recipient_Sel`(
+
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_Setting_Recipient_Sel`(
 	/*
 		Creator: Scofield@20190404
         Description: Get list of all recipients with their status
@@ -8,6 +9,7 @@ CREATE PROCEDURE `NCB_Setting_Recipient_Sel`(
 				- 20190404@Scofield: Create        
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 	DECLARE LICENSEE_TYPE INT DEFAULT 1;
 	

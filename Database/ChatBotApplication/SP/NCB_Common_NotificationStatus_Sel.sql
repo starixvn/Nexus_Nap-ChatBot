@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_Common_NotificationStatus_Sel;
 
-CREATE PROCEDURE  NCB_Common_NotificationStatus_Sel(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_Common_NotificationStatus_Sel(
     /*
 		Creator: Dominic@20190408
         Param:
@@ -12,6 +12,7 @@ CREATE PROCEDURE  NCB_Common_NotificationStatus_Sel(
         
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 	#Hard coding and not create any physical tables to store data because this kind of data
     # is rarely changed, we gonna consider later

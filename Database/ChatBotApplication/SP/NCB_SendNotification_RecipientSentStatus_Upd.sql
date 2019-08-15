@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_SendNotification_RecipientSentStatus_Upd;
 
-CREATE PROCEDURE  NCB_SendNotification_RecipientSentStatus_Upd(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_RecipientSentStatus_Upd(
     IN sentStatus MEDIUMTEXT CHARACTER SET utf8mb4
 	, OUT errCode SMALLINT
 	, OUT errMsg VARCHAR(100)
@@ -36,6 +36,7 @@ CREATE PROCEDURE  NCB_SendNotification_RecipientSentStatus_Upd(
         
     */
 )
+SQL SECURITY DEFINER
 NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
 
 	#Variables used to write User Logs

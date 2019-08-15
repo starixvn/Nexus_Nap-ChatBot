@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_SendNotification_GetPlanRetryNotifUpdStatus;
 
-CREATE PROCEDURE  NCB_SendNotification_GetPlanRetryNotifUpdStatus(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_GetPlanRetryNotifUpdStatus(
     /*
 		Creator: Dominic@20190417
         Param:
@@ -14,6 +14,7 @@ CREATE PROCEDURE  NCB_SendNotification_GetPlanRetryNotifUpdStatus(
         
     */
 )
+SQL SECURITY DEFINER
 NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 	#Variables used to write User Logs
 	DECLARE startTime 			DATETIME(3);

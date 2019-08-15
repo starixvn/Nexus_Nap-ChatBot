@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_UserLog_RunSP_Ins;
 
-CREATE PROCEDURE  NCB_UserLog_RunSP_Ins(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_UserLog_RunSP_Ins(
 	IN actionID SMALLINT
     , IN referenceID INT
 	, IN userID INT
@@ -22,6 +22,7 @@ CREATE PROCEDURE  NCB_UserLog_RunSP_Ins(
 		
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 	INSERT INTO UserLog_RunSP(LogTime, ActionID, ReferenceID, UserID, LogContent, Duration)
     SELECT logTime, actionID, referenceID, userID, logContent, duration;

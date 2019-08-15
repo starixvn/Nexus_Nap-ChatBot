@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_Common_Product_Sel;
 
-CREATE PROCEDURE  NCB_Common_Product_Sel(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_Common_Product_Sel(
     /*
 		Creator: Dominic@20190401
         Param:
@@ -12,6 +12,7 @@ CREATE PROCEDURE  NCB_Common_Product_Sel(
         
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 
 	SELECT p.ProductId AS ID, p.ProductName AS Name

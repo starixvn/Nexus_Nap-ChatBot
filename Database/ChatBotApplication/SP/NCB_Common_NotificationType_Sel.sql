@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_Common_NotificationType_Sel;
 
-CREATE PROCEDURE  NCB_Common_NotificationType_Sel(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_Common_NotificationType_Sel(
     /*
 		CREATOR: DOMINIC@20190401
         PARAM:
@@ -12,6 +12,7 @@ CREATE PROCEDURE  NCB_Common_NotificationType_Sel(
         
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 
 	SELECT nt.NotificationTypeID, nt.NotificationTypeName

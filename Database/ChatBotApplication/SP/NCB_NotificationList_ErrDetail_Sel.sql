@@ -1,7 +1,7 @@
 DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_NotificationList_ErrDetail_Sel;
-CREATE DEFINER=`dominic.dao`@`%` PROCEDURE `NCB_NotificationList_ErrDetail_Sel`(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_NotificationList_ErrDetail_Sel`(
      IN notificationID INT
     /*
 		Creator: Dominic@20190408
@@ -16,6 +16,7 @@ CREATE DEFINER=`dominic.dao`@`%` PROCEDURE `NCB_NotificationList_ErrDetail_Sel`(
 				- 20190814@Elton: remove unnecessary columns on select
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 	DECLARE SENT_STATUSID_ERROR TINYINT UNSIGNED DEFAULT 2;
     DECLARE SENT_STATUSID_RESOLVED TINYINT UNSIGNED DEFAULT 5;

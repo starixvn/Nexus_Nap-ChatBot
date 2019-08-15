@@ -1,6 +1,7 @@
 DELIMITER //
 DROP PROCEDURE IF EXISTS `NCB_Setting_LicenseeStatus_Sel`;
-CREATE PROCEDURE `NCB_Setting_LicenseeStatus_Sel`(
+
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_Setting_LicenseeStatus_Sel`(
 	/*
 		Creator: Scofield@20190404
         Description: Get list of all LicenseeStatus
@@ -8,6 +9,7 @@ CREATE PROCEDURE `NCB_Setting_LicenseeStatus_Sel`(
 				- 20190404@Scofield: Create        
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 	DECLARE PRODUCT_STATUS_ID INT DEFAULT -1000;
 	

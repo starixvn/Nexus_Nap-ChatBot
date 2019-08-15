@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_NotificationList_Cancel_Upd;
 
-CREATE PROCEDURE  NCB_NotificationList_Cancel_Upd(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_NotificationList_Cancel_Upd(
 	 IN notificationID INT
 	, IN userID INT
 	, OUT errCode SMALLINT
@@ -16,6 +16,7 @@ CREATE PROCEDURE  NCB_NotificationList_Cancel_Upd(
         
     */
 )
+SQL SECURITY DEFINER
 NCB_NotificationList_Cancel_Upd:BEGIN
 
 	#Variables used to write User Logs

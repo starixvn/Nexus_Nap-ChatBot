@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_NewNotification_Ins;
 
-CREATE PROCEDURE  NCB_NewNotification_Ins(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_NewNotification_Ins(
 	IN notificationTypeID SMALLINT
 	, IN productID SMALLINT
 	, IN recipientIDLst VARCHAR(200)
@@ -25,6 +25,7 @@ CREATE PROCEDURE  NCB_NewNotification_Ins(
         
     */
 )
+SQL SECURITY DEFINER
 NCB_NewNotification_Ins:BEGIN
 
 	#Variables used to write User Logs

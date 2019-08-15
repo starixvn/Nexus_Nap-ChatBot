@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_Common_User_Sel;
 
-CREATE PROCEDURE  NCB_Common_User_Sel(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_Common_User_Sel(
     /*
 		Creator: Dominic@20190408
         Param:
@@ -12,6 +12,7 @@ CREATE PROCEDURE  NCB_Common_User_Sel(
         
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 	SELECT u.UserID AS ID, u.UserName AS Name
     FROM User u

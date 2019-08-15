@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_NewNotification_Recipient_Sel;
 
-CREATE  PROCEDURE NCB_NewNotification_Recipient_Sel (
+CREATE DEFINER = 'ChatBotSystem'@'%'  PROCEDURE NCB_NewNotification_Recipient_Sel (
 	IN notificationTypeID SMALLINT
 	,IN productID SMALLINT
     /*
@@ -14,6 +14,7 @@ CREATE  PROCEDURE NCB_NewNotification_Recipient_Sel (
         
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 	DECLARE RECIPIENT_TYPE_LICENSEES 	SMALLINT DEFAULT 1;
     DECLARE LICENSEE_STATUS_ACTIVE 		TINYINT UNSIGNED DEFAULT 3;
