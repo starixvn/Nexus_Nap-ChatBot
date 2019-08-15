@@ -4,10 +4,25 @@ import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 import { PAGING_SIZES, NotificationStatus, DateFormat, TimeFormat } from '../../constants/constants';
 import Labels from '../../common/Labels';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';
+import Panel, { PanelHeader } from './Panel';
 
 export default class DataGrid extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            expandPanels: false
+        };
+
+        this.panels = [];
+    }
+
+    toggleExpandPanels = () => {
+        this.setState(prevState => ({ expandPanels: !prevState.expandPanels }), () => {
+            this.panels.filter(x => x.state.isOpen !== this.state.expandPanels).forEach(panel => {
+                panel.set(this.state.expandPanels);
+            });
+        });
     }
 
     handleCancelNotification = e => {
@@ -41,7 +56,7 @@ export default class DataGrid extends Component {
                 <Cell colWidth={5} header>{Labels.NumberCol}</Cell>
                 <Cell colWidth={20} header>Sender/Notification Type</Cell>
                 <Cell colWidth={18} header>Send Date/Time (GMT+8)</Cell>
-                <Cell colWidth={100} header><div className="has-icons">Title/Content <span className="icon-expand" /></div></Cell>
+                <Cell colWidth={100} header><div className="has-icons">Title/Content <span className="icon-expand" onClick={this.toggleExpandPanels} /></div></Cell>
                 <Cell colWidth={12} className="col-status" header>Status</Cell>
                 <Cell colWidth={10} className="col-action" header>{Labels.Action}</Cell>
             </Row>);
@@ -54,7 +69,7 @@ export default class DataGrid extends Component {
             return data.map(this.renderRow);
         }
 
-        return [<Row key={`body${1}`} ><Cell colSpan="6"><NoDataTitle /></Cell></Row >];
+        return [<Row key={`body${1}`} ><Cell colSpan="6"><NoDataTitle /></Cell></Row>];
     }
 
     renderRecipient = (recipient, index) => (
@@ -72,10 +87,14 @@ export default class DataGrid extends Component {
                 {item.configSendTime.toFormat(TimeFormat)}
                 <div>{item.configSendTime.toFormat(DateFormat)}</div>
             </Cell>
-
             <Cell>
-                <div>To {item.recipientSentStatusJson.length} recipient(s): {item.recipientSentStatusJson.map(this.renderRecipient)}</div>
-                <strong>{item.title} - {item.configSendTime.toFormat('MM/dd/yyyy')}</strong>
+                <Panel ref={panel => this.panels[index] = panel}>
+                    <PanelHeader>
+                        <div>To {item.recipientSentStatusJson.length} recipient(s): {item.recipientSentStatusJson.map(this.renderRecipient)}</div>
+                        <strong>{item.title} - {item.configSendTime.toFormat('MM/dd/yyyy')}</strong>
+                    </PanelHeader>
+                    <p className="notification-content" >{item.content}</p>
+                </Panel>
             </Cell>
             <Cell className="text-center"><span className={this.getNotificationStatusClass(item.statusId)}>{item.status}</span></Cell>
             <Cell className="col-action text-center">{this.renderAction(item)}</Cell>
