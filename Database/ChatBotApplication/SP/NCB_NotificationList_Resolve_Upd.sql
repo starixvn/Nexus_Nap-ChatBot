@@ -76,8 +76,8 @@ NCB_NotificationList_Resolve_Upd:BEGIN
     
     #Get Log Content, JSON format
     SET logContent = json_object(
-							'notificationID', notificationID
-                            , 'resolvedRemark', resolvedRemark
+							'NotificationID', notificationID
+                            , 'ResolvedRemark', resolvedRemark
 					) ;
                     
 		#Write User Log

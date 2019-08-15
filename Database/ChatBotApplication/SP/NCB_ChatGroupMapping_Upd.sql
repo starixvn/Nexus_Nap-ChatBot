@@ -100,12 +100,12 @@ NCB_ChatGroupMapping_Upd:BEGIN
     SET duration =  TIMESTAMPDIFF(MICROSECOND, startTime, finishTime)  / 1000;
 	
 	-- Get Log Content, JSON format
-    SET logContent = json_object('groupID', groupID
-								, 'recipientTypeID', recipientTypeID
-								, 'recipientIDs', recipientIDs
-								, 'chatGroupTypeID', chatGroupTypeID
-								, 'remark', remark
-								, 'creatorID', creatorID);
+    SET logContent = json_object('GroupID', groupID
+								, 'RecipientTypeID', recipientTypeID
+								, 'RecipientIDs', recipientIDs
+								, 'ChatGroupTypeID', chatGroupTypeID
+								, 'Remark', remark
+								, 'CreatorID', creatorID);
 										
 	-- Write User Log
 	CALL NCB_UserLog_RunSP_Ins(ACTION_ID, groupID, creatorID, logContent, startTime, duration);

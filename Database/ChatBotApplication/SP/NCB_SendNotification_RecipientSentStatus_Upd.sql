@@ -182,8 +182,8 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
      
     CALL NCB_UserLog_RunSP_Ins(
 													ACTION_ID #actionID
-													, 0 #referenceID
-													, 0 #UserID
+													, -1 #referenceID
+													, -1 #UserID
 													, logContent #LogContent
 													, startTime #logtime
 													, duration	#Duration

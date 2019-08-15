@@ -72,7 +72,7 @@ NCB_NotificationList_Cancel_Upd:BEGIN
     
     #Get Log Content, JSON format
     SET logContent = json_object(
-							'notificationID', notificationID
+							'NotificationID', notificationID
 					) ;
                     
 		#Write User Log

@@ -401,16 +401,16 @@ NCB_EditNotification_Upd:BEGIN
                                                                         , finishTime)  / 1000; 	#miliseconds
     
     #Get Log Content, JSON format
-    SET logContent = json_object('notificationTypeID', notificationTypeID
-										, 'productID', productID
-                                        , 'recipientIDLst', recipientIDLst
-										, 'oldTitle', logOldTitle
-                                        , 'newTitle', title
-										, 'oldContent', logOldContent
-                                        , 'newContent', content
-										, 'oldConfigSendTime', logOldConfigSendTime
-                                        , 'newConfigSendTime', configSendTime
-                                        , 'notificationID', notificationID
+    SET logContent = json_object('NotificationTypeID', notificationTypeID
+										, 'ProductID', productID
+                                        , 'RecipientIDLst', recipientIDLst
+										, 'OldTitle', logOldTitle
+                                        , 'NewTitle', title
+										, 'OldContent', logOldContent
+                                        , 'NewContent', content
+										, 'OldConfigSendTime', logOldConfigSendTime
+                                        , 'NewConfigSendTime', configSendTime
+                                        , 'NotificationID', notificationID
 										, 'logDeletedRecipientLst', '#logDeletedRecipientLst#'
                                         , 'logInsertedRecipientLst',  '#logInsertedRecipientLst#'
 					) ;

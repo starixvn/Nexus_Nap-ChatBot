@@ -112,14 +112,14 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
     
     #Get Log Content, JSON format
     SET logContent = json_object(
-							'notificationID', notificationID
+							'NotificationID', notificationID
 					) ;
                     
 	#Write User Log
 	CALL NCB_UserLog_RunSP_Ins(
 											ACTION_ID #actionID
                                             , notificationID #referenceID
-											, 0 #UserID
+											, -1 #UserID
                                             , logContent #LogContent
                                             , startTime #logtime
                                             , duration	#Duration
