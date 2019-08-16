@@ -22,8 +22,8 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
     DECLARE duration 			INT;							
     DECLARE logContent 		TEXT;
     DECLARE ACTION_ID 		INT DEFAULT 8;
-     DECLARE plannedNotifIDLst TEXT  CHARACTER SET utf8mb4;
-    DECLARE tryingNotifRecipChatGrpIDLst TEXT  CHARACTER SET utf8mb4;
+     DECLARE plannedNotifIDLst TEXT;
+    DECLARE tryingNotifRecipChatGrpIDLst TEXT;
     
 	#Constant
 	DECLARE NOTIFICATION_STATUSID_PLANNED	TINYINT UNSIGNED DEFAULT 0;  #Planned
@@ -87,6 +87,8 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 					, r.RecipientID, r.RecipientName
 					, GroupBot.ConversationGroupID AS ChatGroupID
 					, grp.ConversationID AS ChatGroupConversationID 
+                    , grp.ServiceUrl
+                    , grp.ChannelID
                     , bot.ConversationBotID AS BotID 
                     , bot.Name AS BotName
                     , bot.ConversationID AS BotConversationID 
@@ -96,7 +98,7 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
                                 WHEN cgr.RecipientID <> nrl.RecipientID THEN 3 #Recipient is changed group
                                 WHEN bot.ConversationBotID IS NULL THEN 2 #Bot Removed
                                 ELSE 0 #Ready to send
-						END
+						END ErrCode
 	 FROM NotificationRecipientList nrl
 	 INNER JOIN ConversationGroup grp
 			ON grp.ConversationGroupID = nrl.ConversationGroupID
