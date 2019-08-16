@@ -218,29 +218,4 @@ CREATE TABLE ChatBot.UserLog_RunSP(
 		, CONSTRAINT PK_LogID PRIMARY KEY (LogID)
         , INDEX INDEX_LogTime USING BTREE (LogTime)
         , INDEX INDEX_ReferenceID USING BTREE (ReferenceID)
- );        
- 
-CREATE TABLE ChatBot.SystemLog(
-		LogID BIGINT UNSIGNED AUTO_INCREMENT NOT NULL
-        , MachineName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NOT NULL
-        , LogTime DATETIME NOT NULL
-		, Level VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NOT NULL
-        , LogContent TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
-        , Logger VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NOT NULL
-		, Callsite TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
-        , Exception TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
-        , CONSTRAINT PK_LogID PRIMARY KEY (LogID)
-        , INDEX INDEX_LogTime USING BTREE (LogTime)
-);        
-
-CREATE TABLE ChatBot.User(
-		UserID INT NOT NULL
-        , UserName VARCHAR(100) NOT NULL
-		, AuthKey 	VARCHAR(40) NULL
-        , Claims 	TEXT NULL
-		, LastUpdate 	DATETIME NULL
-		, LoginProvider 	VARCHAR(25) NULL
-		, ProviderKey 	TEXT NULL
-        , CONSTRAINT PK_UserID PRIMARY KEY (UserID)
-        , UNIQUE INDEX UNIQUE_UserName USING BTREE (UserName)
-);       
+ ); 
