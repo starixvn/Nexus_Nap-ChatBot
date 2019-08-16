@@ -117,7 +117,7 @@
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Auth}/{action=Index}");
+                    template: "{controller=Auth}/{action=Index}/{id?}");
             });
 
             NapClientManager

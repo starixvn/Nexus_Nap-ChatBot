@@ -262,7 +262,7 @@ export default class NotificationList extends Component {
                             statusField="checked"
                             isSummited={false}
                             isAllTextShown
-                            onChange={this.handleNotificationTypeChange}
+                            onChange={this.handleStatusChange}
                         />
                     </FormGroup>
                     <button id="submit-button" className="btn-submit" type="submit">Submit</button>

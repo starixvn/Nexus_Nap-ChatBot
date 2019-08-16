@@ -19,5 +19,7 @@
         Task<NotificationErrorReport> GetNotificationErrorAsync(int notificationId);
 
         Task<CommandResult> ResolveAsync(int notificationId, string resolvedRemark, int userId);
+
+        Task<EditNotificationInfo> GetEditNotificationInfo(int notificationId);
     }
 }

@@ -1,4 +1,4 @@
-﻿const errorResponseHandler = () => {
+﻿const errorResponseHandler = (error) => {
     //alert('Internal Errors Occur');
 }
 

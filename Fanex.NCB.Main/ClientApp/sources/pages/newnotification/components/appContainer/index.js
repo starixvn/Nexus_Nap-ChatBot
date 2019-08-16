@@ -201,7 +201,10 @@ export class AppContainer extends React.Component {
         console.log(value);
     }
 
-    handleToggleConfirmationPopup = () => this.props.toggleConfirmationPopup(!this.props.confimrationPopup.isOpen)
+    handleToggleConfirmationPopup = () => {
+        this.props.toggleConfirmationPopup(!this.props.confimrationPopup.isOpen);
+        this.refs.form.setSubmitting(false);
+    }
 
     handleConfirm = () => {
         const formik = this.refs.form;
@@ -220,7 +223,6 @@ export class AppContainer extends React.Component {
             sendImmediately: values.sendMode === '1'
         });
 
-        formik.setSubmitting(true);
         this.props.createNewNotification(data).then(response => {
             formik.setSubmitting(false);
             this.props.toggleConfirmationPopup(false);
@@ -249,7 +251,7 @@ export class AppContainer extends React.Component {
         content: Yup.string().required(Labels.FieldRequired),
         recipients: Yup.array().required(Labels.FieldRequired),
         sendMode: Yup.string(),
-        sendDate: Yup.date().when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired) : schema)
+        sendDate: Yup.mixed().when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired) : schema)
     })
 
     renderNotificationTypeOption = (item) => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>
@@ -384,7 +386,7 @@ export class AppContainer extends React.Component {
 
                 </FormGroup>
                 <FormGroup row className="list-buttons">
-                    <Button className="btn-submit offset-sm-2" disabled={isSubmitting}>Save</Button>
+                    <Button className="btn-submit offset-sm-2" disabled={isSubmitting} type="submit">Save</Button>
                 </FormGroup>
             </Form >
         );
@@ -425,7 +427,7 @@ export class AppContainer extends React.Component {
                     onToggle={this.handleToggleConfirmationPopup}
                     isOpen={this.props.confimrationPopup.isOpen}
                     content={this.props.confimrationPopup.content}
-                />}
+                />
             </>
         );
     }

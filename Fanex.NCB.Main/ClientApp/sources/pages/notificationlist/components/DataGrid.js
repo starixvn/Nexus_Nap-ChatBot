@@ -19,9 +19,11 @@ export default class DataGrid extends Component {
 
     toggleExpandPanels = () => {
         this.setState(prevState => ({ expandPanels: !prevState.expandPanels }), () => {
-            this.panels.filter(x => x.state.isOpen !== this.state.expandPanels).forEach(panel => {
-                panel.set(this.state.expandPanels);
-            });
+            if (this.props.tableData.total > 0) {
+                this.panels.filter(x => x.state.isOpen !== this.state.expandPanels).forEach(panel => {
+                    panel.set(this.state.expandPanels);
+                });
+            }
         });
     }
 
@@ -114,8 +116,8 @@ export default class DataGrid extends Component {
             case NotificationStatus.Planned:
                 return (<span className="icon-delete" data-notificationid={notification.notificationId} onClick={this.handleCancelNotification} />);
             case NotificationStatus.Cancelled:
-                return (<a className="icon-edit" href={`EditNotification/${notification.notificationId}`} />);
-            default: return (<span className="icon-view" data-notificationid={notification.notificationId} onClick={this.handleShowErrorReport} />);
+                return (<a className="icon-edit" href={`EditNotification/Index/${notification.notificationId}`} />);
+            default: return null;
         }
     }
 

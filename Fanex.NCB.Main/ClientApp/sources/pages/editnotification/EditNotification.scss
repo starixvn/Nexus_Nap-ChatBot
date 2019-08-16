@@ -1,0 +1,63 @@
+@import "../shared/variables";
+@import "../shared/common";
+@import "../shared/components/forms";
+@import "../shared/components/buttons";
+@import "../shared/components/modals";
+@import "../shared/components/font";
+@import "../shared/components/messages";
+
+.form-group {
+    .notification-type,
+    .notification-template {
+        width: 540px;
+    }
+
+    .notification-content {
+        height: 260px;
+    }
+
+    &.row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+.send-date-area {
+    display: grid;
+    grid-template-columns: 293px 212px 1fr;
+    grid-gap: 15px;
+    align-items: center;
+
+    .react-datepicker__input-container {
+        display: block !important;
+        margin-right: 0 !important;
+    }
+
+    .react-datepicker__input-container {
+        position: relative;
+        display: inline-block;
+        margin-right: 15px;
+
+        &:after {
+            position: absolute;
+            right: 8px;
+            top: 6px;
+            content: "\E909";
+            font-family: "nap-chatbot";
+            font-size: 15px;
+            color: #798388;
+        }
+
+        .form-control {
+            padding-right: 16px;
+        }
+    }
+}
+
+.edit-notification {
+    width: 1000px;
+
+    .list-buttons {
+        margin-left: 18px;
+    }
+}

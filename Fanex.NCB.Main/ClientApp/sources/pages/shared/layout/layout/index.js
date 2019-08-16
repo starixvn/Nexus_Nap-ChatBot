@@ -51,5 +51,5 @@ export function renderLayout(content) {
     ReactDOM.render(
         <Layout>
             {content}
-        </Layout>, document.getElementById('layout'));
+        </Layout>, document.getElementById('root'));
 }

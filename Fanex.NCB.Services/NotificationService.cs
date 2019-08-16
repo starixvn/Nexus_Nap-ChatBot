@@ -119,6 +119,23 @@
             return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
         }
 
+        public async Task<EditNotificationInfo> GetEditNotificationInfo(int notificationId)
+        {
+            var result = await baseService.FetchMultipleAsync<EditNotificationInfo, int>(new GetEditNotificationInfoCriteria
+            {
+                NotificationId = notificationId
+            }).ConfigureAwait(false);
+
+            var notification = result.Item1.FirstOrDefault();
+
+            if (notification != null)
+            {
+                notification.RecipientIds = result.Item2;
+            }
+
+            return notification;
+        }
+
         private void SendNotificationImediately(int notificationId)
         {
             Task.Run(
