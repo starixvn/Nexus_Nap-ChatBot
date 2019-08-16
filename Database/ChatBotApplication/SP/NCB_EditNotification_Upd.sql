@@ -4,8 +4,6 @@ DROP PROCEDURE IF EXISTS NCB_EditNotification_Upd;
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_EditNotification_Upd(
 	IN notificationID INT
-	, IN notificationTypeID SMALLINT
-	, IN productID INT
 	, IN recipientIDLst VARCHAR(200)
 	, IN title VARCHAR(300) CHARACTER SET utf8mb4
 	, IN content MEDIUMTEXT CHARACTER SET utf8mb4
@@ -53,6 +51,14 @@ NCB_EditNotification_Upd:BEGIN
 	DECLARE logOldTitle TEXT CHARACTER SET utf8mb4;
 	DECLARE logOldContent TEXT CHARACTER SET utf8mb4;
     DECLARE logOldconfigSendTime DATETIME;
+    
+    DECLARE productID INT;
+    DECLARE notificationTypeID SMALLINT;
+    
+    SELECT n.NotificationTypeID, n.ProductID
+    INTO notificationTypeID, productID
+    FROM Notification n
+    WHERE n.NotificationID = notificationID;
     
     #Get Start Time to calcualte execution duration
     SET  startTime = UTC_TIMESTAMP(3);
@@ -402,8 +408,8 @@ NCB_EditNotification_Upd:BEGIN
                                                                         , finishTime)  / 1000; 	#miliseconds
     
     #Get Log Content, JSON format
-    SET logContent = json_object('NotificationTypeID', notificationTypeID
-										, 'ProductID', productID
+    SET logContent = json_object(
+										'NotificationID', notificationID
                                         , 'RecipientIDLst', recipientIDLst
 										, 'OldTitle', logOldTitle
                                         , 'NewTitle', title
@@ -411,9 +417,8 @@ NCB_EditNotification_Upd:BEGIN
                                         , 'NewContent', content
 										, 'OldConfigSendTime', logOldConfigSendTime
                                         , 'NewConfigSendTime', configSendTime
-                                        , 'NotificationID', notificationID
-										, 'logDeletedRecipientLst', '#logDeletedRecipientLst#'
-                                        , 'logInsertedRecipientLst',  '#logInsertedRecipientLst#'
+										, 'LogDeletedRecipientLst', '#logDeletedRecipientLst#'
+                                        , 'LogInsertedRecipientLst',  '#logInsertedRecipientLst#'
 					) ;
          
          SET logContent = REPLACE(logContent, '"#logDeletedRecipientLst#"', IFNULL(logDeletedRecipientLst, '[]'));
