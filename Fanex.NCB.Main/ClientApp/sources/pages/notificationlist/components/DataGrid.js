@@ -92,7 +92,7 @@ export default class DataGrid extends Component {
                 {item.configSendTime.toFormat(TimeFormat)}
                 <div>{item.configSendTime.toFormat(DateFormat)}</div>
             </Cell>
-            <Cell>
+            <Cell className="col-content">
                 <Panel ref={panel => this.panels[index] = panel}>
                     <PanelHeader>
                         <div>To {item.recipientSentStatusJson.length} recipient(s): {item.recipientSentStatusJson.map(this.renderRecipient)}</div>

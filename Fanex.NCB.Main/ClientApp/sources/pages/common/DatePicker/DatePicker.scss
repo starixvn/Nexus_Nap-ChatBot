@@ -26,14 +26,6 @@
     border-bottom: none;
 }
 
-.react-datepicker__navigation--next--with-time:not(.react-datepicker__navigation--next--with-today-button) {
-    right: 134px;
-}
-
-.react-datepicker__navigation {
-    top: 22px;
-}
-
 .react-datepicker__current-month,
 .react-datepicker-time__header,
 .react-datepicker-year-header {
@@ -99,5 +91,48 @@
         font-family: "nap-chatbot";
         font-size: 15px;
         color: #798388;
+    }
+}
+
+.react-datepicker__navigation {
+    top: 20px;
+}
+
+.react-datepicker__navigation {
+    border: none;
+    background: #ecedef;
+    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    text-indent: 0;
+
+    &:hover {
+        background-color: darken(#ecedef, 10%);
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &:before {
+        display: inline-block;
+        top: -4px;
+        position: relative;
+        content: "\e915";
+        font-family: $font-icons, sans-serif !important;
+        color: #767678;
+        font-size: 9px;
+    }
+
+    &.react-datepicker__navigation--next {
+        right: 140px;
+    }
+
+    &.react-datepicker__navigation--previous {
+        left: 22px;
+
+        &:before {
+            transform: rotate(180deg);
+        }
     }
 }

@@ -1,0 +1,35 @@
+@import "../../shared/variables";
+
+
+.table {
+
+    .panel-header {
+        padding-right: 24px;
+    }
+
+    .col-content {
+        position: relative !important;
+    }
+
+    .col-content .icon-right {
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        margin-top: -9px;
+        color: $text-color;
+        font-size: 10px;
+        text-align: center;
+        transform: rotate(0);
+        transition: transform .2s ease-in;
+
+        &:hover {
+            color: $text-color;
+        }
+
+        &.content-expand {
+            top: 28px;
+            transform: rotate(90deg);
+            transition: transform .2s ease-in;
+        }
+    }
+}

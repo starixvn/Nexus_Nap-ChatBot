@@ -1,3 +1,38 @@
-﻿.icon-copy {
-    cursor: pointer;
+﻿
+.error-report {
+    width: 980px;
+    max-width: 980px;
+
+    .msg-error {
+        margin-top: 16px;
+    }
+
+    .icon-copy {
+        right: 0;
+        top: 1px;
+        font-size: 14px;
+    }
+}
+
+.remark {
+    display: grid;
+    grid-template-columns: 50px 736px 1fr;
+    grid-template-rows: 1fr;
+    grid-gap: 16px;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+}
+
+.resolved-remark {
+    margin-top: 30px;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.notification-content {
+    white-space: pre-wrap;
+    margin-bottom: 0;
 }
