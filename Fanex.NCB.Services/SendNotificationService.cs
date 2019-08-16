@@ -49,7 +49,7 @@
                 {
                     NotificationID = r.NotificationId,
                     RecipientID = r.RecipientId,
-                    SentTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    SentTime = DateTimeExtension.ConvertToDateTimeString(DateTime.Now.ConvertToUTC()),
                     ConversationGroupID = r.ChatGroupId,
                     ConversationBotID = r.BotId,
                     Retry = false,
@@ -64,7 +64,9 @@
         private async Task<(IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>)> GetNotificationPlannedToSend()
         {
             var criteria = new GetNotificationsToSendCriteria();
-            return await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria).ConfigureAwait(false);
+            var notifications = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria)
+                                .ConfigureAwait(false);
+            return notifications;
         }
 
         private static IList<SendMessageResult> ConvertJsonResponse(string json)
@@ -116,10 +118,10 @@
                 {
                     NotificationID = recipient.NotificationId,
                     RecipientID = recipient.RecipientId,
-                    SentTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    SentTime = DateTimeExtension.ConvertToDateTimeString(result.SentTime),
                     ConversationGroupID = recipient.ChatGroupId,
                     ConversationBotID = recipient.BotId,
-                    Retry = true,
+                    Retry = result.ErrorCode != 0,
                     IsSuccess = result.ErrorCode == 0,
                     ErrMsg = result.ErrorCode == 0 ? string.Empty : result.ErrorMessage
                 };
@@ -131,10 +133,10 @@
 
         private IEnumerable<NotificationMessage> GenerateNotificationMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
-            var proactiveMsgs = new List<NotificationMessage>();
+            var msgList = new List<NotificationMessage>();
             foreach (var noti in notifications)
             {
-                var proactiveMsg = new NotificationMessage
+                var msg = new NotificationMessage
                 {
                     NotifictaionId = noti.NotificationId,
                     Message = string.Format("{0}\n{1}", noti.Title, noti.Content),
@@ -148,10 +150,10 @@
                                 BotName = r.BotName
                             }).Distinct()
                 };
-                proactiveMsgs.Add(proactiveMsg);
+                msgList.Add(msg);
             }
 
-            return proactiveMsgs;
+            return msgList;
         }
 
         private async Task UpdateSentNotificationStatus(IEnumerable<UpdateNotificationModel> msgs)

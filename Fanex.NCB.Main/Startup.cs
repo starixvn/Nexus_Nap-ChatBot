@@ -31,8 +31,8 @@
         private const int CookieExpiration = 60;
 
         public Startup(IConfiguration configuration)
-        {            
-        	Configuration = configuration;
+        {
+            Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -100,8 +100,9 @@
                 app.UseHsts();
             }
             else
-            {
-                app.UseDeveloperExceptionPage();
+            {               
+             
+                app.UseMiddleware<ErrorHandlingMiddleware>();
             }
 
             app.UseHttpsRedirection();

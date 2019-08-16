@@ -22,5 +22,10 @@
 
             return TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(dateTime, DateTimeKind.Utc), info);
         }
+
+        public static string ConvertToDateTimeString(DateTime dateTime)
+        {
+            return dateTime.ToString("yyyy-MM-dd HH:mm:ss");
+        }
     }
 }

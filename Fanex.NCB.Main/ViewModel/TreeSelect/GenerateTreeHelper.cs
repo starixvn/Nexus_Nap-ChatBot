@@ -1,12 +1,10 @@
-﻿using Fanex.NCB.Models.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Fanex.NCB.Main.ViewModel.TreeSelect
+﻿namespace Fanex.NCB.Main.ViewModel.TreeSelect
 {
-    public class GenerateTreeHelper
+    using System.Collections.Generic;
+    using System.Linq;
+    using Fanex.NCB.Models.Common;
+
+    public static class GenerateTreeHelper
     {
         public static IEnumerable<TreeNodeItem> FromRecipient(IEnumerable<Recipient> data)
 

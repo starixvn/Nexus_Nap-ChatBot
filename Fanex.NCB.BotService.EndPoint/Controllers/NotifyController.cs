@@ -140,7 +140,7 @@
             var coversation = new ConversationReference
             {
                 Bot = new ChannelAccount { Id = conversationGroup.BotConversationId, Name = conversationGroup.BotName, Role = "bot" },
-                Conversation = new ConversationAccount() { Id = conversationId },
+                Conversation = new ConversationAccount { Id = conversationId },
                 ServiceUrl = conversationGroup.ServiceUrl,
                 ChannelId = conversationGroup.ChannelId
             };
@@ -153,7 +153,7 @@
             var coversation = new ConversationReference
             {
                 Bot = new ChannelAccount { Id = conversationInfo.BotConversationId, Name = conversationInfo.BotName, Role = "bot" },
-                Conversation = new ConversationAccount() { Id = conversationInfo.ConversationId },
+                Conversation = new ConversationAccount { Id = conversationInfo.ConversationId },
                 ServiceUrl = conversationInfo.ServiceUrl,
                 ChannelId = conversationInfo.ChannelId
             };
