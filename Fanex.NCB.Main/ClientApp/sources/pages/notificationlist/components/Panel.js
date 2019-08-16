@@ -21,7 +21,7 @@ export default class Panel extends Component {
     render() {
         return (
             <div className="nap-panel">
-                <div className="panel-header" onClick={this.toggle}>
+                <div className={`panel-header ${this.state.isOpen ? 'expand' : 'collapse'}`} onClick={this.toggle}>
                     {this.props.children[0]}
                 </div>
                 <Collapse isOpen={this.state.isOpen}>
