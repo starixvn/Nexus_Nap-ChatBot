@@ -1,7 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <ApplicationIcon />
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <PublishProtocol>FileSystem</PublishProtocol>
+    <Configuration>Release</Configuration>
+    <Platform>Any CPU</Platform>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <PublishDir>D:\Deploy\ChatBotHangfire</PublishDir>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <_IsPortable>false</_IsPortable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <PlatformTarget>x64</PlatformTarget>
@@ -10,6 +22,7 @@
     <None Remove="appsettings.json" />
     <None Remove="App_Data\SpNames.xml" />
   </ItemGroup>
+  
   <ItemGroup>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
