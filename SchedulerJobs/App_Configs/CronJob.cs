@@ -1,4 +1,4 @@
-﻿namespace SchedulerJobs
+﻿namespace Fanex.NCB.AutoJobs
 {
     public class CronJob
     {

@@ -36,7 +36,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.BotService.EndPoi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Core", "Fanex.NCB.Core\Fanex.NCB.Core.csproj", "{37BAF550-80C1-4D64-8F9F-634B87197B3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchedulerJobs", "SchedulerJobs\SchedulerJobs.csproj", "{98DAC18C-9880-4225-86CB-16DDF78B3622}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.AutoJobs", "SchedulerJobs\Fanex.NCB.AutoJobs.csproj", "{98DAC18C-9880-4225-86CB-16DDF78B3622}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
