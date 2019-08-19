@@ -1,9 +1,7 @@
 ﻿import './EditNotification.scss';
 
 import React from 'react';
-import { DateTime } from 'luxon';
-import { Form, FormGroup, Label, Button, Container, Row, Col, Input, FormFeedback } from 'reactstrap';
-import { stringify } from 'qs';
+import { Form, FormGroup, Label, Button, Col, Input, FormFeedback } from 'reactstrap';
 import axios from 'axios';
 
 import { Formik } from 'formik';
@@ -117,7 +115,7 @@ export default class EditNotification extends React.Component {
             recipientIds: recipientIds.toString(),
             title: values.title,
             content: values.content,
-            sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
+            sendDate: values.sendDate,
             sendImmediately: values.sendMode === '1',
         };
 

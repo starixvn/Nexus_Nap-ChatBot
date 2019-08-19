@@ -2,12 +2,13 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_EditNotification_Upd;
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_EditNotification_Upd(
+CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_EditNotification_Upd`(
 	IN notificationID INT
 	, IN recipientIDLst VARCHAR(200)
 	, IN title VARCHAR(300) CHARACTER SET utf8mb4
 	, IN content MEDIUMTEXT CHARACTER SET utf8mb4
 	, IN configSendTime DATETIME
+    , IN sendImmediately BIT
 	, IN userID INT
 	, OUT errCode SMALLINT
 	, OUT errMsg VARCHAR(100)
@@ -19,10 +20,9 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_EditNotification_Upd(
                 - ConfigSendTime: UTC (GMT +0)
         Revisions:
 				- 20190401@Dominic: First Commit
-        
+				- 20190819Q@Elton: Update Error Message
     */
 )
-SQL SECURITY DEFINER
 NCB_EditNotification_Upd:BEGIN
 
 	#Variables used to write User Logs
@@ -137,7 +137,8 @@ NCB_EditNotification_Upd:BEGIN
 								OR bcri.ChatGroupTypeID IS  NULL
                                 OR cgb.ConversationBotID IS NULL
 			);
-
+            
+		SET errMsg = 'Recipient is not mapped or removed: ' + errMsg;
         LEAVE NCB_EditNotification_Upd;
     END IF;
 
@@ -168,6 +169,7 @@ NCB_EditNotification_Upd:BEGIN
 						WHERE  l.LicenseeStatusId <> LICENSEE_STATUS_ACTIVE
 			);
 
+		SET errMsg = 'Licensee is Inactive: ' + errMsg;
         LEAVE NCB_EditNotification_Upd;
     END IF;
     
@@ -218,6 +220,7 @@ NCB_EditNotification_Upd:BEGIN
 									)
 			);
 
+		SET errMsg = 'Licensee is not offered: ' + errMsg;
         LEAVE NCB_EditNotification_Upd;
     END IF;
     
@@ -245,6 +248,7 @@ NCB_EditNotification_Upd:BEGIN
 						WHERE ex.NotificationTypeID = notificationTypeID
                         );
                         
+        SET errMsg = 'There are recipients in the exception list: ' + errMsg;
 		LEAVE NCB_EditNotification_Upd;
     END IF;
     
@@ -398,6 +402,7 @@ NCB_EditNotification_Upd:BEGIN
 			, n.StatusID = NEW_NOTIFICATION_STATUSID
             , n.LastModifiedDate = UTC_TIMESTAMP()
             , n.LastModifiedBy = userID
+            ,n.SendImmediately = sendImmediately
      WHERE n.NotificationID = notificationID;
      
      

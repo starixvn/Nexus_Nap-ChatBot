@@ -1,4 +1,4 @@
-﻿import React, { Component, Fragment } from 'react';
+﻿import React, { PureComponent, Fragment } from 'react';
 import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 
 import { PAGING_SIZES, NotificationStatus, DateFormat, TimeFormat } from '../../constants/constants';
@@ -6,7 +6,7 @@ import Labels from '../../common/Labels';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';
 import Panel, { PanelHeader } from './Panel';
 
-export default class DataGrid extends Component {
+export default class DataGrid extends PureComponent {
     constructor(props) {
         super(props);
 

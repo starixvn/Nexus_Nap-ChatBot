@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_EditNotification_Sel;
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_EditNotification_Sel(
+CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_EditNotification_Sel`(
      IN notificationID INT
     /*
 		Creator: Dominic@20190408
@@ -16,20 +16,16 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_EditNotification_Sel(
         
     */
 )
-SQL SECURITY DEFINER
 BEGIN
 	#1st dataset: Main info of Notification
-	SELECT n.NotificationTypeID,  n.ProductID, n.Title, n.Content
+	SELECT n.NotificationID, n.NotificationTypeID, nt.NotificationTypeName,  n.ProductID, p.ProductName, n.Title, n.Content, n.SendImmediately, n.ConfigSendTime
     FROM Notification n
-    WHERE n.NotificationID = notificationID;
+		INNER JOIN NotificationType nt ON n.NotificationTypeID = nt.NotificationTypeID
+        LEFT JOIN Product p ON n.ProductID = p.ProductID
+    WHERE n.NotificationID = notificationID AND n.StatusID = 4;
     
     #2nd dataset: List of recipients
-	SELECT   rt.RecipientTypeID, rt.RecipientTypeName, r.RecipientID, r.RecipientName
+	SELECT DISTINCT rlst.RecipientID
     FROM NotificationRecipientList rlst
-		INNER JOIN Recipient r
-			ON r.RecipientID = rlst.RecipientID
-        INNER JOIN RecipientType rt
-			ON rt.RecipientTypeID = r.RecipientTypeID
-    WHERE rlst.NotificationID = notificationID
-    ORDER BY rt.RecipientTypeID, r.RecipientID;
+	WHERE rlst.NotificationID = notificationID;
 END;

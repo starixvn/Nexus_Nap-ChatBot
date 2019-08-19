@@ -9,5 +9,7 @@
         public const string NewNotification = "NewNotification";
 
         public const string ChatGroupMapping = "ChatGroupMapping";
+
+        public const string EditNotification = "EditNotification";
     }
 }
