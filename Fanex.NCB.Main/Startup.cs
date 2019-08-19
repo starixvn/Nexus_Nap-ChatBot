@@ -100,9 +100,8 @@
                 app.UseHsts();
             }
             else
-            {               
-             
-                app.UseMiddleware<ErrorHandlingMiddleware>();
+            {
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();

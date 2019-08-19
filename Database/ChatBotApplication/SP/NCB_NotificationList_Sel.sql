@@ -177,3 +177,5 @@ BEGIN
     FROM tmp_Notification n
     ORDER BY n.ConfigSendTime,  n.CreatorID;
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationList_Sel TO 'ncb.admin'@'%';

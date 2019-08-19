@@ -29,3 +29,5 @@ BEGIN
     FROM NotificationRecipientList rlst
 	WHERE rlst.NotificationID = notificationID;
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_EditNotification_Sel TO 'ncb.admin'@'%';

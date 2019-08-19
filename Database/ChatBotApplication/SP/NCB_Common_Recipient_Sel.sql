@@ -12,4 +12,6 @@ BEGIN
 		LEFT JOIN Licensee lic ON r.RecipientTypeID = RECIPIENT_TYPE_LICENSEES AND lic.LicenseeId = r.SourceID
 		LEFT JOIN LicenseeType lt ON lt.LicenseeTypeId = lic.LicenseeTypeId
     ORDER BY RecipientTypeID,  lt.LicenseeTypeName, RecipientName;
-END
+END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Common_Recipient_Sel TO 'ncb.admin'@'%';
