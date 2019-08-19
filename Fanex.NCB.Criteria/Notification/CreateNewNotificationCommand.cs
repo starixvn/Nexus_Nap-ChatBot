@@ -27,7 +27,7 @@
 
         public override bool IsValid()
         {
-            bool isValidNotiInfo = NotificationId > 0 && CreatorId > 0;
+            bool isValidNotiInfo = NotificationTypeId > 0 && CreatorId > 0;
             return isValidNotiInfo && !string.IsNullOrWhiteSpace(RecipientIDLst) && !string.IsNullOrWhiteSpace(Title)
                             && !string.IsNullOrWhiteSpace(Content);
         }
