@@ -30,7 +30,3 @@ export default class CommonFunctions {
         return Object.keys(obj).length === 0;
     }
 }
-
-export function getErrorTemplateMessage(code) {
-    return ErrorCodeTempalteMessage.find(x => x.code === code).message;
-}

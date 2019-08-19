@@ -9,7 +9,7 @@ import axios from 'axios';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { NCBBreadcrum } from '../common/breadcrumbs';
-import TreeSelect from '../common/TreeSelect/index';
+import TreeSelect, { getRealValuesFromExtra } from '../common/TreeSelect/index';
 import DatePicker from '../common/DatePicker/index';
 import Labels from '../common/Labels';
 import { DateTimeFormat } from '../constants/constants';
@@ -35,7 +35,11 @@ export default class EditNotification extends React.Component {
         this.state = {
             notificationId: parseInt(document.getElementById('notification-id').value),
             notification: null,
-            recipientOptions: null
+            recipientOptions: null,
+            confimrationPopup: {
+                isOpen: false,
+                message: ''
+            }
         };
     }
 
@@ -65,7 +69,7 @@ export default class EditNotification extends React.Component {
             content: notification.content,
             recipients: {
                 value: recipientIds,
-                extra: recipientOptions.slice()
+                extra: this.state.notification.recipientIds.map(x => ({ realValue: x }))
             },
             sendMode: notification.sendImmediately ? '1' : '2',
             sendDate: notification.configSendTime
@@ -73,8 +77,6 @@ export default class EditNotification extends React.Component {
     }
 
     findRecipientTreeValue = (array, tree) => {
-        debugger;
-
         for (let i = 0; i < tree.length; i++) {
             const item = tree[i];
             if (item.children && item.children.length > 0) {
@@ -98,35 +100,47 @@ export default class EditNotification extends React.Component {
         }).catch(errorResponseHandler);
     }
 
-    handleToggleConfirmationPopup = () => this.props.toggleConfirmationPopup(!this.props.confimrationPopup.isOpen)
+    handleCloseConfirmationPopup = () => {
+        this.refs.form.setSubmitting(false);
+        this.setState({ confimrationPopup: { isOpen: false } });
+    }
 
     handleConfirm = () => {
         const formik = this.refs.form;
         const values = formik.state.values;
 
         const recipientIds = [];
-        this.getRecipientIds(recipientIds, this.selectedNodes);
+        getRealValuesFromExtra(recipientIds, values.recipients.extra);
 
-        const data = stringify({
-            notificationTypeId: values.notificationTypeId,
-            productId: values.productId,
+        const data = {
+            notificationId: this.state.notificationId,
             recipientIds: recipientIds.toString(),
             title: values.title,
             content: values.content,
             sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
             sendImmediately: values.sendMode === '1',
-        });
+        };
 
-        formik.setSubmitting(true);
-        this.props.createNewNotification(data).then(response => {
-            formik.setSubmitting(false);
-            this.props.toggleConfirmationPopup(false);
-            if (this.props.createNotificationResult.isSuccessful) {
-                setTimeout(function () {
-                    window.location = Site.resolveClientUrl('NotificationList');
-                }, 3000);
+        this.handleCloseConfirmationPopup();
+
+        axios({
+            url: Site.resolveClientUrl('EditNotification/Edit'),
+            method: 'post',
+            data: data,
+            headers: {
+                'RequestVerificationToken': Site.getXsrfToken()
             }
-        });
+        }).then(response => {
+            const data = response.data;
+            if (data.isSuccessful) {
+                this.setState({ editNotificationResult: data },
+                    () => setTimeout(function () {
+                        window.location = Site.resolveClientUrl('NotificationList');
+                    }, 3000));
+            } else {
+                this.setState({ editNotificationResult: data });
+            }
+        }).catch(errorResponseHandler);
     }
 
     getRecipientIds = (ids, collection) => {
@@ -143,14 +157,12 @@ export default class EditNotification extends React.Component {
     schema = Yup.object().shape({
         title: Yup.string().required(Labels.FieldRequired),
         content: Yup.string().required(Labels.FieldRequired),
-        recipients: Yup.array().required(Labels.FieldRequired),
+        recipients: Yup.object({
+            value: Yup.array().required(Labels.FieldRequired)
+        }),
         sendMode: Yup.string(),
         sendDate: Yup.mixed().when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired) : schema)
     })
-
-    renderNotificationTypeOption = (item) => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>
-
-    renderProductOption = (item) => <option key={item.id} value={item.id} >{item.name}</option>
 
     renderSendModeOption = item => <option key={item.value} value={item.value} >{item.label}</option>;
 
@@ -160,31 +172,13 @@ export default class EditNotification extends React.Component {
 
         const message = values.sendMode === '1' ? 'Do you want to send immediately the notification to the selected recipient?'
             : `Do you want to send the notification at ${formatDate} to the selected recipient?`;
-        this.props.toggleConfirmationPopup(true, message);
-    }
-
-    handleNotificationTypeChange = (event) => {
-        const formik = this.refs.form;
-        this.props.getRecipients(event.target.value, formik.state.values.productId);
-        formik.handleChange(event);
-        if (formik.state.values.recipients.length > 0) {
-            formik.setFieldValue('recipients', []);
-        }
-    }
-
-    handleProductChange = (event) => {
-        const formik = this.refs.form;
-        this.props.getRecipients(formik.state.values.notificationTypeId, event.target.value);
-        formik.handleChange(event);
-        if (formik.state.values.recipients.length > 0) {
-            formik.setFieldValue('recipients', []);
-        }
+        this.setState({ confimrationPopup: { isOpen: true, message: message } });
     }
 
     handleRecipientChange = (value, label, extra) => {
         const formik = this.refs.form;
         this.selectedNodes = extra.allCheckedNodes;
-        formik.setFieldValue('recipients', value);
+        formik.setFieldValue('recipients', { value, extra });
     }
 
     renderForm = ({
@@ -205,11 +199,10 @@ export default class EditNotification extends React.Component {
                             invalid={touched.notificationTypeId && errors.notificationTypeId}
                             name="notificationTypeId" disabled
                             onChange={this.handleNotificationTypeChange}
-                            value={values.notificationTypeId}
+                            value={this.state.notification.notificationTypeId}
                         >
-                            <option value="" disabled hidden>{Labels.PleaseSelect}</option>
+                            <option value={this.state.notification.notificationTypeId} disabled hidden>{this.state.notification.notificationTypeName}</option>
                         </Input>
-                        {touched.notificationTypeId && errors.notificationTypeId && <FormFeedback>{errors.notificationTypeId}</FormFeedback>}
                     </Col>
 
                 </FormGroup>
@@ -218,11 +211,14 @@ export default class EditNotification extends React.Component {
 
                     <Col sm={10}>
                         <Input type="select"
-                            value={values.productId}
+                            value={this.state.notification.productId || ''}
                             name="productId" disabled
                             onChange={this.handleProductChange}
                         >
-                            <option value="">{Labels.None}</option>
+                            {this.state.notification.productId ?
+                                <option value={this.state.notification.productId} disabled hidden>{this.state.notification.productName}</option>
+                                : <option value="">{Labels.None}</option>
+                            }
                         </Input>
                     </Col>
                 </FormGroup>
@@ -294,9 +290,9 @@ export default class EditNotification extends React.Component {
             <>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Edit Notification" />
                 <div className="content edit-notification">
-                    {this.props.createNotificationResult &&
-                        <ResponseMessage isSuccessful={this.props.createNotificationResult.isSuccessful}
-                            message={this.props.createNotificationResult.message || Labels.CreateNotificationSuccessfully} />
+                    {this.state.editNotificationResult &&
+                        <ResponseMessage isSuccessful={this.state.editNotificationResult.isSuccessful}
+                            message={this.state.editNotificationResult.message || Labels.EditNotificationSuccessfully} />
                     }
 
                     <Formik ref="form"
@@ -304,6 +300,13 @@ export default class EditNotification extends React.Component {
                         render={this.renderForm}
                         validationSchema={this.schema}
                         onSubmit={this.handleSubmit}
+                    />
+
+                    <ConfirmPopup
+                        onConfirm={this.handleConfirm}
+                        onToggle={this.handleCloseConfirmationPopup}
+                        isOpen={this.state.confimrationPopup.isOpen}
+                        content={this.state.confimrationPopup.message}
                     />
 
                 </div>

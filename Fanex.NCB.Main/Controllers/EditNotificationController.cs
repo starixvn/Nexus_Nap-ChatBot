@@ -1,7 +1,9 @@
 ﻿namespace Fanex.NCB.Main.Controllers
 {
     using Fanex.NAP.Client.Helpers.Web;
+    using Fanex.NCB.Main.ViewModel.Notification;
     using Fanex.NCB.Main.ViewModel.TreeSelect;
+    using Fanex.NCB.Models.Notification;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
     using System.Threading.Tasks;
@@ -39,6 +41,23 @@
             var tree = GenerateTreeHelper.FromRecipient(result);
 
             return Json(tree);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit([FromBody]EditNotificationViewModel data)
+        {
+            var result = await notificationService.EditAsync(new EditNotification
+            {
+                NotificationId = data.NotificationId,
+                Title = data.Title,
+                Content = data.Content,
+                RecipientIds = data.RecipientIds,
+                SendDate = data.SendDate,
+                SendImmediately = data.SendImmediately,
+                UserId = napSession.UserId
+            }).ConfigureAwait(false);
+
+            return Json(result);
         }
     }
 }

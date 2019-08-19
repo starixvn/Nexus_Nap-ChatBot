@@ -31,5 +31,6 @@
     TitleContent: 'Title/Content',
     UpdateMappingStatusSuccessfully: 'Update Mapping Status Successfully.',
     CreateNotificationSuccessfully: 'Your request has been submitted successfully',
+    EditNotificationSuccessfully: 'Your request has been submitted successfully',
     CancelNotificationSuccessfully: 'Cancel notification successfully'
 };

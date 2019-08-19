@@ -131,9 +131,33 @@
             if (notification != null)
             {
                 notification.RecipientIds = result.Item2;
+                notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();
             }
 
             return notification;
+        }
+
+        public async Task<CommandResult> EditAsync(EditNotification model)
+        {
+            var command = new EditNotificationCommand
+            {
+                NotificationId = model.NotificationId,
+                RecipientIDLst = model.RecipientIds,
+                Title = model.Title,
+                Content = model.Content,
+                ConfigSendTime = model.SendImmediately ? DateTime.UtcNow : model.SendDate.ConvertToUTC(),
+                SendImmediately = model.SendImmediately,
+                UserId = model.UserId
+            };
+
+            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+
+            if (model.SendImmediately)
+            {
+                SendNotificationImediately(command.NotificationId);
+            }
+
+            return result;
         }
 
         private void SendNotificationImediately(int notificationId)
