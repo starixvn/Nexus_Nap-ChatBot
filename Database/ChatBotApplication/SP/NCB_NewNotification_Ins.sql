@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_NewNotification_Ins;
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_NewNotification_Ins(
+CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NewNotification_Ins`(
 	IN notificationTypeID SMALLINT
 	, IN productID SMALLINT
 	, IN recipientIDLst VARCHAR(200)
@@ -19,13 +19,12 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_NewNotification_Ins(
         Param:
 				- ProductID: Applied to filter licensees who are offered a specific product, NULL if not specified
                 - NotificationID: ID of created Notification
-                - ConfigSendTime: UTC
+                - ConfigSendTime: UTC (GMT +0)
         Revisions:
 				- 20190401@Dominic: First Commit
-        
+				- 20190819Q@Elton: Update Error Message
     */
 )
-SQL SECURITY DEFINER
 NCB_NewNotification_Ins:BEGIN
 
 	#Variables used to write User Logs
@@ -115,7 +114,7 @@ NCB_NewNotification_Ins:BEGIN
 								OR bcri.ChatGroupTypeID IS  NULL
                                 OR cgb.ConversationBotID IS NULL
 			);
-
+		SET errMsg = 'Recipient is not mapped or removed: ' + errMsg;
         LEAVE NCB_NewNotification_Ins;
     END IF;
 
@@ -145,7 +144,8 @@ NCB_NewNotification_Ins:BEGIN
 							ON l.LicenseeId = re.SourceID
 						WHERE  l.LicenseeStatusId <> LICENSEE_STATUS_ACTIVE
 			);
-
+            
+		SET errMsg = 'Licensee is Inactive: ' + errMsg;
         LEAVE NCB_NewNotification_Ins;
     END IF;
     
@@ -195,7 +195,8 @@ NCB_NewNotification_Ins:BEGIN
 										AND configSendTimeGMTPlus4 > lp.TerminationDate
 									)
 			);
-
+            
+		SET errMsg = 'Licensee is not offered: ' + errMsg;
         LEAVE NCB_NewNotification_Ins;
     END IF;
     
@@ -222,7 +223,8 @@ NCB_NewNotification_Ins:BEGIN
 						FROM NotificationTypeRecipientException ex
 						WHERE ex.NotificationTypeID = notificationTypeID
                         );
-                        
+               
+		SET errMsg = 'There are recipients in the exception list: ' + errMsg;
 		LEAVE NCB_NewNotification_Ins;
     END IF;
 
@@ -282,14 +284,14 @@ NCB_NewNotification_Ins:BEGIN
                                                                         , finishTime)  / 1000; 	#miliseconds
     
     #Get Log Content, JSON format
-    SET logContent = json_object('NotificationTypeID', notificationTypeID
-										, 'ProductID', productID
-                                        , 'RecipientIDLst', recipientIDLst
-										, 'Title', title
-                                        , 'Content', content
-                                        , 'ConfigSendTime', configSendTime
-                                        , 'SendImmediately', sendImmediately
-                                        , 'NotificationID', notificationID
+    SET logContent = json_object('notificationTypeID', notificationTypeID
+										, 'productID', productID
+                                        , 'recipientIDLst', recipientIDLst
+										, 'title', title
+                                        , 'content', content
+                                        , 'configSendTime', configSendTime
+                                        , 'sendImmediately', sendImmediately
+                                        , 'notificationID', notificationID
 					) ;
                     
 		#Write User Log
@@ -302,5 +304,4 @@ NCB_NewNotification_Ins:BEGIN
                                             , duration	#Duration
                                             );
 END;
-
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NewNotification_Ins TO 'ncb.admin'@'%';
