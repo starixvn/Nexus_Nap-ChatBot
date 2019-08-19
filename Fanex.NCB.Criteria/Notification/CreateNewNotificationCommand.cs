@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.Criteria.Notification
 {
-    using Fanex.NCB.Shared.Models;
     using System;
+    using Fanex.NCB.Shared.Models;
 
     public class CreateNewNotificationCommand : BaseCommand
     {
@@ -25,7 +25,11 @@
 
         public override string GetSettingKey() => "NCB_NewNotification_Ins";
 
-        public override bool IsValid() => NotificationTypeId > 0 && !string.IsNullOrWhiteSpace(RecipientIDLst) && !string.IsNullOrWhiteSpace(Title)
-             && !string.IsNullOrWhiteSpace(Content) && CreatorId > 0;
+        public override bool IsValid()
+        {
+            bool isValidNotiInfo = NotificationId > 0 && CreatorId > 0;
+            return isValidNotiInfo && !string.IsNullOrWhiteSpace(RecipientIDLst) && !string.IsNullOrWhiteSpace(Title)
+                            && !string.IsNullOrWhiteSpace(Content);
+        }
     }
 }

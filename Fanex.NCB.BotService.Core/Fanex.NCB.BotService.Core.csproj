@@ -20,6 +20,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Fanex.NCB.Base\Fanex.NCB.Shared.csproj" />
+    <ProjectReference Include="..\Fanex.NCB.Shared\Fanex.NCB.Shared.csproj" />
   </ItemGroup>
 </Project>

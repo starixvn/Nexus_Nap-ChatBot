@@ -32,8 +32,7 @@
                 var key = Encoding.ASCII.GetBytes(appSettings.Secret);
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
-                    Subject = new ClaimsIdentity(new Claim[]
-                    {
+                    Subject = new ClaimsIdentity(new[] {
                         new Claim(ClaimTypes.Name, username)
                     }),
                     Expires = DateTime.UtcNow.AddMinutes(20),

@@ -1,4 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="SonarQube - Sparta /  Licensee Chat Bot Nexcel CSharp" ToolsVersion="15.0">
-  <Include Path="..\..\sonarqube\fanex.ncbcsharp.ruleset" Action="Default" />
-</RuleSet>

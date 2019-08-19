@@ -58,9 +58,7 @@
     <PackageReference Include="T4.TemplateFileManager" Version="2.2.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Fanex.NCB.Base\Fanex.NCB.Shared.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Services\Fanex.NCB.Services.csproj" />
-    <ProjectReference Include="..\Fanex.NCB.Shared\Fanex.NCB.CustomAspNetCoreModule\Fanex.NCB.CustomAspNetCoreModule.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="Views\SkypeBot\Index.cshtml">

@@ -9,7 +9,6 @@
     <CodeAnalysisRuleSet>Fanex.NCB.Repository.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Fanex.NCB.Base\Fanex.NCB.Shared.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Criteria\Fanex.NCB.Criteria.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Models\Fanex.NCB.Models.csproj" />
   </ItemGroup>
