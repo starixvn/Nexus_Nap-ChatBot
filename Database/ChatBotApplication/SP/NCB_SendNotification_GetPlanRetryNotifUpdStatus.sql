@@ -179,8 +179,8 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
     
 	 #Get Log Content, JSON format
     SET logContent = json_object(
-										 'plannedNotifIDLst', '#plannedNotifIDLst#'
-                                        , 'tryingNotifRecipChatGrpIDLst',  '#tryingNotifRecipChatGrpIDLst#'
+										 'PlannedNotifIDLst', '#plannedNotifIDLst#'
+                                        , 'TryingNotifRecipChatGrpIDLst',  '#tryingNotifRecipChatGrpIDLst#'
 					) ;
     
      SET logContent = REPLACE(logContent, '"#plannedNotifIDLst#"', IFNULL(plannedNotifIDLst, '[]'));
