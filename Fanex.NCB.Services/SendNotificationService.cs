@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Extensions;
@@ -35,10 +36,12 @@
         public async Task ScanAndSendNotification()
         {
             var notifications = await GetNotificationPlannedToSend().ConfigureAwait(false);
+            if (notifications.Item1.Any())
+            {
+                await UpdateFailedRecipientStatus(notifications.Item2.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
 
-            await UpdateFailedRecipientStatus(notifications.Item2.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
-
-            await SendNotificationToRecipients(notifications.Item1, notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend))).ConfigureAwait(false);
+                await SendNotificationToRecipients(notifications.Item1, notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend))).ConfigureAwait(false);
+            }
         }
 
         private async Task UpdateFailedRecipientStatus(IEnumerable<NotificationRecipient> recipients)
@@ -148,7 +151,7 @@
                                 ChannelId = r.ChannelId,
                                 ConversationId = r.ChatGroupConversationId,
                                 BotName = r.BotName
-                            }).Distinct()
+                            }).DistinctBy(r => r.ConversationId)
                 };
                 msgList.Add(msg);
             }
@@ -160,12 +163,12 @@
         {
             if (msgs.Any())
             {
-                string stringMsg = JsonConvert.SerializeObject(msgs);
+                string json = JsonConvert.SerializeObject(msgs);
+
                 var command = new UpdateRecipientSendNotifiactionStatusCommand
                 {
-                    SentStatus = stringMsg
+                    SentStatus = Regex.Unescape(json)
                 };
-
                 await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
             }
         }

@@ -1,5 +1,8 @@
 ﻿namespace Fanex.NCB.Models.NotifictaionSendMessage
 {
+    using System;
+
+    [Serializable]
     public class UpdateNotificationModel
     {
         public int NotificationID { get; set; }

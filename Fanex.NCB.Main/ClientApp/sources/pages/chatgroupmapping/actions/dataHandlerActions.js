@@ -19,7 +19,7 @@ export const getSettings = () => {
             const submitButton = document.getElementById('submit-button');
             if (submitButton) {
                 submitButton.click();
-            };
+            }
         }).catch(() => { errorResponseHandler(); });
     };
 };

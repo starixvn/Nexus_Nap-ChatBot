@@ -5,6 +5,7 @@
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Data.Repository;
+    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Services;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Repositories;
@@ -54,6 +55,8 @@
             };
 
             services.AddSingleton(Configuration);
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<BotSettings>(Configuration.GetSection("ChatBotConfigs"));
             RegisterService(services);
             RegisterRepository(services);
             RegisterHangfire(services);
