@@ -104,6 +104,8 @@ export default class EditNotification extends React.Component {
     }
 
     handleConfirm = () => {
+        this.setState({ confimrationPopup: { isOpen: false } });
+
         const formik = this.refs.form;
         const values = formik.state.values;
 
@@ -130,6 +132,8 @@ export default class EditNotification extends React.Component {
             }
         }).then(response => {
             const data = response.data;
+            formik.setSubmitting(false);
+
             if (data.isSuccessful) {
                 this.setState({ editNotificationResult: data },
                     () => setTimeout(function () {

@@ -207,6 +207,8 @@ export class AppContainer extends React.Component {
     }
 
     handleConfirm = () => {
+        this.props.toggleConfirmationPopup(false);
+
         const formik = this.refs.form;
         const values = formik.state.values;
 
@@ -225,7 +227,6 @@ export class AppContainer extends React.Component {
 
         this.props.createNewNotification(data).then(response => {
             formik.setSubmitting(false);
-            this.props.toggleConfirmationPopup(false);
             if (this.props.createNotificationResult.isSuccessful) {
                 setTimeout(function () {
                     window.location = Site.resolveClientUrl('NotificationList');

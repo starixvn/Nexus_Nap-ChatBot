@@ -97,7 +97,7 @@ export default class ErrorReport extends Component {
                                     value={this.state.remark}
                                     placeholder="Add Remark"
                                 />
-                                <button className="btn-mark" onClick={this.handleResolveNotification}>Mark As Resolved</button>
+                                <button className="btn-mark" onClick={this.handleResolveNotification} disabled={this.props.isSubmitting}>Mark As Resolved</button>
                             </div>
                         }
                         {report.statusId === NotificationStatus.Resolved &&

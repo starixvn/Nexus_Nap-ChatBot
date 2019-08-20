@@ -46,7 +46,8 @@ export default class NotificationList extends Component {
             errorReport: {
                 notificationId: null,
                 report: null,
-                show: false
+                show: false,
+                isSubmitting: false
             }
         };
     }
@@ -163,6 +164,7 @@ export default class NotificationList extends Component {
     }
 
     handleResolveNotification = resolvedRemark => {
+        this.setState(prevState => ({ errorReport: { ...prevState.errorReport, isSubmitting: true } }));
         axios({
             url: Site.resolveClientUrl('NotificationList/Resolve'),
             method: 'post',
@@ -179,9 +181,9 @@ export default class NotificationList extends Component {
             if (data.isSuccessful) {
                 this.getNotifications(this.state.tableData.pageIndex, this.state.tableData.pageSize);
 
-                this.setState({ errorReport: { show: false } });
+                this.setState({ errorReport: { show: false, isSubmitting: false } });
             } else {
-                this.setState(prevState => ({ errorReport: { ...prevState.errorReport, responseMessage: data } }));
+                this.setState(prevState => ({ errorReport: { ...prevState.errorReport, responseMessage: data, isSubmitting: false } }));
             }
         }).catch(errorResponseHandler);
     }
@@ -287,6 +289,7 @@ export default class NotificationList extends Component {
                     report={this.state.errorReport.report}
                     onResolveNotification={this.handleResolveNotification}
                     responseMessage={this.state.errorReport.responseMessage}
+                    isSubmitting={this.state.errorReport.isSubmitting}
                 />
             </div>
         );
