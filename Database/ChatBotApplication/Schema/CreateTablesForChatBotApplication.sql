@@ -31,7 +31,7 @@ CREATE TABLE ChatBot.ConversationBot(
         , SentTime DATETIME NOT NULL
         , IsSuccessfull BIT NOT NULL
         , ErrorMessage VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
-  );
+  ) COMPRESSION="zlib";
   
   
   CREATE TABLE ChatBot.ConversationGroupBot(
@@ -148,7 +148,7 @@ CREATE TABLE ChatBot.NotificationTemplate(
         , CONSTRAINT PK_NotificationID  PRIMARY KEY (NotificationID)
         , INDEX INDEX_StatusID USING BTREE (StatusID, ConfigSendTime)
         , INDEX INDEX_NotificationLst USING BTREE (ConfigSendTime, NotificationTypeID, StatusID, CreatorID)
-  );
+  ) COMPRESSION="zlib";
 
 CREATE TABLE ChatBot.NotificationRecipientList(
 		NotificationID INT  NOT NULL
@@ -163,7 +163,7 @@ CREATE TABLE ChatBot.NotificationRecipientList(
         , CONSTRAINT PK_NotificationID_BotConversationID_RecipientID_ChatGroupTypeID PRIMARY KEY (NotificationID, RecipientID, ConversationGroupID, ChatGroupTypeID)
         , INDEX INDEX_RecipientID USING BTREE (RecipientID)
         , INDEX INDEX_StatusID USING BTREE (StatusID, NotificationID, RecipientID, ConversationGroupID)
-);
+) COMPRESSION="zlib";
 
 CREATE TABLE ChatBot.Licensee(
 		LicenseeId INT  NOT NULL
@@ -218,4 +218,4 @@ CREATE TABLE ChatBot.UserLog_RunSP(
 		, CONSTRAINT PK_LogID PRIMARY KEY (LogID)
         , INDEX INDEX_LogTime USING BTREE (LogTime)
         , INDEX INDEX_ReferenceID USING BTREE (ReferenceID)
- ); 
+ ) COMPRESSION="zlib"; 
