@@ -31,11 +31,11 @@ const SendModeOptions = [
     }
 ];
 
+const Today = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+
 export class AppContainer extends React.Component {
     constructor(props) {
         super(props);
-
-        this.today = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
 
         this.state = {
             isSummited: false,
@@ -255,7 +255,8 @@ export class AppContainer extends React.Component {
         content: Yup.string().required(Labels.FieldRequired),
         recipients: Yup.array().required(Labels.FieldRequired),
         sendMode: Yup.string(),
-        sendDate: Yup.mixed().when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired) : schema)
+        sendDate: Yup.date().min(Today, (field) => `Send date must be later than ${field.min.toLocaleString()}`)
+            .when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired) : schema)
     })
 
     renderNotificationTypeOption = (item) => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>
@@ -380,7 +381,7 @@ export class AppContainer extends React.Component {
                                 {SendModeOptions.map(this.renderSendModeOption)}
                             </Input>
                             <DatePicker selected={values.sendDate} showTimeSelect disabled={values.sendMode === '1'}
-                                onChange={value => setFieldValue('sendDate', value)} minDate={this.today}
+                                onChange={value => setFieldValue('sendDate', value)} minDate={Today}
                                 className={touched.sendDate && errors.sendDate && 'is-invalid'}
                             />
                             <span>(GMT +8)</span>
@@ -417,7 +418,7 @@ export class AppContainer extends React.Component {
                             recipients: [],
                             title: '',
                             content: '',
-                            sendDate: this.today,
+                            sendDate: Today,
                             sendMode: '1'
                         }}
                         render={this.renderForm}

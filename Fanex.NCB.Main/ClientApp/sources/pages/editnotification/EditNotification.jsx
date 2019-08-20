@@ -27,9 +27,12 @@ const SendModeOptions = [
     }
 ];
 
+const Today = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+
 export default class EditNotification extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             notificationId: parseInt(document.getElementById('notification-id').value),
             notification: null,
@@ -163,7 +166,8 @@ export default class EditNotification extends React.Component {
             value: Yup.array().required(Labels.FieldRequired)
         }),
         sendMode: Yup.string(),
-        sendDate: Yup.mixed().when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired) : schema)
+        sendDate: Yup.date().min(Today, (field) => `Send date must be later than ${field.min.toLocaleString()}`)
+            .when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired) : schema)
     })
 
     renderSendModeOption = item => <option key={item.value} value={item.value} >{item.label}</option>;
@@ -266,7 +270,7 @@ export default class EditNotification extends React.Component {
                                 {SendModeOptions.map(this.renderSendModeOption)}
                             </Input>
                             <DatePicker selected={values.sendDate} showTimeSelect disabled={values.sendMode === '1'}
-                                onChange={value => setFieldValue('sendDate', value)}
+                                onChange={value => setFieldValue('sendDate', value)} minDate={Today}
                                 className={touched.sendDate && errors.sendDate && 'is-invalid'}
                             />
                             <span>(GMT +8)</span>
