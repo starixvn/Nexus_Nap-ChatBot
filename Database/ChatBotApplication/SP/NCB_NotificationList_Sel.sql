@@ -157,20 +157,28 @@ BEGIN
     LIMIT rowStart, pageSize; 
     
     #Update RecipientSentStatus
+   #Update RecipientSentStatus
     UPDATE tmp_Notification n
     SET n.RecipientSentStatusJSON = (
 				SELECT CONCAT('[' , GROUP_CONCAT(
 										json_object('recipientName', r.RecipientName
 										, 'isError', CASE 
-														WHEN nrl.StatusID NOT IN (SENT_STATUSID_ERROR, SENT_STATUSID_RESOLVED)
-															THEN 0 #Not error
-														ELSE 1
+														WHEN EXISTS (SELECT 1 
+																	FROM NotificationRecipientList nrl
+																	WHERE nrl.StatusID IN (SENT_STATUSID_ERROR, SENT_STATUSID_RESOLVED)
+																		AND r.RecipientID = nrl.RecipientID AND nrl.NotificationID = n.NotificationID
+																	)
+															THEN 1 #error
+														ELSE 0
 													END
                                         )
 							SEPARATOR ', ') ,']') 
-				FROM NotificationRecipientList nrl
-                INNER JOIN Recipient r ON r.RecipientID = nrl.RecipientID
-                WHERE nrl.NotificationID = n.NotificationID
+				FROM Recipient r 
+                WHERE EXISTS(
+					SELECT 1
+					FROM NotificationRecipientList nrl
+                    WHERE r.RecipientID = nrl.RecipientID AND nrl.NotificationID = n.NotificationID
+                )
                 ORDER BY r.RecipientName
 		);
     
