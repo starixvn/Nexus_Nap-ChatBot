@@ -35,6 +35,8 @@ BEGIN
 	DECLARE rowStart INT;
     SET rowStart =	pageSize * (pageIndex - 1);   
     
+    SET configSendTimeTo = DATE_ADD(configSendTimeTo, INTERVAL 1 DAY);
+    
 	#Insert comma seperated list notificationTypeIDLst to temporary tables
     DROP TEMPORARY TABLE IF EXISTS tmp_notificationTypeIDLst;
 	CREATE TEMPORARY TABLE tmp_notificationTypeIDLst(NotificationTypeID SMALLINT);
@@ -88,7 +90,7 @@ BEGIN
                                     FROM tmp_notificationTypeIDLst tmp_nt
 								)
 	AND n.ConfigSendTime >= configSendTimeFrom
-    AND n.ConfigSendTime <= configSendTimeTo
+    AND n.ConfigSendTime < configSendTimeTo
 	AND (creatorID IS NULL OR n.CreatorID = creatorID)
     AND n.StatusID IN (
 									SELECT	tmp_stt.StatusID
@@ -136,7 +138,7 @@ BEGIN
                                     FROM tmp_notificationTypeIDLst tmp_nt
 								)
 	AND n.ConfigSendTime >= configSendTimeFrom
-    AND n.ConfigSendTime <= configSendTimeTo
+    AND n.ConfigSendTime < configSendTimeTo
 	AND (creatorID IS NULL OR n.CreatorID = creatorID)
     AND n.StatusID IN (
 									SELECT	tmp_stt.StatusID

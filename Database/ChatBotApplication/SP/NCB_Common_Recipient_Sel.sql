@@ -1,4 +1,6 @@
-CREATE DEFINER=`elton.ton`@`%` PROCEDURE `NCB_Common_Recipient_Sel`()
+DROP PROCEDURE IF EXISTS NCB_Common_Recipient_Sel;
+
+CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_Common_Recipient_Sel`()
 BEGIN
 	DECLARE RECIPIENT_TYPE_LICENSEES 	SMALLINT DEFAULT 1;
 	SELECT rt.RecipientTypeID
