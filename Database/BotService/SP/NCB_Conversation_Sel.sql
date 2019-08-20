@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS `NCB_Conversation_Sel`;
 
-CREATE PROCEDURE `NCB_Conversation_Sel`(
+CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_Sel`(
     IN conversationId VARCHAR(200)  
     , IN botName VARCHAR(70)
     /*
@@ -15,6 +15,7 @@ CREATE PROCEDURE `NCB_Conversation_Sel`(
         
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 	SELECT cg.ConversationID
 		,cg.Name AS GroupName

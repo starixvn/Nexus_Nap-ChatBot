@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS `NCB_Conversation_AddBotToGroup`;
 
-CREATE PROCEDURE `NCB_Conversation_AddBotToGroup`(
+CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_AddBotToGroup`(
 	IN botConversationId VARCHAR(200)  
 	, IN botName VARCHAR(70)
     , IN conversationId VARCHAR(200)  
@@ -26,6 +26,7 @@ CREATE PROCEDURE `NCB_Conversation_AddBotToGroup`(
         
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 
 	#Variables used to write User Logs

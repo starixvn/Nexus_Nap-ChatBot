@@ -1,7 +1,8 @@
 DELIMITER //
 
 DROP PROCEDURE IF EXISTS `NCB_Conversation_AddMessageLog`;
-CREATE PROCEDURE `NCB_Conversation_AddMessageLog`(
+
+CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_AddMessageLog`(
 	IN fromConversationId VARCHAR(200)  
     , IN toConversationId VARCHAR(200)  
     , IN content TEXT CHARACTER SET utf8mb4
@@ -22,6 +23,7 @@ CREATE PROCEDURE `NCB_Conversation_AddMessageLog`(
         
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 	DECLARE currentTime DATETIME(3);
 	SET currentTime = UTC_TIMESTAMP(3);

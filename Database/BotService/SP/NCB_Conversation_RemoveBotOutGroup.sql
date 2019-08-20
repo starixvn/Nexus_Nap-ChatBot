@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS `NCB_Conversation_RemoveBotOutGroup`;
 
-CREATE PROCEDURE `NCB_Conversation_RemoveBotOutGroup`(
+CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_RemoveBotOutGroup`(
 	IN botConversationId VARCHAR(200)
     , IN conversationId VARCHAR(200)
 	, IN updatedBy VARCHAR(200)
@@ -19,6 +19,7 @@ CREATE PROCEDURE `NCB_Conversation_RemoveBotOutGroup`(
         
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 
 	#Variables used to write User Logs

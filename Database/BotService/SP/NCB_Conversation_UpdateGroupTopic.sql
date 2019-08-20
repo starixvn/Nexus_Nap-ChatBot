@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS `NCB_Conversation_UpdateGroupTopic`;
 
-CREATE PROCEDURE `NCB_Conversation_UpdateGroupTopic`(
+CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_UpdateGroupTopic`(
     IN conversationId VARCHAR(200)  
     , IN groupName VARCHAR(500) CHARACTER SET 'utf8mb4'
 	, IN updatedBy VARCHAR(50)
@@ -19,6 +19,7 @@ CREATE PROCEDURE `NCB_Conversation_UpdateGroupTopic`(
         
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 
 	#Variables used to write User Logs
