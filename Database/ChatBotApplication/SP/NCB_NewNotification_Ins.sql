@@ -227,7 +227,13 @@ NCB_NewNotification_Ins:BEGIN
 		SET errMsg = 'There are recipients in the exception list: ' + errMsg;
 		LEAVE NCB_NewNotification_Ins;
     END IF;
-
+	
+    IF sendImmediately = 0 AND configSendTime < UTC_TIMESTAMP(3)
+    THEN
+			SET errCode=110;
+            SET errMsg = 'A notification can be scheduled at a specific time in the future only';
+			LEAVE NCB_NewNotification_Ins;
+    END IF;
     
     #Insert a new Notification
     INSERT INTO Notification(NotificationTypeID
