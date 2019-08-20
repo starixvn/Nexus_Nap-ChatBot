@@ -86,3 +86,5 @@ NCB_NotificationList_Cancel_Upd:BEGIN
                                             , duration	#Duration
                                             );
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationList_Cancel_Upd TO 'ncb.admin'@'%';

@@ -91,3 +91,5 @@ NCB_NotificationList_Resolve_Upd:BEGIN
                                             , duration	#Duration
                                             );
 END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationList_Resolve_Upd TO 'ncb.admin'@'%';

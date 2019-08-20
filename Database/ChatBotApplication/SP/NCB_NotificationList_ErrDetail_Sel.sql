@@ -1,7 +1,7 @@
 DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_NotificationList_ErrDetail_Sel;
-CREATE DEFINER=`dominic.dao`@`%` PROCEDURE `NCB_NotificationList_ErrDetail_Sel`(
+CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_ErrDetail_Sel`(
      IN notificationID INT
     /*
 		Creator: Dominic@20190408
@@ -49,3 +49,5 @@ BEGIN
     WHERE rlst.NotificationID = notificationID AND rlst.StatusID  IN (SENT_STATUSID_ERROR, SENT_STATUSID_RESOLVED)
     ORDER BY rt.RecipientTypeName, r.RecipientName;
 END
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationList_ErrDetail_Sel TO 'ncb.admin'@'%';
