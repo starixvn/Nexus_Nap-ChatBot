@@ -34,6 +34,9 @@ const SendModeOptions = [
 export class AppContainer extends React.Component {
     constructor(props) {
         super(props);
+
+        this.today = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+
         this.state = {
             isSummited: false,
             manuallyEditted: false,
@@ -377,7 +380,7 @@ export class AppContainer extends React.Component {
                                 {SendModeOptions.map(this.renderSendModeOption)}
                             </Input>
                             <DatePicker selected={values.sendDate} showTimeSelect disabled={values.sendMode === '1'}
-                                onChange={value => setFieldValue('sendDate', value)}
+                                onChange={value => setFieldValue('sendDate', value)} minDate={this.today}
                                 className={touched.sendDate && errors.sendDate && 'is-invalid'}
                             />
                             <span>(GMT +8)</span>
@@ -414,7 +417,7 @@ export class AppContainer extends React.Component {
                             recipients: [],
                             title: '',
                             content: '',
-                            sendDate: new Date(),
+                            sendDate: this.today,
                             sendMode: '1'
                         }}
                         render={this.renderForm}

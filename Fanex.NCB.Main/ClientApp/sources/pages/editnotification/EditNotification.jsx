@@ -67,7 +67,7 @@ export default class EditNotification extends React.Component {
             content: notification.content,
             recipients: {
                 value: recipientIds,
-                extra: this.state.notification.recipientIds.map(x => ({ realValue: x }))
+                allCheckedNodes: this.state.notification.recipientIds.map(x => ({ realValue: x }))
             },
             sendMode: notification.sendImmediately ? '1' : '2',
             sendDate: notification.configSendTime
@@ -110,7 +110,7 @@ export default class EditNotification extends React.Component {
         const values = formik.state.values;
 
         const recipientIds = [];
-        getRealValuesFromExtra(recipientIds, values.recipients.extra);
+        getRealValuesFromExtra(recipientIds, values.recipients.allCheckedNodes);
 
         const data = {
             notificationId: this.state.notificationId,
@@ -179,8 +179,7 @@ export default class EditNotification extends React.Component {
 
     handleRecipientChange = (value, label, extra) => {
         const formik = this.refs.form;
-        this.selectedNodes = extra.allCheckedNodes;
-        formik.setFieldValue('recipients', { value, extra });
+        formik.setFieldValue('recipients', { value, allCheckedNodes: extra.allCheckedNodes });
     }
 
     renderForm = ({

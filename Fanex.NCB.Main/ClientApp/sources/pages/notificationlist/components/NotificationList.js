@@ -88,7 +88,7 @@ export default class NotificationList extends Component {
                             },
                             recipients: {
                                 value: recipientResponse.data.map(r => ({ value: r.value, label: r.title })),
-                                extra: recipientResponse.data
+                                allCheckedNodes: recipientResponse.data
                             }
                         }
                     }
@@ -109,7 +109,7 @@ export default class NotificationList extends Component {
         const filter = this.state.filter;
         const recipientIds = [];
 
-        getRealValuesFromExtra(recipientIds, filter.recipients.extra);
+        getRealValuesFromExtra(recipientIds, filter.recipients.allCheckedNodes);
         axios.get(Site.resolveClientUrl('NotificationList/Get'), {
             params: {
                 notificationTypeIds: filter.notificationTypes.value,
@@ -154,7 +154,7 @@ export default class NotificationList extends Component {
     handleStatusChange = value => this.handleFilterChange('statuses', value)
 
     handleRecipientChange = (value, label, extra) => {
-        this.handleFilterChange('recipients', { value, extra });
+        this.handleFilterChange('recipients', { value, allCheckedNodes: extra.allCheckedNodes });
     }
     renderStatus = status => <option key={status.id} value={status.id}>{status.name}</option>
 
