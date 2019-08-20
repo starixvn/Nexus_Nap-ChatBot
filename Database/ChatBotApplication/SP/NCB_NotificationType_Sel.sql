@@ -28,7 +28,7 @@ BEGIN
 		s.SystemID AS SystemId,
 		s.SystemName AS SystemName
 	FROM NotificationType nt
-	INNER JOIN System s ON nt.SystemID = s.SystemId
+	INNER JOIN ChatBot.System s ON nt.SystemID = s.SystemId
     ORDER BY nt.NotificationTypeID
 	LIMIT rowStart, pageSize;
     
