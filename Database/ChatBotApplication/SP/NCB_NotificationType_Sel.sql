@@ -1,10 +1,21 @@
-CREATE PROCEDURE `NCB_NotificationType_Sel`(
-	/*
-		20190729@Oliver: Revised total items to output
-    */
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS NCB_NotificationType_Sel;
+
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_NotificationType_Sel(
 	IN pageIndex INT, 
 	IN pageSize INT,
-    OUT totalItems INT)
+    OUT totalItems INT
+	/*
+		Creator: Oliver@20190820
+				Params:
+						- pageIndex: Page Index for paging
+						- pageSize: Page Size for paging
+				Revisions:
+						- 20190729@Oliver: Revised total items to output    		
+    */
+	)
+SQL SECURITY DEFINER
 BEGIN
 	DECLARE rowStart INT;
     DECLARE total INT;
@@ -29,4 +40,4 @@ BEGIN
     INNER JOIN RecipientType rt ON nrt.RecipientTypeID = rt.RecipientTypeId;
 END;
 
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_ChatGroupMapping_Sel TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationType_Sel TO 'ncb.admin'@'%';
