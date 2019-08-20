@@ -38,11 +38,9 @@
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
-            var evn = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             var configuration = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                    .AddJsonFile($"appsettings.{evn}.json", optional: true, reloadOnChange: true)
                     .AddEnvironmentVariables()
                     .Build();
 
