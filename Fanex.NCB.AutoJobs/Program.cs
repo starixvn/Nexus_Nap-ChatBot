@@ -42,11 +42,12 @@
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                     .Build();
+            string evn = configuration["Enviroment"] ?? string.Empty;
 
             return WebHost.CreateDefaultBuilder(args)
                .ConfigureLogging((hostingContext, logging) => { })
                .UseConfiguration(configuration)
-               .UseEnvironment("LOCAL")
+               .UseEnvironment(evn)
                .UseStartup<Startup>()
                .UseUrls($"http://0.0.0.0:{configuration["Port"]}");
         }
