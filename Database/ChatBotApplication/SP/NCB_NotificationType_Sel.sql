@@ -18,19 +18,19 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_NotificationType_Sel(
 SQL SECURITY DEFINER
 BEGIN
 	DECLARE rowStart INT;
-    DECLARE total INT;
-    SELECT 	pageSize * (pageIndex - 1) into rowStart;    
+    SET rowStart =	pageSize * (pageIndex - 1);  
     
-    SET totalItems = (SELECT COUNT(1) FROM NotificationType);
+    SET totalItems = (SELECT COUNT(1) FROM NotificationType nt);
     
-    SELECT distinct
+    SELECT
 		nt.NotificationTypeID AS Id, 
 		nt.NotificationTypeName AS Name, 
 		s.SystemID AS SystemId,
 		s.SystemName AS SystemName
-	FROM (SELECT * FROM NotificationType ORDER BY NotificationTypeID LIMIT rowStart, pageSize) nt
-	INNER JOIN System s ON nt.SystemId = s.SystemId
-    ORDER BY nt.NotificationTypeID;    
+	FROM NotificationType nt
+	INNER JOIN System s ON nt.SystemID = s.SystemId
+    ORDER BY nt.NotificationTypeID
+	LIMIT rowStart, pageSize;
     
     SELECT 
 		  nrt.RecipientTypeID AS Id,
