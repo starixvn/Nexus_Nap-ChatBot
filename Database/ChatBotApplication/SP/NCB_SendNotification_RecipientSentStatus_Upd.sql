@@ -109,7 +109,11 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
     SET nrl.SentTime = tmp.SentTime
 			, nrl.ErrMsg = tmp.ErrMsg
             , nrl.SentTime = tmp.SentTime
-            , nrl.RetryTime = CASE WHEN nrl.RetryTime IS NULL THEN 0  ELSE nrl.RetryTime + 1 END
+            , nrl.RetryTime = CASE 
+											WHEN nrl.RetryTime IS NULL THEN 0  
+                                            WHEN tmp.Retry = 1 AND tmp.IsSuccess = 0 AND IFNULL(nrl.RetryTime, 0) < 5 THEN nrl.RetryTime + 1 
+                                            ELSE nrl.RetryTime
+                                        END
             , nrl.StatusID = CASE 
 										WHEN tmp.Retry = 1 AND tmp.IsSuccess = 0 AND IFNULL(nrl.RetryTime, 0) < 5 THEN NOTIFICATION_STATUSID_RETRYING
 										WHEN tmp.IsSuccess = 0 THEN NOTIFICATION_STATUSID_ERROR

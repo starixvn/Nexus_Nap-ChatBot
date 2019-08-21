@@ -153,7 +153,7 @@ BEGIN
 												FROM tmp_recipientIDLst tmp_rid
                                             )
     )
-    ORDER BY n.ConfigSendTime,  n.CreatorID
+    ORDER BY n.ConfigSendTime DESC,  n.CreatorID
     LIMIT rowStart, pageSize; 
     
     #Update RecipientSentStatus
@@ -185,7 +185,7 @@ BEGIN
     #2nd dataset: Get data based on Page Index and Page Size
     SELECT *
     FROM tmp_Notification n
-    ORDER BY n.ConfigSendTime,  n.CreatorID;
+    ORDER BY n.ConfigSendTime DESC,  n.CreatorID;
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationList_Sel TO 'ncb.admin'@'%';
