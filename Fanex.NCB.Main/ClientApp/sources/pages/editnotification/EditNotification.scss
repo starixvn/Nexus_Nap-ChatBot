@@ -32,26 +32,6 @@
         display: block !important;
         margin-right: 0 !important;
     }
-
-    .react-datepicker__input-container {
-        position: relative;
-        display: inline-block;
-        margin-right: 15px;
-
-        &:after {
-            position: absolute;
-            right: 8px;
-            top: 6px;
-            content: "\E909";
-            font-family: "nap-chatbot";
-            font-size: 15px;
-            color: #798388;
-        }
-
-        .form-control {
-            padding-right: 16px;
-        }
-    }
 }
 
 .edit-notification {
