@@ -81,7 +81,11 @@
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddSession();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(CookieExpiration);
+                options.Cookie.IsEssential = true;
+            });
             services.AddSingleton<INapSettings>(new NapSettings(Configuration));
             services.AddSingleton<INapSession, NapSession>();
             services.AddSingleton<IRestClient, RestClient>();
