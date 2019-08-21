@@ -10,7 +10,7 @@
 
         public DateTime ConfigSendTime { get; set; }
 
-        public string ResolvedMark { get; set; }
+        public string ResolvedRemark { get; set; }
 
         public string ResolvedByUserName { get; set; }
 
