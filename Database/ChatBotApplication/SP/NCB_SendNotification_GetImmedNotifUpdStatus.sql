@@ -80,9 +80,9 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
                     , bot.Name AS BotName
                     , bot.ConversationID AS BotConversationID 
                     , CASE 
-								WHEN gri.ChatGroupTypeID IS NULL  OR cgr.RecipientID IS NULL THEN 1 #Not Mapped
+								WHEN gri.ChatGroupTypeID IS NULL THEN 1 #Not Mapped
                                 WHEN gri.ChatGroupTypeID <> nrl.ChatGroupTypeID THEN 5 #Chat Group Type has been changed
-                                WHEN cgr.RecipientID <> nrl.RecipientID THEN 3 #Recipient is changed group
+                                WHEN cgr.RecipientID IS NULL THEN 3 #Recipient is changed group
                                 WHEN bot.ConversationBotID IS NULL THEN 2 #Bot Removed
                                 ELSE 0 #Ready to send
 						END ErrCode
