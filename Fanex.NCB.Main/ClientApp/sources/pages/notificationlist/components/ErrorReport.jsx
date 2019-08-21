@@ -66,23 +66,32 @@ export default class ErrorReport extends Component {
                             Send at:<br />
                             <span className="bold">{report.configSendTime.toFormat(DateTimeFormat)}</span>
                         </p>
-                        <div className="msg-success">Notification has been successfully sent to the following recipient(s): <strong>{report.successRecipients.join(', ')}</strong></div>
-                        <div className="msg-error">Error(s) occoured while sending the notification to the following recipient(s)</div>
-                        <table className="tbl w-100">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <div className="has-icons">Recipient<span className="icon-copy" onClick={this.copyToClipboard} /></div>
-                                    </th>
-                                    <th>Recipient Type</th>
-                                    <th>Group</th>
-                                    <th>Reason</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {report.errorDetails.map(this.renderFailedRecipient)}
-                            </tbody>
-                        </table>
+
+                        {report.successRecipients.length > 0 &&
+                            <div className="msg-success">Notification has been successfully sent to the following recipient(s): <strong>{report.successRecipients.join(', ')}</strong></div>
+                        }
+
+                        {report.errorDetails.length > 0 &&
+                            <>
+                                <div className="msg-error">Error(s) occoured while sending the notification to the following recipient(s)</div>
+                                <table className="tbl w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <div className="has-icons">Recipient<span className="icon-copy" onClick={this.copyToClipboard} /></div>
+                                            </th>
+                                            <th>Recipient Type</th>
+                                            <th>Group</th>
+                                            <th>Reason</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {report.errorDetails.map(this.renderFailedRecipient)}
+                                    </tbody>
+                                </table>
+                            </>
+                        }
+
                         {report.statusId === NotificationStatus.Error &&
                             <div className="remark">
                                 <span>Remark:</span>

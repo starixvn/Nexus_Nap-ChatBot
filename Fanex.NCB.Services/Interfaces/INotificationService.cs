@@ -23,5 +23,7 @@
         Task<EditNotificationInfo> GetEditNotificationInfo(int notificationId);
 
         Task<CommandResult> EditAsync(EditNotification model);
+
+        Task<IEnumerable<Recipient>> GetEditNotificationRecipientsAsync(int notificationId, int notificationTypeId, int? productId);
     }
 }

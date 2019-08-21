@@ -161,6 +161,16 @@
             return result;
         }
 
+        public async Task<IEnumerable<Recipient>> GetEditNotificationRecipientsAsync(int notificationId, int notificationTypeId, int? productId)
+        {
+            return await baseService.GetDataAsync<Recipient>(new GetEditNotificationRecipientsCriteria
+            {
+                NotificationId = notificationId,
+                NotificationTypeId = notificationTypeId,
+                ProductId = productId,
+            }).ConfigureAwait(false);
+        }
+
         private void SendNotificationImediately(int notificationId)
         {
             Task.Run(

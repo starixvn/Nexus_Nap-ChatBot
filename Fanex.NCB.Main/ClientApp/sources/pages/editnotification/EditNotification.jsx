@@ -51,7 +51,6 @@ export default class EditNotification extends React.Component {
 
         Promise.all(promises)
             .then(([notificationResponse]) => {
-                debugger;
                 const notification = notificationResponse.data;
                 notification.configSendTime = new Date(notification.configSendTime);
 
@@ -94,7 +93,11 @@ export default class EditNotification extends React.Component {
     getRecipients = () => {
         const notification = this.state.notification;
         axios.get(Site.resolveClientUrl('EditNotification/GetRecipients'), {
-            params: { notificationTypeId: notification.notificationTypeId, productId: notification.productId }
+            params: {
+                notificationId: this.state.notificationId,
+                notificationTypeId: notification.notificationTypeId,
+                productId: notification.productId
+            }
         }).then(response => {
             const initialObj = this.initializeObj(response.data);
 

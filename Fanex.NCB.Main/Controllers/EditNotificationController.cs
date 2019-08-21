@@ -46,9 +46,9 @@
 
         [HttpGet]
         [NapAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host)]
-        public async Task<IActionResult> GetRecipients(int notificationTypeId, int? productId)
+        public async Task<IActionResult> GetRecipients(int notificationId, int notificationTypeId, int? productId)
         {
-            var result = await notificationService.GetRecipientsAsync(notificationTypeId, productId).ConfigureAwait(false);
+            var result = await notificationService.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId).ConfigureAwait(false);
 
             var tree = GenerateTreeHelper.FromRecipient(result);
 
