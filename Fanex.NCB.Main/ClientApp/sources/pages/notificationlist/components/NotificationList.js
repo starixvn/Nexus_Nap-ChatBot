@@ -126,7 +126,6 @@ export default class NotificationList extends Component {
                 notification.configSendTime = DateTime.fromISO(notification.configSendTime);
                 notification.recipientSentStatusJson = JSON.parse(notification.recipientSentStatusJson);
             });
-
             this.setState({
                 tableData: {
                     pageIndex,

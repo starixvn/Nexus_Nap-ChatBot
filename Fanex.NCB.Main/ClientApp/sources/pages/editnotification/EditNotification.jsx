@@ -51,6 +51,7 @@ export default class EditNotification extends React.Component {
 
         Promise.all(promises)
             .then(([notificationResponse]) => {
+                debugger;
                 const notification = notificationResponse.data;
                 notification.configSendTime = new Date(notification.configSendTime);
 
@@ -120,7 +121,7 @@ export default class EditNotification extends React.Component {
             recipientIds: recipientIds.toString(),
             title: values.title,
             content: values.content,
-            sendDate: values.sendDate,
+            sendDate: values.sendDate.toLocaleString("en-US"),
             sendImmediately: values.sendMode === '1',
         };
 
