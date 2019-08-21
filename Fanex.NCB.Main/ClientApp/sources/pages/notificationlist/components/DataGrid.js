@@ -97,13 +97,13 @@ export default class DataGrid extends PureComponent {
             <Cell className="col-content">
                 <Panel ref={panel => this.panels[index] = panel}>
                     <PanelHeader>
-                        <div>To {item.recipientSentStatusJson.length} recipient(s): {item.recipientSentStatusJson.map(this.renderRecipient)}</div>
-                        <strong>{item.title} - {item.configSendTime.toFormat('MM/dd/yyyy')}</strong>
+                        <div className="recipient-list">To {item.recipientSentStatusJson.length} recipient(s): {item.recipientSentStatusJson.map(this.renderRecipient)}</div>
+                        <div className="title-date">{item.title} - {item.configSendTime.toFormat('MM/dd/yyyy')}</div>
                     </PanelHeader>
                     <p className="notification-content" >{item.content}</p>
                 </Panel>
             </Cell>
-            <Cell className="text-center"><span className={this.getNotificationStatusClass(item.statusId)}>{item.status}</span></Cell>
+            <Cell><span className={this.getNotificationStatusClass(item.statusId)}>{item.status}</span></Cell>
             <Cell className="col-action text-center">{this.renderAction(item)}</Cell>
         </Row>);
     }

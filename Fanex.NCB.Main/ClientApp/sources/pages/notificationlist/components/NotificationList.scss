@@ -6,9 +6,15 @@
 @import "../../shared/components/messages.scss";
 @import "../../shared/components/tables.scss";
 
-.form-filter .form-control {
-    display: inline-block;
-    width: auto;
+.form-filter {
+    .form-control {
+        display: inline-block;
+        width: auto;
+    }
+
+    .btn-submit {
+        margin-bottom: 12px;
+    }
 }
 
 .tooltip {
@@ -58,5 +64,13 @@
 
     .icon-edit {
         color: $text-color;
+    }
+
+    .recipient-list {
+        font-style: italic;
+    }
+
+    .title-date {
+        font-weight: bold;
     }
 }

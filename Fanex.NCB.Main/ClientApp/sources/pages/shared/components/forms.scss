@@ -80,6 +80,10 @@
     button[disabled] {
         background-color: grey;
     }
+
+    .form-control {
+        min-width: 160px;
+    }
 }
 
 .invalid-feedback {

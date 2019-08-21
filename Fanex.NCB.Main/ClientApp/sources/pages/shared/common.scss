@@ -69,7 +69,9 @@ body {
 
 
 %badge {
-    padding: 1px 5px;
+    display: inline-block;
+    line-height: 20px;
+    padding: 0 5px;
     border-radius: 3px;
     color: #fff;
     white-space: nowrap;
