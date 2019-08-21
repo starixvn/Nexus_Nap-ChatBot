@@ -28,7 +28,7 @@ export default class ErrorReport extends Component {
 
     copyToClipboard = () => {
         let input = document.createElement("input");
-        input.value = this.props.report.successRecipients.join(', ');
+        input.value = this.props.report.errorDetails.map(x => x.recipientName).join(', ');
         document.body.appendChild(input);
         input.select();
         document.execCommand('copy');
