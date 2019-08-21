@@ -96,7 +96,7 @@ export default class ErrorReport extends Component {
                         }
                         {report.statusId === NotificationStatus.Resolved &&
                             <div className="resolved-remark">
-                                <p>Remark: <span className="text-italic">Remark Text{report.resolvedRemark}</span></p>
+                                <p>Remark: <span className="text-italic">{report.resolvedRemark}</span></p>
                                 <p><span className="text-red">*</span> Resolved by: <strong>{report.resolvedByUsername}</strong></p>
                             </div>
                         }
