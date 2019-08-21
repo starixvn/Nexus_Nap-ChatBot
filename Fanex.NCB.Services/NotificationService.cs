@@ -102,6 +102,7 @@
             {
                 report.SuccessRecipients = result.Item2;
                 report.ErrorDetails = result.Item3;
+                report.ConfigSendTime = report.ConfigSendTime.ConvertFromUTC();
             }
 
             return report;
