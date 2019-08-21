@@ -1,6 +1,7 @@
 DELIMITER //
 
 DROP PROCEDURE IF EXISTS NCB_NotificationList_ErrDetail_Sel;
+
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_ErrDetail_Sel`(
      IN notificationID INT
     /*
@@ -27,14 +28,11 @@ BEGIN
     WHERE n.NotificationID = notificationID;
     
     #2nd dataset: List of success Recipients
-    SELECT r.RecipientName
-    FROM Recipient r
-    WHERE EXISTS (
-		SELECT 1
-        FROM NotificationRecipientList nrl
-        WHERE nrl.NotificationID = notificationID AND nrl.RecipientID = r.RecipientID
+	SELECT DISTINCT r.RecipientName
+	FROM ChatBot.NotificationRecipientList nrl
+	INNER JOIN ChatBot.Recipient r ON nrl.RecipientID = r.RecipientID
+	WHERE nrl.NotificationID = notificationID
 			AND nrl.StatusID NOT IN (SENT_STATUSID_ERROR, SENT_STATUSID_RESOLVED)
-    )		
     ORDER BY r.RecipientName;
     
     #3rd dataset: List of failed Recipients
@@ -48,6 +46,6 @@ BEGIN
     INNER JOIN ConversationGroup grp ON grp.ConversationGroupID = rlst.ConversationGroupID
     WHERE rlst.NotificationID = notificationID AND rlst.StatusID  IN (SENT_STATUSID_ERROR, SENT_STATUSID_RESOLVED)
     ORDER BY rt.RecipientTypeName, r.RecipientName;
-END
+END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationList_ErrDetail_Sel TO 'ncb.admin'@'%';
