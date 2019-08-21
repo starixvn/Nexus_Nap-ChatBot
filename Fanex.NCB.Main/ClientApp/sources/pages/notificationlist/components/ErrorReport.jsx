@@ -80,12 +80,6 @@ export default class ErrorReport extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr >
-                                    <td>recipient.recipientName</td>
-                                    <td>recipient.recipientTypeName</td>
-                                    <td>recipient.groupName</td>
-                                    <td className="text-red">recipient.errorMessage</td>
-                                </tr>
                                 {report.errorDetails.map(this.renderFailedRecipient)}
                             </tbody>
                         </table>
