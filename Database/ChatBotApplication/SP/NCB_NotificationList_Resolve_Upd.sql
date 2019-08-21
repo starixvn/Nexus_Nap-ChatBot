@@ -67,7 +67,8 @@ NCB_NotificationList_Resolve_Upd:BEGIN
     UPDATE NotificationRecipientList rlst
     SET rlst.Status = NOTIFICATION_STATUS_RESOLVED
 			, rlst.StatusID = NOTIFICATION_STATUSID_RESOLVED
-    WHERE rlst.NotificationID = notificationID;
+    WHERE rlst.NotificationID = notificationID
+		AND rlst.StatusID = NOTIFICATION_STATUSID_ERROR;
     
      #Get Finish Time to calcualte execution duration
     SET finishTime = UTC_TIMESTAMP(3);
