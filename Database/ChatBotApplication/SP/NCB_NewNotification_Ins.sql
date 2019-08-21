@@ -231,7 +231,7 @@ NCB_NewNotification_Ins:BEGIN
     IF sendImmediately = 0 AND configSendTime < UTC_TIMESTAMP(3)
     THEN
 			SET errCode=110;
-            SET errMsg = 'A notification can be scheduled at a specific time in the future only';
+            SET errMsg = 'The schedule is expired, Please check again!';
 			LEAVE NCB_NewNotification_Ins;
     END IF;
     

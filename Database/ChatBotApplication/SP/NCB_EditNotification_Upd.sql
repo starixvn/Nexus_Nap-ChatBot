@@ -224,6 +224,13 @@ NCB_EditNotification_Upd:BEGIN
         LEAVE NCB_EditNotification_Upd;
     END IF;
     
+     IF sendImmediately = 0 AND configSendTime < UTC_TIMESTAMP(3)
+    THEN
+			SET errCode=512;
+            SET errMsg = 'The schedule is expired, Please check again!';
+			LEAVE NCB_EditNotification_Upd;
+    END IF;
+    
     #Check exeption recipient
     IF EXISTS(
 			SELECT 1
