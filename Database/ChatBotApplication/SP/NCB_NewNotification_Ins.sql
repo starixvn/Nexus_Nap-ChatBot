@@ -290,14 +290,14 @@ NCB_NewNotification_Ins:BEGIN
                                                                         , finishTime)  / 1000; 	#miliseconds
     
     #Get Log Content, JSON format
-    SET logContent = json_object('notificationTypeID', notificationTypeID
-										, 'productID', productID
-                                        , 'recipientIDLst', recipientIDLst
-										, 'title', title
-                                        , 'content', content
-                                        , 'configSendTime', configSendTime
-                                        , 'sendImmediately', sendImmediately
-                                        , 'notificationID', notificationID
+    SET logContent = json_object('NotificationTypeID', notificationTypeID
+										, 'ProductID', productID
+                                        , 'RecipientIDLst', recipientIDLst
+										, 'Title', title
+                                        , 'Content', content
+                                        , 'ConfigSendTime', configSendTime
+                                        , 'SendImmediately', sendImmediately
+                                        , 'NotificationID', notificationID
 					) ;
                     
 		#Write User Log
