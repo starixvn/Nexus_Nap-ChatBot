@@ -65,6 +65,7 @@
             services.AddSingleton(Configuration);
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<BotSettings>(Configuration.GetSection("ChatBotConfigs"));
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
@@ -81,11 +82,17 @@
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(CookieExpiration);
-                options.Cookie.IsEssential = true;
+
+            services.AddDistributedRedisCache(options => {
+                options.Configuration = "10.100.10.199:6379";
+                options.InstanceName = "Fanex.NCB.Auth";
             });
+
+            services.AddSession(options => {
+                options.Cookie.IsEssential = true;
+                options.IdleTimeout = TimeSpan.FromMinutes(CookieExpiration);
+            });
+
             services.AddSingleton<INapSettings>(new NapSettings(Configuration));
             services.AddSingleton<INapSession, NapSession>();
             services.AddSingleton<IRestClient, RestClient>();
