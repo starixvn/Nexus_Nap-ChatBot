@@ -66,13 +66,6 @@ namespace Fanex.NCB.SkypeBot.Controllers
         {
             var result = await notificationService.GetNotificationErrorAsync(notificationId).ConfigureAwait(false);
 
-            if (result.ResolvedBy.HasValue)
-            {
-                var user = await userService.GetAsync(result.ResolvedBy.Value);
-
-                result.ResolvedByUserName = user.Username;
-            }
-
             return Json(result);
         }
 
