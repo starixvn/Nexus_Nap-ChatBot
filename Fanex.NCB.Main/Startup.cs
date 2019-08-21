@@ -83,7 +83,7 @@
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(CookieExpiration);
+                options.IdleTimeout = TimeSpan.FromMinutes(CookieExpiration);
                 options.Cookie.IsEssential = true;
             });
             services.AddSingleton<INapSettings>(new NapSettings(Configuration));
