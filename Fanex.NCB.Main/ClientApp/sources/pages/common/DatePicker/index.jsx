@@ -1,7 +1,7 @@
 ﻿import React from 'react';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import "./DatePicker.scss";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import './DatePicker.scss';
 
 export default function DatePickerHOC(props) {
     const { className, ...rest } = props;

@@ -10,7 +10,6 @@ import { NCBBreadcrum } from '../common/breadcrumbs';
 import TreeSelect, { getRealValuesFromExtra } from '../common/TreeSelect/index';
 import DatePicker from '../common/DatePicker/index';
 import Labels from '../common/Labels';
-import { DateTimeFormat } from '../constants/constants';
 import ResponseMessage from '../common/response-message/ResponseMessage';
 import Site from '../lib/site';
 import ConfirmPopup from '../common/ConfirmPopup';
