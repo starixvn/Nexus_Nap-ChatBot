@@ -53,6 +53,13 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 			, n.StatusID = NOTIFICATION_STATUSID_SENDING
             , t.LockSuccess = 1
 	 WHERE n.StatusID = NOTIFICATION_STATUSID_PLANNED;
+     
+	 UPDATE NotificationRecipientList AS n
+     INNER JOIN  tmp_PlannedNotification AS t 
+			ON n.NotificationID = t.NotificationID
+     SET n.Status = NOTIFICATION_STATUS_SENDING
+			, n.StatusID = NOTIFICATION_STATUSID_SENDING
+	 WHERE t.LockSuccess = 1;
 		
 	DROP TEMPORARY TABLE IF EXISTS tmp_TryingNotification;
 	CREATE TEMPORARY TABLE tmp_TryingNotification(NotificationID INT, RecipientID INT, ConversationGroupID INT
@@ -63,6 +70,9 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 	SELECT n.NotificationID, n.RecipientID, n.ConversationGroupID, 0
 	FROM NotificationRecipientList n
 	WHERE n.StatusID = NOTIFICATION_STATUSID_RETRYING;
+    
+    
+    
     
     #Lock Trying notifications to send
 	 UPDATE NotificationRecipientList AS n
@@ -77,9 +87,9 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 	SELECT n.NotificationID, n.Title, n.Content
     FROM Notification n
     WHERE n.NotificationID IN (
-		SELECT t1.NotificationID FROM tmp_PlannedNotification t1
+		SELECT t1.NotificationID FROM tmp_PlannedNotification t1 WHERE t1.LockSuccess = 1
         UNION ALL
-        SELECT t1.NotificationID FROM tmp_TryingNotification t1
+        SELECT t2.NotificationID FROM tmp_TryingNotification t2 WHERE t2.LockSuccess = 1
     );
     
     #2nd dataset: List of recipient,bot,conversation
@@ -115,7 +125,7 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
     LEFT JOIN ConversationGroupRecipient cgr 
 			ON cgr.ConversationGroupID = nrl.ConversationGroupID 
 				AND cgr.RecipientID = nrl.RecipientID 
-	WHERE nrl.NotificationID IN (SELECT t1.NotificationID FROM tmp_PlannedNotification t1)
+	WHERE nrl.NotificationID IN (SELECT t1.NotificationID FROM tmp_PlannedNotification t1 WHERE t1.LockSuccess = 1)
     #Trying Nofitication List
     UNION ALL
     SELECT nrl.NotificationID AS NotificationID
@@ -136,7 +146,10 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 						END ErrCode
 	 FROM NotificationRecipientList nrl
      INNER JOIN tmp_TryingNotification tnlst
-			ON nrl.NotificationID = tnlst.NotificationID AND nrl.RecipientID = tnlst.RecipientID  AND nrl.ConversationGroupID = tnlst.ConversationGroupID
+			ON nrl.NotificationID = tnlst.NotificationID 
+					AND nrl.RecipientID = tnlst.RecipientID  
+                    AND nrl.ConversationGroupID = tnlst.ConversationGroupID
+                    AND tnlst.LockSuccess = 1
 	 INNER JOIN ConversationGroup grp
 			ON grp.ConversationGroupID = nrl.ConversationGroupID
      INNER JOIN Recipient r ON r.RecipientID = nrl.RecipientID
