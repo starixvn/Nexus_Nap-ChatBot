@@ -28,12 +28,12 @@ export default class DataGrid extends PureComponent {
     }
 
     handleCancelNotification = e => {
-        var id = parseInt(e.target.dataset.notificationid);
+        var id = parseInt(e.target.dataset.notificationid, 10);
         this.props.onCancelNotification(id);
     }
 
     handleShowErrorReport = e => {
-        var id = parseInt(e.target.dataset.notificationid);
+        var id = parseInt(e.target.dataset.notificationid, 10);
         this.props.onShowErrorReport(id);
     }
 

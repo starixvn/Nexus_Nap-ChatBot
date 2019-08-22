@@ -34,7 +34,7 @@ export default class EditNotification extends React.Component {
         super(props);
 
         this.state = {
-            notificationId: parseInt(document.getElementById('notification-id').value),
+            notificationId: parseInt(document.getElementById('notification-id').value, 10),
             notification: null,
             recipientOptions: null,
             confimrationPopup: {
