@@ -70,8 +70,10 @@ export class DataGrid extends Component {
                     <Cell>{item.mappingStatusID === mappingStatus.BotRemoved ? '' : item.botName}</Cell>
                     <Cell title={item.conversationID}>
                         <span
-                            onClick={() => this.copyGroupId(item.conversationID)}>
-                            {item.conversationID}</span>
+                            onClick={() => this.copyGroupId(item.conversationID)}
+                        >
+                            {item.conversationID}
+                        </span>
                     </Cell>
                     <Cell>{item.groupName}</Cell>
                     <Cell>{item.chatGroupTypeName}</Cell>

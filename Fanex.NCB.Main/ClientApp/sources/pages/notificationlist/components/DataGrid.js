@@ -79,44 +79,48 @@ export default class DataGrid extends PureComponent {
         return [<Row key={`body${1}`} ><Cell colSpan="6"><NoDataTitle /></Cell></Row>];
     }
 
-    renderRecipient = (recipient, index) => (
-        <Fragment key={index}>
-            {index > 0 && ', '}
-            <span className={recipient.isError === 1 ? 'text-red' : ''} > {recipient.recipientName}</span>
-        </Fragment>
-    )
+    renderRecipient = (recipient, index) => {
+        return (
+            <Fragment key={index}>
+                {index > 0 && ', '}
+                <span className={recipient.isError === 1 ? 'text-red' : ''} > {recipient.recipientName}</span>
+            </Fragment>
+        );
+    }
 
     renderRow = (item, index) => {
-        return (<Row key={item.notificationId} >
-            <Cell className="col-order text-center">{index + this.startIndex}</Cell>
-            <Cell>{item.notificationTypeName}</Cell>
-            <Cell className="text-center">
-                {item.configSendTime.toFormat(TimeFormat)}
-                <div>{item.configSendTime.toFormat(DateFormat)}</div>
-            </Cell>
-            <Cell className="col-content">
-                <Panel ref={panel => this.panels[index] = panel}>
-                    <PanelHeader>
-                        <div className="recipient-list">To {item.recipientSentStatusJson.length} recipient(s): {item.recipientSentStatusJson.map(this.renderRecipient)}</div>
-                        <div className="title-date">{item.title} - {item.configSendTime.toFormat('MM/dd/yyyy')}</div>
-                    </PanelHeader>
-                    <p className="notification-content" >{item.content}</p>
-                </Panel>
-            </Cell>
-            <Cell><span className={this.getNotificationStatusClass(item.statusId)}>{item.status}</span></Cell>
-            <Cell className="col-action text-center">{this.renderAction(item)}</Cell>
-        </Row>);
+        return (
+            <Row key={item.notificationId} >
+                <Cell className="col-order text-center">{index + this.startIndex}</Cell>
+                <Cell>{item.notificationTypeName}</Cell>
+                <Cell className="text-center">
+                    {item.configSendTime.toFormat(TimeFormat)}
+                    <div>{item.configSendTime.toFormat(DateFormat)}</div>
+                </Cell>
+                <Cell className="col-content">
+                    <Panel ref={panel => this.panels[index] = panel}>
+                        <PanelHeader>
+                            <div className="recipient-list">To {item.recipientSentStatusJson.length} recipient(s): {item.recipientSentStatusJson.map(this.renderRecipient)}</div>
+                            <div className="title-date">{item.title} - {item.configSendTime.toFormat('MM/dd/yyyy')}</div>
+                        </PanelHeader>
+                        <p className="notification-content" >{item.content}</p>
+                    </Panel>
+                </Cell>
+                <Cell><span className={this.getNotificationStatusClass(item.statusId)}>{item.status}</span></Cell>
+                <Cell className="col-action text-center">{this.renderAction(item)}</Cell>
+            </Row>
+        );
     }
 
     renderAction = notification => {
         switch (notification.statusId) {
             case NotificationStatus.Error:
             case NotificationStatus.Resolved:
-                return (<span className="icon-view" data-notificationid={notification.notificationId} onClick={this.handleShowErrorReport} />);
+                return <span className="icon-view" data-notificationid={notification.notificationId} onClick={this.handleShowErrorReport} />;
             case NotificationStatus.Planned:
-                return (<span className="icon-delete" data-notificationid={notification.notificationId} onClick={this.handleCancelNotification} />);
+                return <span className="icon-delete" data-notificationid={notification.notificationId} onClick={this.handleCancelNotification} />;
             case NotificationStatus.Cancelled:
-                return (<a className="icon-edit" href={`EditNotification/Index/${notification.notificationId}`} />);
+                return <a className="icon-edit" href={`EditNotification/Index/${notification.notificationId}`} />;
             default: return null;
         }
     }
