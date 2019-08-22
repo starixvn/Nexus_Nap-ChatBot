@@ -1,4 +1,4 @@
-﻿import { mappingStatus, ErrorCodeTemplateMessage } from '../constants/constants';
+﻿import { mappingStatus } from '../constants/constants';
 import Labels from './Labels';
 
 export default class CommonFunctions {
