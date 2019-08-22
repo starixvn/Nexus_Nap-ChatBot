@@ -1,14 +1,15 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Bots
 {
+    using System;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Web;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Schema;
-    using System;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
 
     public class LicBot : ActivityHandler
     {
@@ -107,7 +108,7 @@
             var command = new UpdateGroupTopicCommand
             {
                 ConversationId = turnContext.Activity.Conversation.Id,
-                GroupName = turnContext.Activity.TopicName,
+                GroupName = HttpUtility.HtmlDecode(turnContext.Activity.TopicName),
                 UpdatedBy = turnContext.Activity.From.Id
             };
 

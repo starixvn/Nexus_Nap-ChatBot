@@ -24,17 +24,6 @@
 
                      config.AddEnvironmentVariables();
                  })
-                 .ConfigureLogging((_, logging) => //should be move to startup.cs and add providers by ENV
-                 {
-                     logging.ClearProviders();
-                     // add built-in providers manually, as needed
-                     //logging.AddFilter("NCB", LogLevel.Error);
-                     //logging.AddConsole();
-                     //logging.AddDebug();
-                     //logging.AddEventLog();
-                     //logging.AddEventSourceLogger();
-                     //logging.AddTraceSource("TraceSourceSwitch");
-                 })
                 .UseStartup<Startup>();
     }
 }
