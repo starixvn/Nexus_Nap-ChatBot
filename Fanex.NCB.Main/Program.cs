@@ -28,12 +28,12 @@
                  {
                      logging.ClearProviders();
                      // add built-in providers manually, as needed
-                     logging.AddFilter("NCB", LogLevel.Error);
-                     logging.AddConsole();
-                     logging.AddDebug();
-                     logging.AddEventLog();
-                     logging.AddEventSourceLogger();
-                     logging.AddTraceSource("TraceSourceSwitch");
+                     //logging.AddFilter("NCB", LogLevel.Error);
+                     //logging.AddConsole();
+                     //logging.AddDebug();
+                     //logging.AddEventLog();
+                     //logging.AddEventSourceLogger();
+                     //logging.AddTraceSource("TraceSourceSwitch");
                  })
                 .UseStartup<Startup>();
     }
