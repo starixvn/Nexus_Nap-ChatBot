@@ -40,12 +40,12 @@ export const setGridData = data => {
 };
 
 export const getGridData = params => {
-    //const url = Site.resolveClientUrl('ChatGroupMapping/GetAll');
-    //return dispatch => {
-    //    axios.get(url, { params: params }).then(response => {
-    //        dispatch(setGridData(response.data));
-    //    }).catch(() => { errorResponseHandler(); });
-    //};
+    const url = Site.resolveClientUrl('ChatGroupMapping/GetAll');
+    return dispatch => {
+        axios.get(url, { params: params }).then(response => {
+            dispatch(setGridData(response.data));
+        }).catch(() => { errorResponseHandler(); });
+    };
 };
 
 // Edit Popup
