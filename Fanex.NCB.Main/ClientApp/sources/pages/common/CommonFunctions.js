@@ -38,6 +38,6 @@ export default class CommonFunctions {
         document.body.appendChild(div);
         setInterval(() => {
             div.remove();
-        }, 10000);
+        }, 1000);
     }
 }
