@@ -32,7 +32,7 @@ export class DataGrid extends Component {
     buildHeader = (isHost) => {
         return (
             <Row style={{ height: 32 }}>
-                <Cell colWidth={30} header>{Labels.NumberCol}</Cell>
+                <Cell colWidth={50} header>{Labels.NumberCol}</Cell>
                 <Cell colWidth={100} header>{Labels.BotName}</Cell>
                 <Cell colWidth={300} header>{Labels.GroupID}</Cell>
                 <Cell colWidth={200} header>{Labels.GroupName}</Cell>
