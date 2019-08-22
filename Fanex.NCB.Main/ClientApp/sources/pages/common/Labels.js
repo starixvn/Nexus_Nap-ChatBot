@@ -8,6 +8,7 @@
     ConfirmMessage: 'Confirm Message',
     ConfirmUpdate: 'Change setting will impact sending notification to a group. Are you sure to proceed?',
     ConfirmClose: 'There might be some unsaved changes in the form. The changes shall not be saved if you close this form. Are you sure you want to close this form?',
+    CopiedToClipboard: "Copied to clipboard",
     Edit: 'Edit',
     EditMappingStatus: 'Edit Mapping Status',
     GroupID: 'Group ID',

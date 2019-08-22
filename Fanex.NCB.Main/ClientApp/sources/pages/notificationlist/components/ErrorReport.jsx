@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { DateFormat, DateTimeFormat, NotificationStatus } from '../../constants/constants';
+import CommonFunctions from '../../common/CommonFunctions';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 
 import './ErrorReport.scss';
@@ -17,14 +18,16 @@ export default class ErrorReport extends Component {
 
     handleRemarkChange = event => this.setState({ remark: event.target.value.trim(), remarkTouched: true });
 
-    renderFailedRecipient = (recipient, index) => (
-        <tr key={index}>
-            <td>{recipient.recipientName}</td>
-            <td>{recipient.recipientTypeName}</td>
-            <td>{recipient.groupName}</td>
-            <td className="text-red">{recipient.errorMessage}</td>
-        </tr>
-    )
+    renderFailedRecipient = (recipient, index) => {
+        return (
+            <tr key={index}>
+                <td>{recipient.recipientName}</td>
+                <td>{recipient.recipientTypeName}</td>
+                <td>{recipient.groupName}</td>
+                <td className="text-red">{recipient.errorMessage}</td>
+            </tr>
+        );
+    }
 
     copyToClipboard = () => {
         let input = document.createElement("input");
@@ -33,6 +36,7 @@ export default class ErrorReport extends Component {
         input.select();
         document.execCommand('copy');
         document.body.removeChild(input);
+        CommonFunctions.displayCopiedToClipboard();
     }
 
     handleResolveNotification = () => {

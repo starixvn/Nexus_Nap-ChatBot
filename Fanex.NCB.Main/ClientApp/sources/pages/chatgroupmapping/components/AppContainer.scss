@@ -72,3 +72,15 @@
 :-ms-input-placeholder {
     font-style: italic;
 }
+
+.copied-confirm {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    background-color: #000;
+    border-radius: 3px;
+    padding: 5px 10px;
+    font-size: 12px;
+    color: #fff;
+    font-weight: bold;
+}

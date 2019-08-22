@@ -34,7 +34,7 @@ export class DataGrid extends Component {
             <Row style={{ height: 32 }}>
                 <Cell colWidth={50} header>{Labels.NumberCol}</Cell>
                 <Cell colWidth={100} header>{Labels.BotName}</Cell>
-                <Cell colWidth={300} header>{Labels.GroupID}</Cell>
+                <Cell colWidth={350} header>{Labels.GroupID}</Cell>
                 <Cell colWidth={200} header>{Labels.GroupName}</Cell>
                 <Cell colWidth={110} header>{Labels.ChatGroupType}</Cell>
                 <Cell colWidth={100} header>{Labels.RecipientType}</Cell>
@@ -49,11 +49,14 @@ export class DataGrid extends Component {
             </Row>);
     };
 
-    copyGroupId = (text) => {
-        var input = document.createElement('textarea', value = text);
+    copyGroupIdToClipboard = (text) => {
+        var input = document.createElement('textarea');
+        input.value = text;
+        document.body.appendChild(input);
         input.select();
         document.execCommand("copy");
-        console.log(input.value);
+        input.remove();
+        CommonFunctions.displayCopiedToClipboard();
     }
 
     getLicenseeStatus = item => item.recipientTypeName ? CommonFunctions.getLicenseeStatus(item.recipientStatusNames) : '';
@@ -69,11 +72,8 @@ export class DataGrid extends Component {
                     <Cell className="text-center">{index + startIndex}</Cell>
                     <Cell>{item.mappingStatusID === mappingStatus.BotRemoved ? '' : item.botName}</Cell>
                     <Cell title={item.conversationID}>
-                        <span
-                            onClick={() => this.copyGroupId(item.conversationID)}
-                        >
-                            {item.conversationID}
-                        </span>
+                        <span onClick={() => this.copyGroupIdToClipboard(item.conversationID)} className="icon-copy" />
+                        <span>{item.conversationID}</span>
                     </Cell>
                     <Cell>{item.groupName}</Cell>
                     <Cell>{item.chatGroupTypeName}</Cell>

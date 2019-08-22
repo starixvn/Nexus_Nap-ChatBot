@@ -1,4 +1,5 @@
 ﻿import { mappingStatus, ErrorCodeTemplateMessage } from '../constants/constants';
+import Labels from './Labels';
 
 export default class CommonFunctions {
     static getMappingClass(mappingStatusId) {
@@ -28,5 +29,15 @@ export default class CommonFunctions {
 
     static isEmptyObject(obj) {
         return Object.keys(obj).length === 0;
+    }
+
+    static displayCopiedToClipboard() {
+        var div = document.createElement('div');
+        div.className = "copied-confirm";
+        div.innerHTML = Labels.CopiedToClipboard;
+        document.body.appendChild(div);
+        setInterval(() => {
+            div.remove();
+        }, 10000);
     }
 }
