@@ -15,7 +15,8 @@ BEGIN
 	SELECT RecipientID AS ID, RecipientName AS Name
 	FROM Recipient
 	WHERE RecipientName LIKE CONCAT('%', keyword, '%')
-    ORDER BY RecipientName;
+    ORDER BY RecipientName
+	LIMIT 10;
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_SearchRecipient_Sel TO 'ncb.admin'@'%';
