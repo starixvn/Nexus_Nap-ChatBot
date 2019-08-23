@@ -26,7 +26,7 @@ const SendModeOptions = [
     }
 ];
 
-const Today = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+const Today = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
 
 export default class EditNotification extends React.Component {
     constructor(props) {
@@ -123,7 +123,7 @@ export default class EditNotification extends React.Component {
             recipientIds: recipientIds.toString(),
             title: values.title,
             content: values.content,
-            sendDate: values.sendDate.toLocaleString("en-US"),
+            sendDate: values.sendDate.toLocaleString('en-US'),
             sendImmediately: values.sendMode === '1',
         };
 
