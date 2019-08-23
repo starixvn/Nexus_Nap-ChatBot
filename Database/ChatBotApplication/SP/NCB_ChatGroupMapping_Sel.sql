@@ -49,7 +49,7 @@ BEGIN
     IF botIDs IS NULL THEN SET botIDs = ''; END IF;
     IF recipientTypeIds IS NULL THEN SET recipientTypeIds = ''; END IF;
     IF recipientName IS NULL THEN SET recipientName = ''; END IF;
-    IF groupName IS NULL THEN SET recipientName = ''; END IF;
+    IF groupName IS NULL THEN SET groupName = ''; END IF;
     IF mappingStatusIds IS NULL THEN SET mappingStatusIds = ''; END IF;    
 	IF licenseeStatusIds IS NULL THEN SET licenseeStatusIds = ''; END IF;
     
