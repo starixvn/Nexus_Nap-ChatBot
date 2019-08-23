@@ -5,7 +5,8 @@ DROP PROCEDURE IF EXISTS NCB_ChatGroupMapping_Sel;
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_ChatGroupMapping_Sel (
 		IN botIDs VARCHAR(500) ,
         IN recipientTypeIds VARCHAR(1000),
-        IN recipientName VARCHAR(100),
+        IN recipientName VARCHAR(100)  ,
+        IN groupName VARCHAR(500) ,
 		IN licenseeStatusIds VARCHAR(1000),
         IN mappingStatusIds VARCHAR(1000),
 		IN pageIndex INT, 
@@ -48,6 +49,7 @@ BEGIN
     IF botIDs IS NULL THEN SET botIDs = ''; END IF;
     IF recipientTypeIds IS NULL THEN SET recipientTypeIds = ''; END IF;
     IF recipientName IS NULL THEN SET recipientName = ''; END IF;
+    IF groupName IS NULL THEN SET recipientName = ''; END IF;
     IF mappingStatusIds IS NULL THEN SET mappingStatusIds = ''; END IF;    
 	IF licenseeStatusIds IS NULL THEN SET licenseeStatusIds = ''; END IF;
     
@@ -205,7 +207,10 @@ BEGIN
 					IFNULL(r.RecipientTypeID, RECIPIENT_TYPE_ID_NA)  IN (SELECT trt.RecipientTypeId FROM tmp_RecipientTypeIds trt)
 		)
         AND (
-					IFNULL(r.RecipientName,'') LIKE CONCAT(recipientName, '%') 
+					IFNULL(r.RecipientName,'') LIKE CONCAT('%', recipientName, '%') 
+		)
+		AND (
+					IFNULL(cgrp.Name,'') LIKE CONCAT( '%', groupName, '%') 
 		);
     
 	-- Get BotConversations for current paging page

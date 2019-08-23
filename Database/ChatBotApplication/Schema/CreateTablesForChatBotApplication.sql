@@ -1,14 +1,14 @@
-CREATE DATABASE ChatBot CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci ;
+CREATE DATABASE ChatBot CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  ;
 
 
 CREATE TABLE ChatBot.ConversationGroup(
 		ConversationGroupID INT UNSIGNED AUTO_INCREMENT NOT NULL
-		, ConversationID VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
-		, Name VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
-		, ChannelID VARCHAR(45) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
-		, UpdatedBy VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, ConversationID VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NOT NULL
+		, Name VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NULL
+		, ChannelID VARCHAR(45) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci '  NULL
+		, UpdatedBy VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NOT NULL
 		, LastUpdate DATETIME NOT NULL
-		, ServiceUrl VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
+		, ServiceUrl VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci '  NULL
 		, CONSTRAINT PK_ID  PRIMARY KEY (ConversationGroupID)
 		, INDEX INDEX_Name USING BTREE (Name)
 		, UNIQUE INDEX UNIQUE_ConversationID USING BTREE (ConversationID)
@@ -16,8 +16,8 @@ CREATE TABLE ChatBot.ConversationGroup(
 
 CREATE TABLE ChatBot.ConversationBot(
 		 ConversationBotID INT UNSIGNED AUTO_INCREMENT NOT NULL
-		, ConversationID VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
-		, Name VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
+		, ConversationID VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NOT NULL
+		, Name VARCHAR(70) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NULL
         , CONSTRAINT PK_ID  PRIMARY KEY (ConversationBotID)
         , INDEX INDEX_ConversationID USING BTREE (ConversationID)
         , INDEX INDEX_Name USING BTREE (Name)
@@ -25,12 +25,12 @@ CREATE TABLE ChatBot.ConversationBot(
   
   
   CREATE TABLE ChatBot.ConversationMessageLog(
-		FromConversationID VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
-		, ToConversationID VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
-		, Content MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		FromConversationID VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NOT NULL
+		, ToConversationID VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NOT NULL
+		, Content MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NOT NULL
         , SentTime DATETIME NOT NULL
         , IsSuccessfull BIT NOT NULL
-        , ErrorMessage VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
+        , ErrorMessage VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci '  NULL
   ) COMPRESSION="zlib";
   
   
@@ -43,24 +43,24 @@ CREATE TABLE ChatBot.ConversationBot(
   
 CREATE TABLE ChatBot.System(
 		SystemID SMALLINT UNSIGNED  AUTO_INCREMENT NOT NULL
-        , SystemName VARCHAR(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+        , SystemName VARCHAR(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NOT NULL
         , CONSTRAINT PK_SystemID PRIMARY KEY (SystemID)
         , UNIQUE INDEX UNIQUE_SystemName USING BTREE (SystemName)
 );
 
 CREATE TABLE ChatBot.RecipientType(
 		RecipientTypeID SMALLINT UNSIGNED  AUTO_INCREMENT NOT NULL
-        , RecipientTypeName VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+        , RecipientTypeName VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NOT NULL
         , CONSTRAINT PK_RecipientTypeID PRIMARY KEY (RecipientTypeID)
         , UNIQUE INDEX UNIQUE_RecipientTypeName USING BTREE (RecipientTypeName)
 );
 
 CREATE TABLE ChatBot.Recipient(
 		RecipientID INT UNSIGNED  AUTO_INCREMENT NOT NULL
-        , RecipientName VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+        , RecipientName VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NOT NULL
         , RecipientTypeID SMALLINT NOT NULL
         , SourceID INT NULL
-        , SourceDescription VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
+        , SourceDescription VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci '  NULL
         , CONSTRAINT PK_RecipientID PRIMARY KEY (RecipientID)
         , UNIQUE INDEX UNIQUE_RecipientName USING BTREE (RecipientName)
         , INDEX INDEX_RecipientTypeID USING BTREE (RecipientTypeID)
@@ -74,7 +74,7 @@ CREATE TABLE ChatBot.ConversationGroupRecipient(
 
 CREATE TABLE ChatBot.ChatGroupType(
 		ChatGroupTypeID SMALLINT UNSIGNED  AUTO_INCREMENT NOT NULL
-        , ChatGroupTypeName VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+        , ChatGroupTypeName VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NOT NULL
         , CONSTRAINT PK_ChatGroupTypeID PRIMARY KEY (ChatGroupTypeID)
         , UNIQUE INDEX UNIQUE_ChatGroupTypeName USING BTREE (ChatGroupTypeName)
 );
@@ -82,13 +82,13 @@ CREATE TABLE ChatBot.ChatGroupType(
 CREATE TABLE ChatBot.ConversationGroupExtraInfo(
 		ConversationGroupID INT  NOT NULL
         , ChatGroupTypeID SMALLINT  NULL
-         , Remark VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NULL
+         , Remark VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NULL
         , CONSTRAINT PK_ConversationGroupID PRIMARY KEY (ConversationGroupID)
 );
 
 CREATE TABLE ChatBot.NotificationType(
 		NotificationTypeID SMALLINT UNSIGNED  AUTO_INCREMENT NOT NULL
-        , NotificationTypeName VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+        , NotificationTypeName VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NOT NULL
         , SystemID SMALLINT  NOT NULL
         , CONSTRAINT PK_NotificationTypeID PRIMARY KEY (NotificationTypeID)
         , UNIQUE INDEX UNIQUE_NotificationTypeName USING BTREE (NotificationTypeName)
@@ -115,10 +115,10 @@ CREATE TABLE ChatBot.NotificationTypeRecipientException(
 
 CREATE TABLE ChatBot.NotificationTemplate(
 		 NotificationTemplateID INT UNSIGNED AUTO_INCREMENT NOT NULL
-		, NotificationTemplateName  VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, NotificationTemplateName  VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NOT NULL
 		, NotificationTypeID SMALLINT NOT NULL
-		, Title  VARCHAR(300) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
-		, Content MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, Title  VARCHAR(300) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NOT NULL
+		, Content MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NOT NULL
 		, CreatorID INT NOT NULL
 		, CreatedDate DATETIME NOT NULL
 		, LastModifiedDate DATETIME NULL
@@ -132,17 +132,17 @@ CREATE TABLE ChatBot.NotificationTemplate(
 		 NotificationID INT UNSIGNED AUTO_INCREMENT NOT NULL
 		, NotificationTypeID SMALLINT NOT NULL
         , ProductID SMALLINT NULL
-		, Title VARCHAR(300) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
-		, Content MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci' NOT NULL
+		, Title VARCHAR(300) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NOT NULL
+		, Content MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci ' NOT NULL
 		, ConfigSendTime DATETIME NOT NULL
         , SendImmediately BIT NOT NULL
 		, CreatorID INT NOT NULL
 		, CreatedDate DATETIME NOT NULL
         , LastModifiedBy INT  NULL
 		, LastModifiedDate DATETIME  NULL
-        , Status VARCHAR(10) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
+        , Status VARCHAR(10) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci '  NOT NULL
         , StatusID TINYINT UNSIGNED NOT NULL
-		, ResolvedRemark VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
+		, ResolvedRemark VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci '  NULL
 		, ResolvedBy INT NULL
 		, ResolvedDate DATETIME NULL
         , CONSTRAINT PK_NotificationID  PRIMARY KEY (NotificationID)
@@ -156,10 +156,10 @@ CREATE TABLE ChatBot.NotificationRecipientList(
         , ChatGroupTypeID SMALLINT  NOT NULL
         , RecipientID INT  NOT NULL
 		, SentTime DATETIME NULL
-		, Status VARCHAR(10) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
+		, Status VARCHAR(10) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci '  NOT NULL
 		, StatusID TINYINT UNSIGNED NOT NULL
         , RetryTime TINYINT UNSIGNED NULL
-		, ErrMsg VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NULL
+		, ErrMsg VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci '  NULL
         , CONSTRAINT PK_NotificationID_BotConversationID_RecipientID_ChatGroupTypeID PRIMARY KEY (NotificationID, RecipientID, ConversationGroupID, ChatGroupTypeID)
         , INDEX INDEX_RecipientID USING BTREE (RecipientID)
         , INDEX INDEX_StatusID USING BTREE (StatusID, NotificationID, RecipientID, ConversationGroupID)
@@ -167,8 +167,8 @@ CREATE TABLE ChatBot.NotificationRecipientList(
 
 CREATE TABLE ChatBot.Licensee(
 		LicenseeId INT  NOT NULL
-		, LicenseeName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
-		, RegisteredLicenseeName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
+		, LicenseeName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci '   NULL
+		, RegisteredLicenseeName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci '   NULL
 		, LicenseeStatusId TINYINT UNSIGNED NULL
 		, LicenseeTypeId TINYINT UNSIGNED NULL
         , CONSTRAINT PK_LicenseeId PRIMARY KEY (LicenseeId)
@@ -176,13 +176,13 @@ CREATE TABLE ChatBot.Licensee(
 
 CREATE TABLE ChatBot.LicenseeType(
 		LicenseeTypeId TINYINT UNSIGNED  NOT NULL
-		, LicenseeTypeName VARCHAR(30) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
+		, LicenseeTypeName VARCHAR(30) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci '   NULL
         , CONSTRAINT PK_LicenseeTypeId PRIMARY KEY (LicenseeTypeId)
 );
 
 CREATE TABLE ChatBot.Product(
 		ProductID SMALLINT NOT NULL
-		, ProductName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
+		, ProductName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci '   NULL
         , CONSTRAINT PK_ProductId PRIMARY KEY (ProductId)
 );
 
@@ -196,14 +196,14 @@ CREATE TABLE ChatBot.LicenseeProduct(
 
 CREATE TABLE ChatBot.LicenseeStatus(
 		LicenseeStatusId TINYINT UNSIGNED NOT NULL
-		, LicenseeStatusName VARCHAR(30) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NULL
+		, LicenseeStatusName VARCHAR(30) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci '   NULL
         , CONSTRAINT PK_LicenseeStatusId PRIMARY KEY (LicenseeStatusId)
 );
 
 CREATE TABLE ChatBot.LogAction(
 		ActionID SMALLINT  NOT NULL
-		, ActionName VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NOT NULL
-        , SPName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'   NOT NULL
+		, ActionName VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci '   NOT NULL
+        , SPName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci '   NOT NULL
         , CONSTRAINT PK_ActionID PRIMARY KEY (ActionID)
 );
 
@@ -213,7 +213,7 @@ CREATE TABLE ChatBot.UserLog_RunSP(
         , ReferenceID INT
 		, ActionID SMALLINT  NOT NULL
 		, UserID INT NOT NULL
-        , LogContent TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_520_ci'  NOT NULL
+        , LogContent TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci '  NOT NULL
         , Duration INT NOT NULL
 		, CONSTRAINT PK_LogID PRIMARY KEY (LogID)
         , INDEX INDEX_LogTime USING BTREE (LogTime)
