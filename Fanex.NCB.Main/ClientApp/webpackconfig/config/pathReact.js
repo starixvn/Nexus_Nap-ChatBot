@@ -10,7 +10,6 @@ var paths = {
     notificationtemplate: "./sources/pages/notificationtemplate/index.js",
     chatgroupmapping: "./sources/pages/chatgroupmapping/index.js",
     notificationtype: "./sources/pages/notificationtype/index.js",
-    home: "./sources/pages/home/index.js",
     login: "./sources/pages/login/index.js",
     editnotification: "./sources/pages/editnotification/index.jsx"
 };
