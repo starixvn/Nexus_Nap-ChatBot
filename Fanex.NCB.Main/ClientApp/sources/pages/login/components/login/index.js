@@ -12,7 +12,7 @@ class Login extends Component {
         super(props);
         this.state = {
             password: '',
-            invalidLogin: AppData.invalidLogin,
+            invalidLogin: AppData.invalidLogin
         };
         this.token = document.getElementsByName('__RequestVerificationToken')[0].value;
     }

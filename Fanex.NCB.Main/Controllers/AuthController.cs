@@ -78,52 +78,80 @@
 
         private async Task<IActionResult> AuthenticateUser(string userName, string password, string returnUrl)
         {
-            var user = await userService.GetAsync(userName).ConfigureAwait(false);
+            string msg = string.Empty;
+            User user = await userService.GetAsync(userName).ConfigureAwait(false);
 
             if (user != null && user.Password == Cryptography.CfsEnCode(password))
             {
-                var siteLevelList = userService.GetSiteLevel(user.Id, napSettings.Environment);
-
+                var siteLevelList = await userService.GetSiteLevelAsync(user.Id, napSettings.Environment).ConfigureAwait(false);
                 if (siteLevelList.Any(s => s.Site.Id == napSettings.SiteId))
                 {
-                    var loginParam = new LoginParameter
-                    {
-                        UserId = user.Id,
-                        SiteId = napSettings.SiteId,
-                        NetSessionId = HttpContext.Session.Id,
-                        Ip = HttpContext.Connection.RemoteIpAddress.ToString(),
-                        LoginDate = DateTime.Now
-                    };
-
-                    var onlineUserId = await securityService.LoginAsync(loginParam);
-
-                    napSession.UserName = user.Username;
-                    napSession.UserId = user.Id;
-                    napSession.OnUserId = onlineUserId;
-                    napSession.MenuItemList = userService.GetMenuItem(user.Id, napSettings.SiteId,
-                        napSettings.Environment, true).Where(x => !string.IsNullOrWhiteSpace(x.Url))
-                        .OrderBy(x => x.DisplayOrder).ToList();
-
-                    var claims = new List<Claim>
-                        {
-                            new Claim(ClaimTypes.Name, user.Username),
-                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-                        };
-
-                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                        new ClaimsPrincipal(identity));
-
-                    return Redirect(!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl) ? returnUrl :
-                        Url.Content($"~/{napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url}"));
+                    return await DoCheckIn(user, returnUrl);
                 }
+                else
+                {
+                    msg = "Don't have permission on current site";
+                }
+            }
+            else
+            {
+                msg = user == null ? "User does not exist" : "Wrong password";
             }
 
             return RedirectToAction("Index", new
             {
                 returnUrl,
-                invalidLogin = true
+                invalidLogin = true,
+                errorMsg = msg
             });
+        }
+
+        private async Task<IActionResult> DoCheckIn(User user, string returnUrl)
+        {
+            var loginParam = new LoginParameter
+            {
+                UserId = user.Id,
+                SiteId = napSettings.SiteId,
+                NetSessionId = HttpContext.Session.Id,
+                Ip = HttpContext.Connection.RemoteIpAddress.ToString(),
+                LoginDate = DateTime.Now
+            };
+
+            var onlineUserId = await securityService.LoginAsync(loginParam);
+
+            var ssoLoginParam = new SSOLoginParameter
+            {
+                UserId = user.Id,
+                SiteId = napSettings.SiteId,
+                CheckOnUserId = onlineUserId,
+                OnUserId = user.Id,
+                IP = HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                BrowserName = Request.Headers["User-Agent"].ToString(),
+                NetSessionId = HttpContext.Session.Id,
+                Platform = Environment.OSVersion.Platform.ToString(),
+                LoginDate = DateTime.Now
+            };
+            await securityService.SSOLoginAsync(ssoLoginParam).ConfigureAwait(false);
+
+            napSession.UserName = user.Username;
+            napSession.UserId = user.Id;
+            napSession.OnUserId = onlineUserId;
+            napSession.MenuItemList = userService.GetMenuItem(user.Id, napSettings.SiteId,
+                napSettings.Environment, true).Where(x => !string.IsNullOrWhiteSpace(x.Url))
+                .OrderBy(x => x.DisplayOrder).ToList();
+
+            var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Name, user.Username),
+                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                        };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(identity));
+
+            return Redirect(!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl) ? returnUrl :
+                Url.Content($"~/{napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url}"));
         }
     }
 }
