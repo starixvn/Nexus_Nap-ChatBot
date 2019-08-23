@@ -67,11 +67,20 @@
             return await baseService.GetDataAsync<BaseModel>(criteria).ConfigureAwait(false);
         }
 
+        public async Task<IEnumerable<BaseModel>> SearchChatGroupAsync(string query)
+        {
+            var criteria = new SearchChatGroupNameCriteria
+            {
+                Keyword = query
+            };
+            return await baseService.GetDataAsync<BaseModel>(criteria).ConfigureAwait(false);
+        }
+
         public async Task<IEnumerable<Recipient>> SearchRecipientsAsync(string query)
         {
             var criteria = new SearchRecipientCriteria
             {
-                Query = query
+                Keyword = query
             };
             return await baseService.GetDataAsync<Recipient>(criteria).ConfigureAwait(false);
         }

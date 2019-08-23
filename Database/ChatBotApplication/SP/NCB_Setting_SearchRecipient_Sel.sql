@@ -2,7 +2,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS `NCB_Setting_SearchRecipient_Sel`;
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_Setting_SearchRecipient_Sel`(
-	IN query VARCHAR(200)
+	IN keyword VARCHAR(200)
 	/*
 		Creator: Scofield@20190404       
         Revisions:
@@ -14,7 +14,7 @@ SQL SECURITY DEFINER
 BEGIN	
 	SELECT RecipientID AS ID, RecipientName AS Name
 	FROM Recipient
-	WHERE RecipientName LIKE CONCAT('%', query, '%')
+	WHERE RecipientName LIKE CONCAT('%', keyword, '%')
     ORDER BY RecipientName;
 END;
 

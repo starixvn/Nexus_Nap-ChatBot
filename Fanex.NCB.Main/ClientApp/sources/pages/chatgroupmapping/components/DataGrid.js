@@ -34,14 +34,14 @@ export class DataGrid extends Component {
             <Row style={{ height: 32 }}>
                 <Cell colWidth={50} header>{Labels.NumberCol}</Cell>
                 <Cell colWidth={100} header>{Labels.BotName}</Cell>
-                <Cell colWidth={350} header>{Labels.GroupID}</Cell>
+                <Cell colWidth={60} header>{Labels.GroupID}</Cell>
                 <Cell colWidth={200} header>{Labels.GroupName}</Cell>
                 <Cell colWidth={110} header>{Labels.ChatGroupType}</Cell>
                 <Cell colWidth={100} header>{Labels.RecipientType}</Cell>
                 <Cell colWidth={130} header>{Labels.Recipient}</Cell>
                 <Cell colWidth={100} header>{Labels.LicenseeStatus}</Cell>
                 <Cell colWidth={100} header>{Labels.MappingStatus}</Cell>
-                <Cell colWidth={100} header>{Labels.Remark}</Cell>
+                <Cell colWidth={200} header>{Labels.Remark}</Cell>
                 {
                     isHost &&
                     <Cell colWidth={60} header>{Labels.Action}</Cell>
@@ -71,16 +71,19 @@ export class DataGrid extends Component {
                 rows.push(<Row key={`body${index}`} >
                     <Cell className="text-center">{index + startIndex}</Cell>
                     <Cell>{item.mappingStatusID === mappingStatus.BotRemoved ? '' : item.botName}</Cell>
-                    <Cell title={item.conversationID}>
-                        <span onClick={() => this.copyGroupIdToClipboard(item.conversationID)} className="icon-copy" />
-                        <span>{item.conversationID}</span>
+                    <Cell className="text-center">
+                        <span
+                            onClick={() => this.copyGroupIdToClipboard(item.conversationID)}
+                            className="icon-copy" title={item.conversationID} />
                     </Cell>
                     <Cell>{item.groupName}</Cell>
                     <Cell>{item.chatGroupTypeName}</Cell>
                     <Cell>{item.recipientTypeName}</Cell>
                     <Cell>{item.recipientNames}</Cell>
                     <Cell>{this.getLicenseeStatus(item)}</Cell>
-                    <Cell><span className={CommonFunctions.getMappingClass(item.mappingStatusID)}>{item.mappingStatusName}</span></Cell>
+                    <Cell>
+                        <span className={CommonFunctions.getMappingClass(item.mappingStatusID)}>{item.mappingStatusName}</span>
+                    </Cell>
                     <Cell>{item.remark}</Cell>
                     {
                         isHost &&

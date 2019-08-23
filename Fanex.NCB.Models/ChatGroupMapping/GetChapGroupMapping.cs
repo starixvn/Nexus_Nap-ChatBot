@@ -10,6 +10,8 @@
 
         public string MappingStatusIds { get; set; }
 
+        public string GroupName { get; set; }
+
         public string LicenseeStatusIds { get; set; }
 
         public int PageIndex { get; set; }

@@ -12,6 +12,7 @@
     <Setting Key="NCB_Setting_Recipient_Sel" SpName="NCB_Setting_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_Common_RecipientType_Sel" SpName="NCB_Common_RecipientType_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_Setting_SearchRecipient_Sel" SpName="NCB_Setting_SearchRecipient_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Setting_SearchChatGroup_Sel" SpName="NCB_Setting_SearchChatGroup_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
   <Function Name="Notification Type">
     <Setting Key="NCB_NotificationType_Sel" SpName="NCB_NotificationType_Sel" DbName="ChatBot" Plain="0"></Setting>

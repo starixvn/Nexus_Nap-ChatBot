@@ -23,6 +23,9 @@ export class Filter extends Component {
             recipient: {
                 value: ''
             },
+            groupName: {
+                value: ''
+            },
             licenseeStatuses: {
                 value: ''
             },
@@ -113,6 +116,7 @@ export class Filter extends Component {
             botIds: this.state.botIds.value,
             recipientTypeIds: this.state.recipientTypes.value,
             recipientName: this.state.recipient.value,
+            groupName: this.state.groupName.value,
             mappingStatusIds: this.state.mappingStatuses.value,
             licenseeStatusIds: this.state.licenseeStatuses.value,
             pageIndex: 1,
@@ -158,6 +162,15 @@ export class Filter extends Component {
                         url={Site.resolveClientUrl('ChatGroupMapping/SearchRecipient')}
                         onSelect={value => this.onChange('recipient', { value: value })}
                         onInput={value => this.onChange('recipient', { value: value })}
+                        htmlAttributes={{ maxLength: 50 }}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label className="form-label">{Labels.GroupName}</Label>
+                    <AutoComplete
+                        url={Site.resolveClientUrl('ChatGroupMapping/SearchChatGroup')}
+                        onSelect={value => this.onChange('groupName', { value: value })}
+                        onInput={value => this.onChange('groupName', { value: value })}
                         htmlAttributes={{ maxLength: 50 }}
                     />
                 </FormGroup>

@@ -1,0 +1,18 @@
+DELIMITER //
+DROP PROCEDURE IF EXISTS `NCB_Setting_SearchChatGroup_Sel`;
+
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_Setting_SearchChatGroup_Sel`(
+	IN keyword VARCHAR(200)
+	/*
+		Creator: Oliver@20190823       
+    */
+) 
+SQL SECURITY DEFINER
+BEGIN	
+	SELECT cg.ConversationGroupID AS ID, cg.Name AS Name
+	FROM ChatBot.ConversationGroup cg
+	WHERE cg.Name <> '' AND cg.Name LIKE CONCAT('%', keyword, '%')
+    ORDER BY cg.Name;
+END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_SearchChatGroup_Sel TO 'ncb.admin'@'%';

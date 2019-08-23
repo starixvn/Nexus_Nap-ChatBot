@@ -21,6 +21,8 @@
 
         Task<IEnumerable<BaseModel>> GetFilterRecipientTypesAsync();
 
+        Task<IEnumerable<BaseModel>> SearchChatGroupAsync(string query);
+
         IEnumerable<BaseModel> GetAllMappingStatus();
     }
 }

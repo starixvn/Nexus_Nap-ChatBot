@@ -26,6 +26,7 @@
             {
                 BotIds = model.BotIDs,
                 RecipientName = model.RecipientName,
+                GroupName = model.GroupName,
                 RecipientTypeIDs = model.RecipientTypeIDs,
                 LicenseeStatusIds = model.LicenseeStatusIds,
                 MappingStatusIds = model.MappingStatusIds,

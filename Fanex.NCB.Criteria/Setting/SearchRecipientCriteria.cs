@@ -4,7 +4,7 @@
 
     public class SearchRecipientCriteria : CriteriaBase
     {
-        public string Query { get; set; }
+        public string Keyword { get; set; }
 
         public override string GetSettingKey() => "NCB_Setting_SearchRecipient_Sel";
 

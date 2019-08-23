@@ -45,13 +45,21 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSettings()
         {
+            var bots = settingService.GetBotNameAsync();
+            var recipientTypes = settingService.GetFilterRecipientTypesAsync();
+            var recipients = settingService.GetRecipientsAsync();
+            var chatgroupTypes = settingService.GetChatGroupTypeAsync();
+            var licenseeStatus = settingService.GetLicenseeStatusAsync();
+
+            await Task.WhenAll(bots, recipientTypes, recipients, chatgroupTypes, licenseeStatus).ConfigureAwait(false);
+
             var viewModel = new ChatGroupMappingFilterViewModel
             {
-                Bots = await settingService.GetBotNameAsync().ConfigureAwait(false),
-                RecipientTypes = await settingService.GetFilterRecipientTypesAsync().ConfigureAwait(false),
-                Recipients = await settingService.GetRecipientsAsync().ConfigureAwait(false),
-                ChatGroupTypes = await settingService.GetChatGroupTypeAsync().ConfigureAwait(false),
-                LicenseeStatuses = await settingService.GetLicenseeStatusAsync().ConfigureAwait(false),
+                Bots = await bots,
+                RecipientTypes = await recipientTypes,
+                Recipients = await recipients,
+                ChatGroupTypes = await chatgroupTypes,
+                LicenseeStatuses = await licenseeStatus,
                 MappingStatuses = settingService.GetAllMappingStatus()
             };
 
@@ -81,6 +89,12 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> SearchRecipient(string query)
         {
             return Json(await settingService.SearchRecipientsAsync(query).ConfigureAwait(false));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SearchChatGroup(string query)
+        {
+            return Json(await settingService.SearchChatGroupAsync(query).ConfigureAwait(false));
         }
     }
 }
