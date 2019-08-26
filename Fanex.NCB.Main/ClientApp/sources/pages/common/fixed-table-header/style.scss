@@ -137,7 +137,6 @@ $colorBorderPaging: #d1dae1;
 
     .page-prev {
         transform: scale(-1);
-        border-left: 0;
 
         &:before {
             content: "\e915";
@@ -212,18 +211,16 @@ $colorBorderPaging: #d1dae1;
 
     .page-div {
         display: inline-block;
-        border: 1px solid #ced4da;
+        height: 27px;
         vertical-align: middle;
 
         .page-span {
             display: inline-block;
-            padding: 3px 9px;
-            border-right: solid 1px #ced4da;
+            padding: 0 10px;
+            line-height: 25px;
+            border: 1px solid #ced4da;
             cursor: pointer;
-
-            &:last-child {
-                border-right: 0;
-            }
+            margin-left: -1px;
 
             &:hover {
                 background: rgba(6, 104, 150, .5);
@@ -233,6 +230,11 @@ $colorBorderPaging: #d1dae1;
         .active {
             background: #066896;
             color: white;
+            border-color: #066896;
+
+            &:hover {
+                border-color: #81B2C9;
+            }
         }
     }
 }

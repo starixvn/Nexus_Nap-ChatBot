@@ -11,34 +11,6 @@
     font-weight: bold;
 }
 
-.edit-mapping-status {
-    width: 450px;
-}
-
-.col-status {
-    width: 114px;
-}
-
-.col-group-id {
-    width: 160px;
-}
-
-.col-recipient-type {
-    width: 160px;
-}
-
-.col-group-name {
-    width: 250px;
-}
-
-.col-bot-name {
-    width: 200px;
-}
-
-.col-recipient {
-    width: 300px;
-}
-
 .form-edit {
     .form-group {
         display: grid;
@@ -86,5 +58,5 @@
 }
 
 .icon-copy:hover {
-    color: #000;
+    background-color: #ff9913;
 }
