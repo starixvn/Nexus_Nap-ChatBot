@@ -112,7 +112,6 @@
     position: absolute;
     top: 11px;
     right: 6px;
-    line-height: 0;
     font-size: 11px;
     color: #fff;
     line-height: 16px;
@@ -193,7 +192,7 @@
 
     &:after {
         margin-left: 10px;
-        font-family: 'nap-chatbot' !important;
+        font-family: 'nap-chatbot', sans-serif !important;
         font-size: 5px;
         content: "\E90D";
         color: #000;
