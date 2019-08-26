@@ -120,21 +120,6 @@ $colorBorderPaging: #d1dae1;
         }
     }
 
-    .page-prev, .page-next {
-        padding: 0 10px;
-        font-family: 'nap-chatbot' !important;
-        font-size: 10px;
-        height: 27px;
-        line-height: 27px;
-        border: 1px solid #ced4da;
-        color: #373737;
-        vertical-align: middle;
-
-        &:hover {
-            background: rgba(6, 104, 150, .5);
-        }
-    }
-
     .page-prev {
         transform: scale(-1);
 
@@ -148,6 +133,21 @@ $colorBorderPaging: #d1dae1;
 
         &:before {
             content: "\e915";
+        }
+    }
+
+    .page-prev, .page-next {
+        padding: 0 10px;
+        font-family: 'nap-chatbot', sans-serif !important;
+        font-size: 10px;
+        height: 27px;
+        line-height: 27px;
+        border: 1px solid #ced4da;
+        color: #373737;
+        vertical-align: middle;
+
+        &:hover {
+            background: rgba(6, 104, 150, .5);
         }
     }
 
