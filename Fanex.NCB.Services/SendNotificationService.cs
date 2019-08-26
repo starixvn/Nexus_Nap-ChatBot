@@ -52,7 +52,7 @@
                 {
                     NotificationID = r.NotificationId,
                     RecipientID = r.RecipientId,
-                    SentTime = DateTimeExtension.ConvertToDateTimeString(DateTime.Now.ConvertToUTC()),
+                    SentTime = DateTimeExtension.ConvertToDateTimeString(DateTime.UtcNow),
                     ConversationGroupID = r.ChatGroupId,
                     ConversationBotID = r.BotId,
                     Retry = false,

@@ -117,25 +117,11 @@
                 LoginDate = DateTime.Now
             };
 
-            var onlineUserId = await securityService.LoginAsync(loginParam);
-
-            var ssoLoginParam = new SSOLoginParameter
-            {
-                UserId = user.Id,
-                SiteId = napSettings.SiteId,
-                CheckOnUserId = onlineUserId,
-                OnUserId = user.Id,
-                IP = HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                BrowserName = Request.Headers["User-Agent"].ToString(),
-                NetSessionId = HttpContext.Session.Id,
-                Platform = Environment.OSVersion.Platform.ToString(),
-                LoginDate = DateTime.Now
-            };
-            await securityService.SSOLoginAsync(ssoLoginParam).ConfigureAwait(false);
+            var onUserId = await securityService.LoginAsync(loginParam);
 
             napSession.UserName = user.Username;
             napSession.UserId = user.Id;
-            napSession.OnUserId = onlineUserId;
+            napSession.OnUserId = onUserId;
             napSession.MenuItemList = userService.GetMenuItem(user.Id, napSettings.SiteId,
                 napSettings.Environment, true).Where(x => !string.IsNullOrWhiteSpace(x.Url))
                 .OrderBy(x => x.DisplayOrder).ToList();
@@ -152,6 +138,34 @@
 
             return Redirect(!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl) ? returnUrl :
                 Url.Content($"~/{napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url}"));
+        }
+
+        public async Task<IActionResult> SSO(int userId, int onUserId, string redirectUrl)
+        {
+            var ssoLoginParam = new SSOLoginParameter
+            {
+                UserId = userId,
+                SiteId = napSettings.SiteId,
+                CheckOnUserId = userId,
+                OnUserId = onUserId,
+                IP = HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                BrowserName = Request.Headers["User-Agent"].ToString(),
+                NetSessionId = HttpContext.Session.Id,
+                Platform = Environment.OSVersion.Platform.ToString(),
+                LoginDate = DateTime.Now
+            };
+            var result = await securityService.SSOLoginAsync(ssoLoginParam).ConfigureAwait(false);
+
+            if (result > 0)
+            {
+                var user = await userService.GetAsync(userId).ConfigureAwait(false);
+                await DoCheckIn(user, redirectUrl).ConfigureAwait(false);
+
+                return Redirect(!string.IsNullOrWhiteSpace(redirectUrl) && Url.IsLocalUrl(redirectUrl) ? redirectUrl :
+                Url.Content($"~/{napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url}"));
+            }
+
+            return NotFound();
         }
     }
 }
