@@ -71,8 +71,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> GetAll(GetChapGroupMapping model)
         {
             var result = await chatGroupMappingService.GetChatGroupMappingListAsync(model).ConfigureAwait(false);
-            var isHostPermission = userService.IsHavingPermission(napSession.UserId, napSettings.SiteId, FunctionKey.ChatGroupMapping, Policy.Host);
-            return Json(new { data = result.Item1, count = result.Item2, isHost = isHostPermission });
+            var permission = await userService.GetPermissionAsync(napSession.UserId, napSettings.SiteId, FunctionKey.ChatGroupMapping).ConfigureAwait(false);
+            return Json(new { data = result.Item1, count = result.Item2, isHost = permission >= (int)Policy.Host });
         }
 
         [HttpPost]

@@ -42,8 +42,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> GetAll(int pageIndex, int pageSize)
         {
             var data = await notificationTypeService.GetAllAsync(pageIndex, pageSize).ConfigureAwait(false);
-            var isHost = userService.IsHavingPermission(napSession.UserId, napSettings.SiteId, FunctionKey.ChatGroupMapping, Policy.Host);
-            return Json(new { NotificationTypes = data.Item1, Count = data.Item2, IsHost = isHost });
+            var permission = await userService.GetPermissionAsync(napSession.UserId, napSettings.SiteId, FunctionKey.ChatGroupMapping).ConfigureAwait(false);
+            return Json(new { NotificationTypes = data.Item1, Count = data.Item2, IsHost = permission >= (int)Policy.Host });
         }
 
         [HttpPost]
