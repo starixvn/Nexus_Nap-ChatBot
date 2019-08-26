@@ -8,7 +8,8 @@ export default class Header extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            dropdownOpen: false
+            dropdownOpen: false,
+            username: document.getElementById('logged-username').value
         };
     }
 
@@ -45,13 +46,13 @@ export default class Header extends React.PureComponent {
                                 <div className="profile-picture">
                                     <span className="icon-username" />
                                 </div>
-                                Welcome Sa
+                                Welcome {this.state.username}
                             </DropdownToggle>
                             <DropdownMenu>
                                 <DropdownItem tag="a" href="#">
                                     <span className="icon-change-pass" />Change Password
                                 </DropdownItem>
-                                <DropdownItem tag="a" href={Site.resolveClientUrl('Auth/Index')}>
+                                <DropdownItem tag="a" href={Site.resolveClientUrl('Auth/Logout')}>
                                     <span className="icon-sign-out" />Sign Out
                                 </DropdownItem>
                             </DropdownMenu>

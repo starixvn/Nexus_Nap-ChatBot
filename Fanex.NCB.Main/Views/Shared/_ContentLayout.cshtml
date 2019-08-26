@@ -23,6 +23,7 @@
         @RenderBody()
     </div>
     <input type="hidden" id="root-url" value="@Url.Content("~/")" />
+    <input type="hidden" id="logged-username" value="@User.Identity.Name" />
 
     <environment include="Development">
         <script src="~/dev/common/reactvendor.chunk.js" asp-append-version="true"></script>
