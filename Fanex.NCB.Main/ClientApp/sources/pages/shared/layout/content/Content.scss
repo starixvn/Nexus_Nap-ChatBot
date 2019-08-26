@@ -1,7 +1,6 @@
 @import "../../variables";
 
 .content {
-    overflow-y: hidden;
     background-color: #fdfdfd;
     position: absolute;
     top: $header-height + 3;
@@ -9,6 +8,7 @@
     right: 0;
     bottom: 0;
     padding: 12px;
+    overflow: auto;
 }
 
 .main-content {
