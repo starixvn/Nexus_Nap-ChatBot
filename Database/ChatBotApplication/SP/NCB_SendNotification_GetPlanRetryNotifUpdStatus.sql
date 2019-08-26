@@ -95,7 +95,7 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
     #2nd dataset: List of recipient,bot,conversation
 	SELECT nrl.NotificationID AS NotificationID
 					, r.RecipientID, r.RecipientName
-					, GroupBot.ConversationGroupID AS ChatGroupID
+					, nrl.ConversationGroupID AS ChatGroupID
 					, grp.ConversationID AS ChatGroupConversationID 
                     , grp.ServiceUrl
                     , grp.ChannelID
@@ -130,7 +130,7 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
     UNION ALL
     SELECT nrl.NotificationID AS NotificationID
 					, r.RecipientID, r.RecipientName
-					, GroupBot.ConversationGroupID AS ChatGroupID
+					, nrl.ConversationGroupID AS ChatGroupID
 					, grp.ConversationID AS ChatGroupConversationID 
                     , grp.ServiceUrl
                     , grp.ChannelID
