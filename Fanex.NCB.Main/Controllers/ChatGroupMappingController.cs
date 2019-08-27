@@ -9,9 +9,12 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Main.ViewModel.ChatGroupMapping;
     using Fanex.NCB.Models.ChatGroupMapping;
+    using Fanex.NCB.NAPResolver;
+    using Fanex.NCB.NAPResolver.Model;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
     using static Fanex.NAP.Core.Business.Constant;
 
     [NapSuperAuth]
@@ -29,14 +32,15 @@ namespace Fanex.NCB.SkypeBot.Controllers
             ISettingService settingService,
             INapSettings napSettings,
             INapSession napSession,
-            IUserService userService,
+            Func<NAPResolverType, IUserService> userServiceProvider,
+               IOptionsSnapshot<NapOption> napOption,
             ILogger<ChatGroupMappingController> logger)
         {
             this.chatGroupMappingService = chatGroupMappingService;
             this.settingService = settingService;
             this.napSettings = napSettings;
             this.napSession = napSession;
-            this.userService = userService;
+            userService = userServiceProvider(napOption.Value.NAPResolverType);
         }
 
         [HttpGet]
@@ -73,7 +77,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [HttpGet]
         [NapAuth(FunctionKey = FunctionKey.ChatGroupMapping, Policy = Policy.Read)]
         public async Task<IActionResult> GetAll(GetChapGroupMapping model)
-        {         
+        {
             var result = await chatGroupMappingService.GetChatGroupMappingListAsync(model).ConfigureAwait(false);
             var permission = await userService.GetPermissionAsync(napSession.UserId, napSettings.SiteId, FunctionKey.ChatGroupMapping).ConfigureAwait(false);
             return Json(new { data = result.Item1, count = result.Item2, isHost = permission >= (int)Policy.Host });
