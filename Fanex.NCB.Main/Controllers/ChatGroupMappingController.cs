@@ -21,7 +21,6 @@ namespace Fanex.NCB.SkypeBot.Controllers
         private readonly INapSettings napSettings;
         private readonly INapSession napSession;
         private readonly IUserService userService;
-        private readonly ILogger logger;
 
         public ChatGroupMappingController(
             IChatGroupMappingService chatGroupMappingService,

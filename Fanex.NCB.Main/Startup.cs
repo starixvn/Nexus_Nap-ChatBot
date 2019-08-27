@@ -83,7 +83,7 @@
 
             services.AddDistributedRedisCache(options =>
             {
-                options.Configuration = "10.100.10.199:6379";
+                options.Configuration = Configuration.GetSection("RedisConfig").Value;
                 options.InstanceName = "Fanex.NCB.Auth";
             });
 

@@ -7,6 +7,8 @@
     using Fanex.NAP.Client.Models.ParameterObject;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Models;
+    using Fanex.NCB.Core.Resources;
+    using Fanex.NCB.Models.Auth;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;
@@ -19,18 +21,22 @@
 
     public class AuthController : Controller
     {
+        private const int SSOExpiredTimeInSeconds = 30;
         private readonly IUserService userService;
+        private readonly IGroupService groupService;
         private readonly INapSession napSession;
         private readonly INapSettings napSettings;
         private readonly ISecurityService securityService;
 
         public AuthController(
             IUserService userService,
+            IGroupService groupService,
             ISecurityService securityService,
             INapSession napSession,
             INapSettings napSettings)
         {
             this.userService = userService;
+            this.groupService = groupService;
             this.napSession = napSession;
             this.napSettings = napSettings;
             this.securityService = securityService;
@@ -63,50 +69,57 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> SignIn(string userName, string password, string returnUrl)
+        public async Task<IActionResult> SignIn(UserLogin userLogin)
         {
-            return await AuthenticateUser(userName, password, returnUrl);
+            string errorMsg = string.Empty;
+            User user = await userService.GetAsync(userLogin.Username).ConfigureAwait(false);
+
+            if (user != null)
+            {
+                if (!ValidatePassword(user, userLogin))
+                {
+                    errorMsg = Labels.WrongPassword;
+                }
+                else if (!IsExistNapSite(user))
+                {
+                    errorMsg = Labels.NoPermision;
+                    
+                }
+                else if (!IsExistNapGroup(user))
+                {
+                    errorMsg = Labels.NoPermision;
+                }
+                else
+                {
+                    await DoCheckIn(user);
+
+                    return Redirect(!string.IsNullOrWhiteSpace(userLogin.ReturnUrl) && Url.IsLocalUrl(userLogin.ReturnUrl) ? userLogin.ReturnUrl :
+                        Url.Content($"~/{napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url}"));
+                }
+            }
+            else
+            {
+                errorMsg = Labels.UserNotExists;
+            }
+
+            return RedirectToAction("Index", new
+            {
+                userLogin.ReturnUrl,
+                invalidLogin = true,
+                errorMsg
+            });
         }
 
         public async Task<IActionResult> Logout()
         {
+            securityService.Logout(napSession.OnUserId);
             napSession.ClearAll();
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
 
             return RedirectToAction("Index");
         }
-
-        private async Task<IActionResult> AuthenticateUser(string userName, string password, string returnUrl)
-        {
-            string msg = string.Empty;
-            User user = await userService.GetAsync(userName).ConfigureAwait(false);
-
-            if (user != null && user.Password == Cryptography.CfsEnCode(password))
-            {
-                var siteLevelList = await userService.GetSiteLevelAsync(user.Id, napSettings.Environment).ConfigureAwait(false);
-                if (siteLevelList.Any(s => s.Site.Id == napSettings.SiteId))
-                {
-                    return await DoCheckIn(user, returnUrl);
-                }
-                else
-                {
-                    msg = "Don't have permission on current site";
-                }
-            }
-            else
-            {
-                msg = user == null ? "User does not exist" : "Wrong password";
-            }
-
-            return RedirectToAction("Index", new
-            {
-                returnUrl,
-                invalidLogin = true,
-                errorMsg = msg
-            });
-        }
-
-        private async Task<IActionResult> DoCheckIn(User user, string returnUrl)
+        
+        private async Task DoCheckIn(User user)
         {
             var loginParam = new LoginParameter
             {
@@ -135,37 +148,81 @@
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(identity));
-
-            return Redirect(!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl) ? returnUrl :
-                Url.Content($"~/{napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url}"));
         }
 
-        public async Task<IActionResult> SSO(int userId, int onUserId, string redirectUrl)
+        [Route("userlogin/sso")]
+        public async Task<IActionResult> SSO(SSOLogin ssoLogin)
         {
-            var ssoLoginParam = new SSOLoginParameter
+            if (ValidateTime(ssoLogin.Time))
             {
-                UserId = userId,
-                SiteId = napSettings.SiteId,
-                CheckOnUserId = userId,
-                OnUserId = onUserId,
-                IP = HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                BrowserName = Request.Headers["User-Agent"].ToString(),
-                NetSessionId = HttpContext.Session.Id,
-                Platform = Environment.OSVersion.Platform.ToString(),
-                LoginDate = DateTime.Now
-            };
-            var result = await securityService.SSOLoginAsync(ssoLoginParam).ConfigureAwait(false);
+                var userId = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.UserId));
+                var onuserid = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.OnUserId));
 
-            if (result > 0)
-            {
-                var user = await userService.GetAsync(userId).ConfigureAwait(false);
-                await DoCheckIn(user, redirectUrl).ConfigureAwait(false);
+                var ssoLoginParam = new SSOLoginParameter
+                {
+                    UserId = userId,
+                    SiteId = napSettings.SiteId,
+                    CheckOnUserId = userId,
+                    OnUserId = onuserid,
+                    IP = HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                    BrowserName = Request.Headers["User-Agent"].ToString(),
+                    NetSessionId = HttpContext.Session.Id,
+                    Platform = Environment.OSVersion.Platform.ToString(),
+                    LoginDate = DateTime.Now
+                };
+                var result = await securityService.SSOLoginAsync(ssoLoginParam).ConfigureAwait(false);
 
-                return Redirect(!string.IsNullOrWhiteSpace(redirectUrl) && Url.IsLocalUrl(redirectUrl) ? redirectUrl :
-                Url.Content($"~/{napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url}"));
+                if (result > 0)
+                {
+                    //// bug here, wait for updating Fanex.NAP.Client
+                    var user = await userService.GetAsync(userId).ConfigureAwait(false);
+
+                    if (user != null)
+                    {
+                        await DoCheckIn(user).ConfigureAwait(false);
+
+                        return Redirect(!string.IsNullOrWhiteSpace(ssoLogin.RedirectUrl) && Url.IsLocalUrl(ssoLogin.RedirectUrl) ? ssoLogin.RedirectUrl :
+                        Url.Content($"~/{napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url}"));
+                    }
+                }
             }
 
             return NotFound();
+        }
+
+        private static bool ValidatePassword(User user, UserLogin userLogin)
+        {
+            return string.Equals(user.Password, Cryptography.CfsEnCode(userLogin.Password), StringComparison.CurrentCulture);
+        }
+
+        private bool IsExistNapSite(User user)
+        {
+            return userService
+                .GetSiteLevel(user.Id, napSettings.Environment)
+                .Any(s => s.Site.Id == napSettings.SiteId && s.IsActive);
+        }
+
+        private bool IsExistNapGroup(User user)
+        {
+            if (user.Group != null)
+            {
+                var group = groupService.Get(user.Group.Id);
+
+                if (group != null && !group.IsActive)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool ValidateTime(string time)
+        {
+            var cfsDescryptTime = Data.Cryptography.DecryptPassword(time);
+            var expiration = DateTime.Parse(securityService.GetTime()) - DateTime.Parse(cfsDescryptTime);
+
+            return expiration.TotalSeconds <= SSOExpiredTimeInSeconds;
         }
     }
 }
