@@ -16,16 +16,17 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_User_ReCheckIn(
 )
 SQL SECURITY DEFINER
 BEGIN
-		IF EXISTS (	SELECT 1 
-					FROM ChatBot.NAP_OnUser ou
-					WHERE ou.Id = onUserId AND ou.IsKickedOut = 1 )
-			THEN
+		IF EXISTS (	
+				SELECT 1 
+				FROM ChatBot.NAP_OnUser ou
+				WHERE ou.Id = onUserId AND ou.IsKickedOut = 1 
+		) THEN
 				SET isKickedOut = 1;
 		ELSE    
 				SET isKickedOut = 0;    
 
 				UPDATE ChatBot.NAP_OnUser ou
-				SET ou.ReloadTime = GETDATE()     
+				SET ou.ReloadTime = UTC_TIMESTAMP()     
 				WHERE ou.Id = onUserId;    
 				 
 				IF ROW_COUNT() = 0 THEN
