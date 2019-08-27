@@ -16,7 +16,7 @@ export default class ErrorReport extends Component {
         };
     }
 
-    handleRemarkChange = event => this.setState({ remark: event.target.value.trim(), remarkTouched: true });
+    handleRemarkChange = event => this.setState({ remark: event.target.value, remarkTouched: true });
 
     renderFailedRecipient = (recipient, index) => {
         return (
@@ -41,7 +41,7 @@ export default class ErrorReport extends Component {
 
     handleResolveNotification = () => {
         if (this.state.remark !== '') {
-            this.props.onResolveNotification(this.state.remark);
+            this.props.onResolveNotification(this.state.remark.trim());
         } else {
             if (!this.state.remarkTouched) {
                 this.setState({ remarkTouched: true });
