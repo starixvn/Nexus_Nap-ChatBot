@@ -1,22 +1,17 @@
 ﻿namespace Fanex.NCB.Main
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Logging;
     using Fanex.Logging.Sentry;
     using Fanex.NAP.Client;
-    using Fanex.NAP.Client.AspNetCore.Configuration;
-    using Fanex.NAP.Client.AspNetCore.Session;
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
-    using Fanex.NAP.Client.Services;
-    using Fanex.NAP.Client.Transport;
     using Fanex.NAP.Client.Web;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Main.AppConfig;
+    using Fanex.NCB.NAPResolver;
+    using Fanex.NCB.NAPResolver.Model;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -25,6 +20,9 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Sentry;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     public class Startup
     {
@@ -65,6 +63,7 @@
             services.AddSingleton(Configuration);
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<BotSettings>(Configuration.GetSection("ChatBotConfigs"));
+            services.Configure<NapOption>(Configuration.GetSection("NapOption"));
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
@@ -95,11 +94,7 @@
                 options.IdleTimeout = TimeSpan.FromMinutes(CookieExpiration);
             });
 
-            services.AddSingleton<INapSettings>(new NapSettings(Configuration));
-            services.AddSingleton<INapSession, NapSession>();
-            services.AddSingleton<IGroupService, GroupService>();
-            services.AddSingleton<IRestClient, RestClient>();
-            services.AddSingleton<ISecurityService, SecurityService>();
+            services.AddNapServices(Configuration);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<ILogger, Logger>();
             services.RegisterServices();
