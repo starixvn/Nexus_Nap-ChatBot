@@ -70,6 +70,7 @@
             services.AddSingleton(Configuration);
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<BotSettings>(Configuration.GetSection("ChatBotConfigs"));
+            services.Configure<CronJob>(Configuration.GetSection("CronJob"));
             services.AddTransient<ILogger, Logger>();
             RegisterService(services);
             RegisterRepository(services);
@@ -98,8 +99,6 @@
             {
                 WorkerCount = Configuration.GetValue<int>("WorkerCount")
             });
-
-            RunHangfireJobs(Configuration);
 
             app.UseStaticFiles();
             app.UseMvc();

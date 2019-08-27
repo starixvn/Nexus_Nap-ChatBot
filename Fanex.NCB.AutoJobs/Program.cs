@@ -4,9 +4,9 @@
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using Fanex.NCB.AutoJobs.Extensions;
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Hosting.WindowsServices;
     using Microsoft.Extensions.Configuration;
 
     public static class Program
@@ -28,7 +28,7 @@
 
             if (isService)
             {
-                host.RunAsService();
+                host.RunAsCustomService();
             }
             else
             {
@@ -45,7 +45,9 @@
             string evn = configuration["Enviroment"] ?? string.Empty;
 
             return WebHost.CreateDefaultBuilder(args)
-               .ConfigureLogging((hostingContext, logging) => { })
+               .ConfigureLogging((hostingContext, logging) =>
+               {
+               })
                .UseConfiguration(configuration)
                .UseEnvironment(evn)
                .UseStartup<Startup>()
