@@ -6,6 +6,7 @@
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ParameterObject;
     using Fanex.NAP.Client.Services;
+    using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Core.Resources;
     using Fanex.NCB.Models.Auth;
@@ -24,6 +25,7 @@
         private const int SSOExpiredTimeInSeconds = 30;
         private readonly IUserService userService;
         private readonly IGroupService groupService;
+        private readonly ISiteService siteService;
         private readonly INapSession napSession;
         private readonly INapSettings napSettings;
         private readonly ISecurityService securityService;
@@ -32,14 +34,16 @@
             IUserService userService,
             IGroupService groupService,
             ISecurityService securityService,
+            ISiteService siteService,
             INapSession napSession,
             INapSettings napSettings)
         {
             this.userService = userService;
             this.groupService = groupService;
+            this.securityService = securityService;
+            this.siteService = siteService;
             this.napSession = napSession;
             this.napSettings = napSettings;
-            this.securityService = securityService;
         }
 
         public IActionResult Index(string returnUrl, bool invalidLogin)
@@ -118,36 +122,16 @@
 
             return RedirectToAction("Index");
         }
-        
-        private async Task DoCheckIn(User user)
+
+        [HttpPost]
+        public ActionResult CheckUserOnlineStatus()
         {
-            var loginParam = new LoginParameter
+            var recheckInStatus = RecheckIn();
+            return Json(new
             {
-                UserId = user.Id,
-                SiteId = napSettings.SiteId,
-                NetSessionId = HttpContext.Session.Id,
-                Ip = HttpContext.Connection.RemoteIpAddress.ToString(),
-                LoginDate = DateTime.Now
-            };
-
-            var onUserId = await securityService.LoginAsync(loginParam);
-
-            napSession.UserName = user.Username;
-            napSession.UserId = user.Id;
-            napSession.OnUserId = onUserId;
-            napSession.MenuItemList = userService.GetMenuItem(user.Id, napSettings.SiteId,
-                napSettings.Environment, true).Where(x => !string.IsNullOrWhiteSpace(x.Url))
-                .OrderBy(x => x.DisplayOrder).ToList();
-
-            var claims = new List<Claim>
-                        {
-                            new Claim(ClaimTypes.Name, user.Username),
-                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-                        };
-
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(identity));
+                napSession.OnUserId,
+                ErrCode = (int)recheckInStatus
+            });
         }
 
         [Route("userlogin/sso")]
@@ -186,6 +170,54 @@
             }
 
             return NotFound();
+        }
+
+        private RecheckInStatus RecheckIn()
+        {
+            if (!napSettings.EnableReCheckIn || napSession.OnUserId <= 0)
+            {
+                return RecheckInStatus.Success;
+            }
+
+            if (!siteService.IsActivated(napSettings.SiteId))
+            {
+                return RecheckInStatus.InvalidSite;
+            }
+
+            var status = securityService.ReCheckIn(napSession.OnUserId, napSettings.SiteId);
+
+            return status > 0 ? RecheckInStatus.KickOut : RecheckInStatus.Success;
+        }
+
+        private async Task DoCheckIn(User user)
+        {
+            var loginParam = new LoginParameter
+            {
+                UserId = user.Id,
+                SiteId = napSettings.SiteId,
+                NetSessionId = HttpContext.Session.Id,
+                Ip = HttpContext.Connection.RemoteIpAddress.ToString(),
+                LoginDate = DateTime.Now
+            };
+
+            var onUserId = await securityService.LoginAsync(loginParam);
+
+            napSession.UserName = user.Username;
+            napSession.UserId = user.Id;
+            napSession.OnUserId = onUserId;
+            napSession.MenuItemList = userService.GetMenuItem(user.Id, napSettings.SiteId,
+                napSettings.Environment, true).Where(x => !string.IsNullOrWhiteSpace(x.Url))
+                .OrderBy(x => x.DisplayOrder).ToList();
+
+            var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Name, user.Username),
+                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                        };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(identity));
         }
 
         private static bool ValidatePassword(User user, UserLogin userLogin)
