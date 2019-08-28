@@ -297,7 +297,7 @@ CREATE TABLE ChatBot.UserLog_RunSP(
 	, ReloadTime DATETIME NULL
 	, IsKickedOut BIT NULL
 	, IP VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NULL
-	, NetSessionId VARCHAR(30) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NULL
+	, NetSessionId VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NULL
     , CONSTRAINT PK_NAP_On_User PRIMARY KEY (Id)
 );
 

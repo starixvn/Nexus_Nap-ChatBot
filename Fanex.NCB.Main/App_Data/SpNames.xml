@@ -46,4 +46,48 @@
     <Setting Key="NCB_EditNotification_Upd" SpName="NCB_EditNotification_Upd" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_EditNotification_Recipient_Sel" SpName="NCB_EditNotification_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
+
+  <Function Name="Local NAP">
+    <Setting Key="NAP_User_GetByUsername" SpName="NAP_User_GetByUsername" DbName="ChatBot" Plain="0">
+      <Mapping DataField="UserId" ObjectProperty="Id" Class="User" />
+      <Mapping DataField="CreatorId" ObjectProperty="Id" Class="User" />
+      <Mapping DataField="CreatorUsername" ObjectProperty="Username" Class="User" />
+      <Mapping DataField="ModifierId" ObjectProperty="Id" Class="User" />
+      <Mapping DataField="ModifierUsername" ObjectProperty="Username" Class="User" />
+    </Setting>
+    <Setting Key="NAP_Site_GetByUser" SpName="NAP_Site_GetByUser" DbName="ChatBot" Plain="0">
+      <Mapping DataField="SiteId" ObjectProperty="Id" Class="Site" />
+      <Mapping DataField="SiteName" ObjectProperty="Name" Class="Site" />
+      <Mapping DataField="CreatorId" ObjectProperty="Id" Class="User" />
+      <Mapping DataField="CreatorUsername" ObjectProperty="Username" Class="User" />
+      <Mapping DataField="ModifierId" ObjectProperty="Id" Class="User" />
+      <Mapping DataField="ModifierUsername" ObjectProperty="Username" Class="User" />
+    </Setting>
+    <Setting Key="NAP_Group_GetById" SpName="NAP_Group_GetById" DbName="ChatBot" Plain="0">
+      <Mapping DataField="GroupId" ObjectProperty="Id" />
+      <Mapping DataField="GroupName" ObjectProperty="Name" />
+    </Setting>
+    <Setting Key="NAP_LogUserLogin_Insert" SpName="NAP_LogUserLogin_Insert" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NAP_User_CheckIn" SpName="NAP_User_CheckIn" DbName="ChatBot" Plain="0"></Setting>
+
+    <Setting Key="NAP_MenuItem_GetByUserAndSiteIncludeGroup" SpName="NAP_MenuItem_GetByUserAndSiteIncludeGroup" DbName="ChatBot" Plain="0">
+      <Mapping DataField="MenuItemId" ObjectProperty="Id" Class="MenuItem" />
+      <Mapping DataField="MenuItemName" ObjectProperty="Name" Class="MenuItem" />
+
+      <Mapping DataField="ParentId" ObjectProperty="Id" Class="MenuItem" />
+      <Mapping DataField="ParentName" ObjectProperty="Name" Class="MenuItem" />
+
+      <Mapping DataField="FunctionId" ObjectProperty="Id" Class="Function" />
+      <Mapping DataField="FunctionName" ObjectProperty="Name" Class="Function" />
+
+      <Mapping DataField="SiteId" ObjectProperty="Id" Class="Site" />
+      <Mapping DataField="SiteName" ObjectProperty="Name" Class="Site" />
+
+      <Mapping DataField="CreatorId" ObjectProperty="Id" Class="User" />
+      <Mapping DataField="CreatorUsername" ObjectProperty="Username" Class="User" />
+
+      <Mapping DataField="ModifierId" ObjectProperty="Id" Class="User" />
+      <Mapping DataField="ModifierUsername" ObjectProperty="Username" Class="User" />
+    </Setting>
+  </Function>
 </Functions>

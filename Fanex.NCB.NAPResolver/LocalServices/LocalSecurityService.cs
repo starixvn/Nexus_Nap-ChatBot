@@ -1,9 +1,11 @@
 ﻿namespace Fanex.NCB.NAPResolver.LocalServices
 {
-    using Fanex.NAP.Client.Models.ParameterObject;
-    using Fanex.NAP.Client.Services;
     using System;
     using System.Threading.Tasks;
+    using Fanex.Data;
+    using Fanex.NAP.Client.Models.ParameterObject;
+    using Fanex.NAP.Client.Services;
+    using Fanex.NCB.Criteria.LocalNap.Security;
 
     public class LocalSecurityService : ISecurityService
     {
@@ -22,9 +24,44 @@
             throw new NotImplementedException();
         }
 
-        public Task<int> LoginAsync(LoginParameter parameter)
+        public async Task<int> LoginAsync(LoginParameter parameter)
         {
-            throw new NotImplementedException();
+            var criteria = new UserCheckInCriteria
+            {
+                UserId = parameter.UserId,
+                SiteId = parameter.SiteId,
+                NetSessionId = parameter.NetSessionId,
+                Ip = parameter.Ip,
+                LoginDate = parameter.LoginDate
+            };
+
+            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+            {
+                await objectDb.ExecuteNonQueryAsync(criteria).ConfigureAwait(false);
+
+                LogUser(parameter);
+
+                return criteria.OnUserId;
+            }
+        }
+
+        private void LogUser(LoginParameter loginParameter)
+        {
+            var logCriteria = new LogUserLoginCriteria
+            {
+                UserId = loginParameter.UserId,
+                SiteId = loginParameter.SiteId,
+                LogDate = loginParameter.LoginDate,
+                DomainName = loginParameter.Domain,
+                BrowserName = loginParameter.BrowserName,
+                Platform = loginParameter.Platform,
+                IP = loginParameter.Ip,
+                CountryCode = loginParameter.CountryCode,
+            };
+            using (var objectDb = ObjectDbFactory.CreateInstance(logCriteria.GetSettingKey()))
+            {
+                objectDb.ExecuteNonQuery(logCriteria);
+            }
         }
 
         public void Logout(int onlineUserId)

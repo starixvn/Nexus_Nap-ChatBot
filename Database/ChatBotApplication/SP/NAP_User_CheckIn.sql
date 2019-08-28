@@ -5,7 +5,7 @@ DROP PROCEDURE IF EXISTS ChatBot.NAP_User_CheckIn;
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_User_CheckIn(
 	IN userID INT,
     IN siteID INT, 
-    IN netSessionId VARCHAR(30),
+    IN netSessionId VARCHAR(50),
 	IN iP VARCHAR(50), 
     IN loginDate DATETIME,
     OUT onUserId INT

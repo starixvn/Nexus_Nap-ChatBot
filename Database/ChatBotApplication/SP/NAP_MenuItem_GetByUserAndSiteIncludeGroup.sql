@@ -30,27 +30,26 @@ BEGIN
 			INNER JOIN dbo.NAP_Users AS u ON u.GroupId = gf.GroupId
 		WHERE u.UserId = userID AND gf.SiteId = siteID;
     
-		SELECT 
-				m.MenuItemId,
-				m.FunctionId,
-				f.FunctionName,
-				m.SiteId,
-				s.SiteName,
-				m.MenuItemName,
-				m.Description,
-				m.ParentId,
-				m.ParentName,
+		SELECT m.MenuItemId,
+                m.MenuItemName,
+                m.CreatedDate,
+				m.ModifiedDate,
+				m.Environment,
+                m.Description,
 				uf.Policy,
 				m.URL,
 				m.DisplayOrder,
-				m.IsActive,
+				m.IsActive,		
+                m.ParentId,
+				m.ParentName,
+				f.FunctionId,
+				f.FunctionName,
+				s.SiteId,
+				s.SiteName,			
 				m.CreatedBy		AS CreatorId,
-				cb.username		AS CreatorUsername,
-				m.CreatedDate,
+				cb.username		AS CreatorUsername,				
 				m.ModifiedBy	AS ModifierId,
-				mb.username		AS ModifierUsername,
-				m.ModifiedDate,
-				m.Environment
+				mb.username		AS ModifierUsername
 		FROM 
 			(
 					SELECT CASE 

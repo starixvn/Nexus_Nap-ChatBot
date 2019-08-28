@@ -31,10 +31,10 @@
             }
             else
             {
-                services.AddSingleton<IGroupService, LocalGroupService>();
-                services.AddSingleton<IUserService, LocalUserService>();
-                services.AddSingleton<ISecurityService, LocalSecurityService>();
-                services.AddSingleton<ISiteService, LocalSiteService>();
+                services.AddScoped<IGroupService, LocalGroupService>();
+                services.AddScoped<IUserService, LocalUserService>();
+                services.AddScoped<ISecurityService, LocalSecurityService>();
+                services.AddScoped<ISiteService, LocalSiteService>();
             }
         }
     }
