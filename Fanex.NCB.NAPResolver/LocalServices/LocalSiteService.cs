@@ -1,10 +1,10 @@
 ﻿namespace Fanex.NCB.NAPResolver.LocalServices
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ValueObject;
     using Fanex.NAP.Client.Services;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
 
     public class LocalSiteService : ISiteService
     {

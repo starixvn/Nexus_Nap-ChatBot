@@ -11,9 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Fanex.NCB.Criteria\Fanex.NCB.Criteria.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Models\Fanex.NCB.Models.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
+    <ProjectReference Include="..\Fanex.NCB.Shared\Fanex.NCB.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">

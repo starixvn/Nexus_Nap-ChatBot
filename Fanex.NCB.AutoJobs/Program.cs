@@ -42,7 +42,7 @@
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                     .Build();
-            string evn = configuration["Enviroment"] ?? string.Empty;
+            string evn = configuration["Environment"] ?? string.Empty;
 
             return WebHost.CreateDefaultBuilder(args)
                .ConfigureLogging((hostingContext, logging) =>
