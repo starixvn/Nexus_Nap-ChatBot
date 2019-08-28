@@ -383,6 +383,13 @@ CREATE TABLE ChatBot.UserLog_RunSP(
 		, CONSTRAINT PK_Customer PRIMARY KEY (custid)
 );
 
+CREATE TABLE ChatBot.custInfo(
+		custid INT  NOT NULL
+        , username VARCHAR(30) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NOT NULL
+        , closed BIT NULL
+		, CONSTRAINT PK_custInfo PRIMARY KEY (custid)
+);
+
  CREATE TABLE ChatBot.NAPLog_UserLogin(
         Id BIGINT UNSIGNED AUTO_INCREMENT NOT NULL
 		, UserId INT NOT NULL
