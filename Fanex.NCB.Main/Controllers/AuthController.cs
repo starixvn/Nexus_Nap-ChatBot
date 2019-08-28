@@ -7,13 +7,10 @@
     using Fanex.NAP.Client.Models.ParameterObject;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.NAPResolver;
-    using Fanex.NCB.NAPResolver.Model;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Options;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -28,16 +25,15 @@
         private readonly ISecurityService securityService;
 
         public AuthController(
-            Func<NAPResolverType, IUserService> userServiceProvider,
-            Func<NAPResolverType, ISecurityService> securityServiceProvider,
+            IUserService userService,
+            ISecurityService securityService,
             INapSession napSession,
-            INapSettings napSettings,
-            IOptionsSnapshot<NapOption> napOption)
+            INapSettings napSettings)
         {
-            userService = userServiceProvider(napOption.Value.NAPResolverType);
+            this.userService = userService;
             this.napSession = napSession;
             this.napSettings = napSettings;
-            securityService = securityServiceProvider(napOption.Value.NAPResolverType);
+            this.securityService = securityService;
         }
 
         public IActionResult Index(string returnUrl, bool invalidLogin)

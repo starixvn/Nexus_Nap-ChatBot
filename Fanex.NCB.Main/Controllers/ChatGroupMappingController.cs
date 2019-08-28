@@ -1,7 +1,5 @@
 namespace Fanex.NCB.SkypeBot.Controllers
 {
-    using System;
-    using System.Threading.Tasks;
     using Fanex.NAP.Client.AspNetCore.Attributes;
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
@@ -9,12 +7,10 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Main.ViewModel.ChatGroupMapping;
     using Fanex.NCB.Models.ChatGroupMapping;
-    using Fanex.NCB.NAPResolver;
-    using Fanex.NCB.NAPResolver.Model;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
+    using System.Threading.Tasks;
     using static Fanex.NAP.Core.Business.Constant;
 
     [NapSuperAuth]
@@ -32,15 +28,14 @@ namespace Fanex.NCB.SkypeBot.Controllers
             ISettingService settingService,
             INapSettings napSettings,
             INapSession napSession,
-            Func<NAPResolverType, IUserService> userServiceProvider,
-               IOptionsSnapshot<NapOption> napOption,
+            IUserService userService,
             ILogger<ChatGroupMappingController> logger)
         {
             this.chatGroupMappingService = chatGroupMappingService;
             this.settingService = settingService;
             this.napSettings = napSettings;
             this.napSession = napSession;
-            userService = userServiceProvider(napOption.Value.NAPResolverType);
+            this.userService = userService;
         }
 
         [HttpGet]

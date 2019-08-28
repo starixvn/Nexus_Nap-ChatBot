@@ -20,55 +20,22 @@
             services.AddSingleton<INapSession, NapSession>();
             services.AddSingleton<IRestClient, RestClient>();
 
-            services.AddSingleton<GroupService>();
-            services.AddSingleton<UserService>();
-            services.AddSingleton<SecurityService>();
-            services.AddSingleton<SiteService>();
+            var resolverType = Enum.Parse<NAPResolverType>(configuration["NapOption:NAPResolverType"]);
 
-            services.AddSingleton<LocalUserService>();
-            services.AddSingleton<LocalSiteService>();
-            services.AddSingleton<LocalSecurityService>();
-            services.AddSingleton<LocalGroupService>();
-
-            services.AddSingleton<Func<NAPResolverType, IUserService>>(serviceProvider => type =>
+            if (resolverType == NAPResolverType.Remote)
             {
-                if (type == NAPResolverType.Local)
-                {
-                    return serviceProvider.GetService<LocalUserService>();
-                }
-
-                return serviceProvider.GetService<UserService>();
-            });
-
-            services.AddSingleton<Func<NAPResolverType, IGroupService>>(serviceProvider => type =>
+                services.AddSingleton<IGroupService, GroupService>();
+                services.AddSingleton<IUserService, UserService>();
+                services.AddSingleton<ISecurityService, SecurityService>();
+                services.AddSingleton<ISiteService, SiteService>();
+            }
+            else
             {
-                if (type == NAPResolverType.Local)
-                {
-                    return serviceProvider.GetService<LocalGroupService>();
-                }
-
-                return serviceProvider.GetService<GroupService>();
-            });
-
-            services.AddSingleton<Func<NAPResolverType, ISecurityService>>(serviceProvider => type =>
-            {
-                if (type == NAPResolverType.Local)
-                {
-                    return serviceProvider.GetService<LocalSecurityService>();
-                }
-
-                return serviceProvider.GetService<SecurityService>();
-            });
-
-            services.AddSingleton<Func<NAPResolverType, ISiteService>>(serviceProvider => type =>
-            {
-                if (type == NAPResolverType.Local)
-                {
-                    return serviceProvider.GetService<LocalSiteService>();
-                }
-
-                return serviceProvider.GetService<SiteService>();
-            });
+                services.AddSingleton<IGroupService, LocalGroupService>();
+                services.AddSingleton<IUserService, LocalUserService>();
+                services.AddSingleton<ISecurityService, LocalSecurityService>();
+                services.AddSingleton<ISiteService, LocalSiteService>();
+            }
         }
     }
 }
