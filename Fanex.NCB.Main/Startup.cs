@@ -1,5 +1,8 @@
 ﻿namespace Fanex.NCB.Main
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Logging;
@@ -11,7 +14,6 @@
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Main.AppConfig;
     using Fanex.NCB.NAPResolver;
-    using Fanex.NCB.NAPResolver.Model;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -20,9 +22,6 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Sentry;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
 
     public class Startup
     {

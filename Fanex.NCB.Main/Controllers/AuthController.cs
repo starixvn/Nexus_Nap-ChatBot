@@ -174,9 +174,7 @@
 
                 if (result > 0)
                 {
-                    //// bug here, wait for updating Fanex.NAP.Client
                     var user = await userService.GetAsync(userId).ConfigureAwait(false);
-
                     if (user != null)
                     {
                         await DoCheckIn(user).ConfigureAwait(false);

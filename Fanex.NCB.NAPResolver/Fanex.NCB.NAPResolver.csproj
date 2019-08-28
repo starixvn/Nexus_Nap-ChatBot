@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fanex.NAP.Client.AspNetCore" Version="1.0.0-beta2" />
-    <PackageReference Include="Fanex.NAP.Client.Transport" Version="1.0.0-beta2" />
+    <PackageReference Include="Fanex.NAP.Client.AspNetCore" Version="1.0.0-beta4" />
+    <PackageReference Include="Fanex.NAP.Client.Transport" Version="1.0.0-beta4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
   </ItemGroup>
 
