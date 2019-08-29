@@ -50,6 +50,8 @@
   <Function Name="Local NAP">
     <Setting Key="NAP_User_GetByUsername" SpName="NAP_User_GetByUsername" DbName="ChatBot" Plain="0">
       <Mapping DataField="UserId" ObjectProperty="Id" Class="User" />
+      <Mapping DataField="GroupId" ObjectProperty="Id" Class="Group" />
+      <Mapping DataField="GroupName" ObjectProperty="Name" Class="Group" />
       <Mapping DataField="CreatorId" ObjectProperty="Id" Class="User" />
       <Mapping DataField="CreatorUsername" ObjectProperty="Username" Class="User" />
       <Mapping DataField="ModifierId" ObjectProperty="Id" Class="User" />

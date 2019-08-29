@@ -2,7 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS ChatBot.NAP_MenuItem_GetByUserAndSiteIncludeGroup;
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_MenuItem_GetByUserAndSiteIncludeGroup(
+CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NAP_MenuItem_GetByUserAndSiteIncludeGroup`(
 	IN userID INT
     , IN siteID INT
     , IN environment VARCHAR(10)
@@ -15,7 +15,6 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_MenuItem_GetByUserAn
         
     */
 )
-SQL SECURITY DEFINER
 BEGIN
 		DROP TEMPORARY TABLE IF EXISTS tmp_UserFunctionPolicy1;
 		CREATE TEMPORARY TABLE tmp_UserFunctionPolicy1
@@ -42,27 +41,35 @@ BEGIN
 		FROM ChatBot.NAP_GroupFunction AS gf
 			INNER JOIN ChatBot.NAP_Users AS u ON u.GroupId = gf.GroupId
 		WHERE u.UserId = userID AND gf.SiteId = siteID;
+        
+        DROP TEMPORARY TABLE IF EXISTS tmp_GroupFunctionPolicy2;
+		CREATE TEMPORARY TABLE tmp_GroupFunctionPolicy2
+       SELECT gf.FunctionId, gf.Policy
+		FROM ChatBot.NAP_GroupFunction AS gf
+			INNER JOIN ChatBot.NAP_Users AS u ON u.GroupId = gf.GroupId
+		WHERE u.UserId = userID AND gf.SiteId = siteID;
     
-		SELECT m.MenuItemId,
-                m.MenuItemName,
-                m.CreatedDate,
-				m.ModifiedDate,
-				m.Environment,
-                m.Description,
+		SELECT 
+				m.MenuItemId,
+				m.MenuItemName,
+				m.Description,				
 				uf.Policy,
 				m.URL,
 				m.DisplayOrder,
-				m.IsActive,		
+                m.Environment,
+				m.IsActive,
+                m.CreatedDate,
+				m.ModifiedDate,
                 m.ParentId,
 				m.ParentName,
-				f.FunctionId,
+				m.FunctionId,
 				f.FunctionName,
-				s.SiteId,
-				s.SiteName,			
+				m.SiteId,
+				s.SiteName,
 				m.CreatedBy		AS CreatorId,
 				cb.username		AS CreatorUsername,				
 				m.ModifiedBy	AS ModifierId,
-				mb.username		AS ModifierUsername
+				mb.username		AS ModifierUsername			
 		FROM 
 			(
 					SELECT CASE 

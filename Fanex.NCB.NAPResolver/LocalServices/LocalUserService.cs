@@ -26,15 +26,16 @@
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
-                var result = objectDb.QueryEntity<User, User, User, User>(
-                  (user, creator, modifier) =>
+                var result = objectDb.QueryEntity<User, Group, User, User, User>(
+                  (user, group, creator, modifier) =>
                   {
+                      user.Group = group;
                       user.Creator = creator;
                       user.Modifier = modifier;
 
                       return user;
                   },
-                  "CreatorId, ModifierId",
+                  "GroupId,CreatorId,ModifierId",
                   criteria);
 
                 return result;
@@ -65,16 +66,17 @@
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
-                var result = await objectDb.QueryEntityAsync<User, User, User, User>(
-                  (user, creator, modifier) =>
-                  {
-                      user.Creator = creator;
-                      user.Modifier = modifier;
+                var result = await objectDb.QueryEntityAsync<User, Group, User, User, User>(
+                    (user, group, creator, modifier) =>
+                    {
+                        user.Group = group;
+                        user.Creator = creator;
+                        user.Modifier = modifier;
 
-                      return user;
-                  },
-                  "CreatorId, ModifierId",
-                  criteria).ConfigureAwait(false);
+                        return user;
+                    },
+                    "GroupId,CreatorId,ModifierId",
+                    criteria).ConfigureAwait(false);
 
                 return result;
             }
@@ -102,7 +104,7 @@
 
                       return menu;
                   },
-                  "ParentId, FunctionId, SiteId, CreatorId, ModifierId",
+                  "ParentId,FunctionId,SiteId,CreatorId,ModifierId",
                   criteria);
 
                 return result;
