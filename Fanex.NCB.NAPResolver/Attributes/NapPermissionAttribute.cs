@@ -42,14 +42,14 @@
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            if (UserHasInValidFunctionPolicy(napSession))
+            if (UserHasInvalidFunctionPolicy(napSession))
             {
                 var unauthorizeUrl = napSettings.UnauthorizeUrl;
                 context.Result = new RedirectResult(unauthorizeUrl);
             }
         }
 
-        private bool UserHasInValidFunctionPolicy(INapSession currentSession)
+        private bool UserHasInvalidFunctionPolicy(INapSession currentSession)
         {
             int userPolicy = 0;
 
