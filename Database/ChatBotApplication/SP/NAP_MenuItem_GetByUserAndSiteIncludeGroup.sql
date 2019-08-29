@@ -17,17 +17,30 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_MenuItem_GetByUserAn
 )
 SQL SECURITY DEFINER
 BEGIN
-		DROP TEMPORARY TABLE IF EXISTS tmp_UserFunctionPolicy;
-		CREATE TEMPORARY TABLE tmp_UserFunctionPolicy
+		DROP TEMPORARY TABLE IF EXISTS tmp_UserFunctionPolicy1;
+		CREATE TEMPORARY TABLE tmp_UserFunctionPolicy1
+        SELECT t.FunctionId, t.Policy
+		FROM ChatBot.NAP_UserFunction t
+		WHERE t.UserId = userID AND t.SiteId = siteID;
+        
+        DROP TEMPORARY TABLE IF EXISTS tmp_UserFunctionPolicy2;
+		CREATE TEMPORARY TABLE tmp_UserFunctionPolicy2
         SELECT t.FunctionId, t.Policy
 		FROM ChatBot.NAP_UserFunction t
 		WHERE t.UserId = userID AND t.SiteId = siteID;
                     
-		DROP TEMPORARY TABLE IF EXISTS tmp_GroupFunctionPolicy;
-		CREATE TEMPORARY TABLE tmp_GroupFunctionPolicy
+		DROP TEMPORARY TABLE IF EXISTS tmp_GroupFunctionPolicy1;
+		CREATE TEMPORARY TABLE tmp_GroupFunctionPolicy1
        SELECT gf.FunctionId, gf.Policy
-		FROM dbo.NAP_GroupFunction AS gf
-			INNER JOIN dbo.NAP_Users AS u ON u.GroupId = gf.GroupId
+		FROM ChatBot.NAP_GroupFunction AS gf
+			INNER JOIN ChatBot.NAP_Users AS u ON u.GroupId = gf.GroupId
+		WHERE u.UserId = userID AND gf.SiteId = siteID;
+        
+        DROP TEMPORARY TABLE IF EXISTS tmp_GroupFunctionPolicy2;
+		CREATE TEMPORARY TABLE tmp_GroupFunctionPolicy2
+       SELECT gf.FunctionId, gf.Policy
+		FROM ChatBot.NAP_GroupFunction AS gf
+			INNER JOIN ChatBot.NAP_Users AS u ON u.GroupId = gf.GroupId
 		WHERE u.UserId = userID AND gf.SiteId = siteID;
     
 		SELECT m.MenuItemId,
@@ -61,14 +74,14 @@ BEGIN
 										ELSE IFNULL(t.APolicy, 0) 
 									END AS Policy
 					FROM (
-						SELECT t1.AFunctionId, t1.APolicy, t2.BFunctionId, t2.BPolicy
-						FROM tmp_UserFunctionPolicy t1
-						LEFT JOIN tmp_GroupFunctionPolicy t2 
+						SELECT t1.FunctionId AFunctionId, t1.Policy APolicy, t2.FunctionId BFunctionId, t2.Policy BPolicy
+						FROM tmp_UserFunctionPolicy1 t1
+						LEFT JOIN tmp_GroupFunctionPolicy1 t2 
 								ON t1.FunctionId = t2.FunctionId
 						UNION ALL
-						SELECT t1.AFunctionId, t1.APolicy, t2.BFunctionId, t2.BPolicy
-						FROM tmp_UserFunctionPolicy t1
-						RIGHT JOIN tmp_GroupFunctionPolicy t2 
+						SELECT t1.FunctionId AFunctionId, t1.Policy APolicy, t2.FunctionId BFunctionId, t2.Policy BPolicy
+						FROM tmp_UserFunctionPolicy2 t1
+						RIGHT JOIN tmp_GroupFunctionPolicy2 t2 
 								ON t1.FunctionId = t2.FunctionId
 						WHERE t1.FunctionId IS NULL
 					) t
