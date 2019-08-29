@@ -142,7 +142,7 @@
                 var msg = new NotificationMessage
                 {
                     NotifictaionId = noti.NotificationId,
-                    Message = string.Format("{0}\n{1}", noti.Title, noti.Content),
+                    Message = noti.Content,
                     Recipients = recipients.Where(r => noti.NotificationId == r.NotificationId)
                             .Select(r => new ConversationInfo
                             {
