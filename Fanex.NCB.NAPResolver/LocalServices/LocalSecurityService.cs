@@ -66,12 +66,28 @@
 
         public void Logout(int onlineUserId)
         {
-            throw new NotImplementedException();
+            var criteria = new UserLogOutCriteria
+            {
+                OnUserId = onlineUserId
+            };
+
+            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+            {
+                objectDb.ExecuteNonQuery(criteria);
+            }
         }
 
-        public Task LogoutAsync(int onlineUserId)
+        public async Task LogoutAsync(int onlineUserId)
         {
-            throw new NotImplementedException();
+            var criteria = new UserLogOutCriteria
+            {
+                OnUserId = onlineUserId
+            };
+
+            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+            {
+                await objectDb.ExecuteNonQueryAsync(criteria).ConfigureAwait(false);
+            }
         }
 
         public int ReCheckIn(int onlineUserId, int siteId)
