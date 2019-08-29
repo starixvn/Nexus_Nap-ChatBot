@@ -4,6 +4,7 @@ using Fanex.NCB.Core.Constants;
 using Fanex.NCB.Main.ViewModel.Notification;
 using Fanex.NCB.Main.ViewModel.TreeSelect;
 using Fanex.NCB.Models.Notification;
+using Fanex.NCB.NAPResolver.Attributes;
 using Fanex.NCB.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -23,15 +24,15 @@ namespace Fanex.NCB.SkypeBot.Controllers
             this.napSession = napSession;
         }
 
-        [NapAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host, PermissionCache = true)]
         [HttpGet]
+        [TypeFilter(typeof(NapPermissionAttribute), Arguments = new object[] { FunctionKey.NewNotification, Policy.Host, true })]
         public IActionResult Index()
         {
             return View("~/Views/SkypeBot/NewNotification/Index.cshtml");
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host, PermissionCache = true)]
+        [TypeFilter(typeof(NapPermissionAttribute), Arguments = new object[] { FunctionKey.NewNotification, Policy.Host, true })]
         public async Task<IActionResult> Create(CreateNewNotificationViewModel model)
         {
             var result = await notificationService.CreateAsync(new CreateNotification
@@ -50,7 +51,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        [NapAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host, PermissionCache = true)]
+        [TypeFilter(typeof(NapPermissionAttribute), Arguments = new object[] { FunctionKey.NewNotification, Policy.Host, true })]
         public async Task<IActionResult> GetRecipients(int notificationTypeId, int? productId)
         {
             var result = await notificationService.GetRecipientsAsync(notificationTypeId, productId).ConfigureAwait(false);
