@@ -23,14 +23,14 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        [NapAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host)]
+        [NapAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
         public IActionResult Index()
         {
             return View("~/Views/SkypeBot/NotificationList/Index.cshtml");
         }
 
         [HttpGet]
-        [NapAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host)]
+        [NapAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Get(GetNotificationViewModel filter)
         {
             var result = await notificationService.GetNotificationsAsync(new GetNotifications
@@ -49,7 +49,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host)]
+        [NapAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Cancel(int notificationId)
         {
             var result = await notificationService.CancelAsync(notificationId, napSession.UserId).ConfigureAwait(false);
@@ -58,7 +58,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        [NapAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host)]
+        [NapAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> GetNotificationError(int notificationId)
         {
             var result = await notificationService.GetNotificationErrorAsync(notificationId).ConfigureAwait(false);
@@ -67,7 +67,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host)]
+        [NapAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Resolve([FromBody]ResolveNotificationViewModel data)
         {
             var result = await notificationService.ResolveAsync(data.NotificationId, data.ResolvedRemark, napSession.UserId).ConfigureAwait(false);

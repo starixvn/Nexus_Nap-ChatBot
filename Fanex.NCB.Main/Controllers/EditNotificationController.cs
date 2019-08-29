@@ -24,14 +24,14 @@
         }
 
         [HttpGet]
-        [NapAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host)]
+        [NapAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
         public IActionResult Index(int id)
         {
             return View("~/Views/SkypeBot/EditNotification/Index.cshtml", id);
         }
 
         [HttpGet]
-        [NapAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host)]
+        [NapAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Get(int id)
         {
             var notification = await notificationService.GetEditNotificationInfo(id).ConfigureAwait(false);
@@ -45,7 +45,7 @@
         }
 
         [HttpGet]
-        [NapAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host)]
+        [NapAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> GetRecipients(int notificationId, int notificationTypeId, int? productId)
         {
             var result = await notificationService.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId).ConfigureAwait(false);
@@ -56,7 +56,7 @@
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host)]
+        [NapAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Edit([FromBody]EditNotificationViewModel data)
         {
             var result = await notificationService.EditAsync(new EditNotification

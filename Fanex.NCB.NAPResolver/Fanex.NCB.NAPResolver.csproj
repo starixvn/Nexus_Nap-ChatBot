@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fanex.NCB.Criteria\Fanex.NCB.Criteria.csproj" />
-    <ProjectReference Include="..\Fanex.NCB.Shared\Fanex.NCB.Shared.csproj" />
   </ItemGroup>
 
 </Project>
