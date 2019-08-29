@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
+    using System.Threading.Tasks;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Logging;
@@ -25,8 +27,6 @@
 
     public class Startup
     {
-        private const int CookieExpiration = 60;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -66,13 +66,18 @@
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
-                options.LoginPath = "/Auth/Index";
-                options.LogoutPath = "/Auth/SignOut";
+                options.LoginPath = Configuration.GetSection("AuthSettings:LoginPath").Value;
+                options.LogoutPath = Configuration.GetSection("AuthSettings:LogoutPath").Value;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(int.Parse(Configuration.GetSection("AuthSettings:CookieTimeOut").Value));
                 options.Cookie = new CookieBuilder
                 {
-                    Name = "Fanex.NCB.Auth",
-                    Expiration = TimeSpan.FromMinutes(CookieExpiration),
+                    Name = "Fanex.NCB.Cookie",
                     SecurePolicy = CookieSecurePolicy.SameAsRequest
+                };
+                options.Events.OnSigningOut = context =>
+                {
+                    context.Response.Redirect(options.LoginPath);
+                    return Task.CompletedTask;
                 };
             });
             services.AddMvc(options =>
@@ -82,14 +87,15 @@
 
             services.AddDistributedRedisCache(options =>
             {
-                options.Configuration = Configuration.GetSection("RedisConfig").Value;
-                options.InstanceName = "Fanex.NCB.Auth";
+                options.Configuration = Configuration.GetSection("AuthSettings:RedisConfig").Value;
+                options.InstanceName = $"Fanex.NCB.Session-{Dns.GetHostEntry(Dns.GetHostName()).HostName}-";
             });
 
             services.AddSession(options =>
             {
                 options.Cookie.IsEssential = true;
-                options.IdleTimeout = TimeSpan.FromMinutes(CookieExpiration);
+                options.IdleTimeout = TimeSpan.FromMinutes(int.Parse(Configuration.GetSection("AuthSettings:SessionTimeOut").Value));
+                options.Cookie.Name = "Fanex.NCB.Session";
             });
 
             services.AddNapServices(Configuration);
