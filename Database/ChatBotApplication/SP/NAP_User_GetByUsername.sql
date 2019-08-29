@@ -21,7 +21,7 @@ BEGIN
 			,c.lastname
 			,c.email
 			,ci.username
-			,c.userpwd
+			,c.userpwd		AS Password
 			,u.LastLoginDate
 			,u.CreatedDate
 			,u.ModifiedDate

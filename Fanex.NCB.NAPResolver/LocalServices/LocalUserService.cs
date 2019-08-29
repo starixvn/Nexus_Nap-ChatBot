@@ -142,12 +142,32 @@
 
         public int GetPermission(int userId, int siteId, string functionKey)
         {
-            throw new NotImplementedException();
+            var criteria = new GetUserFunctionPolicyCriteria
+            {
+                UserId = userId,
+                SiteId = siteId,
+                FunctionKey = functionKey
+            };
+
+            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+            {
+                return objectDb.QueryEntity<int>(criteria);
+            }
         }
 
-        public Task<int> GetPermissionAsync(int userId, int siteId, string functionKey)
+        public async Task<int> GetPermissionAsync(int userId, int siteId, string functionKey)
         {
-            throw new NotImplementedException();
+            var criteria = new GetUserFunctionPolicyCriteria
+            {
+                UserId = userId,
+                SiteId = siteId,
+                FunctionKey = functionKey
+            };
+
+            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+            {
+                return await objectDb.QueryEntityAsync<int>(criteria).ConfigureAwait(false);
+            }
         }
 
         public IEnumerable<FunctionPolicy> GetPermissions(int userId, int siteId, string parentFunctionKey, string environment = "UAT")

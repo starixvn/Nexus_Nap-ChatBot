@@ -23,7 +23,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
             this.napSession = napSession;
         }
 
-        [NapAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
+        [NapAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host, PermissionCache = true)]
         [HttpGet]
         public IActionResult Index()
         {
@@ -31,7 +31,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
+        [NapAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Create(CreateNewNotificationViewModel model)
         {
             var result = await notificationService.CreateAsync(new CreateNotification
@@ -50,7 +50,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        [NapAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
+        [NapAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> GetRecipients(int notificationTypeId, int? productId)
         {
             var result = await notificationService.GetRecipientsAsync(notificationTypeId, productId).ConfigureAwait(false);
