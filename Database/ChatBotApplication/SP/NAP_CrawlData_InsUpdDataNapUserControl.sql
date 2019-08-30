@@ -1,8 +1,8 @@
 DELIMITER //
 
-DROP PROCEDURE IF EXISTS ChatBot.NAP_CrawlData_InsUpdDataNapUserControl;
+DROP PROCEDURE IF EXISTS ChatBot.NAP_UserControl_SyncData;
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_CrawlData_InsUpdDataNapUserControl(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_UserControl_SyncData(
 	IN Functions TEXT,
 	IN NapGroups TEXT, 
 	IN GroupFunction TEXT, 
@@ -838,4 +838,4 @@ BEGIN
 
 END;
 
-GRANT EXECUTE ON PROCEDURE ChatBot.NAP_CrawlData_InsUpdDataNapUserControl TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE ChatBot.NAP_UserControl_SyncData TO 'ncb.admin'@'%';
