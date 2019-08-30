@@ -1,0 +1,841 @@
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS ChatBot.NAP_CrawlData_InsUpdDataNapUserControl;
+
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_CrawlData_InsUpdDataNapUserControl(
+	IN Functions TEXT,
+	IN NapGroups TEXT, 
+	IN GroupFunction TEXT, 
+	IN MenuItems TEXT, 
+	IN OnUser TEXT, 
+	IN Sites TEXT, 
+	IN SiteURL TEXT, 
+	IN UserFunction TEXT, 
+	IN Users TEXT, 
+	IN UserSite TEXT
+
+    /*
+		Creator: Oliver@20190829
+        Param:
+
+        Revisions:
+				- 20190829@Oliver: First Commit
+        
+    */
+)
+SQL SECURITY DEFINER
+BEGIN
+	DECLARE iLoop INT;
+################# NAP_Functions ###########################
+
+	DROP TEMPORARY TABLE IF EXISTS tmp_NAP_Functions;
+	CREATE TEMPORARY TABLE tmp_NAP_Functions(
+                            FunctionId INT
+                            , SiteId INT
+                            , FunctionName VARCHAR(100) CHARACTER SET utf8mb4
+                            , FunctionKey VARCHAR(100) CHARACTER SET utf8mb4
+                            , Description VARCHAR(300) CHARACTER SET utf8mb4
+                            , ParentId INT
+                            , ParentName VARCHAR(1000) CHARACTER SET utf8mb4
+                            , CRUD INT
+                            , DisplayOrder INT
+                            , IsActive TINYINT
+                            , CreatedBy INT
+                            , CreatedDate DATETIME
+                            , ModifiedBy INT
+                            , ModifiedDate DATETIME
+                            , Environment VARCHAR(100) CHARACTER SET utf8mb4
+                        );	
+    
+    SET iLoop = 0;
+	WHILE (JSON_EXTRACT(Functions, CONCAT('$[',iLoop, '].FunctionId'))  IS NOT NULL) DO
+		INSERT INTO tmp_NAP_Functions(
+																		FunctionId 
+																		, SiteId 
+																		, FunctionName 
+																		, FunctionKey 
+																		, Description
+																		, ParentId 
+                                                                        , ParentName
+																		, CRUD
+                                                                        , DisplayOrder
+                                                                        , IsActive
+                                                                        , CreatedBy
+                                                                        , CreatedDate
+                                                                        , ModifiedBy
+                                                                        , ModifiedDate
+                                                                        , Environment
+																	)
+		SELECT JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].FunctionId')) 
+						, JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].SiteId')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].FunctionName')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].FunctionKey')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].Description')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].ParentId')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].ParentName')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].CRUD')))
+                        , JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].IsActive'))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].CreatedBy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].CreatedDate')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].ModifiedBy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].ModifiedDate')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].Environment')));                        
+		SET iLoop = iLoop +1;
+	END WHILE;
+
+    DELETE f FROM ChatBot.NAP_Functions f LEFT JOIN tmp_NAP_Functions  ON f.FuntcionId = tempf.FunctionId WHERE tempf.FunctionId IS NULL;
+
+   INSERT INTO ChatBot.NAP_Functions(FunctionId 
+                                    , SiteId 
+                                    , FunctionName 
+                                    , FunctionKey 
+                                    , Description
+                                    , ParentId 
+                                    , ParentName
+                                    , CRUD
+                                    , DisplayOrder
+                                    , IsActive
+                                    , CreatedBy
+                                    , CreatedDate
+                                    , ModifiedBy
+                                    , ModifiedDate
+                                    , Environment
+                                )
+    SELECT tmpf.FunctionId 
+            , tmpf.SiteId 
+            , tmpf.FunctionName 
+            , tmpf.FunctionKey 
+            , tmpf.Description
+            , tmpf.ParentId 
+            , tmpf.ParentName
+            , tmpf.CRUD
+            , tmpf.DisplayOrder
+            , tmpf.IsActive
+            , tmpf.CreatedBy
+            , tmpf.CreatedDate
+            , tmpf.ModifiedBy
+            , tmpf.ModifiedDate
+            , tmpf.Environment
+    FROM tmp_NAP_Functions tmpf
+    LEFT JOIN ChatBot.NAP_Functions f ON tmpf.FunctionId = f.FunctionId
+    WHERE f.FunctionId IS NULL;
+
+    UPDATE ChatBot.NAP_Functions f
+    INNER JOIN tmp_NAP_Functions tmpf ON tmpf.FunctionId = f.FunctionId
+    SET f.FunctionId = tempf.FunctionId
+            , f.SiteId = tmpf.SiteId 
+            , f.FunctionName  = tmpf.FunctionName 
+            , f.FunctionKey = tmpf.FunctionKey 
+            , f.Description = tmpf.Description
+            , f.ParentId = tmpf.ParentId 
+            , f.ParentName= tmpf.ParentName
+            , f.CRUD = tmpf.CRUD
+            , f.DisplayOrder= tmpf.DisplayOrder
+            , f.IsActive = tmpf.IsActive
+            , f.CreatedBy= tmpf.CreatedBy
+            , f.CreatedDate= tmpf.CreatedDate
+            , f.ModifiedBy = tmpf.ModifiedBy
+            , f.ModifiedDate= tmpf.ModifiedDate
+            , f.Environment = tmpf.Environment;
+
+################# NAP_Groups ########################### 
+
+    DROP TEMPORARY TABLE IF EXISTS tmp_NAP_Groups;
+	CREATE TEMPORARY TABLE tmp_NAP_Groups(
+                            GroupId INT
+                            , GroupName VARCHAR(100) CHARACTER SET utf8mb4
+                            , Description VARCHAR(300) CHARACTER SET utf8mb4
+                            , IsActive TINYINT
+                            , CreatedBy INT
+                            , CreatedDate DATETIME
+                            , ModifiedBy INT
+                            , ModifiedDate DATETIME
+                        );	
+    
+    SET iLoop = 0;
+	WHILE (JSON_EXTRACT(NapGroups, CONCAT('$[',iLoop, '].GroupId'))  IS NOT NULL) DO
+		INSERT INTO tmp_NAP_Groups(
+																		GroupId 
+																		, GroupName 
+																		, Description
+                                                                        , IsActive
+                                                                        , CreatedBy
+                                                                        , CreatedDate
+                                                                        , ModifiedBy
+                                                                        , ModifiedDate
+																	)
+		SELECT JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].GroupId')) 
+						, JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].GroupName')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].Description')))
+                        , JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].IsActive'))
+                        , JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].CreatedBy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].CreatedDate')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].ModifiedBy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].ModifiedDate')));
+		SET iLoop = iLoop +1;
+	END WHILE;
+
+    DELETE g FROM ChatBot.NAP_Groups g LEFT JOIN tmp_NAP_Groups tempg ON g.GroupId = tempg.GroupId WHERE tempg.GroupId IS NULL;
+
+    INSERT INTO ChatBot.NAP_Groups(GroupId 
+                                    , GroupName 
+                                    , Description
+                                    , IsActive
+                                    , CreatedBy
+                                    , CreatedDate
+                                    , ModifiedBy
+                                    , ModifiedDate
+                                )
+    SELECT tmp.GroupId 
+            , tmp.GroupName 
+            , tmp.Description
+            , tmp.IsActive
+            , tmp.CreatedBy
+            , tmp.CreatedDate
+            , tmp.ModifiedBy
+            , tmp.ModifiedDate
+    FROM tmp_NAP_Groups tmp
+    LEFT JOIN ChatBot.NAP_Groups g ON tmp.GroupId = g.GroupId
+    WHERE g.GroupId IS NULL;
+
+    UPDATE ChatBot.NAP_Groups g
+    INNER JOIN tmp_NAP_Groups temp ON temp.GroupId = g.GroupId
+    SET g.GroupId = temp.GroupId
+        ,g.GroupName = temp.GroupName
+        ,g.Description = temp.Description
+        ,g.IsActive = temp.IsActive
+        ,g.CreatedBy = temp.CreatedBy
+        ,g.CreatedDate = temp.CreatedDate
+        ,g.ModifiedBy = temp.ModifiedBy
+        ,g.ModifiedDate = temp.ModifiedDate;
+
+################# NAP_GroupFunction ########################### 
+
+    DROP TEMPORARY TABLE IF EXISTS tmp_NAP_GroupFunction;
+	CREATE TEMPORARY TABLE tmp_NAP_GroupFunction(
+                            GroupId INT
+                            , FunctionId INT
+                            , SiteId INT
+                            , Policy INT
+                            , CreatedBy INT
+                            , CreatedDate DATETIME
+                            , ModifiedBy INT
+                            , ModifiedDate DATETIME
+                        );	
+    
+    SET iLoop = 0;
+	WHILE (JSON_EXTRACT(GroupFunction, CONCAT('$[',iLoop, '].GroupId'))  IS NOT NULL) DO
+		INSERT INTO tmp_NAP_GroupFunction(
+																		GroupId 
+																		, FunctionId 
+																		, SiteId
+                                                                        , Policy
+                                                                        , CreatedBy
+                                                                        , CreatedDate
+                                                                        , ModifiedBy
+                                                                        , ModifiedDate
+																	)
+		SELECT JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].GroupId')) 
+						, JSON_UNQUOTE(JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].FunctionId')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].SiteId')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].Policy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].CreatedBy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].CreatedDate')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].ModifiedBy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].ModifiedDate')));
+		SET iLoop = iLoop +1;
+	END WHILE;
+
+    DELETE g FROM ChatBot.NAP_GroupFunction g LEFT JOIN tmp_NAP_GroupFunction tempg ON g.GroupId = tempg.GroupId 
+                            AND g.FunctionId = tempg.FuntcionId 
+                            AND g.Policy = tempg.Policy 
+                            AND g.SiteId = tempg.SiteId
+    WHERE tempg.GroupId IS NULL;
+
+    INSERT INTO ChatBot.NAP_GroupFunction(GroupId 
+                                    , FunctionId 
+                                    , SiteId
+                                    , Policy
+                                    , CreatedBy
+                                    , CreatedDate
+                                    , ModifiedBy
+                                    , ModifiedDate
+                                )
+    SELECT tmp.GroupId 
+            , tmp.GroupName 
+            , tmp.Description
+            , tmp.IsActive
+            , tmp.CreatedBy
+            , tmp.CreatedDate
+            , tmp.ModifiedBy
+            , tmp.ModifiedDate
+    FROM tmp_NAP_GroupFunction tmp
+    LEFT JOIN ChatBot.NAP_GroupFunction g ON tmp.GroupId = g.GroupId 
+                AND tmp.FunctionId = g.FunctionId 
+                AND tmp.SiteId = g.SiteId
+                AND tmp.Policy = g.Policy
+    WHERE g.GroupId IS NULL;
+
+    UPDATE ChatBot.NAP_GroupFunction g
+    INNER JOIN tmp_NAP_GroupFunction temp ON temp.GroupId = g.GroupId 
+                AND temp.FunctionId = g.FunctionId 
+                AND temp.SiteId = g.SiteId
+                AND temp.Policy = g.Policy
+    SET g.GroupId = temp.GroupId
+        ,g.GroupName = temp.FunctionId
+        ,g.Description = temp.SiteId
+        ,g.IsActive = temp.Policy
+        ,g.CreatedBy = temp.CreatedBy
+        ,g.CreatedDate = temp.CreatedDate
+        ,g.ModifiedBy = temp.ModifiedBy
+        ,g.ModifiedDate = temp.ModifiedDate;
+
+################# NAP_MenuItems ###########################
+
+	DROP TEMPORARY TABLE IF EXISTS tmp_NAP_MenuItems;
+	CREATE TEMPORARY TABLE tmp_NAP_MenuItems(
+                              MenuItemId INT
+                            , FunctionId INT
+                            , SiteId INT
+                            , MenuItemName VARCHAR(200) CHARACTER SET utf8mb4
+                            , Description VARCHAR(300) CHARACTER SET utf8mb4
+                            , ParentId INT
+                            , ParentName VARCHAR(200) CHARACTER SET utf8mb4
+                            , Policy INT
+                            , URL VARCHAR(200)
+                            , DisplayOrder INT
+                            , IsActive TINYINT
+                            , CreatedBy INT
+                            , CreatedDate DATETIME
+                            , ModifiedBy INT
+                            , ModifiedDate DATETIME
+                        );	
+    
+    SET iLoop = 0;
+	WHILE (JSON_EXTRACT(MenuItems, CONCAT('$[',iLoop, '].MenuItemId'))  IS NOT NULL) DO
+		INSERT INTO tmp_NAP_MenuItems(
+                                                                          MenuItemId
+																		, FunctionId 
+																		, SiteId 
+																		, MenuItemName 
+																		, Description
+																		, ParentId 
+                                                                        , ParentName
+																		, Policy
+                                                                        , URL
+                                                                        , DisplayOrder
+                                                                        , IsActive
+                                                                        , CreatedBy
+                                                                        , CreatedDate
+                                                                        , ModifiedBy
+                                                                        , ModifiedDate
+																	)
+		SELECT JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].MenuItemId')) 
+						, JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].FunctionId')))
+						, JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].SiteId')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].MenuItemName')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].Description')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].ParentId')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].ParentName')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].Policy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].URL')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].DisplayOrder')))
+                        , JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].IsActive'))
+                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].CreatedBy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].CreatedDate')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].ModifiedBy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].ModifiedDate')));
+		SET iLoop = iLoop +1;
+	END WHILE;
+
+    DELETE f FROM ChatBot.NAP_MenuItems f LEFT JOIN tmp_NAP_MenuItems tmp ON f.MenuItemId = tmp.MenuItemId WHERE tmp.MenuItemId IS NULL;
+
+   INSERT INTO ChatBot.NAP_MenuItems(MenuItemId
+                                    , FunctionId 
+                                    , SiteId 
+                                    , MenuItemName 
+                                    , Description
+                                    , ParentId 
+                                    , ParentName
+                                    , Policy
+                                    , URL
+                                    , DisplayOrder
+                                    , IsActive
+                                    , CreatedBy
+                                    , CreatedDate
+                                    , ModifiedBy
+                                    , ModifiedDate
+                                )
+    SELECT tmpf.MenuItemId 
+            , tmpf.FunctionId 
+            , tmpf.SiteId 
+            , tmpf.MenuItemName 
+            , tmpf.Description
+            , tmpf.ParentId 
+            , tmpf.ParentName
+            , tmpf.Policy
+            , tempf.URL
+            , tmpf.DisplayOrder
+            , tmpf.IsActive
+            , tmpf.CreatedBy
+            , tmpf.CreatedDate
+            , tmpf.ModifiedBy
+            , tmpf.ModifiedDate
+    FROM tmp_NAP_MenuItems tmpf
+    LEFT JOIN ChatBot.NAP_MenuItems f ON tmpf.MenuItemId = f.MenuItemId
+    WHERE f.MenuItemId IS NULL;
+
+    UPDATE ChatBot.NAP_MenuItems f
+    INNER JOIN tmp_NAP_MenuItems tmpf ON tmpf.MenuItemId = f.MenuItemId
+    SET f.MenuItemId = tempf.MenuItemId
+            , f.FunctionId = tmpf.FunctionId
+            , f.SiteId = tmpf.SiteId 
+            , f.MenuItemName  = tmpf.MenuItemName 
+            , f.Description = tmpf.Description
+            , f.ParentId = tmpf.ParentId 
+            , f.ParentName= tmpf.ParentName
+            , f.Policy = tmpf.Policy
+            , f.URL = tmpf.URL
+            , f.DisplayOrder= tmpf.DisplayOrder
+            , f.IsActive = tmpf.IsActive
+            , f.CreatedBy= tmpf.CreatedBy
+            , f.CreatedDate= tmpf.CreatedDate
+            , f.ModifiedBy = tmpf.ModifiedBy
+            , f.ModifiedDate = tmpf.ModifiedDate;
+
+################# NAP_OnUser ########################### 
+
+    DROP TEMPORARY TABLE IF EXISTS tmp_NAP_OnUser;
+	CREATE TEMPORARY TABLE tmp_NAP_OnUser(
+                            Id INT
+                            , UserId INT
+                            , SiteId INT
+                            , ReloadTime DATETIME
+                            , IsKickedOut TINYINT
+                            , IP VARCHAR(100)
+                            , NetSessionId VARCHAR(200)
+                        );	
+    
+    SET iLoop = 0;
+	WHILE (JSON_EXTRACT(OnUser, CONCAT('$[',iLoop, '].Id'))  IS NOT NULL) DO
+		INSERT INTO tmp_NAP_OnUser(
+                              Id
+                            , UserId
+                            , SiteId
+                            , ReloadTime
+                            , IsKickedOut
+                            , IP
+                            , NetSessionId
+                                    )
+		SELECT JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].Id')) 
+						, JSON_UNQUOTE(JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].UserId')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].SiteId')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].ReloadTime')))
+                        , JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].IsKickedOut'))
+                        , JSON_UNQUOTE(JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].IP')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].NetSessionId')));
+		SET iLoop = iLoop +1;
+	END WHILE;
+
+    DELETE ou FROM ChatBot.NAP_OnUser ou LEFT JOIN tmp_NAP_OnUser tmp ON ou.Id = tmp.Id WHERE tmp.Id IS NULL;
+
+    INSERT INTO ChatBot.NAP_OnUser(Id
+                            , UserId
+                            , SiteId
+                            , ReloadTime
+                            , IsKickedOut
+                            , IP
+                            , NetSessionId
+                                )
+    SELECT tmp.Id 
+            , tmp.UserId 
+            , tmp.SiteId
+            , tmp.ReloadTime
+            , tmp.IsKickedOut
+            , tmp.IP
+            , tmp.NetSessionId
+    FROM tmp_NAP_OnUser tmp
+    LEFT JOIN ChatBot.NAP_OnUser ou ON tmp.Id = ou.Id
+    WHERE ou.Id IS NULL;
+
+    UPDATE ChatBot.NAP_OnUser ou
+    INNER JOIN tmp_NAP_OnUser tmp ON tmp.Id = g.Id
+    SET ou.Id = tmp.Id
+        ,ou.UserId = tmp.UserId
+        ,ou.SiteId = tmp.SiteId
+        ,ou.ReloadTime = tmp.ReloadTime
+        ,ou.IsKickedOut = tmp.IsKickedOut
+        ,ou.IP = tmp.IP
+        ,ou.NetSessionId = tmp.NetSessionId;
+
+################# NAP_Sites ########################### 
+
+    DROP TEMPORARY TABLE IF EXISTS tmp_NAP_Sites;
+	CREATE TEMPORARY TABLE tmp_NAP_Sites(
+                            SiteId INT
+                            , SiteName VARCHAR(100)
+                            , Description VARCHAR(200)
+                            , URL VARCHAR(200)
+                            , TestURL VARCHAR(200)
+                            , IsActive TINYINT
+                            , Environment VARCHAR(50)
+                            , SecretAccessKey VARCHAR(200)
+                            , SiteKey VARCHAR(100)
+                        );
+    
+    SET iLoop = 0;
+	WHILE (JSON_EXTRACT(Sites, CONCAT('$[',iLoop, '].SiteId'))  IS NOT NULL) DO
+		INSERT INTO tmp_NAP_Sites(
+                              SiteId 
+                            , SiteName
+                            , Description
+                            , URL
+                            , TestURL
+                            , IsActive
+                            , Environment
+                            , SecretAccessKey
+                            , SiteKey
+                                    )
+		SELECT JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].SiteId')) 
+						, JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].SiteName')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].Description')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].URL')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].TestURL')))
+                        , JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].IsActive'))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].Environment')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].SecretAccessKey')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].SiteKey')));
+
+		SET iLoop = iLoop +1;
+	END WHILE;
+
+    DELETE s FROM ChatBot.NAP_Sites s LEFT JOIN tmp_NAP_Sites tmp ON s.SiteId = tmp.SiteId WHERE tmp.SiteId IS NULL;
+
+    INSERT INTO ChatBot.NAP_Sites(SiteId 
+                            , SiteName
+                            , Description
+                            , URL
+                            , TestURL
+                            , IsActive
+                            , Environment
+                            , SecretAccessKey
+                            , SiteKey)
+    SELECT tmp.SiteId 
+            , tmp.SiteName 
+            , tmp.Description
+            , tmp.URL
+            , tmp.TestURL
+            , tmp.IsActive
+            , tmp.Environment
+            , tmp.SecretAccessKey
+            , tmp.SiteKey
+    FROM tmp_NAP_Sites tmp
+    LEFT JOIN ChatBot.NAP_Sites s ON tmp.SiteId = s.SiteId
+    WHERE s.SiteId IS NULL;
+
+    UPDATE ChatBot.NAP_Sites s
+    INNER JOIN tmp_NAP_Sites tmp ON tmp.SiteId = s.SiteId
+    SET s.SiteId = tmp.SiteId
+        ,s.SiteName = tmp.SiteName
+        ,s.Description = tmp.Description
+        ,s.URL = tmp.URL
+        ,s.TestURL = tmp.TestURL
+        ,s.IsActive = tmp.IsActive
+        ,s.Environment = tmp.Environment
+        ,s.SecretAccessKey = tmp.SecretAccessKey
+        ,s.SiteKey = tmp.SiteKey;
+    
+################# NAP_SiteURL ########################### 
+
+    DROP TEMPORARY TABLE IF EXISTS tmp_NAP_SiteURL;
+	CREATE TEMPORARY TABLE tmp_NAP_SiteURL(
+                            SiteURLId INT
+                            , SiteId INT
+                            , URL VARCHAR(200)
+                            , Environment VARCHAR(50)
+                            , IsDefault TINYINT
+                            , IsActive TINYINT
+                        );
+    
+    SET iLoop = 0;
+	WHILE (JSON_EXTRACT(SiteURL, CONCAT('$[',iLoop, '].SiteURLId'))  IS NOT NULL) DO
+		INSERT INTO tmp_NAP_SiteURL(
+                              SiteURLId
+                            , SiteId
+                            , URL
+                            , Environment
+                            , IsDefault
+                            , IsActive
+                                    )
+		SELECT JSON_EXTRACT(SiteURL, CONCAT('$[', iLoop, '].SiteURLId')) 
+						, JSON_UNQUOTE(JSON_EXTRACT(SiteURL, CONCAT('$[', iLoop, '].SiteId')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(SiteURL, CONCAT('$[', iLoop, '].URL')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(SiteURL, CONCAT('$[', iLoop, '].Environment')))
+                        , JSON_EXTRACT(SiteURL, CONCAT('$[', iLoop, '].IsDefault'))
+                        , JSON_EXTRACT(SiteURL, CONCAT('$[', iLoop, '].IsActive'));
+
+		SET iLoop = iLoop +1;
+	END WHILE;
+
+    DELETE s FROM ChatBot.NAP_SiteURL s LEFT JOIN tmp_NAP_SiteURL tmp ON s.SiteURLId = tmp.SiteURLId WHERE tmp.SiteURLId IS NULL;
+
+    INSERT INTO ChatBot.NAP_SiteURL(SiteURLId
+                            , SiteId
+                            , URL
+                            , Environment
+                            , IsDefault
+                            , IsActive)
+    SELECT tmp.SiteURLId 
+            , tmp.SiteId 
+            , tmp.URL
+            , tmp.Environment
+            , tmp.IsDefault
+            , tmp.IsActive
+    FROM tmp_NAP_SiteURL tmp
+    LEFT JOIN ChatBot.NAP_SiteURL s ON tmp.SiteURLId = s.SiteURLId
+    WHERE s.SiteURLId IS NULL;
+
+    UPDATE ChatBot.NAP_SiteURL s
+    INNER JOIN tmp_NAP_SiteURL tmp ON tmp.SiteURLId = s.SiteURLId
+    SET s.SiteURLId = tmp.SiteURLId
+        ,s.SiteId = tmp.SiteId
+        ,s.URL = tmp.URL
+        ,s.Environment = tmp.Environment
+        ,s.IsDefault = tmp.IsDefault
+        ,s.IsActive = tmp.IsActive;
+
+################# NAP_UserFunction ########################### 
+
+    DROP TEMPORARY TABLE IF EXISTS tmp_NAP_UserFunction;
+	CREATE TEMPORARY TABLE tmp_NAP_UserFunction(
+                            UserId INT
+                            , FunctionId INT
+                            , SiteId INT
+                            , Policy INT
+                            , CreatedBy INT
+                            , CreatedDate DATETIME
+                            , ModifiedBy INT
+                            , ModifiedDate DATETIME
+                        );
+    
+    SET iLoop = 0;
+	WHILE (JSON_EXTRACT(UserFunction, CONCAT('$[',iLoop, '].UserId'))  IS NOT NULL) DO
+		INSERT INTO tmp_NAP_UserFunction(
+                              UserId
+                            , FunctionId
+                            , SiteId
+                            , Policy
+                            , CreatedBy
+                            , CreatedDate
+                            , ModifiedBy
+                            , ModifiedDate
+                                    )
+		SELECT JSON_EXTRACT(UserFunction, CONCAT('$[', iLoop, '].UserId')) 
+						, JSON_UNQUOTE(JSON_EXTRACT(UserFunction, CONCAT('$[', iLoop, '].FunctionId')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(UserFunction, CONCAT('$[', iLoop, '].SiteId')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(UserFunction, CONCAT('$[', iLoop, '].Policy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(UserFunction, CONCAT('$[', iLoop, '].CreatedBy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(UserFunction, CONCAT('$[', iLoop, '].CreatedDate')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(UserFunction, CONCAT('$[', iLoop, '].ModifiedBy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(UserFunction, CONCAT('$[', iLoop, '].ModifiedDate')));
+
+		SET iLoop = iLoop +1;
+	END WHILE;
+
+    DELETE uf FROM ChatBot.NAP_UserFunction uf 
+            LEFT JOIN tmp_NAP_UserFunction tmp ON uf.UserId = tmp.UserId 
+                                        AND uf.FunctionId = tmp.FunctionId
+                                        AND uf.Policy = tmp.Policy
+                                        AND uf.SiteId = tmp.SiteId
+            WHERE tmp.UserId IS NULL;
+
+    INSERT INTO ChatBot.NAP_UserFunction(UserId
+                            , FunctionId
+                            , SiteId
+                            , Policy
+                            , CreatedBy
+                            , CreatedDate
+                            , ModifiedBy
+                            , ModifiedDate)
+    SELECT tmp.UserId 
+            , tmp.FunctionId 
+            , tmp.SiteId
+            , tmp.Policy
+            , tmp.CreatedBy
+            , tmp.CreatedDate
+            , tmp.ModifiedBy
+            , tmp.ModifiedDate
+    FROM tmp_NAP_UserFunction tmp
+    LEFT JOIN ChatBot.NAP_UserFunction uf ON uf.UserId = tmp.UserId 
+                                        AND uf.FunctionId = tmp.FunctionId
+                                        AND uf.Policy = tmp.Policy
+                                        AND uf.SiteId = tmp.SiteId
+    WHERE uf.UserId IS NULL;
+
+    UPDATE ChatBot.NAP_UserFunction uf
+    INNER JOIN tmp_NAP_UserFunction tmp ON uf.UserId = tmp.UserId 
+                                        AND uf.FunctionId = tmp.FunctionId
+                                        AND uf.Policy = tmp.Policy
+                                        AND uf.SiteId = tmp.SiteId
+    SET uf.UserId = tmp.UserId
+        ,uf.FunctionId = tmp.FunctionId
+        ,uf.SiteId = tmp.SiteId
+        ,uf.Policy = tmp.Policy
+        ,uf.CreatedBy = tmp.CreatedBy
+        ,uf.CreatedDate = tmp.CreatedDate
+        ,uf.ModifiedBy = tmp.ModifiedBy
+        ,uf.ModifiedDate = tmp.ModifiedDate;
+        
+################# NAP_Users ########################### 
+
+    DROP TEMPORARY TABLE IF EXISTS tmp_NAP_Users;
+	CREATE TEMPORARY TABLE tmp_NAP_Users(
+                            UserId INT
+                            , GroupId INT
+                            , LastLoginDate INT
+                            , CreatedBy INT
+                            , CreatedDate DATETIME
+                            , ModifiedBy INT
+                            , ModifiedDate DATETIME
+                        );
+    
+    SET iLoop = 0;
+	WHILE (JSON_EXTRACT(Users, CONCAT('$[',iLoop, '].UserId'))  IS NOT NULL) DO
+		INSERT INTO tmp_NAP_Users(
+                              UserId
+                            , GroupId
+                            , LastLoginDate
+                            , CreatedBy
+                            , CreatedDate
+                            , ModifiedBy
+                            , ModifiedDate
+                                    )
+		SELECT JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].UserId')) 
+						, JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].GroupId')))
+						, JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].LastLoginDate')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].CreatedBy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].CreatedDate')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].ModifiedBy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].ModifiedDate')));
+
+		SET iLoop = iLoop +1;
+	END WHILE;
+
+    DELETE u FROM ChatBot.NAP_Users u
+            LEFT JOIN tmp_NAP_Users tmp ON u.UserId = tmp.UserId 
+            WHERE tmp.UserId IS NULL;
+
+    INSERT INTO ChatBot.NAP_UserFunction(UserId
+                            , GroupId
+                            , LastLoginDate
+                            , CreatedBy
+                            , CreatedDate
+                            , ModifiedBy
+                            , ModifiedDate)
+    SELECT tmp.UserId 
+            , tmp.GroupId 
+            , tmp.LastLoginDate
+            , tmp.CreatedBy
+            , tmp.CreatedDate
+            , tmp.ModifiedBy
+            , tmp.ModifiedDate
+    FROM tmp_NAP_Users tmp
+    LEFT JOIN ChatBot.NAP_Users m ON m.UserId = tmp.UserId 
+    WHERE m.UserId IS NULL;
+
+    UPDATE ChatBot.NAP_Users m
+    INNER JOIN tmp_NAP_Users tmp ON m.UserId = tmp.UserId 
+    SET m.UserId = tmp.UserId
+        ,m.GroupId = tmp.GroupId
+        ,m.LastLoginDate = tmp.LastLoginDate
+        ,m.CreatedBy = tmp.CreatedBy
+        ,m.CreatedDate = tmp.CreatedDate
+        ,m.ModifiedBy = tmp.ModifiedBy
+        ,m.ModifiedDate = tmp.ModifiedDate;
+
+################# NAP_UserSite ########################### 
+
+    DROP TEMPORARY TABLE IF EXISTS tmp_NAP_UserSite;
+	CREATE TEMPORARY TABLE tmp_NAP_UserSite(
+                            UserId INT
+                            , SiteId INT
+                            , Level INT
+                            , IsActive TINYINT
+                            , LastLoginDate INT
+                            , CreatedBy INT
+                            , CreatedDate DATETIME
+                            , ModifiedBy INT
+                            , ModifiedDate DATETIME
+                            , ExpiredDate DATETIME
+                            , IsNeverExpired TINYINT
+                        );
+    
+    SET iLoop = 0;
+	WHILE (JSON_EXTRACT(UserSite, CONCAT('$[',iLoop, '].UserId'))  IS NOT NULL) DO
+		INSERT INTO tmp_NAP_UserSite(
+                              UserId
+                            , SiteId
+                            , Level
+                            , IsActive
+                            , LastLoginDate
+                            , CreatedBy
+                            , CreatedDate
+                            , ModifiedBy
+                            , ModifiedDate
+                            , ExpiredDate
+                            , IsNeverExpired
+                                    )
+		SELECT JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].UserId')) 
+						, JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].SiteId')))
+						, JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].Level')))
+                        , JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].IsActive'))
+						, JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].LastLoginDate')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].CreatedBy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].CreatedDate')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].ModifiedBy')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].ModifiedDate')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].ExpiredDate')))
+                        , JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].IsNeverExpired'));
+
+		SET iLoop = iLoop +1;
+	END WHILE;
+
+    DELETE us FROM ChatBot.NAP_UserSite us
+            LEFT JOIN tmp_NAP_UserSite tmp ON us.UserId = tmp.UserId 
+            WHERE tmp.UserId IS NULL;
+
+    INSERT INTO ChatBot.NAP_UserFunction(UserId
+                            , SiteId
+                            , Level
+                            , IsActive
+                            , LastLoginDate
+                            , CreatedBy
+                            , CreatedDate
+                            , ModifiedBy
+                            , ModifiedDate
+                            , ExpiredDate
+                            , IsNeverExpired)
+    SELECT tmp.UserId 
+            , tmp.GroupId 
+            , tmp.LastLoginDate
+            , tmp.CreatedBy
+            , tmp.CreatedDate
+            , tmp.ModifiedBy
+            , tmp.ModifiedDate
+    FROM tmp_NAP_UserSite tmp
+    LEFT JOIN ChatBot.NAP_Users m ON m.UserId = tmp.UserId 
+    WHERE m.UserId IS NULL;
+
+    UPDATE ChatBot.NAP_Users m
+    INNER JOIN tmp_NAP_UserSite tmp ON m.UserId = tmp.UserId 
+    SET m.UserId = tmp.UserId
+        ,m.GroupId = tmp.GroupId
+        ,m.LastLoginDate = tmp.LastLoginDate
+        ,m.CreatedBy = tmp.CreatedBy
+        ,m.CreatedDate = tmp.CreatedDate
+        ,m.ModifiedBy = tmp.ModifiedBy
+        ,m.ModifiedDate = tmp.ModifiedDate;
+
+END;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NAP_CrawlData_InsUpdDataNapUserControl TO 'ncb.admin'@'%';

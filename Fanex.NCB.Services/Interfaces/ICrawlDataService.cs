@@ -5,5 +5,7 @@
     public interface ICrawlDataService
     {
         Task NapClientSyncDataAsync();
+
+        Task OicSyncDataAsync();
     }
 }

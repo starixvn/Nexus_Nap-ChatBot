@@ -20,8 +20,6 @@
 
         public IEnumerable<NapUserFunction> NAP_UserFunction { get; set; }
 
-        public IEnumerable<NapUserMarkedMenu> NAP_UserMarkedMenus { get; set; }
-
         public IEnumerable<NapUser> NAP_Users { get; set; }
 
         public IEnumerable<NapUserSite> NAP_UserSite { get; set; }

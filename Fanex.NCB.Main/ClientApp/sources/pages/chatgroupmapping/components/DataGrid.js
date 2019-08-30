@@ -74,7 +74,8 @@ export class DataGrid extends Component {
                     <Cell className="text-center">
                         <span
                             onClick={() => this.copyGroupIdToClipboard(item.conversationID)}
-                            className="icon-copy" title={item.conversationID} />
+                            className="icon-copy" title={item.conversationID}
+                        />
                     </Cell>
                     <Cell>{item.groupName}</Cell>
                     <Cell>{item.chatGroupTypeName}</Cell>

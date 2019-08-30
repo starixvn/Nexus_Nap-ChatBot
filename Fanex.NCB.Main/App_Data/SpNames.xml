@@ -46,10 +46,13 @@
     <Setting Key="NCB_EditNotification_Upd" SpName="NCB_EditNotification_Upd" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_EditNotification_Recipient_Sel" SpName="NCB_EditNotification_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
-
+ <Function Name="Crawl Data">
+    <Setting Key="NAP_UserControl_GetDataBySiteId" SpName="NAP_UserControl_GetDataBySiteId" DbName="NapUserControl" Plain="0"></Setting>
+    <Setting Key="NAP_CrawlData_Ins" SpName="NAP_CrawlData_Ins" DbName="ChatBot" Plain="0"></Setting>
+  </Function>
   <Function Name="Local NAP">
     <Setting Key="NAP_User_GetByUsername" SpName="NAP_User_GetByUsername" DbName="ChatBot" Plain="0">
-      <Mapping DataField="UserId" ObjectProperty="Id" Class="User" />
+      <Mapping DataField="UserId" ObjectProperty="Id" Class="User" /> 
       <Mapping DataField="GroupId" ObjectProperty="Id" Class="Group" />
       <Mapping DataField="GroupName" ObjectProperty="Name" Class="Group" />
       <Mapping DataField="CreatorId" ObjectProperty="Id" Class="User" />

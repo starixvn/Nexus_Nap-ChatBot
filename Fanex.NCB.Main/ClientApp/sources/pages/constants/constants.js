@@ -20,3 +20,5 @@ export const DateFormat = 'MM/dd/yyyy';
 export const TimeFormat = 'hh:mm:ss a';
 
 export const DateTimeFormat = 'MM/dd/yyyy hh:mm:ss a';
+
+export const NotAvailabeId = -1000;

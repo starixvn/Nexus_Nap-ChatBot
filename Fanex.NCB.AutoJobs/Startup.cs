@@ -5,11 +5,14 @@
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Data.Repository;
+    using Fanex.Data.SqlServer;
     using Fanex.Logging;
     using Fanex.Logging.Sentry;
     using Fanex.NCB.AutoJobs.Services;
     using Fanex.NCB.AutoJobs.Services.Implements;
     using Fanex.NCB.Core.Models;
+    using Fanex.NCB.Repository;
+    using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Repositories;
@@ -37,16 +40,19 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            Dictionary<string, ConnectionConfiguration> connections = Configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .ToDictionary(connection => connection.Key,
-                              connection => new ConnectionConfiguration(connection.Key, connection.Value));
+            var connections = Configuration.GetSection("ConnectionStrings")
+                                    .GetChildren()
+                                    .AsEnumerable()
+                                    .Where(x => !string.IsNullOrWhiteSpace(x.GetValue<string>("Name")))
+                                    .ToDictionary(x => x.GetValue<string>("Name"),
+                                    y => new ConnectionConfiguration(y.GetValue<string>("Name"), y.GetValue<string>("ConnectionString"), y.GetValue<string>("ProviderName")));
 
             DbSettingProviderManager
                .StartNewSession()
                .Use(connections)
-               .WithMySql(resourcePath: "~/App_Data")
+               .WithMySql()
+               .WithSqlServer()
+               .UseDefaultDbSettingProvider("~/App_Data")
                .Run();
 
             LogManager
@@ -110,6 +116,7 @@
             services.AddSingleton<IBaseService, BaseService>();
             services.AddSingleton<IChatbotService, ChatbotService>();
             services.AddSingleton<ISendNotificationService, SendNotificationService>();
+            services.AddSingleton<ICrawlDataService, CrawlDataService>();
             services.AddSingleton<IJobService, JobService>();
         }
 
@@ -117,22 +124,13 @@
         {
             services.AddScoped<IDynamicRepository, DynamicRepository>();
             services.AddTransient<IBaseRepository, BaseRepository>();
+            services.AddTransient<ICrawlDataRepository, CrawlDataRepository>();
         }
 
         private void RegisterHangfire(IServiceCollection services)
         {
             var connectionString = Cryptography.DecryptConnectionString(Configuration.GetConnectionString("Hangfire"));
             services.AddHangfire(x => x.UseStorage(new MySqlStorage(connectionString)));
-        }
-
-        private static void RunHangfireJobs(IConfiguration configuration)
-        {
-            var cronJob = new CronJob();
-            configuration.Bind("CronJob", cronJob);
-
-            RecurringJob.AddOrUpdate<IJobService>("Auto Scan & Send Notification",
-                sendNoti => sendNoti.AutoScanAndSendNotifictaion(),
-                cronJob.SendNotification);
         }
     }
 }

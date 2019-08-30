@@ -1,5 +1,10 @@
 ﻿namespace Fanex.NCB.Main.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Security.Claims;
+    using System.Threading.Tasks;
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Common;
     using Fanex.NAP.Client.Helpers.Web;
@@ -15,11 +20,6 @@
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Security.Claims;
-    using System.Threading.Tasks;
 
     public class AuthController : Controller
     {
@@ -77,7 +77,6 @@
                 else if (!await IsExistNapSite(user))
                 {
                     errorMsg = Labels.NoPermision;
-                    
                 }
                 else if (!await IsExistNapGroup(user))
                 {

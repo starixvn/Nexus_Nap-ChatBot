@@ -1,7 +1,8 @@
 ﻿namespace Fanex.NCB.Main.AppConfig
 {
     using Fanex.Data.Repository;
-    using Fanex.NAP.Client.Services;
+    using Fanex.NCB.Repository;
+    using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Repositories;
@@ -21,12 +22,14 @@
             services.AddScoped<ICommonService, CommonService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<ISendNotificationService, SendNotificationService>();
+            services.AddScoped<ICrawlDataService, CrawlDataService>();
         }
 
         public static void RegisterRepositories(this IServiceCollection services)
         {
             services.AddScoped<IDynamicRepository, DynamicRepository>();
             services.AddTransient<IBaseRepository, BaseRepository>();
+            services.AddTransient<ICrawlDataRepository, CrawlDataRepository>();
         }
     }
 }

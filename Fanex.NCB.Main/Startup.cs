@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using Fanex.Data;
     using Fanex.Data.MySql;
+    using Fanex.Data.SqlServer;
     using Fanex.Logging;
     using Fanex.Logging.Sentry;
     using Fanex.NAP.Client;
@@ -36,16 +37,19 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            Dictionary<string, ConnectionConfiguration> connections = Configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .ToDictionary(connection => connection.Key,
-                              connection => new ConnectionConfiguration(connection.Key, connection.Value));
+            var connections = Configuration.GetSection("ConnectionStrings")
+                                    .GetChildren()
+                                    .AsEnumerable()
+                                    .Where(x => !string.IsNullOrWhiteSpace(x.GetValue<string>("Name")))
+                                    .ToDictionary(x => x.GetValue<string>("Name"),
+                                    y => new ConnectionConfiguration(y.GetValue<string>("Name"), y.GetValue<string>("ConnectionString"), y.GetValue<string>("ProviderName")));
 
             DbSettingProviderManager
                .StartNewSession()
                .Use(connections)
-               .WithMySql(resourcePath: "~/App_Data")
+               .WithMySql()
+               .WithSqlServer()
+               .UseDefaultDbSettingProvider(resourcePath: "~/App_Data")
                .Run();
 
             LogManager

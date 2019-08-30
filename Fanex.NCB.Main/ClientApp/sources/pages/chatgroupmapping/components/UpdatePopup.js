@@ -10,6 +10,7 @@ import Labels from '../../common/Labels';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 import { TextField } from '../../common/text-field/TextField';
 import ConfirmPopup from '../../common/ConfirmPopup';
+import { NotAvailabeId } from '../../constants/constants';
 
 const CONFIRM_CLOSE = 1;
 const CONFIRM_UPDATE = 2;
@@ -130,6 +131,7 @@ export class UpdatePopup extends Component {
             v['checked'] = isChecked ? true : false;
             isChecked && v.status && licenseeStatuses.push(v.status);
         });
+        const recipientType = this.props.settingData.recipientTypes.filter(v => v.id !== NotAvailabeId);
 
         return (
             <Modal isOpen wrapClassName="new-notification-type">
@@ -158,7 +160,7 @@ export class UpdatePopup extends Component {
                         <FormGroup>
                             <Label className="form-label required">{Labels.RecipientType}</Label>
                             <SelectField initialValue={editingItem.recipientTypeId.value}
-                                data={this.props.settingData.recipientTypes}
+                                data={recipientType}
                                 isSummited={this.state.isSummited}
                                 onChange={recipientTypeId => {
                                     this.filterRecipients(recipientTypeId.value);
