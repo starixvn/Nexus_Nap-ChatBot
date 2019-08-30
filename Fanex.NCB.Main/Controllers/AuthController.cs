@@ -16,6 +16,7 @@
     using Fanex.NCB.Core.Resources;
     using Fanex.NCB.Models.Auth;
     using Fanex.NCB.NAPResolver;
+    using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;
@@ -31,6 +32,7 @@
         private readonly INapSession napSession;
         private readonly INapSettings napSettings;
         private readonly ISecurityService securityService;
+        private readonly ICrawlDataService crawlDataService;
 
         public AuthController(
             IUserService userService,
@@ -38,7 +40,8 @@
             ISecurityService securityService,
             ISiteService siteService,
             INapSession napSession,
-            INapSettings napSettings)
+            INapSettings napSettings,
+            ICrawlDataService crawlDataService)
         {
             this.userService = userService;
             this.groupService = groupService;
@@ -46,6 +49,7 @@
             this.siteService = siteService;
             this.napSession = napSession;
             this.napSettings = napSettings;
+            this.crawlDataService = crawlDataService;
         }
 
         public IActionResult Index(string returnUrl, bool invalidLogin)
@@ -65,6 +69,7 @@
         [HttpPost]
         public async Task<IActionResult> SignIn(UserLogin userLogin)
         {
+            await crawlDataService.NapClientSyncDataAsync();
             string errorMsg = string.Empty;
             User user = await userService.GetAsync(userLogin.Username).ConfigureAwait(false);
 

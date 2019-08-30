@@ -24,7 +24,7 @@
 
         public string UserSite { get; set; }
 
-        public override string GetSettingKey() => "NAP_CrawlData_InsUpdDataNapUserControl";
+        public override string GetSettingKey() => "NAP_UserControl_SyncData";
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(Functions);
     }
