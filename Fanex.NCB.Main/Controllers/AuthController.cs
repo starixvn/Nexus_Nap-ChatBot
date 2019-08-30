@@ -10,6 +10,7 @@
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Core.Resources;
     using Fanex.NCB.Models.Auth;
+    using Fanex.NCB.NAPResolver;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;
@@ -23,6 +24,7 @@
     public class AuthController : Controller
     {
         private const int SSOExpiredTimeInSeconds = 30;
+        private const int DiffTimeZoneBetweenNAPServerAndChatBotServer = -4;
         private readonly IUserService userService;
         private readonly IGroupService groupService;
         private readonly ISiteService siteService;
@@ -254,7 +256,10 @@
         {
             var cfsDescryptTime = Data.Cryptography.DecryptPassword(time.Replace(" ", "+"));
             var serverTime = await securityService.GetTimeAsync();
-            var expiration = DateTime.Parse(serverTime).AddHours(-4) - DateTime.Parse(cfsDescryptTime);
+            var serverDateTime = NapServicesRegistrationExtension.NAPResolverType == NAPResolverType.Local
+                ? DateTime.Parse(serverTime).AddHours(DiffTimeZoneBetweenNAPServerAndChatBotServer)
+                : DateTime.Parse(serverTime);
+            var expiration = serverDateTime - DateTime.Parse(cfsDescryptTime);
 
             return expiration.TotalSeconds <= SSOExpiredTimeInSeconds;
         }
