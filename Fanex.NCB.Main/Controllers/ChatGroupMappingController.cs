@@ -1,19 +1,19 @@
 namespace Fanex.NCB.SkypeBot.Controllers
 {
-    using Fanex.NAP.Client.AspNetCore.Attributes;
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Main.ViewModel.ChatGroupMapping;
     using Fanex.NCB.Models.ChatGroupMapping;
+    using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using System.Threading.Tasks;
     using static Fanex.NAP.Core.Business.Constant;
 
-    [NapSuperAuth]
+    [NapChatBotSuperAuth]
     public class ChatGroupMappingController : Controller
     {
         private readonly IChatGroupMappingService chatGroupMappingService;
@@ -38,7 +38,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        [NapAuth(FunctionKey = FunctionKey.ChatGroupMapping, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.ChatGroupMapping, Policy = Policy.Read)]
         public IActionResult Index()
         {
             return View("~/Views/SkypeBot/ChatGroupMapping/Index.cshtml");
@@ -69,7 +69,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        [NapAuth(FunctionKey = FunctionKey.ChatGroupMapping, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.ChatGroupMapping, Policy = Policy.Read)]
         public async Task<IActionResult> GetAll(GetChapGroupMapping model)
         {
             var result = await chatGroupMappingService.GetChatGroupMappingListAsync(model).ConfigureAwait(false);
@@ -79,7 +79,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [NapAuth(FunctionKey = FunctionKey.ChatGroupMapping, Policy = Policy.Host)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.ChatGroupMapping, Policy = Policy.Host)]
         public async Task<IActionResult> Edit([FromBody]EditChatGroupMapping model)
         {
             model.CreatorID = napSession.UserId;

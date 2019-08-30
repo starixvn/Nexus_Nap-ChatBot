@@ -1,17 +1,17 @@
 ﻿namespace Fanex.NCB.Main.Controllers
 {
-    using Fanex.NAP.Client.AspNetCore.Attributes;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Main.ViewModel.Notification;
     using Fanex.NCB.Main.ViewModel.TreeSelect;
     using Fanex.NCB.Models.Notification;
+    using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
     using System.Threading.Tasks;
     using static Fanex.NAP.Core.Business.Constant;
 
-    [NapSuperAuth]
+    [NapChatBotSuperAuth]
     public class EditNotificationController : Controller
     {
         private readonly INotificationService notificationService;
@@ -24,14 +24,14 @@
         }
 
         [HttpGet]
-        [NapAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
         public IActionResult Index(int id)
         {
             return View("~/Views/SkypeBot/EditNotification/Index.cshtml", id);
         }
 
         [HttpGet]
-        [NapAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Get(int id)
         {
             var notification = await notificationService.GetEditNotificationInfo(id).ConfigureAwait(false);
@@ -45,7 +45,7 @@
         }
 
         [HttpGet]
-        [NapAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> GetRecipients(int notificationId, int notificationTypeId, int? productId)
         {
             var result = await notificationService.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId).ConfigureAwait(false);
@@ -56,7 +56,7 @@
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Edit([FromBody]EditNotificationViewModel data)
         {
             var result = await notificationService.EditAsync(new EditNotification

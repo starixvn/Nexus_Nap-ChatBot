@@ -1,18 +1,17 @@
-using Fanex.NAP.Client.AspNetCore.Attributes;
-using Fanex.NAP.Client.Helpers.Web;
-using Fanex.NCB.Core.Constants;
-using Fanex.NCB.Main.ViewModel.Notification;
-using Fanex.NCB.Main.ViewModel.TreeSelect;
-using Fanex.NCB.Models.Notification;
-using Fanex.NCB.NAPResolver.Attributes;
-using Fanex.NCB.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using static Fanex.NAP.Core.Business.Constant;
-
 namespace Fanex.NCB.SkypeBot.Controllers
 {
-    [NapSuperAuth]
+    using Fanex.NAP.Client.Helpers.Web;
+    using Fanex.NCB.Core.Constants;
+    using Fanex.NCB.Main.ViewModel.Notification;
+    using Fanex.NCB.Main.ViewModel.TreeSelect;
+    using Fanex.NCB.Models.Notification;
+    using Fanex.NCB.NAPResolver.Attributes;
+    using Fanex.NCB.Services.Interfaces;
+    using Microsoft.AspNetCore.Mvc;
+    using System.Threading.Tasks;
+    using static Fanex.NAP.Core.Business.Constant;
+
+    [NapChatBotSuperAuth]
     public class NewNotificationController : Controller
     {
         private readonly INotificationService notificationService;
@@ -25,14 +24,16 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        [TypeFilter(typeof(NapPermissionAttribute), Arguments = new object[] { FunctionKey.NewNotification, Policy.Host, true })]
+        //[TypeFilter(typeof(NapPermissionAttribute), Arguments = new object[] { FunctionKey.NewNotification, Policy.Host, true })]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
         public IActionResult Index()
         {
             return View("~/Views/SkypeBot/NewNotification/Index.cshtml");
         }
 
         [HttpPost]
-        [TypeFilter(typeof(NapPermissionAttribute), Arguments = new object[] { FunctionKey.NewNotification, Policy.Host, true })]
+        //[TypeFilter(typeof(NapPermissionAttribute), Arguments = new object[] { FunctionKey.NewNotification, Policy.Host, true })]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
         public async Task<IActionResult> Create(CreateNewNotificationViewModel model)
         {
             var result = await notificationService.CreateAsync(new CreateNotification
@@ -51,7 +52,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        [TypeFilter(typeof(NapPermissionAttribute), Arguments = new object[] { FunctionKey.NewNotification, Policy.Host, true })]
+        //[TypeFilter(typeof(NapPermissionAttribute), Arguments = new object[] { FunctionKey.NewNotification, Policy.Host, true })]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
         public async Task<IActionResult> GetRecipients(int notificationTypeId, int? productId)
         {
             var result = await notificationService.GetRecipientsAsync(notificationTypeId, productId).ConfigureAwait(false);

@@ -1,17 +1,17 @@
 namespace Fanex.NCB.SkypeBot.Controllers
 {
     using System.Threading.Tasks;
-    using Fanex.NAP.Client.AspNetCore.Attributes;
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Models.NotificationType;
+    using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
     using static Fanex.NAP.Core.Business.Constant;
 
-    [NapSuperAuth]
+    [NapChatBotSuperAuth]
     public class NotificationTypeController : Controller
     {
         private readonly INotificationTypeService notificationTypeService;
@@ -31,14 +31,14 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        [NapAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Read)]
         public IActionResult Index()
         {
             return View("~/Views/SkypeBot/NotificationType/Index.cshtml");
         }
 
         [HttpGet]
-        [NapAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Read)]
         public async Task<IActionResult> GetAll(int pageIndex, int pageSize)
         {
             var data = await notificationTypeService.GetAllAsync(pageIndex, pageSize).ConfigureAwait(false);
@@ -47,7 +47,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Host)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Host)]
         public async Task<IActionResult> Delete([FromBody] int notificationTypeId)
         {
             var result = await notificationTypeService.DeleteAsync(notificationTypeId).ConfigureAwait(false);
@@ -56,7 +56,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Host)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Host)]
         public async Task<IActionResult> Add([FromBody] NotificationType item)
         {
             var result = await notificationTypeService.InsertAsync(item).ConfigureAwait(false);
@@ -65,7 +65,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Host)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Host)]
         public async Task<IActionResult> Edit([FromBody] NotificationType item)
         {
             var result = notificationTypeService.UpdateAsync(item);
