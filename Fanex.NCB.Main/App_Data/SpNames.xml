@@ -49,7 +49,6 @@
   <Function Name="Crawl Data">
     <Setting Key="NAP_UserControl_GetDataBySiteId" SpName="NAP_UserControl_GetDataBySiteId" DbName="NapUserControl" Plain="0"></Setting>
     <Setting Key="NAP_UserControl_SyncData" SpName="NAP_UserControl_SyncData" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NapChatBot_GetDataFromOIC" SpName="NapChatBot_GetDataFromOIC" DbName="OIC" Plain="0"></Setting>
     <Setting Key="OIC_SyncData" SpName="OIC_SyncData" DbName="ChatBot" Plain="0"></Setting>
   </Function>
   <Function Name="Local NAP">
