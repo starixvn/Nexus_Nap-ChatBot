@@ -6,7 +6,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_User_SSOCheckIn(
 	IN userID INT,
     IN siteID INT, 
     IN checkOnUserID INT, 
-    IN netSessionId VARCHAR(30),
+    IN netSessionId VARCHAR(50),
 	IN iP VARCHAR(50), 
     IN loginDate DATETIME,
     OUT onUserId INT
