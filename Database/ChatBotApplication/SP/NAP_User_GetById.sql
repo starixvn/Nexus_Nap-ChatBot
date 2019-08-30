@@ -33,7 +33,7 @@ BEGIN
 			,ci2.username	AS ModifierUsername
 		FROM 
 			ChatBot.NAP_Users AS u 
-			INNER JOIN ChatBot.Customer AS C  ON u.UserId = c.custid
+			INNER JOIN ChatBot.Customer AS c  ON u.UserId = c.custid
 			INNER JOIN ChatBot.custInfo AS ci  ON u.UserId = ci.custid
 			LEFT JOIN ChatBot.NAP_Groups AS g  ON g.GroupId = u.GroupId
 			LEFT JOIN ChatBot.custInfo AS ci1  ON u.CreatedBy = ci1.custid
