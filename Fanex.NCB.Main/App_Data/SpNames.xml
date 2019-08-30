@@ -57,6 +57,15 @@
       <Mapping DataField="ModifierId" ObjectProperty="Id" Class="User" />
       <Mapping DataField="ModifierUsername" ObjectProperty="Username" Class="User" />
     </Setting>
+    <Setting Key="NAP_User_GetById" SpName="NAP_User_GetById" DbName="ChatBot" Plain="0">
+      <Mapping DataField="UserId" ObjectProperty="Id" Class="User" />
+      <Mapping DataField="GroupId" ObjectProperty="Id" Class="Group" />
+      <Mapping DataField="GroupName" ObjectProperty="Name" Class="Group" />
+      <Mapping DataField="CreatorId" ObjectProperty="Id" Class="User" />
+      <Mapping DataField="CreatorUsername" ObjectProperty="Username" Class="User" />
+      <Mapping DataField="ModifierId" ObjectProperty="Id" Class="User" />
+      <Mapping DataField="ModifierUsername" ObjectProperty="Username" Class="User" />
+    </Setting>
     <Setting Key="NAP_Site_GetByUser" SpName="NAP_Site_GetByUser" DbName="ChatBot" Plain="0">
       <Mapping DataField="SiteId" ObjectProperty="Id" Class="Site" />
       <Mapping DataField="SiteName" ObjectProperty="Name" Class="Site" />
@@ -93,6 +102,14 @@
 
       <Mapping DataField="ModifierId" ObjectProperty="Id" Class="User" />
       <Mapping DataField="ModifierUsername" ObjectProperty="Username" Class="User" />
+    </Setting>
+
+    <Setting Key="NAP_User_ReCheckIn" SpName="NAP_User_ReCheckIn" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NAP_User_SSOCheckIn" SpName="NAP_User_SSOCheckIn" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NAP_User_SSOGetTime" SpName="NAP_User_SSOGetTime" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NAP_Site_GetById" SpName="NAP_Site_GetById" DbName="ChatBot" Plain="0">
+      <Mapping DataField="SiteId" ObjectProperty="Id" />
+      <Mapping DataField="SiteName" ObjectProperty="Name" />
     </Setting>
   </Function>
 </Functions>

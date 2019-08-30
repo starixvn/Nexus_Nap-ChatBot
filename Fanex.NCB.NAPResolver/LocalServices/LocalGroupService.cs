@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.NAPResolver.LocalServices
 {
+    using System;
     using System.Threading.Tasks;
     using Fanex.Data;
     using Fanex.NAP.Client.Models;
@@ -10,25 +11,7 @@
     {
         public Group Get(int groupId)
         {
-            var criteria = new GetGroupByIdCriteria
-            {
-                GroupId = groupId
-            };
-
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                var result = objectDb.QueryEntity<Group, User, User, Group>(
-                    (group, creator, modifier) =>
-                    {
-                        group.Creator = creator;
-                        group.Modifier = modifier;
-                        return group;
-                    },
-                    "CreatorId, ModifierId",
-                    criteria);
-
-                return result;
-            }
+            throw new NotImplementedException();
         }
 
         public async Task<Group> GetAsync(int groupId)

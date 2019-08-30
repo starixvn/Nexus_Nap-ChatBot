@@ -19,27 +19,7 @@
 
         public User Get(string username)
         {
-            var criteria = new GetUserByUsernameCriteria
-            {
-                Username = username
-            };
-
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                var result = objectDb.QueryEntity<User, Group, User, User, User>(
-                  (user, group, creator, modifier) =>
-                  {
-                      user.Group = group;
-                      user.Creator = creator;
-                      user.Modifier = modifier;
-
-                      return user;
-                  },
-                  "GroupId,CreatorId,ModifierId",
-                  criteria);
-
-                return result;
-            }
+            throw new NotImplementedException();
         }
 
         public IEnumerable<User> GetAll()
@@ -52,9 +32,29 @@
             throw new NotImplementedException();
         }
 
-        public Task<User> GetAsync(int userId)
+        public async Task<User> GetAsync(int userId)
         {
-            throw new NotImplementedException();
+            var criteria = new GetByUserIdCriteria
+            {
+                UserId = userId
+            };
+
+            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+            {
+                var result = await objectDb.QueryEntityAsync<User, Group, User, User, User>(
+                    (user, group, creator, modifier) =>
+                    {
+                        user.Group = group;
+                        user.Creator = creator;
+                        user.Modifier = modifier;
+
+                        return user;
+                    },
+                    "GroupId,CreatorId,ModifierId",
+                    criteria).ConfigureAwait(false);
+
+                return result;
+            }
         }
 
         public async Task<User> GetAsync(string username)
@@ -84,31 +84,7 @@
 
         public IEnumerable<MenuItem> GetMenuItem(int userId, int siteId, string environment = "UAT", bool? isActive = null)
         {
-            var criteria = new GetMenuItemCriteria
-            {
-                UserId = userId,
-                SiteId = siteId,
-                Environment = environment
-            };
-
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                var result = objectDb.Query<MenuItem, MenuItem, Function, Site, User, User, MenuItem>(
-                  (menu, parent, function, site, creator, modififer) =>
-                  {
-                      menu.Parent = parent;
-                      menu.Function = function;
-                      menu.Site = site;
-                      menu.Creator = creator;
-                      menu.Modifier = modififer;
-
-                      return menu;
-                  },
-                  "ParentId,FunctionId,SiteId,CreatorId,ModifierId",
-                  criteria);
-
-                return result;
-            }
+            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<MenuItem>> GetMenuItemAsync(int userId, int siteId, string environment = "UAT", bool? isActive = null)
@@ -142,17 +118,7 @@
 
         public int GetPermission(int userId, int siteId, string functionKey)
         {
-            var criteria = new GetUserFunctionPolicyCriteria
-            {
-                UserId = userId,
-                SiteId = siteId,
-                FunctionKey = functionKey
-            };
-
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                return objectDb.QueryEntity<int>(criteria);
-            }
+            throw new NotImplementedException();
         }
 
         public async Task<int> GetPermissionAsync(int userId, int siteId, string functionKey)
@@ -177,27 +143,7 @@
 
         public IEnumerable<SiteLevel> GetSiteLevel(int userId, string environment = "UAT")
         {
-            var criteria = new GetSiteLevelCriteria
-            {
-                UserId = userId,
-                Environment = environment
-            };
-
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                var result = objectDb.Query<SiteLevel, Site, User, User, SiteLevel>(
-                  (siteLevel, site, creator, modifier) =>
-                  {
-                      siteLevel.Site = site;
-                      siteLevel.Creator = creator;
-                      siteLevel.Modifier = modifier;
-                      return siteLevel;
-                  },
-                  "SiteId, CreatorId, ModifierId",
-                  criteria);
-
-                return result;
-            }
+            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<SiteLevel>> GetSiteLevelAsync(int userId, string environment = "UAT")

@@ -2,9 +2,11 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Fanex.Data;
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ValueObject;
     using Fanex.NAP.Client.Services;
+    using Fanex.NCB.Criteria.LocalNap.Site;
 
     public class LocalSiteService : ISiteService
     {
@@ -33,9 +35,25 @@
             throw new System.NotImplementedException();
         }
 
-        public Task<bool> IsActivatedAsync(int siteId)
+        public async Task<bool> IsActivatedAsync(int siteId)
         {
-            throw new System.NotImplementedException();
+            var criteria = new GetByIdSiteCriteria
+            {
+                SiteId = siteId
+            };
+
+            bool isActive = false;
+            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+            {
+                var site = await objectDb.QueryEntityAsync<Site>(criteria);
+
+                if (site != null)
+                {
+                    isActive = site.IsActive;
+                }
+
+                return isActive;
+            }
         }
     }
 }

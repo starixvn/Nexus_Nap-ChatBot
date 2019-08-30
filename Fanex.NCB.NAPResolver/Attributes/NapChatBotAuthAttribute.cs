@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.NAPResolver.Attributes
 {
     using System;
+    using System.Threading.Tasks;
     using Fanex.NAP.Client;
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
@@ -52,7 +53,8 @@
                 return;
             }
 
-            if (UserHasValidFunctionPolicy(napSession))
+            var hasValidFunctionPolicy = UserHasValidFunctionPolicy(napSession).Result;
+            if (hasValidFunctionPolicy)
             {
                 var unauthorizeUrl = napSettings.UnauthorizeUrl;
                 context.Result = new RedirectResult(string.IsNullOrEmpty(unauthorizeUrl)
@@ -61,7 +63,7 @@
             }
         }
 
-        private bool UserHasValidFunctionPolicy(INapSession currentSession)
+        private async Task<bool> UserHasValidFunctionPolicy(INapSession currentSession)
         {
             int policy = 0;
 
@@ -73,7 +75,7 @@
 
                 if (cachedPolicy == null)
                 {
-                    policy = userService.GetPermission(currentSession.UserId, napSettings.SiteId, FunctionKey);
+                    policy = await userService.GetPermissionAsync(currentSession.UserId, napSettings.SiteId, FunctionKey);
                     cache.Set(cacheKey, policy, DateTime.Now.AddSeconds(CacheDuration));
                 }
                 else
@@ -83,7 +85,7 @@
             }
             else
             {
-                policy = userService.GetPermission(currentSession.UserId, napSettings.SiteId, FunctionKey);
+                policy = await userService.GetPermissionAsync(currentSession.UserId, napSettings.SiteId, FunctionKey);
             }
 
             return policy < (int)Policy;

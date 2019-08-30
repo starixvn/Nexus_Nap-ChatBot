@@ -60,18 +60,6 @@
             return Json(menu);
         }
 
-        private IEnumerable<Menu> GetMenus(IEnumerable<MenuItem> menuItems)
-        {
-            return menuItems
-                .Select(m => new Menu
-                {
-                    Id = m.Id,
-                    Name = m.Name,
-                    Url = m.Url,
-                    Policy = m.Policy,
-                });
-        }
-
         [HttpPost]
         public async Task<IActionResult> SignIn(UserLogin userLogin)
         {
@@ -84,18 +72,19 @@
                 {
                     errorMsg = Labels.WrongPassword;
                 }
-                else if (!IsExistNapSite(user))
+                else if (!await IsExistNapSite(user))
                 {
                     errorMsg = Labels.NoPermision;
                     
                 }
-                else if (!IsExistNapGroup(user))
+                else if (!await IsExistNapGroup(user))
                 {
                     errorMsg = Labels.NoPermision;
                 }
                 else
                 {
-                    await DoCheckIn(user);
+                    var onUserId = await LoginCheckIn(user);
+                    await DoCheckIn(user, onUserId);
 
                     return Redirect(!string.IsNullOrWhiteSpace(userLogin.ReturnUrl) && Url.IsLocalUrl(userLogin.ReturnUrl) ? userLogin.ReturnUrl :
                         Url.Content($"~/{napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url}"));
@@ -116,31 +105,21 @@
 
         public async Task<IActionResult> Logout()
         {
-            securityService.Logout(napSession.OnUserId);
+            await securityService.LogoutAsync(napSession.OnUserId);
             napSession.ClearAll();
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
 
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        public ActionResult CheckUserOnlineStatus()
-        {
-            var recheckInStatus = RecheckIn();
-            return Json(new
-            {
-                napSession.OnUserId,
-                ErrCode = (int)recheckInStatus
-            });
-        }
-
         [Route("userlogin/sso")]
         public async Task<IActionResult> SSO(SSOLogin ssoLogin)
         {
-            if (ValidateTime(ssoLogin.Time))
+            var isValidTime = await IsValidateTime(ssoLogin.Time);
+            if (isValidTime)
             {
-                var userId = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.UserId));
-                var onuserid = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.OnUserId));
+                var userId = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.UserId.Replace(" ", "+")));
+                var onuserid = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.OnUserId.Replace(" ", "+")));
 
                 var ssoLoginParam = new SSOLoginParameter
                 {
@@ -154,14 +133,14 @@
                     Platform = Environment.OSVersion.Platform.ToString(),
                     LoginDate = DateTime.Now
                 };
-                var result = await securityService.SSOLoginAsync(ssoLoginParam).ConfigureAwait(false);
+                var onUserId = await securityService.SSOLoginAsync(ssoLoginParam).ConfigureAwait(false);
 
-                if (result > 0)
+                if (onUserId > 0)
                 {
                     var user = await userService.GetAsync(userId).ConfigureAwait(false);
                     if (user != null)
                     {
-                        await DoCheckIn(user).ConfigureAwait(false);
+                        await DoCheckIn(user, onUserId);
 
                         return Redirect(!string.IsNullOrWhiteSpace(ssoLogin.RedirectUrl) && Url.IsLocalUrl(ssoLogin.RedirectUrl) ? ssoLogin.RedirectUrl :
                         Url.Content($"~/{napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url}"));
@@ -169,44 +148,56 @@
                 }
             }
 
-            return NotFound();
+            return new RedirectResult("~/Auth/Index");
         }
 
-        private RecheckInStatus RecheckIn()
+        [HttpPost]
+        public async Task<ActionResult> CheckUserOnlineStatus()
+        {
+            var recheckInStatus = await RecheckIn();
+            return Json(new
+            {
+                napSession.OnUserId,
+                ErrCode = (int)recheckInStatus
+            });
+        }
+
+        private IEnumerable<Menu> GetMenus(IEnumerable<MenuItem> menuItems)
+        {
+            return menuItems
+                .Select(m => new Menu
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    Url = m.Url,
+                    Policy = m.Policy,
+                });
+        }
+
+        private async Task<RecheckInStatus> RecheckIn()
         {
             if (!napSettings.EnableReCheckIn || napSession.OnUserId <= 0)
             {
                 return RecheckInStatus.Success;
             }
 
-            if (!siteService.IsActivated(napSettings.SiteId))
+            if (!await siteService.IsActivatedAsync(napSettings.SiteId))
             {
                 return RecheckInStatus.InvalidSite;
             }
 
-            var status = securityService.ReCheckIn(napSession.OnUserId, napSettings.SiteId);
+            var status = await securityService.ReCheckInAsync(napSession.OnUserId, napSettings.SiteId);
 
             return status > 0 ? RecheckInStatus.KickOut : RecheckInStatus.Success;
         }
 
-        private async Task DoCheckIn(User user)
+        private async Task DoCheckIn(User user, int onUserId)
         {
-            var loginParam = new LoginParameter
-            {
-                UserId = user.Id,
-                SiteId = napSettings.SiteId,
-                NetSessionId = HttpContext.Session.Id,
-                Ip = HttpContext.Connection.RemoteIpAddress.ToString(),
-                LoginDate = DateTime.Now
-            };
-
-            var onUserId = await securityService.LoginAsync(loginParam);
-
             napSession.UserName = user.Username;
             napSession.UserId = user.Id;
             napSession.OnUserId = onUserId;
-            napSession.MenuItemList = userService.GetMenuItem(user.Id, napSettings.SiteId,
-                napSettings.Environment, true).Where(x => !string.IsNullOrWhiteSpace(x.Url))
+            napSession.MenuItemList = (await userService.GetMenuItemAsync(user.Id, napSettings.SiteId,
+                napSettings.Environment, true)).Where(x => !string.IsNullOrWhiteSpace(x.Url))
                 .OrderBy(x => x.DisplayOrder).ToList();
 
             var claims = new List<Claim>
@@ -220,23 +211,35 @@
                 new ClaimsPrincipal(identity));
         }
 
+        private async Task<int> LoginCheckIn(User user)
+        {
+            var loginParam = new LoginParameter
+            {
+                UserId = user.Id,
+                SiteId = napSettings.SiteId,
+                NetSessionId = HttpContext.Session.Id,
+                Ip = HttpContext.Connection.RemoteIpAddress.ToString(),
+                LoginDate = DateTime.Now
+            };
+
+            return await securityService.LoginAsync(loginParam);
+        }
+
         private static bool ValidatePassword(User user, UserLogin userLogin)
         {
             return string.Equals(user.Password, Cryptography.CfsEnCode(userLogin.Password), StringComparison.CurrentCulture);
         }
 
-        private bool IsExistNapSite(User user)
+        private async Task<bool> IsExistNapSite(User user)
         {
-            return userService
-                .GetSiteLevel(user.Id, napSettings.Environment)
-                .Any(s => s.Site.Id == napSettings.SiteId && s.IsActive);
+            return (await userService.GetSiteLevelAsync(user.Id, napSettings.Environment)).Any(s => s.Site.Id == napSettings.SiteId && s.IsActive);
         }
 
-        private bool IsExistNapGroup(User user)
+        private async Task<bool> IsExistNapGroup(User user)
         {
             if (user.Group != null)
             {
-                var group = groupService.Get(user.Group.Id);
+                var group = await groupService.GetAsync(user.Group.Id);
 
                 if (group != null && !group.IsActive)
                 {
@@ -247,10 +250,11 @@
             return true;
         }
 
-        private bool ValidateTime(string time)
+        private async Task<bool> IsValidateTime(string time)
         {
-            var cfsDescryptTime = Data.Cryptography.DecryptPassword(time);
-            var expiration = DateTime.Parse(securityService.GetTime()) - DateTime.Parse(cfsDescryptTime);
+            var cfsDescryptTime = Data.Cryptography.DecryptPassword(time.Replace(" ", "+"));
+            var serverTime = await securityService.GetTimeAsync();
+            var expiration = DateTime.Parse(serverTime).AddHours(-4) - DateTime.Parse(cfsDescryptTime);
 
             return expiration.TotalSeconds <= SSOExpiredTimeInSeconds;
         }
