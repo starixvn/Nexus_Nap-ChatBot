@@ -291,7 +291,7 @@ CREATE TABLE ChatBot.UserLog_RunSP(
 );
 
  CREATE TABLE ChatBot.NAP_OnUser(
-	Id INT  NOT NULL
+	Id  INT  AUTO_INCREMENT NOT NULL
 	, UserId INT  NULL
 	, SiteId INT  NULL
 	, ReloadTime DATETIME NULL
