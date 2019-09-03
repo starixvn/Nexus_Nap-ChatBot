@@ -7,16 +7,24 @@
     public class JobService : IJobService
     {
         private readonly ISendNotificationService sendNotificationService;
+        private readonly ISyncDataService syncDataService;
 
-        public JobService(ISendNotificationService sendNotificationService)
+        public JobService(ISendNotificationService sendNotificationService, ISyncDataService syncDataService)
         {
             this.sendNotificationService = sendNotificationService;
+            this.syncDataService = syncDataService;
         }
 
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         public async Task AutoScanAndSendNotifictaion()
         {
             await sendNotificationService.ScanAndSendNotification().ConfigureAwait(false);
+        }
+
+        [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
+        public async Task SyncDataFromNapUserControl()
+        {
+            await syncDataService.NapClientSyncDataAsync(null);
         }
     }
 }

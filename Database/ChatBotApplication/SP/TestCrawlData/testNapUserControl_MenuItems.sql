@@ -36,45 +36,68 @@ BEGIN
                             , CreatedDate DATETIME
                             , ModifiedBy INT
                             , ModifiedDate DATETIME
+                            , Environment VARCHAR(10)
                         );	
     
     SET iLoop = 0;
 	WHILE (JSON_EXTRACT(MenuItems, CONCAT('$[',iLoop, '].MenuItemId'))  IS NOT NULL) DO
 		INSERT INTO tmp_NAP_MenuItems(
-                                                                          MenuItemId
-																		, FunctionId 
-																		, SiteId 
-																		, MenuItemName 
-																		, Description
-																		, ParentId 
-                                                                        , ParentName
-																		, Policy
-                                                                        , URL
-                                                                        , DisplayOrder
-                                                                        , IsActive
-                                                                        , CreatedBy
-                                                                        , CreatedDate
-                                                                        , ModifiedBy
-                                                                        , ModifiedDate
-																	)
+                                        MenuItemId
+                                    , FunctionId 
+                                    , SiteId 
+                                    , MenuItemName 
+                                    , Description
+                                    , ParentId 
+                                    , ParentName
+                                    , Policy
+                                    , URL
+                                    , DisplayOrder
+                                    , IsActive
+                                    , CreatedBy
+                                    , CreatedDate
+                                    , ModifiedBy
+                                    , ModifiedDate
+                                    , Environment
+                                                        )
 		SELECT JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].MenuItemId')) 
 						, JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].FunctionId')))
 						, JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].SiteId')))
                         , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].MenuItemName')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].Description')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].ParentId')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].ParentName')))
+                        , CASE 
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].Description'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].Description')))
+                          END
+                        , CASE 
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].ParentId'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].ParentId')))
+                          END
+                        , CASE 
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].ParentName'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].ParentName')))
+                          END
                         , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].Policy')))
                         , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].URL')))
                         , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].DisplayOrder')))
                         , JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].IsActive'))
                         , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].CreatedBy')))
                         , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].CreatedDate')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].ModifiedBy')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].ModifiedDate')));
+                        , CASE 
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].ModifiedBy'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].ModifiedBy')))
+                          END
+                        , CASE
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].ModifiedDate'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].ModifiedDate')))
+                          END
+                        , JSON_UNQUOTE(JSON_EXTRACT(MenuItems, CONCAT('$[', iLoop, '].Environment')));
 		SET iLoop = iLoop +1;
 	END WHILE;
-
+	
     DELETE f FROM ChatBot.NAP_MenuItems f LEFT JOIN tmp_NAP_MenuItems tmp ON f.MenuItemId = tmp.MenuItemId WHERE tmp.MenuItemId IS NULL;
 
    INSERT INTO ChatBot.NAP_MenuItems(MenuItemId
@@ -92,6 +115,7 @@ BEGIN
                                     , CreatedDate
                                     , ModifiedBy
                                     , ModifiedDate
+                                    , Environment
                                 )
     SELECT tmpf.MenuItemId 
             , tmpf.FunctionId 
@@ -101,21 +125,21 @@ BEGIN
             , tmpf.ParentId 
             , tmpf.ParentName
             , tmpf.Policy
-            , tempf.URL
+            , tmpf.URL
             , tmpf.DisplayOrder
             , tmpf.IsActive
             , tmpf.CreatedBy
             , tmpf.CreatedDate
             , tmpf.ModifiedBy
             , tmpf.ModifiedDate
+            , tmpf.Environment
     FROM tmp_NAP_MenuItems tmpf
     LEFT JOIN ChatBot.NAP_MenuItems f ON tmpf.MenuItemId = f.MenuItemId
     WHERE f.MenuItemId IS NULL;
 
     UPDATE ChatBot.NAP_MenuItems f
     INNER JOIN tmp_NAP_MenuItems tmpf ON tmpf.MenuItemId = f.MenuItemId
-    SET f.MenuItemId = tempf.MenuItemId
-            , f.FunctionId = tmpf.FunctionId
+    SET  f.FunctionId = tmpf.FunctionId
             , f.SiteId = tmpf.SiteId 
             , f.MenuItemName  = tmpf.MenuItemName 
             , f.Description = tmpf.Description
@@ -128,7 +152,8 @@ BEGIN
             , f.CreatedBy= tmpf.CreatedBy
             , f.CreatedDate= tmpf.CreatedDate
             , f.ModifiedBy = tmpf.ModifiedBy
-            , f.ModifiedDate = tmpf.ModifiedDate;
+            , f.ModifiedDate = tmpf.ModifiedDate
+            , f.Environment = tmpf.Environment;
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.testNapUserControl_MenuItems TO 'ncb.admin'@'%';

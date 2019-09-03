@@ -25,7 +25,7 @@ BEGIN
                             , SiteId INT
                             , Level INT
                             , IsActive TINYINT
-                            , LastLoginDate INT
+                            , LastLoginDate DATETIME
                             , CreatedBy INT
                             , CreatedDate DATETIME
                             , ModifiedBy INT
@@ -53,19 +53,39 @@ BEGIN
 						, JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].SiteId')))
 						, JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].Level')))
                         , JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].IsActive'))
-						, JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].LastLoginDate')))
+						, CASE 
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].LastLoginDate'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].LastLoginDate')))
+                          END
                         , JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].CreatedBy')))
                         , JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].CreatedDate')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].ModifiedBy')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].ModifiedDate')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].ExpiredDate')))
-                        , JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].IsNeverExpired'));
+                        , CASE 
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].ModifiedBy'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].ModifiedBy')))
+                          END
+                        , CASE
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].ModifiedDate'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].ModifiedDate')))
+                          END
+                        , CASE 
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].ExpiredDate'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].ExpiredDate')))
+                          END
+                        , CASE
+                            WHEN JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].IsNeverExpired')) = 'null'
+                            THEN NULL
+                            ELSE JSON_EXTRACT(UserSite, CONCAT('$[', iLoop, '].IsNeverExpired'))
+                          END;
 
 		SET iLoop = iLoop +1;
 	END WHILE;
 
     DELETE us FROM ChatBot.NAP_UserSite us
-            LEFT JOIN tmp_NAP_UserSite tmp ON us.UserId = tmp.UserId 
+            LEFT JOIN tmp_NAP_UserSite tmp ON us.UserId = tmp.UserId AND us.SiteId = tmp.SiteId
             WHERE tmp.UserId IS NULL;
 
     INSERT INTO ChatBot.NAP_UserSite(UserId
@@ -91,14 +111,12 @@ BEGIN
             , tmp.ExpiredDate
             , tmp.IsNeverExpired
     FROM tmp_NAP_UserSite tmp
-    LEFT JOIN ChatBot.NAP_UserSite m ON m.UserId = tmp.UserId 
+    LEFT JOIN ChatBot.NAP_UserSite m ON m.UserId = tmp.UserId AND m.SiteId = tmp.SiteId
     WHERE m.UserId IS NULL;
 
     UPDATE ChatBot.NAP_UserSite m
-    INNER JOIN tmp_NAP_UserSite tmp ON m.UserId = tmp.UserId 
-    SET m.UserId = tmp.UserId
-        ,m.SiteId = tmp.SiteId
-        ,m.IsActive = tmp.IsActive
+    INNER JOIN tmp_NAP_UserSite tmp ON m.UserId = tmp.UserId AND m.SiteId = tmp.SiteId
+    SET m.IsActive = tmp.IsActive
         ,m.LastLoginDate = tmp.LastLoginDate
         ,m.CreatedBy = tmp.CreatedBy
         ,m.CreatedDate = tmp.CreatedDate

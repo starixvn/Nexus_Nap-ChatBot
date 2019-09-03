@@ -5,5 +5,7 @@
     public interface IJobService
     {
         Task AutoScanAndSendNotifictaion();
+
+        Task SyncDataFromNapUserControl();
     }
 }

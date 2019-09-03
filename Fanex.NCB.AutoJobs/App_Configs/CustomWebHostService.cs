@@ -48,8 +48,12 @@
         private void RunHangfireJobs()
         {
             RecurringJob.AddOrUpdate<IJobService>("Auto Scan & Send Notification",
-                sendNoti => sendNoti.AutoScanAndSendNotifictaion(),
+                job => job.AutoScanAndSendNotifictaion(),
                 cronJob.Value.SendNotification);
+
+            RecurringJob.AddOrUpdate<IJobService>("Auto sync data from Nap User Control",
+                job => job.SyncDataFromNapUserControl(),
+                cronJob.Value.SyncNapUserControlData);
         }
 
         private void RemoveHangfireJobs()

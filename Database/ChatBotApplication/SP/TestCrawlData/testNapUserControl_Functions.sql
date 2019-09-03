@@ -22,59 +22,71 @@ BEGIN
 	DROP TEMPORARY TABLE IF EXISTS tmp_NAP_Functions;
 	CREATE TEMPORARY TABLE tmp_NAP_Functions(
                             FunctionId INT
-                            , SiteId INT
-                            , FunctionName VARCHAR(100) CHARACTER SET utf8mb4
-                            , FunctionKey VARCHAR(100) CHARACTER SET utf8mb4
-                            , Description VARCHAR(300) CHARACTER SET utf8mb4
+                            , SiteId TINYINT UNSIGNED
+                            , FunctionName VARCHAR(50) CHARACTER SET utf8mb4
+                            , FunctionKey VARCHAR(50) CHARACTER SET utf8mb4
+                            , Description VARCHAR(200) CHARACTER SET utf8mb4
                             , ParentId INT
-                            , ParentName VARCHAR(1000) CHARACTER SET utf8mb4
-                            , CRUD INT
-                            , DisplayOrder INT
+                            , ParentName VARCHAR(50) CHARACTER SET utf8mb4
+                            , CRUD TINYINT UNSIGNED
+                            , DisplayOrder SMALLINT
                             , IsActive TINYINT
                             , CreatedBy INT
                             , CreatedDate DATETIME
                             , ModifiedBy INT
                             , ModifiedDate DATETIME
-                            , Environment VARCHAR(100) CHARACTER SET utf8mb4
+                            , Environment VARCHAR(10) CHARACTER SET utf8mb4
                         );	
     
     SET iLoop = 0;
 	WHILE (JSON_EXTRACT(Functions, CONCAT('$[',iLoop, '].FunctionId'))  IS NOT NULL) DO
-		INSERT INTO tmp_NAP_Functions(
-																		FunctionId 
-																		, SiteId 
-																		, FunctionName 
-																		, FunctionKey 
-																		, Description
-																		, ParentId 
-                                                                        , ParentName
-																		, CRUD
-                                                                        , DisplayOrder
-                                                                        , IsActive
-                                                                        , CreatedBy
-                                                                        , CreatedDate
-                                                                        , ModifiedBy
-                                                                        , ModifiedDate
-                                                                        , Environment
-																	)
+		INSERT INTO tmp_NAP_Functions(FunctionId 
+										, SiteId 
+										, FunctionName 
+										, FunctionKey 
+										, Description
+										, ParentId 
+										, ParentName
+										, CRUD
+										, DisplayOrder
+										, IsActive
+										, CreatedBy
+										, CreatedDate
+										, ModifiedBy
+										, ModifiedDate
+										, Environment
+										)
 		SELECT JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].FunctionId')) 
 						, JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].SiteId')))
                         , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].FunctionName')))
                         , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].FunctionKey')))
                         , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].Description')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].ParentId')))
+                        , CASE 
+							WHEN JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].ParentId'))) = 'null' 
+                            THEN null 
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].ParentId'))) 
+						  END
                         , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].ParentName')))
                         , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].CRUD')))
+                        , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].DisplayOrder')))
                         , JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].IsActive'))
                         , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].CreatedBy')))
                         , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].CreatedDate')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].ModifiedBy')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].ModifiedDate')))
+                        , CASE 
+							WHEN JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].ModifiedBy'))) = 'null' 
+                            THEN NULL 
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].ModifiedBy'))) 
+						  END
+                        , CASE 
+							WHEN JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].ModifiedDate'))) = 'null' 
+                            THEN NULL 
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].ModifiedDate'))) 
+						   END
                         , JSON_UNQUOTE(JSON_EXTRACT(Functions, CONCAT('$[', iLoop, '].Environment')));                        
 		SET iLoop = iLoop +1;
 	END WHILE;
-
-    DELETE f FROM ChatBot.NAP_Functions f LEFT JOIN tmp_NAP_Functions  ON f.FuntcionId = tempf.FunctionId WHERE tempf.FunctionId IS NULL;
+	
+    DELETE f FROM ChatBot.NAP_Functions f LEFT JOIN tmp_NAP_Functions tempf ON f.FunctionId = tempf.FunctionId WHERE tempf.FunctionId IS NULL;
 
    INSERT INTO ChatBot.NAP_Functions(FunctionId 
                                     , SiteId 
@@ -113,21 +125,21 @@ BEGIN
 
     UPDATE ChatBot.NAP_Functions f
     INNER JOIN tmp_NAP_Functions tmpf ON tmpf.FunctionId = f.FunctionId
-    SET f.FunctionId = tempf.FunctionId
-            , f.SiteId = tmpf.SiteId 
-            , f.FunctionName  = tmpf.FunctionName 
-            , f.FunctionKey = tmpf.FunctionKey 
-            , f.Description = tmpf.Description
-            , f.ParentId = tmpf.ParentId 
-            , f.ParentName= tmpf.ParentName
-            , f.CRUD = tmpf.CRUD
-            , f.DisplayOrder= tmpf.DisplayOrder
-            , f.IsActive = tmpf.IsActive
-            , f.CreatedBy= tmpf.CreatedBy
-            , f.CreatedDate= tmpf.CreatedDate
-            , f.ModifiedBy = tmpf.ModifiedBy
-            , f.ModifiedDate= tmpf.ModifiedDate
-            , f.Environment = tmpf.Environment;
+    SET f.SiteId = tmpf.SiteId 
+		, f.FunctionName  = tmpf.FunctionName 
+		, f.FunctionKey = tmpf.FunctionKey 
+		, f.Description = tmpf.Description
+		, f.ParentId = tmpf.ParentId 
+		, f.ParentName= tmpf.ParentName
+		, f.CRUD = tmpf.CRUD
+		, f.DisplayOrder= tmpf.DisplayOrder
+		, f.IsActive = tmpf.IsActive
+		, f.CreatedBy= tmpf.CreatedBy
+		, f.CreatedDate= tmpf.CreatedDate
+		, f.ModifiedBy = tmpf.ModifiedBy
+		, f.ModifiedDate= tmpf.ModifiedDate
+		, f.Environment = tmpf.Environment
+	WHERE f.FunctionId = tmpf.FunctionId;
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.testNapUserControl_Functions TO 'ncb.admin'@'%';

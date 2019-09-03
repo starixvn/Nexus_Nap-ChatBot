@@ -80,7 +80,7 @@
             services.AddTransient<ILogger, Logger>();
             RegisterService(services);
             RegisterRepository(services);
-            RegisterHangfire(services);
+            RegisterHangfire(services, connections.FirstOrDefault(x => x.Key.Equals("Hangfire")).Value.ConnectionString);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -116,7 +116,7 @@
             services.AddSingleton<IBaseService, BaseService>();
             services.AddSingleton<IChatbotService, ChatbotService>();
             services.AddSingleton<ISendNotificationService, SendNotificationService>();
-            services.AddSingleton<ICrawlDataService, CrawlDataService>();
+            services.AddSingleton<ISyncDataService, SyncDataService>();
             services.AddSingleton<IJobService, JobService>();
         }
 
@@ -124,12 +124,11 @@
         {
             services.AddScoped<IDynamicRepository, DynamicRepository>();
             services.AddTransient<IBaseRepository, BaseRepository>();
-            services.AddTransient<ICrawlDataRepository, CrawlDataRepository>();
+            services.AddTransient<ISyncDataRepository, SyncDataRepository>();
         }
 
-        private void RegisterHangfire(IServiceCollection services)
+        private void RegisterHangfire(IServiceCollection services, string connectionString)
         {
-            var connectionString = Cryptography.DecryptConnectionString(Configuration.GetConnectionString("Hangfire"));
             services.AddHangfire(x => x.UseStorage(new MySqlStorage(connectionString)));
         }
     }

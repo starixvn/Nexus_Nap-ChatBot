@@ -5,7 +5,7 @@
     using Fanex.NCB.Shared.Models.NapClient;
     using Fanex.NCB.Shared.Models.OIC;
 
-    public interface ICrawlDataRepository
+    public interface ISyncDataRepository
     {
         Task<NapDataCrawler> FetchDataFromNapClient(ICriteria criteria);
 

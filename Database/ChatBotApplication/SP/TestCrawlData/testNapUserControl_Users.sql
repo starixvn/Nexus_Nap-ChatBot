@@ -23,7 +23,7 @@ BEGIN
 	CREATE TEMPORARY TABLE tmp_NAP_Users(
                             UserId INT
                             , GroupId INT
-                            , LastLoginDate INT
+                            , LastLoginDate DATETIME
                             , CreatedBy INT
                             , CreatedDate DATETIME
                             , ModifiedBy INT
@@ -43,11 +43,23 @@ BEGIN
                                     )
 		SELECT JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].UserId')) 
 						, JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].GroupId')))
-						, JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].LastLoginDate')))
+						, CASE 
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].LastLoginDate'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].LastLoginDate')))
+                          END
                         , JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].CreatedBy')))
                         , JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].CreatedDate')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].ModifiedBy')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].ModifiedDate')));
+                        , CASE
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].ModifiedBy'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].ModifiedBy')))
+                          END
+                        , CASE
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].ModifiedDate'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(Users, CONCAT('$[', iLoop, '].ModifiedDate')))
+                          END;
 
 		SET iLoop = iLoop +1;
 	END WHILE;
@@ -76,8 +88,7 @@ BEGIN
 
     UPDATE ChatBot.NAP_Users m
     INNER JOIN tmp_NAP_Users tmp ON m.UserId = tmp.UserId 
-    SET m.UserId = tmp.UserId
-        ,m.GroupId = tmp.GroupId
+    SET m.GroupId = tmp.GroupId
         ,m.LastLoginDate = tmp.LastLoginDate
         ,m.CreatedBy = tmp.CreatedBy
         ,m.CreatedDate = tmp.CreatedDate

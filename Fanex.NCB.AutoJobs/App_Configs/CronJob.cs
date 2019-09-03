@@ -4,6 +4,6 @@
     {
         public string SendNotification { get; set; }
 
-        public string CrawlOICData { get; set; }
+        public string SyncNapUserControlData { get; set; }
     }
 }

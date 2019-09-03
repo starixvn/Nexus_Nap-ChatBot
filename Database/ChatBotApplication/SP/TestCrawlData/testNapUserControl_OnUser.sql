@@ -19,7 +19,7 @@ BEGIN
 	DECLARE iLoop INT;
 ################# NAP_Functions ###########################
 
-	 DROP TEMPORARY TABLE IF EXISTS tmp_NAP_OnUser;
+	DROP TEMPORARY TABLE IF EXISTS tmp_NAP_OnUser;
 	CREATE TEMPORARY TABLE tmp_NAP_OnUser(
                             Id INT
                             , UserId INT
@@ -44,7 +44,11 @@ BEGIN
 		SELECT JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].Id')) 
 						, JSON_UNQUOTE(JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].UserId')))
                         , JSON_UNQUOTE(JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].SiteId')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].ReloadTime')))
+                        , CASE 
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].ReloadTime'))) = 'null' OR JSON_UNQUOTE(JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].ReloadTime'))) = 0
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].ReloadTime')))
+                          END
                         , JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].IsKickedOut'))
                         , JSON_UNQUOTE(JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].IP')))
                         , JSON_UNQUOTE(JSON_EXTRACT(OnUser, CONCAT('$[', iLoop, '].NetSessionId')));
@@ -73,9 +77,8 @@ BEGIN
     WHERE ou.Id IS NULL;
 
     UPDATE ChatBot.NAP_OnUser ou
-    INNER JOIN tmp_NAP_OnUser tmp ON tmp.Id = g.Id
-    SET ou.Id = tmp.Id
-        ,ou.UserId = tmp.UserId
+    INNER JOIN tmp_NAP_OnUser tmp ON tmp.Id = ou.Id
+    SET ou.UserId = tmp.UserId
         ,ou.SiteId = tmp.SiteId
         ,ou.ReloadTime = tmp.ReloadTime
         ,ou.IsKickedOut = tmp.IsKickedOut

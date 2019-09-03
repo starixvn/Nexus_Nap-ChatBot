@@ -22,14 +22,14 @@
             services.AddScoped<ICommonService, CommonService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<ISendNotificationService, SendNotificationService>();
-            services.AddScoped<ICrawlDataService, CrawlDataService>();
+            services.AddScoped<ISyncDataService, SyncDataService>();
         }
 
         public static void RegisterRepositories(this IServiceCollection services)
         {
             services.AddScoped<IDynamicRepository, DynamicRepository>();
             services.AddTransient<IBaseRepository, BaseRepository>();
-            services.AddTransient<ICrawlDataRepository, CrawlDataRepository>();
+            services.AddTransient<ISyncDataRepository, SyncDataRepository>();
         }
     }
 }

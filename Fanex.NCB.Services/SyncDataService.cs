@@ -11,14 +11,14 @@
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 
-    public class CrawlDataService : ICrawlDataService
+    public class SyncDataService : ISyncDataService
     {
         private readonly IOptionsSnapshot<AppSettings> appSettings;
-        private readonly ICrawlDataRepository crawlDataRepository;
+        private readonly ISyncDataRepository crawlDataRepository;
         private readonly IBaseService baseService;
 
-        public CrawlDataService(IOptionsSnapshot<AppSettings> appSettings
-            , ICrawlDataRepository crawlDataRepository,
+        public SyncDataService(IOptionsSnapshot<AppSettings> appSettings
+            , ISyncDataRepository crawlDataRepository,
             IBaseService baseService)
         {
             this.appSettings = appSettings;
@@ -26,9 +26,9 @@
             this.baseService = baseService;
         }
 
-        public async Task NapClientSyncDataAsync()
+        public async Task NapClientSyncDataAsync(int? userId)
         {
-            var data = await GetDataFromNapClient().ConfigureAwait(false);
+            var data = await GetDataFromNapClient(userId).ConfigureAwait(false);
             await InsertNapClientData(data).ConfigureAwait(false);
         }
 
@@ -38,11 +38,12 @@
             await InsertOICData(data).ConfigureAwait(false);
         }
 
-        private async Task<NapDataCrawler> GetDataFromNapClient()
+        private async Task<NapDataCrawler> GetDataFromNapClient(int? userId)
         {
             var criteria = new GetDataFromNapClientCriteria
             {
-                SiteId = appSettings.Value.SiteId
+                SiteId = appSettings.Value.SiteId,
+                UserId = userId
             };
 
             return await crawlDataRepository.FetchDataFromNapClient(criteria).ConfigureAwait(false);

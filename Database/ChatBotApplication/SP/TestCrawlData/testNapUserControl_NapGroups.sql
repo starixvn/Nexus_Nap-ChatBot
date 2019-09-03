@@ -45,12 +45,24 @@ BEGIN
 																	)
 		SELECT JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].GroupId')) 
 						, JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].GroupName')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].Description')))
+                        , CASE 
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].Description'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].Description'))) = 'null'
+                          END
                         , JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].IsActive'))
                         , JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].CreatedBy')))
                         , JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].CreatedDate')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].ModifiedBy')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].ModifiedDate')));
+                        , CASE 
+							WHEN JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].ModifiedBy'))) = 'null' 
+                            THEN NULL 
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].ModifiedBy'))) 
+						  END
+                        , CASE 
+							WHEN JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].ModifiedDate'))) = 'null' 
+                            THEN NULL 
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(NapGroups, CONCAT('$[', iLoop, '].ModifiedDate'))) 
+						   END;
 		SET iLoop = iLoop +1;
 	END WHILE;
 

@@ -2,9 +2,9 @@
 {
     using System.Threading.Tasks;
 
-    public interface ICrawlDataService
+    public interface ISyncDataService
     {
-        Task NapClientSyncDataAsync();
+        Task NapClientSyncDataAsync(int? userId);
 
         Task OicSyncDataAsync();
     }

@@ -20,7 +20,7 @@
 
         public string Url { get; set; }
 
-        public int DisplyOrder { get; set; }
+        public int DisplayOrder { get; set; }
 
         public bool IsActive { get; set; }
 

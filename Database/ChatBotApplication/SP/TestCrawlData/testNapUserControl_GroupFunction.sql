@@ -19,7 +19,7 @@ BEGIN
 	DECLARE iLoop INT;
 ################# NAP_GroupFunctions ###########################
 
-	 DROP TEMPORARY TABLE IF EXISTS tmp_NAP_GroupFunction;
+	DROP TEMPORARY TABLE IF EXISTS tmp_NAP_GroupFunction;
 	CREATE TEMPORARY TABLE tmp_NAP_GroupFunction(
                             GroupId INT
                             , FunctionId INT
@@ -49,13 +49,21 @@ BEGIN
                         , JSON_UNQUOTE(JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].Policy')))
                         , JSON_UNQUOTE(JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].CreatedBy')))
                         , JSON_UNQUOTE(JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].CreatedDate')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].ModifiedBy')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].ModifiedDate')));
+                        , CASE 
+							WHEN JSON_UNQUOTE(JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].ModifiedBy'))) = 'null' 
+                            THEN NULL 
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].ModifiedBy'))) 
+						  END
+                        , CASE 
+							WHEN JSON_UNQUOTE(JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].ModifiedDate'))) = 'null' 
+                            THEN NULL 
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(GroupFunction, CONCAT('$[', iLoop, '].ModifiedDate'))) 
+						   END;
 		SET iLoop = iLoop +1;
 	END WHILE;
-
+	
     DELETE g FROM ChatBot.NAP_GroupFunction g LEFT JOIN tmp_NAP_GroupFunction tempg ON g.GroupId = tempg.GroupId 
-                            AND g.FunctionId = tempg.FuntcionId 
+                            AND g.FunctionId = tempg.FunctionId 
                             AND g.Policy = tempg.Policy 
                             AND g.SiteId = tempg.SiteId
     WHERE tempg.GroupId IS NULL;
@@ -70,9 +78,9 @@ BEGIN
                                     , ModifiedDate
                                 )
     SELECT tmp.GroupId 
-            , tmp.GroupName 
-            , tmp.Description
-            , tmp.IsActive
+            , tmp.FunctionId 
+            , tmp.SiteId
+            , tmp.Policy
             , tmp.CreatedBy
             , tmp.CreatedDate
             , tmp.ModifiedBy
@@ -90,9 +98,9 @@ BEGIN
                 AND temp.SiteId = g.SiteId
                 AND temp.Policy = g.Policy
     SET g.GroupId = temp.GroupId
-        ,g.GroupName = temp.FunctionId
-        ,g.Description = temp.SiteId
-        ,g.IsActive = temp.Policy
+        ,g.FunctionId = temp.FunctionId
+        ,g.SiteId = temp.SiteId
+        ,g.Policy = temp.Policy
         ,g.CreatedBy = temp.CreatedBy
         ,g.CreatedDate = temp.CreatedDate
         ,g.ModifiedBy = temp.ModifiedBy

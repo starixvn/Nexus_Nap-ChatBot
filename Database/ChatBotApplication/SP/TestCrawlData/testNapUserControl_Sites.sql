@@ -19,7 +19,7 @@ BEGIN
 	DECLARE iLoop INT;
 ################# NAP_Functions ###########################
 
-	 DROP TEMPORARY TABLE IF EXISTS tmp_NAP_Sites;
+	DROP TEMPORARY TABLE IF EXISTS tmp_NAP_Sites;
 	CREATE TEMPORARY TABLE tmp_NAP_Sites(
                             SiteId INT
                             , SiteName VARCHAR(100)
@@ -47,13 +47,33 @@ BEGIN
                                     )
 		SELECT JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].SiteId')) 
 						, JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].SiteName')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].Description')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].URL')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].TestURL')))
+                        , CASE 
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].Description'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].Description')))
+                          END
+                        , CASE 
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].URL'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].URL')))
+                          END
+                        , CASE 
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].TestURL'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].TestURL')))
+                          END
                         , JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].IsActive'))
                         , JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].Environment')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].SecretAccessKey')))
-                        , JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].SiteKey')));
+                        , CASE 
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].SecretAccessKey'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].SecretAccessKey')))
+                          END                            
+                        , CASE
+                            WHEN JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].SiteKey'))) = 'null'
+                            THEN NULL
+                            ELSE JSON_UNQUOTE(JSON_EXTRACT(Sites, CONCAT('$[', iLoop, '].SiteKey')))
+                          END;
 
 		SET iLoop = iLoop +1;
 	END WHILE;
