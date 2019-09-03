@@ -1,7 +1,6 @@
 ﻿import Site from '../lib/site';
 
 const errorResponseHandler = (error) => {
-    debugger;
     if (error.response) {
         let url;
 

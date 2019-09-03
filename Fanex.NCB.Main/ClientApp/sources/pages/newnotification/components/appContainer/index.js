@@ -228,7 +228,7 @@ export class AppContainer extends React.Component {
             sendImmediately: values.sendMode === '1'
         });
 
-        this.props.createNewNotification(data).then(response => {
+        this.props.createNewNotification(data).then(() => {
             formik.setSubmitting(false);
             if (this.props.createNotificationResult.isSuccessful) {
                 setTimeout(function () {
