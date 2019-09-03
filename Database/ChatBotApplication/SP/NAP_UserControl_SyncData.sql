@@ -3,16 +3,18 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS ChatBot.NAP_UserControl_SyncData;
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_UserControl_SyncData(
-	IN Functions TEXT,
-	IN NapGroups TEXT, 
-	IN GroupFunction TEXT, 
-	IN MenuItems TEXT, 
-	IN OnUser TEXT, 
-	IN Sites TEXT, 
-	IN SiteURL TEXT, 
-	IN UserFunction TEXT, 
-	IN Users TEXT, 
-	IN UserSite TEXT
+	IN Functions JSON,
+	IN NapGroups JSON, 
+	IN GroupFunction JSON, 
+	IN MenuItems JSON, 
+	IN OnUser JSON, 
+	IN Sites JSON, 
+	IN SiteURL JSON, 
+	IN UserFunction JSON, 
+	IN Users JSON, 
+	IN UserSite JSON,
+    OUT errCode INT,
+    OUT errMsg VARCHAR(200)
 
     /*
 		Creator: Oliver@20190829
@@ -725,7 +727,7 @@ BEGIN
             LEFT JOIN tmp_NAP_Users tmp ON u.UserId = tmp.UserId 
             WHERE tmp.UserId IS NULL;
 
-    INSERT INTO ChatBot.NAP_UserFunction(UserId
+    INSERT INTO ChatBot.NAP_Users(UserId
                             , GroupId
                             , LastLoginDate
                             , CreatedBy
@@ -804,7 +806,7 @@ BEGIN
             LEFT JOIN tmp_NAP_UserSite tmp ON us.UserId = tmp.UserId 
             WHERE tmp.UserId IS NULL;
 
-    INSERT INTO ChatBot.NAP_UserFunction(UserId
+    INSERT INTO ChatBot.NAP_UserSite(UserId
                             , SiteId
                             , Level
                             , IsActive
@@ -816,25 +818,32 @@ BEGIN
                             , ExpiredDate
                             , IsNeverExpired)
     SELECT tmp.UserId 
-            , tmp.GroupId 
+            , tmp.SiteId 
+            , tmp.Level
+            , tmp.IsActive
             , tmp.LastLoginDate
             , tmp.CreatedBy
             , tmp.CreatedDate
             , tmp.ModifiedBy
             , tmp.ModifiedDate
+            , tmp.ExpiredDate
+            , tmp.IsNeverExpired
     FROM tmp_NAP_UserSite tmp
-    LEFT JOIN ChatBot.NAP_Users m ON m.UserId = tmp.UserId 
+    LEFT JOIN ChatBot.NAP_UserSite m ON m.UserId = tmp.UserId 
     WHERE m.UserId IS NULL;
 
-    UPDATE ChatBot.NAP_Users m
+    UPDATE ChatBot.NAP_UserSite m
     INNER JOIN tmp_NAP_UserSite tmp ON m.UserId = tmp.UserId 
     SET m.UserId = tmp.UserId
-        ,m.GroupId = tmp.GroupId
+        ,m.SiteId = tmp.SiteId
+        ,m.IsActive = tmp.IsActive
         ,m.LastLoginDate = tmp.LastLoginDate
         ,m.CreatedBy = tmp.CreatedBy
         ,m.CreatedDate = tmp.CreatedDate
         ,m.ModifiedBy = tmp.ModifiedBy
-        ,m.ModifiedDate = tmp.ModifiedDate;
+        ,m.ModifiedDate = tmp.ModifiedDate
+        ,m.ExpiredDate = tmp.ExpiredDate
+        ,m.IsNeverExpired = tmp.IsNeverExpired;
 
 END;
 
