@@ -121,7 +121,7 @@
             var criteria = new UserReCheckInUserCriteria
             {
                 OnUserId = onlineUserId,
-                IsKickedOut = 0
+                IsKickedOut = false
             };
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
@@ -129,7 +129,7 @@
                 await objectDb.ExecuteNonQueryAsync(criteria).ConfigureAwait(false);
             }
 
-            if (criteria.IsKickedOut == 1)
+            if (criteria.IsKickedOut)
             {
                 return (int)RecheckInStatus.KickOut;
             }

@@ -7,7 +7,7 @@ namespace Fanex.NCB.Criteria.LocalNap.Security
     {
         public int OnUserId { get; set; }
 
-        public int IsKickedOut { get; set; }
+        public bool IsKickedOut { get; set; }
 
         public override bool IsValid() => OnUserId > 0;
 
