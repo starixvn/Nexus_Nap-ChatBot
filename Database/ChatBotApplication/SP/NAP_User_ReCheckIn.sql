@@ -4,7 +4,7 @@ DROP PROCEDURE IF EXISTS ChatBot.NAP_User_ReCheckIn;
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_User_ReCheckIn(
 	IN onUserId INT,
-    OUT isKickedOut INT
+    OUT isKickedOut BOOL
     /*
 		Creator: Dominic@20190408
         Param:
