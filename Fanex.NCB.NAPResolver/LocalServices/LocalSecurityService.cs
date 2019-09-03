@@ -144,13 +144,13 @@
 
         public async Task<int> SSOLoginAsync(SSOLoginParameter parameter)
         {
-            int result = await SSOCheckIn(parameter);
-            if (result > 0)
+            int onUserId = await SSOCheckIn(parameter);
+            if (onUserId > 0)
             {
                 await LogSSOLoginAsync(parameter);
             }
 
-            return result;
+            return onUserId;
         }
 
         private async Task<int> SSOCheckIn(SSOLoginParameter parameter)
@@ -160,7 +160,6 @@
                 UserId = parameter.UserId,
                 SiteId = parameter.SiteId,
                 CheckOnUserId = parameter.CheckOnUserId,
-                OnUserId = parameter.OnUserId,
                 IP = parameter.IP,
                 BrowserName = parameter.BrowserName,
                 NetSessionId = parameter.NetSessionId,
@@ -170,7 +169,8 @@
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
-                return await objectDb.ExecuteNonQueryAsync(criteria).ConfigureAwait(false);
+                await objectDb.ExecuteNonQueryAsync(criteria).ConfigureAwait(false);
+                return criteria.OnUserId;
             }
         }
 
