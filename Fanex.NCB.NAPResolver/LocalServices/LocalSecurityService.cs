@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.NAPResolver.LocalServices
 {
     using System;
+    using System.Globalization;
     using System.Threading.Tasks;
     using Fanex.Data;
     using Fanex.NAP.Client.Models;
@@ -28,7 +29,7 @@
             {
                 await objectDb.ExecuteNonQueryAsync(criteria).ConfigureAwait(false);
 
-                return criteria.Time.ToString();
+                return criteria.Time.ToString(CultureInfo.InvariantCulture);
             }
         }
 

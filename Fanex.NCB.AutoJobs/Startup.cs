@@ -111,7 +111,7 @@
         }
 
         //Extensions
-        private void RegisterService(IServiceCollection services)
+        private static void RegisterService(IServiceCollection services)
         {
             services.AddSingleton<IBaseService, BaseService>();
             services.AddSingleton<IChatbotService, ChatbotService>();
@@ -120,14 +120,14 @@
             services.AddSingleton<IJobService, JobService>();
         }
 
-        private void RegisterRepository(IServiceCollection services)
+        private static void RegisterRepository(IServiceCollection services)
         {
             services.AddScoped<IDynamicRepository, DynamicRepository>();
             services.AddTransient<IBaseRepository, BaseRepository>();
             services.AddTransient<ISyncDataRepository, SyncDataRepository>();
         }
 
-        private void RegisterHangfire(IServiceCollection services, string connectionString)
+        private static void RegisterHangfire(IServiceCollection services, string connectionString)
         {
             services.AddHangfire(x => x.UseStorage(new MySqlStorage(connectionString)));
         }

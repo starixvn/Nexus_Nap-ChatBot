@@ -7,3 +7,6 @@
     Justification = "<Pending>", Scope = "member", Target = "~P:Fanex.NCB.Shared.Models.ConversationInfo.ServiceUrl")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3996:URI properties should not be strings",
     Justification = "<Pending>", Scope = "member", Target = "~P:Fanex.NCB.Shared.Models.NapClient.NapMenuItem.Url")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3996:URI properties should not be strings", 
+    Justification = "<Pending>", Scope = "member", Target = "~P:Fanex.NCB.Shared.Models.NapUserControl.NapMenuItem.Url")]
+

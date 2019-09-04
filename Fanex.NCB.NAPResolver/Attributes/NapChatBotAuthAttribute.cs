@@ -13,7 +13,7 @@
     using Microsoft.Extensions.Caching.Memory;
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class NapChatBotAuthAttribute : Attribute, IAuthorizationFilter
+    public class NapChatBotAuthAttribute : Attribute, IAsyncAuthorizationFilter
     {
         private readonly IMemoryCache cache;
         private int cacheDuration;
@@ -45,7 +45,7 @@
             set => cacheDuration = value;
         }
 
-        public void OnAuthorization(AuthorizationFilterContext context)
+        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             if (context?.HttpContext == null)
             {
@@ -53,7 +53,7 @@
                 return;
             }
 
-            var hasValidFunctionPolicy = UserHasValidFunctionPolicy(napSession).Result;
+            var hasValidFunctionPolicy = await UserHasValidFunctionPolicy(napSession);
             if (hasValidFunctionPolicy)
             {
                 var unauthorizeUrl = napSettings.UnauthorizeUrl;
@@ -91,7 +91,7 @@
             return policy < (int)Policy;
         }
 
-        private IUserService GetUserService()
+        private static IUserService GetUserService()
         {
             if (NapServicesRegistrationExtension.NAPResolverType == NAPResolverType.Remote)
             {

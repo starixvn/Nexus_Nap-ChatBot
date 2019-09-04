@@ -56,7 +56,7 @@
                 cronJob.Value.SyncNapUserControlData);
         }
 
-        private void RemoveHangfireJobs()
+        private static void RemoveHangfireJobs()
         {
             using (var connection = JobStorage.Current.GetConnection())
             {
