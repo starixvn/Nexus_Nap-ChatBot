@@ -1,8 +1,8 @@
-﻿namespace Fanex.NCB.Criteria.CrawlData
+﻿namespace Fanex.NCB.Criteria.SyncData
 {
     using Fanex.NCB.Shared.Models;
 
-    public class InsertNapUserControlDataCommand : BaseCommand
+    public class UpdateNapDataByUserIdCommand : BaseCommand
     {
         public string Functions { get; set; }
 
@@ -24,8 +24,10 @@
 
         public string UserSite { get; set; }
 
-        public override string GetSettingKey() => "NAP_UserControl_SyncData";
+        public int UserId { get; set; }
 
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(Functions);
+        public override string GetSettingKey() => "NAP_UserControl_SyncData_ByUserId";
+
+        public override bool IsValid() => UserId > 0;
     }
 }

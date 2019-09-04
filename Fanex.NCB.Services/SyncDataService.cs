@@ -2,9 +2,10 @@
 {
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Criteria.CrawlData;
+    using Fanex.NCB.Criteria.SyncData;
     using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.NapUserControl;
     using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services.Interfaces;
@@ -27,10 +28,10 @@
             this.baseService = baseService;
         }
 
-        public async Task NapUserControlSyncDataAsync(int? userId)
+        public async Task NapUserControlSyncDataAsync()
         {
-            var data = await GetDataFromNapUserControl(userId).ConfigureAwait(false);
-            await InsertNapUserControlData(data).ConfigureAwait(false);
+            var data = await GetDataFromNapUserControl(null).ConfigureAwait(false);
+            await InsertNapData(data).ConfigureAwait(false);
         }
 
         public async Task OicSyncDataAsync()
@@ -50,7 +51,7 @@
             return await crawlDataRepository.FetchDataFromNapUserControl(criteria).ConfigureAwait(false);
         }
 
-        private async Task InsertNapUserControlData(NapData data)
+        private async Task InsertNapData(NapData data)
         {
             var command = new InsertNapUserControlDataCommand
             {
@@ -67,6 +68,26 @@
             };
 
             await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+        }
+
+        private async Task<CommandResult> InsertNapDataOnUser(NapData data, int userId)
+        {
+            var command = new UpdateNapDataByUserIdCommand
+            {
+                Functions = ConvertToJsonWithDateTimeFormatString(data.NapFunctions),
+                NapGroups = ConvertToJsonWithDateTimeFormatString(data.NapGroups),
+                GroupFunction = ConvertToJsonWithDateTimeFormatString(data.NapGroupFunction),
+                MenuItems = ConvertToJsonWithDateTimeFormatString(data.NapMenuItems),
+                OnUser = ConvertToJsonWithDateTimeFormatString(data.NapOnUser),
+                Sites = ConvertToJsonWithDateTimeFormatString(data.NapSites),
+                SiteURL = ConvertToJsonWithDateTimeFormatString(data.NapSiteURL),
+                UserFunction = ConvertToJsonWithDateTimeFormatString(data.NapUserFunction),
+                Users = ConvertToJsonWithDateTimeFormatString(data.NapUsers),
+                UserSite = ConvertToJsonWithDateTimeFormatString(data.NapUserSite),
+                UserId = userId
+            };
+
+            return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
         }
 
         private async Task<OicData> GetDataFromOIC()
@@ -93,6 +114,12 @@
         private string ConvertToJsonWithDateTimeFormatString(object data)
         {
             return JsonConvert.SerializeObject(data, new JsonSerializerSettings { DateFormatString = DateTimeFormat });
+        }
+
+        public async Task<CommandResult> NapSSOSyncDataByUserIdAsync(int userId)
+        {
+            var data = await GetDataFromNapUserControl(userId).ConfigureAwait(false);
+            return await InsertNapDataOnUser(data, userId).ConfigureAwait(false);
         }
     }
 }

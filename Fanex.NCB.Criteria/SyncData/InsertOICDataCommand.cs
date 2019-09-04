@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Criteria.CrawlData
+﻿namespace Fanex.NCB.Criteria.SyncData
 {
     using Fanex.NCB.Shared.Models;
 

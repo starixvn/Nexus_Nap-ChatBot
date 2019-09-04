@@ -24,7 +24,7 @@
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         public async Task SyncDataFromNapUserControl()
         {
-            await syncDataService.NapUserControlSyncDataAsync(null);
+            await syncDataService.NapUserControlSyncDataAsync();
         }
     }
 }
