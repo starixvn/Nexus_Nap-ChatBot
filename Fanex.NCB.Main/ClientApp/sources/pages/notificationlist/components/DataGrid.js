@@ -28,12 +28,12 @@ export default class DataGrid extends PureComponent {
     }
 
     handleCancelNotification = e => {
-        var id = parseInt(e.target.dataset.notificationid, 10);
+        const id = parseInt(e.target.dataset.notificationid, 10);
         this.props.onCancelNotification(id);
     }
 
     handleShowErrorReport = e => {
-        var id = parseInt(e.target.dataset.notificationid, 10);
+        const id = parseInt(e.target.dataset.notificationid, 10);
         this.props.onShowErrorReport(id);
     }
 
@@ -49,6 +49,7 @@ export default class DataGrid extends PureComponent {
             case NotificationStatus.Sending: return "badge-outline-green";
             case NotificationStatus.Cancelled: return "badge-grey";
             case NotificationStatus.Resolved: return "badge-orange";
+            default: return '';
         }
     }
 

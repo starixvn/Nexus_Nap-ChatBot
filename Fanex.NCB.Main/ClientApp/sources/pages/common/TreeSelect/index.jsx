@@ -17,7 +17,7 @@ export default React.memo(function (props) {
     );
 });
 
-export function getRealValuesFromExtra(result, collection) {
+export const getRealValuesFromExtra = function (result, collection) {
     for (let i = 0; i < collection.length; i++) {
         const item = collection[i];
         if (item.children && item.children.length > 0) {
@@ -26,4 +26,4 @@ export function getRealValuesFromExtra(result, collection) {
             result.push(item.realValue || item.node.props.realValue);
         }
     }
-};
+}

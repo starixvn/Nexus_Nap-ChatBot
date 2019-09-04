@@ -30,7 +30,7 @@ export default class ErrorReport extends Component {
     }
 
     copyToClipboard = () => {
-        let input = document.createElement("input");
+        const input = document.createElement('input');
         input.value = this.props.report.errorDetails.map(x => x.recipientName).join(', ');
         document.body.appendChild(input);
         input.select();
@@ -72,7 +72,9 @@ export default class ErrorReport extends Component {
                         </p>
 
                         {report.successRecipients.length > 0 &&
-                            <div className="msg-success">Notification has been successfully sent to the following recipient(s): <strong>{report.successRecipients.join(', ')}</strong></div>
+                            <div className="msg-success">
+                                Notification has been successfully sent to the following recipient(s): <strong>{report.successRecipients.join(', ')}</strong>
+                            </div>
                         }
 
                         {report.errorDetails.length > 0 &&

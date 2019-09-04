@@ -44,6 +44,14 @@ export const getSettings = () => {
 };
 
 // Delete
+
+export const setDeleteData = data => {
+    return {
+        type: types.DELETE_DATA,
+        data: data
+    };
+};
+
 export const deleteItem = notificationTypeId => {
     const url = Site.resolveClientUrl('NotificationType/Delete');
     const headers = {
@@ -54,13 +62,6 @@ export const deleteItem = notificationTypeId => {
         const request = await axios.post(url, notificationTypeId, { headers: headers });
         const data = await request.data;
         dispatch(setDeleteData(data));
-    };
-};
-
-export const setDeleteData = data => {
-    return {
-        type: types.DELETE_DATA,
-        data: data
     };
 };
 
@@ -113,5 +114,3 @@ const actions = {
 };
 
 export default actions;
-
-
