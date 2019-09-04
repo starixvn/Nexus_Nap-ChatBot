@@ -4,7 +4,7 @@
 
     public interface ISyncDataService
     {
-        Task NapClientSyncDataAsync(int? userId);
+        Task NapUserControlSyncDataAsync(int? userId);
 
         Task OicSyncDataAsync();
     }

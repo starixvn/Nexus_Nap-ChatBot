@@ -4,29 +4,29 @@
     using Fanex.Data;
     using Fanex.Data.Repository;
     using Fanex.NCB.Repository.Interfaces;
-    using Fanex.NCB.Shared.Models.NapClient;
+    using Fanex.NCB.Shared.Models.NapUserControl;
     using Fanex.NCB.Shared.Models.OIC;
 
     public class SyncDataRepository : ISyncDataRepository
     {
-        public async Task<NapDataCrawler> FetchDataFromNapClient(ICriteria criteria)
+        public async Task<NapData> FetchDataFromNapUserControl(ICriteria criteria)
         {
             using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
                 using (IMultiResultReader multi = await db.QueryMultipleAsync(criteria).ConfigureAwait(false))
                 {
-                    var data = new NapDataCrawler
+                    var data = new NapData
                     {
-                        NAP_Functions = multi.Read<NapFunction>(),
-                        NAP_Groups = multi.Read<NapGroup>(),
-                        NAP_GroupFunction = multi.Read<NapGroupFunction>(),
-                        NAP_MenuItems = multi.Read<NapMenuItem>(),
-                        NAP_OnUser = multi.Read<NapOnUser>(),
-                        NAP_Sites = multi.Read<NapSite>(),
-                        NAP_SiteURL = multi.Read<NapSiteURL>(),
-                        NAP_UserFunction = multi.Read<NapUserFunction>(),
-                        NAP_Users = multi.Read<NapUser>(),
-                        NAP_UserSite = multi.Read<NapUserSite>()
+                        NapFunctions = multi.Read<NapFunction>(),
+                        NapGroups = multi.Read<NapGroup>(),
+                        NapGroupFunction = multi.Read<NapGroupFunction>(),
+                        NapMenuItems = multi.Read<NapMenuItem>(),
+                        NapOnUser = multi.Read<NapOnUser>(),
+                        NapSites = multi.Read<NapSite>(),
+                        NapSiteURL = multi.Read<NapSiteURL>(),
+                        NapUserFunction = multi.Read<NapUserFunction>(),
+                        NapUsers = multi.Read<NapUser>(),
+                        NapUserSite = multi.Read<NapUserSite>()
                     };
 
                     return data;
@@ -34,13 +34,13 @@
             }
         }
 
-        public async Task<OicDataCrawler> FetchDataFromOIC(ICriteria criteria)
+        public async Task<OicData> FetchDataFromOIC(ICriteria criteria)
         {
             using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
                 using (IMultiResultReader multi = await db.QueryMultipleAsync(criteria).ConfigureAwait(false))
                 {
-                    var data = new OicDataCrawler
+                    var data = new OicData
                     {
                         Licensees = multi.Read<Licensee>(),
                         LicenseeStatuses = multi.Read<LicenseeStatus>(),

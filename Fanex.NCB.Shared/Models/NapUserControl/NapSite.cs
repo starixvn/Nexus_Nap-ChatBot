@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Shared.Models.NapClient
+﻿namespace Fanex.NCB.Shared.Models.NapUserControl
 {
     public class NapSite
     {

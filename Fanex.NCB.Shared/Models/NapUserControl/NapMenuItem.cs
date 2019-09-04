@@ -1,14 +1,14 @@
-﻿namespace Fanex.NCB.Shared.Models.NapClient
+﻿namespace Fanex.NCB.Shared.Models.NapUserControl
 {
-    public class NapFunction : NapBaseEntity
+    public class NapMenuItem : NapBaseEntity
     {
+        public int MenuItemId { get; set; }
+
         public int FunctionId { get; set; }
 
         public int SiteId { get; set; }
 
-        public string FunctionName { get; set; }
-
-        public string FunctionKey { get; set; }
+        public string MenuItemName { get; set; }
 
         public string Description { get; set; }
 
@@ -16,7 +16,9 @@
 
         public string ParentName { get; set; }
 
-        public int CRUD { get; set; }
+        public int Policy { get; set; }
+
+        public string Url { get; set; }
 
         public int DisplayOrder { get; set; }
 

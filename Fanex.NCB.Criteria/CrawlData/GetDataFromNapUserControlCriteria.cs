@@ -2,7 +2,7 @@
 {
     using Fanex.Data.Repository;
 
-    public class GetDataFromNapClientCriteria : CriteriaBase
+    public class GetDataFromNapUserControlCriteria : CriteriaBase
     {
         public int SiteId { get; set; }
 

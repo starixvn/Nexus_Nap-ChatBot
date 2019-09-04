@@ -2,7 +2,7 @@
 {
     using Fanex.NCB.Shared.Models;
 
-    public class InsertNapClientDataCommand : BaseCommand
+    public class InsertNapUserControlDataCommand : BaseCommand
     {
         public string Functions { get; set; }
 

@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public class OicDataCrawler
+    public class OicData
     {
         public IEnumerable<Licensee> Licensees { get; set; }
 
