@@ -8,6 +8,7 @@ import './Layout.scss';
 import Sidebar from './../sidebar';
 import Content from './../content';
 import Site from '../../../lib/site';
+import AuthRecheck from './../recheckin';
 
 class Layout extends React.PureComponent {
     constructor(props) {
@@ -42,6 +43,7 @@ class Layout extends React.PureComponent {
                 >
                     {this.props.children}
                 </Content>
+                <AuthRecheck />
             </div>
         );
     }

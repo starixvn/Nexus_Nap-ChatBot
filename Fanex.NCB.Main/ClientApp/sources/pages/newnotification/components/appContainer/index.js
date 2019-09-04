@@ -3,7 +3,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { DateTime } from 'luxon';
-import { Form, FormGroup, Label, Button, Container, Row, Col, Input, FormFeedback } from 'reactstrap';
+import { Form, FormGroup, Label, Button, Col, Input, FormFeedback } from 'reactstrap';
 import { stringify } from 'qs';
 
 import { Formik } from 'formik';
@@ -13,7 +13,6 @@ import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../../actions/index';
 import TreeSelect from '../../../common/TreeSelect/index';
 import DatePicker from '../../../common/DatePicker/index';
-import { TemplateTextField } from '../../../common/template-text-field/TemplateTextField';
 import Labels from '../../../common/Labels';
 import { DateTimeFormat } from '../../../constants/constants';
 import ResponseMessage from '../../../common/response-message/ResponseMessage';
