@@ -34,7 +34,6 @@
         protected override void OnStarted()
         {
             logger.LogInformation($"Service started at {DateTime.Now}.");
-            RemoveHangfireJobs();
             RunHangfireJobs();
             base.OnStarted();
         }
@@ -42,6 +41,7 @@
         protected override void OnStopping()
         {
             logger.LogInformation($"Stopping service at {DateTime.Now}");
+            RemoveHangfireJobs();
             base.OnStopping();
         }
 

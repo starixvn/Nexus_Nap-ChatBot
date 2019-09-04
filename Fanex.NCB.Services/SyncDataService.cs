@@ -16,6 +16,7 @@
         private readonly IOptionsSnapshot<AppSettings> appSettings;
         private readonly ISyncDataRepository crawlDataRepository;
         private readonly IBaseService baseService;
+        private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
         public SyncDataService(IOptionsSnapshot<AppSettings> appSettings
             , ISyncDataRepository crawlDataRepository,
@@ -53,16 +54,16 @@
         {
             var command = new InsertNapUserControlDataCommand
             {
-                Functions = JsonConvert.SerializeObject(data.NapFunctions),
-                NapGroups = JsonConvert.SerializeObject(data.NapGroups),
-                GroupFunction = JsonConvert.SerializeObject(data.NapGroupFunction),
-                MenuItems = JsonConvert.SerializeObject(data.NapMenuItems),
-                OnUser = JsonConvert.SerializeObject(data.NapOnUser),
-                Sites = JsonConvert.SerializeObject(data.NapSites),
-                SiteURL = JsonConvert.SerializeObject(data.NapSiteURL),
-                UserFunction = JsonConvert.SerializeObject(data.NapUserFunction),
-                Users = JsonConvert.SerializeObject(data.NapUsers),
-                UserSite = JsonConvert.SerializeObject(data.NapUserSite)
+                Functions = ConvertToJsonWithDateTimeFormatString(data.NapFunctions),
+                NapGroups = ConvertToJsonWithDateTimeFormatString(data.NapGroups),
+                GroupFunction = ConvertToJsonWithDateTimeFormatString(data.NapGroupFunction),
+                MenuItems = ConvertToJsonWithDateTimeFormatString(data.NapMenuItems),
+                OnUser = ConvertToJsonWithDateTimeFormatString(data.NapOnUser),
+                Sites = ConvertToJsonWithDateTimeFormatString(data.NapSites),
+                SiteURL = ConvertToJsonWithDateTimeFormatString(data.NapSiteURL),
+                UserFunction = ConvertToJsonWithDateTimeFormatString(data.NapUserFunction),
+                Users = ConvertToJsonWithDateTimeFormatString(data.NapUsers),
+                UserSite = ConvertToJsonWithDateTimeFormatString(data.NapUserSite)
             };
 
             await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
@@ -79,14 +80,19 @@
         {
             var command = new InsertOICDataCommand
             {
-                Licensees = JsonConvert.SerializeObject(data.Licensees),
-                LicenseeStatuses = JsonConvert.SerializeObject(data.LicenseeStatuses),
-                LicenseeProducts = JsonConvert.SerializeObject(data.LicenseeProducts),
-                LicenseeTypes = JsonConvert.SerializeObject(data.LicenseeTypes),
-                Products = JsonConvert.SerializeObject(data.Products),
+                Licensees = ConvertToJsonWithDateTimeFormatString(data.Licensees),
+                LicenseeStatuses = ConvertToJsonWithDateTimeFormatString(data.LicenseeStatuses),
+                LicenseeProducts = ConvertToJsonWithDateTimeFormatString(data.LicenseeProducts),
+                LicenseeTypes = ConvertToJsonWithDateTimeFormatString(data.LicenseeTypes),
+                Products = ConvertToJsonWithDateTimeFormatString(data.Products),
             };
 
             await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+        }
+
+        private string ConvertToJsonWithDateTimeFormatString(object data)
+        {
+            return JsonConvert.SerializeObject(data, new JsonSerializerSettings { DateFormatString = DateTimeFormat });
         }
     }
 }

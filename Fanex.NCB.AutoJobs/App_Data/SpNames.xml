@@ -4,8 +4,8 @@
     <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd" DbName="ChatBot" Plain="0"></Setting>
   </Function>
-  <Function Name="Nap User Control">
+  <Function Name="Sync Data">
     <Setting Key="NAP_UserControl_GetDataBySiteId" SpName="NAP_UserControl_GetDataBySiteId" DbName="NapUserControl" Plain="0"></Setting>
-    <Setting Key="NAP_CrawlData_InsUpdDataNapUserControl" SpName="NAP_CrawlData_InsUpdDataNapUserControl" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NAP_UserControl_SyncData" SpName="NAP_UserControl_SyncData" DbName="ChatBot" Plain="0"></Setting>
   </Function>
 </Functions>

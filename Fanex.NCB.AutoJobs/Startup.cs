@@ -106,6 +106,11 @@
                 WorkerCount = Configuration.GetValue<int>("WorkerCount")
             });
 
+            if (env.IsDevelopment())
+            {
+                RunHangfireJobs(Configuration);
+            }
+
             app.UseStaticFiles();
             app.UseMvc();
         }
@@ -114,22 +119,37 @@
         private static void RegisterService(IServiceCollection services)
         {
             services.AddSingleton<IBaseService, BaseService>();
-            services.AddSingleton<IChatbotService, ChatbotService>();
-            services.AddSingleton<ISendNotificationService, SendNotificationService>();
-            services.AddSingleton<ISyncDataService, SyncDataService>();
-            services.AddSingleton<IJobService, JobService>();
+            services.AddScoped<IChatbotService, ChatbotService>();
+            services.AddScoped<ISendNotificationService, SendNotificationService>();
+            services.AddScoped<ISyncDataService, SyncDataService>();
+            services.AddScoped<IJobService, JobService>();
         }
 
         private static void RegisterRepository(IServiceCollection services)
         {
-            services.AddScoped<IDynamicRepository, DynamicRepository>();
+            services.AddSingleton<IDynamicRepository, DynamicRepository>();
             services.AddTransient<IBaseRepository, BaseRepository>();
             services.AddTransient<ISyncDataRepository, SyncDataRepository>();
         }
 
         private static void RegisterHangfire(IServiceCollection services, string connectionString)
         {
-            services.AddHangfire(x => x.UseStorage(new MySqlStorage(connectionString)));
+            var connection = Cryptography.DecryptConnectionString(connectionString);
+            services.AddHangfire(x => x.UseStorage(new MySqlStorage(connection)));
+        }
+
+        private static void RunHangfireJobs(IConfiguration configuration)
+        {
+            var cronJob = new CronJob();
+            configuration.Bind("CronJob", cronJob);
+
+            RecurringJob.AddOrUpdate<IJobService>("Auto Scan & Send Notification",
+                sendNoti => sendNoti.AutoScanAndSendNotifictaion(),
+                cronJob.SendNotification);
+
+            RecurringJob.AddOrUpdate<IJobService>("Auto sync data from Nap User Control",
+                job => job.SyncDataFromNapUserControl(),
+                cronJob.SyncNapUserControlData);
         }
     }
 }
