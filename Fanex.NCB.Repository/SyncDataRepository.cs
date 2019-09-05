@@ -26,7 +26,9 @@
                         NapSiteURL = multi.Read<NapSiteURL>(),
                         NapUserFunction = multi.Read<NapUserFunction>(),
                         NapUsers = multi.Read<NapUser>(),
-                        NapUserSite = multi.Read<NapUserSite>()
+                        NapUserSite = multi.Read<NapUserSite>(),
+                        Customer = multi.Read<Customer>(),
+                        CustInfo = multi.Read<CustInfo>()
                     };
 
                     return data;

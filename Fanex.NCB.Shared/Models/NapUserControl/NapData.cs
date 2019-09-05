@@ -23,5 +23,9 @@
         public IEnumerable<NapUser> NapUsers { get; set; }
 
         public IEnumerable<NapUserSite> NapUserSite { get; set; }
+
+        public IEnumerable<Customer> Customer { get; set; }
+
+        public IEnumerable<CustInfo> CustInfo { get; set; }
     }
 }

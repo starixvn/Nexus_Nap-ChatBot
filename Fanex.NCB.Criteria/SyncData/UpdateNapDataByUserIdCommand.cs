@@ -24,6 +24,10 @@
 
         public string UserSite { get; set; }
 
+        public string Customer { get; set; }
+
+        public string CustInfo { get; set; }
+
         public int UserId { get; set; }
 
         public override string GetSettingKey() => "NAP_UserControl_SyncData_ByUserId";

@@ -70,7 +70,9 @@
                 SiteURL = ConvertToJsonWithDateTimeFormatString(data.NapSiteURL),
                 UserFunction = ConvertToJsonWithDateTimeFormatString(data.NapUserFunction),
                 Users = ConvertToJsonWithDateTimeFormatString(data.NapUsers),
-                UserSite = ConvertToJsonWithDateTimeFormatString(data.NapUserSite)
+                UserSite = ConvertToJsonWithDateTimeFormatString(data.NapUserSite),
+                Customer = ConvertToJsonWithDateTimeFormatString(data.Customer),
+                CustInfo = ConvertToJsonWithDateTimeFormatString(data.CustInfo)
             };
 
             await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
@@ -90,6 +92,8 @@
                 UserFunction = ConvertToJsonWithDateTimeFormatString(data.NapUserFunction),
                 Users = ConvertToJsonWithDateTimeFormatString(data.NapUsers),
                 UserSite = ConvertToJsonWithDateTimeFormatString(data.NapUserSite),
+                Customer = ConvertToJsonWithDateTimeFormatString(data.Customer),
+                CustInfo = ConvertToJsonWithDateTimeFormatString(data.CustInfo),
                 UserId = userId
             };
 

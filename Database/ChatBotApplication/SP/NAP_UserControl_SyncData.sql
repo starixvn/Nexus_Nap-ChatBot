@@ -13,8 +13,10 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_UserControl_SyncData
 	IN UserFunction JSON, 
 	IN Users JSON, 
 	IN UserSite JSON,
-    OUT errCode INT,
-    OUT errMsg VARCHAR(200)
+  IN Customer JSON,
+  IN CustInfo JSON,
+  OUT errCode INT,
+  OUT errMsg VARCHAR(200)
 
     /*
 		Creator: Oliver@20190829
@@ -957,6 +959,111 @@ BEGIN
         ,m.ExpiredDate = tmp.ExpiredDate
         ,m.IsNeverExpired = tmp.IsNeverExpired;
 
+################# Customer ########################### 
+
+  DROP TEMPORARY TABLE IF EXISTS tmp_Customer;
+	CREATE TEMPORARY TABLE tmp_Customer(
+                            CustId INT
+                            , FirstName VARCHAR(100)
+                            , LastName VARCHAR(100)
+                            , Username VARCHAR(100)
+                            , UserPwd VARCHAR(200)
+                            , Email VARCHAR(100)
+                        );
+    
+  SET iLoop = 0;
+	WHILE (JSON_EXTRACT(Customer, CONCAT('$[',iLoop, '].CustId'))  IS NOT NULL) DO
+		INSERT INTO tmp_Customer(
+                              CustId 
+                            , FirstName 
+                            , LastName 
+                            , Username 
+                            , UserPwd
+                            , Email
+                                    )
+		SELECT JSON_EXTRACT(Customer, CONCAT('$[', iLoop, '].CustId')) 
+						, JSON_UNQUOTE(JSON_EXTRACT(Customer, CONCAT('$[', iLoop, '].FirstName')))
+						, JSON_UNQUOTE(JSON_EXTRACT(Customer, CONCAT('$[', iLoop, '].LastName')))
+						, JSON_UNQUOTE(JSON_EXTRACT(Customer, CONCAT('$[', iLoop, '].Username')))
+						, JSON_UNQUOTE(JSON_EXTRACT(Customer, CONCAT('$[', iLoop, '].UserPwd')))
+						, JSON_UNQUOTE(JSON_EXTRACT(Customer, CONCAT('$[', iLoop, '].Email')));
+
+		SET iLoop = iLoop +1;
+	END WHILE;
+
+  DELETE c FROM ChatBot.Customer c
+          LEFT JOIN tmp_Customer tmp ON c.custid = tmp.CustId
+          WHERE tmp.CustId IS NULL;
+
+  INSERT INTO ChatBot.Customer(
+                            custid 
+                          , firstname 
+                          , lastname 
+                          , username 
+                          , userpwd
+                          , email
+                            )
+  SELECT tmp.CustId 
+          , tmp.FirstName 
+          , tmp.LastName
+          , tmp.Username
+          , tmp.UserPwd
+          , tmp.Email
+  FROM tmp_Customer tmp
+  LEFT JOIN ChatBot.Customer c ON c.custid = tmp.CustId
+  WHERE c.custid IS NULL;
+
+  UPDATE ChatBot.Customer m
+  INNER JOIN tmp_Customer tmp ON m.custid = tmp.CustId
+  SET m.firstname = tmp.FirstName
+      ,m.lastname = tmp.LastName
+      ,m.username = tmp.Username
+      ,m.userpwd = tmp.UserPwd
+      ,m.email = tmp.Email;
+
+################# CustInfo ########################### 
+
+  DROP TEMPORARY TABLE IF EXISTS tmp_CustInfo;
+	CREATE TEMPORARY TABLE tmp_CustInfo(
+                            CustId INT
+                            , Username VARCHAR(100)
+                            , Closed TINYINT
+                        );
+    
+  SET iLoop = 0;
+	WHILE (JSON_EXTRACT(CustInfo, CONCAT('$[',iLoop, '].CustId'))  IS NOT NULL) DO
+		INSERT INTO tmp_CustInfo(
+                              CustId 
+                            , Username 
+                            , Closed
+                                    )
+		SELECT JSON_EXTRACT(CustInfo, CONCAT('$[', iLoop, '].CustId')) 
+						, JSON_UNQUOTE(JSON_EXTRACT(CustInfo, CONCAT('$[', iLoop, '].Username')))
+            , JSON_EXTRACT(CustInfo, CONCAT('$[', iLoop, '].Closed'));
+
+		SET iLoop = iLoop +1;
+	END WHILE;
+
+  DELETE c FROM ChatBot.custInfo c
+          LEFT JOIN tmp_CustInfo tmp ON c.custid = tmp.CustId
+          WHERE tmp.CustId IS NULL;
+
+  INSERT INTO ChatBot.custInfo(
+                            custid 
+                          , username 
+                          , closed
+                            )
+  SELECT tmp.CustId 
+          , tmp.Username
+          , tmp.Closed
+  FROM tmp_CustInfo tmp
+  LEFT JOIN ChatBot.custInfo c ON c.custid = tmp.CustId
+  WHERE c.custid IS NULL;
+
+  UPDATE ChatBot.custInfo m
+  INNER JOIN tmp_CustInfo tmp ON m.custid = tmp.CustId
+  SET m.username = tmp.Username
+      ,m.closed = tmp.Closed;
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NAP_UserControl_SyncData TO 'ncb.admin'@'%';
