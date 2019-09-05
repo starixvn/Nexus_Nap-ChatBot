@@ -162,6 +162,10 @@
                     }
                 }
             }
+            else
+            {
+                logger.Error("Testing invalid sso time");
+            }
 
             return new RedirectResult("~/Auth/Index");
         }
