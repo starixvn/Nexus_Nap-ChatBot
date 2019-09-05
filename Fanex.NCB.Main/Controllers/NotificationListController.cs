@@ -55,15 +55,6 @@ namespace Fanex.NCB.SkypeBot.Controllers
             return Json(new { total = result.Item1, data = result.Item2 });
         }
 
-        [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
-        public async Task<IActionResult> Cancel(int notificationId)
-        {
-            var result = await notificationService.CancelAsync(notificationId, napSession.UserId).ConfigureAwait(false);
-
-            return Json(result);
-        }
-
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
         public async Task<IActionResult> GetNotificationError(int notificationId)
@@ -74,7 +65,16 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
+        public async Task<IActionResult> Cancel(int notificationId)
+        {
+            var result = await notificationService.CancelAsync(notificationId, napSession.UserId).ConfigureAwait(false);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        [NapChatBotAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Resolve([FromBody]ResolveNotificationViewModel data)
         {
             var result = await notificationService.ResolveAsync(data.NotificationId, data.ResolvedRemark, napSession.UserId).ConfigureAwait(false);
