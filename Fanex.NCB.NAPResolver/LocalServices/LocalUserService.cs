@@ -118,7 +118,17 @@
 
         public int GetPermission(int userId, int siteId, string functionKey)
         {
-            throw new NotImplementedException();
+            var criteria = new GetUserFunctionPolicyCriteria
+            {
+                UserId = userId,
+                SiteId = siteId,
+                FunctionKey = functionKey
+            };
+
+            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+            {
+                return objectDb.QueryEntity<int>(criteria);
+            }
         }
 
         public async Task<int> GetPermissionAsync(int userId, int siteId, string functionKey)
@@ -193,7 +203,9 @@
 
         public bool IsHavingPermission(int userId, int siteId, string functionKey, Constant.Policy policy)
         {
-            throw new NotImplementedException();
+            var currentPolicy = GetPermission(userId, siteId, functionKey);
+
+            return currentPolicy >= (int)policy;
         }
     }
 }

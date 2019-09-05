@@ -22,17 +22,20 @@ BEGIN
     DECLARE SENT_STATUSID_RESOLVED TINYINT UNSIGNED DEFAULT 5;
     
 	#1st dataset: Main Notification Info
-	SELECT n.NotificationID, n.title, n.ConfigSendTime, IFNULL(n.ResolvedRemark, '') AS resolvedRemark, IFNULL(u.UserName, '') AS resolvedByUsername, n.StatusID, n.ResolvedBy
+	SELECT n.NotificationID, n.title, n.ConfigSendTime, IFNULL(n.ResolvedRemark, '') AS resolvedRemark, n.StatusID, n.ResolvedBy, c.username AS ResolvedByUsername
     FROM Notification n
-    LEFT JOIN User u ON u.UserID = n.ResolvedBy
+		LEFT JOIN Customer c ON n.ResolvedBy = c.custid
     WHERE n.NotificationID = notificationID;
     
     #2nd dataset: List of success Recipients
-	SELECT DISTINCT r.RecipientName
-	FROM ChatBot.NotificationRecipientList nrl
-	INNER JOIN ChatBot.Recipient r ON nrl.RecipientID = r.RecipientID
-	WHERE nrl.NotificationID = notificationID
+    SELECT r.RecipientName
+    FROM Recipient r
+    WHERE EXISTS (
+		SELECT 1
+        FROM NotificationRecipientList nrl
+        WHERE nrl.NotificationID = notificationID AND nrl.RecipientID = r.RecipientID
 			AND nrl.StatusID NOT IN (SENT_STATUSID_ERROR, SENT_STATUSID_RESOLVED)
+    )		
     ORDER BY r.RecipientName;
     
     #3rd dataset: List of failed Recipients

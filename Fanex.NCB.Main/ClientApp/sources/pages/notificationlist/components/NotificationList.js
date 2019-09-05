@@ -24,6 +24,9 @@ export default class NotificationList extends Component {
         const fromDate = new Date();
         fromDate.setDate(fromDate.getDate() - 7);
 
+        this.haveHostPermission = document.getElementById('have-host-permission').checked;
+        this.haveEditNotificationPermission = document.getElementById('have-edit-notification-permission').checked;
+
         this.state = {
             isRemark: null,
             filter: {
@@ -273,7 +276,8 @@ export default class NotificationList extends Component {
                         onPaging={this.getNotifications}
                         onCancelNotification={this.handleOpenNotificationCancellation}
                         onShowErrorReport={this.handleShowErrorReport}
-
+                        haveHostPermission={this.haveHostPermission}
+                        haveEditNotificationPermission={this.haveEditNotificationPermission}
                     />
                 }
                 <NotificationCancellation
@@ -289,6 +293,7 @@ export default class NotificationList extends Component {
                     onResolveNotification={this.handleResolveNotification}
                     responseMessage={this.state.errorReport.responseMessage}
                     isSubmitting={this.state.errorReport.isSubmitting}
+                    haveHostPermission={this.haveHostPermission}
                 />
             </div>
         );

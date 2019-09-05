@@ -1,7 +1,9 @@
 namespace Fanex.NCB.SkypeBot.Controllers
 {
     using System.Threading.Tasks;
+    using Fanex.NAP.Client;
     using Fanex.NAP.Client.Helpers.Web;
+    using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Main.ViewModel.Notification;
     using Fanex.NCB.Models.Notification;
@@ -15,22 +17,27 @@ namespace Fanex.NCB.SkypeBot.Controllers
     {
         private readonly INotificationService notificationService;
         private readonly INapSession napSession;
+        private readonly IUserService userService;
 
-        public NotificationListController(INotificationService notificationService, INapSession napSession)
+        public NotificationListController(INotificationService notificationService, INapSession napSession, IUserService userService)
         {
             this.notificationService = notificationService;
             this.napSession = napSession;
+            this.userService = userService;
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
         public IActionResult Index()
         {
+            ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotifiactionList, Policy.Host);
+            ViewBag.HaveEditNotificationPermission = userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.EditNotification, Policy.Host);
+
             return View("~/Views/SkypeBot/NotificationList/Index.cshtml");
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
         public async Task<IActionResult> Get(GetNotificationViewModel filter)
         {
             var result = await notificationService.GetNotificationsAsync(new GetNotifications
@@ -58,7 +65,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
         public async Task<IActionResult> GetNotificationError(int notificationId)
         {
             var result = await notificationService.GetNotificationErrorAsync(notificationId).ConfigureAwait(false);

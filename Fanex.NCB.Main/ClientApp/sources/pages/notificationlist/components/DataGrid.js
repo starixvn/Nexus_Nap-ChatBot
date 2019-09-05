@@ -119,9 +119,9 @@ export default class DataGrid extends PureComponent {
             case NotificationStatus.Resolved:
                 return <span className="icon-view" data-notificationid={notification.notificationId} onClick={this.handleShowErrorReport} />;
             case NotificationStatus.Planned:
-                return <span className="icon-delete" data-notificationid={notification.notificationId} onClick={this.handleCancelNotification} />;
+                return this.props.haveHostPermission && <span className="icon-delete" data-notificationid={notification.notificationId} onClick={this.handleCancelNotification} />;
             case NotificationStatus.Cancelled:
-                return <a className="icon-edit" href={`EditNotification/Index/${notification.notificationId}`} />;
+                return this.props.haveEditNotificationPermission && <a className="icon-edit" href={`EditNotification/Index/${notification.notificationId}`} />;
             default: return null;
         }
     }

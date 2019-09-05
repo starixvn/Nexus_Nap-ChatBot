@@ -50,7 +50,7 @@ export default class ErrorReport extends Component {
     }
 
     render() {
-        const { isOpen, report, toggle, responseMessage } = this.props;
+        const { isOpen, report, toggle, responseMessage, haveHostPermission } = this.props;
 
         if (report) {
             return (
@@ -98,7 +98,7 @@ export default class ErrorReport extends Component {
                             </>
                         }
 
-                        {report.statusId === NotificationStatus.Error &&
+                        {report.statusId === NotificationStatus.Error && haveHostPermission &&
                             <div className="remark">
                                 <span>Remark:</span>
                                 <input type="text" className={`form-control ${this.state.remarkTouched && this.state.remark === '' && 'is-invalid'}`}
@@ -112,7 +112,7 @@ export default class ErrorReport extends Component {
                         {report.statusId === NotificationStatus.Resolved &&
                             <div className="resolved-remark">
                                 <p>Remark: <span className="text-italic">{report.resolvedRemark}</span></p>
-                                <p><span className="text-red">*</span> Resolved by: <strong>{report.resolvedByUsername}</strong></p>
+                                <p><span className="text-red">*</span> Resolved by: <strong>{report.resolvedByUserName}</strong></p>
                             </div>
                         }
                     </ModalBody>
