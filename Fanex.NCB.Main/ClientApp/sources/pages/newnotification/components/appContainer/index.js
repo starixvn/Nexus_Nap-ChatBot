@@ -53,7 +53,7 @@ export class AppContainer extends React.Component {
                     finalTemplate: ''
                 },
                 params: []
-            },
+            }
         };
     }
 
@@ -254,17 +254,17 @@ export class AppContainer extends React.Component {
         content: Yup.string().required(Labels.FieldRequired),
         recipients: Yup.array().required(Labels.FieldRequired),
         sendMode: Yup.string(),
-        sendDate: Yup.date().min(Today, (field) => `Send date must be later than ${field.min.toLocaleString()}`)
+        sendDate: Yup.date().min(Today, field => `Send date must be later than ${field.min.toLocaleString()}`)
             .when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired) : schema)
     })
 
-    renderNotificationTypeOption = (item) => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>
+    renderNotificationTypeOption = item => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>
 
-    renderProductOption = (item) => <option key={item.id} value={item.id} >{item.name}</option>
+    renderProductOption = item => <option key={item.id} value={item.id} >{item.name}</option>
 
     renderSendModeOption = item => <option key={item.value} value={item.value} >{item.label}</option>;
 
-    handleSubmit = (values) => {
+    handleSubmit = values => {
         const formatDate = values.sendDate.toLocaleString('en-US',
             { hour12: true, month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
@@ -273,7 +273,7 @@ export class AppContainer extends React.Component {
         this.props.toggleConfirmationPopup(true, message);
     }
 
-    handleNotificationTypeChange = (event) => {
+    handleNotificationTypeChange = event => {
         const formik = this.refs.form;
         this.props.getRecipients(event.target.value, formik.state.values.productId);
         formik.handleChange(event);
@@ -282,7 +282,7 @@ export class AppContainer extends React.Component {
         }
     }
 
-    handleProductChange = (event) => {
+    handleProductChange = event => {
         const formik = this.refs.form;
         this.props.getRecipients(formik.state.values.notificationTypeId, event.target.value);
         formik.handleChange(event);
