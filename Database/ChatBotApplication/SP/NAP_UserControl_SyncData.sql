@@ -463,7 +463,7 @@ BEGIN
 
 ################# NAP_OnUser ########################### 
 
-    DROP TEMPORARY TABLE IF EXISTS tmp_NAP_OnUser;
+  DROP TEMPORARY TABLE IF EXISTS tmp_NAP_OnUser;
 	CREATE TEMPORARY TABLE tmp_NAP_OnUser(
                             Id INT
                             , UserId INT
@@ -687,7 +687,7 @@ BEGIN
 
 ################# NAP_UserFunction ########################### 
 
-    DROP TEMPORARY TABLE IF EXISTS tmp_NAP_UserFunction;
+  DROP TEMPORARY TABLE IF EXISTS tmp_NAP_UserFunction;
 	CREATE TEMPORARY TABLE tmp_NAP_UserFunction(
                             UserId INT
                             , FunctionId INT
@@ -766,18 +766,14 @@ BEGIN
                                         AND uf.FunctionId = tmp.FunctionId
                                         AND uf.Policy = tmp.Policy
                                         AND uf.SiteId = tmp.SiteId
-    SET uf.UserId = tmp.UserId
-        ,uf.FunctionId = tmp.FunctionId
-        ,uf.SiteId = tmp.SiteId
-        ,uf.Policy = tmp.Policy
-        ,uf.CreatedBy = tmp.CreatedBy
+    SET uf.CreatedBy = tmp.CreatedBy
         ,uf.CreatedDate = tmp.CreatedDate
         ,uf.ModifiedBy = tmp.ModifiedBy
         ,uf.ModifiedDate = tmp.ModifiedDate;
         
 ################# NAP_Users ########################### 
 
-    DROP TEMPORARY TABLE IF EXISTS tmp_NAP_Users;
+  DROP TEMPORARY TABLE IF EXISTS tmp_NAP_Users;
 	CREATE TEMPORARY TABLE tmp_NAP_Users(
                             UserId INT
                             , GroupId INT
@@ -855,7 +851,7 @@ BEGIN
 
 ################# NAP_UserSite ########################### 
 
-    DROP TEMPORARY TABLE IF EXISTS tmp_NAP_UserSite;
+  DROP TEMPORARY TABLE IF EXISTS tmp_NAP_UserSite;
 	CREATE TEMPORARY TABLE tmp_NAP_UserSite(
                             UserId INT
                             , SiteId INT
@@ -921,7 +917,7 @@ BEGIN
 	END WHILE;
 
     DELETE us FROM ChatBot.NAP_UserSite us
-            LEFT JOIN tmp_NAP_UserSite tmp ON us.UserId = tmp.UserId AND us.SiteId = tmp.SiteId
+            LEFT JOIN tmp_NAP_UserSite tmp ON us.UserId = tmp.UserId AND us.SiteId = tmp.SiteId AND us.Level = tmp.Level
             WHERE tmp.UserId IS NULL;
 
     INSERT INTO ChatBot.NAP_UserSite(UserId
@@ -947,11 +943,11 @@ BEGIN
             , tmp.ExpiredDate
             , tmp.IsNeverExpired
     FROM tmp_NAP_UserSite tmp
-    LEFT JOIN ChatBot.NAP_UserSite m ON m.UserId = tmp.UserId AND m.SiteId = tmp.SiteId
+    LEFT JOIN ChatBot.NAP_UserSite m ON m.UserId = tmp.UserId AND m.SiteId = tmp.SiteId AND us.Level = tmp.Level
     WHERE m.UserId IS NULL;
 
     UPDATE ChatBot.NAP_UserSite m
-    INNER JOIN tmp_NAP_UserSite tmp ON m.UserId = tmp.UserId AND m.SiteId = tmp.SiteId
+    INNER JOIN tmp_NAP_UserSite tmp ON m.UserId = tmp.UserId AND m.SiteId = tmp.SiteId AND us.Level = tmp.Level
     SET m.IsActive = tmp.IsActive
         ,m.LastLoginDate = tmp.LastLoginDate
         ,m.CreatedBy = tmp.CreatedBy
