@@ -1,4 +1,4 @@
-﻿coonst commonRules = [
+﻿const commonRules = [
     {
         test: require.resolve('jquery'),
         use: [{
