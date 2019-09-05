@@ -947,11 +947,11 @@ BEGIN
             , tmp.ExpiredDate
             , tmp.IsNeverExpired
     FROM tmp_NAP_UserSite tmp
-    LEFT JOIN ChatBot.NAP_UserSite m ON m.UserId = tmp.UserId AND m.SiteId = tmp.SiteId AND us.Level = tmp.Level
+    LEFT JOIN ChatBot.NAP_UserSite m ON m.UserId = tmp.UserId AND m.SiteId = tmp.SiteId AND m.Level = tmp.Level
     WHERE m.UserId IS NULL;
 
     UPDATE ChatBot.NAP_UserSite m
-    INNER JOIN tmp_NAP_UserSite tmp ON m.UserId = tmp.UserId AND m.SiteId = tmp.SiteId AND us.Level = tmp.Level
+    INNER JOIN tmp_NAP_UserSite tmp ON m.UserId = tmp.UserId AND m.SiteId = tmp.SiteId AND m.Level = tmp.Level
     SET m.IsActive = tmp.IsActive
         ,m.LastLoginDate = tmp.LastLoginDate
         ,m.CreatedBy = tmp.CreatedBy
