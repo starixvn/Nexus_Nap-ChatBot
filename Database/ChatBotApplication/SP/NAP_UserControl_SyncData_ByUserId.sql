@@ -13,6 +13,8 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_UserControl_SyncData
 	IN UserFunction JSON, 
 	IN Users JSON, 
 	IN UserSite JSON,
+  IN Customer JSON,
+  IN CustInfo JSON,
   IN UserId INT,
   OUT errCode INT,
   OUT errMsg VARCHAR(200)
