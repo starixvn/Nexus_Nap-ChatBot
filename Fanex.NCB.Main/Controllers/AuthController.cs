@@ -78,11 +78,7 @@
                 {
                     errorMsg = Labels.WrongPassword;
                 }
-                else if (!await IsExistNapSite(user))
-                {
-                    errorMsg = Labels.NoPermision;
-                }
-                else if (!await IsExistNapGroup(user))
+                else if (!await IsExistNapSite(user) || !await IsExistNapGroup(user))
                 {
                     errorMsg = Labels.NoPermision;
                 }
@@ -230,11 +226,28 @@
                 UserId = user.Id,
                 SiteId = napSettings.SiteId,
                 NetSessionId = HttpContext.Session.Id,
-                Ip = HttpContext.Connection.RemoteIpAddress.ToString(),
+                Ip = GetIPAddress(),
                 LoginDate = DateTime.Now
             };
 
             return await securityService.LoginAsync(loginParam);
+        }
+
+        public string GetIPAddress()
+        {
+            HttpContext context = HttpContext;
+            string ipAddress = context.Request.Headers["HTTP_X_FORWARDED_FOR"];
+
+            if (!string.IsNullOrEmpty(ipAddress))
+            {
+                string[] addresses = ipAddress.Split(',');
+                if (addresses.Length != 0)
+                {
+                    return addresses[0];
+                }
+            }
+
+            return context.Request.Headers["REMOTE_ADDR"];
         }
 
         private static bool ValidatePassword(User user, UserLogin userLogin)
