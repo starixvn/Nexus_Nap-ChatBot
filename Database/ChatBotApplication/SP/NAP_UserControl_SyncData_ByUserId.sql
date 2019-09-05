@@ -29,6 +29,10 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_UserControl_SyncData
 SQL SECURITY DEFINER
 BEGIN
   SET errCode = 0, errMsg = '';
+
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+    SET errCode = 1, errMsg = 'Sync Data Error';
+
 	DECLARE iLoop INT;
 ################# NAP_Functions ###########################
 

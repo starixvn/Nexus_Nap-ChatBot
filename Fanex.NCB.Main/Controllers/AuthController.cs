@@ -2,9 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
+    using Fanex.Logging;
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Common;
     using Fanex.NAP.Client.Helpers.Web;
@@ -16,6 +18,7 @@
     using Fanex.NCB.Core.Resources;
     using Fanex.NCB.Models.Auth;
     using Fanex.NCB.NAPResolver;
+    using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;
@@ -31,6 +34,8 @@
         private readonly INapSession napSession;
         private readonly INapSettings napSettings;
         private readonly ISecurityService securityService;
+        private readonly ISyncDataService syncDataService;
+        private readonly ILogger logger;
 
         public AuthController(
             IUserService userService,
@@ -38,7 +43,9 @@
             ISecurityService securityService,
             ISiteService siteService,
             INapSession napSession,
-            INapSettings napSettings)
+            INapSettings napSettings,
+            ISyncDataService syncDataService,
+            ILogger logger)
         {
             this.userService = userService;
             this.groupService = groupService;
@@ -46,6 +53,8 @@
             this.siteService = siteService;
             this.napSession = napSession;
             this.napSettings = napSettings;
+            this.syncDataService = syncDataService;
+            this.logger = logger;
         }
 
         public IActionResult Index(string returnUrl, bool invalidLogin)
@@ -122,19 +131,24 @@
                 var userId = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.UserId.Replace(" ", "+")));
                 var onuserid = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.OnUserId.Replace(" ", "+")));
 
-                var ssoLoginParam = new SSOLoginParameter
+                try
                 {
-                    UserId = userId,
-                    SiteId = napSettings.SiteId,
-                    CheckOnUserId = userId,
-                    OnUserId = onuserid,
-                    IP = HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                    BrowserName = Request.Headers["User-Agent"].ToString(),
-                    NetSessionId = HttpContext.Session.Id,
-                    Platform = Environment.OSVersion.Platform.ToString(),
-                    LoginDate = DateTime.Now
-                };
-                var onUserId = await securityService.SSOLoginAsync(ssoLoginParam).ConfigureAwait(false);
+                    await syncDataService.NapSSOSyncDataByUserIdAsync(userId).ConfigureAwait(false);
+                }
+                catch (Exception exception)
+                {
+                    string errMsg = string.Format(
+                    CultureInfo.InvariantCulture,
+                    "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
+                    exception.Message,
+                    exception.Source,
+                    HttpContext.Request.Headers["Host"],
+                    exception.TargetSite,
+                    exception.StackTrace);
+                    logger.Error(errMsg);
+                }
+
+                var onUserId = await SSOLogin(userId, onuserid).ConfigureAwait(false);
 
                 if (onUserId > 0)
                 {
@@ -150,6 +164,23 @@
             }
 
             return new RedirectResult("~/Auth/Index");
+        }
+
+        private async Task<int> SSOLogin(int userId, int onuserId)
+        {
+            var ssoLoginParam = new SSOLoginParameter
+            {
+                UserId = userId,
+                SiteId = napSettings.SiteId,
+                CheckOnUserId = userId,
+                OnUserId = onuserId,
+                IP = HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                BrowserName = Request.Headers["User-Agent"].ToString(),
+                NetSessionId = HttpContext.Session.Id,
+                Platform = Environment.OSVersion.Platform.ToString(),
+                LoginDate = DateTime.Now
+            };
+            return await securityService.SSOLoginAsync(ssoLoginParam).ConfigureAwait(false);
         }
 
         [HttpPost]
