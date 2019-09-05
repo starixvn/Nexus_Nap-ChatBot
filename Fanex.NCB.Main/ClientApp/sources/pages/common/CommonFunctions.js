@@ -32,11 +32,11 @@ export default class CommonFunctions {
     }
 
     static displayCopiedToClipboard() {
-        var div = document.createElement('div');
+        const div = document.createElement('div');
         div.className = "copied-confirm";
         div.innerHTML = Labels.CopiedToClipboard;
         document.body.appendChild(div);
-        setInterval(() => {
+        setTimeout(() => {
             div.remove();
         }, 1000);
     }

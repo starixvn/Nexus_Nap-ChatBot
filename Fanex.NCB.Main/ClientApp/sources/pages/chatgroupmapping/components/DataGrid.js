@@ -49,12 +49,12 @@ export class DataGrid extends Component {
             </Row>);
     };
 
-    copyGroupIdToClipboard = (text) => {
-        var input = document.createElement('textarea');
+    copyGroupIdToClipboard = text => {
+        const input = document.createElement('textarea');
         input.value = text;
         document.body.appendChild(input);
         input.select();
-        document.execCommand("copy");
+        document.execCommand('copy');
         input.remove();
         CommonFunctions.displayCopiedToClipboard();
     }

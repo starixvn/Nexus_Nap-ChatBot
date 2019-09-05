@@ -2,16 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 class Cell extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     static propTypes = {
-        header: PropTypes.bool,
-        sortable: PropTypes.bool,
-        sorting: PropTypes.bool,
         asc: PropTypes.bool,
-        onClick: PropTypes.func
+        header: PropTypes.bool,
+        onClick: PropTypes.func,
+        sortable: PropTypes.bool,
+        sorting: PropTypes.bool
     }
 
     static defaultProps = {
@@ -20,20 +16,31 @@ class Cell extends Component {
         sorting: false,
         asc: true,
         // nothing by default
-        onClick: function () { }
+        onClick: () => null
+    }
+
+    constructor(props) {
+        super(props);
     }
 
     renderSorting(sorting, asc) {
-        return <span className={`${sorting ? (asc ? 'asc' : 'desc') : ''}`} />;
+        if (sorting) {
+            return <span />;
+        }
+
+        return <span className={asc ? 'asc' : 'desc'} />;
     }
 
     renderHeader(rest) {
         const { sortable, sorting, asc, onClick } = this.props;
-        return (sortable ? (<th {...rest} className={`sortable ${sorting ? 'sorting' : ''}`} onClick={onClick}>
-            {this.props.children}
-            {this.renderSorting(sorting, asc)}
-        </th>)
-            : <th {...rest}>{this.props.children}</th>);
+        if (sortable) {
+            return (<th {...rest} className={`sortable ${sorting ? 'sorting' : ''}`} onClick={onClick}>
+                {this.props.children}
+                {this.renderSorting(sorting, asc)}
+            </th>);
+        }
+
+        return (<th {...rest}>{this.props.children}</th>);
     }
 
     render() {

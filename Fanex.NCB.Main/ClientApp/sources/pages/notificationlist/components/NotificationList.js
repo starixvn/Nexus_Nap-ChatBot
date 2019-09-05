@@ -21,7 +21,7 @@ export default class NotificationList extends Component {
         super(props);
 
         const toDate = new Date();
-        let fromDate = new Date();
+        const fromDate = new Date();
         fromDate.setDate(fromDate.getDate() - 7);
 
         this.state = {

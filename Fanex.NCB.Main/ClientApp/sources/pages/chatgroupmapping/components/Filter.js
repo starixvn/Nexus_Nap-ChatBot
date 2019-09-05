@@ -226,7 +226,7 @@ export class Filter extends Component {
             </Form>
         );
     }
-};
+}
 
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 

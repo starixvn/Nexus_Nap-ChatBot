@@ -124,7 +124,7 @@ export default class EditNotification extends React.Component {
             title: values.title,
             content: values.content,
             sendDate: values.sendDate.toLocaleString('en-US'),
-            sendImmediately: values.sendMode === '1',
+            sendImmediately: values.sendMode === '1'
         };
 
         this.handleCloseConfirmationPopup();
@@ -137,16 +137,16 @@ export default class EditNotification extends React.Component {
                 'RequestVerificationToken': Site.getXsrfToken()
             }
         }).then(response => {
-            const data = response.data;
+            const result = response.data;
             formik.setSubmitting(false);
 
-            if (data.isSuccessful) {
-                this.setState({ editNotificationResult: data },
+            if (result.isSuccessful) {
+                this.setState({ editNotificationResult: result },
                     () => setTimeout(function () {
                         window.location = Site.resolveClientUrl('NotificationList');
                     }, 3000));
             } else {
-                this.setState({ editNotificationResult: data });
+                this.setState({ editNotificationResult: result });
             }
         }).catch(errorResponseHandler);
     }
@@ -169,13 +169,13 @@ export default class EditNotification extends React.Component {
             value: Yup.array().required(Labels.FieldRequired)
         }),
         sendMode: Yup.string(),
-        sendDate: Yup.date().min(Today, (field) => `Send date must be later than ${field.min.toLocaleString()}`)
+        sendDate: Yup.date().min(Today, field => `Send date must be later than ${field.min.toLocaleString()}`)
             .when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired) : schema)
     })
 
     renderSendModeOption = item => <option key={item.value} value={item.value} >{item.label}</option>;
 
-    handleSubmit = (values) => {
+    handleSubmit = values => {
         const formatDate = values.sendDate.toLocaleString('en-US',
             { hour12: true, month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 

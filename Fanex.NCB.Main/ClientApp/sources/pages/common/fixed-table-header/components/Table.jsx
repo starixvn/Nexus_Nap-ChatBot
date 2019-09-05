@@ -33,32 +33,6 @@ const debounce = (func, wait) => {
 };
 
 class Table extends Component {
-    constructor(props) {
-        super(props);
-
-        this.bodyWrapper = null;
-        this.footerWrapper = null;
-
-        const headerContainerProps = { className: 'header-content', isHeader: true };
-        this.Header = createTableSection(headerContainerProps);
-
-        const bodyContainerProps = { className: 'body-content', getRef: element => this.bodyWrapper = element };
-        this.Body = createTableSection(bodyContainerProps);
-
-        const footerContainerProps = { className: 'footer-content', getRef: element => this.footerWrapper = element };
-        this.Footer = createTableSection(footerContainerProps);
-
-        const { maxWidth, bodyHeight, adjustedHeight } = this.props;
-        this.diffWidth = BODY_WIDTH - maxWidth;
-        this.adjustedHeight = adjustedHeight;
-
-        this.state = {
-            maxWidth,
-            contentHeight: bodyHeight,
-            columnsWidth: this._getColumnsWidth(props.header)
-        };
-    }
-
     static propTypes = {
         width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         maxWidth: PropTypes.number,
@@ -83,6 +57,32 @@ class Table extends Component {
         adjustedHeight: 0,
         bodyHeight: 0,
         autoHeight: true
+    }
+
+    constructor(props) {
+        super(props);
+
+        this.bodyWrapper = null;
+        this.footerWrapper = null;
+
+        const headerContainerProps = { className: 'header-content', isHeader: true };
+        this.Header = createTableSection(headerContainerProps);
+
+        const bodyContainerProps = { className: 'body-content', getRef: element => this.bodyWrapper = element };
+        this.Body = createTableSection(bodyContainerProps);
+
+        const footerContainerProps = { className: 'footer-content', getRef: element => this.footerWrapper = element };
+        this.Footer = createTableSection(footerContainerProps);
+
+        const { maxWidth, bodyHeight, adjustedHeight } = this.props;
+        this.diffWidth = BODY_WIDTH - maxWidth;
+        this.adjustedHeight = adjustedHeight;
+
+        this.state = {
+            maxWidth,
+            contentHeight: bodyHeight,
+            columnsWidth: this._getColumnsWidth(props.header)
+        };
     }
 
     _getColumnsWidth(headerRows) {
@@ -116,10 +116,11 @@ class Table extends Component {
                     }
                 }
             }
-        }
-        const currentRowIndex = 0;
-        const cellList = headerIsArray ? headerRows[currentRowIndex].props.children : headerRows.props.children;
-        getWidthByCells(cellList, currentRowIndex);
+        };
+
+        const startIndex = 0;
+        const cellList = headerIsArray ? headerRows[startIndex].props.children : headerRows.props.children;
+        getWidthByCells(cellList, startIndex);
         return columnsWidth;
     }
 
