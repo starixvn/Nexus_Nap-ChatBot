@@ -1,6 +1,9 @@
 ﻿namespace Fanex.NCB.Services
 {
+    using System;
+    using System.Globalization;
     using System.Threading.Tasks;
+    using Fanex.Logging;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SyncData;
     using Fanex.NCB.Repository.Interfaces;
@@ -17,15 +20,18 @@
         private readonly IOptionsSnapshot<AppSettings> appSettings;
         private readonly ISyncDataRepository crawlDataRepository;
         private readonly IBaseService baseService;
+        private readonly ILogger logger;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
-        public SyncDataService(IOptionsSnapshot<AppSettings> appSettings
-            , ISyncDataRepository crawlDataRepository,
-            IBaseService baseService)
+        public SyncDataService(IOptionsSnapshot<AppSettings> appSettings,
+            ISyncDataRepository crawlDataRepository,
+            IBaseService baseService,
+            ILogger logger)
         {
             this.appSettings = appSettings;
             this.crawlDataRepository = crawlDataRepository;
             this.baseService = baseService;
+            this.logger = logger;
         }
 
         public async Task NapUserControlSyncDataAsync()
@@ -116,10 +122,30 @@
             return JsonConvert.SerializeObject(data, new JsonSerializerSettings { DateFormatString = DateTimeFormat });
         }
 
-        public async Task<CommandResult> NapSSOSyncDataByUserIdAsync(int userId)
+        public async Task NapSSOSyncDataByUserIdAsync(int userId)
         {
             var data = await GetDataFromNapUserControl(userId).ConfigureAwait(false);
-            return await InsertNapDataOnUser(data, userId).ConfigureAwait(false);
+            await InsertNapDataOnUser(data, userId).ConfigureAwait(false);
+        }
+
+        public async Task SyncNapDataForSSOLogin(int userId)
+        {
+            try
+            {
+                await NapSSOSyncDataByUserIdAsync(userId).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                string errMsg = string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
+                exception.Message,
+                exception.Source,
+                string.Empty,
+                exception.TargetSite,
+                exception.StackTrace);
+                logger.Error(errMsg);
+            }
         }
     }
 }

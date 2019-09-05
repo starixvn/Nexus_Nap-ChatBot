@@ -2,11 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
-    using Fanex.Logging;
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Common;
     using Fanex.NAP.Client.Helpers.Web;
@@ -35,7 +33,6 @@
         private readonly INapSettings napSettings;
         private readonly ISecurityService securityService;
         private readonly ISyncDataService syncDataService;
-        private readonly ILogger logger;
 
         public AuthController(
             IUserService userService,
@@ -44,8 +41,7 @@
             ISiteService siteService,
             INapSession napSession,
             INapSettings napSettings,
-            ISyncDataService syncDataService,
-            ILogger logger)
+            ISyncDataService syncDataService)
         {
             this.userService = userService;
             this.groupService = groupService;
@@ -54,7 +50,6 @@
             this.napSession = napSession;
             this.napSettings = napSettings;
             this.syncDataService = syncDataService;
-            this.logger = logger;
         }
 
         public IActionResult Index(string returnUrl, bool invalidLogin)
@@ -131,22 +126,7 @@
                 var userId = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.UserId.Replace(" ", "+")));
                 var onuserid = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.OnUserId.Replace(" ", "+")));
 
-                try
-                {
-                    await syncDataService.NapSSOSyncDataByUserIdAsync(userId).ConfigureAwait(false);
-                }
-                catch (Exception exception)
-                {
-                    string errMsg = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
-                    exception.Message,
-                    exception.Source,
-                    HttpContext.Request.Headers["Host"],
-                    exception.TargetSite,
-                    exception.StackTrace);
-                    logger.Error(errMsg);
-                }
+                await syncDataService.SyncNapDataForSSOLogin(userId).ConfigureAwait(false);
 
                 var onUserId = await SSOLogin(userId, onuserid).ConfigureAwait(false);
 

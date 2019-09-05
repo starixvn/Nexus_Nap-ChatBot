@@ -1,5 +1,7 @@
 ﻿namespace Fanex.NCB.Shared.Models.NapUserControl
 {
+    using System;
+
     public class NapOnUser
     {
         public int Id { get; set; }
@@ -8,7 +10,7 @@
 
         public int SiteId { get; set; }
 
-        public int ReloadTime { get; set; }
+        public DateTime? ReloadTime { get; set; }
 
         public bool IsKickedOut { get; set; }
 
