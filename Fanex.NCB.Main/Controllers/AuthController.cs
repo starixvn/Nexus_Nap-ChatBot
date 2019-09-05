@@ -120,18 +120,18 @@
             if (isValidTime)
             {
                 var userId = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.UserId.Replace(" ", "+")));
-                var onuserid = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.OnUserId.Replace(" ", "+")));
+                var onUserid = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.OnUserId.Replace(" ", "+")));
 
                 await syncDataService.SyncNapDataForSSOLogin(userId).ConfigureAwait(false);
 
-                var onUserId = await SSOLogin(userId, onuserid).ConfigureAwait(false);
+                var newOnUserId = await SSOLogin(userId, onUserid).ConfigureAwait(false);
 
-                if (onUserId > 0)
+                if (newOnUserId > 0)
                 {
                     var user = await userService.GetAsync(userId).ConfigureAwait(false);
                     if (user != null)
                     {
-                        await DoCheckIn(user, onUserId);
+                        await DoCheckIn(user, newOnUserId);
 
                         return Redirect(!string.IsNullOrWhiteSpace(ssoLogin.RedirectUrl) && Url.IsLocalUrl(ssoLogin.RedirectUrl) ? ssoLogin.RedirectUrl :
                         Url.Content($"~/{napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url}"));
@@ -148,8 +148,7 @@
             {
                 UserId = userId,
                 SiteId = napSettings.SiteId,
-                CheckOnUserId = userId,
-                OnUserId = onuserId,
+                CheckOnUserId = onuserId,
                 IP = HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                 BrowserName = Request.Headers["User-Agent"].ToString(),
                 NetSessionId = HttpContext.Session.Id,
@@ -226,28 +225,11 @@
                 UserId = user.Id,
                 SiteId = napSettings.SiteId,
                 NetSessionId = HttpContext.Session.Id,
-                Ip = GetIPAddress(),
+                Ip = HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                 LoginDate = DateTime.Now
             };
 
             return await securityService.LoginAsync(loginParam);
-        }
-
-        public string GetIPAddress()
-        {
-            HttpContext context = HttpContext;
-            string ipAddress = context.Request.Headers["HTTP_X_FORWARDED_FOR"];
-
-            if (!string.IsNullOrEmpty(ipAddress))
-            {
-                string[] addresses = ipAddress.Split(',');
-                if (addresses.Length != 0)
-                {
-                    return addresses[0];
-                }
-            }
-
-            return context.Request.Headers["REMOTE_ADDR"];
         }
 
         private static bool ValidatePassword(User user, UserLogin userLogin)
