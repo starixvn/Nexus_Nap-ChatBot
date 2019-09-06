@@ -344,6 +344,7 @@ export class AppContainer extends React.Component {
                     <Col sm={10}>
                         <TreeSelect value={values.recipients} onChange={this.handleRecipientChange} placeholder={Labels.PleaseSelect}
                             treeData={this.props.recipientOptions} className={touched.recipients && errors.recipients && 'is-invalid'}
+                            treeDefaultExpandAll
                         />
                         {touched.recipients && errors.recipients && <FormFeedback>{errors.recipients}</FormFeedback>}
                     </Col>

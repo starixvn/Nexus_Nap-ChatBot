@@ -52,3 +52,8 @@
     padding: 4px 0;
     cursor: pointer;
 }
+
+.rc-tree-select-dropdown > div {
+    max-height: 500px;
+    overflow-y: auto;
+}
