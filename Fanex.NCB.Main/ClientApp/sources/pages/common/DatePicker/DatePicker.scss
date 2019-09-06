@@ -113,6 +113,10 @@
     }
 
     &.react-datepicker__navigation--next {
+        right: 22px;
+    }
+
+    &.react-datepicker__navigation--next.react-datepicker__navigation--next--with-time {
         right: 140px;
     }
 
