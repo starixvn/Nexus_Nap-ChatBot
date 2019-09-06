@@ -126,4 +126,7 @@
   <data name="WrongPassword" xml:space="preserve">
     <value>Wrong Password</value>
   </data>
+  <data name="ChatBotForLicensee" xml:space="preserve">
+    <value>ChatBot For Licensee</value>
+  </data>
 </root>

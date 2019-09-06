@@ -61,6 +61,15 @@ namespace Fanex.NCB.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ChatBot For Licensee.
+        /// </summary>
+        public static string ChatBotForLicensee {
+            get {
+                return ResourceManager.GetString("ChatBotForLicensee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No permission on current site.
         /// </summary>
         public static string NoPermision {

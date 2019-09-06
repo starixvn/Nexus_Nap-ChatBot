@@ -49,9 +49,6 @@ export default class Header extends React.PureComponent {
                                 Welcome {this.state.username}
                             </DropdownToggle>
                             <DropdownMenu>
-                                <DropdownItem tag="a" href="#">
-                                    <span className="icon-change-pass" />Change Password
-                                </DropdownItem>
                                 <DropdownItem tag="a" href={Site.resolveClientUrl('Auth/Logout')}>
                                     <span className="icon-sign-out" />Sign Out
                                 </DropdownItem>
