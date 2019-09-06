@@ -93,7 +93,7 @@
 
         private static IUserService GetUserService()
         {
-            if (NapServicesRegistrationExtension.NAPResolverType == NAPResolverType.Remote)
+            if (NapServicesRegistrationExtension.NAPResolverType == NapResolverType.Remote)
             {
                 return new UserService();
             }

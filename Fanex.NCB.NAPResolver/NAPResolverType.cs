@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.NAPResolver
 {
-    public enum NAPResolverType
+    public enum NapResolverType
     {
         Remote,
         Local

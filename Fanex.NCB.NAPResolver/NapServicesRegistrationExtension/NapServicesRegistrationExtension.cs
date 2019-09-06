@@ -14,7 +14,7 @@
 
     public static class NapServicesRegistrationExtension
     {
-        public static NAPResolverType NAPResolverType { get; internal set; }
+        public static NapResolverType NAPResolverType { get; internal set; }
 
         public static void AddNapServices(this IServiceCollection services, IConfiguration configuration)
         {
@@ -22,8 +22,8 @@
             services.AddSingleton<INapSession, NapSession>();
             services.AddSingleton<IRestClient, RestClient>();
 
-            NAPResolverType = Enum.Parse<NAPResolverType>(configuration["NapOption:NAPResolverType"]);
-            if (NAPResolverType == NAPResolverType.Remote)
+            NAPResolverType = Enum.Parse<NapResolverType>(configuration["NapOption:NAPResolverType"]);
+            if (NAPResolverType == NapResolverType.Remote)
             {
                 services.AddSingleton<IGroupService, GroupService>();
                 services.AddSingleton<IUserService, UserService>();

@@ -4,6 +4,6 @@
 
     public class NapOption
     {
-        public NAPResolverType NAPResolverType { get; set; }
+        public NapResolverType NAPResolverType { get; set; }
     }
 }
