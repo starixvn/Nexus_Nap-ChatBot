@@ -253,7 +253,9 @@
         }
 
         [Fact]
+#pragma warning disable S2699 // Tests should include assertions
         public async Task ExecuteNonQueryAsync_CriteriaIsValid_ExpectedExecuteQuery()
+#pragma warning restore S2699 // Tests should include assertions
         {
             // Arrange
             var command = Substitute.For<INonQueryCommand>();

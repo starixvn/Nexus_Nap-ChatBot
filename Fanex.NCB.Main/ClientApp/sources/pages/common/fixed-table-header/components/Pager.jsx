@@ -30,14 +30,23 @@ export default class Pager extends Component {
         );
     }
 
-    renderPageIcon = (iconClass, isDisable, onClickFunc) => <a href='javascript:;'
-        className={`icon ${iconClass} ${isDisable ? 'disable' : ''}`}
-        onClick={() => !isDisable && onClickFunc()}></a>;
+    renderPageIcon = (iconClass, isDisable, onClickFunc) => {
+        return (
+            <a href='javascript:;'
+                className={`icon ${iconClass} ${isDisable ? 'disable' : ''}`}
+                onClick={() => !isDisable && onClickFunc()}
+            />
+        );
+    }
 
     renderPageInfo = (index, pageSize, totalItem) => {
         const viewFrom = ((index - 1) * pageSize) + 1;
         const viewTo = index * pageSize;
-        return (<span className="page-info">{`Displaying ${viewFrom} to ${viewTo > totalItem ? totalItem : viewTo} of ${totalItem} item(s)`}</span>);
+        return (
+            <span className="page-info">
+                {`Displaying ${viewFrom} to ${viewTo > totalItem ? totalItem : viewTo} of ${totalItem} item(s)`}
+            </span>
+        );
     }
 
     calculatePages = (pageIndex, totalPage) => {
@@ -85,9 +94,9 @@ export default class Pager extends Component {
     render() {
         const { PageIndex, PageSize, TotalItem, PageList } = this.props.pageOption;
         const totalPage = Math.ceil(TotalItem / PageSize);
-
+        const pagerWidth = this.props.width ? this.props.width + 'px' : 'unset';
         return (
-            <div className="page-container">
+            <div className="page-container" style={{ width: pagerWidth }}>
                 <span>Page size</span>
                 {this.renderPageSizeSelection(PageSize, PageList)}
                 {this.renderPageIcon('page-prev', PageIndex <= 1, () => this.goToPage(PageIndex - 1, PageSize))}

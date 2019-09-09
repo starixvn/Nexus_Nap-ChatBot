@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -57,7 +57,9 @@
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.6" />
     <PackageReference Include="Hangfire.MySql.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0">
+      <AllowExplicitVersion>true</AllowExplicitVersion>
+    </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.16.0.8981">

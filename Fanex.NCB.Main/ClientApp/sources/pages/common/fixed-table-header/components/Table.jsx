@@ -85,6 +85,45 @@ class Table extends Component {
         };
     }
 
+    componentDidMount() {
+        this._handleResize();
+        window.addEventListener('resize', debounce(this._handleResize));
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.header !== prevProps.header) {
+            this.setState({ columnsWidth: this._getColumnsWidth(this.props.header) });
+        }
+
+        if (prevProps.body !== this.props.body) {
+            scrollToTop(this.bodyWrapper, 200);
+        }
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', debounce(this._handleResize));
+    }
+
+    get columnWidthSum() {
+        const columnsWidth = this.state.columnsWidth;
+        return !columnsWidth || !columnsWidth.length || columnsWidth.find(x => typeof x !== 'number') ?
+            null : columnsWidth.reduce((prev, current) => prev + current, 0);
+    }
+
+    _getNextColspanCells(cells, fromCellIndex, toCellIndex) {
+        const colspanCells = [];
+        let _toCellIndex = toCellIndex;
+        for (let i = fromCellIndex; i <= _toCellIndex; i++) {
+            const cell = cells[i];
+            if (cell.props.colSpan) {
+                _toCellIndex -= 1;
+            }
+            colspanCells.push(cell);
+        }
+
+        return colspanCells;
+    }
+
     _getColumnsWidth(headerRows) {
         const headerIsArray = Array.isArray(headerRows);
         if (headerIsArray && headerRows.length === 0) {
@@ -122,45 +161,6 @@ class Table extends Component {
         const cellList = headerIsArray ? headerRows[startIndex].props.children : headerRows.props.children;
         getWidthByCells(cellList, startIndex);
         return columnsWidth;
-    }
-
-    _getNextColspanCells(cells, fromCellIndex, toCellIndex) {
-        const colspanCells = [];
-        let _toCellIndex = toCellIndex;
-        for (let i = fromCellIndex; i <= _toCellIndex; i++) {
-            const cell = cells[i];
-            if (cell.props.colSpan) {
-                _toCellIndex -= 1;
-            }
-            colspanCells.push(cell);
-        }
-
-        return colspanCells;
-    }
-
-    get columnWidthSum() {
-        const columnsWidth = this.state.columnsWidth;
-        return !columnsWidth || !columnsWidth.length || columnsWidth.find(x => typeof x !== 'number') ?
-            null : columnsWidth.reduce((prev, current) => prev + current, 0);
-    }
-
-    componentDidMount() {
-        this._handleResize();
-        window.addEventListener('resize', debounce(this._handleResize));
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', debounce(this._handleResize));
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.header !== prevProps.header) {
-            this.setState({ columnsWidth: this._getColumnsWidth(this.props.header) });
-        }
-
-        if (prevProps.body !== this.props.body) {
-            scrollToTop(this.bodyWrapper, 200);
-        }
     }
 
     _handleResize = event => {
@@ -238,7 +238,7 @@ class Table extends Component {
                 </div>
                 {
                     isPaging && pageOption &&
-                    <Pager pageOption={pageOption} onPaging={onPaging} />
+                    <Pager pageOption={pageOption} onPaging={onPaging} width={width} />
                 }
             </div>
         );
