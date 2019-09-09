@@ -27,20 +27,20 @@
         protected override void OnStarting(string[] args)
         {
             Debugger.Launch();
-            logger.LogInformation($"Staring service at {DateTime.Now}.");
+            logger.LogInformation($"Nap Chatbot Staring service at {DateTime.Now}.");
             base.OnStarting(args);
         }
 
         protected override void OnStarted()
         {
-            logger.LogInformation($"Service started at {DateTime.Now}.");
+            logger.LogInformation($"Nap Chatbot Service started & initialize auto jobs at {DateTime.Now}.");
             RunHangfireJobs();
             base.OnStarted();
         }
 
         protected override void OnStopping()
         {
-            logger.LogInformation($"Stopping service at {DateTime.Now}");
+            logger.LogInformation($"Stopping Nap Chatbot service & remove Hangfire schedule jobs at {DateTime.Now}");
             RemoveHangfireJobs();
             base.OnStopping();
         }
