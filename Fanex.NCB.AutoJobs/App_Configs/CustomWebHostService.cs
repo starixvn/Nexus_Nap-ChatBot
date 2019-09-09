@@ -16,12 +16,12 @@
     internal class CustomWebHostService : WebHostService
     {
         private readonly ILogger logger;
-        private readonly IOptionsSnapshot<CronJob> cronJob;
+        private readonly IOptionsMonitor<CronJob> cronJob;
 
         public CustomWebHostService(IWebHost host) : base(host)
         {
             logger = host.Services.GetRequiredService<ILogger<CustomWebHostService>>();
-            cronJob = host.Services.GetRequiredService<IOptionsSnapshot<CronJob>>();
+            cronJob = host.Services.GetRequiredService<IOptionsMonitor<CronJob>>();
         }
 
         protected override void OnStarting(string[] args)
@@ -49,11 +49,11 @@
         {
             RecurringJob.AddOrUpdate<IJobService>("Auto Scan & Send Notification",
                 job => job.AutoScanAndSendNotifictaion(),
-                cronJob.Value.SendNotification);
+                cronJob.CurrentValue.SendNotification);
 
             RecurringJob.AddOrUpdate<IJobService>("Auto sync data from Nap User Control",
                 job => job.SyncDataFromNapUserControl(),
-                cronJob.Value.SyncNapUserControlData);
+                cronJob.CurrentValue.SyncNapUserControlData);
         }
 
         private static void RemoveHangfireJobs()
