@@ -23,6 +23,7 @@
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<ISendNotificationService, SendNotificationService>();
             services.AddScoped<ISyncDataService, SyncDataService>();
+            services.AddScoped<INotificationTemplaceService, NotificationTemplaceService>();
         }
 
         public static void RegisterRepositories(this IServiceCollection services)

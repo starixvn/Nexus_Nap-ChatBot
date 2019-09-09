@@ -97,12 +97,12 @@ export default class Pager extends Component {
         const pagerWidth = this.props.width ? this.props.width + 'px' : 'unset';
         return (
             <div className="page-container" style={{ width: pagerWidth }}>
-                <span>Page size</span>
-                {this.renderPageSizeSelection(PageSize, PageList)}
-                {this.renderPageIcon('page-prev', PageIndex <= 1, () => this.goToPage(PageIndex - 1, PageSize))}
-                {this.renderPages(PageIndex, PageSize, totalPage)}
-                {this.renderPageIcon('page-next', PageIndex >= totalPage, () => this.goToPage(PageIndex + 1, PageSize))}
-                {this.renderPageInfo(PageIndex, PageSize, TotalItem)}
+                {TotalItem > 0 && <span>Page size</span>}
+                {TotalItem > 0 && this.renderPageSizeSelection(PageSize, PageList)}
+                {totalPage > 1 && this.renderPageIcon('page-prev', PageIndex <= 1, () => this.goToPage(PageIndex - 1, PageSize))}
+                {totalPage > 1 && this.renderPages(PageIndex, PageSize, totalPage)}
+                {totalPage > 1 && this.renderPageIcon('page-next', PageIndex >= totalPage, () => this.goToPage(PageIndex + 1, PageSize))}
+                {totalPage > 1 && this.renderPageInfo(PageIndex, PageSize, TotalItem)}
             </div>);
     }
 }

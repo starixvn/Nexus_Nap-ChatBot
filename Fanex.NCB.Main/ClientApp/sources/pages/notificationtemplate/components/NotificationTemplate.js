@@ -1,156 +1,155 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import {NCBBreadcrum} from '../../common/breadcrumbs';
-import NewNotificationTemplate from './NewNotificationTemplate';
-import { Tooltip } from 'reactstrap';
-
 import '../../shared/components/font.css';
 import './NotificationTemplate.scss';
 
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { NCBBreadcrum } from '../../common/breadcrumbs';
+import NewNotificationTemplate from './NewNotificationTemplate';
+import { Tooltip } from 'reactstrap';
+
 class NotificationTemplate extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tooltipOpen: false,
-      modal: false
-    };
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            tooltipOpen: false,
+            modal: false
+        };
+    }
 
-  togglePopup = () => {
-    this.setState({
-      modal: !this.state.modal
-    });
-  }
+    togglePopup = () => {
+        this.setState({
+            modal: !this.state.modal
+        });
+    }
 
-  toggle = () => {
-    this.setState({
-      tooltipOpen: !this.state.tooltipOpen
-    });
-  }
+    toggle = () => {
+        this.setState({
+            tooltipOpen: !this.state.tooltipOpen
+        });
+    }
 
-  render() {
-    return (
-      <div>
-        <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Template" />
-        <form className="filter">
-          <div className="form-group">
-              <label htmlFor="recipientType" className="form-label">Notification Type</label>
-              <select name="recipientType" required="" id="recipientType" className="notification-type form-control">
-                <option>--- Please select ---</option>
-                <option>UM</option>
-              </select>
-          </div>
-          <button className="btn-submit">Submit</button>
-        </form>
+    render() {
+        return (
+            <div>
+                <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Template" />
+                <form className="filter">
+                    <div className="form-group">
+                        <label htmlFor="recipientType" className="form-label">Notification Type</label>
+                        <select name="recipientType" required="" id="recipientType" className="notification-type form-control">
+                            <option>--- Please select ---</option>
+                            <option>UM</option>
+                        </select>
+                    </div>
+                    <button className="btn-submit">Submit</button>
+                </form>
 
-        <button className="btn-new" onClick={this.togglePopup}>Create New Template</button>
+                <button className="btn-new" onClick={this.togglePopup}>Create New Template</button>
 
-        <table className="tbl w-100">
-          <thead>
-            <tr>
-              <th className="col-order">#</th>
-              <th>Notification Type</th>
-              <th>Notification Name</th>
-              <th>
-                <div className="has-icons">Title/Content <span className="icon-expand" /></div>
-              </th>
-              <th className="col-action">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="text-center">1</td>
-              <td>UM</td>
-              <td>Weekly UM 1</td>
-              <td className="col-content">
-                <span className="icon-down" />
-                <p className="bold text-uppercase">Weekly maintenance announcement - <span className="text-red">UM DATE</span></p>
-                Good Day! <br/>
-                This is Shane, kindly take note of the below message <br/>
-              </td>
-              <td className="text-center col-action">
-                <span className="icon-edit" id="editTooltip1" />
-                <Tooltip placement="top" isOpen={this.state.tooltipOpen} target="editTooltip1" toggle={this.toggle}>
-                  Edit
+                <table className="tbl w-100">
+                    <thead>
+                        <tr>
+                            <th className="col-order">#</th>
+                            <th>Notification Type</th>
+                            <th>Notification Name</th>
+                            <th>
+                                <div className="has-icons">Title/Content <span className="icon-expand" /></div>
+                            </th>
+                            <th className="col-action">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td className="text-center">1</td>
+                            <td>UM</td>
+                            <td>Weekly UM 1</td>
+                            <td className="col-content">
+                                <span className="icon-down" />
+                                <p className="bold text-uppercase">Weekly maintenance announcement - <span className="text-red">UM DATE</span></p>
+                                Good Day! <br />
+                                This is Shane, kindly take note of the below message <br />
+                            </td>
+                            <td className="text-center col-action">
+                                <span className="icon-edit" id="editTooltip1" />
+                                <Tooltip placement="top" isOpen={this.state.tooltipOpen} target="editTooltip1" toggle={this.toggle}>
+                                    Edit
                 </Tooltip>
-                <span className="icon-delete" />
-              </td>
-            </tr>
-            <tr>
-              <td className="text-center">1</td>
-              <td>UM</td>
-              <td>Weekly UM 2</td>
-              <td className="col-content">
-                <span className="icon-right" />
-                <span className="bold text-uppercase">Weekly maintenance (complete) announcement - <span className="text-red">UM DATE</span></span>
-              </td>
-              <td className="text-center col-action">
-                <span className="icon-edit" />
-                <span className="icon-delete" />
-              </td>
-            </tr>
-            <tr>
-              <td className="text-center">1</td>
-              <td>UM</td>
-              <td>Extend UM</td>
-              <td className="col-content">
-                <span className="icon-right" />
-                <span className="bold text-uppercase">Extend maintenance announcement</span>
-              </td>
-              <td className="text-center col-action">
-                <span className="icon-edit" />
-                <span className="icon-delete" />
-              </td>
-            </tr>
-            <tr>
-              <td className="text-center">1</td>
-              <td>UM 3rd</td>
-              <td>UM 3rd - Schedule</td>
-              <td className="col-content">
-                <span className="icon-right" />
-                <span className="bold text-uppercase">UM Confirmation - <span className="text-red">UM DATE</span></span>
-              </td>
-              <td className="text-center col-action">
-                <span className="icon-edit" />
-                <span className="icon-delete" />
-              </td>
-            </tr>
-            <tr>
-              <td className="text-center">1</td>
-              <td>UM 3rd</td>
-              <td>UM 3rd 1</td>
-              <td className="col-content">
-                <span className="icon-right" />
-                <span className="bold text-uppercase">maintenance announcement - <span className="text-red">UM DATE</span></span>
-              </td>
-              <td className="text-center col-action">
-                <span className="icon-edit" />
-                <span className="icon-delete" />
-              </td>
-            </tr>
-            <tr>
-              <td className="text-center">1</td>
-              <td>UM 3rd</td>
-              <td>UM 3rd 2</td>
-              <td className="col-content">
-                <span className="icon-right" />
-                <span className="bold text-uppercase">Match Suspend/Delay - Match Name</span>
-              </td>
-              <td className="text-center col-action">
-                <span className="icon-edit" />
-                <span className="icon-delete" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <NewNotificationTemplate
-            isModal={this.state.modal}
-            toggleHandler={this.togglePopup}
-        />
-      </div>
-    );
-  }
+                                <span className="icon-delete" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="text-center">1</td>
+                            <td>UM</td>
+                            <td>Weekly UM 2</td>
+                            <td className="col-content">
+                                <span className="icon-right" />
+                                <span className="bold text-uppercase">Weekly maintenance (complete) announcement - <span className="text-red">UM DATE</span></span>
+                            </td>
+                            <td className="text-center col-action">
+                                <span className="icon-edit" />
+                                <span className="icon-delete" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="text-center">1</td>
+                            <td>UM</td>
+                            <td>Extend UM</td>
+                            <td className="col-content">
+                                <span className="icon-right" />
+                                <span className="bold text-uppercase">Extend maintenance announcement</span>
+                            </td>
+                            <td className="text-center col-action">
+                                <span className="icon-edit" />
+                                <span className="icon-delete" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="text-center">1</td>
+                            <td>UM 3rd</td>
+                            <td>UM 3rd - Schedule</td>
+                            <td className="col-content">
+                                <span className="icon-right" />
+                                <span className="bold text-uppercase">UM Confirmation - <span className="text-red">UM DATE</span></span>
+                            </td>
+                            <td className="text-center col-action">
+                                <span className="icon-edit" />
+                                <span className="icon-delete" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="text-center">1</td>
+                            <td>UM 3rd</td>
+                            <td>UM 3rd 1</td>
+                            <td className="col-content">
+                                <span className="icon-right" />
+                                <span className="bold text-uppercase">maintenance announcement - <span className="text-red">UM DATE</span></span>
+                            </td>
+                            <td className="text-center col-action">
+                                <span className="icon-edit" />
+                                <span className="icon-delete" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="text-center">1</td>
+                            <td>UM 3rd</td>
+                            <td>UM 3rd 2</td>
+                            <td className="col-content">
+                                <span className="icon-right" />
+                                <span className="bold text-uppercase">Match Suspend/Delay - Match Name</span>
+                            </td>
+                            <td className="text-center col-action">
+                                <span className="icon-edit" />
+                                <span className="icon-delete" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <NewNotificationTemplate
+                    isModal={this.state.modal}
+                    toggleHandler={this.togglePopup}
+                />
+            </div>
+        );
+    }
 }
 
 export default connect()(NotificationTemplate);
-

@@ -1,35 +1,33 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Form, FormGroup, Label } from 'reactstrap';
+import { Form, FormGroup, Label, Input } from 'reactstrap';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
-import { SelectField } from '../../common/SelectField';
 import Labels from '../../common/Labels';
 
-export class Filter extends Component {
+class Filter extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            notificationTypeId: {
-                value: -1
-            }
+            notificationTypeId: ''
         };
     }
 
-    componentWillMount() {
-        this.props.getSettings();
+    componentDidMount() {
+        const params = this.getParams();
+        this.props.setGridParams(params);
+        this.props.getGridData(params);
     }
 
-    onChange = (fieldName, fieldValue) => {
+    handleNotificationTypeChange = event =>
         this.setState({
-            [fieldName]: fieldValue
+            notificationTypeId: event.target.value
         });
-    }
 
     getParams = () => {
         return {
-            notificationTypeId: this.state.notificationTypeId.value,
+            notificationTypeId: parseInt(this.state.notificationTypeId, 10),
             pageIndex: 1,
             pageSize: 5
         };
@@ -42,19 +40,24 @@ export class Filter extends Component {
         this.props.getGridData(params);
     }
 
+    renderNotificationTypeOption = item => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>
+
     render() {
         return (
             <Form className="form-filter">
                 <FormGroup>
                     <Label className="form-label">{Labels.NotificationType}</Label>
-                    <SelectField initialValue={this.state.notificationTypeId.value}
-                        data={this.props.settingData.notificationTypes}
-                        isSummited={this.state.isSummited}
-                        onChange={value => this.onChange('notificationTypeId', value)}
-                    />
+                    <Input type="select"
+                        name="notificationTypeId"
+                        onChange={this.handleNotificationTypeChange}
+                        value={this.state.notificationTypeId}
+                    >
+                        <option value="">{Labels.All}</option>
+                        {this.props.notificationTypes.map(this.renderNotificationTypeOption)}
+
+                    </Input>
                 </FormGroup>
                 <button className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
-                <button className="btn-new">{Labels.CreateNewTemplate}</button>
             </Form>
         );
     }
@@ -63,9 +66,10 @@ export class Filter extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { settingData } = state;
+    const { notificationTypes, gridParams } = state;
     return {
-        settingData
+        notificationTypes,
+        gridParams
     };
 };
 

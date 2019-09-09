@@ -4,31 +4,21 @@ import Site from '../../lib/site';
 import errorResponseHandler from '../../lib/errorResponseHandler';
 
 // Settings
-export const setSettings = data => {
+export const setNotificationTypes = data => {
     return {
-        type: types.SETTING_DATA,
+        type: types.NOTIFICATIONTYPE_DATA,
         data: data
     };
-}
+};
 
-export const getSettings = () => {
-    const url = Site.resolveClientUrl('NotificationTemplate/GetSettings');
-    const fakeData = {
-        notificationTypes: [
-            { id: 1, name: "UM" },
-            { id: 2, name: "Something" }
-        ]
-    };
-
+export const getNotificationTypes = () => {
+    const url = Site.resolveClientUrl('Common/GetNotificationTypes');
     return dispatch => {
         return axios.get(url).then(response => {
-            dispatch(setSettings(response.data));
-        }).catch(() => {
-            errorResponseHandler();
-            dispatch(setSettings(fakeData));
-        });
+            dispatch(setNotificationTypes(response.data));
+        }).catch(errorResponseHandler);
     };
-}
+};
 
 // Grid
 export const setGridParams = value => {
@@ -36,48 +26,23 @@ export const setGridParams = value => {
         type: types.GRID_PARAMS,
         data: value
     };
-}
+};
 
 export const setGridData = data => {
     return {
         type: types.GRID_DATA,
         data: data
     };
-}
+};
 
 export const getGridData = params => {
-    const url = Site.resolveClientUrl('NotificationTemplate/GetAll');
-    const fakeData = [
-        {
-            notificationTemplateId: 1,
-            notificationTypeId: 1,
-            notificationTypeName: "UM",
-            templateName: "Weekly UM1",
-            title: "WEEKLY MAINTENANCEMENT - UM DATE",
-            content: "Good day!\nThis is Shane, kindly take note of the below message"
-        },
-        {
-            notificationTemplateId: 2,
-            notificationTypeId: 1,
-            notificationTypeName: "UM",
-            templateName: "Weekly UM2",
-            title: "WEEKLY MAINTENANCEMENT - UM DATE",
-            content: "Good day!\nThis is Shane, kindly take note of the below message"
-        }
-    ];
-
+    const url = Site.resolveClientUrl('NotificationTemplate/Get');
     return dispatch => {
         return axios.get(url, { params: params }).then(response => {
             dispatch(setGridData(response.data));
-        }).catch(() => {
-            errorResponseHandler();
-            dispatch(setGridData({
-                data: fakeData,
-                count: 3
-            }));
-        });
+        }).catch(errorResponseHandler);
     };
-}
+};
 
 // Delete
 export const deleteItem = notificationTypeId => {
@@ -125,26 +90,26 @@ export const update = (params, isNew) => {
     const fakeData = { errorCode: 0 };
 
     return async dispatch => {
-       try {
-           const request = await axios.post(resolvedUrl, JSON.stringify(params), { headers: headers });
-           const data = await request.data;
-           dispatch(setUpdateData(data));
-       } catch (err) {
-           errorResponseHandler();
-           dispatch(setUpdateData(fakeData));
-       };
+        try {
+            const request = await axios.post(resolvedUrl, JSON.stringify(params), { headers: headers });
+            const data = await request.data;
+            dispatch(setUpdateData(data));
+        } catch (err) {
+            errorResponseHandler();
+            dispatch(setUpdateData(fakeData));
+        }
     };
-}
+};
 
 export const refreshUpdateData = () => {
     return dispatch => {
         dispatch(setUpdateData(null));
     };
-}
+};
 
 const actions = {
-    setSettings,
-    getSettings,
+    setNotificationTypes,
+    getNotificationTypes,
     setGridParams,
     getGridData,
     deleteItem,

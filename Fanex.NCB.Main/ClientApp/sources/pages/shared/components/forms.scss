@@ -50,6 +50,7 @@
     padding-top: 8px;
     font-size: $font-size;
     color: #ff0101;
+    display: block;
 }
 
 .form-create {
@@ -84,8 +85,4 @@
     .form-control {
         min-width: 160px;
     }
-}
-
-.invalid-feedback {
-    display: block;
 }

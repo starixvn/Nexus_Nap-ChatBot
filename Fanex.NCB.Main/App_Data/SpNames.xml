@@ -117,4 +117,9 @@
       <Mapping DataField="SiteName" ObjectProperty="Name" />
     </Setting>
   </Function>
+
+  <Function Name="Notification Template">
+    <Setting Key="NCB_Template_Sel" SpName="NCB_Template_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Template_Ins" SpName="NCB_Template_Ins" DbName="ChatBot" Plain="0"></Setting>
+  </Function>
 </Functions>

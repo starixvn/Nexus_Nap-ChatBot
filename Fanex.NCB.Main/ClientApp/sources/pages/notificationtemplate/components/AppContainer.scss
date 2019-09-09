@@ -38,6 +38,11 @@
         display: inline-block;
     }
 
+    .form-control {
+        display: inline-block;
+        width: auto;
+    }
+
     .form-label {
         margin-right: 5px;
     }
@@ -79,14 +84,5 @@
         grid-template-rows: 1fr;
         grid-gap: 30px;
         align-items: start;
-    }
-}
-
-.table-container-div {
-    width: 1400px;
-    margin-top: 10px;
-
-    table {
-        margin-bottom: 0;
     }
 }

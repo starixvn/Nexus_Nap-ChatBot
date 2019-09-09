@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.NAPResolver
 {
+    using System;
     using Fanex.NAP.Client.AspNetCore.Configuration;
     using Fanex.NAP.Client.AspNetCore.Session;
     using Fanex.NAP.Client.Configuration;
@@ -10,7 +11,6 @@
     using Fanex.NCB.NAPResolver.LocalServices;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using System;
 
     public static class NapServicesRegistrationExtension
     {

@@ -2,8 +2,8 @@ import createReducer from '../../lib/createReducer';
 import types from '../actions/types';
 
 // Setting
-export const settingData = createReducer({}, {
-    [types.SETTING_DATA](state, action) {
+export const notificationTypes = createReducer({}, {
+    [types.NOTIFICATIONTYPE_DATA](state, action) {
         return action.data;
     }
 });
@@ -21,7 +21,6 @@ export const gridData = createReducer({}, {
     }
 });
 
-
 // Delete
 export const deleteResponseData = createReducer({}, {
     [types.DELETE_RESPONSE_DATA](state, action) {
@@ -37,7 +36,7 @@ export const updateResponseData = createReducer({}, {
 });
 
 const reducers = {
-    settingData,
+    notificationTypes,
     gridParams,
     gridData,
     deleteResponseData,
@@ -45,4 +44,3 @@ const reducers = {
 };
 
 export default reducers;
-
