@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.AutoJobs
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Fanex.Data;
@@ -103,7 +104,8 @@
                 Authorization = Enumerable.Empty<IDashboardAuthorizationFilter>()
             }).UseHangfireServer(options: new BackgroundJobServerOptions
             {
-                WorkerCount = Configuration.GetValue<int>("WorkerCount")
+                WorkerCount = Configuration.GetValue<int>("WorkerCount"),
+                ServerName = Environment.MachineName
             });
 
             if (env.IsDevelopment())
