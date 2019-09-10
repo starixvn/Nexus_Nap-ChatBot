@@ -9,6 +9,7 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Logging.EventLog;
 
     public static class Program
     {
@@ -49,9 +50,12 @@
                .ConfigureLogging((hostingContext, logging) =>
                {
                    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                   logging.AddConsole();
-                   logging.AddDebug();
-                   logging.AddEventSourceLogger();
+                   logging.AddEventLog(new EventLogSettings
+                   {
+                       SourceName = "NapChatBot",
+                       LogName = "NapChatBot",
+                       Filter = (x, y) => y >= LogLevel.Information
+                   });
                })
                .UseConfiguration(configuration)
                .UseEnvironment(evn)

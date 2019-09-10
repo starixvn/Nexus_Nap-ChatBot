@@ -145,15 +145,15 @@
             var cronJob = new CronJob();
             configuration.Bind("CronJob", cronJob);
 
-            RecurringJob.AddOrUpdate<IJobService>("Auto Scan & Send Notification",
+            RecurringJob.AddOrUpdate<IJobService>(Resources.Resources.Job_ScanAndSendNotification,
                 sendNoti => sendNoti.AutoScanAndSendNotifictaion(),
                 cronJob.SendNotification);
 
-            RecurringJob.AddOrUpdate<IJobService>("Auto sync data from Nap User Control",
+            RecurringJob.AddOrUpdate<IJobService>(Resources.Resources.Job_SyncNapUserControlData,
                 job => job.SyncDataFromNapUserControl(),
                 cronJob.SyncNapUserControlData);
 
-            RecurringJob.AddOrUpdate<IJobService>("Auto sync data from OIC",
+            RecurringJob.AddOrUpdate<IJobService>(Resources.Resources.Job_SyncOICData,
                 job => job.SyncDataFromOIC(),
                 cronJob.SyncOICData);
         }

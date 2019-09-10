@@ -11,6 +11,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using Resources;
 
     [DesignerCategory("Code")]
     internal class CustomWebHostService : WebHostService
@@ -26,35 +27,35 @@
 
         protected override void OnStarting(string[] args)
         {
-            logger.LogInformation($"Nap Chatbot Staring service at {DateTime.Now}.");
+            logger.LogInformation(string.Format(Resources.Log_OnStartingService, DateTime.Now));
             base.OnStarting(args);
         }
 
         protected override void OnStarted()
         {
-            logger.LogInformation($"Nap Chatbot Service started & initialize auto jobs at {DateTime.Now}.");
+            logger.LogInformation(string.Format(Resources.Log_OnStartedService, DateTime.Now));
             RunHangfireJobs();
             base.OnStarted();
         }
 
         protected override void OnStopping()
         {
-            logger.LogInformation($"Stopping Nap Chatbot service & remove Hangfire schedule jobs at {DateTime.Now}");
+            logger.LogInformation(string.Format(Resources.Log_OnStoppingService, DateTime.Now));
             RemoveCurrentHangfireServer();
             base.OnStopping();
         }
 
         private void RunHangfireJobs()
         {
-            RecurringJob.AddOrUpdate<IJobService>("Auto Scan & Send Notification",
+            RecurringJob.AddOrUpdate<IJobService>(Resources.Job_ScanAndSendNotification,
                 job => job.AutoScanAndSendNotifictaion(),
                 cronJob.CurrentValue.SendNotification);
 
-            RecurringJob.AddOrUpdate<IJobService>("Auto sync data from Nap User Control",
+            RecurringJob.AddOrUpdate<IJobService>(Resources.Job_SyncNapUserControlData,
                 job => job.SyncDataFromNapUserControl(),
                 cronJob.CurrentValue.SyncNapUserControlData);
 
-            RecurringJob.AddOrUpdate<IJobService>("Auto sync data from OIC",
+            RecurringJob.AddOrUpdate<IJobService>(Resources.Job_SyncOICData,
                 job => job.SyncDataFromOIC(),
                 cronJob.CurrentValue.SyncOICData);
         }
