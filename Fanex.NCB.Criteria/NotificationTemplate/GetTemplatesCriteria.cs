@@ -10,7 +10,7 @@
 
         public int PageSize { get; set; }
 
-        public override string GetSettingKey() => "NCB_Template_Sel";
+        public override string GetSettingKey() => "NCB_NotificationTemplateList_Sel";
 
         public override bool IsValid() => PageIndex > 0 && PageSize > 0;
     }

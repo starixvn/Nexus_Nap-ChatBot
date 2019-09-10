@@ -63,7 +63,7 @@ export const deleteItem = notificationTypeId => {
             dispatch(setDeleteData(fakeData));
         };
     };
-}
+};
 
 export const setDeleteData = data => {
     return {
@@ -78,7 +78,7 @@ export const setUpdateData = data => {
         type: types.UPDATE_RESPONSE_DATA,
         data: data
     };
-}
+};
 
 export const update = (params, isNew) => {
     const url = isNew ? '/NotificationType/Add' : '/NotificationType/Edit';
@@ -107,6 +107,35 @@ export const refreshUpdateData = () => {
     };
 };
 
+//create template
+export const setCreateTemplatePopup = data => {
+    return {
+        type: types.CREATE_POPUP_DATA,
+        data: data
+    };
+};
+
+export const setCreateTemplateResult = data => {
+    return {
+        type: types.CREATE_TEMPLATE_RESULT_DATA,
+        data: data
+    };
+};
+
+export const createTemplate = data => {
+    return async dispatch => axios({
+        url: Site.resolveClientUrl('NotificationTemplate/Create'),
+        method: 'post',
+        data: data,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'RequestVerificationToken': Site.getXsrfToken()
+        }
+    }).then(response => {
+        dispatch(setCreateTemplateResult(response.data));
+    }).catch(errorResponseHandler);
+};
+
 const actions = {
     setNotificationTypes,
     getNotificationTypes,
@@ -115,7 +144,9 @@ const actions = {
     deleteItem,
     setUpdateData,
     update,
-    refreshUpdateData
+    refreshUpdateData,
+    setCreateTemplatePopup,
+    setCreateTemplateResult
 };
 
 export default actions;
