@@ -72,7 +72,11 @@ BEGIN
         VALUES (
 			JSON_UNQUOTE(JSON_EXTRACT(LicenseeProducts, CONCAT('$[', iLoop, '].LicenseeId'))), 
             JSON_UNQUOTE(JSON_EXTRACT(LicenseeProducts, CONCAT('$[', iLoop, '].ProductId'))),
-            JSON_UNQUOTE(JSON_EXTRACT(LicenseeProducts, CONCAT('$[', iLoop, '].LaunchDate'))),
+            CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(LicenseeProducts, CONCAT('$[', iLoop, '].LaunchDate'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(LicenseeProducts, CONCAT('$[', iLoop, '].LaunchDate')))
+            END,
             CASE
                 WHEN JSON_UNQUOTE(JSON_EXTRACT(LicenseeProducts, CONCAT('$[', iLoop, '].TerminationDate'))) = 'null'
                 THEN NULL
