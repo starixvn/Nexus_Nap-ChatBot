@@ -2,7 +2,7 @@
 {
     using System;
     using System.ComponentModel;
-    using System.Diagnostics;
+    using System.Linq;
     using Fanex.NCB.AutoJobs.Services;
     using Hangfire;
     using Hangfire.Storage;
@@ -26,7 +26,6 @@
 
         protected override void OnStarting(string[] args)
         {
-            Debugger.Launch();
             logger.LogInformation($"Nap Chatbot Staring service at {DateTime.Now}.");
             base.OnStarting(args);
         }
@@ -41,7 +40,7 @@
         protected override void OnStopping()
         {
             logger.LogInformation($"Stopping Nap Chatbot service & remove Hangfire schedule jobs at {DateTime.Now}");
-            RemoveHangfireJobs();
+            RemoveCurrentHangfireServer();
             base.OnStopping();
         }
 
@@ -54,17 +53,17 @@
             RecurringJob.AddOrUpdate<IJobService>("Auto sync data from Nap User Control",
                 job => job.SyncDataFromNapUserControl(),
                 cronJob.CurrentValue.SyncNapUserControlData);
+
+            RecurringJob.AddOrUpdate<IJobService>("Auto sync data from OIC",
+                job => job.SyncDataFromOIC(),
+                cronJob.CurrentValue.SyncOICData);
         }
 
-        private static void RemoveHangfireJobs()
+        private static void RemoveCurrentHangfireServer()
         {
-            using (var connection = JobStorage.Current.GetConnection())
-            {
-                foreach (var recurringJob in connection.GetRecurringJobs())
-                {
-                    RecurringJob.RemoveIfExists(recurringJob.Id);
-                }
-            }
+            IMonitoringApi monitoringApi = JobStorage.Current.GetMonitoringApi();
+            var serverToRemove = monitoringApi.Servers().FirstOrDefault(s => s.Name.Equals(Environment.MachineName));
+            JobStorage.Current.GetConnection().RemoveServer(serverToRemove.Name);
         }
     }
 }

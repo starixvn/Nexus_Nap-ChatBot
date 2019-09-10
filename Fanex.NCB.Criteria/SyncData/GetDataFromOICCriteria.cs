@@ -4,7 +4,7 @@
 
     public class GetDataFromOICCriteria : CriteriaBase
     {
-        public override string GetSettingKey() => "NapChatBot_GetDataFromOIC";
+        public override string GetSettingKey() => "NAP_Chatbot_GetDataToSync";
 
         public override bool IsValid() => true;
     }

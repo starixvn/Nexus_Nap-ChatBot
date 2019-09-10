@@ -8,7 +8,7 @@
 
         public string RegisteredLicenseeName { get; set; }
 
-        public int LicenseeStatus { get; set; }
+        public int LicenseeStatusId { get; set; }
 
         public int LicenseeTypeId { get; set; }
     }

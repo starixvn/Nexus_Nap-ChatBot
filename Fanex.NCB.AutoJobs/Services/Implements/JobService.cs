@@ -24,7 +24,13 @@
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         public async Task SyncDataFromNapUserControl()
         {
-            await syncDataService.NapUserControlSyncDataAsync();
+            await syncDataService.NapUserControlSyncDataAsync().ConfigureAwait(false);
+        }
+
+        [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
+        public async Task SyncDataFromOIC()
+        {
+            await syncDataService.OicSyncDataAsync().ConfigureAwait(false);
         }
     }
 }

@@ -150,6 +150,10 @@
             RecurringJob.AddOrUpdate<IJobService>("Auto sync data from Nap User Control",
                 job => job.SyncDataFromNapUserControl(),
                 cronJob.SyncNapUserControlData);
+
+            RecurringJob.AddOrUpdate<IJobService>("Auto sync data from OIC",
+                job => job.SyncDataFromOIC(),
+                cronJob.SyncOICData);
         }
     }
 }

@@ -5,5 +5,7 @@
         public string SendNotification { get; set; }
 
         public string SyncNapUserControlData { get; set; }
+
+        public string SyncOICData { get; set; }
     }
 }

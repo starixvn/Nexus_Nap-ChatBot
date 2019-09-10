@@ -7,5 +7,7 @@
         Task AutoScanAndSendNotifictaion();
 
         Task SyncDataFromNapUserControl();
+
+        Task SyncDataFromOIC();
     }
 }
