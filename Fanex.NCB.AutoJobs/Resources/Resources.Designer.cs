@@ -113,5 +113,14 @@ namespace Fanex.NCB.AutoJobs.Resources {
                 return ResourceManager.GetString("Log_OnStoppingService", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NapChatBot.
+        /// </summary>
+        internal static string NapChatBot {
+            get {
+                return ResourceManager.GetString("NapChatBot", resourceCulture);
+            }
+        }
     }
 }

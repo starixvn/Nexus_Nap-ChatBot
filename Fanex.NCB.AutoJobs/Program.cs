@@ -52,8 +52,8 @@
                    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                    logging.AddEventLog(new EventLogSettings
                    {
-                       SourceName = "NapChatBot",
-                       LogName = "NapChatBot",
+                       SourceName = Resources.Resources.NapChatBot,
+                       LogName = Resources.Resources.NapChatBot,
                        Filter = (x, y) => y >= LogLevel.Information
                    });
                })
