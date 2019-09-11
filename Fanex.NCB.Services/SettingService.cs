@@ -34,37 +34,37 @@
         public async Task<IEnumerable<BotName>> GetBotNameAsync()
         {
             var criteria = new GetBotNameCriteria();
-            return await baseService.GetDataAsync<BotName>(criteria).ConfigureAwait(false);
+            return await baseService.GetDataAsync<BotName>(criteria);
         }
 
         public async Task<IEnumerable<ChatGroupType>> GetChatGroupTypeAsync()
         {
             var criteria = new GetChatGroupTypeCriteria();
-            return await baseService.GetDataAsync<ChatGroupType>(criteria).ConfigureAwait(false);
+            return await baseService.GetDataAsync<ChatGroupType>(criteria);
         }
 
         public async Task<IEnumerable<BaseModel>> GetFilterRecipientTypesAsync()
         {
             var criteria = new GetFilterRecipientTypeCriteria();
-            return await baseService.GetDataAsync<BaseModel>(criteria).ConfigureAwait(false);
+            return await baseService.GetDataAsync<BaseModel>(criteria);
         }
 
         public async Task<IEnumerable<BaseModel>> GetLicenseeStatusAsync()
         {
             var criteria = new GetLicenseeStatusCriteria();
-            return await baseService.GetDataAsync<BaseModel>(criteria).ConfigureAwait(false);
+            return await baseService.GetDataAsync<BaseModel>(criteria);
         }
 
         public async Task<IEnumerable<Recipient>> GetRecipientsAsync()
         {
             var criteria = new GetRecipientCriteria();
-            return await baseService.GetDataAsync<Recipient>(criteria).ConfigureAwait(false);
+            return await baseService.GetDataAsync<Recipient>(criteria);
         }
 
         public async Task<IEnumerable<BaseModel>> GetRecipientTypesAsync()
         {
             var criteria = new GetRecipientTypeCriteria();
-            return await baseService.GetDataAsync<BaseModel>(criteria).ConfigureAwait(false);
+            return await baseService.GetDataAsync<BaseModel>(criteria);
         }
 
         public async Task<IEnumerable<BaseModel>> SearchChatGroupAsync(string query)
@@ -73,7 +73,7 @@
             {
                 Keyword = query
             };
-            return await baseService.GetDataAsync<BaseModel>(criteria).ConfigureAwait(false);
+            return await baseService.GetDataAsync<BaseModel>(criteria);
         }
 
         public async Task<IEnumerable<Recipient>> SearchRecipientsAsync(string query)
@@ -82,7 +82,7 @@
             {
                 Keyword = query
             };
-            return await baseService.GetDataAsync<Recipient>(criteria).ConfigureAwait(false);
+            return await baseService.GetDataAsync<Recipient>(criteria);
         }
     }
 }

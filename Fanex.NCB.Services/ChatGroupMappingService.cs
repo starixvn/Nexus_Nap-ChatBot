@@ -34,7 +34,7 @@
                 PageSize = model.PageSize,
             };
 
-            var result = await baseService.FetchMultipleAsync<BotConversation, BotConversationMember, ConversationRecipient>(critera).ConfigureAwait(false);
+            var result = await baseService.FetchMultipleAsync<BotConversation, BotConversationMember, ConversationRecipient>(critera);
 
             return (MappingData(result.Item1, result.Item2, result.Item3), critera.TotalItems);
         }
@@ -51,7 +51,7 @@
                 Remark = model.Remark
             };
 
-            return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            return await baseService.ExecuteNonQueryAsync(command);
         }
 
         private IEnumerable<ChatGroupMappingResult> MappingData(IEnumerable<BotConversation> conversations,

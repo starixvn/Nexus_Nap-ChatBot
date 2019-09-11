@@ -35,12 +35,12 @@
 
         public async Task ScanAndSendNotification()
         {
-            var notifications = await GetNotificationPlannedToSend().ConfigureAwait(false);
+            var notifications = await GetNotificationPlannedToSend();
             if (notifications.Item1.Any())
             {
                 await UpdateFailedRecipientStatus(notifications.Item2.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
 
-                await SendNotificationToRecipients(notifications.Item1, notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend))).ConfigureAwait(false);
+                await SendNotificationToRecipients(notifications.Item1, notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
             }
         }
 
@@ -68,7 +68,7 @@
         {
             var criteria = new GetNotificationsToSendCriteria();
             var notifications = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria)
-                                .ConfigureAwait(false);
+                                ;
             return notifications;
         }
 
@@ -88,8 +88,8 @@
             for (int i = 0; i < totalBatch; i++)
             {
                 var currentMsgs = notiMsgs.Skip(i * itemEachBatch).Take(itemEachBatch);
-                var response = await chatbotService.SendMessageToMultitpleAsync(currentMsgs).ConfigureAwait(false);
-                await HandleResponse(response, recipients).ConfigureAwait(false);
+                var response = await chatbotService.SendMessageToMultitpleAsync(currentMsgs);
+                await HandleResponse(response, recipients);
             }
         }
 
@@ -107,16 +107,16 @@
                     recipient.ErrCode = (int)RecipientStatuses.BotServiceError;
                 }
 
-                await UpdateFailedRecipientStatus(recipients).ConfigureAwait(false);
+                await UpdateFailedRecipientStatus(recipients);
             }
         }
 
-        private async Task UpdateStatusAfterSendNotification(IEnumerable<NotificationRecipient> recipients, IEnumerable<SendMessageResult> responseMsgs)
+        private async Task UpdateStatusAfterSendNotification(IEnumerable<NotificationRecipient> recipients, IEnumerable<SendMessageResult> responseMessages)
         {
             var updateNotiModels = new List<UpdateNotificationModel>();
             foreach (var recipient in recipients)
             {
-                var result = responseMsgs.FirstOrDefault(r => r.NotificationId == recipient.NotificationId && r.ConversationId == recipient.ChatGroupConversationId);
+                var result = responseMessages.FirstOrDefault(r => r.NotificationId == recipient.NotificationId && r.ConversationId == recipient.ChatGroupConversationId);
                 var model = new UpdateNotificationModel
                 {
                     NotificationID = recipient.NotificationId,
@@ -131,15 +131,15 @@
                 updateNotiModels.Add(model);
             }
 
-            await UpdateSentNotificationStatus(updateNotiModels).ConfigureAwait(false);
+            await UpdateSentNotificationStatus(updateNotiModels);
         }
 
         private IEnumerable<NotificationMessage> GenerateNotificationMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
-            var msgList = new List<NotificationMessage>();
+            var messages = new List<NotificationMessage>();
             foreach (var noti in notifications)
             {
-                var msg = new NotificationMessage
+                var message = new NotificationMessage
                 {
                     NotifictaionId = noti.NotificationId,
                     Message = noti.Content,
@@ -153,23 +153,23 @@
                                 BotName = r.BotName
                             }).DistinctBy(r => r.ConversationId)
                 };
-                msgList.Add(msg);
+                messages.Add(message);
             }
 
-            return msgList;
+            return messages;
         }
 
-        private async Task UpdateSentNotificationStatus(IEnumerable<UpdateNotificationModel> msgs)
+        private async Task UpdateSentNotificationStatus(IEnumerable<UpdateNotificationModel> messages)
         {
-            if (msgs.Any())
+            if (messages.Any())
             {
-                string json = JsonConvert.SerializeObject(msgs);
+                string json = JsonConvert.SerializeObject(messages);
 
                 var command = new UpdateRecipientSendNotifiactionStatusCommand
                 {
                     SentStatus = Regex.Unescape(json)
                 };
-                await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+                await baseService.ExecuteNonQueryAsync(command);
             }
         }
 
@@ -180,12 +180,12 @@
                 NotificationId = notifiactionId
             };
             var notifications = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria)
-                .ConfigureAwait(false);
+                ;
 
             await UpdateFailedRecipientStatus(notifications.Item2.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)
             && !r.RecipientStatus.Equals(RecipientStatuses.BotServiceError)));
 
-            await SendNotificationToRecipients(notifications.Item1, notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend))).ConfigureAwait(false);
+            await SendNotificationToRecipients(notifications.Item1, notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
         }
     }
 }

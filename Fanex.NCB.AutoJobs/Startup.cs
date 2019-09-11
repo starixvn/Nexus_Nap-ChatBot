@@ -108,11 +108,6 @@
                 ServerName = Environment.MachineName
             });
 
-            if (env.IsDevelopment())
-            {
-                RunHangfireJobs(Configuration);
-            }
-
             app.UseStaticFiles();
             app.UseMvc();
         }
@@ -125,6 +120,7 @@
             services.AddScoped<ISendNotificationService, SendNotificationService>();
             services.AddScoped<ISyncDataService, SyncDataService>();
             services.AddScoped<IJobService, JobService>();
+            services.AddTransient<IRecurringJobManager, RecurringJobManager>();
         }
 
         private static void RegisterRepository(IServiceCollection services)
@@ -138,24 +134,6 @@
         {
             var connection = Cryptography.DecryptConnectionString(connectionString);
             services.AddHangfire(x => x.UseStorage(new MySqlStorage(connection)));
-        }
-
-        private static void RunHangfireJobs(IConfiguration configuration)
-        {
-            var cronJob = new CronJob();
-            configuration.Bind("CronJob", cronJob);
-
-            RecurringJob.AddOrUpdate<IJobService>(Resources.Resources.Job_ScanAndSendNotification,
-                sendNoti => sendNoti.AutoScanAndSendNotifictaion(),
-                cronJob.SendNotification);
-
-            RecurringJob.AddOrUpdate<IJobService>(Resources.Resources.Job_SyncNapUserControlData,
-                job => job.SyncDataFromNapUserControl(),
-                cronJob.SyncNapUserControlData);
-
-            RecurringJob.AddOrUpdate<IJobService>(Resources.Resources.Job_SyncOICData,
-                job => job.SyncDataFromOIC(),
-                cronJob.SyncOICData);
         }
     }
 }

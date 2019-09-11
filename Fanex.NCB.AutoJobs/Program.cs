@@ -28,14 +28,7 @@
 
             var host = builder.Build();
 
-            if (isService)
-            {
-                host.RunAsCustomService();
-            }
-            else
-            {
-                host.Run();
-            }
+            host.RunAsCustomService(isService);
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)

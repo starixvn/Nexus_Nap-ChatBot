@@ -18,11 +18,13 @@
     {
         private readonly ILogger logger;
         private readonly IOptionsMonitor<CronJob> cronJob;
+        private readonly IRecurringJobManager recurringJob;
 
         public CustomWebHostService(IWebHost host) : base(host)
         {
             logger = host.Services.GetRequiredService<ILogger<CustomWebHostService>>();
             cronJob = host.Services.GetRequiredService<IOptionsMonitor<CronJob>>();
+            recurringJob = host.Services.GetRequiredService<IRecurringJobManager>();
         }
 
         protected override void OnStarting(string[] args)
@@ -45,17 +47,17 @@
             base.OnStopping();
         }
 
-        private void RunHangfireJobs()
+        public void RunHangfireJobs()
         {
-            RecurringJob.AddOrUpdate<IJobService>(Resources.Job_ScanAndSendNotification,
+            recurringJob.AddOrUpdate<IJobService>(Resources.Job_ScanAndSendNotification,
                 job => job.AutoScanAndSendNotifictaion(),
                 cronJob.CurrentValue.SendNotification);
 
-            RecurringJob.AddOrUpdate<IJobService>(Resources.Job_SyncNapUserControlData,
+            recurringJob.AddOrUpdate<IJobService>(Resources.Job_SyncNapUserControlData,
                 job => job.SyncDataFromNapUserControl(),
                 cronJob.CurrentValue.SyncNapUserControlData);
 
-            RecurringJob.AddOrUpdate<IJobService>(Resources.Job_SyncOICData,
+            recurringJob.AddOrUpdate<IJobService>(Resources.Job_SyncOICData,
                 job => job.SyncDataFromOIC(),
                 cronJob.CurrentValue.SyncOICData);
         }

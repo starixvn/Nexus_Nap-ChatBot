@@ -18,32 +18,32 @@
     public class SyncDataService : ISyncDataService
     {
         private readonly IOptionsSnapshot<AppSettings> appSettings;
-        private readonly ISyncDataRepository crawlDataRepository;
+        private readonly ISyncDataRepository syncDataRepository;
         private readonly IBaseService baseService;
         private readonly ILogger logger;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
         public SyncDataService(IOptionsSnapshot<AppSettings> appSettings,
-            ISyncDataRepository crawlDataRepository,
+            ISyncDataRepository syncDataRepository,
             IBaseService baseService,
             ILogger logger)
         {
             this.appSettings = appSettings;
-            this.crawlDataRepository = crawlDataRepository;
+            this.syncDataRepository = syncDataRepository;
             this.baseService = baseService;
             this.logger = logger;
         }
 
         public async Task NapUserControlSyncDataAsync()
         {
-            var data = await GetDataFromNapUserControl(null).ConfigureAwait(false);
-            await InsertNapData(data).ConfigureAwait(false);
+            var data = await GetDataFromNapUserControl(null);
+            await InsertNapData(data);
         }
 
         public async Task OicSyncDataAsync()
         {
-            var data = await GetDataFromOIC().ConfigureAwait(false);
-            await InsertOICData(data).ConfigureAwait(false);
+            var data = await GetDataFromOIC();
+            await InsertOICData(data);
         }
 
         private async Task<NapData> GetDataFromNapUserControl(int? userId)
@@ -54,7 +54,7 @@
                 UserId = userId
             };
 
-            return await crawlDataRepository.FetchDataFromNapUserControl(criteria).ConfigureAwait(false);
+            return await syncDataRepository.FetchDataFromNapUserControl(criteria);
         }
 
         private async Task InsertNapData(NapData data)
@@ -75,7 +75,7 @@
                 CustInfo = ConvertToJsonWithDateTimeFormatString(data.CustInfo)
             };
 
-            await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            await baseService.ExecuteNonQueryAsync(command);
         }
 
         private async Task<CommandResult> InsertNapDataOnUser(NapData data, int userId)
@@ -97,14 +97,14 @@
                 UserId = userId
             };
 
-            return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            return await baseService.ExecuteNonQueryAsync(command);
         }
 
         private async Task<OicData> GetDataFromOIC()
         {
             var criteria = new GetDataFromOICCriteria();
 
-            return await crawlDataRepository.FetchDataFromOIC(criteria).ConfigureAwait(false);
+            return await syncDataRepository.FetchDataFromOIC(criteria);
         }
 
         private async Task InsertOICData(OicData data)
@@ -118,7 +118,7 @@
                 Products = ConvertToJsonWithDateTimeFormatString(data.Products),
             };
 
-            await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            await baseService.ExecuteNonQueryAsync(command);
         }
 
         private string ConvertToJsonWithDateTimeFormatString(object data)
@@ -128,15 +128,15 @@
 
         public async Task NapSSOSyncDataByUserIdAsync(int userId)
         {
-            var data = await GetDataFromNapUserControl(userId).ConfigureAwait(false);
-            await InsertNapDataOnUser(data, userId).ConfigureAwait(false);
+            var data = await GetDataFromNapUserControl(userId);
+            await InsertNapDataOnUser(data, userId);
         }
 
         public async Task SyncNapDataForSSOLogin(int userId)
         {
             try
             {
-                await NapSSOSyncDataByUserIdAsync(userId).ConfigureAwait(false);
+                await NapSSOSyncDataByUserIdAsync(userId);
             }
             catch (Exception exception)
             {

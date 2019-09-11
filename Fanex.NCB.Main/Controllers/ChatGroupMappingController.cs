@@ -1,5 +1,6 @@
 namespace Fanex.NCB.SkypeBot.Controllers
 {
+    using System.Threading.Tasks;
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
@@ -10,7 +11,6 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using System.Threading.Tasks;
     using static Fanex.NAP.Core.Business.Constant;
 
     [NapChatBotSuperAuth]
@@ -53,7 +53,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
             var chatgroupTypes = settingService.GetChatGroupTypeAsync();
             var licenseeStatus = settingService.GetLicenseeStatusAsync();
 
-            await Task.WhenAll(bots, recipientTypes, recipients, chatgroupTypes, licenseeStatus).ConfigureAwait(false);
+            await Task.WhenAll(bots, recipientTypes, recipients, chatgroupTypes, licenseeStatus);
 
             var viewModel = new ChatGroupMappingFilterViewModel
             {
@@ -72,8 +72,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.ChatGroupMapping, Policy = Policy.Read)]
         public async Task<IActionResult> GetAll(GetChapGroupMapping model)
         {
-            var result = await chatGroupMappingService.GetChatGroupMappingListAsync(model).ConfigureAwait(false);
-            var permission = await userService.GetPermissionAsync(napSession.UserId, napSettings.SiteId, FunctionKey.ChatGroupMapping).ConfigureAwait(false);
+            var result = await chatGroupMappingService.GetChatGroupMappingListAsync(model);
+            var permission = await userService.GetPermissionAsync(napSession.UserId, napSettings.SiteId, FunctionKey.ChatGroupMapping);
             return Json(new { data = result.Item1, count = result.Item2, isHost = permission >= (int)Policy.Host });
         }
 
@@ -83,20 +83,20 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> Edit([FromBody]EditChatGroupMapping model)
         {
             model.CreatorID = napSession.UserId;
-            var result = await chatGroupMappingService.EditAsync(model).ConfigureAwait(false);
+            var result = await chatGroupMappingService.EditAsync(model);
             return Json(result);
         }
 
         [HttpGet]
         public async Task<IActionResult> SearchRecipient(string query)
         {
-            return Json(await settingService.SearchRecipientsAsync(query).ConfigureAwait(false));
+            return Json(await settingService.SearchRecipientsAsync(query));
         }
 
         [HttpGet]
         public async Task<IActionResult> SearchChatGroup(string query)
         {
-            return Json(await settingService.SearchChatGroupAsync(query).ConfigureAwait(false));
+            return Json(await settingService.SearchChatGroupAsync(query));
         }
     }
 }

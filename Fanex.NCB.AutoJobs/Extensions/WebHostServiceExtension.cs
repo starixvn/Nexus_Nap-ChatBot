@@ -6,10 +6,18 @@
 
     public static class WebHostServiceExtension
     {
-        public static void RunAsCustomService(this IWebHost host)
+        public static void RunAsCustomService(this IWebHost host, bool isService)
         {
             var webHostService = new CustomWebHostService(host);
-            ServiceBase.Run(webHostService);
+            if (isService)
+            {
+                ServiceBase.Run(webHostService);
+            }
+            else
+            {
+                webHostService.RunHangfireJobs();
+                host.Run();
+            }
         }
     }
 }
