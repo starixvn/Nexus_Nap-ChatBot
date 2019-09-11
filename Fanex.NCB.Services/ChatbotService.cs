@@ -24,22 +24,22 @@
 
         public async Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages)
         {
-            ChatbotToken token = await GetTokenAsync().ConfigureAwait(false);
+            ChatbotToken token = await GetTokenAsync();
 
             webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
             var request = new RestRequest(botSettings.Value.BotServiceUrl, Method.POST);
             request.AddHeader("Authorization", $"Bearer {token.AccessToken}");
             request.AddJsonBody(messages);
 
-            return await webClient.ExecutePostTaskAsync(request).ConfigureAwait(false);
+            return await webClient.ExecutePostTaskAsync(request);
         }
 
         public async Task SendMessageAsync(string conversationId, string message)
         {
             if (!string.IsNullOrWhiteSpace(conversationId))
             {
-                ChatbotToken token = await GetTokenAsync().ConfigureAwait(false);
-                await ForwardToBotAsync(message, conversationId, token).ConfigureAwait(false);
+                ChatbotToken token = await GetTokenAsync();
+                await ForwardToBotAsync(message, conversationId, token);
             }
         }
 
@@ -53,7 +53,7 @@
             request.AddParameter("message", message);
             request.AddParameter("conversationId", conversationId);
 
-            await webClient.ExecutePostTaskAsync(request).ConfigureAwait(false);
+            await webClient.ExecutePostTaskAsync(request);
         }
 
         private async Task<ChatbotToken> GetTokenAsync()
@@ -65,7 +65,7 @@
 
             request.AddHeader("Content-type", "application/x-www-form-urlencoded");
 
-            var response = await webClient.ExecutePostTaskAsync<ChatbotToken>(request).ConfigureAwait(false);
+            var response = await webClient.ExecutePostTaskAsync<ChatbotToken>(request);
 
             return response.Data;
         }

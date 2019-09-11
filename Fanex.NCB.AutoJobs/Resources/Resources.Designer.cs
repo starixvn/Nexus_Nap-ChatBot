@@ -122,5 +122,14 @@ namespace Fanex.NCB.AutoJobs.Resources {
                 return ResourceManager.GetString("NapChatBot", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NCBAutoServices.
+        /// </summary>
+        internal static string NCBAutoServices {
+            get {
+                return ResourceManager.GetString("NCBAutoServices", resourceCulture);
+            }
+        }
     }
 }

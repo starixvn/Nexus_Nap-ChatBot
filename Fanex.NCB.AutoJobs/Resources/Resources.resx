@@ -138,4 +138,7 @@
   <data name="NapChatBot" xml:space="preserve">
     <value>NapChatBot</value>
   </data>
+  <data name="NCBAutoServices" xml:space="preserve">
+    <value>NCBAutoServices</value>
+  </data>
 </root>
