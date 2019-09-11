@@ -18,6 +18,8 @@
 
         Task<IEnumerable<NotificationRecipientType>> GetRecipientType();
 
+        Task<IEnumerable<NotificationChatGroupType>> GetChatGroupType();
+
         Task<IEnumerable<BaseModel>> GetSystem();
     }
 }

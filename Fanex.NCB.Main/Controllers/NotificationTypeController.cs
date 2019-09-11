@@ -78,8 +78,9 @@ namespace Fanex.NCB.SkypeBot.Controllers
         {
             var getRecipent = await notificationTypeService.GetRecipientType().ConfigureAwait(false);
             var getNotification = await notificationTypeService.GetSystem().ConfigureAwait(false);
+            var getChatGroupTypes = await notificationTypeService.GetChatGroupType().ConfigureAwait(false);
 
-            return Json(new { recipientTypes = getRecipent, notificationSystems = getNotification });
+            return Json(new { recipientTypes = getRecipent, notificationSystems = getNotification, chatGroupTypes = getChatGroupTypes });
         }
     }
 }

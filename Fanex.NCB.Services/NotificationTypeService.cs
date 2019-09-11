@@ -55,6 +55,13 @@
             return await baseService.GetDataAsync<NotificationRecipientType>(criteria).ConfigureAwait(false);
         }
 
+        public async Task<IEnumerable<NotificationChatGroupType>> GetChatGroupType()
+        {
+            var criteria = new GetNotificationChatGroupTypeCriteria();
+
+            return await baseService.GetDataAsync<NotificationChatGroupType>(criteria).ConfigureAwait(false);
+        }
+
         public async Task<IEnumerable<BaseModel>> GetSystem()
         {
             var criteria = new GetNotificationTypeSystemCriteria();

@@ -23,6 +23,10 @@ export class UpdatePopup extends Component {
         value: this.props.updatePopupData.editingItem.recipientTypeIds.value,
         isValid: this.props.updatePopupData.editingItem.recipientTypeIds.isValid
       },
+      chatGroupTypeIds: {
+        value: this.props.updatePopupData.editingItem.chatGroupTypeIds.value,
+        isValid: this.props.updatePopupData.editingItem.chatGroupTypeIds.isValid
+      },
       systemId: {
         value: this.props.updatePopupData.editingItem.systemId.value,
         isValid: this.props.updatePopupData.editingItem.systemId.isValid
@@ -51,11 +55,12 @@ export class UpdatePopup extends Component {
       notificationTypeId: this.state.notificationTypeId,
       notificationTypeName: this.state.notificationTypeName.value,
       recipientTypeIds: this.state.recipientTypeIds.value,
+      chatGroupTypeIds: this.state.chatGroupTypeIds.value,
       systemId: this.state.systemId.value
     };
   }
 
-  checkValidParams = () => this.state.notificationTypeName.isValid && this.state.recipientTypeIds.isValid && this.state.systemId.isValid;
+  checkValidParams = () => this.state.notificationTypeName.isValid && this.state.recipientTypeIds.isValid && this.state.chatGroupTypeIds.isValid && this.state.systemId.isValid;
 
   onChange = (fieldName, fieldValue) => {
     this.setState({
@@ -87,6 +92,16 @@ export class UpdatePopup extends Component {
       });
     }
 
+    if (this.props.settingData.chatGroupTypes) {
+      this.props.settingData.chatGroupTypes.map(v => {
+        v['checked'] = false;
+        if (this.props.updatePopupData.editingItem.chatGroupTypeIds.value.split(',').includes(v.id.toString())) {
+          v['checked'] = true;
+        }
+      });
+    }
+
+    console.log(this.props.updatePopupData.editingItem.notificationTypeName);
     return (
       <Modal isOpen toggle={this.props.closeUpdatePopupHandler} wrapClassName="new-notification-type">
         <ModalHeader toggle={this.props.closeUpdatePopupHandler}>{popupTitle}</ModalHeader>
@@ -110,6 +125,18 @@ export class UpdatePopup extends Component {
                 statusField={'checked'}
                 isSummited={this.state.isSummited}
                 onChange={value => this.onChange('recipientTypeIds', value)}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label className="form-label required">Chat Group Type</Label>
+              <MultipleSelectField
+                selectedValue={this.state.chatGroupTypeIds.value}
+                data={this.props.settingData.chatGroupTypes}
+                keyField={'id'}
+                valueField={'name'}
+                statusField={'checked'}
+                isSummited={this.state.isSummited}
+                onChange={value => this.onChange('chatGroupTypeIds', value)}
               />
             </FormGroup>
             <FormGroup>

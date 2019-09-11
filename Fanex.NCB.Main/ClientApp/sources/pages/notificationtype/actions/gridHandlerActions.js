@@ -36,17 +36,22 @@ export const closeDeletePopup = () => {
 
 // Update Popup
 export const openEditPopup = item => {
+  console.log(item);
     const newEditPopupData = {
         isShowed: true,
         editingItem: {
             notificationTypeId: item.notificationTypeId,
             notificationTypeName: {
-                value: item.notificationTypeName,
+                value: item.name,
                 isValid: true
             },
             recipientTypeIds: {
                 value: item.recipientTypes.map(v => v.id).join(','),
                 isValid: true
+            },
+            chatGroupTypeIds: {
+              value: item.chatGroupTypes.map(v => v.id).join(','),
+              isValid: true
             },
             systemId: {
                 value: item.systemId,

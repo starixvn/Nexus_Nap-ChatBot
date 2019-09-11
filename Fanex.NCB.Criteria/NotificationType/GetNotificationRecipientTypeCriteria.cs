@@ -4,7 +4,7 @@
 
     public class GetNotificationRecipientTypeCriteria : CriteriaBase
     {
-        public override string GetSettingKey() => "NCB_RecipientType_Sel";
+        public override string GetSettingKey() => "NCB_Setting_RecipientType_Sel";
 
         public override bool IsValid() => true;
     }
