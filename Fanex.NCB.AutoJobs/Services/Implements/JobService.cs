@@ -32,6 +32,7 @@
             catch (Exception ex)
             {
                 Logging(ex);
+                throw;
             }
         }
 
@@ -45,6 +46,7 @@
             catch (Exception ex)
             {
                 Logging(ex);
+                throw;
             }
         }
 
@@ -58,6 +60,7 @@
             catch (Exception ex)
             {
                 Logging(ex);
+                throw;
             }
         }
 

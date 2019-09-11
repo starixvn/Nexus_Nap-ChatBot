@@ -27,12 +27,6 @@
             recurringJob = host.Services.GetRequiredService<IRecurringJobManager>();
         }
 
-        protected override void OnStarting(string[] args)
-        {
-            logger.LogInformation(string.Format(Resources.Log_OnStartingService, DateTime.Now));
-            base.OnStarting(args);
-        }
-
         protected override void OnStarted()
         {
             logger.LogInformation(string.Format(Resources.Log_OnStartedService, DateTime.Now));
@@ -65,8 +59,11 @@
         private static void RemoveCurrentHangfireServer()
         {
             IMonitoringApi monitoringApi = JobStorage.Current.GetMonitoringApi();
-            var serverToRemove = monitoringApi.Servers().FirstOrDefault(s => s.Name.Equals(Environment.MachineName));
-            JobStorage.Current.GetConnection().RemoveServer(serverToRemove.Name);
+            var serverToRemove = monitoringApi.Servers().FirstOrDefault(s => s.Name.ToLowerInvariant().Contains(Environment.MachineName.ToLowerInvariant()));
+            if (serverToRemove != null)
+            {
+                JobStorage.Current.GetConnection().RemoveServer(serverToRemove?.Name);
+            }
         }
     }
 }

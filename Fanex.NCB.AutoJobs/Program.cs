@@ -43,15 +43,9 @@
                .ConfigureLogging((hostingContext, logging) =>
                {
                    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                   if (!EventLog.SourceExists(Resources.Resources.NapChatBot))
-                   {
-                       EventLog.CreateEventSource(Resources.Resources.NapChatBot, Resources.Resources.NCBAutoServices);
-                   }
                    logging.AddEventLog(new EventLogSettings
                    {
-                       SourceName = Resources.Resources.NapChatBot,
-                       LogName = Resources.Resources.NCBAutoServices,
-                       Filter = (x, y) => y >= LogLevel.Information
+                       Filter = (x, logLevel) => x.Contains("Fanex.NCB.AutoJobs") && logLevel >= LogLevel.Information
                    });
                })
                .UseConfiguration(configuration)
