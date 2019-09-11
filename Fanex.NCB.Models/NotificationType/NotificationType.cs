@@ -7,6 +7,8 @@
     {
         public IEnumerable<NotificationRecipientType> RecipientTypes { get; set; }
 
+        public IEnumerable<NotificationChatGroupType> ChatGroupTypes { get; set; }
+
         public int SystemId { get; set; }
 
         public string SystemName { get; set; }

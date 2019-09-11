@@ -37,11 +37,12 @@
                 PageIndex = pageIndex,
                 PageSize = pageSize
             };
-            var data = await baseService.FetchMultipleAsync<NotificationType, NotificationRecipientType>(criteria).ConfigureAwait(false);
+            var data = await baseService.FetchMultipleAsync<NotificationType, NotificationRecipientType, NotificationChatGroupType>(criteria).ConfigureAwait(false);
 
             foreach (var notificationType in data.Item1)
             {
                 notificationType.RecipientTypes = data.Item2.Where(t => t.NotificationTypeId == notificationType.Id);
+                notificationType.ChatGroupTypes = data.Item3.Where(t => t.NotificationTypeId == notificationType.Id);
             }
 
             return new ValueTuple<IEnumerable<NotificationType>, long>(data.Item1, criteria.TotalItems);

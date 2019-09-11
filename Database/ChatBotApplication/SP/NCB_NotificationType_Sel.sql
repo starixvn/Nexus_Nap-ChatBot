@@ -38,6 +38,13 @@ BEGIN
           nrt.NotificationTypeID AS NotificationTypeId
     FROM NotificationRecipientType nrt 
     INNER JOIN RecipientType rt ON nrt.RecipientTypeID = rt.RecipientTypeId;
+	
+	SELECT 
+		cgt.ChatGroupTypeID AS Id,
+		cgt.ChatGroupTypeName AS Name,
+		nct.NotificationTypeID AS NotificationTypeId
+	FROM NotificationChatGroupType nct
+	INNER JOIN ChatGroupType cgt ON cgt.ChatGroupTypeID = nct.ChatGroupTypeID;
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationType_Sel TO 'ncb.admin'@'%';

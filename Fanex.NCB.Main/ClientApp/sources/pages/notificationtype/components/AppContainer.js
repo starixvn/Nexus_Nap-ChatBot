@@ -32,7 +32,7 @@ export class AppContainer extends Component {
     return (
       <div>
         <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Type" />
-        <button className="btn-new" onClick={this.props.openNewPopup}>Create New</button>
+        <button className="btn-new" onClick={this.props.openNewPopup}>New Notification Type</button>
         <DataGrid />
         {this.props.updatePopupData.isShowed && <UpdatePopup closeUpdatePopupHandler={this.closeUpdatePopupHandler} />}
         {this.props.deletePopupData.isShowed && <DeletePopup closeDeletePopupHandler={this.closeDeletePopupHandler} />}

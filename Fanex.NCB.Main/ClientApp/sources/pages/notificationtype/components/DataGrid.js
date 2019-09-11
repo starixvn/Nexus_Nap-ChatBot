@@ -45,6 +45,7 @@ export class DataGrid extends Component {
       <Cell colWidth={50} header>#</Cell>
       <Cell colWidth={200} header>Notification Type</Cell>
       <Cell colWidth={150} header>Recipient Type</Cell>
+      <Cell colWidth={150} header>Chat Group Type</Cell>
       <Cell colWidth={150} header>System</Cell>
       <Cell colWidth={150} header>Action</Cell>
     </Row>;
@@ -54,11 +55,11 @@ export class DataGrid extends Component {
     const rows = [];
     const startIndex = (pageIndex - 1) * pageSize + 1;
     data.map((item, index) => {
-      const recipientTypeNames = item.recipientTypes.map(r => r.name);
       rows.push(<Row key={`body${index}`} className={index === activeRowIndex ? 'active' : ''}>
         <Cell className="text-center">{index + startIndex}</Cell>
-        <Cell>{item.notificationTypeName}</Cell>
-        <Cell>{recipientTypeNames.join(', ')}</Cell>
+        <Cell>{item.name}</Cell>
+        <Cell>{item.recipientTypes.map(r => r.name).join(', ')}</Cell>
+        <Cell>{item.chatGroupTypes.map(r => r.name).join(', ')}</Cell>
         <Cell>{item.systemName}</Cell>
         <Cell className="text-center col-action">
           <div>
@@ -74,12 +75,12 @@ export class DataGrid extends Component {
     return rows;
   }
 
-  render() {
-    if (!this.props.gridData || !this.props.gridData.data) {
+  render() {        
+    if (!this.props.gridData || !this.props.gridData.notificationTypes) {
       return null;
-    }
+    }  
 
-    const { data, count } = this.props.gridData;
+    const { notificationTypes, count } = this.props.gridData;
     const { pageIndex, pageSize } = this.props.gridParams;
     const activeRowIndex = this.props.activeRowIndex;
 
@@ -96,7 +97,7 @@ export class DataGrid extends Component {
           width={900}
           autoWidth={false}
           header={this.buildHeader()}
-          body={this.buildBody(data, pageIndex, pageSize, activeRowIndex)}
+          body={this.buildBody(notificationTypes, pageIndex, pageSize, activeRowIndex)}
           isPaging
           pageOption={pagingOption}
           onPaging={this.onPaging}
