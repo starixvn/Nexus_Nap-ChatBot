@@ -44,7 +44,7 @@
             }
         }
 
-        private async Task UpdateFailedRecipientStatus(IEnumerable<NotificationRecipient> recipients)
+        private async Task UpdateFailedRecipientStatus(IEnumerable<NotificationRecipient> recipients, bool isRetry = false)
         {
             if (recipients.Any())
             {
@@ -55,9 +55,9 @@
                     SentTime = DateTimeExtension.ConvertToDateTimeString(DateTime.UtcNow),
                     ConversationGroupID = r.ChatGroupId,
                     ConversationBotID = r.BotId,
-                    Retry = false,
+                    Retry = isRetry,
                     IsSuccess = false,
-                    ErrMsg = EnumHelper.GetDescription(r.RecipientStatus)
+                    ErrorMessage = EnumHelper.GetDescription(r.RecipientStatus)
                 });
 
                 await UpdateSentNotificationStatus(updateNoti);
@@ -97,8 +97,8 @@
         {
             if (response.IsSuccessful && response.StatusCode.Equals(HttpStatusCode.OK))
             {
-                var responseMsgs = ConvertJsonResponse(response.Content);
-                await UpdateStatusAfterSendNotification(recipients, responseMsgs);
+                var responseMessages = ConvertJsonResponse(response.Content);
+                await UpdateStatusAfterSendNotification(recipients, responseMessages);
             }
             else
             {
@@ -107,7 +107,7 @@
                     recipient.ErrCode = (int)RecipientStatuses.BotServiceError;
                 }
 
-                await UpdateFailedRecipientStatus(recipients);
+                await UpdateFailedRecipientStatus(recipients, true);
             }
         }
 
@@ -126,7 +126,7 @@
                     ConversationBotID = recipient.BotId,
                     Retry = result.ErrorCode != 0,
                     IsSuccess = result.ErrorCode == 0,
-                    ErrMsg = result.ErrorCode == 0 ? string.Empty : result.ErrorMessage
+                    ErrorMessage = result.ErrorCode == 0 ? string.Empty : result.ErrorMessage
                 };
                 updateNotiModels.Add(model);
             }
