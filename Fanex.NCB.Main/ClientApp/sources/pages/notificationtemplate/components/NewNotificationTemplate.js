@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { ActionCreators } from '../actions/index';
 import { Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input, FormFeedback, Col } from 'reactstrap';
-
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import ReactMde, { commands } from "react-mde";
-import ReactMarkdown from 'react-markdown/with-html';
-import "react-mde/lib/styles/css/react-mde-all.css";
 import Labels from '../../common/Labels';
+import ResponseMessage from '../../common/response-message/ResponseMessage';
+import TemplatePreview from '../../common/TemplatePreview/index';
 
 const commandList = [
     {
@@ -21,10 +22,6 @@ const commandList = [
         ]
     }
 ];
-
-Yup.addMethod(Yup.string, 'notmatch', function (regex) {
-    regex.exec
-});
 
 class NewNotificationTemplate extends Component {
     constructor(props) {
@@ -45,16 +42,8 @@ class NewNotificationTemplate extends Component {
     })
 
     handleGerneratePreview = markdown => {
-        let params = markdown.match(/{[-\w\s]+}/g);
-
-        if (params) {
-            for (let i = 0; i < params.length; i++) {
-                markdown = markdown.replace(params[i], `<span style="color:red">${params[i]}</span>`);
-            }
-        }
-
         return Promise.resolve(
-            <ReactMarkdown source={markdown} escapeHtml={false} />
+            <TemplatePreview text={markdown} />
         );
     }
 
@@ -85,21 +74,21 @@ class NewNotificationTemplate extends Component {
                     </Col>
                     <Label for="title" className="form-label required" sm={2}>Template Name</Label>
                     <Col sm={4}>
-                        <Input value={values.title} name="title"
-                            invalid={touched.title && errors.title}
+                        <Input value={values.notificationTemplateName} name="notificationTemplateName"
+                            invalid={touched.notificationTemplateName && errors.notificationTemplateName}
                             onChange={handleChange}
                         />
-                        {touched.title && errors.title && <FormFeedback>{errors.title}</FormFeedback>}
+                        {touched.title && errors.title && <FormFeedback>{errors.notificationTemplateName}</FormFeedback>}
                     </Col>
                 </FormGroup>
                 <FormGroup row>
                     <Label for="title" className="form-label required" sm={2}>Title</Label>
                     <Col sm={10}>
-                        <Input value={values.notificationTemplateName} name="notificationTemplateName"
-                            invalid={touched.notificationTemplateName && errors.notificationTemplateName}
+                        <Input value={values.title} name="title"
+                            invalid={touched.title && errors.title}
                             onChange={handleChange}
                         />
-                        {touched.notificationTemplateName && errors.notificationTemplateName && <FormFeedback>{errors.notificationTemplateName}</FormFeedback>}
+                        {touched.title && errors.title && <FormFeedback>{errors.title}</FormFeedback>}
                     </Col>
                 </FormGroup>
                 <FormGroup row>
@@ -122,13 +111,31 @@ class NewNotificationTemplate extends Component {
             </Form >
         );
     }
+
+    handleSubmit = (values, { setSubmitting }) => {
+        setSubmitting(true);
+        this.props.createTemplate(values).then(() => {
+            if (this.props.createTemplateResult.isSuccessful) {
+                setTimeout(() => {
+                    this.props.onCreateSuccess();
+                }, 1000);
+            } else {
+                setSubmitting(false);
+            }
+        });
+    }
+
     render() {
         return (
             <div>
-                <Modal isOpen toggle={this.props.onClose} className="new-notification-template" backdrop="static" >
+                <Modal isOpen toggle={this.props.onClose} className="new-notification-template" backdrop="static">
                     <ModalHeader toggle={this.props.onClose}>Create New Notification Template</ModalHeader>
                     <ModalBody>
-
+                        {this.props.createTemplateResult &&
+                            <ResponseMessage isSuccessful={this.props.createTemplateResult.isSuccessful}
+                                message={this.props.createTemplateResult.message || Labels.CreateTemplateSuccessfully}
+                            />
+                        }
                         <Formik ref="form"
                             initialValues={{
                                 notificationTypeId: '',
@@ -148,4 +155,17 @@ class NewNotificationTemplate extends Component {
     }
 }
 
-export default connect()(NewNotificationTemplate);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators({
+        createTemplate: ActionCreators.createTemplate
+    }, dispatch);
+};
+
+const mapStateToProps = state => {
+    const { createTemplateResult } = state;
+    return {
+        createTemplateResult
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewNotificationTemplate);

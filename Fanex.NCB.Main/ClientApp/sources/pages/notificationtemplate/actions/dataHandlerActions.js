@@ -146,7 +146,8 @@ const actions = {
     update,
     refreshUpdateData,
     setCreateTemplatePopup,
-    setCreateTemplateResult
+    setCreateTemplateResult,
+    createTemplate
 };
 
 export default actions;

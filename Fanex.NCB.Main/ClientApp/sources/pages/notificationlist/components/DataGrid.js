@@ -4,7 +4,7 @@ import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 import { PAGING_SIZES, NotificationStatus, DateFormat, TimeFormat } from '../../constants/constants';
 import Labels from '../../common/Labels';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';
-import Panel, { PanelHeader } from './Panel';
+import Panel, { PanelHeader } from '../../common/panel/index';
 
 export default class DataGrid extends PureComponent {
     constructor(props) {

@@ -1,20 +1,15 @@
 @import "../../shared/variables";
 
-
-.table {
-
+.nap-panel {
     .panel-header {
         padding-right: 24px;
+        position: relative;
     }
 
-    .col-content {
-        position: relative !important;
-    }
-
-    .col-content .icon-right {
+    .icon-right {
         position: absolute;
         top: 50%;
-        right: 12px;
+        right: 5px;
         margin-top: -9px;
         color: $text-color;
         font-size: 10px;
@@ -27,7 +22,6 @@
         }
 
         &.content-expand {
-            top: 28px;
             transform: rotate(90deg);
             transition: transform .2s ease-in;
         }

@@ -7,12 +7,12 @@ import AppContainer from './components/AppContainer';
 import reducer from './reducers/index';
 
 // Get the application-wide store instance, prepopulating with state from the server where available.
-const initialState = window.initialReduxState;
 const store = Store.createStore(reducer, {
     notificationTypes: [],
     createTemplatePopup: {
         show: false
-    }
+    },
+    createTemplateResult: null
 });
 
 renderLayout(

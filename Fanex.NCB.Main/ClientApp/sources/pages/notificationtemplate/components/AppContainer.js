@@ -33,6 +33,11 @@ export class AppContainer extends Component {
 
     handleCloseCreateTemplatePopup = () => this.props.setCreateTemplatePopup({ show: false })
 
+    handleCreateSuccess = () => {
+        this.handleCloseCreateTemplatePopup();
+        this.props.getGridData(this.props.gridParams);
+    }
+
     render() {
         return (
             <>
@@ -44,7 +49,7 @@ export class AppContainer extends Component {
                 {this.props.deletePopupData.isShowed && <DeletePopup closeDeletePopupHandler={this.closeDeletePopupHandler} />}
                 {this.props.createTemplatePopup.show &&
                     <NewNotificationTemplate notificationTypes={this.props.notificationTypes}
-                        onClose={this.handleCloseCreateTemplatePopup}
+                        onClose={this.handleCloseCreateTemplatePopup} onCreateSuccess={this.handleCreateSuccess}
                     />}
             </>
         );
