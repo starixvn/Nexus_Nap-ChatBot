@@ -28,7 +28,7 @@
 
             webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
             var request = new RestRequest(botSettings.Value.BotServiceUrl, Method.POST);
-            request.AddHeader("Authorization", $"Bearer {token.AccessToken}");
+            request.AddHeader("Authorization", $"Bearer {token?.AccessToken}");
             request.AddJsonBody(messages);
 
             return await webClient.ExecutePostTaskAsync(request);
@@ -48,7 +48,7 @@
             webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
 
             var request = new RestRequest(botSettings.Value.BotServiceUrl, Method.POST);
-            request.AddHeader("Authorization", $"{token.TokenType} {token.AccessToken}");
+            request.AddHeader("Authorization", $"{token?.TokenType} {token?.AccessToken}");
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
             request.AddParameter("message", message);
             request.AddParameter("conversationId", conversationId);

@@ -5,7 +5,6 @@
     using System.Text;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Models;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;
     using NSubstitute;
@@ -34,26 +33,52 @@
         public async Task SendMessageToMultitpleAsync_WhenCalled_ExecutePostTaskAsync()
         {
             var messages = new List<NotificationMessage>();
-            var expected = new RestResponse { StatusCode = HttpStatusCode.OK };
+            var expected = new RestResponse
+            {
+                StatusCode = HttpStatusCode.OK
+            };
             var service = new ChatbotService(botSettings);
             var request = new RestRequest("/Test", Method.POST);
-            request.AddHeader("Authorization", "Bearer ABCDEF");
-            var chatbotToken = new ChatbotToken
-            {
-                AccessToken = "ABCDEF"
-            };
-            var token = new RestResponse<ChatbotToken>
-            {
-                Data = chatbotToken
-            };
-            webClient.ExecutePostTaskAsync<ChatbotToken>(Arg.Any<RestRequest>()).Returns(token);
-            webClient.ExecutePostTaskAsync(Arg.Any<RestRequest>()).Returns(expected);
+
+            webClient.ExecutePostTaskAsync(Arg.Is(request)).Returns(expected);
 
             //Act
-            await service.SendMessageToMultitpleAsync(messages);
+            var actual = await service.SendMessageToMultitpleAsync(messages);
 
             //Assert
-            await webClient.Received(2).ExecutePostTaskAsync(Arg.Any<RestRequest>());
+            Assert.Equal(HttpStatusCode.OK, actual.StatusCode);
+            Assert.Equal("/Test", actual.Request.Resource);
+        }
+
+        [Fact]
+        public async Task SendMessageAsync_EmptyConversationId_WebClientNotCalled()
+        {
+            var service = new ChatbotService(botSettings);
+
+            //Actual
+            await service.SendMessageAsync(string.Empty, "Test");
+
+            //Assert
+            await webClient.DidNotReceiveWithAnyArgs()
+                .ExecutePostTaskAsync(Arg.Any<RestRequest>());
+        }
+
+        [Fact]
+        public async Task SendMessageAsync_ValidConversationId_WebClientExecuted()
+        {
+            var service = new ChatbotService(botSettings);
+            var expected = new RestResponse
+            {
+                StatusCode = HttpStatusCode.OK
+            };
+            var request = new RestRequest("/Test", Method.POST);
+
+            webClient.ExecutePostTaskAsync(Arg.Do<RestRequest>(x => request = x)).Returns(expected);
+            //Actual
+            await service.SendMessageAsync("Test conversationId", "Test");
+
+            //Assert
+            webClient.ReceivedCalls();
         }
     }
 }
