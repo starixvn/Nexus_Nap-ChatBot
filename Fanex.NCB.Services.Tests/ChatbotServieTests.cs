@@ -13,21 +13,8 @@
 
     public class ChatbotServieTests
     {
-        private readonly IRestClient webClient;
-        private readonly IOptionsSnapshot<BotSettings> botSettings;
-
-        public ChatbotServieTests()
-        {
-            webClient = new RestClient { Encoding = Encoding.UTF8 };
-            var settings = new BotSettings
-            {
-                BotDomain = "http://test.com",
-                BotServiceUrl = "/Test"
-            };
-            webClient = Substitute.For<IRestClient>();
-            botSettings = Substitute.For<IOptionsSnapshot<BotSettings>>();
-            botSettings.Value.Returns(settings);
-        }
+        private IRestClient webClient;
+        private IOptionsSnapshot<BotSettings> botSettings;
 
         [Fact]
         public async Task SendMessageToMultitpleAsync_WhenCalled_ExecutePostTaskAsync()
@@ -37,7 +24,7 @@
             {
                 StatusCode = HttpStatusCode.OK
             };
-            var service = new ChatbotService(botSettings);
+            var service = GetService();
             var request = new RestRequest("/Test", Method.POST);
 
             webClient.ExecutePostTaskAsync(Arg.Is(request)).Returns(expected);
@@ -53,7 +40,7 @@
         [Fact]
         public async Task SendMessageAsync_EmptyConversationId_WebClientNotCalled()
         {
-            var service = new ChatbotService(botSettings);
+            var service = GetService();
 
             //Actual
             await service.SendMessageAsync(string.Empty, "Test");
@@ -66,7 +53,7 @@
         [Fact]
         public async Task SendMessageAsync_ValidConversationId_WebClientExecuted()
         {
-            var service = new ChatbotService(botSettings);
+            var service = GetService();
             var expected = new RestResponse
             {
                 StatusCode = HttpStatusCode.OK
@@ -79,6 +66,21 @@
 
             //Assert
             webClient.ReceivedCalls();
+        }
+
+        private ChatbotService GetService()
+        {
+            webClient = new RestClient { Encoding = Encoding.UTF8 };
+            var settings = new BotSettings
+            {
+                BotDomain = "http://test.com",
+                BotServiceUrl = "/Test"
+            };
+            webClient = Substitute.For<IRestClient>();
+            botSettings = Substitute.For<IOptionsSnapshot<BotSettings>>();
+            botSettings.Value.Returns(settings);
+
+            return new ChatbotService(botSettings);
         }
     }
 }

@@ -76,7 +76,7 @@
         {
             var messages = JsonConvert.DeserializeObject<List<SendMessageResult>>(json);
 
-            return messages;
+            return messages ?? new List<SendMessageResult>();
         }
 
         private async Task SendNotificationToRecipients(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
@@ -117,18 +117,21 @@
             foreach (var recipient in recipients)
             {
                 var result = responseMessages.FirstOrDefault(r => r.NotificationId == recipient.NotificationId && r.ConversationId == recipient.ChatGroupConversationId);
-                var model = new UpdateNotificationModel
+                if (result != null)
                 {
-                    NotificationID = recipient.NotificationId,
-                    RecipientID = recipient.RecipientId,
-                    SentTime = DateTimeExtension.ConvertToDateTimeString(result.SentTime),
-                    ConversationGroupID = recipient.ChatGroupId,
-                    ConversationBotID = recipient.BotId,
-                    Retry = result.ErrorCode != 0,
-                    IsSuccess = result.ErrorCode == 0,
-                    ErrorMessage = result.ErrorCode == 0 ? string.Empty : result.ErrorMessage
-                };
-                updateNotiModels.Add(model);
+                    var model = new UpdateNotificationModel
+                    {
+                        NotificationID = recipient.NotificationId,
+                        RecipientID = recipient.RecipientId,
+                        SentTime = DateTimeExtension.ConvertToDateTimeString(result.SentTime),
+                        ConversationGroupID = recipient.ChatGroupId,
+                        ConversationBotID = recipient.BotId,
+                        Retry = result.ErrorCode != 0,
+                        IsSuccess = result.ErrorCode == 0,
+                        ErrorMessage = result.ErrorCode == 0 ? string.Empty : result.ErrorMessage
+                    };
+                    updateNotiModels.Add(model);
+                }
             }
 
             await UpdateSentNotificationStatus(updateNotiModels);
@@ -179,8 +182,7 @@
             {
                 NotificationId = notifiactionId
             };
-            var notifications = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria)
-                ;
+            var notifications = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria);
 
             await UpdateFailedRecipientStatus(notifications.Item2.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)
             && !r.RecipientStatus.Equals(RecipientStatuses.BotServiceError)));
