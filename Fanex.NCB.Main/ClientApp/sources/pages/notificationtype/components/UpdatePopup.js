@@ -70,9 +70,9 @@ export class UpdatePopup extends Component {
 
   closePopup = () => {
     setTimeout(function () {
-      this.props.closeUpdatePopupHandler();
+        this.props.updateData.addedresult.isSuccessful && this.props.closeUpdatePopupHandler();
     }.bind(this),
-      1000);
+      2000);
   }
 
   render() {
@@ -81,7 +81,14 @@ export class UpdatePopup extends Component {
     }
 
     const { popupTitle, successMsg } = this.props.updatePopupData;
-    let showSucessMsg = this.props.updateData && this.props.updateData.addedresult;
+      let showMsg = this.props.updateData && this.props.updateData.addedresult;
+      let updateMsg = '';
+      let updateMsgCls = '';
+      if (showMsg) {
+          let isSuccess = this.props.updateData.addedresult.isSuccessful;
+          updateMsg = isSuccess ? successMsg : this.props.updateData.addedresult.message;
+          updateMsgCls = isSuccess ? 'msg-success' : 'msg-error';
+      }
 
     if (this.props.settingData.recipientTypes) {
       this.props.settingData.recipientTypes.map(v => {
@@ -106,7 +113,7 @@ export class UpdatePopup extends Component {
       <Modal isOpen toggle={this.props.closeUpdatePopupHandler} wrapClassName="new-notification-type">
         <ModalHeader toggle={this.props.closeUpdatePopupHandler}>{popupTitle}</ModalHeader>
         <ModalBody>
-          {showSucessMsg && <div className="msg-success ">{successMsg}</div>}
+                {showMsg && <div className={updateMsgCls}>{updateMsg}</div>}                
           <Form className="form-create">
             <FormGroup>
               <Label className="form-label required">Notification Type Name</Label>

@@ -57,7 +57,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpPost]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Host)]
-        public async Task<IActionResult> Add([FromBody] NotificationType item)
+        public async Task<IActionResult> Add([FromBody] NotificationTypeViewModel item)
         {
             var result = await notificationTypeService.InsertAsync(item).ConfigureAwait(false);
 
@@ -66,7 +66,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpPost]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Host)]
-        public async Task<IActionResult> Edit([FromBody] NotificationType item)
+        public async Task<IActionResult> Edit([FromBody] NotificationTypeViewModel item)
         {
             var result = notificationTypeService.UpdateAsync(item);
 

@@ -1,42 +1,82 @@
-CREATE PROCEDURE `NCB_NotificationType_Upd`(
-	IN id INT,
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS NCB_NotificationType_Upd;
+
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_NotificationType_Upd(
+	IN notificationTypeId INT,
 	IN notificationTypeName varchar(100), 
     IN recipientTypeIds varchar(500), 
+    IN chatGroupTypeIds varchar(500), 
     IN systemId INT,
-    OUT errorCode INT, 
-    OUT errorMsg nvarchar(100)
+    OUT errCode SMALLINT,
+	OUT errMsg VARCHAR(100)
+    /*
+		Creator: Scofield@20190912
+				Params:
+						- pageIndex: Page Index for paging
+						- pageSize: Page Size for paging
+				Revisions:
+						- 20190912@Scofield: Create
+    */
    )
-BEGIN	 
-	DECLARE strLen    INT DEFAULT 0;
-	DECLARE SubStrLen INT DEFAULT 0;
-    
-	if exists(select * from NotificationType nt where nt.NotificationTypeName =  notificationTypeName and nt.NotificationTypeId <> id) then
-		select 1 into errorCode;
-        select "Notification Type Name exists" into errorMsg;
-    else
-		update NotificationType nt
-        set nt.NotificationTypeName = notificationTypeName, nt.SystemId = systemId
-        where nt.NotificationTypeId = id;
+SQL SECURITY DEFINER
+BEGIN	 	
+	IF EXISTS(SELECT * FROM NotificationType nt WHERE nt.NotificationTypeName =  notificationTypeName and nt.NotificationTypeId <> notificationTypeId) THEN
+		SELECT 1 INTO errCode;
+        SELECT "Notification Type Name exists" INTO errMsg;
+    ELSE
+		UPDATE NotificationType nt
+        SET nt.NotificationTypeName = notificationTypeName, nt.SystemId = systemId
+        WHERE nt.NotificationTypeId = notificationTypeId;
         
-        delete from NotificationTypeRecipientType
-        where NotificationTypeID = id;
+        -- Update NotificationRecipientType
+		DROP TEMPORARY TABLE IF EXISTS tmp_RecipientTypes;
+		CREATE TEMPORARY TABLE tmp_RecipientTypes(RecipientTypeID INT);
+		
+		SET @SqlCommand = REPLACE(recipientTypeIds, ',', '),(');
+		SET @SqlCommand = CONCAT('(', @SqlCommand, ')');
+		SET @SqlCommand= CONCAT('INSERT INTO tmp_RecipientTypes VALUES'
+															, @SqlCommand); 
+		
+		PREPARE Stmt FROM  @SqlCommand;
+		EXECUTE Stmt;
+		DEALLOCATE PREPARE Stmt;
         
-        do_this:
-		  LOOP			
-            SET strLen = LENGTH(recipientTypeIds);            
-            
-            insert into NotificationTypeRecipientType(NotificationTypeID, RecipientTypeID)
-            values (id, SUBSTRING_INDEX(recipientTypeIds, ',', 1));			
+        DELETE FROM NotificationRecipientType nrt
+        WHERE nrt.NotificationTypeID = notificationTypeId;
+        
+        INSERT INTO NotificationRecipientType(NotificationTypeID, RecipientTypeID)
+        SELECT notificationTypeId, tmp.RecipientTypeID
+        FROM tmp_RecipientTypes tmp;		        
+        
+        -- Update NotificationRecipientType
+		DROP TEMPORARY TABLE IF EXISTS tmp_ChatGroupTypes;
+		CREATE TEMPORARY TABLE tmp_ChatGroupTypes(ChatGroupTypeID INT);
+		
+		SET @SqlCommand = REPLACE(chatGroupTypeIds, ',', '),(');
+		SET @SqlCommand = CONCAT('(', @SqlCommand, ')');
+		SET @SqlCommand= CONCAT('INSERT INTO tmp_ChatGroupTypes VALUES'
+															, @SqlCommand); 
+		
+		PREPARE Stmt FROM  @SqlCommand;
+		EXECUTE Stmt;
+		DEALLOCATE PREPARE Stmt;
+        
+        DELETE FROM NotificationChatGroupType nrt
+        WHERE nrt.NotificationTypeID = notificationTypeId;
+        
+        INSERT INTO NotificationChatGroupType(NotificationTypeID, ChatGroupTypeID)
+        SELECT notificationTypeId, tmp.ChatGroupTypeID
+        FROM tmp_ChatGroupTypes tmp;		        
+        
+        -- Drop temp tables
+        DROP TEMPORARY TABLE IF EXISTS tmp_RecipientTypes;
+        DROP TEMPORARY TABLE IF EXISTS tmp_ChatGroupTypes;
+       
+		-- Update error code
+        SELECT 0 INTO errCode;
+        SELECT "" INTO errMsg;
+    END IF;    
+END;
 
-			SET SubStrLen = LENGTH(SUBSTRING_INDEX(recipientTypeIds, ',', 1));
-			SET recipientTypeIds = MID(recipientTypeIds, SubStrLen + 2, strLen);
-
-			IF recipientTypeIds = '' THEN
-			  LEAVE do_this;
-			END IF;
-		  END LOOP do_this;
-        
-        select 0 into errorCode;
-        select "" into errorMsg;
-    end if;    
-END
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationType_Upd TO 'ncb.admin'@'%';

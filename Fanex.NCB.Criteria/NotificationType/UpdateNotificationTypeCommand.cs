@@ -10,12 +10,23 @@
 
         public string RecipientTypeIds { get; set; }
 
+        public string ChatGroupTypeIds { get; set; }
+
         public int SystemId { get; set; }
 
         public override string GetSettingKey() => "NCB_NotificationType_Upd";
 
-        public override bool IsValid() => NotificationTypeId > 0 && SystemId > 0 &&
-                                !string.IsNullOrWhiteSpace(NotificationTypeName) &&
-                                !string.IsNullOrWhiteSpace(RecipientTypeIds);
+        public override bool IsValid()
+        {
+            if(NotificationTypeId <= 0)
+            {
+                return false;
+            }
+
+            return SystemId > 0 &&
+                    !string.IsNullOrWhiteSpace(NotificationTypeName) &&
+                    !string.IsNullOrWhiteSpace(RecipientTypeIds) &&
+                    !string.IsNullOrWhiteSpace(ChatGroupTypeIds);
+        }        
     }
 }

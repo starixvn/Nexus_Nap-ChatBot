@@ -69,24 +69,27 @@
             return await baseService.GetDataAsync<BaseModel>(criteria).ConfigureAwait(false);
         }
 
-        public async Task<CommandResult> InsertAsync(NotificationType model)
+        public async Task<CommandResult> InsertAsync(NotificationTypeViewModel model)
         {
             var command = new InsertNotificationTypeCommand
             {
-                NotificationTypeName = model.Name,
+                NotificationTypeName = model.NotificationTypeName,
                 SystemId = model.SystemId,
-                RecipientTypeIds = string.Join(",", model.RecipientTypes.Select(x => x.Id))
+                RecipientTypeIds = model.RecipientTypeIds,
+                ChatGroupTypeIds = model.ChatGroupTypeIds
             };
 
             return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
         }
 
-        public async Task<CommandResult> UpdateAsync(NotificationType model)
+        public async Task<CommandResult> UpdateAsync(NotificationTypeViewModel model)
         {
             var command = new UpdateNotificationTypeCommand
             {
-                NotificationTypeId = model.Id,
-                NotificationTypeName = model.Name,
+                NotificationTypeId = model.NotificationTypeId,
+                NotificationTypeName = model.NotificationTypeName,
+                RecipientTypeIds = model.RecipientTypeIds,
+                ChatGroupTypeIds = model.ChatGroupTypeIds,
                 SystemId = model.SystemId
             };
 

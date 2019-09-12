@@ -81,13 +81,14 @@ export const setUpdateData = data => {
 };
 
 export const update = (params, isNew) => {
-    const url = isNew ? '/NotificationType/Add' : '/NotificationType/Edit';
+    const url = isNew ? 'NotificationType/Add' : 'NotificationType/Edit';
     const headers = {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'RequestVerificationToken': Site.getXsrfToken()
     };
 
     return async dispatch => {
-        const request = await axios.post(url, JSON.stringify(params), { headers: headers });
+        const request = await axios.post(Site.resolveClientUrl(url), JSON.stringify(params), { headers: headers });
         const data = await request.data;
         dispatch(setUpdateData({ addedresult: data }));
     };
@@ -95,7 +96,7 @@ export const update = (params, isNew) => {
 
 export const refreshUpdateData = () => {
     return dispatch => {
-        dispatch(setUpdateData({ addedresult: false }));
+        dispatch(setUpdateData({ addedresult: null }));
     };
 };
 

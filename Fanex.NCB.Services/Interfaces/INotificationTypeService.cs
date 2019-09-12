@@ -12,9 +12,9 @@
 
         Task<CommandResult> DeleteAsync(int notificationTypeId);
 
-        Task<CommandResult> InsertAsync(NotificationType model);
+        Task<CommandResult> InsertAsync(NotificationTypeViewModel model);
 
-        Task<CommandResult> UpdateAsync(NotificationType model);
+        Task<CommandResult> UpdateAsync(NotificationTypeViewModel model);
 
         Task<IEnumerable<NotificationRecipientType>> GetRecipientType();
 

@@ -40,7 +40,7 @@ export const openEditPopup = item => {
     const newEditPopupData = {
         isShowed: true,
         editingItem: {
-            notificationTypeId: item.notificationTypeId,
+            notificationTypeId: item.id,
             notificationTypeName: {
                 value: item.name,
                 isValid: true
@@ -78,6 +78,10 @@ export const openNewPopup = () => {
                 isValid: false
             },
             recipientTypeIds: {
+                value: '',
+                isValid: false
+            },
+            chatGroupTypeIds: {
                 value: '',
                 isValid: false
             },
