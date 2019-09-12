@@ -148,7 +148,7 @@
                 string.Empty,
                 exception.TargetSite,
                 exception.StackTrace);
-                logger.Error(errMsg);
+                await logger.ErrorAsync(errMsg);
             }
         }
     }
