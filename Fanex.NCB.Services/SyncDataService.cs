@@ -109,7 +109,7 @@
 
         private async Task InsertOICData(OicData data)
         {
-            var command = new InsertOICDataCommand
+            var command = new InsertOicDataCommand
             {
                 Licensees = ConvertToJsonWithDateTimeFormatString(data.Licensees),
                 LicenseeStatuses = ConvertToJsonWithDateTimeFormatString(data.LicenseeStatuses),

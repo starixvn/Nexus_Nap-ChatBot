@@ -2,7 +2,7 @@
 {
     using Fanex.NCB.Shared.Models;
 
-    public class InsertOICDataCommand : BaseCommand
+    public class InsertOicDataCommand : BaseCommand
     {
         public string Licensees { get; set; }
 
