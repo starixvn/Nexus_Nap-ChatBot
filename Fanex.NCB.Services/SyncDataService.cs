@@ -126,7 +126,7 @@
             return JsonConvert.SerializeObject(data, new JsonSerializerSettings { DateFormatString = DateTimeFormat });
         }
 
-        public async Task NapSSOSyncDataByUserIdAsync(int userId)
+        private async Task NapSSOSyncDataByUserIdAsync(int userId)
         {
             var data = await GetDataFromNapUserControl(userId);
             await InsertNapDataOnUser(data, userId);
