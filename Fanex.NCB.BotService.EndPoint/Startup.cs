@@ -1,21 +1,17 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint
 {
-    using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Text;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Logging.Sentry;
     using Fanex.NCB.BotService.Core;
-    using Fanex.NCB.BotService.EndPoint.Bots;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Bot.Builder.Integration.AspNet.Core;
-    using Microsoft.Bot.Configuration;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
@@ -67,7 +63,6 @@
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
 
-            // configure jwt authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -84,8 +79,7 @@
                 };
             });
 
-            BotServiceDI.Init(services);
-            LoadBotConfig(services, appSettings);
+            BotServiceDI.Init(services, Configuration, Environment, appSettings, logger);
         }
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -106,40 +100,6 @@
             app.UseBotFramework();
 
             app.UseMvc();
-        }
-
-        private void LoadBotConfig(IServiceCollection services, AppSettings appSettings)
-        {
-            // Loads .bot configuration file and adds a singleton that your Bot can access through dependency injection.
-            BotConfiguration botConfig = null;
-            try
-            {
-                var realPath = Path.Combine(Environment.ContentRootPath, appSettings.BotFilePath);
-                botConfig = BotConfiguration.Load(realPath, appSettings.BotFileSecret);
-            }
-            catch (Exception ex)
-            {
-                const string msg = @"Error reading bot file. Please ensure you have valid botFilePath and botFileSecret set for your environment.
-                    - You can find the botFilePath and botFileSecret in the Azure App Service application settings.
-                    - If you are running this bot locally, consider adding a appsettings.json file with botFilePath and botFileSecret.
-                    - See https://aka.ms/about-bot-file to learn more about .bot file its use and bot configuration.";
-
-                logger.LogCritical(msg, ex);
-                throw new InvalidOperationException(msg);
-            }
-
-            services.AddSingleton(_ => botConfig);
-
-            services.AddBot<LicBot>(options =>
-            {
-                options.CredentialProvider = new MultiCredentialProvider(botConfig);
-                options.OnTurnError = async (turnContext, exception) =>
-                {
-                    logger.LogError($"Exception caught : {exception.Message}");
-                    await turnContext.SendActivityAsync("Sorry, it looks like something went wrong. Please contact Administrator.");
-                    throw exception;
-                };
-            });
         }
     }
 }
