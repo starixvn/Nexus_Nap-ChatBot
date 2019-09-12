@@ -31,7 +31,7 @@
             }
             catch (Exception ex)
             {
-                Logging(ex);
+                await Logging(ex);
                 throw;
             }
         }
@@ -45,7 +45,7 @@
             }
             catch (Exception ex)
             {
-                Logging(ex);
+                await Logging(ex);
                 throw;
             }
         }
@@ -59,12 +59,12 @@
             }
             catch (Exception ex)
             {
-                Logging(ex);
+                await Logging(ex);
                 throw;
             }
         }
 
-        private void Logging(Exception exception)
+        private async Task Logging(Exception exception)
         {
             string message = string.Format(
                     CultureInfo.InvariantCulture,
@@ -74,7 +74,7 @@
                     string.Empty,
                     exception.TargetSite,
                     exception.StackTrace);
-            logger.Error(message);
+            await logger.ErrorAsync(message);
         }
     }
 }
