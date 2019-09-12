@@ -14,7 +14,7 @@
     using Resources;
 
     [DesignerCategory("Code")]
-    internal class CustomWebHostService : WebHostService
+    public class CustomWebHostService : WebHostService
     {
         private readonly ILogger logger;
         private readonly IOptionsMonitor<CronJob> cronJob;
