@@ -17,8 +17,7 @@ const commandList = [
             commands.boldCommand,
             commands.italicCommand,
             commands.strikeThroughCommand,
-            commands.linkCommand,
-            commands.quoteCommand
+            commands.linkCommand
         ]
     }
 ];

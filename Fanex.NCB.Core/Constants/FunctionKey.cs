@@ -11,5 +11,11 @@
         public const string ChatGroupMapping = "ChatGroupMapping";
 
         public const string EditNotification = "EditNotification";
+
+        public const string CreateNotificationTemplate = "CreateNotificationTemplate";
+
+        public const string NotificationTemplateList = "NotificationTemplateList";
+
+        public const string EditNotificationTemplate = "EditNotificationTemplate";
     }
 }

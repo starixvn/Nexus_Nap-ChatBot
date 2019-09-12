@@ -3,11 +3,15 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NAP.Client.Helpers.Web;
+    using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Main.ViewModel.NotificationTemplate;
     using Fanex.NCB.Models.NotificationTemplate;
+    using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
+    using static Fanex.NAP.Core.Business.Constant;
 
+    [NapChatBotSuperAuth]
     public class NotificationTemplateController : Controller
     {
         private readonly INotificationTemplaceService notificationTemplaceService;
@@ -20,12 +24,14 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplateList, Policy = Policy.Read)]
         public IActionResult Index()
         {
             return View("~/Views/SkypeBot/NotificationTemplate/Index.cshtml");
         }
 
         [HttpGet]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplateList, Policy = Policy.Read)]
         public async Task<IActionResult> Get(int? notificationTypeId, int pageIndex, int pageSize)
         {
             var result = await notificationTemplaceService.GetAsync(notificationTypeId, pageIndex, pageSize).ConfigureAwait(false);
@@ -34,6 +40,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpPost]
+        [NapChatBotAuth(FunctionKey = FunctionKey.CreateNotificationTemplate, Policy = Policy.Host)]
         public async Task<IActionResult> Create([FromBody]CreateNotificationTemplateViewModel viewModel)
         {
             if (ModelState.IsValid)

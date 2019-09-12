@@ -20,6 +20,7 @@
     NotificationType: 'Notification Type',
     NoInfo: 'No information is available.',
     PleaseSelect: 'Please select ...',
+    Preview: 'Preview',
     FieldRequired: 'This field is required',
     RecipientType: 'Recipient Type',
     Recipient: 'Recipient',

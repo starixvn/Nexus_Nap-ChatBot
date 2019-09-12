@@ -80,26 +80,9 @@
     }
 }
 
-.form-create {
-    overflow: hidden;
-
-    .form-group {
-        display: grid;
-        grid-template-columns: 120px 1fr;
-        grid-template-rows: 1fr;
-        align-items: center;
-        margin-bottom: 12px;
-
-        .content {
-            height: 260px;
-        }
-    }
-
-    .two-cols {
-        display: grid;
-        grid-template-columns: 380px 536px;
-        grid-template-rows: 1fr;
-        grid-gap: 30px;
-        align-items: start;
+.new-notification-template {
+    .mde-preview {
+        max-height: 400px;
+        overflow-y: auto;
     }
 }

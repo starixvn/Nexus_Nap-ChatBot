@@ -24,7 +24,6 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        //[TypeFilter(typeof(NapPermissionAttribute), Arguments = new object[] { FunctionKey.NewNotification, Policy.Host, true })]
         [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
         public IActionResult Index()
         {
@@ -32,7 +31,6 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpPost]
-        //[TypeFilter(typeof(NapPermissionAttribute), Arguments = new object[] { FunctionKey.NewNotification, Policy.Host, true })]
         [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
         public async Task<IActionResult> Create(CreateNewNotificationViewModel model)
         {

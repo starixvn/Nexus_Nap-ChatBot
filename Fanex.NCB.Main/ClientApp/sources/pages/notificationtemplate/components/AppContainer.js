@@ -35,6 +35,7 @@ export class AppContainer extends Component {
 
     handleCreateSuccess = () => {
         this.handleCloseCreateTemplatePopup();
+        this.props.setCreateTemplateResult(null);
         this.props.getGridData(this.props.gridParams);
     }
 
