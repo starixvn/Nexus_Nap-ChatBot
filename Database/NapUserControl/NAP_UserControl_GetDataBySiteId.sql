@@ -1,7 +1,19 @@
-CREATE PROCEDURE [dbo].[NAP_UserControl_GetDataBySiteId]
+/*<info serverAlias="DBPOL-NAP_UserControl" executers="bodbAdminNet" isFunction="0" isNested="0"></info>*/
+ALTER PROCEDURE [dbo].[NAP_UserControl_GetDataBySiteId]
 	@SiteId INT
 	,@UserId INT = NULL
 AS
+/*  
+ * Created	: 20190828@Oliver
+ * Task		: Fetch all data from Nap User Control by SiteId 
+ * DB		: NAP_UserControl
+ *  
+ * Revisions:
+	- 20190828@Oliver: init - [Redmine:119340]
+      - 20190828@Oliver: add config db - [Redmine:119340]
+	- 20190905@Oliver: update condition get OnUser table and get more 2 tables- [Redmine:119340]
+ * Param's Explanation:
+ */
 BEGIN
 	SET NOCOUNT ON;
 
@@ -71,8 +83,10 @@ BEGIN
       ,[IP]
       ,[NetSessionId]
 	FROM dbo.NAP_OnUser ou WITH (NOLOCK)
-	WHERE ou.SiteId = @SiteId
-		AND (@UserId IS NULL OR ou.UserId = @UserId)
+	WHERE ou.IsKickedOut = 0
+	AND ((@UserId IS NULL AND ou.SiteId = @SiteId)
+	OR
+	 (@UserId IS NOT NULL AND ou.UserId = @UserId))
 
 	SELECT [SiteId]
       ,[SiteName]
@@ -133,6 +147,26 @@ BEGIN
 	FROM dbo.NAP_UserSite us WITH (NOLOCK)
 	WHERE us.SiteId = @SiteId
 	AND (@UserId IS NULL OR us.UserId = @UserId)
+
+     SELECT DISTINCT c.custid
+		  ,c.firstname
+		  ,c.lastname
+		  ,c.username
+		  ,c.userpwd
+		  ,c.email
+	FROM CustDB.dbo.Customer c WITH (NOLOCK)
+	INNER JOIN dbo.NAP_UserSite us WITH (NOLOCK)
+	ON c.custid = us.UserId
+	WHERE (@UserId IS NULL AND us.SiteId = @SiteId)
+		OR (@UserId IS NOT NULL AND c.custid = @UserId)
+
+	SELECT DISTINCT ci.custid
+		  ,username
+		  ,closed
+	FROM CustDB.dbo.custInfo ci WITH (NOLOCK)
+	INNER JOIN dbo.NAP_UserSite us WITH (NOLOCK) ON ci.custid = us.UserId
+	WHERE (@UserId IS NULL AND us.SiteId = @SiteId)
+		OR (@UserId IS NOT NULL AND ci.custid = @UserId)
 END
 
 GO
