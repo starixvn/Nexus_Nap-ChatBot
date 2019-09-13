@@ -4,6 +4,6 @@
     {
         public int SiteId { get; set; }
 
-        public int ItemEachBatchSendNotification { get; set; } = 10;
+        public int ItemEachBatchSendNotification { get; set; }
     }
 }

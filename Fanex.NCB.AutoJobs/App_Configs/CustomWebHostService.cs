@@ -22,9 +22,9 @@
 
         public CustomWebHostService(IWebHost host) : base(host)
         {
-            logger = host.Services.GetRequiredService<ILogger<CustomWebHostService>>();
-            cronJob = host.Services.GetRequiredService<IOptionsMonitor<CronJob>>();
-            recurringJob = host.Services.GetRequiredService<IRecurringJobManager>();
+            logger = host.Services.GetService<ILogger<CustomWebHostService>>();
+            cronJob = host.Services.GetService<IOptionsMonitor<CronJob>>();
+            recurringJob = host.Services.GetService<IRecurringJobManager>();
         }
 
         protected override void OnStarted()
