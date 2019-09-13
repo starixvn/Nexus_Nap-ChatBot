@@ -2,12 +2,8 @@
 {
     public class AppSettings
     {
-        public string Secret { get; set; }
-
         public int SiteId { get; set; }
 
-        public string Env { get; set; }
-
-        public int ItemEachBatchSendNotification { get; set; }
+        public int ItemEachBatchSendNotification { get; set; } = 10;
     }
 }

@@ -124,7 +124,6 @@
             var settings = new AppSettings
             {
                 SiteId = 69,
-                Env = "UAT",
                 ItemEachBatchSendNotification = 10
             };
             appSettings = Substitute.For<IOptionsSnapshot<AppSettings>>();
