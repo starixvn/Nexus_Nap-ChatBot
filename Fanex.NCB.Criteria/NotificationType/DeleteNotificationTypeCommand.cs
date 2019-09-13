@@ -4,10 +4,12 @@
 
     public class DeleteNotificationTypeCommand : BaseCommand
     {
-        public int NotificationId { get; set; }
+        public int NotificationTypeId { get; set; }
+
+        public int UserId { get; set; }
 
         public override string GetSettingKey() => "NCB_NotificationType_Del";
 
-        public override bool IsValid() => NotificationId > 0;
+        public override bool IsValid() => NotificationTypeId > 0;
     }
 }

@@ -55,7 +55,8 @@ export const setDeleteData = data => {
 export const deleteItem = notificationTypeId => {
     const url = Site.resolveClientUrl('NotificationType/Delete');
     const headers = {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'RequestVerificationToken': Site.getXsrfToken()
     };
 
     return async dispatch => {

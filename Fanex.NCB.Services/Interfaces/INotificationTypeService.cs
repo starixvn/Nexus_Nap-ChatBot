@@ -10,7 +10,7 @@
     {
         Task<(IEnumerable<NotificationType>, long)> GetAllAsync(int pageIndex, int pageSize);
 
-        Task<CommandResult> DeleteAsync(int notificationTypeId);
+        Task<CommandResult> DeleteAsync(int notificationTypeId, int userId);
 
         Task<CommandResult> InsertAsync(NotificationTypeViewModel model);
 

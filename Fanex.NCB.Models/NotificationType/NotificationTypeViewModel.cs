@@ -15,5 +15,7 @@ namespace Fanex.NCB.Models.NotificationType
         public string ChatGroupTypeIds { get; set; }                
 
         public int SystemId { get; set; }
+
+        public int UserId { get; set; }
     }
 }

@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import PropTypes from 'prop-types';
 import ConfirmPopup from '../../common/ConfirmPopup';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 export class DeletePopup extends Component {
   constructor(props) {
@@ -16,21 +17,25 @@ export class DeletePopup extends Component {
       : this.props.closeDeletePopupHandler();
   }
 
-  render() {
-    if (!this.props.deletePopupData || !this.props.deletePopupData.isShowed) {
-      return null;
-    }
+    render() {
+        if (!this.props.deletePopupData || !this.props.deletePopupData.isShowed) {
+          return null;
+        }
 
-    return (
-      <ConfirmPopup
-        confirmHandler={this.confirmHandler}
-        confirmToggle={this.props.closeDeletePopupHandler}
-        isShowPopup={this.props.deletePopupData.isShowed}
-        title={'Delete Notification Type'}
-        content={`<p>Are you sure you want to delete <br /><strong>${this.props.deletePopupData.content}</strong></p>`}
-        warningIcon={false}
-      />
-    );
+        return (
+            <Modal isOpen toggle={this.props.closeDeletePopupHandler} wrapClassName="popup-confirm">
+                <ModalHeader toggle={this.props.closeDeletePopupHandler}>Delete Notification Type</ModalHeader>
+                <ModalBody>
+                    <div className="info">
+                        <p>Are you sure you want to delete <br /><strong>{this.props.deletePopupData.content}</strong> ?</p>
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <button className="btn-submit" onClick={() => this.confirmHandler(true)}>OK</button>
+                    <button className="btn-cancel" onClick={() => this.confirmHandler(false)}>Cancel</button>
+                </ModalFooter>
+            </Modal>
+        );
   }
 }
 

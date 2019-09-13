@@ -50,7 +50,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Host)]
         public async Task<IActionResult> Delete([FromBody] int notificationTypeId)
         {
-            var result = await notificationTypeService.DeleteAsync(notificationTypeId).ConfigureAwait(false);
+            var result = await notificationTypeService.DeleteAsync(notificationTypeId, napSession.UserId).ConfigureAwait(false);
 
             return Json(result);
         }
@@ -59,6 +59,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Host)]
         public async Task<IActionResult> Add([FromBody] NotificationTypeViewModel item)
         {
+            item.UserId = napSession.UserId;
             var result = await notificationTypeService.InsertAsync(item).ConfigureAwait(false);
 
             return Json(result);
@@ -68,6 +69,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Host)]
         public async Task<IActionResult> Edit([FromBody] NotificationTypeViewModel item)
         {
+            item.UserId = napSession.UserId;
             var result = notificationTypeService.UpdateAsync(item);
 
             return Json(await result);

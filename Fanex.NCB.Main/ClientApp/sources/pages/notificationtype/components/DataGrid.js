@@ -65,7 +65,7 @@ export class DataGrid extends Component {
           <div>
             <span className="icon-edit" id={'edit-' + index} onClick={() => this.openEditPopup(item, index)} />
             <UncontrolledTooltip placement="top" target={'edit-' + index}>Edit</UncontrolledTooltip>
-            <span className="icon-delete" id={'delete-' + index} onClick={() => this.openDeletePopup(index, item.notificationTypeId, item.notificationTypeName)} />
+            <span className="icon-delete" id={'delete-' + index} onClick={() => this.openDeletePopup(index, item.id, item.name)} />
             <UncontrolledTooltip placement="top" target={'delete-' + index}>Delete</UncontrolledTooltip>
           </div>
         </Cell>

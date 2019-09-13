@@ -20,11 +20,12 @@
             this.baseService = baseService;
         }
 
-        public async Task<CommandResult> DeleteAsync(int notificationTypeId)
+        public async Task<CommandResult> DeleteAsync(int notificationTypeId, int userId)
         {
             var command = new DeleteNotificationTypeCommand
             {
-                NotificationId = notificationTypeId
+                NotificationTypeId = notificationTypeId,
+                UserId = userId
             };
 
             return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
@@ -76,7 +77,8 @@
                 NotificationTypeName = model.NotificationTypeName,
                 SystemId = model.SystemId,
                 RecipientTypeIds = model.RecipientTypeIds,
-                ChatGroupTypeIds = model.ChatGroupTypeIds
+                ChatGroupTypeIds = model.ChatGroupTypeIds,
+                UserId = model.UserId
             };
 
             return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
@@ -90,7 +92,8 @@
                 NotificationTypeName = model.NotificationTypeName,
                 RecipientTypeIds = model.RecipientTypeIds,
                 ChatGroupTypeIds = model.ChatGroupTypeIds,
-                SystemId = model.SystemId
+                SystemId = model.SystemId,
+                UserId = model.UserId
             };
 
             return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);

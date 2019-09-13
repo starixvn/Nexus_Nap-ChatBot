@@ -8,19 +8,35 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_NotificationType_Upd(
     IN recipientTypeIds varchar(500), 
     IN chatGroupTypeIds varchar(500), 
     IN systemId INT,
+    IN userId INT,
     OUT errCode SMALLINT,
 	OUT errMsg VARCHAR(100)
     /*
 		Creator: Scofield@20190912
 				Params:
-						- pageIndex: Page Index for paging
-						- pageSize: Page Size for paging
+						- notificationTypeId: Notification Type Id
+						- notificationTypeName: Notification Type Name
+						- recipientTypeIds: Recipient Type Ids
+                        - chatGroupTypeIds: Chat Group Type Ids
+                        - systemId: System Id
+                        - userId: User Id
 				Revisions:
 						- 20190912@Scofield: Create
     */
    )
 SQL SECURITY DEFINER
 BEGIN	 	
+	-- Variables used to write User Logs
+	DECLARE startTime 			DATETIME(3);
+    DECLARE finishTime 		DATETIME(3); 
+    DECLARE duration 			INT;							
+    DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
+    DECLARE ACTION_ID 		INT DEFAULT 16;
+	
+	-- Get Start Time to calcualte execution duration
+    SET startTime = UTC_TIMESTAMP(3);
+    SET errCode = 0, errMsg = '';
+    
 	IF EXISTS(SELECT * FROM NotificationType nt WHERE nt.NotificationTypeName =  notificationTypeName and nt.NotificationTypeId <> notificationTypeId) THEN
 		SELECT 1 INTO errCode;
         SELECT "Notification Type Name exists" INTO errMsg;
@@ -73,9 +89,19 @@ BEGIN
         DROP TEMPORARY TABLE IF EXISTS tmp_RecipientTypes;
         DROP TEMPORARY TABLE IF EXISTS tmp_ChatGroupTypes;
        
-		-- Update error code
-        SELECT 0 INTO errCode;
-        SELECT "" INTO errMsg;
+		-- Get Finish Time to calcualte execution duration
+		SET finishTime = UTC_TIMESTAMP(3);
+		SET duration =  TIMESTAMPDIFF(MICROSECOND, startTime,finishTime) / 1000;
+		
+		-- Get Log Content, JSON format
+		SET logContent = json_object('notificationTypeId', notificationTypeId,
+									'notificationTypeName', notificationTypeName,
+									'recipientTypeIds', recipientTypeIds,
+									'chatGroupTypeIds', chatGroupTypeIds,
+									'systemId', systemId);
+						
+		-- Write User Log
+		CALL NCB_UserLog_RunSP_Ins(ACTION_ID, notificationTypeId, userId, logContent, startTime, duration);
     END IF;    
 END;
 
