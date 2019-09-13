@@ -17,12 +17,23 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NCB_OIC_SyncData(
 
         Revisions:
 				- 20190909@Oliver: Merge 5 SP into 1
+                - 20190913@Oliver: update table Recipient after sync
         
     */
 )
 SQL SECURITY DEFINER
 BEGIN
+    # Variables
 	DECLARE iLoop INT;
+
+    #Constants
+
+    DECLARE RECIPIENT_TYPE_LICENSEE INT DEFAULT 1;
+    DECLARE RECIPIENT_TYPE_PRODUCT INT DEFAULT 2;
+    DECLARE LICENSEE_SOURCE_DESCRIPTION VARCHAR(50) DEFAULT 'bodb_OIC.dbo.Licensee';
+    DECLARE PRODUCT_SOURCE_DESCRIPTION VARCHAR(50) DEFAULT 'bodb_OIC.dbo.Product';
+
+
 
 ############################ Licensee ###########################################
 
@@ -174,6 +185,55 @@ BEGIN
     ON DUPLICATE KEY UPDATE 
 		ProductId = values(ProductId), 
         ProductName = values(ProductName);
+
+########################################### UPDATE TABLE RECIPIENT ######################################################
+
+    DROP TEMPORARY TABLE IF EXISTS tmp_Recipient;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Recipient(RecipientName VARCHAR(500), RecipientTypeID INT, SourceID INT, SourceDescription VARCHAR(50));
+    
+    INSERT INTO tmp_Recipient(RecipientName, RecipientTypeID, SourceID, SourceDescription)
+    SELECT l.LicenseeName
+          , RECIPIENT_TYPE_LICENSEE
+          , l.LicenseeId
+          , LICENSEE_SOURCE_DESCRIPTION
+    FROM ChatBot.Licensee l;
+
+    INSERT INTO tmp_Recipient(RecipientName, RecipientTypeID, SourceID, SourceDescription)
+    SELECT p.ProductName
+          , RECIPIENT_TYPE_PRODUCT
+          , p.ProductID
+          , PRODUCT_SOURCE_DESCRIPTION
+    FROM ChatBot.Product p;
+
+    # Need delete Ricipient
+    DROP TEMPORARY TABLE IF EXISTS tmp_Recipient_Remove;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Recipient_Remove(RecipientID INT);
+
+    INSERT INTO tmp_Recipient_Remove(RecipientID)
+    SELECT r.RecipientID
+    FROM ChatBot.Recipient r
+    LEFT JOIN tmp_Recipient tmp ON r.RecipientTypeID = tmp.RecipientTypeID 
+                        AND r.SourceID = tmp.SourceID
+    WHERE tmp.RecipientTypeID IS NULL;
+
+    DELETE r FROM ChatBot.Recipient r INNER JOIN tmp_Recipient_Remove tmp ON r.RecipientID = tmp.RecipientID;
+
+    # End delete removed recipients
+
+    INSERT INTO Recipient(RecipientName, RecipientTypeID, SourceID, SourceDescription)    
+    SELECT tmp.RecipientName 
+         , tmp.RecipientTypeID
+         , tmp.SourceID
+         , tmp.SourceDescription
+    FROM tmp_Recipient tmp
+    LEFT JOIN ChatBot.Recipient r ON tmp.RecipientTypeID = r.RecipientTypeID
+                    AND tmp.SourceID = r.SourceID
+    WHERE r.RecipientID IS NULL;
+
+    UPDATE ChatBot.Recipient r
+    INNER JOIN tmp_Recipient tmp ON r.RecipientTypeID = tmp.RecipientTypeID AND r.SourceID = tmp.SourceID
+    SET r.RecipientName = tmp.RecipientName
+       ,r.SourceDescription = tmp.SourceDescription;
 END;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_OIC_SyncData TO 'ncb.admin'@'%';
