@@ -1,0 +1,24 @@
+{
+  "name": "Fanex.NCB.BotService",
+  "description": "",
+  "services": [
+    {
+      "type": "endpoint",
+      "name": "1on1notify(UAT)",
+      "endpoint": "https://licbot-api.starific.net/api/messages",
+      "appId": "1fa1a23c-a202-46e0-b168-57b7537b9456",
+      "appPassword": "7SoTkwGtspX2WNcW5.Cb1bqCnD*/aOb@",
+      "id": "1"
+    },
+    {
+      "type": "endpoint",
+      "name": "OWnotify(UAT)",
+      "endpoint": "https://licbot-api.starific.net/api/messages",
+      "appId": "efd1cd73-a9a2-4c54-818c-1fa2ef6b8c78",
+      "appPassword": "?8Ti3CSQ1BSi4XwJNNWHAmI+gLmdcM?[",
+      "id": "2"
+    }
+  ],
+  "padlock": "",
+  "version": "2.0"
+}

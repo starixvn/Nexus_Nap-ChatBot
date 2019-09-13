@@ -8,8 +8,7 @@
       "endpoint": "https://licbot.nexdev.net/api/messages",
       "appId": "8e7cdcd3-a375-45eb-be44-da89e26aaa49",
       "appPassword": "[14Z15g?rKmygZWNZQI-Mb.7bvaMlfzy",
-      "id": "1",
-      "Intro": "Hello"
+      "id": "1"
     },
     {
       "type": "endpoint",
@@ -17,17 +16,7 @@
       "endpoint": "https://licbot.nexdev.net/api/messages",
       "appId": "56c9b606-4cd4-49e3-bdfe-24815ac7d7b4",
       "appPassword": "G5Vh4qm06+-q[SK=I1o@L@iC]fGAymJ]",
-      "id": "2",
-      "Intro": "Hi I'm OWnotify"
-    },
-    {
-      "type": "endpoint",
-      "name": "NCB1",
-      "endpoint": "https://4bf792cb.ngrok.io/api/messages",
-      "appId": "3b546454-c9a5-4cc8-9f2e-be8e1bfd4e9a",
-      "appPassword": "jcA0aW9d@Lk55RaUbCSCsBB*B/Szbnc.",
-      "id": "3",
-      "Intro": "Hi I'm NCB1 Bot for testing."
+      "id": "2"
     }
   ],
   "padlock": "",

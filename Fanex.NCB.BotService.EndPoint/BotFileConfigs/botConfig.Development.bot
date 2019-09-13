@@ -1,0 +1,24 @@
+{
+  "name": "Fanex.NCB.BotService",
+  "description": "",
+  "services": [
+    {
+      "type": "endpoint",
+      "name": "NCB1",
+      "endpoint": "https://4bf792cb.ngrok.io/api/messages",
+      "appId": "3b546454-c9a5-4cc8-9f2e-be8e1bfd4e9a",
+      "appPassword": "jcA0aW9d@Lk55RaUbCSCsBB*B/Szbnc.",
+      "id": "1"
+    },
+    {
+      "type": "endpoint",
+      "name": "NCB2",
+      "endpoint": "https://4bf792cb.ngrok.io/api/messages",
+      "appId": "33645da9-5fb8-4671-b65c-20711a95a20c",
+      "appPassword": "jcA0aW9d@Lk55RaUbCSCsBB*B/Szbnc.",
+      "id": "2"
+    }
+  ],
+  "padlock": "",
+  "version": "2.0"
+}
