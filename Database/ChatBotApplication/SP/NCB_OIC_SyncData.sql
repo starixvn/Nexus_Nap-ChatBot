@@ -216,8 +216,37 @@ BEGIN
                         AND r.SourceID = tmp.SourceID
     WHERE tmp.RecipientTypeID IS NULL;
 
-    DELETE r FROM ChatBot.Recipient r INNER JOIN tmp_Recipient_Remove tmp ON r.RecipientID = tmp.RecipientID;
+    IF EXISTS (SELECT 1 FROM tmp_Recipient_Remove) THEN
 
+        # Delete Recipient
+        DELETE r FROM ChatBot.Recipient r WHERE r.RecipientID IN (SELECT tmp.RecipientID FROM tmp_Recipient_Remove tmp);
+
+        # Delete from ConversationGroupRecipient
+        DELETE c FROM ChatBot.ConversationGroupRecipient c WHERE c.RecipientID IN (SELECT tmp.RecipientID FROM tmp_Recipient_Remove tmp);
+
+        # Delete from NotificationTypeRecipientException
+        DELETE ntre FROM ChatBot.NotificationTypeRecipientException ntre WHERE ntre.RecipientID IN (SELECT tmp.RecipientID FROM tmp_Recipient_Remove tmp);
+
+        # Delete from NotificationRecipientList
+        DROP TEMPORARY TABLE IF EXISTS tmp_Notification;
+        CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Notification(NotificationId INT);
+
+        INSERT INTO tmp_Notification(NotificationId)
+        SELECT NotificationID
+        FROM ChatBot.NotificationRecipientList nrl
+        WHERE nrl.RecipientID IN (SELECT tmp.RecipientID FROM tmp_Recipient_Remove tmp);
+
+        DELETE nrl FROM ChatBot.NotificationRecipientList nrl WHERE nrl.RecipientID IN (SELECT tmp.RecipientID FROM tmp_Recipient_Remove tmp);
+
+        # Delete Notification if just 1 recipient on list.
+        DELETE n FROM ChatBot.Notification n 
+        WHERE NOT EXISTS (
+            SELECT 1 FROM ChatBot.NotificationRecipientList nrl
+            WHERE nrl.NotificationId = n.NotificationId
+            ) 
+            AND n.NotificationID IN (SELECT NotificationID FROM tmp_Notification);
+
+    END IF;
     # End delete removed recipients
 
     INSERT INTO Recipient(RecipientName, RecipientTypeID, SourceID, SourceDescription)    
