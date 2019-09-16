@@ -10,8 +10,6 @@
 
         public IEnumerable<BaseModel> RecipientTypes { get; set; }
 
-        public IEnumerable<BaseModel> FilterRecipientTypes { get; set; }
-
         public IEnumerable<Recipient> Recipients { get; set; }
 
         public IEnumerable<ChatGroupType> ChatGroupTypes { get; set; }

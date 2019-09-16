@@ -10,7 +10,6 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
     using static Fanex.NAP.Core.Business.Constant;
 
     [NapChatBotSuperAuth]
@@ -27,8 +26,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
             ISettingService settingService,
             INapSettings napSettings,
             INapSession napSession,
-            IUserService userService,
-            ILogger<ChatGroupMappingController> logger)
+            IUserService userService)
         {
             this.chatGroupMappingService = chatGroupMappingService;
             this.settingService = settingService;
