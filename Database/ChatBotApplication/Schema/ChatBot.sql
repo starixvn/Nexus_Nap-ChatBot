@@ -127,7 +127,7 @@
 			, CreatorID INT NOT NULL
 			, CreatedDate DATETIME NOT NULL
 			, LastModifiedDate DATETIME NULL
-			, LastModifiedBy DATETIME NULL
+			, LastModifiedBy INT NULL
 			, CONSTRAINT PK_NotificationTemplateID  PRIMARY KEY (NotificationTemplateID)
 			, INDEX INDEX_NotificationTypeID USING BTREE (NotificationTypeID)
 			, UNIQUE INDEX UNIQUE_NotificationTypeID_NotificationTemplateName USING BTREE (NotificationTypeID, NotificationTemplateName)
