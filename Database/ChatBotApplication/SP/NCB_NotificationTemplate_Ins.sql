@@ -1,3 +1,7 @@
+DROP PROCEDURE IF EXISTS NCB_NotificationTemplate_Ins;
+
+DELIMITER //
+
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationTemplate_Ins`(
 	IN notificationTypeID SMALLINT
     ,IN notificationTemplateName VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
@@ -71,4 +75,8 @@ NCB_NotificationTemplate_Ins:BEGIN
 							,startTime 
 							,duration
 							);
-END
+END;
+//
+DELIMITER ;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationTemplate_Ins TO 'ncb.admin'@'%';

@@ -1,3 +1,7 @@
+DROP PROCEDURE IF EXISTS NCB_NotificationTemplate_Del;
+
+DELIMITER //
+
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationTemplate_Del`(
 	IN notificationTemplateID INT
     ,IN userID INT
@@ -45,4 +49,10 @@ NCB_NotificationTemplate_Del:BEGIN
 							,startTime 
 							,duration
 							);
-END
+END;
+
+
+//
+DELIMITER ;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationTemplate_Del TO 'ncb.admin'@'%';

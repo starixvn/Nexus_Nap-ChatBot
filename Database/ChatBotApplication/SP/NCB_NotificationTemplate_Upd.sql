@@ -1,3 +1,7 @@
+DROP PROCEDURE IF EXISTS NCB_NotificationTemplate_Upd;
+
+DELIMITER //
+
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationTemplate_Upd`(
 	IN notificationTemplateID INT
 	,IN notificationTypeID SMALLINT
@@ -15,7 +19,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationTemplate_Upd`(
 )
 NCB_NotificationTemplate_Upd:BEGIN
 	#Variables used to write User Logs
-	DECLARE startTime 			DATETIME(3);
+	DECLARE startTime 		DATETIME(3);
     DECLARE finishTime 		DATETIME(3); 
     DECLARE duration 			INT;							
     DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
@@ -62,5 +66,11 @@ NCB_NotificationTemplate_Upd:BEGIN
 							,logContent 
 							,startTime 
 							,duration
-							);
-END
+							);;
+	
+END;
+
+//
+DELIMITER ;
+
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationTemplate_Upd TO 'ncb.admin'@'%';
