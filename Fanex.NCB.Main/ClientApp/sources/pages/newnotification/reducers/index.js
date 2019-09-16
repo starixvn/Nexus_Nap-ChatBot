@@ -1,8 +1,6 @@
 import { combineReducers } from 'redux';
-import dataHandlerReducer  from './dataHandlerReducer';
-import gridHanderReducer from './gridHandlerReducer';
+import dataHandlerReducer from './dataHandlerReducer';
 
 export default combineReducers({
-    ...dataHandlerReducer,
-    ...gridHanderReducer
+    ...dataHandlerReducer
 });

@@ -45,5 +45,45 @@
 
             return result;
         }
+
+        public async Task<CommandResult> EditAsync(EditNotificationTemplate model)
+        {
+            var command = new EditNotificationTemplateCommand
+            {
+                NotificationTemplateId = model.NotificationTemplateId,
+                NotificationTypeId = model.NotificationTypeId,
+                NotificationTemplateName = model.NotificationTemplateName,
+                Title = model.Title,
+                Content = model.Content,
+                ModifierId = model.ModifierId
+            };
+
+            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+
+            return result;
+        }
+
+        public async Task<NotificationTemplate> GetByIdAsync(int notificationTemplateId)
+        {
+            var result = await baseService.GetDataEntityAsync<NotificationTemplate>(new GetTemplateByIdCriteria
+            {
+                NotificationTemplateId = notificationTemplateId
+            }).ConfigureAwait(false);
+
+            return result;
+        }
+
+        public async Task<CommandResult> DeleteAsync(int notificationTemplateId, int userId)
+        {
+            var command = new DeleteNotificationTemplateCommand
+            {
+                NotificationTemplateId = notificationTemplateId,
+                UserId = userId
+            };
+
+            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+
+            return result;
+        }
     }
 }

@@ -12,10 +12,6 @@
 
         public const string EditNotification = "EditNotification";
 
-        public const string CreateNotificationTemplate = "CreateNotificationTemplate";
-
-        public const string NotificationTemplateList = "NotificationTemplateList";
-
-        public const string EditNotificationTemplate = "EditNotificationTemplate";
+        public const string NotificationTemplate = "NotificationTemplate";
     }
 }

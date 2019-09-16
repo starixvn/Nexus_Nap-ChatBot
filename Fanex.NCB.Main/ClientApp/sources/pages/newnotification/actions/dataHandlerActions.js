@@ -2,32 +2,6 @@ import types from './types';
 import axios from 'axios';
 import Site from '../../lib/site';
 import errorResponseHandler from '../../lib/errorResponseHandler';
-
-// Settings
-export const setSettings = data => {
-    return {
-        type: types.SETTING_DATA,
-        data: data
-    };
-};
-
-export const getSettings = () => {
-    const url = Site.resolveClientUrl('NewNotification/GetSettings');
-    const data = {
-        notificationTypes: [{ id: 1, name: 'a' }, { id: 2, name: 'b' }],
-        products: [{ id: 1, name: 'p1' }, { id: 2, name: 'p2' }]
-    };
-
-    return dispatch => {
-        return axios.get(url).then(response => {
-            dispatch(setSettings(response.data));
-        }).catch(() => {
-            errorResponseHandler();
-            dispatch(setSettings(data)); //test
-        });
-    };
-};
-
 // Notification Type
 export const setNotificationTypes = data => {
     return {
@@ -174,8 +148,6 @@ export const toggleConfirmationPopup = (isOpen, content) => {
 };
 
 const actions = {
-    setSettings,
-    getSettings,
     setNotificationTypes,
     getNotificationTypes,
     setTemplateTypes,

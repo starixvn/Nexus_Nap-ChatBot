@@ -13,7 +13,6 @@ import TemplatePreview from '../../common/TemplatePreview/index';
 const commandList = [
     {
         commands: [
-            commands.headerCommand,
             commands.boldCommand,
             commands.italicCommand,
             commands.strikeThroughCommand,
@@ -77,7 +76,7 @@ class NewNotificationTemplate extends Component {
                             invalid={touched.notificationTemplateName && errors.notificationTemplateName}
                             onChange={handleChange}
                         />
-                        {touched.title && errors.title && <FormFeedback>{errors.notificationTemplateName}</FormFeedback>}
+                        {touched.notificationTemplateName && errors.notificationTemplateName && <FormFeedback>{errors.notificationTemplateName}</FormFeedback>}
                     </Col>
                 </FormGroup>
                 <FormGroup row>
@@ -126,30 +125,28 @@ class NewNotificationTemplate extends Component {
 
     render() {
         return (
-            <div>
-                <Modal isOpen toggle={this.props.onClose} className="new-notification-template" backdrop="static">
-                    <ModalHeader toggle={this.props.onClose}>Create New Notification Template</ModalHeader>
-                    <ModalBody>
-                        {this.props.createTemplateResult &&
-                            <ResponseMessage isSuccessful={this.props.createTemplateResult.isSuccessful}
-                                message={this.props.createTemplateResult.message || Labels.CreateTemplateSuccessfully}
-                            />
-                        }
-                        <Formik ref="form"
-                            initialValues={{
-                                notificationTypeId: '',
-                                notificationTemplateName: '',
-                                title: '',
-                                content: '',
-                                mode: 'write'
-                            }}
-                            render={this.renderForm}
-                            validationSchema={this.schema}
-                            onSubmit={this.handleSubmit}
+            <Modal isOpen toggle={this.props.onClose} className="new-notification-template" backdrop="static">
+                <ModalHeader toggle={this.props.onClose}>Create New Notification Template</ModalHeader>
+                <ModalBody>
+                    {this.props.createTemplateResult &&
+                        <ResponseMessage isSuccessful={this.props.createTemplateResult.isSuccessful}
+                            message={this.props.createTemplateResult.message || Labels.SubmitSuccessfully}
                         />
-                    </ModalBody>
-                </Modal>
-            </div>
+                    }
+                    <Formik ref="form"
+                        initialValues={{
+                            notificationTypeId: '',
+                            notificationTemplateName: '',
+                            title: '',
+                            content: '',
+                            mode: 'write'
+                        }}
+                        render={this.renderForm}
+                        validationSchema={this.schema}
+                        onSubmit={this.handleSubmit}
+                    />
+                </ModalBody>
+            </Modal>
         );
     }
 }
@@ -161,9 +158,10 @@ const mapDispatchToProps = dispatch => {
 };
 
 const mapStateToProps = state => {
-    const { createTemplateResult } = state;
+    const { createTemplateResult, notificationTypes } = state;
     return {
-        createTemplateResult
+        createTemplateResult,
+        notificationTypes
     };
 };
 

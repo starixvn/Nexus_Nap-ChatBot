@@ -1,13 +1,6 @@
 import createReducer from '../../lib/createReducer';
 import types from '../actions/types';
 
-// Setting
-export const settingData = createReducer(null, {
-    [types.SETTING_DATA](state, action) {
-        return action.data;
-    }
-});
-
 // Notification Type
 export const notificationTypes = createReducer(null, {
     [types.NOTIFICATION_TYPE_DATA](state, action) {
@@ -56,7 +49,6 @@ export const confimrationPopup = createReducer({}, {
 });
 
 const reducers = {
-    settingData,
     notificationTypes,
     notificationTemplates,
     template,

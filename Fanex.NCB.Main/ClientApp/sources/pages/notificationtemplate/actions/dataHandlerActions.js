@@ -45,60 +45,68 @@ export const getGridData = params => {
 };
 
 // Delete
-export const deleteItem = notificationTypeId => {
-    const url = Site.resolveClientUrl('NotificationTemplate/Delete');
-    const headers = {
-        'Content-Type': 'application/json'
-    };
-    const fakeData = { errorCode: 0 };
-
-    return async dispatch => {
-        try {
-            const request = await axios.post(url, notificationTypeId, { headers: headers });
-            const data = await request.data;
-            dispatch(setDeleteData(data));
-            return data;
-        } catch {
-            errorResponseHandler();
-            dispatch(setDeleteData(fakeData));
-        };
+export const setDeleteTemplatePopup = data => {
+    return {
+        type: types.DELETE_POPUP_DATA,
+        data: data
     };
 };
 
-export const setDeleteData = data => {
+export const setDeleteTemplateResult = data => {
     return {
-        type: types.DELETE_RESPONSE_DATA,
+        type: types.DELETE_RESULT_DATA,
         data: data
     };
-}
+};
+
+export const deleteTemplate = notificationTemplateId => {
+    return async dispatch => axios({
+        url: Site.resolveClientUrl(`NotificationTemplate/Delete/${notificationTemplateId}`),
+        method: 'post',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'RequestVerificationToken': Site.getXsrfToken()
+        }
+    }).then(response => {
+        dispatch(setDeleteTemplateResult(response.data));
+    }).catch(errorResponseHandler);
+};
 
 // Edit Popup
-export const setUpdateData = data => {
+
+export const setEditTemplatePopup = data => {
     return {
-        type: types.UPDATE_RESPONSE_DATA,
+        type: types.EDIT_POPUP_DATA,
         data: data
     };
 };
 
-export const update = (params, isNew) => {
-    const url = isNew ? '/NotificationType/Add' : '/NotificationType/Edit';
-    const resolvedUrl = Site.resolveClientUrl(url);
-    const headers = {
-        'Content-Type': 'application/json',
-        'RequestVerificationToken': Site.getXsrfToken()
+export const setEditTemplateResult = data => {
+    return {
+        type: types.EDIT_RESULT_DATA,
+        data: data
     };
-    const fakeData = { errorCode: 0 };
+};
 
-    return async dispatch => {
-        try {
-            const request = await axios.post(resolvedUrl, JSON.stringify(params), { headers: headers });
-            const data = await request.data;
-            dispatch(setUpdateData(data));
-        } catch (err) {
-            errorResponseHandler();
-            dispatch(setUpdateData(fakeData));
+export const getTemplate = (templateId) => {
+    return async dispatch => axios(Site.resolveClientUrl(`NotificationTemplate/GetById/${templateId}`))
+        .then(response => {
+            dispatch(setEditTemplatePopup({ show: true, template: response.data }));
+        }).catch(errorResponseHandler);
+};
+
+export const editTemplate = (data) => {
+    return async dispatch => axios({
+        url: Site.resolveClientUrl('NotificationTemplate/Edit'),
+        method: 'post',
+        data: data,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'RequestVerificationToken': Site.getXsrfToken()
         }
-    };
+    }).then(response => {
+        dispatch(setEditTemplateResult(response.data));
+    }).catch(errorResponseHandler);
 };
 
 export const refreshUpdateData = () => {
@@ -141,13 +149,16 @@ const actions = {
     getNotificationTypes,
     setGridParams,
     getGridData,
-    deleteItem,
-    setUpdateData,
-    update,
-    refreshUpdateData,
     setCreateTemplatePopup,
     setCreateTemplateResult,
-    createTemplate
+    createTemplate,
+    setEditTemplatePopup,
+    setEditTemplateResult,
+    getTemplate,
+    editTemplate,
+    deleteTemplate,
+    setDeleteTemplatePopup,
+    setDeleteTemplateResult
 };
 
 export default actions;

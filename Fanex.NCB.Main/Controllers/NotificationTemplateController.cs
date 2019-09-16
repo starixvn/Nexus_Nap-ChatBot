@@ -24,14 +24,14 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplateList, Policy = Policy.Read)]
+        //   [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Read)]
         public IActionResult Index()
         {
             return View("~/Views/SkypeBot/NotificationTemplate/Index.cshtml");
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplateList, Policy = Policy.Read)]
+        // [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Read)]
         public async Task<IActionResult> Get(int? notificationTypeId, int pageIndex, int pageSize)
         {
             var result = await notificationTemplaceService.GetAsync(notificationTypeId, pageIndex, pageSize).ConfigureAwait(false);
@@ -39,8 +39,17 @@ namespace Fanex.NCB.SkypeBot.Controllers
             return Json(new { total = result.Item1, data = result.Item2 });
         }
 
+        [HttpGet]
+        //    [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Read)]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var result = await notificationTemplaceService.GetByIdAsync(id).ConfigureAwait(false);
+
+            return Json(result);
+        }
+
         [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.CreateNotificationTemplate, Policy = Policy.Host)]
+        //  [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Host)]
         public async Task<IActionResult> Create([FromBody]CreateNotificationTemplateViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -59,6 +68,38 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
             var errors = ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
             return Json(new { isSuccessful = false, errors });
+        }
+
+        [HttpPost]
+        //    [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Host)]
+        public async Task<IActionResult> Edit([FromBody]EditNotificationTemplateViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await notificationTemplaceService.EditAsync(new EditNotificationTemplate
+                {
+                    NotificationTemplateId = viewModel.NotificationTemplateId,
+                    NotificationTypeId = viewModel.NotificationTypeId,
+                    NotificationTemplateName = viewModel.NotificationTemplateName,
+                    Title = viewModel.Title,
+                    Content = viewModel.Content,
+                    ModifierId = napSession.UserId
+                }).ConfigureAwait(false);
+
+                return Json(result);
+            }
+
+            var errors = ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
+            return Json(new { isSuccessful = false, errors });
+        }
+
+        [HttpPost]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Host)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await notificationTemplaceService.DeleteAsync(id, napSession.UserId).ConfigureAwait(false);
+
+            return Json(result);
         }
     }
 }

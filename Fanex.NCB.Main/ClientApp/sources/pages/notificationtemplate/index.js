@@ -12,7 +12,15 @@ const store = Store.createStore(reducer, {
     createTemplatePopup: {
         show: false
     },
-    createTemplateResult: null
+    editTemplatePopup: {
+        show: false
+    },
+    deleteTemplatePopup: {
+        show: false
+    },
+    createTemplateResult: null,
+    editTemplateResult: null,
+    deleteTemplateResult: null
 });
 
 renderLayout(

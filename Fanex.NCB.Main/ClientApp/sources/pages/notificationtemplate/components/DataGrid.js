@@ -67,6 +67,16 @@ export class DataGrid extends Component {
         return [<Row key={`body${1}`} ><Cell colSpan="5"><NoDataTitle /></Cell></Row>];
     }
 
+    handleEditTemplate = e => {
+        const id = parseInt(e.target.dataset.templateid, 10);
+        this.props.getTemplate(id);
+    }
+
+    handleDeleteTemplate = e => {
+        const id = parseInt(e.target.dataset.templateid, 10);
+        this.props.setDeleteTemplatePopup({ show: true, templateId: id });
+    }
+
     renderRow = (item, index) => (
         <Row key={item.notificationTemplateId} >
             <Cell className="text-center">{index + this.startIndex}</Cell>
@@ -80,8 +90,8 @@ export class DataGrid extends Component {
                     <TemplatePreview text={item.content} />
                 </Panel></Cell>
             <Cell className="text-center">
-                <span className="icon-edit" data-notificationid={item.notificationTemplateId} onClick={this.handleCancelNotification} />
-                <span className="icon-delete" data-notificationid={item.notificationTemplateId} onClick={this.handleCancelNotification} />
+                <span className="icon-edit" data-templateid={item.notificationTemplateId} onClick={this.handleEditTemplate} />
+                <span className="icon-delete" data-templateid={item.notificationTemplateId} onClick={this.handleDeleteTemplate} />
             </Cell>
         </Row>
     )
@@ -98,7 +108,7 @@ export class DataGrid extends Component {
             PageIndex: pageIndex,
             PageSize: pageSize,
             TotalItem: total,
-            PageList: [5, 10, 20, 50, 100, 500]
+            PageList: [10, 20, 50, 100, 500]
         };
 
         return (

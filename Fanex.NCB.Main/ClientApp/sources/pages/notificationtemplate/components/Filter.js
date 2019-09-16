@@ -29,7 +29,7 @@ class Filter extends Component {
         return {
             notificationTypeId: parseInt(this.state.notificationTypeId, 10),
             pageIndex: 1,
-            pageSize: 5
+            pageSize: 10
         };
     }
 

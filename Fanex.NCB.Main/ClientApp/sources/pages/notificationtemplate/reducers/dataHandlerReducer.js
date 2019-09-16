@@ -22,15 +22,27 @@ export const gridData = createReducer({}, {
 });
 
 // Delete
-export const deleteResponseData = createReducer({}, {
-    [types.DELETE_RESPONSE_DATA](state, action) {
+export const deleteTemplatePopup = createReducer({}, {
+    [types.DELETE_POPUP_DATA](state, action) {
+        return action.data;
+    }
+});
+
+export const deleteTemplateResult = createReducer({}, {
+    [types.DELETE_RESULT_DATA](state, action) {
         return action.data;
     }
 });
 
 // Update Popup
-export const updateResponseData = createReducer({}, {
-    [types.UPDATE_RESPONSE_DATA](state, action) {
+export const editTemplatePopup = createReducer({}, {
+    [types.EDIT_POPUP_DATA](state, action) {
+        return action.data;
+    }
+});
+
+export const editTemplateResult = createReducer({}, {
+    [types.EDIT_RESULT_DATA](state, action) {
         return action.data;
     }
 });
@@ -52,10 +64,12 @@ const reducers = {
     notificationTypes,
     gridParams,
     gridData,
-    deleteResponseData,
-    updateResponseData,
     createTemplatePopup,
-    createTemplateResult
+    createTemplateResult,
+    editTemplatePopup,
+    editTemplateResult,
+    deleteTemplatePopup,
+    deleteTemplateResult
 };
 
 export default reducers;
