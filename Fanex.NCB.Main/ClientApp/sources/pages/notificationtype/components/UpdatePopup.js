@@ -7,6 +7,8 @@ import PropTypes from 'prop-types';
 import { InputField } from '../../common/InputField';
 import { SelectField } from '../../common/SelectField';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
+import ConfirmPopup from '../../common/ConfirmPopup';
+import { Notification } from '../../common/Notification';
 
 import '@9softstudio/react-multiselect/dist/style.css';
 
@@ -31,7 +33,8 @@ export class UpdatePopup extends Component {
         value: this.props.updatePopupData.editingItem.systemId.value,
         isValid: this.props.updatePopupData.editingItem.systemId.isValid
       },
-      isSummited: false
+      isSummited: false,
+      isShowedConfirm: false
     };
   }
 
@@ -71,49 +74,43 @@ export class UpdatePopup extends Component {
   closePopup = () => {
     setTimeout(function () {
         this.props.updateData.addedresult.isSuccessful && this.props.closeUpdatePopupHandler();
-    }.bind(this),
-      2000);
+      }.bind(this),
+    2000);
+  }
+
+  closeConfirmation = () => {
+    this.setState({
+      isShowedConfirm: false
+    });
+  }
+
+  togglePopup = () => {
+    this.setState({
+      isShowedConfirm: true
+    });
+  }
+
+  updateDropdownData = (items, selectedIds) => {
+    let selectedIdsArr = selectedIds.split(',');
+    items && items.map(v => {
+      v['checked'] = selectedIdsArr.includes(v.id.toString());
+    });
   }
 
   render() {
-    if (!this.props.updatePopupData.isShowed) {
-      return null;
-    }
+    this.updateDropdownData(this.props.settingData.recipientTypes, this.props.updatePopupData.editingItem.recipientTypeIds.value);
+    this.updateDropdownData(this.props.settingData.chatGroupTypes, this.props.updatePopupData.editingItem.chatGroupTypeIds.value);
 
-    const { popupTitle, successMsg } = this.props.updatePopupData;
-      let showMsg = this.props.updateData && this.props.updateData.addedresult;
-      let updateMsg = '';
-      let updateMsgCls = '';
-      if (showMsg) {
-          let isSuccess = this.props.updateData.addedresult.isSuccessful;
-          updateMsg = isSuccess ? successMsg : this.props.updateData.addedresult.message;
-          updateMsgCls = isSuccess ? 'msg-success' : 'msg-error';
-      }
-
-    if (this.props.settingData.recipientTypes) {
-      this.props.settingData.recipientTypes.map(v => {
-        v['checked'] = false;
-        if (this.props.updatePopupData.editingItem.recipientTypeIds.value.split(',').includes(v.id.toString())) {
-          v['checked'] = true;
-        }
-      });
-    }
-
-    if (this.props.settingData.chatGroupTypes) {
-      this.props.settingData.chatGroupTypes.map(v => {
-        v['checked'] = false;
-        if (this.props.updatePopupData.editingItem.chatGroupTypeIds.value.split(',').includes(v.id.toString())) {
-          v['checked'] = true;
-        }
-      });
-    }
-
-    console.log(this.props.updatePopupData.editingItem.notificationTypeName);
     return (
-      <Modal isOpen toggle={this.props.closeUpdatePopupHandler} wrapClassName="new-notification-type">
-        <ModalHeader toggle={this.props.closeUpdatePopupHandler}>{popupTitle}</ModalHeader>
+      <Modal isOpen toggle={this.togglePopup} wrapClassName="new-notification-type">
+        <ModalHeader toggle={this.togglePopup}>{this.props.updatePopupData.popupTitle}</ModalHeader>
         <ModalBody>
-                {showMsg && <div className={updateMsgCls}>{updateMsg}</div>}                
+          {this.props.updateData.addedresult &&
+            <Notification
+              isSuccess={this.props.updateData.addedresult.isSuccessful}
+              successMsg={this.props.updatePopupData.successMsg}
+              failedMsg={this.props.updateData.addedresult.message} />}
+
           <Form className="form-create">
             <FormGroup>
               <Label className="form-label required">Notification Type Name</Label>
@@ -157,6 +154,13 @@ export class UpdatePopup extends Component {
             <button className="btn-submit" onClick={this.submitHandler}>Submit</button>
           </Form>
         </ModalBody>
+
+        <ConfirmPopup
+          onConfirm={this.props.closeUpdatePopupHandler}
+          onToggle={this.closeConfirmation}
+          isOpen={this.state.isShowedConfirm}
+          content={"There might be some unsaved changes in the form. The changes shall not be saved if you close this form. Are you sure you want to close this form?"}
+        />
       </Modal>
     );
   }

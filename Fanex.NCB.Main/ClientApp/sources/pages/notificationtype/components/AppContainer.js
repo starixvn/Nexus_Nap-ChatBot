@@ -24,6 +24,7 @@ export class AppContainer extends Component {
 
   closeDeletePopupHandler = () => {
     this.props.closeDeletePopup();
+    this.props.refreshDeleteData();
     this.props.updateActiveRowIndex(-1);
     !this.props.deletePopupData.isShowed && this.props.getGridData(this.props.gridParams);
   }

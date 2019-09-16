@@ -62,8 +62,15 @@ export const deleteItem = notificationTypeId => {
     return async dispatch => {
         const request = await axios.post(url, notificationTypeId, { headers: headers });
         const data = await request.data;
-        dispatch(setDeleteData(data));
+        dispatch(setDeleteData({ deleteResult: data }));
     };
+};
+
+
+export const refreshDeleteData = () => {
+  return dispatch => {
+    dispatch(setDeleteData({ deleteResult: null }));
+  };
 };
 
 // Update
@@ -112,7 +119,8 @@ const actions = {
     setUpdateParams,
     update,
     setUpdateData,
-    refreshUpdateData
+  refreshUpdateData,
+  refreshDeleteData
 };
 
 export default actions;

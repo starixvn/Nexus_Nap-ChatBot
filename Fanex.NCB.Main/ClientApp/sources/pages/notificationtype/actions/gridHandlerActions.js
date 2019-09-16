@@ -13,7 +13,8 @@ export const openDeletePopup = (notificationTypeId, notificationTypeName) => {
     const deletePopupData = {
         isShowed: true,
         notificationTypeId: notificationTypeId,
-        content: notificationTypeName
+        content: notificationTypeName,
+        successMsg: 'Delete Notification Type Successfully'
     };
 
     return {
@@ -36,7 +37,6 @@ export const closeDeletePopup = () => {
 
 // Update Popup
 export const openEditPopup = item => {
-  console.log(item);
     const newEditPopupData = {
         isShowed: true,
         editingItem: {
