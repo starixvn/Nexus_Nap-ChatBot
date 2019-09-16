@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Criteria\" />
+    <ProjectReference Include="..\Fanex.NCB.BotService.Core\Fanex.NCB.BotService.Core.csproj" />
   </ItemGroup>
 
 </Project>
