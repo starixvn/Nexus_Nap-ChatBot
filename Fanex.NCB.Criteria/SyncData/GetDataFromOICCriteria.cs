@@ -2,7 +2,7 @@
 {
     using Fanex.Data.Repository;
 
-    public class GetDataFromOICCriteria : CriteriaBase
+    public class GetDataFromOicCriteria : CriteriaBase
     {
         public override string GetSettingKey() => "NAP_Chatbot_GetDataToSync";
 

@@ -66,7 +66,7 @@
         public async Task SyncNapDataFromOIC_WhenCalled_ExecuteExpectedMethod()
         {
             var service = GetService();
-            syncDataRepository.FetchDataFromOIC(Arg.Any<GetDataFromOICCriteria>()).Returns(FakeOICData());
+            syncDataRepository.FetchDataFromOIC(Arg.Any<GetDataFromOicCriteria>()).Returns(FakeOICData());
 
             //Actual
             await service.OicSyncDataAsync();

@@ -102,7 +102,7 @@
 
         private async Task<OicData> GetDataFromOIC()
         {
-            var criteria = new GetDataFromOICCriteria();
+            var criteria = new GetDataFromOicCriteria();
 
             return await syncDataRepository.FetchDataFromOIC(criteria);
         }

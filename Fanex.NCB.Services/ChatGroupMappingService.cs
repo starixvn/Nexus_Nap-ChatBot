@@ -22,7 +22,7 @@
 
         public async Task<(IEnumerable<ChatGroupMappingResult>, long)> GetChatGroupMappingListAsync(GetChapGroupMapping model)
         {
-            var critera = new GetChapGroupMappingCriteria
+            var critera = new GetChatGroupMappingCriteria
             {
                 BotIds = model.BotIDs,
                 RecipientName = model.RecipientName,

@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ChatGroupMapping\" />
+    <Folder Include="Common\" />
+    <Folder Include="LocalNap\Group\" />
+    <Folder Include="LocalNap\Security\" />
+    <Folder Include="LocalNap\Site\" />
+    <Folder Include="LocalNap\User\" />
+    <Folder Include="NotificationTemplate\" />
+    <Folder Include="NotificationType\" />
+    <Folder Include="Notification\" />
+    <Folder Include="SendNotification\" />
+    <Folder Include="Setting\" />
+    <Folder Include="SyncData\" />
+  </ItemGroup>
+
+</Project>

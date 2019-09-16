@@ -21,10 +21,10 @@ namespace Fanex.NCB.Services.Tests
         {
             var model = new GetChapGroupMapping { BotIDs = "1,2,3" };
             var data = FakeTupleValue();
-            var criteria = new GetChapGroupMappingCriteria { TotalItems = 10 };
+            var criteria = new GetChatGroupMappingCriteria { TotalItems = 10 };
             var service = GetService();
 
-            baseService.FetchMultipleAsync<BotConversation, BotConversationMember, ConversationRecipient>(Arg.Do<GetChapGroupMappingCriteria>(x => criteria = x)).Returns(data);
+            baseService.FetchMultipleAsync<BotConversation, BotConversationMember, ConversationRecipient>(Arg.Do<GetChatGroupMappingCriteria>(x => criteria = x)).Returns(data);
 
             //Act
             var actual = await service.GetChatGroupMappingListAsync(model).ConfigureAwait(false);

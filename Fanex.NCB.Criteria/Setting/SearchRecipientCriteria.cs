@@ -8,6 +8,6 @@
 
         public override string GetSettingKey() => "NCB_Setting_SearchRecipient_Sel";
 
-        public override bool IsValid() => true;
+        public override bool IsValid() => !string.IsNullOrWhiteSpace(Keyword);
     }
 }

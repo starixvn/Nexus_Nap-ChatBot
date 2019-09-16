@@ -2,7 +2,7 @@
 {
     using Fanex.Data.Repository;
 
-    public class GetChapGroupMappingCriteria : CriteriaBase
+    public class GetChatGroupMappingCriteria : CriteriaBase
     {
         public string BotIds { get; set; }
 

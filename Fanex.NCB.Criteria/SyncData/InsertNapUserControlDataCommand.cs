@@ -30,6 +30,6 @@
 
         public override string GetSettingKey() => "NAP_UserControl_SyncData";
 
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(Functions);
+        public override bool IsValid() => true;
     }
 }
