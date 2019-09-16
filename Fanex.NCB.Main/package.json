@@ -1,0 +1,12 @@
+{
+  "name": "fanex_ncb",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build-dev": "npm run build-dev --prefix ClientApp",
+    "build-pro": "npm run build-pro --prefix ClientApp"
+  },
+  "dependencies": {
+    "webpack": "^4.40.2"
+  }
+}
