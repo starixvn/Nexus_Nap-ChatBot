@@ -111,14 +111,14 @@
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsProduction())
+            if (env.IsDevelopment())
             {
-                app.UseMiddleware<ErrorHandlingMiddleware>();
-                app.UseHsts();
+                app.UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseDeveloperExceptionPage();
+                app.UseMiddleware<ErrorHandlingMiddleware>();
+                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
