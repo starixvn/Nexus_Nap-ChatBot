@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS `NCB_Conversation_Sel`;
+DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_Sel`(
     IN conversationId VARCHAR(200)  
@@ -30,4 +29,6 @@ BEGIN
 		AND cb.Name = botName;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Conversation_Sel TO 'ncb.bot'@'%';

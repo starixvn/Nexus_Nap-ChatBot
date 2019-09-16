@@ -1,5 +1,5 @@
-DELIMITER //
 DROP PROCEDURE IF EXISTS `NCB_Setting_LicenseeStatus_Sel`;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_Setting_LicenseeStatus_Sel`(
 	/*
@@ -24,4 +24,6 @@ BEGIN
     ORDER BY tmp.GroupID, tmp.Id;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_LicenseeStatus_Sel TO 'ncb.admin'@'%';

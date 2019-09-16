@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS NCB_SendNotification_GetImmedNotifUpdStatus;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_GetImmedNotifUpdStatus(
 	 IN notificationID INT
@@ -127,4 +126,6 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
                                             );
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_SendNotification_GetImmedNotifUpdStatus TO 'ncb.admin'@'%';

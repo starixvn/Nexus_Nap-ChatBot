@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS ChatBot.NAP_User_CheckIn;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_User_CheckIn(
 	IN userID INT,
@@ -42,4 +41,6 @@ BEGIN
 		END IF;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NAP_User_CheckIn TO 'ncb.admin'@'%';

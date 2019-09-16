@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS NCB_ChatGroupMapping_Sel;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_ChatGroupMapping_Sel (
 		IN botIDs VARCHAR(500) ,
@@ -275,4 +274,6 @@ BEGIN
     
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_ChatGroupMapping_Sel TO 'ncb.admin'@'%';

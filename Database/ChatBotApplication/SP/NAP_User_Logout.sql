@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS ChatBot.NAP_User_Logout;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_User_Logout(
 	IN onUserID INT
@@ -32,4 +31,6 @@ BEGIN
         WHERE ou.Id = onUserID;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NAP_User_Logout TO 'ncb.admin'@'%';

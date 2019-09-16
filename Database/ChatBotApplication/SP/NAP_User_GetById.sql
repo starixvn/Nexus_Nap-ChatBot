@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS ChatBot.NAP_User_GetById;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_User_GetById(
 	IN userID INT
@@ -41,4 +40,6 @@ BEGIN
 		WHERE u.UserId = userID;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NAP_User_GetById TO 'ncb.admin'@'%';

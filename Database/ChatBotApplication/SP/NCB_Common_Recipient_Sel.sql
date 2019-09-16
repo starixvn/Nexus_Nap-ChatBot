@@ -1,4 +1,5 @@
 DROP PROCEDURE IF EXISTS NCB_Common_Recipient_Sel;
+DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_Common_Recipient_Sel`()
 BEGIN
@@ -16,4 +17,6 @@ BEGIN
     ORDER BY RecipientTypeID,  lt.LicenseeTypeName, RecipientName;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Common_Recipient_Sel TO 'ncb.admin'@'%';

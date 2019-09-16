@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS NCB_UserLog_RunSP_Ins;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_UserLog_RunSP_Ins(
 	IN actionID SMALLINT
@@ -27,3 +26,7 @@ BEGIN
 	INSERT INTO UserLog_RunSP(LogTime, ActionID, ReferenceID, UserID, LogContent, Duration)
     SELECT logTime, actionID, referenceID, userID, logContent, duration;
 END;
+
+//
+DELIMITER ;
+GRANT EXECUTE ON PROCEDURE ChatBot.NCB_UserLog_RunSP_Ins TO 'ncb.admin'@'%';

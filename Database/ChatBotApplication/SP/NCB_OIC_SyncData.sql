@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS ChatBot.NCB_OIC_SyncData;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NCB_OIC_SyncData(
 	IN Licensees JSON,
@@ -265,4 +264,6 @@ BEGIN
        ,r.SourceDescription = tmp.SourceDescription;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_OIC_SyncData TO 'ncb.admin'@'%';

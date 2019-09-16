@@ -1,6 +1,6 @@
+DROP PROCEDURE IF EXISTS NCB_EditNotification_Recipient_Sel;
 DELIMITER //
 
-DROP PROCEDURE IF EXISTS NCB_EditNotification_Recipient_Sel;
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_EditNotification_Recipient_Sel`(
 	IN notificationID INT
     ,IN notificationTypeID SMALLINT
@@ -161,4 +161,6 @@ BEGIN
 	DROP TEMPORARY TABLE IF EXISTS tmp_errorNotificationRecipient;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_EditNotification_Recipient_Sel TO 'ncb.admin'@'%';

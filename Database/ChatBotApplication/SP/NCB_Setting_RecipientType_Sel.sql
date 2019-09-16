@@ -1,5 +1,5 @@
-DELIMITER //
 DROP PROCEDURE IF EXISTS `NCB_Setting_RecipientType_Sel`;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_Setting_RecipientType_Sel`(
 	/*
@@ -17,4 +17,6 @@ BEGIN
     ORDER BY rt.RecipientTypeId;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_RecipientType_Sel TO 'ncb.admin'@'%';

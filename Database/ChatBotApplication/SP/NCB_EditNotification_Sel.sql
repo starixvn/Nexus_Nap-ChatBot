@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS NCB_EditNotification_Sel;
+DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_EditNotification_Sel`(
      IN notificationID INT
@@ -30,4 +29,6 @@ BEGIN
 	WHERE rlst.NotificationID = notificationID;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_EditNotification_Sel TO 'ncb.admin'@'%';

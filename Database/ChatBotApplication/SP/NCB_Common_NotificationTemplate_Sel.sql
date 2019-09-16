@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS NCB_Common_NotificationTemplate_Sel;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_Common_NotificationTemplate_Sel(
 	IN notificationTypeID SMALLINT
@@ -23,4 +22,6 @@ BEGIN
     
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Common_NotificationTemplate_Sel TO 'ncb.admin'@'%';

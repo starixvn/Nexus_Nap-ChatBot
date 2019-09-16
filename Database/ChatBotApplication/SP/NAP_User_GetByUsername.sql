@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS ChatBot.NAP_User_GetByUsername;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_User_GetByUsername(
 	IN userName VARCHAR(50)
@@ -40,4 +39,6 @@ BEGIN
 		WHERE c.username = userName and ci.closed = 0;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NAP_User_GetByUsername TO 'ncb.admin'@'%';

@@ -1,5 +1,5 @@
-DELIMITER //
 DROP PROCEDURE IF EXISTS `NCB_Setting_BotName_Sel`;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_Setting_BotName_Sel`(
 	/*
@@ -17,6 +17,8 @@ BEGIN
     ORDER BY b.Name;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_BotName_Sel TO 'ncb.admin'@'%';
 
 

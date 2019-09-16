@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS NCB_ChatGroupMapping_Upd;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_ChatGroupMapping_Upd`(
 	IN groupID INT,
@@ -112,4 +111,6 @@ NCB_ChatGroupMapping_Upd:BEGIN
 	CALL NCB_UserLog_RunSP_Ins(ACTION_ID, groupID, creatorID, logContent, startTime, duration);
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_ChatGroupMapping_Upd TO 'ncb.admin'@'%';

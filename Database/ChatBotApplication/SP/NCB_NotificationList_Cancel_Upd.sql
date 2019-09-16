@@ -1,6 +1,6 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS NCB_NotificationList_Cancel_Upd;
+
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_NotificationList_Cancel_Upd(
 	 IN notificationID INT
@@ -86,5 +86,8 @@ NCB_NotificationList_Cancel_Upd:BEGIN
                                             , duration	#Duration
                                             );
 END;
+
+//
+DELIMITER ;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationList_Cancel_Upd TO 'ncb.admin'@'%';

@@ -1,6 +1,6 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS NCB_NotificationList_Sel;
+
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_NotificationList_Sel`(
      IN notificationTypeIDLst VARCHAR(1000)
@@ -187,5 +187,8 @@ BEGIN
     FROM tmp_Notification n
     ORDER BY n.ConfigSendTime DESC,  n.CreatorID;
 END;
+
+//
+DELIMITER ;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationList_Sel TO 'ncb.admin'@'%';

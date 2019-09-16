@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS ChatBot.NAP_User_SSOGetTime;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_User_SSOGetTime(
     OUT time DATETIME
@@ -18,4 +17,6 @@ BEGIN
         SET time = UTC_TIMESTAMP();
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NAP_User_SSOGetTime TO 'ncb.admin'@'%';

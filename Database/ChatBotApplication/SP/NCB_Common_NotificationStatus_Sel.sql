@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS NCB_Common_NotificationStatus_Sel;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_Common_NotificationStatus_Sel(
     /*
@@ -33,4 +32,6 @@ BEGIN
     ORDER BY StatusID;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Common_NotificationStatus_Sel TO 'ncb.admin'@'%';

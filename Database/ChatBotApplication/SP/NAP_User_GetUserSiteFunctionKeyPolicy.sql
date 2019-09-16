@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS ChatBot.NAP_User_GetUserSiteFunctionKeyPolicy;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_User_GetUserSiteFunctionKeyPolicy(
 	IN userID INT
@@ -90,4 +89,6 @@ BEGIN
 		) t;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NAP_User_GetUserSiteFunctionKeyPolicy TO 'ncb.admin'@'%';

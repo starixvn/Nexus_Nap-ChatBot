@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS ChatBot.NAP_Site_GetById;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_Site_GetById(
     IN siteID INT
@@ -28,4 +27,6 @@ BEGIN
 		WHERE s.SiteId = siteID;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NAP_Site_GetById TO 'ncb.admin'@'%';

@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS `NCB_Conversation_RemoveBotOutGroup`;
+DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_RemoveBotOutGroup`(
 	IN botConversationId VARCHAR(200)
@@ -79,5 +78,6 @@ BEGIN
 
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Conversation_RemoveBotOutGroup TO 'ncb.bot'@'%';
-

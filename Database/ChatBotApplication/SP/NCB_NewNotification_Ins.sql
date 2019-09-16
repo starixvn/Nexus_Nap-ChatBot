@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS NCB_NewNotification_Ins;
+DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NewNotification_Ins`(
 	IN notificationTypeID SMALLINT
@@ -310,4 +309,7 @@ NCB_NewNotification_Ins:BEGIN
                                             , duration	#Duration
                                             );
 END;
+
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NewNotification_Ins TO 'ncb.admin'@'%';

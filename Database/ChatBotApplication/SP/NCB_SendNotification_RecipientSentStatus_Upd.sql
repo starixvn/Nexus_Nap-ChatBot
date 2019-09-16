@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS NCB_SendNotification_RecipientSentStatus_Upd;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_RecipientSentStatus_Upd(
     IN sentStatus MEDIUMTEXT CHARACTER SET utf8mb4
@@ -195,4 +194,6 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
 													);
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_SendNotification_RecipientSentStatus_Upd TO 'ncb.admin'@'%';

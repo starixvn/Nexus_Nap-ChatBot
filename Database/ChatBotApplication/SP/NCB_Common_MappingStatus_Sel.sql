@@ -1,5 +1,5 @@
-DELIMITER //
 DROP PROCEDURE IF EXISTS `NCB_Common_MappingStatus_Sel`;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_Common_MappingStatus_Sel`(
 	/*
@@ -22,4 +22,6 @@ BEGIN
     ORDER BY tmp.OrderGroup ;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Common_MappingStatus_Sel TO 'ncb.admin'@'%';

@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS NCB_NotificationType_Upd;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_NotificationType_Upd(
 	IN notificationTypeId INT,
@@ -105,4 +104,6 @@ BEGIN
     END IF;    
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationType_Upd TO 'ncb.admin'@'%';

@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS `NCB_Conversation_AddMessageLog`;
+DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_AddMessageLog`(
 	IN fromConversationId VARCHAR(200)  
@@ -45,4 +44,7 @@ BEGIN
         errorMessage
     );
 END;
+
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Conversation_AddMessageLog TO 'ncb.bot'@'%';

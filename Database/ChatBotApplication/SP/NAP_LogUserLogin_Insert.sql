@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS ChatBot.NAP_LogUserLogin_Insert;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_LogUserLogin_Insert(
 	IN userID INT,
@@ -48,4 +47,6 @@ BEGIN
 			duration);
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NAP_LogUserLogin_Insert TO 'ncb.admin'@'%';

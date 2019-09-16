@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS NCB_SendNotification_GetPlanRetryNotifUpdStatus;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_GetPlanRetryNotifUpdStatus(
     /*
@@ -215,4 +214,6 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
     
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_SendNotification_GetPlanRetryNotifUpdStatus TO 'ncb.admin'@'%';

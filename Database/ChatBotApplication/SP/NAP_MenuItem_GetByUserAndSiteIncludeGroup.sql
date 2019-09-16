@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS ChatBot.NAP_MenuItem_GetByUserAndSiteIncludeGroup;
+DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NAP_MenuItem_GetByUserAndSiteIncludeGroup`(
 	IN userID INT
@@ -103,4 +102,6 @@ BEGIN
 		AND f.IsActive = 1;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NAP_MenuItem_GetByUserAndSiteIncludeGroup TO 'ncb.admin'@'%';

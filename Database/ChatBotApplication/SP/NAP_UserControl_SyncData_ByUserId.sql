@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS ChatBot.NAP_UserControl_SyncData_ByUserId;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_UserControl_SyncData_ByUserId(
 	IN Functions JSON,
@@ -1074,4 +1073,6 @@ BEGIN
       ,m.closed = tmp.Closed;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NAP_UserControl_SyncData_ByUserId TO 'ncb.admin'@'%';

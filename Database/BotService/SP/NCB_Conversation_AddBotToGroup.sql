@@ -1,6 +1,5 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS `NCB_Conversation_AddBotToGroup`;
+DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_AddBotToGroup`(
 	IN botConversationId VARCHAR(200)  
@@ -123,4 +122,6 @@ BEGIN
 										);
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Conversation_AddBotToGroup TO 'ncb.bot'@'%';

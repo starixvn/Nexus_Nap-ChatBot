@@ -1,6 +1,6 @@
-DELIMITER //
-
 DROP PROCEDURE IF EXISTS ChatBot.NAP_Group_GetById;
+
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_Group_GetById(
 	IN groupID INT
@@ -31,5 +31,8 @@ BEGIN
 			LEFT JOIN ChatBot.custInfo AS ci1  ON g.ModifiedBy = ci1.custid
 		WHERE g.GroupId = groupID;
 END;
+
+//
+DELIMITER ;
 
 GRANT EXECUTE ON PROCEDURE ChatBot.NAP_Group_GetById TO 'ncb.admin'@'%';

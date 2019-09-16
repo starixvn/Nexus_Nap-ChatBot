@@ -1,5 +1,5 @@
-DELIMITER //
 DROP PROCEDURE IF EXISTS `NCB_Setting_SearchChatGroup_Sel`;
+DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_Setting_SearchChatGroup_Sel`(
 	IN keyword VARCHAR(200)
@@ -16,4 +16,6 @@ BEGIN
 	LIMIT 10;
 END;
 
+//
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_SearchChatGroup_Sel TO 'ncb.admin'@'%';
