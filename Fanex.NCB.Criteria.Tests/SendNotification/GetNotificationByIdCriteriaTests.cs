@@ -27,6 +27,8 @@
             // Arrange
             var criteria = new GetNotificationByIdCriteria
             {
+                ErrCode = 0,
+                ErrMsg = string.Empty,
                 NotificationId = notificationId
             };
 
