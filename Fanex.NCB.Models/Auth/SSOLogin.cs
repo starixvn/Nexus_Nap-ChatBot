@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Models.Auth
 {
-    public class SSOLogin
+    public class SsoLogin
     {
         public string UserId { get; set; }
 

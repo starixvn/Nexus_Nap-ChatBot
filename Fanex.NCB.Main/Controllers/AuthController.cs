@@ -114,7 +114,7 @@
         }
 
         [Route("userlogin/sso")]
-        public async Task<IActionResult> SSO(SSOLogin ssoLogin)
+        public async Task<IActionResult> SSO(SsoLogin ssoLogin)
         {
             var isValidTime = await IsValidateTime(ssoLogin.Time);
             if (isValidTime)

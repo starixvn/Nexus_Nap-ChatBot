@@ -3,7 +3,7 @@
     using System;
     using Fanex.Data.Repository;
 
-    public class UserSSOGetTimeUserCriteria : CriteriaBase
+    public class UserSsoGetTimeUserCriteria : CriteriaBase
     {
         public DateTime Time { get; set; }
 

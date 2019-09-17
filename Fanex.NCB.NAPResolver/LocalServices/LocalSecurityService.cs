@@ -20,7 +20,7 @@
 
         public async Task<string> GetTimeAsync()
         {
-            var criteria = new UserSSOGetTimeUserCriteria
+            var criteria = new UserSsoGetTimeUserCriteria
             {
                 Time = DateTime.Now
             };
@@ -156,7 +156,7 @@
 
         private async Task<int> SSOCheckIn(SSOLoginParameter parameter)
         {
-            var criteria = new UserSSOCheckInUserCriteria
+            var criteria = new UserSsoCheckInUserCriteria
             {
                 UserId = parameter.UserId,
                 SiteId = parameter.SiteId,

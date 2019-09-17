@@ -18,7 +18,10 @@
 
         public override string GetSettingKey() => "NCB_NotificationTemplate_Upd";
 
-        public override bool IsValid() => NotificationTemplateId > 0 && NotificationTypeId > 0 && ModifierId > 0 && !string.IsNullOrWhiteSpace(NotificationTemplateName)
+        private bool isValidIntParam() => NotificationTemplateId > 0 && NotificationTypeId > 0 && ModifierId > 0;
+
+        public override bool IsValid() => isValidIntParam() &&
+            !string.IsNullOrWhiteSpace(NotificationTemplateName)
             && !string.IsNullOrWhiteSpace(Title) && !string.IsNullOrWhiteSpace(Content);
     }
 }

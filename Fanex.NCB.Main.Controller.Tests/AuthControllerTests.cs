@@ -8,6 +8,7 @@
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ParameterObject;
+    using Fanex.NAP.Client.Models.ValueObject;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Models;
@@ -145,7 +146,7 @@
         public async Task SSO_IsNotValidTime_RedirectToAction()
         {
             var controller = GetController();
-            var sso = new SSOLogin
+            var sso = new SsoLogin
             {
                 OnUserId = Cryptography.EncryptPassword("8"),
                 UserId = Cryptography.EncryptPassword("8"),
@@ -165,7 +166,7 @@
         public async Task SSO_IsValidTimeAndCannotSSOLogin_RedirectToAction()
         {
             var controller = GetController();
-            var sso = new SSOLogin
+            var sso = new SsoLogin
             {
                 OnUserId = Cryptography.EncryptPassword("8"),
                 UserId = Cryptography.EncryptPassword("8"),
@@ -186,7 +187,7 @@
         public async Task SSO_IsValidTimeAndSSOLoginSuccess_ButNoUser_RedirectAction()
         {
             var controller = GetController();
-            var sso = new SSOLogin
+            var sso = new SsoLogin
             {
                 OnUserId = Cryptography.EncryptPassword("8"),
                 UserId = Cryptography.EncryptPassword("8"),
@@ -206,8 +207,8 @@
         [Fact]
         public async Task SSO_IsValidTimeAndSSOLoginSuccess_GetUserSuccess_RedirectAction()
         {
-            var controller = FakeDoCheckInService();
-            var sso = new SSOLogin
+            var controller = FakeDoCheckInController();
+            var sso = new SsoLogin
             {
                 OnUserId = Cryptography.EncryptPassword("8"),
                 UserId = Cryptography.EncryptPassword("8"),
@@ -261,11 +262,109 @@
             Assert.Equal(expected, result.RouteValues);
         }
 
+        [Fact]
+        public async Task SignIn_WrongPassword_ReturnExpectedResult()
+        {
+            var controller = GetController();
+            var userLogin = new UserLogin
+            {
+                Username = "sa",
+                Password = "1234"
+            };
+            var expected = new RouteValueDictionary();
+            expected.Add("ReturnUrl", userLogin.ReturnUrl);
+            expected.Add("invalidLogin", true);
+            expected.Add("errorMsg", Labels.WrongPassword);
+            var user = new User
+            {
+                Username = "sa",
+                Password = "Test"
+            };
+            userService.GetAsync(Arg.Any<string>()).Returns(user);
+
+            //Actual
+            var actual = await controller.SignIn(userLogin);
+
+            //Assert
+            var result = Assert.IsType<RedirectToActionResult>(actual);
+            Assert.Equal("Index", result.ActionName);
+            Assert.Equal(expected, result.RouteValues);
+        }
+
+        [Fact]
+        public async Task SignIn_NoPermission_ReturnExpectedResult()
+        {
+            var controller = GetController();
+            var userLogin = new UserLogin
+            {
+                Username = "sa",
+                Password = "1234"
+            };
+            var expected = new RouteValueDictionary();
+            expected.Add("ReturnUrl", userLogin.ReturnUrl);
+            expected.Add("invalidLogin", true);
+            expected.Add("errorMsg", Labels.NoPermision);
+            var user = new User
+            {
+                Username = "sa",
+                Password = NAP.Client.Helpers.Common.Cryptography.CfsEnCode("1234"),
+                Group = new Group { Id = 2, Name = "Test" }
+            };
+
+            userService.GetAsync(Arg.Any<string>()).Returns(user);
+            groupService.GetAsync(Arg.Any<int>()).Returns(new Group { Id = 2, Name = "Test", IsActive = true });
+            //Actual
+            var actual = await controller.SignIn(userLogin);
+
+            //Assert
+            var result = Assert.IsType<RedirectToActionResult>(actual);
+
+            Assert.Equal("Index", result.ActionName);
+            Assert.Equal(expected, result.RouteValues);
+        }
+
+        [Fact]
+        public async Task SignIn_Valid_ReturnExpectedResult()
+        {
+            var controller = FakeDoCheckInController();
+            var userLogin = new UserLogin
+            {
+                Username = "sa",
+                Password = "1234",
+                ReturnUrl = "/Test"
+            };
+            var expected = new RouteValueDictionary();
+            expected.Add("ReturnUrl", userLogin.ReturnUrl);
+            expected.Add("invalidLogin", true);
+            expected.Add("errorMsg", Labels.NoPermision);
+            var user = new User
+            {
+                Username = "sa",
+                Password = NAP.Client.Helpers.Common.Cryptography.CfsEnCode("1234"),
+                Group = new Group { Id = 2, Name = "Test" }
+            };
+            var siteLevel = new List<SiteLevel>
+            {
+                new SiteLevel { Site = new Site { Id = 69}, IsActive = true }
+            };
+            napSettings.SiteId.Returns(69);
+            userService.GetAsync(Arg.Any<string>()).Returns(user);
+            groupService.GetAsync(Arg.Any<int>())
+                .Returns(new Group { Id = 2, Name = "Test", IsActive = true });
+            userService.GetSiteLevelAsync(Arg.Any<int>(), Arg.Any<string>())
+                   .Returns(siteLevel);
+            //Actual
+            var actual = await controller.SignIn(userLogin);
+
+            //Assert
+            Assert.IsType<RedirectResult>(actual);
+        }
+
         #endregion SignIn tests
 
         #region helper
 
-        private AuthController FakeDoCheckInService()
+        private AuthController FakeDoCheckInController()
         {
             var authService = Substitute.For<IAuthenticationService>();
             var urlHelper = Substitute.For<IUrlHelper>();
@@ -290,6 +389,11 @@
             controller.ControllerContext.HttpContext.Connection.RemoteIpAddress = System.Net.IPAddress.Any;
             controller.ControllerContext.HttpContext.Request.Headers["User-Agent"] = "12345";
             controller.Url.IsLocalUrl(Arg.Any<string>()).Returns(true);
+            napSession.MenuItemList = new List<MenuItem>
+            {
+                new MenuItem {Id = 1, Name = "Test", Url = "/Test"},
+                new MenuItem {Id = 2, Name = "Sub", Url = "Sub" }
+            };
             return controller;
         }
 

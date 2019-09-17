@@ -4,7 +4,7 @@
     using Fanex.Data;
     using Fanex.Data.Repository;
 
-    public class UserSSOCheckInUserCriteria : CriteriaBase
+    public class UserSsoCheckInUserCriteria : CriteriaBase
     {
         public int UserId { get; set; }
 
