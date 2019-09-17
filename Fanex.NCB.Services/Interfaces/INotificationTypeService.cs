@@ -15,11 +15,5 @@
         Task<CommandResult> InsertAsync(NotificationTypeViewModel model);
 
         Task<CommandResult> UpdateAsync(NotificationTypeViewModel model);
-
-        Task<IEnumerable<NotificationRecipientType>> GetRecipientType();
-
-        Task<IEnumerable<NotificationChatGroupType>> GetChatGroupType();
-
-        Task<IEnumerable<BaseModel>> GetSystem();
     }
 }

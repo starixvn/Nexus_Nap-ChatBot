@@ -15,16 +15,19 @@ namespace Fanex.NCB.SkypeBot.Controllers
     public class NotificationTypeController : Controller
     {
         private readonly INotificationTypeService notificationTypeService;
+        private readonly ISettingService settingService;
         private readonly INapSettings napSettings;
         private readonly INapSession napSession;
         private readonly IUserService userService;
 
         public NotificationTypeController(INotificationTypeService notificationTypeService,
+            ISettingService settingService,
             INapSession napSession,
             INapSettings napSettings,
             IUserService userService)
         {
             this.notificationTypeService = notificationTypeService;
+            this.settingService = settingService;
             this.napSession = napSession;
             this.napSettings = napSettings;
             this.userService = userService;
@@ -78,9 +81,9 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSettings()
         {
-            var getRecipent = await notificationTypeService.GetRecipientType().ConfigureAwait(false);
-            var getNotification = await notificationTypeService.GetSystem().ConfigureAwait(false);
-            var getChatGroupTypes = await notificationTypeService.GetChatGroupType().ConfigureAwait(false);
+            var getRecipent = await settingService.GetRecipientTypesAsync().ConfigureAwait(false);
+            var getNotification = await settingService.GetSystemAsync().ConfigureAwait(false);
+            var getChatGroupTypes = await settingService.GetChatGroupTypeAsync().ConfigureAwait(false);
 
             return Json(new { recipientTypes = getRecipent, notificationSystems = getNotification, chatGroupTypes = getChatGroupTypes });
         }

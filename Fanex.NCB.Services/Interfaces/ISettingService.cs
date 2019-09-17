@@ -24,5 +24,7 @@
         Task<IEnumerable<BaseModel>> SearchChatGroupAsync(string query);
 
         IEnumerable<BaseModel> GetAllMappingStatus();
+
+        Task<IEnumerable<BaseModel>> GetSystemAsync();
     }
 }

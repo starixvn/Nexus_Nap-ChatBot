@@ -19,18 +19,7 @@
         {
             this.baseService = baseService;
         }
-
-        public async Task<CommandResult> DeleteAsync(int notificationTypeId, int userId)
-        {
-            var command = new DeleteNotificationTypeCommand
-            {
-                NotificationTypeId = notificationTypeId,
-                UserId = userId
-            };
-
-            return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
-        }
-
+       
         public async Task<(IEnumerable<NotificationType>, long)> GetAllAsync(int pageIndex, int pageSize)
         {
             var criteria = new GetNotificationTypeCriteria
@@ -47,30 +36,9 @@
             }
 
             return new ValueTuple<IEnumerable<NotificationType>, long>(data.Item1, criteria.TotalItems);
-        }
+        }       
 
-        public async Task<IEnumerable<NotificationRecipientType>> GetRecipientType()
-        {
-            var criteria = new GetNotificationRecipientTypeCriteria();
-
-            return await baseService.GetDataAsync<NotificationRecipientType>(criteria).ConfigureAwait(false);
-        }
-
-        public async Task<IEnumerable<NotificationChatGroupType>> GetChatGroupType()
-        {
-            var criteria = new GetNotificationChatGroupTypeCriteria();
-
-            return await baseService.GetDataAsync<NotificationChatGroupType>(criteria).ConfigureAwait(false);
-        }
-
-        public async Task<IEnumerable<BaseModel>> GetSystem()
-        {
-            var criteria = new GetNotificationTypeSystemCriteria();
-
-            return await baseService.GetDataAsync<BaseModel>(criteria).ConfigureAwait(false);
-        }
-
-        public async Task<CommandResult> InsertAsync(NotificationTypeViewModel model)
+        public Task<CommandResult> InsertAsync(NotificationTypeViewModel model)
         {
             var command = new InsertNotificationTypeCommand
             {
@@ -81,10 +49,10 @@
                 UserId = model.UserId
             };
 
-            return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            return baseService.ExecuteNonQueryAsync(command);
         }
 
-        public async Task<CommandResult> UpdateAsync(NotificationTypeViewModel model)
+        public Task<CommandResult> UpdateAsync(NotificationTypeViewModel model)
         {
             var command = new UpdateNotificationTypeCommand
             {
@@ -96,7 +64,18 @@
                 UserId = model.UserId
             };
 
-            return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            return baseService.ExecuteNonQueryAsync(command);
+        }
+
+        public Task<CommandResult> DeleteAsync(int notificationTypeId, int userId)
+        {
+            var command = new DeleteNotificationTypeCommand
+            {
+                NotificationTypeId = notificationTypeId,
+                UserId = userId
+            };
+
+            return baseService.ExecuteNonQueryAsync(command);
         }
     }
 }
