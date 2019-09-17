@@ -4,7 +4,7 @@
   "services": [
     {
       "type": "endpoint",
-      "name": "1on1notify(UAT)",
+      "name": "1on1notify_UAT",
       "endpoint": "https://licbot-api.starific.net/api/messages",
       "appId": "1fa1a23c-a202-46e0-b168-57b7537b9456",
       "appPassword": "7SoTkwGtspX2WNcW5.Cb1bqCnD*/aOb@",
@@ -12,7 +12,7 @@
     },
     {
       "type": "endpoint",
-      "name": "OWnotify(UAT)",
+      "name": "OWnotify_UAT",
       "endpoint": "https://licbot-api.starific.net/api/messages",
       "appId": "efd1cd73-a9a2-4c54-818c-1fa2ef6b8c78",
       "appPassword": "?8Ti3CSQ1BSi4XwJNNWHAmI+gLmdcM?[",
