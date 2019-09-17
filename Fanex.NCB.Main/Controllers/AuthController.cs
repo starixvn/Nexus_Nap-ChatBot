@@ -150,8 +150,8 @@
                 SiteId = napSettings.SiteId,
                 CheckOnUserId = onuserId,
                 IP = HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                BrowserName = Request.Headers["User-Agent"].ToString(),
-                NetSessionId = HttpContext.Session.Id,
+                BrowserName = Request?.Headers["User-Agent"].ToString(),
+                NetSessionId = HttpContext?.Session.Id,
                 Platform = Environment.OSVersion.Platform.ToString(),
                 LoginDate = DateTime.Now
             };

@@ -10,7 +10,7 @@
         {
             // Arrange
             var criteria = new GetDataFromNapUserControlCriteria();
-            var expected = "NAP_UserControl_GetDataBySiteId";
+            var expected = "NAP_ChatBot_GetDataBySiteId";
 
             // Act
             var actual = criteria.GetSettingKey();

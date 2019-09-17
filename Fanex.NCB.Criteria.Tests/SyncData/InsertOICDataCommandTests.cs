@@ -32,3 +32,4 @@
             Assert.True(actual);
         }
     }
+}

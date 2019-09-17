@@ -30,4 +30,8 @@
     <Folder Include="SyncData\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Fanex.NCB.Criteria\Fanex.NCB.Criteria.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -48,7 +48,7 @@
     <Setting Key="NCB_EditNotification_Recipient_Sel" SpName="NCB_EditNotification_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
   <Function Name="Sync Data">
-    <Setting Key="NAP_UserControl_GetDataBySiteId" SpName="NAP_UserControl_GetDataBySiteId" DbName="DBPOL.NAP_UserControl.bodbAdminNet" Plain="0"></Setting>
+    <Setting Key="NAP_ChatBot_GetDataBySiteId" SpName="NAP_ChatBot_GetDataBySiteId" DbName="DBPOL.NAP_UserControl.bodbAdminNet" Plain="0"></Setting>
     <Setting Key="NAP_UserControl_SyncData" SpName="NAP_UserControl_SyncData" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NAP_UserControl_SyncData_ByUserId" SpName="NAP_UserControl_SyncData_ByUserId" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="OIC_SyncData" SpName="OIC_SyncData" DbName="ChatBot" Plain="0"></Setting>
