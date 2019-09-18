@@ -136,6 +136,11 @@
     .list-buttons {
         margin-left: 18px;
     }
+
+    .mde-preview {
+        max-height: 400px;
+        overflow-y: auto;
+    }
 }
 /*.icon-edit {
         display: inline-block;

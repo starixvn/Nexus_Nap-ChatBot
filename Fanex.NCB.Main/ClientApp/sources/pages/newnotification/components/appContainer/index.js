@@ -220,12 +220,20 @@ export class AppContainer extends React.Component {
         const recipientIds = [];
         this.getRecipientIds(recipientIds, this.selectedNodes);
 
+        let title = values.title;
+        let content = values.content;
+
+        for (let i = 0; i < values.params.length; i++) {
+            title = title.replace(new RegExp(values.params[i].name, 'g'), values.params[i].value);
+            content = content.replace(new RegExp(values.params[i].name, 'g'), values.params[i].value);
+        }
+
         const data = stringify({
             notificationTypeId: values.notificationTypeId,
             productId: values.productId,
             recipientIds: recipientIds.toString(),
-            title: values.title,
-            content: values.content,
+            title: title,
+            content: content,
             sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
             sendImmediately: values.sendMode === '1'
         });
@@ -295,8 +303,9 @@ export class AppContainer extends React.Component {
     }
 
     handleTemplateChange = event => {
+        const formik = this.refs.form;
+
         if (event.target.value) {
-            const formik = this.refs.form;
             const selectedTemplate = this.props.notificationTemplates.find(x => x.notificationTemplateId === parseInt(event.target.value, 10));
 
             const paramsInTitle = selectedTemplate.title.match(/{[_-\w\s]+}/g) || [];
@@ -317,7 +326,7 @@ export class AppContainer extends React.Component {
                 templateId: event.target.value,
                 params: [],
                 title: '',
-                content: '',
+                content: ''
             });
         }
     }
@@ -339,12 +348,12 @@ export class AppContainer extends React.Component {
 
     handleResetTitleContent = () => {
         const formik = this.refs.form;
-        const selectedTemplate = this.props.notificationTemplates.find(x => x.notificationTemplateId === parseInt(formik.state.templateId, 10));
+        const selectedTemplate = this.props.notificationTemplates.find(x => x.notificationTemplateId === parseInt(formik.state.values.templateId, 10));
 
         formik.setValues({
             ...formik.state.values,
             title: selectedTemplate.title,
-            content: selectedTemplate.content,
+            content: selectedTemplate.content
         });
     }
 
@@ -424,7 +433,7 @@ export class AppContainer extends React.Component {
                         {touched.templateId && errors.templateId && <FormFeedback>{errors.templateId}</FormFeedback>}
                     </Col>
                     <Col sm={6}>
-                        <a onClick={this.handleResetTitleContent} disabled={!values.templateId}>Reset Title & Content</a>
+                        <Button type="button" onClick={this.handleResetTitleContent} disabled={!values.templateId}>Reset Title & Content</Button>
                     </Col>
                 </FormGroup>
                 <FormGroup row>
@@ -459,11 +468,11 @@ export class AppContainer extends React.Component {
                                 <FormGroup row>
                                     {values.params.map((x, i) =>
                                         <>
-                                            <Label for="title" className="form-label" sm={2}>{x.name}</Label>
+                                            <Label for={`params.${i}.value`} className="form-label" sm={2}>{x.name}</Label>
                                             <Col sm={4}>
                                                 <Input value={x.values} name={`params.${i}.value`} disabled={values.mode === 'preview'}
                                                     invalid={getIn(touched, `params.${i}.value`) && getIn(errors, `params.${i}.value`)}
-                                                    onChange={e => setFieldValue(`params.${i}.value`, e.target.value)}
+                                                    onChange={handleChange}
                                                 />
                                             </Col>
                                         </>
@@ -508,7 +517,7 @@ export class AppContainer extends React.Component {
         return (
             <>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="New Notification" />
-                <div className="content new-notification">
+                <div className="new-notification">
                     {this.props.createNotificationResult &&
                         <ResponseMessage isSuccessful={this.props.createNotificationResult.isSuccessful}
                             message={this.props.createNotificationResult.message || Labels.CreateNotificationSuccessfully} />
