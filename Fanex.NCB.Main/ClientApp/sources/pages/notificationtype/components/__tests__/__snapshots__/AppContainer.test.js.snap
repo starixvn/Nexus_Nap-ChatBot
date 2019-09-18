@@ -9,7 +9,7 @@ exports[`AppContainer render hide UpdatePopup, DeletePopup 1`] = `
   <button
     className="btn-new"
   >
-    Create New
+    New Notification Type
   </button>
   <Connect(DataGrid) />
 </div>
@@ -24,7 +24,7 @@ exports[`AppContainer render show DeletePopup 1`] = `
   <button
     className="btn-new"
   >
-    Create New
+    New Notification Type
   </button>
   <Connect(DataGrid) />
   <Connect(DeletePopup)
@@ -42,7 +42,7 @@ exports[`AppContainer render show UpdatePopup 1`] = `
   <button
     className="btn-new"
   >
-    Create New
+    New Notification Type
   </button>
   <Connect(DataGrid) />
   <Connect(UpdatePopup)

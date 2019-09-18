@@ -233,7 +233,7 @@ exports[`Table  render isPaging is true - return content with paging that match 
     className="page-container"
     style={
       Object {
-        "display": "block",
+        "width": "-30px",
       }
     }
   >

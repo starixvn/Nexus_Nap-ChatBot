@@ -46,8 +46,6 @@ exports[`Cell component render sortable header cell correctly with html attribut
   }
 >
   Cell Content
-  <span
-    className="asc"
-  />
+  <span />
 </th>
 `;

@@ -2,19 +2,20 @@
 import { AppContainer } from '../AppContainer';
 import renderer from 'react-test-renderer';
 import ShallowRenderer from 'react-test-renderer/shallow';
+import { shallow } from 'enzyme';
 
-describe("AppContainer", () => { 
-    describe("render", () => { 
+describe("AppContainer", () => {
+    describe("render", () => {
         it("hide updatePopup", () => {
             // Arrange
-            let props = {
+            const props = {
                 updatePopupData: {
                     isShowed: false
                 }
             };
 
             // Act
-            let appContainer = (new ShallowRenderer()).render(<AppContainer {...props} />);
+            let appContainer = renderer.create(<AppContainer {...props} />).ToJSON();
 
             // Assert
             expect(appContainer).toMatchSnapshot();
@@ -29,15 +30,15 @@ describe("AppContainer", () => {
             };
 
             // Act
-            let appContainer = (new ShallowRenderer()).render(<AppContainer {...props} />);
+            let appContainer = renderer.create(<AppContainer {...props} />).ToJSON();
 
             // Assert
             expect(appContainer).toMatchSnapshot();
         });
     });
 
-    describe("closeUpdatePopupHandler", () => { 
-        it("when UpdatePopup is showed", () => { 
+    describe("closeUpdatePopupHandler", () => {
+        it("when UpdatePopup is showed", () => {
             // Arrange
             let props = {
                 closeEditPopup: jest.fn(),
@@ -59,7 +60,7 @@ describe("AppContainer", () => {
             expect(props.getGridData).toBeCalledTimes(0);
         });
 
-        it("when UpdatePopup is not showed", () => { 
+        it("when UpdatePopup is not showed", () => {
             // Arrange
             let props = {
                 closeEditPopup: jest.fn(),

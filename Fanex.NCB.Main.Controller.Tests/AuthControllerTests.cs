@@ -76,7 +76,7 @@
         [Fact]
         public async Task Logout_WhenCalled_ExecutedExpectedMethodsAndReturnViewResult()
         {
-            var controller = GetControllerForLogoutMethod();
+            var controller = FakeDoCheckInController();
             //Actual
             var actual = await controller.Logout();
 
@@ -394,27 +394,6 @@
                 new MenuItem {Id = 1, Name = "Test", Url = "/Test"},
                 new MenuItem {Id = 2, Name = "Sub", Url = "Sub" }
             };
-            return controller;
-        }
-
-        private AuthController GetControllerForLogoutMethod()
-        {
-            var authService = Substitute.For<IAuthenticationService>();
-            var serviceProvider = Substitute.For<IServiceProvider>();
-            serviceProvider.GetService(typeof(IAuthenticationService)).Returns(authService);
-            var controllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext
-                {
-                    RequestServices = serviceProvider
-                }
-            };
-
-            var controller = GetController();
-            controller.ControllerContext = controllerContext;
-            controller.ControllerContext.HttpContext.Connection.RemoteIpAddress = System.Net.IPAddress.Any;
-            controller.ControllerContext.HttpContext.Request.Headers["User-Agent"] = "12345";
-            controller.Url = Substitute.For<IUrlHelper>();
             return controller;
         }
 

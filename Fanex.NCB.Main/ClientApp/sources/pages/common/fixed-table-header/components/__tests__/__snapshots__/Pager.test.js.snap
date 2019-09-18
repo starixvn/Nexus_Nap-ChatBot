@@ -5,7 +5,7 @@ exports[`Pager render component is hidden if paging is not available 1`] = `
   className="page-container"
   style={
     Object {
-      "display": "none",
+      "width": "unset",
     }
   }
 >
@@ -33,31 +33,6 @@ exports[`Pager render component is hidden if paging is not available 1`] = `
       20
     </option>
   </select>
-  <a
-    className="icon page-prev disable"
-    href="javascript:;"
-    onClick={[Function]}
-  />
-  <div
-    className="page-div"
-  >
-    <span
-      className="page-span active"
-      onClick={[Function]}
-    >
-      1
-    </span>
-  </div>
-  <a
-    className="icon page-next disable"
-    href="javascript:;"
-    onClick={[Function]}
-  />
-  <span
-    className="page-info"
-  >
-    Displaying 1 to 1 of 1 item(s)
-  </span>
 </div>
 `;
 
@@ -66,7 +41,7 @@ exports[`Pager render component is rendered correctly 1`] = `
   className="page-container"
   style={
     Object {
-      "display": "block",
+      "width": "unset",
     }
   }
 >

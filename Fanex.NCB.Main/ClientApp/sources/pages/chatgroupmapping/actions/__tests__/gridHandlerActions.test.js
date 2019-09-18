@@ -2,7 +2,7 @@
 import types from '../types';
 import "babel-polyfill";
 
-describe("gridHandlerActions", () => { 
+describe("gridHandlerActions", () => {
     describe("openEditPopup", () => {
         it("create the correct action", () => {
             // Arrange
@@ -62,7 +62,7 @@ describe("gridHandlerActions", () => {
 
     describe("closeEditPopup", () => {
         it("create the correct action", () => {
-            // Arrange            
+            // Arrange
             let popupData = {
                 isShowed: false,
                 editingItem: {}

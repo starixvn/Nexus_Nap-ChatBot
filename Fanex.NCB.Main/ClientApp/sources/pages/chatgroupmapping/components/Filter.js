@@ -124,10 +124,14 @@ export class Filter extends Component {
         };
     }
 
-    checkValidParams = () => this.state.botIds.value !== '' &&
-        this.state.recipientTypes.value !== '' &&
-        this.state.mappingStatuses.value !== '' &&
-        this.state.licenseeStatuses.value !== '';
+    checkValidParams = () => {
+        const botIds = this.state.botIds ? this.state.botIds.value : '',
+            recipientTypes = this.state.recipientTypes ? this.state.recipientTypes.value : '',
+            mappingStatuses = this.state.mappingStatuses ? this.state.mappingStatuses.value : '',
+            licenseeStatuses = this.state.licenseeStatuses ? this.state.licenseeStatuses.value : '';
+
+        return botIds !== '' && recipientTypes !== '' && mappingStatuses !== '' && licenseeStatuses !== '';
+    }
 
     submitHandler = e => {
         e.preventDefault();

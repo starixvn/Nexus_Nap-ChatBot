@@ -2,9 +2,9 @@
 import { Filter } from '../Filter';
 import ShallowRenderer from 'react-test-renderer/shallow';
 
-describe("Filter", () => { 
-    describe("constructor", () => { 
-        it("init state", () => { 
+describe("Filter", () => {
+    describe("constructor", () => {
+        it("init state", () => {
             // Arrange
             let props = {
                 getSettings: jest.fn(),
@@ -15,10 +15,10 @@ describe("Filter", () => {
             let filter = new Filter(props);
 
             // Assert
-            expect(filter.state.botNames.value).toEqual("");
-            expect(filter.state.recipientTypes.value).toEqual("");
-            expect(filter.state.recipient.value).toEqual("");
-            expect(filter.state.mappingStatuses.value).toEqual("");
+            expect(filter.state.botNames.value).toEqual(undefined);
+            expect(filter.state.recipientTypes.value).toEqual(undefined);
+            expect(filter.state.recipient.value).toEqual(undefined);
+            expect(filter.state.mappingStatuses.value).toEqual(undefined);
         });
     });
 
@@ -106,9 +106,9 @@ describe("Filter", () => {
             expect(result).toBeNull();
         });
     });
-   
-    describe("onChange", () => { 
-        it("when called - setState", () => { 
+
+    describe("onChange", () => {
+        it("when called - setState", () => {
             // Arrange
             let props = {
                 getSettings: jest.fn(),
@@ -117,18 +117,18 @@ describe("Filter", () => {
             let filter = new Filter(props);
             filter.setState = jest.fn();
             let fieldName = "field name";
-            let fieldValue = 123; 
+            let fieldValue = 123;
 
             // Act
             filter.onChange(fieldName, fieldValue);
 
             // Assert
-            expect(filter.setState).toHaveBeenCalledWith({[fieldName]: fieldValue});
+            expect(filter.setState).toHaveBeenCalledWith({ [fieldName]: fieldValue });
         });
     });
 
-    describe("getParams", () => { 
-        it("get params from state", () => { 
+    describe("getParams", () => {
+        it("get params from state", () => {
             // Arrange
             let props = {
                 getSettings: jest.fn(),
@@ -170,8 +170,8 @@ describe("Filter", () => {
         });
     });
 
-    describe("submitHandler", () => { 
-        it("when submit - call props functions", () => { 
+    describe("submitHandler", () => {
+        it("when submit - call props functions", () => {
             // Arrange
             let props = {
                 setGridParams: jest.fn(),
@@ -179,9 +179,9 @@ describe("Filter", () => {
                 getSettings: jest.fn(),
                 filterRecipients: jest.fn()
             };
-            let filter = new Filter(props);            
+            let filter = new Filter(props);
             let params = "some params";
-            filter.getParams = jest.fn(() => { return params; });            
+            filter.getParams = jest.fn(() => { return params; });
             let event = { preventDefault: jest.fn() };
 
             // Act
@@ -194,10 +194,9 @@ describe("Filter", () => {
         });
     });
 
-
-    describe("render", () => { 
-        it("render correctly", () => { 
-            // Arrange 
+    describe("render", () => {
+        it("render correctly", () => {
+            // Arrange
             let props = {
                 getSettings: jest.fn(),
                 filterRecipients: jest.fn(),
@@ -219,12 +218,12 @@ describe("Filter", () => {
 
     describe("checkValidParams", () => {
         it("when all values != empty - return true", () => {
-            // Arrange                        
+            // Arrange
             let props = {
                 getSettings: jest.fn(),
                 filterRecipients: jest.fn()
             };
-            let filter = new Filter(props);           
+            let filter = new Filter(props);
             filter.state = {
                 botNames: { value: "a" },
                 recipientTypes: { value: "a" },
@@ -240,7 +239,7 @@ describe("Filter", () => {
         });
 
         it("when botNames empty - return false", () => {
-            // Arrange                        
+            // Arrange
             let props = {
                 getSettings: jest.fn(),
                 filterRecipients: jest.fn()
@@ -261,7 +260,7 @@ describe("Filter", () => {
         });
 
         it("when recipientTypes empty - return false", () => {
-            // Arrange                        
+            // Arrange
             let props = {
                 getSettings: jest.fn(),
                 filterRecipients: jest.fn()
@@ -282,7 +281,7 @@ describe("Filter", () => {
         });
 
         it("when mappingStatuses empty - return false", () => {
-            // Arrange                        
+            // Arrange
             let props = {
                 getSettings: jest.fn(),
                 filterRecipients: jest.fn()
@@ -303,7 +302,7 @@ describe("Filter", () => {
         });
 
         it("when licenseeStatuses empty - return false", () => {
-            // Arrange                        
+            // Arrange
             let props = {
                 getSettings: jest.fn(),
                 filterRecipients: jest.fn()
