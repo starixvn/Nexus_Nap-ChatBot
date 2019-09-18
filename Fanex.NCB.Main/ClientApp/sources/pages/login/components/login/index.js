@@ -14,7 +14,7 @@ class Login extends Component {
             password: '',
             invalidLogin: AppData.invalidLogin
         };
-        this.token = document.getElementsByName('__RequestVerificationToken')[0].value;
+        this.token = Site.getXsrfToken();
     }
 
     handleChangePassword = event => {

@@ -1,8 +1,11 @@
 ﻿import React from 'react';
 import { AppContainer } from '../AppContainer';
-import renderer from 'react-test-renderer';
+import { Provider } from "react-redux";
+import configureMockStore from "redux-mock-store";
 import ShallowRenderer from 'react-test-renderer/shallow';
-import { shallow } from 'enzyme';
+
+const mockStore = configureMockStore();
+const store = mockStore({});
 
 describe("AppContainer", () => {
     describe("render", () => {
@@ -15,7 +18,11 @@ describe("AppContainer", () => {
             };
 
             // Act
-            let appContainer = renderer.create(<AppContainer {...props} />).ToJSON();
+            let appContainer = (new ShallowRenderer()).render(
+                <Provider store={store}>
+                    <AppContainer {...props} />
+                </Provider>
+            );
 
             // Assert
             expect(appContainer).toMatchSnapshot();
@@ -30,7 +37,11 @@ describe("AppContainer", () => {
             };
 
             // Act
-            let appContainer = renderer.create(<AppContainer {...props} />).ToJSON();
+            let appContainer = (new ShallowRenderer()).render(
+                <Provider store={store}>
+                    <AppContainer {...props} />
+                </Provider>
+            );
 
             // Assert
             expect(appContainer).toMatchSnapshot();

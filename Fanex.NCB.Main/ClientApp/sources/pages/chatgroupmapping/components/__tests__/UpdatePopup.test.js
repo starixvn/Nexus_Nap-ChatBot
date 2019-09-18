@@ -5,7 +5,6 @@ import ShallowRenderer from 'react-test-renderer/shallow';
 //import { getLicenseeStatus, isMapped } from '../../../common/CommonFunctions';
 import CommonFunctions from '../../../common/CommonFunctions';
 
-
 describe("UpdatePopup", () => {
     const defaultProps = {
         updatePopupData: {
@@ -15,7 +14,8 @@ describe("UpdatePopup", () => {
                 recipientTypeId: { value: 3 },
                 chatGroupTypeId: { value: 1 },
                 recipientIds: { value: "4,5" },
-                remark: { value: "remark 1" }
+                remark: { value: "remark 1" },
+                mappingStatusId: 1
             }
         }
     };
@@ -84,7 +84,9 @@ describe("UpdatePopup", () => {
                     isShowed: true
                 },
                 filteredRecipients: [],
-                settingData: {},
+                settingData: {
+                    recipientTypes: []
+                },
                 updateData: { addedresult: true }
             };
 
@@ -103,7 +105,9 @@ describe("UpdatePopup", () => {
                     isShowed: true
                 },
                 filteredRecipients: [],
-                settingData: {},
+                settingData: {
+                    recipientTypes: []
+                },
                 updateData: { addedresult: false }
             };
 
@@ -124,7 +128,7 @@ describe("UpdatePopup", () => {
             let updatePopup = new UpdatePopup(props);
             let event = { preventDefault: jest.fn() };
             updatePopup.setState = jest.fn();
-            updatePopup.checkValidParams = jest.fn(() => { return false;});
+            updatePopup.checkValidParams = jest.fn(() => { return false; });
             updatePopup.state.isSummited = false;
 
             // Act
@@ -135,13 +139,13 @@ describe("UpdatePopup", () => {
             expect(updatePopup.setState).toHaveBeenCalledWith({ isSummited: true });
         });
 
-        it("when valid params and updateData errorCode is 0 - call update", (done) => {
+        it("when valid params and updateData isSuccessful - call update", (done) => {
             // Arrange
             let response = {};
             let props = {
                 ...defaultProps,
                 update: jest.fn(() => Promise.resolve(response)),
-                updateData: {errorCode: 0}
+                updateData: { isSuccessful: true }
             };
             let updatePopup = new UpdatePopup(props);
             let event = { preventDefault: jest.fn() };
@@ -154,7 +158,7 @@ describe("UpdatePopup", () => {
 
             let isMapped = jest.fn(() => { return false; });
             CommonFunctions.isMapped = isMapped.bind(CommonFunctions);
-            
+
             // Act
             updatePopup.submitHandler(event);
 
@@ -174,7 +178,7 @@ describe("UpdatePopup", () => {
             let props = {
                 ...defaultProps,
                 update: jest.fn(() => Promise.resolve(response)),
-                updateData: { errorCode: 1 }
+                updateData: { isSuccessful: false }
             };
             let updatePopup = new UpdatePopup(props);
             let event = { preventDefault: jest.fn() };
@@ -217,7 +221,7 @@ describe("UpdatePopup", () => {
                 },
                 recipientIds: { value: "4,5" },
                 remark: { value: "remark" }
-            };            
+            };
             let expectedParams = {
                 groupID: 1,
                 conversationId: 2,
@@ -245,8 +249,8 @@ describe("UpdatePopup", () => {
             updatePopup.state = {
                 recipientTypeId: { isValid: true },
                 recipientIds: { isValid: true },
-                chatGroupTypeId: {isValid: true}
-            };    
+                chatGroupTypeId: { isValid: true }
+            };
 
             // Act
             let result = updatePopup.checkValidParams();
@@ -294,7 +298,7 @@ describe("UpdatePopup", () => {
             // Assert
             expect(result).toBe(false);
         });
-        
+
         it("when chatGroupTypeId invalid - return false", () => {
             // Arrange
             let props = {
@@ -331,7 +335,7 @@ describe("UpdatePopup", () => {
             updatePopup.onChange(fieldName, fieldValue);
 
             // Assert
-            expect(updatePopup.setState).toHaveBeenCalledWith({ [fieldName]: fieldValue, isChanged: true  });
+            expect(updatePopup.setState).toHaveBeenCalledWith({ [fieldName]: fieldValue, isChanged: true });
         });
     });
 
@@ -374,7 +378,7 @@ describe("UpdatePopup", () => {
 
             // Assert
             expect(props.filterRecipients).toHaveBeenCalledWith(props.settingData.recipients, recipientTypeId);
-            expect(updatePopup.setState).toHaveBeenCalledWith({ recipientIds: {value: '', isValid: false}});
+            expect(updatePopup.setState).toHaveBeenCalledWith({ recipientIds: { value: '', isValid: false } });
         });
     });
 });

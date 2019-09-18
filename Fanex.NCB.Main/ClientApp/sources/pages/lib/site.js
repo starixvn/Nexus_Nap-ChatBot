@@ -3,7 +3,8 @@ let _xsrfToken = null;
 export default class Site {
     static getXsrfToken() {
         if (!_xsrfToken) {
-            _xsrfToken = document.querySelector('input[name=__RequestVerificationToken]').value;
+            _xsrfToken = document.querySelector('input[name=__RequestVerificationToken]') ?
+                document.querySelector('input[name=__RequestVerificationToken]').value : '';
         }
 
         return _xsrfToken;

@@ -15,10 +15,10 @@ describe("Filter", () => {
             let filter = new Filter(props);
 
             // Assert
-            expect(filter.state.botNames.value).toEqual(undefined);
-            expect(filter.state.recipientTypes.value).toEqual(undefined);
-            expect(filter.state.recipient.value).toEqual(undefined);
-            expect(filter.state.mappingStatuses.value).toEqual(undefined);
+            expect(filter.state.botIds.value).toEqual('');
+            expect(filter.state.recipientTypes.value).toEqual('');
+            expect(filter.state.recipient.value).toEqual('');
+            expect(filter.state.mappingStatuses.value).toEqual('');
         });
     });
 
@@ -27,7 +27,7 @@ describe("Filter", () => {
             // Arrange
             let nextProps = {
                 settingData: {
-                    botNames: [{ id: 1 }, { id: 2 }],
+                    bots: [{ id: 1 }, { id: 2 }],
                     recipientTypes: [{ id: 1 }, { id: 2 }],
                     mappingStatuses: [{ id: 1 }, { id: 2 }],
                     licenseeStatuses: [{ id: 1 }, { id: 2 }],
@@ -35,12 +35,12 @@ describe("Filter", () => {
             };
             let prevState = {
                 settingData: {
-                    botNames: []
+                    bots: []
                 }
             };
 
             let expectedState = {
-                botNames: {
+                botIds: {
                     value: "1,2"
                 },
                 recipientTypes: {
@@ -56,7 +56,7 @@ describe("Filter", () => {
                     value: "1,2"
                 },
                 settingData: {
-                    botNames: [{ checked: true, id: 1 }, { checked: true, id: 2 }],
+                    bots: [{ checked: true, id: 1 }, { checked: true, id: 2 }],
                     recipientTypes: [{ checked: true, id: 1 }, { checked: true, id: 2 }],
                     mappingStatuses: [{ checked: true, id: 1 }, { checked: true, id: 2 }],
                     licenseeStatuses: [{ checked: true, id: 1 }, { checked: true, id: 2 }]
@@ -74,12 +74,12 @@ describe("Filter", () => {
             // Arrange
             let nextProps = {
                 settingData: {
-                    botNames: null
+                    bots: null
                 }
             };
             let prevState = {
                 settingData: {
-                    botNames: []
+                    bots: []
                 }
             };
 
@@ -95,7 +95,7 @@ describe("Filter", () => {
             let nextProps = {};
             let prevState = {
                 settingData: {
-                    botNames: [1]
+                    bots: [1]
                 }
             };
 
@@ -136,7 +136,7 @@ describe("Filter", () => {
             };
             let filter = new Filter(props);
             filter.state = {
-                botNames: {
+                botIds: {
                     value: "bot name"
                 },
                 recipientTypes: {
@@ -150,14 +150,18 @@ describe("Filter", () => {
                 },
                 licenseeStatuses: {
                     value: "licensee statuses"
+                },
+                groupName: {
+                    value: "group name"
                 }
             };
             let expectedParams = {
-                botNames: "bot name",
+                botIds: "bot name",
                 recipientTypeIds: "recipient types",
                 recipientName: "recipient 1",
                 mappingStatusIds: "mapping statuses",
                 licenseeStatusIds: "licensee statuses",
+                groupName: "group name",
                 pageIndex: 1,
                 pageSize: 20
             };
@@ -201,7 +205,7 @@ describe("Filter", () => {
                 getSettings: jest.fn(),
                 filterRecipients: jest.fn(),
                 settingData: {
-                    botNames: [],
+                    bots: [],
                     recipientTypes: [],
                     mappingStatuses: [],
                     licenseeStatuses: []
@@ -225,7 +229,7 @@ describe("Filter", () => {
             };
             let filter = new Filter(props);
             filter.state = {
-                botNames: { value: "a" },
+                bots: { value: "1,2" },
                 recipientTypes: { value: "a" },
                 mappingStatuses: { value: "a" },
                 licenseeStatuses: { value: "a" }
@@ -246,7 +250,7 @@ describe("Filter", () => {
             };
             let filter = new Filter(props);
             filter.state = {
-                botNames: { value: "" },
+                botIds: { value: "" },
                 recipientTypes: { value: "a" },
                 mappingStatuses: { value: "a" },
                 licenseeStatuses: { value: "a" }
@@ -267,7 +271,7 @@ describe("Filter", () => {
             };
             let filter = new Filter(props);
             filter.state = {
-                botNames: { value: "a" },
+                botIds: { value: "a" },
                 recipientTypes: { value: "" },
                 mappingStatuses: { value: "a" },
                 licenseeStatuses: { value: "a" }
@@ -288,7 +292,7 @@ describe("Filter", () => {
             };
             let filter = new Filter(props);
             filter.state = {
-                botNames: { value: "a" },
+                botIds: { value: "a" },
                 recipientTypes: { value: "a" },
                 mappingStatuses: { value: "" },
                 licenseeStatuses: { value: "a" }
@@ -309,7 +313,7 @@ describe("Filter", () => {
             };
             let filter = new Filter(props);
             filter.state = {
-                botNames: { value: "a" },
+                botIds: { value: "a" },
                 recipientTypes: { value: "a" },
                 mappingStatuses: { value: "a" },
                 licenseeStatuses: { value: "" }

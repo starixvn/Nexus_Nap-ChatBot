@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AppContainer render hide updatePopup 1`] = `
+<AppContainer
+  updatePopupData={
+    Object {
+      "isShowed": false,
+    }
+  }
+/>
+`;
+
+exports[`AppContainer render show updatePopup 1`] = `
+<AppContainer
+  updatePopupData={
+    Object {
+      "isShowed": true,
+    }
+  }
+/>
+`;

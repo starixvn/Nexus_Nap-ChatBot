@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import { ResponseMessage } from '../ResponseMessage';
 import renderer from 'react-test-renderer';
+import ShallowRenderer from 'react-test-renderer/shallow';
 
 describe("ResponseMessage", () => {
     it("render matched snapshot", () => {
@@ -12,10 +13,9 @@ describe("ResponseMessage", () => {
 
         // Act
 
-        const component = renderer.create(<ResponseMessage props={props} />);
-        const result = component.toJSON();
+        let component = (new ShallowRenderer()).render(<ResponseMessage {...props} />);
 
         // Assert
-        expect(result).toMatchSnapshot();
+        expect(component).toMatchSnapshot();
     });
 });
