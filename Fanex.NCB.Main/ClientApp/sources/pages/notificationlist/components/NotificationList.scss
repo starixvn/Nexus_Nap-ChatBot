@@ -24,48 +24,6 @@
 }
 
 .table {
-    th .has-icons {
-        position: relative;
-
-        [class^="icon"] {
-            position: absolute;
-
-            &:hover {
-                cursor: pointer;
-            }
-        }
-    }
-
-    .col-action {
-        padding-top: 0;
-        padding-bottom: 0;
-    }
-
-    .icon-expand, .icon-collapse {
-        right: 0;
-        top: -2px;
-        height: 24px;
-        width: 24px;
-        border-radius: 3px;
-        background-color: #066896;
-        color: #fff;
-
-        &:before {
-            font-size: 12px;
-            position: relative;
-            top: 5px;
-            font-weight: normal;
-        }
-
-        &:hover {
-            background-color: darken(#066896, 10%);
-        }
-    }
-
-    .icon-edit {
-        color: $text-color;
-    }
-
     .recipient-list {
         font-style: italic;
     }

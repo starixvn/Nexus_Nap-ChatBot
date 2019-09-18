@@ -7,6 +7,7 @@ $colorBorderTable: #CED4DA;
 $colorTableHeader: $black;
 $bgSummaryTotal: #B8C3C9;
 $bgTotal: $bgSummaryTotal;
+$iconColor: #333;
 
 .table {
     line-height: 1.5;
@@ -23,6 +24,48 @@ $bgTotal: $bgSummaryTotal;
         &:active {
             text-decoration: none;
         }
+    }
+
+    th .has-icons {
+        position: relative;
+
+        [class^="icon"] {
+            position: absolute;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+
+    .col-action {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    .icon-expand, .icon-collapse {
+        right: 0;
+        top: -2px;
+        height: 24px;
+        width: 24px;
+        border-radius: 3px;
+        background-color: #066896;
+        color: #fff;
+
+        &:before {
+            font-size: 12px;
+            position: relative;
+            top: 5px;
+            font-weight: normal;
+        }
+
+        &:hover {
+            background-color: darken(#066896, 10%);
+        }
+    }
+
+    .icon-edit {
+        color: $iconColor;
     }
 
     > thead {

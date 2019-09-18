@@ -58,7 +58,7 @@ class NewNotificationTemplate extends Component {
             <Form onSubmit={handleSubmit}>
                 <FormGroup row>
                     <Label for="notificationTypeId" className="form-label required" sm={2}>Notification Type</Label>
-                    <Col sm={4}>
+                    <Col sm={10}>
                         <Input type="select"
                             invalid={touched.notificationTypeId && errors.notificationTypeId}
                             name="notificationTypeId"
@@ -69,9 +69,11 @@ class NewNotificationTemplate extends Component {
                             {this.props.notificationTypes.map(this.renderNotificationTypeOption)}
                         </Input>
                         {touched.notificationTypeId && errors.notificationTypeId && <FormFeedback>{errors.notificationTypeId}</FormFeedback>}
-                    </Col>
+                    </Col>                   
+                </FormGroup>
+                <FormGroup row>                    
                     <Label for="title" className="form-label required" sm={2}>Template Name</Label>
-                    <Col sm={4}>
+                    <Col sm={10}>
                         <Input value={values.notificationTemplateName} name="notificationTemplateName"
                             invalid={touched.notificationTemplateName && errors.notificationTemplateName}
                             onChange={handleChange}

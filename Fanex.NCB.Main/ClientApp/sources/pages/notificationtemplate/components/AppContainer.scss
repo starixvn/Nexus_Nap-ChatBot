@@ -12,78 +12,24 @@
     width: 160px;
 }
 
-.table {
-    th .has-icons {
-        position: relative;
-
-        [class^="icon"] {
-            position: absolute;
-
-            &:hover {
-                cursor: pointer;
-            }
-        }
-    }
-
-    .icon-expand, .icon-collapse {
-        right: 0;
-        top: -2px;
-        height: 24px;
-        width: 24px;
-        border-radius: 3px;
-        background-color: #066896;
-        color: #fff;
-
-        &:before {
-            font-size: 12px;
-            position: relative;
-            top: 5px;
-            font-weight: normal;
-        }
-
-        &:hover {
-            background-color: darken(#066896, 10%);
-        }
-    }
+.table-container {
+    margin-top: 10px;
 }
 
 .new-notification-template {
     max-width: 980px;
-}
 
-.form-filter {
-    .form-group {
-        display: inline-block;
-    }
-
-    .form-control {
-        display: inline-block;
-        width: auto;
-    }
-
-    .form-label {
-        margin-right: 5px;
-    }
-
-    .btn-submit {
-        margin-left: 10px;
-    }
-
-    .btn-new {
-        display: block;
-        background-color: #05b15b;
-        color: #fff;
-    }
-
-    .btn-new:hover {
-        background-color: #047f42;
-        color: #fff;
-    }
-}
-
-.new-notification-template {
     .mde-preview {
         max-height: 400px;
         overflow-y: auto;
     }
+}
+
+.row-style1 {
+    display: grid;
+    grid-template-columns: 113px 1fr;
+    grid-template-rows: 1fr;
+    justify-content: space-between;
+    align-items: center;
+    grid-gap: 16px;
 }
