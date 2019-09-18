@@ -25,51 +25,20 @@ export const getNotificationTypes = () => {
 };
 
 // Notification Template
-export const setTemplateTypes = data => {
-    return {
-        type: types.TEMPLATE_TYPE_DATA,
-        data: data
-    };
-};
-
-export const getTemplateTypes = () => {
-    const url = Site.resolveClientUrl('NewNotification/GetNotificationTemplate');
-    const data = [{ id: 1, name: 'template 1' }, { id: 2, name: 'template 2' }];
-
-    return (dispatch) => {
-        return axios.get(url).then(response => {
-            dispatch(setTemplateTypes(response.data));
-        }).catch(() => {
-            errorResponseHandler();
-            dispatch(setTemplateTypes(data));
-        }) //test
-    }
-};
-
-// Template
-export const setTemplate = data => {
+export const setTemplates = data => {
     return {
         type: types.TEMPLATE_DATA,
         data: data
     };
 };
 
-export const getTemplate = () => {
-    const url = Site.resolveClientUrl('NewNotification/GetTemplate');
-    const data = {
-        title: 'title hh {UM date}',
-        content: 'good day! \n {UM time} something \n {UM time}'
-            + 'and {End time} <br/> {UM time} and {End time} <br/> {UM time}'
-            + 'and {End time} <br/> {a very long parameter here} {ha ha} cc'
-    };
+export const getTemplates = (notificationTypeId) => {
+    const url = Site.resolveClientUrl('NewNotification/GetTemplates');
 
-    return dispatch => {
-        axios.get(url).then(response => {
-            dispatch(setTemplate(response.data));
-        }).catch(() => {
-            errorResponseHandler();
-            dispatch(setTemplate(data));
-        });
+    return (dispatch) => {
+        return axios.get(url, { params: { notificationTypeId } }).then(response => {
+            dispatch(setTemplates(response.data));
+        }).catch(errorResponseHandler);
     };
 };
 
@@ -150,10 +119,8 @@ export const toggleConfirmationPopup = (isOpen, content) => {
 const actions = {
     setNotificationTypes,
     getNotificationTypes,
-    setTemplateTypes,
-    getTemplateTypes,
-    setTemplate,
-    getTemplate,
+    setTemplates,
+    getTemplates,
     setProducts,
     getProducts,
     setRecipients,

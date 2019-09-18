@@ -10,13 +10,6 @@ export const notificationTypes = createReducer(null, {
 
 // Notification Template
 export const notificationTemplates = createReducer(null, {
-    [types.TEMPLATE_TYPE_DATA](state, action) {
-        return action.data;
-    }
-});
-
-// Template
-export const template = createReducer(null, {
     [types.TEMPLATE_DATA](state, action) {
         return action.data;
     }
@@ -51,7 +44,6 @@ export const confimrationPopup = createReducer({}, {
 const reducers = {
     notificationTypes,
     notificationTemplates,
-    template,
     products,
     recipients,
     createNotificationResult,

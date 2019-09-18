@@ -7,11 +7,11 @@ import { ActionCreators } from '../actions/index';
 import { NCBBreadcrum } from '../../common/breadcrumbs';
 import Filter from './Filter';
 import DataGrid from './DataGrid';
-import DeletePopup from './DeleteNotificationTemplate';
 import Labels from '../../common/Labels';
 import NewNotificationTemplate from './NewNotificationTemplate';
 import EditNotificationTemplate from './EditNotificationTemplate';
 import DeleteNotificationTemplate from './DeleteNotificationTemplate';
+import "react-mde/lib/styles/css/react-mde-all.css";
 
 export class AppContainer extends Component {
     constructor(props) {

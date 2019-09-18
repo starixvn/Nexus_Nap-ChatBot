@@ -171,6 +171,14 @@
             }).ConfigureAwait(false);
         }
 
+        public async Task<IEnumerable<Template>> GetTemplatesAsync(int notificationTypeId)
+        {
+            return await baseService.GetDataAsync<Template>(new GetTemplatesCriteria
+            {
+                NotificationTypeId = notificationTypeId,
+            }).ConfigureAwait(false);
+        }
+
         private void SendNotificationImediately(int notificationId)
         {
             Task.Run(

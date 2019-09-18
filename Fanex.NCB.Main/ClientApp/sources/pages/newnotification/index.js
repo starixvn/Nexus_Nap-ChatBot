@@ -12,7 +12,8 @@ const store = Store.createStore(reducer,
         confimrationPopup: {
             isOpen: false,
             content: ''
-        }
+        },
+        notificationTemplates: []
     });
 
 renderLayout(

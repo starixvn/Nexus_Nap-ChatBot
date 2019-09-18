@@ -50,7 +50,6 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        //[TypeFilter(typeof(NapPermissionAttribute), Arguments = new object[] { FunctionKey.NewNotification, Policy.Host, true })]
         [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
         public async Task<IActionResult> GetRecipients(int notificationTypeId, int? productId)
         {
@@ -59,6 +58,15 @@ namespace Fanex.NCB.SkypeBot.Controllers
             var tree = GenerateTreeHelper.FromRecipient(result);
 
             return Json(tree);
+        }
+
+        [HttpGet]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
+        public async Task<IActionResult> GetTemplates(int notificationTypeId)
+        {
+            var result = await notificationService.GetTemplatesAsync(notificationTypeId).ConfigureAwait(false);
+
+            return Json(result);
         }
     }
 }

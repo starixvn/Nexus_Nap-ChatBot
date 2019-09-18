@@ -25,5 +25,7 @@
         Task<CommandResult> EditAsync(EditNotification model);
 
         Task<IEnumerable<Recipient>> GetEditNotificationRecipientsAsync(int notificationId, int notificationTypeId, int? productId);
+
+        Task<IEnumerable<Template>> GetTemplatesAsync(int notificationTypeId);
     }
 }

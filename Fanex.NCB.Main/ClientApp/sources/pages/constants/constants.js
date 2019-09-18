@@ -1,4 +1,6 @@
-﻿export const mappingStatus = {
+﻿import { commands } from 'react-mde';
+
+export const mappingStatus = {
     'BotRemoved': 0,
     'NotMapped': 1,
     'Mapped': 2
@@ -22,3 +24,14 @@ export const TimeFormat = 'hh:mm:ss a';
 export const DateTimeFormat = 'MM/dd/yyyy hh:mm:ss a';
 
 export const NotAvailabeId = -1000;
+
+export const editorCommandList = [
+    {
+        commands: [
+            commands.boldCommand,
+            commands.italicCommand,
+            commands.strikeThroughCommand,
+            commands.linkCommand
+        ]
+    }
+];

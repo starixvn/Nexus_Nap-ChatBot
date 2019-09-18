@@ -1,7 +1,6 @@
 ﻿import React, { PureComponent } from 'react';
 import remarkDisableTokenizers from "remark-disable-tokenizers";
 import ReactMarkdown from 'react-markdown/with-html';
-import "react-mde/lib/styles/css/react-mde-all.css";
 
 export default class TemplatePreview extends PureComponent {
     highlightParameters = text => {

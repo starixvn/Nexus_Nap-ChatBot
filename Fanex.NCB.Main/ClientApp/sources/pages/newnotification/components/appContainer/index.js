@@ -3,21 +3,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { DateTime } from 'luxon';
-import { Form, FormGroup, Label, Button, Col, Input, FormFeedback } from 'reactstrap';
+import { Form, FormGroup, Label, Button, Col, Input, FormFeedback, Row } from 'reactstrap';
 import { stringify } from 'qs';
 
-import { Formik } from 'formik';
+import { Formik, getIn } from 'formik';
 import * as Yup from 'yup';
+import ReactMde from 'react-mde';
 import { NCBBreadcrum } from '../../../common/breadcrumbs';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../../actions/index';
 import TreeSelect from '../../../common/TreeSelect/index';
 import DatePicker from '../../../common/DatePicker/index';
 import Labels from '../../../common/Labels';
-import { DateTimeFormat } from '../../../constants/constants';
+import { DateTimeFormat, editorCommandList } from '../../../constants/constants';
 import ResponseMessage from '../../../common/response-message/ResponseMessage';
 import Site from '../../../lib/site';
 import ConfirmPopup from '../../../common/ConfirmPopup';
+import ContentPreview from './ContentPreview';
+import "react-mde/lib/styles/css/react-mde-all.css";
 
 const SendModeOptions = [
     {
@@ -255,10 +258,12 @@ export class AppContainer extends React.Component {
         recipients: Yup.array().required(Labels.FieldRequired),
         sendMode: Yup.string(),
         sendDate: Yup.date().min(Today, field => `Send date must be later than ${field.min.toLocaleString()}`)
-            .when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired) : schema)
+            .when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired) : schema),
     })
 
     renderNotificationTypeOption = item => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>
+
+    renderNotificationTemplateOption = item => <option key={item.notificationTemplateId} value={item.notificationTemplateId} >{item.notificationTemplateName}</option>
 
     renderProductOption = item => <option key={item.id} value={item.id} >{item.name}</option>
 
@@ -276,9 +281,44 @@ export class AppContainer extends React.Component {
     handleNotificationTypeChange = event => {
         const formik = this.refs.form;
         this.props.getRecipients(event.target.value, formik.state.values.productId);
-        formik.handleChange(event);
-        if (formik.state.values.recipients.length > 0) {
-            formik.setFieldValue('recipients', []);
+        this.props.getTemplates(event.target.value);
+
+        formik.setValues({
+            ...formik.state.values,
+            notificationTypeId: event.target.value,
+            recipients: [],
+            templateId: '',
+            params: [],
+            title: '',
+            content: ''
+        });
+    }
+
+    handleTemplateChange = event => {
+        if (event.target.value) {
+            const formik = this.refs.form;
+            const selectedTemplate = this.props.notificationTemplates.find(x => x.notificationTemplateId === parseInt(event.target.value, 10));
+
+            const paramsInTitle = selectedTemplate.title.match(/{[_-\w\s]+}/g) || [];
+            const paramsInContent = selectedTemplate.content.match(/{[_-\w\s]+}/g) || [];
+
+            const paramNames = new Set([...paramsInTitle, ...paramsInContent]);
+
+            formik.setValues({
+                ...formik.state.values,
+                templateId: event.target.value,
+                params: [...paramNames].map(x => ({ name: x, value: '' })),
+                title: selectedTemplate.title,
+                content: selectedTemplate.content
+            });
+        } else {
+            formik.setValues({
+                ...formik.state.values,
+                templateId: event.target.value,
+                params: [],
+                title: '',
+                content: '',
+            });
         }
     }
 
@@ -295,6 +335,29 @@ export class AppContainer extends React.Component {
         const formik = this.refs.form;
         this.selectedNodes = extra.allCheckedNodes;
         formik.setFieldValue('recipients', value);
+    }
+
+    handleResetTitleContent = () => {
+        const formik = this.refs.form;
+        const selectedTemplate = this.props.notificationTemplates.find(x => x.notificationTemplateId === parseInt(formik.state.templateId, 10));
+
+        formik.setValues({
+            ...formik.state.values,
+            title: selectedTemplate.title,
+            content: selectedTemplate.content,
+        });
+    }
+
+    handleGerneratePreview = markdown => {
+        const params = this.refs.form.state.values.params;
+
+        for (let i = 0; i < params.length; i++) {
+            markdown = markdown.replace(new RegExp(params[i].name, 'g'), params[i].value);
+        }
+
+        return Promise.resolve(
+            <ContentPreview text={markdown} />
+        );
     }
 
     renderForm = ({
@@ -322,11 +385,9 @@ export class AppContainer extends React.Component {
                         </Input>
                         {touched.notificationTypeId && errors.notificationTypeId && <FormFeedback>{errors.notificationTypeId}</FormFeedback>}
                     </Col>
-
                 </FormGroup>
                 <FormGroup row>
                     <Label for="productId" className="form-label" sm={2}>Product</Label>
-
                     <Col sm={10}>
                         <Input type="select"
                             value={values.productId}
@@ -340,13 +401,30 @@ export class AppContainer extends React.Component {
                 </FormGroup>
                 <FormGroup row>
                     <Label for="productId" className="form-label required" sm={2}>Recipients</Label>
-
                     <Col sm={10}>
                         <TreeSelect value={values.recipients} onChange={this.handleRecipientChange} placeholder={Labels.PleaseSelect}
                             treeData={this.props.recipientOptions} className={touched.recipients && errors.recipients && 'is-invalid'}
                             treeDefaultExpandAll
                         />
                         {touched.recipients && errors.recipients && <FormFeedback>{errors.recipients}</FormFeedback>}
+                    </Col>
+                </FormGroup>
+                <FormGroup row>
+                    <Label for="notificationTypeId" className="form-label" sm={2}>Template</Label>
+                    <Col sm={4}>
+                        <Input type="select"
+                            invalid={touched.templateId && errors.templateId}
+                            name="templateId"
+                            onChange={this.handleTemplateChange}
+                            value={values.templateId}
+                        >
+                            <option value="">{Labels.None}</option>
+                            {this.props.notificationTemplates.map(this.renderNotificationTemplateOption)}
+                        </Input>
+                        {touched.templateId && errors.templateId && <FormFeedback>{errors.templateId}</FormFeedback>}
+                    </Col>
+                    <Col sm={6}>
+                        <a onClick={this.handleResetTitleContent} disabled={!values.templateId}>Reset Title & Content</a>
                     </Col>
                 </FormGroup>
                 <FormGroup row>
@@ -361,17 +439,43 @@ export class AppContainer extends React.Component {
                 </FormGroup>
                 <FormGroup row>
                     <Label for="content" className="form-label required" sm={2}>Content</Label>
-
                     <Col sm={10}>
-                        <Input className="notification-content" type="textarea" value={values.content} name="content"
-                            onChange={handleChange} invalid={touched.content && errors.content}
+                        <ReactMde className={touched.content && errors.content && 'is-invalid'}
+                            value={values.content} commands={editorCommandList}
+                            onChange={content => setFieldValue('content', content)}
+                            selectedTab={values.mode}
+                            onTabChange={selectedTab => setFieldValue('mode', selectedTab)}
+                            generateMarkdownPreview={this.handleGerneratePreview}
+                            maxEditorHeight={400}
                         />
                         {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
                     </Col>
                 </FormGroup>
+                {values.params.length > 0 &&
+                    <Row >
+                        <Col sm={{ size: 10, offset: 2 }}>
+                            <fieldset>
+                                <legend>Parameters</legend>
+                                <FormGroup row>
+                                    {values.params.map((x, i) =>
+                                        <>
+                                            <Label for="title" className="form-label" sm={2}>{x.name}</Label>
+                                            <Col sm={4}>
+                                                <Input value={x.values} name={`params.${i}.value`} disabled={values.mode === 'preview'}
+                                                    invalid={getIn(touched, `params.${i}.value`) && getIn(errors, `params.${i}.value`)}
+                                                    onChange={e => setFieldValue(`params.${i}.value`, e.target.value)}
+                                                />
+                                            </Col>
+                                        </>
+                                    )}
+                                </FormGroup>
+                            </fieldset>
+                        </Col>
+                    </Row>
+                }
                 <FormGroup row>
                     <Label for="sendMode" className="form-label required" sm={2}>Send Date/Time</Label>
-                    <Col sm={10}>
+                    <Col sm={10} >
                         <div className="send-date-area">
                             <Input type='select'
                                 value={values.sendMode}
@@ -388,7 +492,6 @@ export class AppContainer extends React.Component {
                             {touched.sendDate && errors.sendDate && <FormFeedback>{errors.sendDate}</FormFeedback>}
                         </div>
                     </Col>
-
                 </FormGroup>
                 <FormGroup row className="list-buttons">
                     <Button className="btn-submit offset-sm-2" disabled={isSubmitting} type="submit">Save</Button>
@@ -414,12 +517,15 @@ export class AppContainer extends React.Component {
                     <Formik ref="form"
                         initialValues={{
                             notificationTypeId: '',
+                            templateId: '',
                             productId: '',
                             recipients: [],
                             title: '',
                             content: '',
                             sendDate: Today,
-                            sendMode: '1'
+                            sendMode: '1',
+                            params: [],
+                            mode: 'write'
                         }}
                         render={this.renderForm}
                         validationSchema={this.schema}
@@ -446,7 +552,8 @@ const mapStateToProps = state => {
         products: state.products,
         recipientOptions: state.recipients,
         createNotificationResult: state.createNotificationResult,
-        confimrationPopup: state.confimrationPopup
+        confimrationPopup: state.confimrationPopup,
+        notificationTemplates: state.notificationTemplates
     };
 };
 
