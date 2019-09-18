@@ -133,8 +133,14 @@
 .new-notification {
     width: 1000px;
 
+    .form-group {
+        display: grid;
+        grid-template-columns: 109px 1fr;
+        grid-gap: 10px;
+    }
+
     .list-buttons {
-        margin-left: 18px;
+        padding-left: 119px;
     }
 
     .mde-preview {

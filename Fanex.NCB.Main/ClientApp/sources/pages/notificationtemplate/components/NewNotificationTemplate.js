@@ -56,9 +56,9 @@ class NewNotificationTemplate extends Component {
     }) => {
         return (
             <Form onSubmit={handleSubmit}>
-                <FormGroup row>
-                    <Label for="notificationTypeId" className="form-label required" sm={2}>Notification Type</Label>
-                    <Col sm={10}>
+                <FormGroup>
+                    <Label for="notificationTypeId" className="form-label required">Notification Type</Label>
+                    <div>
                         <Input type="select"
                             invalid={touched.notificationTypeId && errors.notificationTypeId}
                             name="notificationTypeId"
@@ -69,32 +69,32 @@ class NewNotificationTemplate extends Component {
                             {this.props.notificationTypes.map(this.renderNotificationTypeOption)}
                         </Input>
                         {touched.notificationTypeId && errors.notificationTypeId && <FormFeedback>{errors.notificationTypeId}</FormFeedback>}
-                    </Col>                   
+                    </div>                   
                 </FormGroup>
-                <FormGroup row>                    
-                    <Label for="title" className="form-label required" sm={2}>Template Name</Label>
-                    <Col sm={10}>
+                <FormGroup>                    
+                    <Label for="title" className="form-label required">Template Name</Label>
+                    <div>
                         <Input value={values.notificationTemplateName} name="notificationTemplateName"
                             invalid={touched.notificationTemplateName && errors.notificationTemplateName}
                             onChange={handleChange}
                         />
                         {touched.notificationTemplateName && errors.notificationTemplateName && <FormFeedback>{errors.notificationTemplateName}</FormFeedback>}
-                    </Col>
+                    </div>
                 </FormGroup>
-                <FormGroup row>
-                    <Label for="title" className="form-label required" sm={2}>Title</Label>
-                    <Col sm={10}>
+                <FormGroup>
+                    <Label for="title" className="form-label required">Title</Label>
+                    <div>
                         <Input value={values.title} name="title"
                             invalid={touched.title && errors.title}
                             onChange={handleChange}
                         />
                         {touched.title && errors.title && <FormFeedback>{errors.title}</FormFeedback>}
-                    </Col>
+                    </div>
                 </FormGroup>
-                <FormGroup row>
-                    <Label for="content" className="form-label required" sm={2}>Content</Label>
+                <FormGroup>
+                    <Label for="content" className="form-label required">Content</Label>
 
-                    <Col sm={10}>
+                    <div>
                         <ReactMde className={touched.content && errors.content && 'is-invalid'}
                             value={values.content} commands={commandList}
                             onChange={content => setFieldValue('content', content)}
@@ -104,10 +104,12 @@ class NewNotificationTemplate extends Component {
                             maxEditorHeight={400}
                         />
                         {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
-                    </Col>
+                    </div>
                 </FormGroup>
-
-                <Button className="btn-submit float-right" disabled={isSubmitting} type="submit">{Labels.Submit}</Button>
+                <div className="list-button">
+                    <Button className="btn-submit float-right" disabled={isSubmitting} type="submit">{Labels.Submit}</Button>
+                </div>
+                
             </Form >
         );
     }

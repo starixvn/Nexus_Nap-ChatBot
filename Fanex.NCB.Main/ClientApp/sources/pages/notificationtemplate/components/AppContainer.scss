@@ -23,13 +23,17 @@
         max-height: 400px;
         overflow-y: auto;
     }
+
+    .form-group {
+        display: grid;
+        grid-template-columns: 108px 1fr;
+        grid-gap: 10px;
+    }
+
+    .list-button {
+        padding-left: 118px;
+    }
 }
 
-.row-style1 {
-    display: grid;
-    grid-template-columns: 113px 1fr;
-    grid-template-rows: 1fr;
-    justify-content: space-between;
-    align-items: center;
-    grid-gap: 16px;
-}
+
+

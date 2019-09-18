@@ -40,10 +40,8 @@
 
 .form-group {
     display: grid;
-    grid-template-columns: 154px 1fr;
-    grid-template-rows: 1fr;
-    align-items: center;
-    margin-bottom: 12px;
+    grid-template-columns: 146px 1fr;
+    grid-gap: 10px;
 }
 
 .table-container-div{
