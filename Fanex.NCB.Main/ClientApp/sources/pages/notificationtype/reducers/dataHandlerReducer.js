@@ -1,6 +1,13 @@
 import createReducer from '../../lib/createReducer';
 import types from '../actions/types';
 
+// Is Host
+export const isHost = createReducer({}, {
+  [types.IS_HOST](state, action) {
+    return action.data;
+  }
+});
+
 // Grid
 export const gridParams = createReducer({}, {
     [types.GRID_PARAMS](state, action){
@@ -43,6 +50,7 @@ export const updateData = createReducer({}, {
 });
 
 const reducers = {
+    isHost,
     gridParams,
     gridData,
     settingData,

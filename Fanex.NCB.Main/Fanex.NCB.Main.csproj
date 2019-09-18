@@ -9,6 +9,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="ClientApp\sources\js\**" />

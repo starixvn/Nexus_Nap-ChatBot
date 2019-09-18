@@ -1,9 +1,9 @@
-﻿@{
+﻿@model bool
+@{
     ViewData["Title"] = "Notification Type";
 }
-
+<input type="hidden" id="is-host" value="@Model.ToString()" />
 <div id="root"></div>
-
 @section Styles {
     <environment include="Development">
         <link rel="stylesheet" href="~/dev/pages/notificationtype/notificationtype.chunk.css" asp-append-version="true" />
@@ -12,7 +12,6 @@
         <link rel="stylesheet" href="~/pro/pages/notificationtype/notificationtype.chunk.css" asp-append-version="true" />
     </environment>
 }
-
 @section Scripts {
     <environment include="Development">
         <script src="~/dev/pages/notificationtype/notificationtype.chunk.js" asp-append-version="true"></script>

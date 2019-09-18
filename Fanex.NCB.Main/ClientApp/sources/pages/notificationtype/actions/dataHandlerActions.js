@@ -2,6 +2,20 @@ import types from './types';
 import axios from 'axios';
 import Site from '../../lib/site';
 
+// IsHost
+export const setIsHost = data => {
+  return {
+    type: types.IS_HOST,
+    data: data
+  };
+};
+
+export const getIsHost = () => {
+  return dispatch => {
+    dispatch(setIsHost(document.getElementById('is-host').value === "True"));
+  };
+};
+
 // Grid
 export const setGridParams = data => {
     return {
@@ -109,16 +123,18 @@ export const refreshUpdateData = () => {
 };
 
 const actions = {
-    setGridParams,
-    getGridData,
-    setGridData,
-    getSettings,
-    setSettings,
-    deleteItem,
-    setDeleteData,
-    setUpdateParams,
-    update,
-    setUpdateData,
+  setIsHost,
+  getIsHost,
+  setGridParams,
+  getGridData,
+  setGridData,
+  getSettings,
+  setSettings,
+  deleteItem,
+  setDeleteData,
+  setUpdateParams,
+  update,
+  setUpdateData,
   refreshUpdateData,
   refreshDeleteData
 };

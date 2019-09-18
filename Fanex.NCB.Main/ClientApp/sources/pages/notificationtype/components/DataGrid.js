@@ -47,7 +47,7 @@ export class DataGrid extends Component {
       <Cell colWidth={150} header>Recipient Type</Cell>
       <Cell colWidth={150} header>Chat Group Type</Cell>
       <Cell colWidth={150} header>System</Cell>
-      <Cell colWidth={150} header>Action</Cell>
+      {this.props.isHost && <Cell colWidth={150} header>Action</Cell>}
     </Row>;
   }
 
@@ -61,14 +61,17 @@ export class DataGrid extends Component {
         <Cell>{item.recipientTypes.map(r => r.name).join(', ')}</Cell>
         <Cell>{item.chatGroupTypes.map(r => r.name).join(', ')}</Cell>
         <Cell>{item.systemName}</Cell>
-        <Cell className="text-center col-action">
-          <div>
-            <span className="icon-edit" id={'edit-' + index} onClick={() => this.openEditPopup(item, index)} />
-            <UncontrolledTooltip placement="top" target={'edit-' + index}>Edit</UncontrolledTooltip>
-            <span className="icon-delete" id={'delete-' + index} onClick={() => this.openDeletePopup(index, item.id, item.name)} />
-            <UncontrolledTooltip placement="top" target={'delete-' + index}>Delete</UncontrolledTooltip>
-          </div>
-        </Cell>
+        {
+          this.props.isHost && 
+          <Cell className="text-center col-action">
+            <div>
+              <span className="icon-edit" id={'edit-' + index} onClick={() => this.openEditPopup(item, index)} />
+              <UncontrolledTooltip placement="top" target={'edit-' + index}>Edit</UncontrolledTooltip>
+              <span className="icon-delete" id={'delete-' + index} onClick={() => this.openDeletePopup(index, item.id, item.name)} />
+              <UncontrolledTooltip placement="top" target={'delete-' + index}>Delete</UncontrolledTooltip>
+            </div>
+          </Cell>
+        }
       </Row>);
     });
 
@@ -111,8 +114,9 @@ export class DataGrid extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-  const { gridParams, gridData, activeRowIndex } = state;
+  const { gridParams, gridData, activeRowIndex, isHost } = state;
   return {
+    isHost,
     gridParams,
     gridData,
     activeRowIndex

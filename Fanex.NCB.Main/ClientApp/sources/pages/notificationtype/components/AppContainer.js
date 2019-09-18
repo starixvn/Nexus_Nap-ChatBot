@@ -15,6 +15,10 @@ export class AppContainer extends Component {
     super(props);
   }
 
+  componentWillMount() {
+    this.props.getIsHost();
+  }
+
   closeUpdatePopupHandler = () => {
     this.props.closeNewEditPopup();
     this.props.refreshUpdateData();
@@ -33,7 +37,7 @@ export class AppContainer extends Component {
     return (
       <div>
         <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Type" />
-        <button className="btn-new" onClick={this.props.openNewPopup}>New Notification Type</button>
+        {this.props.isHost && <button className="btn-new" onClick={this.props.openNewPopup}>New Notification Type</button>}
         <DataGrid />
         {this.props.updatePopupData.isShowed && <UpdatePopup closeUpdatePopupHandler={this.closeUpdatePopupHandler} />}
         {this.props.deletePopupData.isShowed && <DeletePopup closeDeletePopupHandler={this.closeDeletePopupHandler} />}
@@ -45,8 +49,9 @@ export class AppContainer extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-  const { gridParams, updatePopupData, deletePopupData } = state;
+  const { gridParams, updatePopupData, deletePopupData, isHost } = state;
   return {
+    isHost,
     gridParams,
     updatePopupData,
     deletePopupData

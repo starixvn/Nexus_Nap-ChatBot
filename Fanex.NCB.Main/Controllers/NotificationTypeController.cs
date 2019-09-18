@@ -35,9 +35,11 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Read)]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View("~/Views/SkypeBot/NotificationType/Index.cshtml");
+            var permission = await userService.GetPermissionAsync(napSession.UserId, napSettings.SiteId, FunctionKey.ChatGroupMapping).ConfigureAwait(false);
+            var isHost = permission >= (int)Policy.Host;
+            return View("~/Views/SkypeBot/NotificationType/Index.cshtml", isHost);
         }
 
         [HttpGet]
@@ -45,8 +47,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> GetAll(int pageIndex, int pageSize)
         {
             var data = await notificationTypeService.GetAllAsync(pageIndex, pageSize).ConfigureAwait(false);
-            var permission = await userService.GetPermissionAsync(napSession.UserId, napSettings.SiteId, FunctionKey.ChatGroupMapping).ConfigureAwait(false);
-            return Json(new { NotificationTypes = data.Item1, Count = data.Item2, IsHost = permission >= (int)Policy.Host });
+            return Json(new { NotificationTypes = data.Item1, Count = data.Item2 });
         }
 
         [HttpPost]
@@ -60,25 +61,26 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpPost]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Host)]
-        public async Task<IActionResult> Add([FromBody] NotificationTypeViewModel item)
+        public async Task<IActionResult> Add([FromBody] NotificationTypeViewModel model)
         {
-            item.UserId = napSession.UserId;
-            var result = await notificationTypeService.InsertAsync(item).ConfigureAwait(false);
+            model.UserId = napSession.UserId;
+            var result = await notificationTypeService.InsertAsync(model).ConfigureAwait(false);
 
             return Json(result);
         }
 
         [HttpPost]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Host)]
-        public async Task<IActionResult> Edit([FromBody] NotificationTypeViewModel item)
+        public async Task<IActionResult> Edit([FromBody] NotificationTypeViewModel model)
         {
-            item.UserId = napSession.UserId;
-            var result = notificationTypeService.UpdateAsync(item);
+            model.UserId = napSession.UserId;
+            var result = notificationTypeService.UpdateAsync(model);
 
             return Json(await result);
         }
 
         [HttpGet]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Read)]
         public async Task<IActionResult> GetSettings()
         {
             var getRecipent = await settingService.GetRecipientTypesAsync().ConfigureAwait(false);
