@@ -380,9 +380,9 @@ export class AppContainer extends React.Component {
     }) => {
         return (
             <Form onSubmit={handleSubmit} className="new-notification-form">
-                <FormGroup row>
-                    <Label for="notificationTypeId" className="form-label required" sm={2}>Notification Type</Label>
-                    <Col sm={10}>
+                <FormGroup>
+                    <Label for="notificationTypeId" className="form-label required">Notification Type</Label>
+                    <div>
                         <Input type="select"
                             invalid={touched.notificationTypeId && errors.notificationTypeId}
                             name="notificationTypeId"
@@ -393,11 +393,11 @@ export class AppContainer extends React.Component {
                             {this.props.notificationTypes.map(this.renderNotificationTypeOption)}
                         </Input>
                         {touched.notificationTypeId && errors.notificationTypeId && <FormFeedback>{errors.notificationTypeId}</FormFeedback>}
-                    </Col>
+                    </div>
                 </FormGroup>
-                <FormGroup row>
-                    <Label for="productId" className="form-label" sm={2}>Product</Label>
-                    <Col sm={10}>
+                <FormGroup>
+                    <Label for="productId" className="form-label">Product</Label>
+                    <div>
                         <Input type="select"
                             value={values.productId}
                             name="productId"
@@ -406,21 +406,21 @@ export class AppContainer extends React.Component {
                             <option value="">{Labels.None}</option>
                             {this.props.products.map(this.renderProductOption)}
                         </Input>
-                    </Col>
+                    </div>
                 </FormGroup>
-                <FormGroup row>
-                    <Label for="productId" className="form-label required" sm={2}>Recipients</Label>
-                    <Col sm={10}>
+                <FormGroup>
+                    <Label for="productId" className="form-label required">Recipients</Label>
+                    <div>
                         <TreeSelect value={values.recipients} onChange={this.handleRecipientChange} placeholder={Labels.PleaseSelect}
                             treeData={this.props.recipientOptions} className={touched.recipients && errors.recipients && 'is-invalid'}
                             treeDefaultExpandAll
                         />
                         {touched.recipients && errors.recipients && <FormFeedback>{errors.recipients}</FormFeedback>}
-                    </Col>
+                    </div>
                 </FormGroup>
-                <FormGroup row>
-                    <Label for="notificationTypeId" className="form-label" sm={2}>Template</Label>
-                    <Col sm={4}>
+                <FormGroup className="row-has-reset">
+                    <Label for="notificationTypeId" className="form-label">Template</Label>
+                    <div>
                         <Input type="select"
                             invalid={touched.templateId && errors.templateId}
                             name="templateId"
@@ -431,24 +431,28 @@ export class AppContainer extends React.Component {
                             {this.props.notificationTemplates.map(this.renderNotificationTemplateOption)}
                         </Input>
                         {touched.templateId && errors.templateId && <FormFeedback>{errors.templateId}</FormFeedback>}
-                    </Col>
-                    <Col sm={6}>
-                        <Button type="button" onClick={this.handleResetTitleContent} disabled={!values.templateId}>Reset Title & Content</Button>
-                    </Col>
+                    </div>
+                    <div className="action" onClick={this.handleResetTitleContent} disabled={!values.templateId}>
+                        <div className="circle blue">
+                            <span className="icon-reset" />
+                        </div>
+
+                        <span className="text">Reset Title & Content</span>
+                    </div>
                 </FormGroup>
-                <FormGroup row>
-                    <Label for="title" className="form-label required" sm={2}>Title</Label>
-                    <Col sm={10}>
+                <FormGroup>
+                    <Label for="title" className="form-label required">Title</Label>
+                    <div>
                         <Input value={values.title} name="title"
                             invalid={touched.title && errors.title}
                             onChange={handleChange}
                         />
                         {touched.title && errors.title && <FormFeedback>{errors.title}</FormFeedback>}
-                    </Col>
+                    </div>
                 </FormGroup>
-                <FormGroup row>
-                    <Label for="content" className="form-label required" sm={2}>Content</Label>
-                    <Col sm={10}>
+                <FormGroup>
+                    <Label for="content" className="form-label required">Content</Label>
+                    <div>
                         <ReactMde className={touched.content && errors.content && 'is-invalid'}
                             value={values.content} commands={editorCommandList}
                             onChange={content => setFieldValue('content', content)}
@@ -458,33 +462,31 @@ export class AppContainer extends React.Component {
                             maxEditorHeight={400}
                         />
                         {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
-                    </Col>
+                    </div>
                 </FormGroup>
                 {values.params.length > 0 &&
-                    <Row >
-                        <Col sm={{ size: 10, offset: 2 }}>
-                            <fieldset>
-                                <legend>Parameters</legend>
-                                <FormGroup row>
-                                    {values.params.map((x, i) =>
-                                        <>
-                                            <Label for={`params.${i}.value`} className="form-label" sm={2}>{x.name}</Label>
-                                            <Col sm={4}>
-                                                <Input value={x.values} name={`params.${i}.value`} disabled={values.mode === 'preview'}
-                                                    invalid={getIn(touched, `params.${i}.value`) && getIn(errors, `params.${i}.value`)}
-                                                    onChange={handleChange}
-                                                />
-                                            </Col>
-                                        </>
-                                    )}
-                                </FormGroup>
-                            </fieldset>
-                        </Col>
-                    </Row>
+                    <FormGroup>
+                        <fieldset className="parameter-area">
+                            <legend>Parameters</legend>
+                            <FormGroup className="parameters">
+                                {values.params.map((x, i) =>
+                                    <div className="parameter-col">
+                                        <Label for={`params.${i}.value`} className="form-label">{x.name}</Label>
+                                        <div>
+                                            <Input value={x.values} name={`params.${i}.value`} disabled={values.mode === 'preview'}
+                                                invalid={getIn(touched, `params.${i}.value`) && getIn(errors, `params.${i}.value`)}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                            </FormGroup>
+                        </fieldset>
+                    </FormGroup>
                 }
-                <FormGroup row>
-                    <Label for="sendMode" className="form-label required" sm={2}>Send Date/Time</Label>
-                    <Col sm={10} >
+                <FormGroup>
+                    <Label for="sendMode" className="form-label required">Send Date/Time</Label>
+                    <div>
                         <div className="send-date-area">
                             <Input type='select'
                                 value={values.sendMode}
@@ -500,11 +502,11 @@ export class AppContainer extends React.Component {
                             <span>(GMT +8)</span>
                             {touched.sendDate && errors.sendDate && <FormFeedback>{errors.sendDate}</FormFeedback>}
                         </div>
-                    </Col>
+                    </div>
                 </FormGroup>
-                <FormGroup row className="list-buttons">
-                    <Button className="btn-submit offset-sm-2" disabled={isSubmitting} type="submit">Save</Button>
-                </FormGroup>
+                <div className="list-buttons">
+                    <Button className="btn-submit" disabled={isSubmitting} type="submit">Save</Button>
+                </div>
             </Form >
         );
     }
