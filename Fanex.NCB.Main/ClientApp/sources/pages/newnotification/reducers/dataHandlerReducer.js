@@ -41,13 +41,27 @@ export const confimrationPopup = createReducer({}, {
     }
 });
 
+export const resetConfimrationPopup = createReducer({}, {
+    [types.RESET_CONFIRMATIONPOPUP_DATA](state, action) {
+        return action.data;
+    }
+});
+
+export const editConfimrationPopup = createReducer({}, {
+    [types.EDIT_CONFIRMATIONPOPUP_DATA](state, action) {
+        return action.data;
+    }
+});
+
 const reducers = {
     notificationTypes,
     notificationTemplates,
     products,
     recipients,
     createNotificationResult,
-    confimrationPopup
+    confimrationPopup,
+    resetConfimrationPopup,
+    editConfimrationPopup
 };
 
 export default reducers;

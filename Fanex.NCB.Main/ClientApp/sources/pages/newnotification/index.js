@@ -13,6 +13,12 @@ const store = Store.createStore(reducer,
             isOpen: false,
             content: ''
         },
+        resetConfimrationPopup: {
+            isOpen: false
+        },
+        editConfimrationPopup: {
+            isOpen: false
+        },
         notificationTemplates: []
     });
 

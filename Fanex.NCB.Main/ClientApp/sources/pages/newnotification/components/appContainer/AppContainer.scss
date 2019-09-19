@@ -6,22 +6,6 @@
 @import "../../../shared/components/font.css";
 @import "../../../shared/components/messages";
 
-.form-group {
-    .notification-type,
-    .notification-template {
-        width: 540px;
-    }
-
-    .notification-content {
-        height: 260px;
-    }
-
-    &.row {
-        margin-left: 0;
-        margin-right: 0;
-    }
-}
-
 /*.row-has-actions {
     display: grid;
     grid-template-columns: 685px 160px 1fr;

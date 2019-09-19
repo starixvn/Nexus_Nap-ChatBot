@@ -3,7 +3,7 @@ import remarkDisableTokenizers from "remark-disable-tokenizers";
 import ReactMarkdown from 'react-markdown/with-html';
 
 export default class ContentPreview extends PureComponent {
-    highlightParameters = text => {
+    transformText = text => {
         text = text.replace(/(?:\r\n|\r|\n)/g, '<br>');
         return text;
     }
@@ -20,7 +20,7 @@ export default class ContentPreview extends PureComponent {
 
     render() {
         return (
-            <ReactMarkdown source={this.highlightParameters(this.props.text)} escapeHtml={false} linkTarget="blank"
+            <ReactMarkdown source={this.transformText(this.props.text)} escapeHtml={false} linkTarget="blank"
                 plugins={this.plugins}
             />
         );

@@ -7,19 +7,9 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import ReactMde, { commands } from "react-mde";
 import Labels from '../../common/Labels';
+import { editorCommandList } from '../../constants/constants';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 import TemplatePreview from '../../common/TemplatePreview/index';
-
-const commandList = [
-    {
-        commands: [
-            commands.boldCommand,
-            commands.italicCommand,
-            commands.strikeThroughCommand,
-            commands.linkCommand
-        ]
-    }
-];
 
 class NewNotificationTemplate extends Component {
     constructor(props) {
@@ -69,9 +59,9 @@ class NewNotificationTemplate extends Component {
                             {this.props.notificationTypes.map(this.renderNotificationTypeOption)}
                         </Input>
                         {touched.notificationTypeId && errors.notificationTypeId && <FormFeedback>{errors.notificationTypeId}</FormFeedback>}
-                    </div>                   
+                    </div>
                 </FormGroup>
-                <FormGroup>                    
+                <FormGroup>
                     <Label for="title" className="form-label required">Template Name</Label>
                     <div>
                         <Input value={values.notificationTemplateName} name="notificationTemplateName"
@@ -96,7 +86,7 @@ class NewNotificationTemplate extends Component {
 
                     <div>
                         <ReactMde className={touched.content && errors.content && 'is-invalid'}
-                            value={values.content} commands={commandList}
+                            value={values.content} commands={editorCommandList}
                             onChange={content => setFieldValue('content', content)}
                             selectedTab={values.mode}
                             onTabChange={selectedTab => setFieldValue('mode', selectedTab)}
@@ -109,7 +99,7 @@ class NewNotificationTemplate extends Component {
                 <div className="list-button">
                     <Button className="btn-submit float-right" disabled={isSubmitting} type="submit">{Labels.Submit}</Button>
                 </div>
-                
+
             </Form >
         );
     }

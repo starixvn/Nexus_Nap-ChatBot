@@ -2,7 +2,9 @@ namespace Fanex.NCB.SkypeBot.Controllers
 {
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.NAP.Client;
     using Fanex.NAP.Client.Helpers.Web;
+    using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Main.ViewModel.NotificationTemplate;
     using Fanex.NCB.Models.NotificationTemplate;
@@ -24,14 +26,16 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        //   [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Read)]
-        public IActionResult Index()
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Read)]
+        public IActionResult Index([FromServices]IUserService userService)
         {
+            ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotificationTemplate, Policy.Host);
+
             return View("~/Views/SkypeBot/NotificationTemplate/Index.cshtml");
         }
 
         [HttpGet]
-        // [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Read)]
         public async Task<IActionResult> Get(int? notificationTypeId, int pageIndex, int pageSize)
         {
             var result = await notificationTemplaceService.GetAsync(notificationTypeId, pageIndex, pageSize).ConfigureAwait(false);
@@ -40,7 +44,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpGet]
-        //    [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Read)]
         public async Task<IActionResult> GetById(int id)
         {
             var result = await notificationTemplaceService.GetByIdAsync(id).ConfigureAwait(false);
@@ -49,7 +53,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpPost]
-        //  [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Host)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Host)]
         public async Task<IActionResult> Create([FromBody]CreateNotificationTemplateViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -71,7 +75,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpPost]
-        //    [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Host)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Host)]
         public async Task<IActionResult> Edit([FromBody]EditNotificationTemplateViewModel viewModel)
         {
             if (ModelState.IsValid)

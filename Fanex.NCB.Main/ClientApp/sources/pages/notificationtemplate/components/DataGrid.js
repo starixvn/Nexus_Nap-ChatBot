@@ -90,8 +90,12 @@ export class DataGrid extends Component {
                     <TemplatePreview text={item.content} />
                 </Panel></Cell>
             <Cell className="text-center">
-                <span className="icon-edit" data-templateid={item.notificationTemplateId} onClick={this.handleEditTemplate} />
-                <span className="icon-delete" data-templateid={item.notificationTemplateId} onClick={this.handleDeleteTemplate} />
+                {this.props.haveHostPermission &&
+                    <>
+                        <span className="icon-edit" data-templateid={item.notificationTemplateId} onClick={this.handleEditTemplate} />
+                        <span className="icon-delete" data-templateid={item.notificationTemplateId} onClick={this.handleDeleteTemplate} />
+                    </>
+                }
             </Cell>
         </Row>
     )

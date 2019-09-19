@@ -16,6 +16,8 @@ import "react-mde/lib/styles/css/react-mde-all.css";
 export class AppContainer extends Component {
     constructor(props) {
         super(props);
+
+        this.haveHostPermission = document.getElementById('have-host-permission').checked;
     }
 
     componentDidMount() {
@@ -49,8 +51,10 @@ export class AppContainer extends Component {
             <>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Template" />
                 <Filter />
-                <button className="btn-new" onClick={this.handleOpenCreateTemplatePopup}>{Labels.CreateNewTemplate}</button>
-                <DataGrid />
+                {this.haveHostPermission &&
+                    <button className="btn-new" onClick={this.handleOpenCreateTemplatePopup}>{Labels.CreateNewTemplate}</button>
+                }
+                <DataGrid haveHostPermission={this.haveHostPermission} />
                 {this.props.createTemplatePopup.show &&
                     <NewNotificationTemplate onClose={this.handleCloseCreateTemplatePopup} onCreateSuccess={this.handleCreateSuccess}
                     />}

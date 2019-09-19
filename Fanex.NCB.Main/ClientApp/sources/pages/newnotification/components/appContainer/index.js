@@ -3,10 +3,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { DateTime } from 'luxon';
-import { Form, FormGroup, Label, Button, Col, Input, FormFeedback, Row } from 'reactstrap';
+import { Form, FormGroup, Label, Button, Input, FormFeedbac } from 'reactstrap';
 import { stringify } from 'qs';
-
-import { Formik, getIn } from 'formik';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 import ReactMde from 'react-mde';
 import { NCBBreadcrum } from '../../../common/breadcrumbs';
@@ -19,7 +18,7 @@ import { DateTimeFormat, editorCommandList } from '../../../constants/constants'
 import ResponseMessage from '../../../common/response-message/ResponseMessage';
 import Site from '../../../lib/site';
 import ConfirmPopup from '../../../common/ConfirmPopup';
-import ContentPreview from './ContentPreview';
+import ContentPreview from '../../../common/ContentPreview';
 import "react-mde/lib/styles/css/react-mde-all.css";
 
 const SendModeOptions = [
@@ -211,6 +210,14 @@ export class AppContainer extends React.Component {
         this.refs.form.setSubmitting(false);
     }
 
+    handleToggleResetConfirmationPopup = () => {
+        this.props.toggleResetConfirmationPopup(false);
+    }
+
+    handleToggleEditConfirmationPopup = () => {
+        this.props.toggleEditConfirmationPopup(false);
+    }
+
     handleConfirm = () => {
         this.props.toggleConfirmationPopup(false);
 
@@ -220,20 +227,12 @@ export class AppContainer extends React.Component {
         const recipientIds = [];
         this.getRecipientIds(recipientIds, this.selectedNodes);
 
-        let title = values.title;
-        let content = values.content;
-
-        for (let i = 0; i < values.params.length; i++) {
-            title = title.replace(new RegExp(values.params[i].name, 'g'), values.params[i].value);
-            content = content.replace(new RegExp(values.params[i].name, 'g'), values.params[i].value);
-        }
-
         const data = stringify({
             notificationTypeId: values.notificationTypeId,
             productId: values.productId,
             recipientIds: recipientIds.toString(),
-            title: title,
-            content: content,
+            title: values.title,
+            content: values.content,
             sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
             sendImmediately: values.sendMode === '1'
         });
@@ -326,7 +325,8 @@ export class AppContainer extends React.Component {
                 templateId: event.target.value,
                 params: [],
                 title: '',
-                content: ''
+                content: '',
+                canEditTitleContent: true
             });
         }
     }
@@ -347,23 +347,58 @@ export class AppContainer extends React.Component {
     }
 
     handleResetTitleContent = () => {
+        const message = 'Reset Title and Content will recover the original template and discard your changes.';
+        this.props.toggleResetConfirmationPopup(true, message);
+    }
+
+    handleConfirmResetTitleContent = () => {
+        this.props.toggleResetConfirmationPopup(false);
+
         const formik = this.refs.form;
         const selectedTemplate = this.props.notificationTemplates.find(x => x.notificationTemplateId === parseInt(formik.state.values.templateId, 10));
 
         formik.setValues({
             ...formik.state.values,
             title: selectedTemplate.title,
-            content: selectedTemplate.content
+            content: selectedTemplate.content,
+            canEditTitleContent: false,
+            params: formik.state.values.params.map(x => ({ name: x.name, value: '' }))
+        });
+    }
+
+    handleEditTitleContent = () => {
+        const message = 'You can edit the Title and Content but manually change the text in {} might cause the parameter replacing feature dysfunctional.';
+        this.props.toggleEditConfirmationPopup(true, message);
+    }
+
+    handleConfirmEditTitleContent = () => {
+        this.props.toggleEditConfirmationPopup(false);
+        const formik = this.refs.form;
+        formik.setFieldValue('canEditTitleContent', true);
+    }
+
+    handleReplaceParamsWithValue = () => {
+        const formik = this.refs.form;
+        const params = formik.state.values.params;
+        const selectedTemplate = this.props.notificationTemplates.find(x => x.notificationTemplateId === parseInt(formik.state.values.templateId, 10));
+
+        let { title, content } = selectedTemplate;
+
+        for (let i = 0; i < params.length; i++) {
+            if (params[i].value) {
+                title = title.replace(new RegExp(params[i].name, 'g'), params[i].value);
+                content = content.replace(new RegExp(params[i].name, 'g'), params[i].value);
+            }
+        }
+
+        formik.setValues({
+            ...formik.state.values,
+            title,
+            content
         });
     }
 
     handleGerneratePreview = markdown => {
-        const params = this.refs.form.state.values.params;
-
-        for (let i = 0; i < params.length; i++) {
-            markdown = markdown.replace(new RegExp(params[i].name, 'g'), params[i].value);
-        }
-
         return Promise.resolve(
             <ContentPreview text={markdown} />
         );
@@ -419,7 +454,7 @@ export class AppContainer extends React.Component {
                     </div>
                 </FormGroup>
                 <FormGroup className="row-has-reset">
-                    <Label for="notificationTypeId" className="form-label">Template</Label>
+                    <Label for="notificationTypeId" className="form-label">Notification Template</Label>
                     <div>
                         <Input type="select"
                             invalid={touched.templateId && errors.templateId}
@@ -432,20 +467,23 @@ export class AppContainer extends React.Component {
                         </Input>
                         {touched.templateId && errors.templateId && <FormFeedback>{errors.templateId}</FormFeedback>}
                     </div>
-                    <div className="action" onClick={this.handleResetTitleContent} disabled={!values.templateId}>
-                        <div className="circle blue">
-                            <span className="icon-reset" />
+                    {values.templateId &&
+                        <div className="action">
+                            <div className="circle blue" title="Edit Title & Content" onClick={this.handleEditTitleContent}  >
+                                <span className="icon-edit" />
+                            </div>
+                            <div className="circle blue" title="Reset Title & Content" onClick={this.handleResetTitleContent}  >
+                                <span className="icon-reset" />
+                            </div>
                         </div>
-
-                        <span className="text">Reset Title & Content</span>
-                    </div>
+                    }
                 </FormGroup>
                 <FormGroup>
                     <Label for="title" className="form-label required">Title</Label>
                     <div>
                         <Input value={values.title} name="title"
                             invalid={touched.title && errors.title}
-                            onChange={handleChange}
+                            onChange={handleChange} readOnly={!values.canEditTitleContent && values.templateId}
                         />
                         {touched.title && errors.title && <FormFeedback>{errors.title}</FormFeedback>}
                     </div>
@@ -459,26 +497,27 @@ export class AppContainer extends React.Component {
                             selectedTab={values.mode}
                             onTabChange={selectedTab => setFieldValue('mode', selectedTab)}
                             generateMarkdownPreview={this.handleGerneratePreview}
-                            maxEditorHeight={400}
+                            maxEditorHeight={400} readOnly={!values.canEditTitleContent && values.templateId}
                         />
                         {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
                     </div>
                 </FormGroup>
-                {values.params.length > 0 &&
+                {values.params.length > 0 && !values.canEditTitleContent &&
                     <FormGroup>
                         <fieldset className="parameter-area">
                             <legend>Parameters</legend>
                             <FormGroup className="parameters">
                                 {values.params.map((x, i) =>
-                                    <div className="parameter-col">
-                                        <Label for={`params.${i}.value`} className="form-label">{x.name}</Label>
-                                        <div>
-                                            <Input value={x.values} name={`params.${i}.value`} disabled={values.mode === 'preview'}
-                                                invalid={getIn(touched, `params.${i}.value`) && getIn(errors, `params.${i}.value`)}
-                                                onChange={handleChange}
-                                            />
+                                    (
+                                        <div className="parameter-col">
+                                            <Label for={`params.${i}.value`} className="form-label">{x.name}</Label>
+                                            <div>
+                                                <Input value={x.values} name={`params.${i}.value`} disabled={values.mode === 'preview'}
+                                                    onChange={handleChange} onBlur={this.handleReplaceParamsWithValue}
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
+                                    )
                                 )}
                             </FormGroup>
                         </fieldset>
@@ -536,7 +575,8 @@ export class AppContainer extends React.Component {
                             sendDate: Today,
                             sendMode: '1',
                             params: [],
-                            mode: 'write'
+                            mode: 'write',
+                            canEditTitleContent: false
                         }}
                         render={this.renderForm}
                         validationSchema={this.schema}
@@ -549,6 +589,20 @@ export class AppContainer extends React.Component {
                     onToggle={this.handleToggleConfirmationPopup}
                     isOpen={this.props.confimrationPopup.isOpen}
                     content={this.props.confimrationPopup.content}
+                />
+                <ConfirmPopup
+                    onConfirm={this.handleConfirmResetTitleContent}
+                    onToggle={this.handleToggleResetConfirmationPopup}
+                    isOpen={this.props.resetConfimrationPopup.isOpen}
+                    content={this.props.resetConfimrationPopup.content}
+                    warningIcon
+                />
+                <ConfirmPopup
+                    onConfirm={this.handleConfirmEditTitleContent}
+                    onToggle={this.handleToggleEditConfirmationPopup}
+                    isOpen={this.props.editConfimrationPopup.isOpen}
+                    content={this.props.editConfimrationPopup.content}
+                    warningIcon
                 />
             </>
         );
@@ -564,7 +618,9 @@ const mapStateToProps = state => {
         recipientOptions: state.recipients,
         createNotificationResult: state.createNotificationResult,
         confimrationPopup: state.confimrationPopup,
-        notificationTemplates: state.notificationTemplates
+        notificationTemplates: state.notificationTemplates,
+        resetConfimrationPopup: state.resetConfimrationPopup,
+        editConfimrationPopup: state.editConfimrationPopup
     };
 };
 

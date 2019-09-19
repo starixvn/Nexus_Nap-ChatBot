@@ -3,6 +3,7 @@ import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 
 import { PAGING_SIZES, NotificationStatus, DateFormat, TimeFormat } from '../../constants/constants';
 import Labels from '../../common/Labels';
+import ContentPreview from '../../common/ContentPreview';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';
 import Panel, { PanelHeader } from '../../common/panel/index';
 
@@ -102,9 +103,9 @@ export default class DataGrid extends PureComponent {
                     <Panel ref={panel => this.panels[index] = panel}>
                         <PanelHeader>
                             <div className="recipient-list">To {item.recipientSentStatusJson.length} recipient(s): {item.recipientSentStatusJson.map(this.renderRecipient)}</div>
-                            <div className="title-date">{item.title} - {item.configSendTime.toFormat('MM/dd/yyyy')}</div>
+                            <div className="title-date">{item.title}</div>
                         </PanelHeader>
-                        <p className="notification-content" >{item.content}</p>
+                        <ContentPreview text={item.content} />
                     </Panel>
                 </Cell>
                 <Cell><span className={this.getNotificationStatusClass(item.statusId)}>{item.status}</span></Cell>

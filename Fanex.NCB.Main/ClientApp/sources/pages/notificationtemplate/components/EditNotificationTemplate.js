@@ -7,19 +7,9 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import ReactMde, { commands } from "react-mde";
 import Labels from '../../common/Labels';
+import { editorCommandList } from '../../constants/constants';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 import TemplatePreview from '../../common/TemplatePreview/index';
-
-const commandList = [
-    {
-        commands: [
-            commands.boldCommand,
-            commands.italicCommand,
-            commands.strikeThroughCommand,
-            commands.linkCommand
-        ]
-    }
-];
 
 class EditNotificationTemplate extends Component {
     constructor(props) {
@@ -100,7 +90,7 @@ class EditNotificationTemplate extends Component {
 
                     <div>
                         <ReactMde className={touched.content && errors.content && 'is-invalid'}
-                            value={values.content} commands={commandList}
+                            value={values.content} commands={editorCommandList}
                             onChange={content => setFieldValue('content', content)}
                             selectedTab={values.mode}
                             onTabChange={selectedTab => setFieldValue('mode', selectedTab)}
@@ -112,7 +102,7 @@ class EditNotificationTemplate extends Component {
                 </FormGroup>
                 <div className="list-button">
                     <Button className="btn-submit float-right" disabled={isSubmitting} type="submit">{Labels.Submit}</Button>
-                </div>                
+                </div>
             </Form >
         );
     }

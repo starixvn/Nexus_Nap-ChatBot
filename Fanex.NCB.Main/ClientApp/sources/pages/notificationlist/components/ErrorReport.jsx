@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
-import { DateFormat, DateTimeFormat, NotificationStatus } from '../../constants/constants';
+import { DateTimeFormat, NotificationStatus } from '../../constants/constants';
 import CommonFunctions from '../../common/CommonFunctions';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 
@@ -64,7 +64,7 @@ export default class ErrorReport extends Component {
                         }
                         <p>
                             Error report for the notification titled:<br />
-                            <span className="bold text-uppercase">{report.title} - {report.configSendTime.toFormat(DateFormat)}</span>
+                            <span className="bold text-uppercase">{report.title}</span>
                         </p>
                         <p>
                             Send at:<br />

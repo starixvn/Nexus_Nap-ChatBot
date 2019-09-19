@@ -116,6 +116,30 @@ export const toggleConfirmationPopup = (isOpen, content) => {
     };
 };
 
+export const toggleResetConfirmationPopup = (isOpen, content) => {
+    const popupData = {
+        isOpen,
+        content
+    };
+
+    return {
+        type: types.RESET_CONFIRMATIONPOPUP_DATA,
+        data: popupData
+    };
+};
+
+export const toggleEditConfirmationPopup = (isOpen, content) => {
+    const popupData = {
+        isOpen,
+        content
+    };
+
+    return {
+        type: types.EDIT_CONFIRMATIONPOPUP_DATA,
+        data: popupData
+    };
+};
+
 const actions = {
     setNotificationTypes,
     getNotificationTypes,
@@ -127,7 +151,9 @@ const actions = {
     getRecipients,
     createNewNotification,
     setCreateNewNotificationResult,
-    toggleConfirmationPopup
+    toggleConfirmationPopup,
+    toggleResetConfirmationPopup,
+    toggleEditConfirmationPopup
 };
 
 export default actions;
