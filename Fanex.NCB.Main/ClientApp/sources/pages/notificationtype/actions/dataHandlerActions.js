@@ -58,7 +58,6 @@ export const getSettings = () => {
 };
 
 // Delete
-
 export const setDeleteData = data => {
     return {
         type: types.DELETE_DATA,
@@ -74,8 +73,8 @@ export const deleteItem = notificationTypeId => {
     };
 
     return async dispatch => {
-        const request = await axios.post(url, notificationTypeId, { headers: headers });
-        const data = await request.data;
+        const response = await axios.post(url, notificationTypeId, { headers: headers });
+        const data = await response.data;
         dispatch(setDeleteData({ deleteResult: data }));
     };
 };
@@ -110,8 +109,8 @@ export const update = (params, isNew) => {
     };
 
     return async dispatch => {
-        const request = await axios.post(Site.resolveClientUrl(url), JSON.stringify(params), { headers: headers });
-        const data = await request.data;
+        const response = await axios.post(Site.resolveClientUrl(url), JSON.stringify(params), { headers: headers });
+        const data = await response.data;
         dispatch(setUpdateData({ addedresult: data }));
     };
 };

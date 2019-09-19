@@ -5,11 +5,13 @@ import ShallowRenderer from 'react-test-renderer/shallow';
 
 describe('AppContainer', () => {   
     describe('render', () => {
-        it('hide UpdatePopup, DeletePopup', () => {
+        it('hide UpdatePopup, hide DeletePopup, hide New Button', () => {
             // Arrange
-            let props = {                
+            let props = {           
+                isHost: false,
                 setGridParams: jest.fn(),
                 getGridData: jest.fn(),
+                getIsHost: jest.fn(),
                 updatePopupData: {isShowed: false},
                 deletePopupData: {isShowed: false}
             };        
@@ -21,11 +23,30 @@ describe('AppContainer', () => {
             expect(appContainer).toMatchSnapshot();
         });
 
+        it('show New Button', () => {
+            // Arrange
+            let props = {
+                isHost: true,
+                setGridParams: jest.fn(),
+                getGridData: jest.fn(),
+                getIsHost: jest.fn(),
+                updatePopupData: { isShowed: false },
+                deletePopupData: { isShowed: false }
+            };
+
+            // Act
+            let appContainer = (new ShallowRenderer()).render(<AppContainer {...props} />);
+
+            // Assert
+            expect(appContainer).toMatchSnapshot();
+        });
+
         it('show UpdatePopup', () => {
             // Arrange
             let props = {                
                 setGridParams: jest.fn(),
                 getGridData: jest.fn(),
+                getIsHost: jest.fn(),
                 updatePopupData: {isShowed: true},
                 deletePopupData: {isShowed: false}
             };
@@ -42,6 +63,7 @@ describe('AppContainer', () => {
             let props = {                
                 setGridParams: jest.fn(),
                 getGridData: jest.fn(),
+                getIsHost: jest.fn(),
                 updatePopupData: {isShowed: false},
                 deletePopupData: {isShowed: true}
             };
@@ -105,6 +127,7 @@ describe('AppContainer', () => {
             let props = {                
                 closeDeletePopup: jest.fn(),
                 updateActiveRowIndex: jest.fn(),
+                refreshDeleteData: jest.fn(),
                 deletePopupData: {isShowed: true}
             };
             let appContainer = new AppContainer(props);
@@ -112,8 +135,9 @@ describe('AppContainer', () => {
             // Act
             appContainer.closeDeletePopupHandler();
 
-            // Assert
+            // Assert            
             expect(props.closeDeletePopup).toHaveBeenCalled();
+            expect(props.refreshDeleteData).toHaveBeenCalled();
             expect(props.updateActiveRowIndex).toHaveBeenCalledWith(-1);
         });
 
@@ -123,6 +147,7 @@ describe('AppContainer', () => {
             let props = {                
                 closeDeletePopup: jest.fn(),
                 updateActiveRowIndex: jest.fn(),
+                refreshDeleteData: jest.fn(),
                 getGridData: jest.fn(),
                 deletePopupData: {isShowed: false},
                 gridParams: gridParams
@@ -134,6 +159,7 @@ describe('AppContainer', () => {
 
             // Assert
             expect(props.closeDeletePopup).toHaveBeenCalled();
+            expect(props.refreshDeleteData).toHaveBeenCalled();
             expect(props.updateActiveRowIndex).toHaveBeenCalledWith(-1);
             expect(props.getGridData).toHaveBeenCalledWith(gridParams);
         });

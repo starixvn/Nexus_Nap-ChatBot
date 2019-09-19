@@ -1,16 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AppContainer render hide UpdatePopup, DeletePopup 1`] = `
+exports[`AppContainer render hide UpdatePopup, hide DeletePopup, hide New Button 1`] = `
 <div>
   <NCBBreadcrum
     chatbotName="Skype Chatbot"
     pageTitle="Notification Type"
   />
-  <button
-    className="btn-new"
-  >
-    New Notification Type
-  </button>
   <Connect(DataGrid) />
 </div>
 `;
@@ -21,11 +16,6 @@ exports[`AppContainer render show DeletePopup 1`] = `
     chatbotName="Skype Chatbot"
     pageTitle="Notification Type"
   />
-  <button
-    className="btn-new"
-  >
-    New Notification Type
-  </button>
   <Connect(DataGrid) />
   <Connect(DeletePopup)
     closeDeletePopupHandler={[Function]}
@@ -33,7 +23,7 @@ exports[`AppContainer render show DeletePopup 1`] = `
 </div>
 `;
 
-exports[`AppContainer render show UpdatePopup 1`] = `
+exports[`AppContainer render show New Button 1`] = `
 <div>
   <NCBBreadcrum
     chatbotName="Skype Chatbot"
@@ -44,6 +34,16 @@ exports[`AppContainer render show UpdatePopup 1`] = `
   >
     New Notification Type
   </button>
+  <Connect(DataGrid) />
+</div>
+`;
+
+exports[`AppContainer render show UpdatePopup 1`] = `
+<div>
+  <NCBBreadcrum
+    chatbotName="Skype Chatbot"
+    pageTitle="Notification Type"
+  />
   <Connect(DataGrid) />
   <Connect(UpdatePopup)
     closeUpdatePopupHandler={[Function]}

@@ -10,11 +10,14 @@ configure({adapter: new Adapter()});
 describe('UpdatePopup redux', () => {
     let wrapper, store;
     beforeEach(() => {
-        const initialState = {settingData: {data1: []}, updatePopupData: {data2: []}, updateData: {data3: []}};
+        const initialState = { settingData: { data1: [] }, updatePopupData: { data2: [] }, updateData: { data3: [] } };
+        let props = {
+            closeUpdatePopupHandler: jest.fn()
+        };
         store = mockStore(initialState);
 
         wrapper = shallow(
-            <UpdatePopup store={store} />
+            <UpdatePopup store={store} {...props} />
         );
     });
 

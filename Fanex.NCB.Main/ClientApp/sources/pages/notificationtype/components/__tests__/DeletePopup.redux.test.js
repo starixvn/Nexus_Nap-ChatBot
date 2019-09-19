@@ -11,11 +11,14 @@ configure({adapter: new Adapter()});
 describe('DeletePopup redux', () => {
     let wrapper, store;
     beforeEach(() => {
-        const initialState = {deletePopupData: {isShowed: true}};
+        const initialState = { deletePopupData: { isShowed: true } };
+        let props = {
+            closeDeletePopupHandler: jest.fn()
+        };
         store = mockStore(initialState);
 
         wrapper = shallow(
-            <DeletePopup store={store} />
+            <DeletePopup store={store} {...props} />
         );
     });
 

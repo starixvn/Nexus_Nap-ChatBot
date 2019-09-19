@@ -27,7 +27,8 @@ describe('gridHanderActions', () => {
             const deletePopupData = {
                 isShowed: true,
                 notificationTypeId: 1,
-                content: 'abc'
+                content: 'abc',
+                successMsg: 'Delete Notification Type Successfully'
             };
             const expected = {
                 type: types.DELETE_POPUP_DATA,
@@ -65,18 +66,25 @@ describe('gridHanderActions', () => {
         it('create the correct action', () => {
             // Arrange
             const item = {
-                notificationTypeName: 'name 1',
+                id: 10,
+                name: 'name 1',
                 recipientTypes: [{ id: 1 }, { id: 2 }],
+                chatGroupTypes: [{ id: 1 }, { id: 2 }],
                 systemId: 2
-            };
+            }; 
             const newEditPopupData = {
                 isShowed: true,
                 editingItem: {
+                    notificationTypeId: item.id,
                     notificationTypeName: {
-                        value: item.notificationTypeName,
+                        value: item.name,
                         isValid: true
                     },
                     recipientTypeIds: {
+                        value: "1,2",
+                        isValid: true
+                    },
+                    chatGroupTypeIds: {
                         value: "1,2",
                         isValid: true
                     },
@@ -114,6 +122,10 @@ describe('gridHanderActions', () => {
                     },
                     recipientTypeIds: {
                         value: "",
+                        isValid: false
+                    },
+                    chatGroupTypeIds: {
+                        value: '',
                         isValid: false
                     },
                     systemId: {

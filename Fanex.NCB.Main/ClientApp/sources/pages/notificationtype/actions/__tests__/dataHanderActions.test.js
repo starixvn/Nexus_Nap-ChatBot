@@ -4,11 +4,39 @@ import actions from '../dataHandlerActions';
 import types from '../types';
 import axios from 'axios';
 import "babel-polyfill";
+import Site from '../../../lib/site';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
-describe('dataHanderActions', () => {
+describe('dataHanderActions', () => {    
+    describe("getIsHost", () => {
+        test.each`
+            inputValue | expectedData
+            ${'True'}  | ${true}
+            ${'False'} | ${false}
+        `('get is-host value from document', ({ inputValue, expectedData }) => {            
+            // Arrange
+            const input = document.createElement('input');
+            input.id = 'is-host';
+            input.value = inputValue;
+            document.body.innerHTML = '';
+            document.body.appendChild(input);           
+
+            const store = mockStore();
+            const expectedAction = [{
+                type: types.IS_HOST,
+                data: expectedData
+            }];
+
+            // Act
+            store.dispatch(actions.getIsHost());
+
+            // Asssert
+            expect(store.getActions()).toEqual(expectedAction);
+        });
+    });
+
     describe('setGridParams', () => {
         it('create the correct action', () => {
             // Arrange
@@ -25,24 +53,7 @@ describe('dataHanderActions', () => {
             expect(result).toEqual(expected);
         });
     });
-
-    describe('setGridData', () => {
-        it('create the correct action', () => {
-            // Arrange
-            const data = ['some data'];
-            const expected = {
-                type: types.GRID_DATA,
-                data: data
-            };
-
-            // Act
-            const result = actions.setGridData(data);
-
-            // Assert
-            expect(result).toEqual(expected);
-        });
-    });
-
+    
     describe('getGridData', () => {
         it('axios.get with correct params', () => {
             // Arrange
@@ -77,24 +88,7 @@ describe('dataHanderActions', () => {
                 done();
             });
         });
-    });
-
-    describe('setSettings', () => {
-        it('create the correct action', () => {
-            // Arrange
-            const data = ['some data'];
-            const expected = {
-                type: types.SETTING_DATA,
-                data: data
-            };
-
-            // Act
-            const result = actions.setSettings(data);
-
-            // Assert
-            expect(result).toEqual(expected);
-        });
-    });
+    });    
 
     describe('getSettings', () => {
         it('axios.get with correct params', () => {
@@ -132,21 +126,21 @@ describe('dataHanderActions', () => {
             });
         });
     });
-
-    describe('setDeleteData', () => {
-        it('create the correct action', () => {
+   
+    describe('refreshDeleteData', () => {
+        it('dispatch the correct action', () => {
             // Arrange
-            const data = ['some data'];
-            const expected = {
+            const store = mockStore();
+            const expectedAction = [{
                 type: types.DELETE_DATA,
-                data: data
-            };
+                data: { deleteResult: null }
+            }];
 
             // Act
-            const result = actions.setDeleteData(data);
+            store.dispatch(actions.refreshDeleteData());
 
-            // Assert
-            expect(result).toEqual(expected);
+            // Asssert
+            expect(store.getActions()).toEqual(expectedAction);
         });
     });
 
@@ -156,11 +150,11 @@ describe('dataHanderActions', () => {
             const fakeResponse = { data: 'some data' };
             axios.post = jest.fn(() => Promise.resolve(fakeResponse));
             const store = mockStore();
-            const expectedUrl = '/NotificationType/Delete';
+            const expectedUrl = Site.resolveClientUrl('NotificationType/Delete');
 
             // Act & Assert
             store.dispatch(actions.deleteItem(1)).then(() => {
-                expect(axios.post).toHaveBeenCalledWith(expectedUrl, 1, { 'headers': { 'Content-Type': 'application/json' } });
+                expect(axios.post).toHaveBeenCalledWith(expectedUrl, 1, { 'headers': { 'Content-Type': 'application/json', 'RequestVerificationToken': Site.getXsrfToken() } });
                 done();
             });
         });
@@ -173,7 +167,7 @@ describe('dataHanderActions', () => {
             const expectedAction = [
                 {
                     type: types.DELETE_DATA,
-                    data: fakeResponse.data
+                    data: { deleteResult: fakeResponse.data } 
                 }
             ];
 
@@ -200,24 +194,7 @@ describe('dataHanderActions', () => {
             // Assert
             expect(result).toEqual(expected);
         });
-    });
-
-    describe('setUpdateData', () => {
-        it('create the correct action', () => {
-            // Arrange
-            const data = ['some data'];
-            const expected = {
-                type: types.UPDATE_DATA,
-                data: data
-            };
-
-            // Act
-            const result = actions.setUpdateData(data);
-
-            // Assert
-            expect(result).toEqual(expected);
-        });
-    });
+    });    
 
     describe('refreshUpdateData', () => {
         it('dispatch the correct action', () => {
@@ -225,7 +202,7 @@ describe('dataHanderActions', () => {
             const store = mockStore();
             const expectedAction = [{
                 type: types.UPDATE_DATA,
-                data: { addedresult: false }
+                data: { addedresult: null }
             }];
 
             // Act
@@ -242,12 +219,15 @@ describe('dataHanderActions', () => {
             const store = mockStore();
             const fakeResponse = { data: 'some data' };
             axios.post = jest.fn(() => Promise.resolve(fakeResponse));
-            const expectedUrl = '/NotificationType/Add';
+            const expectedUrl = Site.resolveClientUrl('NotificationType/Add');
             const expectedParams = 'data';
 
             // Act & Assert
             store.dispatch(actions.update(expectedParams, true)).then(() => {
-                expect(axios.post).toHaveBeenCalledWith(expectedUrl, JSON.stringify(expectedParams), { 'headers': { 'Content-Type': 'application/json' } });
+                expect(axios.post).toHaveBeenCalledWith(
+                    expectedUrl,
+                    JSON.stringify(expectedParams),
+                    { 'headers': { 'Content-Type': 'application/json', 'RequestVerificationToken': Site.getXsrfToken() } });
                 done();
             });
         });
@@ -257,12 +237,15 @@ describe('dataHanderActions', () => {
             const store = mockStore();
             const fakeResponse = { data: 'some data' };
             axios.post = jest.fn(() => Promise.resolve(fakeResponse));
-            const expectedUrl = '/NotificationType/Edit';
+            const expectedUrl = Site.resolveClientUrl('NotificationType/Edit');
             const expectedParams = 'data';
 
             // Act & Assert
             store.dispatch(actions.update(expectedParams, false)).then(() => {
-                expect(axios.post).toHaveBeenCalledWith(expectedUrl, JSON.stringify(expectedParams), { 'headers': { 'Content-Type': 'application/json' } });
+                expect(axios.post).toHaveBeenCalledWith(
+                    expectedUrl,
+                    JSON.stringify(expectedParams),
+                    { 'headers': { 'Content-Type': 'application/json', 'RequestVerificationToken': Site.getXsrfToken() } });
                 done();
             });
         });
