@@ -70,6 +70,9 @@
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ClientApp\sources\pages\chatgroupmapping\components\__tests__\__snapshots__\" />
+    <Folder Include="ClientApp\sources\pages\common\fixed-table-header\components\__tests__\__snapshots__\" />
+    <Folder Include="ClientApp\sources\pages\common\response-message\__tests__\__snapshots__\" />
     <Folder Include="ClientApp\sources\pages\newnotification\store\" />
     <Folder Include="ClientApp\sources\pages\shared\backupnapchatbotfont\" />
     <Folder Include="logs\" />
