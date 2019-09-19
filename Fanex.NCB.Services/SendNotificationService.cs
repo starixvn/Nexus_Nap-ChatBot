@@ -2,10 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Net;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using Fanex.Logging;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
@@ -23,14 +25,17 @@
         private readonly IChatbotService chatbotService;
         private readonly IBaseService baseService;
         private readonly IOptionsSnapshot<AppSettings> appSettings;
+        private readonly ILogger logger;
 
         public SendNotificationService(IChatbotService chatbotService,
             IBaseService baseService,
-            IOptionsSnapshot<AppSettings> appSettings)
+            IOptionsSnapshot<AppSettings> appSettings,
+            ILogger logger)
         {
             this.chatbotService = chatbotService;
             this.baseService = baseService;
             this.appSettings = appSettings;
+            this.logger = logger;
         }
 
         public async Task ScanAndSendNotification()
@@ -67,8 +72,7 @@
         private async Task<(IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>)> GetNotificationPlannedToSend()
         {
             var criteria = new GetNotificationsToSendCriteria();
-            var notifications = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria)
-                                ;
+            var notifications = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria);
             return notifications;
         }
 
@@ -88,8 +92,40 @@
             for (int i = 0; i < totalBatch; i++)
             {
                 var currentMsgs = notiMsgs.Skip(i * itemEachBatch).Take(itemEachBatch);
-                var response = await chatbotService.SendMessageToMultitpleAsync(currentMsgs);
+
+                var response = await SendMessageToMultipleWithHandleException(currentMsgs, recipients);
                 await HandleResponse(response, recipients);
+            }
+        }
+
+        private async Task<IRestResponse> SendMessageToMultipleWithHandleException(
+            IEnumerable<NotificationMessage> messages,
+            IEnumerable<NotificationRecipient> recipients)
+        {
+            try
+            {
+                return await chatbotService.SendMessageToMultitpleAsync(messages);
+            }
+            catch (Exception exception)
+            {
+                var updateRecipients = recipients.Where(r => messages.Any(m => m.NotifictaionId == r.NotificationId))
+                    .Select(r =>
+                    {
+                        r.ErrCode = (int)RecipientStatuses.BotServiceError;
+                        return r;
+                    });
+
+                await UpdateFailedRecipientStatus(updateRecipients, true);
+                string errMsg = string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
+                exception.Message,
+                exception.Source,
+                string.Empty,
+                exception.TargetSite,
+                exception.StackTrace);
+                await logger.ErrorAsync(errMsg);
+                throw;
             }
         }
 

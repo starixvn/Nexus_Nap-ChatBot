@@ -1,37 +1,33 @@
 import React from 'react';
-import { Content } from './../content';
-import { configure } from 'enzyme';
+import { Content } from './../content/index';
+import { configure, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import ShallowRenderer from 'react-test-renderer/shallow';
+import renderer from 'react-test-renderer';
 
-configure({ adapter: new Adapter() })
+configure({ adapter: new Adapter() });
 
 describe('Content', () => {
     describe('render', () => {
         it('sidebar is expanded', () => {
-            // Arrange
-            const props = {
-                isSidebarExpanded: true,
-            }
-
             // Act
-            const renderOutput = (new ShallowRenderer()).render(<Content {...props}/>)
+            const component = renderer.create(<Content isSidebarExpanded />).toJSON();
 
             // Assert
-            expect(renderOutput).toMatchSnapshot()
-        })
+            expect(component).toMatchSnapshot();
+        });
 
         it('sidebar is not expanded', () => {
             // Arrange
             const props = {
-                isSidebarExpanded: false,
-            }
+                isSidebarExpanded: false
+            };
 
             // Act
-            const renderOutput = (new ShallowRenderer()).render(<Content {...props}/>)
+            const renderOutput = (new ShallowRenderer()).render(<Content {...props} />);
 
             // Assert
-            expect(renderOutput).toMatchSnapshot()
-        })
-    })
+            expect(renderOutput).toMatchSnapshot();
+        });
+    });
 })

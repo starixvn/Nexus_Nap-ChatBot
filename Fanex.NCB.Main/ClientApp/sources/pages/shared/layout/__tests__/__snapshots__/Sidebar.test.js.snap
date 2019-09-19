@@ -17,13 +17,13 @@ exports[`Sidebar render menu is empty 1`] = `
       Chatbot
     </h1>
   </div>
-  <ul
+  <div
     className="nav"
   >
-    <li
+    <ul
       className="menu"
     />
-  </ul>
+  </div>
 </div>
 `;
 
@@ -44,57 +44,12 @@ exports[`Sidebar render menu is not empty 1`] = `
       Chatbot
     </h1>
   </div>
-  <ul
+  <div
     className="nav"
   >
-    <li
+    <ul
       className="menu"
-    >
-      <span
-        className="menu"
-      >
-        <ul
-          className="submenu list-unstyled"
-        >
-          <li
-            className="menu-item"
-          >
-            <a
-              className="link"
-              href=""
-              onClick={[Function]}
-            >
-              <span
-                className="icon-submenu1"
-              />
-              <span
-                className="text"
-              >
-                subMenu1
-              </span>
-            </a>
-          </li>
-          <li
-            className="menu-item"
-          >
-            <a
-              className="link"
-              href=""
-              onClick={[Function]}
-            >
-              <span
-                className="icon-submenu2"
-              />
-              <span
-                className="text"
-              >
-                subMenu2
-              </span>
-            </a>
-          </li>
-        </ul>
-      </span>
-    </li>
-  </ul>
+    />
+  </div>
 </div>
 `;

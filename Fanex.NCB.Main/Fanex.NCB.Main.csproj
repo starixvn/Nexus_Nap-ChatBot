@@ -75,6 +75,7 @@
     <Folder Include="ClientApp\sources\pages\common\response-message\__tests__\__snapshots__\" />
     <Folder Include="ClientApp\sources\pages\newnotification\store\" />
     <Folder Include="ClientApp\sources\pages\shared\backupnapchatbotfont\" />
+    <Folder Include="ClientApp\sources\pages\shared\layout\__tests__\__snapshots__\" />
     <Folder Include="logs\" />
     <Folder Include="wwwroot\dev\common\" />
   </ItemGroup>

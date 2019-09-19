@@ -5,6 +5,7 @@
     using System.Net;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
+    using Fanex.Logging;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SendNotification;
     using Fanex.NCB.Models.NotifictaionSendMessage;
@@ -13,6 +14,7 @@
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using NSubstitute;
+    using NSubstitute.ExceptionExtensions;
     using RestSharp;
     using Xunit;
 
@@ -21,6 +23,7 @@
         private IChatbotService chatbotService;
         private IBaseService baseService;
         private IOptionsSnapshot<AppSettings> appSettings;
+        private ILogger logger;
 
         [Fact]
         public async Task ScanAndSendNotification_ScanEmptyNoti_NotUpdateStatusAndSendNoti()
@@ -67,6 +70,21 @@
 
             //Assert
             await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<IEnumerable<NotificationMessage>>());
+            await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+        }
+
+        [Fact]
+        public async Task ScanAndSendNotification_ScanHasNoti_ChatbotServiceThrowExceptions()
+        {
+            var notifications = FakeData();
+            var service = GetService();
+            baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
+
+            chatbotService.SendMessageToMultitpleAsync(Arg.Any<IEnumerable<NotificationMessage>>()).Throws(new Exception());
+
+            //Assert
+            await Assert.ThrowsAsync<Exception>(() => service.ScanAndSendNotification());
+            await logger.Received().ErrorAsync(Arg.Any<string>());
             await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
         }
 
@@ -120,6 +138,7 @@
         {
             chatbotService = Substitute.For<IChatbotService>();
             baseService = Substitute.For<IBaseService>();
+            logger = Substitute.For<ILogger>();
 
             var settings = new AppSettings
             {
@@ -129,7 +148,7 @@
             appSettings = Substitute.For<IOptionsSnapshot<AppSettings>>();
             appSettings.Value.Returns(settings);
 
-            return new SendNotificationService(chatbotService, baseService, appSettings);
+            return new SendNotificationService(chatbotService, baseService, appSettings, logger);
         }
 
         #endregion Helper
