@@ -73,7 +73,7 @@ export class UpdatePopup extends Component {
 
   closePopup = () => {
     setTimeout(function () {
-        this.props.updateData.addedresult.isSuccessful && this.props.closeUpdatePopupHandler();
+        this.props.updateData.addedResult.isSuccessful && this.props.closeUpdatePopupHandler();
       }.bind(this),
     2000);
   }
@@ -105,11 +105,11 @@ export class UpdatePopup extends Component {
       <Modal isOpen toggle={this.togglePopup} wrapClassName="new-notification-type">
         <ModalHeader toggle={this.togglePopup}>{this.props.updatePopupData.popupTitle}</ModalHeader>
         <ModalBody>
-          {this.props.updateData.addedresult &&
+          {this.props.updateData.addedResult &&
             <Notification
-              isSuccess={this.props.updateData.addedresult.isSuccessful}
+                    isSuccess={this.props.updateData.addedResult.isSuccessful}
               successMsg={this.props.updatePopupData.successMsg}
-              failedMsg={this.props.updateData.addedresult.message} />}
+                    failedMsg={this.props.updateData.addedResult.message} />}
 
           <Form className="form-create">
             <FormGroup>

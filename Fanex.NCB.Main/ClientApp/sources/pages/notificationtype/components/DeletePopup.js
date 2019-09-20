@@ -7,59 +7,61 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Notification } from '../../common/Notification';
 
 export class DeletePopup extends Component {
-  constructor(props) {
-    super(props);
-  }
+    constructor(props) {
+        super(props);
+    }
 
-  confirmHandler = isYes => {
-    isYes
-      ? this.props.deleteItem(this.props.deletePopupData.notificationTypeId).then(this.closePopup)
-      : this.props.closeDeletePopupHandler();
-  }
+    confirmHandler = () => {
+        this.props.deleteItem(this.props.deletePopupData.notificationTypeId).then(this.closePopup);
+    }
 
-  closePopup = () => {
-    setTimeout(function () {
-      this.props.deleteData.deleteResult.isSuccessful && this.props.closeDeletePopupHandler();
-      }.bind(this),
-    1000);
-  }
+    cancelHandler = () => {
+        this.props.closeDeletePopupHandler();
+    }
 
-  render() {    
+    closePopup = () => {
+        setTimeout(function () {
+            this.props.deleteData.deleteResult.isSuccessful && this.props.closeDeletePopupHandler();
+            }.bind(this),
+        1000);
+    }
+
+    render() {    
     return (
-      <Modal isOpen toggle={this.props.closeDeletePopupHandler} wrapClassName="popup-confirm">
+        <Modal isOpen toggle={this.props.closeDeletePopupHandler} wrapClassName="popup-confirm">
         <ModalHeader toggle={this.props.closeDeletePopupHandler}>Delete Notification Type</ModalHeader>
-      <ModalBody>
+        <ModalBody>
         { this.props.deleteData.deleteResult &&
-          <Notification
+            <Notification
             isSuccess={this.props.deleteData.deleteResult.isSuccessful}
             successMsg={this.props.deletePopupData.successMsg}
             failedMsg={this.props.deleteData.deleteResult.message} />}
 
         <div className="info">
-          <p>Are you sure you want to delete <br /><strong>{this.props.deletePopupData.content}</strong> ?</p>
+            <p>Are you sure you want to delete <br /><strong>{this.props.deletePopupData.content}</strong> ?</p>
         </div>
-      </ModalBody>
-      <ModalFooter>
-        <button className="btn-submit" onClick={() => this.confirmHandler(true)}>OK</button>
-        <button className="btn-cancel" onClick={() => this.confirmHandler(false)}>Cancel</button>
-      </ModalFooter>
-      </Modal>
+        </ModalBody>
+        <ModalFooter>
+            <button className="btn-submit" onClick={() => this.confirmHandler()}>OK</button>
+            <button className="btn-cancel" onClick={() => this.cancelHandler()}>Cancel</button>
+        </ModalFooter>
+        </Modal>
     );
-  }
+    }
 }
 
 DeletePopup.propTypes = {
-  closeDeletePopupHandler: PropTypes.func.isRequired
+    closeDeletePopupHandler: PropTypes.func.isRequired
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
     const { deletePopupData, deleteData } = state;
-  return {
-      deletePopupData,
-      deleteData
-  };
+    return {
+        deletePopupData,
+        deleteData
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeletePopup);

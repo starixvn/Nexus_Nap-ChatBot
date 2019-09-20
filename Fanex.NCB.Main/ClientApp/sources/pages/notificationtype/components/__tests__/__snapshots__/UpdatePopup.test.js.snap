@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`UpdatePopup render when isShowed true and NOT showSucessMsg 1`] = `
+exports[`UpdatePopup render when has addedResult - show Notification 1`] = `
 <Modal
   autoFocus={true}
   backdrop={true}
@@ -22,7 +22,7 @@ exports[`UpdatePopup render when isShowed true and NOT showSucessMsg 1`] = `
   onClosed={[Function]}
   onOpened={[Function]}
   role="dialog"
-  toggle={[MockFunction]}
+  toggle={[Function]}
   wrapClassName="new-notification-type"
   zIndex={1050}
 >
@@ -30,7 +30,7 @@ exports[`UpdatePopup render when isShowed true and NOT showSucessMsg 1`] = `
     charCode={215}
     closeAriaLabel="Close"
     tag="h5"
-    toggle={[MockFunction]}
+    toggle={[Function]}
     wrapTag="div"
   >
     title
@@ -110,6 +110,33 @@ exports[`UpdatePopup render when isShowed true and NOT showSucessMsg 1`] = `
             ]
           }
         >
+          Chat Group Type
+        </Label>
+        <MultipleSelectField
+          isSummited={false}
+          keyField="id"
+          onChange={[Function]}
+          selectedValue="2"
+          statusField="checked"
+          valueField="name"
+        />
+      </FormGroup>
+      <FormGroup
+        tag="div"
+      >
+        <Label
+          className="form-label required"
+          tag="label"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
+          }
+        >
           System
         </Label>
         <SelectField
@@ -127,10 +154,16 @@ exports[`UpdatePopup render when isShowed true and NOT showSucessMsg 1`] = `
       </button>
     </Form>
   </ModalBody>
+  <ConfirmPopup
+    content="There might be some unsaved changes in the form. The changes shall not be saved if you close this form. Are you sure you want to close this form?"
+    isOpen={false}
+    onConfirm={[MockFunction]}
+    onToggle={[Function]}
+  />
 </Modal>
 `;
 
-exports[`UpdatePopup render when isShowed true and showSucessMsg 1`] = `
+exports[`UpdatePopup render when not have addedResult - do not show Notification 1`] = `
 <Modal
   autoFocus={true}
   backdrop={true}
@@ -152,7 +185,7 @@ exports[`UpdatePopup render when isShowed true and showSucessMsg 1`] = `
   onClosed={[Function]}
   onOpened={[Function]}
   role="dialog"
-  toggle={[MockFunction]}
+  toggle={[Function]}
   wrapClassName="new-notification-type"
   zIndex={1050}
 >
@@ -160,7 +193,7 @@ exports[`UpdatePopup render when isShowed true and showSucessMsg 1`] = `
     charCode={215}
     closeAriaLabel="Close"
     tag="h5"
-    toggle={[MockFunction]}
+    toggle={[Function]}
     wrapTag="div"
   >
     title
@@ -168,11 +201,6 @@ exports[`UpdatePopup render when isShowed true and showSucessMsg 1`] = `
   <ModalBody
     tag="div"
   >
-    <div
-      className="msg-success "
-    >
-      sucess
-    </div>
     <Form
       className="form-create"
       tag="form"
@@ -245,6 +273,33 @@ exports[`UpdatePopup render when isShowed true and showSucessMsg 1`] = `
             ]
           }
         >
+          Chat Group Type
+        </Label>
+        <MultipleSelectField
+          isSummited={false}
+          keyField="id"
+          onChange={[Function]}
+          selectedValue="2"
+          statusField="checked"
+          valueField="name"
+        />
+      </FormGroup>
+      <FormGroup
+        tag="div"
+      >
+        <Label
+          className="form-label required"
+          tag="label"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
+          }
+        >
           System
         </Label>
         <SelectField
@@ -262,5 +317,11 @@ exports[`UpdatePopup render when isShowed true and showSucessMsg 1`] = `
       </button>
     </Form>
   </ModalBody>
+  <ConfirmPopup
+    content="There might be some unsaved changes in the form. The changes shall not be saved if you close this form. Are you sure you want to close this form?"
+    isOpen={false}
+    onConfirm={[MockFunction]}
+    onToggle={[Function]}
+  />
 </Modal>
 `;

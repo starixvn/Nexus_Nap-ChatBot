@@ -202,7 +202,7 @@ describe('dataHanderActions', () => {
             const store = mockStore();
             const expectedAction = [{
                 type: types.UPDATE_DATA,
-                data: { addedresult: null }
+                data: { addedResult: null }
             }];
 
             // Act
@@ -258,7 +258,7 @@ describe('dataHanderActions', () => {
             const expectedAction = [
                 {
                     type: types.UPDATE_DATA,
-                    data: { addedresult: fakeResponse.data }
+                    data: { addedResult: fakeResponse.data }
                 }
             ];
 

@@ -111,13 +111,13 @@ export const update = (params, isNew) => {
     return async dispatch => {
         const response = await axios.post(Site.resolveClientUrl(url), JSON.stringify(params), { headers: headers });
         const data = await response.data;
-        dispatch(setUpdateData({ addedresult: data }));
+        dispatch(setUpdateData({ addedResult: data }));
     };
 };
 
 export const refreshUpdateData = () => {
     return dispatch => {
-        dispatch(setUpdateData({ addedresult: null }));
+        dispatch(setUpdateData({ addedResult: null }));
     };
 };
 
