@@ -17,6 +17,14 @@
       "appId": "efd1cd73-a9a2-4c54-818c-1fa2ef6b8c78",
       "appPassword": "?8Ti3CSQ1BSi4XwJNNWHAmI+gLmdcM?[",
       "id": "2"
+    },
+    {
+      "type": "endpoint",
+      "name": "OWnotify_UAT1",
+      "endpoint": "https://licbot-api.starific.net/api/messages",
+      "appId": "5de209e3-670a-4bbb-bd9a-24fdca303da9",
+      "appPassword": "LQc3rTLX-YH_Pl+b35BqyDArtBQ5Gyv*",
+      "id": "3"
     }
   ],
   "padlock": "",
