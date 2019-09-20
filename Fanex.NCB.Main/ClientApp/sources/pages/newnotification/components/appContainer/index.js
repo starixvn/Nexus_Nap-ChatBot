@@ -1,9 +1,10 @@
 ﻿import './AppContainer.scss';
+import "react-mde/lib/styles/css/react-mde-all.css";
 
 import React from 'react';
 import { connect } from 'react-redux';
 import { DateTime } from 'luxon';
-import { Form, FormGroup, Label, Button, Input, FormFeedbac } from 'reactstrap';
+import { Form, FormGroup, Label, Button, Input, FormFeedback } from 'reactstrap';
 import { stringify } from 'qs';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -19,7 +20,6 @@ import ResponseMessage from '../../../common/response-message/ResponseMessage';
 import Site from '../../../lib/site';
 import ConfirmPopup from '../../../common/ConfirmPopup';
 import ContentPreview from '../../../common/ContentPreview';
-import "react-mde/lib/styles/css/react-mde-all.css";
 
 const SendModeOptions = [
     {
@@ -367,7 +367,7 @@ export class AppContainer extends React.Component {
     }
 
     handleEditTitleContent = () => {
-        const message = 'You can edit the Title and Content but manually change the text in {} might cause the parameter replacing feature dysfunctional.';
+        const message = 'You can edit the Title and Content but the system doesn\'t support manually change the text in {}';
         this.props.toggleEditConfirmationPopup(true, message);
     }
 

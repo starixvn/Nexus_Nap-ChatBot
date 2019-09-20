@@ -1,19 +1,22 @@
 ﻿import './EditNotification.scss';
+import "react-mde/lib/styles/css/react-mde-all.css";
 
 import React from 'react';
 import { Form, FormGroup, Label, Button, Col, Input, FormFeedback } from 'reactstrap';
 import axios from 'axios';
-
+import ReactMde from 'react-mde';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { NCBBreadcrum } from '../common/breadcrumbs';
 import TreeSelect, { getRealValuesFromExtra } from '../common/TreeSelect/index';
 import DatePicker from '../common/DatePicker/index';
 import Labels from '../common/Labels';
+import { editorCommandList } from '../constants/constants';
 import ResponseMessage from '../common/response-message/ResponseMessage';
 import Site from '../lib/site';
 import ConfirmPopup from '../common/ConfirmPopup';
 import errorResponseHandler from '../lib/errorResponseHandler';
+import ContentPreview from '../common/ContentPreview';
 
 const SendModeOptions = [
     {
@@ -184,9 +187,15 @@ export default class EditNotification extends React.Component {
         this.setState({ confimrationPopup: { isOpen: true, message: message } });
     }
 
-    handleRecipientChange = (value, label, extra) => {
+    handleRecipientChange = (value, _label, extra) => {
         const formik = this.refs.form;
         formik.setFieldValue('recipients', { value, allCheckedNodes: extra.allCheckedNodes });
+    }
+
+    handleGerneratePreview = markdown => {
+        return Promise.resolve(
+            <ContentPreview text={markdown} />
+        );
     }
 
     renderForm = ({
@@ -255,8 +264,13 @@ export default class EditNotification extends React.Component {
                     <Label for="content" className="form-label required" sm={2}>Content</Label>
 
                     <Col sm={10}>
-                        <Input className="notification-content" type="textarea" value={values.content} name="content"
-                            onChange={handleChange} invalid={touched.content && errors.content}
+                        <ReactMde className={touched.content && errors.content && 'is-invalid'}
+                            value={values.content} commands={editorCommandList}
+                            onChange={content => setFieldValue('content', content)}
+                            selectedTab={values.mode}
+                            onTabChange={selectedTab => setFieldValue('mode', selectedTab)}
+                            generateMarkdownPreview={this.handleGerneratePreview}
+                            maxEditorHeight={400}
                         />
                         {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
                     </Col>
@@ -297,7 +311,7 @@ export default class EditNotification extends React.Component {
         return (
             <>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Edit Notification" />
-                <div className="content edit-notification">
+                <div className="edit-notification">
                     {this.state.editNotificationResult &&
                         <ResponseMessage isSuccessful={this.state.editNotificationResult.isSuccessful}
                             message={this.state.editNotificationResult.message || Labels.EditNotificationSuccessfully} />
