@@ -62,7 +62,7 @@
                     ConversationBotID = r.BotId,
                     Retry = isRetry,
                     IsSuccess = false,
-                    ErrorMessage = EnumHelper.GetDescription(r.RecipientStatus)
+                    ErrMsg = EnumHelper.GetDescription(r.RecipientStatus)
                 });
 
                 await UpdateSentNotificationStatus(updateNoti);
@@ -177,7 +177,7 @@
                         ConversationBotID = recipient.BotId,
                         Retry = result.ErrorCode != 0,
                         IsSuccess = result.ErrorCode == 0,
-                        ErrorMessage = result.ErrorCode == 0 ? string.Empty : result.ErrorMessage
+                        ErrMsg = result.ErrorCode == 0 ? string.Empty : result.ErrorMessage
                     };
                     updateNotiModels.Add(model);
                 }
