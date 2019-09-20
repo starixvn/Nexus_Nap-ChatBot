@@ -111,11 +111,17 @@
                 var updateRecipients = recipients.Where(r => messages.Any(m => m.NotifictaionId == r.NotificationId))
                     .Select(r =>
                     {
-                        r.ErrCode = (int)RecipientStatuses.BotServiceError;
-                        return r;
+                        return new NotificationRecipient
+                        {
+                            NotificationId = r.NotificationId,
+                            RecipientId = r.RecipientId,
+                            BotId = r.BotId,
+                            ChatGroupId = r.ChatGroupId,
+                            ErrCode = (int)RecipientStatuses.BotServiceError
+                        };
                     });
 
-                await UpdateFailedRecipientStatus(updateRecipients, true);
+                await UpdateFailedRecipientStatus(updateRecipients, false);
                 string errMsg = string.Format(
                 CultureInfo.InvariantCulture,
                 "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
@@ -138,12 +144,19 @@
             }
             else
             {
-                foreach (var recipient in recipients)
+                var updatedRecipients = recipients.Select(r =>
                 {
-                    recipient.ErrCode = (int)RecipientStatuses.BotServiceError;
-                }
+                    return new NotificationRecipient
+                    {
+                        NotificationId = r.NotificationId,
+                        RecipientId = r.RecipientId,
+                        BotId = r.BotId,
+                        ChatGroupId = r.ChatGroupId,
+                        ErrCode = (int)RecipientStatuses.BotServiceError
+                    };
+                });
 
-                await UpdateFailedRecipientStatus(recipients, true);
+                await UpdateFailedRecipientStatus(updatedRecipients, true);
             }
         }
 
