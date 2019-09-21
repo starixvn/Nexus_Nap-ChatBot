@@ -28,6 +28,13 @@
                     await logger.WarnAsync("Received request from skype");
                 }
 
+                if (context.Request.Headers["User-Agent"].Count > 0
+                    && context.Request.Headers["User-Agent"][0].Contains("BF-DirectLine")
+                    )
+                {
+                    await logger.WarnAsync("Received request from webchat");
+                }
+
                 await next(context).ConfigureAwait(false);
             }
             catch (Exception ex)

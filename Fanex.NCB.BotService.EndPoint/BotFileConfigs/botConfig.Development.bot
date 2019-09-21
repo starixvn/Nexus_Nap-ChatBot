@@ -20,7 +20,7 @@
     },
     {
       "type": "endpoint",
-      "name": "OWnotify_UAT1",
+      "name": "1on1notify_UAT1",
       "endpoint": "https://licbot-api.starific.net/api/messages",
       "appId": "5de209e3-670a-4bbb-bd9a-24fdca303da9",
       "appPassword": "LQc3rTLX-YH_Pl+b35BqyDArtBQ5Gyv*",
