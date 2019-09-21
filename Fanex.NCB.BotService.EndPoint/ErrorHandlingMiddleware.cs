@@ -21,6 +21,13 @@
         {
             try
             {
+                if (context.Request.Headers["User-Agent"].Count > 0
+                    && context.Request.Headers["User-Agent"][0].Contains("Microsoft-SkypeBotApi")
+                    )
+                {
+                    await logger.WarnAsync("Received request from skype");
+                }
+
                 await next(context).ConfigureAwait(false);
             }
             catch (Exception ex)
