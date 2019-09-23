@@ -36,6 +36,7 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry(Configuration);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             Dictionary<string, ConnectionConfiguration> connections = Configuration
@@ -85,6 +86,7 @@
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseApplicationInsightsRequestTelemetry();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -94,6 +96,8 @@
                 app.UseMiddleware<ErrorHandlingMiddleware>();
                 app.UseHsts();
             }
+
+            app.UseApplicationInsightsExceptionTelemetry();
 
             app.UseDefaultFiles();
             app.UseStaticFiles();

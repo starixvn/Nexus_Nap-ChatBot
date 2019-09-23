@@ -25,6 +25,14 @@
       "appId": "3b546454-c9a5-4cc8-9f2e-be8e1bfd4e9a",
       "appPassword": "jcA0aW9d@Lk55RaUbCSCsBB*B/Szbnc.",
       "id": "3"
+    },
+    {
+      "type": "endpoint",
+      "name": "licbot",
+      "endpoint": "https://licbot-api.starific.net/api/messages",
+      "appId": "40bccb6f-d5e6-4b02-9915-060ebb959fe4",
+      "appPassword": "mkyj1n3UccM_cuPZ[OBpnvasDA*sW-42",
+      "id": "5"
     }
   ],
   "padlock": "",
