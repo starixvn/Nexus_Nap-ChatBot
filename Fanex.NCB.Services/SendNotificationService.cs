@@ -62,11 +62,25 @@
                     ConversationBotID = r.BotId,
                     Retry = isRetry,
                     IsSuccess = false,
-                    ErrMsg = EnumHelper.GetDescription(r.RecipientStatus)
+                    ErrMsg = GenerateErrorMessage(r.RecipientStatus, r.ErrorMessage)
                 });
 
                 await UpdateSentNotificationStatus(updateNoti);
             }
+        }
+
+        private string GenerateErrorMessage(RecipientStatuses recipientStatus, string errMsg)
+        {
+            var outputMsg = string.Empty;
+            if (recipientStatus == RecipientStatuses.BotServiceError)
+            {
+                outputMsg = $"[Internal Error] {errMsg}";
+            }
+            else
+            {
+                outputMsg = EnumHelper.GetDescription(recipientStatus);
+            }
+            return outputMsg;
         }
 
         private async Task<(IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>)> GetNotificationPlannedToSend()
@@ -117,11 +131,12 @@
                             RecipientId = r.RecipientId,
                             BotId = r.BotId,
                             ChatGroupId = r.ChatGroupId,
-                            ErrCode = (int)RecipientStatuses.BotServiceError
+                            ErrCode = (int)RecipientStatuses.BotServiceError,
+                            ErrorMessage = exception.Message
                         };
                     });
 
-                await UpdateFailedRecipientStatus(updateRecipients, false);
+                await UpdateFailedRecipientStatus(updateRecipients, true);
                 string errMsg = string.Format(
                 CultureInfo.InvariantCulture,
                 "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
@@ -152,7 +167,8 @@
                         RecipientId = r.RecipientId,
                         BotId = r.BotId,
                         ChatGroupId = r.ChatGroupId,
-                        ErrCode = (int)RecipientStatuses.BotServiceError
+                        ErrCode = (int)RecipientStatuses.BotServiceError,
+                        ErrorMessage = response.ErrorMessage
                     };
                 });
 
@@ -177,7 +193,8 @@
                         ConversationBotID = recipient.BotId,
                         Retry = result.ErrorCode != 0,
                         IsSuccess = result.ErrorCode == 0,
-                        ErrMsg = result.ErrorCode == 0 ? string.Empty : RecipientStatuses.BotServiceError.ToString()
+                        ErrMsg = result.ErrorCode == 0 ? string.Empty :
+                            GenerateErrorMessage(RecipientStatuses.BotServiceError, result.ErrorMessage)
                     };
                     updateNotiModels.Add(model);
                 }

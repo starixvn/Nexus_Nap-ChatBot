@@ -26,6 +26,8 @@ namespace Fanex.NCB.Models.NotifictaionSendMessage
 
         public int ErrCode { get; set; }
 
+        public string ErrorMessage { get; set; }
+
         public RecipientStatuses RecipientStatus
         {
             get

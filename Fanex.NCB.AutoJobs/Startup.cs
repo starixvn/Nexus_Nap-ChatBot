@@ -85,7 +85,7 @@
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(int.Parse(Configuration.GetSection("AuthSettings:CookieTimeOut").Value));
                 options.Cookie = new CookieBuilder
                 {
-                    Name = "Fanex.NCB.Cookie",
+                    Name = "Fanex.NCB.AutoJobs.Cookie",
                     SecurePolicy = CookieSecurePolicy.SameAsRequest
                 };
                 options.Events.OnSigningOut = context =>
@@ -99,7 +99,7 @@
             {
                 options.Cookie.IsEssential = true;
                 options.IdleTimeout = TimeSpan.FromMinutes(int.Parse(Configuration.GetSection("AuthSettings:SessionTimeOut").Value));
-                options.Cookie.Name = "Fanex.NCB.Session";
+                options.Cookie.Name = "Fanex.NCB.AutoJobs.Session";
             });
 
             services.AddSingleton(Configuration);
