@@ -177,7 +177,7 @@
                         ConversationBotID = recipient.BotId,
                         Retry = result.ErrorCode != 0,
                         IsSuccess = result.ErrorCode == 0,
-                        ErrMsg = result.ErrorCode == 0 ? string.Empty : result.ErrorMessage
+                        ErrMsg = result.ErrorCode == 0 ? string.Empty : RecipientStatuses.BotServiceError.ToString()
                     };
                     updateNotiModels.Add(model);
                 }

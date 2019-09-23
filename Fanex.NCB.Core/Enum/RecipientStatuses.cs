@@ -19,7 +19,7 @@
         [Description("Error occured on chatbot service.")]
         BotServiceError = 4,
 
-        [Description("Group Type is changed.")]
+        [Description("Group type is changed.")]
         GroupTypeChanged = 5
     }
 }

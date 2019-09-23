@@ -48,6 +48,7 @@
                        Filter = (x, logLevel) => x.Contains("Fanex.NCB.AutoJobs") && logLevel >= LogLevel.Information
                    });
                })
+               .UseContentRoot(Directory.GetCurrentDirectory())
                .UseConfiguration(configuration)
                .UseEnvironment(evn)
                .UseStartup<Startup>()
