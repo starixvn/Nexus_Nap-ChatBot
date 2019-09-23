@@ -69,18 +69,11 @@
             }
         }
 
-        private string GenerateErrorMessage(RecipientStatuses recipientStatus, string errMsg)
+        private static string GenerateErrorMessage(RecipientStatuses recipientStatus, string errMsg)
         {
-            var outputMsg = string.Empty;
-            if (recipientStatus == RecipientStatuses.BotServiceError)
-            {
-                outputMsg = $"[Internal Error] {errMsg}";
-            }
-            else
-            {
-                outputMsg = EnumHelper.GetDescription(recipientStatus);
-            }
-            return outputMsg;
+            return recipientStatus == RecipientStatuses.BotServiceError ?
+                                        $"[Internal Error] {errMsg}" :
+                                        EnumHelper.GetDescription(recipientStatus);
         }
 
         private async Task<(IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>)> GetNotificationPlannedToSend()
