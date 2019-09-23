@@ -62,10 +62,15 @@
 
         private bool IsValidUser(string username, string password)
         {
-            var encryptedPassword = Cryptography.EncryptPassword(password);
-
-            return username.Equals(auth.Value.UserName, StringComparison.OrdinalIgnoreCase) &&
+            bool isValid = false;
+            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
+            {
+                var encryptedPassword = Cryptography.EncryptPassword(password);
+                isValid = username.Equals(auth.Value.UserName, StringComparison.OrdinalIgnoreCase) &&
                    encryptedPassword.Equals(auth.Value.Password);
+            }
+
+            return isValid;
         }
     }
 }
