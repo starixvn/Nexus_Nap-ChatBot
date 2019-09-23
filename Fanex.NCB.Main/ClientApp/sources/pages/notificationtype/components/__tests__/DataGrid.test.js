@@ -1,7 +1,10 @@
 import React from 'react';
 import {DataGrid} from '../DataGrid';
 import renderer from 'react-test-renderer';
-import ShallowRenderer from 'react-test-renderer/shallow';
+import ShallowRenderer from 'react-test-renderer/shallow'; 
+import Adapter from 'enzyme-adapter-react-16';
+import configureMockStore from 'redux-mock-store';
+import { shallow, render, mount, configure } from 'enzyme';
 
 describe('DataGrid', () => {   
     describe('mount', () => {
@@ -90,10 +93,27 @@ describe('DataGrid', () => {
     });    
 
     describe("render", () => {
+        const mockStore = configureMockStore();
+        configure({ adapter: new Adapter() });
+
         it("when no data - return null", () => {
             // Arrange
             let props = {
                 gridData: null
+            };
+            let dataGrid = new DataGrid(props);
+
+            // Act
+            let result = dataGrid.render();
+
+            // Assert
+            expect(result).toBe(null);
+        });
+
+        it("when notificationTypes null - return null", () => {
+            // Arrange
+            let props = {
+                gridData: { notificationTypes: null}
             };
             let dataGrid = new DataGrid(props);
 
@@ -111,19 +131,22 @@ describe('DataGrid', () => {
                     notificationTypeName: "notificationTypeName 1",
                     recipientTypeName: "recipientTypeName 1",
                     systemName: "systemName 1",
-                    recipientTypes: [{ name: "a" }, { name: "b" }]
+                    recipientTypes: [{ name: "a" }, { name: "b" }],
+                    chatGroupTypes: [{ name: "a" }, { name: "b" }]
                 },
                 {
                     notificationTypeName: "notificationTypeName 2",
                     recipientTypeName: "recipientTypeName 2",
                     systemName: "systemName 2",
-                    recipientTypes: [{ name: "a" }, { name: "b" }]
+                    recipientTypes: [{ name: "a" }, { name: "b" }],
+                    chatGroupTypes: [{ name: "a" }, { name: "b" }]
                 }
             ];
             let props = {
+                isHost: true,
                 activeRowIndex: 1,
                 gridData: {
-                    data:data,
+                    notificationTypes:data,
                     count: 1
                 },
                 gridParams: {
@@ -139,6 +162,6 @@ describe('DataGrid', () => {
 
             // Assert
             expect(dataGrid).toMatchSnapshot();
-        });
+        });      
     });
 });
