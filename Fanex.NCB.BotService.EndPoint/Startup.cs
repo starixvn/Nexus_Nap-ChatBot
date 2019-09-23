@@ -84,15 +84,18 @@
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseMiddleware<ErrorHandlingMiddleware>();
-                app.UseHsts();
-            }
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
+            //    app.UseMiddleware<ErrorHandlingMiddleware>();
+            //    app.UseHsts();
+            //}
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseHsts();
 
             app.UseDefaultFiles();
             app.UseStaticFiles();

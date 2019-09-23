@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
     using Fanex.Logging;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc.Infrastructure;
 
     public class ErrorHandlingMiddleware
     {
@@ -21,19 +22,30 @@
         {
             try
             {
-                if (context.Request.Headers["User-Agent"].Count > 0
-                    && context.Request.Headers["User-Agent"][0].Contains("Microsoft-SkypeBotApi")
-                    )
-                {
-                    await logger.WarnAsync("Received request from skype");
-                }
+                var x = context.Connection.RemoteIpAddress.ToString();
+                await logger.WarnAsync("test x: " + x);
+                
 
-                if (context.Request.Headers["User-Agent"].Count > 0
-                    && context.Request.Headers["User-Agent"][0].Contains("BF-DirectLine")
-                    )
+                if (context.Request.Headers["X-Forwarded-For"].Count > 0)
                 {
-                    await logger.WarnAsync("Received request from webchat");
+                    var y = context.Request.Headers["X-Forwarded-For"][0];
+                    await logger.WarnAsync("test y: " + y);
                 }
+                
+
+                //if (context.Request.Headers["User-Agent"].Count > 0
+                //    && context.Request.Headers["User-Agent"][0].Contains("Microsoft-SkypeBotApi")
+                //    )
+                //{
+                //    await logger.WarnAsync("Received request from skype");
+                //}
+
+                //if (context.Request.Headers["User-Agent"].Count > 0
+                //    && context.Request.Headers["User-Agent"][0].Contains("BF-DirectLine")
+                //    )
+                //{
+                //    await logger.WarnAsync("Received request from webchat");
+                //}
 
                 await next(context).ConfigureAwait(false);
             }
