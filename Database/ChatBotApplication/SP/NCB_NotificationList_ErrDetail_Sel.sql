@@ -42,7 +42,10 @@ BEGIN
 	SELECT r.RecipientName
 		, rt.RecipientTypeName
         , grp.Name AS GroupName
-        , rlst.ErrMsg AS ErrorMessage
+        , CASE 
+				WHEN rlst.ErrMsg Like '[Internal Error]%'  THEN 'Error occured on chatbot service'
+				ELSE rlst.ErrMsg
+            END AS ErrorMessage
     FROM NotificationRecipientList rlst
     INNER JOIN Recipient r ON r.RecipientID = rlst.RecipientID
     INNER JOIN RecipientType rt ON rt.RecipientTypeID = r.RecipientTypeID
