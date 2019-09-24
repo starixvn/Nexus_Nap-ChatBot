@@ -36,7 +36,7 @@
             var botConfig = GetBotConfig(environment, appSettings, logger);
             services.AddSingleton(botConfig);
 
-            var botFrameworkHttpAdapter =  GetBotFrameworkHttpAdapter(botConfig, configuration);
+            var botFrameworkHttpAdapter = GetBotFrameworkHttpAdapter(botConfig, configuration);
             services.AddSingleton(botFrameworkHttpAdapter);
 
             services.AddBot<LicBot>(options =>

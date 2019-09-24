@@ -35,6 +35,10 @@ export class UpdatePopup extends Component {
         };
     }
 
+    componentDidMount() {
+        console.log(this.props);
+    }
+
     submitHandler = e => {
         e.preventDefault();
 
@@ -196,7 +200,7 @@ export class UpdatePopup extends Component {
                                 placeholder={Labels.RemarkPlaceHolder}
                             />
                         </FormGroup>
-                        <button disabled={!this.state.isChanged} className="btn-submit" onClick={this.submitHandler}>{Labels.Save}</button>
+                        <button type="submit" disabled={!this.state.isChanged} className="btn-submit" onClick={this.submitHandler}>{Labels.Save}</button>
                     </Form>
                 </ModalBody>
                 {this.state.isShowedConfirm &&

@@ -131,7 +131,6 @@ export class Filter extends Component {
 
     submitHandler = e => {
         e.preventDefault();
-
         const params = this.getParams();
         this.props.setGridParams(params);
         this.props.getGridData(params);
@@ -222,7 +221,7 @@ export class Filter extends Component {
                         onChange={value => this.onChange('botIds', value)}
                     />
                 </FormGroup>
-                <button id="submit-button" disabled={!this.checkValidParams()} className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
+                <button type="submit" id="submit-button" disabled={!this.checkValidParams()} className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
             </Form>
         );
     }
