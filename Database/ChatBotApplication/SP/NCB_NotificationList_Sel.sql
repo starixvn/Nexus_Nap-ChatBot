@@ -2,7 +2,7 @@ DROP PROCEDURE IF EXISTS NCB_NotificationList_Sel;
 
 DELIMITER //
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_NotificationList_Sel`(
+CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_Sel`(
      IN notificationTypeIDLst VARCHAR(1000)
     , IN recipientIDLst VARCHAR(5000)
 	, IN creatorID	INT
@@ -27,7 +27,6 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_NotificationList_Sel`(
 				- 20190814@Elton: change RecipientSentStatusJSON
     */
 )
-SQL SECURITY DEFINER
 BEGIN
 	DECLARE SENT_STATUSID_ERROR TINYINT UNSIGNED DEFAULT 2;
     DECLARE SENT_STATUSID_RESOLVED TINYINT UNSIGNED DEFAULT 5;
@@ -111,7 +110,8 @@ BEGIN
 	CREATE TEMPORARY TABLE tmp_Notification(
 													NotificationID INT
                                                     ,NotificationTypeName VARCHAR(50)
-                                                    , CreatorID INT
+                                                    ,CreatorID INT
+                                                    ,CreatorName VARCHAR(30)
                                                     , ConfigSendTime DATETIME
                                                     , Title VARCHAR(300) CHARACTER SET utf8mb4
                                                     , Content MEDIUMTEXT CHARACTER SET utf8mb4
@@ -124,15 +124,17 @@ BEGIN
 													NotificationID
                                                     ,NotificationTypeName
                                                     , CreatorID
+                                                    ,CreatorName
                                                     , ConfigSendTime
                                                     , Title
                                                     , Content
                                                     , Status
                                                     , StatusID
 												)
-    SELECT n.NotificationID, nt.NotificationTypeName, n.CreatorID, n.ConfigSendTime, n.Title, n.Content, n.Status, n.StatusID
+    SELECT n.NotificationID, nt.NotificationTypeName, n.CreatorID, c.username, n.ConfigSendTime, n.Title, n.Content, n.Status, n.StatusID
     FROM Notification n
 		INNER JOIN NotificationType nt ON n.NotificationTypeID = nt.NotificationTypeID
+        INNER JOIN Customer c ON n.CreatorID = c.custid
     WHERE n.NotificationTypeID IN (
 									SELECT	tmp_nt.NotificationTypeID
                                     FROM tmp_notificationTypeIDLst tmp_nt
@@ -153,7 +155,7 @@ BEGIN
 												FROM tmp_recipientIDLst tmp_rid
                                             )
     )
-    ORDER BY n.ConfigSendTime DESC,  n.CreatorID
+    ORDER BY n.ConfigSendTime DESC
     LIMIT rowStart, pageSize; 
     
     #Update RecipientSentStatus
@@ -185,7 +187,7 @@ BEGIN
     #2nd dataset: Get data based on Page Index and Page Size
     SELECT *
     FROM tmp_Notification n
-    ORDER BY n.ConfigSendTime DESC,  n.CreatorID;
+    ORDER BY n.ConfigSendTime DESC;
 END;
 
 //

@@ -13,5 +13,7 @@
         Task<IEnumerable<Recipient>> GetRecipientsAsync();
 
         Task<IEnumerable<NotificationStatus>> GetNotificationStatusesAsync();
+
+        Task<IEnumerable<User>> GetUsersAsync();
     }
 }

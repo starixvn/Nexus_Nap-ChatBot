@@ -50,7 +50,8 @@
         color: #fff;
 
         &:hover,
-        &:focus {
+        &:focus,
+        &.current {
             background-color: #044868;
             color: #51e7ff;
             text-decoration: none;

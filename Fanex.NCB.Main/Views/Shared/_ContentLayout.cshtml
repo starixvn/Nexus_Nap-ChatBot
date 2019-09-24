@@ -24,6 +24,8 @@
     </div>
     <input type="hidden" id="root-url" value="@Url.Content("~/")" />
     <input type="hidden" id="logged-username" value="@User.Identity.Name" />
+    <input type="hidden" id="current-controller" value="@ViewContext.RouteData.Values["Controller"].ToString()" />
+    <input type="hidden" id="current-action" value="@ViewContext.RouteData.Values["Action"].ToString()" />
 
     <environment include="Development">
         <script src="~/dev/common/reactvendor.chunk.js" asp-append-version="true"></script>

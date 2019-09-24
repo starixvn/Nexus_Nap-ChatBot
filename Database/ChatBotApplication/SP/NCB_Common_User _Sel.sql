@@ -13,8 +13,8 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_Common_User_Sel(
 )
 SQL SECURITY DEFINER
 BEGIN
-	SELECT u.UserID AS ID, u.UserName AS Name
-    FROM User u
+	SELECT u.custid AS ID, u.UserName AS Name
+    FROM Customer u
     ORDER BY  u.UserName;
 END;
 

@@ -10,6 +10,8 @@
 
         public int CreatorId { get; set; }
 
+        public string CreatorName { get; set; }
+
         public DateTime ConfigSendTime { get; set; }
 
         public string Title { get; set; }

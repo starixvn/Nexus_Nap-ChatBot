@@ -297,7 +297,7 @@ export default class EditNotification extends React.Component {
 
                 </FormGroup>
                 <FormGroup row className="list-buttons">
-                    <Button className="btn-submit offset-sm-2" disabled={isSubmitting}>Save</Button>
+                    <Button className="btn-submit offset-sm-2" disabled={isSubmitting}>{Labels.Submit}</Button>
                 </FormGroup>
             </Form >
         );

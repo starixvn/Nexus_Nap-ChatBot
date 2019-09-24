@@ -25,7 +25,7 @@ NCB_NotificationTemplate_Del:BEGIN
     SET  startTime = UTC_TIMESTAMP(3);
     SET errCode=0, errMsg='';
     
-	IF NOT  EXISTS(SELECT 1 FROM NotificationTemplate nt WHERE  nt.NotificationTemplateID <= notificationTemplateID) 
+	IF NOT  EXISTS(SELECT 1 FROM NotificationTemplate nt WHERE  nt.NotificationTemplateID = notificationTemplateID) 
     THEN
 		SET errCode=101, errMsg='Invalid Template Id';
         LEAVE NCB_NotificationTemplate_Del;

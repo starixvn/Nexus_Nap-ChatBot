@@ -8,6 +8,9 @@ export default class Sidebar extends React.Component {
     constructor(props) {
         super(props);
 
+        this.currentController = document.getElementById('current-controller').value.toLowerCase();
+        this.currentAction = document.getElementById('current-action').value.toLowerCase();
+
         this.state = {
             menuItems: []
         };
@@ -20,13 +23,15 @@ export default class Sidebar extends React.Component {
 
     getMenuClassName = name => 'icon-' + name.replace(/ /g, '-').toLowerCase();
 
+    isCurrent = url => url.toLowerCase() === `${this.currentController}${this.currentAction !== 'index' ? `/${this.currentAction}` : ''}`
+
     renderMenu = () => {
         return this.state.menuItems.map(this.renderMenuItem);
     }
 
     renderMenuItem = (submenu) => (
         <li className="menu-item" key={submenu.id}>
-            <a href={Site.resolveClientUrl(submenu.url)} className="link">
+            <a href={Site.resolveClientUrl(submenu.url)} className={`link ${this.isCurrent(submenu.url) && 'current'} `}>
                 <span className={this.getMenuClassName(submenu.name)} />
                 <span className="text">{submenu.name}</span>
             </a>

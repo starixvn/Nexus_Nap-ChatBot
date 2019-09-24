@@ -469,7 +469,7 @@ export class AppContainer extends React.Component {
                     </div>
                     {values.templateId &&
                         <div className="action">
-                            <div className="circle blue" title="Edit Title & Content" onClick={this.handleEditTitleContent}  >
+                            <div className="circle orange" title="Edit Title & Content" onClick={this.handleEditTitleContent}  >
                                 <span className="icon-edit" />
                             </div>
                             <div className="circle blue" title="Reset Title & Content" onClick={this.handleResetTitleContent}  >
@@ -544,7 +544,7 @@ export class AppContainer extends React.Component {
                     </div>
                 </FormGroup>
                 <div className="list-buttons">
-                    <Button className="btn-submit" disabled={isSubmitting} type="submit">Save</Button>
+                    <Button className="btn-submit" disabled={isSubmitting} type="submit">{Labels.Submit}</Button>
                 </div>
             </Form >
         );

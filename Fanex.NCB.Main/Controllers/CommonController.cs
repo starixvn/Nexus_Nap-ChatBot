@@ -48,5 +48,13 @@
 
             return Json(tree);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUsers()
+        {
+            var result = await commonService.GetUsersAsync().ConfigureAwait(false);
+
+            return Json(result);
+        }
     }
 }

@@ -94,7 +94,10 @@ export default class DataGrid extends PureComponent {
         return (
             <Row key={item.notificationId} >
                 <Cell className="col-order text-center">{index + this.startIndex}</Cell>
-                <Cell>{item.notificationTypeName}</Cell>
+                <Cell>
+                    {item.creatorName}
+                    <div> {item.notificationTypeName}</div>
+                </Cell>
                 <Cell className="text-center">
                     {item.configSendTime.toFormat(TimeFormat)}
                     <div>{item.configSendTime.toFormat(DateFormat)}</div>

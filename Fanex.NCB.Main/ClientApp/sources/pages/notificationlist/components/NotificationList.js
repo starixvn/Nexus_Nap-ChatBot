@@ -41,6 +41,7 @@ export default class NotificationList extends Component {
             notificationTypeOptions: [],
             recipientOptions: [],
             statusOptions: [],
+            userOptions: [],
             tableData: null,
             notificationCancellation: {
                 show: false
@@ -57,12 +58,13 @@ export default class NotificationList extends Component {
         const promises = [
             axios(Site.resolveClientUrl('Common/GetNotificationTypes')),
             axios(Site.resolveClientUrl('Common/GetRecipients')),
-            axios(Site.resolveClientUrl('Common/GetNotificationStatuses'))
+            axios(Site.resolveClientUrl('Common/GetNotificationStatuses')),
+            axios(Site.resolveClientUrl('Common/GetUsers')),
 
         ];
 
         Promise.all(promises)
-            .then(([notificationTypeResponse, recipientResponse, statusResponse]) => {
+            .then(([notificationTypeResponse, recipientResponse, statusResponse, userResponse]) => {
                 const notificationTypeIds = [];
                 const notificationTypeOptions = notificationTypeResponse.data.map(x => {
                     notificationTypeIds.push(x.notificationTypeID);
@@ -79,6 +81,7 @@ export default class NotificationList extends Component {
                     notificationTypeOptions,
                     recipientOptions: recipientResponse.data,
                     statusOptions: statusResponse.data,
+                    userOptions: userResponse.data,
                     filter: {
                         ...prevState.filter,
                         ...{
@@ -210,6 +213,8 @@ export default class NotificationList extends Component {
 
     handleCloseErrorReport = () => this.setState({ errorReport: { show: false } });
 
+    renderUserOption = user => <option key={user.id} value={user.id}>{user.name}</option>
+
     render() {
         return (
             <div>
@@ -237,14 +242,12 @@ export default class NotificationList extends Component {
                     <FormGroup>
                         <Label className="form-label">To</Label>
                         <DatePicker selected={this.state.filter.toDate} onChange={this.handleToDateChange} />
-
                     </FormGroup>
                     <FormGroup>
                         <Label className="form-label">Sender</Label>
                         <Input type="select" name="creatorId" value={this.state.filter.creatorId} onChange={this.handleCreatorChange}>
                             <option value="" >{Labels.All}</option>
-                            <option value="8" >sa</option>
-
+                            {this.state.userOptions.map(this.renderUserOption)}
                         </Input>
                     </FormGroup>
 

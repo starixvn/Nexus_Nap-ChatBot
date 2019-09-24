@@ -35,5 +35,10 @@
         {
             return await baseService.GetDataAsync<Recipient>(new GetRecipientsCriteria()).ConfigureAwait(false);
         }
+
+        public async Task<IEnumerable<User>> GetUsersAsync()
+        {
+            return await baseService.GetDataAsync<User>(new GetUsersCriteria()).ConfigureAwait(false);
+        }
     }
 }
