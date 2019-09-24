@@ -35,10 +35,6 @@ export class UpdatePopup extends Component {
         };
     }
 
-    componentDidMount() {
-        console.log(this.props);
-    }
-
     submitHandler = e => {
         e.preventDefault();
 

@@ -9,7 +9,9 @@
         {
             var context = HttpContext.Features.Get<IHttpConnectionFeature>();
             var ip = context?.LocalIpAddress;
+            var domain = HttpContext.Request.Host.Value;
             ViewBag.IpServer = ip;
+            ViewBag.Domain = domain;
 
             return View();
         }

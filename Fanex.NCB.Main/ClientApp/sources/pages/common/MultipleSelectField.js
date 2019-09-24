@@ -32,7 +32,7 @@ export class MultipleSelectField extends Component {
                         valueField={'name'}
                         statusField={'checked'}
                         hasSearchBox={this.props.isSearchable}
-                        texts={this.props.texts || { SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: '# selected' }}
+                        texts={this.props.texts || { All: Labels.All, SelectedItemCount: '# selected' }}
                         isAllTextShown={this.props.isAllTextShown || false}
                         onChange={(currentItem, selectedItemsKey) => this.onChange(selectedItemsKey)}
                     />
