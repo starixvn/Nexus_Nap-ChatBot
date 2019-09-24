@@ -87,7 +87,7 @@ export default class ErrorReport extends Component {
                                                 <div className="has-icons">Recipient<span className="icon-copy" onClick={this.copyToClipboard} /></div>
                                             </th>
                                             <th>Recipient Type</th>
-                                            <th>Group</th>
+                                            <th>Group Name</th>
                                             <th>Reason</th>
                                         </tr>
                                     </thead>
