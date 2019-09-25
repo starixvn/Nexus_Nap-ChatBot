@@ -41,6 +41,14 @@
       "appId": "40bccb6f-d5e6-4b02-9915-060ebb959fe4",
       "appPassword": "mkyj1n3UccM_cuPZ[OBpnvasDA*sW-42",
       "id": "5"
+    },
+    {
+      "type": "endpoint",
+      "name": "1on1notify_UAT4",
+      "endpoint": "https://testinguat.starific.net/api/messages",
+      "appId": "cfc5a5ad-1467-4590-b63b-d284498082fe",
+      "appPassword": "Et-*28+FQPq6l3IiDX?3*Z.V__...nx6",
+      "id": "6"
     }
   ],
   "padlock": "",

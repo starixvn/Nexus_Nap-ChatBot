@@ -21,6 +21,12 @@
         {
             try
             {
+                var x = context.Request.Host.Value;
+                if (x.Contains("starific.net"))
+                {
+                    await logger.WarnAsync(x);
+                }
+
                 await next(context).ConfigureAwait(false);
             }
             catch (Exception ex)

@@ -9,7 +9,13 @@
         public void GetSettingKey_ReturnCorrectSettingKey()
         {
             // Arrange
-            var command = new AddMessageLogCommand();
+            var command = new AddMessageLogCommand {
+                FromConversationId = string.Empty,
+                ToConversationId = string.Empty,
+                Content = string.Empty,
+                IsSuccessfull = false,
+                ErrorMessage = string.Empty
+            };
             var expected = "NCB_Conversation_AddMessageLog";
 
             // Act

@@ -136,7 +136,15 @@
         public async Task GetGroupConversation_WhenCalled_ReturnExpectedConversation()
         {
             // Arrange
-            var expected = new ConversationGroup();
+            var expected = new ConversationGroup
+            {
+                BotConversationId = string.Empty,
+                BotName = string.Empty,
+                ConversationId = string.Empty,
+                GroupName = string.Empty,
+                ChannelId = string.Empty,
+                ServiceUrl = string.Empty
+            };
             var conversationId = string.Empty;
             var botName = string.Empty;
             var criteria = new GetConversationGroupCriteria

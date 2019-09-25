@@ -33,6 +33,14 @@
       "appId": "40bccb6f-d5e6-4b02-9915-060ebb959fe4",
       "appPassword": "mkyj1n3UccM_cuPZ[OBpnvasDA*sW-42",
       "id": "5"
+    },
+    {
+      "type": "endpoint",
+      "name": "1on1notify_UAT3",
+      "endpoint": "https://licbot.nexdev.net/api/messages",
+      "appId": "023ce7c5-1ef3-4653-ae7a-1ce4114ef4bb",
+      "appPassword": "FnN1a6t7+1W_r/Tt[N55yz3z@+@+OLo4",
+      "id": "6"
     }
   ],
   "padlock": "",

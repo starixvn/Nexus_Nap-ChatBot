@@ -9,7 +9,16 @@
         public void GetSettingKey_ReturnCorrectSettingKey()
         {
             // Arrange
-            var command = new AddBotToGroupCommand();
+            var command = new AddBotToGroupCommand
+            {
+                BotConversationId = string.Empty,
+                ConversationId = string.Empty,
+                BotName = string.Empty,
+                ChannelId = string.Empty,
+                ServiceUrl = string.Empty,
+                UpdatedBy = string.Empty
+            };
+
             var expected = "NCB_Conversation_AddBotToGroup";
 
             // Act

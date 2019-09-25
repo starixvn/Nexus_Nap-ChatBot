@@ -9,7 +9,13 @@
         public void GetSettingKey_ReturnCorrectSettingKey()
         {
             // Arrange
-            var command = new RemoveBotOutGroupCommand();
+            var command = new RemoveBotOutGroupCommand
+            {
+                BotConversationId = string.Empty,
+                ConversationId = string.Empty,
+                UpdatedBy = string.Empty
+            };
+
             var expected = "NCB_Conversation_RemoveBotOutGroup";
 
             // Act

@@ -9,7 +9,13 @@
         public void GetSettingKey_ReturnCorrectSettingKey()
         {
             // Arrange
-            var command = new UpdateGroupTopicCommand();
+            var command = new UpdateGroupTopicCommand
+            {
+                ConversationId = string.Empty,
+                GroupName = string.Empty,
+                UpdatedBy = string.Empty
+            };
+
             var expected = "NCB_Conversation_UpdateGroupTopic";
 
             // Act

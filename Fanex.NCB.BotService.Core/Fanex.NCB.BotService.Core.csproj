@@ -9,7 +9,9 @@
     <CodeAnalysisRuleSet>Fanex.NCB.BotService.Core.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Repositories\" />
+    <Compile Remove="Repositories\**" />
+    <EmbeddedResource Remove="Repositories\**" />
+    <None Remove="Repositories\**" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fanex.Data.MySql" Version="4.1.0" />
