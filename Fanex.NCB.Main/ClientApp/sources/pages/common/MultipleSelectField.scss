@@ -7,21 +7,22 @@
 
     .multiple-select-label {
         border-bottom: none;
-        
+        font-size: 13px;
+
         .text-display {
             padding-left: 10px;
         }
     }
 }
 
-.multiple-select-field{
+.multiple-select-field {
     display: inline-block;
 }
 
 .multiple-select-field.invalid {
     .invalid-feedback {
         display: block;
-    } 
+    }
 }
 
 .multiple-select-label {
