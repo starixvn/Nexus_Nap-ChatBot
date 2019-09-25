@@ -38,7 +38,7 @@ export class SelectField extends Component {
                     onChange={this.onChange}
                     invalid={this.props.isSummited && !this.isValid()}
                 >
-                    <option disabled hidden>{Labels.PleaseSelect}</option>
+                    <option value="" disabled hidden>{Labels.PleaseSelect}</option>
                     {
                         this.props.data &&
                         this.props.data.map((item, index) =>
