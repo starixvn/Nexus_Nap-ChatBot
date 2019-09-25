@@ -8,8 +8,10 @@ export default class Sidebar extends React.Component {
     constructor(props) {
         super(props);
 
-        this.currentController = document.getElementById('current-controller').value.toLowerCase();
-        this.currentAction = document.getElementById('current-action').value.toLowerCase();
+        this.currentController = document.getElementById('current-controller') ?
+            document.getElementById('current-controller').value.toLowerCase() : '';
+        this.currentAction = document.getElementById('current-action') ?
+            document.getElementById('current-action').value.toLowerCase() : '';
 
         this.state = {
             menuItems: []

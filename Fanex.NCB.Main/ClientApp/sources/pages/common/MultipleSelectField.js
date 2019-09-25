@@ -20,6 +20,7 @@ export class MultipleSelectField extends Component {
     isValid = value => value !== '';
 
     render() {
+        let defaultTexts = { SelectOptions: '---Please select---', All: Labels.All, SelectedItemCount: '# selected' };
         return (
             <div style={{ width: this.props.width ? this.props.width : 'auto' }}
                 className={this.props.isSummited && !this.isValid(this.props.selectedValue) ? 'invalid multiple-select-field' : 'multiple-select-field'}
@@ -32,7 +33,8 @@ export class MultipleSelectField extends Component {
                         valueField={'name'}
                         statusField={'checked'}
                         hasSearchBox={this.props.isSearchable}
-                        texts={this.props.texts || { SelectOptions: '---Please select---', All: Labels.All, SelectedItemCount: '# selected' }}
+                        hasAllOption={this.props.data.length > 0}
+                        texts={this.props.texts || defaultTexts}
                         isAllTextShown={this.props.isAllTextShown || false}
                         onChange={(currentItem, selectedItemsKey) => this.onChange(selectedItemsKey)}
                     />
