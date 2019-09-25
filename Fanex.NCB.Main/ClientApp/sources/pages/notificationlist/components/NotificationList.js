@@ -4,6 +4,7 @@ import './NotificationList.scss';
 import React, { Component } from 'react';
 import axios from 'axios';
 import { DateTime } from 'luxon';
+import { toast } from 'react-toastify';
 import { NCBBreadcrum } from '../../common/breadcrumbs';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
 import ErrorReport from './ErrorReport';
@@ -15,9 +16,6 @@ import errorResponseHandler from '../../lib/errorResponseHandler';
 import Site from '../../lib/site';
 import DataGrid from './DataGrid';
 import ConfirmPopup from '../../common/ConfirmPopup';
-
-import NotificationCancellation from './NotificationCancellation';
-import { toast } from 'react-toastify';
 
 export default class NotificationList extends Component {
     constructor(props) {
