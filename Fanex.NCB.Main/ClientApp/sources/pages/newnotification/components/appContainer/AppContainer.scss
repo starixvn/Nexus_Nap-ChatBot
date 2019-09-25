@@ -85,16 +85,16 @@
 
     .form-group {
         display: grid;
-        grid-template-columns: 109px 1fr;
+        grid-template-columns: 130px 1fr;
         grid-gap: 10px;
 
         &.row-has-reset {
-            grid-template-columns: 109px 1fr 200px;
+            grid-template-columns: 130px 1fr 80px;
         }
     }
 
     .list-buttons {
-        padding-left: 119px;
+        padding-left: 140px;
     }
 
     .mde-preview {
