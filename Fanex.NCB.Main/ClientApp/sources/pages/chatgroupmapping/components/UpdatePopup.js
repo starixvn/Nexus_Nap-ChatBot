@@ -132,7 +132,6 @@ export class UpdatePopup extends Component {
             isChecked && v.status && licenseeStatuses.push(v.status);
         });
         const recipientType = this.props.settingData.recipientTypes.filter(v => v.id !== NotAvailabeId);
-
         return (
             <Modal isOpen wrapClassName="new-notification-type">
                 <ModalHeader toggle={this.confirmThenClose} className="bold-text">{Labels.EditMappingStatus}</ModalHeader>
@@ -140,7 +139,7 @@ export class UpdatePopup extends Component {
                     {this.props.updateData && !CommonFunctions.isEmptyObject(this.props.updateData) &&
                         <ResponseMessage message={this.props.updateData.message || Labels.UpdateMappingStatusSuccessfully} isSuccessful={this.props.updateData.isSuccessful} />
                     }
-                    <Form className="form-edit">
+                    <Form className="form-edit" tag='div'>
                         <FormGroup>
                             <Label className="form-label ">{Labels.BotName}</Label>
                             <Label className="form-label">{editingItem.botName}</Label>
@@ -167,6 +166,7 @@ export class UpdatePopup extends Component {
                                     this.onChange('recipientTypeId', recipientTypeId);
                                 }}
                             />
+
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label required">{Labels.Recipient}</Label>

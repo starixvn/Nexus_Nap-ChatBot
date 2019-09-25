@@ -101,7 +101,6 @@ export class Filter extends Component {
             return state;
         }
 
-        // Return null to indicate no change to state.
         return null;
     }
 
@@ -138,7 +137,7 @@ export class Filter extends Component {
 
     render() {
         return (
-            <Form className="form-filter" >
+            <Form className="form-filter" tag='div' >
                 <FormGroup>
                     <Label className="form-label">{Labels.RecipientType}</Label>
                     <MultipleSelectField
