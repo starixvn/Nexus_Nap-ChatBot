@@ -28,12 +28,6 @@ export const deleteTemplatePopup = createReducer({}, {
     }
 });
 
-export const deleteTemplateResult = createReducer({}, {
-    [types.DELETE_RESULT_DATA](state, action) {
-        return action.data;
-    }
-});
-
 // Update Popup
 export const editTemplatePopup = createReducer({}, {
     [types.EDIT_POPUP_DATA](state, action) {
@@ -68,8 +62,7 @@ const reducers = {
     createTemplateResult,
     editTemplatePopup,
     editTemplateResult,
-    deleteTemplatePopup,
-    deleteTemplateResult
+    deleteTemplatePopup
 };
 
 export default reducers;

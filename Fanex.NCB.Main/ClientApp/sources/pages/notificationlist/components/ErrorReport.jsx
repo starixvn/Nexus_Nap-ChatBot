@@ -2,7 +2,6 @@
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { DateTimeFormat, NotificationStatus } from '../../constants/constants';
 import CommonFunctions from '../../common/CommonFunctions';
-import ResponseMessage from '../../common/response-message/ResponseMessage';
 
 import './ErrorReport.scss';
 
@@ -50,18 +49,13 @@ export default class ErrorReport extends Component {
     }
 
     render() {
-        const { isOpen, report, toggle, responseMessage, haveHostPermission } = this.props;
+        const { isOpen, report, toggle, haveHostPermission } = this.props;
 
         if (report) {
             return (
                 <Modal isOpen={isOpen} toggle={toggle} className="error-report" backdrop="static">
                     <ModalHeader toggle={toggle}>Notification Sending Error Report</ModalHeader>
                     <ModalBody>
-                        {responseMessage &&
-                            <ResponseMessage isSuccessful={responseMessage.isSuccessful}
-                                message={responseMessage.message}
-                            />
-                        }
                         <p>
                             Error report for the notification titled:<br />
                             <span className="bold text-uppercase">{report.title}</span>

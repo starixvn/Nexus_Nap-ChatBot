@@ -1,9 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { ToastContainer } from 'react-toastify';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../components/font.css';
 import './Layout.scss';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Sidebar from './../sidebar';
 import Content from './../content';
@@ -44,6 +46,11 @@ class Layout extends React.PureComponent {
                     {this.props.children}
                 </Content>
                 <AuthRecheck />
+                <ToastContainer
+                    position="top-center"
+                    autoClose={3000}
+                    draggable={false}
+                />
             </div>
         );
     }

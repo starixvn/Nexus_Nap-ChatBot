@@ -56,7 +56,7 @@ NCB_NotificationList_Cancel_Upd:BEGIN
 		AND n.StatusID = NOTIFICATION_STATUSID_PLANNED;
 	
     IF ROW_COUNT()  = 0 THEN
-		SET errCode=303, errMsg='Sorry, it\'s Too late. The notification has been sent to the recipients.';
+		SET errCode=303, errMsg='Sorry, it\'s too late. The notification has been sent to the recipients.';
         LEAVE NCB_NotificationList_Cancel_Upd;
     END IF;
     

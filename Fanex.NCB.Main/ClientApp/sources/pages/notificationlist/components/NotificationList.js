@@ -14,7 +14,10 @@ import TreeSelect, { getRealValuesFromExtra } from '../../common/TreeSelect/inde
 import errorResponseHandler from '../../lib/errorResponseHandler';
 import Site from '../../lib/site';
 import DataGrid from './DataGrid';
+import ConfirmPopup from '../../common/ConfirmPopup';
+
 import NotificationCancellation from './NotificationCancellation';
+import { toast } from 'react-toastify';
 
 export default class NotificationList extends Component {
     constructor(props) {
@@ -105,9 +108,28 @@ export default class NotificationList extends Component {
 
     handleCloseNotificationCancellation = () => this.setState({ notificationCancellation: { show: false } });
 
-    handleCancellationSuccess = () => {
+    handleCancelNotification = () => {
+        const notificationId = this.state.notificationCancellation.notificationId;
         this.handleCloseNotificationCancellation();
-        this.getNotifications(this.state.tableData.pageIndex, this.state.tableData.pageSize);
+
+        axios({
+            url: Site.resolveClientUrl('NotificationList/Cancel'),
+            method: 'post',
+            data: `notificationId=${notificationId}`,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'RequestVerificationToken': Site.getXsrfToken()
+            }
+        }).then(response => {
+            const data = response.data;
+            if (data.isSuccessful) {
+                this.getNotifications(this.state.tableData.pageIndex, this.state.tableData.pageSize);
+                toast.success(Labels.CancelNotificationSuccessfully);
+            } else {
+                toast.error(data.message);
+            }
+        }).catch(errorResponseHandler);
     }
 
     getNotifications = (pageIndex = 1, pageSize = 20) => {
@@ -168,12 +190,15 @@ export default class NotificationList extends Component {
     }
 
     handleResolveNotification = resolvedRemark => {
-        this.setState(prevState => ({ errorReport: { ...prevState.errorReport, isSubmitting: true } }));
+        const notificationId = this.state.errorReport.notificationId;
+
+        this.handleCloseErrorReport();
+
         axios({
             url: Site.resolveClientUrl('NotificationList/Resolve'),
             method: 'post',
             data: {
-                notificationId: this.state.errorReport.notificationId,
+                notificationId: notificationId,
                 resolvedRemark: resolvedRemark
             },
             headers: {
@@ -182,12 +207,12 @@ export default class NotificationList extends Component {
             }
         }).then(response => {
             const data = response.data;
+
             if (data.isSuccessful) {
                 this.getNotifications(this.state.tableData.pageIndex, this.state.tableData.pageSize);
-
-                this.setState({ errorReport: { show: false, isSubmitting: false } });
+                toast.success(Labels.SubmitSuccessfully);
             } else {
-                this.setState(prevState => ({ errorReport: { ...prevState.errorReport, responseMessage: data, isSubmitting: false } }));
+                toast.error(data.message);
             }
         }).catch(errorResponseHandler);
     }
@@ -281,19 +306,17 @@ export default class NotificationList extends Component {
                         haveEditNotificationPermission={this.haveEditNotificationPermission}
                     />
                 }
-                <NotificationCancellation
+                <ConfirmPopup
                     isOpen={this.state.notificationCancellation.show}
-                    notificationId={this.state.notificationCancellation.notificationId}
                     onToggle={this.handleCloseNotificationCancellation}
-                    onCancellationSuccess={this.handleCancellationSuccess}
+                    onConfirm={this.handleCancelNotification}
+                    content="Cancelled notification will not be sent. Are you sure to proceed?"
                 />
                 <ErrorReport
                     isOpen={this.state.errorReport.show}
                     toggle={this.handleCloseErrorReport}
                     report={this.state.errorReport.report}
                     onResolveNotification={this.handleResolveNotification}
-                    responseMessage={this.state.errorReport.responseMessage}
-                    isSubmitting={this.state.errorReport.isSubmitting}
                     haveHostPermission={this.haveEditNotificationPermission}
                 />
             </div>

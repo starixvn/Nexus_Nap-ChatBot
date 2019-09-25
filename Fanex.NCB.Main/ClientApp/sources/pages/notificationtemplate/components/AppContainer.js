@@ -1,7 +1,9 @@
 ﻿import './AppContainer.scss';
+import "react-mde/lib/styles/css/react-mde-all.css";
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { toast } from 'react-toastify';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import { NCBBreadcrum } from '../../common/breadcrumbs';
@@ -10,8 +12,7 @@ import DataGrid from './DataGrid';
 import Labels from '../../common/Labels';
 import NewNotificationTemplate from './NewNotificationTemplate';
 import EditNotificationTemplate from './EditNotificationTemplate';
-import DeleteNotificationTemplate from './DeleteNotificationTemplate';
-import "react-mde/lib/styles/css/react-mde-all.css";
+import ConfirmPopup from '../../common/ConfirmPopup';
 
 export class AppContainer extends Component {
     constructor(props) {
@@ -40,10 +41,17 @@ export class AppContainer extends Component {
         this.props.getGridData(this.props.gridParams);
     }
 
-    handleDeleteSuccess = () => {
-        this.props.setDeleteTemplatePopup({ show: false });
-        this.props.setDeleteTemplateResult(null);
-        this.props.getGridData(this.props.gridParams);
+    handleDeleteTemplate = () => {
+        this.props.deleteTemplate(this.props.deleteTemplatePopup.templateId).then(data => {
+            if (data.isSuccessful) {
+                this.props.getGridData(this.props.gridParams);
+                toast.success(Labels.DeleteTemplateSuccessfully);
+            } else {
+                toast.error(data.message);
+            }
+        });
+
+        this.props.closeDeleteTemplatePopup();
     }
 
     render() {
@@ -60,7 +68,14 @@ export class AppContainer extends Component {
                     />}
 
                 {this.props.editTemplatePopup.show && <EditNotificationTemplate onEditSuccess={this.handleEditSuccess} />}
-                {this.props.deleteTemplatePopup.show && <DeleteNotificationTemplate onDeleteSuccess={this.handleDeleteSuccess} />}
+                {this.props.deleteTemplatePopup.show &&
+                    <ConfirmPopup
+                        isOpen={this.props.deleteTemplatePopup.show}
+                        onToggle={this.props.closeDeleteTemplatePopup}
+                        onConfirm={this.handleDeleteTemplate}
+                        content=" Do you want to delete the selected notification template?"
+                    />
+                }
 
             </>
         );

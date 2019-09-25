@@ -45,17 +45,20 @@ export const getGridData = params => {
 };
 
 // Delete
-export const setDeleteTemplatePopup = data => {
+export const openDeleteTemplatePopup = extra => {
     return {
         type: types.DELETE_POPUP_DATA,
-        data: data
+        data: {
+            show: true,
+            ...extra
+        }
     };
 };
 
-export const setDeleteTemplateResult = data => {
+export const closeDeleteTemplatePopup = () => {
     return {
-        type: types.DELETE_RESULT_DATA,
-        data: data
+        type: types.DELETE_POPUP_DATA,
+        data: { show: false }
     };
 };
 
@@ -67,9 +70,7 @@ export const deleteTemplate = notificationTemplateId => {
             'X-Requested-With': 'XMLHttpRequest',
             'RequestVerificationToken': Site.getXsrfToken()
         }
-    }).then(response => {
-        dispatch(setDeleteTemplateResult(response.data));
-    }).catch(errorResponseHandler);
+    }).then(response => response.data).catch(errorResponseHandler);
 };
 
 // Edit Popup
@@ -157,8 +158,8 @@ const actions = {
     getTemplate,
     editTemplate,
     deleteTemplate,
-    setDeleteTemplatePopup,
-    setDeleteTemplateResult
+    openDeleteTemplatePopup,
+    closeDeleteTemplatePopup
 };
 
 export default actions;

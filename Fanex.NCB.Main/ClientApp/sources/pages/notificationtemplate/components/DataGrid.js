@@ -74,7 +74,7 @@ export class DataGrid extends Component {
 
     handleDeleteTemplate = e => {
         const id = parseInt(e.target.dataset.templateid, 10);
-        this.props.setDeleteTemplatePopup({ show: true, templateId: id });
+        this.props.openDeleteTemplatePopup({ templateId: id });
     }
 
     renderRow = (item, index) => (
