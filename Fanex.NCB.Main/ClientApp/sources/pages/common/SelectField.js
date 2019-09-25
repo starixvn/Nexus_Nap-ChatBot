@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Input, FormFeedback } from 'reactstrap';
-import Labels from '../common/Labels'
+import Labels from '../common/Labels';
 
 import './SelectField.scss';
 
@@ -38,7 +38,7 @@ export class SelectField extends Component {
                     onChange={this.onChange}
                     invalid={this.props.isSummited && !this.isValid()}
                 >
-                    <option value="" disabled hidden>{Labels.PleaseSelect}</option>
+                    <option value="0" disabled hidden>{Labels.PleaseSelect}</option>
                     {
                         this.props.data &&
                         this.props.data.map((item, index) =>
