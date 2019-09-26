@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderLayout } from './../layout/index';
+import { renderLayout, Layout } from './../layout/index';
 import { shallow, configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import ShallowRenderer from 'react-test-renderer/shallow';
