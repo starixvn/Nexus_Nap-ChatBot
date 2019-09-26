@@ -51,8 +51,8 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Fanex.Data.MySql" Version="4.1.2" />
-    <PackageReference Include="Fanex.Data.SqlServer" Version="4.1.0" />
+    <PackageReference Include="Fanex.Data.MySql" Version="4.1.4" />
+    <PackageReference Include="Fanex.Data.SqlServer" Version="4.1.4" />
     <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.6" />
     <PackageReference Include="Hangfire.MySql.Core" Version="2.2.5" />

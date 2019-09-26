@@ -9,8 +9,7 @@
     <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Fanex.Data.Repository" Version="4.0.1" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="7.16.0.8981">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

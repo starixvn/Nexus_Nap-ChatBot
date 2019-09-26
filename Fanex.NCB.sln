@@ -54,7 +54,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Criteria.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Main.Controllers.Tests", "Fanex.NCB.Main.Controller.Tests\Fanex.NCB.Main.Controllers.Tests.csproj", "{9E38AD24-EA1E-4F40-8B71-42F10D070D8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.BotService.EndPoint.Tests", "Fanex.NCB.BotService.EndPoint.Tests\Fanex.NCB.BotService.EndPoint.Tests.csproj", "{7BCD4314-5AB6-4B59-89EE-44CAB59453B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.BotService.EndPoint.Tests", "Fanex.NCB.BotService.EndPoint.Tests\Fanex.NCB.BotService.EndPoint.Tests.csproj", "{7BCD4314-5AB6-4B59-89EE-44CAB59453B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
