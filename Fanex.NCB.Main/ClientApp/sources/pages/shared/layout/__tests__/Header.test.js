@@ -40,6 +40,24 @@ describe('Header', () => {
             expect(renderOutput).toMatchSnapshot();
         });
 
+        it('render without username', () => {
+            spyOn(document, 'getElementById').and.callFake(function () {
+                return [{
+                    value: 'abc test'
+                }];
+            });
+
+            const props = {
+                isSidebarExpanded: true
+            };
+
+            // Act
+            const renderOutput = renderer.create(<Header {...props} />).toJSON();
+
+            // Assert
+            expect(renderOutput).toMatchSnapshot();
+        });
+
         it('render correct chil components', () => {
             const props = {
                 isSidebarExpanded: true,
@@ -68,6 +86,20 @@ describe('Header', () => {
 
             // Assert
             expect(props.collapseExpandHandler).toHaveBeenCalled();
+        });
+
+        it('when toggle, state dropdownOpen will change', () => {
+            const props = {
+                isSidebarExpanded: true,
+                collapseExpandHandler: jest.fn()
+            };
+
+            const wrapper = shallow(<Header {...props} />);
+            wrapper.setState({
+                dropdownOpen: true, username: 'abc test'
+            });
+            wrapper.instance().toggle();
+            expect(wrapper.state().dropdownOpen).toBe(false);
         });
     });
 });

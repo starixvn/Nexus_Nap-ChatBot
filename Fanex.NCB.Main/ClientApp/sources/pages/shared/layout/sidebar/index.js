@@ -23,7 +23,7 @@ export default class Sidebar extends React.Component {
             .then(response => this.setState({ menuItems: response.data }));
     }
 
-    getMenuClassName = name => 'icon-' + name.replace(/ /g, '-').toLowerCase();
+    getMenuClassName = name => name ? 'icon-' + name.replace(/ /g, '-').toLowerCase() : '';
 
     isCurrent = url => url.toLowerCase() === `${this.currentController}${this.currentAction !== 'index' ? `/${this.currentAction}` : ''}`
 

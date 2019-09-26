@@ -229,7 +229,7 @@ describe("Filter", () => {
             };
             let filter = new Filter(props);
             filter.state = {
-                bots: { value: "1,2" },
+                botIds: { value: "1,2" },
                 recipientTypes: { value: "a" },
                 mappingStatuses: { value: "a" },
                 licenseeStatuses: { value: "a" }

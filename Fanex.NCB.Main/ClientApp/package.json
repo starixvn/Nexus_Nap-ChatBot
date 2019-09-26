@@ -85,6 +85,7 @@
     "test": "jest --coverage  --config ./jest.config.js",
     "test-one": "jest \".*1\\.test\\.js\" --coverage  --watch --u  --setupTestFrameworkScriptFile=raf/polyfill",
     "test-watch": "jest --watch",
+    "test-debug": "node --inspect node_modules/.bin/jest --runInBand",
     "jest-install": "npm install jest-cli -g",
     "jest-up-ss": "jest --updateSnapshot",
     "lint": "eslint ./sources/pages/",

@@ -43,7 +43,7 @@ exports[`UpdatePopup render when SuccessMsg is not shown 1`] = `
     />
     <Form
       className="form-edit"
-      tag="form"
+      tag="div"
     >
       <FormGroup
         tag="div"
@@ -253,6 +253,7 @@ exports[`UpdatePopup render when SuccessMsg is not shown 1`] = `
         className="btn-submit"
         disabled={true}
         onClick={[Function]}
+        type="submit"
       >
         Save
       </button>
@@ -304,7 +305,7 @@ exports[`UpdatePopup render when SuccessMsg shown 1`] = `
     />
     <Form
       className="form-edit"
-      tag="form"
+      tag="div"
     >
       <FormGroup
         tag="div"
@@ -514,6 +515,7 @@ exports[`UpdatePopup render when SuccessMsg shown 1`] = `
         className="btn-submit"
         disabled={true}
         onClick={[Function]}
+        type="submit"
       >
         Save
       </button>

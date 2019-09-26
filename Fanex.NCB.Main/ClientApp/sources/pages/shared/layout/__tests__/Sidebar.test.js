@@ -2,7 +2,6 @@ import React from 'react';
 import Sidebar from './../sidebar/index';
 import { shallow, mount, configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import Site from '../../../lib/site';
 import renderer from 'react-test-renderer';
 
 configure({ adapter: new Adapter() });
@@ -64,11 +63,64 @@ describe('Sidebar', () => {
     describe('behavior', () => {
         it('should call componentDidMount', () => {
             const spy = jest.spyOn(Sidebar.prototype, 'componentDidMount');
-            const component = shallow(
+            shallow(
                 <Sidebar />
             );
 
             expect(spy).toHaveBeenCalled();
+        });
+
+        it('should call functions when render', () => {
+            const wrapper = shallow(
+                <Sidebar />
+            );
+
+            expect(wrapper.instance().getMenuClassName("test")).toEqual("icon-test");
+            expect(wrapper.instance().getMenuClassName()).toEqual("");
+            expect(wrapper.instance().isCurrent("url")).not.toBeTruthy();
+        });
+
+        it('render menu item', () => {
+            const expected = (
+                <li className="menu-item" key="1">
+                    <a href="/url" className="link false ">
+                        <span className="icon-test" />
+                        <span className="text">test</span>
+                    </a>
+                </li >
+            );
+
+            const wrapper = shallow(
+                <Sidebar />
+            );
+            const submenu = { id: 1, url: "url", name: "test" };
+
+            const act = wrapper.instance().renderMenuItem(submenu);
+
+            expect(act).toEqual(expected);
+        });
+
+        it('render menu listitem', () => {
+            const result = (
+                <li className="menu-item" key="1">
+                    <a href="/url" className="link false ">
+                        <span className="icon-test" />
+                        <span className="text">test</span>
+                    </a>
+                </li >
+            );
+
+            let expected = [];
+            expected.push(result);
+
+            const wrapper = shallow(
+                <Sidebar />
+            );
+            wrapper.setState({ menuItems: [{ id: 1, url: "url", name: "test" }] });
+
+            const act = wrapper.instance().renderMenu();
+
+            expect(act).toEqual(expected);
         });
     });
 });

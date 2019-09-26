@@ -1,6 +1,10 @@
 ﻿import React from 'react';
 import renderer from 'react-test-renderer';
 import Pager from '../Pager';
+import { shallow, configure } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+
+configure({ adapter: new Adapter() });
 
 describe('Pager', () => {
     describe('render', () => {
@@ -62,6 +66,30 @@ describe('Pager', () => {
             result.children.forEach((item, index) => {
                 expect(item.props.value).toEqual(pageList[index]);
             });
+        });
+
+        it('render correct input', () => {
+            const pageList = [10, 20];
+            const props = {
+                pageOption: {
+                    PageIndex: 1,
+                    PageSize: 10,
+                    TotalItem: 100,
+                    PageList: pageList
+                },
+                onPaging: jest.fn()
+            };
+            const wrapper = shallow(<Pager {...props} />);
+            let spy = jest.spyOn(wrapper.instance(), "goToPage");
+            wrapper.instance().forceUpdate();
+            wrapper.find('.pagesize-select').at(0).simulate('change', {
+                preventDefault: () => {
+                },
+                target: {
+                    value: 2
+                }
+            });
+            expect(spy).toHaveBeenCalled();
         });
     });
 

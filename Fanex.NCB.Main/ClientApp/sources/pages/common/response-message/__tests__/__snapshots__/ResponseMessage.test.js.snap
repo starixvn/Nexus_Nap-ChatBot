@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ResponseMessage render matched snapshot 1`] = `
+<div
+  className="msg-success"
+>
+  Success
+</div>
+`;
+
+exports[`ResponseMessage render matched snapshot when success 1`] = `
+<div
+  className="msg-success"
+>
+  Success
+</div>
+`;
+
+exports[`ResponseMessage render matched snapshot whenfailed 1`] = `
+<div
+  className="msg-error"
+>
+  Failed
+</div>
+`;

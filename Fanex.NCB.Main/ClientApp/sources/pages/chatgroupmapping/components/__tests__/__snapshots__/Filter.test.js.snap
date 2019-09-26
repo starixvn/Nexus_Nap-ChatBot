@@ -3,7 +3,7 @@
 exports[`Filter render render correctly 1`] = `
 <Form
   className="form-filter"
-  tag="form"
+  tag="div"
 >
   <FormGroup
     tag="div"
@@ -240,6 +240,7 @@ exports[`Filter render render correctly 1`] = `
     disabled={true}
     id="submit-button"
     onClick={[Function]}
+    type="submit"
   >
     Submit
   </button>

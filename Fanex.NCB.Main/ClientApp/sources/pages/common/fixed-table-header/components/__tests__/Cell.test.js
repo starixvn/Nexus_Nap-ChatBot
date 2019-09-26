@@ -3,8 +3,11 @@ import Cell from '../Cell';
 import renderer from 'react-test-renderer';
 
 test('Cell component render correctly', () => {
+    const props = {
+        onClick: jest.fn
+    };
     const cell = renderer.create(
-        <Cell>Cell Content</Cell>
+        <Cell {...props}>Cell Content</Cell>
     );
 
     const tree = cell.toJSON();
