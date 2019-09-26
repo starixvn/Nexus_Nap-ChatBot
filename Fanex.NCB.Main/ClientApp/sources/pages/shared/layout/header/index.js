@@ -9,7 +9,7 @@ export default class Header extends React.PureComponent {
         super(props);
         this.state = {
             dropdownOpen: false,
-            username: document.getElementById('logged-username').value
+            username: document.getElementById('logged-username') ? document.getElementById('logged-username').value : ''
         };
     }
 

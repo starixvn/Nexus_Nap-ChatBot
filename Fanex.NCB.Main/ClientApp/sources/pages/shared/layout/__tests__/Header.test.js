@@ -1,13 +1,14 @@
 import React from 'react';
-import { Header } from './../header';
+import Header from './../header/index';
 import { shallow, mount, configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import renderer from 'react-test-renderer';
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 configure({ adapter: new Adapter() });
 
 function setup(props, isShallow = true) {
-    const wrap = isShallow ? (component) => shallow(component) : (component) => mount(component)
+    const wrap = isShallow ? (component) => shallow(component) : (component) => mount(component);
     return wrap(<Header {...props} />);
 }
 
@@ -37,6 +38,20 @@ describe('Header', () => {
 
             // Assert
             expect(renderOutput).toMatchSnapshot();
+        });
+
+        it('render correct chil components', () => {
+            const props = {
+                isSidebarExpanded: true,
+                collapseExpandHandler: jest.fn()
+            };
+
+            const wrapper = shallow(<Header {...props} />);
+
+            expect(wrapper.find(Dropdown)).toHaveLength(1);
+            expect(wrapper.find(DropdownToggle)).toHaveLength(1);
+            expect(wrapper.find(DropdownMenu)).toHaveLength(1);
+            expect(wrapper.find(DropdownItem)).toHaveLength(1);
         });
     });
 

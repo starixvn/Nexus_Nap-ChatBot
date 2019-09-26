@@ -62,24 +62,13 @@ describe('Sidebar', () => {
     });
 
     describe('behavior', () => {
-        it('should call onChange prop with correct url when onChange method is called', () => {
-            // Arrange
-            const props = {
-                onChange: jest.fn()
-            };
-            const sidebar = new Sidebar(props);
-            const fakeData = {
-                event: {
-                    preventDefault: jest.fn()
-                },
-                url: '/any'
-            };
+        it('should call componentDidMount', () => {
+            const spy = jest.spyOn(Sidebar.prototype, 'componentDidMount');
+            const component = shallow(
+                <Sidebar />
+            );
 
-            // Act
-            sidebar.onChange(fakeData.event, fakeData.url);
-
-            // Assert
-            expect(props.onChange).toHaveBeenCalledWith(fakeData.url);
+            expect(spy).toHaveBeenCalled();
         });
     });
 });

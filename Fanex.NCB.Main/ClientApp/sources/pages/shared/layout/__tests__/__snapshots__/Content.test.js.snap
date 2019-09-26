@@ -1,0 +1,185 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Content render sidebar is expanded 1`] = `
+<div
+  className="main-container"
+>
+  <div
+    className="header"
+  >
+    <div
+      className="line-wrapp"
+      onClick={[Function]}
+    >
+      <div
+        className="line top"
+      />
+      <div
+        className="line center"
+      />
+      <div
+        className="line bottom"
+      />
+    </div>
+    <ul
+      className="list-unstyled userinfo"
+    >
+      <li
+        className="annoucement"
+      >
+        <div
+          className="icon-bell"
+        />
+        <div
+          className="pulse-css"
+        />
+        <div
+          className="number"
+        >
+          99+
+        </div>
+      </li>
+      <li
+        className="user-info"
+      >
+        <div
+          className="dropdown"
+          onKeyDown={[Function]}
+        >
+          <a
+            aria-expanded={false}
+            aria-haspopup={true}
+            className=""
+            onClick={[Function]}
+          >
+            <div
+              className="profile-picture"
+            >
+              <span
+                className="icon-username"
+              />
+            </div>
+            Welcome 
+            
+          </a>
+          <div
+            aria-hidden={true}
+            className="dropdown-menu"
+            role="menu"
+            tabIndex="-1"
+          >
+            <a
+              className="dropdown-item"
+              href="/Auth/Logout"
+              onClick={[Function]}
+              tabIndex="0"
+            >
+              <span
+                className="icon-sign-out"
+              />
+              Sign Out
+            </a>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div
+    className="content"
+  >
+    Test
+  </div>
+</div>
+`;
+
+exports[`Content render sidebar is not expanded 1`] = `
+<div
+  className="main-container"
+>
+  <div
+    className="header"
+  >
+    <div
+      className="line-wrapp collaped"
+      onClick={[Function]}
+    >
+      <div
+        className="line top"
+      />
+      <div
+        className="line center"
+      />
+      <div
+        className="line bottom"
+      />
+    </div>
+    <ul
+      className="list-unstyled userinfo"
+    >
+      <li
+        className="annoucement"
+      >
+        <div
+          className="icon-bell"
+        />
+        <div
+          className="pulse-css"
+        />
+        <div
+          className="number"
+        >
+          99+
+        </div>
+      </li>
+      <li
+        className="user-info"
+      >
+        <div
+          className="dropdown"
+          onKeyDown={[Function]}
+        >
+          <a
+            aria-expanded={false}
+            aria-haspopup={true}
+            className=""
+            onClick={[Function]}
+          >
+            <div
+              className="profile-picture"
+            >
+              <span
+                className="icon-username"
+              />
+            </div>
+            Welcome 
+            
+          </a>
+          <div
+            aria-hidden={true}
+            className="dropdown-menu"
+            role="menu"
+            tabIndex="-1"
+          >
+            <a
+              className="dropdown-item"
+              href="/Auth/Logout"
+              onClick={[Function]}
+              tabIndex="0"
+            >
+              <span
+                className="icon-sign-out"
+              />
+              Sign Out
+            </a>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div
+    className="content"
+  >
+    Test
+  </div>
+</div>
+`;

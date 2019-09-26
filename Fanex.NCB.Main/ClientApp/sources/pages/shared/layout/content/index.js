@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import Header from './../header';
 
 import './Content.scss';
 
-export default class Content extends React.PureComponent {
+export default class Content extends PureComponent {
     constructor(props) {
         super(props);
     }
