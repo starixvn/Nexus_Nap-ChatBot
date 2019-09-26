@@ -6,6 +6,7 @@
     public class NotificationErrorReport
     {
         public int NotificationId { get; set; }
+
         public string Title { get; set; }
 
         public DateTime ConfigSendTime { get; set; }
