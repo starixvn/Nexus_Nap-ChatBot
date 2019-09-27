@@ -34,7 +34,7 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Get(int id)
         {
-            var notification = await notificationService.GetEditNotificationInfo(id).ConfigureAwait(false);
+            var notification = await notificationService.GetEditNotificationInfoAsync(id).ConfigureAwait(false);
 
             if (notification != null)
             {

@@ -120,7 +120,7 @@
             return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
         }
 
-        public async Task<EditNotificationInfo> GetEditNotificationInfo(int notificationId)
+        public async Task<EditNotificationInfo> GetEditNotificationInfoAsync(int notificationId)
         {
             var result = await baseService.FetchMultipleAsync<EditNotificationInfo, int>(new GetEditNotificationInfoCriteria
             {
