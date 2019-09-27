@@ -92,6 +92,35 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
     );
     
     #2nd dataset: List of recipient,bot,conversation
+    DROP TEMPORARY TABLE IF EXISTS tmp_ConversationID_FIRSTBot1;
+	CREATE TEMPORARY TABLE tmp_ConversationID_FIRSTBot1(
+																					ConversationGroupID INT
+                                                                                    , ConversationBotID INT
+																		);
+     
+	INSERT INTO tmp_ConversationID_FIRSTBot1 (ConversationGroupID, ConversationBotID)
+	SELECT GroupBot.ConversationGroupID, MIN(GroupBot.ConversationBotID) ConversationBotID
+	FROM ConversationGroupBot GroupBot 
+	INNER JOIN (
+		SELECT grb.ConversationGroupID, MIN(grb.CreatedTime)  MaxTime
+		FROM ConversationGroupBot grb 
+		GROUP BY grb.ConversationGroupID
+	) tmp ON GroupBot.ConversationGroupID = tmp.ConversationGroupID
+	AND GroupBot.CreatedTime = tmp. MaxTime
+    GROUP BY GroupBot.ConversationGroupID;
+    
+    
+	DROP TEMPORARY TABLE IF EXISTS tmp_ConversationID_FIRSTBot2;
+	CREATE TEMPORARY TABLE tmp_ConversationID_FIRSTBot2(
+																					ConversationGroupID INT
+                                                                                    , ConversationBotID INT
+																		);
+                                                                        
+	INSERT INTO tmp_ConversationID_FIRSTBot2 (ConversationGroupID, ConversationBotID)
+    SELECT ConversationGroupID, ConversationBotID
+    FROM tmp_ConversationID_FIRSTBot1;
+    
+    
 	SELECT nrl.NotificationID AS NotificationID
 					, r.RecipientID, r.RecipientName
 					, nrl.ConversationGroupID AS ChatGroupID
@@ -114,11 +143,7 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
      INNER JOIN Recipient r ON r.RecipientID = nrl.RecipientID
      LEFT JOIN ConversationGroupBot GroupBot 
 			ON GroupBot.ConversationGroupID = nrl.ConversationGroupID
-	 LEFT JOIN (
-				SELECT grb.ConversationGroupID, MIN(grb.CreatedTime)  MaxTime
-				FROM ConversationGroupBot grb 
-				GROUP BY grb.ConversationGroupID
-			) tmp ON GroupBot.ConversationGroupID = tmp.ConversationGroupID AND GroupBot.CreatedTime = tmp. MaxTime
+	 LEFT JOIN tmp_ConversationID_FIRSTBot1 tmp ON GroupBot.ConversationGroupID = tmp.ConversationGroupID
 	LEFT JOIN ConversationBot bot ON bot.ConversationBotID = GroupBot.ConversationBotID
 	LEFT JOIN ConversationGroupExtraInfo gri ON gri.ConversationGroupID = nrl.ConversationGroupID
     LEFT JOIN ConversationGroupRecipient cgr 
@@ -154,11 +179,7 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
      INNER JOIN Recipient r ON r.RecipientID = nrl.RecipientID
      LEFT JOIN ConversationGroupBot GroupBot 
 			ON GroupBot.ConversationGroupID = nrl.ConversationGroupID
-	 LEFT JOIN (
-				SELECT grb.ConversationGroupID, MIN(grb.CreatedTime)  MaxTime
-				FROM ConversationGroupBot grb 
-				GROUP BY grb.ConversationGroupID
-			) tmp ON GroupBot.ConversationGroupID = tmp.ConversationGroupID AND GroupBot.CreatedTime = tmp. MaxTime
+	 LEFT JOIN tmp_ConversationID_FIRSTBot2 tmp ON GroupBot.ConversationGroupID = tmp.ConversationGroupID
 	LEFT JOIN ConversationBot bot ON bot.ConversationBotID = GroupBot.ConversationBotID
 	LEFT JOIN ConversationGroupExtraInfo gri ON gri.ConversationGroupID = nrl.ConversationGroupID
     LEFT JOIN ConversationGroupRecipient cgr 

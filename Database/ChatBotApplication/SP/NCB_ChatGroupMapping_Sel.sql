@@ -147,14 +147,15 @@ BEGIN
 																		);
      
 	INSERT INTO tmp_ConversationID_FIRSTBot (ConversationGroupID, ConversationBotID)
-	SELECT GroupBot.ConversationGroupID, GroupBot.ConversationBotID
+	SELECT GroupBot.ConversationGroupID, MIN(GroupBot.ConversationBotID) ConversationBotID
 	FROM ConversationGroupBot GroupBot 
 	INNER JOIN (
 		SELECT grb.ConversationGroupID, MIN(grb.CreatedTime)  MaxTime
 		FROM ConversationGroupBot grb 
 		GROUP BY grb.ConversationGroupID
 	) tmp ON GroupBot.ConversationGroupID = tmp.ConversationGroupID
-	AND GroupBot.CreatedTime = tmp. MaxTime;
+	AND GroupBot.CreatedTime = tmp. MaxTime
+    GROUP BY GroupBot.ConversationGroupID;
 
 	-- Get all BotConversation IDs that satisfy filtering conditions
     DROP TEMPORARY TABLE IF EXISTS tmp_AllBotConversation;

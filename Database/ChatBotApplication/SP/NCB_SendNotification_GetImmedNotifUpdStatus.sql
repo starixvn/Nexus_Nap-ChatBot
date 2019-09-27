@@ -69,6 +69,23 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
     WHERE n.NotificationID = notificationID;
 
 	#2nd dataset: List of recipient,bot,conversation
+    DROP TEMPORARY TABLE IF EXISTS tmp_ConversationID_FIRSTBot;
+	CREATE TEMPORARY TABLE tmp_ConversationID_FIRSTBot(
+																					ConversationGroupID INT
+                                                                                    , ConversationBotID INT
+																		);
+     
+	INSERT INTO tmp_ConversationID_FIRSTBot (ConversationGroupID, ConversationBotID)
+	SELECT GroupBot.ConversationGroupID, MIN(GroupBot.ConversationBotID) ConversationBotID
+	FROM ConversationGroupBot GroupBot 
+	INNER JOIN (
+		SELECT grb.ConversationGroupID, MIN(grb.CreatedTime)  MaxTime
+		FROM ConversationGroupBot grb 
+		GROUP BY grb.ConversationGroupID
+	) tmp ON GroupBot.ConversationGroupID = tmp.ConversationGroupID
+	AND GroupBot.CreatedTime = tmp. MaxTime
+    GROUP BY GroupBot.ConversationGroupID;
+    
 	SELECT nrl.NotificationID AS NotificationID
 					, r.RecipientID, r.RecipientName
 					, nrl.ConversationGroupID AS ChatGroupID
@@ -91,11 +108,7 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
      INNER JOIN Recipient r ON r.RecipientID = nrl.RecipientID
      LEFT JOIN ConversationGroupBot GroupBot 
 			ON GroupBot.ConversationGroupID = nrl.ConversationGroupID
-	 LEFT JOIN (
-				SELECT grb.ConversationGroupID, MIN(grb.CreatedTime)  MaxTime
-				FROM ConversationGroupBot grb 
-				GROUP BY grb.ConversationGroupID
-			) tmp ON GroupBot.ConversationGroupID = tmp.ConversationGroupID AND GroupBot.CreatedTime = tmp. MaxTime
+	 LEFT JOIN tmp_ConversationID_FIRSTBot tmp ON GroupBot.ConversationGroupID = tmp.ConversationGroupID
 	LEFT JOIN ConversationBot bot ON bot.ConversationBotID = GroupBot.ConversationBotID
 	LEFT JOIN ConversationGroupExtraInfo gri ON gri.ConversationGroupID = nrl.ConversationGroupID
     LEFT JOIN ConversationGroupRecipient cgr 
