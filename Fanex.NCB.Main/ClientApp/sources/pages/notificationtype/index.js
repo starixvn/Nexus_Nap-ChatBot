@@ -4,7 +4,6 @@ import Store from '../lib/store';
 import AppContainer from './components/AppContainer';
 import { renderLayout } from '../shared/layout/layout/index';
 import reducer from './reducers/index';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Get the application-wide store instance, prepopulating with state from the server where available.
 const initialState = window.initialReduxState;
