@@ -9,6 +9,8 @@ import { SelectField } from '../../common/SelectField';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
 import ConfirmPopup from '../../common/ConfirmPopup';
 import { Notification } from '../../common/Notification';
+import ResponseMessage from '../../common/response-message/ResponseMessage';
+import { toast } from 'react-toastify';
 
 import '@9softstudio/react-multiselect/dist/style.css';
 
@@ -34,7 +36,8 @@ export class UpdatePopup extends Component {
         isValid: this.props.updatePopupData.editingItem.systemId.isValid
       },
       isSummited: false,
-      isShowedConfirm: false
+        isShowedConfirm: false,
+      isChanged: false
     };
   }
 
@@ -66,16 +69,26 @@ export class UpdatePopup extends Component {
   checkValidParams = () => this.state.notificationTypeName.isValid && this.state.recipientTypeIds.isValid && this.state.chatGroupTypeIds.isValid && this.state.systemId.isValid;
 
   onChange = (fieldName, fieldValue) => {
-    this.setState({
-      [fieldName]: fieldValue
-    });
+      this.setState({
+          isChanged: true,
+          [fieldName]: fieldValue
+      });
   }
 
-  closePopup = () => {
-    setTimeout(function () {
+    closePopup = () => {
+        if (this.props.updateData.addedResult) {
+            if (this.props.updateData.addedResult.isSuccessful) {
+                toast.success(this.props.updatePopupData.successMsg);
+            }
+            else {
+                toast.error(this.props.updateData.addedResult.message);
+            }
+        }
+
+      setTimeout(function () {
         this.props.updateData.addedResult.isSuccessful && this.props.closeUpdatePopupHandler();
       }.bind(this),
-    2000);
+        2000);
   }
 
   closeConfirmation = () => {
@@ -84,10 +97,15 @@ export class UpdatePopup extends Component {
     });
   }
 
-  togglePopup = () => {
-    this.setState({
-      isShowedConfirm: true
-    });
+    togglePopup = () => {
+        if (this.state.isChanged) {
+            this.setState({
+                isShowedConfirm: this.state.isChanged
+            });
+        }
+        else {
+            this.props.closeUpdatePopupHandler();
+        }      
   }
 
   updateDropdownData = (items, selectedIds) => {
@@ -105,12 +123,6 @@ export class UpdatePopup extends Component {
       <Modal isOpen toggle={this.togglePopup} wrapClassName="new-notification-type">
         <ModalHeader toggle={this.togglePopup}>{this.props.updatePopupData.popupTitle}</ModalHeader>
         <ModalBody>
-          {this.props.updateData.addedResult &&
-            <Notification
-                    isSuccess={this.props.updateData.addedResult.isSuccessful}
-              successMsg={this.props.updatePopupData.successMsg}
-                    failedMsg={this.props.updateData.addedResult.message} />}
-
           <Form className="form-create">
             <FormGroup>
               <Label className="form-label required">Notification Type Name</Label>
@@ -150,8 +162,8 @@ export class UpdatePopup extends Component {
                 isSummited={this.state.isSummited}
                 onChange={value => this.onChange('systemId', value)}
               />
-            </FormGroup>
-            <button className="btn-submit" onClick={this.submitHandler}>Submit</button>
+                    </FormGroup>
+                    <button className="btn-submit" onClick={this.submitHandler}>Submit</button>
           </Form>
         </ModalBody>
 

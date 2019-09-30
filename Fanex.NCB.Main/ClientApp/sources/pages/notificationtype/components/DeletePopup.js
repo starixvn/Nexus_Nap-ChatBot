@@ -5,6 +5,7 @@ import { ActionCreators } from '../actions/index';
 import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Notification } from '../../common/Notification';
+import { toast } from 'react-toastify';
 
 export class DeletePopup extends Component {
     constructor(props) {
@@ -20,6 +21,15 @@ export class DeletePopup extends Component {
     }
 
     closePopup = () => {
+        if (this.props.deleteData.deleteResult) {
+            if (this.props.deleteData.deleteResult.isSuccessful) {
+                toast.success(this.props.deletePopupData.successMsg);
+            }
+            else {
+                toast.error(this.props.deleteData.deleteResult.message);
+            }
+        }
+       
         setTimeout(function () {
             this.props.deleteData.deleteResult.isSuccessful && this.props.closeDeletePopupHandler();
             }.bind(this),
@@ -31,12 +41,6 @@ export class DeletePopup extends Component {
         <Modal isOpen toggle={this.props.closeDeletePopupHandler} wrapClassName="popup-confirm">
         <ModalHeader toggle={this.props.closeDeletePopupHandler}>Delete Notification Type</ModalHeader>
         <ModalBody>
-        { this.props.deleteData.deleteResult &&
-            <Notification
-            isSuccess={this.props.deleteData.deleteResult.isSuccessful}
-            successMsg={this.props.deletePopupData.successMsg}
-            failedMsg={this.props.deleteData.deleteResult.message} />}
-
         <div className="info">
             <p>Are you sure you want to delete <br /><strong>{this.props.deletePopupData.content}</strong> ?</p>
         </div>

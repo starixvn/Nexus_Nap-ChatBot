@@ -86,7 +86,7 @@ export const openNewPopup = () => {
                 isValid: false
             },
             systemId: {
-                value: -1,
+                value: 0,
                 isValid: false
             }
         },
