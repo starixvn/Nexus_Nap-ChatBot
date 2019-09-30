@@ -5,9 +5,9 @@ import { ActionCreators } from '../actions/index';
 import { Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input, FormFeedback, Col } from 'reactstrap';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import ReactMde, { commands } from "react-mde";
+import ReactMde from "react-mde";
 import Labels from '../../common/Labels';
-import { editorCommandList } from '../../constants/constants';
+import { editorCommandList, invalidFieldClass } from '../../constants/constants';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 import TemplatePreview from '../../common/TemplatePreview/index';
 
@@ -89,7 +89,7 @@ class EditNotificationTemplate extends Component {
                     <Label for="content" className="form-label required">Content</Label>
 
                     <div>
-                        <ReactMde className={touched.content && errors.content && 'is-invalid'}
+                        <ReactMde className={touched.content && errors.content && invalidFieldClass}
                             value={values.content} commands={editorCommandList}
                             onChange={content => setFieldValue('content', content)}
                             selectedTab={values.mode}

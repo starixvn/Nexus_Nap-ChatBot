@@ -26,4 +26,4 @@ export const getRealValuesFromExtra = function (result, collection) {
             result.push(item.realValue || item.node.props.realValue);
         }
     }
-}
+};

@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
-import { DateTimeFormat, NotificationStatus } from '../../constants/constants';
+import { DateTimeFormat, NotificationStatus, invalidFieldClass } from '../../constants/constants';
 import CommonFunctions from '../../common/CommonFunctions';
 
 import './ErrorReport.scss';
@@ -95,7 +95,7 @@ export default class ErrorReport extends Component {
                         {report.statusId === NotificationStatus.Error && haveHostPermission &&
                             <div className="remark">
                                 <span>Remark:</span>
-                                <input type="text" className={`form-control ${this.state.remarkTouched && this.state.remark === '' && 'is-invalid'}`}
+                                <input type="text" className={`form-control ${this.state.remarkTouched && this.state.remark === '' && invalidFieldClass}`}
                                     onChange={this.handleRemarkChange}
                                     value={this.state.remark}
                                     placeholder="Input the remark here..."

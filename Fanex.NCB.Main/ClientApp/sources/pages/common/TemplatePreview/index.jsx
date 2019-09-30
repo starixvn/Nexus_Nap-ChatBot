@@ -1,20 +1,19 @@
 ﻿import React, { PureComponent } from 'react';
-import remarkDisableTokenizers from "remark-disable-tokenizers";
+import remarkDisableTokenizers from 'remark-disable-tokenizers';
 import ReactMarkdown from 'react-markdown/with-html';
 
 export default class TemplatePreview extends PureComponent {
     highlightParameters = text => {
-        let params = [...new Set(text.match(/{[_-\w\s]+}/g))];
+        const params = [...new Set(text.match(/{[_-\w\s]+}/g))];
+        let formattedText = text;
 
-        if (params) {
-            for (let i = 0; i < params.length; i++) {
-                text = text.replace(new RegExp(params[i], 'g'), `<span style="color:red">${params[i]}</span>`);
-            }
+        for (let i = 0; i < params.length; i++) {
+            formattedText = formattedText.replace(new RegExp(params[i], 'g'), `<span style="color:red">${params[i]}</span>`);
         }
 
-        text = text.replace(/(?:\r\n|\r|\n)/g, '<br>');
+        formattedText = formattedText.replace(/(?:\r\n|\r|\n)/g, '<br>');
 
-        return text;
+        return formattedText;
     }
 
     plugins = [

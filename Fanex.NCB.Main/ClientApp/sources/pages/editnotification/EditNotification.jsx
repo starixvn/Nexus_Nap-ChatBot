@@ -1,5 +1,5 @@
 ﻿import './EditNotification.scss';
-import "react-mde/lib/styles/css/react-mde-all.css";
+import 'react-mde/lib/styles/css/react-mde-all.css';
 
 import React from 'react';
 import { Form, FormGroup, Label, Button, Col, Input, FormFeedback } from 'reactstrap';
@@ -11,7 +11,7 @@ import { NCBBreadcrum } from '../common/breadcrumbs';
 import TreeSelect, { getRealValuesFromExtra } from '../common/TreeSelect/index';
 import DatePicker from '../common/DatePicker/index';
 import Labels from '../common/Labels';
-import { editorCommandList } from '../constants/constants';
+import { editorCommandList, invalidFieldClass } from '../constants/constants';
 import ResponseMessage from '../common/response-message/ResponseMessage';
 import Site from '../lib/site';
 import ConfirmPopup from '../common/ConfirmPopup';
@@ -244,7 +244,7 @@ export default class EditNotification extends React.Component {
 
                     <Col sm={10}>
                         <TreeSelect value={values.recipients.value} onChange={this.handleRecipientChange} placeholder={Labels.PleaseSelect}
-                            treeData={this.state.recipientOptions} className={touched.recipients && errors.recipients && 'is-invalid'}
+                            treeData={this.state.recipientOptions} className={touched.recipients && errors.recipients && invalidFieldClass}
                             labelInValue={false}
                         />
                         {touched.recipients && errors.recipients && <FormFeedback>{errors.recipients}</FormFeedback>}
@@ -264,7 +264,7 @@ export default class EditNotification extends React.Component {
                     <Label for="content" className="form-label required" sm={2}>Content</Label>
 
                     <Col sm={10}>
-                        <ReactMde className={touched.content && errors.content && 'is-invalid'}
+                        <ReactMde className={touched.content && errors.content && invalidFieldClass}
                             value={values.content} commands={editorCommandList}
                             onChange={content => setFieldValue('content', content)}
                             selectedTab={values.mode}
@@ -288,7 +288,7 @@ export default class EditNotification extends React.Component {
                             </Input>
                             <DatePicker selected={values.sendDate} showTimeSelect disabled={values.sendMode === '1'}
                                 onChange={value => setFieldValue('sendDate', value)} minDate={Today}
-                                className={touched.sendDate && errors.sendDate && 'is-invalid'}
+                                className={touched.sendDate && errors.sendDate && invalidFieldClass}
                             />
                             <span>(GMT +8)</span>
                             {touched.sendDate && errors.sendDate && <FormFeedback>{errors.sendDate}</FormFeedback>}

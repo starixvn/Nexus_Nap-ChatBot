@@ -35,3 +35,5 @@ export const editorCommandList = [
         ]
     }
 ];
+
+export const invalidFieldClass = 'is-invalid';
