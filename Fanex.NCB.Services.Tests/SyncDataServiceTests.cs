@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AutoFixture;
     using Fanex.Data.Repository;
     using Fanex.Logging;
     using Fanex.NCB.Core.Models;
@@ -79,32 +80,34 @@
 
         private OicData FakeOICData()
         {
+            var fixture = new Fixture();
             return new OicData
             {
-                Licensees = new List<Licensee>(),
-                LicenseeProducts = new List<LicenseeProduct>(),
-                LicenseeStatuses = new List<LicenseeStatus>(),
-                LicenseeTypes = new List<LicenseeType>(),
-                Products = new List<Product>()
+                Licensees = fixture.Create<List<Licensee>>(),
+                LicenseeProducts = fixture.Create<List<LicenseeProduct>>(),
+                LicenseeStatuses = fixture.Create<List<LicenseeStatus>>(),
+                LicenseeTypes = fixture.Create<List<LicenseeType>>(),
+                Products = fixture.Create<List<Product>>()
             };
         }
 
         private NapData FakeNapData()
         {
+            var fixture = new Fixture();
             return new NapData
             {
-                NapFunctions = new List<NapFunction>(),
-                NapGroups = new List<NapGroup>(),
-                NapGroupFunction = new List<NapGroupFunction>(),
-                NapMenuItems = new List<NapMenuItem>(),
-                NapOnUser = new List<NapOnUser>(),
-                NapSites = new List<NapSite>(),
-                NapSiteURL = new List<NapSiteURL>(),
-                NapUserFunction = new List<NapUserFunction>(),
-                NapUsers = new List<NapUser>(),
-                NapUserSite = new List<NapUserSite>(),
-                Customer = new List<Customer>(),
-                CustInfo = new List<CustInfo>()
+                NapFunctions = fixture.Create<List<NapFunction>>(),
+                NapGroups = fixture.Create<List<NapGroup>>(),
+                NapGroupFunction = fixture.Create<List<NapGroupFunction>>(),
+                NapMenuItems = fixture.Create<List<NapMenuItem>>(),
+                NapOnUser = fixture.Create<List<NapOnUser>>(),
+                NapSites = fixture.Create<List<NapSite>>(),
+                NapSiteURL = fixture.Create<List<NapSiteURL>>(),
+                NapUserFunction = fixture.Create<List<NapUserFunction>>(),
+                NapUsers = fixture.Create<List<NapUser>>(),
+                NapUserSite = fixture.Create<List<NapUserSite>>(),
+                Customer = fixture.Create<List<Customer>>(),
+                CustInfo = fixture.Create<List<CustInfo>>()
             };
         }
 
