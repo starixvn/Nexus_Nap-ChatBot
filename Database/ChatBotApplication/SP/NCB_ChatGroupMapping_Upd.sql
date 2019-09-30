@@ -20,7 +20,8 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_ChatGroupMapping_Upd`(
                 - remark: Bot Conversation Remark
                 - creatorID: Creator ID
         Revisions:
-				- 20190404@Scofield: Create        
+				- 20190404@Scofield: Create     
+                - 20190930@Dominic: Enhance concurrency updates
     */
 )
 SQL SECURITY DEFINER
@@ -85,12 +86,15 @@ NCB_ChatGroupMapping_Upd:BEGIN
 	DEALLOCATE PREPARE Stmt;
     
 	-- Update BotConversationRecipient with values from tmp_RecipientID
-    DELETE FROM ConversationGroupRecipient
-    WHERE ConversationGroupID = groupID;
+    DELETE cgr
+    FROM ConversationGroupRecipient cgr
+    WHERE cgr.ConversationGroupID = groupID
+    AND cgr.RecipientID NOT IN (SELECT t.RecipientID FROM tmp_RecipientID t);
     
     INSERT INTO ConversationGroupRecipient(ConversationGroupID, RecipientID)
     SELECT groupID AS ConversationGroupID, tri.RecipientID
-    FROM tmp_RecipientID tri;    
+    FROM tmp_RecipientID tri
+    WHERE tri.RecipientID NOT IN (SELECT t.RecipientID FROM ConversationGroupRecipient t WHERE t.ConversationGroupID = groupID);    
 	
 	-- Drop temporary tables
     DROP TEMPORARY TABLE IF EXISTS tmp_RecipientID;        
