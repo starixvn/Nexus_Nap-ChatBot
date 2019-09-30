@@ -10,7 +10,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_Setting_SearchChatGroup_Sel`
 SQL SECURITY DEFINER
 BEGIN	
 	SELECT cg.ConversationGroupID AS ID, cg.Name AS Name
-	FROM ChatBot.ConversationGroup cg
+	FROM ConversationGroup cg
 	WHERE cg.Name <> '' AND cg.Name LIKE CONCAT('%', keyword, '%')
     ORDER BY cg.Name
 	LIMIT 10;
@@ -18,4 +18,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_SearchChatGroup_Sel TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_Setting_SearchChatGroup_Sel TO 'ncb.admin'@'%';

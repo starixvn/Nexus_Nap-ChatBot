@@ -27,7 +27,7 @@ BEGIN
 		s.SystemID AS SystemId,
 		s.SystemName AS SystemName
 	FROM NotificationType nt
-	INNER JOIN ChatBot.System s ON nt.SystemID = s.SystemId
+	INNER JOIN `System` s ON nt.SystemID = s.SystemId
     ORDER BY nt.NotificationTypeID
 	LIMIT rowStart, pageSize;
     
@@ -48,4 +48,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationType_Sel TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_NotificationType_Sel TO 'ncb.admin'@'%';

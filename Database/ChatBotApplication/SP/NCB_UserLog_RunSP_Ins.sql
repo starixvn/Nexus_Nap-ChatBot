@@ -29,4 +29,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_UserLog_RunSP_Ins TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_UserLog_RunSP_Ins TO 'ncb.admin'@'%';

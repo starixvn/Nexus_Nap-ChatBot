@@ -141,4 +141,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_SendNotification_GetImmedNotifUpdStatus TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_SendNotification_GetImmedNotifUpdStatus TO 'ncb.admin'@'%';

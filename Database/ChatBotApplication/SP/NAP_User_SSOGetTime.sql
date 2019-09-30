@@ -1,7 +1,7 @@
-DROP PROCEDURE IF EXISTS ChatBot.NAP_User_SSOGetTime;
+DROP PROCEDURE IF EXISTS NAP_User_SSOGetTime;
 DELIMITER //
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_User_SSOGetTime(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NAP_User_SSOGetTime(
     OUT time DATETIME
     /*
 		Creator: Dominic@20190408
@@ -19,4 +19,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NAP_User_SSOGetTime TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NAP_User_SSOGetTime TO 'ncb.admin'@'%';

@@ -29,7 +29,7 @@ NCB_NotificationTemplate_Upd:BEGIN
     SET  startTime = UTC_TIMESTAMP(3);
     SET errCode=0, errMsg='';
     
-    IF  EXISTS(SELECT 1 FROM ChatBot.NotificationTemplate nt WHERE nt.NotificationTemplateName = notificationTemplateName AND nt.NotificationTemplateID <> notificationTemplateID) 
+    IF  EXISTS(SELECT 1 FROM NotificationTemplate nt WHERE nt.NotificationTemplateName = notificationTemplateName AND nt.NotificationTemplateID <> notificationTemplateID) 
     THEN
 		SET errCode=101, errMsg='The selected template name has already been taken';
         LEAVE NCB_NotificationTemplate_Upd;
@@ -66,11 +66,11 @@ NCB_NotificationTemplate_Upd:BEGIN
 							,logContent 
 							,startTime 
 							,duration
-							);;
+							);
 	
 END;
 
 //
 DELIMITER ;
 
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationTemplate_Upd TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_NotificationTemplate_Upd TO 'ncb.admin'@'%';

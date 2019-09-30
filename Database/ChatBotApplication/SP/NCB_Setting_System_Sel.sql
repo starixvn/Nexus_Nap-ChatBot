@@ -12,10 +12,10 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_Setting_System_Sel`(
 SQL SECURITY DEFINER
 BEGIN
 	SELECT SystemID As Id, SystemName As Name
-    FROM ChatBot.System
+    FROM `System`
     ORDER BY SystemID;
 END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_System_Sel TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_Setting_System_Sel TO 'ncb.admin'@'%';

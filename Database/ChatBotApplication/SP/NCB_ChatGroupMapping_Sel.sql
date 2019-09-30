@@ -277,4 +277,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_ChatGroupMapping_Sel TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_ChatGroupMapping_Sel TO 'ncb.admin'@'%';

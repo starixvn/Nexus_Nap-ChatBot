@@ -1,7 +1,7 @@
-DROP PROCEDURE IF EXISTS ChatBot.NAP_Site_GetByUser;
+DROP PROCEDURE IF EXISTS NAP_Site_GetByUser;
 DELIMITER //
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_Site_GetByUser(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NAP_Site_GetByUser(
 	IN userID INT
     , IN environment	VARCHAR(10)
     , IN isActive		BIT
@@ -31,11 +31,10 @@ BEGIN
 			,ci.username	AS CreatorUsername
 			,ci1.custid		AS ModifierId
 			,ci1.username ModifierUsername
-		FROM
-			ChatBot.NAP_UserSite us
-			INNER JOIN ChatBot.NAP_Sites s ON us.SiteId = s.SiteId
-			LEFT JOIN ChatBot.Customer ci ON us.CreatedBy = ci.custid
-			LEFT JOIN ChatBot.Customer ci1 ON us.ModifiedBy = ci1.custid
+		FROM NAP_UserSite us
+			INNER JOIN NAP_Sites s ON us.SiteId = s.SiteId
+			LEFT JOIN Customer ci ON us.CreatedBy = ci.custid
+			LEFT JOIN Customer ci1 ON us.ModifiedBy = ci1.custid
 		WHERE
 			us.UserId = userID
 			AND (environment = 'UAT' OR (environment <> 'UAT' AND s.Environment = environment))
@@ -45,4 +44,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NAP_Site_GetByUser TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NAP_Site_GetByUser TO 'ncb.admin'@'%';

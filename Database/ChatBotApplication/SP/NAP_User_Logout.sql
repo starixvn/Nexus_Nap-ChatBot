@@ -1,7 +1,7 @@
-DROP PROCEDURE IF EXISTS ChatBot.NAP_User_Logout;
+DROP PROCEDURE IF EXISTS NAP_User_Logout;
 DELIMITER //
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_User_Logout(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NAP_User_Logout(
 	IN onUserID INT
     /*
 		Creator: Dominic@20190408
@@ -18,19 +18,19 @@ BEGIN
 		SET userId = 0;
 
 		SELECT userId = ou.UserId
-		FROM ChatBot.NAP_OnUser ou 
+		FROM NAP_OnUser ou 
 		WHERE ou.Id = onUserID AND ou.SiteId = 0;
 		
 		IF(userId <> 0) THEN
-			UPDATE ChatBot.NAP_OnUser ou
+			UPDATE NAP_OnUser ou
 			SET ou.IsKickedOut = 1 
 			WHERE ou.UserId = userId AND ou.SiteId <> 0;
 		END IF;
 
-		DELETE FROM ChatBot.NAP_OnUser ou 
+		DELETE FROM NAP_OnUser ou 
         WHERE ou.Id = onUserID;
 END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NAP_User_Logout TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NAP_User_Logout TO 'ncb.admin'@'%';

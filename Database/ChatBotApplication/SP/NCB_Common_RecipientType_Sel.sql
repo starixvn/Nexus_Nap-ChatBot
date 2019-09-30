@@ -18,4 +18,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Common_RecipientType_Sel TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_Common_RecipientType_Sel TO 'ncb.admin'@'%';

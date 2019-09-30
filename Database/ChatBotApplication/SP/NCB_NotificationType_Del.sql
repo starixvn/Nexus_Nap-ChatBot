@@ -49,4 +49,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationType_Del TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_NotificationType_Del TO 'ncb.admin'@'%';

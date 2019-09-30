@@ -1,8 +1,8 @@
-DROP PROCEDURE IF EXISTS ChatBot.NAP_Group_GetById;
+DROP PROCEDURE IF EXISTS NAP_Group_GetById;
 
 DELIMITER //
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_Group_GetById(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NAP_Group_GetById(
 	IN groupID INT
     /*
 		Creator: Dominic@20190408
@@ -26,13 +26,13 @@ BEGIN
 				,g.ModifiedBy	AS ModifierId
 				,ci1.Username	AS ModifierUsername       
 		FROM 
-			ChatBot.NAP_Groups AS g 
-			LEFT JOIN ChatBot.custInfo AS ci  ON g.CreatedBy = ci.custid
-			LEFT JOIN ChatBot.custInfo AS ci1  ON g.ModifiedBy = ci1.custid
+			NAP_Groups AS g 
+			LEFT JOIN custInfo AS ci  ON g.CreatedBy = ci.custid
+			LEFT JOIN custInfo AS ci1  ON g.ModifiedBy = ci1.custid
 		WHERE g.GroupId = groupID;
 END;
 
 //
 DELIMITER ;
 
-GRANT EXECUTE ON PROCEDURE ChatBot.NAP_Group_GetById TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NAP_Group_GetById TO 'ncb.admin'@'%';

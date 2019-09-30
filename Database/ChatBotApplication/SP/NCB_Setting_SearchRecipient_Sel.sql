@@ -21,4 +21,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_Setting_SearchRecipient_Sel TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_Setting_SearchRecipient_Sel TO 'ncb.admin'@'%';

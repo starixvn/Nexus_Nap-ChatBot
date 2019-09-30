@@ -1,7 +1,7 @@
-DROP PROCEDURE IF EXISTS ChatBot.NAP_LogUserLogin_Insert;
+DROP PROCEDURE IF EXISTS NAP_LogUserLogin_Insert;
 DELIMITER //
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_LogUserLogin_Insert(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NAP_LogUserLogin_Insert(
 	IN userID INT,
     IN siteID INT, 
     IN iP VARCHAR(50), 
@@ -23,7 +23,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_LogUserLogin_Insert(
 )
 SQL SECURITY DEFINER
 BEGIN
-		INSERT INTO ChatBot.NAPLog_UserLogin(
+		INSERT INTO NAPLog_UserLogin(
 			UserId,
 			SiteId,
 			IP,
@@ -49,4 +49,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NAP_LogUserLogin_Insert TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NAP_LogUserLogin_Insert TO 'ncb.admin'@'%';

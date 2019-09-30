@@ -117,4 +117,4 @@ END;
 //
 DELIMITER ;
 
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NewNotification_Recipient_Sel TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_NewNotification_Recipient_Sel TO 'ncb.admin'@'%';

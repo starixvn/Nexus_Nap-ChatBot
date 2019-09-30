@@ -1,7 +1,7 @@
-DROP PROCEDURE IF EXISTS ChatBot.NAP_User_GetUserSiteFunctionKeyPolicy;
+DROP PROCEDURE IF EXISTS NAP_User_GetUserSiteFunctionKeyPolicy;
 DELIMITER //
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_User_GetUserSiteFunctionKeyPolicy(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NAP_User_GetUserSiteFunctionKeyPolicy(
 	IN userID INT
     , IN siteID INT
     , IN functionKey VARCHAR(50)
@@ -21,8 +21,8 @@ BEGIN
         SELECT 
 					uf.FunctionId, 
 					uf.Policy
-				FROM ChatBot.NAP_UserFunction AS uf 
-					INNER JOIN ChatBot.NAP_Functions AS f  ON uf.FunctionId = f.FunctionId
+				FROM NAP_UserFunction AS uf 
+					INNER JOIN NAP_Functions AS f  ON uf.FunctionId = f.FunctionId
 				WHERE 
 					uf.UserId = userID
 					AND f.SiteId = siteID
@@ -34,8 +34,8 @@ BEGIN
         SELECT 
 					uf.FunctionId, 
 					uf.Policy
-				FROM ChatBot.NAP_UserFunction AS uf 
-					INNER JOIN ChatBot.NAP_Functions AS f  ON uf.FunctionId = f.FunctionId
+				FROM NAP_UserFunction AS uf 
+					INNER JOIN NAP_Functions AS f  ON uf.FunctionId = f.FunctionId
 				WHERE 
 					uf.UserId = userID
 					AND f.SiteId = siteID
@@ -47,9 +47,9 @@ BEGIN
         SELECT 
 					gf.FunctionId, 
 					gf.Policy
-				FROM  ChatBot.NAP_GroupFunction AS gf 
-					INNER JOIN ChatBot.NAP_Users AS u  ON u.GroupId = gf.GroupId
-					INNER JOIN ChatBot.NAP_Functions AS f  ON gf.FunctionId = f.FunctionId
+				FROM  NAP_GroupFunction AS gf 
+					INNER JOIN NAP_Users AS u  ON u.GroupId = gf.GroupId
+					INNER JOIN NAP_Functions AS f  ON gf.FunctionId = f.FunctionId
 				WHERE 
 					u.UserId = userID
 					AND f.SiteId = siteID
@@ -61,9 +61,9 @@ BEGIN
         SELECT 
 					gf.FunctionId, 
 					gf.Policy
-				FROM  ChatBot.NAP_GroupFunction AS gf 
-					INNER JOIN ChatBot.NAP_Users AS u  ON u.GroupId = gf.GroupId
-					INNER JOIN ChatBot.NAP_Functions AS f  ON gf.FunctionId = f.FunctionId
+				FROM  NAP_GroupFunction AS gf 
+					INNER JOIN NAP_Users AS u  ON u.GroupId = gf.GroupId
+					INNER JOIN NAP_Functions AS f  ON gf.FunctionId = f.FunctionId
 				WHERE 
 					u.UserId = userID
 					AND f.SiteId = siteID
@@ -91,4 +91,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NAP_User_GetUserSiteFunctionKeyPolicy TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NAP_User_GetUserSiteFunctionKeyPolicy TO 'ncb.admin'@'%';

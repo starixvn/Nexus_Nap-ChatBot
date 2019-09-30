@@ -1,7 +1,7 @@
-DROP PROCEDURE IF EXISTS ChatBot.NAP_User_ReCheckIn;
+DROP PROCEDURE IF EXISTS NAP_User_ReCheckIn;
 DELIMITER //
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_User_ReCheckIn(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NAP_User_ReCheckIn(
 	IN onUserId INT,
     OUT isKickedOut BOOL
     /*
@@ -17,14 +17,14 @@ SQL SECURITY DEFINER
 BEGIN
 		IF EXISTS (	
 				SELECT 1 
-				FROM ChatBot.NAP_OnUser ou
+				FROM NAP_OnUser ou
 				WHERE ou.Id = onUserId AND ou.IsKickedOut = 1 
 		) THEN
 				SET isKickedOut = 1;
 		ELSE    
 				SET isKickedOut = 0;    
 
-				UPDATE ChatBot.NAP_OnUser ou
+				UPDATE NAP_OnUser ou
 				SET ou.ReloadTime = UTC_TIMESTAMP()     
 				WHERE ou.Id = onUserId;    
 				 
@@ -36,4 +36,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NAP_User_ReCheckIn TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NAP_User_ReCheckIn TO 'ncb.admin'@'%';

@@ -1,7 +1,7 @@
-DROP PROCEDURE IF EXISTS ChatBot.NAP_Site_GetById;
+DROP PROCEDURE IF EXISTS NAP_Site_GetById;
 DELIMITER //
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_Site_GetById(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NAP_Site_GetById(
     IN siteID INT
     /*
 		Creator: Dominic@20190408
@@ -23,10 +23,10 @@ BEGIN
 			TestURL,
 			IsActive,
 			Environment
-		FROM ChatBot.NAP_Sites s
+		FROM NAP_Sites s
 		WHERE s.SiteId = siteID;
 END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NAP_Site_GetById TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NAP_Site_GetById TO 'ncb.admin'@'%';

@@ -448,4 +448,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_EditNotification_Upd TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_EditNotification_Upd TO 'ncb.admin'@'%';

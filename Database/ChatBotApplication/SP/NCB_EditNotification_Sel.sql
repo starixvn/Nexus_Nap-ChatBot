@@ -31,4 +31,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_EditNotification_Sel TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_EditNotification_Sel TO 'ncb.admin'@'%';

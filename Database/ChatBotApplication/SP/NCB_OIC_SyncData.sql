@@ -1,7 +1,7 @@
-DROP PROCEDURE IF EXISTS ChatBot.NCB_OIC_SyncData;
+DROP PROCEDURE IF EXISTS NCB_OIC_SyncData;
 DELIMITER //
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NCB_OIC_SyncData(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_OIC_SyncData(
 	IN Licensees JSON,
 	IN LicenseeProducts JSON, 
 	IN LicenseeStatuses JSON, 
@@ -59,9 +59,9 @@ BEGIN
         SET iLoop := iLoop + 1;
     END WHILE;    
     
-    DELETE l FROM ChatBot.Licensee l LEFT JOIN tmp_Licensee tmp ON l.LicenseeId = tmp.LicenseeId WHERE tmp.LicenseeId IS NULL;
+    DELETE l FROM Licensee l LEFT JOIN tmp_Licensee tmp ON l.LicenseeId = tmp.LicenseeId WHERE tmp.LicenseeId IS NULL;
 
-    INSERT INTO  ChatBot.Licensee(LicenseeId, LicenseeName, RegisteredLicenseeName, LicenseeStatusId, LicenseeTypeId)    
+    INSERT INTO  Licensee(LicenseeId, LicenseeName, RegisteredLicenseeName, LicenseeStatusId, LicenseeTypeId)    
     SELECT LicenseeId, LicenseeName, RegisteredLicenseeName, LicenseeStatusId, LicenseeTypeId
     FROM tmp_Licensee
     ON DUPLICATE KEY UPDATE 
@@ -97,7 +97,7 @@ BEGIN
         SET iLoop := iLoop + 1;
     END WHILE;
 
-    DELETE lp FROM ChatBot.LicenseeProduct lp 
+    DELETE lp FROM LicenseeProduct lp 
     LEFT JOIN tmp_LicenseeProduct tmp ON lp.LicenseeId = tmp.LicenseeId AND lp.ProductId = tmp.ProductId 
     WHERE tmp.LicenseeId IS NULL;
     
@@ -126,7 +126,7 @@ BEGIN
         SET iLoop := iLoop + 1;
     END WHILE;
     
-    DELETE ls FROM ChatBot.LicenseeStatus ls LEFT JOIN tmp_LicenseeStatus tmp ON ls.LicenseeStatusId = tmp.LicenseeStatusId WHERE tmp.LicenseeStatusId IS NULL;
+    DELETE ls FROM LicenseeStatus ls LEFT JOIN tmp_LicenseeStatus tmp ON ls.LicenseeStatusId = tmp.LicenseeStatusId WHERE tmp.LicenseeStatusId IS NULL;
 
     INSERT INTO  LicenseeStatus(LicenseeStatusId, LicenseeStatusName)    
     SELECT LicenseeStatusId, LicenseeStatusName
@@ -151,7 +151,7 @@ BEGIN
         SET iLoop := iLoop + 1;
     END WHILE;    
     
-    DELETE lt FROM ChatBot.LicenseeType lt LEFT JOIN tmp_LicenseeType tmp ON lt.LicenseeTypeId = tmp.LicenseeTypeId WHERE tmp.LicenseeTypeId IS NULL;
+    DELETE lt FROM LicenseeType lt LEFT JOIN tmp_LicenseeType tmp ON lt.LicenseeTypeId = tmp.LicenseeTypeId WHERE tmp.LicenseeTypeId IS NULL;
 
     INSERT INTO  LicenseeType(LicenseeTypeId, LicenseeTypeName)    
     SELECT LicenseeTypeId, LicenseeTypeName
@@ -176,7 +176,7 @@ BEGIN
         SET iLoop := iLoop + 1;
     END WHILE;    
     
-    DELETE p FROM ChatBot.Product p LEFT JOIN tmp_Product tmp ON p.ProductId = tmp.ProductId WHERE tmp.ProductId IS NULL;
+    DELETE p FROM Product p LEFT JOIN tmp_Product tmp ON p.ProductId = tmp.ProductId WHERE tmp.ProductId IS NULL;
 
     INSERT INTO Product(ProductId, ProductName)    
     SELECT ProductId, ProductName
@@ -195,14 +195,14 @@ BEGIN
           , RECIPIENT_TYPE_LICENSEE
           , l.LicenseeId
           , LICENSEE_SOURCE_DESCRIPTION
-    FROM ChatBot.Licensee l;
+    FROM Licensee l;
 
     INSERT INTO tmp_Recipient(RecipientName, RecipientTypeID, SourceID, SourceDescription)
     SELECT p.ProductName
           , RECIPIENT_TYPE_PRODUCT
           , p.ProductID
           , PRODUCT_SOURCE_DESCRIPTION
-    FROM ChatBot.Product p;
+    FROM Product p;
 
     # Need delete Ricipient
     DROP TEMPORARY TABLE IF EXISTS tmp_Recipient_Remove;
@@ -210,7 +210,7 @@ BEGIN
 
     INSERT INTO tmp_Recipient_Remove(RecipientID)
     SELECT r.RecipientID
-    FROM ChatBot.Recipient r
+    FROM Recipient r
     LEFT JOIN tmp_Recipient tmp ON r.RecipientTypeID = tmp.RecipientTypeID 
                         AND r.SourceID = tmp.SourceID
     WHERE tmp.RecipientTypeID IS NULL;
@@ -218,13 +218,13 @@ BEGIN
     IF EXISTS (SELECT 1 FROM tmp_Recipient_Remove) THEN
 
         # Delete Recipient
-        DELETE r FROM ChatBot.Recipient r WHERE r.RecipientID IN (SELECT tmp.RecipientID FROM tmp_Recipient_Remove tmp);
+        DELETE r FROM Recipient r WHERE r.RecipientID IN (SELECT tmp.RecipientID FROM tmp_Recipient_Remove tmp);
 
         # Delete from ConversationGroupRecipient
-        DELETE c FROM ChatBot.ConversationGroupRecipient c WHERE c.RecipientID IN (SELECT tmp.RecipientID FROM tmp_Recipient_Remove tmp);
+        DELETE c FROM ConversationGroupRecipient c WHERE c.RecipientID IN (SELECT tmp.RecipientID FROM tmp_Recipient_Remove tmp);
 
         # Delete from NotificationTypeRecipientException
-        DELETE ntre FROM ChatBot.NotificationTypeRecipientException ntre WHERE ntre.RecipientID IN (SELECT tmp.RecipientID FROM tmp_Recipient_Remove tmp);
+        DELETE ntre FROM NotificationTypeRecipientException ntre WHERE ntre.RecipientID IN (SELECT tmp.RecipientID FROM tmp_Recipient_Remove tmp);
 
         # Delete from NotificationRecipientList
         DROP TEMPORARY TABLE IF EXISTS tmp_Notification;
@@ -232,15 +232,15 @@ BEGIN
 
         INSERT INTO tmp_Notification(NotificationId)
         SELECT NotificationID
-        FROM ChatBot.NotificationRecipientList nrl
+        FROM NotificationRecipientList nrl
         WHERE nrl.RecipientID IN (SELECT tmp.RecipientID FROM tmp_Recipient_Remove tmp);
 
-        DELETE nrl FROM ChatBot.NotificationRecipientList nrl WHERE nrl.RecipientID IN (SELECT tmp.RecipientID FROM tmp_Recipient_Remove tmp);
+        DELETE nrl FROM NotificationRecipientList nrl WHERE nrl.RecipientID IN (SELECT tmp.RecipientID FROM tmp_Recipient_Remove tmp);
 
         # Delete Notification if just 1 recipient on list.
-        DELETE n FROM ChatBot.Notification n 
+        DELETE n FROM Notification n 
         WHERE NOT EXISTS (
-            SELECT 1 FROM ChatBot.NotificationRecipientList nrl
+            SELECT 1 FROM NotificationRecipientList nrl
             WHERE nrl.NotificationId = n.NotificationId
             ) 
             AND n.NotificationID IN (SELECT NotificationID FROM tmp_Notification);
@@ -254,11 +254,11 @@ BEGIN
          , tmp.SourceID
          , tmp.SourceDescription
     FROM tmp_Recipient tmp
-    LEFT JOIN ChatBot.Recipient r ON tmp.RecipientTypeID = r.RecipientTypeID
+    LEFT JOIN Recipient r ON tmp.RecipientTypeID = r.RecipientTypeID
                     AND tmp.SourceID = r.SourceID
     WHERE r.RecipientID IS NULL;
 
-    UPDATE ChatBot.Recipient r
+    UPDATE Recipient r
     INNER JOIN tmp_Recipient tmp ON r.RecipientTypeID = tmp.RecipientTypeID AND r.SourceID = tmp.SourceID
     SET r.RecipientName = tmp.RecipientName
        ,r.SourceDescription = tmp.SourceDescription;
@@ -266,4 +266,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_OIC_SyncData TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_OIC_SyncData TO 'ncb.admin'@'%';

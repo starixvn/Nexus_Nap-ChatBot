@@ -237,4 +237,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_SendNotification_GetPlanRetryNotifUpdStatus TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_SendNotification_GetPlanRetryNotifUpdStatus TO 'ncb.admin'@'%';

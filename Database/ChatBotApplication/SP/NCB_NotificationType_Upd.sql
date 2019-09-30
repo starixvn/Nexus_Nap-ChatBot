@@ -106,4 +106,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NotificationType_Upd TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_NotificationType_Upd TO 'ncb.admin'@'%';

@@ -1,7 +1,7 @@
-DROP PROCEDURE IF EXISTS ChatBot.NAP_UserControl_SyncData;
+DROP PROCEDURE IF EXISTS NAP_UserControl_SyncData;
 DELIMITER //
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  ChatBot.NAP_UserControl_SyncData(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NAP_UserControl_SyncData(
 	IN Functions JSON,
 	IN NapGroups JSON, 
 	IN GroupFunction JSON, 
@@ -102,9 +102,9 @@ BEGIN
 		SET iLoop = iLoop +1;
 	END WHILE;
 	
-    DELETE f FROM ChatBot.NAP_Functions f LEFT JOIN tmp_NAP_Functions tempf ON f.FunctionId = tempf.FunctionId WHERE tempf.FunctionId IS NULL;
+    DELETE f FROM NAP_Functions f LEFT JOIN tmp_NAP_Functions tempf ON f.FunctionId = tempf.FunctionId WHERE tempf.FunctionId IS NULL;
 
-   INSERT INTO ChatBot.NAP_Functions(FunctionId 
+   INSERT INTO NAP_Functions(FunctionId 
                                     , SiteId 
                                     , FunctionName 
                                     , FunctionKey 
@@ -136,10 +136,10 @@ BEGIN
             , tmpf.ModifiedDate
             , tmpf.Environment
     FROM tmp_NAP_Functions tmpf
-    LEFT JOIN ChatBot.NAP_Functions f ON tmpf.FunctionId = f.FunctionId
+    LEFT JOIN NAP_Functions f ON tmpf.FunctionId = f.FunctionId
     WHERE f.FunctionId IS NULL;
 
-    UPDATE ChatBot.NAP_Functions f
+    UPDATE NAP_Functions f
     INNER JOIN tmp_NAP_Functions tmpf ON tmpf.FunctionId = f.FunctionId
     SET f.SiteId = tmpf.SiteId 
 		, f.FunctionName  = tmpf.FunctionName 
@@ -206,9 +206,9 @@ BEGIN
 		SET iLoop = iLoop +1;
 	END WHILE;
 
-    DELETE g FROM ChatBot.NAP_Groups g LEFT JOIN tmp_NAP_Groups tempg ON g.GroupId = tempg.GroupId WHERE tempg.GroupId IS NULL;
+    DELETE g FROM NAP_Groups g LEFT JOIN tmp_NAP_Groups tempg ON g.GroupId = tempg.GroupId WHERE tempg.GroupId IS NULL;
 
-    INSERT INTO ChatBot.NAP_Groups(GroupId 
+    INSERT INTO NAP_Groups(GroupId 
                                     , GroupName 
                                     , Description
                                     , IsActive
@@ -226,10 +226,10 @@ BEGIN
             , tmp.ModifiedBy
             , tmp.ModifiedDate
     FROM tmp_NAP_Groups tmp
-    LEFT JOIN ChatBot.NAP_Groups g ON tmp.GroupId = g.GroupId
+    LEFT JOIN NAP_Groups g ON tmp.GroupId = g.GroupId
     WHERE g.GroupId IS NULL;
 
-    UPDATE ChatBot.NAP_Groups g
+    UPDATE NAP_Groups g
     INNER JOIN tmp_NAP_Groups temp ON temp.GroupId = g.GroupId
     SET g.GroupName = temp.GroupName
         ,g.Description = temp.Description
@@ -284,13 +284,13 @@ BEGIN
 		SET iLoop = iLoop +1;
 	END WHILE;
 	
-    DELETE g FROM ChatBot.NAP_GroupFunction g LEFT JOIN tmp_NAP_GroupFunction tempg ON g.GroupId = tempg.GroupId 
+    DELETE g FROM NAP_GroupFunction g LEFT JOIN tmp_NAP_GroupFunction tempg ON g.GroupId = tempg.GroupId 
                             AND g.FunctionId = tempg.FunctionId 
                             AND g.Policy = tempg.Policy 
                             AND g.SiteId = tempg.SiteId
     WHERE tempg.GroupId IS NULL;
 
-    INSERT INTO ChatBot.NAP_GroupFunction(GroupId 
+    INSERT INTO NAP_GroupFunction(GroupId 
                                     , FunctionId 
                                     , SiteId
                                     , Policy
@@ -308,13 +308,13 @@ BEGIN
             , tmp.ModifiedBy
             , tmp.ModifiedDate
     FROM tmp_NAP_GroupFunction tmp
-    LEFT JOIN ChatBot.NAP_GroupFunction g ON tmp.GroupId = g.GroupId 
+    LEFT JOIN NAP_GroupFunction g ON tmp.GroupId = g.GroupId 
                 AND tmp.FunctionId = g.FunctionId 
                 AND tmp.SiteId = g.SiteId
                 AND tmp.Policy = g.Policy
     WHERE g.GroupId IS NULL;
 
-    UPDATE ChatBot.NAP_GroupFunction g
+    UPDATE NAP_GroupFunction g
     INNER JOIN tmp_NAP_GroupFunction temp ON temp.GroupId = g.GroupId 
                 AND temp.FunctionId = g.FunctionId 
                 AND temp.SiteId = g.SiteId
@@ -409,9 +409,9 @@ BEGIN
 		SET iLoop = iLoop +1;
 	END WHILE;
 	
-    DELETE f FROM ChatBot.NAP_MenuItems f LEFT JOIN tmp_NAP_MenuItems tmp ON f.MenuItemId = tmp.MenuItemId WHERE tmp.MenuItemId IS NULL;
+    DELETE f FROM NAP_MenuItems f LEFT JOIN tmp_NAP_MenuItems tmp ON f.MenuItemId = tmp.MenuItemId WHERE tmp.MenuItemId IS NULL;
 
-   INSERT INTO ChatBot.NAP_MenuItems(MenuItemId
+   INSERT INTO NAP_MenuItems(MenuItemId
                                     , FunctionId 
                                     , SiteId 
                                     , MenuItemName 
@@ -445,10 +445,10 @@ BEGIN
             , tmpf.ModifiedDate
             , tmpf.Environment
     FROM tmp_NAP_MenuItems tmpf
-    LEFT JOIN ChatBot.NAP_MenuItems f ON tmpf.MenuItemId = f.MenuItemId
+    LEFT JOIN NAP_MenuItems f ON tmpf.MenuItemId = f.MenuItemId
     WHERE f.MenuItemId IS NULL;
 
-    UPDATE ChatBot.NAP_MenuItems f
+    UPDATE NAP_MenuItems f
     INNER JOIN tmp_NAP_MenuItems tmpf ON tmpf.MenuItemId = f.MenuItemId
     SET  f.FunctionId = tmpf.FunctionId
             , f.SiteId = tmpf.SiteId 
@@ -504,9 +504,9 @@ BEGIN
 		SET iLoop = iLoop +1;
 	END WHILE;
 
-    DELETE ou FROM ChatBot.NAP_OnUser ou LEFT JOIN tmp_NAP_OnUser tmp ON ou.Id = tmp.Id WHERE tmp.Id IS NULL;
+    DELETE ou FROM NAP_OnUser ou LEFT JOIN tmp_NAP_OnUser tmp ON ou.Id = tmp.Id WHERE tmp.Id IS NULL;
 
-    INSERT INTO ChatBot.NAP_OnUser(Id
+    INSERT INTO NAP_OnUser(Id
                             , UserId
                             , SiteId
                             , ReloadTime
@@ -522,10 +522,10 @@ BEGIN
             , tmp.IP
             , tmp.NetSessionId
     FROM tmp_NAP_OnUser tmp
-    LEFT JOIN ChatBot.NAP_OnUser ou ON tmp.Id = ou.Id
+    LEFT JOIN NAP_OnUser ou ON tmp.Id = ou.Id
     WHERE ou.Id IS NULL;
 
-    UPDATE ChatBot.NAP_OnUser ou
+    UPDATE NAP_OnUser ou
     INNER JOIN tmp_NAP_OnUser tmp ON tmp.Id = ou.Id
     SET ou.UserId = tmp.UserId
         ,ou.SiteId = tmp.SiteId
@@ -595,9 +595,9 @@ BEGIN
 		SET iLoop = iLoop +1;
 	END WHILE;
 
-    DELETE s FROM ChatBot.NAP_Sites s LEFT JOIN tmp_NAP_Sites tmp ON s.SiteId = tmp.SiteId WHERE tmp.SiteId IS NULL;
+    DELETE s FROM NAP_Sites s LEFT JOIN tmp_NAP_Sites tmp ON s.SiteId = tmp.SiteId WHERE tmp.SiteId IS NULL;
 
-    INSERT INTO ChatBot.NAP_Sites(SiteId 
+    INSERT INTO NAP_Sites(SiteId 
                             , SiteName
                             , Description
                             , URL
@@ -616,10 +616,10 @@ BEGIN
             , tmp.SecretAccessKey
             , tmp.SiteKey
     FROM tmp_NAP_Sites tmp
-    LEFT JOIN ChatBot.NAP_Sites s ON tmp.SiteId = s.SiteId
+    LEFT JOIN NAP_Sites s ON tmp.SiteId = s.SiteId
     WHERE s.SiteId IS NULL;
 
-    UPDATE ChatBot.NAP_Sites s
+    UPDATE NAP_Sites s
     INNER JOIN tmp_NAP_Sites tmp ON tmp.SiteId = s.SiteId
     SET s.SiteId = tmp.SiteId
         ,s.SiteName = tmp.SiteName
@@ -663,9 +663,9 @@ BEGIN
 		SET iLoop = iLoop +1;
 	END WHILE;
 
-    DELETE s FROM ChatBot.NAP_SiteURL s LEFT JOIN tmp_NAP_SiteURL tmp ON s.SiteURLId = tmp.SiteURLId WHERE tmp.SiteURLId IS NULL;
+    DELETE s FROM NAP_SiteURL s LEFT JOIN tmp_NAP_SiteURL tmp ON s.SiteURLId = tmp.SiteURLId WHERE tmp.SiteURLId IS NULL;
 
-    INSERT INTO ChatBot.NAP_SiteURL(SiteURLId
+    INSERT INTO NAP_SiteURL(SiteURLId
                             , SiteId
                             , URL
                             , Environment
@@ -678,10 +678,10 @@ BEGIN
             , tmp.IsDefault
             , tmp.IsActive
     FROM tmp_NAP_SiteURL tmp
-    LEFT JOIN ChatBot.NAP_SiteURL s ON tmp.SiteURLId = s.SiteURLId
+    LEFT JOIN NAP_SiteURL s ON tmp.SiteURLId = s.SiteURLId
     WHERE s.SiteURLId IS NULL;
 
-    UPDATE ChatBot.NAP_SiteURL s
+    UPDATE NAP_SiteURL s
     INNER JOIN tmp_NAP_SiteURL tmp ON tmp.SiteURLId = s.SiteURLId
     SET s.SiteURLId = tmp.SiteURLId
         ,s.SiteId = tmp.SiteId
@@ -736,14 +736,14 @@ BEGIN
 		SET iLoop = iLoop +1;
 	END WHILE;
 
-    DELETE uf FROM ChatBot.NAP_UserFunction uf 
+    DELETE uf FROM NAP_UserFunction uf 
             LEFT JOIN tmp_NAP_UserFunction tmp ON uf.UserId = tmp.UserId 
                                         AND uf.FunctionId = tmp.FunctionId
                                         AND uf.Policy = tmp.Policy
                                         AND uf.SiteId = tmp.SiteId
             WHERE tmp.UserId IS NULL;
 
-    INSERT INTO ChatBot.NAP_UserFunction(UserId
+    INSERT INTO NAP_UserFunction(UserId
                             , FunctionId
                             , SiteId
                             , Policy
@@ -760,13 +760,13 @@ BEGIN
             , tmp.ModifiedBy
             , tmp.ModifiedDate
     FROM tmp_NAP_UserFunction tmp
-    LEFT JOIN ChatBot.NAP_UserFunction uf ON uf.UserId = tmp.UserId 
+    LEFT JOIN NAP_UserFunction uf ON uf.UserId = tmp.UserId 
                                         AND uf.FunctionId = tmp.FunctionId
                                         AND uf.Policy = tmp.Policy
                                         AND uf.SiteId = tmp.SiteId
     WHERE uf.UserId IS NULL;
 
-    UPDATE ChatBot.NAP_UserFunction uf
+    UPDATE NAP_UserFunction uf
     INNER JOIN tmp_NAP_UserFunction tmp ON uf.UserId = tmp.UserId 
                                         AND uf.FunctionId = tmp.FunctionId
                                         AND uf.Policy = tmp.Policy
@@ -823,11 +823,11 @@ BEGIN
 		SET iLoop = iLoop +1;
 	END WHILE;
 
-    DELETE u FROM ChatBot.NAP_Users u
+    DELETE u FROM NAP_Users u
             LEFT JOIN tmp_NAP_Users tmp ON u.UserId = tmp.UserId 
             WHERE tmp.UserId IS NULL;
 
-    INSERT INTO ChatBot.NAP_Users(UserId
+    INSERT INTO NAP_Users(UserId
                             , GroupId
                             , LastLoginDate
                             , CreatedBy
@@ -842,10 +842,10 @@ BEGIN
             , tmp.ModifiedBy
             , tmp.ModifiedDate
     FROM tmp_NAP_Users tmp
-    LEFT JOIN ChatBot.NAP_Users m ON m.UserId = tmp.UserId 
+    LEFT JOIN NAP_Users m ON m.UserId = tmp.UserId 
     WHERE m.UserId IS NULL;
 
-    UPDATE ChatBot.NAP_Users m
+    UPDATE NAP_Users m
     INNER JOIN tmp_NAP_Users tmp ON m.UserId = tmp.UserId 
     SET m.GroupId = tmp.GroupId
         ,m.LastLoginDate = tmp.LastLoginDate
@@ -921,11 +921,11 @@ BEGIN
 		SET iLoop = iLoop +1;
 	END WHILE;
 
-    DELETE us FROM ChatBot.NAP_UserSite us
+    DELETE us FROM NAP_UserSite us
             LEFT JOIN tmp_NAP_UserSite tmp ON us.UserId = tmp.UserId AND us.SiteId = tmp.SiteId AND us.Level = tmp.Level
             WHERE tmp.UserId IS NULL;
 
-    INSERT INTO ChatBot.NAP_UserSite(UserId
+    INSERT INTO NAP_UserSite(UserId
                             , SiteId
                             , Level
                             , IsActive
@@ -948,10 +948,10 @@ BEGIN
             , tmp.ExpiredDate
             , tmp.IsNeverExpired
     FROM tmp_NAP_UserSite tmp
-    LEFT JOIN ChatBot.NAP_UserSite m ON m.UserId = tmp.UserId AND m.SiteId = tmp.SiteId AND m.Level = tmp.Level
+    LEFT JOIN NAP_UserSite m ON m.UserId = tmp.UserId AND m.SiteId = tmp.SiteId AND m.Level = tmp.Level
     WHERE m.UserId IS NULL;
 
-    UPDATE ChatBot.NAP_UserSite m
+    UPDATE NAP_UserSite m
     INNER JOIN tmp_NAP_UserSite tmp ON m.UserId = tmp.UserId AND m.SiteId = tmp.SiteId AND m.Level = tmp.Level
     SET m.IsActive = tmp.IsActive
         ,m.LastLoginDate = tmp.LastLoginDate
@@ -994,11 +994,11 @@ BEGIN
 		SET iLoop = iLoop +1;
 	END WHILE;
 
-  DELETE c FROM ChatBot.Customer c
+  DELETE c FROM Customer c
           LEFT JOIN tmp_Customer tmp ON c.custid = tmp.CustId
           WHERE tmp.CustId IS NULL;
 
-  INSERT INTO ChatBot.Customer(
+  INSERT INTO Customer(
                             custid 
                           , firstname 
                           , lastname 
@@ -1013,10 +1013,10 @@ BEGIN
           , tmp.UserPwd
           , tmp.Email
   FROM tmp_Customer tmp
-  LEFT JOIN ChatBot.Customer c ON c.custid = tmp.CustId
+  LEFT JOIN Customer c ON c.custid = tmp.CustId
   WHERE c.custid IS NULL;
 
-  UPDATE ChatBot.Customer m
+  UPDATE Customer m
   INNER JOIN tmp_Customer tmp ON m.custid = tmp.CustId
   SET m.firstname = tmp.FirstName
       ,m.lastname = tmp.LastName
@@ -1047,11 +1047,11 @@ BEGIN
 		SET iLoop = iLoop +1;
 	END WHILE;
 
-  DELETE c FROM ChatBot.custInfo c
+  DELETE c FROM custInfo c
           LEFT JOIN tmp_CustInfo tmp ON c.custid = tmp.CustId
           WHERE tmp.CustId IS NULL;
 
-  INSERT INTO ChatBot.custInfo(
+  INSERT INTO custInfo(
                             custid 
                           , username 
                           , closed
@@ -1060,10 +1060,10 @@ BEGIN
           , tmp.Username
           , tmp.Closed
   FROM tmp_CustInfo tmp
-  LEFT JOIN ChatBot.custInfo c ON c.custid = tmp.CustId
+  LEFT JOIN custInfo c ON c.custid = tmp.CustId
   WHERE c.custid IS NULL;
 
-  UPDATE ChatBot.custInfo m
+  UPDATE custInfo m
   INNER JOIN tmp_CustInfo tmp ON m.custid = tmp.CustId
   SET m.username = tmp.Username
       ,m.closed = tmp.Closed;
@@ -1071,4 +1071,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NAP_UserControl_SyncData TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NAP_UserControl_SyncData TO 'ncb.admin'@'%';

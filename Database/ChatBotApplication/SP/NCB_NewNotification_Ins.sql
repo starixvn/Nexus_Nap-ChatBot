@@ -50,7 +50,7 @@ NCB_NewNotification_Ins:BEGIN
     
 	#Check param
 	IF  NOT EXISTS(SELECT 1 
-									FROM ChatBot.NotificationType  nt
+									FROM NotificationType  nt
                                     WHERE nt.NotificationTypeID = notificationTypeID ) THEN
 		SET errCode=101, errMsg='Invalid NotificationTypeID';
         LEAVE NCB_NewNotification_Ins;
@@ -309,4 +309,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_NewNotification_Ins TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_NewNotification_Ins TO 'ncb.admin'@'%';

@@ -196,4 +196,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE ChatBot.NCB_SendNotification_RecipientSentStatus_Upd TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_SendNotification_RecipientSentStatus_Upd TO 'ncb.admin'@'%';
