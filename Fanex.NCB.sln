@@ -56,6 +56,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Main.Controllers.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.BotService.EndPoint.Tests", "Fanex.NCB.BotService.EndPoint.Tests\Fanex.NCB.BotService.EndPoint.Tests.csproj", "{7BCD4314-5AB6-4B59-89EE-44CAB59453B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.NAPResolver.Tests", "Fanex.NCB.NAPResolver.Tests\Fanex.NCB.NAPResolver.Tests.csproj", "{6EF4655D-3044-47A5-9A1A-F797B6042075}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -138,6 +140,10 @@ Global
 		{7BCD4314-5AB6-4B59-89EE-44CAB59453B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BCD4314-5AB6-4B59-89EE-44CAB59453B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BCD4314-5AB6-4B59-89EE-44CAB59453B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EF4655D-3044-47A5-9A1A-F797B6042075}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EF4655D-3044-47A5-9A1A-F797B6042075}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EF4655D-3044-47A5-9A1A-F797B6042075}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EF4655D-3044-47A5-9A1A-F797B6042075}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -155,6 +161,7 @@ Global
 		{4C9E8111-87C3-45EA-B2AF-CD52785CB65D} = {75FA3E39-3317-4FFC-8969-2D3EA2442CEB}
 		{9E38AD24-EA1E-4F40-8B71-42F10D070D8E} = {75FA3E39-3317-4FFC-8969-2D3EA2442CEB}
 		{7BCD4314-5AB6-4B59-89EE-44CAB59453B1} = {75FA3E39-3317-4FFC-8969-2D3EA2442CEB}
+		{6EF4655D-3044-47A5-9A1A-F797B6042075} = {75FA3E39-3317-4FFC-8969-2D3EA2442CEB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37A2AE26-EFD0-4EE5-89D6-E3D42A9AEF67}

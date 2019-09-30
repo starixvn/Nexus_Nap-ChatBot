@@ -182,8 +182,8 @@ export default class EditNotification extends React.Component {
         const formatDate = values.sendDate.toLocaleString('en-US',
             { hour12: true, month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-        const message = values.sendMode === '1' ? 'Do you want to send immediately the notification to the selected recipient?'
-            : `Do you want to send the notification at ${formatDate} to the selected recipient?`;
+        const message = values.sendMode === '1' ? 'Do you want to send the notification to the selected recipient(s) immediately?'
+            : `Do you want to send the notification to the selected recipient(s)  at ${formatDate}?`;
         this.setState({ confimrationPopup: { isOpen: true, message: message } });
     }
 
