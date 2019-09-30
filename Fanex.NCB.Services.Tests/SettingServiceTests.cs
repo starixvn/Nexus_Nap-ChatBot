@@ -6,6 +6,7 @@
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
+    using Fanex.NCB.Criteria.NotificationType;
     using Fanex.NCB.Criteria.Setting;
     using Fanex.NCB.Models.Setting;
     using Fanex.NCB.Shared.Services.Interfaces;
@@ -186,6 +187,25 @@
 
             //Act
             var actual = await service.SearchRecipientsAsync("Test").ConfigureAwait(false);
+
+            //Assert
+            Assert.Equal(1, actual.FirstOrDefault().Id);
+            Assert.Equal("Test", actual.FirstOrDefault().Name);
+        }
+
+        [Fact]
+        public async Task GetSystemAsync_WhenCalled_ReturnExpectedResult()
+        {
+            var expected = new List<BaseModel>
+            {
+                new BaseModel {Id = 1, Name = "Test"}
+            };
+            var criteria = new GetNotificationTypeSystemCriteria();
+            var service = GetService();
+            baseService.GetDataAsync<BaseModel>(Arg.Do<GetNotificationTypeSystemCriteria>(x => criteria = x)).Returns(expected);
+
+            //Act
+            var actual = await service.GetSystemAsync();
 
             //Assert
             Assert.Equal(1, actual.FirstOrDefault().Id);

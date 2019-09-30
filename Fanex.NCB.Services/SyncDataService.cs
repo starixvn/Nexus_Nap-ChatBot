@@ -61,17 +61,17 @@
         {
             var command = new InsertNapUserControlDataCommand
             {
-                Functions = ConvertToJsonWithDateTimeFormatString(data.NapFunctions),
+                Customer = ConvertToJsonWithDateTimeFormatString(data.Customer),
                 NapGroups = ConvertToJsonWithDateTimeFormatString(data.NapGroups),
                 GroupFunction = ConvertToJsonWithDateTimeFormatString(data.NapGroupFunction),
                 MenuItems = ConvertToJsonWithDateTimeFormatString(data.NapMenuItems),
                 OnUser = ConvertToJsonWithDateTimeFormatString(data.NapOnUser),
                 Sites = ConvertToJsonWithDateTimeFormatString(data.NapSites),
+                Functions = ConvertToJsonWithDateTimeFormatString(data.NapFunctions),
                 SiteURL = ConvertToJsonWithDateTimeFormatString(data.NapSiteURL),
                 UserFunction = ConvertToJsonWithDateTimeFormatString(data.NapUserFunction),
                 Users = ConvertToJsonWithDateTimeFormatString(data.NapUsers),
                 UserSite = ConvertToJsonWithDateTimeFormatString(data.NapUserSite),
-                Customer = ConvertToJsonWithDateTimeFormatString(data.Customer),
                 CustInfo = ConvertToJsonWithDateTimeFormatString(data.CustInfo)
             };
 
@@ -83,6 +83,10 @@
             var command = new UpdateNapDataByUserIdCommand
             {
                 Functions = ConvertToJsonWithDateTimeFormatString(data.NapFunctions),
+
+                UserSite = ConvertToJsonWithDateTimeFormatString(data.NapUserSite),
+                Customer = ConvertToJsonWithDateTimeFormatString(data.Customer),
+                CustInfo = ConvertToJsonWithDateTimeFormatString(data.CustInfo),
                 NapGroups = ConvertToJsonWithDateTimeFormatString(data.NapGroups),
                 GroupFunction = ConvertToJsonWithDateTimeFormatString(data.NapGroupFunction),
                 MenuItems = ConvertToJsonWithDateTimeFormatString(data.NapMenuItems),
@@ -91,9 +95,6 @@
                 SiteURL = ConvertToJsonWithDateTimeFormatString(data.NapSiteURL),
                 UserFunction = ConvertToJsonWithDateTimeFormatString(data.NapUserFunction),
                 Users = ConvertToJsonWithDateTimeFormatString(data.NapUsers),
-                UserSite = ConvertToJsonWithDateTimeFormatString(data.NapUserSite),
-                Customer = ConvertToJsonWithDateTimeFormatString(data.Customer),
-                CustInfo = ConvertToJsonWithDateTimeFormatString(data.CustInfo),
                 UserId = userId
             };
 
