@@ -11,7 +11,11 @@
         [Fact]
         public void Index_WhenCalled_ReturnExpectedViewResult()
         {
-           var controller = new HomeController();
+            var controller = new HomeController();
+            controller.ControllerContext = new ControllerContext();
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+            controller.ControllerContext.HttpContext.Connection.LocalIpAddress = IPAddress.Parse("10.10.10.10");
+            controller.ControllerContext.HttpContext.Request.Host = new HostString("test.com");
 
             //Actual
             var actual = controller.Index();
