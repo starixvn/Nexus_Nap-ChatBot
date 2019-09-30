@@ -100,9 +100,11 @@
             };
 
             auth.Value.Returns(authModel);
-            var controller = new AuthController(auth);
-            controller.ControllerContext = controllerContext;
-            controller.ControllerContext = controllerContext;
+            var controller = new AuthController(auth)
+            {
+                ControllerContext = controllerContext
+            };
+
             controller.ControllerContext.HttpContext.Connection.RemoteIpAddress = System.Net.IPAddress.Any;
             controller.ControllerContext.HttpContext.Request.Headers["User-Agent"] = "12345";
 

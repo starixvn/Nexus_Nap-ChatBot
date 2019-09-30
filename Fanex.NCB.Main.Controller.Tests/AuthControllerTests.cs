@@ -248,10 +248,12 @@
         {
             var controller = GetController();
             var userLogin = new UserLogin();
-            var expected = new RouteValueDictionary();
-            expected.Add("ReturnUrl", userLogin.ReturnUrl);
-            expected.Add("invalidLogin", true);
-            expected.Add("errorMsg", Labels.UserNotExists);
+            var expected = new RouteValueDictionary
+            {
+                { "ReturnUrl", userLogin.ReturnUrl },
+                { "invalidLogin", true },
+                { "errorMsg", Labels.UserNotExists }
+            };
 
             //Actual
             var actual = await controller.SignIn(new UserLogin());
@@ -271,10 +273,12 @@
                 Username = "sa",
                 Password = "1234"
             };
-            var expected = new RouteValueDictionary();
-            expected.Add("ReturnUrl", userLogin.ReturnUrl);
-            expected.Add("invalidLogin", true);
-            expected.Add("errorMsg", Labels.WrongPassword);
+            var expected = new RouteValueDictionary
+            {
+                { "ReturnUrl", userLogin.ReturnUrl },
+                { "invalidLogin", true },
+                { "errorMsg", Labels.WrongPassword }
+            };
             var user = new User
             {
                 Username = "sa",
@@ -300,10 +304,12 @@
                 Username = "sa",
                 Password = "1234"
             };
-            var expected = new RouteValueDictionary();
-            expected.Add("ReturnUrl", userLogin.ReturnUrl);
-            expected.Add("invalidLogin", true);
-            expected.Add("errorMsg", Labels.NoPermision);
+            var expected = new RouteValueDictionary
+            {
+                { "ReturnUrl", userLogin.ReturnUrl },
+                { "invalidLogin", true },
+                { "errorMsg", Labels.NoPermision }
+            };
             var user = new User
             {
                 Username = "sa",
@@ -333,10 +339,7 @@
                 Password = "1234",
                 ReturnUrl = "/Test"
             };
-            var expected = new RouteValueDictionary();
-            expected.Add("ReturnUrl", userLogin.ReturnUrl);
-            expected.Add("invalidLogin", true);
-            expected.Add("errorMsg", Labels.NoPermision);
+
             var user = new User
             {
                 Username = "sa",
@@ -357,7 +360,9 @@
             var actual = await controller.SignIn(userLogin);
 
             //Assert
-            Assert.IsType<RedirectResult>(actual);
+            var result = Assert.IsType<RedirectResult>(actual);
+
+            Assert.Equal("/Test", result.Url);
         }
 
         #endregion SignIn tests
