@@ -35,6 +35,7 @@
 
             var botConfig = GetBotConfig(environment, appSettings, logger);
             services.AddSingleton(botConfig);
+            services.AddSingleton(appSettings);
 
             var botFrameworkHttpAdapter = GetBotFrameworkHttpAdapter(botConfig, configuration);
             services.AddSingleton(botFrameworkHttpAdapter);

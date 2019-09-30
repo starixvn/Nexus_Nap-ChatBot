@@ -7,7 +7,6 @@
     using Fanex.NCB.BotService.Core;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Options;
     using Microsoft.IdentityModel.Tokens;
 
     public class AuthController : ControllerBase
@@ -15,9 +14,9 @@
         private readonly AppSettings appSettings;
         private readonly string invalidUsernameOrPasswordText = "Username or password is incorrect";
 
-        public AuthController(IOptions<AppSettings> appSettings)
+        public AuthController(AppSettings appSettings)
         {
-            this.appSettings = appSettings.Value;
+            this.appSettings = appSettings;
         }
 
         [AllowAnonymous]
@@ -45,7 +44,7 @@
             }
             else
             {
-                return BadRequest(new { message = invalidUsernameOrPasswordText });
+                return BadRequest(invalidUsernameOrPasswordText);
             }
         }
 

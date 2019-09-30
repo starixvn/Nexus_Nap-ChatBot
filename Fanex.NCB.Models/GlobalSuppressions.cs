@@ -7,7 +7,7 @@
     Justification = "<Pending>", Scope = "member",
     Target = "~P:Fanex.NCB.Models.NotifictaionSendMessage.NotificationRecipient.ServiceUrl")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3996:URI properties should not be strings", 
-    Justification = "<Pending>", Scope = "member", Target = "~P:Fanex.NCB.Models.Auth.SSOLogin.RedirectUrl")]
+    Justification = "<Pending>", Scope = "member", Target = "~P:Fanex.NCB.Models.Auth.SsoLogin.RedirectUrl")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3996:URI properties should not be strings", 
     Justification = "<Pending>", Scope = "member", Target = "~P:Fanex.NCB.Models.Auth.UserLogin.ReturnUrl")]
 
