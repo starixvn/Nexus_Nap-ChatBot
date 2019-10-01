@@ -17,6 +17,7 @@
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Main.AppConfig;
     using Fanex.NCB.NAPResolver;
+    using Fanex.NCB.Shared.Middlewares;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;

@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.BotService.EndPoint
+﻿namespace Fanex.NCB.Shared.Middlewares
 {
     using System;
     using System.Globalization;

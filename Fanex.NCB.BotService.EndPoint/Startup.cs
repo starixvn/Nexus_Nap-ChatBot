@@ -7,6 +7,7 @@
     using Fanex.Data.MySql;
     using Fanex.Logging.Sentry;
     using Fanex.NCB.BotService.Core;
+    using Fanex.NCB.Shared.Middlewares;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
