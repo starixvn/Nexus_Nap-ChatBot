@@ -73,19 +73,19 @@
                 {
                     await turnContext.SendActivityAsync(MessageFactory.Text(turnContext.Activity.Conversation.Id), cancellationToken);
                 }
-            } 
+            }
         }
 
         protected virtual async Task OnBotAddedAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             var command = new AddBotToGroupCommand
             {
-                BotConversationId = turnContext.Activity.Recipient.Id,
-                BotName = turnContext.Activity.Recipient.Name,
-                ConversationId = turnContext.Activity.Conversation.Id,
-                ChannelId = turnContext.Activity.ChannelId,
-                ServiceUrl = turnContext.Activity.ServiceUrl,
-                UpdatedBy = turnContext.Activity.From.Id
+                BotConversationId = turnContext.Activity?.Recipient.Id,
+                BotName = turnContext.Activity?.Recipient.Name,
+                ConversationId = turnContext.Activity?.Conversation.Id,
+                ChannelId = turnContext.Activity?.ChannelId,
+                ServiceUrl = turnContext.Activity?.ServiceUrl,
+                UpdatedBy = turnContext.Activity?.From.Id
             };
 
             await conversationService.AddBotToGroup(command);
@@ -95,9 +95,9 @@
         {
             var command = new RemoveBotOutGroupCommand
             {
-                BotConversationId = turnContext.Activity.Recipient.Id,
-                ConversationId = turnContext.Activity.Conversation.Id,
-                UpdatedBy = turnContext.Activity.From.Id
+                BotConversationId = turnContext.Activity?.Recipient.Id,
+                ConversationId = turnContext.Activity?.Conversation.Id,
+                UpdatedBy = turnContext.Activity?.From.Id
             };
 
             await conversationService.RemoveBotOutGroup(command);
@@ -107,9 +107,9 @@
         {
             var command = new UpdateGroupTopicCommand
             {
-                ConversationId = turnContext.Activity.Conversation.Id,
-                GroupName = HttpUtility.HtmlDecode(turnContext.Activity.TopicName),
-                UpdatedBy = turnContext.Activity.From.Id
+                ConversationId = turnContext.Activity?.Conversation.Id,
+                GroupName = HttpUtility.HtmlDecode(turnContext.Activity?.TopicName),
+                UpdatedBy = turnContext.Activity?.From.Id
             };
 
             await conversationService.UpdateGroupTopic(command);
