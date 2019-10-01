@@ -1,88 +1,241 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Tests
 {
+    using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.BotService.EndPoint.Controllers;
+    using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Bot.Builder;
-    using Microsoft.Bot.Builder.Integration.AspNet.Core;
+    using Microsoft.Bot.Builder.Integration;
     using Microsoft.Bot.Configuration;
     using Microsoft.Bot.Schema;
     using NSubstitute;
+    using NSubstitute.ExceptionExtensions;
     using Xunit;
 
     public class NotifyControllerTests
     {
-        private IBotFrameworkHttpAdapter adapter;
+        private IAdapterIntegration adapter;
         private BotConfiguration botConfig;
         private IConversationService conversationService;
 
-        ////[Fact]
-        ////public async Task Send_InValidBotName_SendContinueWithDefaultAppId()
-        ////{
-        ////    var controller = GetController();
+        [Fact]
+        public async Task Send_InValidBotName_SendContinueWithDefaultAppId()
+        {
+            var controller = GetController();
+            var botName = string.Empty;
+            var conversationId = string.Empty;
+            var message = string.Empty;
 
-        ////    var botName = string.Empty;
-        ////    var conversationId = string.Empty;
-        ////    var message = string.Empty;
+            var conversationGroup = new ConversationGroup
+            {
+                BotConversationId = string.Empty,
+                BotName = string.Empty,
+                ConversationId = string.Empty,
+                GroupName = string.Empty,
+                ChannelId = string.Empty,
+                ServiceUrl = string.Empty
+            };
 
-        ////    //botConfig.Services.
+            conversationService.GetGroupConversation(Arg.Any<string>(), Arg.Any<string>()).Returns(conversationGroup);
 
-        ////    var conversationGroup = new ConversationGroup
-        ////    {
-        ////        BotConversationId = string.Empty,
-        ////        BotName = string.Empty,
-        ////        ConversationId = string.Empty,
-        ////        GroupName = string.Empty,
-        ////        ChannelId = string.Empty,
-        ////        ServiceUrl = string.Empty
-        ////    };
-        ////    Task t3 = Task.Run(() => {
-        ////        var aaa = 1;
-        ////    });
+            //Actual
+            var actual = await controller.Send(botName, conversationId, message);
 
-        ////    conversationService.GetGroupConversation(Arg.Any<string>(), Arg.Any<string>()).Returns(conversationGroup);
-        ////    var x = (BotFrameworkAdapter)adapter;
-            
-            
+            //Assert
+            Assert.IsType<OkObjectResult>(actual);
 
-        ////    ((BotFrameworkAdapter)adapter).ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
-        ////        Arg.Any<CancellationToken>()).Returns(t3);
+            await adapter.Received().ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
+                Arg.Any<CancellationToken>());
+        }
 
-        ////    //Actual
-        ////    var actual = await controller.Send(botName, conversationId, message);
+        [Fact]
+        public async Task Send_ValidBotName_ReturOkObjectResult()
+        {
+            var controller = GetController();
 
-        ////    //Assert
-        ////    Assert.IsType<OkObjectResult>(actual);
-            
+            var botName = string.Empty;
+            var conversationId = string.Empty;
+            var message = string.Empty;
 
-        ////    await x.Received().ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
-        ////        Arg.Any<CancellationToken>()
-        ////        );
-        ////}
+            var endpointService = new EndpointService
+            {
+                AppId = "1",
+                AppPassword = "1",
+                Name = botName
+            };
 
-        ////[Fact]
-        ////public async Task Send_ValidBotName_ReturOkObjectResult()
-        ////{
-        ////    var controller = GetController();
+            botConfig.Services = new List<ConnectedService>
+            {
+                endpointService
+            };
 
-        ////    var botName = string.Empty;
-        ////    var conversationId = string.Empty;
-        ////    var message = string.Empty;
-  
-        ////    //Actual
-        ////    var actual = await controller.Send(botName, conversationId, message);
+            var conversationGroup = new ConversationGroup();
+            conversationService.GetGroupConversation(Arg.Any<string>(), Arg.Any<string>()).Returns(conversationGroup);
 
-        ////    //Assert
-        ////    Assert.IsType<OkObjectResult>(actual);
+            //Actual
+           var actual = await controller.Send(botName, conversationId, message);
 
-        ////}
+            //Assert
+            Assert.IsType<OkObjectResult>(actual);
+
+            await adapter.Received().ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
+                Arg.Any<CancellationToken>());
+        }
+
+        [Fact]
+        public async Task Send_GetGroupConversationThrowException_ReturnExpectedErrorMessage()
+        {
+            var controller = GetController();
+
+            var botName = string.Empty;
+            var conversationId = string.Empty;
+            var message = string.Empty;
+
+            var conversationGroup = new ConversationGroup
+            {
+                BotConversationId = string.Empty,
+                BotName = string.Empty,
+                ConversationId = string.Empty,
+                GroupName = string.Empty,
+                ChannelId = string.Empty,
+                ServiceUrl = string.Empty
+            };
+
+            conversationService.GetGroupConversation(Arg.Any<string>(), Arg.Any<string>()).Returns(conversationGroup);
+
+            adapter.ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
+                Arg.Any<CancellationToken>()).Throws(new Exception("error msg"));
+
+            //Actual
+            var actual = await controller.Send(botName, conversationId, message);
+
+            //Assert
+            Assert.IsType<OkObjectResult>(actual);
+            Assert.Equal("error msg", actual.Value);
+        }
+
+        [Fact]
+        public async Task SendMulti_NotificationListIsNull_ReturnObjectResultWithEmptyList()
+        {
+            var controller = GetController();
+
+            //Actual
+            var actual = await controller.SendMulti(null);
+
+            //Assert
+            Assert.IsType<OkObjectResult>(actual);
+            Assert.Empty((List<SendMessageResult>)actual.Value);
+        }
+
+        [Fact]
+        public async Task SendMulti_NotificationListIsEmpty_ReturnObjectResultWithEmptyList()
+        {
+            var controller = GetController();
+            var notificationMessages = new List<NotificationMessage>();
+
+            //Actual
+            var actual = await controller.SendMulti(notificationMessages);
+
+            //Assert
+            Assert.IsType<OkObjectResult>(actual);
+            Assert.Empty((List<SendMessageResult>)actual.Value);
+        }
+
+        [Fact]
+        public async Task SendMulti_NotificationListIsNotEmpty_ReturnObjectResultWithSuccessList()
+        {
+            var controller = GetController();
+
+            var conversationGroup = new ConversationGroup();
+
+            conversationService.GetGroupConversation(Arg.Any<string>(), Arg.Any<string>()).Returns(conversationGroup);
+
+            var notificationMessages = new List<NotificationMessage>
+            {
+                new NotificationMessage
+                {
+                    NotifictaionId = 1,
+                    Message = "test",
+                    Recipients = new List<ConversationInfo>
+                    {
+                        new ConversationInfo
+                        {
+                            ConversationId = "ConversationId"
+                        }
+                    }
+                }
+            };
+
+            //Actual
+            var actual = await controller.SendMulti(notificationMessages);
+
+            //Assert
+            Assert.IsType<OkObjectResult>(actual);
+            Assert.Single((List<SendMessageResult>)actual.Value);
+            Assert.Equal(1, ((List<SendMessageResult>)actual.Value)[0].NotificationId);
+            Assert.Equal("ConversationId", ((List<SendMessageResult>)actual.Value)[0].ConversationId);
+            Assert.Equal(0, ((List<SendMessageResult>)actual.Value)[0].ErrorCode);
+            Assert.Null(((List<SendMessageResult>)actual.Value)[0].ErrorMessage);
+
+            await adapter.Received().ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
+                Arg.Any<CancellationToken>());
+        }
+
+        [Fact]
+        public async Task SendMulti_NotificationListIsNotEmpty_ReturnObjectResultWithErrorList()
+        {
+            var controller = GetController();
+
+            var conversationGroup = new ConversationGroup
+            {
+                BotConversationId = string.Empty,
+                BotName = string.Empty,
+                ConversationId = string.Empty,
+                GroupName = string.Empty,
+                ChannelId = string.Empty,
+                ServiceUrl = string.Empty
+            };
+
+            conversationService.GetGroupConversation(Arg.Any<string>(), Arg.Any<string>()).Returns(conversationGroup);
+
+            adapter.ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
+                Arg.Any<CancellationToken>()).Throws(new Exception("error msg"));
+
+            var notificationMessages = new List<NotificationMessage>
+            {
+                new NotificationMessage
+                {
+                    NotifictaionId = 1,
+                    Message = "test",
+                    Recipients = new List<ConversationInfo>
+                    {
+                        new ConversationInfo()
+                    }
+                }
+            };
+
+            //Actual
+            var actual = await controller.SendMulti(notificationMessages);
+
+            //Assert
+            Assert.IsType<OkObjectResult>(actual);
+            Assert.Single((List<SendMessageResult>)actual.Value);
+            Assert.Equal(1, ((List<SendMessageResult>)actual.Value)[0].NotificationId);
+            Assert.Equal(1, ((List<SendMessageResult>)actual.Value)[0].ErrorCode);
+            Assert.Equal("error msg", ((List<SendMessageResult>)actual.Value)[0].ErrorMessage);
+
+            await adapter.Received().ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
+                Arg.Any<CancellationToken>());
+        }
 
         private NotifyController GetController()
         {
-            adapter = Substitute.For<IBotFrameworkHttpAdapter>();
+            adapter = Substitute.For<IAdapterIntegration>();
             botConfig = Substitute.For<BotConfiguration>();
             conversationService = Substitute.For<IConversationService>();
 

@@ -10,8 +10,7 @@
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Bot.Builder;
-    using Microsoft.Bot.Builder.Integration.AspNet.Core;
+    using Microsoft.Bot.Builder.Integration;
     using Microsoft.Bot.Configuration;
     using Microsoft.Bot.Connector.Authentication;
     using Microsoft.Bot.Schema;
@@ -19,11 +18,11 @@
     [Authorize]
     public class NotifyController : ControllerBase
     {
-        private readonly IBotFrameworkHttpAdapter adapter;
+        private readonly IAdapterIntegration adapter;
         private readonly BotConfiguration botConfig;
         private readonly IConversationService conversationService;
 
-        public NotifyController(IBotFrameworkHttpAdapter adapter, BotConfiguration botConfig, IConversationService conversationService)
+        public NotifyController(IAdapterIntegration adapter, BotConfiguration botConfig, IConversationService conversationService)
         {
             this.adapter = adapter;
             this.botConfig = botConfig;
@@ -58,7 +57,7 @@
             var results = new List<SendMessageResult>();
             var tasks = new List<Task>();
 
-            if(notificationMessages != null && notificationMessages.Any())
+            if (notificationMessages != null && notificationMessages.Any())
             {
                 foreach (var notificationMessage in notificationMessages)
                 {
@@ -72,7 +71,7 @@
 
                 await Task.WhenAll(tasks.ToArray());
             }
-            
+
             return Ok(results);
         }
 
@@ -111,7 +110,7 @@
 
         private async Task SendMessage(string appId, ConversationReference conversationReference, string message)
         {
-            await ((BotFrameworkAdapter)adapter).ContinueConversationAsync(appId, conversationReference,
+            await adapter.ContinueConversationAsync(appId, conversationReference,
                     async (context, token) =>
                     {
                         MicrosoftAppCredentials.TrustServiceUrl(conversationReference.ServiceUrl);
@@ -163,11 +162,8 @@
 
         private string GetAppId(string botName)
         {
-            var appId = ((EndpointService)botConfig.Services.FirstOrDefault(t => t.Name.Equals(botName, StringComparison.InvariantCultureIgnoreCase))).AppId;
-            if (string.IsNullOrEmpty(appId))
-            {
-                appId = Guid.NewGuid().ToString();
-            }
+            var endpoint = (EndpointService)botConfig.Services.FirstOrDefault(t => t.Name.Equals(botName, StringComparison.InvariantCultureIgnoreCase));
+            var appId = (endpoint != null && !string.IsNullOrEmpty(endpoint.AppId)) ? endpoint.AppId : Guid.NewGuid().ToString();
 
             return appId;
         }
