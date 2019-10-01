@@ -16,6 +16,7 @@ echo %mypath%
 
 call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.Main.Controller.Tests
 call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.Services.Tests
+call CodeCoverage\run_netcore.bat %build_number% Fanex.NCB.Criteria.Tests
 
 REM call CodeCoverage\run_netframework.bat %build_number% Fanex.NCB.Swagger\Fanex.NCB.Swagger.AuthGate.UnitTests\bin\Debug\Fanex.NCB.Swagger.AuthGate.UnitTests.dll
 

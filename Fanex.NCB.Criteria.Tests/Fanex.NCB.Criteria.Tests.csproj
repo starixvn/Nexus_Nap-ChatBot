@@ -7,6 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="LocalNap\**" />
+    <Compile Remove="NotificationTemplate\**" />
+    <Compile Remove="Notification\**" />
+    <EmbeddedResource Remove="LocalNap\**" />
+    <EmbeddedResource Remove="NotificationTemplate\**" />
+    <EmbeddedResource Remove="Notification\**" />
+    <None Remove="LocalNap\**" />
+    <None Remove="NotificationTemplate\**" />
+    <None Remove="Notification\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="5.9.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
@@ -18,13 +31,6 @@
   <ItemGroup>
     <Folder Include="ChatGroupMapping\" />
     <Folder Include="Common\" />
-    <Folder Include="LocalNap\Group\" />
-    <Folder Include="LocalNap\Security\" />
-    <Folder Include="LocalNap\Site\" />
-    <Folder Include="LocalNap\User\" />
-    <Folder Include="NotificationTemplate\" />
-    <Folder Include="NotificationType\" />
-    <Folder Include="Notification\" />
     <Folder Include="SendNotification\" />
     <Folder Include="Setting\" />
     <Folder Include="SyncData\" />
