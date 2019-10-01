@@ -28,7 +28,7 @@
         }
 
         [Fact]
-        public async Task GetTimeAsync_WhenCalled_ReturnAsExpectedResult()
+        public async Task GetTimeAsync_WhenCalled_ReturnExpectedResult()
         {
             var service = new LocalSecurityService();
 
@@ -42,7 +42,7 @@
         }
 
         [Fact]
-        public async Task LoginAsync_ValidData_ReturnAsExpectedResult()
+        public async Task LoginAsync_ValidData_ReturnExpectedResult()
         {
             var service = new LocalSecurityService();
             var fixture = new Fixture();
@@ -148,7 +148,7 @@
         }
 
         [Fact]
-        public async Task SSOLoginAsync_ValidData_ReturnAsExpectedResult()
+        public async Task SSOLoginAsync_ValidData_ReturnExpectedResult()
         {
             var service = new LocalSecurityService();
             var fixture = new Fixture();
