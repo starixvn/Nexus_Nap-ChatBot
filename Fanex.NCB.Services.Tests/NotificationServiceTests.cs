@@ -42,12 +42,15 @@
             {
                 SendImmediately = true
             };
-            baseService.ExecuteNonQueryAsync(Arg.Any<CreateNewNotificationCommand>()).Returns(new CommandResult { Code = 0 });
+
+            var command = new CreateNewNotificationCommand();
+
+            baseService.ExecuteNonQueryAsync(Arg.Do<CreateNewNotificationCommand>(x => command = x)).Returns(new CommandResult { Code = 0 }).AndDoes(x => command.NotificationId = 1);
 
             var result = await service.CreateAsync(model).ConfigureAwait(false);
 
             Assert.True(result.IsSuccessful);
-            Task.Run(() => sendNotificationService.Received().SendNotificationImmediately(0)).Wait();
+            sendNotificationService.Received().SendNotificationImmediately(command.NotificationId).Wait();
         }
 
         [Fact]
