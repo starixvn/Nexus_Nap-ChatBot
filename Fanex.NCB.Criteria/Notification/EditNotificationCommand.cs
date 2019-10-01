@@ -23,7 +23,8 @@
 
 #pragma warning disable S1067 // Expressions should not be too complex
 
-        public override bool IsValid() => NotificationId > 0 && !string.IsNullOrWhiteSpace(RecipientIDLst) && !string.IsNullOrWhiteSpace(Title)
+        public override bool IsValid() => NotificationId > 0 && !string.IsNullOrWhiteSpace(RecipientIDLst) 
+            && !string.IsNullOrWhiteSpace(Title)
              && !string.IsNullOrWhiteSpace(Content) && UserId > 0;
 
 #pragma warning restore S1067 // Expressions should not be too complex
