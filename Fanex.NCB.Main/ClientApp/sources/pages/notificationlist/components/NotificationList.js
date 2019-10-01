@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { DateTime } from 'luxon';
 import { toast } from 'react-toastify';
-import { NCBBreadcrum } from '../../common/breadcrumbs';
+import { NCBBreadcrum } from '../../common/breadcrumbs/breadcrumbs';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
 import ErrorReport from './ErrorReport';
 import DatePicker from '../../common/DatePicker/index';

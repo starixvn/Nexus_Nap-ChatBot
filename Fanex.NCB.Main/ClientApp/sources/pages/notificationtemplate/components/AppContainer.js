@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
-import { NCBBreadcrum } from '../../common/breadcrumbs';
+import { NCBBreadcrum } from '../../common/breadcrumbs/breadcrumbs';
 import Filter from './Filter';
 import DataGrid from './DataGrid';
 import Labels from '../../common/Labels';

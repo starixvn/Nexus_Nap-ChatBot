@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import Filter from './Filter';
 import DataGrid from './DataGrid';
-import { NCBBreadcrum } from '../../common/breadcrumbs';
+import { NCBBreadcrum } from '../../common/breadcrumbs/breadcrumbs';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import UpdatePopup from './UpdatePopup';

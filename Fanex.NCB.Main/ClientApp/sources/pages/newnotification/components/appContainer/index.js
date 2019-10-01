@@ -9,7 +9,7 @@ import { stringify } from 'qs';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import ReactMde from 'react-mde';
-import { NCBBreadcrum } from '../../../common/breadcrumbs';
+import { NCBBreadcrum } from '../../../common/breadcrumbs/breadcrumbs';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../../actions/index';
 import TreeSelect from '../../../common/TreeSelect/index';

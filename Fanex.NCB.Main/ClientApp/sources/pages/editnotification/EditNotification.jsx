@@ -7,7 +7,7 @@ import axios from 'axios';
 import ReactMde from 'react-mde';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { NCBBreadcrum } from '../common/breadcrumbs';
+import { NCBBreadcrum } from '../common/breadcrumbs/breadcrumbs';
 import TreeSelect, { getRealValuesFromExtra } from '../common/TreeSelect/index';
 import DatePicker from '../common/DatePicker/index';
 import Labels from '../common/Labels';

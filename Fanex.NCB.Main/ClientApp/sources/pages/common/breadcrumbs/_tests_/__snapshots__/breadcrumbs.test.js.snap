@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NCBBreadcrum NCBBreadcrum - render correctly 1`] = `
+<Breadcrumb
+  aria-label="breadcrumb"
+  className="nav-customized"
+  listTag="ol"
+  tag="nav"
+>
+  <BreadcrumbItem
+    tag="li"
+  >
+    a
+  </BreadcrumbItem>
+  <BreadcrumbItem
+    active={true}
+    tag="li"
+  >
+    b
+  </BreadcrumbItem>
+</Breadcrumb>
+`;
