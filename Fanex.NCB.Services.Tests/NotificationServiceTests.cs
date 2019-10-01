@@ -40,16 +40,14 @@
             var service = GetService();
             var model = new CreateNotification
             {
-                NotificationTypeId = 1,
                 SendImmediately = true
             };
-
             baseService.ExecuteNonQueryAsync(Arg.Any<CreateNewNotificationCommand>()).Returns(new CommandResult { Code = 0 });
 
             var result = await service.CreateAsync(model).ConfigureAwait(false);
 
             Assert.True(result.IsSuccessful);
-            await sendNotificationService.Received().SendNotificationImmediately(0);
+            Task.Run(() => sendNotificationService.Received().SendNotificationImmediately(0)).Wait();
         }
 
         [Fact]
@@ -216,11 +214,11 @@
             Assert.True(result.IsSuccessful);
             if (model.SendImmediately)
             {
-                await sendNotificationService.Received().SendNotificationImmediately(model.NotificationId);
+                Task.Run(() => sendNotificationService.Received().SendNotificationImmediately(model.NotificationId)).Wait();
             }
             else
             {
-                await sendNotificationService.DidNotReceive().SendNotificationImmediately(model.NotificationId);
+                Task.Run(() => sendNotificationService.DidNotReceive().SendNotificationImmediately(model.NotificationId)).Wait();
             }
 
             Assert.Equal(model.NotificationId, command.NotificationId);
