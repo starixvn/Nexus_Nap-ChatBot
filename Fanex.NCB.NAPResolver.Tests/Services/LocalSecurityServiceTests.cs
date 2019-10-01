@@ -62,7 +62,7 @@
         }
 
         [Fact]
-        public async Task ReCheckInAsync_SiteIsInActive_ReturnKickOutStatus()
+        public async Task ReCheckInAsync_SiteIsInactive_ReturnKickOutStatus()
         {
             var service = new LocalSecurityService();
             var fixture = new Fixture();

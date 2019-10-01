@@ -264,9 +264,9 @@
             var notificationTypeId = fixture.Create<int>();
             var templates = fixture.Create<IEnumerable<Template>>();
 
-            var criteria = new GetEditNotificationRecipientsCriteria();
+            var criteria = new GetTemplatesCriteria();
 
-            baseService.GetDataAsync<Template>(Arg.Do<GetEditNotificationRecipientsCriteria>(x => criteria = x)).Returns(templates);
+            baseService.GetDataAsync<Template>(Arg.Do<GetTemplatesCriteria>(x => criteria = x)).Returns(templates);
 
             var result = await service.GetTemplatesAsync(notificationTypeId).ConfigureAwait(false);
 
