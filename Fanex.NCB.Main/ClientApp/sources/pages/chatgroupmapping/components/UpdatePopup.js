@@ -150,7 +150,7 @@ export class UpdatePopup extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label required">{Labels.ChatGroupType}</Label>
-                            <SelectField initialValue={editingItem.chatGroupTypeId.value}
+                            <SelectField initialValue={editingItem.chatGroupTypeId.value ? editingItem.chatGroupTypeId.value : 0}
                                 data={this.props.settingData.chatGroupTypes}
                                 isSummited={this.state.isSummited}
                                 onChange={chatGroupTypeId => { this.onChange('chatGroupTypeId', chatGroupTypeId); }}
