@@ -124,7 +124,7 @@ class Table extends Component {
         return colspanCells;
     }
 
-    getWidthByCells = (cells, currentRowIndex, columnsWidth, currentNextCellIndexByRow) => {
+    getWidthByCells = (cells, currentRowIndex, columnsWidth, currentNextCellIndexByRow, headerRows) => {
         for (let i = 0; i < cells.length; i++) {
             const cell = cells[i];
             const cellProps = cell.props;
@@ -139,7 +139,7 @@ class Table extends Component {
                 const nextCells = headerRows[nextRowIndex].props.children;
                 const nextColspanCells = this._getNextColspanCells(nextCells, fromNextCellIndex, toNextCellIndex);
                 currentNextCellIndexByRow[nextRowIndex] += nextColspanCells.length;
-                getWidthByCells(nextColspanCells, nextRowIndex);
+                this.getWidthByCells(nextColspanCells, nextRowIndex);
             }
             else {
                 const cellWidth = cellProps.colWidth ? cellProps.colWidth : DEFAULT_COLUMN_WIDTH;
@@ -158,7 +158,7 @@ class Table extends Component {
 
         const startIndex = 0;
         const cellList = headerIsArray ? headerRows[startIndex].props.children : headerRows.props.children;
-        this.getWidthByCells(cellList, startIndex, columnsWidth, currentNextCellIndexByRow);
+        this.getWidthByCells(cellList, startIndex, columnsWidth, currentNextCellIndexByRow, headerRows);
 
         return columnsWidth;
     }
