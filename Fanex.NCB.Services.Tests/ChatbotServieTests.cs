@@ -74,7 +74,8 @@
             var settings = new BotSettings
             {
                 BotDomain = "http://test.com",
-                BotServiceUrl = "/Test"
+                BotServiceUrl = "/Test",
+                TokenUrl = "ABC/test"
             };
             webClient = Substitute.For<IRestClient>();
             botSettings = Substitute.For<IOptionsSnapshot<BotSettings>>();

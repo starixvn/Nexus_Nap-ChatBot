@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.NotificationType;
     using Fanex.NCB.Models.NotificationType;
     using Fanex.NCB.Services.Interfaces;
@@ -19,7 +18,7 @@
         {
             this.baseService = baseService;
         }
-       
+
         public async Task<(IEnumerable<NotificationType>, long)> GetAllAsync(int pageIndex, int pageSize)
         {
             var criteria = new GetNotificationTypeCriteria
@@ -36,7 +35,7 @@
             }
 
             return new ValueTuple<IEnumerable<NotificationType>, long>(data.Item1, criteria.TotalItems);
-        }       
+        }
 
         public Task<CommandResult> InsertAsync(NotificationTypeViewModel model)
         {

@@ -75,8 +75,7 @@
                     RecipientTypeName = conversation.RecipientTypeName,
                     RecipientIDs = string.Join(",", recipients.Select(x => x.RecipientID)),
                     RecipientNames = string.Join(", ", recipients.Select(x => x.RecipientName)),
-                    RecipientStatusNames = string.Join(", ", recipients.Where(x => !string.IsNullOrEmpty(x.RecipientStatusName))
-                                                                        .Select(r => r.RecipientStatusName)),
+                    RecipientStatusNames = string.Join(", ", recipients.Where(x => !string.IsNullOrEmpty(x.RecipientStatusName)).Select(r => r.RecipientStatusName)),
                     MappingStatusID = (int)conversation.MappingStatus,
                     MappingStatusName = EnumHelper.GetDescription(conversation.MappingStatus),
                     Remark = conversation.Remark
