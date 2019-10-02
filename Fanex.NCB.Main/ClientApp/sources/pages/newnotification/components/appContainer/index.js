@@ -7,7 +7,7 @@ import { DateTime } from 'luxon';
 import { Form, FormGroup, Label, Button, Input, FormFeedback } from 'reactstrap';
 import { stringify } from 'qs';
 import { Formik } from 'formik';
-import * as Yup from 'yup';
+import { object, string, array, date } from 'yup';
 import ReactMde from 'react-mde';
 import { NCBBreadcrum } from '../../../common/breadcrumbs/breadcrumbs';
 import { bindActionCreators } from 'redux';
@@ -258,13 +258,16 @@ export class AppContainer extends React.Component {
         }
     }
 
-    schema = Yup.object().shape({
-        notificationTypeId: Yup.string().required(Labels.FieldRequired),
-        title: Yup.string().required(Labels.FieldRequired),
-        content: Yup.string().required(Labels.FieldRequired),
-        recipients: Yup.array().required(Labels.FieldRequired),
-        sendMode: Yup.string(),
-        sendDate: Yup.date().when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired).min(Today, field => `Send date must be later than ${field.min.toLocaleString()}`) : schema),
+    schema = object().shape({
+        notificationTypeId: string().required(Labels.FieldRequired),
+        title: string().required(Labels.FieldRequired),
+        content: string().required(Labels.FieldRequired),
+        recipients: array().required(Labels.FieldRequired),
+        sendMode: string(),
+        sendDate: date()
+            .when('sendMode', (sendMode, schema) => sendMode === '2' ?
+                schema.required(Labels.FieldRequired).min(Today, field => `Send date must be later than ${field.min.toLocaleString()}`)
+                : schema)
     })
 
     renderNotificationTypeOption = item => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>

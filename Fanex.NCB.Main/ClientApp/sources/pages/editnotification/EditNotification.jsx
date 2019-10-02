@@ -6,7 +6,7 @@ import { Form, FormGroup, Label, Button, Col, Input, FormFeedback } from 'reacts
 import axios from 'axios';
 import ReactMde from 'react-mde';
 import { Formik } from 'formik';
-import * as Yup from 'yup';
+import { object, string, array, date } from 'yup';
 import { NCBBreadcrum } from '../common/breadcrumbs/breadcrumbs';
 import TreeSelect, { getRealValuesFromExtra } from '../common/TreeSelect/index';
 import DatePicker from '../common/DatePicker/index';
@@ -165,14 +165,17 @@ export default class EditNotification extends React.Component {
         }
     }
 
-    schema = Yup.object().shape({
-        title: Yup.string().required(Labels.FieldRequired),
-        content: Yup.string().required(Labels.FieldRequired),
-        recipients: Yup.object({
-            value: Yup.array().required(Labels.FieldRequired)
+    schema = object().shape({
+        title: string().required(Labels.FieldRequired),
+        content: string().required(Labels.FieldRequired),
+        recipients: object({
+            value: array().required(Labels.FieldRequired)
         }),
-        sendMode: Yup.string(),
-        sendDate: Yup.date().when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired).min(Today, field => `Send date must be later than ${field.min.toLocaleString()}`) : schema)
+        sendMode: string(),
+        sendDate: date()
+            .when('sendMode', (sendMode, schema) => sendMode === '2' ?
+                schema.required(Labels.FieldRequired).min(Today, field => `Send date must be later than ${field.min.toLocaleString()}`) :
+                schema)
     })
 
     renderSendModeOption = item => <option key={item.value} value={item.value} >{item.label}</option>;
@@ -206,6 +209,7 @@ export default class EditNotification extends React.Component {
         setFieldValue,
         isSubmitting
     }) => {
+        debugger;
         return (
             <Form onSubmit={handleSubmit} className="edit-notification-form">
                 <FormGroup row>
@@ -245,7 +249,7 @@ export default class EditNotification extends React.Component {
                             treeData={this.state.recipientOptions} className={touched.recipients && errors.recipients && invalidFieldClass}
                             labelInValue={false}
                         />
-                        {touched.recipients && errors.recipients && <FormFeedback>{errors.recipients}</FormFeedback>}
+                        {touched.recipients && errors.recipients && <FormFeedback>{errors.recipients.value}</FormFeedback>}
                     </Col>
                 </FormGroup>
                 <FormGroup row>

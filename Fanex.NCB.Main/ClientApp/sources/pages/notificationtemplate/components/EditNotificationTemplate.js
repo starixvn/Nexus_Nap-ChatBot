@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import { Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input, FormFeedback, Col } from 'reactstrap';
 import { Formik } from 'formik';
-import * as Yup from 'yup';
+import { object, string } from 'yup';
 import ReactMde from "react-mde";
 import Labels from '../../common/Labels';
 import { editorCommandList, invalidFieldClass } from '../../constants/constants';
@@ -26,11 +26,11 @@ class EditNotificationTemplate extends Component {
 
     renderNotificationTypeOption = item => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>
 
-    schema = Yup.object().shape({
-        notificationTypeId: Yup.string().required(Labels.FieldRequired),
-        notificationTemplateName: Yup.string().required(Labels.FieldRequired).max(100),
-        title: Yup.string().required(Labels.FieldRequired).max(300),
-        content: Yup.string().required(Labels.FieldRequired)
+    schema = object().shape({
+        notificationTypeId: string().required(Labels.FieldRequired),
+        notificationTemplateName: string().required(Labels.FieldRequired).max(100),
+        title: string().required(Labels.FieldRequired).max(300),
+        content: string().required(Labels.FieldRequired)
     })
 
     handleGerneratePreview = markdown => {
