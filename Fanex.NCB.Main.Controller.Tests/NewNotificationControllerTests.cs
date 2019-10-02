@@ -1,0 +1,107 @@
+﻿namespace Fanex.NCB.Main.Controllers.Tests
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using NSubstitute;
+    using Xunit;
+    using System.Threading.Tasks;
+    using AutoFixture;
+    using Fanex.NCB.Services.Interfaces;
+    using Fanex.NAP.Client.Helpers.Web;
+    using Fanex.NCB.SkypeBot.Controllers;
+    using Microsoft.AspNetCore.Mvc;
+    using Fanex.NCB.Main.ViewModel.Notification;
+    using Fanex.NCB.Models.Notification;
+    using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Models.Common;
+    using Fanex.NCB.Main.ViewModel.TreeSelect;
+
+    public class NewNotificationControllerTests
+    {
+        private INotificationService notificationService;
+        private INapSession napSession;
+
+        [Fact]
+        public void Index_WhenCalled_ReturnExpectedView()
+        {
+            var controller = GetController();
+
+            var actual = controller.Index();
+
+            Assert.IsType<ViewResult>(actual);
+        }
+
+        [Fact]
+        public async Task Create_ValidModel_ReturnSuccessCommandResult()
+        {
+            var controller = GetController();
+            var fixture = new Fixture();
+            napSession.UserId = fixture.Create<int>();
+
+            var viewModel = fixture.Create<CreateNewNotificationViewModel>();
+            var model = new CreateNotification();
+
+            notificationService.CreateAsync(Arg.Do<CreateNotification>(x => model = x)).Returns(new CommandResult { Code = 0 });
+
+            var result = await controller.Create(viewModel).ConfigureAwait(false);
+
+            var json = Assert.IsType<JsonResult>(result);
+            var commandResult = Assert.IsType<CommandResult>(json.Value);
+            Assert.True(commandResult.IsSuccessful);
+
+            Assert.Equal(viewModel.NotificationTypeId, model.NotificationTypeId);
+            Assert.Equal(viewModel.ProductId, model.ProductId);
+            Assert.Equal(viewModel.Title, model.Title);
+            Assert.Equal(viewModel.Content, model.Content);
+            Assert.Equal(viewModel.SendDate, model.SendDate);
+            Assert.Equal(viewModel.SendImmediately, model.SendImmediately);
+            Assert.Equal(viewModel.RecipientIds, model.RecipientIds);
+            Assert.Equal(napSession.UserId, model.CreatorId);
+        }
+
+        [Fact]
+        public async Task GetRecipients_WhenCalled_ReturnJsonResult()
+        {
+            var controller = GetController();
+            var fixture = new Fixture();
+            var notificationTypeId = fixture.Create<int>();
+            var productId = fixture.Create<int?>();
+
+            var recipients = fixture.Create<IEnumerable<Recipient>>();
+
+            notificationService.GetRecipientsAsync(notificationTypeId, productId).Returns(recipients);
+
+            var result = await controller.GetRecipients(notificationTypeId, productId).ConfigureAwait(false);
+
+            var json = Assert.IsType<JsonResult>(result);
+            Assert.IsAssignableFrom<IEnumerable<TreeNodeItem>>(json.Value);
+        }
+
+        [Fact]
+        public async Task GetTemplates_WhenCalled_ReturnJsonResult()
+        {
+            var controller = GetController();
+            var fixture = new Fixture();
+            var notificationTypeId = fixture.Create<int>();
+
+            var templates = fixture.Create<IEnumerable<Template>>();
+
+            notificationService.GetTemplatesAsync(notificationTypeId).Returns(templates);
+
+            var result = await controller.GetTemplates(notificationTypeId).ConfigureAwait(false);
+
+            var json = Assert.IsType<JsonResult>(result);
+            var returnedTemplates = Assert.IsAssignableFrom<IEnumerable<Template>>(json.Value);
+            Assert.Equal(templates, returnedTemplates);
+        }
+
+        private NewNotificationController GetController()
+        {
+            notificationService = Substitute.For<INotificationService>();
+            napSession = Substitute.For<INapSession>();
+
+            return new NewNotificationController(notificationService, napSession);
+        }
+    }
+}

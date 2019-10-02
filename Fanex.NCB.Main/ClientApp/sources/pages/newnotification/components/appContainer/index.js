@@ -317,7 +317,8 @@ export class AppContainer extends React.Component {
                 templateId: event.target.value,
                 params: [...paramNames].map(x => ({ name: x, value: '' })),
                 title: selectedTemplate.title,
-                content: selectedTemplate.content
+                content: selectedTemplate.content,
+                canEditTitleContent: false
             });
         } else {
             formik.setValues({
