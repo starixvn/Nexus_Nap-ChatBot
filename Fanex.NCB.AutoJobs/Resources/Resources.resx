@@ -129,16 +129,7 @@
   <data name="Log_OnStartedService" xml:space="preserve">
     <value>Nap Chatbot Service started &amp; initialize auto jobs at {0}.</value>
   </data>
-  <data name="Log_OnStartingService" xml:space="preserve">
-    <value>Nap Chatbot Staring service at {0}.</value>
-  </data>
   <data name="Log_OnStoppingService" xml:space="preserve">
     <value>Stopping Nap Chatbot service &amp; remove current Hangfire server at {0}</value>
-  </data>
-  <data name="NapChatBot" xml:space="preserve">
-    <value>NapChatBot</value>
-  </data>
-  <data name="NCBAutoServices" xml:space="preserve">
-    <value>NCBAutoServices</value>
   </data>
 </root>

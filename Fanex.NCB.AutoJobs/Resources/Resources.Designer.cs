@@ -97,38 +97,11 @@ namespace Fanex.NCB.AutoJobs.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Nap Chatbot Staring service at {0}..
-        /// </summary>
-        internal static string Log_OnStartingService {
-            get {
-                return ResourceManager.GetString("Log_OnStartingService", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Stopping Nap Chatbot service &amp; remove current Hangfire server at {0}.
         /// </summary>
         internal static string Log_OnStoppingService {
             get {
                 return ResourceManager.GetString("Log_OnStoppingService", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to NapChatBot.
-        /// </summary>
-        internal static string NapChatBot {
-            get {
-                return ResourceManager.GetString("NapChatBot", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to NCBAutoServices.
-        /// </summary>
-        internal static string NCBAutoServices {
-            get {
-                return ResourceManager.GetString("NCBAutoServices", resourceCulture);
             }
         }
     }
