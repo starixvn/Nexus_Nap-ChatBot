@@ -209,7 +209,6 @@ export default class EditNotification extends React.Component {
         setFieldValue,
         isSubmitting
     }) => {
-        debugger;
         return (
             <Form onSubmit={handleSubmit} className="edit-notification-form">
                 <FormGroup row>
