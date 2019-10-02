@@ -79,14 +79,14 @@ export default class EditNotification extends React.Component {
         };
     }
 
-    findRecipientTreeValue = (array, tree) => {
+    findRecipientTreeValue = (recipientIds, tree) => {
         for (let i = 0; i < tree.length; i++) {
             const item = tree[i];
             if (item.children && item.children.length > 0) {
-                this.findRecipientTreeValue(array, item.children);
+                this.findRecipientTreeValue(recipientIds, item.children);
             } else {
                 if (this.state.notification.recipientIds.some(r => r === item.realValue)) {
-                    array.push(item.value);
+                    recipientIds.push(item.value);
                 }
             }
         }
