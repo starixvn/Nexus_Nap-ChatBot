@@ -172,8 +172,7 @@ export default class EditNotification extends React.Component {
             value: Yup.array().required(Labels.FieldRequired)
         }),
         sendMode: Yup.string(),
-        sendDate: Yup.date().min(Today, field => `Send date must be later than ${field.min.toLocaleString()}`)
-            .when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired) : schema)
+        sendDate: Yup.date().when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired).min(Today, field => `Send date must be later than ${field.min.toLocaleString()}`) : schema)
     })
 
     renderSendModeOption = item => <option key={item.value} value={item.value} >{item.label}</option>;

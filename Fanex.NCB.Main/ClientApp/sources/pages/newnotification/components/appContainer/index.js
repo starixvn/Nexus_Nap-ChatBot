@@ -264,8 +264,7 @@ export class AppContainer extends React.Component {
         content: Yup.string().required(Labels.FieldRequired),
         recipients: Yup.array().required(Labels.FieldRequired),
         sendMode: Yup.string(),
-        sendDate: Yup.date().min(Today, field => `Send date must be later than ${field.min.toLocaleString()}`)
-            .when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired) : schema),
+        sendDate: Yup.date().when('sendMode', (sendMode, schema) => sendMode === '2' ? schema.required(Labels.FieldRequired).min(Today, field => `Send date must be later than ${field.min.toLocaleString()}`) : schema),
     })
 
     renderNotificationTypeOption = item => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>
