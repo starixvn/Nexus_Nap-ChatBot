@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { Notification } from '../../common/Notification';
 import { toast } from 'react-toastify';
 
 export class DeletePopup extends Component {

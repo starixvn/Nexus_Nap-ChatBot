@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClientApp\sources\pages\chatgroupmapping\components\__tests__\__snapshots__\" />
+    <Folder Include="ClientApp\sources\pages\common\confirm-popup\_tests_\__snapshots__\" />
     <Folder Include="ClientApp\sources\pages\common\fixed-table-header\components\__tests__\__snapshots__\" />
     <Folder Include="ClientApp\sources\pages\common\response-message\__tests__\__snapshots__\" />
     <Folder Include="ClientApp\sources\pages\newnotification\store\" />
