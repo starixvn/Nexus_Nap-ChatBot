@@ -14,18 +14,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="ClientApp\sources\js\**" />
+    <Compile Remove="ClientApp\sources\pages\common\multiple-select-field\_tests_\NewFolder\**" />
     <Compile Remove="ClientApp\sources\pages\common\multiple-select\**" />
     <Compile Remove="ClientApp\sources\sass\**" />
     <Compile Remove="wwwroot\js\**" />
     <Content Remove="ClientApp\sources\js\**" />
+    <Content Remove="ClientApp\sources\pages\common\multiple-select-field\_tests_\NewFolder\**" />
     <Content Remove="ClientApp\sources\pages\common\multiple-select\**" />
     <Content Remove="ClientApp\sources\sass\**" />
     <Content Remove="wwwroot\js\**" />
     <EmbeddedResource Remove="ClientApp\sources\js\**" />
+    <EmbeddedResource Remove="ClientApp\sources\pages\common\multiple-select-field\_tests_\NewFolder\**" />
     <EmbeddedResource Remove="ClientApp\sources\pages\common\multiple-select\**" />
     <EmbeddedResource Remove="ClientApp\sources\sass\**" />
     <EmbeddedResource Remove="wwwroot\js\**" />
     <None Remove="ClientApp\sources\js\**" />
+    <None Remove="ClientApp\sources\pages\common\multiple-select-field\_tests_\NewFolder\**" />
     <None Remove="ClientApp\sources\pages\common\multiple-select\**" />
     <None Remove="ClientApp\sources\sass\**" />
     <None Remove="wwwroot\js\**" />

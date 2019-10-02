@@ -6,7 +6,7 @@ import { ActionCreators } from '../actions/index';
 import PropTypes from 'prop-types';
 import { InputField } from '../../common/input-field/InputField';
 import { SelectField } from '../../common/select-field/SelectField';
-import { MultipleSelectField } from '../../common/MultipleSelectField';
+import { MultipleSelectField } from '../../common/multiple-select-field/MultipleSelectField';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 import { toast } from 'react-toastify';

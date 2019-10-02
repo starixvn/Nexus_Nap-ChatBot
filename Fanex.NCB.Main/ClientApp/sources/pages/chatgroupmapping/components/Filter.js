@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Form, FormGroup, Label } from 'reactstrap';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
-import { MultipleSelectField } from '../../common/MultipleSelectField';
+import { MultipleSelectField } from '../../common/multiple-select-field/MultipleSelectField';
 import Labels from '../../common/Labels';
 import AutoComplete from '../../common/auto-complete';
 import Site from '../../lib/site';

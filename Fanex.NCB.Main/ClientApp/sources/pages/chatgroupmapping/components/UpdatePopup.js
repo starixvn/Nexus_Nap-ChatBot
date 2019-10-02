@@ -4,7 +4,7 @@ import { Modal, ModalHeader, ModalBody, Form, FormGroup, Label } from 'reactstra
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import { SelectField } from '../../common/select-field/SelectField';
-import { MultipleSelectField } from '../../common/MultipleSelectField';
+import { MultipleSelectField } from '../../common/multiple-select-field/MultipleSelectField';
 import CommonFunctions from '../../common/CommonFunctions';
 import Labels from '../../common/Labels';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
