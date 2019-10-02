@@ -4,7 +4,7 @@ import { Modal, ModalHeader, ModalBody, Form, FormGroup, Label } from 'reactstra
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import PropTypes from 'prop-types';
-import { InputField } from '../../common/InputField';
+import { InputField } from '../../common/input-field/InputField';
 import { SelectField } from '../../common/SelectField';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';

@@ -13,17 +13,19 @@ export class InputField extends Component {
 
   onChange = e => {
     this.setState(
-      {
-        value: e.target.value
-      },
-      () => {
-        this.props.onChange({
-          value: this.state.value,
-          isValid: this.isValid()
-        });
-      }
+        {
+            value: e.target.value
+        },
+        this.callOnChange
     );
-  }
+    }
+
+    callOnChange = () => {
+        this.props.onChange({
+            value: this.state.value,
+            isValid: this.isValid()
+        });
+    }
 
   isValid = () => this.state.value !== '';
 
