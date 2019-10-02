@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './DatePicker.scss';
 
-function withDatePicker(props) {
+export default function (props) {
     const { className, ...rest } = props;
     return (
         <DatePicker
@@ -14,6 +14,4 @@ function withDatePicker(props) {
             {...rest}
         />
     );
-}
-
-export default withDatePicker;
+};
