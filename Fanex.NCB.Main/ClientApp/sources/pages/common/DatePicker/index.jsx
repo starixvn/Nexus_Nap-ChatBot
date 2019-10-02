@@ -14,6 +14,6 @@ function withDatePicker(props) {
             {...rest}
         />
     );
-};
+}
 
 export default withDatePicker;

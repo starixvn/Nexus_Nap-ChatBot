@@ -124,6 +124,30 @@ class Table extends Component {
         return colspanCells;
     }
 
+    getWidthByCells = (cells, currentRowIndex, columnsWidth, currentNextCellIndexByRow) => {
+        for (let i = 0; i < cells.length; i++) {
+            const cell = cells[i];
+            const cellProps = cell.props;
+            const colspan = Number(cellProps.colSpan);
+            if (colspan && colspan > 1) {
+                const nextRowIndex = currentRowIndex + 1;
+                if (currentNextCellIndexByRow[nextRowIndex] === undefined) {
+                    currentNextCellIndexByRow[nextRowIndex] = 0;
+                }
+                const fromNextCellIndex = currentNextCellIndexByRow[nextRowIndex];
+                const toNextCellIndex = fromNextCellIndex + colspan - 1;
+                const nextCells = headerRows[nextRowIndex].props.children;
+                const nextColspanCells = this._getNextColspanCells(nextCells, fromNextCellIndex, toNextCellIndex);
+                currentNextCellIndexByRow[nextRowIndex] += nextColspanCells.length;
+                getWidthByCells(nextColspanCells, nextRowIndex);
+            }
+            else {
+                const cellWidth = cellProps.colWidth ? cellProps.colWidth : DEFAULT_COLUMN_WIDTH;
+                columnsWidth.push(cellWidth);
+            }
+        }
+    };
+
     _getColumnsWidth(headerRows) {
         const headerIsArray = Array.isArray(headerRows);
         if (headerIsArray && headerRows.length === 0) {
@@ -131,35 +155,11 @@ class Table extends Component {
         }
         const columnsWidth = [];
         const currentNextCellIndexByRow = {};
-        const getWidthByCells = (cells, currentRowIndex) => {
-            for (let i = 0; i < cells.length; i++) {
-                const cell = cells[i];
-                if (cell) {
-                    const cellProps = cell.props;
-                    const colspan = Number(cellProps.colSpan);
-                    if (colspan && colspan > 1) {
-                        const nextRowIndex = currentRowIndex + 1;
-                        if (currentNextCellIndexByRow[nextRowIndex] === undefined) {
-                            currentNextCellIndexByRow[nextRowIndex] = 0;
-                        }
-                        const fromNextCellIndex = currentNextCellIndexByRow[nextRowIndex];
-                        const toNextCellIndex = fromNextCellIndex + colspan - 1;
-                        const nextCells = headerRows[nextRowIndex].props.children;
-                        const nextColspanCells = this._getNextColspanCells(nextCells, fromNextCellIndex, toNextCellIndex);
-                        currentNextCellIndexByRow[nextRowIndex] += nextColspanCells.length;
-                        getWidthByCells(nextColspanCells, nextRowIndex);
-                    }
-                    else {
-                        const cellWidth = cellProps.colWidth ? cellProps.colWidth : DEFAULT_COLUMN_WIDTH;
-                        columnsWidth.push(cellWidth);
-                    }
-                }
-            }
-        };
 
         const startIndex = 0;
         const cellList = headerIsArray ? headerRows[startIndex].props.children : headerRows.props.children;
-        getWidthByCells(cellList, startIndex);
+        this.getWidthByCells(cellList, startIndex, columnsWidth, currentNextCellIndexByRow);
+
         return columnsWidth;
     }
 
