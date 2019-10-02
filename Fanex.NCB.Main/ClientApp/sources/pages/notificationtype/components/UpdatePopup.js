@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import PropTypes from 'prop-types';
 import { InputField } from '../../common/input-field/InputField';
-import { SelectField } from '../../common/SelectField';
+import { SelectField } from '../../common/select-field/SelectField';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import ResponseMessage from '../../common/response-message/ResponseMessage';

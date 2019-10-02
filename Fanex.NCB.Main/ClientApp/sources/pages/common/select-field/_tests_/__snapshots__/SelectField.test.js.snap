@@ -1,0 +1,704 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SelectField when isSummitted and not valid - render correctly 1`] = `
+initialize {
+  "0": Object {
+    "attribs": Object {
+      "class": "select-field",
+    },
+    "children": Array [
+      Object {
+        "attribs": Object {
+          "class": "is-invalid form-control",
+        },
+        "children": Array [
+          Object {
+            "attribs": Object {
+              "disabled": "",
+              "hidden": "",
+              "value": "0",
+            },
+            "children": Array [
+              Object {
+                "data": "Please select ...",
+                "next": null,
+                "parent": [Circular],
+                "prev": null,
+                "type": "text",
+              },
+            ],
+            "name": "option",
+            "namespace": "http://www.w3.org/1999/xhtml",
+            "next": null,
+            "parent": [Circular],
+            "prev": null,
+            "type": "tag",
+            "x-attribsNamespace": Object {
+              "disabled": undefined,
+              "hidden": undefined,
+              "value": undefined,
+            },
+            "x-attribsPrefix": Object {
+              "disabled": undefined,
+              "hidden": undefined,
+              "value": undefined,
+            },
+          },
+        ],
+        "name": "select",
+        "namespace": "http://www.w3.org/1999/xhtml",
+        "next": Object {
+          "attribs": Object {
+            "class": "invalid-feedback",
+          },
+          "children": Array [
+            Object {
+              "data": "This field is required.",
+              "next": null,
+              "parent": [Circular],
+              "prev": null,
+              "type": "text",
+            },
+          ],
+          "name": "div",
+          "namespace": "http://www.w3.org/1999/xhtml",
+          "next": null,
+          "parent": [Circular],
+          "prev": [Circular],
+          "type": "tag",
+          "x-attribsNamespace": Object {
+            "class": undefined,
+          },
+          "x-attribsPrefix": Object {
+            "class": undefined,
+          },
+        },
+        "parent": [Circular],
+        "prev": null,
+        "type": "tag",
+        "x-attribsNamespace": Object {
+          "class": undefined,
+        },
+        "x-attribsPrefix": Object {
+          "class": undefined,
+        },
+      },
+      Object {
+        "attribs": Object {
+          "class": "invalid-feedback",
+        },
+        "children": Array [
+          Object {
+            "data": "This field is required.",
+            "next": null,
+            "parent": [Circular],
+            "prev": null,
+            "type": "text",
+          },
+        ],
+        "name": "div",
+        "namespace": "http://www.w3.org/1999/xhtml",
+        "next": null,
+        "parent": [Circular],
+        "prev": Object {
+          "attribs": Object {
+            "class": "is-invalid form-control",
+          },
+          "children": Array [
+            Object {
+              "attribs": Object {
+                "disabled": "",
+                "hidden": "",
+                "value": "0",
+              },
+              "children": Array [
+                Object {
+                  "data": "Please select ...",
+                  "next": null,
+                  "parent": [Circular],
+                  "prev": null,
+                  "type": "text",
+                },
+              ],
+              "name": "option",
+              "namespace": "http://www.w3.org/1999/xhtml",
+              "next": null,
+              "parent": [Circular],
+              "prev": null,
+              "type": "tag",
+              "x-attribsNamespace": Object {
+                "disabled": undefined,
+                "hidden": undefined,
+                "value": undefined,
+              },
+              "x-attribsPrefix": Object {
+                "disabled": undefined,
+                "hidden": undefined,
+                "value": undefined,
+              },
+            },
+          ],
+          "name": "select",
+          "namespace": "http://www.w3.org/1999/xhtml",
+          "next": [Circular],
+          "parent": [Circular],
+          "prev": null,
+          "type": "tag",
+          "x-attribsNamespace": Object {
+            "class": undefined,
+          },
+          "x-attribsPrefix": Object {
+            "class": undefined,
+          },
+        },
+        "type": "tag",
+        "x-attribsNamespace": Object {
+          "class": undefined,
+        },
+        "x-attribsPrefix": Object {
+          "class": undefined,
+        },
+      },
+    ],
+    "name": "div",
+    "namespace": "http://www.w3.org/1999/xhtml",
+    "next": null,
+    "parent": null,
+    "prev": null,
+    "root": Object {
+      "attribs": Object {},
+      "children": Array [
+        [Circular],
+      ],
+      "name": "root",
+      "namespace": "http://www.w3.org/1999/xhtml",
+      "next": null,
+      "parent": null,
+      "prev": null,
+      "type": "root",
+      "x-attribsNamespace": Object {},
+      "x-attribsPrefix": Object {},
+    },
+    "type": "tag",
+    "x-attribsNamespace": Object {
+      "class": undefined,
+    },
+    "x-attribsPrefix": Object {
+      "class": undefined,
+    },
+  },
+  "_root": [Circular],
+  "length": 1,
+  "options": Object {
+    "decodeEntities": true,
+    "normalizeWhitespace": false,
+    "withDomLvl1": true,
+    "xml": false,
+  },
+}
+`;
+
+exports[`SelectField when isSummitted and valid - render correctly 1`] = `
+initialize {
+  "0": Object {
+    "attribs": Object {
+      "class": "select-field",
+    },
+    "children": Array [
+      Object {
+        "attribs": Object {
+          "class": "form-control",
+        },
+        "children": Array [
+          Object {
+            "attribs": Object {
+              "disabled": "",
+              "hidden": "",
+              "value": "0",
+            },
+            "children": Array [
+              Object {
+                "data": "Please select ...",
+                "next": null,
+                "parent": [Circular],
+                "prev": null,
+                "type": "text",
+              },
+            ],
+            "name": "option",
+            "namespace": "http://www.w3.org/1999/xhtml",
+            "next": null,
+            "parent": [Circular],
+            "prev": null,
+            "type": "tag",
+            "x-attribsNamespace": Object {
+              "disabled": undefined,
+              "hidden": undefined,
+              "value": undefined,
+            },
+            "x-attribsPrefix": Object {
+              "disabled": undefined,
+              "hidden": undefined,
+              "value": undefined,
+            },
+          },
+        ],
+        "name": "select",
+        "namespace": "http://www.w3.org/1999/xhtml",
+        "next": null,
+        "parent": [Circular],
+        "prev": null,
+        "type": "tag",
+        "x-attribsNamespace": Object {
+          "class": undefined,
+        },
+        "x-attribsPrefix": Object {
+          "class": undefined,
+        },
+      },
+    ],
+    "name": "div",
+    "namespace": "http://www.w3.org/1999/xhtml",
+    "next": null,
+    "parent": null,
+    "prev": null,
+    "root": Object {
+      "attribs": Object {},
+      "children": Array [
+        [Circular],
+      ],
+      "name": "root",
+      "namespace": "http://www.w3.org/1999/xhtml",
+      "next": null,
+      "parent": null,
+      "prev": null,
+      "type": "root",
+      "x-attribsNamespace": Object {},
+      "x-attribsPrefix": Object {},
+    },
+    "type": "tag",
+    "x-attribsNamespace": Object {
+      "class": undefined,
+    },
+    "x-attribsPrefix": Object {
+      "class": undefined,
+    },
+  },
+  "_root": [Circular],
+  "length": 1,
+  "options": Object {
+    "decodeEntities": true,
+    "normalizeWhitespace": false,
+    "withDomLvl1": true,
+    "xml": false,
+  },
+}
+`;
+
+exports[`SelectField when not isSummitted - render correctly 1`] = `
+initialize {
+  "0": Object {
+    "attribs": Object {
+      "class": "select-field",
+    },
+    "children": Array [
+      Object {
+        "attribs": Object {
+          "class": "form-control",
+        },
+        "children": Array [
+          Object {
+            "attribs": Object {
+              "disabled": "",
+              "hidden": "",
+              "value": "0",
+            },
+            "children": Array [
+              Object {
+                "data": "Please select ...",
+                "next": null,
+                "parent": [Circular],
+                "prev": null,
+                "type": "text",
+              },
+            ],
+            "name": "option",
+            "namespace": "http://www.w3.org/1999/xhtml",
+            "next": null,
+            "parent": [Circular],
+            "prev": null,
+            "type": "tag",
+            "x-attribsNamespace": Object {
+              "disabled": undefined,
+              "hidden": undefined,
+              "value": undefined,
+            },
+            "x-attribsPrefix": Object {
+              "disabled": undefined,
+              "hidden": undefined,
+              "value": undefined,
+            },
+          },
+        ],
+        "name": "select",
+        "namespace": "http://www.w3.org/1999/xhtml",
+        "next": null,
+        "parent": [Circular],
+        "prev": null,
+        "type": "tag",
+        "x-attribsNamespace": Object {
+          "class": undefined,
+        },
+        "x-attribsPrefix": Object {
+          "class": undefined,
+        },
+      },
+    ],
+    "name": "div",
+    "namespace": "http://www.w3.org/1999/xhtml",
+    "next": null,
+    "parent": null,
+    "prev": null,
+    "root": Object {
+      "attribs": Object {},
+      "children": Array [
+        [Circular],
+      ],
+      "name": "root",
+      "namespace": "http://www.w3.org/1999/xhtml",
+      "next": null,
+      "parent": null,
+      "prev": null,
+      "type": "root",
+      "x-attribsNamespace": Object {},
+      "x-attribsPrefix": Object {},
+    },
+    "type": "tag",
+    "x-attribsNamespace": Object {
+      "class": undefined,
+    },
+    "x-attribsPrefix": Object {
+      "class": undefined,
+    },
+  },
+  "_root": [Circular],
+  "length": 1,
+  "options": Object {
+    "decodeEntities": true,
+    "normalizeWhitespace": false,
+    "withDomLvl1": true,
+    "xml": false,
+  },
+}
+`;
+
+exports[`SelectField when not isSummitted and has data - render correctly 1`] = `
+initialize {
+  "0": Object {
+    "attribs": Object {
+      "class": "select-field",
+    },
+    "children": Array [
+      Object {
+        "attribs": Object {
+          "class": "form-control",
+        },
+        "children": Array [
+          Object {
+            "attribs": Object {
+              "disabled": "",
+              "hidden": "",
+              "value": "0",
+            },
+            "children": Array [
+              Object {
+                "data": "Please select ...",
+                "next": null,
+                "parent": [Circular],
+                "prev": null,
+                "type": "text",
+              },
+            ],
+            "name": "option",
+            "namespace": "http://www.w3.org/1999/xhtml",
+            "next": Object {
+              "attribs": Object {
+                "value": "1",
+              },
+              "children": Array [
+                Object {
+                  "data": "a",
+                  "next": null,
+                  "parent": [Circular],
+                  "prev": null,
+                  "type": "text",
+                },
+              ],
+              "name": "option",
+              "namespace": "http://www.w3.org/1999/xhtml",
+              "next": Object {
+                "attribs": Object {
+                  "value": "2",
+                },
+                "children": Array [
+                  Object {
+                    "data": "b",
+                    "next": null,
+                    "parent": [Circular],
+                    "prev": null,
+                    "type": "text",
+                  },
+                ],
+                "name": "option",
+                "namespace": "http://www.w3.org/1999/xhtml",
+                "next": null,
+                "parent": [Circular],
+                "prev": [Circular],
+                "type": "tag",
+                "x-attribsNamespace": Object {
+                  "value": undefined,
+                },
+                "x-attribsPrefix": Object {
+                  "value": undefined,
+                },
+              },
+              "parent": [Circular],
+              "prev": [Circular],
+              "type": "tag",
+              "x-attribsNamespace": Object {
+                "value": undefined,
+              },
+              "x-attribsPrefix": Object {
+                "value": undefined,
+              },
+            },
+            "parent": [Circular],
+            "prev": null,
+            "type": "tag",
+            "x-attribsNamespace": Object {
+              "disabled": undefined,
+              "hidden": undefined,
+              "value": undefined,
+            },
+            "x-attribsPrefix": Object {
+              "disabled": undefined,
+              "hidden": undefined,
+              "value": undefined,
+            },
+          },
+          Object {
+            "attribs": Object {
+              "value": "1",
+            },
+            "children": Array [
+              Object {
+                "data": "a",
+                "next": null,
+                "parent": [Circular],
+                "prev": null,
+                "type": "text",
+              },
+            ],
+            "name": "option",
+            "namespace": "http://www.w3.org/1999/xhtml",
+            "next": Object {
+              "attribs": Object {
+                "value": "2",
+              },
+              "children": Array [
+                Object {
+                  "data": "b",
+                  "next": null,
+                  "parent": [Circular],
+                  "prev": null,
+                  "type": "text",
+                },
+              ],
+              "name": "option",
+              "namespace": "http://www.w3.org/1999/xhtml",
+              "next": null,
+              "parent": [Circular],
+              "prev": [Circular],
+              "type": "tag",
+              "x-attribsNamespace": Object {
+                "value": undefined,
+              },
+              "x-attribsPrefix": Object {
+                "value": undefined,
+              },
+            },
+            "parent": [Circular],
+            "prev": Object {
+              "attribs": Object {
+                "disabled": "",
+                "hidden": "",
+                "value": "0",
+              },
+              "children": Array [
+                Object {
+                  "data": "Please select ...",
+                  "next": null,
+                  "parent": [Circular],
+                  "prev": null,
+                  "type": "text",
+                },
+              ],
+              "name": "option",
+              "namespace": "http://www.w3.org/1999/xhtml",
+              "next": [Circular],
+              "parent": [Circular],
+              "prev": null,
+              "type": "tag",
+              "x-attribsNamespace": Object {
+                "disabled": undefined,
+                "hidden": undefined,
+                "value": undefined,
+              },
+              "x-attribsPrefix": Object {
+                "disabled": undefined,
+                "hidden": undefined,
+                "value": undefined,
+              },
+            },
+            "type": "tag",
+            "x-attribsNamespace": Object {
+              "value": undefined,
+            },
+            "x-attribsPrefix": Object {
+              "value": undefined,
+            },
+          },
+          Object {
+            "attribs": Object {
+              "value": "2",
+            },
+            "children": Array [
+              Object {
+                "data": "b",
+                "next": null,
+                "parent": [Circular],
+                "prev": null,
+                "type": "text",
+              },
+            ],
+            "name": "option",
+            "namespace": "http://www.w3.org/1999/xhtml",
+            "next": null,
+            "parent": [Circular],
+            "prev": Object {
+              "attribs": Object {
+                "value": "1",
+              },
+              "children": Array [
+                Object {
+                  "data": "a",
+                  "next": null,
+                  "parent": [Circular],
+                  "prev": null,
+                  "type": "text",
+                },
+              ],
+              "name": "option",
+              "namespace": "http://www.w3.org/1999/xhtml",
+              "next": [Circular],
+              "parent": [Circular],
+              "prev": Object {
+                "attribs": Object {
+                  "disabled": "",
+                  "hidden": "",
+                  "value": "0",
+                },
+                "children": Array [
+                  Object {
+                    "data": "Please select ...",
+                    "next": null,
+                    "parent": [Circular],
+                    "prev": null,
+                    "type": "text",
+                  },
+                ],
+                "name": "option",
+                "namespace": "http://www.w3.org/1999/xhtml",
+                "next": [Circular],
+                "parent": [Circular],
+                "prev": null,
+                "type": "tag",
+                "x-attribsNamespace": Object {
+                  "disabled": undefined,
+                  "hidden": undefined,
+                  "value": undefined,
+                },
+                "x-attribsPrefix": Object {
+                  "disabled": undefined,
+                  "hidden": undefined,
+                  "value": undefined,
+                },
+              },
+              "type": "tag",
+              "x-attribsNamespace": Object {
+                "value": undefined,
+              },
+              "x-attribsPrefix": Object {
+                "value": undefined,
+              },
+            },
+            "type": "tag",
+            "x-attribsNamespace": Object {
+              "value": undefined,
+            },
+            "x-attribsPrefix": Object {
+              "value": undefined,
+            },
+          },
+        ],
+        "name": "select",
+        "namespace": "http://www.w3.org/1999/xhtml",
+        "next": null,
+        "parent": [Circular],
+        "prev": null,
+        "type": "tag",
+        "x-attribsNamespace": Object {
+          "class": undefined,
+        },
+        "x-attribsPrefix": Object {
+          "class": undefined,
+        },
+      },
+    ],
+    "name": "div",
+    "namespace": "http://www.w3.org/1999/xhtml",
+    "next": null,
+    "parent": null,
+    "prev": null,
+    "root": Object {
+      "attribs": Object {},
+      "children": Array [
+        [Circular],
+      ],
+      "name": "root",
+      "namespace": "http://www.w3.org/1999/xhtml",
+      "next": null,
+      "parent": null,
+      "prev": null,
+      "type": "root",
+      "x-attribsNamespace": Object {},
+      "x-attribsPrefix": Object {},
+    },
+    "type": "tag",
+    "x-attribsNamespace": Object {
+      "class": undefined,
+    },
+    "x-attribsPrefix": Object {
+      "class": undefined,
+    },
+  },
+  "_root": [Circular],
+  "length": 1,
+  "options": Object {
+    "decodeEntities": true,
+    "normalizeWhitespace": false,
+    "withDomLvl1": true,
+    "xml": false,
+  },
+}
+`;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Input, FormFeedback } from 'reactstrap';
-import Labels from '../common/Labels';
+import Labels from '../../common/Labels';
 
 import './SelectField.scss';
 
@@ -18,13 +18,15 @@ export class SelectField extends Component {
             {
                 value: e.target.value
             },
-            () => {
-                this.props.onChange({
-                    value: this.state.value,
-                    isValid: this.isValid()
-                });
-            }
+            this.callOnChange
         );
+    }
+
+    callOnChange = () => {
+        this.props.onChange({
+            value: this.state.value,
+            isValid: this.isValid()
+        });
     }
 
     isValid = () => parseInt(this.state.value, 10) > 0;

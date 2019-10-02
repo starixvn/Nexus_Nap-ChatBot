@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, Form, FormGroup, Label } from 'reactstrap';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
-import { SelectField } from '../../common/SelectField';
+import { SelectField } from '../../common/select-field/SelectField';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
 import CommonFunctions from '../../common/CommonFunctions';
 import Labels from '../../common/Labels';
