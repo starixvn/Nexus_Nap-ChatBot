@@ -188,6 +188,7 @@
 	CREATE TABLE ChatBot.Product(
 			ProductID SMALLINT NOT NULL
 			, ProductName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'   NULL
+            , IsDisabled BIT NOT NULL DEFAULT 0
 			, CONSTRAINT PK_ProductId PRIMARY KEY (ProductId)
 	);
 

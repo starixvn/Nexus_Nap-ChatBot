@@ -8,6 +8,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_Common_Product_Sel(
 
         Revisions:
 				- 20190401@Dominic: First Commit
+                - 20191002@Dominic: Filter enabled products
         
     */
 )
@@ -16,6 +17,7 @@ BEGIN
 
 	SELECT p.ProductId AS ID, p.ProductName AS Name
     FROM Product p
+    WHERE p.IsDisabled = 0
     ORDER BY p.ProductName;
     
 END;
