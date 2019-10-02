@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { InputField } from '../../common/InputField';
 import { SelectField } from '../../common/SelectField';
 import { MultipleSelectField } from '../../common/MultipleSelectField';
-import ConfirmPopup from '../../common/ConfirmPopup';
+import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import { Notification } from '../../common/Notification';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 import { toast } from 'react-toastify';

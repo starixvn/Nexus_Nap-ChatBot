@@ -15,7 +15,7 @@ import TreeSelect, { getRealValuesFromExtra } from '../../common/TreeSelect/inde
 import errorResponseHandler from '../../lib/errorResponseHandler';
 import Site from '../../lib/site';
 import DataGrid from './DataGrid';
-import ConfirmPopup from '../../common/ConfirmPopup';
+import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 
 export default class NotificationList extends Component {
     constructor(props) {

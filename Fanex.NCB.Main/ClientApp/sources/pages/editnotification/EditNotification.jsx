@@ -14,7 +14,7 @@ import Labels from '../common/Labels';
 import { editorCommandList, invalidFieldClass } from '../constants/constants';
 import ResponseMessage from '../common/response-message/ResponseMessage';
 import Site from '../lib/site';
-import ConfirmPopup from '../common/ConfirmPopup';
+import ConfirmPopup from '../common/confirm-popup/ConfirmPopup';
 import errorResponseHandler from '../lib/errorResponseHandler';
 import ContentPreview from '../common/ContentPreview';
 

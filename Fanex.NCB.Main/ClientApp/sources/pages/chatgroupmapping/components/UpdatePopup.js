@@ -9,7 +9,7 @@ import CommonFunctions from '../../common/CommonFunctions';
 import Labels from '../../common/Labels';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 import { TextField } from '../../common/text-field/TextField';
-import ConfirmPopup from '../../common/ConfirmPopup';
+import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import { NotAvailabeId } from '../../constants/constants';
 
 const CONFIRM_CLOSE = 1;

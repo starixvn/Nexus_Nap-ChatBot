@@ -12,7 +12,7 @@ import DataGrid from './DataGrid';
 import Labels from '../../common/Labels';
 import NewNotificationTemplate from './NewNotificationTemplate';
 import EditNotificationTemplate from './EditNotificationTemplate';
-import ConfirmPopup from '../../common/ConfirmPopup';
+import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 
 export class AppContainer extends Component {
     constructor(props) {
