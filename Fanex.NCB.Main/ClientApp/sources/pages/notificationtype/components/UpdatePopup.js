@@ -92,8 +92,12 @@ export class UpdatePopup extends Component {
             }
         }
 
-        this.setState({ isLoading: false });
-        this.props.updateData.addedResult.isSuccessful && this.props.closeUpdatePopupHandler();
+        if (this.props.updateData.addedResult.isSuccessful) {
+            this.props.closeUpdatePopupHandler();
+        }
+        else {
+            setTimeout(function () { this.setState({ isLoading: false }); }.bind(this), 4000);        
+        }        
     }
 
     closeConfirmation = () => {

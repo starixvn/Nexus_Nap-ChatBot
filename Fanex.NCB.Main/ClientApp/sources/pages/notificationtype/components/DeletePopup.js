@@ -37,7 +37,7 @@ export class DeletePopup extends Component {
             }
         }
        
-        this.props.deleteData.deleteResult.isSuccessful && this.props.closeDeletePopupHandler();
+        this.props.closeDeletePopupHandler();
     }
 
     render() {    
