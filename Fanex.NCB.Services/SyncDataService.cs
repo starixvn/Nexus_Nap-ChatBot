@@ -14,6 +14,7 @@
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
+    using ONEbook.UM.Services;
 
     public class SyncDataService : ISyncDataService
     {
@@ -21,29 +22,64 @@
         private readonly ISyncDataRepository syncDataRepository;
         private readonly IBaseService baseService;
         private readonly ILogger logger;
+        private readonly IMaintenanceService maintenanceService;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
         public SyncDataService(IOptionsSnapshot<AppSettings> appSettings,
             ISyncDataRepository syncDataRepository,
             IBaseService baseService,
-            ILogger logger)
+            ILogger logger,
+            IMaintenanceService maintenanceService)
         {
             this.appSettings = appSettings;
             this.syncDataRepository = syncDataRepository;
             this.baseService = baseService;
             this.logger = logger;
+            this.maintenanceService = maintenanceService;
         }
 
         public async Task NapUserControlSyncDataAsync()
         {
-            var data = await GetDataFromNapUserControl(null);
-            await InsertNapData(data);
+            bool isMaintenance = await maintenanceService.IsUnderMaintenanceAsync();
+            if (!isMaintenance)
+            {
+                var data = await GetDataFromNapUserControl(null);
+                await InsertNapData(data);
+            }
+        }
+
+        public async Task SyncNapDataForSSOLogin(int userId)
+        {
+            try
+            {
+                bool isMaintenance = await maintenanceService.IsUnderMaintenanceAsync();
+                if (!isMaintenance)
+                {
+                    await NapSSOSyncDataByUserIdAsync(userId);
+                }
+            }
+            catch (Exception exception)
+            {
+                string errMsg = string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
+                exception.Message,
+                exception.Source,
+                string.Empty,
+                exception.TargetSite,
+                exception.StackTrace);
+                await logger.ErrorAsync(errMsg);
+            }
         }
 
         public async Task OicSyncDataAsync()
         {
-            var data = await GetDataFromOIC();
-            await InsertOICData(data);
+            bool isMaintenance = await maintenanceService.IsUnderMaintenanceAsync();
+            if (!isMaintenance)
+            {
+                var data = await GetDataFromOIC();
+                await InsertOICData(data);
+            }
         }
 
         private async Task<NapData> GetDataFromNapUserControl(int? userId)
@@ -131,26 +167,6 @@
         {
             var data = await GetDataFromNapUserControl(userId);
             await InsertNapDataOnUser(data, userId);
-        }
-
-        public async Task SyncNapDataForSSOLogin(int userId)
-        {
-            try
-            {
-                await NapSSOSyncDataByUserIdAsync(userId);
-            }
-            catch (Exception exception)
-            {
-                string errMsg = string.Format(
-                CultureInfo.InvariantCulture,
-                "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
-                exception.Message,
-                exception.Source,
-                string.Empty,
-                exception.TargetSite,
-                exception.StackTrace);
-                await logger.ErrorAsync(errMsg);
-            }
         }
     }
 }

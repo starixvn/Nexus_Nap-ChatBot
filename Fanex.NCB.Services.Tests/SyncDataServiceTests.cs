@@ -15,6 +15,7 @@
     using Microsoft.Extensions.Options;
     using NSubstitute;
     using NSubstitute.ExceptionExtensions;
+    using ONEbook.UM.Services;
     using Xunit;
 
     public class SyncDataServiceTests
@@ -22,6 +23,7 @@
         private IOptionsSnapshot<AppSettings> appSettings;
         private ISyncDataRepository syncDataRepository;
         private IBaseService baseService;
+        private IMaintenanceService maintenanceService;
         private ILogger logger;
 
         [Fact]
@@ -115,15 +117,17 @@
         {
             var settings = new AppSettings
             {
-                SiteId = 69
+                SiteId = 69,
+                ItemEachBatchSendNotification = 10
             };
             appSettings = Substitute.For<IOptionsSnapshot<AppSettings>>();
             appSettings.Value.Returns(settings);
             syncDataRepository = Substitute.For<ISyncDataRepository>();
             baseService = Substitute.For<IBaseService>();
+            maintenanceService = Substitute.For<IMaintenanceService>();
             logger = Substitute.For<ILogger>();
-
-            return new SyncDataService(appSettings, syncDataRepository, baseService, logger);
+            maintenanceService.IsUnderMaintenanceAsync().Returns(false);
+            return new SyncDataService(appSettings, syncDataRepository, baseService, logger, maintenanceService);
         }
 
         #endregion Helper

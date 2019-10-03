@@ -32,6 +32,11 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
+    using ONEbook.UM.AspNetCore;
+    using ONEbook.UM.Configurations;
+    using ONEbook.UM.Helpers;
+    using ONEbook.UM.Services;
+    using ONEbook.UM.Transport;
     using Sentry;
 
     public class Startup
@@ -107,6 +112,7 @@
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<BotSettings>(Configuration.GetSection("ChatBotConfigs"));
             services.Configure<CronJob>(Configuration.GetSection("CronJob"));
+            services.AddSingleton(new UMClientConfiguration().Initialize(Configuration));
             services.AddTransient<ILogger, Logger>();
             RegisterService(services);
             RegisterRepository(services);
@@ -130,6 +136,7 @@
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseCookiePolicy();
             app.UseAuthentication();
+
             app.UseHangfireDashboard(options: new DashboardOptions
             {
                 Authorization = new[] { new HangfireAuthorizationFilter() }
@@ -151,6 +158,17 @@
         //Extensions
         private static void RegisterService(IServiceCollection services)
         {
+            #region ONEbookUM
+
+            services.AddSingleton<IUMCacheService, UMCacheService>();
+            services.AddSingleton<IUMRestClient, UMRestClient>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IHttpContextHelper, HttpContextHelper>();
+            services.AddSingleton<IMaintenanceService, MaintenanceService>();
+            services.AddSession();
+
+            #endregion ONEbookUM
+
             services.AddSingleton<IBaseService, BaseService>();
             services.AddScoped<IChatbotService, ChatbotService>();
             services.AddScoped<ISendNotificationService, SendNotificationService>();
