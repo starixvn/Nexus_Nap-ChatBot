@@ -362,7 +362,7 @@
             //Assert
             var result = Assert.IsType<RedirectResult>(actual);
 
-            Assert.Equal("/Test", result.Url);
+            Assert.Equal("~/Test", result.Url);
         }
 
         #endregion SignIn tests
