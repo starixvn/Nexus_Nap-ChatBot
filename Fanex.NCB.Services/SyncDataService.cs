@@ -52,11 +52,7 @@
         {
             try
             {
-                bool isMaintenance = await maintenanceService.IsUnderMaintenanceAsync();
-                if (!isMaintenance)
-                {
-                    await NapSSOSyncDataByUserIdAsync(userId);
-                }
+                await NapSSOSyncDataByUserIdAsync(userId);
             }
             catch (Exception exception)
             {
