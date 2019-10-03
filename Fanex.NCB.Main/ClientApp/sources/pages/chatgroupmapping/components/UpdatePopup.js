@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import { SelectField } from '../../common/select-field/SelectField';
 import { MultipleSelectField } from '../../common/multiple-select-field/MultipleSelectField';
-import CommonFunctions from '../../common/CommonFunctions';
+import CommonFunctions from '../../common/common-functions/CommonFunctions';
 import Labels from '../../common/Labels';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 import { TextField } from '../../common/text-field/TextField';

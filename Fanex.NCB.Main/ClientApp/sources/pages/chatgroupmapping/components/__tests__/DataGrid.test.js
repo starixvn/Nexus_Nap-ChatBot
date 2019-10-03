@@ -2,7 +2,7 @@
 import { DataGrid } from '../DataGrid';
 import renderer from 'react-test-renderer';
 import ShallowRenderer from 'react-test-renderer/shallow';
-import CommonFunctions from '../../../common/CommonFunctions';
+import CommonFunctions from '../../../common/common-functions/CommonFunctions';
 
 describe("DataGrid", () => { 
     describe("render", () => { 

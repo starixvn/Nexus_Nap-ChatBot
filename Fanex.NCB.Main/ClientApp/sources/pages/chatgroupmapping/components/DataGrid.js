@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
-import CommonFunctions from '../../common/CommonFunctions';
+import CommonFunctions from '../../common/common-functions/CommonFunctions';
 import { PAGING_SIZES, mappingStatus } from '../../constants/constants';
 import Labels from '../../common/Labels';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';

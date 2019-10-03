@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { DateTimeFormat, NotificationStatus, invalidFieldClass } from '../../constants/constants';
-import CommonFunctions from '../../common/CommonFunctions';
+import CommonFunctions from '../../common/common-functions/CommonFunctions';
 
 import './ErrorReport.scss';
 

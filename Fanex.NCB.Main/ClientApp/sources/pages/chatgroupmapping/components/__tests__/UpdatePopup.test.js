@@ -3,7 +3,7 @@ import { UpdatePopup } from '../UpdatePopup';
 import renderer from 'react-test-renderer';
 import ShallowRenderer from 'react-test-renderer/shallow';
 //import { getLicenseeStatus, isMapped } from '../../../common/CommonFunctions';
-import CommonFunctions from '../../../common/CommonFunctions';
+import CommonFunctions from '../../../common/common-functions/CommonFunctions';
 
 describe("UpdatePopup", () => {
     const defaultProps = {

@@ -1,5 +1,5 @@
-﻿import { mappingStatus } from '../constants/constants';
-import Labels from './Labels';
+﻿import { mappingStatus } from '../../constants/constants';
+import Labels from '../Labels';
 
 export default class CommonFunctions {
     static getMappingClass(mappingStatusId) {
