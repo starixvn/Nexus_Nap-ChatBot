@@ -9,10 +9,18 @@ import { toast } from 'react-toastify';
 export class DeletePopup extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            isLoading: false
+        };
     }
 
     confirmHandler = () => {
-        this.props.deleteItem(this.props.deletePopupData.notificationTypeId).then(this.closePopup);
+        this.setState({ isLoading: true },
+            () => {
+                this.props.deleteItem(this.props.deletePopupData.notificationTypeId).then(this.closePopup);
+            }
+        );        
     }
 
     cancelHandler = () => {
@@ -29,25 +37,22 @@ export class DeletePopup extends Component {
             }
         }
        
-        setTimeout(function () {
-            this.props.deleteData.deleteResult.isSuccessful && this.props.closeDeletePopupHandler();
-            }.bind(this),
-        1000);
+        this.props.deleteData.deleteResult.isSuccessful && this.props.closeDeletePopupHandler();
     }
 
     render() {    
     return (
-        <Modal isOpen toggle={this.props.closeDeletePopupHandler} wrapClassName="popup-confirm">
-        <ModalHeader toggle={this.props.closeDeletePopupHandler}>Delete Notification Type</ModalHeader>
-        <ModalBody>
-        <div className="info">
-            <p>Are you sure you want to delete <br /><strong>{this.props.deletePopupData.content}</strong> ?</p>
-        </div>
-        </ModalBody>
-        <ModalFooter>
-            <button className="btn-submit" onClick={() => this.confirmHandler()}>OK</button>
-            <button className="btn-cancel" onClick={() => this.cancelHandler()}>Cancel</button>
-        </ModalFooter>
+        <Modal isOpen wrapClassName="popup-confirm">
+            <ModalHeader toggle={this.props.closeDeletePopupHandler}>Delete Notification Type</ModalHeader>
+            <ModalBody>
+            <div className="info">
+                <p>Are you sure you want to delete <br /><strong>{this.props.deletePopupData.content}</strong> ?</p>
+            </div>
+            </ModalBody>
+                <ModalFooter>
+                    <button disabled={this.state.isLoading} className="btn-submit" onClick={() => this.confirmHandler()}>OK</button>
+                    <button disabled={this.state.isLoading} className="btn-cancel" onClick={() => this.cancelHandler()}>Cancel</button>
+            </ModalFooter>
         </Modal>
     );
     }
