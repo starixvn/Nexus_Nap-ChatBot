@@ -37,7 +37,7 @@
             var fixture = new Fixture();
             napSession.UserId = fixture.Create<int>();
 
-            userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.EditNotification, Policy.Host)
+            userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotifiactionList, Policy.Host)
                 .Returns(true);
             var actual = controller.Index();
 

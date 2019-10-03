@@ -30,7 +30,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
         public IActionResult Index()
         {
-            ViewBag.HaveEditNotificationPermission = userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.EditNotification, Policy.Host);
+            ViewBag.HaveEditNotificationPermission = userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotifiactionList, Policy.Host);
 
             return View("~/Views/SkypeBot/NotificationList/Index.cshtml");
         }
@@ -64,7 +64,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Cancel(int notificationId)
         {
             var result = await notificationService.CancelAsync(notificationId, napSession.UserId).ConfigureAwait(false);
@@ -73,7 +73,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         }
 
         [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.EditNotification, Policy = Policy.Host, PermissionCache = true)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Resolve([FromBody]ResolveNotificationViewModel data)
         {
             var result = await notificationService.ResolveAsync(data.NotificationId, data.ResolvedRemark, napSession.UserId).ConfigureAwait(false);
