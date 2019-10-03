@@ -25,6 +25,8 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using ONEbook.UM.AspNetCore;
+    using ONEbook.UM.Configurations;
     using Sentry;
 
     public class Startup
@@ -106,6 +108,8 @@
             services.AddNapServices(Configuration);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<ILogger, Logger>();
+            services.AddSingleton(new UMClientConfiguration().Initialize(Configuration));
+
             services.RegisterServices();
             services.RegisterRepositories();
         }

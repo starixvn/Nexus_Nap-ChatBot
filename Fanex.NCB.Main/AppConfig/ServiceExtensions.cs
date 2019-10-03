@@ -9,6 +9,9 @@
     using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.DependencyInjection;
+    using ONEbook.UM.Helpers;
+    using ONEbook.UM.Services;
+    using ONEbook.UM.Transport;
 
     public static class ServiceExtensions
     {
@@ -24,6 +27,11 @@
             services.AddScoped<ISendNotificationService, SendNotificationService>();
             services.AddScoped<ISyncDataService, SyncDataService>();
             services.AddScoped<INotificationTemplaceService, NotificationTemplaceService>();
+
+            services.AddSingleton<IUMCacheService, UMCacheService>();
+            services.AddSingleton<IUMRestClient, UMRestClient>();
+            services.AddSingleton<IHttpContextHelper, HttpContextHelper>();
+            services.AddSingleton<IMaintenanceService, MaintenanceService>();
         }
 
         public static void RegisterRepositories(this IServiceCollection services)
