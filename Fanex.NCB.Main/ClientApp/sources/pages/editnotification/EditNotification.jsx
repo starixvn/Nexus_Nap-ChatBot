@@ -223,13 +223,12 @@ export default class EditNotification extends React.Component {
                             <option value={this.state.notification.notificationTypeId} disabled hidden>{this.state.notification.notificationTypeName}</option>
                         </Input>
                     </Col>
-
                 </FormGroup>
                 <FormGroup row>
                     <Label for="productId" className="form-label" sm={2}>Product</Label>
                     <Col sm={10}>
                         <Input type="select"
-                            value={this.state.notification.productId || ''}
+                            value={this.state.notification.productId}
                             name="productId" disabled
                             onChange={this.handleProductChange}
                         >

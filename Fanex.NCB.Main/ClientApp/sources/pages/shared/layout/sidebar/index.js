@@ -25,7 +25,7 @@ export default class Sidebar extends React.Component {
 
     getMenuClassName = name => name ? 'icon-' + name.replace(/ /g, '-').toLowerCase() : '';
 
-    isCurrent = url => url.toLowerCase() === `${this.currentController}${this.currentAction !== 'index' ? `/${this.currentAction}` : ''}`
+    isCurrent = url => url.toLowerCase() === `/${this.currentController}${this.currentAction !== 'index' ? `/${this.currentAction}` : ''}`
 
     renderMenu = () => {
         return this.state.menuItems.map(this.renderMenuItem);
@@ -33,7 +33,7 @@ export default class Sidebar extends React.Component {
 
     renderMenuItem = (submenu) => (
         <li className="menu-item" key={submenu.id}>
-            <a href={Site.resolveClientUrl(submenu.url)} className={`link ${this.isCurrent(submenu.url) && 'current'} `}>
+            <a href={Site.resolveClientUrl(submenu.url).replace('//', '/')} className={`link ${this.isCurrent(submenu.url) && 'current'} `}>
                 <span className={this.getMenuClassName(submenu.name)} />
                 <span className="text">{submenu.name}</span>
             </a>
