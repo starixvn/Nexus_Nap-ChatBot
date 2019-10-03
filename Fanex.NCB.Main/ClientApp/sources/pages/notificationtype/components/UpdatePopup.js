@@ -117,7 +117,7 @@ export class UpdatePopup extends Component {
     this.updateDropdownData(this.props.settingData.chatGroupTypes, this.props.updatePopupData.editingItem.chatGroupTypeIds.value);
 
     return (
-      <Modal isOpen toggle={this.togglePopup} wrapClassName="new-notification-type">
+      <Modal isOpen wrapClassName="new-notification-type">
         <ModalHeader toggle={this.togglePopup}>{this.props.updatePopupData.popupTitle}</ModalHeader>
         <ModalBody>
           <Form className="form-create">

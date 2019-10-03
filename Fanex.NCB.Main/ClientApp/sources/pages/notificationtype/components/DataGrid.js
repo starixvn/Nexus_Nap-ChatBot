@@ -65,10 +65,8 @@ export class DataGrid extends Component {
           this.props.isHost && 
           <Cell className="text-center col-action">
             <div>
-              <span className="icon-edit" id={'edit-' + index} onClick={() => this.openEditPopup(item, index)} />
-              <UncontrolledTooltip placement="top" target={'edit-' + index}>Edit</UncontrolledTooltip>
-              <span className="icon-delete" id={'delete-' + index} onClick={() => this.openDeletePopup(index, item.id, item.name)} />
-              <UncontrolledTooltip placement="top" target={'delete-' + index}>Delete</UncontrolledTooltip>
+              <span className="icon-edit" id={'edit-' + index} onClick={() => this.openEditPopup(item, index)} title="Edit" />
+              <span className="icon-delete" id={'delete-' + index} onClick={() => this.openDeletePopup(index, item.id, item.name)} title="Delete"/>
             </div>
           </Cell>
         }
