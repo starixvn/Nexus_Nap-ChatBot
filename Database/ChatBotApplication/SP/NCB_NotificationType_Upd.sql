@@ -3,7 +3,7 @@ DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_NotificationType_Upd(
 	IN notificationTypeId INT,
-	IN notificationTypeName varchar(100), 
+	IN notificationTypeName varchar(200), 
     IN recipientTypeIds varchar(500), 
     IN chatGroupTypeIds varchar(500), 
     IN systemId INT,

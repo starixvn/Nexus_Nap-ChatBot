@@ -11,8 +11,6 @@ import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 import { toast } from 'react-toastify';
 
-import '@9softstudio/react-multiselect/dist/style.css';
-
 export class UpdatePopup extends Component {
   constructor(props) {
     super(props);
@@ -125,9 +123,10 @@ export class UpdatePopup extends Component {
           <Form className="form-create">
             <FormGroup>
               <Label className="form-label required">Notification Type Name</Label>
-              <InputField initialValue={this.props.updatePopupData.editingItem.notificationTypeName.value}
-                isSummited={this.state.isSummited}
-                onChange={value => this.onChange('notificationTypeName', value)}
+                        <InputField initialValue={this.props.updatePopupData.editingItem.notificationTypeName.value}
+                            maxLength={200}
+                    isSummited={this.state.isSummited}
+                    onChange={value => this.onChange('notificationTypeName', value)}
               />
             </FormGroup>
             <FormGroup>
@@ -162,7 +161,7 @@ export class UpdatePopup extends Component {
                 onChange={value => this.onChange('systemId', value)}
               />
                     </FormGroup>
-                    <button className="btn-submit" onClick={this.submitHandler}>Submit</button>
+                    <button className="btn-submit" onClick={this.submitHandler}>Save</button>
           </Form>
         </ModalBody>
 

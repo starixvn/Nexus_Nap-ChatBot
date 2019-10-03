@@ -2,7 +2,7 @@ DROP PROCEDURE IF EXISTS NCB_NotificationType_Ins;
 DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_NotificationType_Ins(
-	IN notificationTypeName nvarchar(100), 
+	IN notificationTypeName nvarchar(200), 
     IN recipientTypeIds nvarchar(500), 
     IN chatGroupTypeIds nvarchar(500), 
     IN systemId INT,
