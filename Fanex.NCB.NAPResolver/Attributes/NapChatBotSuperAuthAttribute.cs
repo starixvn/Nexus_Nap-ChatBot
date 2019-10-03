@@ -33,7 +33,9 @@
             {
                 RequestHelper.CloseConnection(context);
 
-                context.Result = new RedirectResult("~/Auth/Index");
+                var path = context.HttpContext.Request.Path.HasValue ? context.HttpContext.Request.Path.Value : string.Empty;
+
+                context.Result = new RedirectResult("~/Auth/Index?returnURL=" + path);
             }
         }
     }
