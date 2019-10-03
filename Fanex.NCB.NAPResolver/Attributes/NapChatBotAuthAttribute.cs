@@ -25,7 +25,7 @@
         {
         }
 
-        internal NapChatBotAuthAttribute(IUserService userService, INapSettings napSettings, INapSession napSession, IMemoryCache cache)
+        public NapChatBotAuthAttribute(IUserService userService, INapSettings napSettings, INapSession napSession, IMemoryCache cache)
         {
             this.userService = userService ?? GetUserService();
             this.napSettings = napSettings ?? NapClientManager.NapSettings;
