@@ -22,12 +22,12 @@ export class InputField extends Component {
 
     callOnChange = () => {
         this.props.onChange({
-            value: this.state.value,
+            value: this.state.value.trim(),
             isValid: this.isValid()
         });
     }
 
-  isValid = () => this.state.value !== '';
+    isValid = () => this.state.value && this.state.value.trim() !== '';
 
   render() {
     return (
