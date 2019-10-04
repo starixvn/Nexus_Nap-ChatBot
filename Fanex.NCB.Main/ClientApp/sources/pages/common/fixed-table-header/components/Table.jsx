@@ -132,10 +132,9 @@ class Table extends Component {
         const columnsWidth = [];
         const currentNextCellIndexByRow = {};
         const getWidthByCells = (cells, currentRowIndex) => {
-            for (let i = 0; i < cells.length; i++) {
-                const cell = cells[i];                
-                if (!cell) { continue; }
-                
+            cells.map((cell) => {
+                if (!cell) { return; }
+
                 const cellProps = cell.props;
                 const colspan = Number(cellProps.colSpan);
                 if (colspan && colspan > 1) {
@@ -153,8 +152,8 @@ class Table extends Component {
                 else {
                     const cellWidth = cellProps.colWidth ? cellProps.colWidth : DEFAULT_COLUMN_WIDTH;
                     columnsWidth.push(cellWidth);
-                }                
-            }
+                }   
+            });
         };
 
         const startIndex = 0;
