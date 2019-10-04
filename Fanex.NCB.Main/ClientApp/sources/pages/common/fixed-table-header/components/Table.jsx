@@ -132,7 +132,7 @@ class Table extends Component {
         const columnsWidth = [];
         const currentNextCellIndexByRow = {};
         const getWidthByCells = (cells, currentRowIndex) => {
-            cells.map((cell) => {
+            cells.map(cell => {
                 if (!cell) { return; }
 
                 const cellProps = cell.props;
@@ -152,7 +152,7 @@ class Table extends Component {
                 else {
                     const cellWidth = cellProps.colWidth ? cellProps.colWidth : DEFAULT_COLUMN_WIDTH;
                     columnsWidth.push(cellWidth);
-                }   
+                }
             });
         };
 
