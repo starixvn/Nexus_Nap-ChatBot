@@ -44,10 +44,10 @@
             {
                 options.CredentialProvider = new MultiCredentialProvider(botConfig);
                 options.HttpClient = GetDefaultHttpClient(configuration);
-                options.OnTurnError = async (turnContext, exception) =>
+                options.OnTurnError = (turnContext, exception) =>
                 {
                     logger.LogError($"Exception caught : {exception.Message}");
-                    await turnContext.SendActivityAsync("Sorry, it looks like something went wrong. Please contact Administrator.");
+                    ////await turnContext.SendActivityAsync("Sorry, it looks like something went wrong. Please contact Administrator.");
                     throw exception;
                 };
             });
