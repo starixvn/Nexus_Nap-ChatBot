@@ -4,14 +4,14 @@ import ReactMarkdown from 'react-markdown/with-html';
 
 export default class TemplatePreview extends PureComponent {
     highlightParameters = text => {
-        const params = [...new Set(text.match(/{[_-\w\s]+}/g))];
+        const params = [...new Set(text.match(/{[_-\w\s]+}/g))];// NOSONAR Make sure that using a regular expression is safe here
         let formattedText = text;
 
         for (let i = 0; i < params.length; i++) {
-            formattedText = formattedText.replace(new RegExp(`\\${params[i]}`, 'g'), `<span style="color:red">${params[i]}</span>`);
+            formattedText = formattedText.replace(new RegExp(`\\${params[i]}`, 'g'), `<span style="color:red">${params[i]}</span>`);// NOSONAR Make sure that using a regular expression is safe here
         }
 
-        formattedText = formattedText.replace(/(?:\r\n|\r|\n)/g, '<br>');
+        formattedText = formattedText.replace(/(?:\r\n|\r|\n)/g, '<br>');// NOSONAR Make sure that using a regular expression is safe here
 
         return formattedText;
     }
