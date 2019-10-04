@@ -10,7 +10,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_EditNotification_Upd`(
     , IN sendImmediately BIT
 	, IN userID INT
 	, OUT errCode SMALLINT
-	, OUT errMsg VARCHAR(100)
+	, OUT errMsg TEXT
     /*
 		Creator: Dominic@20190401
         Param:
@@ -137,7 +137,7 @@ NCB_EditNotification_Upd:BEGIN
                                 OR cgb.ConversationBotID IS NULL
 			);
             
-		SET errMsg = 'Recipient is not mapped or removed: ' + errMsg;
+		SET errMsg = CONCAT('Recipient is not mapped or removed: ' , errMsg);
         LEAVE NCB_EditNotification_Upd;
     END IF;
 
@@ -168,7 +168,7 @@ NCB_EditNotification_Upd:BEGIN
 						WHERE  l.LicenseeStatusId <> LICENSEE_STATUS_ACTIVE
 			);
 
-		SET errMsg = 'Licensee is Inactive: ' + errMsg;
+		SET errMsg = CONCAT('Licensee is Inactive: ' , errMsg);
         LEAVE NCB_EditNotification_Upd;
     END IF;
     
@@ -219,7 +219,7 @@ NCB_EditNotification_Upd:BEGIN
 									)
 			);
 
-		SET errMsg = 'Licensee is not offered: ' + errMsg;
+		SET errMsg = CONCAT('Licensee is not offered: ' , errMsg);
         LEAVE NCB_EditNotification_Upd;
     END IF;
     
@@ -254,7 +254,7 @@ NCB_EditNotification_Upd:BEGIN
 						WHERE ex.NotificationTypeID = notificationTypeID
                         );
                         
-        SET errMsg = 'There are recipients in the exception list: ' + errMsg;
+        SET errMsg = CONCAT('There are recipients in the exception list: ' , errMsg);
 		LEAVE NCB_EditNotification_Upd;
     END IF;
     

@@ -12,7 +12,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NewNotification_Ins`(
 	, IN creatorID INT
     , OUT notificationID INT
 	, OUT errCode SMALLINT
-	, OUT errMsg VARCHAR(100)
+	, OUT errMsg TEXT
     /*
 		Creator: Dominic@20190401
         Param:
@@ -110,7 +110,7 @@ NCB_NewNotification_Ins:BEGIN
 						FROM tmp_recipientIDLst main
 						WHERE main.RecipientID NOT IN (SELECT t1.RecipientID FROM tmp_mappedRecipientIDLst t1)
 			);
-		SET errMsg = 'Recipient is not mapped or removed: ' + errMsg;
+		SET errMsg = CONCAT('Recipient is not mapped or removed: ' , errMsg);
         LEAVE NCB_NewNotification_Ins;
     END IF;
 
@@ -141,7 +141,7 @@ NCB_NewNotification_Ins:BEGIN
 						WHERE  l.LicenseeStatusId <> LICENSEE_STATUS_ACTIVE
 			);
             
-		SET errMsg = 'Licensee is Inactive: ' + errMsg;
+		SET errMsg = CONCAT('Licensee is Inactive: ' , errMsg);
         LEAVE NCB_NewNotification_Ins;
     END IF;
     
@@ -192,7 +192,7 @@ NCB_NewNotification_Ins:BEGIN
 									)
 			);
             
-		SET errMsg = 'Licensee is not offered: ' + errMsg;
+		SET errMsg = CONCAT('Licensee is not offered: ' , errMsg);
         LEAVE NCB_NewNotification_Ins;
     END IF;
     
@@ -220,7 +220,7 @@ NCB_NewNotification_Ins:BEGIN
 						WHERE ex.NotificationTypeID = notificationTypeID
                         );
                
-		SET errMsg = 'There are recipients in the exception list: ' + errMsg;
+		SET errMsg = CONCAT('There are recipients in the exception list: ' , errMsg);
 		LEAVE NCB_NewNotification_Ins;
     END IF;
 	
