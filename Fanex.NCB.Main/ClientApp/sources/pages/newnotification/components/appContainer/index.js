@@ -248,8 +248,8 @@ export class AppContainer extends React.Component {
 
         for (let i = 0; i < params.length; i++) {
             if (params[i].value) {
-                title = title.replace(new RegExp(params[i].name, 'g'), params[i].value);
-                content = content.replace(new RegExp(params[i].name, 'g'), params[i].value);
+                title = title.replace(new RegExp(`\\${params[i].name}`, 'g'), params[i].value);
+                content = content.replace(new RegExp(`\\${params[i].name}`, 'g'), params[i].value);
             }
         }
 

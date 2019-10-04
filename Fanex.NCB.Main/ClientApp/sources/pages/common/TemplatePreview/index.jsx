@@ -8,7 +8,7 @@ export default class TemplatePreview extends PureComponent {
         let formattedText = text;
 
         for (let i = 0; i < params.length; i++) {
-            formattedText = formattedText.replace(new RegExp(params[i], 'g'), `<span style="color:red">${params[i]}</span>`);
+            formattedText = formattedText.replace(new RegExp(`\\${params[i]}`, 'g'), `<span style="color:red">${params[i]}</span>`);
         }
 
         formattedText = formattedText.replace(/(?:\r\n|\r|\n)/g, '<br>');
