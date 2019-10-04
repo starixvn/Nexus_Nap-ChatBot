@@ -72,12 +72,13 @@
 
             if (isUseProxy)
             {
-                var httpClientHandler = new HttpClientHandler
+                var socketsHttpHandler = new SocketsHttpHandler
                 {
+                    UseProxy = isUseProxy,
                     Proxy = new WebProxy(proxyAddress, bypassOnLocal)
                 };
 
-                httpClient = new HttpClient(handler: httpClientHandler);
+                httpClient = new HttpClient(handler: socketsHttpHandler);
             }
             else
             {
