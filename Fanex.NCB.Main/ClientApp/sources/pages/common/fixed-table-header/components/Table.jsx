@@ -133,27 +133,27 @@ class Table extends Component {
         const currentNextCellIndexByRow = {};
         const getWidthByCells = (cells, currentRowIndex) => {
             for (let i = 0; i < cells.length; i++) {
-                const cell = cells[i];
-                if (cell) {
-                    const cellProps = cell.props;
-                    const colspan = Number(cellProps.colSpan);
-                    if (colspan && colspan > 1) {
-                        const nextRowIndex = currentRowIndex + 1;
-                        if (currentNextCellIndexByRow[nextRowIndex] === undefined) {
-                            currentNextCellIndexByRow[nextRowIndex] = 0;
-                        }
-                        const fromNextCellIndex = currentNextCellIndexByRow[nextRowIndex];
-                        const toNextCellIndex = fromNextCellIndex + colspan - 1;
-                        const nextCells = headerRows[nextRowIndex].props.children;
-                        const nextColspanCells = this._getNextColspanCells(nextCells, fromNextCellIndex, toNextCellIndex);
-                        currentNextCellIndexByRow[nextRowIndex] += nextColspanCells.length;
-                        getWidthByCells(nextColspanCells, nextRowIndex);
+                const cell = cells[i];                
+                if (!cell) { continue; }
+                
+                const cellProps = cell.props;
+                const colspan = Number(cellProps.colSpan);
+                if (colspan && colspan > 1) {
+                    const nextRowIndex = currentRowIndex + 1;
+                    if (currentNextCellIndexByRow[nextRowIndex] === undefined) {
+                        currentNextCellIndexByRow[nextRowIndex] = 0;
                     }
-                    else {
-                        const cellWidth = cellProps.colWidth ? cellProps.colWidth : DEFAULT_COLUMN_WIDTH;
-                        columnsWidth.push(cellWidth);
-                    }
+                    const fromNextCellIndex = currentNextCellIndexByRow[nextRowIndex];
+                    const toNextCellIndex = fromNextCellIndex + colspan - 1;
+                    const nextCells = headerRows[nextRowIndex].props.children;
+                    const nextColspanCells = this._getNextColspanCells(nextCells, fromNextCellIndex, toNextCellIndex);
+                    currentNextCellIndexByRow[nextRowIndex] += nextColspanCells.length;
+                    getWidthByCells(nextColspanCells, nextRowIndex);
                 }
+                else {
+                    const cellWidth = cellProps.colWidth ? cellProps.colWidth : DEFAULT_COLUMN_WIDTH;
+                    columnsWidth.push(cellWidth);
+                }                
             }
         };
 
