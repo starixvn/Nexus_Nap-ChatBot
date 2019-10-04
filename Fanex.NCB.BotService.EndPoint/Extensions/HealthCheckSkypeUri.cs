@@ -36,7 +36,7 @@
             var request = new RestRequest(uri, Method.GET);
             var response = await webClient.ExecuteGetTaskAsync(request);
 
-            if (response.StatusCode != HttpStatusCode.OK)
+            if (response == null || response.StatusCode != HttpStatusCode.OK)
             {
                 string errMsg = string.Format(
                 CultureInfo.InvariantCulture,
