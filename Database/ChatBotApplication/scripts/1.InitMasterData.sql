@@ -1,6 +1,6 @@
 INSERT INTO ChatBot.System(SystemID, SystemName) 
 VALUES 
-(1, 'I, Bot Site')
+(1, 'Chatbot for Licensee')
 , (2, 'Special Delete Site');
 
 INSERT INTO ChatBot.RecipientType(RecipientTypeID, RecipientTypeName) 
