@@ -62,7 +62,7 @@ namespace Fanex.NCB.Main.Controllers.Tests
             var siteId = fixture.Create<int>();
             napSession.UserId.Returns(userId);
             napSettings.SiteId.Returns(siteId);
-            userService.GetPermissionAsync(userId, siteId, FunctionKey.ChatGroupMapping).Returns((int)policy);
+            userService.GetPermissionAsync(userId, siteId, FunctionKey.NotificationType).Returns((int)policy);
 
             // Act
             var result = await controller.Index() as ViewResult;

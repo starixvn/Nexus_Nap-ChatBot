@@ -37,7 +37,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Read)]
         public async Task<IActionResult> Index()
         {
-            var permission = await userService.GetPermissionAsync(napSession.UserId, napSettings.SiteId, FunctionKey.ChatGroupMapping).ConfigureAwait(false);
+            var permission = await userService.GetPermissionAsync(napSession.UserId, napSettings.SiteId, FunctionKey.NotificationType).ConfigureAwait(false);
             var isHost = permission >= (int)Policy.Host;
             return View("~/Views/SkypeBot/NotificationType/Index.cshtml", isHost);
         }
