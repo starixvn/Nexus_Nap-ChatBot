@@ -17,5 +17,7 @@ namespace Fanex.NCB.BotService.Core
         public string TokenUrl { get; set; }
 
         public string SkypeServiceUrl { get; set; }
+
+        public string HealthCheckUrl { get; set; }
     }
 }
