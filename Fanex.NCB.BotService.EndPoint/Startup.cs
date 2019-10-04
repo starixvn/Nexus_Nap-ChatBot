@@ -7,19 +7,19 @@
     using Fanex.Data.MySql;
     using Fanex.Logging.Sentry;
     using Fanex.NCB.BotService.Core;
+    using Fanex.NCB.BotService.EndPoint.Extensions;
     using Fanex.NCB.Shared.Middlewares;
+    using HealthChecks.UI.Client;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Bot.Builder.Integration.AspNet.Core;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.IdentityModel.Tokens;
-    using Newtonsoft.Json;
     using Sentry;
 
     public class Startup
@@ -40,6 +40,10 @@
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddHealthChecks().AddCheck<HealthCheckSkypeUri>("Skype service URL");
+
+            services.AddHealthChecksUI();
 
             Dictionary<string, ConnectionConfiguration> connections = Configuration
                 .GetSection("ConnectionStrings")
@@ -63,8 +67,6 @@
                     FrontEndDsn = new Dsn(Configuration.GetSection("SentryEngineOptions:FrontEndDsn").Value)
                 })
             });
-
-            services.AddHealthChecks().AddCheck<HealthCheckExtension>("Skype service URL");
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
@@ -99,27 +101,15 @@
                 app.UseMiddleware<ErrorHandlingMiddleware>();
                 app.UseHsts();
             }
-            var healthCheckOptions = new HealthCheckOptions
-            {
-                ResponseWriter = async (c, r) =>
-                {
-                    var result = JsonConvert.SerializeObject(
-                       new
-                       {
-                           checks = r.Entries.Select(e =>
-                      new
-                      {
-                          description = e.Key,
-                          status = e.Value.Status.ToString(),
-                          responseTime = e.Value.Duration.TotalMilliseconds
-                      }),
-                           totalResponseTime = r.TotalDuration.TotalMilliseconds
-                       });
-                    await c.Response.WriteAsync(result);
-                }
-            };
 
-            app.UseHealthChecks("/health", healthCheckOptions);
+            app.UseHealthChecks("/health", new HealthCheckOptions
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+
+            app.UseHealthChecksUI();//healthchecks-ui
+
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseAuthentication();
