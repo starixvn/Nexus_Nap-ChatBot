@@ -50,7 +50,7 @@
             }
             else
             {
-                context.Response.Redirect("/error/InternalError");
+                context.Response.Redirect("/error/InternalServerError");
             }
         }
     }
