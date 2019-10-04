@@ -396,12 +396,16 @@ export class AppContainer extends React.Component {
                             >
                                 {SendModeOptions.map(this.renderSendModeOption)}
                             </Input>
-                            <DatePicker selected={values.sendDate} showTimeSelect disabled={values.sendMode === '1'}
-                                onChange={value => setFieldValue('sendDate', value)} minDate={Today}
-                                className={touched.sendDate && errors.sendDate && invalidFieldClass}
-                            />
-                            <span>(GMT +8)</span>
-                            {touched.sendDate && errors.sendDate && <FormFeedback>{errors.sendDate}</FormFeedback>}
+                            {values.sendMode === '2' &&
+                                <>
+                                    <DatePicker selected={values.sendDate} showTimeSelect
+                                        onChange={value => setFieldValue('sendDate', value)} minDate={Today}
+                                        className={touched.sendDate && errors.sendDate && invalidFieldClass}
+                                    />
+                                    <span>(GMT +8)</span>
+                                    {touched.sendDate && errors.sendDate && <FormFeedback>{errors.sendDate}</FormFeedback>}
+                                </>
+                            }
                         </div>
                     </div>
                 </FormGroup>
