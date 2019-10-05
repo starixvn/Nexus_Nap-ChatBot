@@ -69,12 +69,14 @@
             var bypassOnLocal = bool.Parse(configuration.GetSection("ProxySettings:BypassOnLocal").Value);
 
             HttpClient httpClient;
+            AppContext.SetSwitch("System.Net.Http.UseSocketsHttpHandler", false);
 
             if (isUseProxy)
             {
-                var socketsHttpHandler = new SocketsHttpHandler
+                var socketsHttpHandler = new HttpClientHandler
                 {
                     UseProxy = isUseProxy,
+                    UseDefaultCredentials = true,
                     Proxy = new WebProxy(proxyAddress, bypassOnLocal)
                 };
 
