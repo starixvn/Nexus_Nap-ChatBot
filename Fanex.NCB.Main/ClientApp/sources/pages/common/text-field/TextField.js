@@ -17,13 +17,15 @@ export class TextField extends Component {
             {
                 value: e.target.value
             },
-            () => {
-                this.props.onChange({
-                    value: this.state.value,
-                    isValid: this.isValid()
-                });
-            }
+            this.callOnChange
         );
+    }
+
+    callOnChange = () => {
+        this.props.onChange({
+            value: this.state.value,
+            isValid: this.isValid()
+        });
     }
 
     isValid = () => this.state.value !== '';
