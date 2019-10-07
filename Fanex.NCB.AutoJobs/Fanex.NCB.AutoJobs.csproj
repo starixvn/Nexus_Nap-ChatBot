@@ -31,6 +31,16 @@
     <None Remove="App_Data\SpNames.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Program.cs">
+      <SonarQubeExclude>true</SonarQubeExclude>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Startup.cs">
+      <SonarQubeExclude>true</SonarQubeExclude>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="appsettings.Development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
