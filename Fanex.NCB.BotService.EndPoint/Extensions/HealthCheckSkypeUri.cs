@@ -20,7 +20,7 @@
 
         public HealthCheckSkypeUri(ILogger logger, IConfiguration configuration, AppSettings appSettings)
         {
-            this.logger = logger;
+            this.logger = logger ?? new Logger();
             this.appSettings = appSettings;
             webClient = new RestClient
             {
@@ -37,7 +37,7 @@
             var request = new RestRequest(uri, Method.GET);
             var response = await webClient.ExecuteGetTaskAsync(request);
 
-            if ((int)response.StatusCode != (int)HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
                 string errMsg = string.Format(
                 CultureInfo.InvariantCulture,
