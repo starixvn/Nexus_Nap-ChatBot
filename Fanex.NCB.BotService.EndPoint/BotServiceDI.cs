@@ -74,6 +74,7 @@
 
             HttpClient httpClient;
             AppContext.SetSwitch("System.Net.Http.UseSocketsHttpHandler", false);
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             if (isUseProxy)
             {
