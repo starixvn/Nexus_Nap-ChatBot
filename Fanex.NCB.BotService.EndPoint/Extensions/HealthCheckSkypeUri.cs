@@ -7,6 +7,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Fanex.Logging;
+    using Fanex.NCB.BotService.Core;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
     using RestSharp;
@@ -15,12 +16,12 @@
     {
         private readonly IRestClient webClient;
         private readonly ILogger logger;
-        private readonly IConfiguration configuration;
+        private readonly AppSettings appSettings;
 
-        public HealthCheckSkypeUri(ILogger logger, IConfiguration configuration)
+        public HealthCheckSkypeUri(ILogger logger, IConfiguration configuration, AppSettings appSettings)
         {
             this.logger = logger;
-            this.configuration = configuration;
+            this.appSettings = appSettings;
             webClient = new RestClient
             {
                 Encoding = Encoding.UTF8,
@@ -31,12 +32,12 @@
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
             CancellationToken cancellationToken = default)
         {
-            string uri = configuration.GetSection("AppSettings:HealthCheckUrl").Value;
+            string uri = appSettings.HealthCheckUrl;
             webClient.BaseUrl = new Uri(uri);
             var request = new RestRequest(uri, Method.GET);
             var response = await webClient.ExecuteGetTaskAsync(request);
 
-            if (response == null || response.StatusCode != HttpStatusCode.OK)
+            if ((int)response.StatusCode != (int)HttpStatusCode.OK)
             {
                 string errMsg = string.Format(
                 CultureInfo.InvariantCulture,

@@ -43,10 +43,6 @@
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddHealthChecks().AddCheck<HealthCheckSkypeUri>("Skype service URL");
-
-            services.AddHealthChecksUI();
-
             Dictionary<string, ConnectionConfiguration> connections = Configuration
                 .GetSection("ConnectionStrings")
                 .GetChildren()
@@ -91,6 +87,10 @@
 
             IdentityModelEventSource.ShowPII = true;
             BotServiceDI.Init(services, Configuration, Environment, appSettings, logger);
+
+            services.AddHealthChecks().AddCheck<HealthCheckSkypeUri>("Skype service URL");
+
+            services.AddHealthChecksUI();
         }
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
