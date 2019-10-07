@@ -13,21 +13,6 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Program.cs">
-      <SonarQubeExclude>true</SonarQubeExclude>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Startup.cs">
-      <SonarQubeExclude>true</SonarQubeExclude>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ServiceExtensions.cs">
-      <SonarQubeExclude>true</SonarQubeExclude>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="ClientApp\sources\js\**" />
     <Compile Remove="ClientApp\sources\pages\common\multiple-select-field\_tests_\NewFolder\**" />
     <Compile Remove="ClientApp\sources\pages\common\multiple-select\**" />

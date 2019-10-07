@@ -10,21 +10,6 @@
     <CodeAnalysisRuleSet>Fanex.NCB.BotService.EndPoint.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Program.cs">
-      <SonarQubeExclude>true</SonarQubeExclude>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Startup.cs">
-      <SonarQubeExclude>true</SonarQubeExclude>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="BotServiceDI.cs">
-      <SonarQubeExclude>true</SonarQubeExclude>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="logs\log.txt" />
   </ItemGroup>
   <ItemGroup>
