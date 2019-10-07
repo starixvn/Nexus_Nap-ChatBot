@@ -52,3 +52,4 @@ bower_components
 
 
 /Fanex.NCB.Main/healthchecksdb
+Fanex.NCB.BotService.EndPoint/healthchecksdb

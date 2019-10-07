@@ -37,7 +37,7 @@
             services.AddTransient<ICredentialProvider, MultiCredentialProvider>();
             services.AddTransient<IBot, LicBot>();
             services.AddTransient<Logging.ILogger, Logging.Logger>();
-            services.AddSingleton<IHealthCheck, HealthCheckSkypeUri>();
+            services.AddTransient<IHealthCheck, HealthCheckSkypeUri>();
             var botConfig = GetBotConfig(environment, appSettings, logger);
             services.AddSingleton(botConfig);
             services.AddSingleton(appSettings);
