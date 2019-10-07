@@ -25,6 +25,8 @@
 
     public static class BotServiceDI
     {
+        private static double timeout = 180;
+
         public static void Init(IServiceCollection services, IConfiguration configuration, IHostingEnvironment environment, AppSettings appSettings, ILogger logger)
         {
             services.AddTransient<IBaseRepository, BaseRepository>();
@@ -83,6 +85,7 @@
                 };
 
                 httpClient = new HttpClient(handler: socketsHttpHandler);
+                httpClient.Timeout = TimeSpan.FromSeconds(timeout);
             }
             else
             {
