@@ -4,6 +4,7 @@
     using System.IO;
     using System.Net;
     using System.Net.Http;
+    using System.Security.Authentication;
     using Fanex.Data.Repository;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Services;
@@ -74,7 +75,6 @@
 
             HttpClient httpClient;
             AppContext.SetSwitch("System.Net.Http.UseSocketsHttpHandler", false);
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             if (isUseProxy)
             {
@@ -82,6 +82,7 @@
                 {
                     UseProxy = isUseProxy,
                     UseDefaultCredentials = true,
+                    SslProtocols = SslProtocols.Tls12,
                     Proxy = new WebProxy(proxyAddress, bypassOnLocal)
                 };
 
