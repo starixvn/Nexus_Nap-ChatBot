@@ -46,6 +46,7 @@
                 "Chatbot for Licensee - Skype Bot Service",
                 string.Empty
                 );
+
                 await logger.ErrorAsync(errMsg);
 
                 return HealthCheckResult.Unhealthy(description: "Microsoft Skype service Error occurred");

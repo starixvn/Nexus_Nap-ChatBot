@@ -25,7 +25,7 @@
             var healthCheck = Setup();
             var response = Substitute.For<IRestResponse>();
             response.IsSuccessful.Returns(true);
-            response.StatusCode = HttpStatusCode.OK;
+            response.StatusCode = HttpStatusCode.InternalServerError;
 
             webClient.ExecuteGetTaskAsync(Arg.Any<RestRequest>()).Returns(response);
             //Actual
