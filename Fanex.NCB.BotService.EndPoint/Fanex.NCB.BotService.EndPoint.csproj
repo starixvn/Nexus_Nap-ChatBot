@@ -17,6 +17,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.UI" Version="2.2.35" />
     <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
@@ -52,6 +53,24 @@
     <None Update="BotFileConfigs\botConfig.Local.bot">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Startup.cs" />
+    <Compile Include="Startup.cs">
+      <SonarQubeExclude>true</SonarQubeExclude>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Program.cs" />
+    <Compile Include="Program.cs">
+      <SonarQubeExclude>true</SonarQubeExclude>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="BotServiceDI.cs" />
+    <Compile Include="BotServiceDI.cs">
+      <SonarQubeExclude>true</SonarQubeExclude>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dependency\" />
