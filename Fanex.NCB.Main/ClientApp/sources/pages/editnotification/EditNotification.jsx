@@ -75,7 +75,8 @@ export default class EditNotification extends React.Component {
                 allCheckedNodes: this.state.notification.recipientIds.map(x => ({ realValue: x }))
             },
             sendMode: notification.sendImmediately ? '1' : '2',
-            sendDate: notification.configSendTime
+            sendDate: notification.configSendTime,
+            productId: this.state.notification.productId || ''
         };
     }
 
@@ -209,14 +210,17 @@ export default class EditNotification extends React.Component {
         setFieldValue,
         isSubmitting
     }) => {
+        const isRecipientInvalid = touched.recipients && errors.recipients;
+        const isTitleInvalid = touched.title && errors.title;
+        const isContentInvalid = touched.content && errors.content;
+        const isSendDateInvalid = touched.sendDate && errors.sendDate;
+
         return (
             <Form onSubmit={handleSubmit} className="edit-notification-form">
                 <FormGroup row>
                     <Label for="notificationTypeId" className="form-label required" sm={2}>Notification Type</Label>
                     <Col sm={10}>
-                        <Input type="select"
-                            invalid={touched.notificationTypeId && errors.notificationTypeId}
-                            name="notificationTypeId" disabled
+                        <Input type="select" name="notificationTypeId" disabled
                             onChange={this.handleNotificationTypeChange}
                             value={this.state.notification.notificationTypeId}
                         >
@@ -228,12 +232,12 @@ export default class EditNotification extends React.Component {
                     <Label for="productId" className="form-label" sm={2}>Product</Label>
                     <Col sm={10}>
                         <Input type="select"
-                            value={this.state.notification.productId}
+                            value={values.productId}
                             name="productId" disabled
                             onChange={this.handleProductChange}
                         >
-                            {this.state.notification.productId ?
-                                <option value={this.state.notification.productId} disabled hidden>{this.state.notification.productName}</option>
+                            {values.productId ?
+                                <option value={values.productId} disabled hidden>{this.state.notification.productName}</option>
                                 : <option value="">{Labels.None}</option>
                             }
                         </Input>
@@ -244,27 +248,25 @@ export default class EditNotification extends React.Component {
 
                     <Col sm={10}>
                         <TreeSelect value={values.recipients.value} onChange={this.handleRecipientChange} placeholder={Labels.PleaseSelect}
-                            treeData={this.state.recipientOptions} className={touched.recipients && errors.recipients && invalidFieldClass}
+                            treeData={this.state.recipientOptions} className={isRecipientInvalid && invalidFieldClass}
                             labelInValue={false}
                         />
-                        {touched.recipients && errors.recipients && <FormFeedback>{errors.recipients.value}</FormFeedback>}
+                        {isRecipientInvalid && <FormFeedback>{errors.recipients.value}</FormFeedback>}
                     </Col>
                 </FormGroup>
                 <FormGroup row>
                     <Label for="title" className="form-label required" sm={2}>Title</Label>
                     <Col sm={10}>
                         <Input value={values.title} name="title"
-                            invalid={touched.title && errors.title}
-                            onChange={handleChange}
+                            invalid={isTitleInvalid} onChange={handleChange}
                         />
-                        {touched.title && errors.title && <FormFeedback>{errors.title}</FormFeedback>}
+                        {isTitleInvalid && <FormFeedback>{errors.title}</FormFeedback>}
                     </Col>
                 </FormGroup>
                 <FormGroup row>
                     <Label for="content" className="form-label required" sm={2}>Content</Label>
-
                     <Col sm={10}>
-                        <ReactMde className={touched.content && errors.content && invalidFieldClass}
+                        <ReactMde className={isContentInvalid && invalidFieldClass}
                             value={values.content} commands={editorCommandList}
                             onChange={content => setFieldValue('content', content)}
                             selectedTab={values.mode}
@@ -272,7 +274,7 @@ export default class EditNotification extends React.Component {
                             generateMarkdownPreview={this.handleGerneratePreview}
                             maxEditorHeight={400}
                         />
-                        {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
+                        {isContentInvalid && <FormFeedback>{errors.content}</FormFeedback>}
                     </Col>
                 </FormGroup>
                 <FormGroup row>
@@ -290,10 +292,10 @@ export default class EditNotification extends React.Component {
                                 <>
                                     <DatePicker selected={values.sendDate} showTimeSelect
                                         onChange={value => setFieldValue('sendDate', value)} minDate={Today}
-                                        className={touched.sendDate && errors.sendDate && invalidFieldClass}
+                                        className={isSendDateInvalid && invalidFieldClass}
                                     />
                                     <span>(GMT +8)</span>
-                                    {touched.sendDate && errors.sendDate && <FormFeedback>{errors.sendDate}</FormFeedback>}
+                                    {isSendDateInvalid && <FormFeedback>{errors.sendDate}</FormFeedback>}
                                 </>
                             }
                         </div>
