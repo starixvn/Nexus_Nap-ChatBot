@@ -201,6 +201,10 @@ export default class EditNotification extends React.Component {
         );
     }
 
+    touchedAndErrors = (touched, errors, fieldName) => {
+        return touched[fieldName] && errors[fieldName];
+    }
+
     renderForm = ({
         values,
         errors,
@@ -210,10 +214,10 @@ export default class EditNotification extends React.Component {
         setFieldValue,
         isSubmitting
     }) => {
-        const isRecipientInvalid = touched.recipients && errors.recipients;
-        const isTitleInvalid = touched.title && errors.title;
-        const isContentInvalid = touched.content && errors.content;
-        const isSendDateInvalid = touched.sendDate && errors.sendDate;
+        const isRecipientInvalid = this.touchedAndErrors(touched, errors, "recipients");
+        const isTitleInvalid = this.touchedAndErrors(touched, errors, "title");
+        const isContentInvalid = this.touchedAndErrors(touched, errors, "content");
+        const isSendDateInvalid = this.touchedAndErrors(touched, errors, "sendDate");
 
         return (
             <Form onSubmit={handleSubmit} className="edit-notification-form">
