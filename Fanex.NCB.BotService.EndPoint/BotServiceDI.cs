@@ -74,7 +74,7 @@
             var bypassOnLocal = bool.Parse(configuration.GetSection("ProxySettings:BypassOnLocal").Value);
 
             HttpClient httpClient;
-            AppContext.SetSwitch("System.Net.Http.UseSocketsHttpHandler", false);
+            ////AppContext.SetSwitch("System.Net.Http.UseSocketsHttpHandler", false);
 
             if (isUseProxy)
             {
