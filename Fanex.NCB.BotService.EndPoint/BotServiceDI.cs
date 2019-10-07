@@ -26,7 +26,7 @@
 
     public static class BotServiceDI
     {
-        private static double timeout = 180;
+        ////private static double timeout = 180;
 
         public static void Init(IServiceCollection services, IConfiguration configuration, IHostingEnvironment environment, AppSettings appSettings, ILogger logger)
         {
@@ -81,13 +81,13 @@
                 var socketsHttpHandler = new HttpClientHandler
                 {
                     UseProxy = isUseProxy,
-                    UseDefaultCredentials = true,
-                    SslProtocols = SslProtocols.Tls12,
+                    ////UseDefaultCredentials = true,
+                    ////SslProtocols = SslProtocols.Tls12,
                     Proxy = new WebProxy(proxyAddress, bypassOnLocal)
                 };
 
                 httpClient = new HttpClient(handler: socketsHttpHandler);
-                httpClient.Timeout = TimeSpan.FromSeconds(timeout);
+                ////httpClient.Timeout = TimeSpan.FromSeconds(timeout);
             }
             else
             {
