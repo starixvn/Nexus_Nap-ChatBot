@@ -20,7 +20,7 @@
 
         public HealthCheckSkypeUri(ILogger logger, IConfiguration configuration, AppSettings appSettings)
         {
-            this.logger = logger ?? new Logger();
+            this.logger = logger;
             this.appSettings = appSettings;
             webClient = new RestClient
             {
