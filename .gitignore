@@ -50,7 +50,4 @@ bower_components
 /results.xml
 /UnitTestCoverage*
 
-
-/Fanex.NCB.Main/healthchecksdb
-Fanex.NCB.BotService.EndPoint/healthchecksdb
-Fanex.NCB.BotService.EndPoint/healthchecksdb
+/Fanex.NCB.BotService.EndPoint/healthchecksdb
