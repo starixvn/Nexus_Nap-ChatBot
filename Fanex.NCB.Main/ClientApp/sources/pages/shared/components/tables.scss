@@ -58,15 +58,24 @@ tbody {
 
         &:hover {
             color: #fff;
-        }        
+        }
     }
 
     .icon-edit:hover {
-        background-color: #ff9913;            
+        background-color: #ff9913;
     }
+
 
     .icon-delete:hover {
         background-color: #fe3a3a;
+    }
+
+    .col-action .icon-error {
+        font-size: 16px;
+
+        &:hover {
+            color: #fe3a3a;
+        }
     }
 
     .icon-view {
