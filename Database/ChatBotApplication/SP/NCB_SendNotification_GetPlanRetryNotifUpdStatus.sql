@@ -10,6 +10,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_GetPlanRetr
 				 #2nd dataset: List of recipient,bot,conversation
         Revisions:
 				- 20190408@Dominic: First Commit
+                - 20191008@Dominic: Update RetryTime when retry sending a notification
         
     */
 )
@@ -71,14 +72,13 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 	WHERE n.StatusID = NOTIFICATION_STATUSID_RETRYING;
     
     
-    
-    
     #Lock Trying notifications to send
 	 UPDATE NotificationRecipientList AS n
      INNER JOIN  tmp_TryingNotification AS t 
 			ON n.NotificationID = t.NotificationID AND n.RecipientID = t.RecipientID  AND n.ConversationGroupID = t.ConversationGroupID
      SET n.Status = NOTIFICATION_STATUS_SENDING
 			, n.StatusID = NOTIFICATION_STATUSID_SENDING
+            , n.RetryTime =  IFNULL(n.RetryTime, 0) + 1
             , t.LockSuccess = 1
 	 WHERE n.StatusID = NOTIFICATION_STATUSID_RETRYING;
     
