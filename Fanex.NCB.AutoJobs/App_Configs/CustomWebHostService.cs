@@ -54,6 +54,10 @@
             recurringJob.AddOrUpdate<IJobService>(Resources.Job_SyncOICData,
                 job => job.SyncDataFromOIC(),
                 cronJob.CurrentValue.SyncOICData);
+
+            recurringJob.AddOrUpdate<IJobService>(Resources.MonitorChatbotService,
+                job => job.MonitorChatbot(),
+                cronJob.CurrentValue.SyncOICData);
         }
 
         private static void RemoveCurrentHangfireServer()

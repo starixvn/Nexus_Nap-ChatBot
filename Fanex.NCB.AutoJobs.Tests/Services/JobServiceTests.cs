@@ -1,10 +1,14 @@
 ﻿namespace Fanex.NCB.AutoJobs.Tests.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Logging;
+    using Fanex.NCB.AutoJobs.App_Configs;
     using Fanex.NCB.AutoJobs.Services.Implements;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models;
+    using Microsoft.Extensions.Options;
     using NSubstitute;
     using NSubstitute.ExceptionExtensions;
     using Xunit;
@@ -13,6 +17,8 @@
     {
         private ISendNotificationService sendNotificationService;
         private ISyncDataService syncDataService;
+        private IChatbotService chatbotService;
+        private IOptionsSnapshot<MonitorChatbot> monitorOptions;
         private ILogger logger;
 
         [Fact]
@@ -84,15 +90,39 @@
             await logger.Received().ErrorAsync(Arg.Any<string>());
         }
 
+        [Fact]
+        public async Task MonitorChatbot_WhenCalled_ExecuteSuccessed()
+        {
+            var service = GetService();
+
+            //Actual
+            await service.MonitorChatbot();
+
+            //Assert
+            await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+        }
+
+        [Fact]
+        public async Task MonitorChatbot_WhenCalled_ThrowException()
+        {
+            var service = GetService();
+            chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Throws(new Exception());
+
+            //Assert
+            await Assert.ThrowsAsync<Exception>(() => service.SyncDataFromOIC());
+            await logger.Received().ErrorAsync(Arg.Any<string>());
+        }
+
         #region Helper
 
         private JobService GetService()
         {
             sendNotificationService = Substitute.For<ISendNotificationService>();
             syncDataService = Substitute.For<ISyncDataService>();
-
+            chatbotService = Substitute.For<IChatbotService>();
+            monitorOptions = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
             logger = Substitute.For<ILogger>();
-            return new JobService(sendNotificationService, syncDataService, logger);
+            return new JobService(sendNotificationService, syncDataService, chatbotService, logger, monitorOptions);
         }
 
         #endregion Helper

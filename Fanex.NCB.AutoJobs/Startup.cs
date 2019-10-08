@@ -109,6 +109,7 @@
 
             services.AddSingleton(Configuration);
             services.Configure<IdentifyModel>(Configuration.GetSection("HangfireAuthenticate"));
+            services.Configure<MonitorChatbot>(Configuration.GetSection("MonitorChatbot"));
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<BotSettings>(Configuration.GetSection("ChatBotConfigs"));
             services.Configure<CronJob>(Configuration.GetSection("CronJob"));

@@ -7,7 +7,7 @@
 
     public interface IChatbotService
     {
-        Task SendMessageAsync(string conversationId, string message);
+        Task SendMessageAsync(string botName, string conversationId, string message);
 
         Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages);
     }

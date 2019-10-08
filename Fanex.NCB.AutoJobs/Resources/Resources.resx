@@ -132,4 +132,7 @@
   <data name="Log_OnStoppingService" xml:space="preserve">
     <value>Stopping Nap Chatbot service &amp; remove current Hangfire server at {0}</value>
   </data>
+  <data name="MonitorChatbotService" xml:space="preserve">
+    <value>Monitor chatbot service</value>
+  </data>
 </root>

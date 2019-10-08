@@ -7,5 +7,7 @@
         public string SyncNapUserControlData { get; set; }
 
         public string SyncOICData { get; set; }
+
+        public string MonitorSkypebot { get; set; }
     }
 }

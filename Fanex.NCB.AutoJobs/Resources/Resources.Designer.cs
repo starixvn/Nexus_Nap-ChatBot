@@ -104,5 +104,14 @@ namespace Fanex.NCB.AutoJobs.Resources {
                 return ResourceManager.GetString("Log_OnStoppingService", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monitor chatbot service.
+        /// </summary>
+        internal static string MonitorChatbotService {
+            get {
+                return ResourceManager.GetString("MonitorChatbotService", resourceCulture);
+            }
+        }
     }
 }

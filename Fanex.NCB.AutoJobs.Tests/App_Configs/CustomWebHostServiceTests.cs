@@ -25,7 +25,7 @@
             SetupService("OnStarted");
 
             logger.ReceivedCalls();
-            recurringJob.Received(3);
+            recurringJob.Received(4);
         }
 
         private void SetupService(string methodName)

@@ -6,6 +6,8 @@
 
         public string BotServiceUrl { get; set; }
 
+        public string SendSingleMessage { get; set; }
+
         public string TokenUrl { get; set; }
 
         public string AuthenticateUrl { get; set; }

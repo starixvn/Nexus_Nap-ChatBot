@@ -43,7 +43,7 @@
             var service = GetService();
 
             //Actual
-            await service.SendMessageAsync(string.Empty, "Test");
+            await service.SendMessageAsync(string.Empty, string.Empty, "Test");
 
             //Assert
             await webClient.DidNotReceiveWithAnyArgs()
@@ -62,7 +62,7 @@
 
             webClient.ExecutePostTaskAsync(Arg.Do<RestRequest>(x => request = x)).Returns(expected);
             //Actual
-            await service.SendMessageAsync("Test conversationId", "Test");
+            await service.SendMessageAsync("", "Test conversationId", "Test");
 
             //Assert
             webClient.ReceivedCalls();

@@ -9,5 +9,7 @@
         Task SyncDataFromNapUserControl();
 
         Task SyncDataFromOIC();
+
+        Task MonitorChatbot();
     }
 }
