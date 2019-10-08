@@ -35,37 +35,21 @@
             string uri = appSettings.HealthCheckUrl;
             webClient.BaseUrl = new Uri(uri);
             var request = new RestRequest(uri, Method.GET);
-            try
+            var response = await webClient.ExecuteGetTaskAsync(request);
+
+            if (response.StatusCode != HttpStatusCode.OK)
             {
-                var response = await webClient.ExecuteGetTaskAsync(request);
+                string errMsg = string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: \n\rStackTrace: ",
+                $"{uri} is inaccessable",
+                "Chatbot for Licensee - Skype Bot Service",
+                string.Empty
+                );
 
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    string errMsg = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: \n\rStackTrace: ",
-                    $"{uri} is inaccessable",
-                    "Chatbot for Licensee - Skype Bot Service",
-                    string.Empty
-                    );
+                await logger.ErrorAsync(errMsg);
 
-                    await logger.ErrorAsync(errMsg);
-
-                    return HealthCheckResult.Unhealthy(description: "Microsoft Skype service Error occurred");
-                }
-            }
-            catch (Exception exception)
-            {
-                string message = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
-                    exception.Message,
-                    exception.Source,
-                    string.Empty,
-                    exception.TargetSite,
-                    exception.StackTrace);
-                await logger.ErrorAsync(message);
-                throw;
+                return HealthCheckResult.Unhealthy(description: "Microsoft Skype service Error occurred");
             }
 
             return HealthCheckResult.Healthy();
