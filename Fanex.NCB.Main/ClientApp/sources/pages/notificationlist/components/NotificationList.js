@@ -190,8 +190,6 @@ export default class NotificationList extends Component {
     handleResolveNotification = resolvedRemark => {
         const notificationId = this.state.errorReport.notificationId;
 
-        this.handleCloseErrorReport();
-
         axios({
             url: Site.resolveClientUrl('NotificationList/Resolve'),
             method: 'post',
@@ -207,6 +205,7 @@ export default class NotificationList extends Component {
             const data = response.data;
 
             if (data.isSuccessful) {
+                this.handleCloseErrorReport();
                 this.getNotifications(this.state.tableData.pageIndex, this.state.tableData.pageSize);
                 toast.success(Labels.SubmitSuccessfully);
             } else {
@@ -310,13 +309,16 @@ export default class NotificationList extends Component {
                     onConfirm={this.handleCancelNotification}
                     content="Cancelled notification will not be sent. Are you sure to proceed?"
                 />
-                <ErrorReport
-                    isOpen={this.state.errorReport.show}
-                    toggle={this.handleCloseErrorReport}
-                    report={this.state.errorReport.report}
-                    onResolveNotification={this.handleResolveNotification}
-                    haveHostPermission={this.haveEditNotificationPermission}
-                />
+                {this.state.errorReport.show &&
+                    <ErrorReport
+                        isOpen
+                        toggle={this.handleCloseErrorReport}
+                        report={this.state.errorReport.report}
+                        onResolveNotification={this.handleResolveNotification}
+                        haveHostPermission={this.haveEditNotificationPermission}
+                    />
+                }
+
             </div>
         );
     }
