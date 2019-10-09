@@ -35,9 +35,25 @@
     <None Remove="wwwroot\js\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="App_Data\Development\SpNames.xml" />
+    <None Remove="App_Data\Local\SpNames.xml" />
+    <None Remove="App_Data\Production\SpNames.xml" />
+    <None Remove="App_Data\UAT\SpNames.xml" />
     <None Remove="logs\log.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Development\SpNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Data\Local\SpNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Data\Production\SpNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Data\UAT\SpNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="logs\log.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -74,6 +90,7 @@
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\LOCAL\" />
     <Folder Include="ClientApp\sources\pages\chatgroupmapping\components\__tests__\__snapshots__\" />
     <Folder Include="ClientApp\sources\pages\common\confirm-popup\_tests_\__snapshots__\" />
     <Folder Include="ClientApp\sources\pages\common\fixed-table-header\components\__tests__\__snapshots__\" />

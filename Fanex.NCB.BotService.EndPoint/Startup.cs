@@ -55,7 +55,7 @@
             DbSettingProviderManager
                .StartNewSession()
                .Use(connections)
-               .WithMySql(resourcePath: "~/App_Data")
+               .WithMySql(resourcePath: $"~/App_Data/{Environment.EnvironmentName}")
                .Run();
 
             Logging.LogManager

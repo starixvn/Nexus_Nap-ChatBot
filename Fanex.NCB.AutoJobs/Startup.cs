@@ -56,13 +56,16 @@
                                     .Where(x => !string.IsNullOrWhiteSpace(x.GetValue<string>("Name")))
                                     .ToDictionary(x => x.GetValue<string>("Name"),
                                     y => new ConnectionConfiguration(y.GetValue<string>("Name"), y.GetValue<string>("ConnectionString"), y.GetValue<string>("ProviderName")));
+            string spSettings = Configuration["Environment"] == null ?
+                                "~/App_Data" :
+                                $"~/App_Data/{Configuration["Environment"]}";
 
             DbSettingProviderManager
                .StartNewSession()
                .Use(connections)
                .WithMySql()
                .WithSqlServer()
-               .UseDefaultDbSettingProvider("~/App_Data")
+               .UseDefaultDbSettingProvider(spSettings)
                .Run();
 
             LogManager

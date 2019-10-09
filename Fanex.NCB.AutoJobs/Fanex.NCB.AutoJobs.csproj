@@ -25,7 +25,11 @@
     <None Remove="appsettings.LOCAL.json" />
     <None Remove="appsettings.Production.json" />
     <None Remove="appsettings.UAT.json" />
+    <None Remove="App_Data\Development\SpNames.xml" />
+    <None Remove="App_Data\LOCAL\SpNames.xml" />
+    <None Remove="App_Data\Production\SpNames.xml" />
     <None Remove="App_Data\SpNames.xml" />
+    <None Remove="App_Data\UAT\SpNames.xml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="appsettings.Development.json">
@@ -34,7 +38,7 @@
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="appsettings.LOCAL.json">
+    <Content Include="appsettings.Local.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="appsettings.Production.json">
@@ -43,7 +47,19 @@
     <Content Include="appsettings.UAT.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="App_Data\Development\SpNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Data\LOCAL\SpNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Data\Production\SpNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="App_Data\SpNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Data\UAT\SpNames.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
