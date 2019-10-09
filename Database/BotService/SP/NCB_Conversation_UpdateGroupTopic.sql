@@ -4,7 +4,7 @@ DELIMITER //
 CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_UpdateGroupTopic`(
     IN conversationId VARCHAR(200)  
     , IN groupName VARCHAR(500) CHARACTER SET 'utf8mb4'
-	, IN updatedBy VARCHAR(50)
+	, IN updatedBy VARCHAR(200)
 	, OUT errCode SMALLINT
 	, OUT errMsg VARCHAR(100)
     /*
