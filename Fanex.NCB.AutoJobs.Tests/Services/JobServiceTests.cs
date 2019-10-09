@@ -109,7 +109,7 @@
             chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Throws(new Exception());
 
             //Assert
-            await Assert.ThrowsAsync<Exception>(() => service.SyncDataFromOIC());
+            await Assert.ThrowsAsync<Exception>(() => service.MonitorChatbot());
             await logger.Received().ErrorAsync(Arg.Any<string>());
         }
 
@@ -121,6 +121,17 @@
             syncDataService = Substitute.For<ISyncDataService>();
             chatbotService = Substitute.For<IChatbotService>();
             monitorOptions = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
+            var option = new MonitorChatbot
+            {
+                IsMonitoring = true,
+                BotConversationId = "A",
+                BotName = "A",
+                ChannelId = "A",
+                ConversationId = "",
+                Message = "",
+                ServiceUrl = "dsa"
+            };
+            monitorOptions.Value.Returns(option);
             logger = Substitute.For<ILogger>();
             return new JobService(sendNotificationService, syncDataService, chatbotService, logger, monitorOptions);
         }
