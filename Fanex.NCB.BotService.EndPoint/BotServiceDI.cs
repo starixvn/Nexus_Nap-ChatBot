@@ -4,13 +4,11 @@
     using System.IO;
     using System.Net;
     using System.Net.Http;
-    using System.Security.Authentication;
     using Fanex.Data.Repository;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.BotService.EndPoint.Bots;
-    using Fanex.NCB.BotService.EndPoint.Extensions;
     using Fanex.NCB.Shared.Repositories;
     using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
@@ -21,7 +19,6 @@
     using Microsoft.Bot.Connector.Authentication;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Diagnostics.HealthChecks;
     using Microsoft.Extensions.Logging;
 
     public static class BotServiceDI
@@ -35,7 +32,6 @@
             services.AddTransient<ICredentialProvider, MultiCredentialProvider>();
             services.AddTransient<IBot, LicBot>();
             services.AddTransient<Logging.ILogger, Logging.Logger>();
-            services.AddTransient<IHealthCheck, HealthCheckSkypeUri>();
             var botConfig = GetBotConfig(environment, appSettings, logger);
             services.AddSingleton(botConfig);
             services.AddSingleton(appSettings);

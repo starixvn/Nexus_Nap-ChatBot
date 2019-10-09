@@ -7,12 +7,9 @@
     using Fanex.Data.MySql;
     using Fanex.Logging.Sentry;
     using Fanex.NCB.BotService.Core;
-    using Fanex.NCB.BotService.EndPoint.Extensions;
     using Fanex.NCB.Shared.Middlewares;
-    using HealthChecks.UI.Client;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Diagnostics.HealthChecks;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Bot.Builder.Integration.AspNet.Core;
@@ -41,10 +38,6 @@
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            services.AddHealthChecks().AddCheck<HealthCheckSkypeUri>("Skype service URL");
-
-            services.AddHealthChecksUI();
 
             Dictionary<string, ConnectionConfiguration> connections = Configuration
                 .GetSection("ConnectionStrings")
@@ -103,14 +96,6 @@
                 app.UseMiddleware<ErrorHandlingMiddleware>();
                 app.UseHsts();
             }
-
-            app.UseHealthChecks("/health", new HealthCheckOptions
-            {
-                Predicate = _ => true,
-                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            });
-
-            app.UseHealthChecksUI();//healthchecks-ui
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
