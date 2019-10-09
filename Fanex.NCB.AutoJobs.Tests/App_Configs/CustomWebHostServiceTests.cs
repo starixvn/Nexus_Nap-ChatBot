@@ -36,7 +36,8 @@
             {
                 SendNotification = "* * * * *",
                 SyncNapUserControlData = "* * * * *",
-                SyncOICData = "* * * * *"
+                SyncOICData = "* * * * *",
+                MonitorSkypebot = "*/5 * * * 8"
             };
             cronJob.CurrentValue.Returns(cron);
             recurringJob = Substitute.For<IRecurringJobManager>();
