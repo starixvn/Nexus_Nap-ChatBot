@@ -76,8 +76,6 @@
             if (isUseProxy)
             {
                 var proxy = new WebProxy(proxyAddress, bypassOnLocal);
-                proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
-
                 var socketsHttpHandler = new HttpClientHandler
                 {
                     UseProxy = isUseProxy,

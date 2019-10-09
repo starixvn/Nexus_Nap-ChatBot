@@ -2,9 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Fanex.Logging;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
@@ -21,12 +23,14 @@
         private readonly IAdapterIntegration adapter;
         private readonly BotConfiguration botConfig;
         private readonly IConversationService conversationService;
+        private readonly ILogger logger;
 
-        public NotifyController(IAdapterIntegration adapter, BotConfiguration botConfig, IConversationService conversationService)
+        public NotifyController(IAdapterIntegration adapter, BotConfiguration botConfig, IConversationService conversationService, ILogger logger)
         {
             this.adapter = adapter;
             this.botConfig = botConfig;
             this.conversationService = conversationService;
+            this.logger = logger;
         }
 
         [HttpPost]
@@ -44,6 +48,7 @@
             catch (Exception ex)
             {
                 errorMessage = ex.Message;
+                logger.Error(errorMessage);
             }
 
             return Ok(errorMessage);
@@ -98,10 +103,21 @@
             {
                 await SendMessage(appId, conversationReference, message);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                result.ErrorCode = 1;
-                result.ErrorMessage = ex.Message;
+                WriteLog(exception);
+
+                try
+                {
+                    await SendMessage(appId, conversationReference, message);
+                }
+                catch (Exception ex)
+                {
+                    result.ErrorCode = 1;
+                    result.ErrorMessage = ex.Message;
+
+                    WriteLog(ex);
+                }
             }
 
             result.SentTime = DateTime.UtcNow;
@@ -166,6 +182,18 @@
             var appId = (endpoint != null && !string.IsNullOrEmpty(endpoint.AppId)) ? endpoint.AppId : Guid.NewGuid().ToString();
 
             return appId;
+        }
+
+        private void WriteLog(Exception exception)
+        {
+            string message = string.Format(
+                    CultureInfo.InvariantCulture,
+                    "{0}\n\rSource: {1}\n\rTargetSite: {2}\n\rStackTrace: {3}",
+                    exception.Message,
+                    exception.Source,
+                    exception.TargetSite,
+                    exception.StackTrace);
+            logger.Error(message);
         }
     }
 }
