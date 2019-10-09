@@ -26,8 +26,6 @@
 
     public static class BotServiceDI
     {
-        ////private static double timeout = 180;
-
         public static void Init(IServiceCollection services, IConfiguration configuration, IHostingEnvironment environment, AppSettings appSettings, ILogger logger)
         {
             services.AddTransient<IBaseRepository, BaseRepository>();
@@ -52,7 +50,6 @@
                 options.OnTurnError = (turnContext, exception) =>
                 {
                     logger.LogError($"Exception caught : {exception.Message}");
-                    ////await turnContext.SendActivityAsync("Sorry, it looks like something went wrong. Please contact Administrator.");
                     throw exception;
                 };
             });
@@ -78,16 +75,17 @@
 
             if (isUseProxy)
             {
+                var proxy = new WebProxy(proxyAddress, bypassOnLocal);
+                proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
+
                 var socketsHttpHandler = new HttpClientHandler
                 {
                     UseProxy = isUseProxy,
-                    ////UseDefaultCredentials = true,
                     ////SslProtocols = SslProtocols.Tls12,
-                    Proxy = new WebProxy(proxyAddress, bypassOnLocal)
+                    Proxy = proxy
                 };
 
                 httpClient = new HttpClient(handler: socketsHttpHandler);
-                ////httpClient.Timeout = TimeSpan.FromSeconds(timeout);
             }
             else
             {
