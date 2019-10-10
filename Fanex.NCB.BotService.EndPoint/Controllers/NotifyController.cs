@@ -196,10 +196,11 @@
 
         private void WriteLog(Exception exception)
         {
+            var messageException = exception.InnerException != null ? exception.InnerException.Message : exception.Message;
             string message = string.Format(
                     CultureInfo.InvariantCulture,
                     "{0}\n\rSource: {1}\n\rTargetSite: {2}\n\rStackTrace: {3}",
-                    exception.Message,
+                    messageException,
                     exception.Source,
                     exception.TargetSite,
                     exception.StackTrace);
