@@ -33,6 +33,16 @@
             this.logger = logger;
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("api/Test")]
+        public async Task<ObjectResult> Test()
+        {
+            await logger.ErrorAsync("test sentry");
+
+            return Ok("ok");
+        }
+
         [HttpPost]
         [Route("api/notify")]
         public async Task<ObjectResult> Send(string botName, string conversationId, string message)
