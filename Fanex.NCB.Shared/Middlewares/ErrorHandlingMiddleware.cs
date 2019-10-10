@@ -31,10 +31,12 @@
 
         private void HandleException(HttpContext context, Exception exception)
         {
+            var messageException = exception.InnerException != null ? exception.InnerException.Message : exception.Message;
+
             string message = string.Format(
                     CultureInfo.InvariantCulture,
                     "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
-                    exception.Message,
+                    messageException,
                     exception.Source,
                     context.Request.Headers["Host"],
                     exception.TargetSite,
@@ -48,10 +50,10 @@
             {
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             }
-            else
-            {
-                context.Response.Redirect(context.Request.PathBase + "/Error/InternalServerError");
-            }
+            ////else
+            ////{
+            ////    context.Response.Redirect(context.Request.PathBase + "/Error/InternalServerError");
+            ////}
         }
     }
 }
