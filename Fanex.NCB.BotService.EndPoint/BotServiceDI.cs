@@ -23,6 +23,8 @@
 
     public static class BotServiceDI
     {
+        private const double timeOut = 30;
+
         public static void Init(IServiceCollection services, IConfiguration configuration, IHostingEnvironment environment, AppSettings appSettings, ILogger logger)
         {
             services.AddTransient<IBaseRepository, BaseRepository>();
@@ -71,14 +73,14 @@
             if (isUseProxy)
             {
                 var proxy = new WebProxy(proxyAddress, bypassOnLocal);
-                var socketsHttpHandler = new HttpClientHandler
+                var socketsHttpHandler = new SocketsHttpHandler
                 {
                     UseProxy = isUseProxy,
-                    ////SslProtocols = SslProtocols.Tls12,
-                    Proxy = proxy
+                    Proxy = proxy,
                 };
 
                 httpClient = new HttpClient(handler: socketsHttpHandler);
+                httpClient.Timeout = TimeSpan.FromMinutes(timeOut);
             }
             else
             {
