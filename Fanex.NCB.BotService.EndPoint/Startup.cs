@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
@@ -82,6 +83,8 @@
             });
 
             IdentityModelEventSource.ShowPII = true;
+            AppContext.SetSwitch("System.Net.Http.UseSocketsHttpHandler", false);
+
             BotServiceDI.Init(services, Configuration, Environment, appSettings, logger);
         }
 
