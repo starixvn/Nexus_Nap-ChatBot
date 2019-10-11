@@ -53,7 +53,7 @@ BEGIN
     
 	#Insert comma seperated list recipientIDLst to temporary tables
     DROP TEMPORARY TABLE IF EXISTS tmp_recipientIDLst;
-	CREATE TEMPORARY TABLE tmp_recipientIDLst(RecipientID INT);
+	CREATE TEMPORARY TABLE tmp_recipientIDLst(RecipientID INT, UNIQUE INDEX Index_RecipientID(RecipientID));
     
 	IF IFNULL(recipientIDLst,'') <> ''THEN
 		SET @sqlCommand = REPLACE(recipientIDLst, ',', '),(');

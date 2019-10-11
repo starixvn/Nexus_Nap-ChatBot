@@ -111,7 +111,7 @@ BEGIN
 	END IF;
 
 	DROP TEMPORARY TABLE IF EXISTS tmp_RecipientIDByLicenseeStatus;
-	CREATE TEMPORARY TABLE tmp_RecipientIDByLicenseeStatus(RecipientID INT);
+	CREATE TEMPORARY TABLE tmp_RecipientIDByLicenseeStatus(RecipientID INT, UNIQUE INDEX Index_RecipientID(RecipientID));
     
     INSERT INTO tmp_RecipientIDByLicenseeStatus(RecipientID)
     SELECT r.RecipientID
@@ -144,6 +144,7 @@ BEGIN
 	CREATE TEMPORARY TABLE tmp_ConversationID_FIRSTBot(
 																					ConversationGroupID INT
                                                                                     , ConversationBotID INT
+                                                                                    , UNIQUE INDEX Index_ConversationGroupID(ConversationGroupID)
 																		);
      
 	INSERT INTO tmp_ConversationID_FIRSTBot (ConversationGroupID, ConversationBotID)
