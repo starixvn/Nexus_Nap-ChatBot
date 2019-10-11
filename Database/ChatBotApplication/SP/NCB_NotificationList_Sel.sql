@@ -4,7 +4,7 @@ DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_Sel`(
      IN notificationTypeIDLst VARCHAR(1000)
-    , IN recipientIDLst VARCHAR(5000)
+    , IN recipientIDLst TEXT
 	, IN creatorID	INT
     , IN notificationStatusIDLst VARCHAR(1000)
 	, IN configSendTimeFrom DATETIME #UTC

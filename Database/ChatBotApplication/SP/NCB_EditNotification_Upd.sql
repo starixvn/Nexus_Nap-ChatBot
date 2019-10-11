@@ -3,7 +3,7 @@ DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_EditNotification_Upd`(
 	IN notificationID INT
-	, IN recipientIDLst VARCHAR(200)
+	, IN recipientIDLst TEXT
 	, IN title VARCHAR(300) CHARACTER SET utf8mb4
 	, IN content MEDIUMTEXT CHARACTER SET utf8mb4
 	, IN configSendTime DATETIME

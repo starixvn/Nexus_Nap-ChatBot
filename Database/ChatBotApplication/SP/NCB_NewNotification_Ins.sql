@@ -4,7 +4,7 @@ DELIMITER //
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NewNotification_Ins`(
 	IN notificationTypeID SMALLINT
 	, IN productID SMALLINT
-	, IN recipientIDLst VARCHAR(200)
+	, IN recipientIDLst TEXT
 	, IN title VARCHAR(300) CHARACTER SET utf8mb4
 	, IN content MEDIUMTEXT CHARACTER SET utf8mb4
 	, IN configSendTime DATETIME
