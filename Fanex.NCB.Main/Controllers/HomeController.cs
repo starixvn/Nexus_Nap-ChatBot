@@ -14,5 +14,12 @@ namespace Fanex.NCB.Main.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [AllowAnonymous]
+        public IActionResult IP()
+        {
+            ViewBag.IpServer = HttpContext.Connection.LocalIpAddress.ToString();
+            return View();
+        }
     }
 }
