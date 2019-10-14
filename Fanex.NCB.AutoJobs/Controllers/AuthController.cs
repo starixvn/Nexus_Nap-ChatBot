@@ -8,9 +8,11 @@
     using Fanex.NCB.AutoJobs.App_Configs;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
 
+    [AllowAnonymous]
     public class AuthController : Controller
     {
         private readonly IOptionsSnapshot<IdentifyModel> auth;
