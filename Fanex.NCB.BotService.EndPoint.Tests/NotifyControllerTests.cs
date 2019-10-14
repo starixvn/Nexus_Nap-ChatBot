@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using Fanex.Logging;
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.BotService.EndPoint.Controllers;
@@ -22,6 +23,7 @@
         private IAdapterIntegration adapter;
         private BotConfiguration botConfig;
         private IConversationService conversationService;
+        private ILogger logger;
 
         [Fact]
         public async Task Send_InValidBotName_SendContinueWithDefaultAppId()
@@ -78,7 +80,7 @@
             conversationService.GetGroupConversation(Arg.Any<string>(), Arg.Any<string>()).Returns(conversationGroup);
 
             //Actual
-           var actual = await controller.Send(botName, conversationId, message);
+            var actual = await controller.Send(botName, conversationId, message);
 
             //Assert
             Assert.IsType<OkObjectResult>(actual);
@@ -238,8 +240,8 @@
             adapter = Substitute.For<IAdapterIntegration>();
             botConfig = Substitute.For<BotConfiguration>();
             conversationService = Substitute.For<IConversationService>();
-
-            return new NotifyController(adapter, botConfig, conversationService);
+            logger = Substitute.For<ILogger>();
+            return new NotifyController(adapter, botConfig, conversationService, logger);
         }
     }
 }
