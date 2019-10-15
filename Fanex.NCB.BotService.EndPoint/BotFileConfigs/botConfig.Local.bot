@@ -6,16 +6,16 @@
       "type": "endpoint",
       "name": "1on1notify",
       "endpoint": "https://licbot.nexdev.net/api/messages",
-      "appId": "8e7cdcd3-a375-45eb-be44-da89e26aaa49",
-      "appPassword": "[14Z15g?rKmygZWNZQI-Mb.7bvaMlfzy",
+      "appId": "e63aedd7-660c-46ca-8637-1df5fb133f96",
+      "appPassword": "Lrb@U45PXP4F=3t:kAyjLdoBNqnlCQr-",
       "id": "1"
     },
     {
       "type": "endpoint",
       "name": "OWnotify",
       "endpoint": "https://licbot.nexdev.net/api/messages",
-      "appId": "56c9b606-4cd4-49e3-bdfe-24815ac7d7b4",
-      "appPassword": "G5Vh4qm06+-q[SK=I1o@L@iC]fGAymJ]",
+      "appId": "6de2b90e-03b5-4bf7-9268-6cec3ed6f87b",
+      "appPassword": ":DQdaPNlj2n1]dx[R4YkTjsNq?cYDd3Z",
       "id": "2"
     },
     {
@@ -41,6 +41,62 @@
       "appId": "023ce7c5-1ef3-4653-ae7a-1ce4114ef4bb",
       "appPassword": "FnN1a6t7+1W_r/Tt[N55yz3z@+@+OLo4",
       "id": "6"
+    },
+    {
+      "type": "endpoint",
+      "name": "NCB_undefine1_PRO",
+      "endpoint": "https://licbot.nexdev.net/api/messages",
+      "appId": "3eb816dc-4b12-4614-a539-3a789b37a456",
+      "appPassword": "C?V0Eot@lP:hWw787VeGfeeoAAD/:J=R",
+      "id": "7"
+    },
+    {
+      "type": "endpoint",
+      "name": "NCB_undefine2_PRO",
+      "endpoint": "https://licbot.nexdev.net/api/messages",
+      "appId": "05ba2d83-76dc-41fb-b0bb-6ae7bfc5933f",
+      "appPassword": "ZPz9lcK02e:p?8ztAGQAQ[yX.G9mmuxX",
+      "id": "8"
+    },
+    {
+      "type": "endpoint",
+      "name": "1on1notify_UAT4",
+      "endpoint": "https://licbot.nexdev.net/api/messages",
+      "appId": "cfc5a5ad-1467-4590-b63b-d284498082fe",
+      "appPassword": "JDMNS./D/B4uSANJePl6nWNrd3gzyq[5",
+      "id": "9"
+    },
+    {
+      "type": "endpoint",
+      "name": "NCB_undefine3_PRO",
+      "endpoint": "https://licbot.nexdev.net/api/messages",
+      "appId": "5eef9a86-a096-49da-b71d-6079cdffa7a8",
+      "appPassword": "XEuEQVFhk0UCI.dBy[x2CMnqE4Tjx-1@",
+      "id": "10"
+    },
+    {
+      "type": "endpoint",
+      "name": "NCB_undefine3_UAT",
+      "endpoint": "https://licbot.nexdev.net/api/messages",
+      "appId": "5dd6d41b-b361-4f91-9ac0-7b1f4ebe1ca1",
+      "appPassword": "H3-Uo[IhiDL1vXRfrX2sbsZRpJBOX2@]",
+      "id": "11"
+    },
+    {
+      "type": "endpoint",
+      "name": "NCB_undefine4_UAT",
+      "endpoint": "https://licbot.nexdev.net/api/messages",
+      "appId": "bd392363-9d0c-4460-b3d2-30aba5631d3c",
+      "appPassword": "6dhTv72U_LrXBK6j/?]TYHbbQlebiq6u",
+      "id": "12"
+    },
+    {
+      "type": "endpoint",
+      "name": "NCB_undefine4_PRO",
+      "endpoint": "https://licbot.nexdev.net/api/messages",
+      "appId": "46f6dc32-16ae-477e-9f37-4fef97327462",
+      "appPassword": "]:rVKZgSWOg8s88cByuO?]vdYwNt8CZ8",
+      "id": "13"
     }
   ],
   "padlock": "",

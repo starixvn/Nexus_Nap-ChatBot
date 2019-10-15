@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Text;
     using Fanex.Data;
     using Fanex.Data.MySql;
@@ -83,6 +84,7 @@
             });
 
             IdentityModelEventSource.ShowPII = true;
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
 
             BotServiceDI.Init(services, Configuration, Environment, appSettings, logger);
         }
