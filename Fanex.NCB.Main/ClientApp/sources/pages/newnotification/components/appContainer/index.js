@@ -112,7 +112,9 @@ export class AppContainer extends React.Component {
             if (item.children && item.children.length > 0) {
                 this.getRecipientIds(ids, item.children);
             } else {
-                ids.push(item.node.props.realValue);
+                if (!ids.some(i => i === item.node.props.realValue)) {
+                    ids.push(item.node.props.realValue);
+                }
             }
         }
     }
@@ -203,6 +205,7 @@ export class AppContainer extends React.Component {
     }
 
     handleRecipientChange = (value, label, extra) => {
+        debugger;
         const formik = this.refs.form;
         this.selectedNodes = extra.allCheckedNodes;
         formik.setFieldValue('recipients', value);

@@ -23,7 +23,11 @@ export const getRealValuesFromExtra = function (result, collection) {
         if (item.children && item.children.length > 0) {
             getRealValuesFromExtra(result, item.children);
         } else {
-            result.push(item.realValue || item.node.props.realValue);
+            const value = item.realValue || item.node.props.realValue;
+
+            if (!result.some(i => i === value)) {
+                result.push(value);
+            }
         }
     }
 };
