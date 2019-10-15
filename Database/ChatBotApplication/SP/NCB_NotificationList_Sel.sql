@@ -13,6 +13,8 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_Sel`(
     , IN pageSize INT
     /*
 		Creator: Dominic@20190408
+        Task: Chatbot For Licensee - Phase 1: Sending UM notification using Skype bot
+        Redmine: https://nexdev.net/issues/110890
         Param:
 				- notificationTypeIDLst, recipientIDLst, creatorIDLst, notificationStatusIDLst: Comma separated strings for filtering
                 - pageIndex: Page Index for paging, start from 1
@@ -25,6 +27,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_Sel`(
         Revisions:
 				- 20190408@Dominic: First Commit
 				- 20190814@Elton: change RecipientSentStatusJSON
+                - 20191015@Dominic: extend NotificationTypeName length
     */
 )
 BEGIN
@@ -109,7 +112,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Notification;
 	CREATE TEMPORARY TABLE tmp_Notification(
 													NotificationID INT
-                                                    ,NotificationTypeName VARCHAR(50)
+                                                    ,NotificationTypeName VARCHAR(200)
                                                     ,CreatorID INT
                                                     ,CreatorName VARCHAR(30)
                                                     , ConfigSendTime DATETIME
