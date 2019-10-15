@@ -113,8 +113,10 @@
             {
                 await SendMessage(appId, conversationReference, message);
             }
-            catch 
+            catch (Exception exception)
             {
+                WriteLog(exception);
+
                 try
                 {
                     await SendMessage(appId, conversationReference, message);
