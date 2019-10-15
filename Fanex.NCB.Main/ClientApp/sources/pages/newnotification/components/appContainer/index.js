@@ -205,7 +205,6 @@ export class AppContainer extends React.Component {
     }
 
     handleRecipientChange = (value, label, extra) => {
-        debugger;
         const formik = this.refs.form;
         this.selectedNodes = extra.allCheckedNodes;
         formik.setFieldValue('recipients', value);
