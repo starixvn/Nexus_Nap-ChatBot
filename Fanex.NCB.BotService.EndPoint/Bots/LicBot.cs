@@ -60,7 +60,6 @@
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            await logger.WarnAsync("test 2");
             var message = turnContext.Activity.Text.Trim();
             var botName = turnContext.Activity.Recipient.Name;
             if (turnContext.Activity.Conversation.IsGroup == true)
@@ -83,17 +82,26 @@
 
         protected virtual async Task OnBotAddedAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            var command = new AddBotToGroupCommand
+            try
             {
-                BotConversationId = turnContext.Activity?.Recipient.Id,
-                BotName = turnContext.Activity?.Recipient.Name,
-                ConversationId = turnContext.Activity?.Conversation.Id,
-                ChannelId = turnContext.Activity?.ChannelId,
-                ServiceUrl = turnContext.Activity?.ServiceUrl,
-                UpdatedBy = turnContext.Activity?.From.Id
-            };
+                await logger.WarnAsync("test 12");
 
-            await conversationService.AddBotToGroup(command);
+                var command = new AddBotToGroupCommand
+                {
+                    BotConversationId = turnContext.Activity?.Recipient.Id,
+                    BotName = turnContext.Activity?.Recipient.Name,
+                    ConversationId = turnContext.Activity?.Conversation.Id,
+                    ChannelId = turnContext.Activity?.ChannelId,
+                    ServiceUrl = turnContext.Activity?.ServiceUrl,
+                    UpdatedBy = turnContext.Activity?.From.Id
+                };
+
+                await conversationService.AddBotToGroup(command);
+            }
+            catch (Exception ex)
+            {
+                await logger.ErrorAsync(ex.Message);
+            }
         }
 
         protected virtual async Task OnBotRemovedAsync(ITurnContext turnContext, CancellationToken cancellationToken)
