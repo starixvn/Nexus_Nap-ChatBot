@@ -4,6 +4,8 @@ DELIMITER //
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_GetPlanRetryNotifUpdStatus(
     /*
 		Creator: Dominic@20190417
+        Task: Chatbot For Licensee - Phase 1: Sending UM notification using Skype bot
+        Redmine: https://nexdev.net/issues/110890
         Param:
 		Result Dataset:
 				 #1st dataset: Main Notification Info such as title, content
@@ -11,6 +13,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_GetPlanRetr
         Revisions:
 				- 20190408@Dominic: First Commit
                 - 20191008@Dominic: Update RetryTime when retry sending a notification
+                - 20191016@Dominic: Limit  number of planned notifs and retrying notifs to send, they are 10 and 100 respectively
         
     */
 )
@@ -44,7 +47,9 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 	FROM Notification n
 	WHERE n.StatusID = NOTIFICATION_STATUSID_PLANNED
 		AND n.ConfigSendTime <= UTC_TIMESTAMP()
-        AND n.SendImmediately = 0;
+        AND n.SendImmediately = 0
+	ORDER BY ConfigSendTime, n.NotificationID
+	LIMIT 10;
      
      #Lock planned notifications to send
 	 UPDATE Notification AS n
@@ -69,7 +74,9 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
     INSERT INTO tmp_TryingNotification(NotificationID, RecipientID, ConversationGroupID, LockSuccess)
 	SELECT n.NotificationID, n.RecipientID, n.ConversationGroupID, 0
 	FROM NotificationRecipientList n
-	WHERE n.StatusID = NOTIFICATION_STATUSID_RETRYING;
+	WHERE n.StatusID = NOTIFICATION_STATUSID_RETRYING
+    ORDER BY n.NotificationID
+    LIMIT 100;
     
     
     #Lock Trying notifications to send
