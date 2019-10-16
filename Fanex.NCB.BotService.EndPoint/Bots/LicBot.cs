@@ -5,6 +5,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
+    using Fanex.Logging;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
@@ -17,14 +18,17 @@
         private const string greetingMessage = "Hello, I am {0}";
 
         private readonly IConversationService conversationService;
+        private readonly ILogger logger;
 
-        public LicBot(IConversationService conversationService)
+        public LicBot(IConversationService conversationService, ILogger logger)
         {
             this.conversationService = conversationService;
+            this.logger = logger;
         }
 
         protected override async Task OnConversationUpdateActivityAsync(ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
+            await logger.WarnAsync("test 1");
             if (turnContext.Activity.ChannelId.Equals(channelSkypeId))
             {
                 if (turnContext.Activity.MembersAdded != null)
@@ -56,6 +60,7 @@
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
+            await logger.WarnAsync("test 2");
             var message = turnContext.Activity.Text.Trim();
             var botName = turnContext.Activity.Recipient.Name;
             if (turnContext.Activity.Conversation.IsGroup == true)
