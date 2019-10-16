@@ -84,8 +84,6 @@
             });
 
             IdentityModelEventSource.ShowPII = true;
-            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-
             BotServiceDI.Init(services, Configuration, Environment, appSettings, logger);
         }
 
