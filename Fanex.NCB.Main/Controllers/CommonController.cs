@@ -1,12 +1,12 @@
 ﻿namespace Fanex.NCB.SkypeBot.Controllers
 {
-    using Fanex.NAP.Client.AspNetCore.Attributes;
+    using System.Threading.Tasks;
     using Fanex.NCB.Main.ViewModel.TreeSelect;
+    using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
-    using System.Threading.Tasks;
 
-    [NapSuperAuth]
+    [NapChatBotSuperAuth]
     public class CommonController : Controller
     {
         private readonly ICommonService commonService;

@@ -36,7 +36,7 @@ export default class AuthRecheck extends PureComponent {
     }
 
     handleRedirect = () => {
-        window.location = Site.resolveClientUrl('Auth/Index');
+        window.location.href = Site.resolveClientUrl('Auth/Index');
     }
 
     render() {
