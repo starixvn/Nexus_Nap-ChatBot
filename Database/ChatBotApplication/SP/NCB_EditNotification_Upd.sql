@@ -22,7 +22,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_EditNotification_Upd`(
         Revisions:
 				- 20190401@Dominic: First Commit
 				- 20190819@Elton: Update Error Message
-                - 20191021@Dominic: Not check recipients who have atleast 1 mapped chat group
+                - 20191021@Dominic: Not check recipients who have at least 1 mapped chat group
     */
 )
 NCB_EditNotification_Upd:BEGIN
