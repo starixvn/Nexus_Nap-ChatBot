@@ -13,13 +13,16 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_EditNotification_Upd`(
 	, OUT errMsg TEXT
     /*
 		Creator: Dominic@20190401
+        Task: Chatbot For Licensee - Phase 1: Sending UM notification using Skype bot
+        Redmine: https://nexdev.net/issues/110890
         Param:
 				- ProductID: Applied to filter licensees who are offered a specific product
                 - NotificationID: ID of created Notification
                 - ConfigSendTime: UTC (GMT +0)
         Revisions:
 				- 20190401@Dominic: First Commit
-				- 20190819Q@Elton: Update Error Message
+				- 20190819@Elton: Update Error Message
+                - 20191021@Dominic: Not check recipients who have atleast 1 mapped chat group
     */
 )
 NCB_EditNotification_Upd:BEGIN
