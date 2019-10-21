@@ -104,20 +104,25 @@ NCB_EditNotification_Upd:BEGIN
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
     
+	DROP TEMPORARY TABLE IF EXISTS tmp_mappedRecipientIDLst;
+	CREATE TEMPORARY TABLE tmp_mappedRecipientIDLst(RecipientID INT);
+	
+	INSERT INTO tmp_mappedRecipientIDLst(RecipientID)
+	SELECT main.RecipientID 
+	FROM tmp_recipientIDLst main
+	INNER JOIN ConversationGroupRecipient bcr
+			ON bcr.RecipientID = main.RecipientID
+	INNER JOIN ConversationGroupExtraInfo bcri
+			ON bcri.ConversationGroupID = bcr.ConversationGroupID
+	INNER JOIN ConversationGroupBot cgb
+			ON cgb.ConversationGroupID = bcr.ConversationGroupID;
+            
     #Check Not-Mapping/Removed-Bot Recipients
     IF EXISTS(
 						SELECT 1 
 						FROM tmp_recipientIDLst main
-                        LEFT JOIN ConversationGroupRecipient bcr
-								ON bcr.RecipientID = main.RecipientID
-						LEFT JOIN ConversationGroupExtraInfo bcri
-								ON bcri.ConversationGroupID = bcr.ConversationGroupID
-						LEFT JOIN ConversationGroupBot cgb
-								ON cgb.ConversationGroupID = bcr.ConversationGroupID
-						WHERE bcr.ConversationGroupID IS NULL
-								OR bcri.ChatGroupTypeID IS  NULL
-                                OR cgb.ConversationBotID IS NULL
-	) THEN
+						WHERE main.RecipientID NOT IN (SELECT t1.RecipientID FROM tmp_mappedRecipientIDLst t1)
+	)  THEN
 		SET errCode=507;
 
 		SELECT GROUP_CONCAT( DISTINCT re.RecipientName  ORDER BY re.RecipientName SEPARATOR ', ') 
@@ -126,18 +131,11 @@ NCB_EditNotification_Upd:BEGIN
         WHERE re.RecipientID IN (
 						SELECT main. RecipientID
 						FROM tmp_recipientIDLst main
-                        LEFT JOIN ConversationGroupRecipient bcr
-								ON bcr.RecipientID = main.RecipientID
-						LEFT JOIN ConversationGroupExtraInfo bcri
-								ON bcri.ConversationGroupID = bcr.ConversationGroupID
-						LEFT JOIN ConversationGroupBot cgb
-								ON cgb.ConversationGroupID = bcr.ConversationGroupID
-						WHERE bcr.ConversationGroupID IS NULL
-								OR bcri.ChatGroupTypeID IS  NULL
-                                OR cgb.ConversationBotID IS NULL
+						WHERE main.RecipientID NOT IN (SELECT t1.RecipientID FROM tmp_mappedRecipientIDLst t1)
 			);
-            
-		SET errMsg = CONCAT('Recipient is not mapped or removed: ' , errMsg);
+		
+        SET errMsg = CONCAT('Recipient is not mapped or removed: ' , errMsg);
+        
         LEAVE NCB_EditNotification_Upd;
     END IF;
 
