@@ -18,17 +18,14 @@
         private const string greetingMessage = "Hello, I am {0}";
 
         private readonly IConversationService conversationService;
-        private readonly ILogger logger;
 
-        public LicBot(IConversationService conversationService, ILogger logger)
+        public LicBot(IConversationService conversationService)
         {
             this.conversationService = conversationService;
-            this.logger = logger;
         }
 
         protected override async Task OnConversationUpdateActivityAsync(ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
-            await logger.WarnAsync("test 1");
             if (turnContext.Activity.ChannelId.Equals(channelSkypeId))
             {
                 if (turnContext.Activity.MembersAdded != null)
@@ -82,26 +79,17 @@
 
         protected virtual async Task OnBotAddedAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            try
+            var command = new AddBotToGroupCommand
             {
-                await logger.WarnAsync("test 12");
+                BotConversationId = turnContext.Activity?.Recipient.Id,
+                BotName = turnContext.Activity?.Recipient.Name,
+                ConversationId = turnContext.Activity?.Conversation.Id,
+                ChannelId = turnContext.Activity?.ChannelId,
+                ServiceUrl = turnContext.Activity?.ServiceUrl,
+                UpdatedBy = turnContext.Activity?.From.Id
+            };
 
-                var command = new AddBotToGroupCommand
-                {
-                    BotConversationId = turnContext.Activity?.Recipient.Id,
-                    BotName = turnContext.Activity?.Recipient.Name,
-                    ConversationId = turnContext.Activity?.Conversation.Id,
-                    ChannelId = turnContext.Activity?.ChannelId,
-                    ServiceUrl = turnContext.Activity?.ServiceUrl,
-                    UpdatedBy = turnContext.Activity?.From.Id
-                };
-
-                await conversationService.AddBotToGroup(command);
-            }
-            catch (Exception ex)
-            {
-                await logger.ErrorAsync(ex.Message);
-            }
+            await conversationService.AddBotToGroup(command);
         }
 
         protected virtual async Task OnBotRemovedAsync(ITurnContext turnContext, CancellationToken cancellationToken)
