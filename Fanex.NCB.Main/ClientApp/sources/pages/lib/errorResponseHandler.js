@@ -16,6 +16,8 @@ const errorResponseHandler = (error) => {
             case 500:
                 url = Site.resolveClientUrl('Error/InternalServerError');
                 break;
+            default:
+                url = Site.resolveClientUrl('Auth/Index');
         }
 
         window.location = url;
