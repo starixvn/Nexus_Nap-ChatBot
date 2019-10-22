@@ -1,9 +1,10 @@
 ﻿namespace Fanex.NCB.Shared.Middlewares
 {
     using System;
-    using System.Globalization;
     using System.Threading.Tasks;
     using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
     using Microsoft.AspNetCore.Http;
 
     public class ErrorHandlingMiddleware
@@ -31,17 +32,12 @@
 
         private void HandleException(HttpContext context, Exception exception)
         {
-            var messageException = exception.InnerException != null ? exception.InnerException.Message : exception.Message;
-
-            string message = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
-                    messageException,
-                    exception.Source,
-                    context.Request.Headers["Host"],
-                    exception.TargetSite,
-                    exception.StackTrace);
-            logger.Error(message);
+            var logMessage = new LogMessage(exception.Message)
+                        .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
+                        .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
+                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
+                        .ToString();
+            logger.Error(logMessage);
 
             var method = context.Request.Method.ToLowerInvariant();
             var requestedWith = context.Request.Headers["X-Requested-With"];
