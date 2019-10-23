@@ -15,7 +15,7 @@
             controller.ControllerContext = new ControllerContext();
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
             controller.ControllerContext.HttpContext.Connection.LocalIpAddress = IPAddress.Parse("10.10.10.10");
-            controller.ControllerContext.HttpContext.Request.Host = new HostString("test.com");
+            controller.ControllerContext.HttpContext.Connection.RemoteIpAddress = IPAddress.Parse("10.10.10.11");
 
             //Actual
             var actual = controller.Index();
@@ -32,7 +32,7 @@
             controller.ControllerContext = new ControllerContext();
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
             controller.ControllerContext.HttpContext.Connection.LocalIpAddress = IPAddress.Parse("10.10.10.10");
-            controller.ControllerContext.HttpContext.Request.Host = new HostString("test.com");
+            controller.ControllerContext.HttpContext.Connection.RemoteIpAddress = IPAddress.Parse("10.10.10.11");
 
             //Actual
             var actual = controller.Index();
@@ -40,8 +40,8 @@
             //Assert
             var result = actual as ViewResult;
 
-            Assert.Equal("10.10.10.10", result.ViewData["IpServer"]);
-            Assert.Equal("test.com", result.ViewData["Domain"]);
+            Assert.Equal("10.10.10.10", result.ViewData["LocalIpAddress"]);
+            Assert.Equal("10.10.10.11", result.ViewData["RemoteIpAddress"]);
         }
     }
 }

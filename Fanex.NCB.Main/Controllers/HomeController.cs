@@ -21,7 +21,7 @@ namespace Fanex.NCB.Main.Controllers
             var localIpAddress = HttpContext.Connection.LocalIpAddress;
             var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
             ViewBag.LocalIpAddress = localIpAddress.ToString();
-            ViewBag.RemoteIpAddress = remoteIpAddress;
+            ViewBag.RemoteIpAddress = remoteIpAddress.ToString();
 
             return View();
         }

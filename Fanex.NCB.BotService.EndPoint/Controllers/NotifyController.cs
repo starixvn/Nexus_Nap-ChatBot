@@ -57,6 +57,7 @@
             }
             catch (Exception ex)
             {
+                errorMessage = ex.Message;
                 await WriteLog(ex);
             }
 

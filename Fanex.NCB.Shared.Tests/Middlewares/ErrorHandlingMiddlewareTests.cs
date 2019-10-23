@@ -35,7 +35,7 @@
             //Actual
             await middleware.InvokeAsync(httpContext);
 
-            logger.Received().Error(Arg.Any<string>());
+            await logger.Received().ErrorAsync(Arg.Any<string>());
         }
 
         [Fact]
