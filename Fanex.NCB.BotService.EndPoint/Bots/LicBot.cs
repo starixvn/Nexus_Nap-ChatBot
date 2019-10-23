@@ -5,7 +5,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
-    using Fanex.Logging;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Services.Interfaces;

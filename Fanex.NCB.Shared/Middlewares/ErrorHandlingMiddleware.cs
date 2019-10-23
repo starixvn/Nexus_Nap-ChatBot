@@ -26,18 +26,18 @@
             }
             catch (Exception ex)
             {
-                HandleException(context, ex);
+                await HandleException(context, ex);
             }
         }
 
-        private void HandleException(HttpContext context, Exception exception)
+        private async Task HandleException(HttpContext context, Exception exception)
         {
             var logMessage = new LogMessage(exception.Message)
                         .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
                         .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
                         .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
                         .ToString();
-            logger.Error(logMessage);
+            await logger.ErrorAsync(logMessage);
 
             var method = context.Request.Method.ToLowerInvariant();
             var requestedWith = context.Request.Headers["X-Requested-With"];

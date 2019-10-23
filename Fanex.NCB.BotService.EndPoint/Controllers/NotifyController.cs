@@ -57,8 +57,7 @@
             }
             catch (Exception ex)
             {
-                errorMessage = ex.Message;
-                logger.Error(errorMessage);
+                await WriteLog(ex);
             }
 
             return Ok(errorMessage);
@@ -115,7 +114,7 @@
             }
             catch (Exception exception)
             {
-                WriteLog(exception);
+                await WriteLog(exception);
 
                 try
                 {
@@ -126,7 +125,7 @@
                     result.ErrorCode = 1;
                     result.ErrorMessage = ex.Message;
 
-                    WriteLog(ex);
+                    await WriteLog(ex);
                 }
             }
 
@@ -194,7 +193,7 @@
             return appId;
         }
 
-        private void WriteLog(Exception exception)
+        private async Task WriteLog(Exception exception)
         {
             var messageException = exception.InnerException != null ? exception.InnerException.Message : exception.Message;
             string message = string.Format(
@@ -204,7 +203,7 @@
                     exception.Source,
                     exception.TargetSite,
                     exception.StackTrace);
-            logger.Error(message);
+            await logger.ErrorAsync(message);
         }
     }
 }
