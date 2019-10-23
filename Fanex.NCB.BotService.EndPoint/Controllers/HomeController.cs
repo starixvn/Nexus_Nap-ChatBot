@@ -6,10 +6,10 @@
     {
         public IActionResult Index()
         {
-            var ip = HttpContext.Connection.LocalIpAddress;
-            var domain = HttpContext.Request.Host.Value;
-            ViewBag.IpServer = ip.ToString();
-            ViewBag.Domain = domain;
+            var localIpAddress = HttpContext.Connection.LocalIpAddress;
+            var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
+            ViewBag.LocalIpAddress = localIpAddress.ToString();
+            ViewBag.RemoteIpAddress = remoteIpAddress;
 
             return View("Index");
         }

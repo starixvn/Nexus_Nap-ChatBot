@@ -18,7 +18,11 @@ namespace Fanex.NCB.Main.Controllers
         [AllowAnonymous]
         public IActionResult IP()
         {
-            ViewBag.IpServer = HttpContext.Connection.LocalIpAddress.ToString();
+            var localIpAddress = HttpContext.Connection.LocalIpAddress;
+            var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
+            ViewBag.LocalIpAddress = localIpAddress.ToString();
+            ViewBag.RemoteIpAddress = remoteIpAddress;
+
             return View();
         }
     }
