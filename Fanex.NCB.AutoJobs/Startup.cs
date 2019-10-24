@@ -9,6 +9,9 @@
     using Fanex.Data.Repository;
     using Fanex.Data.SqlServer;
     using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.AspNetCore;
+    using Fanex.Logging.Extensions.Database;
     using Fanex.Logging.Sentry;
     using Fanex.NCB.AutoJobs.App_Configs;
     using Fanex.NCB.AutoJobs.Extensions;
@@ -77,6 +80,10 @@
                     Dsn = new Dsn(Configuration.GetSection("SentryEngineOptions:Dsn").Value)
                 })
             });
+
+            ExceptionHandler
+                .UseConfig(new LoggingConfiguration())
+                .UseGetDbExceptionInfo(DatabaseInfoGetters.GetDbExceptionInfo);
 
             JsonConvert.DefaultSettings = () =>
             {

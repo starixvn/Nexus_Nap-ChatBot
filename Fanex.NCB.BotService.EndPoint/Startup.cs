@@ -1,9 +1,7 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
     using System.Text;
     using Fanex.Data;
     using Fanex.Data.MySql;
