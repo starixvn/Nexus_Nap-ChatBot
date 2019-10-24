@@ -15,6 +15,7 @@
     using Microsoft.Extensions.Options;
     using NSubstitute;
     using NSubstitute.ExceptionExtensions;
+    using ONEbook.UM.Models;
     using ONEbook.UM.Services;
     using Xunit;
 
@@ -31,7 +32,11 @@
         {
             var service = GetService();
             syncDataRepository.FetchDataFromNapUserControl(Arg.Any<GetDataFromNapUserControlCriteria>()).Returns(FakeNapData());
-
+            var maintainceTime = new UnderMaintenanceTime
+            {
+                IsUnderMaintenanceTime = false
+            };
+            maintenanceService.GetUnderMaintenanceTimeAsync().Returns(maintainceTime);
             //Actual
             await service.NapUserControlSyncDataAsync();
 
@@ -70,7 +75,11 @@
         {
             var service = GetService();
             syncDataRepository.FetchDataFromOIC(Arg.Any<GetDataFromOicCriteria>()).Returns(FakeOICData());
-
+            var maintainceTime = new UnderMaintenanceTime
+            {
+                IsUnderMaintenanceTime = false
+            };
+            maintenanceService.GetUnderMaintenanceTimeAsync().Returns(maintainceTime);
             //Actual
             await service.OicSyncDataAsync();
 

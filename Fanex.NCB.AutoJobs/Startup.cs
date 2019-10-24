@@ -146,6 +146,7 @@
 
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseCookiePolicy();
+            app.UseSession();
             app.UseAuthentication();
 
             app.UseHangfireDashboard(options: new DashboardOptions

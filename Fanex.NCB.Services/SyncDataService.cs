@@ -40,8 +40,9 @@
 
         public async Task NapUserControlSyncDataAsync()
         {
-            bool isMaintenance = await maintenanceService.IsUnderMaintenanceAsync();
-            if (!isMaintenance)
+            var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
+
+            if (!maintanceTime.IsUnderMaintenanceTime)
             {
                 var data = await GetDataFromNapUserControl(null);
                 await InsertNapData(data);
@@ -70,8 +71,9 @@
 
         public async Task OicSyncDataAsync()
         {
-            bool isMaintenance = await maintenanceService.IsUnderMaintenanceAsync();
-            if (!isMaintenance)
+            var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
+
+            if (!maintanceTime.IsUnderMaintenanceTime)
             {
                 var data = await GetDataFromOIC();
                 await InsertOICData(data);
