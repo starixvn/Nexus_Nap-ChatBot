@@ -190,7 +190,17 @@
         private string GetAppId(string botName)
         {
             var endpoint = (EndpointService)botConfig.Services.FirstOrDefault(t => t.Name.Equals(botName, StringComparison.InvariantCultureIgnoreCase));
-            var appId = (endpoint != null && !string.IsNullOrEmpty(endpoint.AppId)) ? endpoint.AppId : Guid.NewGuid().ToString();
+            string appId;
+
+            if (endpoint != null && !string.IsNullOrEmpty(endpoint.AppId))
+            {
+                appId = endpoint.AppId;
+            }
+            else
+            {
+                appId = Guid.NewGuid().ToString();
+                logger.Error($"BotName : { botName } is not supported by system.");
+            }
 
             return appId;
         }
