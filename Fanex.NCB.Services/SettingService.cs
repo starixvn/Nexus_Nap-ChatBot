@@ -9,7 +9,6 @@
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.NotificationType;
     using Fanex.NCB.Criteria.Setting;
-    using Fanex.NCB.Models.NotificationType;
     using Fanex.NCB.Models.Setting;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Services.Interfaces;
