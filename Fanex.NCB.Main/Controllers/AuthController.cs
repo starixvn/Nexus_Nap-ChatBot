@@ -224,8 +224,10 @@
             {
                 UserId = user.Id,
                 SiteId = napSettings.SiteId,
-                NetSessionId = HttpContext.Session.Id,
                 Ip = HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                BrowserName = Request?.Headers["User-Agent"].ToString(),
+                NetSessionId = HttpContext.Session.Id,
+                Platform = Environment.OSVersion.Platform.ToString(),
                 LoginDate = DateTime.Now
             };
 
