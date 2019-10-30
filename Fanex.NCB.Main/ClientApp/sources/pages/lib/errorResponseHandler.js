@@ -2,25 +2,19 @@
 
 const errorResponseHandler = (error) => {
     if (error.response) {
-        let url;
-
         switch (error.response.status) {
             case 401:
-                url = Site.resolveClientUrl('Error/UnauthorizedUser');
+                window.location = Site.resolveClientUrl('Error/UnauthorizedUser');
                 break;
 
             case 404:
-                url = Site.resolveClientUrl('Error/PageNotFound');
+                window.location = Site.resolveClientUrl('Error/PageNotFound');
                 break;
 
             case 500:
-                url = Site.resolveClientUrl('Error/InternalServerError');
+                window.location = Site.resolveClientUrl('Error/InternalServerError');
                 break;
-            default:
-                url = Site.resolveClientUrl('Auth/Index');
         }
-
-        window.location = url;
     }
 };
 
