@@ -14,9 +14,9 @@ export default class AuthRecheck extends PureComponent {
     }
 
     componentDidMount() {
-        setInterval(() => {
-            this.reCheckin();
-        }, 30000);
+        //setInterval(() => {
+        //    this.reCheckin();
+        //}, 30000);
     }
 
     reCheckin = () => {
