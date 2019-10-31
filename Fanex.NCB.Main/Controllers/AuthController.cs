@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
@@ -148,9 +149,11 @@
             {
                 UserId = userId,
                 SiteId = napSettings.SiteId,
+                Domain = HttpContext.Request.Host.ToString(),
                 CheckOnUserId = onuserId,
                 IP = HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                 BrowserName = Request?.Headers["User-Agent"].ToString(),
+                CountryCode = ResolveCountry(HttpContext.Request)?.GeoId.ToString(CultureInfo.CurrentCulture),
                 NetSessionId = HttpContext?.Session.Id,
                 Platform = Environment.OSVersion.Platform.ToString(),
                 LoginDate = DateTime.Now
@@ -224,14 +227,36 @@
             {
                 UserId = user.Id,
                 SiteId = napSettings.SiteId,
+                Domain = HttpContext.Request.Host.ToString(),
                 Ip = HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                 BrowserName = Request?.Headers["User-Agent"].ToString(),
+                CountryCode = ResolveCountry(HttpContext.Request)?.GeoId.ToString(CultureInfo.CurrentCulture),
                 NetSessionId = HttpContext.Session.Id,
                 Platform = Environment.OSVersion.Platform.ToString(),
                 LoginDate = DateTime.Now
             };
 
             return await securityService.LoginAsync(loginParam);
+        }
+
+        private static RegionInfo ResolveCountry(HttpRequest request)
+        {
+            var culture = ResolveCulture(request);
+
+            if (culture != null)
+            {
+                return new RegionInfo(culture.LCID);
+            }
+
+            return null;
+        }
+
+        private static CultureInfo ResolveCulture(HttpRequest request)
+        {
+            var userLangs = request.Headers["Accept-Language"].ToString();
+            var firstLang = userLangs.Split(',').FirstOrDefault();
+            var defaultLang = string.IsNullOrEmpty(firstLang) ? "en" : firstLang;
+            return CultureInfo.CreateSpecificCulture(defaultLang);
         }
 
         private static bool ValidatePassword(User user, UserLogin userLogin)
