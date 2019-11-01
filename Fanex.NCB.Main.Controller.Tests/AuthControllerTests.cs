@@ -165,7 +165,7 @@
         [Fact]
         public async Task SSO_IsValidTimeAndCannotSSOLogin_RedirectToAction()
         {
-            var controller = GetController();
+            var controller = FakeDoCheckInController();
             var sso = new SsoLogin
             {
                 OnUserId = Cryptography.EncryptPassword("8"),
@@ -186,7 +186,7 @@
         [Fact]
         public async Task SSO_IsValidTimeAndSSOLoginSuccess_ButNoUser_RedirectAction()
         {
-            var controller = GetController();
+            var controller = FakeDoCheckInController();
             var sso = new SsoLogin
             {
                 OnUserId = Cryptography.EncryptPassword("8"),

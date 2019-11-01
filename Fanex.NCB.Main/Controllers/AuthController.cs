@@ -149,9 +149,9 @@
             {
                 UserId = userId,
                 SiteId = napSettings.SiteId,
-                Domain = HttpContext.Request.Host.ToString(),
+                Domain = HttpContext.Request?.Host.ToString(),
                 CheckOnUserId = onuserId,
-                IP = HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                IP = GetClientIP(HttpContext),
                 BrowserName = Request?.Headers["User-Agent"].ToString(),
                 CountryCode = ResolveCountry(HttpContext.Request)?.GeoId.ToString(CultureInfo.CurrentCulture),
                 NetSessionId = HttpContext?.Session.Id,
@@ -227,8 +227,8 @@
             {
                 UserId = user.Id,
                 SiteId = napSettings.SiteId,
-                Domain = HttpContext.Request.Host.ToString(),
-                Ip = HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                Domain = HttpContext.Request?.Host.ToString(),
+                Ip = GetClientIP(HttpContext),
                 BrowserName = Request?.Headers["User-Agent"].ToString(),
                 CountryCode = ResolveCountry(HttpContext.Request)?.GeoId.ToString(CultureInfo.CurrentCulture),
                 NetSessionId = HttpContext.Session.Id,
@@ -237,6 +237,17 @@
             };
 
             return await securityService.LoginAsync(loginParam);
+        }
+
+        private static string GetClientIP(HttpContext httpContext)
+        {
+            var clientIP = httpContext.Request?.Headers["x-forwarded-for"].ToString();
+            if (string.IsNullOrWhiteSpace(clientIP))
+            {
+                clientIP = httpContext?.Connection?.RemoteIpAddress?.ToString();
+            }
+
+            return clientIP;
         }
 
         private static RegionInfo ResolveCountry(HttpRequest request)
