@@ -1,6 +1,7 @@
 ﻿import React, { PureComponent } from 'react';
-import remarkDisableTokenizers from 'remark-disable-tokenizers';
 import ReactMarkdown from 'react-markdown/with-html';
+import { defaultRendererOptions } from '../markdown-settings/default-markdown-options';
+import '../markdown-settings/style.scss';
 
 export default class TemplatePreview extends PureComponent {
     highlightParameters = text => {
@@ -11,25 +12,13 @@ export default class TemplatePreview extends PureComponent {
             formattedText = formattedText.replace(new RegExp(`\\${params[i]}`, 'g'), `<span style="color:red">${params[i]}</span>`);// NOSONAR Make sure that using a regular expression is safe here
         }
 
-        formattedText = formattedText.replace(/(?:\r\n|\r|\n)/g, '<br>');// NOSONAR Make sure that using a regular expression is safe here
-
         return formattedText;
     }
-
-    plugins = [
-        [
-            remarkDisableTokenizers,
-            {
-                block: ['blockquote', 'indentedCode', 'fencedCode', 'table', 'atxHeading', 'list', 'footnote'],
-                inline: ['code', 'reference']
-            }
-        ]
-    ]
 
     render() {
         return (
             <ReactMarkdown source={this.highlightParameters(this.props.text)} escapeHtml={false} linkTarget="blank"
-                plugins={this.plugins}
+                renderers={defaultRendererOptions}
             />
         );
     }
