@@ -9,4 +9,4 @@
     listItem: element => element.children,
     inlineCode: element => element.children,
     code: element => element.children
-}
+};
