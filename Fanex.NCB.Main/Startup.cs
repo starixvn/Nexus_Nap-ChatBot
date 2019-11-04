@@ -23,15 +23,16 @@
     using Fanex.NCB.Shared.Middlewares;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.HttpOverrides;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using ONEbook.UM.AspNetCore;
     using ONEbook.UM.Configurations;
     using Sentry;
+    using StackExchange.Redis;
 
     public class Startup
     {
@@ -101,16 +102,16 @@
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.ForwardedHeaders =
-                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-            });
+            var redisConfig = Configuration.GetSection("AuthSettings:RedisConfig").Value;
+            var redis = ConnectionMultiplexer.Connect(redisConfig);
+            services.AddDataProtection()
+                .SetApplicationName("CharBotForLicensee")
+                .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
 
-            services.AddDistributedRedisCache(options =>
+            services.AddStackExchangeRedisCache(options =>
             {
-                options.Configuration = Configuration.GetSection("AuthSettings:RedisConfig").Value;
-                options.InstanceName = $"Fanex.NCB.Session-{Dns.GetHostEntry(Dns.GetHostName()).HostName}-";
+                options.Configuration = redisConfig;
+                options.InstanceName = $"Fanex.NCB.Session-";
             });
 
             services.AddSession(options =>
@@ -131,8 +132,6 @@
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseForwardedHeaders();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
