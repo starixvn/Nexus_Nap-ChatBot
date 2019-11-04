@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
     using System.Threading.Tasks;
     using Fanex.Data;
     using Fanex.Data.MySql;
@@ -106,7 +105,7 @@
             var redis = ConnectionMultiplexer.Connect(redisConfig);
             services.AddDataProtection()
                 .SetApplicationName("CharBotForLicensee")
-                .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
+                .PersistKeysToStackExchangeRedis(redis, "CharBotForLicensee-Keys");
 
             services.AddStackExchangeRedisCache(options =>
             {
