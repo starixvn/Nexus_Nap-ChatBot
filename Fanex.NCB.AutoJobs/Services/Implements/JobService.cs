@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
+    using System.Net;
     using System.Threading.Tasks;
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
@@ -103,7 +103,13 @@
                             }
                         }
                     };
-                    await chatbotService.SendMessageToMultitpleAsync(notificationModel);
+
+                    var response = await chatbotService.SendMessageToMultitpleAsync(notificationModel);
+
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        await logger.ErrorAsync(response.ErrorMessage);
+                    }
                 }
             }
             catch (Exception ex)
