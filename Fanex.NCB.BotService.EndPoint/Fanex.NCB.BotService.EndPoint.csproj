@@ -12,7 +12,7 @@
   <ItemGroup>
     <None Remove="App_Data\Development\SpNames.xml" />
     <None Remove="App_Data\Local\SpNames.xml" />
-    <None Remove="App_Data\Production\SpNames.xml" />
+    <None Remove="App_Data\PROD\SpNames.xml" />
     <None Remove="App_Data\UAT\SpNames.xml" />
     <None Remove="logs\log.txt" />
   </ItemGroup>
@@ -53,7 +53,7 @@
     <None Update="App_Data\SpNames.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="BotFileConfigs\botConfig.Production.bot">
+    <None Update="BotFileConfigs\botConfig.PROD.bot">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="BotFileConfigs\botConfig.Development.bot">
@@ -68,7 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Startup.cs" />
-    <Content Include="App_Data\Production\SpNames.xml">
+    <Content Include="App_Data\PROD\SpNames.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Compile Include="Startup.cs">
