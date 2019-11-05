@@ -145,6 +145,23 @@ export const createTemplate = data => {
     }).catch(errorResponseHandler);
 };
 
+// Markdown Rule
+export const openMarkdownRulesPopup = () => {
+    return {
+        type: types.MARKDOWNRULE_POPUP_DATA,
+        data: {
+            show: true,
+        }
+    };
+};
+
+export const closeMarkdownRulesPopup = () => {
+    return {
+        type: types.MARKDOWNRULE_POPUP_DATA,
+        data: { show: false }
+    };
+};
+
 const actions = {
     setNotificationTypes,
     getNotificationTypes,
@@ -159,7 +176,9 @@ const actions = {
     editTemplate,
     deleteTemplate,
     openDeleteTemplatePopup,
-    closeDeleteTemplatePopup
+    closeDeleteTemplatePopup,
+    openMarkdownRulesPopup,
+    closeMarkdownRulesPopup
 };
 
 export default actions;

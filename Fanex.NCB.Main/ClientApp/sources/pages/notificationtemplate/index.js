@@ -20,7 +20,10 @@ const store = Store.createStore(reducer, {
     },
     createTemplateResult: null,
     editTemplateResult: null,
-    deleteTemplateResult: null
+    deleteTemplateResult: null,
+    markdownRulesPopup: {
+        show: false
+    }
 });
 
 renderLayout(

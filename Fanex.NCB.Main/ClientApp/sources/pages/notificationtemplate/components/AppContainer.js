@@ -13,6 +13,7 @@ import Labels from '../../common/Labels';
 import NewNotificationTemplate from './NewNotificationTemplate';
 import EditNotificationTemplate from './EditNotificationTemplate';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
+import MarkdownRules from '../../common/markdown-rules';
 
 export class AppContainer extends Component {
     constructor(props) {
@@ -64,8 +65,8 @@ export class AppContainer extends Component {
                 }
                 <DataGrid haveHostPermission={this.haveHostPermission} />
                 {this.props.createTemplatePopup.show &&
-                    <NewNotificationTemplate onClose={this.handleCloseCreateTemplatePopup} onCreateSuccess={this.handleCreateSuccess}
-                    />}
+                    <NewNotificationTemplate onClose={this.handleCloseCreateTemplatePopup} onCreateSuccess={this.handleCreateSuccess} />
+                }
 
                 {this.props.editTemplatePopup.show && <EditNotificationTemplate onEditSuccess={this.handleEditSuccess} />}
                 {this.props.deleteTemplatePopup.show &&
@@ -77,6 +78,10 @@ export class AppContainer extends Component {
                     />
                 }
 
+                {this.props.markdownRulesPopup.show &&
+                    <MarkdownRules show={this.props.markdownRulesPopup.show} onToggle={this.props.closeMarkdownRulesPopup} />
+                }
+
             </>
         );
     }
@@ -85,12 +90,13 @@ export class AppContainer extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { gridParams, editTemplatePopup, createTemplatePopup, deleteTemplatePopup } = state;
+    const { gridParams, editTemplatePopup, createTemplatePopup, deleteTemplatePopup, markdownRulesPopup } = state;
     return {
         gridParams,
         editTemplatePopup,
         createTemplatePopup,
-        deleteTemplatePopup
+        deleteTemplatePopup,
+        markdownRulesPopup
     };
 };
 

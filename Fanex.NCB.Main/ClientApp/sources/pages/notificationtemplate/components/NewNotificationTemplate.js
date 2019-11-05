@@ -94,6 +94,7 @@ class NewNotificationTemplate extends Component {
                             maxEditorHeight={400}
                         />
                         {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
+                        <div onClick={this.props.openMarkdownRulesPopup}>Markdown Rules: </div>
                     </div>
                 </FormGroup>
                 <div className="list-button">
@@ -147,7 +148,8 @@ class NewNotificationTemplate extends Component {
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({
-        createTemplate: ActionCreators.createTemplate
+        createTemplate: ActionCreators.createTemplate,
+        openMarkdownRulesPopup: ActionCreators.openMarkdownRulesPopup
     }, dispatch);
 };
 

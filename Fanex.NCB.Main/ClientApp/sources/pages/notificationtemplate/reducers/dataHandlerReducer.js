@@ -54,6 +54,12 @@ export const createTemplateResult = createReducer({}, {
     }
 });
 
+export const markdownRulesPopup = createReducer({}, {
+    [types.MARKDOWNRULE_POPUP_DATA](state, action) {
+        return action.data;
+    }
+});
+
 const reducers = {
     notificationTypes,
     gridParams,
@@ -62,7 +68,8 @@ const reducers = {
     createTemplateResult,
     editTemplatePopup,
     editTemplateResult,
-    deleteTemplatePopup
+    deleteTemplatePopup,
+    markdownRulesPopup
 };
 
 export default reducers;
