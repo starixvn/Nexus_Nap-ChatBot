@@ -150,7 +150,7 @@ export const openMarkdownRulesPopup = () => {
     return {
         type: types.MARKDOWNRULE_POPUP_DATA,
         data: {
-            show: true,
+            show: true
         }
     };
 };

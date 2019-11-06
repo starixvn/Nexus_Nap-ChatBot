@@ -17,6 +17,7 @@ import Site from '../lib/site';
 import ConfirmPopup from '../common/confirm-popup/ConfirmPopup';
 import errorResponseHandler from '../lib/errorResponseHandler';
 import ContentPreview from '../common/ContentPreview';
+import MarkdownRules from '../common/markdown-rules';
 
 const SendModeOptions = [
     {
@@ -42,6 +43,9 @@ export default class EditNotification extends React.Component {
             confimrationPopup: {
                 isOpen: false,
                 message: ''
+            },
+            markdownRulesPopup: {
+                isOpen: false,
             }
         };
     }
@@ -203,6 +207,10 @@ export default class EditNotification extends React.Component {
 
     touchedAndErrors = (touched, errors, fieldName) => touched[fieldName] && errors[fieldName]
 
+    handleOpenMarkdownRulesPopup = () => this.setState({ markdownRulesPopup: { isOpen: true } })
+
+    handleCloseMarkdownRulesPopup = () => this.setState({ markdownRulesPopup: { isOpen: false } })
+
     renderForm = ({
         values,
         errors,
@@ -277,6 +285,7 @@ export default class EditNotification extends React.Component {
                             maxEditorHeight={400}
                         />
                         {isContentInvalid && <FormFeedback>{errors.content}</FormFeedback>}
+                        <div onClick={this.handleOpenMarkdownRulesPopup}>Markdown Rules: </div>
                     </Col>
                 </FormGroup>
                 <FormGroup row>
@@ -338,7 +347,9 @@ export default class EditNotification extends React.Component {
                         isOpen={this.state.confimrationPopup.isOpen}
                         content={this.state.confimrationPopup.message}
                     />
-
+                    {this.state.markdownRulesPopup.isOpen &&
+                        <MarkdownRules show onToggle={this.handleCloseMarkdownRulesPopup} />
+                    }
                 </div>
 
             </>

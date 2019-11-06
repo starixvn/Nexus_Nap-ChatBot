@@ -53,6 +53,12 @@ export const editConfimrationPopup = createReducer({}, {
     }
 });
 
+export const markdownRulesPopup = createReducer({}, {
+    [types.MARKDOWNRULE_POPUP_DATA](state, action) {
+        return action.data;
+    }
+});
+
 const reducers = {
     notificationTypes,
     notificationTemplates,
@@ -61,7 +67,8 @@ const reducers = {
     createNotificationResult,
     confimrationPopup,
     resetConfimrationPopup,
-    editConfimrationPopup
+    editConfimrationPopup,
+    markdownRulesPopup
 };
 
 export default reducers;

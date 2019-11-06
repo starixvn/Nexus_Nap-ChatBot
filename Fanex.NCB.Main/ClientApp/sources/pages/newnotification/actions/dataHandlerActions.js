@@ -140,6 +140,23 @@ export const toggleEditConfirmationPopup = (isOpen, content) => {
     };
 };
 
+// Markdown Rule
+export const openMarkdownRulesPopup = () => {
+    return {
+        type: types.MARKDOWNRULE_POPUP_DATA,
+        data: {
+            isOpen: true
+        }
+    };
+};
+
+export const closeMarkdownRulesPopup = () => {
+    return {
+        type: types.MARKDOWNRULE_POPUP_DATA,
+        data: { isOpen: false }
+    };
+};
+
 const actions = {
     setNotificationTypes,
     getNotificationTypes,
@@ -153,7 +170,9 @@ const actions = {
     setCreateNewNotificationResult,
     toggleConfirmationPopup,
     toggleResetConfirmationPopup,
-    toggleEditConfirmationPopup
+    toggleEditConfirmationPopup,
+    openMarkdownRulesPopup,
+    closeMarkdownRulesPopup
 };
 
 export default actions;

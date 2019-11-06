@@ -19,6 +19,9 @@ const store = Store.createStore(reducer,
         editConfimrationPopup: {
             isOpen: false
         },
+        markdownRulesPopup: {
+            isOpen: false
+        },
         notificationTemplates: []
     });
 

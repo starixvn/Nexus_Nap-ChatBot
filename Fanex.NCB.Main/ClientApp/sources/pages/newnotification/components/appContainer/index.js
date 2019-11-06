@@ -20,6 +20,7 @@ import ResponseMessage from '../../../common/response-message/ResponseMessage';
 import Site from '../../../lib/site';
 import ConfirmPopup from '../../../common/confirm-popup/ConfirmPopup';
 import ContentPreview from '../../../common/ContentPreview';
+import MarkdownRules from '../../../common/markdown-rules';
 
 const SendModeOptions = [
     {
@@ -364,6 +365,7 @@ export class AppContainer extends React.Component {
                             maxEditorHeight={400} readOnly={!values.canEditTitleContent && values.templateId}
                         />
                         {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
+                        <div onClick={this.props.openMarkdownRulesPopup}>Markdown Rules: </div>
                     </div>
                 </FormGroup>
                 {values.params.length > 0 && !values.canEditTitleContent &&
@@ -472,6 +474,9 @@ export class AppContainer extends React.Component {
                     content={this.props.editConfimrationPopup.content}
                     warningIcon
                 />
+                {this.props.markdownRulesPopup.isOpen &&
+                    <MarkdownRules show onToggle={this.props.closeMarkdownRulesPopup} />
+                }
             </>
         );
     }
@@ -488,7 +493,8 @@ const mapStateToProps = state => {
         confimrationPopup: state.confimrationPopup,
         notificationTemplates: state.notificationTemplates,
         resetConfimrationPopup: state.resetConfimrationPopup,
-        editConfimrationPopup: state.editConfimrationPopup
+        editConfimrationPopup: state.editConfimrationPopup,
+        markdownRulesPopup: state.markdownRulesPopup
     };
 };
 
