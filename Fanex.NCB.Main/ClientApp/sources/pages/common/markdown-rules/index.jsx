@@ -9,7 +9,8 @@ export default class MarkdownRules extends Component {
     }
 
     render() {
-        const exampleUrl = 'http://google.com/';
+        const exampleUrl = 'http://google.com/'; // NOSONAR
+
         return (
             <Modal isOpen={this.props.show} toggle={this.props.onToggle} wrapClassName="popup-markdown-rules" backdrop="static">
                 <ModalHeader toggle={this.props.onToggle}>Markdown Rules</ModalHeader>
