@@ -9,6 +9,7 @@ export default class MarkdownRules extends Component {
     }
 
     render() {
+        const exampleUrl = 'http://google.com/';
         return (
             <Modal isOpen={this.props.show} toggle={this.props.onToggle} wrapClassName="popup-markdown-rules" backdrop="static">
                 <ModalHeader toggle={this.props.onToggle}>Markdown Rules</ModalHeader>
@@ -18,10 +19,10 @@ export default class MarkdownRules extends Component {
                          <br />
                         Ex:
                         <ul>
-                            <li> Bold Text markdown **Text** treat as <strong>Text</strong></li>
-                            <li> Italic Text markdown *Text* treat as <em>Text</em></li>
-                            <li> Strikethrough Text markdown ~~Text~~ treat as <del>Text</del></li>
-                            <li> Hyperlink Google markdown: [Google](http://google.com/) treat as <a href="http://google.com/">Google</a></li>
+                            <li>Bold Text markdown **Text** treat as <strong>Text</strong></li>
+                            <li>Italic Text markdown *Text* treat as <em>Text</em></li>
+                            <li>Strikethrough Text markdown ~~Text~~ treat as <del>Text</del></li>
+                            <li>Hyperlink Google markdown: [Google]({exampleUrl}) treat as <a target="blank" href={exampleUrl}>Google</a></li>
                         </ul>
 
                         2. Some markdowns similar to html code may lead to text missing or unexpected parsing. Please use \ before the markdown to escape markdown parsing.
