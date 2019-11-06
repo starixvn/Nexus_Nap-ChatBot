@@ -98,6 +98,8 @@ class EditNotificationTemplate extends Component {
                             maxEditorHeight={400}
                         />
                         {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
+                        <div onClick={this.props.openMarkdownRulesPopup}>Markdown Rules: </div>
+
                     </div>
                 </FormGroup>
                 <div className="list-button">
@@ -147,7 +149,8 @@ class EditNotificationTemplate extends Component {
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({
         editTemplate: ActionCreators.editTemplate,
-        setEditTemplatePopup: ActionCreators.setEditTemplatePopup
+        setEditTemplatePopup: ActionCreators.setEditTemplatePopup,
+        openMarkdownRulesPopup: ActionCreators.openMarkdownRulesPopup
     }, dispatch);
 };
 
