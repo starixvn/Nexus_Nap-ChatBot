@@ -78,7 +78,7 @@ describe('MultipleSelectField', () => {
         // Arrange
         let props = { onChange: jest.fn() };
         let inputField = new MultipleSelectField(props);
-        inputField.isValid = jest.fn(() => { return true;});
+        inputField.isValid = jest.fn(() => { return true; });
         let value = "abc";
 
         // Act
@@ -92,7 +92,7 @@ describe('MultipleSelectField', () => {
         // Arrange
         let props = { onChange: jest.fn() };
         let inputField = new MultipleSelectField(props);
-        let value = 'abc' ;
+        let value = 'abc';
 
         // Act
         var result = inputField.isValid(value);
