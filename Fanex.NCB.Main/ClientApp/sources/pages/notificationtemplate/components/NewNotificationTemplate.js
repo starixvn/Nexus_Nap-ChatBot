@@ -94,7 +94,7 @@ class NewNotificationTemplate extends Component {
                             maxEditorHeight={400}
                         />
                         {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
-                        <div onClick={this.props.openMarkdownRulesPopup}>Markdown Rules: </div>
+                        <div className="markdown-rules" onClick={this.props.openMarkdownRulesPopup}>Markdown Rules: <span className="icon-book" /></div>
                     </div>
                 </FormGroup>
                 <div className="list-button">

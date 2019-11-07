@@ -112,3 +112,19 @@ body {
     background-color: #39434a;
 }
 
+//markdown-rules
+
+.markdown-rules {
+    padding: 10px 0;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    .icon-book {
+        position: relative;
+        top: 2px;
+        color: #066896;
+        font-size: 16px;
+    }
+}

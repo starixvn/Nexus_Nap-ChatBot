@@ -1,12 +1,13 @@
 @font-face {
   font-family: 'nap-chatbot';
-  src:  url('./fonts/nap-chatbot.eot?qou8kv');
-  src:  url('./fonts/nap-chatbot.eot?qou8kv#iefix') format('embedded-opentype'),
-    url('./fonts/nap-chatbot.ttf?qou8kv') format('truetype'),
-    url('./fonts/nap-chatbot.woff?qou8kv') format('woff'),
-    url('./fonts/nap-chatbot.svg?qou8kv#nap-chatbot') format('svg');
+  src:  url('fonts/nap-chatbot.eot?e5kacs');
+  src:  url('fonts/nap-chatbot.eot?e5kacs#iefix') format('embedded-opentype'),
+    url('fonts/nap-chatbot.ttf?e5kacs') format('truetype'),
+    url('fonts/nap-chatbot.woff?e5kacs') format('woff'),
+    url('fonts/nap-chatbot.svg?e5kacs#nap-chatbot') format('svg');
   font-weight: normal;
   font-style: normal;
+  font-display: block;
 }
 
 [class^="icon-"], [class*=" icon-"] {
@@ -24,6 +25,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-book:before {
+  content: "\e919";
+}
 .icon-close:before {
   content: "\e90e";
 }
