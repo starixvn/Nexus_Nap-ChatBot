@@ -92,21 +92,17 @@
 
         private async Task SendNotificationToRecipients(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
-            int itemEachBatch = appSettings.Value.ItemEachBatchSendNotification;
             var notiMsgs = GenerateNotificationMessage(notifications, recipients);
-
-            int totalBatch = (int)Math.Ceiling((double)notiMsgs.Count() / itemEachBatch);
-            for (int i = 0; i < totalBatch; i++)
+            foreach (var notiMsg in notiMsgs)
             {
-                var currentMsgs = notiMsgs.Skip(i * itemEachBatch).Take(itemEachBatch);
-
-                var response = await SendMessageToMultipleWithHandleException(currentMsgs, recipients);
-                await HandleResponse(response, recipients);
+                var currentRecipients = recipients.Where(r => r.NotificationId == notiMsg.NotifictaionId);
+                var response = await SendMessageToMultipleWithHandleException(notiMsg, currentRecipients);
+                await HandleResponse(response, currentRecipients);
             }
         }
 
         private async Task<IRestResponse> SendMessageToMultipleWithHandleException(
-            IEnumerable<NotificationMessage> messages,
+            NotificationMessage messages,
             IEnumerable<NotificationRecipient> recipients)
         {
             try
@@ -115,8 +111,7 @@
             }
             catch (Exception exception)
             {
-                var updateRecipients = recipients.Where(r => messages.Any(m => m.NotifictaionId == r.NotificationId))
-                    .Select(r =>
+                var updateRecipients = recipients.Select(r =>
                     {
                         return new NotificationRecipient
                         {
@@ -201,24 +196,39 @@
             var messages = new List<NotificationMessage>();
             foreach (var noti in notifications)
             {
-                var message = new NotificationMessage
-                {
-                    NotifictaionId = noti.NotificationId,
-                    Message = noti.Content,
-                    Recipients = recipients.Where(r => noti.NotificationId == r.NotificationId)
-                            .Select(r => new ConversationInfo
-                            {
-                                BotConversationId = r.BotConversationId,
-                                ServiceUrl = r.ServiceUrl,
-                                ChannelId = r.ChannelId,
-                                ConversationId = r.ChatGroupConversationId,
-                                BotName = r.BotName
-                            }).DistinctBy(r => r.ConversationId)
-                };
-                messages.Add(message);
+                var batchs = DivideBatchForNotification(noti, recipients.Where(r => r.NotificationId == noti.NotificationId));
+                messages.AddRange(batchs);
             }
 
             return messages;
+        }
+
+        private IEnumerable<NotificationMessage> DivideBatchForNotification(NotificationSendMessage
+            notification, IEnumerable<NotificationRecipient> recipients)
+        {
+            var listBatchs = new List<NotificationMessage>();
+
+            int itemEachBatch = appSettings.Value.ItemEachBatchSendNotification;
+            int totalBatch = (int)Math.Ceiling((double)recipients.Count() / itemEachBatch);
+            for (int i = 0; i < totalBatch; i++)
+            {
+                var currentRecipients = recipients.Skip(i * itemEachBatch).Take(itemEachBatch);
+                listBatchs.Add(new NotificationMessage
+                {
+                    NotifictaionId = notification.NotificationId,
+                    Message = notification.Content,
+                    Recipients = currentRecipients.Select(r => new ConversationInfo
+                    {
+                        BotConversationId = r.BotConversationId,
+                        ServiceUrl = r.ServiceUrl,
+                        ChannelId = r.ChannelId,
+                        ConversationId = r.ChatGroupConversationId,
+                        BotName = r.BotName
+                    }).DistinctBy(r => r.ConversationId)
+                });
+            }
+
+            return listBatchs;
         }
 
         private async Task UpdateSentNotificationStatus(IEnumerable<UpdateNotificationModel> messages)
