@@ -1,7 +1,6 @@
 ﻿namespace Fanex.NCB.AutoJobs.Tests.Services
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Logging;
     using Fanex.NCB.AutoJobs.App_Configs;
@@ -99,14 +98,14 @@
             await service.MonitorChatbot();
 
             //Assert
-            await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+            await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<NotificationMessage>());
         }
 
         [Fact]
         public async Task MonitorChatbot_WhenCalled_ThrowException()
         {
             var service = GetService();
-            chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Throws(new Exception());
+            chatbotService.SendMessageToMultitpleAsync(Arg.Any<NotificationMessage>()).Throws(new Exception());
 
             //Assert
             await Assert.ThrowsAsync<Exception>(() => service.MonitorChatbot());

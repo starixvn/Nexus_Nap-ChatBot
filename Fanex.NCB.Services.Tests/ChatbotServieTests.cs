@@ -1,6 +1,5 @@
 ﻿namespace Fanex.NCB.Services.Tests
 {
-    using System.Collections.Generic;
     using System.Net;
     using System.Text;
     using System.Threading.Tasks;
@@ -19,7 +18,7 @@
         [Fact]
         public async Task SendMessageToMultitpleAsync_WhenCalled_ExecutePostTaskAsync()
         {
-            var messages = new List<NotificationMessage>();
+            var messages = new NotificationMessage();
             var expected = new RestResponse
             {
                 StatusCode = HttpStatusCode.OK

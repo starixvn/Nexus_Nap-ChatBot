@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Net;
     using System.Threading.Tasks;
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
@@ -84,13 +83,11 @@
                 var settings = monitorOptions.Value;
                 if (settings.IsMonitoring)
                 {
-                    var notificationModel = new List<NotificationMessage>
+                    var notificationModel = new NotificationMessage
                     {
-                        new NotificationMessage
-                        {
-                            NotifictaionId = -1,
-                            Message = settings.Message,
-                            Recipients = new List<ConversationInfo>
+                        NotifictaionId = -1,
+                        Message = settings.Message,
+                        Recipients = new List<ConversationInfo>
                             {
                                 new ConversationInfo
                                 {
@@ -101,15 +98,8 @@
                                     BotName = settings.BotName
                                 }
                             }
-                        }
                     };
-
-                    var response = await chatbotService.SendMessageToMultitpleAsync(notificationModel);
-
-                    if (response.StatusCode != HttpStatusCode.OK)
-                    {
-                        await logger.ErrorAsync(response.ErrorMessage);
-                    }
+                    await chatbotService.SendMessageToMultitpleAsync(notificationModel);
                 }
             }
             catch (Exception ex)

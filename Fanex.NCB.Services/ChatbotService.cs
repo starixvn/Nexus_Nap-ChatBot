@@ -22,14 +22,14 @@
             this.botSettings = botSettings;
         }
 
-        public async Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages)
+        public async Task<IRestResponse> SendMessageToMultitpleAsync(NotificationMessage messages)
         {
             ChatbotToken token = await GetTokenAsync();
-
+            var listMessage = new List<NotificationMessage> { messages };
             webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
             var request = new RestRequest(botSettings.Value.BotServiceUrl, Method.POST);
             request.AddHeader("Authorization", $"Bearer {token?.AccessToken}");
-            request.AddJsonBody(messages);
+            request.AddJsonBody(listMessage);
 
             return await webClient.ExecutePostTaskAsync(request);
         }
