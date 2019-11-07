@@ -365,7 +365,9 @@ export class AppContainer extends React.Component {
                             maxEditorHeight={400} readOnly={!values.canEditTitleContent && values.templateId}
                         />
                         {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
-                        <div onClick={this.props.openMarkdownRulesPopup}>Markdown Rules: </div>
+                        <div className="markdown-rules" onClick={this.props.openMarkdownRulesPopup}>
+                            Markdown Rules: <span className="icon-book" />
+                        </div>
                     </div>
                 </FormGroup>
                 {values.params.length > 0 && !values.canEditTitleContent &&

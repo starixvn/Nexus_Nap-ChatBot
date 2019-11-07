@@ -45,7 +45,7 @@ export default class EditNotification extends React.Component {
                 message: ''
             },
             markdownRulesPopup: {
-                isOpen: false,
+                isOpen: false
             }
         };
     }
@@ -285,7 +285,9 @@ export default class EditNotification extends React.Component {
                             maxEditorHeight={400}
                         />
                         {isContentInvalid && <FormFeedback>{errors.content}</FormFeedback>}
-                        <div onClick={this.handleOpenMarkdownRulesPopup}>Markdown Rules: </div>
+                        <div className="markdown-rules" onClick={this.handleOpenMarkdownRulesPopup}>
+                            Markdown Rules: <span className="icon-book" />
+                        </div>
                     </Col>
                 </FormGroup>
                 <FormGroup row>

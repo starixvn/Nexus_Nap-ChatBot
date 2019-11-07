@@ -23,7 +23,15 @@ export default class Sidebar extends React.Component {
             .then(response => this.setState({ menuItems: response.data }));
     }
 
-    getMenuClassName = name => name ? 'icon-' + name.replace(/ /g, '-').toLowerCase() : '';
+    getMenuClassName = name => {
+        switch (name) {
+            case 'New Notification': return 'icon-new-notification';
+            case 'Notification List': return 'icon-notification-list';
+            case 'Notification Template': return 'icon-template';
+            case 'Chat Group Mapping': return 'icon-group-mapping';
+            case 'Notification Type': return 'icon-notification-type';
+        }
+    }
 
     isCurrent = url => url.toLowerCase() === `/${this.currentController}${this.currentAction !== 'index' ? `/${this.currentAction}` : ''}`
 
