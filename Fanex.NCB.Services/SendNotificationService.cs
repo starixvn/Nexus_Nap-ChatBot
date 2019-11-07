@@ -196,7 +196,7 @@
             var messages = new List<NotificationMessage>();
             foreach (var noti in notifications)
             {
-                var batchs = DivideBatchForNotification(noti, recipients.Where(r => r.NotificationId == noti.NotificationId));
+                var batchs = DivideBatchForNotification(noti, recipients.Where(r => r.NotificationId == noti.NotificationId).DistinctBy(r => r.ChatGroupConversationId));
                 messages.AddRange(batchs);
             }
 
