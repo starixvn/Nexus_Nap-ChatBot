@@ -22,7 +22,7 @@ export default class AuthRecheck extends PureComponent {
     reCheckin = () => {
         if (!this.state.showModal) {
             axios({
-                url: Site.resolveClientUrl('Auth/CheckUserOnlineStatus'),
+                url: Site.resolveClientUrl('User/CheckUserOnlineStatus'),
                 method: 'post',
                 headers: {
                     'RequestVerificationToken': Site.getXsrfToken()

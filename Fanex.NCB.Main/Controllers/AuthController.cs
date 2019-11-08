@@ -12,8 +12,6 @@
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ParameterObject;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Core.Enum;
-    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Core.Resources;
     using Fanex.NCB.Models.Auth;
     using Fanex.NCB.NAPResolver;
@@ -29,7 +27,6 @@
         private const int DiffTimeZoneBetweenNAPServerAndChatBotServer = -4;
         private readonly IUserService userService;
         private readonly IGroupService groupService;
-        private readonly ISiteService siteService;
         private readonly INapSession napSession;
         private readonly INapSettings napSettings;
         private readonly ISecurityService securityService;
@@ -39,7 +36,6 @@
             IUserService userService,
             IGroupService groupService,
             ISecurityService securityService,
-            ISiteService siteService,
             INapSession napSession,
             INapSettings napSettings,
             ISyncDataService syncDataService)
@@ -47,7 +43,6 @@
             this.userService = userService;
             this.groupService = groupService;
             this.securityService = securityService;
-            this.siteService = siteService;
             this.napSession = napSession;
             this.napSettings = napSettings;
             this.syncDataService = syncDataService;
@@ -58,14 +53,6 @@
             ViewBag.returnUrl = returnUrl;
             ViewBag.invalidLogin = invalidLogin;
             return View();
-        }
-
-        [HttpGet]
-        public IActionResult GetMenu()
-        {
-            var menuItems = napSession.MenuItemList ?? new List<MenuItem>();
-            var menu = GetMenus(menuItems);
-            return Json(menu);
         }
 
         [HttpPost]
@@ -160,53 +147,6 @@
                 LoginDate = DateTime.Now
             };
             return await securityService.SSOLoginAsync(ssoLoginParam).ConfigureAwait(false);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> CheckUserOnlineStatus()
-        {
-            var recheckInStatus = await RecheckIn();
-            return Json(new
-            {
-                napSession.OnUserId,
-                ErrCode = (int)recheckInStatus
-            });
-        }
-
-        private IEnumerable<Menu> GetMenus(IEnumerable<MenuItem> menuItems)
-        {
-            return menuItems
-                .Select(m => new Menu
-                {
-                    Id = m.Id,
-                    Name = m.Name,
-                    Url = m.Url,
-                    Policy = m.Policy,
-                });
-        }
-
-        private async Task<RecheckInStatus> RecheckIn()
-        {
-            if (napSession.OnUserId <= 0)
-            {
-                return RecheckInStatus.KickOut;
-            }
-            else
-            {
-                if (!napSettings.EnableReCheckIn)
-                {
-                    return RecheckInStatus.Success;
-                }
-
-                if (!await siteService.IsActivatedAsync(napSettings.SiteId))
-                {
-                    return RecheckInStatus.InvalidSite;
-                }
-
-                var status = await securityService.ReCheckInAsync(napSession.OnUserId, napSettings.SiteId);
-
-                return status > 0 ? RecheckInStatus.KickOut : RecheckInStatus.Success;
-            }
         }
 
         private async Task DoCheckIn(User user, int onUserId)

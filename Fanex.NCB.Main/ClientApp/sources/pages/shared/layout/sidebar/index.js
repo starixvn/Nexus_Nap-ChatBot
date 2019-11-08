@@ -19,7 +19,7 @@ export default class Sidebar extends React.Component {
     }
 
     componentDidMount() {
-        axios.get(Site.resolveClientUrl('Auth/GetMenu'))
+        axios.get(Site.resolveClientUrl('User/GetMenu'))
             .then(response => this.setState({ menuItems: response.data }));
     }
 
