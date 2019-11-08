@@ -57,7 +57,7 @@ export default class DataGrid extends PureComponent {
     buildHeader = () => {
         return (
             <Row style={{ height: 32 }}>
-                <Cell colWidth={5} header>{Labels.NumberCol}</Cell>
+                <Cell colWidth={8} header>{Labels.NumberCol}</Cell>
                 <Cell colWidth={20} header>Sender/Notification Type</Cell>
                 <Cell colWidth={18} header>Send Date/Time (GMT+8)</Cell>
                 <Cell colWidth={100} header>
@@ -91,9 +91,10 @@ export default class DataGrid extends PureComponent {
     }
 
     renderRow = (item, index) => {
+        console.log(item);
         return (
             <Row key={item.notificationId} >
-                <Cell className="col-order text-center">{index + this.startIndex}</Cell>
+                <Cell className="col-order text-center">{item.notificationId}</Cell>
                 <Cell>
                     {item.creatorName}
                     <div> {item.notificationTypeName}</div>
