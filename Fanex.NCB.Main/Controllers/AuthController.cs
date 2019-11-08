@@ -63,7 +63,8 @@
         [HttpGet]
         public IActionResult GetMenu()
         {
-            var menu = GetMenus(napSession.MenuItemList);
+            var menuItems = napSession.MenuItemList ?? new List<MenuItem>();
+            var menu = GetMenus(menuItems);
             return Json(menu);
         }
 
@@ -186,19 +187,26 @@
 
         private async Task<RecheckInStatus> RecheckIn()
         {
-            if (!napSettings.EnableReCheckIn || napSession.OnUserId <= 0)
+            if (napSession.OnUserId <= 0)
             {
-                return RecheckInStatus.Success;
+                return RecheckInStatus.KickOut;
             }
-
-            if (!await siteService.IsActivatedAsync(napSettings.SiteId))
+            else
             {
-                return RecheckInStatus.InvalidSite;
+                if (!napSettings.EnableReCheckIn)
+                {
+                    return RecheckInStatus.Success;
+                }
+
+                if (!await siteService.IsActivatedAsync(napSettings.SiteId))
+                {
+                    return RecheckInStatus.InvalidSite;
+                }
+
+                var status = await securityService.ReCheckInAsync(napSession.OnUserId, napSettings.SiteId);
+
+                return status > 0 ? RecheckInStatus.KickOut : RecheckInStatus.Success;
             }
-
-            var status = await securityService.ReCheckInAsync(napSession.OnUserId, napSettings.SiteId);
-
-            return status > 0 ? RecheckInStatus.KickOut : RecheckInStatus.Success;
         }
 
         private async Task DoCheckIn(User user, int onUserId)

@@ -140,6 +140,22 @@
             Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(result));
         }
 
+        [Fact]
+        public async Task CheckUserOnlineStatus_SessionUserIdIsZero_ReturnKickOutJsonResult()
+        {
+            var controller = GetController();
+            napSession = null;
+            var expected = new { OnUserId = 0, ErrCode = (int)RecheckInStatus.KickOut };
+            //Actual
+            var actual = await controller.CheckUserOnlineStatus();
+
+            //Assert
+
+            var json = Assert.IsType<JsonResult>(actual);
+            var result = Assert.IsAssignableFrom<object>(json.Value);
+            Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(result));
+        }
+
         #region SSO Login Tests
 
         [Fact]
