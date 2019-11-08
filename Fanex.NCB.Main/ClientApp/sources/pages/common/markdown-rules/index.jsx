@@ -28,9 +28,12 @@ export default class MarkdownRules extends Component {
 
                         2. Some markdowns similar to html code may lead to text missing or unexpected parsing. Please use \ before the markdown to escape markdown parsing.
                          <br />
-                        Ex: \**Text** treat as **Text**
-                         <br />
-                        &lt;\!Good Day!\&gt; treat as &lt;!Good Day!&gt;
+                        Ex:
+                        <ul>
+                            <li>\**Text** treat as **Text**</li>
+                            <li>&lt;\!Good Day!\&gt; treat as &lt;!Good Day!&gt; </li>
+                        </ul>
+
                     </p>
                 </ModalBody>
             </Modal>
