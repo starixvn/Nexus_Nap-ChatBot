@@ -176,7 +176,7 @@ initialize {
   "0": Object {
     "attribs": Object {
       "class": "multiple-select-field",
-      "style": "width:auto",
+      "style": "width:10px",
     },
     "children": Array [
       Object {
@@ -194,7 +194,6 @@ initialize {
               Object {
                 "attribs": Object {
                   "class": "text-display",
-                  "title": "Please select ...",
                 },
                 "children": Array [
                   Object {
@@ -230,11 +229,9 @@ initialize {
                 "type": "tag",
                 "x-attribsNamespace": Object {
                   "class": undefined,
-                  "title": undefined,
                 },
                 "x-attribsPrefix": Object {
                   "class": undefined,
-                  "title": undefined,
                 },
               },
               Object {
@@ -249,7 +246,6 @@ initialize {
                 "prev": Object {
                   "attribs": Object {
                     "class": "text-display",
-                    "title": "Please select ...",
                   },
                   "children": Array [
                     Object {
@@ -268,11 +264,9 @@ initialize {
                   "type": "tag",
                   "x-attribsNamespace": Object {
                     "class": undefined,
-                    "title": undefined,
                   },
                   "x-attribsPrefix": Object {
                     "class": undefined,
-                    "title": undefined,
                   },
                 },
                 "type": "tag",
@@ -418,7 +412,6 @@ initialize {
                 Object {
                   "attribs": Object {
                     "class": "text-display",
-                    "title": "Please select ...",
                   },
                   "children": Array [
                     Object {
@@ -454,11 +447,9 @@ initialize {
                   "type": "tag",
                   "x-attribsNamespace": Object {
                     "class": undefined,
-                    "title": undefined,
                   },
                   "x-attribsPrefix": Object {
                     "class": undefined,
-                    "title": undefined,
                   },
                 },
                 Object {
@@ -473,7 +464,6 @@ initialize {
                   "prev": Object {
                     "attribs": Object {
                       "class": "text-display",
-                      "title": "Please select ...",
                     },
                     "children": Array [
                       Object {
@@ -492,11 +482,9 @@ initialize {
                     "type": "tag",
                     "x-attribsNamespace": Object {
                       "class": undefined,
-                      "title": undefined,
                     },
                     "x-attribsPrefix": Object {
                       "class": undefined,
-                      "title": undefined,
                     },
                   },
                   "type": "tag",
