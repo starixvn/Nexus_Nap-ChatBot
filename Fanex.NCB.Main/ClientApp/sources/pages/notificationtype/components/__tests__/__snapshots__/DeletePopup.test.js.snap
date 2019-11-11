@@ -22,7 +22,6 @@ exports[`DeletePopup render when has deleteData 1`] = `
   onClosed={[Function]}
   onOpened={[Function]}
   role="dialog"
-  toggle={[MockFunction]}
   wrapClassName="popup-confirm"
   zIndex={1050}
 >
@@ -38,10 +37,6 @@ exports[`DeletePopup render when has deleteData 1`] = `
   <ModalBody
     tag="div"
   >
-    <Notification
-      failedMsg="msg2"
-      isSuccess={true}
-    />
     <div
       className="info"
     >
@@ -60,12 +55,14 @@ exports[`DeletePopup render when has deleteData 1`] = `
   >
     <button
       className="btn-submit"
+      disabled={false}
       onClick={[Function]}
     >
       OK
     </button>
     <button
       className="btn-cancel"
+      disabled={false}
       onClick={[Function]}
     >
       Cancel
@@ -96,7 +93,6 @@ exports[`DeletePopup render when no deleteData - return null 1`] = `
   onClosed={[Function]}
   onOpened={[Function]}
   role="dialog"
-  toggle={[MockFunction]}
   wrapClassName="popup-confirm"
   zIndex={1050}
 >
@@ -130,12 +126,14 @@ exports[`DeletePopup render when no deleteData - return null 1`] = `
   >
     <button
       className="btn-submit"
+      disabled={false}
       onClick={[Function]}
     >
       OK
     </button>
     <button
       className="btn-cancel"
+      disabled={false}
       onClick={[Function]}
     >
       Cancel

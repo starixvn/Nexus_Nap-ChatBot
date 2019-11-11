@@ -22,21 +22,6 @@ exports[`Header render render without username 1`] = `
     className="list-unstyled userinfo"
   >
     <li
-      className="annoucement"
-    >
-      <div
-        className="icon-bell"
-      />
-      <div
-        className="pulse-css"
-      />
-      <div
-        className="number"
-      >
-        99+
-      </div>
-    </li>
-    <li
       className="user-info"
     >
       <div
@@ -103,21 +88,6 @@ exports[`Header render sidebar is expanded 1`] = `
   <ul
     className="list-unstyled userinfo"
   >
-    <li
-      className="annoucement"
-    >
-      <div
-        className="icon-bell"
-      />
-      <div
-        className="pulse-css"
-      />
-      <div
-        className="number"
-      >
-        99+
-      </div>
-    </li>
     <li
       className="user-info"
     >
@@ -186,21 +156,6 @@ exports[`Header render sidebar is not expanded 1`] = `
   <ul
     className="list-unstyled userinfo"
   >
-    <li
-      className="annoucement"
-    >
-      <div
-        className="icon-bell"
-      />
-      <div
-        className="pulse-css"
-      />
-      <div
-        className="number"
-      >
-        99+
-      </div>
-    </li>
     <li
       className="user-info"
     >

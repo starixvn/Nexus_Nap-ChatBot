@@ -22,7 +22,6 @@ exports[`UpdatePopup render when has addedResult - show Notification 1`] = `
   onClosed={[Function]}
   onOpened={[Function]}
   role="dialog"
-  toggle={[Function]}
   wrapClassName="new-notification-type"
   zIndex={1050}
 >
@@ -63,6 +62,7 @@ exports[`UpdatePopup render when has addedResult - show Notification 1`] = `
         <InputField
           initialValue="abc"
           isSummited={false}
+          maxLength={200}
           onChange={[Function]}
         />
       </FormGroup>
@@ -148,9 +148,10 @@ exports[`UpdatePopup render when has addedResult - show Notification 1`] = `
       </FormGroup>
       <button
         className="btn-submit"
+        disabled={false}
         onClick={[Function]}
       >
-        Submit
+        Save
       </button>
     </Form>
   </ModalBody>
@@ -185,7 +186,6 @@ exports[`UpdatePopup render when not have addedResult - do not show Notification
   onClosed={[Function]}
   onOpened={[Function]}
   role="dialog"
-  toggle={[Function]}
   wrapClassName="new-notification-type"
   zIndex={1050}
 >
@@ -226,6 +226,7 @@ exports[`UpdatePopup render when not have addedResult - do not show Notification
         <InputField
           initialValue="abc"
           isSummited={false}
+          maxLength={200}
           onChange={[Function]}
         />
       </FormGroup>
@@ -311,9 +312,10 @@ exports[`UpdatePopup render when not have addedResult - do not show Notification
       </FormGroup>
       <button
         className="btn-submit"
+        disabled={false}
         onClick={[Function]}
       >
-        Submit
+        Save
       </button>
     </Form>
   </ModalBody>
