@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TemplatePreview render correctly 1`] = `
+<ReactMarkdownWithHtml
+  astPlugins={Array []}
+  escapeHtml={false}
+  linkTarget="blank"
+  parserOptions={Object {}}
+  plugins={Array []}
+  rawSourcePos={false}
+  renderers={
+    Object {
+      "blockquote": [Function],
+      "code": [Function],
+      "emphasis": [Function],
+      "inlineCode": [Function],
+      "linkReference": [Function],
+      "list": [Function],
+      "listItem": [Function],
+      "strong": [Function],
+      "table": [Function],
+      "tableBody": [Function],
+      "tableCell": [Function],
+      "tableHead": [Function],
+      "tableRow": [Function],
+    }
+  }
+  skipHtml={false}
+  source="**bold**"
+  sourcePos={false}
+  transformLinkUri={[Function]}
+/>
+`;
