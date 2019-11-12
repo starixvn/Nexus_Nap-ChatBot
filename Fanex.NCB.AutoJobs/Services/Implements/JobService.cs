@@ -6,7 +6,7 @@
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
-    using Fanex.NCB.AutoJobs.App_Configs;
+    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Hangfire;

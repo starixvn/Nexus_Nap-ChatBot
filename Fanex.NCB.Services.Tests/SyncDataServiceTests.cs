@@ -127,7 +127,8 @@
             var settings = new AppSettings
             {
                 SiteId = 69,
-                ItemEachBatchSendNotification = 10
+                ItemEachBatchSendNotification = 10,
+                DelayTimeEachBatch = 1000
             };
             appSettings = Substitute.For<IOptionsSnapshot<AppSettings>>();
             appSettings.Value.Returns(settings);
