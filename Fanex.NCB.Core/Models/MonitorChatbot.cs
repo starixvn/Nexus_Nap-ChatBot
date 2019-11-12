@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.AutoJobs.App_Configs
+﻿namespace Fanex.NCB.Core.Models
 {
     public class MonitorChatbot
     {

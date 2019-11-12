@@ -5,5 +5,7 @@
         public int SiteId { get; set; }
 
         public int ItemEachBatchSendNotification { get; set; }
+
+        public int DelayTimeEachBatch { get; set; }
     }
 }

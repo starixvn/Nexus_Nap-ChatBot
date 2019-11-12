@@ -25,16 +25,19 @@
         private readonly IChatbotService chatbotService;
         private readonly IBaseService baseService;
         private readonly IOptionsSnapshot<AppSettings> appSettings;
+        private readonly IOptionsSnapshot<MonitorChatbot> monitorOptions;
         private readonly ILogger logger;
 
         public SendNotificationService(IChatbotService chatbotService,
             IBaseService baseService,
             IOptionsSnapshot<AppSettings> appSettings,
+            IOptionsSnapshot<MonitorChatbot> monitorOptions,
             ILogger logger)
         {
             this.chatbotService = chatbotService;
             this.baseService = baseService;
             this.appSettings = appSettings;
+            this.monitorOptions = monitorOptions;
             this.logger = logger;
         }
 
@@ -93,11 +96,17 @@
         private async Task SendNotificationToRecipients(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
             var notiMsgs = GenerateNotificationMessage(notifications, recipients);
+            var index = 0;
             foreach (var notiMsg in notiMsgs)
             {
+                index++;
                 var currentRecipients = recipients.Where(r => r.NotificationId == notiMsg.NotifictaionId);
                 var response = await SendMessageToMultipleWithHandleException(notiMsg, currentRecipients);
                 await HandleResponse(response, currentRecipients);
+                if (index != notiMsgs.Count())
+                {
+                    await Task.Delay(appSettings.Value.DelayTimeEachBatch);
+                }
             }
         }
 
@@ -228,7 +237,30 @@
                 });
             }
 
+            listBatchs.Last().Recipients = AddMonitorRecipient(listBatchs.Last().Recipients);
+
             return listBatchs;
+        }
+
+        private IEnumerable<ConversationInfo> AddMonitorRecipient(IEnumerable<ConversationInfo> conversations)
+        {
+            var settings = monitorOptions.Value;
+            if (settings.IsMonitoring)
+            {
+                var conversation = new ConversationInfo
+                {
+                    ConversationId = settings.ConversationId,
+                    ChannelId = settings.ChannelId,
+                    ServiceUrl = settings.ServiceUrl,
+                    BotConversationId = settings.BotConversationId,
+                    BotName = settings.BotName
+                };
+
+                conversations = conversations.Append(conversation);
+            }
+
+            return conversations;
+
         }
 
         private async Task UpdateSentNotificationStatus(IEnumerable<UpdateNotificationModel> messages)
