@@ -90,7 +90,6 @@
                     WriteLogToFile.Writelog(results);
                 }
             }
-            WriteLogToFile.Writelog(results);
 
             return Ok(results);
         }
