@@ -178,7 +178,9 @@
             var updateNotiModels = new List<UpdateNotificationModel>();
             foreach (var recipient in recipients)
             {
-                var result = responseMessages.FirstOrDefault(r => r.NotificationId == recipient.NotificationId && r.ConversationId == recipient.ChatGroupConversationId);
+                var result = responseMessages.FirstOrDefault(r => r.NotificationId == recipient.NotificationId
+                && r.ConversationId == recipient.ChatGroupConversationId);
+
                 if (result != null)
                 {
                     var model = new UpdateNotificationModel
@@ -203,9 +205,14 @@
         private IEnumerable<NotificationMessage> GenerateNotificationMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
             var messages = new List<NotificationMessage>();
+
             foreach (var noti in notifications)
             {
-                var batchs = DivideBatchForNotification(noti, recipients.Where(r => r.NotificationId == noti.NotificationId).DistinctBy(r => r.ChatGroupConversationId));
+                var currentRecipients = new List<NotificationRecipient>(recipients
+                                        .Where(r => r.NotificationId == noti.NotificationId)
+                                        .DistinctBy(r => r.ChatGroupConversationId));
+
+                var batchs = DivideBatchForNotification(noti, currentRecipients);
                 messages.AddRange(batchs);
             }
 
@@ -260,7 +267,6 @@
             }
 
             return conversations;
-
         }
 
         private async Task UpdateSentNotificationStatus(IEnumerable<UpdateNotificationModel> messages)

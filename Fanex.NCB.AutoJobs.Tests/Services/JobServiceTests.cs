@@ -3,8 +3,8 @@
     using System;
     using System.Threading.Tasks;
     using Fanex.Logging;
-    using Fanex.NCB.AutoJobs.App_Configs;
     using Fanex.NCB.AutoJobs.Services.Implements;
+    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;

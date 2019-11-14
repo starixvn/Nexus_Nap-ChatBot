@@ -1,7 +1,6 @@
 ﻿namespace Fanex.NCB.Services
 {
     using System;
-    using System.Collections.Generic;
     using System.Text;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
@@ -25,11 +24,10 @@
         public async Task<IRestResponse> SendMessageToMultitpleAsync(NotificationMessage messages)
         {
             ChatbotToken token = await GetTokenAsync();
-            var listMessage = new List<NotificationMessage> { messages };
             webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
             var request = new RestRequest(botSettings.Value.BotServiceUrl, Method.POST);
             request.AddHeader("Authorization", $"Bearer {token?.AccessToken}");
-            request.AddJsonBody(listMessage);
+            request.AddJsonBody(messages);
 
             return await webClient.ExecutePostTaskAsync(request);
         }
