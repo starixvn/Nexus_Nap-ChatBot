@@ -11,6 +11,7 @@
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Bot.Builder.Integration;
@@ -68,24 +69,26 @@
         [HttpPost]
         [Route("api/notifymulti")]
         [HttpPost]
-        public async Task<ObjectResult> SendMulti([FromBody]IList<NotificationMessage> notificationMessages)
+        public async Task<ObjectResult> SendMulti([FromBody]NotificationMessage notificationMessage)
         {
             var results = new List<SendMessageResult>();
             var tasks = new List<Task>();
 
-            if (notificationMessages != null && notificationMessages.Any())
+            if (notificationMessage != null && notificationMessage.Recipients != null && notificationMessage.Recipients.Any())
             {
-                foreach (var notificationMessage in notificationMessages)
+                foreach (var conversationInfo in notificationMessage.Recipients)
                 {
-                    foreach (var conversationInfo in notificationMessage.Recipients)
-                    {
-                        tasks.Add(
-                            Task.Run(async () => results.Add(await SendNotification(conversationInfo, notificationMessage.NotifictaionId, notificationMessage.Message)))
-                            );
-                    }
+                    tasks.Add(
+                        Task.Run(async () => results.Add(await SendNotification(conversationInfo, notificationMessage.NotifictaionId, notificationMessage.Message)))
+                        );
                 }
 
                 await Task.WhenAll(tasks.ToArray());
+
+                if (results.Count != notificationMessage.Recipients.Count())
+                {
+                    WriteLogToFile.Writelog(results);
+                }
             }
 
             return Ok(results);

@@ -23,6 +23,7 @@
         private IChatbotService chatbotService;
         private IBaseService baseService;
         private IOptionsSnapshot<AppSettings> appSettings;
+        private IOptionsSnapshot<MonitorChatbot> monitor;
         private ILogger logger;
 
         [Fact]
@@ -139,7 +140,14 @@
             chatbotService = Substitute.For<IChatbotService>();
             baseService = Substitute.For<IBaseService>();
             logger = Substitute.For<ILogger>();
+            monitor = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
 
+            var monitorChatbot = new MonitorChatbot
+            {
+                IsMonitoring = true,
+                BotConversationId = "",
+                ServiceUrl = "",
+            };
             var settings = new AppSettings
             {
                 SiteId = 69,
@@ -147,8 +155,9 @@
             };
             appSettings = Substitute.For<IOptionsSnapshot<AppSettings>>();
             appSettings.Value.Returns(settings);
+            monitor.Value.Returns(monitorChatbot);
 
-            return new SendNotificationService(chatbotService, baseService, appSettings, logger);
+            return new SendNotificationService(chatbotService, baseService, appSettings, monitor, logger);
         }
 
         #endregion Helper

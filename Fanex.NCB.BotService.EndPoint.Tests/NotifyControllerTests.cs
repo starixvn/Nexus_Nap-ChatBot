@@ -138,10 +138,10 @@
         public async Task SendMulti_NotificationListIsEmpty_ReturnObjectResultWithEmptyList()
         {
             var controller = GetController();
-            var notificationMessages = new List<NotificationMessage>();
+            var notificationMessage = new NotificationMessage { NotifictaionId = 1, Recipients = new List<ConversationInfo>() };
 
             //Actual
-            var actual = await controller.SendMulti(notificationMessages);
+            var actual = await controller.SendMulti(notificationMessage);
 
             //Assert
             Assert.IsType<OkObjectResult>(actual);
@@ -157,24 +157,21 @@
 
             conversationService.GetGroupConversation(Arg.Any<string>(), Arg.Any<string>()).Returns(conversationGroup);
 
-            var notificationMessages = new List<NotificationMessage>
+            var notificationMessage = new NotificationMessage
             {
-                new NotificationMessage
-                {
-                    NotifictaionId = 1,
-                    Message = "test",
-                    Recipients = new List<ConversationInfo>
+                NotifictaionId = 1,
+                Message = "test",
+                Recipients = new List<ConversationInfo>
                     {
                         new ConversationInfo
                         {
                             ConversationId = "ConversationId"
                         }
                     }
-                }
             };
 
             //Actual
-            var actual = await controller.SendMulti(notificationMessages);
+            var actual = await controller.SendMulti(notificationMessage);
 
             //Assert
             Assert.IsType<OkObjectResult>(actual);
@@ -208,21 +205,18 @@
             adapter.ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
                 Arg.Any<CancellationToken>()).Throws(new Exception("error msg"));
 
-            var notificationMessages = new List<NotificationMessage>
+            var notificationMessage = new NotificationMessage
             {
-                new NotificationMessage
-                {
-                    NotifictaionId = 1,
-                    Message = "test",
-                    Recipients = new List<ConversationInfo>
+                NotifictaionId = 1,
+                Message = "test",
+                Recipients = new List<ConversationInfo>
                     {
                         new ConversationInfo()
                     }
-                }
             };
 
             //Actual
-            var actual = await controller.SendMulti(notificationMessages);
+            var actual = await controller.SendMulti(notificationMessage);
 
             //Assert
             Assert.IsType<OkObjectResult>(actual);
