@@ -102,7 +102,7 @@
                 index++;
                 var currentRecipients = recipients.Where(r => r.NotificationId == notiMsg.NotifictaionId);
                 var response = await SendMessageToMultipleWithHandleException(notiMsg, currentRecipients);
-                await HandleResponse(response, currentRecipients);
+                await HandleResponse(response, new List<NotificationRecipient>(currentRecipients));
                 if (index != notiMsgs.Count())
                 {
                     await Task.Delay(appSettings.Value.DelayTimeEachBatch);
