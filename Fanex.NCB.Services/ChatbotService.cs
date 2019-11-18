@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Text;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
@@ -21,7 +22,7 @@
             this.botSettings = botSettings;
         }
 
-        public async Task<IRestResponse> SendMessageToMultitpleAsync(NotificationMessage messages)
+        public async Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages)
         {
             ChatbotToken token = await GetTokenAsync();
             webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);

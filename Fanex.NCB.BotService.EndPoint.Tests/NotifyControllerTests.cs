@@ -138,7 +138,7 @@
         public async Task SendMulti_NotificationListIsEmpty_ReturnObjectResultWithEmptyList()
         {
             var controller = GetController();
-            var notificationMessage = new NotificationMessage { NotifictaionId = 1, Recipients = new List<ConversationInfo>() };
+            var notificationMessage = new List<NotificationMessage> { new NotificationMessage { NotifictaionId = 1, Recipients = new List<ConversationInfo>() } };
 
             //Actual
             var actual = await controller.SendMulti(notificationMessage);
@@ -157,8 +157,9 @@
 
             conversationService.GetGroupConversation(Arg.Any<string>(), Arg.Any<string>()).Returns(conversationGroup);
 
-            var notificationMessage = new NotificationMessage
+            var notificationMessage = new List<NotificationMessage>
             {
+                new NotificationMessage {
                 NotifictaionId = 1,
                 Message = "test",
                 Recipients = new List<ConversationInfo>
@@ -168,6 +169,7 @@
                             ConversationId = "ConversationId"
                         }
                     }
+                }
             };
 
             //Actual
@@ -205,14 +207,16 @@
             adapter.ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
                 Arg.Any<CancellationToken>()).Throws(new Exception("error msg"));
 
-            var notificationMessage = new NotificationMessage
+            var notificationMessage = new List<NotificationMessage>
             {
+                new NotificationMessage {
                 NotifictaionId = 1,
                 Message = "test",
                 Recipients = new List<ConversationInfo>
                     {
                         new ConversationInfo()
                     }
+                }
             };
 
             //Actual

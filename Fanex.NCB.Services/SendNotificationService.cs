@@ -15,6 +15,7 @@
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
@@ -95,15 +96,15 @@
 
         private async Task SendNotificationToRecipients(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
-            var notiMsgs = GenerateNotificationMessage(notifications, recipients);
+            var batchs = DivideNotificationBatch(notifications, recipients);
             var index = 0;
-            foreach (var notiMsg in notiMsgs)
+            foreach (var batch in batchs)
             {
                 index++;
-                var currentRecipients = recipients.Where(r => r.NotificationId == notiMsg.NotifictaionId);
-                var response = await SendMessageToMultipleWithHandleException(notiMsg, currentRecipients);
-                await HandleResponse(response, new List<NotificationRecipient>(currentRecipients));
-                if (index != notiMsgs.Count())
+                var currentRecipients = new List<NotificationRecipient>(batch.Item2);
+                var response = await SendMessageToMultipleWithHandleException(batch.Item1, batch.Item2);
+                await HandleResponse(response, currentRecipients);
+                if (index != currentRecipients.Count)
                 {
                     await Task.Delay(appSettings.Value.DelayTimeEachBatch);
                 }
@@ -111,7 +112,7 @@
         }
 
         private async Task<IRestResponse> SendMessageToMultipleWithHandleException(
-            NotificationMessage messages,
+            IEnumerable<NotificationMessage> messages,
             IEnumerable<NotificationRecipient> recipients)
         {
             try
@@ -175,6 +176,11 @@
 
         private async Task UpdateStatusAfterSendNotification(IEnumerable<NotificationRecipient> recipients, IEnumerable<SendMessageResult> responseMessages)
         {
+            if (recipients.Count() != responseMessages.Count())
+            {
+                WriteLogToFile.Writelog(recipients);
+                WriteLogToFile.Writelog(responseMessages);
+            }
             var updateNotiModels = new List<UpdateNotificationModel>();
             foreach (var recipient in recipients)
             {
@@ -202,51 +208,45 @@
             await UpdateSentNotificationStatus(updateNotiModels);
         }
 
-        private IEnumerable<NotificationMessage> GenerateNotificationMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
+        private IEnumerable<ValueTuple<List<NotificationMessage>, List<NotificationRecipient>>>
+            DivideNotificationBatch(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
-            var messages = new List<NotificationMessage>();
-
-            foreach (var noti in notifications)
-            {
-                var currentRecipients = new List<NotificationRecipient>(recipients
-                                        .Where(r => r.NotificationId == noti.NotificationId)
-                                        .DistinctBy(r => r.ChatGroupConversationId));
-
-                var batchs = DivideBatchForNotification(noti, currentRecipients);
-                messages.AddRange(batchs);
-            }
-
-            return messages;
-        }
-
-        private IEnumerable<NotificationMessage> DivideBatchForNotification(NotificationSendMessage
-            notification, IEnumerable<NotificationRecipient> recipients)
-        {
-            var listBatchs = new List<NotificationMessage>();
-
+            var batchs = new List<ValueTuple<List<NotificationMessage>, List<NotificationRecipient>>>();
+            var batchRecipients = new List<List<NotificationRecipient>>();
             int itemEachBatch = appSettings.Value.ItemEachBatchSendNotification;
             int totalBatch = (int)Math.Ceiling((double)recipients.Count() / itemEachBatch);
             for (int i = 0; i < totalBatch; i++)
             {
-                var currentRecipients = recipients.Skip(i * itemEachBatch).Take(itemEachBatch);
-                listBatchs.Add(new NotificationMessage
+                batchRecipients.Add(recipients.Skip(i * itemEachBatch).Take(itemEachBatch).ToList());
+            }
+
+            foreach (var patchRecipient in batchRecipients)
+            {
+                var listNotificationIds = patchRecipient.Select(p => p.NotificationId).Distinct();
+                var batch = new List<NotificationMessage>(notifications
+                                .Where(noti => listNotificationIds.Any(l => l == noti.NotificationId))
+                                .Select(n => new NotificationMessage
+                                {
+                                    NotifictaionId = n.NotificationId,
+                                    Message = n.Content
+                                }));
+
+                foreach (var item in batch)
                 {
-                    NotifictaionId = notification.NotificationId,
-                    Message = notification.Content,
-                    Recipients = currentRecipients.Select(r => new ConversationInfo
+                    item.Recipients = new List<ConversationInfo>(patchRecipient.Select(r => new ConversationInfo
                     {
                         BotConversationId = r.BotConversationId,
                         ServiceUrl = r.ServiceUrl,
                         ChannelId = r.ChannelId,
                         ConversationId = r.ChatGroupConversationId,
                         BotName = r.BotName
-                    }).DistinctBy(r => r.ConversationId)
-                });
+                    }).DistinctBy(r => r.ConversationId));
+                }
+                batchs.Add(new ValueTuple<List<NotificationMessage>, List<NotificationRecipient>>(batch, patchRecipient));
             }
 
-            listBatchs.Last().Recipients = AddMonitorRecipient(listBatchs.Last().Recipients);
-
-            return listBatchs;
+            batchs.Last().Item1.Last().Recipients = AddMonitorRecipient(batchs.Last().Item1.Last().Recipients);
+            return batchs;
         }
 
         private IEnumerable<ConversationInfo> AddMonitorRecipient(IEnumerable<ConversationInfo> conversations)

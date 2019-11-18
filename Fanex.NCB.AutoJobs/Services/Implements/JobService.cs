@@ -83,8 +83,9 @@
                 var settings = monitorOptions.Value;
                 if (settings.IsMonitoring)
                 {
-                    var notificationModel = new NotificationMessage
+                    var notificationModel = new List<NotificationMessage>
                     {
+                        new NotificationMessage {
                         NotifictaionId = -1,
                         Message = settings.Message,
                         Recipients = new List<ConversationInfo>
@@ -98,6 +99,7 @@
                                     BotName = settings.BotName
                                 }
                             }
+                        }
                     };
                     await chatbotService.SendMessageToMultitpleAsync(notificationModel);
                 }
