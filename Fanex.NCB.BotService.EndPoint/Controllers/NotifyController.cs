@@ -69,23 +69,26 @@
         [HttpPost]
         [Route("api/notifymulti")]
         [HttpPost]
-        public async Task<ObjectResult> SendMulti([FromBody]NotificationMessage notificationMessage)
+        public async Task<ObjectResult> SendMulti([FromBody]IList<NotificationMessage> notificationMessages)
         {
             var results = new List<SendMessageResult>();
             var tasks = new List<Task>();
 
-            if (notificationMessage != null && notificationMessage.Recipients != null && notificationMessage.Recipients.Any())
+            if (notificationMessages != null && notificationMessages.Any())
             {
-                foreach (var conversationInfo in notificationMessage.Recipients)
+                foreach (var notificationMessage in notificationMessages)
                 {
-                    tasks.Add(
-                        Task.Run(async () => results.Add(await SendNotification(conversationInfo, notificationMessage.NotifictaionId, notificationMessage.Message)))
-                        );
+                    foreach (var conversationInfo in notificationMessage.Recipients)
+                    {
+                        tasks.Add(
+                            Task.Run(async () => results.Add(await SendNotification(conversationInfo, notificationMessage.NotifictaionId, notificationMessage.Message)))
+                            );
+                    }
                 }
 
                 await Task.WhenAll(tasks.ToArray());
 
-                if (results.Count != notificationMessage.Recipients.Count())
+                if (results.Count != notificationMessages.Sum(n => n.Recipients.Count()))
                 {
                     WriteLogToFile.Writelog(results);
                 }
