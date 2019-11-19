@@ -176,7 +176,8 @@
 
         private async Task UpdateStatusAfterSendNotification(IEnumerable<NotificationRecipient> recipients, IEnumerable<SendMessageResult> responseMessages)
         {
-            if (recipients.Count() != responseMessages.Count())
+            if (recipients.Count() != responseMessages.Count() &&
+                !responseMessages.Any(r => r.ConversationId == monitorOptions.Value.ConversationId))
             {
                 WriteLogToFile.Writelog(recipients);
                 WriteLogToFile.Writelog(responseMessages);
