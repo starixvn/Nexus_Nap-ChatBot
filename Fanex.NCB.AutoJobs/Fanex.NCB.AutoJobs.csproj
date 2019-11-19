@@ -33,6 +33,7 @@
     <None Remove="App_Data\Production\SpNames.xml" />
     <None Remove="App_Data\SpNames.xml" />
     <None Remove="App_Data\UAT\SpNames.xml" />
+    <None Remove="logs\log.txt" />
     <None Remove="Views\Auth\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +65,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="App_Data\UAT\SpNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="logs\log.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\Auth\Login.cshtml">
