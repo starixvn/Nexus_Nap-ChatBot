@@ -17,18 +17,21 @@
         private readonly ISendNotificationService sendNotificationService;
         private readonly ISyncDataService syncDataService;
         private readonly IChatbotService chatbotService;
+        private readonly ISpecialDeleteTicketService specialDeleteTicketService;
         private readonly ILogger logger;
         private readonly IOptionsSnapshot<MonitorChatbot> monitorOptions;
 
         public JobService(ISendNotificationService sendNotificationService,
             ISyncDataService syncDataService,
             IChatbotService chatbotService,
+            ISpecialDeleteTicketService specialDeleteTicketService,
             ILogger logger,
             IOptionsSnapshot<MonitorChatbot> monitorOptions)
         {
             this.sendNotificationService = sendNotificationService;
             this.syncDataService = syncDataService;
             this.chatbotService = chatbotService;
+            this.specialDeleteTicketService = specialDeleteTicketService;
             this.monitorOptions = monitorOptions;
             this.logger = logger;
         }
@@ -70,6 +73,21 @@
             }
             catch (Exception ex)
             {
+                await Logging(ex);
+                throw;
+            }
+        }
+
+        [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
+        public async Task PullTicketFromSpecialDeleteAndCreateNotification()
+        {
+            try
+            {
+                await specialDeleteTicketService.PullTicketAndCreateNotification();
+            }
+            catch (Exception ex)
+            {
+                await chatbotService.NotifySponDemoChatGroup(ex.Message);
                 await Logging(ex);
                 throw;
             }

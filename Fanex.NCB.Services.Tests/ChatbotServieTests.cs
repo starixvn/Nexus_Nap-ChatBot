@@ -15,6 +15,7 @@
     {
         private IRestClient webClient;
         private IOptionsSnapshot<BotSettings> botSettings;
+        private IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions;
 
         [Fact]
         public async Task SendMessageToMultitpleAsync_WhenCalled_ExecutePostTaskAsync()
@@ -68,6 +69,14 @@
             webClient.ReceivedCalls();
         }
 
+        [Fact]
+        public async Task NotifySponDemoChatGroup_WhenCalled_WebClientExecuted()
+        {
+            var service = GetService();
+            await service.NotifySponDemoChatGroup("Test");
+            webClient.Received(2);
+        }
+
         private ChatbotService GetService()
         {
             webClient = new RestClient { Encoding = Encoding.UTF8 };
@@ -77,11 +86,21 @@
                 BotServiceUrl = "/Test",
                 TokenUrl = "ABC/test"
             };
+            var sponGroupOptions = new NotifyChatGroupOption
+            {
+                BotName = "1on1",
+                BotConversationId = "ABC",
+                ChannelId = "ACV",
+                ConversationId = "Conversation",
+                ServiceUrl = "test.com"
+            };
             webClient = Substitute.For<IRestClient>();
             botSettings = Substitute.For<IOptionsSnapshot<BotSettings>>();
+            notifyChatGroupOptions = Substitute.For<IOptionsSnapshot<NotifyChatGroupOption>>();
             botSettings.Value.Returns(settings);
+            notifyChatGroupOptions.Value.Returns(sponGroupOptions);
 
-            return new ChatbotService(botSettings);
+            return new ChatbotService(botSettings, notifyChatGroupOptions);
         }
     }
 }

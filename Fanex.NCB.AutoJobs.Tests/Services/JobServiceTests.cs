@@ -18,6 +18,7 @@
         private ISendNotificationService sendNotificationService;
         private ISyncDataService syncDataService;
         private IChatbotService chatbotService;
+        private ISpecialDeleteTicketService specialDeleteTicketService;
         private IOptionsSnapshot<MonitorChatbot> monitorOptions;
         private ILogger logger;
 
@@ -91,6 +92,30 @@
         }
 
         [Fact]
+        public async Task PullTicketFromSpecialDeleteAndCreateNotification_WhenCalled_ExecuteSuccessed()
+        {
+            var service = GetService();
+
+            //Actual
+            await service.PullTicketFromSpecialDeleteAndCreateNotification();
+
+            //Assert
+            await specialDeleteTicketService.Received().PullTicketAndCreateNotification();
+        }
+
+        [Fact]
+        public async Task PullTicketFromSpecialDeleteAndCreateNotification_WhenCalled_ThrowException()
+        {
+            var service = GetService();
+            specialDeleteTicketService.PullTicketAndCreateNotification().Throws(new Exception());
+
+            //Assert
+            await Assert.ThrowsAsync<Exception>(() => service.PullTicketFromSpecialDeleteAndCreateNotification());
+            await chatbotService.Received().NotifySponDemoChatGroup(Arg.Any<string>());
+            await logger.Received().ErrorAsync(Arg.Any<string>());
+        }
+
+        [Fact]
         public async Task MonitorChatbot_WhenCalled_ExecuteSuccessed()
         {
             var service = GetService();
@@ -120,6 +145,7 @@
             sendNotificationService = Substitute.For<ISendNotificationService>();
             syncDataService = Substitute.For<ISyncDataService>();
             chatbotService = Substitute.For<IChatbotService>();
+            specialDeleteTicketService = Substitute.For<ISpecialDeleteTicketService>();
             monitorOptions = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
             var option = new MonitorChatbot
             {
@@ -133,7 +159,7 @@
             };
             monitorOptions.Value.Returns(option);
             logger = Substitute.For<ILogger>();
-            return new JobService(sendNotificationService, syncDataService, chatbotService, logger, monitorOptions);
+            return new JobService(sendNotificationService, syncDataService, chatbotService, specialDeleteTicketService, logger, monitorOptions);
         }
 
         #endregion Helper

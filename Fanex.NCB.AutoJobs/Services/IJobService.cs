@@ -10,6 +10,8 @@
 
         Task SyncDataFromOIC();
 
+        Task PullTicketFromSpecialDeleteAndCreateNotification();
+
         Task MonitorChatbot();
     }
 }
