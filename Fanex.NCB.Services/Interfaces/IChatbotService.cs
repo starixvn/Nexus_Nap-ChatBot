@@ -10,5 +10,7 @@
         Task SendMessageAsync(string botName, string conversationId, string message);
 
         Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages);
+
+        Task NotifySponDemoChatGroup(string message);
     }
 }

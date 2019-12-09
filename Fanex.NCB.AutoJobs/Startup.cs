@@ -123,6 +123,7 @@
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<BotSettings>(Configuration.GetSection("ChatBotConfigs"));
             services.Configure<CronJob>(Configuration.GetSection("CronJob"));
+            services.Configure<NotifyChatGroupOption>(Configuration.GetSection("NotifyChatGroupOptions"));
             services.AddSingleton(new UMClientConfiguration().Initialize(Configuration));
             services.AddTransient<ILogger, Logger>();
             RegisterService(services);
@@ -185,6 +186,7 @@
             services.AddScoped<IChatbotService, ChatbotService>();
             services.AddScoped<ISendNotificationService, SendNotificationService>();
             services.AddScoped<ISyncDataService, SyncDataService>();
+            services.AddScoped<ISpecialDeleteTicketService, SpecialDeleteTicketService>();
             services.AddScoped<IJobService, JobService>();
             services.AddTransient<IRecurringJobManager, RecurringJobManager>();
         }

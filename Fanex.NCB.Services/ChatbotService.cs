@@ -15,10 +15,14 @@
     {
         private readonly IRestClient webClient;
         private readonly IOptionsSnapshot<BotSettings> botSettings;
+        private readonly IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions;
 
-        public ChatbotService(IOptionsSnapshot<BotSettings> botSettings)
+        public ChatbotService(
+            IOptionsSnapshot<BotSettings> botSettings,
+            IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions)
         {
             webClient = new RestClient { Encoding = Encoding.UTF8 };
+            this.notifyChatGroupOptions = notifyChatGroupOptions;
             this.botSettings = botSettings;
         }
 
@@ -69,6 +73,31 @@
             var response = await webClient.ExecutePostTaskAsync<ChatbotToken>(request);
 
             return response.Data;
+        }
+
+        public async Task NotifySponDemoChatGroup(string message)
+        {
+            var settings = notifyChatGroupOptions.Value;
+            var notificationModel = new List<NotificationMessage>
+                    {
+                        new NotificationMessage {
+                            NotifictaionId = -1,
+                            Message = message,
+                            Recipients = new List<ConversationInfo>
+                            {
+                                new ConversationInfo
+                                {
+                                    ConversationId = settings.ConversationId,
+                                    ChannelId = settings.ChannelId,
+                                    ServiceUrl = settings.ServiceUrl,
+                                    BotConversationId = settings.BotConversationId,
+                                    BotName = settings.BotName
+                                }
+                            }
+                        }
+                    };
+
+            await SendMessageToMultitpleAsync(notificationModel);
         }
     }
 }

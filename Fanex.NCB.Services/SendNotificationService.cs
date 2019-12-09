@@ -176,37 +176,55 @@
 
         private async Task UpdateStatusAfterSendNotification(IEnumerable<NotificationRecipient> recipients, IEnumerable<SendMessageResult> responseMessages)
         {
-            if (recipients.Count() != responseMessages.Count() &&
-                !responseMessages.Any(r => r.ConversationId == monitorOptions.Value.ConversationId))
+            try
             {
-                WriteLogToFile.Writelog(recipients);
-                WriteLogToFile.Writelog(responseMessages);
-            }
-            var updateNotiModels = new List<UpdateNotificationModel>();
-            foreach (var recipient in recipients)
-            {
-                var result = responseMessages.FirstOrDefault(r => r.NotificationId == recipient.NotificationId
-                && r.ConversationId == recipient.ChatGroupConversationId);
-
-                if (result != null)
+                if (recipients.Count() != responseMessages.Count() &&
+                                !responseMessages.Any(r => r.ConversationId == monitorOptions.Value.ConversationId))
                 {
-                    var model = new UpdateNotificationModel
-                    {
-                        NotificationID = recipient.NotificationId,
-                        RecipientID = recipient.RecipientId,
-                        SentTime = DateTimeExtension.ConvertToDateTimeString(result.SentTime),
-                        ConversationGroupID = recipient.ChatGroupId,
-                        ConversationBotID = recipient.BotId,
-                        Retry = result.ErrorCode != 0,
-                        IsSuccess = result.ErrorCode == 0,
-                        ErrMsg = result.ErrorCode == 0 ? string.Empty :
-                            GenerateErrorMessage(RecipientStatuses.BotServiceError, result.ErrorMessage)
-                    };
-                    updateNotiModels.Add(model);
+                    WriteLogToFile.Writelog(recipients);
+                    WriteLogToFile.Writelog(responseMessages);
                 }
             }
+            catch (Exception exception)
+            {
+                string errMsg = string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
+                exception.Message,
+                exception.Source,
+                string.Empty,
+                exception.TargetSite,
+                exception.StackTrace);
+                await logger.ErrorAsync(errMsg);
+            }
+            finally
+            {
+                var updateNotiModels = new List<UpdateNotificationModel>();
+                foreach (var recipient in recipients)
+                {
+                    var result = responseMessages.FirstOrDefault(r => r.NotificationId == recipient.NotificationId
+                    && r.ConversationId == recipient.ChatGroupConversationId);
 
-            await UpdateSentNotificationStatus(updateNotiModels);
+                    if (result != null)
+                    {
+                        var model = new UpdateNotificationModel
+                        {
+                            NotificationID = recipient.NotificationId,
+                            RecipientID = recipient.RecipientId,
+                            SentTime = DateTimeExtension.ConvertToDateTimeString(result.SentTime),
+                            ConversationGroupID = recipient.ChatGroupId,
+                            ConversationBotID = recipient.BotId,
+                            Retry = result.ErrorCode != 0,
+                            IsSuccess = result.ErrorCode == 0,
+                            ErrMsg = result.ErrorCode == 0 ? string.Empty :
+                                GenerateErrorMessage(RecipientStatuses.BotServiceError, result.ErrorMessage)
+                        };
+                        updateNotiModels.Add(model);
+                    }
+                }
+
+                await UpdateSentNotificationStatus(updateNotiModels);
+            }
         }
 
         private IEnumerable<ValueTuple<List<NotificationMessage>, List<NotificationRecipient>>>
