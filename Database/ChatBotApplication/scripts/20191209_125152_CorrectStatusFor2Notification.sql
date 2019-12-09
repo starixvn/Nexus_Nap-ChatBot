@@ -1,6 +1,8 @@
 /*
 	Task: Update Sent Status for 2 Notifications( NotificationID=383, 399 ) 
     Redmine: https://nexdev.net/issues/125152
+    Server: 10.99.99.100:3306 (PRO)
+    Database: ChatBot
 */
 
 #11 affected rows
