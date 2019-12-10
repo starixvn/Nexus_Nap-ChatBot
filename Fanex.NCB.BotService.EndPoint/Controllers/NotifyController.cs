@@ -90,7 +90,15 @@
 
                 if (results.Count != notificationMessages.Sum(n => n.Recipients.Count()))
                 {
-                    WriteLogToFile.Writelog(results);
+                    try
+                    {
+                        WriteLogToFile.Writelog(notificationMessages, "From body data:");
+                        WriteLogToFile.Writelog(results, "Result");
+                    }
+                    catch (Exception ex)
+                    {
+                        await WriteLog(ex);
+                    }
                 }
             }
 
@@ -122,19 +130,10 @@
             }
             catch (Exception exception)
             {
+                result.ErrorCode = 1;
+                result.ErrorMessage = exception.Message;
+
                 await WriteLog(exception);
-
-                try
-                {
-                    await SendMessage(appId, conversationReference, message);
-                }
-                catch (Exception ex)
-                {
-                    result.ErrorCode = 1;
-                    result.ErrorMessage = ex.Message;
-
-                    await WriteLog(ex);
-                }
             }
 
             result.SentTime = DateTime.UtcNow;
