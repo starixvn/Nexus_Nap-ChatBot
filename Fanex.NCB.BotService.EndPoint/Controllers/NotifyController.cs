@@ -72,7 +72,7 @@
         public async Task<ObjectResult> SendMulti([FromBody]IList<NotificationMessage> notificationMessages)
         {
             var results = new List<SendMessageResult>();
-            var tasks = new List<Task>();
+            var tasks = new List<Task<SendMessageResult>>();
 
             if (notificationMessages != null && notificationMessages.Any())
             {
@@ -81,12 +81,11 @@
                     foreach (var conversationInfo in notificationMessage.Recipients)
                     {
                         tasks.Add(
-                            Task.Run(async () => results.Add(await SendNotification(conversationInfo, notificationMessage.NotifictaionId, notificationMessage.Message)))
+                            Task.Run(async () => await SendNotification(conversationInfo, notificationMessage.NotifictaionId, notificationMessage.Message))
                             );
                     }
                 }
-
-                await Task.WhenAll(tasks.ToArray());
+                results = (await Task.WhenAll(tasks)).ToList();
 
                 if (results.Count != notificationMessages.Sum(n => n.Recipients.Count()))
                 {
