@@ -14,6 +14,7 @@
 			, UpdatedBy VARCHAR(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NOT NULL
 			, LastUpdate DATETIME NOT NULL
 			, ServiceUrl VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NULL
+            , IsActive BIT NOT NULL DEFAULT 1  
 			, CONSTRAINT PK_ID  PRIMARY KEY (ConversationGroupID)
 			, INDEX INDEX_Name USING BTREE (Name)
 			, UNIQUE INDEX UNIQUE_ConversationID USING BTREE (ConversationID)
