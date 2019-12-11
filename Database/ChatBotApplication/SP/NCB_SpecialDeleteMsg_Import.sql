@@ -208,8 +208,9 @@ NCB_SpecialDeleteMsg_Import:BEGIN
          SELECT DISTINCT ct.NotificationTypeID
 						, NULL ProductID
                         , ct.TemplateTitle Title
-						, REPLACE(REPLACE(ct.TemplateContent, '{EN Announcement}', h.Content_en )
-												, '{CN Announcement}', h.Content_cs) Content
+						, REPLACE(REPLACE(REPLACE(ct.TemplateContent, '{EN Announcement}', h.Content_en )
+												, '{CN Announcement}', h.Content_cs) 
+                                                , '@@', '') Content
                         , startTime ConfigSendTime
                         , 0 SendImmediately
                         , STARIXIT_CUSTID CreatorID
@@ -256,33 +257,38 @@ NCB_SpecialDeleteMsg_Import:BEGIN
                 , n.LastModifiedBy = NULL
 		WHERE nm.MessageID IN (SELECT h.MessageID FROM tmp_MsgHeader h);
         
-        #Update flag to 'Done'
+		#Update flag to 'Done'
 		UPDATE SystemSetting 
 		SET Value = VALUE_4_DONE
 		WHERE ID = 1 AND Value = VALUE_4_RUNNING;
         
-	 #Get Finish Time to calcualte execution duration
-    SET finishTime = UTC_TIMESTAMP(3);
-    SET duration =  TIMESTAMPDIFF(MICROSECOND
-																		, startTime
-                                                                        , finishTime)  / 1000; 	#miliseconds
-    
-    #Get Log Content, JSON format
-    SET logContent = json_object('MessageHeader', messageHeader
-										, 'MessageDetail', messageDetail
-					) ;
-                    
-	#Write User Log
-    IF EXISTS (SELECT 1 FROM tmp_MsgHeader) THEN
-		CALL NCB_UserLog_RunSP_Ins(
-												ACTION_ID #actionID
-												, -1  #referenceID
-												, STARIXIT_CUSTID #UserID
-												, logContent #LogContent
-												, startTime #logtime
-												, duration	#Duration
-												);
-	END IF;
+        #Update flag to 'Done'
+		UPDATE SystemSetting 
+		SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
+		WHERE ID = 3;
+			
+		 #Get Finish Time to calcualte execution duration
+		SET finishTime = UTC_TIMESTAMP(3);
+		SET duration =  TIMESTAMPDIFF(MICROSECOND
+																			, startTime
+																			, finishTime)  / 1000; 	#miliseconds
+		
+		#Get Log Content, JSON format
+		SET logContent = json_object('MessageHeader', messageHeader
+											, 'MessageDetail', messageDetail
+						) ;
+						
+		#Write User Log
+		IF EXISTS (SELECT 1 FROM tmp_MsgHeader) THEN
+			CALL NCB_UserLog_RunSP_Ins(
+													ACTION_ID #actionID
+													, -1  #referenceID
+													, STARIXIT_CUSTID #UserID
+													, logContent #LogContent
+													, startTime #logtime
+													, duration	#Duration
+													);
+		END IF;
 END;
 
 //
