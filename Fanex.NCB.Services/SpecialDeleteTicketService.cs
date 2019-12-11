@@ -56,8 +56,8 @@
 
             var command = new ImportMessageFromSpecialDeleteCommand
             {
-                MessageHeader = messageHeader,
-                MessageDetail = details
+                MessageHeader = JsonConvert.SerializeObject(messages),
+                MessageDetail = JsonConvert.SerializeObject(messageDetails)
             };
 
             return await baseService.ExecuteNonQueryAsync(command);
