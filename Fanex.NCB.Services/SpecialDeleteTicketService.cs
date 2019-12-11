@@ -8,6 +8,7 @@
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
+    using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Newtonsoft.Json;
 
@@ -48,6 +49,11 @@
         {
             string messageHeader = JsonConvert.SerializeObject(messages);
             string details = JsonConvert.SerializeObject(messageDetails);
+            WriteLogToFile.Writelog(messages);
+            WriteLogToFile.Writelog(messageDetails);
+            WriteLogToFile.Writelog(messageHeader);
+            WriteLogToFile.Writelog(details);
+
             var command = new ImportMessageFromSpecialDeleteCommand
             {
                 MessageHeader = messageHeader,
