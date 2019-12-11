@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Services.Interfaces;
@@ -30,11 +31,14 @@
             {
                 var messages = await GetMessageFromSpecialDelete(systemSettings);
 
-                var importResult = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
-
-                if (!importResult.IsSuccessful)
+                if (messages.Item1.Any() && messages.Item2.Any())
                 {
-                    await chatbotService.NotifySponDemoChatGroup(importResult.Message);
+                    var importResult = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
+
+                    if (!importResult.IsSuccessful)
+                    {
+                        await chatbotService.NotifySponDemoChatGroup(importResult.Message);
+                    }
                 }
             }
         }
@@ -59,7 +63,7 @@
             {
                 MessageID = systemSettings.MaxMessageID,
                 BatchSize = systemSettings.BatchSize,
-                MsgContentsTypeLst = systemSettings.ContentsType
+                MsgContentsTypeLst = systemSettings.MsgContentsTypeLst
             };
 
             return await baseService.FetchMultipleAsync<Message, MessageDetail>(criteria);

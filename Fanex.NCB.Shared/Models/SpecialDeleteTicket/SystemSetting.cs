@@ -8,6 +8,6 @@
 
         public int MaxMessageID { get; set; }
 
-        public string ContentsType { get; set; }
+        public string MsgContentsTypeLst { get; set; }
     }
 }
