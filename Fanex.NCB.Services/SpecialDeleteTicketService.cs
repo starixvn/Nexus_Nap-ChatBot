@@ -47,12 +47,8 @@
         private async Task<CommandResult> ImportMessageToChatbotDB(IEnumerable<Message> messages,
             IEnumerable<MessageDetail> messageDetails)
         {
-            string messageHeader = JsonConvert.SerializeObject(messages);
-            string details = JsonConvert.SerializeObject(messageDetails);
             WriteLogToFile.Writelog(messages);
             WriteLogToFile.Writelog(messageDetails);
-            WriteLogToFile.Writelog(messageHeader);
-            WriteLogToFile.Writelog(details);
 
             var command = new ImportMessageFromSpecialDeleteCommand
             {
@@ -60,7 +56,10 @@
                 MessageDetail = JsonConvert.SerializeObject(messageDetails)
             };
 
-            return await baseService.ExecuteNonQueryAsync(command);
+            var result = await baseService.ExecuteNonQueryAsync(command);
+            WriteLogToFile.Writelog(result);
+
+            return result;
         }
 
         private async Task<ValueTuple<IEnumerable<Message>, IEnumerable<MessageDetail>>> GetMessageFromSpecialDelete(SystemSetting systemSettings)
