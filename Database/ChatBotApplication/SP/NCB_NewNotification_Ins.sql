@@ -22,8 +22,10 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NewNotification_Ins`(
         Revisions:
 				- 20190401@Dominic: First Commit
 				- 20190819Q@Elton: Update Error Message
+                - 20191211@Dominic: Filter active chat group - Redmine: #125085
     */
 )
+SQL SECURITY DEFINER
 NCB_NewNotification_Ins:BEGIN
 
 	#Variables used to write User Logs
@@ -91,6 +93,8 @@ NCB_NewNotification_Ins:BEGIN
 			ON bcr.RecipientID = main.RecipientID
 	INNER JOIN ConversationGroupExtraInfo bcri
 			ON bcri.ConversationGroupID = bcr.ConversationGroupID
+	INNER JOIN ConversationGroup con
+				ON con.ConversationGroupID = bcr.ConversationGroupID AND con.IsActive = 1
 	INNER JOIN ConversationGroupBot cgb
 			ON cgb.ConversationGroupID = bcr.ConversationGroupID;
                 
@@ -264,8 +268,10 @@ NCB_NewNotification_Ins:BEGIN
                     , NEW_NOTIFICATION_STATUS
                     , NEW_NOTIFICATION_STATUSID
     FROM tmp_recipientIDLst re
-		LEFT JOIN ConversationGroupRecipient gr 
+		INNER JOIN ConversationGroupRecipient gr 
 			ON re.RecipientID = gr.RecipientID
+		INNER JOIN ConversationGroup con
+				ON con.ConversationGroupID = gr.ConversationGroupID AND con.IsActive = 1
 		LEFT JOIN ConversationGroupExtraInfo gri 
 			ON gri.ConversationGroupID = gr.ConversationGroupID
     WHERE gri.ChatGroupTypeID IN (
