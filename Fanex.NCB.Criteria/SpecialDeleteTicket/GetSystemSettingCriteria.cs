@@ -4,7 +4,7 @@
 
     public class GetSystemSettingCriteria : CriteriaBase
     {
-        public override string GetSettingKey() => "NCB_Setting_SpecialDelete_Sel";
+        public override string GetSettingKey() => "NCB_MsgSetting_SpecialDelete_Sel";
 
         public override bool IsValid() => true;
     }

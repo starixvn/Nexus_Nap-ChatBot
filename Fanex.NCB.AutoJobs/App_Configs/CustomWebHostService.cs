@@ -58,6 +58,10 @@
             recurringJob.AddOrUpdate<IJobService>(Resources.MonitorChatbotService,
                 job => job.MonitorChatbot(),
                 cronJob.CurrentValue.MonitorSkypebot);
+
+            recurringJob.AddOrUpdate<IJobService>(Resources.SpecialDeletePullTicket,
+                job => job.PullTicketFromSpecialDeleteAndCreateNotification(),
+                cronJob.CurrentValue.PullTicketFromSpecialDelete);
         }
 
         private static void RemoveCurrentHangfireServer()

@@ -9,5 +9,7 @@
         public string SyncOICData { get; set; }
 
         public string MonitorSkypebot { get; set; }
+
+        public string PullTicketFromSpecialDelete { get; set; }
     }
 }

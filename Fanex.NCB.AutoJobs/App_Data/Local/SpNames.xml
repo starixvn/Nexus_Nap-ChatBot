@@ -11,8 +11,8 @@
     <Setting Key="NCB_OIC_SyncData" SpName="NCB_OIC_SyncData" DbName="ChatBot" Plain="0"></Setting>
   </Function>
   <Function Name="Special Delete">
-    <Setting Key="NCB_Setting_SpecialDelete_Sel" SpName="NCB_Setting_SpecialDelete_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_MsgSetting_SpecialDelete_Sel" SpName="NCB_MsgSetting_SpecialDelete_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SpecialDeleteMsg_Import" SpName="NCB_SpecialDeleteMsg_Import" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NAP_Chatbot_GetSpecialDeleteMsg" SpName="NAP_Chatbot_GetSpecialDeleteMsg" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_SpecialDeleteMsg_Sel" SpName="NAP_Chatbot_SpecialDeleteMsg_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
   </Function>
 </Functions>

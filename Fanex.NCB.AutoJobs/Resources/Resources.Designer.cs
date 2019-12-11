@@ -113,5 +113,14 @@ namespace Fanex.NCB.AutoJobs.Resources {
                 return ResourceManager.GetString("MonitorChatbotService", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pull ticket from Special Delete and Create Notifications.
+        /// </summary>
+        internal static string SpecialDeletePullTicket {
+            get {
+                return ResourceManager.GetString("SpecialDeletePullTicket", resourceCulture);
+            }
+        }
     }
 }
