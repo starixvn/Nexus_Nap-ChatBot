@@ -53,6 +53,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 	SET  startTime = UTC_TIMESTAMP(3);
     SET errCode=0, errMsg='';
     
+	/*Step 1: Parse JSON data for message header and detaill*/
     DROP TEMPORARY TABLE IF EXISTS tmp_MsgHeader;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgHeader(
             MessageID INT, 
@@ -96,6 +97,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
         SET iLoop := iLoop + 1;
     END WHILE;    
     
+    /*Step 2: Parse JSON data for message template, notification type*/
     SELECT Value INTO templateNotifcationType 
     FROM SystemSetting ss
     WHERE ss.ID = 4; 
@@ -120,6 +122,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
         SET iLoop := iLoop + 1;
     END WHILE;    
     
+/*Step 3: Validate templates*/
     #Get template content
     UPDATE tmp_MsgContentTypeTemplate tmp
     INNER JOIN NotificationTemplate nt ON tmp.NotificationTemplateID = nt.NotificationTemplateID
@@ -158,14 +161,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
         
 	END IF;
     
-    DELETE FROM tmp_MsgHeader h 
-    WHERE h.MessageID IN (SELECT nm.MessageID FROM NotificationSystemMsg nm);
-    
-    DELETE FROM tmp_MsgDetail d 
-    WHERE d.MessageID IN (SELECT nm.MessageID FROM NotificationSystemMsg nm);
-    
-    
-    #Update flag to 'running'
+/*Step 4: Update flag to 'running'*/
     UPDATE SystemSetting 
     SET Value = VALUE_4_RUNNING
     WHERE ID = 1 AND Value = VALUE_4_DONE;
@@ -174,12 +170,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
         LEAVE NCB_SpecialDeleteMsg_Import;
     END IF;
      
-     #Get RecipientID
-    UPDATE tmp_MsgDetail tmp
-    INNER JOIN Licensee l ON l.RegisteredLicenseeName = tmp.Site
-    INNER JOIN Recipient r ON r.SourceID = l.LicenseeId AND r.RecipientTypeID = RECIPIENT_TYPE_LICENSEE
-	SET tmp.RecipientID = r.RecipientID;
-    
+ /*Step 5: Check unsupported MsgContentsType*/
 	#Check unsupported MsgContensType
     UPDATE tmp_MsgHeader h
     SET h.CheckMsgDetail = h.MsgContentsType
@@ -191,8 +182,14 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     
      UPDATE tmp_MsgHeader h
     SET h.CheckMsgDetail = NULL;
+ 
+  /*Step 6: Check if there are any sites which can not be mapped with any recipients*/
+	#Get RecipientID
+    UPDATE tmp_MsgDetail tmp
+    INNER JOIN Licensee l ON l.RegisteredLicenseeName = tmp.Site
+    INNER JOIN Recipient r ON r.SourceID = l.LicenseeId AND r.RecipientTypeID = RECIPIENT_TYPE_LICENSEE
+	SET tmp.RecipientID = r.RecipientID;
     
-    #Check if there are any sites which can not be mapped with any recipients
     UPDATE tmp_MsgHeader h
     SET h.CheckMsgDetail = (
 		SELECT GROUP_CONCAT(d.Site  ORDER BY d.Site SEPARATOR ', ') 
@@ -206,7 +203,8 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     
     UPDATE tmp_MsgHeader h
     SET h.CheckMsgDetail = NULL;
-    
+
+  /*Step 7: Check if there are any recipients which do not have any suitable chat groups*/    
     #Prepare data for Notification List
     DROP TEMPORARY TABLE IF EXISTS tmp_NotificationRecipientList;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmp_NotificationRecipientList(
@@ -215,6 +213,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 				, RecipientID INT
                 , ConversationGroupID INT
                 , ChatGroupTypeID SMALLINT
+                , INDEX Index_MessageID(MessageID)
             );
             
 	INSERT INTO tmp_NotificationRecipientList(MessageID, Site, RecipientID, ConversationGroupID, ChatGroupTypeID)       
@@ -226,11 +225,11 @@ NCB_SpecialDeleteMsg_Import:BEGIN
         INNER JOIN  tmp_MsgContentTypeTemplate tpl ON tpl.MsgContentsType = h.MsgContentsType
         INNER JOIN NotificationChatGroupType ngt ON ngt.NotificationTypeID = tpl.NotificationTypeID
 		INNER JOIN ConversationGroupRecipient gr  ON d.RecipientID = gr.RecipientID
+        INNER JOIN ConversationGroup g ON g.ConversationGroupID = gr.ConversationGroupID
 		INNER JOIN ConversationGroupExtraInfo gri  ON gri.ConversationGroupID = gr.ConversationGroupID
-	WHERE gri.ChatGroupTypeID = ngt.ChatGroupTypeID;
+	WHERE h.CheckMsg NOT LIKE '%MsgContentsType%' 
+			AND gri.ChatGroupTypeID = ngt.ChatGroupTypeID AND g.IsActive = 1;
     
-    
-     #Check if there are any recipients which do not have any suitable chat groups
     UPDATE tmp_MsgHeader h
     SET h.CheckMsgDetail = (
 		SELECT GROUP_CONCAT(d.Site  ORDER BY d.Site SEPARATOR ', ') 
@@ -246,16 +245,19 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     
     UPDATE tmp_MsgHeader h
     SET h.CheckMsgDetail = NULL;
-    
+ 
+/*Step 8: Insert NotificationSystemMsg with Chek Message*/    
 	#Insert  NotificationSystemMsg
     INSERT INTO NotificationSystemMsg(MessageID, NotificationID, CheckMsg, CreatedDate)
     SELECT h.MessageID, NULL NotificationID, h.CheckMsg, startTime
     FROM tmp_MsgHeader h
     WHERE h.MessageID NOT IN (SELECT MessageID FROM NotificationSystemMsg);
    
-   	DELETE FROM tmp_MsgDetail d WHERE d.MessageID IN (SELECT h.MessageID FROM tmp_MsgHeader h WHERE h.CheckMsg LIKE '%MsgContentsType%');
-    DELETE FROM tmp_MsgHeader h WHERE h.CheckMsg LIKE '%MsgContentsType%';
-    
+	IF ROW_COUNT()  = 0 THEN
+        LEAVE NCB_SpecialDeleteMsg_Import;
+    END IF;
+
+/*Step 9: Insert Notification*/   
     #Insert Notification
      INSERT INTO Notification(NotificationTypeID
 											, ProductID
@@ -283,7 +285,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
                         , h.MessageID LastModifiedBy
          FROM tmp_MsgHeader h
          INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType
-         INNER JOIN tmp_MsgDetail d  ON h.MessageID = d.MessageID AND d.RecipientID IS NOT NULL;
+         WHERE h.MessageID IN (SELECT nrl.MessageID FROM tmp_NotificationRecipientList nrl);
          
          #Update NotificationSystemMsg
          UPDATE NotificationSystemMsg nm
@@ -291,26 +293,20 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 																AND n.ConfigSendTime = startTime
                                                                 AND n.LastModifiedBy = nm.MessageID
 		SET nm.NotificationID = n.NotificationID
-		WHERE nm.MessageID IN (SELECT h.MessageID FROM tmp_MsgHeader h);
+		WHERE nm.MessageID IN (SELECT nrl.MessageID FROM tmp_NotificationRecipientList nrl);
          
 		#Insert recipient list
         INSERT INTO NotificationRecipientList(NotificationID, ConversationGroupID
 																		, ChatGroupTypeID, RecipientID
 																		, Status, StatusID)
         SELECT nm.NotificationID
-					, IFNULL(gri.ConversationGroupID, -1)
-					, IFNULL(gri.ChatGroupTypeID,-1)
+					, d.ConversationGroupID
+					, d.ChatGroupTypeID
                     , d.RecipientID
 					, NEW_NOTIFICATION_STATUS
 					, NEW_NOTIFICATION_STATUSID
         FROM NotificationSystemMsg nm
-        INNER JOIN tmp_MsgDetail d ON d.MessageID = nm.MessageID
-			LEFT JOIN ConversationGroupRecipient gr 
-				ON d.RecipientID = gr.RecipientID
-			LEFT JOIN ConversationGroupExtraInfo gri 
-				ON gri.ConversationGroupID = gr.ConversationGroupID
-        WHERE nm.MessageID IN (SELECT h.MessageID FROM tmp_MsgHeader h)
-			AND d.RecipientID IS NOT NULL;
+        INNER JOIN tmp_NotificationRecipientList d ON d.MessageID = nm.MessageID;
         
         #Update Status for Notification
         UPDATE Notification n
@@ -318,7 +314,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
         SET n.Status = NEW_NOTIFICATION_STATUS
 				, n.StatusID = NEW_NOTIFICATION_STATUSID
                 , n.LastModifiedBy = NULL
-		WHERE nm.MessageID IN (SELECT h.MessageID FROM tmp_MsgHeader h);
+		WHERE nm.MessageID IN (SELECT nrl.MessageID FROM tmp_NotificationRecipientList nrl);
         
 		#Update flag to 'Done'
 		UPDATE SystemSetting 
