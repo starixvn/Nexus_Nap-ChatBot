@@ -31,7 +31,7 @@
             if (systemSettings != null)
             {
                 var messages = await GetMessageFromSpecialDelete(systemSettings);
-
+                WriteLogToFile.Writelog(messages, "Data from Special Delete");
                 if (messages.Item1.Any() && messages.Item2.Any())
                 {
                     var importResult = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
