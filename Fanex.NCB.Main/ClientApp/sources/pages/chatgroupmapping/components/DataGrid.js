@@ -7,10 +7,19 @@ import CommonFunctions from '../../common/common-functions/CommonFunctions';
 import { PAGING_SIZES, mappingStatus } from '../../constants/constants';
 import Labels from '../../common/Labels';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';
+import axios from 'axios';
+import Site from '../../lib/site';
+import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 
 export class DataGrid extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            isShowActivePopup: false,
+            item: {},
+            activeContent: ''
+        }
     }
 
     onPaging = (pageIndex, pageSize) => {
@@ -64,7 +73,40 @@ export class DataGrid extends Component {
 
     getEditClassNames = item => CommonFunctions.isBotRemoved(item.mappingStatusID) ? 'icon-edit edit-disabled' : 'icon-edit';
 
-    updateActive = () => console.log('abc');
+    updateActive = () => {
+        const params = {
+            groupID: this.state.item.groupID,
+            isActive: !this.state.item.isActive
+        };
+
+        const url = Site.resolveClientUrl('ChatGroupMapping/UpdateActive');
+        const headers = {
+            'Content-Type': 'application/json',
+            'RequestVerificationToken': Site.getXsrfToken()
+        };
+
+        axios.post(url, JSON.stringify(params), { headers: headers }).then(response => {
+            if (response.data && response.data.code === 0) {
+                this.props.getGridData(this.props.gridParams);
+            }
+        }).catch(error => {
+            console.log(error);
+        })
+
+        this.toggleActive();
+    };
+
+    changeActive = item => {
+        this.setState({
+            isShowActivePopup: true,
+            item: item,
+            activeContent: item.isActive ? Labels.ConfirmUpdateActive : Labels.ConfirmUpdateInActive
+        })
+    }
+
+    toggleActive = () => {
+        this.setState({ isShowActivePopup: !this.state.isShowActivePopup });
+    }
 
     buildBody = (data, pageIndex, pageSize, isHost) => {
         const rows = [];
@@ -92,8 +134,8 @@ export class DataGrid extends Component {
                         <input
                             type='checkbox'
                             checked={item.isActive}
-                            disabled={item.mappingStatusID !== mappingStatus.BotRemoved}
-                            onChange={() => this.updateActive()}
+                            disabled={!CommonFunctions.isBotRemoved(item.mappingStatusID) && !CommonFunctions.isMapped(item.mappingStatusID)}
+                            onChange={() => this.changeActive(item)}
                         />
                     </Cell>
                     <Cell>{item.remark}</Cell>
@@ -123,7 +165,6 @@ export class DataGrid extends Component {
         }
 
         const { data, count, isHost } = this.props.gridData;
-        console.log("debug by merlin", data, this.props);
         const { pageIndex, pageSize } = this.props.gridParams;
 
         const pagingOption = {
@@ -146,6 +187,12 @@ export class DataGrid extends Component {
                     containerPadding={0}
                     adjustedHeight={50}
 
+                />
+                <ConfirmPopup
+                    isOpen={this.state.isShowActivePopup}
+                    onConfirm={this.updateActive}
+                    onToggle={this.toggleActive}
+                    content={this.state.activeContent}
                 />
             </div>
         );

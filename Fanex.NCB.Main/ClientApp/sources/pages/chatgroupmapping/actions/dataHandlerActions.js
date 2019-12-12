@@ -100,24 +100,6 @@ export const refreshUpdateData = () => {
     };
 };
 
-export const updateActive = params => {
-    const url = Site.resolveClientUrl('ChatGroupMapping/UpdateActive');
-    const headers = {
-        'Content-Type': 'application/json',
-        'RequestVerificationToken': Site.getXsrfToken()
-    };
-
-    return async dispatch => {
-        try {
-            const request = await axios.post(url, JSON.stringify(params), { headers: headers });
-            console.log(request);
-            dispatch(setUpdateData(null));
-        } catch (err) {
-            errorResponseHandler();
-        }
-    };
-}
-
 const actions = {
     setSettings,
     getSettings,
@@ -128,8 +110,7 @@ const actions = {
     filterRecipients,
     setUpdateData,
     update,
-    refreshUpdateData,
-    updateActive
+    refreshUpdateData
 };
 
 export default actions;
