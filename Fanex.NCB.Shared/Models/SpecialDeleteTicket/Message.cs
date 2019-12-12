@@ -4,7 +4,7 @@
     {
         public long MessageID { get; set; }
 
-        public int MsgContentType { get; set; }
+        public int MsgContentsType { get; set; }
 
         public string Content_en { get; set; }
 
