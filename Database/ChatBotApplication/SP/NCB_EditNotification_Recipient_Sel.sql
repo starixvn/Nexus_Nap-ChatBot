@@ -9,9 +9,11 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_EditNotification_Recipient_Sel
 		Creator: Elton@20190821
         Revisions:
 				- 20190821@Elton: First Commit
+                - 20191211@Dominic: Filter active chat group - Redmine: #125085
         
     */
 )
+SQL SECURITY DEFINER
 BEGIN
 	DECLARE RECIPIENT_TYPE_LICENSEES 	SMALLINT DEFAULT 1;
     DECLARE LICENSEE_STATUS_ACTIVE 		TINYINT UNSIGNED DEFAULT 3;
@@ -57,6 +59,7 @@ BEGIN
 		INNER JOIN ConversationBot bot
 				ON bot.ConversationBotID = cgb.ConversationBotID
     WHERE bcri.ChatGroupTypeID IS NOT NULL
+		AND con.IsActive = 1
 		AND r.RecipientTypeID IN (
 							SELECT nrt.RecipientTypeID 
 							FROM NotificationRecipientType nrt 

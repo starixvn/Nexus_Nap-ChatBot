@@ -11,64 +11,347 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SpecialDeleteMsg_Import(
 		Creator: Dominic@20191211
         Task: Chatbot For Licensee - Phase 2: Integrate Special Delete - Redmine:#122905
         Param:
-
+				-  @MessageHeader:
+							[  
+								{ "MessageID":885128, "MsgContentsType":101, "Content_en":"Attn:[Soccer] Due to bets er...", "Content_cs":"請注意:[籃球] 由於中文隊名顯示.." }
+								, { "MessageID":885131,"MsgContentsType":101,"Content_en":"Attn:[Soccer] Due to bets er...", "Content_cs":"請注意:[籃球] 由於中文隊名顯示..."}
+							]
+				- @MessageDetail
+							[  
+								{ "MessageID":885128, "Site":"IBO" }
+								, { "MessageID":885128, "Site":"XTD3" }
+								, { "MessageID":885131,"Site":"mansion88"}
+								, { "MessageID":885131, "Site":"haifa"}
+							]
         Revisions:
 				- 20191211@Dominic: First Commit
         
     */
 )
 SQL SECURITY DEFINER
-BEGIN
+NCB_SpecialDeleteMsg_Import:BEGIN
     # Variables
 	DECLARE iLoop INT;
+    DECLARE startTime 			DATETIME(3);
+    DECLARE finishTime 		DATETIME(3); 
+    DECLARE duration 			INT;							
+    DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
+    DECLARE templateNotifcationType JSON;
 
     #Constants
-
+	DECLARE ACTION_ID 	INT DEFAULT 18;
+    DECLARE VALUE_4_RUNNING 	TEXT  DEFAULT 'Running';
+    DECLARE VALUE_4_DONE 	TEXT DEFAULT 'Done';
     DECLARE RECIPIENT_TYPE_LICENSEE INT DEFAULT 1;
-    DECLARE RECIPIENT_TYPE_PRODUCT INT DEFAULT 2;
-    DECLARE LICENSEE_SOURCE_DESCRIPTION VARCHAR(50) DEFAULT 'bodb_OIC.dbo.Licensee';
-    DECLARE PRODUCT_SOURCE_DESCRIPTION VARCHAR(50) DEFAULT 'bodb_OIC.dbo.Product';
+    DECLARE STARIXIT_CUSTID 	INT DEFAULT 10278938;
+    
+    DECLARE NEW_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 0;
+    DECLARE NEW_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Planned';
+    DECLARE CREATING_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 7;
+    DECLARE CREATING_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Creating';
 
-
-
-############################ Licensee ###########################################
-
-    DROP TEMPORARY TABLE IF EXISTS tmp_Licensee;
-    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Licensee(
-            LicenseeId INT, 
-            LicenseeName VARCHAR(500), 
-            RegisteredLicenseeName VARCHAR(500), 
-            LicenseeStatusId INT, 
-            LicenseeTypeId INT
+	SET  startTime = UTC_TIMESTAMP(3);
+    SET errCode=0, errMsg='';
+    
+    DROP TEMPORARY TABLE IF EXISTS tmp_MsgHeader;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgHeader(
+            MessageID INT, 
+            MsgContentsType INT,
+            Content_en TEXT, 
+            Content_cs TEXT,
+            CheckMsg VARCHAR(1000) DEFAULT '',
+            CheckMsgDetail TEXT,
+            UNIQUE INDEX Index_MessageID(MessageID)
             );
     
     SET iLoop = 0;
-    WHILE (JSON_EXTRACT(Licensees, CONCAT('$[',iLoop, '].LicenseeId'))  IS NOT NULL) DO 
-		INSERT INTO tmp_Licensee(LicenseeId, LicenseeName, RegisteredLicenseeName, LicenseeStatusId, LicenseeTypeId)
+    WHILE (JSON_EXTRACT(messageHeader, CONCAT('$[',iLoop, '].MessageID'))  IS NOT NULL) DO 
+		INSERT INTO tmp_MsgHeader(MessageID, MsgContentsType, Content_en, Content_cs)
         VALUES (
-			JSON_UNQUOTE(JSON_EXTRACT(Licensees, CONCAT('$[', iLoop, '].LicenseeId'))), 
-            JSON_UNQUOTE(JSON_EXTRACT(Licensees, CONCAT('$[', iLoop, '].LicenseeName'))),
-            JSON_UNQUOTE(JSON_EXTRACT(Licensees, CONCAT('$[', iLoop, '].RegisteredLicenseeName'))),
-            JSON_UNQUOTE(JSON_EXTRACT(Licensees, CONCAT('$[', iLoop, '].LicenseeStatusId'))),
-            JSON_UNQUOTE(JSON_EXTRACT(Licensees, CONCAT('$[', iLoop, '].LicenseeTypeId')))
+			JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MessageID'))), 
+            JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MsgContentsType'))),
+            JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_en'))),
+            JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_cs')))
+		);
+        
+        SET iLoop := iLoop + 1;
+    END WHILE;    
+
+	DROP TEMPORARY TABLE IF EXISTS tmp_MsgDetail;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgDetail(
+            MessageID INT, 
+            Site TEXT,
+            RecipientID INT,
+            INDEX Index_MessageID(MessageID)
+            );
+    
+    SET iLoop = 0;
+    WHILE (JSON_EXTRACT(messageDetail, CONCAT('$[',iLoop, '].MessageID'))  IS NOT NULL) DO 
+		INSERT INTO tmp_MsgDetail(MessageID, Site)
+        VALUES (
+			JSON_UNQUOTE(JSON_EXTRACT(messageDetail, CONCAT('$[', iLoop, '].MessageID'))), 
+            JSON_UNQUOTE(JSON_EXTRACT(messageDetail, CONCAT('$[', iLoop, '].Site')))
 		);
         
         SET iLoop := iLoop + 1;
     END WHILE;    
     
-    DELETE l FROM Licensee l LEFT JOIN tmp_Licensee tmp ON l.LicenseeId = tmp.LicenseeId WHERE tmp.LicenseeId IS NULL;
-
-    INSERT INTO  Licensee(LicenseeId, LicenseeName, RegisteredLicenseeName, LicenseeStatusId, LicenseeTypeId)    
-    SELECT LicenseeId, LicenseeName, RegisteredLicenseeName, LicenseeStatusId, LicenseeTypeId
-    FROM tmp_Licensee
-    ON DUPLICATE KEY UPDATE 
-		LicenseeId = values(LicenseeId), 
-        LicenseeName = values(LicenseeName), 
-        RegisteredLicenseeName = values(RegisteredLicenseeName), 
-        LicenseeStatusId = values(LicenseeStatusId), 
-        LicenseeTypeId = values(LicenseeTypeId);
-
-
+    SELECT Value INTO templateNotifcationType 
+    FROM SystemSetting ss
+    WHERE ss.ID = 4; 
+    
+    DROP TEMPORARY TABLE IF EXISTS tmp_MsgContentTypeTemplate;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgContentTypeTemplate(
+				MsgContentsType INT
+                , NotificationTypeID INT
+                , NotificationTemplateID INT
+                , TemplateTitle VARCHAR(300)
+                , TemplateContent MEDIUMTEXT
+            );
+   SET iLoop = 0;
+   WHILE (JSON_EXTRACT(templateNotifcationType, CONCAT('$[',iLoop, '].MsgContentsType'))  IS NOT NULL) DO 
+		INSERT INTO tmp_MsgContentTypeTemplate(MsgContentsType, NotificationTypeID, NotificationTemplateID)
+        VALUES (
+			JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].MsgContentsType')))
+            , JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTypeID')))
+            , JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTemplateID')))
+		);
+        
+        SET iLoop := iLoop + 1;
+    END WHILE;    
+    
+    #Get template content
+    UPDATE tmp_MsgContentTypeTemplate tmp
+    INNER JOIN NotificationTemplate nt ON tmp.NotificationTemplateID = nt.NotificationTemplateID
+	SET tmp.TemplateContent = nt.Content
+			, tmp.TemplateTitle = nt.Title;
+    
+    #Check if there are any template IDs are not existing
+    IF  EXISTS(SELECT 1 
+									FROM tmp_MsgContentTypeTemplate  nt
+                                    WHERE nt.TemplateContent IS NULL ) THEN
+		SET errCode = 1801;
+		SELECT GROUP_CONCAT( DISTINCT nt.NotificationTemplateID  ORDER BY nt.NotificationTemplateID SEPARATOR ', ') 
+        INTO errMsg
+        FROM tmp_MsgContentTypeTemplate  nt
+		WHERE nt.TemplateContent IS NULL;
+        
+		SET errMsg = CONCAT('Notification template is not existing (IDs): ' , errMsg);
+        LEAVE NCB_SpecialDeleteMsg_Import;
+        
+	END IF;
+    
+    #Check if there are any template IDs which do not have required params
+     IF  EXISTS(SELECT 1 
+									FROM tmp_MsgContentTypeTemplate  nt
+                                    WHERE nt.TemplateContent NOT LIKE '%{EN Announcement}%' 
+										OR nt.TemplateContent NOT LIKE '%{CN Announcement}%'  ) THEN
+		SET errCode = 1802;
+		SELECT GROUP_CONCAT( DISTINCT nt.NotificationTemplateID  ORDER BY nt.NotificationTemplateID SEPARATOR ', ') 
+        INTO errMsg
+        FROM tmp_MsgContentTypeTemplate  nt
+		WHERE nt.TemplateContent NOT LIKE '%{EN Announcement}%' 
+										OR nt.TemplateContent NOT LIKE '%{CN Announcement}%' ;
+        
+		SET errMsg = CONCAT('Notification template is not existing (IDs): ' , errMsg);
+        LEAVE NCB_SpecialDeleteMsg_Import;
+        
+	END IF;
+    
+    DELETE FROM tmp_MsgHeader h 
+    WHERE h.MessageID IN (SELECT nm.MessageID FROM NotificationSystemMsg nm);
+    
+    DELETE FROM tmp_MsgDetail d 
+    WHERE d.MessageID IN (SELECT nm.MessageID FROM NotificationSystemMsg nm);
+    
+    
+    #Update flag to 'running'
+    UPDATE SystemSetting 
+    SET Value = VALUE_4_RUNNING
+    WHERE ID = 1 AND Value = VALUE_4_DONE;
+    
+     IF ROW_COUNT()  = 0 THEN
+        LEAVE NCB_SpecialDeleteMsg_Import;
+    END IF;
+     
+     #Get RecipientID
+    UPDATE tmp_MsgDetail tmp
+    INNER JOIN Licensee l ON l.RegisteredLicenseeName = tmp.Site
+    INNER JOIN Recipient r ON r.SourceID = l.LicenseeId AND r.RecipientTypeID = RECIPIENT_TYPE_LICENSEE
+	SET tmp.RecipientID = r.RecipientID;
+    
+	#Check unsupported MsgContensType
+    UPDATE tmp_MsgHeader h
+    SET h.CheckMsgDetail = h.MsgContentsType
+    WHERE h.MsgContentsType NOT IN (SELECT tpl.MsgContentsType FROM tmp_MsgContentTypeTemplate tpl);
+    
+	UPDATE   tmp_MsgHeader h
+    SET h.CheckMsg = CONCAT(h.CheckMsg, CONCAT('- Unsupported MsgContentsType value: ' , h.CheckMsgDetail),  '\r\n')
+    WHERE h.CheckMsgDetail  IS NOT NULL;
+    
+     UPDATE tmp_MsgHeader h
+    SET h.CheckMsgDetail = NULL;
+    
+    #Check if there are any sites which can not be mapped with any recipients
+    UPDATE tmp_MsgHeader h
+    SET h.CheckMsgDetail = (
+		SELECT GROUP_CONCAT(d.Site  ORDER BY d.Site SEPARATOR ', ') 
+		FROM tmp_MsgDetail d 
+		WHERE d.RecipientID IS NULL AND d.MessageID = h.MessageID
+    );
+    
+    UPDATE   tmp_MsgHeader h
+    SET h.CheckMsg = CONCAT(h.CheckMsg, '- Can not map to any Recipient(s): ' , h.CheckMsgDetail, '\r\n')
+    WHERE h.CheckMsgDetail  IS NOT NULL;
+    
+    UPDATE tmp_MsgHeader h
+    SET h.CheckMsgDetail = NULL;
+    
+    #Prepare data for Notification List
+    DROP TEMPORARY TABLE IF EXISTS tmp_NotificationRecipientList;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_NotificationRecipientList(
+				MessageID INT
+                , Site TEXT
+				, RecipientID INT
+                , ConversationGroupID INT
+                , ChatGroupTypeID SMALLINT
+            );
+            
+	INSERT INTO tmp_NotificationRecipientList(MessageID, Site, RecipientID, ConversationGroupID, ChatGroupTypeID)       
+    SELECT  d.MessageID, d.Site, d.RecipientID
+					, gri.ConversationGroupID
+					, gri.ChatGroupTypeID
+    FROM tmp_MsgHeader h
+        INNER JOIN tmp_MsgDetail d ON d.MessageID = h.MessageID
+        INNER JOIN  tmp_MsgContentTypeTemplate tpl ON tpl.MsgContentsType = h.MsgContentsType
+        INNER JOIN NotificationChatGroupType ngt ON ngt.NotificationTypeID = tpl.NotificationTypeID
+		INNER JOIN ConversationGroupRecipient gr  ON d.RecipientID = gr.RecipientID
+		INNER JOIN ConversationGroupExtraInfo gri  ON gri.ConversationGroupID = gr.ConversationGroupID
+	WHERE gri.ChatGroupTypeID = ngt.ChatGroupTypeID;
+    
+    
+     #Check if there are any recipients which do not have any suitable chat groups
+    UPDATE tmp_MsgHeader h
+    SET h.CheckMsgDetail = (
+		SELECT GROUP_CONCAT(d.Site  ORDER BY d.Site SEPARATOR ', ') 
+		FROM tmp_MsgDetail d 
+		WHERE d.MessageID = h.MessageID
+			AND d.Site NOT IN (SELECT nrl.Site FROM tmp_NotificationRecipientList nrl)
+            AND d.RecipientID IS NOT NULL
+    );
+    
+    UPDATE   tmp_MsgHeader h
+    SET h.CheckMsg = CONCAT(h.CheckMsg, '- These sites do not have any suitable chat groups: ' , h.CheckMsgDetail, '\r\n')
+    WHERE h.CheckMsgDetail  IS NOT NULL;
+    
+    UPDATE tmp_MsgHeader h
+    SET h.CheckMsgDetail = NULL;
+    
+	#Insert  NotificationSystemMsg
+    INSERT INTO NotificationSystemMsg(MessageID, NotificationID, CheckMsg, CreatedDate)
+    SELECT h.MessageID, NULL NotificationID, h.CheckMsg, startTime
+    FROM tmp_MsgHeader h
+    WHERE h.MessageID NOT IN (SELECT MessageID FROM NotificationSystemMsg);
+   
+   	DELETE FROM tmp_MsgDetail d WHERE d.MessageID IN (SELECT h.MessageID FROM tmp_MsgHeader h WHERE h.CheckMsg LIKE '%MsgContentsType%');
+    DELETE FROM tmp_MsgHeader h WHERE h.CheckMsg LIKE '%MsgContentsType%';
+    
+    #Insert Notification
+     INSERT INTO Notification(NotificationTypeID
+											, ProductID
+											, Title
+                                            , Content
+                                            , ConfigSendTime
+                                            , SendImmediately
+                                            , CreatorID
+                                            , CreatedDate
+                                            , Status
+                                            , StatusID
+                                            , LastModifiedBy)
+         SELECT DISTINCT ct.NotificationTypeID
+						, NULL ProductID
+                        , ct.TemplateTitle Title
+						, REPLACE(REPLACE(REPLACE(ct.TemplateContent, '{EN Announcement}', h.Content_en )
+												, '{CN Announcement}', h.Content_cs) 
+                                                , '@@', '') Content
+                        , startTime ConfigSendTime
+                        , 0 SendImmediately
+                        , STARIXIT_CUSTID CreatorID
+                        , startTime CreatedDate
+                        , CREATING_NOTIFICATION_STATUS Status
+                        , CREATING_NOTIFICATION_STATUSID StatusID
+                        , h.MessageID LastModifiedBy
+         FROM tmp_MsgHeader h
+         INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType
+         INNER JOIN tmp_MsgDetail d  ON h.MessageID = d.MessageID AND d.RecipientID IS NOT NULL;
+         
+         #Update NotificationSystemMsg
+         UPDATE NotificationSystemMsg nm
+         INNER JOIN Notification n ON n.StatusID = CREATING_NOTIFICATION_STATUSID 
+																AND n.ConfigSendTime = startTime
+                                                                AND n.LastModifiedBy = nm.MessageID
+		SET nm.NotificationID = n.NotificationID
+		WHERE nm.MessageID IN (SELECT h.MessageID FROM tmp_MsgHeader h);
+         
+		#Insert recipient list
+        INSERT INTO NotificationRecipientList(NotificationID, ConversationGroupID
+																		, ChatGroupTypeID, RecipientID
+																		, Status, StatusID)
+        SELECT nm.NotificationID
+					, IFNULL(gri.ConversationGroupID, -1)
+					, IFNULL(gri.ChatGroupTypeID,-1)
+                    , d.RecipientID
+					, NEW_NOTIFICATION_STATUS
+					, NEW_NOTIFICATION_STATUSID
+        FROM NotificationSystemMsg nm
+        INNER JOIN tmp_MsgDetail d ON d.MessageID = nm.MessageID
+			LEFT JOIN ConversationGroupRecipient gr 
+				ON d.RecipientID = gr.RecipientID
+			LEFT JOIN ConversationGroupExtraInfo gri 
+				ON gri.ConversationGroupID = gr.ConversationGroupID
+        WHERE nm.MessageID IN (SELECT h.MessageID FROM tmp_MsgHeader h)
+			AND d.RecipientID IS NOT NULL;
+        
+        #Update Status for Notification
+        UPDATE Notification n
+        INNER JOIN NotificationSystemMsg nm ON nm.NotificationID = n.NotificationID
+        SET n.Status = NEW_NOTIFICATION_STATUS
+				, n.StatusID = NEW_NOTIFICATION_STATUSID
+                , n.LastModifiedBy = NULL
+		WHERE nm.MessageID IN (SELECT h.MessageID FROM tmp_MsgHeader h);
+        
+		#Update flag to 'Done'
+		UPDATE SystemSetting 
+		SET Value = VALUE_4_DONE
+		WHERE ID = 1 AND Value = VALUE_4_RUNNING;
+        
+        #Update flag to 'Done'
+		UPDATE SystemSetting 
+		SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
+		WHERE ID = 3;
+			
+		 #Get Finish Time to calcualte execution duration
+		SET finishTime = UTC_TIMESTAMP(3);
+		SET duration =  TIMESTAMPDIFF(MICROSECOND
+																			, startTime
+																			, finishTime)  / 1000; 	#miliseconds
+		
+		#Get Log Content, JSON format
+		SET logContent = json_object('MessageHeader', messageHeader
+											, 'MessageDetail', messageDetail
+						) ;
+						
+		#Write User Log
+		IF EXISTS (SELECT 1 FROM tmp_MsgHeader) THEN
+			CALL NCB_UserLog_RunSP_Ins(
+													ACTION_ID #actionID
+													, -1  #referenceID
+													, STARIXIT_CUSTID #UserID
+													, logContent #LogContent
+													, startTime #logtime
+													, duration	#Duration
+													);
+		END IF;
 END;
 
 //
