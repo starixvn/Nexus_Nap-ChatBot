@@ -4,28 +4,23 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
     using Fanex.NCB.Shared.Services.Interfaces;
-    using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 
     public class SpecialDeleteTicketService : ISpecialDeleteTicketService
     {
         private readonly IBaseService baseService;
         private readonly IChatbotService chatbotService;
-        private readonly IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions;
 
         public SpecialDeleteTicketService(IBaseService baseService,
-            IChatbotService chatbotService,
-            IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions)
+            IChatbotService chatbotService)
         {
             this.baseService = baseService;
             this.chatbotService = chatbotService;
-            this.notifyChatGroupOptions = notifyChatGroupOptions;
         }
 
         public async Task PullTicketAndCreateNotification()
