@@ -22,6 +22,8 @@ namespace Fanex.NCB.Model.ChatGroupMapping
 
         public int MappingStatusCode { get; set; }
 
+        public bool IsActive { get; set; }
+
         public MappingStatus MappingStatus
         {
             get

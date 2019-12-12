@@ -10,5 +10,7 @@
         Task<CommandResult> EditAsync(EditChatGroupMapping model);
 
         Task<(IEnumerable<ChatGroupMappingResult>, long)> GetChatGroupMappingListAsync(GetChapGroupMapping model);
+
+        Task<CommandResult> UpdateActiveAsync(UpdateActiveConversationGroup model);
     }
 }

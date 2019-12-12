@@ -16,5 +16,6 @@
         public int MappingStatusID { get; set; }
         public string MappingStatusName { get; set; }
         public string Remark { get; set; }
+        public bool IsActive { get; set; }
     }
 }

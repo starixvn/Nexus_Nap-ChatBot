@@ -36,5 +36,6 @@
     EditNotificationSuccessfully: 'Your request has been submitted successfully',
     CancelNotificationSuccessfully: 'Cancel notification successfully',
     SubmitSuccessfully: 'Your request has been submitted successfully',
-    DeleteTemplateSuccessfully: "Delete notification template successfully"
+    DeleteTemplateSuccessfully: "Delete notification template successfully",
+    Active: 'Active'
 };

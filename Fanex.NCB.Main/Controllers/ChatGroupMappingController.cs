@@ -96,5 +96,13 @@ namespace Fanex.NCB.SkypeBot.Controllers
         {
             return Json(await settingService.SearchChatGroupAsync(query));
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [NapChatBotAuth(FunctionKey = FunctionKey.ChatGroupMapping, Policy = Policy.Host)]
+        public async Task<IActionResult> UpdateActive([FromBody]UpdateActiveConversationGroup model)
+        {
+            return Json(await chatGroupMappingService.UpdateActiveAsync(model));
+        }
     }
 }

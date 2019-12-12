@@ -41,6 +41,7 @@ export class DataGrid extends Component {
                 <Cell colWidth={130} header>{Labels.Recipient}</Cell>
                 <Cell colWidth={100} header>{Labels.LicenseeStatus}</Cell>
                 <Cell colWidth={100} header>{Labels.MappingStatus}</Cell>
+                <Cell colWidth={50} header>{Labels.Active}</Cell>
                 <Cell colWidth={200} header>{Labels.Remark}</Cell>
                 {
                     isHost &&
@@ -63,6 +64,8 @@ export class DataGrid extends Component {
 
     getEditClassNames = item => CommonFunctions.isBotRemoved(item.mappingStatusID) ? 'icon-edit edit-disabled' : 'icon-edit';
 
+    updateActive = () => console.log('abc');
+
     buildBody = (data, pageIndex, pageSize, isHost) => {
         const rows = [];
         const startIndex = (pageIndex - 1) * pageSize + 1;
@@ -84,6 +87,14 @@ export class DataGrid extends Component {
                     <Cell>{this.getLicenseeStatus(item)}</Cell>
                     <Cell>
                         <span className={CommonFunctions.getMappingClass(item.mappingStatusID)}>{item.mappingStatusName}</span>
+                    </Cell>
+                    <Cell className="text-center">
+                        <input
+                            type='checkbox'
+                            checked={item.isActive}
+                            disabled={item.mappingStatusID !== mappingStatus.BotRemoved}
+                            onChange={() => this.updateActive()}
+                        />
                     </Cell>
                     <Cell>{item.remark}</Cell>
                     {
@@ -109,6 +120,7 @@ export class DataGrid extends Component {
         }
 
         const { data, count, isHost } = this.props.gridData;
+        console.log("debug by merlin", data, this.props);
         const { pageIndex, pageSize } = this.props.gridParams;
 
         const pagingOption = {

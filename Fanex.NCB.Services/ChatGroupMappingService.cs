@@ -54,6 +54,17 @@
             return await baseService.ExecuteNonQueryAsync(command);
         }
 
+        public async Task<CommandResult> UpdateActiveAsync(UpdateActiveConversationGroup model)
+        {
+            var command = new UpdateActiveConverstionGroupCommand
+            {
+                GroupID = model.GroupID,
+                IsActive = model.IsActive
+            };
+
+            return await baseService.ExecuteNonQueryAsync(command);
+        }
+
         private IEnumerable<ChatGroupMappingResult> MappingData(IEnumerable<BotConversation> conversations,
             IEnumerable<BotConversationMember> members,
             IEnumerable<ConversationRecipient> conversationRecipients)
@@ -78,7 +89,8 @@
                     RecipientStatusNames = string.Join(", ", recipients.Where(x => !string.IsNullOrEmpty(x.RecipientStatusName)).Select(r => r.RecipientStatusName)),
                     MappingStatusID = (int)conversation.MappingStatus,
                     MappingStatusName = EnumHelper.GetDescription(conversation.MappingStatus),
-                    Remark = conversation.Remark
+                    Remark = conversation.Remark,
+                    IsActive = conversation.IsActive
                 };
                 chatGroupMappings.Add(chatGroupMapping);
             }

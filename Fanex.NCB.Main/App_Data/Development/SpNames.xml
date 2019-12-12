@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Functions>
   <Function Name="Chat Group Mapping">
-    <Setting Key="NCB_ChatGroupMapping_Sel" SpName="NCB_ChatGroupMapping_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_ChatGroupMapping_Sel" SpName="NCB_ChatGroupMapping_Sel_merlin" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_ConversationGroup_Update" SpName="NCB_ConversationGroup_Update_merlin" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_ChatGroupMapping_Upd" SpName="NCB_ChatGroupMapping_Upd" DbName="ChatBot" Plain="0"></Setting>
   </Function>
   <Function Name="Setting">
