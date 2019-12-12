@@ -25,7 +25,7 @@
             SetupService("OnStarted");
 
             logger.ReceivedCalls();
-            recurringJob.Received(4);
+            recurringJob.Received(5);
         }
 
         private void SetupService(string methodName)
@@ -37,7 +37,8 @@
                 SendNotification = "* * * * *",
                 SyncNapUserControlData = "* * * * *",
                 SyncOICData = "* * * * *",
-                MonitorSkypebot = "*/5 * * * 8"
+                MonitorSkypebot = "*/5 * * * 8",
+                PullTicketFromSpecialDelete = "*/1 * * * 8"
             };
             cronJob.CurrentValue.Returns(cron);
             recurringJob = Substitute.For<IRecurringJobManager>();

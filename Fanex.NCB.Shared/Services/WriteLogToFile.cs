@@ -6,7 +6,7 @@
 
     public static class WriteLogToFile
     {
-        public static void Writelog(object content)
+        public static void Writelog(object content, string title = "")
         {
             string path = Path.Combine(Directory.GetCurrentDirectory(), "logs", "log.txt");
             if (!File.Exists(path))
@@ -15,13 +15,14 @@
             }
             using (StreamWriter writer = File.AppendText(path))
             {
-                Log(content, writer);
+                Log(content, writer, title);
             }
         }
 
-        private static void Log(object content, TextWriter writer)
+        private static void Log(object content, TextWriter writer, string title)
         {
             writer.WriteLine($"{DateTime.Now.ToLongTimeString()} {DateTime.Now.ToLongDateString()} :");
+            writer.WriteLine(title);
             writer.WriteLine(JsonConvert.SerializeObject(content));
             writer.WriteLine("-------------------------------");
         }

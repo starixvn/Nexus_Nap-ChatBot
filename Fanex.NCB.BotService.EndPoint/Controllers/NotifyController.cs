@@ -72,7 +72,7 @@
         public async Task<ObjectResult> SendMulti([FromBody]IList<NotificationMessage> notificationMessages)
         {
             var results = new List<SendMessageResult>();
-            var tasks = new List<Task>();
+            var tasks = new List<Task<SendMessageResult>>();
 
             if (notificationMessages != null && notificationMessages.Any())
             {
@@ -81,16 +81,23 @@
                     foreach (var conversationInfo in notificationMessage.Recipients)
                     {
                         tasks.Add(
-                            Task.Run(async () => results.Add(await SendNotification(conversationInfo, notificationMessage.NotifictaionId, notificationMessage.Message)))
+                            Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotifictaionId, notificationMessage.Message))
                             );
                     }
                 }
-
-                await Task.WhenAll(tasks.ToArray());
+                results = (await Task.WhenAll(tasks)).ToList();
 
                 if (results.Count != notificationMessages.Sum(n => n.Recipients.Count()))
                 {
-                    WriteLogToFile.Writelog(results);
+                    try
+                    {
+                        WriteLogToFile.Writelog(notificationMessages, "From body data:");
+                        WriteLogToFile.Writelog(results, "Result");
+                    }
+                    catch (Exception ex)
+                    {
+                        await WriteLog(ex);
+                    }
                 }
             }
 
@@ -122,19 +129,10 @@
             }
             catch (Exception exception)
             {
+                result.ErrorCode = 1;
+                result.ErrorMessage = exception.Message;
+
                 await WriteLog(exception);
-
-                try
-                {
-                    await SendMessage(appId, conversationReference, message);
-                }
-                catch (Exception ex)
-                {
-                    result.ErrorCode = 1;
-                    result.ErrorMessage = ex.Message;
-
-                    await WriteLog(ex);
-                }
             }
 
             result.SentTime = DateTime.UtcNow;

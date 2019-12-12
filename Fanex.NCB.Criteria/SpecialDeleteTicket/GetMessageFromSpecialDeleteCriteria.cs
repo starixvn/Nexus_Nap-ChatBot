@@ -8,8 +8,12 @@
 
         public int BatchSize { get; set; }
 
-        public override string GetSettingKey() => "NAP_Chatbot_GetSpecialDeleteMsg";
+        public string MsgContentsTypeLst { get; set; }
 
-        public override bool IsValid() => MessageID > 0 && BatchSize > 0;
+        public override string GetSettingKey() => "NAP_Chatbot_SpecialDeleteMsg_Sel";
+
+        public override bool IsValid() => MessageID > 0 &&
+                                          BatchSize > 0 &&
+                                          !string.IsNullOrWhiteSpace(MsgContentsTypeLst);
     }
 }

@@ -101,7 +101,10 @@ export class DataGrid extends Component {
                         isHost &&
                         <Cell className="text-center col-action">
                             <div>
-                                <span className={this.getEditClassNames(item)} id={'edit-' + index} onClick={() => this.openEditPopup(item)} />
+                                {
+                                    item.mappingStatusID !== mappingStatus.BotRemoved &&
+                                    <span className={this.getEditClassNames(item)} id={'edit-' + index} onClick={() => this.openEditPopup(item)} />
+                                }
                             </div>
                         </Cell>
                     }

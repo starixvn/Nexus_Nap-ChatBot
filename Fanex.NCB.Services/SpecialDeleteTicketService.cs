@@ -8,6 +8,7 @@
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
+    using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Newtonsoft.Json;
 
@@ -27,62 +28,50 @@
         {
             var systemSettings = await GetSystemSettings();
 
-            if (systemSettings != null && systemSettings.JobStatus != 0)
+            if (systemSettings != null)
             {
-                IEnumerable<SpecialDeleteMessage> messages = await PullMessageFromSpecialDelete(systemSettings);
+                var messages = await GetMessageFromSpecialDelete(systemSettings);
 
-                var importResult = await ImportMessageToChatbotDB(messages);
-
-                if (!importResult.IsSuccessful)
+                if (messages.Item1.Any() && messages.Item2.Any())
                 {
-                    await chatbotService.NotifySponDemoChatGroup(importResult.Message);
+                    var importResult = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
+
+                    if (!importResult.IsSuccessful)
+                    {
+                        await chatbotService.NotifySponDemoChatGroup(importResult.Message);
+                    }
                 }
             }
         }
 
-        private async Task<CommandResult> ImportMessageToChatbotDB(IEnumerable<SpecialDeleteMessage> messages)
+        private async Task<CommandResult> ImportMessageToChatbotDB(IEnumerable<Message> messages,
+            IEnumerable<MessageDetail> messageDetails)
         {
-            ValueTuple<string, string> tuple = ConvertMessageToJson(messages);
+            WriteLogToFile.Writelog(messages);
+            WriteLogToFile.Writelog(messageDetails);
+
             var command = new ImportMessageFromSpecialDeleteCommand
             {
-                MessageHeader = tuple.Item1,
-                MessageDetail = tuple.Item2
+                MessageHeader = JsonConvert.SerializeObject(messages),
+                MessageDetail = JsonConvert.SerializeObject(messageDetails)
             };
 
-            return await baseService.ExecuteNonQueryAsync(command);
+            var result = await baseService.ExecuteNonQueryAsync(command);
+            WriteLogToFile.Writelog(result);
+
+            return result;
         }
 
-        private ValueTuple<string, string> ConvertMessageToJson(IEnumerable<SpecialDeleteMessage> messages)
-        {
-            var messageHeaders = new List<MessageHeader>(
-                messages.GroupBy(m => m.MessageId)
-                .Select(g => new MessageHeader
-                {
-                    MessageID = g.Key,
-                    ContentEN = messages.FirstOrDefault(m => m.MessageId == g.Key)?.ContentEN,
-                    ContentCS = messages.FirstOrDefault(m => m.MessageId == g.Key)?.ContentCS
-                }));
-
-            var messageDetails = new List<MessageDetail>(
-                    messages.Select(m => new MessageDetail
-                    {
-                        MessageID = m.MessageId,
-                        Site = m.Site
-                    })
-                );
-
-            return new ValueTuple<string, string>(JsonConvert.SerializeObject(messageHeaders), JsonConvert.SerializeObject(messageDetails));
-        }
-
-        private async Task<IEnumerable<SpecialDeleteMessage>> PullMessageFromSpecialDelete(SystemSetting systemSettings)
+        private async Task<ValueTuple<IEnumerable<Message>, IEnumerable<MessageDetail>>> GetMessageFromSpecialDelete(SystemSetting systemSettings)
         {
             var criteria = new GetMessageFromSpecialDeleteCriteria
             {
-                MessageID = systemSettings.PreviousMaxMessageId,
-                BatchSize = systemSettings.BatchSize
+                MessageID = systemSettings.MaxMessageID,
+                BatchSize = systemSettings.BatchSize,
+                MsgContentsTypeLst = systemSettings.MsgContentsTypeLst
             };
 
-            return await baseService.GetDataAsync<SpecialDeleteMessage>(criteria);
+            return await baseService.FetchMultipleAsync<Message, MessageDetail>(criteria);
         }
 
         private async Task<SystemSetting> GetSystemSettings()
