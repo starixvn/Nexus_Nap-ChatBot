@@ -24,6 +24,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_ChatGroupMapping_Sel (
 			Revisions:
 					- 20190404@Scofield: Create        
                     - 20190418@Dominic: Improve performance
+					- 20191212@Merlin.Le: Get additional field IsActive
 		*/
     )
 SQL SECURITY DEFINER
@@ -179,6 +180,7 @@ BEGIN
 				, bot.Name BotName
                 , bot.ConversationBotID BotMemberID
                 , r.RecipientTypeID
+                , cgrp.IsActive
     FROM ConversationGroup cgrp
     LEFT JOIN tmp_ConversationID_FIRSTBot  FirstBot ON cgrp.ConversationGroupID = FirstBot.ConversationGroupID
     LEFT JOIN ConversationBot  bot ON bot.ConversationBotID = FirstBot.ConversationBotID
@@ -227,7 +229,8 @@ BEGIN
         tmp.RecipientTypeName,
 		tmp.MappingStatusCode,
         tmp.BotName,
-        tmp.BotMemberID
+        tmp.BotMemberID,
+        tmp.IsActive
 	FROM tmp_AllBotConversation tmp
     ORDER BY tmp.GroupName
     LIMIT rowStart, pageSize;
@@ -246,7 +249,8 @@ BEGIN
         tmp.Remark, 
         tmp.RecipientTypeID, 
         tmp.RecipientTypeName,
-		tmp.MappingStatusCode
+		tmp.MappingStatusCode,
+        tmp.IsActive
 	FROM tmp_PagedBotConversation tmp
     ORDER BY tmp.GroupName;
     
