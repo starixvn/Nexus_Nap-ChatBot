@@ -8,7 +8,6 @@
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
-    using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Newtonsoft.Json;
 
@@ -31,7 +30,6 @@
             if (systemSettings != null)
             {
                 var messages = await GetMessageFromSpecialDelete(systemSettings);
-                WriteLogToFile.Writelog(messages, "Data from Special Delete");
                 if (messages.Item1.Any() && messages.Item2.Any())
                 {
                     var importResult = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
@@ -47,9 +45,6 @@
         private async Task<CommandResult> ImportMessageToChatbotDB(IEnumerable<Message> messages,
             IEnumerable<MessageDetail> messageDetails)
         {
-            WriteLogToFile.Writelog(messages);
-            WriteLogToFile.Writelog(messageDetails);
-
             var command = new ImportMessageFromSpecialDeleteCommand
             {
                 MessageHeader = JsonConvert.SerializeObject(messages),
@@ -57,7 +52,6 @@
             };
 
             var result = await baseService.ExecuteNonQueryAsync(command);
-            WriteLogToFile.Writelog(result);
 
             return result;
         }
