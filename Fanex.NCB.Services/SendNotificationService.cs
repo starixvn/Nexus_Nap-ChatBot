@@ -15,7 +15,6 @@
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
@@ -178,27 +177,6 @@
         {
             try
             {
-                if (recipients.Count() != responseMessages.Count() &&
-                                !responseMessages.Any(r => r.ConversationId == monitorOptions.Value.ConversationId))
-                {
-                    WriteLogToFile.Writelog(recipients);
-                    WriteLogToFile.Writelog(responseMessages);
-                }
-            }
-            catch (Exception exception)
-            {
-                string errMsg = string.Format(
-                CultureInfo.InvariantCulture,
-                "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
-                exception.Message,
-                exception.Source,
-                string.Empty,
-                exception.TargetSite,
-                exception.StackTrace);
-                await logger.ErrorAsync(errMsg);
-            }
-            finally
-            {
                 var updateNotiModels = new List<UpdateNotificationModel>();
                 foreach (var recipient in recipients)
                 {
@@ -224,6 +202,18 @@
                 }
 
                 await UpdateSentNotificationStatus(updateNotiModels);
+            }
+            catch (Exception exception)
+            {
+                string errMsg = string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
+                exception.Message,
+                exception.Source,
+                string.Empty,
+                exception.TargetSite,
+                exception.StackTrace);
+                await logger.ErrorAsync(errMsg);
             }
         }
 
