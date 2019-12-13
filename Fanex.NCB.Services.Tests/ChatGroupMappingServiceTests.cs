@@ -54,6 +54,24 @@ namespace Fanex.NCB.Services.Tests
             Assert.Equal(commandResult, actual);
         }
 
+        [Fact]
+        public async Task UpdateActiveAsync_WhenCall_ReturnsCorrectCommandResult()
+        {
+            // Arrange
+            var model = new UpdateActiveConversationGroup { GroupID = 1 };
+            var command = new UpdateActiveConverstionGroupCommand();
+            var commandResult = new CommandResult { Code = 0 };
+            var service = GetService();
+
+            baseService.ExecuteNonQueryAsync(Arg.Do<UpdateActiveConverstionGroupCommand>(x => command = x)).Returns(commandResult);
+
+            //Act
+            var actual = await service.UpdateActiveAsync(model).ConfigureAwait(false);
+
+            //Assert
+            Assert.Equal(commandResult, actual);
+        }
+
         private ValueTuple<IEnumerable<BotConversation>,
             IEnumerable<BotConversationMember>,
             IEnumerable<ConversationRecipient>>

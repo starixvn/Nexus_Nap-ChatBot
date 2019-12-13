@@ -173,6 +173,24 @@
             Assert.Equal(expected, actual);
         }
 
+        [Fact]
+        public async Task UpdateActive_WhenCall_ReturnsCorrectJson()
+        {
+            // Arrange
+            var controller = GetController();
+            var expected = new CommandResult { Code = 0, Message = string.Empty };
+            var model = new UpdateActiveConversationGroup { GroupID = 1, IsActive = true };
+            chatGroupMappingService.UpdateActiveAsync(model).Returns(expected);
+
+            //Actual
+            var result = await controller.UpdateActive(model);
+
+            //Assert
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            var actual = Assert.IsAssignableFrom<CommandResult>(jsonResult.Value);
+            Assert.Equal(expected, actual);
+        }
+
         #region helper
 
         private ChatGroupMappingController GetController()
