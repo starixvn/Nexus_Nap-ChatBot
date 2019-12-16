@@ -38,6 +38,6 @@
     SubmitSuccessfully: 'Your request has been submitted successfully',
     DeleteTemplateSuccessfully: "Delete notification template successfully",
     Active: 'Active',
-    ConfirmUpdateActive: 'The group shall not receive notification. Are you sure you want to inactivate the group?',
-    ConfirmUpdateInActive: 'The group shall receive notification. Are you sure you want to activate the group?'
+    ConfirmUpdateActive: 'When a group is inactivated. The system will not send notifications to the group. Do you want to proceed?',
+    ConfirmUpdateInActive: 'When a group is activated. The system will send notifications to the group. Do you want to proceed?'
 };

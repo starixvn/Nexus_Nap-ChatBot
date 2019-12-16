@@ -1,8 +1,10 @@
 ﻿import React from 'react';
 import { DataGrid } from '../DataGrid';
-import renderer from 'react-test-renderer';
 import ShallowRenderer from 'react-test-renderer/shallow';
 import CommonFunctions from '../../../common/common-functions/CommonFunctions';
+import Labels from '../../../common/Labels';
+import axios from 'axios';
+import Site from '../../../../pages/lib/site';
 
 describe("DataGrid", () => { 
     describe("render", () => { 
@@ -226,6 +228,178 @@ describe("DataGrid", () => {
 
             // Assert
             expect(result).toEqual("icon-edit");
+        });
+    });
+
+    describe("updateActive", () => {
+        it("when call - api call with correct params", () => {
+            // Arrange
+            let dataGrid = new DataGrid();
+            const item = {
+                groupID: 1,
+                isActive: true
+            };
+
+            dataGrid.state = {
+                item: item
+            };
+
+            dataGrid.toggleActive = jest.fn();
+            const expectedParams = {
+                groupID: item.groupID,
+                isActive: !item.isActive
+            };
+
+            axios.post = jest.fn(() => Promise.resolve(""));
+            let expectedUrl = Site.resolveClientUrl('ChatGroupMapping/UpdateActive');
+            const expectedHeaders = {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': Site.getXsrfToken()
+            };
+
+            // Action
+            dataGrid.updateActive();
+
+            // Assert
+            expect(axios.post).toHaveBeenCalledWith(expectedUrl, JSON.stringify(expectedParams), { headers: expectedHeaders });
+        });
+        
+        it("when call - close confirm modal", () => {
+            // Arrange
+            let dataGrid = new DataGrid();
+            const item = {
+                groupID: 1,
+                isActive: true
+            };
+
+            dataGrid.state = {
+                item: item,
+                isShowActivePopup: true
+            };
+
+            axios.post = jest.fn(() => Promise.resolve(""));
+            dataGrid.setState = jest.fn();
+
+            // Action
+            dataGrid.updateActive();
+
+            // Assert
+            expect(dataGrid.setState).toHaveBeenCalledWith({ isShowActivePopup: false });
+        });
+        
+        it("response data code is null - not call getGridData method", () => {
+            // Arrange
+            const props = {
+                getGridData: jest.fn()
+            };
+
+            const dataGrid = new DataGrid(props);
+            const expectedReponse = {
+                data: {}
+            };
+
+            axios.post = jest.fn(() => Promise.resolve(expectedReponse));
+
+            // Action
+            dataGrid.updateActive();
+
+            // Assert
+            expect(props.getGridData).not.toHaveBeenCalled();
+        });
+        
+        it("response data is null - not call getGridData method", () => {
+            // Arrange
+            const props = {
+                getGridData: jest.fn()
+            };
+
+            const dataGrid = new DataGrid(props);
+            const expectedReponse = {};
+
+            axios.post = jest.fn(() => Promise.resolve(expectedReponse));
+
+            // Action
+            dataGrid.updateActive();
+
+            // Assert
+            expect(props.getGridData).not.toHaveBeenCalled();
+        });
+        
+        it("response data code is not zero - not call getGridData method", () => {
+            // Arrange
+            const props = {
+                getGridData: jest.fn()
+            };
+
+            const dataGrid = new DataGrid(props);
+            const expectedReponse = {
+                data: {
+                    code: 1
+                }
+            };
+
+            axios.post = jest.fn(() => Promise.resolve(expectedReponse));
+
+            // Action
+            dataGrid.updateActive();
+
+            // Assert
+            expect(props.getGridData).not.toHaveBeenCalled();
+        });
+    });
+
+    describe("changeActive", () => {
+        it("when call with item.isActive true - activeContent is ConfirmUpdateActive", () => {
+            // Arrange
+            const dataGrid = new DataGrid();
+            const item = {
+                isActive: true
+            };
+
+            dataGrid.setState = jest.fn();
+
+            // Action
+            dataGrid.changeActive(item);
+
+            // Assert
+            expect(dataGrid.setState).toHaveBeenCalledWith({
+                isShowActivePopup: true,
+                item: item,
+                activeContent: Labels.ConfirmUpdateActive
+            });
+        });
+        
+        it("when call with item.isActive false - activeContent is ConfirmUpdateInActive", () => {
+            // Arrange
+            const dataGrid = new DataGrid();
+            const item = {
+                isActive: false
+            };
+            dataGrid.setState = jest.fn();
+
+            // Action
+            dataGrid.changeActive(item);
+
+            // Assert
+            expect(dataGrid.setState).toHaveBeenCalledWith({
+                isShowActivePopup: true,
+                item: item,
+                activeContent: Labels.ConfirmUpdateInActive
+            });
+        });
+    });
+
+    describe("toggleActive", () => {
+        it("when call - change isShowActivePopup state", () => {
+            // Arrange
+            const dataGrid = new DataGrid();
+            dataGrid.setState = jest.fn();
+
+            // Action
+            dataGrid.toggleActive();
+
+            // Assert
+            expect(dataGrid.setState).toHaveBeenCalledWith({ isShowActivePopup: !dataGrid.state.isShowActivePopup });
         });
     });
 });
