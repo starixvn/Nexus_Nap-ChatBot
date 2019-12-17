@@ -5,6 +5,7 @@ import CommonFunctions from '../../../common/common-functions/CommonFunctions';
 import Labels from '../../../common/Labels';
 import axios from 'axios';
 import Site from '../../../../pages/lib/site';
+import renderer from 'react-test-renderer';
 
 describe("DataGrid", () => { 
     describe("render", () => { 
@@ -232,9 +233,9 @@ describe("DataGrid", () => {
     });
 
     describe("updateActive", () => {
-        it("when call - api call with correct params", () => {
+        it("when call - api call with correct params", async () => {
             // Arrange
-            let dataGrid = new DataGrid();
+            const dataGrid = renderer.create(<DataGrid />).getInstance();
             const item = {
                 groupID: 1,
                 isActive: true
@@ -258,15 +259,15 @@ describe("DataGrid", () => {
             };
 
             // Action
-            dataGrid.updateActive();
+            await dataGrid.updateActive();
 
             // Assert
             expect(axios.post).toHaveBeenCalledWith(expectedUrl, JSON.stringify(expectedParams), { headers: expectedHeaders });
         });
         
-        it("when call - close confirm modal", () => {
+        it("when call - close confirm modal", async () => {
             // Arrange
-            let dataGrid = new DataGrid();
+            const dataGrid = renderer.create(<DataGrid />).getInstance();
             const item = {
                 groupID: 1,
                 isActive: true
@@ -281,19 +282,19 @@ describe("DataGrid", () => {
             dataGrid.setState = jest.fn();
 
             // Action
-            dataGrid.updateActive();
+            await dataGrid.updateActive();
 
             // Assert
             expect(dataGrid.setState).toHaveBeenCalledWith({ isShowActivePopup: false });
         });
         
-        it("response data code is null - not call getGridData method", () => {
+        it("response data code is null - not call getGridData method", async () => {
             // Arrange
             const props = {
                 getGridData: jest.fn()
             };
 
-            const dataGrid = new DataGrid(props);
+            const dataGrid = renderer.create(<DataGrid {...props} />).getInstance();
             const expectedReponse = {
                 data: {}
             };
@@ -301,37 +302,36 @@ describe("DataGrid", () => {
             axios.post = jest.fn(() => Promise.resolve(expectedReponse));
 
             // Action
-            dataGrid.updateActive();
+            await dataGrid.updateActive();
 
             // Assert
             expect(props.getGridData).not.toHaveBeenCalled();
         });
         
-        it("response data is null - not call getGridData method", () => {
+        it("response data is null - not call getGridData method", async () => {
             // Arrange
             const props = {
                 getGridData: jest.fn()
             };
 
-            const dataGrid = new DataGrid(props);
+            const dataGrid = renderer.create(<DataGrid {...props} />).getInstance();
             const expectedReponse = {};
-
             axios.post = jest.fn(() => Promise.resolve(expectedReponse));
 
             // Action
-            dataGrid.updateActive();
+            await dataGrid.updateActive();
 
             // Assert
             expect(props.getGridData).not.toHaveBeenCalled();
         });
         
-        it("response data code is not zero - not call getGridData method", () => {
+        it("response data code is not zero - not call getGridData method", async () => {
             // Arrange
             const props = {
                 getGridData: jest.fn()
             };
 
-            const dataGrid = new DataGrid(props);
+            const dataGrid = renderer.create(<DataGrid {...props} />).getInstance();
             const expectedReponse = {
                 data: {
                     code: 1
@@ -341,10 +341,33 @@ describe("DataGrid", () => {
             axios.post = jest.fn(() => Promise.resolve(expectedReponse));
 
             // Action
-            dataGrid.updateActive();
+            await dataGrid.updateActive();
 
             // Assert
             expect(props.getGridData).not.toHaveBeenCalled();
+        });
+        
+        it("response data code is zero - call getGridData method", async () => {
+            // Arrange
+            const props = {
+                getGridData: jest.fn(),
+                gridParams: {}
+            };
+
+            const dataGrid = renderer.create(<DataGrid {...props} />).getInstance();
+            const expectedReponse = {
+                data: {
+                    code: 0
+                }
+            };
+
+            axios.post = jest.fn(() => Promise.resolve(expectedReponse));
+
+            // Action
+            await dataGrid.updateActive();
+
+            // Assert
+            expect(props.getGridData).toHaveBeenCalled();
         });
     });
 
