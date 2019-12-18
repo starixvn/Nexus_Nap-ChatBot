@@ -93,7 +93,10 @@ export class DataGrid extends Component {
                 {this.props.haveHostPermission &&
                     <>
                         <span className="icon-edit" data-templateid={item.notificationTemplateId} onClick={this.handleEditTemplate} />
-                        <span className="icon-delete" data-templateid={item.notificationTemplateId} onClick={this.handleDeleteTemplate} />
+                        {
+                            !item.isSpecialDelete &&
+                            <span className="icon-delete" data-templateid={item.notificationTemplateId} onClick={this.handleDeleteTemplate} />
+                        }
                     </>
                 }
             </Cell>

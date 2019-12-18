@@ -13,5 +13,7 @@
         public int NotificationTypeId { get; set; }
 
         public string NotificationTypeName { get; set; }
+
+        public bool IsSpecialDelete { get; set; }
     }
 }
