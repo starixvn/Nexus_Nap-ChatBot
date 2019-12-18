@@ -22,6 +22,7 @@ NCB_NotificationTemplate_Del:BEGIN
 	DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
 	DECLARE ACTION_ID 		INT DEFAULT 14;
 	DECLARE jsonValue 		JSON;
+	DECLARE indexLoop 		INT;
 
 	#Get Start Time to calcualte execution duration
 	SET  startTime = UTC_TIMESTAMP(3);
@@ -34,19 +35,32 @@ NCB_NotificationTemplate_Del:BEGIN
 	END IF;
 
 	SELECT Value INTO jsonValue FROM SystemSetting WHERE ID = 4 LIMIT 1;
+    DROP TEMPORARY TABLE IF EXISTS tmpParseJsonTable;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmpParseJsonTable(NotificationTypeID INT, NotificationTemplateID INT);
+    SET indexLoop = 0;
+    WHILE (JSON_EXTRACT(jsonValue, CONCAT('$[',indexLoop, '].NotificationTemplateID'))) DO 
+		INSERT INTO tmpParseJsonTable(NotificationTypeID, NotificationTemplateID)
+        VALUES (
+            CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID')))
+            END,
+            CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTemplateID'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTemplateID')))
+            END
+		);
+        
+        SET indexLoop := indexLoop + 1;
+    END WHILE;
 
 	IF EXISTS (
 		SELECT 1 FROM NotificationTemplate nt
-		INNER JOIN (			
-			SELECT NotificationTypeID, NotificationTemplateID
-			FROM JSON_TABLE(jsonValue, "$[*]"
-				COLUMNS(
-					NotificationTypeID INT PATH "$.NotificationTypeID" DEFAULT '0' ON EMPTY DEFAULT '-1' ON ERROR,
-					NotificationTemplateID INT PATH "$.NotificationTemplateID" DEFAULT '0' ON EMPTY DEFAULT '-1' ON ERROR
-				)
-			) tvt
-        ) tvt ON nt.NotificationTemplateID = tvt.NotificationTemplateID
-			AND nt.NotificationTypeID = tvt.NotificationTypeID
+		INNER JOIN tmpParseJsonTable tmppjt ON nt.NotificationTemplateID = tmppjt.NotificationTemplateID
+			AND nt.NotificationTypeID = tmppjt.NotificationTypeID
+		WHERE nt.NotificationTemplateID = notificationTemplateID
 	)
 	THEN
 		SET errCode = 102, errMsg = 'Cannot delete this template.';

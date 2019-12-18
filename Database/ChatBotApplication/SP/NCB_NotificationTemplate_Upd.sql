@@ -26,6 +26,7 @@ NCB_NotificationTemplate_Upd:BEGIN
 	DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
 	DECLARE ACTION_ID 		INT DEFAULT 13;
     DECLARE jsonValue		JSON;
+	DECLARE indexLoop		INT;
     
 	#Get Start Time to calcualte execution duration
 	SET startTime = UTC_TIMESTAMP(3);
@@ -42,24 +43,37 @@ NCB_NotificationTemplate_Upd:BEGIN
 	END IF;
 	
 	SELECT Value INTO jsonValue FROM SystemSetting WHERE ID = 4 LIMIT 1;
+    DROP TEMPORARY TABLE IF EXISTS tmpParseJsonTable;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmpParseJsonTable(NotificationTypeID INT, NotificationTemplateID INT);
+    SET indexLoop = 0;
+    WHILE (JSON_EXTRACT(jsonValue, CONCAT('$[',indexLoop, '].NotificationTemplateID'))) DO 
+		INSERT INTO tmpParseJsonTable(NotificationTypeID, NotificationTemplateID)
+        VALUES (
+            CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID')))
+            END,
+            CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTemplateID'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTemplateID')))
+            END
+		);
+        
+        SET indexLoop := indexLoop + 1;
+    END WHILE;
+	
 	IF (
 		EXISTS (
-			SELECT 1 FROM (			
-				SELECT NotificationTypeID, NotificationTemplateID
-				FROM JSON_TABLE(jsonValue, "$[*]"
-					COLUMNS(
-						NotificationTypeID INT PATH "$.NotificationTypeID" DEFAULT '0' ON EMPTY DEFAULT '-1' ON ERROR,
-						NotificationTemplateID INT PATH "$.NotificationTemplateID" DEFAULT '0' ON EMPTY DEFAULT '-1' ON ERROR
-					)
-				) tmpTable
-				WHERE tmpTable.NotificationTemplateID = notificationTemplateID
-					AND tmpTable.NotificationTypeID = notificationTypeID
-			) tmpTable
+			SELECT 1 FROM tmpParseJsonTable tmppjt
+			WHERE tmppjt.NotificationTemplateID = notificationTemplateID
+				AND tmppjt.NotificationTypeID = notificationTypeID
 		)
         AND NOT (content LIKE '%{EN Announcement}%' AND content LIKE '%{CN Announcement}%')
     )
 	THEN
-		SET errCode = 102, errMsg = 'Invalid special delete template content format';
+		SET errCode = 102, errMsg = 'Not allow to delete defined params';
 		LEAVE NCB_NotificationTemplate_Upd;
 	END IF;
     
