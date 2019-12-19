@@ -316,15 +316,15 @@ NCB_SpecialDeleteMsg_Import:BEGIN
                 , n.LastModifiedBy = NULL
 		WHERE nm.MessageID IN (SELECT nrl.MessageID FROM tmp_NotificationRecipientList nrl);
         
-		#Update flag to 'Done'
-		UPDATE SystemSetting 
-		SET Value = VALUE_4_DONE
-		WHERE ID = 1 AND Value = VALUE_4_RUNNING;
-        
         #Update flag to 'Done'
 		UPDATE SystemSetting 
 		SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
 		WHERE ID = 3;
+        
+        #Update flag to 'Done'
+		UPDATE SystemSetting 
+		SET Value = VALUE_4_DONE
+		WHERE ID = 1 AND Value = VALUE_4_RUNNING;
 			
 		 #Get Finish Time to calcualte execution duration
 		SET finishTime = UTC_TIMESTAMP(3);
