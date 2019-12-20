@@ -37,6 +37,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     DECLARE duration 			INT;							
     DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
     DECLARE templateNotifcationType JSON;
+    DECLARE ccConversationGroupID INT;
 
     #Constants
 	DECLARE ACTION_ID 	INT DEFAULT 18;
@@ -317,11 +318,10 @@ NCB_SpecialDeleteMsg_Import:BEGIN
         #Update Status for Notification
         UPDATE Notification n
         INNER JOIN NotificationSystemMsg nm ON nm.NotificationID = n.NotificationID
-        INNER JOIN tmp_MsgHeader h ON h.MessageID = nm.MessageID
-        SET n.Status = h.Status
-				, n.StatusID = h.StatusID
-                , n.LastModifiedBy = NULL
-		WHERE nm.MessageID IN (SELECT nrl.MessageID FROM tmp_NotificationRecipientList nrl);
+        INNER JOIN (SELECT DISTINCT nrl.MessageID, nrl.Status, nrl.StatusID FROM tmp_NotificationRecipientList nrl) AS t ON t.MessageID = nm.MessageID
+        SET n.Status = t.Status
+				, n.StatusID = t.StatusID
+                , n.LastModifiedBy = NULL;
         
         #Update flag to 'Done'
 		UPDATE SystemSetting 
@@ -332,7 +332,29 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 		UPDATE SystemSetting 
 		SET Value = VALUE_4_DONE
 		WHERE ID = 1 AND Value = VALUE_4_RUNNING;
-			
+		
+          #Return information for Chat Group which receives carbon coppies of all imported messages
+        SELECT * INTO ccConversationGroupID
+        FROM SystemSetting WHERE ID = 5;
+        
+        SELECT g.ConversationID AS ChatGroupConversationID
+					, g.ServiceUrl
+                    , g.ChannelID
+                    , b.ConversationID AS BotConversationID 
+        FROM ConversationGroup g
+        INNER JOIN ConversationGroupBot gb ON g.ConversationGroupID = gb.ConversationGroupID
+        INNER JOIN ConversationBot b ON b.ConversationBotID = gb.ConversationBotID
+        WHERE g.ConversationGroupID = ccConversationGroupID;
+        
+        #Return all imported message content
+        SELECT n.NotificationID, n.Title, n.Content
+		FROM Notification n
+        WHERE n.NotificationID IN (	SELECT nm.NotificationID 
+														FROM NotificationSystemMsg nm 
+                                                        WHERE nm.MessageID IN (SELECT nrl.MessageID FROM tmp_NotificationRecipientList nrl)
+                                                        );
+                                                        
+    
 		 #Get Finish Time to calcualte execution duration
 		SET finishTime = UTC_TIMESTAMP(3);
 		SET duration =  TIMESTAMPDIFF(MICROSECOND
