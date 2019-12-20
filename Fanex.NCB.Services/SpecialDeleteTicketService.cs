@@ -36,15 +36,15 @@
                 var messages = await GetMessageFromSpecialDelete(systemSettings);
                 if (messages.Item1.Any() && messages.Item2.Any())
                 {
-                    var importResult = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
+                    var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
 
-                    if (!importResult.Item1.IsSuccessful)
+                    if (!result.Item1.IsSuccessful)
                     {
-                        await chatbotService.NotifyToGroup(importResult.Item1.Message);
+                        await chatbotService.NotifyToGroup(result.Item1.Message);
                     }
                     else
                     {
-                        await chatbotService.SendMessageToMultitpleAsync(importResult.Item2);
+                        await chatbotService.SendMessageToMultitpleAsync(result.Item2);
                     }
                 }
             }

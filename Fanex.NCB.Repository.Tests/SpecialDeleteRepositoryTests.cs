@@ -34,9 +34,9 @@
                 Code = 0,
                 Message = string.Empty
             };
-            multiReader.ReadFirstAsync<CommandResult>().Returns(commandResult);
-            multiReader.ReadAsync<NotificationRecipient>().Returns(new List<NotificationRecipient> { new NotificationRecipient { BotName = "Test" } });
-            multiReader.ReadAsync<NotificationSendMessage>().Returns(new List<NotificationSendMessage> { new NotificationSendMessage { Content = "ABC", NotificationId = 1 } });
+            multiReader.ReadFirstOrDefault<CommandResult>().Returns(commandResult);
+            multiReader.Read<NotificationRecipient>().Returns(new List<NotificationRecipient> { new NotificationRecipient { BotName = "Test" } });
+            multiReader.Read<NotificationSendMessage>().Returns(new List<NotificationSendMessage> { new NotificationSendMessage { Content = "ABC", NotificationId = 1 } });
             objectDb.QueryMultipleAsync(criteria).Returns(multiReader);
 
             //Actual

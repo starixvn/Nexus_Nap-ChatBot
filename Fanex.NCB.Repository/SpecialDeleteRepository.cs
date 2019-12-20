@@ -18,9 +18,9 @@
             {
                 using (IMultiResultReader multi = await db.QueryMultipleAsync(criteria).ConfigureAwait(false))
                 {
-                    var command = await multi.ReadFirstAsync<CommandResult>();
-                    var recipients = await multi.ReadAsync<NotificationRecipient>();
-                    var notifications = await multi.ReadAsync<NotificationSendMessage>();
+                    var command = multi.ReadFirstOrDefault<CommandResult>();
+                    var recipients = multi.Read<NotificationRecipient>();
+                    var notifications = multi.Read<NotificationSendMessage>();
                     var messages = GenerateNotifificationMessage(notifications, recipients);
                     return new ValueTuple<CommandResult, IEnumerable<NotificationMessage>>(command, messages);
                 }

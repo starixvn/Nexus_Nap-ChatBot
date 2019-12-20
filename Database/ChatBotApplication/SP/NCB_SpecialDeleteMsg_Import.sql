@@ -3,11 +3,8 @@ DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SpecialDeleteMsg_Import(
 	IN messageHeader JSON,
-	IN messageDetail JSON,
-    OUT errCode INT,
-    OUT errMsg VARCHAR(200)
-
-    /*
+	IN messageDetail JSON
+       /*
 		Creator: Dominic@20191211
         Task: Chatbot For Licensee - Phase 2: Integrate Special Delete - Redmine:#122905
         Param:
@@ -38,7 +35,8 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
     DECLARE templateNotifcationType JSON;
     DECLARE ccConversationGroupID INT;
-
+    DECLARE errCode INT;
+    DECLARE errMsg VARCHAR(200);
     #Constants
 	DECLARE ACTION_ID 	INT DEFAULT 18;
     DECLARE VALUE_4_RUNNING 	TEXT  DEFAULT 'Running';
