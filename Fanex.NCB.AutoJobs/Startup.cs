@@ -196,6 +196,7 @@
             services.AddSingleton<IDynamicRepository, DynamicRepository>();
             services.AddTransient<IBaseRepository, BaseRepository>();
             services.AddTransient<ISyncDataRepository, SyncDataRepository>();
+            services.AddTransient<ISpecialDeleteRepository, SpecialDeleteRepository>();
         }
 
         private static void RegisterHangfire(IServiceCollection services, string connectionString)

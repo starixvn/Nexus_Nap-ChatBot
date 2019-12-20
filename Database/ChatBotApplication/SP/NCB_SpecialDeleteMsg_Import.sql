@@ -143,6 +143,8 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 		WHERE nt.TemplateContent IS NULL;
         
 		SET errMsg = CONCAT('Notification template is not existing (IDs): ' , errMsg);
+        SELECT errCode As Code, errMsg As Message;
+
         LEAVE NCB_SpecialDeleteMsg_Import;
         
 	END IF;
@@ -160,6 +162,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 										OR nt.TemplateContent NOT LIKE '%{CN Announcement}%' ;
         
 		SET errMsg = CONCAT('Notification template is not existing (IDs): ' , errMsg);
+        SELECT errCode As Code, errMsg As Message;
         LEAVE NCB_SpecialDeleteMsg_Import;
         
 	END IF;
@@ -333,14 +336,18 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 		SET Value = VALUE_4_DONE
 		WHERE ID = 1 AND Value = VALUE_4_RUNNING;
 		
-          #Return information for Chat Group which receives carbon coppies of all imported messages
-        SELECT * INTO ccConversationGroupID
-        FROM SystemSetting WHERE ID = 5;
+        #Return command result
+        SELECT errCode As Code, errMsg As Message;
+
+        #Return information for Chat Group which receives carbon coppies of all imported messages
+        SELECT ss.Value INTO ccConversationGroupID
+        FROM SystemSetting ss WHERE ss.ID = 5;
         
         SELECT g.ConversationID AS ChatGroupConversationID
 					, g.ServiceUrl
                     , g.ChannelID
-                    , b.ConversationID AS BotConversationID 
+                    , b.ConversationID AS BotConversationID
+                    , b.Name As BotName
         FROM ConversationGroup g
         INNER JOIN ConversationGroupBot gb ON g.ConversationGroupID = gb.ConversationGroupID
         INNER JOIN ConversationBot b ON b.ConversationBotID = gb.ConversationBotID
