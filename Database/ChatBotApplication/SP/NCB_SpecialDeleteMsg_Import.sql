@@ -45,8 +45,6 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     DECLARE RECIPIENT_TYPE_LICENSEE INT DEFAULT 1;
     DECLARE STARIXIT_CUSTID 	INT DEFAULT 10278938;
     
-    DECLARE NEW_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 0;
-    DECLARE NEW_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Planned';
     DECLARE CREATING_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 7;
     DECLARE CREATING_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Creating';
 
@@ -109,14 +107,18 @@ NCB_SpecialDeleteMsg_Import:BEGIN
                 , NotificationTemplateID INT
                 , TemplateTitle VARCHAR(300)
                 , TemplateContent MEDIUMTEXT
+                , StatusID TINYINT UNSIGNED
+                , Status VARCHAR(10) 
             );
    SET iLoop = 0;
    WHILE (JSON_EXTRACT(templateNotifcationType, CONCAT('$[',iLoop, '].MsgContentsType'))  IS NOT NULL) DO 
-		INSERT INTO tmp_MsgContentTypeTemplate(MsgContentsType, NotificationTypeID, NotificationTemplateID)
+		INSERT INTO tmp_MsgContentTypeTemplate(MsgContentsType, NotificationTypeID, NotificationTemplateID, StatusID, Status)
         VALUES (
 			JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].MsgContentsType')))
             , JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTypeID')))
             , JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTemplateID')))
+            , JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].StatusID')))
+            , JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].Status')))
 		);
         
         SET iLoop := iLoop + 1;
@@ -213,13 +215,17 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 				, RecipientID INT
                 , ConversationGroupID INT
                 , ChatGroupTypeID SMALLINT
+                , StatusID TINYINT UNSIGNED
+                , Status VARCHAR(10) 
                 , INDEX Index_MessageID(MessageID)
             );
             
-	INSERT INTO tmp_NotificationRecipientList(MessageID, Site, RecipientID, ConversationGroupID, ChatGroupTypeID)       
+	INSERT INTO tmp_NotificationRecipientList(MessageID, Site, RecipientID, ConversationGroupID, ChatGroupTypeID, StatusID, Status)       
     SELECT  d.MessageID, d.Site, d.RecipientID
 					, gri.ConversationGroupID
 					, gri.ChatGroupTypeID
+                    , tpl.StatusID
+                    , tpl.Status
     FROM tmp_MsgHeader h
         INNER JOIN tmp_MsgDetail d ON d.MessageID = h.MessageID
         INNER JOIN  tmp_MsgContentTypeTemplate tpl ON tpl.MsgContentsType = h.MsgContentsType
@@ -303,16 +309,17 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 					, d.ConversationGroupID
 					, d.ChatGroupTypeID
                     , d.RecipientID
-					, NEW_NOTIFICATION_STATUS
-					, NEW_NOTIFICATION_STATUSID
+					, d.Status
+					, d.StatusID
         FROM NotificationSystemMsg nm
         INNER JOIN tmp_NotificationRecipientList d ON d.MessageID = nm.MessageID;
         
         #Update Status for Notification
         UPDATE Notification n
         INNER JOIN NotificationSystemMsg nm ON nm.NotificationID = n.NotificationID
-        SET n.Status = NEW_NOTIFICATION_STATUS
-				, n.StatusID = NEW_NOTIFICATION_STATUSID
+        INNER JOIN tmp_MsgHeader h ON h.MessageID = nm.MessageID
+        SET n.Status = h.Status
+				, n.StatusID = h.StatusID
                 , n.LastModifiedBy = NULL
 		WHERE nm.MessageID IN (SELECT nrl.MessageID FROM tmp_NotificationRecipientList nrl);
         
