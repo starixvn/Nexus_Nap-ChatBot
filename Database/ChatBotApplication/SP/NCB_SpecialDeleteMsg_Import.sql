@@ -171,6 +171,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     WHERE ID = 1 AND Value = VALUE_4_DONE;
     
      IF ROW_COUNT()  = 0 THEN
+        SELECT errCode As Code, errMsg As Message;
         LEAVE NCB_SpecialDeleteMsg_Import;
     END IF;
      
