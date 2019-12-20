@@ -87,7 +87,7 @@
             }
             catch (Exception ex)
             {
-                await chatbotService.NotifySponDemoChatGroup(ex.Message);
+                await chatbotService.NotifyToGroup(ex.Message);
                 await Logging(ex);
                 throw;
             }

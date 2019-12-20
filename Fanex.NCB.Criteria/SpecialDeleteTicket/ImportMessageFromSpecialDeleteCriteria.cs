@@ -1,8 +1,8 @@
 ﻿namespace Fanex.NCB.Criteria.SpecialDeleteTicket
 {
-    using Fanex.NCB.Shared.Models;
+    using Fanex.Data.Repository;
 
-    public class ImportMessageFromSpecialDeleteCommand : BaseCommand
+    public class ImportMessageFromSpecialDeleteCriteria : CriteriaBase
     {
         public string MessageHeader { get; set; }
 

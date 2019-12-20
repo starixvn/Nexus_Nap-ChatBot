@@ -111,7 +111,7 @@
 
             //Assert
             await Assert.ThrowsAsync<Exception>(() => service.PullTicketFromSpecialDeleteAndCreateNotification());
-            await chatbotService.Received().NotifySponDemoChatGroup(Arg.Any<string>());
+            await chatbotService.Received().NotifyToGroup(Arg.Any<string>());
             await logger.Received().ErrorAsync(Arg.Any<string>());
         }
 

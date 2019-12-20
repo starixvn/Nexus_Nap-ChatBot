@@ -73,7 +73,7 @@
         public async Task NotifySponDemoChatGroup_WhenCalled_WebClientExecuted()
         {
             var service = GetService();
-            await service.NotifySponDemoChatGroup("Test");
+            await service.NotifyToGroup("Test");
             webClient.Received(2);
         }
 

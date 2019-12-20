@@ -11,6 +11,6 @@
 
         Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages);
 
-        Task NotifySponDemoChatGroup(string message);
+        Task NotifyToGroup(string message);
     }
 }

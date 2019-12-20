@@ -1,8 +1,11 @@
 ﻿namespace Fanex.NCB.Services.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
+    using Fanex.NCB.Models.NotifictaionSendMessage;
+    using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
@@ -14,6 +17,7 @@
     {
         private IBaseService baseService;
         private IChatbotService chatbotService;
+        private ISpecialDeleteRepository specialDeleteRepository;
 
         [Fact]
         public async Task PullTicketAndCreateNotification_WhenGetSettingIsNull_DoNothing()
@@ -26,7 +30,7 @@
 
             //Expected
             await baseService.DidNotReceiveWithAnyArgs().FetchMultipleAsync<Message, MessageDetail>(Arg.Any<GetMessageFromSpecialDeleteCriteria>());
-            await baseService.DidNotReceive().ExecuteNonQueryAsync(Arg.Any<ImportMessageFromSpecialDeleteCommand>());
+            await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
         }
 
         [Fact]
@@ -43,7 +47,7 @@
             await service.PullTicketAndCreateNotification();
 
             //Expected
-            await baseService.DidNotReceive().ExecuteNonQueryAsync(Arg.Any<ImportMessageFromSpecialDeleteCommand>());
+            await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
         }
 
         [Fact]
@@ -56,13 +60,14 @@
             baseService.FetchMultipleAsync<Message, MessageDetail>(Arg.Any<GetMessageFromSpecialDeleteCriteria>()).Returns(
               (new List<Message> { new Message { MessageID = 1 } }, new List<MessageDetail> { new MessageDetail { MessageID = 1 } })
                 );
-            baseService.ExecuteNonQueryAsync(Arg.Any<ImportMessageFromSpecialDeleteCommand>()).Returns(new CommandResult { Code = 0 });
+            var fakeData = FakeData(true);
+            specialDeleteRepository.ImportMessageAndGetNotification(Arg.Any<ImportMessageFromSpecialDeleteCriteria>()).Returns(fakeData);
 
             //Actual
             await service.PullTicketAndCreateNotification();
 
             //Expected
-            await chatbotService.DidNotReceive().NotifySponDemoChatGroup(Arg.Any<string>());
+            await chatbotService.DidNotReceive().NotifyToGroup(Arg.Any<string>());
         }
 
         [Fact]
@@ -75,20 +80,37 @@
             baseService.FetchMultipleAsync<Message, MessageDetail>(Arg.Any<GetMessageFromSpecialDeleteCriteria>()).Returns(
               (new List<Message> { new Message { MessageID = 1 } }, new List<MessageDetail> { new MessageDetail { MessageID = 1 } })
                 );
-            baseService.ExecuteNonQueryAsync(Arg.Any<ImportMessageFromSpecialDeleteCommand>()).Returns(new CommandResult { Code = 1 });
+            var fakeData = FakeData(false);
+            specialDeleteRepository.ImportMessageAndGetNotification(Arg.Any<ImportMessageFromSpecialDeleteCriteria>()).Returns(fakeData);
 
             //Actual
             await service.PullTicketAndCreateNotification();
 
             //Expected
-            await chatbotService.Received(1).NotifySponDemoChatGroup(Arg.Any<string>());
+            await chatbotService.Received(1).NotifyToGroup(Arg.Any<string>());
+        }
+
+        private ValueTuple<CommandResult, IEnumerable<NotificationMessage>> FakeData(bool isSuccessful)
+        {
+            var command = new CommandResult { Code = isSuccessful ? 0 : 101, Message = "" };
+            var msg = new List<NotificationMessage>
+            {
+                new NotificationMessage
+                {
+                    NotifictaionId = 1,
+                    Message = "ABC",
+                    Recipients = new List<ConversationInfo>()
+                }
+            };
+            return new ValueTuple<CommandResult, IEnumerable<NotificationMessage>>(command, msg);
         }
 
         private SpecialDeleteTicketService GetService()
         {
             baseService = Substitute.For<IBaseService>();
             chatbotService = Substitute.For<IChatbotService>();
-            return new SpecialDeleteTicketService(baseService, chatbotService);
+            specialDeleteRepository = Substitute.For<ISpecialDeleteRepository>();
+            return new SpecialDeleteTicketService(baseService, chatbotService, specialDeleteRepository);
         }
     }
 }

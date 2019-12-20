@@ -75,7 +75,7 @@
             return response.Data;
         }
 
-        public async Task NotifySponDemoChatGroup(string message)
+        public async Task NotifyToGroup(string message)
         {
             var settings = notifyChatGroupOptions.Value;
             var notificationModel = new List<NotificationMessage>
