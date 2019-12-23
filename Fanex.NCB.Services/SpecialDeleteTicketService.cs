@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
-    using Fanex.NCB.Repository.Interfaces;
+    using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
@@ -16,15 +16,12 @@
     {
         private readonly IBaseService baseService;
         private readonly IChatbotService chatbotService;
-        private readonly ISpecialDeleteRepository specialDeleteRepository;
 
         public SpecialDeleteTicketService(IBaseService baseService,
-            IChatbotService chatbotService,
-            ISpecialDeleteRepository specialDeleteRepository)
+            IChatbotService chatbotService)
         {
             this.baseService = baseService;
             this.chatbotService = chatbotService;
-            this.specialDeleteRepository = specialDeleteRepository;
         }
 
         public async Task PullTicketAndCreateNotification()
@@ -38,14 +35,22 @@
                 {
                     var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
 
-                    if (!result.Item1.IsSuccessful)
-                    {
-                        await chatbotService.NotifyToGroup(result.Item1.Message);
-                    }
-                    else
-                    {
-                        await chatbotService.SendMessageToMultitpleAsync(result.Item2);
-                    }
+                    await OnAfterImportData(result.Item1, result.Item2);
+                }
+            }
+        }
+
+        private async Task OnAfterImportData(CommandResult commandResult, IEnumerable<NotificationMessage> notifications)
+        {
+            if (!commandResult.IsSuccessful)
+            {
+                await chatbotService.NotifyToGroup(commandResult.Message);
+            }
+            else
+            {
+                if (notifications.Any())
+                {
+                    await chatbotService.SendMessageToMultitpleAsync(notifications);
                 }
             }
         }
@@ -60,9 +65,44 @@
                 MessageDetail = JsonConvert.SerializeObject(messageDetails)
             };
 
-            var result = await specialDeleteRepository.ImportMessageAndGetNotification(criteria);
+            var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
+            var notification = GenerateNotifificationMessage(data.Item2, data.Item1);
+            var command = new CommandResult
+            {
+                Code = criteria.ErrCode,
+                Message = criteria.ErrMsg
+            };
 
-            return result;
+            return new ValueTuple<CommandResult, IEnumerable<NotificationMessage>>(command, notification);
+        }
+
+        private IEnumerable<NotificationMessage> GenerateNotifificationMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
+        {
+            var messages = new List<NotificationMessage>();
+            if (notifications != null && notifications.Any())
+            {
+                foreach (var noti in notifications)
+                {
+                    var notification = new NotificationMessage
+                    {
+                        NotifictaionId = noti.NotificationId,
+                        Message = noti.Content,
+                        Recipients = recipients.Select(r =>
+                            new ConversationInfo
+                            {
+                                BotConversationId = r.BotConversationId,
+                                BotName = r.BotName,
+                                ChannelId = r.ChannelId,
+                                ConversationId = r.ChatGroupConversationId,
+                                ServiceUrl = r.ServiceUrl
+                            }
+                        )
+                    };
+                    messages.Add(notification);
+                }
+            }
+
+            return messages;
         }
 
         private async Task<ValueTuple<IEnumerable<Message>, IEnumerable<MessageDetail>>> GetMessageFromSpecialDelete(SystemSetting systemSettings)

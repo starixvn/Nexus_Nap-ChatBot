@@ -8,6 +8,10 @@
 
         public string MessageDetail { get; set; }
 
+        public int ErrCode { get; set; }
+
+        public string ErrMsg { get; set; }
+
         public override string GetSettingKey() => "NCB_SpecialDeleteMsg_Import";
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(MessageHeader) &&
