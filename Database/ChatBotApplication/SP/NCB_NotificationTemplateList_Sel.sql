@@ -9,7 +9,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationTemplateList_Sel`(
     ,IN pageSize INT
 	/*
         Revisions:
-			- 20191218@Merlin.Le: Get additional IsSpecialDelete field
+			- 20191218@Merlin.Le: Get additional UnRemovable field -- Redmine ID: #125707
     */
 )
 BEGIN
@@ -60,7 +60,7 @@ BEGIN
 				) 
             ) THEN 1
 			ELSE 0
-		END AS IsSpecialDelete
+		END AS UnRemovable
     FROM NotificationTemplate nt
 		INNER JOIN NotificationType t ON nt.NotificationTypeID = t.NotificationTypeID
 	WHERE notificationTypeID IS NULL OR t.NotificationTypeID = notificationTypeID

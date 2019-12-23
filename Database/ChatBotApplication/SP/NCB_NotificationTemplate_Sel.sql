@@ -8,7 +8,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationTemplate_Sel`(
 		Creator: Elton@20190913
         Revisions:
 			- 20190910@Elton: First Commit
-			- 20191218@Merlin.Le: Get additional IsSpecialDelete field
+			- 20191218@Merlin.Le: Get additional UnRemovable field -- Redmine ID: #125707
     */
 )
 NCB_NotificationTemplate_Sel:BEGIN
@@ -51,7 +51,7 @@ NCB_NotificationTemplate_Sel:BEGIN
 				) 
             ) THEN 1
 			ELSE 0
-		END AS IsSpecialDelete
+		END AS UnRemovable
     FROM NotificationTemplate nt
 	WHERE nt.NotificationTemplateID = notificationTemplateID;
 END;

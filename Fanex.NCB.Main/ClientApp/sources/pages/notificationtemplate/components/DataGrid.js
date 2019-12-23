@@ -94,7 +94,7 @@ export class DataGrid extends Component {
                     <>
                         <span className="icon-edit" data-templateid={item.notificationTemplateId} onClick={this.handleEditTemplate} />
                         {
-                            item.isSpecialDelete ?
+                            item.unRemovable ?
                             <span className="icon-delete icon-disabled" /> :
                             <span className="icon-delete" data-templateid={item.notificationTemplateId} onClick={this.handleDeleteTemplate} />
                         }
