@@ -8,6 +8,8 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_Common_NotificationStatus_Se
 
         Revisions:
 				- 20190408@Dominic: First Commit
+				- 20191223@Dominic: Add Draft status
+
         
     */
 )
