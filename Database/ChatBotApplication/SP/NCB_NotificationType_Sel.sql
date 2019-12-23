@@ -7,34 +7,63 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_NotificationType_Sel(
     OUT totalItems INT
 	/*
 		Creator: Oliver@20190820
-				Params:
-						- pageIndex: Page Index for paging
-						- pageSize: Page Size for paging
-				Revisions:
-						- 20190729@Oliver: Revised total items to output    		
+			Params:
+				- pageIndex: Page Index for paging
+				- pageSize: Page Size for paging
+			Revisions:
+				- 20190729@Oliver: Revised total items to output    
+				- 20191223@Merlin.Le: Get additional UnRemovable field -- Redmine ID: #125707
     */
 	)
 SQL SECURITY DEFINER
 BEGIN
-	DECLARE rowStart INT;
+	DECLARE rowStart	INT;
+	DECLARE jsonValue   JSON;
+    DECLARE indexLoop   INT;
     SET rowStart =	pageSize * (pageIndex - 1);  
     
     SET totalItems = (SELECT COUNT(1) FROM NotificationType nt);
+    
+	SELECT Value INTO jsonValue FROM SystemSetting WHERE ID = 4 LIMIT 1;
+    DROP TEMPORARY TABLE IF EXISTS tmpParseJsonTable;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmpParseJsonTable(NotificationTypeID INT);
+    SET indexLoop = 0;
+    WHILE (JSON_EXTRACT(jsonValue, CONCAT('$[',indexLoop, '].NotificationTypeID'))) DO 
+		INSERT INTO tmpParseJsonTable(NotificationTypeID)
+        VALUES (
+            CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID')))
+            END
+		);
+        
+        SET indexLoop := indexLoop + 1;
+    END WHILE;
     
     SELECT
 		nt.NotificationTypeID AS Id, 
 		nt.NotificationTypeName AS Name, 
 		s.SystemID AS SystemId,
-		s.SystemName AS SystemName
+		s.SystemName AS SystemName,
+        CASE
+			WHEN (
+				EXISTS (
+					SELECT 1 FROM tmpParseJsonTable tmppjt
+					WHERE tmppjt.NotificationTypeID = nt.NotificationTypeID
+				) 
+            ) THEN 1
+			ELSE 0
+		END AS UnRemovable
 	FROM NotificationType nt
 	INNER JOIN `System` s ON nt.SystemID = s.SystemId
     ORDER BY nt.NotificationTypeID
 	LIMIT rowStart, pageSize;
     
     SELECT 
-		  nrt.RecipientTypeID AS Id,
-          rt.RecipientTypeName AS Name,
-          nrt.NotificationTypeID AS NotificationTypeId
+		nrt.RecipientTypeID AS Id,
+		rt.RecipientTypeName AS Name,
+		nrt.NotificationTypeID AS NotificationTypeId
     FROM NotificationRecipientType nrt 
     INNER JOIN RecipientType rt ON nrt.RecipientTypeID = rt.RecipientTypeId;
 	

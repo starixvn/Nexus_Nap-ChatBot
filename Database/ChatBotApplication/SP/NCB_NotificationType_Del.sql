@@ -8,29 +8,57 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_NotificationType_Del(
 	OUT errMsg VARCHAR(100)
 	/*
 		Creator: Scofield@20190912
-				Params:
-						- notificationTypeId: notification type id
-				Revisions:
-						- 20190912@Scofield: Create
+			Params:
+				- notificationTypeId: notification type id
+			Revisions:
+				- 20190912@Scofield: Create
+				- 20192312@Merlin.Le: Check not setting type before delete -- Redmine ID: #125707
     */
    )
 SQL SECURITY DEFINER
 BEGIN	     
 	-- Variables used to write User Logs
-	DECLARE startTime 			DATETIME(3);
+	DECLARE startTime 		DATETIME(3);
     DECLARE finishTime 		DATETIME(3); 
-    DECLARE duration 			INT;							
+    DECLARE duration 		INT;							
     DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
     DECLARE ACTION_ID 		INT DEFAULT 17;
+	DECLARE jsonValue   	JSON;
+    DECLARE indexLoop   	INT;
 	
 	-- Get Start Time to calcualte execution duration
     SET startTime = UTC_TIMESTAMP(3);
     SET errCode = 0, errMsg = '';
     
-    IF (EXISTS(SELECT * FROM Notification WHERE Notification.NotificationTypeID =  notificationTypeId) 
-		OR EXISTS(SELECT * FROM NotificationTemplate WHERE NotificationTemplate.NotificationTypeID =  notificationTypeId)) THEN
+	SELECT Value INTO jsonValue FROM SystemSetting WHERE ID = 4 LIMIT 1;
+    DROP TEMPORARY TABLE IF EXISTS tmpParseJsonTable;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmpParseJsonTable(NotificationTypeID INT);
+    SET indexLoop = 0;
+    WHILE (JSON_EXTRACT(jsonValue, CONCAT('$[',indexLoop, '].NotificationTypeID'))) DO 
+		INSERT INTO tmpParseJsonTable(NotificationTypeID)
+        VALUES (
+            CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID')))
+            END
+		);
+        
+        SET indexLoop := indexLoop + 1;
+    END WHILE;
+    
+    IF (EXISTS(SELECT * FROM Notification WHERE Notification.NotificationTypeID = notificationTypeId) 
+		OR EXISTS(SELECT * FROM NotificationTemplate WHERE NotificationTemplate.NotificationTypeID = notificationTypeId)) THEN
 			SELECT 1 INTO errCode;
 			SELECT "Unable to delete the notification type because one or many assigned notification(s) exist(s)" INTO errMsg;
+	ELSEIF (
+		EXISTS (
+			SELECT 1 FROM tmpParseJsonTable tmppjt
+			WHERE tmppjt.NotificationTypeID = notificationTypeID
+		)
+	) THEN
+		SELECT 2 INTO errCode;
+		SELECT "Unable to delete the notification type because of system setting" INTO errMsg;
     ELSE
 		DELETE FROM NotificationType
 		WHERE NotificationType.notificationTypeId = notificationTypeId;

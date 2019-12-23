@@ -12,5 +12,7 @@
         public int SystemId { get; set; }
 
         public string SystemName { get; set; }
+
+        public bool UnRemovable { get; set; }
     }
 }

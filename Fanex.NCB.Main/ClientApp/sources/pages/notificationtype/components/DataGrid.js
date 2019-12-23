@@ -66,7 +66,11 @@ export class DataGrid extends Component {
           <Cell className="text-center col-action">
             <div>
               <span className="icon-edit" id={'edit-' + index} onClick={() => this.openEditPopup(item, index)} title="Edit" />
-              <span className="icon-delete" id={'delete-' + index} onClick={() => this.openDeletePopup(index, item.id, item.name)} title="Delete"/>
+              {
+                item.unRemovable ?
+                <span className="icon-delete icon-disabled"/> : 
+                <span className="icon-delete" id={'delete-' + index} onClick={() => this.openDeletePopup(index, item.id, item.name)} title="Delete"/>
+              }
             </div>
           </Cell>
         }
