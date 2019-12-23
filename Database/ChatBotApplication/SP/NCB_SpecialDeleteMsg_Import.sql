@@ -355,7 +355,8 @@ NCB_SpecialDeleteMsg_Import:BEGIN
         FROM ConversationGroup g
         INNER JOIN ConversationGroupBot gb ON g.ConversationGroupID = gb.ConversationGroupID
         INNER JOIN ConversationBot b ON b.ConversationBotID = gb.ConversationBotID
-        WHERE g.ConversationGroupID = ccConversationGroupID;
+        WHERE g.ConversationGroupID = ccConversationGroupID
+        LIMIT 1;
         
         #Return all imported message content
         SELECT n.NotificationID, n.Title, n.Content

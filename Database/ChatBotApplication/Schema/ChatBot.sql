@@ -37,6 +37,8 @@
 			, SentTime DATETIME NOT NULL
 			, IsSuccessfull BIT NOT NULL
 			, ErrorMessage VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NULL
+            , ReferenceID INT NULL
+            , INDEX INDEX_ReferenceID USING BTREE (ReferenceID)
 	  ) COMPRESSION="zlib";
 	  
 	  
