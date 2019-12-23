@@ -167,7 +167,7 @@
     
     CREATE TABLE ChatBot.SystemSetting( 
 		  ID INT UNSIGNED NOT NULL
-        , Description VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NULL
+        , Description TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NULL
 		, Value TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NULL
         , CONSTRAINT PK_ID  PRIMARY KEY (ID)
     );
