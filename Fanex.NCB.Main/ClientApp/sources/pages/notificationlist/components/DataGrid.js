@@ -50,7 +50,7 @@ export default class DataGrid extends PureComponent {
             case NotificationStatus.Sending: return "badge-outline-green";
             case NotificationStatus.Cancelled: return "badge-grey";
             case NotificationStatus.Resolved: return "badge-orange";
-            case NotificationStatus.Draft: return "badge-orange";
+            case NotificationStatus.Draft: return "badge-grey";
             default: return '';
         }
     }
