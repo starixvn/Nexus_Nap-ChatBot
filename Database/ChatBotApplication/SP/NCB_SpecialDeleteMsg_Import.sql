@@ -48,6 +48,12 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     
     DECLARE CREATING_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 7;
     DECLARE CREATING_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Creating';
+    
+    DECLARE DRAFT_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 9;
+    DECLARE DRAFT_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Draft';
+    
+    DECLARE PLANNED_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 0;
+    DECLARE PLANNED_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Planned';
 
 	SET  startTime = UTC_TIMESTAMP(3);
     SET errCode=0, errMsg='';
@@ -108,22 +114,26 @@ NCB_SpecialDeleteMsg_Import:BEGIN
                 , NotificationTemplateID INT
                 , TemplateTitle VARCHAR(300)
                 , TemplateContent MEDIUMTEXT
+                , IsTest TINYINT
                 , StatusID TINYINT UNSIGNED
                 , Status VARCHAR(10) 
             );
    SET iLoop = 0;
    WHILE (JSON_EXTRACT(templateNotifcationType, CONCAT('$[',iLoop, '].MsgContentsType'))  IS NOT NULL) DO 
-		INSERT INTO tmp_MsgContentTypeTemplate(MsgContentsType, NotificationTypeID, NotificationTemplateID, StatusID, Status)
+		INSERT INTO tmp_MsgContentTypeTemplate(MsgContentsType, NotificationTypeID, NotificationTemplateID, IsTest)
         VALUES (
 			JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].MsgContentsType')))
             , JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTypeID')))
             , JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTemplateID')))
-            , JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].StatusID')))
-            , JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].Status')))
+            , JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].IsTest')))
 		);
         
         SET iLoop := iLoop + 1;
-    END WHILE;    
+    END WHILE;        
+    
+    UPDATE tmp_MsgContentTypeTemplate t
+    SET t.StatusID = CASE WHEN t.IsTest = 1 THEN  DRAFT_NOTIFICATION_STATUSID ELSE PLANNED_NOTIFICATION_STATUSID END
+    , Status = CASE WHEN t.IsTest = 1 THEN  PLANNED_NOTIFICATION_STATUSID ELSE PLANNED_NOTIFICATION_STATUS END;
     
 /*Step 3: Validate templates*/
     #Get template content
