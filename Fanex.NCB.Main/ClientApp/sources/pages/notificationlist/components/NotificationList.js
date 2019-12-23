@@ -60,7 +60,7 @@ export default class NotificationList extends Component {
             axios(Site.resolveClientUrl('Common/GetNotificationTypes')),
             axios(Site.resolveClientUrl('Common/GetRecipients')),
             axios(Site.resolveClientUrl('Common/GetNotificationStatuses')),
-            axios(Site.resolveClientUrl('Common/GetUsers')),
+            axios(Site.resolveClientUrl('Common/GetUsers'))
 
         ];
 

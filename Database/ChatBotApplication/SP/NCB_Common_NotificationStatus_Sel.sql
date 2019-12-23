@@ -28,6 +28,8 @@ BEGIN
 		SELECT 4 StatusID,  'Cancelled' StatusName
 		UNION ALL
 		SELECT 5 StatusID,  'Resolved' StatusName
+		UNION ALL
+		SELECT 9 StatusID,  'Draft' StatusName
     ) AS tmp
     ORDER BY StatusID;
 END;
