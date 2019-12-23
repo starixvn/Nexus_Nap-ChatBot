@@ -131,6 +131,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
         SET iLoop := iLoop + 1;
     END WHILE;        
     
+    #Update Default status: if IsTest=1 then 'Draft', else 'Planned'
     UPDATE tmp_MsgContentTypeTemplate t
     SET t.StatusID = CASE WHEN t.IsTest = 1 THEN  DRAFT_NOTIFICATION_STATUSID ELSE PLANNED_NOTIFICATION_STATUSID END
     , Status = CASE WHEN t.IsTest = 1 THEN   DRAFT_NOTIFICATION_STATUS ELSE PLANNED_NOTIFICATION_STATUS END;
@@ -333,7 +334,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 				, n.StatusID = t.StatusID
                 , n.LastModifiedBy = NULL;
         
-        #Update flag to 'Done'
+        #Update Max MsgID
 		UPDATE SystemSetting 
 		SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
 		WHERE ID = 3;
@@ -342,11 +343,13 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 		UPDATE SystemSetting 
 		SET Value = VALUE_4_DONE
 		WHERE ID = 1 AND Value = VALUE_4_RUNNING;
-		
-          #Return information for Chat Group which receives carbon coppies of all imported messages
+
+/*Step 10:Return imported messages*/   		
+		#Get ChatGroupID which receives carbon coppies of all imported messages
         SELECT Value INTO ccConversationGroupID
         FROM SystemSetting WHERE ID = 5;
         
+        #Return Bot, Chatgroup
         SELECT g.ConversationID AS ChatGroupConversationID
 					, g.ServiceUrl
                     , g.ChannelID
