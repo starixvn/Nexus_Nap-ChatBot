@@ -11,14 +11,14 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationTemplate_Del`(
 	Creator: Elton@20190913
 		Revisions:
 			- 20190910@Elton: First Commit
-            - 20191218@Merlin.Le: Check not setting template before delete
+            - 20191218@Merlin.Le: Check not setting template before delete -- Redmine ID: #125707
 	*/
 )
 NCB_NotificationTemplate_Del:BEGIN
 	#Variables used to write User Logs
 	DECLARE startTime 		DATETIME(3);
 	DECLARE finishTime 		DATETIME(3); 
-	DECLARE duration 			INT;							
+	DECLARE duration 		INT;							
 	DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
 	DECLARE ACTION_ID 		INT DEFAULT 14;
 	DECLARE jsonValue 		JSON;
@@ -63,7 +63,7 @@ NCB_NotificationTemplate_Del:BEGIN
 		WHERE nt.NotificationTemplateID = notificationTemplateID
 	)
 	THEN
-		SET errCode = 102, errMsg = 'Cannot delete this template.';
+		SET errCode = 102, errMsg = 'Cannot delete this template';
 		LEAVE NCB_NotificationTemplate_Del;
 	END IF;
     
