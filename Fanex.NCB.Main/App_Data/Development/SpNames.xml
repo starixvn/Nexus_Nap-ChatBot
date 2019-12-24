@@ -2,7 +2,7 @@
 <Functions>
   <Function Name="Chat Group Mapping">
     <Setting Key="NCB_ChatGroupMapping_Sel" SpName="NCB_ChatGroupMapping_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_ConversationGroup_Update" SpName="NCB_ConversationGroup_Update" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_ChatGroupMapping_ActiveGroup_Upd" SpName="NCB_ChatGroupMapping_ActiveGroup_Upd" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_ChatGroupMapping_Upd" SpName="NCB_ChatGroupMapping_Upd" DbName="ChatBot" Plain="0"></Setting>
   </Function>
   <Function Name="Setting">

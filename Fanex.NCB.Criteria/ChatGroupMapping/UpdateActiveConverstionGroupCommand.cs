@@ -8,7 +8,7 @@
 
         public bool IsActive { get; set; }
 
-        public override string GetSettingKey() => "NCB_ConversationGroup_Update";
+        public override string GetSettingKey() => "NCB_ChatGroupMapping_ActiveGroup_Upd";
 
         public override bool IsValid() => GroupID > 0;
     }
