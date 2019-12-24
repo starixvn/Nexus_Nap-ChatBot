@@ -1,7 +1,7 @@
-DROP PROCEDURE IF EXISTS NCB_ConversationGroup_Update;
+DROP PROCEDURE IF EXISTS NCB_ChatGroupMapping_ActiveGroup_Upd;
 DELIMITER //
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_ConversationGroup_Update (
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_ChatGroupMapping_ActiveGroup_Upd (
 	IN groupID INT,
     IN isActive BIT(1),
 	OUT errCode SMALLINT,
@@ -10,7 +10,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_ConversationGroup_Update (
 	Creator: Merlin.Le@20191212
 	Params:
 	Revisions:
-		- Merlin.Le@20191212: Create
+		- Merlin.Le@20191212: Create -- Redmine ID: 125345
 */
 )
 SQL SECURITY DEFINER
@@ -33,11 +33,11 @@ BEGIN
 		SET errCode = 101, errMsg = 'Invalid status mapping.';
 	ELSE
 		UPDATE ConversationGroup
-		SET IsActive = isActive, LastUpdate = NOW()
+		SET IsActive = isActive, LastUpdate = UTC_TIMESTAMP(3)
 		WHERE ConversationGroupID = groupID;
 	END IF;
 END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE NCB_ConversationGroup_Update TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_ChatGroupMapping_ActiveGroup_Upd TO 'ncb.admin'@'%';
