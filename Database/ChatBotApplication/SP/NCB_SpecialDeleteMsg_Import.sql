@@ -55,7 +55,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     DECLARE PLANNED_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 0;
     DECLARE PLANNED_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Planned';
 
-	SET  startTime = UTC_TIMESTAMP(3);
+	SET  startTime = UTC_TIMESTAMP();
     SET errCode=0, errMsg='';
     
 	/*Step 1: Parse JSON data for message header and detaill*/
