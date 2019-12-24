@@ -297,7 +297,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
                         , startTime ConfigSendTime
                         , 0 SendImmediately
                         , STARIXIT_CUSTID CreatorID
-                        , startTime CreatedDate
+                        , UTC_TIMESTAMP() CreatedDate
                         , CREATING_NOTIFICATION_STATUS Status
                         , CREATING_NOTIFICATION_STATUSID StatusID
                         , h.MessageID LastModifiedBy
