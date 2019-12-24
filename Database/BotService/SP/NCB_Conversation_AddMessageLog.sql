@@ -2,7 +2,8 @@ DROP PROCEDURE IF EXISTS `NCB_Conversation_AddMessageLog`;
 DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_AddMessageLog`(
-	IN fromConversationId VARCHAR(200)  
+      IN referenceID INT
+	, IN fromConversationId VARCHAR(200)  
     , IN toConversationId VARCHAR(200)  
     , IN content TEXT CHARACTER SET utf8mb4
 	, IN isSuccessfull BIT
@@ -19,6 +20,7 @@ CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_AddMessageLog`(
                 - errorMessage: error msg
         Revisions:
 				- 20190814@Quinn: First Commit
+                - 20191224@Oliver: Add ReferenceID Column -- RedmineID: #124743
         
     */
 )
@@ -28,6 +30,7 @@ BEGIN
 	SET currentTime = UTC_TIMESTAMP(3);
     
 	INSERT INTO ConversationMessageLog(
+        ReferenceID,
 		FromConversationID,
         ToConversationID,
         Content,
@@ -36,6 +39,7 @@ BEGIN
         ErrorMessage
     )
     VALUES(
+        referenceID,
 		fromConversationId,
         toConversationId,
         content,

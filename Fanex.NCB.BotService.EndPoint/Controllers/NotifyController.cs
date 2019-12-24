@@ -157,6 +157,7 @@
                 FromConversationId = conversationReference.Bot.Id,
                 ToConversationId = conversationReference.Conversation.Id,
                 Content = messageContent,
+                ReferenceId = result.NotificationId,
                 IsSuccessfull = result.ErrorCode == 0,
                 ErrorMessage = result.ErrorMessage
             };

@@ -4,6 +4,8 @@
 
     public class AddMessageLogCommand : BaseCommand
     {
+        public int ReferenceId { get; set; }
+
         public string FromConversationId { get; set; }
 
         public string ToConversationId { get; set; }
