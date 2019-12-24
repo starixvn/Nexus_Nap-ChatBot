@@ -25,16 +25,16 @@ BEGIN
         AND EXISTS (
 			SELECT 1
             FROM ConversationGroup conGroup
-				LEFT JOIN ConversationGroupBot conGroupBot ON conGroup.ConversationGroupID = conGroupBot.ConversationGroupID
+				INNER JOIN ConversationGroupBot conGroupBot ON conGroup.ConversationGroupID = conGroupBot.ConversationGroupID
 			WHERE conGroupBot.ConversationGroupID = groupID
         )
 	)
 	THEN
 		SET errCode = 101, errMsg = 'Invalid status mapping.';
 	ELSE
-		UPDATE ConversationGroup
-		SET IsActive = isActive, LastUpdate = UTC_TIMESTAMP(3)
-		WHERE ConversationGroupID = groupID;
+		UPDATE ConversationGroup conGroup
+		SET conGroup.IsActive = isActive, conGroup.LastUpdate = UTC_TIMESTAMP(3)
+		WHERE conGroup.ConversationGroupID = groupID;
 	END IF;
 END;
 
