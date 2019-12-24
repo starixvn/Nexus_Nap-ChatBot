@@ -16,7 +16,6 @@
         }
     }
 
-
     th {
         background-color: $table-header-bg;
         text-align: center;
@@ -30,7 +29,6 @@
 }
 
 tbody {
-
     tr:hover {
         cursor: pointer;
         background-color: $table-tr-hover !important;
@@ -65,8 +63,7 @@ tbody {
         background-color: #ff9913;
     }
 
-
-    .icon-delete:hover {
+    .icon-delete:not(.icon-disabled):hover {
         background-color: #fe3a3a;
     }
 

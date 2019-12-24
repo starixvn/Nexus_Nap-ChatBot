@@ -133,12 +133,14 @@ export class DataGrid extends Component {
                         <span className={CommonFunctions.getMappingClass(item.mappingStatusID)}>{item.mappingStatusName}</span>
                     </Cell>
                     <Cell className="text-center">
-                        <input
+                        <input id={index + startIndex}
+                            className="checkbox-custom"
                             type='checkbox'
                             checked={item.isActive}
                             disabled={!CommonFunctions.isBotRemoved(item.mappingStatusID) && !CommonFunctions.isMapped(item.mappingStatusID)}
                             onChange={() => this.changeActive(item)}
                         />
+                        <label htmlFor={index + startIndex}/>
                     </Cell>
                     <Cell>{item.remark}</Cell>
                     {

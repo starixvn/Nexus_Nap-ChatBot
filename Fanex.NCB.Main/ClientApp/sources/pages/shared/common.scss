@@ -1,10 +1,10 @@
 @import "variables";
 
 body {
-  font-family: $font-family;
-  font-size: $font-size;
-  padding: 12px;
-  color: $text-color;
+    font-family: $font-family;
+    font-size: $font-size;
+    padding: 12px;
+    color: $text-color;
 }
 
 .bold {
@@ -43,7 +43,7 @@ body {
     .breadcrumb-item + .breadcrumb-item {
         padding-left: 0;
     }
-   
+
     .breadcrumb-item + .breadcrumb-item:before {
         position: relative;
         top: -1px;
@@ -67,7 +67,6 @@ body {
 
 // Badges
 
-
 %badge {
     display: inline-block;
     line-height: 20px;
@@ -83,7 +82,7 @@ body {
 
 .badge-green {
     @extend %badge;
-    background-color: #05b15b;    
+    background-color: #05b15b;
 }
 
 .badge-outline-green {
@@ -112,6 +111,11 @@ body {
     background-color: #39434a;
 }
 
+.badge-green-dark {
+    @extend %badge;
+    background-color: #1F5C2F;
+}
+
 //markdown-rules
 
 .markdown-rules {
@@ -131,4 +135,59 @@ body {
 
 .icon-disabled {
     cursor: not-allowed;
+
+    &:before {
+        color: #b5b5b5 !important;
+    }
+}
+
+.checkbox-custom {
+    position: absolute; // take it out of document flow
+    opacity: 0; // hide it
+    & + label {
+        position: relative;
+        cursor: pointer;
+        padding: 0;
+        margin-bottom: 0;
+    }
+    // Box.
+    & + label:before {
+        content: '';
+        display: inline-block;
+        vertical-align: text-top;
+        width: 16px;
+        height: 16px;
+        border-radius: 2px;
+        background: white;
+        border: 2px solid #333;
+    }
+    // Box checked
+    &:checked + label:before {
+        background: #333;
+    }
+    // Checkmark. Could be replaced with an image
+    &:checked + label:after {
+        content: '';
+        position: absolute;
+        left: 6px;
+        top: 3px;
+        display: inline-block;
+        width: 5px;
+        height: 10px;
+        border-right: 2px solid #fff;
+        border-bottom: 2px solid #fff;
+        -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+
+    &:disabled + label:before {
+        border-color: #b5b5b5;
+        cursor: not-allowed;
+    }
+
+    &:checked:disabled + label:before {
+        background: #b5b5b5;
+    }
 }
