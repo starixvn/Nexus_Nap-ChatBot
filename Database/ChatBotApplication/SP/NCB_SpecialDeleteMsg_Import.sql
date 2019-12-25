@@ -65,19 +65,20 @@ NCB_SpecialDeleteMsg_Import:BEGIN
             MsgContentsType INT,
             Content_en TEXT, 
             Content_cs TEXT,
-            CheckMsg VARCHAR(1000) DEFAULT '',
+            CheckMsg TEXT,
             CheckMsgDetail TEXT,
             UNIQUE INDEX Index_MessageID(MessageID)
             );
     
     SET iLoop = 0;
     WHILE (JSON_EXTRACT(messageHeader, CONCAT('$[',iLoop, '].MessageID'))  IS NOT NULL) DO 
-		INSERT INTO tmp_MsgHeader(MessageID, MsgContentsType, Content_en, Content_cs)
+		INSERT INTO tmp_MsgHeader(MessageID, MsgContentsType, Content_en, Content_cs, CheckMsg)
         VALUES (
 			JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MessageID'))), 
             JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MsgContentsType'))),
             JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_en'))),
             JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_cs')))
+            , ''
 		);
         
         SET iLoop := iLoop + 1;

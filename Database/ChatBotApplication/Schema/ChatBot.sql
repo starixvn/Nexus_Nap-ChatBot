@@ -161,7 +161,7 @@
 	CREATE TABLE ChatBot.NotificationSystemMsg( 
 		  MessageID INT UNSIGNED NOT NULL
 		, NotificationID INT UNSIGNED NULL
-        , CheckMsg VARCHAR(1000) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NULL
+        , CheckMsg TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NULL
         , CreatedDate DATETIME NOT NULL
         , CONSTRAINT PK_MessageID  PRIMARY KEY (MessageID)
         , INDEX INDEX_NotificationID USING BTREE (NotificationID)
