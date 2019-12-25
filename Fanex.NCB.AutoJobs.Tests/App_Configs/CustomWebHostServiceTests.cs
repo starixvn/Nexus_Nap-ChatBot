@@ -1,9 +1,12 @@
 ﻿namespace Fanex.NCB.AutoJobs.Tests.App_Configs
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using Fanex.NCB.AutoJobs.App_Configs;
+    using Fanex.NCB.AutoJobs.Constants;
+    using Fanex.NCB.Core.Models;
     using Hangfire;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +18,7 @@
     public class CustomWebHostServiceTests
     {
         private ILogger logger;
-        private IOptionsMonitor<CronJob> cronJob;
+        private IOptionsMonitor<List<HangfireJobSetting>> jobSettings;
         private IRecurringJobManager recurringJob;
         private IWebHost host;
 
@@ -31,20 +34,21 @@
         private void SetupService(string methodName)
         {
             logger = Substitute.For<ILogger<CustomWebHostService>>();
-            cronJob = Substitute.For<IOptionsMonitor<CronJob>>();
-            var cron = new CronJob
+            jobSettings = Substitute.For<IOptionsMonitor<List<HangfireJobSetting>>>();
+
+            var settings = new List<HangfireJobSetting>
             {
-                SendNotification = "* * * * *",
-                SyncNapUserControlData = "* * * * *",
-                SyncOICData = "* * * * *",
-                MonitorSkypebot = "*/5 * * * 8",
-                PullTicketFromSpecialDelete = "*/1 * * * 8"
+                new HangfireJobSetting {JobName = HangfireJob.SendNotification, CronExpression = "* * * * *", IsEnabled = true},
+                new HangfireJobSetting {JobName = HangfireJob.SyncNapUserControlData, CronExpression = "* * * * *", IsEnabled = true},
+                new HangfireJobSetting {JobName = HangfireJob.SyncOICData, CronExpression = "* * * * *", IsEnabled = true},
+                new HangfireJobSetting {JobName = HangfireJob.PullTicketFromSpecialDelete, CronExpression = "* * * * *", IsEnabled = true},
+                new HangfireJobSetting {JobName = HangfireJob.MonitorSkypebot, CronExpression = "* * * * *", IsEnabled = true}
             };
-            cronJob.CurrentValue.Returns(cron);
+            jobSettings.CurrentValue.Returns(settings);
             recurringJob = Substitute.For<IRecurringJobManager>();
             host = Substitute.For<IWebHost>();
             host.Services.GetService<ILogger<CustomWebHostService>>().Returns(logger);
-            host.Services.GetService<IOptionsMonitor<CronJob>>().Returns(cronJob);
+            host.Services.GetService<IOptionsMonitor<List<HangfireJobSetting>>>().Returns(jobSettings);
             host.Services.GetService<IRecurringJobManager>().Returns(recurringJob);
             var type = typeof(CustomWebHostService);
             var instance = Activator.CreateInstance(type, host);

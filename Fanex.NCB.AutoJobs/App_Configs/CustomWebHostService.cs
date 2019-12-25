@@ -1,9 +1,12 @@
 ﻿namespace Fanex.NCB.AutoJobs.App_Configs
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
+    using Fanex.NCB.AutoJobs.Constants;
     using Fanex.NCB.AutoJobs.Services;
+    using Fanex.NCB.Core.Models;
     using Hangfire;
     using Hangfire.Storage;
     using Microsoft.AspNetCore.Hosting;
@@ -17,13 +20,13 @@
     public class CustomWebHostService : WebHostService
     {
         private readonly ILogger logger;
-        private readonly IOptionsMonitor<CronJob> cronJob;
+        private readonly IOptionsMonitor<List<HangfireJobSetting>> jobSettings;
         private readonly IRecurringJobManager recurringJob;
 
         public CustomWebHostService(IWebHost host) : base(host)
         {
             logger = host.Services.GetService<ILogger<CustomWebHostService>>();
-            cronJob = host.Services.GetService<IOptionsMonitor<CronJob>>();
+            jobSettings = host.Services.GetService<IOptionsMonitor<List<HangfireJobSetting>>>();
             recurringJob = host.Services.GetService<IRecurringJobManager>();
         }
 
@@ -45,23 +48,23 @@
         {
             recurringJob.AddOrUpdate<IJobService>(Resources.Job_ScanAndSendNotification,
                 job => job.AutoScanAndSendNotifictaion(),
-                cronJob.CurrentValue.SendNotification);
+                jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.SendNotification))?.CronExpression);
 
             recurringJob.AddOrUpdate<IJobService>(Resources.Job_SyncNapUserControlData,
                 job => job.SyncDataFromNapUserControl(),
-                cronJob.CurrentValue.SyncNapUserControlData);
+                jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.SyncNapUserControlData))?.CronExpression);
 
             recurringJob.AddOrUpdate<IJobService>(Resources.Job_SyncOICData,
                 job => job.SyncDataFromOIC(),
-                cronJob.CurrentValue.SyncOICData);
+                jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.SyncOICData))?.CronExpression);
 
             recurringJob.AddOrUpdate<IJobService>(Resources.MonitorChatbotService,
                 job => job.MonitorChatbot(),
-                cronJob.CurrentValue.MonitorSkypebot);
+                jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.MonitorSkypebot))?.CronExpression);
 
             recurringJob.AddOrUpdate<IJobService>(Resources.SpecialDeletePullTicket,
                 job => job.PullTicketFromSpecialDeleteAndCreateNotification(),
-                cronJob.CurrentValue.PullTicketFromSpecialDelete);
+                jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.PullTicketFromSpecialDelete))?.CronExpression);
         }
 
         private static void RemoveCurrentHangfireServer()

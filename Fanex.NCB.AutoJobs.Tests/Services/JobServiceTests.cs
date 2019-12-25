@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Logging;
+    using Fanex.NCB.AutoJobs.Constants;
     using Fanex.NCB.AutoJobs.Services.Implements;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Services.Interfaces;
@@ -19,6 +20,7 @@
         private ISyncDataService syncDataService;
         private IChatbotService chatbotService;
         private ISpecialDeleteTicketService specialDeleteTicketService;
+        private IOptionsMonitor<List<HangfireJobSetting>> jobSettings;
         private IOptionsSnapshot<MonitorChatbot> monitorOptions;
         private ILogger logger;
 
@@ -147,6 +149,7 @@
             chatbotService = Substitute.For<IChatbotService>();
             specialDeleteTicketService = Substitute.For<ISpecialDeleteTicketService>();
             monitorOptions = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
+            jobSettings = Substitute.For<IOptionsMonitor<List<HangfireJobSetting>>>();
             var option = new MonitorChatbot
             {
                 IsMonitoring = true,
@@ -157,9 +160,19 @@
                 Message = "",
                 ServiceUrl = "dsa"
             };
+            var settings = new List<HangfireJobSetting>
+            {
+                new HangfireJobSetting {JobName = HangfireJob.SendNotification, CronExpression = "* * * * *", IsEnabled = true},
+                new HangfireJobSetting {JobName = HangfireJob.SyncNapUserControlData, CronExpression = "* * * * *", IsEnabled = true},
+                new HangfireJobSetting {JobName = HangfireJob.SyncOICData, CronExpression = "* * * * *", IsEnabled = true},
+                new HangfireJobSetting {JobName = HangfireJob.PullTicketFromSpecialDelete, CronExpression = "* * * * *", IsEnabled = true},
+                new HangfireJobSetting {JobName = HangfireJob.MonitorSkypebot, CronExpression = "* * * * *", IsEnabled = true}
+            };
+            jobSettings.CurrentValue.Returns(settings);
             monitorOptions.Value.Returns(option);
             logger = Substitute.For<ILogger>();
-            return new JobService(sendNotificationService, syncDataService, chatbotService, specialDeleteTicketService, logger, monitorOptions);
+            return new JobService(sendNotificationService, syncDataService, chatbotService, specialDeleteTicketService,
+                logger, jobSettings, monitorOptions);
         }
 
         #endregion Helper

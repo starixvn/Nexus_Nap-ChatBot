@@ -2,10 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
+    using Fanex.NCB.AutoJobs.Constants;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
@@ -19,6 +21,7 @@
         private readonly IChatbotService chatbotService;
         private readonly ISpecialDeleteTicketService specialDeleteTicketService;
         private readonly ILogger logger;
+        private readonly IOptionsMonitor<List<HangfireJobSetting>> jobSettings;
         private readonly IOptionsSnapshot<MonitorChatbot> monitorOptions;
 
         public JobService(ISendNotificationService sendNotificationService,
@@ -26,6 +29,7 @@
             IChatbotService chatbotService,
             ISpecialDeleteTicketService specialDeleteTicketService,
             ILogger logger,
+            IOptionsMonitor<List<HangfireJobSetting>> jobSettings,
             IOptionsSnapshot<MonitorChatbot> monitorOptions)
         {
             this.sendNotificationService = sendNotificationService;
@@ -34,73 +38,91 @@
             this.specialDeleteTicketService = specialDeleteTicketService;
             this.monitorOptions = monitorOptions;
             this.logger = logger;
+            this.jobSettings = jobSettings;
         }
 
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         public async Task AutoScanAndSendNotifictaion()
         {
-            try
+            var configs = GetJobConfig(HangfireJob.SendNotification);
+            if (configs != null && configs.IsEnabled)
             {
-                await sendNotificationService.ScanAndSendNotification();
-            }
-            catch (Exception ex)
-            {
-                await Logging(ex);
-                throw;
+                try
+                {
+                    await sendNotificationService.ScanAndSendNotification();
+                }
+                catch (Exception ex)
+                {
+                    await Logging(ex);
+                    throw;
+                }
             }
         }
 
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         public async Task SyncDataFromNapUserControl()
         {
-            try
+            var configs = GetJobConfig(HangfireJob.SyncNapUserControlData);
+            if (configs != null && configs.IsEnabled)
             {
-                await syncDataService.NapUserControlSyncDataAsync();
-            }
-            catch (Exception ex)
-            {
-                await Logging(ex);
-                throw;
+                try
+                {
+                    await syncDataService.NapUserControlSyncDataAsync();
+                }
+                catch (Exception ex)
+                {
+                    await Logging(ex);
+                    throw;
+                }
             }
         }
 
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         public async Task SyncDataFromOIC()
         {
-            try
+            var configs = GetJobConfig(HangfireJob.SyncOICData);
+            if (configs != null && configs.IsEnabled)
             {
-                await syncDataService.OicSyncDataAsync();
-            }
-            catch (Exception ex)
-            {
-                await Logging(ex);
-                throw;
+                try
+                {
+                    await syncDataService.OicSyncDataAsync();
+                }
+                catch (Exception ex)
+                {
+                    await Logging(ex);
+                    throw;
+                }
             }
         }
 
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         public async Task PullTicketFromSpecialDeleteAndCreateNotification()
         {
-            try
+            var configs = GetJobConfig(HangfireJob.PullTicketFromSpecialDelete);
+            if (configs != null && configs.IsEnabled)
             {
-                await specialDeleteTicketService.PullTicketAndCreateNotification();
-            }
-            catch (Exception ex)
-            {
-                await chatbotService.NotifyToGroup(ex.Message);
-                await Logging(ex);
-                throw;
+                try
+                {
+                    await specialDeleteTicketService.PullTicketAndCreateNotification();
+                }
+                catch (Exception ex)
+                {
+                    await chatbotService.NotifyToGroup(ex.Message);
+                    await Logging(ex);
+                    throw;
+                }
             }
         }
 
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         public async Task MonitorChatbot()
         {
-            try
+            var configs = GetJobConfig(HangfireJob.MonitorSkypebot);
+            if (configs != null && configs.IsEnabled)
             {
-                var settings = monitorOptions.Value;
-                if (settings.IsMonitoring)
+                try
                 {
+                    var settings = monitorOptions.Value;
                     var notificationModel = new List<NotificationMessage>
                     {
                         new NotificationMessage {
@@ -121,11 +143,11 @@
                     };
                     await chatbotService.SendMessageToMultitpleAsync(notificationModel);
                 }
-            }
-            catch (Exception ex)
-            {
-                await Logging(ex);
-                throw;
+                catch (Exception ex)
+                {
+                    await Logging(ex);
+                    throw;
+                }
             }
         }
 
@@ -137,6 +159,11 @@
                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
                        .ToString();
             await logger.ErrorAsync(logMessage);
+        }
+
+        private HangfireJobSetting GetJobConfig(string jobName)
+        {
+            return jobSettings.CurrentValue.FirstOrDefault(job => job.JobName.Equals(jobName, StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }

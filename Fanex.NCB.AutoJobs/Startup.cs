@@ -121,8 +121,8 @@
             services.Configure<IdentifyModel>(Configuration.GetSection("HangfireAuthenticate"));
             services.Configure<MonitorChatbot>(Configuration.GetSection("MonitorChatbot"));
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<List<HangfireJobSetting>>(Configuration.GetSection("HangfireJobSettings"));
             services.Configure<BotSettings>(Configuration.GetSection("ChatBotConfigs"));
-            services.Configure<CronJob>(Configuration.GetSection("CronJob"));
             services.Configure<NotifyChatGroupOption>(Configuration.GetSection("NotifyChatGroupOptions"));
             services.AddSingleton(new UMClientConfiguration().Initialize(Configuration));
             services.AddTransient<ILogger, Logger>();
