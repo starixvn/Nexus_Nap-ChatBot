@@ -40,4 +40,19 @@ export default class CommonFunctions {
             div.remove();
         }, 1000);
     }
+
+    static debounce(func) {
+        let timeout;
+        return function () {
+            const context = this,
+                args = arguments;
+    
+            const later = function () {
+                func.apply(context, args);
+            };
+    
+            clearTimeout(timeout);
+            timeout = setTimeout(later, 500);
+        };
+    }
 }

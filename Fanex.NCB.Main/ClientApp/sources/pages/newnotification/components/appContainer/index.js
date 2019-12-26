@@ -21,6 +21,7 @@ import Site from '../../../lib/site';
 import ConfirmPopup from '../../../common/confirm-popup/ConfirmPopup';
 import ContentPreview from '../../../common/ContentPreview';
 import MarkdownRules from '../../../common/markdown-rules';
+import CommonFunction from '../../../common/common-functions/CommonFunctions';
 
 const SendModeOptions = [
     {
@@ -56,8 +57,12 @@ export class AppContainer extends React.Component {
                     finalTemplate: ''
                 },
                 params: []
-            }
+            },
+            searchValue: ''
         };
+
+        this.debounceHandleSearchRecipents = CommonFunction.debounce(this.handleSearchRecipents);
+        this.searchRecipients = [];
     }
 
     componentDidMount() {
@@ -269,6 +274,49 @@ export class AppContainer extends React.Component {
         );
     }
 
+    onChangeSearch = value => {
+        this.setState({ searchValue: value }, () => {
+            if (this.props.recipientOptions) {
+                this.debounceHandleSearchRecipents(value);
+            }
+        });
+    }
+
+    handleSearchRecipents = value => {
+        let recipients = value.split(/[,;]/);
+        this.searchRecipients = [];
+        let validRecipients = recipients.filter(recipient => this.isValidSearchRecipients(recipient, this.props.recipientOptions[0]));
+        while (validRecipients.length > 0) {
+            const recipient = validRecipients.shift();
+            const index = recipients.indexOf(recipient);
+            recipients.splice(index, 1);
+        }
+
+        const formik = this.refs.form;
+        const updateValues = [...formik.state.values.recipients,...this.searchRecipients];
+        formik.setFieldValue('recipients', updateValues);
+        this.setState({ searchValue: recipients.join(',') });
+    }
+
+    isValidSearchRecipients = (label, recipient) => {
+        if (recipient.title === label) {
+            this.searchRecipients.push({
+                label: label,
+                value: recipient.value
+            });
+
+            return true;
+        }
+        else {
+            if (recipient.children) {
+                let children = recipient.children.map(child => this.isValidSearchRecipients(label, child));
+                if (children.includes(true)) {
+                    return true;
+                }
+            }
+        }
+    }
+
     renderForm = ({
         values,
         errors,
@@ -313,7 +361,7 @@ export class AppContainer extends React.Component {
                     <div>
                         <TreeSelect value={values.recipients} onChange={this.handleRecipientChange} placeholder={Labels.PleaseSelect}
                             treeData={this.props.recipientOptions} className={touched.recipients && errors.recipients && invalidFieldClass}
-                            treeDefaultExpandAll
+                            onSearch={this.onChangeSearch} searchValue={this.state.searchValue} treeDefaultExpandAll
                         />
                         {touched.recipients && errors.recipients && <FormFeedback>{errors.recipients}</FormFeedback>}
                     </div>
