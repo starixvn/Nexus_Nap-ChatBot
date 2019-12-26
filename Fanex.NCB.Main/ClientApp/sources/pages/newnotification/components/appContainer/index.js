@@ -168,6 +168,7 @@ export class AppContainer extends React.Component {
             title: '',
             content: ''
         });
+        this.setState({ searchValue: '' });
     }
 
     handleTemplateChange = event => {
