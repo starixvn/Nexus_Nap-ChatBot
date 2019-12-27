@@ -4,6 +4,8 @@
     {
         public int GroupID { get; set; }
 
+        public int UserID { get; set; }
+
         public bool IsActive { get; set; }
     }
 }

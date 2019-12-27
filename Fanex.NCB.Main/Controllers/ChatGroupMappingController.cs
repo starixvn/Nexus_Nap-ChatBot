@@ -102,6 +102,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.ChatGroupMapping, Policy = Policy.Host)]
         public async Task<IActionResult> UpdateActive([FromBody]UpdateActiveConversationGroup model)
         {
+            model.UserID = napSession.UserId;
             return Json(await chatGroupMappingService.UpdateActiveAsync(model));
         }
     }

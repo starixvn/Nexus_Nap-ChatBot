@@ -59,6 +59,7 @@
             var command = new UpdateActiveConverstionGroupCommand
             {
                 GroupID = model.GroupID,
+                UserID = model.UserID,
                 IsActive = model.IsActive
             };
 

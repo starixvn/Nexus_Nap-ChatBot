@@ -6,6 +6,8 @@
     {
         public int GroupID { get; set; }
 
+        public int UserID { get; set; }
+
         public bool IsActive { get; set; }
 
         public override string GetSettingKey() => "NCB_ChatGroupMapping_ActiveGroup_Upd";
