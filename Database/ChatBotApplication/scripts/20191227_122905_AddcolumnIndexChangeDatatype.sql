@@ -12,4 +12,4 @@ ALTER TABLE ConversationMessageLog ADD COLUMN ReferenceID INT NULL;
 ALTER TABLE ConversationMessageLog ADD INDEX INDEX_ReferenceID USING BTREE (ReferenceID);
 
 #Step 4: Change data type of column UserLog_RunSP.LogContent
-ALTER TABLE UserLog_RunSP CHANGE COLUMN LogContent LogContent MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NOT NULL;
+ALTER TABLE UserLog_RunSP CHANGE COLUMN LogContent LogContent LONGTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NOT NULL;

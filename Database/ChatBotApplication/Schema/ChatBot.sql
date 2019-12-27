@@ -238,7 +238,7 @@
 			, ReferenceID INT
 			, ActionID SMALLINT  NOT NULL
 			, UserID INT NOT NULL
-			, LogContent MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NOT NULL
+			, LogContent LONGTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'  NOT NULL
 			, Duration INT NOT NULL
 			, CONSTRAINT PK_LogID PRIMARY KEY (LogID)
 			, INDEX INDEX_LogTime USING BTREE (LogTime)
