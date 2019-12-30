@@ -69,6 +69,15 @@ namespace Fanex.NCB.SkypeBot.Controllers
             return Json(result);
         }
 
+        [HttpGet]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
+        public async Task<IActionResult> GetAllErrorNotifications()
+        {
+            var result = await notificationService.GetAllErrorNotificationsAsync().ConfigureAwait(false);
+
+            return Json(result);
+        }
+
         [HttpPost]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Cancel(int notificationId)

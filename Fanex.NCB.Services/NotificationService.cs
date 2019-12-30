@@ -221,7 +221,12 @@
             }).ConfigureAwait(false);
         }
 
-        private void BackgroundJobAfterCreateNotification(int notificationId, bool isCreatNotification)
+        public async Task<IEnumerable<Notification>> GetAllErrorNotificationsAsync()
+        {
+            return await baseService.GetDataAsync<Notification>(new GetAllErrorNotificationsCriteria()).ConfigureAwait(false);
+        }
+
+	private void BackgroundJobAfterCreateNotification(int notificationId, bool isCreatNotification)
         {
             Task.Run(() => sendNotificationService.SendNotificationImmediately(notificationId).ContinueWith(result =>
             isCreatNotification ? signalRService.InsertNewNotification(notificationId.ToString()) :

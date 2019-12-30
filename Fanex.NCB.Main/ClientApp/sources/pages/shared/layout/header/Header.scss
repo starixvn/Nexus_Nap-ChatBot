@@ -80,7 +80,6 @@
 
     li {
         float: left;
-        margin-left: 36px;
     }
 }
 
@@ -185,7 +184,7 @@
     border-radius: 50%;
     background-color: #066896;
 
-    .icon-username:before {
+    .icon:before {
         color: #fff;
     }
 }
@@ -202,7 +201,9 @@
         cursor: pointer;
         text-decoration: none;
     }
+}
 
+.dropdown:not(.no-caret) > a {
     &:after {
         margin-left: 10px;
         font-family: 'nap-chatbot', sans-serif !important;
@@ -238,5 +239,25 @@
 
     [class^="icon"] {
         margin-right: 10px;
+    }
+}
+
+.no-caret {
+    a {
+        height: 32px;
+    }
+}
+
+.badge-notification {
+    position: absolute;
+    top: 0;
+}
+
+.notification-item {
+    padding-bottom: 8px;
+    padding-top: 8px;
+
+    * {
+        margin: 0;
     }
 }
