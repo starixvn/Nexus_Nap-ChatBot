@@ -13,6 +13,7 @@ VALUES (1, 'Special Delete Site - Job Sync Status (Running/Done)','Done')
   ,  {"MsgContentsType":104, "NotificationTypeID":15, "NotificationTemplateID":14, "IsTest":1}
   ,  {"MsgContentsType":105, "NotificationTypeID":15, "NotificationTemplateID":14, "IsTest":1}
   ,  {"MsgContentsType":106, "NotificationTypeID":15, "NotificationTemplateID":14, "IsTest":1}
+  ,  {"MsgContentsType":199, "NotificationTypeID":15, "NotificationTemplateID":14, "IsTest":1}
   ,  {"MsgContentsType":102, "NotificationTypeID":16, "NotificationTemplateID":15, "IsTest":1}
   ,  {"MsgContentsType":103, "NotificationTypeID":17, "NotificationTemplateID":16, "IsTest":1}
   ,  {"MsgContentsType":107, "NotificationTypeID":18, "NotificationTemplateID":17, "IsTest":1}
