@@ -41,6 +41,10 @@ export default class CommonFunctions {
         }, 1000);
     }
 
+    static convertJsonTime2String(value) {
+        return value.replace('T', ' at ');
+    }
+    
     static debounce(func) {
         let timeout;
         return function () {

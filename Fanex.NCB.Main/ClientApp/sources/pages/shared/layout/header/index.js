@@ -35,7 +35,6 @@ export default class Header extends React.PureComponent {
 
     componentDidMount = () => {
         axios(Site.resolveClientUrl('NotificationList/GetAllErrorNotifications')).then(res => {
-            console.log(res)
             if (res.data) {
                 this.setState({ notifications: res.data });
             }
@@ -73,11 +72,7 @@ export default class Header extends React.PureComponent {
                             <DropdownMenu right={true}>
 								{
 									this.state.notifications.length > 0 ? this.state.notifications.map((notification, index) => <DropdownItem key={index}>
-                                        <NotificationItem
-                                            title={notification.title}
-                                            content={notification.content}
-                                            configSendTime={notification.configSendTime}
-                                        />
+                                        <NotificationItem notification={notification} />
 									</DropdownItem>) : <DropdownItem disabled>No notifications</DropdownItem>
 								}
                             </DropdownMenu>

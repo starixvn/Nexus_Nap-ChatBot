@@ -12,7 +12,6 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_GetErrNotific
 )
 BEGIN
 	DECLARE SENT_STATUSID_ERROR TINYINT UNSIGNED DEFAULT 2;
-    DECLARE SENT_STATUSID_RESOLVED TINYINT UNSIGNED DEFAULT 5;
     
 	SELECT
         n.NotificationID
@@ -28,12 +27,10 @@ BEGIN
     FROM Notification n
     INNER JOIN NotificationType nt ON n.NotificationTypeID = nt.NotificationTypeID
     INNER JOIN Customer c on n.CreatorID = c.custid
-    WHERE StatusID = SENT_STATUSID_ERROR OR StatusID = SENT_STATUSID_RESOLVED;
+    WHERE StatusID = SENT_STATUSID_ERROR;
 END;
 
 //
 DELIMITER ;
 
 GRANT EXECUTE ON PROCEDURE NCB_NotificationList_GetErrNotifications_Sel TO 'ncb.admin'@'%';
-
-call NCB_NotificationList_GetErrNotifications_Sel()

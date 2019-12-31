@@ -43,6 +43,16 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
+        public IActionResult Focus(int hightLightId)
+        {
+            ViewBag.HaveEditNotificationPermission = userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotifiactionList, Policy.Host);
+            ViewBag.HightLightId = hightLightId;
+
+            return View("~/Views/SkypeBot/NotificationList/Index.cshtml");
+        }
+
+        [HttpGet]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
         public async Task<IActionResult> Get(GetNotificationViewModel filter)
         {
             var result = await notificationService.GetNotificationsAsync(new GetNotifications

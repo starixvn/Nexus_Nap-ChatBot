@@ -1,4 +1,6 @@
 import React from 'react';
+import Site from '../../../lib/site';
+import CommonFunctions from '../../../common/common-functions/CommonFunctions';
 
 export default class NotificationItem extends React.PureComponent {
     constructor(props) {
@@ -6,15 +8,15 @@ export default class NotificationItem extends React.PureComponent {
     }
 
     render() {
-        return (<div className='notification-item' onClick={() => console.log(this.props)}>
-            <div>
-                {this.props.title}
+        return (<div className='notification-item' onClick={() => window.location.assign(Site.resolveClientUrl(`NotificationList/Focus?hightLightId=${this.props.notification.notificationId}`))}>
+            <div className='notification-title'>
+                {this.props.notification.title}
             </div>
-            <div>
-                {this.props.content}
+            <div className='notification-content'>
+                {this.props.notification.content}
             </div>
-            <div>
-                {this.props.configSendTime}
+            <div className='notification-time'>
+                {CommonFunctions.convertJsonTime2String(this.props.notification.configSendTime)}
             </div>
         </div>);
     }
