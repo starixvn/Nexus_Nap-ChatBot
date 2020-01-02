@@ -292,8 +292,9 @@ NCB_SpecialDeleteMsg_Import:BEGIN
          SELECT DISTINCT ct.NotificationTypeID
 						, NULL ProductID
                         , ct.TemplateTitle Title
-						, REPLACE(REPLACE(ct.TemplateContent, '{EN Announcement}', h.Content_en )
-												, '{CN Announcement}', h.Content_cs) Content
+						, REPLACE(REPLACE(REPLACE(ct.TemplateContent, '{EN Announcement}', h.Content_en )
+												, '{CN Announcement}', h.Content_cs) 
+                                                , '@@', '') Content
                         , startTime ConfigSendTime
                         , 0 SendImmediately
                         , STARIXIT_CUSTID CreatorID
