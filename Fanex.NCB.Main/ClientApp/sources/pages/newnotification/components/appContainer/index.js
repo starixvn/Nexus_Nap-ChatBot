@@ -300,7 +300,7 @@ export class AppContainer extends React.Component {
     }
 
     isValidSearchRecipients = (label, recipient) => {
-        if (recipient.title === label) {
+        if (recipient.title.toUpperCase() === label.toUpperCase()) {
             this.searchRecipients.push({
                 label: label,
                 value: recipient.value
