@@ -16,6 +16,24 @@ export default class DataGrid extends PureComponent {
         };
 
         this.panels = [];
+        this.hightLightId = document.getElementById('hight-light-id').value;
+    }
+
+    componentDidMount = () => {
+        let notifications = document.getElementsByClassName('notification');
+        let indexOfHightLight = this.getIndexOfHightLight(notifications);
+        let clientHeight = notifications[indexOfHightLight === 0 ? 0 : 1].clientHeight
+        // if (clientHeight * indexOfHightLight > document.getElementsByClassName('body-content')[0].clientHeight) {
+            console.log(clientHeight * indexOfHightLight,document.getElementsByClassName('body-content')[0].scrollTop)
+        // }
+    }
+
+    getIndexOfHightLight(items) {
+        for (let index = 0; index < items.length; index++) {
+            if (items[index].classList.value.includes('hight-light-notification')) {
+                return index;
+            }
+        }
     }
 
     toggleExpandPanels = () => {
@@ -108,7 +126,7 @@ export default class DataGrid extends PureComponent {
 
     renderRow = (item, index, isHost) => {
         return (
-            <Row key={item.notificationId} >
+            <Row className={this.hightLightId && !isNaN(this.hightLightId) && (parseInt(this.hightLightId) === item.notificationId) ?'hight-light-notification notification' : 'notification'} key={item.notificationId} >
                 <Cell className="col-order text-center">
                     {this.renderNotificationId(item.notificationId, item.messageID)}
                 </Cell>
