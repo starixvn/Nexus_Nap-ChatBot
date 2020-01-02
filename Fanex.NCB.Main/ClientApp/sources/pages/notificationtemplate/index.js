@@ -21,6 +21,7 @@ const store = Store.createStore(reducer, {
     createTemplateResult: null,
     editTemplateResult: null,
     deleteTemplateResult: null,
+    setEditTemplateResult: null,
     markdownRulesPopup: {
         show: false
     }

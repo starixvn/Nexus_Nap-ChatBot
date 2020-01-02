@@ -123,7 +123,10 @@ class EditNotificationTemplate extends Component {
         });
     }
 
-    handleClose = () => this.props.setEditTemplatePopup({ show: false });
+    handleClose = () => {
+        this.props.setEditTemplateResult(null);
+        this.props.setEditTemplatePopup({ show: false });
+    }
 
     render() {
         return (
@@ -151,7 +154,8 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({
         editTemplate: ActionCreators.editTemplate,
         setEditTemplatePopup: ActionCreators.setEditTemplatePopup,
-        openMarkdownRulesPopup: ActionCreators.openMarkdownRulesPopup
+        openMarkdownRulesPopup: ActionCreators.openMarkdownRulesPopup,
+        setEditTemplateResult: ActionCreators.setEditTemplateResult
     }, dispatch);
 };
 
