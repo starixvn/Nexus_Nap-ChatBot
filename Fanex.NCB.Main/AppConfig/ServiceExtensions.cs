@@ -32,6 +32,8 @@
             services.AddSingleton<IUMRestClient, UMRestClient>();
             services.AddSingleton<IHttpContextHelper, HttpContextHelper>();
             services.AddSingleton<IMaintenanceService, MaintenanceService>();
+            services.AddSingleton<ISignalRService, SignalRService>();
+            services.AddSingleton<SignalRService>();
         }
 
         public static void RegisterRepositories(this IServiceCollection services)

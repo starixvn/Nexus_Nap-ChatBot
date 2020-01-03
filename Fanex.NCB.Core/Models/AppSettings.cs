@@ -7,5 +7,11 @@
         public int ItemEachBatchSendNotification { get; set; }
 
         public int DelayTimeEachBatch { get; set; }
+
+        public string AppCredentialId { get; set; }
+
+        public string AppCredentialPassword { get; set; }
+
+        public string SecretKey { get; set; }
     }
 }

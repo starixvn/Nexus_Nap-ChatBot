@@ -19,6 +19,7 @@
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Main.AppConfig;
     using Fanex.NCB.NAPResolver;
+    using Fanex.NCB.Services;
     using Fanex.NCB.Shared.Middlewares;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
@@ -128,6 +129,7 @@
 
             services.RegisterServices();
             services.RegisterRepositories();
+            services.AddSignalR();
         }
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -155,6 +157,10 @@
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Auth}/{action=Index}/{id?}");
+            });
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<SignalRService>("/signalR");
             });
 
             NapClientManager

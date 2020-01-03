@@ -41,6 +41,7 @@
     using ONEbook.UM.Helpers;
     using ONEbook.UM.Services;
     using ONEbook.UM.Transport;
+    using RestSharp;
     using Sentry;
 
     public class Startup
@@ -122,6 +123,7 @@
             services.Configure<IdentifyModel>(Configuration.GetSection("HangfireAuthenticate"));
             services.Configure<MonitorChatbot>(Configuration.GetSection("MonitorChatbot"));
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<SignalRSettings>(Configuration.GetSection("SignalRSettings"));
             services.Configure<List<HangfireJobSetting>>(Configuration.GetSection("HangfireJobSettings"));
             services.Configure<BotSettings>(Configuration.GetSection("ChatBotConfigs"));
             services.Configure<NotifyChatGroupOption>(Configuration.GetSection("NotifyChatGroupOptions"));
@@ -190,6 +192,8 @@
             services.AddScoped<ISyncDataService, SyncDataService>();
             services.AddScoped<ISpecialDeleteService, SpecialDeleteService>();
             services.AddScoped<IJobService, JobService>();
+            services.AddScoped<IPushNotifyService, PushNotifyService>();
+            services.AddScoped<IRestClient, RestClient>();
             services.AddTransient<IRecurringJobManager, RecurringJobManager>();
         }
 

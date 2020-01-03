@@ -15,6 +15,7 @@ import TreeSelect, { getRealValuesFromCollection } from '../../common/TreeSelect
 import errorResponseHandler from '../../lib/errorResponseHandler';
 import Site from '../../lib/site';
 import DataGrid from './DataGrid';
+import SignalR from './UpdateNotifictaionStatus';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 
 export default class NotificationList extends Component {
@@ -242,7 +243,7 @@ export default class NotificationList extends Component {
         return (
             <div>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification List" />
-
+                <SignalR />
                 <Form className="form-filter" onSubmit={this.handleSearch} >
                     <FormGroup>
                         <Label className="form-label">Notification Type</Label>
