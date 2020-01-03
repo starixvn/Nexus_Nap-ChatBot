@@ -30,7 +30,7 @@
             IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
         {
             this.baseService = baseService;
-            this.pushSignalService = pushSignalService;
+            this.pushSignalService = pushSignalService;           
             this.chatbotService = chatbotService;
             this.jobSettings = jobSettings;
         }
@@ -67,6 +67,8 @@
                     await chatbotService.SendMessageToMultitpleAsync(notifications);
                 }
             }
+
+            await sendNotificationService.ScanAndSendNotification();
         }
 
         private async Task<ValueTuple<CommandResult, IEnumerable<NotificationMessage>>> ImportMessageToChatbotDB(
