@@ -28,9 +28,9 @@
                 restClient.BaseUrl = new Uri(signalRSettings.Value.DomainURL);
 
                 var request = new RestRequest(signalRSettings.Value.UpdateNotificationStatusURL, Method.POST);
-                request.AddHeader("Authorization", $"{token?.TokenType} {token?.AccessToken}");
-                request.AddHeader("content-type", "application/x-www-form-urlencoded");
+                request.AddHeader("Authorization", $"{token?.TokenType ?? "Bearer"} {token?.AccessToken}");
                 request.AddParameter("notificationIds", notificationIds);
+                request.AddHeader("content-type", "application/x-www-form-urlencoded");
 
                 await restClient.ExecutePostTaskAsync(request);
             }
