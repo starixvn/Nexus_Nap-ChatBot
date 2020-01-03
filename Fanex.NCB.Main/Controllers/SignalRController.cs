@@ -7,31 +7,36 @@
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Services.Interfaces;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Options;
     using Microsoft.IdentityModel.Tokens;
 
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class SignalRController : ControllerBase
     {
-        private readonly AppSettings appSettings;
+        private readonly IOptionsSnapshot<AppSettings> appSettings;
         private readonly ISignalRService signalRService;
         private readonly string invalidUsernameOrPasswordText = "Username or password is incorrect";
 
-        public SignalRController(AppSettings appSettings, ISignalRService signalRService)
+        public SignalRController(IOptionsSnapshot<AppSettings> appSettings, ISignalRService signalRService)
         {
             this.appSettings = appSettings;
             this.signalRService = signalRService;
         }
 
-        [AllowAnonymous]
         [HttpPost]
+        [Route("api/signalr/auth")]
+        [AllowAnonymous]
+        [IgnoreAntiforgeryToken]
         public ObjectResult Authenticate(string username, string password)
         {
             var token = string.Empty;
             if (IsValidCredential(username, password))
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(appSettings.SecretKey);
+                var key = Encoding.ASCII.GetBytes(appSettings.Value.SecretKey);
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new[] {
@@ -53,12 +58,15 @@
 
         private bool IsValidCredential(string username, string password)
         {
-            return username.Equals(appSettings.AppCredentialId, StringComparison.InvariantCultureIgnoreCase)
-                && password.Equals(appSettings.AppCredentialPassword, StringComparison.InvariantCultureIgnoreCase);
+            return !string.IsNullOrWhiteSpace(username)
+                && !string.IsNullOrWhiteSpace(password)
+                && username.Equals(appSettings.Value.AppCredentialId, StringComparison.InvariantCultureIgnoreCase)
+                && password.Equals(appSettings.Value.AppCredentialPassword, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        [Authorize]
         [HttpPost]
+        [IgnoreAntiforgeryToken]
+        [Route("api/signalr/UpdateNoti")]
         public async Task<ObjectResult> PushSignalUpdateNotificationStatus(string notificationIds)
         {
             await signalRService.UpdateNotificationStatus(notificationIds);

@@ -98,6 +98,7 @@
                     return Task.CompletedTask;
                 };
             });
+
             services.AddMvc(options =>
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
@@ -121,6 +122,8 @@
                 options.IdleTimeout = TimeSpan.FromMinutes(int.Parse(Configuration.GetSection("AuthSettings:SessionTimeOut").Value));
                 options.Cookie.Name = "Fanex.NCB.Session";
             });
+
+            services.RegisterJWTAuthenticate(Configuration);
 
             services.AddNapServices(Configuration);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

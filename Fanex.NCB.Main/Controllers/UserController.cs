@@ -10,9 +10,10 @@
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.NAPResolver.Attributes;
+    using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
 
-    [NapChatBotSuperAuth]
+    [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class UserController : Controller
     {
         private readonly ISiteService siteService;

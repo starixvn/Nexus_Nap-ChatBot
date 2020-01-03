@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Main.Controllers
 {
+    using System.Threading.Tasks;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Main.ViewModel.Notification;
@@ -7,11 +8,11 @@
     using Fanex.NCB.Models.Notification;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
+    using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
-    using System.Threading.Tasks;
     using static Fanex.NAP.Core.Business.Constant;
 
-    [NapChatBotSuperAuth]
+    [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class EditNotificationController : Controller
     {
         private readonly INotificationService notificationService;

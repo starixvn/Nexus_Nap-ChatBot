@@ -9,10 +9,11 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using Fanex.NCB.Models.ChatGroupMapping;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
+    using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
     using static Fanex.NAP.Core.Business.Constant;
 
-    [NapChatBotSuperAuth]
+    [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class ChatGroupMappingController : Controller
     {
         private readonly IChatGroupMappingService chatGroupMappingService;

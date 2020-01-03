@@ -4,9 +4,10 @@
     using Fanex.NCB.Main.ViewModel.TreeSelect;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
+    using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
 
-    [NapChatBotSuperAuth]
+    [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class CommonController : Controller
     {
         private readonly ICommonService commonService;

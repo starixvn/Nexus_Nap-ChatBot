@@ -10,10 +10,11 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using Fanex.NCB.Models.NotificationTemplate;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
+    using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
     using static Fanex.NAP.Core.Business.Constant;
 
-    [NapChatBotSuperAuth]
+    [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class NotificationTemplateController : Controller
     {
         private readonly INotificationTemplaceService notificationTemplaceService;
