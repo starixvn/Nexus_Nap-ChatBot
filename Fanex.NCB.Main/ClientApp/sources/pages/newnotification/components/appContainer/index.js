@@ -284,8 +284,13 @@ export class AppContainer extends React.Component {
     }
 
     handleSearchRecipents = value => {
-        let recipients = value.replace(/\s*[,;]\s*|[\r\t\n]+|\r\n|( )( )+/g, ',').replace(/,{2,}/, ',');
+        let recipients = value.replace(/[,;\t]+/g, ',');
         recipients = recipients.split(',').map(recipient => recipient.trim());
+        while (recipients.includes('')) {
+            const index = recipients.indexOf('');
+            recipients.splice(index, 1);
+        }
+        
         this.searchRecipients = [];
         let validRecipients = recipients.filter(recipient => this.isValidSearchRecipients(recipient, this.props.recipientOptions[0]));
         while (validRecipients.length > 0) {
@@ -297,14 +302,6 @@ export class AppContainer extends React.Component {
         const formik = this.refs.form;
         const updateValues = [...formik.state.values.recipients,...this.searchRecipients];
         formik.setFieldValue('recipients', updateValues);
-        if (recipients[0] === '') {
-            recipients.splice(0, 1);
-        }
-
-        if (recipients[recipients.length - 1] === '') {
-            recipients.splice(recipients.length - 1, 1);
-        }
-
         this.setState({ searchValue: recipients.join(',') });
     }
 
