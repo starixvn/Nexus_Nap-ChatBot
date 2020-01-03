@@ -16,12 +16,15 @@
     {
         private readonly IBaseService baseService;
         private readonly IChatbotService chatbotService;
+        private readonly ISendNotificationService sendNotificationService;
 
         public SpecialDeleteTicketService(IBaseService baseService,
-            IChatbotService chatbotService)
+            IChatbotService chatbotService,
+            ISendNotificationService sendNotificationService)
         {
             this.baseService = baseService;
             this.chatbotService = chatbotService;
+            this.sendNotificationService = sendNotificationService;
         }
 
         public async Task PullTicketAndCreateNotification()
@@ -53,6 +56,8 @@
                     await chatbotService.SendMessageToMultitpleAsync(notifications);
                 }
             }
+
+            await sendNotificationService.ScanAndSendNotification();
         }
 
         private async Task<ValueTuple<CommandResult, IEnumerable<NotificationMessage>>> ImportMessageToChatbotDB(

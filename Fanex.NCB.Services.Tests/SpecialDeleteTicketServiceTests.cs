@@ -16,6 +16,7 @@
     {
         private IBaseService baseService;
         private IChatbotService chatbotService;
+        private ISendNotificationService sendNotificationService;
 
         [Fact]
         public async Task PullTicketAndCreateNotification_WhenGetSettingIsNull_DoNothing()
@@ -86,7 +87,8 @@
         {
             baseService = Substitute.For<IBaseService>();
             chatbotService = Substitute.For<IChatbotService>();
-            return new SpecialDeleteTicketService(baseService, chatbotService);
+            sendNotificationService = Substitute.For<ISendNotificationService>();
+            return new SpecialDeleteTicketService(baseService, chatbotService, sendNotificationService);
         }
     }
 }
