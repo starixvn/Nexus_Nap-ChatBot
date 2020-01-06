@@ -129,10 +129,19 @@
             }
             catch (Exception exception)
             {
-                result.ErrorCode = 1;
-                result.ErrorMessage = exception.Message;
-
                 await WriteLog(exception);
+
+                try
+                {
+                    await SendMessage(appId, conversationReference, message);
+                }
+                catch (Exception ex)
+                {
+                    result.ErrorCode = 1;
+                    result.ErrorMessage = ex.Message;
+
+                    await WriteLog(ex);
+                }
             }
 
             result.SentTime = DateTime.UtcNow;
