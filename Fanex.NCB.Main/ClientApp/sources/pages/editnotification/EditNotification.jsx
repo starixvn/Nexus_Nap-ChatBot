@@ -18,6 +18,7 @@ import ConfirmPopup from '../common/confirm-popup/ConfirmPopup';
 import errorResponseHandler from '../lib/errorResponseHandler';
 import ContentPreview from '../common/ContentPreview';
 import MarkdownRules from '../common/markdown-rules';
+import CommonFunction from '../common/common-functions/CommonFunctions';
 
 const SendModeOptions = [
     {
@@ -46,8 +47,13 @@ export default class EditNotification extends React.Component {
             },
             markdownRulesPopup: {
                 isOpen: false
-            }
+            },
+            searchValue: ''
         };
+
+        this.debounceHandleSearchRecipents = CommonFunction.debounce(this.handleSearchRecipents);
+        this.searchRecipients = [];
+        this.allCheckedNodes = [];
     }
 
     componentDidMount() {
@@ -211,6 +217,54 @@ export default class EditNotification extends React.Component {
 
     handleCloseMarkdownRulesPopup = () => this.setState({ markdownRulesPopup: { isOpen: false } })
 
+    onChangeSearch = value => {
+        this.setState({ searchValue: value }, () => {
+            if (this.state.recipientOptions) {
+                this.debounceHandleSearchRecipents(value);
+            }
+        });
+    }
+
+    handleSearchRecipents = value => {
+        let recipients = value.replace(/[,;\t]+/g, ',');
+        recipients = recipients.split(',').map(recipient => recipient.trim());
+        while (recipients.includes('')) {
+            const index = recipients.indexOf('');
+            recipients.splice(index, 1);
+        }
+        
+        this.searchRecipients = [];
+        this.allCheckedNodes = [];
+        let validRecipients = recipients.filter(recipient => this.isValidSearchRecipients(recipient, this.state.recipientOptions[0]));
+        while (validRecipients.length > 0) {
+            const recipient = validRecipients.shift();
+            const index = recipients.indexOf(recipient);
+            recipients.splice(index, 1);
+        }
+
+        const formik = this.refs.form;
+        const updateValues = [...formik.state.values.recipients.value,...this.searchRecipients];
+        const updateAllCheckNodes = [...formik.state.values.recipients.allCheckedNodes,...this.allCheckedNodes];
+        formik.setFieldValue('recipients', { value: updateValues, allCheckedNodes: updateAllCheckNodes});
+        this.setState({ searchValue: recipients.join(',') });
+    }
+
+    isValidSearchRecipients = (label, recipient) => {
+        if (recipient.title.toUpperCase() === label.toUpperCase()) {
+            this.searchRecipients.push(recipient.value);
+            this.allCheckedNodes.push({ realValue: recipient.realValue });
+            return true;
+        }
+        else {
+            if (recipient.children) {
+                let children = recipient.children.map(child => this.isValidSearchRecipients(label, child));
+                if (children.includes(true)) {
+                    return true;
+                }
+            }
+        }
+    }
+
     renderForm = ({
         values,
         errors,
@@ -259,7 +313,7 @@ export default class EditNotification extends React.Component {
                     <Col sm={10}>
                         <TreeSelect value={values.recipients.value} onChange={this.handleRecipientChange} placeholder={Labels.PleaseSelect}
                             treeData={this.state.recipientOptions} className={isRecipientInvalid && invalidFieldClass}
-                            labelInValue={false}
+                            labelInValue={false} onSearch={this.onChangeSearch} searchValue={this.state.searchValue}
                         />
                         {isRecipientInvalid && <FormFeedback>{errors.recipients.value}</FormFeedback>}
                     </Col>
