@@ -34,6 +34,9 @@
   <ItemGroup>
     <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Bot.Configuration" Version="4.7.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
     <PackageReference Include="RestSharp" Version="106.5.4" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">
@@ -86,9 +89,6 @@
     <Compile Include="BotServiceDI.cs">
       <SonarQubeExclude>true</SonarQubeExclude>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Dependency\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Bot.Builder">
