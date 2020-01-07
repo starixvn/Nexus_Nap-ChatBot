@@ -201,7 +201,12 @@
         private static void RegisterHangfire(IServiceCollection services, string connectionString)
         {
             var connection = Cryptography.DecryptConnectionString(connectionString);
-            services.AddHangfire(x => x.UseStorage(new MySqlStorage(connection)));
+            services.AddHangfire(x => x.UseStorage(
+                new MySqlStorage(connection, new MySqlStorageOptions
+                {
+                    QueuePollInterval = TimeSpan.FromSeconds(1)
+                })
+                ));
         }
     }
 }
