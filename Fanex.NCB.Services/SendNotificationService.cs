@@ -301,6 +301,7 @@
 
         public async Task SendNotificationImmediately(int notifiactionId)
         {
+            PushSignalR(notifiactionId);
             var criteria = new GetNotificationByIdCriteria
             {
                 NotificationId = notifiactionId
@@ -325,12 +326,12 @@
             await logger.ErrorAsync(errMsg);
         }
         
-         private void PushSignalR(int notifiactionId)
+        private void PushSignalR(int notifiactionId)
         {
             Task.Run(
                 () => signalRService.InsertNewNotification(notifiactionId.ToString())
                 );
-        }
+	}
 
     }
 }
