@@ -157,7 +157,7 @@ export class DataGrid extends Component {
                 </Row>);
             });
         } else {
-            rows.push(<Row key={`body${1}`} ><Cell colSpan={isHost ? 11 : 10}><NoDataTitle /></Cell></Row >);
+            rows.push(<Row key={`body${1}`} ><Cell colSpan={isHost ? 12 : 11}><NoDataTitle /></Cell></Row >);
         }
 
         return rows;
