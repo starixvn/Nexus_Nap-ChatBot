@@ -6,7 +6,7 @@
 INSERT INTO ChatBot.SystemSetting(ID, Description, Value)
 VALUES (1, 'Special Delete Site - Job Sync Status (Running/Done)','Done')
 , (2, 'Special Delete Site - Batch Size','10')
-, (3, 'Special Delete Site - Previous MaxMessageID','910285')
+, (3, 'Special Delete Site - Previous MaxMessageID','913062')
 , (4, 'Special Delete Site - Notification Template ID / MsgContentsType / NotificationType'
 ,'[
   {"MsgContentsType":101, "NotificationTypeID":9, "NotificationTemplateID":23, "IsTest":1}
@@ -19,5 +19,5 @@ VALUES (1, 'Special Delete Site - Job Sync Status (Running/Done)','Done')
   ,  {"MsgContentsType":107, "NotificationTypeID":12, "NotificationTemplateID":24, "IsTest":1}
   ,  {"MsgContentsType":108, "NotificationTypeID":13, "NotificationTemplateID":25, "IsTest":1}
 ]')
-, (5, 'Special Delete Site - Chat group ID which receives carbon copies of all imported messages',206
+, (5, 'Special Delete Site - Chat group ID which receives carbon copies of all imported messages',1
 )
