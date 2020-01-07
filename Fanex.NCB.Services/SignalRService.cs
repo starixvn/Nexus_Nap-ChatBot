@@ -13,6 +13,14 @@
             this.hubContext = hubContext;
         }
 
+        public async Task InsertNewNotification(string notificationIds)
+        {
+            if (!string.IsNullOrWhiteSpace(notificationIds))
+            {
+                await hubContext.Clients.All.SendAsync("InsertNewNotifications", notificationIds);
+            }
+        }
+
         public async Task UpdateNotificationStatus(string notificationIds)
         {
             if (!string.IsNullOrWhiteSpace(notificationIds))

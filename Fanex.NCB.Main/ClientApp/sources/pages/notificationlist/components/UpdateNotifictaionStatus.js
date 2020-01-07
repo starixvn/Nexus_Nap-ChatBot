@@ -40,6 +40,8 @@ export default class SignalR extends PureComponent {
 
     onUpdateNotificationStatus(notificationIds) {
         console.log(notificationIds);
+        let button = document.getElementById('submit-button');
+        if (button) button.click();
     }
 
     render() {

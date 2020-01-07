@@ -2,6 +2,7 @@ DROP PROCEDURE IF EXISTS NCB_SendNotification_GetPlanRetryNotifUpdStatus;
 DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_GetPlanRetryNotifUpdStatus(
+	OUT updatedNotificationIds TEXT
     /*
 		Creator: Dominic@20190417
         Task: Chatbot For Licensee - Phase 1: Sending UM notification using Skype bot
@@ -51,13 +52,22 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 	ORDER BY ConfigSendTime, n.NotificationID
 	LIMIT 10;
      
-     #Lock planned notifications to send
-	 UPDATE Notification AS n
-     INNER JOIN  tmp_PlannedNotification AS t ON n.NotificationID = t.NotificationID
-     SET n.Status = NOTIFICATION_STATUS_SENDING
-			, n.StatusID = NOTIFICATION_STATUSID_SENDING
-            , t.LockSuccess = 1
-	 WHERE n.StatusID = NOTIFICATION_STATUSID_PLANNED;
+	#Lock planned notifications to send
+	UPDATE Notification AS n
+	INNER JOIN  tmp_PlannedNotification AS t ON n.NotificationID = t.NotificationID
+	SET n.Status = NOTIFICATION_STATUS_SENDING
+		, n.StatusID = NOTIFICATION_STATUSID_SENDING
+		, t.LockSuccess = 1
+	WHERE n.StatusID = NOTIFICATION_STATUSID_PLANNED;
+
+	#Get updated status Notification Ids
+	IF ROW_COUNT() > 0 THEN
+		SET updatedNotificationIds = SELECT GROUP_CONCAT(t.NotificationID SEPARATOR ',')
+										FROM tmp_PlannedNotification t WHERE t.LockSuccess = 1;
+	ELSE
+		SET updatedNotificationIds = '';
+	END IF;									  
+
      
 	 UPDATE NotificationRecipientList AS n
      INNER JOIN  tmp_PlannedNotification AS t 

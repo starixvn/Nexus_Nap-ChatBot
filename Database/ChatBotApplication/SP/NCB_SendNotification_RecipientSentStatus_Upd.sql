@@ -3,6 +3,7 @@ DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_RecipientSentStatus_Upd(
     IN sentStatus MEDIUMTEXT CHARACTER SET utf8mb4
+	, OUT updatedNotificationIds TEXT
 	, OUT errCode SMALLINT
 	, OUT errMsg VARCHAR(100)
     /*
@@ -171,6 +172,16 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
                     AND n.StatusID = NOTIFICATION_STATUSID_SENDING
 	SET n.StatusID = t.StatusID, n.Status = t.Status;
 
+	#Get updated status Notification Ids
+	IF ROW_COUNT() > 0 THEN
+		SET updatedNotificationIds = SELECT GROUP_CONCAT(n.NotificationID SEPARATOR ',')
+										FROM Notification n 
+										INNER JOIN tmp_NotificationIDs t ON n.NotificationID = t.NotificationID 
+										AND t.StatusID <> NOTIFICATION_STATUSID_SENDING
+										AND n.StatusID = NOTIFICATION_STATUSID_SENDING;
+	ELSE
+		SET updatedNotificationIds = '';
+	END IF;
     
     #Get Finish Time to calcualte execution duration
     SET finishTime = UTC_TIMESTAMP(3);

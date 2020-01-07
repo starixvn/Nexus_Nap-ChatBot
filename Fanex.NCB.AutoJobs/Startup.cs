@@ -192,7 +192,7 @@
             services.AddScoped<ISyncDataService, SyncDataService>();
             services.AddScoped<ISpecialDeleteService, SpecialDeleteService>();
             services.AddScoped<IJobService, JobService>();
-            services.AddScoped<IPushNotifyService, PushNotifyService>();
+            services.AddScoped<IPushSignalService, PushSignalService>();
             services.AddScoped<IRestClient, RestClient>();
             services.AddTransient<IRecurringJobManager, RecurringJobManager>();
         }

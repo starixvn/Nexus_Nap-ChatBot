@@ -5,5 +5,7 @@
     public interface ISignalRService
     {
         Task UpdateNotificationStatus(string notificationIds);
+
+        Task InsertNewNotification(string notificationIds);
     }
 }

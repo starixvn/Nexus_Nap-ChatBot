@@ -22,6 +22,7 @@
     {
         private IChatbotService chatbotService;
         private IBaseService baseService;
+        private ISignalRService signalRService;
         private IOptionsSnapshot<AppSettings> appSettings;
         private IOptionsSnapshot<MonitorChatbot> monitor;
         private ILogger logger;
@@ -103,6 +104,7 @@
             await service.SendNotificationImmediately(1);
 
             //Assert
+            await signalRService.Received().InsertNewNotification(Arg.Any<string>());
             await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
             await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
         }
@@ -141,6 +143,7 @@
         {
             chatbotService = Substitute.For<IChatbotService>();
             baseService = Substitute.For<IBaseService>();
+            signalRService = Substitute.For<ISignalRService>();
             logger = Substitute.For<ILogger>();
             monitor = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
 
@@ -159,7 +162,7 @@
             appSettings.Value.Returns(settings);
             monitor.Value.Returns(monitorChatbot);
 
-            return new SendNotificationService(chatbotService, baseService, appSettings, monitor, logger);
+            return new SendNotificationService(chatbotService, baseService, signalRService, appSettings, monitor, logger);
         }
 
         #endregion Helper

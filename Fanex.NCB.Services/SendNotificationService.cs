@@ -24,18 +24,21 @@
     {
         private readonly IChatbotService chatbotService;
         private readonly IBaseService baseService;
+        private readonly ISignalRService signalRService;
         private readonly IOptionsSnapshot<AppSettings> appSettings;
         private readonly IOptionsSnapshot<MonitorChatbot> monitorOptions;
         private readonly ILogger logger;
 
         public SendNotificationService(IChatbotService chatbotService,
             IBaseService baseService,
+            ISignalRService signalRService,
             IOptionsSnapshot<AppSettings> appSettings,
             IOptionsSnapshot<MonitorChatbot> monitorOptions,
             ILogger logger)
         {
             this.chatbotService = chatbotService;
             this.baseService = baseService;
+            this.signalRService = signalRService;
             this.appSettings = appSettings;
             this.monitorOptions = monitorOptions;
             this.logger = logger;
@@ -284,6 +287,7 @@
 
         public async Task SendNotificationImmediately(int notifiactionId)
         {
+            PushSignalR(notifiactionId);
             var criteria = new GetNotificationByIdCriteria
             {
                 NotificationId = notifiactionId
@@ -308,5 +312,13 @@
                 exception.StackTrace);
             await logger.ErrorAsync(errMsg);
         }
+        
+         private void PushSignalR(int notifiactionId)
+        {
+            Task.Run(
+                () => signalRService.InsertNewNotification(notifiactionId.ToString())
+                );
+        }
+
     }
 }

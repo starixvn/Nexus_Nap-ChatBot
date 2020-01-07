@@ -6,7 +6,6 @@
     using System.Threading.Tasks;
     using Fanex.Data;
     using Fanex.NCB.AutoJobs.App_Configs;
-    using Fanex.NCB.AutoJobs.Services.Implements;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Authorization;
@@ -17,12 +16,10 @@
     public class AuthController : Controller
     {
         private readonly IOptionsSnapshot<IdentifyModel> auth;
-        private readonly IPushNotifyService pushNotifyService;
 
-        public AuthController(IOptionsSnapshot<IdentifyModel> auth, IPushNotifyService pushNotifyService)
+        public AuthController(IOptionsSnapshot<IdentifyModel> auth)
         {
             this.auth = auth;
-            this.pushNotifyService = pushNotifyService;
         }
 
         public IActionResult Login()
@@ -76,12 +73,6 @@
             }
 
             return isValid;
-        }
-
-        public async Task<IActionResult> SignalR(string notificationIds)
-        {
-            await pushNotifyService.PushNotificationUpdatedStatus(notificationIds);
-            return Json("OK");
         }
     }
 }

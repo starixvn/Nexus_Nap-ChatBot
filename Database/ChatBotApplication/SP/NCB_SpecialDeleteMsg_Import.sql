@@ -4,6 +4,7 @@ DELIMITER //
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SpecialDeleteMsg_Import(
 	IN messageHeader JSON,
 	IN messageDetail JSON,
+    OUT insertedNotificationIds VARCHAR(300),
     OUT errCode INT,
     OUT errMsg VARCHAR(200)
 
@@ -294,6 +295,13 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 
       SELECT LAST_INSERT_ID() INTO ccNotificationID;
 
+       IF ROW_COUNT() > 0 THEN
+            SET insertedNotificationIds = SELECT GROUP_CONCAT(n.NotificationID SEPARATOR ',')
+                                          FROM ccNotificationID n;
+       ELSE
+            SET insertedNotificationIds = '';
+       END IF;
+         
       INSERT INTO tmp_Notification(NotificationID)
         VALUES (ccNotificationID);
       
