@@ -156,8 +156,7 @@
             }).UseHangfireServer(options: new BackgroundJobServerOptions
             {
                 WorkerCount = Configuration.GetValue<int>("WorkerCount"),
-                ServerName = Environment.MachineName,
-                SchedulePollingInterval = TimeSpan.Zero
+                ServerName = Environment.MachineName
             });
 
             app.UseStaticFiles();
@@ -202,12 +201,8 @@
         private static void RegisterHangfire(IServiceCollection services, string connectionString)
         {
             var connection = Cryptography.DecryptConnectionString(connectionString);
-            var options = new MySqlStorageOptions
-            {
-                DashboardJobListLimit = 10000,
-                PrepareSchemaIfNecessary = false
-            };
-            services.AddHangfire(x => x.UseStorage(new MySqlStorage(connection, options)));
+
+            services.AddHangfire(x => x.UseStorage(new MySqlStorage(connection)));
         }
     }
 }
