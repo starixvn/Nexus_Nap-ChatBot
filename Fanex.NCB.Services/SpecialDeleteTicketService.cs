@@ -57,7 +57,12 @@
                 }
             }
 
-            await sendNotificationService.ScanAndSendNotification();
+            ExecuteJobScan();
+        }
+
+        private void ExecuteJobScan()
+        {
+            Task.Run(() => sendNotificationService.ScanAndSendNotification()).ConfigureAwait(false);
         }
 
         private async Task<ValueTuple<CommandResult, IEnumerable<NotificationMessage>>> ImportMessageToChatbotDB(
