@@ -64,7 +64,7 @@
 
             recurringJob.AddOrUpdate<IJobService>(Resources.SpecialDeletePullTicket,
                 job => job.PullTicketFromSpecialDeleteAndCreateNotification(),
-                jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.PullTicketFromSpecialDelete))?.CronExpression);
+                Cron.Minutely);
         }
 
         private static void RemoveCurrentHangfireServer()
