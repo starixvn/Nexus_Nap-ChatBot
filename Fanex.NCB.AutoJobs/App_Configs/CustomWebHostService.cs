@@ -46,11 +46,6 @@
 
         public void RunHangfireJobs()
         {
-            recurringJob.AddOrUpdate<IJobService>(Resources.Job_ScanAndSendNotification,
-                job => job.AutoScanAndSendNotifictaion(),
-                jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.SendNotification))?.CronExpression,
-                TimeZoneInfo.Local);
-
             recurringJob.AddOrUpdate<IJobService>(Resources.Job_SyncNapUserControlData,
                 job => job.SyncDataFromNapUserControl(),
                 jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.SyncNapUserControlData))?.CronExpression,
@@ -66,9 +61,9 @@
                 jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.MonitorSkypebot))?.CronExpression,
                 TimeZoneInfo.Local);
 
-            recurringJob.AddOrUpdate<IJobService>(Resources.SpecialDeletePullTicket,
-                job => job.PullTicketFromSpecialDeleteAndCreateNotification(),
-                jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.PullTicketFromSpecialDelete))?.CronExpression,
+            recurringJob.AddOrUpdate<IJobService>(Resources.SpecialDeletePullTicketAndScanNoti,
+                job => job.PullTicketCreateNotificationAndScanNotification(),
+                jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.PullTicketFromSpecialDeleteAndScanNoti))?.CronExpression,
                 TimeZoneInfo.Local);
         }
 

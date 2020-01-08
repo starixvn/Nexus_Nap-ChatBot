@@ -16,36 +16,12 @@
 
     public class JobServiceTests
     {
-        private ISendNotificationService sendNotificationService;
         private ISyncDataService syncDataService;
         private IChatbotService chatbotService;
         private ISpecialDeleteTicketService specialDeleteTicketService;
         private IOptionsMonitor<List<HangfireJobSetting>> jobSettings;
         private IOptionsSnapshot<MonitorChatbot> monitorOptions;
         private ILogger logger;
-
-        [Fact]
-        public async Task AutoScanAndSendNotifictaion_WhenCalled_ExecuteSuccessed()
-        {
-            var service = GetService();
-
-            //Actual
-            await service.AutoScanAndSendNotifictaion();
-
-            //Assert
-            await sendNotificationService.Received().ScanAndSendNotification();
-        }
-
-        [Fact]
-        public async Task AutoScanAndSendNotifictaion_WhenCalled_ThrowException()
-        {
-            var service = GetService();
-            sendNotificationService.ScanAndSendNotification().Throws(new Exception());
-
-            //Assert
-            await Assert.ThrowsAsync<Exception>(() => service.AutoScanAndSendNotifictaion());
-            await logger.Received().ErrorAsync(Arg.Any<string>());
-        }
 
         [Fact]
         public async Task SyncDataFromNapUserControl_WhenCalled_ExecuteSuccessed()
@@ -99,7 +75,7 @@
             var service = GetService();
 
             //Actual
-            await service.PullTicketFromSpecialDeleteAndCreateNotification();
+            await service.PullTicketCreateNotificationAndScanNotification();
 
             //Assert
             await specialDeleteTicketService.Received().PullTicketAndCreateNotification();
@@ -112,7 +88,7 @@
             specialDeleteTicketService.PullTicketAndCreateNotification().Throws(new Exception());
 
             //Assert
-            await Assert.ThrowsAsync<Exception>(() => service.PullTicketFromSpecialDeleteAndCreateNotification());
+            await Assert.ThrowsAsync<Exception>(() => service.PullTicketCreateNotificationAndScanNotification());
             await chatbotService.Received().NotifyToGroup(Arg.Any<string>());
             await logger.Received().ErrorAsync(Arg.Any<string>());
         }
@@ -144,7 +120,6 @@
 
         private JobService GetService()
         {
-            sendNotificationService = Substitute.For<ISendNotificationService>();
             syncDataService = Substitute.For<ISyncDataService>();
             chatbotService = Substitute.For<IChatbotService>();
             specialDeleteTicketService = Substitute.For<ISpecialDeleteTicketService>();
@@ -165,13 +140,13 @@
                 new HangfireJobSetting {JobName = HangfireJob.SendNotification, CronExpression = "* * * * *", IsEnabled = true},
                 new HangfireJobSetting {JobName = HangfireJob.SyncNapUserControlData, CronExpression = "* * * * *", IsEnabled = true},
                 new HangfireJobSetting {JobName = HangfireJob.SyncOICData, CronExpression = "* * * * *", IsEnabled = true},
-                new HangfireJobSetting {JobName = HangfireJob.PullTicketFromSpecialDelete, CronExpression = "* * * * *", IsEnabled = true},
+                new HangfireJobSetting {JobName = HangfireJob.PullTicketFromSpecialDeleteAndScanNoti, CronExpression = "* * * * *", IsEnabled = true},
                 new HangfireJobSetting {JobName = HangfireJob.MonitorSkypebot, CronExpression = "* * * * *", IsEnabled = true}
             };
             jobSettings.CurrentValue.Returns(settings);
             monitorOptions.Value.Returns(option);
             logger = Substitute.For<ILogger>();
-            return new JobService(sendNotificationService, syncDataService, chatbotService, specialDeleteTicketService,
+            return new JobService(syncDataService, chatbotService, specialDeleteTicketService,
                 logger, jobSettings, monitorOptions);
         }
 

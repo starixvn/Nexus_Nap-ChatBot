@@ -16,7 +16,6 @@
 
     public class JobService : IJobService
     {
-        private readonly ISendNotificationService sendNotificationService;
         private readonly ISyncDataService syncDataService;
         private readonly IChatbotService chatbotService;
         private readonly ISpecialDeleteTicketService specialDeleteTicketService;
@@ -24,39 +23,19 @@
         private readonly IOptionsMonitor<List<HangfireJobSetting>> jobSettings;
         private readonly IOptionsSnapshot<MonitorChatbot> monitorOptions;
 
-        public JobService(ISendNotificationService sendNotificationService,
-            ISyncDataService syncDataService,
+        public JobService(ISyncDataService syncDataService,
             IChatbotService chatbotService,
             ISpecialDeleteTicketService specialDeleteTicketService,
             ILogger logger,
             IOptionsMonitor<List<HangfireJobSetting>> jobSettings,
             IOptionsSnapshot<MonitorChatbot> monitorOptions)
         {
-            this.sendNotificationService = sendNotificationService;
             this.syncDataService = syncDataService;
             this.chatbotService = chatbotService;
             this.specialDeleteTicketService = specialDeleteTicketService;
             this.monitorOptions = monitorOptions;
             this.logger = logger;
             this.jobSettings = jobSettings;
-        }
-
-        [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
-        public async Task AutoScanAndSendNotifictaion()
-        {
-            var configs = GetJobConfig(HangfireJob.SendNotification);
-            if (configs != null && configs.IsEnabled)
-            {
-                try
-                {
-                    await sendNotificationService.ScanAndSendNotification();
-                }
-                catch (Exception ex)
-                {
-                    await Logging(ex);
-                    throw;
-                }
-            }
         }
 
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
@@ -96,9 +75,9 @@
         }
 
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
-        public async Task PullTicketFromSpecialDeleteAndCreateNotification()
+        public async Task PullTicketCreateNotificationAndScanNotification()
         {
-            var configs = GetJobConfig(HangfireJob.PullTicketFromSpecialDelete);
+            var configs = GetJobConfig(HangfireJob.PullTicketFromSpecialDeleteAndScanNoti);
             if (configs != null && configs.IsEnabled)
             {
                 try

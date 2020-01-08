@@ -135,7 +135,7 @@
   <data name="MonitorChatbotService" xml:space="preserve">
     <value>Monitor chatbot service</value>
   </data>
-  <data name="SpecialDeletePullTicket" xml:space="preserve">
-    <value>Pull ticket from Special Delete and Create Notifications</value>
+  <data name="SpecialDeletePullTicketAndScanNoti" xml:space="preserve">
+    <value>Pull ticket Create Notifications and Scan Notification</value>
   </data>
 </root>

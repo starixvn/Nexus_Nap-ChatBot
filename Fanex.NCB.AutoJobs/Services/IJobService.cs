@@ -4,13 +4,11 @@
 
     public interface IJobService
     {
-        Task AutoScanAndSendNotifictaion();
-
         Task SyncDataFromNapUserControl();
 
         Task SyncDataFromOIC();
 
-        Task PullTicketFromSpecialDeleteAndCreateNotification();
+        Task PullTicketCreateNotificationAndScanNotification();
 
         Task MonitorChatbot();
     }

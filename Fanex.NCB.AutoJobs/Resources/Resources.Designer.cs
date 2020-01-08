@@ -115,11 +115,11 @@ namespace Fanex.NCB.AutoJobs.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pull ticket from Special Delete and Create Notifications.
+        ///   Looks up a localized string similar to Pull ticket Create Notifications and Scan Notification.
         /// </summary>
-        internal static string SpecialDeletePullTicket {
+        internal static string SpecialDeletePullTicketAndScanNoti {
             get {
-                return ResourceManager.GetString("SpecialDeletePullTicket", resourceCulture);
+                return ResourceManager.GetString("SpecialDeletePullTicketAndScanNoti", resourceCulture);
             }
         }
     }
