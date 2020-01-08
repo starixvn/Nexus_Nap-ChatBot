@@ -41,6 +41,8 @@
                     await OnAfterImportData(result.Item1, result.Item2);
                 }
             }
+
+            ExecuteJobScan();
         }
 
         private async Task OnAfterImportData(CommandResult commandResult, IEnumerable<NotificationMessage> notifications)
@@ -56,8 +58,6 @@
                     await chatbotService.SendMessageToMultitpleAsync(notifications);
                 }
             }
-
-            ExecuteJobScan();
         }
 
         private void ExecuteJobScan()
