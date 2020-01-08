@@ -20,19 +20,9 @@ export default class DataGrid extends PureComponent {
     }
 
     componentDidMount = () => {
-        let notifications = document.getElementsByClassName('notification');
-        let indexOfHightLight = this.getIndexOfHightLight(notifications);
-        let clientHeight = notifications[indexOfHightLight === 0 ? 0 : 1].clientHeight
-        // if (clientHeight * indexOfHightLight > document.getElementsByClassName('body-content')[0].clientHeight) {
-            console.log(clientHeight * indexOfHightLight,document.getElementsByClassName('body-content')[0].scrollTop)
-        // }
-    }
-
-    getIndexOfHightLight(items) {
-        for (let index = 0; index < items.length; index++) {
-            if (items[index].classList.value.includes('hight-light-notification')) {
-                return index;
-            }
+        const notifications = document.getElementsByClassName('hight-light-notification');
+        if (notifications.length > 0) {
+            notifications[0].scrollIntoView();
         }
     }
 

@@ -3,6 +3,9 @@ import Site from '../../../lib/site';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Badge } from 'reactstrap';
 import axios from 'axios';
 import NotificationItem from './NotificationItem';
+import { defaultPageSize, noErrorNotification } from '../../../constants/constants';
+import errorResponseHandler from '../../../lib/errorResponseHandler';
+import { getRealValuesFromExtra } from '../../../common/TreeSelect/index';
 
 import './Header.scss';
 
@@ -34,13 +37,29 @@ export default class Header extends React.PureComponent {
     }
 
     componentDidMount = () => {
-        axios(Site.resolveClientUrl('NotificationList/GetAllErrorNotifications')).then(res => {
-            if (res.data) {
-                this.setState({ notifications: res.data });
-            }
-        }).catch(error => {
-            console.log(error);
-        })
+        const promises = [
+            axios(Site.resolveClientUrl('Common/GetNotificationTypes')),
+            axios(Site.resolveClientUrl('Common/GetRecipients'))
+        ];
+
+        Promise.all(promises).then(([notificationTypeResponse, recipientResponse]) => {
+            const notificationTypeIds = notificationTypeResponse.data.map(notification => notification.notificationTypeID);
+            let recipientIds = [];            
+            getRealValuesFromExtra(recipientIds, recipientResponse.data);
+
+            axios.get(Site.resolveClientUrl('NotificationList/GetAllErrorNotifications'), {
+                params: {
+                    notificationTypeIds: notificationTypeIds.toString(),
+                    recipientIds: recipientIds.toString()
+                }
+            }).then(res => {
+                if (res.data) {
+                    this.setState({ notifications: res.data });
+                }
+            }).catch(error => {
+                console.log(error);
+            })
+        }).catch(errorResponseHandler);
     }
 
     render() {
@@ -72,8 +91,8 @@ export default class Header extends React.PureComponent {
                             <DropdownMenu right={true}>
 								{
 									this.state.notifications.length > 0 ? this.state.notifications.map((notification, index) => <DropdownItem key={index}>
-                                        <NotificationItem notification={notification} />
-									</DropdownItem>) : <DropdownItem disabled>No notifications</DropdownItem>
+                                        <NotificationItem notification={notification} pageIndex={Math.floor(index / defaultPageSize) + 1} />
+                                    </DropdownItem>) : <DropdownItem className='text-center' disabled>{noErrorNotification}</DropdownItem>
 								}
                             </DropdownMenu>
                         </Dropdown>

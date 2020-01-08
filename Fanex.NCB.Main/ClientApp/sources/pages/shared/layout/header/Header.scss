@@ -226,7 +226,7 @@
 
     .dropdown-item {
         display: block;
-        padding: 0;
+        padding: 8px;
         font-size: $font-size;
     }
 
@@ -257,7 +257,6 @@
 .notification-item {
     border-radius: 4px;
     background-color: #F2F5F7;
-    margin: 8px;
     padding: 6px;
 
     * {

@@ -32,6 +32,7 @@
         
         Task<IEnumerable<Notification>> GetUpdatedNotificationAsync(string notificationIds);
         
-        Task<IEnumerable<Notification>> GetAllErrorNotificationsAsync();
+        Task<IEnumerable<Notification>> GetAllErrorNotificationsAsync(GetErrorNotifications model);
+        
     }
 }

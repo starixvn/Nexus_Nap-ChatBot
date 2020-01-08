@@ -38,3 +38,11 @@ export const editorCommandList = [
 ];
 
 export const invalidFieldClass = 'is-invalid';
+
+export const defaultFromDate = '08/01/2019';
+
+export const defaultPageSize = 20;
+
+export const errorId = 2;
+
+export const noErrorNotification = 'No error notification';

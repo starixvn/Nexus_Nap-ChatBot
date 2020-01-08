@@ -17,6 +17,7 @@ import Site from '../../lib/site';
 import DataGrid from './DataGrid';
 import SignalR from './SignalR';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
+import { defaultFromDate, defaultPageSize, errorId } from '../../constants/constants';
 
 export default class NotificationList extends Component {
     constructor(props) {
@@ -55,6 +56,9 @@ export default class NotificationList extends Component {
                 isSubmitting: false
             }
         };
+
+        this.hightLightId = document.getElementById('hight-light-id').value;
+        this.pageIndex = document.getElementById('hight-light-page-index').value;
     }
     componentDidMount() {
         const promises = [
@@ -65,8 +69,17 @@ export default class NotificationList extends Component {
 
         ];
 
+        const isError = this.hightLightId && !isNaN(this.hightLightId);
+
         Promise.all(promises)
             .then(([notificationTypeResponse, recipientResponse, statusResponse, userResponse]) => {
+                if (isError) {
+                    statusResponse.data.forEach(status => status.checked = status.id === errorId);
+                }
+                else {
+                    statusResponse.data.forEach(status => status.checked = true);
+                }
+
                 const notificationTypeIds = [];
                 const notificationTypeOptions = notificationTypeResponse.data.map(x => {
                     notificationTypeIds.push(x.notificationTypeID);
@@ -76,8 +89,6 @@ export default class NotificationList extends Component {
                         checked: true
                     };
                 });
-
-                statusResponse.data.forEach(status => status.checked = true);
 
                 this.setState(prevState => ({
                     notificationTypeOptions,
@@ -91,15 +102,24 @@ export default class NotificationList extends Component {
                                 value: notificationTypeIds.toString()
                             },
                             statuses: {
-                                value: statusResponse.data.map(x => x.id).toString()
+                                value: statusResponse.data.filter(x => x.checked).map(x => x.id).toString()
                             },
                             recipients: {
                                 value: recipientResponse.data.map(r => ({ value: r.value, label: r.title })),
                                 allCheckedNodes: recipientResponse.data
-                            }
+                            },
+                            fromDate: isError ? new Date(defaultFromDate) : prevState.filter.fromDate
                         }
                     }
-                }), this.getNotifications);
+                }), () => {
+                    if (isError) {
+                        const pageIndex = this.pageIndex && !isNaN(this.pageIndex) ? parseInt(this.pageIndex) : 1;
+                        this.getNotifications(pageIndex, defaultPageSize)
+                    }
+                    else {
+                        this.getNotifications();
+                    }
+                });
             }).catch(errorResponseHandler);
     }
 
@@ -131,7 +151,7 @@ export default class NotificationList extends Component {
         }).catch(errorResponseHandler);
     }
 
-    getNotifications = (pageIndex = 1, pageSize = 20) => {
+    getNotifications = (pageIndex = 1, pageSize = defaultPageSize) => {
         const filter = this.state.filter;
         const recipientIds = [];
 

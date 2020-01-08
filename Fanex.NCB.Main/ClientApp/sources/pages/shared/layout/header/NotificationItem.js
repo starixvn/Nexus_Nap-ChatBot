@@ -8,7 +8,7 @@ export default class NotificationItem extends React.PureComponent {
     }
 
     render() {
-        return (<div className='notification-item' onClick={() => window.location.assign(Site.resolveClientUrl(`NotificationList/Focus?hightLightId=${this.props.notification.notificationId}`))}>
+        return (<div className='notification-item' onClick={() => window.location.assign(Site.resolveClientUrl(`NotificationList/Error?id=${this.props.notification.notificationId}&pageIndex=${this.props.pageIndex}`))}>
             <div className='notification-title'>
                 {this.props.notification.title}
             </div>

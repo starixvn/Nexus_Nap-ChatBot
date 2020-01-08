@@ -221,9 +221,13 @@
             }).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<Notification>> GetAllErrorNotificationsAsync()
+        public async Task<IEnumerable<Notification>> GetAllErrorNotificationsAsync(GetErrorNotifications model)
         {
-            return await baseService.GetDataAsync<Notification>(new GetAllErrorNotificationsCriteria()).ConfigureAwait(false);
+            return await baseService.GetDataAsync<Notification>(new GetAllErrorNotificationsCriteria
+            {
+                NotificationTypeIds = model.NotificationTypeIds,
+                RecipientIds = model.RecipientIds
+            }).ConfigureAwait(false);
         }
 
 	private void BackgroundJobAfterCreateNotification(int notificationId, bool isCreatNotification)
