@@ -76,7 +76,7 @@ export default class Header extends React.PureComponent {
                     <li className="user-info">
                         <Dropdown className='no-caret' isOpen={this.state.notificationDropdownOpen} toggle={this.toggleNotificationDropdown}>
                             <DropdownToggle
-                                tag="a"
+                                tag="a" className='notification-toggle'
                             >
                                 <div className="profile-picture">
                                     <span className="icon icon-bell">
