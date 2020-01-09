@@ -211,7 +211,7 @@
                 PrepareSchemaIfNecessary = true,
                 DashboardJobListLimit = 50000,
                 TransactionTimeout = TimeSpan.FromMinutes(1),
-                TablesPrefix = "ChatbotHangfire"
+                TablesPrefix = "ChatbotHangfire_"
             };
             services.AddHangfire(x => x.UseStorage(new MySqlStorage(connection, options)));
         }
