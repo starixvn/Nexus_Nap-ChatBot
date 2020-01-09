@@ -223,11 +223,18 @@
 
         public async Task<IEnumerable<Notification>> GetAllErrorNotificationsAsync(GetErrorNotifications model)
         {
-            return await baseService.GetDataAsync<Notification>(new GetAllErrorNotificationsCriteria
+            var result = await baseService.GetDataAsync<Notification>(new GetAllErrorNotificationsCriteria
             {
                 NotificationTypeIds = model.NotificationTypeIds,
                 RecipientIds = model.RecipientIds
             }).ConfigureAwait(false);
+
+            foreach (var notification in result)
+            {
+                notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();
+            }
+
+            return result;
         }
 
 	private void BackgroundJobAfterCreateNotification(int notificationId, bool isCreatNotification)

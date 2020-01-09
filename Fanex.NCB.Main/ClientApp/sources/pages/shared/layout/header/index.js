@@ -1,6 +1,6 @@
 import React from 'react';
 import Site from '../../../lib/site';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Badge } from 'reactstrap';
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Badge, Link } from 'reactstrap';
 import axios from 'axios';
 import NotificationItem from './NotificationItem';
 import { defaultPageSize, noErrorNotification } from '../../../constants/constants';
@@ -90,8 +90,9 @@ export default class Header extends React.PureComponent {
                             </DropdownToggle>
                             <DropdownMenu right={true}>
 								{
-									this.state.notifications.length > 0 ? this.state.notifications.map((notification, index) => <DropdownItem key={index}>
-                                        <NotificationItem notification={notification} pageIndex={Math.floor(index / defaultPageSize) + 1} />
+                                    this.state.notifications.length > 0 ? this.state.notifications.map((notification, index) =>
+                                    <DropdownItem key={index} tag='a' href={Site.resolveClientUrl(`NotificationList/Index?id=${notification.notificationId}&pageIndex=${Math.floor(index / defaultPageSize) + 1}`)}>
+                                        <NotificationItem notification={notification} />
                                     </DropdownItem>) : <DropdownItem className='text-center' disabled>{noErrorNotification}</DropdownItem>
 								}
                             </DropdownMenu>

@@ -1,5 +1,6 @@
-﻿import { mappingStatus } from '../../constants/constants';
+﻿import { mappingStatus, DateFormat, TimeFormat } from '../../constants/constants';
 import Labels from '../Labels';
+import { DateTime } from 'luxon';
 
 export default class CommonFunctions {
     static getMappingClass(mappingStatusId) {
@@ -41,8 +42,9 @@ export default class CommonFunctions {
         }, 1000);
     }
 
-    static convertJsonTime2String(value) {
-        return value.replace('T', ' at ');
+    static convertTime2String(value) {
+        const time = DateTime.fromISO(value);
+        return `${time.toFormat(DateFormat)} at ${time.toFormat(TimeFormat)}`;
     }
     
     static debounce(func) {

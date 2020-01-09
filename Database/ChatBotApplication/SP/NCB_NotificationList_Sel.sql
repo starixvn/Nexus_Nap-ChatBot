@@ -28,6 +28,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_Sel`(
 				- 20190408@Dominic: First Commit
 				- 20190814@Elton: change RecipientSentStatusJSON
                 - 20191015@Dominic: extend NotificationTypeName length
+				- 20200109@Merlin: order by ConfigSendTime and NotificationID
     */
 )
 BEGIN
@@ -161,7 +162,7 @@ BEGIN
 												FROM tmp_recipientIDLst tmp_rid
                                             )
     )
-    ORDER BY n.ConfigSendTime DESC
+    ORDER BY n.ConfigSendTime DESC, n.NotificationID DESC
     LIMIT rowStart, pageSize; 
     
     #Update RecipientSentStatus
@@ -192,8 +193,7 @@ BEGIN
     
     #2nd dataset: Get data based on Page Index and Page Size
     SELECT *
-    FROM tmp_Notification n
-    ORDER BY n.ConfigSendTime DESC;
+    FROM tmp_Notification n;
 END;
 
 //

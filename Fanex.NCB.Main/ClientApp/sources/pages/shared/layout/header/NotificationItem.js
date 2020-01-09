@@ -1,5 +1,4 @@
 import React from 'react';
-import Site from '../../../lib/site';
 import CommonFunctions from '../../../common/common-functions/CommonFunctions';
 
 export default class NotificationItem extends React.PureComponent {
@@ -8,7 +7,7 @@ export default class NotificationItem extends React.PureComponent {
     }
 
     render() {
-        return (<div className='notification-item' onClick={() => window.location.assign(Site.resolveClientUrl(`NotificationList/Error?id=${this.props.notification.notificationId}&pageIndex=${this.props.pageIndex}`))}>
+        return (<div className='notification-item'>
             <div className='notification-title'>
                 {this.props.notification.title}
             </div>
@@ -16,7 +15,7 @@ export default class NotificationItem extends React.PureComponent {
                 {this.props.notification.content}
             </div>
             <div className='notification-time'>
-                {CommonFunctions.convertJsonTime2String(this.props.notification.configSendTime)}
+                {CommonFunctions.convertTime2String(this.props.notification.configSendTime)}
             </div>
         </div>);
     }

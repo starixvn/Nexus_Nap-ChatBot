@@ -78,7 +78,7 @@ BEGIN
                 FROM tmp_recipientIDLst tmp_rid
             )
     )
-    ORDER BY n.ConfigSendTime DESC;
+    ORDER BY n.ConfigSendTime DESC, n.NotificationID DESC;
 END;
 
 //
