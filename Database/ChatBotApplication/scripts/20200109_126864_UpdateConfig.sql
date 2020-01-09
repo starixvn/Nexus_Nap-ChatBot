@@ -1,5 +1,5 @@
 /*
-	Creator: Dominic@20191227
+	Creator: Dominic@20200109
     Task: Update config , set IsTest = 0  - Redmine: #126864
     
 */
