@@ -156,7 +156,7 @@
                 Authorization = new[] { new HangfireAuthorizationFilter() }
             }).UseHangfireServer(options: new BackgroundJobServerOptions
             {
-                WorkerCount = Environment.ProcessorCount * 5,
+                WorkerCount = Configuration.GetValue<int>("WorkerCount"),
                 ServerName = Environment.MachineName,
                 Queues = new[] { QueuPriority.Critical, QueuPriority.Default }
             });
