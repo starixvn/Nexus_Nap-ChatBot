@@ -27,7 +27,7 @@
     using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Hangfire;
-    using Hangfire.MySql.Core;
+    using Hangfire.MySql;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -203,8 +203,17 @@
         private static void RegisterHangfire(IServiceCollection services, string connectionString)
         {
             var connection = Cryptography.DecryptConnectionString(connectionString);
-
-            services.AddHangfire(x => x.UseStorage(new MySqlStorage(connection)));
+            var options = new MySqlStorageOptions
+            {
+                QueuePollInterval = TimeSpan.FromSeconds(2),
+                JobExpirationCheckInterval = TimeSpan.FromHours(1),
+                CountersAggregateInterval = TimeSpan.FromMinutes(5),
+                PrepareSchemaIfNecessary = true,
+                DashboardJobListLimit = 50000,
+                TransactionTimeout = TimeSpan.FromMinutes(1),
+                TablesPrefix = "Hangfire_"
+            };
+            services.AddHangfire(x => x.UseStorage(new MySqlStorage(connection, options)));
         }
     }
 }
