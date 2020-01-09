@@ -81,7 +81,7 @@
     <PackageReference Include="Fanex.Logging.Extensions.Database" Version="1.0.8" />
     <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.8" />
-    <PackageReference Include="Hangfire.MySqlStorage" Version="2.0.0" />
+    <PackageReference Include="Hangfire.Storage.MySql" Version="2.0.6-beta" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0">
       <AllowExplicitVersion>true</AllowExplicitVersion>
     </PackageReference>

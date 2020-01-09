@@ -27,7 +27,7 @@
     using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Hangfire;
-    using Hangfire.MySql;
+    using Hangfire.Storage.MySql;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
