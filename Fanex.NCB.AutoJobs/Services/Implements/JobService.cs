@@ -39,6 +39,7 @@
         }
 
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
+        [Queue(QueuPriority.Default)]
         public async Task SyncDataFromNapUserControl()
         {
             var configs = GetJobConfig(HangfireJob.SyncNapUserControlData);
@@ -57,6 +58,7 @@
         }
 
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
+        [Queue(QueuPriority.Default)]
         public async Task SyncDataFromOIC()
         {
             var configs = GetJobConfig(HangfireJob.SyncOICData);
@@ -75,6 +77,7 @@
         }
 
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
+        [Queue(QueuPriority.Critical)]
         public async Task PullTicketCreateNotificationAndScanNotification()
         {
             var configs = GetJobConfig(HangfireJob.PullTicketFromSpecialDeleteAndScanNoti);
@@ -94,6 +97,7 @@
         }
 
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
+        [Queue(QueuPriority.Default)]
         public async Task MonitorChatbot()
         {
             var configs = GetJobConfig(HangfireJob.MonitorSkypebot);

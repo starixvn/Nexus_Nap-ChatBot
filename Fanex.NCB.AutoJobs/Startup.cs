@@ -14,6 +14,7 @@
     using Fanex.Logging.Extensions.Database;
     using Fanex.Logging.Sentry;
     using Fanex.NCB.AutoJobs.App_Configs;
+    using Fanex.NCB.AutoJobs.Constants;
     using Fanex.NCB.AutoJobs.Extensions;
     using Fanex.NCB.AutoJobs.Services;
     using Fanex.NCB.AutoJobs.Services.Implements;
@@ -155,8 +156,9 @@
                 Authorization = new[] { new HangfireAuthorizationFilter() }
             }).UseHangfireServer(options: new BackgroundJobServerOptions
             {
-                WorkerCount = Configuration.GetValue<int>("WorkerCount"),
-                ServerName = Environment.MachineName
+                WorkerCount = Environment.ProcessorCount * 5,
+                ServerName = Environment.MachineName,
+                Queues = new[] { QueuPriority.Critical, QueuPriority.Default }
             });
 
             app.UseStaticFiles();
