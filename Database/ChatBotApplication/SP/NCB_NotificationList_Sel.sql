@@ -112,6 +112,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_Notification;
 	CREATE TEMPORARY TABLE tmp_Notification(
 													NotificationID INT
+													,MessageID INT
                                                     ,NotificationTypeName VARCHAR(200)
                                                     ,CreatorID INT
                                                     ,CreatorName VARCHAR(30)
@@ -125,6 +126,7 @@ BEGIN
     #Get data based on Page Index and Page Size
     INSERT INTO tmp_Notification (	
 													NotificationID
+													,MessageID
                                                     ,NotificationTypeName
                                                     , CreatorID
                                                     ,CreatorName
@@ -134,10 +136,11 @@ BEGIN
                                                     , Status
                                                     , StatusID
 												)
-    SELECT n.NotificationID, nt.NotificationTypeName, n.CreatorID, c.username, n.ConfigSendTime, n.Title, n.Content, n.Status, n.StatusID
+    SELECT n.NotificationID, nsm.MessageID, nt.NotificationTypeName, n.CreatorID, c.username, n.ConfigSendTime, n.Title, n.Content, n.Status, n.StatusID
     FROM Notification n
 		INNER JOIN NotificationType nt ON n.NotificationTypeID = nt.NotificationTypeID
         INNER JOIN Customer c ON n.CreatorID = c.custid
+		LEFT JOIN NotificationSystemMsg nsm ON nsm.NotificationID = n.NotificationID
     WHERE n.NotificationTypeID IN (
 									SELECT	tmp_nt.NotificationTypeID
                                     FROM tmp_notificationTypeIDLst tmp_nt

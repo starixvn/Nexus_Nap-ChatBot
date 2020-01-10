@@ -210,7 +210,7 @@
                 CountersAggregateInterval = TimeSpan.FromMinutes(5),
                 PrepareSchemaIfNecessary = true,
                 DashboardJobListLimit = 50000,
-                TransactionTimeout = TimeSpan.FromMinutes(1),
+                TransactionTimeout = TimeSpan.FromMinutes(2),
                 TablesPrefix = "ChatbotHangfire_"
             };
             services.AddHangfire(x => x.UseStorage(new MySqlStorage(connection, options)));

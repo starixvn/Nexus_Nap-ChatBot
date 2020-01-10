@@ -58,7 +58,10 @@ export default class DataGrid extends PureComponent {
     buildHeader = isHost => {
         return (
             <Row style={{ height: 32 }}>
-                <Cell colWidth={8} header>{Labels.NumberCol}</Cell>
+                <Cell colWidth={15} header>
+                    <p className='margin-bot0'>{Labels.NotificationID}</p>
+                    <p className='margin-bot0'>{Labels.MessageID}</p>
+                </Cell>
                 <Cell colWidth={20} header>Sender/Notification Type</Cell>
                 <Cell colWidth={18} header>Send Date/Time (GMT+8)</Cell>
                 <Cell colWidth={100} header>
@@ -71,7 +74,7 @@ export default class DataGrid extends PureComponent {
                 {
                     isHost && <Cell colWidth={10} className="col-action" header>{Labels.Action}</Cell>
                 }
-            </Row>);
+            </Row >);
     };
 
     buildBody = isHost => {
@@ -93,10 +96,22 @@ export default class DataGrid extends PureComponent {
         );
     }
 
+    renderNotificationId = (notificationID, messageID) => (
+        <Fragment key={notificationID}>
+            <span>{notificationID}</span>
+            {
+                messageID > 0 &&
+                <p className='margin-bot0'>(Msg: {messageID})</p>
+            }
+        </Fragment>
+    );
+
     renderRow = (item, index, isHost) => {
         return (
             <Row key={item.notificationId} >
-                <Cell className="col-order text-center">{item.notificationId}</Cell>
+                <Cell className="col-order text-center">
+                    {this.renderNotificationId(item.notificationId, item.messageID)}
+                </Cell>
                 <Cell>
                     {item.creatorName}
                     <div> {item.notificationTypeName}</div>

@@ -6,6 +6,8 @@
     {
         public int NotificationId { get; set; }
 
+        public int MessageID { get; set; }
+
         public string NotificationTypeName { get; set; }
 
         public int CreatorId { get; set; }
