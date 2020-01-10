@@ -48,7 +48,9 @@
         {
             var notifications = FakeData();
             var service = GetService();
+            var response = FakeResponse();
             baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
+            chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
 
             //Actual
             await service.ScanAndSendNotification();

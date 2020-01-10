@@ -134,15 +134,8 @@
                     });
 
                 await UpdateFailedRecipientStatus(updateRecipients, true);
-                string errMsg = string.Format(
-                CultureInfo.InvariantCulture,
-                "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
-                exception.Message,
-                exception.Source,
-                string.Empty,
-                exception.TargetSite,
-                exception.StackTrace);
-                await logger.ErrorAsync(errMsg);
+
+                await WriteLog(exception);
                 throw;
             }
         }
@@ -170,6 +163,7 @@
                 });
 
                 await UpdateFailedRecipientStatus(updatedRecipients, true);
+                await WriteLog(response.ErrorException);
             }
         }
 
@@ -205,15 +199,7 @@
             }
             catch (Exception exception)
             {
-                string errMsg = string.Format(
-                CultureInfo.InvariantCulture,
-                "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
-                exception.Message,
-                exception.Source,
-                string.Empty,
-                exception.TargetSite,
-                exception.StackTrace);
-                await logger.ErrorAsync(errMsg);
+                await WriteLog(exception);
             }
         }
 
@@ -304,6 +290,19 @@
             && !r.RecipientStatus.Equals(RecipientStatuses.BotServiceError)));
 
             await SendNotificationToRecipients(notifications.Item1, notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
+        }
+
+        private async Task WriteLog(Exception exception)
+        {
+            string errMsg = string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
+                exception.Message,
+                exception.Source,
+                string.Empty,
+                exception.TargetSite,
+                exception.StackTrace);
+            await logger.ErrorAsync(errMsg);
         }
     }
 }

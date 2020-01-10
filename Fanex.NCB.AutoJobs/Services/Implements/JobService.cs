@@ -89,8 +89,8 @@
                 }
                 catch (Exception ex)
                 {
-                    await chatbotService.NotifyToGroup(ex.Message);
                     await Logging(ex);
+                    await chatbotService.NotifyToGroup(ex.Message);
                     throw;
                 }
             }
