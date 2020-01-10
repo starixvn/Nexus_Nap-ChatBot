@@ -60,7 +60,7 @@ export default class DataGrid extends PureComponent {
             <Row style={{ height: 32 }}>
                 <Cell colWidth={15} header>
                     <p className='margin-bot0'>{Labels.NotificationID}</p>
-                    <p className='margin-bot0'>{Labels.MessageID}</p>
+                    <p className='margin-bot0'>({Labels.MessageID})</p>
                 </Cell>
                 <Cell colWidth={20} header>Sender/Notification Type</Cell>
                 <Cell colWidth={18} header>Send Date/Time (GMT+8)</Cell>
