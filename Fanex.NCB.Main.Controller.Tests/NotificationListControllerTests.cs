@@ -46,6 +46,33 @@
         }
 
         [Fact]
+        public void Index_WhenCalledWithParams_ReturnExpectedView()
+        {
+            // Arrange
+            var controller = GetController();
+            var napSettings = Substitute.For<INapSettings>();
+            NapClientManager.UseConfig(napSettings);
+            var fixture = new Fixture();
+            napSession.UserId = fixture.Create<int>();
+            var id = fixture.Create<int>();
+            var pageIndex = fixture.Create<int>();
+            userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotifiactionList, Policy.Host)
+                .Returns(true);
+
+            // Action
+            var actual = controller.Index(id, pageIndex);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(actual);
+            var haveHostPermission = Assert.IsType<bool>(viewResult.ViewData["HaveEditNotificationPermission"]);
+            var actualId = Assert.IsType<int>(viewResult.ViewData["HightLightId"]);
+            var actualPageIndex = Assert.IsType<int>(viewResult.ViewData["PageIndex"]);
+            Assert.True(haveHostPermission);
+            Assert.Equal(id, actualId);
+            Assert.Equal(pageIndex, actualPageIndex);
+        }
+
+        [Fact]
         public async Task Get_WhenCalled_ReturnJsonResult()
         {
             var controller = GetController();
@@ -126,6 +153,26 @@
 
             var commandResult = Assert.IsType<CommandResult>(jsonResult.Value);
             Assert.True(commandResult.IsSuccessful);
+        }
+
+        [Fact]
+        public async Task GetAllErrorNotifications_WhenCalled_ReturnJsonResult()
+        {
+            // Arrange
+            var controller = GetController();
+            var fixture = new Fixture();
+            var notificationTypeIds = fixture.Create<string>();
+            var recipientIds = fixture.Create<string>();
+            var notifications = fixture.Create<IEnumerable<Notification>>();
+            var model = new GetErrorNotifications();
+            notificationService.GetAllErrorNotificationsAsync(Arg.Do<GetErrorNotifications>(x => model = x)).Returns(notifications);
+
+            // Action
+            var result = await controller.GetAllErrorNotifications(notificationTypeIds, recipientIds).ConfigureAwait(false);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            Assert.Equal(notifications, jsonResult.Value);
         }
 
         private void SignalRServiceHasBeenCall(string notificationIds)
