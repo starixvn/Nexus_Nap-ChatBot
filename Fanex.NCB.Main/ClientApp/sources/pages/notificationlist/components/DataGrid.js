@@ -55,7 +55,7 @@ export default class DataGrid extends PureComponent {
         }
     }
 
-    buildHeader = () => {
+    buildHeader = isHost => {
         return (
             <Row style={{ height: 32 }}>
                 <Cell colWidth={8} header>{Labels.NumberCol}</Cell>
@@ -68,15 +68,17 @@ export default class DataGrid extends PureComponent {
                     </div>
                 </Cell>
                 <Cell colWidth={12} className="col-status" header>Status</Cell>
-                <Cell colWidth={10} className="col-action" header>{Labels.Action}</Cell>
+                {
+                    isHost && <Cell colWidth={10} className="col-action" header>{Labels.Action}</Cell>
+                }
             </Row>);
     };
 
-    buildBody = () => {
+    buildBody = isHost => {
         const { data, pageIndex, pageSize } = this.props.tableData;
         this.startIndex = (pageIndex - 1) * pageSize + 1;
         if (data.length > 0) {
-            return data.map(this.renderRow);
+            return data.map((item, index) => this.renderRow(item, index, isHost));
         }
 
         return [<Row key={`body${1}`} ><Cell colSpan="6"><NoDataTitle /></Cell></Row>];
@@ -91,8 +93,7 @@ export default class DataGrid extends PureComponent {
         );
     }
 
-    renderRow = (item, index) => {
-        console.log(item);
+    renderRow = (item, index, isHost) => {
         return (
             <Row key={item.notificationId} >
                 <Cell className="col-order text-center">{item.notificationId}</Cell>
@@ -114,7 +115,9 @@ export default class DataGrid extends PureComponent {
                     </Panel>
                 </Cell>
                 <Cell><span className={this.getNotificationStatusClass(item.statusId)}>{item.status}</span></Cell>
-                <Cell className="col-action text-center">{this.renderAction(item)}</Cell>
+                {
+                    isHost && <Cell className="col-action text-center">{this.renderAction(item)}</Cell>
+                }
             </Row>
         );
     }
@@ -125,14 +128,15 @@ export default class DataGrid extends PureComponent {
             case NotificationStatus.Resolved:
                 return <span className="icon-view" data-notificationid={notification.notificationId} onClick={this.handleShowErrorReport} />;
             case NotificationStatus.Planned:
-                return this.props.haveEditNotificationPermission && <span className="icon-error" data-notificationid={notification.notificationId} onClick={this.handleCancelNotification} />;
+                return <span className="icon-error" data-notificationid={notification.notificationId} onClick={this.handleCancelNotification} />;
             case NotificationStatus.Cancelled:
-                return this.props.haveEditNotificationPermission && <a className="icon-edit" href={`EditNotification/Index/${notification.notificationId}`} />;
+                return <a className="icon-edit" href={`EditNotification/Index/${notification.notificationId}`} />;
             default: return null;
         }
     }
 
     render() {
+        const { haveEditNotificationPermission } = this.props;
         const pagingOption = {
             PageIndex: this.props.tableData.pageIndex,
             PageSize: this.props.tableData.pageSize,
@@ -144,8 +148,8 @@ export default class DataGrid extends PureComponent {
             <Table
                 width={1620}
                 autoWidth={false}
-                header={this.buildHeader()}
-                body={this.buildBody()}
+                header={this.buildHeader(haveEditNotificationPermission)}
+                body={this.buildBody(haveEditNotificationPermission)}
                 isPaging
                 pageOption={pagingOption}
                 onPaging={this.onPaging}

@@ -137,7 +137,7 @@ export class DataGrid extends Component {
                             className="checkbox-custom"
                             type='checkbox'
                             checked={item.isActive}
-                            disabled={!CommonFunctions.isBotRemoved(item.mappingStatusID) && !CommonFunctions.isMapped(item.mappingStatusID)}
+                            disabled={!(isHost && (CommonFunctions.isBotRemoved(item.mappingStatusID) || CommonFunctions.isMapped(item.mappingStatusID)))}
                             onChange={() => this.changeActive(item)}
                         />
                         <label htmlFor={index + startIndex}/>

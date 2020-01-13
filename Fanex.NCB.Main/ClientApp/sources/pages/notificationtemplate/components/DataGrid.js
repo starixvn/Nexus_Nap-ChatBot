@@ -39,7 +39,7 @@ export class DataGrid extends Component {
         this.props.getGridData(params);
     }
 
-    buildHeader = () => {
+    buildHeader = isHost => {
         return (
             <Row >
                 <Cell colWidth={5} header>{Labels.NumberCol}</Cell>
@@ -51,17 +51,19 @@ export class DataGrid extends Component {
                         <span className={this.state.expandPanels ? 'icon-collapse' : 'icon-expand'} onClick={this.toggleExpandPanels} />
                     </div>
                 </Cell>
-                <Cell colWidth={10} header>{Labels.Action}</Cell>
+                {
+                    isHost && <Cell colWidth={10} header>{Labels.Action}</Cell>
+                }
             </Row>);
     };
 
-    buildBody = () => {
+    buildBody = isHost => {
         const { pageIndex, pageSize } = this.props.gridParams;
 
         this.startIndex = (pageIndex - 1) * pageSize + 1;
 
         if (this.props.gridData.data.length > 0) {
-            return this.props.gridData.data.map(this.renderRow);
+            return this.props.gridData.data.map((item, index) => this.renderRow(item, index, isHost));
         }
 
         return [<Row key={`body${1}`} ><Cell colSpan="5"><NoDataTitle /></Cell></Row>];
@@ -77,7 +79,7 @@ export class DataGrid extends Component {
         this.props.openDeleteTemplatePopup({ templateId: id });
     }
 
-    renderRow = (item, index) => (
+    renderRow = (item, index, isHost) => (
         <Row key={item.notificationTemplateId} >
             <Cell className="text-center">{index + this.startIndex}</Cell>
             <Cell>{item.notificationTypeName}</Cell>
@@ -89,8 +91,9 @@ export class DataGrid extends Component {
                     </PanelHeader>
                     <TemplatePreview text={item.content} />
                 </Panel></Cell>
-            <Cell className="text-center">
-                {this.props.haveHostPermission &&
+            {
+                isHost &&
+                <Cell className="text-center">
                     <>
                         <span className="icon-edit" data-templateid={item.notificationTemplateId} onClick={this.handleEditTemplate} />
                         {
@@ -99,8 +102,8 @@ export class DataGrid extends Component {
                             <span className="icon-delete" data-templateid={item.notificationTemplateId} onClick={this.handleDeleteTemplate} />
                         }
                     </>
-                }
-            </Cell>
+                </Cell>
+            }
         </Row>
     )
 
@@ -111,6 +114,7 @@ export class DataGrid extends Component {
 
         const { total } = this.props.gridData;
         const { pageIndex, pageSize } = this.props.gridParams;
+        const { haveHostPermission } = this.props;
 
         const pagingOption = {
             PageIndex: pageIndex,
@@ -123,8 +127,8 @@ export class DataGrid extends Component {
             <Table
                 width={1620}
                 autoWidth={false}
-                header={this.buildHeader()}
-                body={this.buildBody()}
+                header={this.buildHeader(haveHostPermission)}
+                body={this.buildBody(haveHostPermission)}
                 isPaging
                 pageOption={pagingOption}
                 onPaging={this.onPaging}
