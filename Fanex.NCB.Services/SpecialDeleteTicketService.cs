@@ -42,7 +42,7 @@
                 }
             }
 
-            await sendNotificationService.ScanAndSendNotification();
+            ExecuteJobScan();
         }
 
         private async Task OnAfterImportData(CommandResult commandResult, IEnumerable<NotificationMessage> notifications)
@@ -58,6 +58,11 @@
                     await chatbotService.SendMessageToMultitpleAsync(notifications);
                 }
             }
+        }
+
+        private void ExecuteJobScan()
+        {
+            Task.Run(() => sendNotificationService.ScanAndSendNotification()).ConfigureAwait(false);
         }
 
         private async Task<ValueTuple<CommandResult, IEnumerable<NotificationMessage>>> ImportMessageToChatbotDB(

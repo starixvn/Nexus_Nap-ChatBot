@@ -228,14 +228,15 @@
 
                 foreach (var item in batch)
                 {
-                    item.Recipients = new List<ConversationInfo>(patchRecipient.Select(r => new ConversationInfo
-                    {
-                        BotConversationId = r.BotConversationId,
-                        ServiceUrl = r.ServiceUrl,
-                        ChannelId = r.ChannelId,
-                        ConversationId = r.ChatGroupConversationId,
-                        BotName = r.BotName
-                    }).DistinctBy(r => r.ConversationId));
+                    item.Recipients = new List<ConversationInfo>(patchRecipient.Where(r => r.NotificationId == item.NotifictaionId)
+                        .Select(r => new ConversationInfo
+                        {
+                            BotConversationId = r.BotConversationId,
+                            ServiceUrl = r.ServiceUrl,
+                            ChannelId = r.ChannelId,
+                            ConversationId = r.ChatGroupConversationId,
+                            BotName = r.BotName
+                        }).DistinctBy(r => r.ConversationId));
                 }
                 batchs.Add(new ValueTuple<List<NotificationMessage>, List<NotificationRecipient>>(batch, patchRecipient));
             }
