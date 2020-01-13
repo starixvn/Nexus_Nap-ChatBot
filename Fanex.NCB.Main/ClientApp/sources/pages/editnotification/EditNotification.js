@@ -165,17 +165,6 @@ export default class EditNotification extends React.Component {
         }).catch(errorResponseHandler);
     }
 
-    getRecipientIds = (ids, collection) => {
-        for (let i = 0; i < collection.length; i++) {
-            const item = collection[i];
-            if (item.children && item.children.length > 0) {
-                this.getRecipientIds(ids, item.children);
-            } else {
-                ids.push(item.node.props.realValue);
-            }
-        }
-    }
-
     schema = object().shape({
         title: string().required(Labels.FieldRequired),
         content: string().required(Labels.FieldRequired),
