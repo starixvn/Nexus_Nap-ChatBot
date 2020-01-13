@@ -23,7 +23,7 @@ export const getRealValuesFromExtra = function (result, collection) {
         if (item.children && item.children.length > 0) {
             getRealValuesFromExtra(result, item.children);
         } else {
-            const value = item.realValue || item.props.realValue;
+            const value = item.realValue || (item.node ? item.node.props.realValue : item.props.realValue);
 
             if (!result.some(r => r === value)) {
                 result.push(value);
