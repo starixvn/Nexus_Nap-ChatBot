@@ -13,5 +13,7 @@
         public const string VoidingAbnormalBets = "VoidingAbnormalBets";
 
         public const string MonitorSkypebot = "MonitorSkypebot";
+
+        public const string OneMinuteJobs = "OneMinuteJobs";
     }
 }

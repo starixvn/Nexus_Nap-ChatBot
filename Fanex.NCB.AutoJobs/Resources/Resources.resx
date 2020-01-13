@@ -141,4 +141,7 @@
   <data name="ScanAndSendNotification" xml:space="preserve">
     <value>Scan and Send Notification</value>
   </data>
+  <data name="OneMinuteJobs" xml:space="preserve">
+    <value>Execute every minute jobs</value>
+  </data>
 </root>

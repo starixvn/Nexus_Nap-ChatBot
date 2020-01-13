@@ -25,6 +25,7 @@
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
         public SpecialDeleteService(IBaseService baseService,
+       	    IChatbotService chatbotService,
             IPushSignalService pushSignalService,
             IChatbotService chatbotService,
             IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
@@ -51,7 +52,6 @@
                         await OnAfterImportData(result.Item1, result.Item2);
                     }
                 }
-            }
         }
 
         private async Task OnAfterImportData(CommandResult commandResult, IEnumerable<NotificationMessage> notifications)
@@ -67,8 +67,6 @@
                     await chatbotService.SendMessageToMultitpleAsync(notifications);
                 }
             }
-
-            await sendNotificationService.ScanAndSendNotification();
         }
 
         private async Task<ValueTuple<CommandResult, IEnumerable<NotificationMessage>>> ImportMessageToChatbotDB(
