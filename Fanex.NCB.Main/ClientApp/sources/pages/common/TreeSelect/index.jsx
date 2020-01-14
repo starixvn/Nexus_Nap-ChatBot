@@ -23,7 +23,22 @@ export const getRealValuesFromExtra = function (result, collection) {
         if (item.children && item.children.length > 0) {
             getRealValuesFromExtra(result, item.children);
         } else {
-            const value = item.realValue || (item.node ? item.node.props.realValue : item.props.realValue);
+            const value = item.realValue || item.node.props.realValue;
+
+            if (!result.some(r => r === value)) {
+                result.push(value);
+            }
+        }
+    }
+};
+
+export const getRealValuesFromAllCheckNodes = function (result, collection) {
+    for (let i = 0; i < collection.length; i++) {
+        const item = collection[i].node ? collection[i].node : collection[i];
+        if (item.props.children && item.props.children.length > 0) {
+            getRealValuesFromAllCheckNodes(result, item.props.children);
+        } else {
+            const value = item.realValue || item.props.realValue;
 
             if (!result.some(r => r === value)) {
                 result.push(value);

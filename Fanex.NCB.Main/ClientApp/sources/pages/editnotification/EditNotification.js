@@ -8,7 +8,7 @@ import ReactMde from 'react-mde';
 import { Formik } from 'formik';
 import { object, string, array, date } from 'yup';
 import { NCBBreadcrum } from '../common/breadcrumbs/breadcrumbs';
-import TreeSelect, { getRealValuesFromExtra } from '../common/TreeSelect/index';
+import TreeSelect, { getRealValuesFromAllCheckNodes } from '../common/TreeSelect/index';
 import DatePicker from '../common/DatePicker/index';
 import Labels from '../common/Labels';
 import { editorCommandList, invalidFieldClass } from '../constants/constants';
@@ -128,9 +128,8 @@ export default class EditNotification extends React.Component {
 
         const formik = this.refs.form;
         const values = formik.state.values;
-
         const recipientIds = [];
-        getRealValuesFromExtra(recipientIds, values.recipients.allCheckedNodes);
+        getRealValuesFromAllCheckNodes(recipientIds, values.recipients.allCheckedNodes);
 
         const data = {
             notificationId: this.state.notificationId,
