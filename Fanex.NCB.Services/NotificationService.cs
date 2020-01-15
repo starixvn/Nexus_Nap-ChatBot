@@ -233,5 +233,14 @@
             return notifications;
         }
 
+        public async Task<IEnumerable<Notification>> GetUpdatedNotificationAsync(string notificationIds)
+        {
+            var criteria = new GetUpdatedNotificationCriteria
+            {
+                NotificationIds = notificationIds
+            };
+
+            return await baseService.GetDataAsync<Notification>(criteria);
+        }
     }
 }

@@ -46,10 +46,8 @@ export default class SignalR extends PureComponent {
         this.props.onInsertNewNotification(notificationIds);
     }
 
-    onUpdateNotificationStatus(notificationIds) {
-        this.props.onUpdateNotificationStatus(notificationIds);
-        let button = document.getElementById('submit-button');
-        if (button) button.click();
+    onUpdateNotificationStatus(notificationIds) {        
+    	this.props.onUpdateNotificationStatus(notificationIds);
     }
 
     render() {

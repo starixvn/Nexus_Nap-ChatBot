@@ -25,6 +25,7 @@
         private readonly IChatbotService chatbotService;
         private readonly IBaseService baseService;
         private readonly IPushSignalService pushSignalService;
+        private readonly IPushSignalService pushSignalService;
         private readonly IOptionsSnapshot<AppSettings> appSettings;
         private readonly IOptionsSnapshot<MonitorChatbot> monitorOptions;
         private readonly ILogger logger;
@@ -32,12 +33,14 @@
         public SendNotificationService(IChatbotService chatbotService,
             IBaseService baseService,
             IPushSignalService pushSignalService,
+            IPushSignalService pushSignalService,
             IOptionsSnapshot<AppSettings> appSettings,
             IOptionsSnapshot<MonitorChatbot> monitorOptions,
             ILogger logger)
         {
             this.chatbotService = chatbotService;
             this.baseService = baseService;
+            this.pushSignalService = pushSignalService;
             this.pushSignalService = pushSignalService;
             this.appSettings = appSettings;
             this.monitorOptions = monitorOptions;

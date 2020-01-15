@@ -105,5 +105,14 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
+        public async Task<IActionResult> GetUpdatedNotification([FromBody]string notificationIds)
+        {
+            var result = await notificationService.GetUpdatedNotificationAsync(notificationIds);
+
+            return Json(result);
+        }
     }
 }
