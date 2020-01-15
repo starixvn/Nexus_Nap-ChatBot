@@ -41,7 +41,6 @@
     using ONEbook.UM.Helpers;
     using ONEbook.UM.Services;
     using ONEbook.UM.Transport;
-    using RestSharp;
     using Sentry;
 
     public class Startup
@@ -129,8 +128,11 @@
             services.Configure<NotifyChatGroupOption>(Configuration.GetSection("NotifyChatGroupOptions"));
             services.AddSingleton(new UMClientConfiguration().Initialize(Configuration));
             services.AddTransient<ILogger, Logger>();
+
             RegisterService(services);
             RegisterRepository(services);
+
+            services.AddSignalR();
 
             RegisterHangfire(services, connections.FirstOrDefault(x => x.Key.Equals("Hangfire")).Value.ConnectionString);
 
@@ -193,8 +195,9 @@
             services.AddScoped<ISpecialDeleteService, SpecialDeleteService>();
             services.AddScoped<IJobService, JobService>();
             services.AddScoped<IPushSignalService, PushSignalService>();
-            services.AddScoped<IRestClient, RestClient>();
+            services.AddScoped<ISignalRService, SignalRService>();
             services.AddTransient<IRecurringJobManager, RecurringJobManager>();
+            services.AddScoped<SignalRService>();
         }
 
         private static void RegisterRepository(IServiceCollection services)

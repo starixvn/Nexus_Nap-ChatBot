@@ -17,6 +17,7 @@
     using ONEbook.UM.Helpers;
     using ONEbook.UM.Services;
     using ONEbook.UM.Transport;
+    using RestSharp;
 
     public static class ServiceExtensions
     {
@@ -32,13 +33,13 @@
             services.AddScoped<ISendNotificationService, SendNotificationService>();
             services.AddScoped<ISyncDataService, SyncDataService>();
             services.AddScoped<INotificationTemplaceService, NotificationTemplaceService>();
+            services.AddScoped<ISignalRService, SignalRService>();
+            services.AddScoped<IPushSignalService, PushSignalService>();
 
             services.AddSingleton<IUMCacheService, UMCacheService>();
             services.AddSingleton<IUMRestClient, UMRestClient>();
             services.AddSingleton<IHttpContextHelper, HttpContextHelper>();
             services.AddSingleton<IMaintenanceService, MaintenanceService>();
-            services.AddSingleton<ISignalRService, SignalRService>();
-            services.AddSingleton<SignalRService>();
         }
 
         public static void RegisterRepositories(this IServiceCollection services)

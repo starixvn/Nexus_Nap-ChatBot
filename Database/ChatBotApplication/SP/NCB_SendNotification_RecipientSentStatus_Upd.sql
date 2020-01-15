@@ -174,7 +174,8 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
 
 	#Get updated status Notification Ids
 	IF ROW_COUNT() > 0 THEN
-		SET updatedNotificationIds = SELECT GROUP_CONCAT(n.NotificationID SEPARATOR ',')
+		SELECT GROUP_CONCAT(DISTINCT n.NotificationID SEPARATOR ',')
+										INTO updatedNotificationIds
 										FROM Notification n 
 										INNER JOIN tmp_NotificationIDs t ON n.NotificationID = t.NotificationID 
 										AND t.StatusID <> NOTIFICATION_STATUSID_SENDING

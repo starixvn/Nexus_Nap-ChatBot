@@ -19,15 +19,18 @@
     public class SpecialDeleteService : ISpecialDeleteService
     {
         private readonly IBaseService baseService;
+        private readonly IPushSignalService pushSignalService;
         private readonly IChatbotService chatbotService;
         private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
         public SpecialDeleteService(IBaseService baseService,
+            IPushSignalService pushSignalService,
             IChatbotService chatbotService,
             IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
         {
             this.baseService = baseService;
+            this.pushSignalService = pushSignalService;
             this.chatbotService = chatbotService;
             this.jobSettings = jobSettings;
         }
@@ -77,6 +80,11 @@
             };
 
             var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
+
+            if (!string.IsNullOrWhiteSpace(criteria.InsertedNotificationIds))
+            {
+                PushInsertedNotifications(criteria.InsertedNotificationIds);
+            }
             var notification = GenerateNotifificationMessage(data.Item2, data.Item1);
             var command = new CommandResult
             {
@@ -232,5 +240,10 @@
                 await OnAfterImportData(command, notification);
             }
         }
+        
+         private void PushInsertedNotifications(string notificationIds)
+        {
+            Task.Run(() => pushSignalService.OnInsertNotification(notificationIds));
+	}
     }
 }

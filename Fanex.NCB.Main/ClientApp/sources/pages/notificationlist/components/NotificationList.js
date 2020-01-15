@@ -15,7 +15,7 @@ import TreeSelect, { getRealValuesFromCollection } from '../../common/TreeSelect
 import errorResponseHandler from '../../lib/errorResponseHandler';
 import Site from '../../lib/site';
 import DataGrid from './DataGrid';
-import SignalR from './UpdateNotifictaionStatus';
+import SignalR from './SignalR';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 
 export default class NotificationList extends Component {
@@ -239,11 +239,68 @@ export default class NotificationList extends Component {
 
     renderUserOption = user => <option key={user.id} value={user.id}>{user.name}</option>
 
+    onUpdateNotificationStatus = (notificationIds) => {
+        const gridData = this.state.tableData;
+        console.log(gridData);
+        debugger;
+        const handledNotiIds = getExistedNotificationIds(notificationIds, gridData.data);
+        const data = getUpdatedNotification(handledNotiIds);
+        let dataTable = { ...this.state.tableData };
+        dataTable.data.map(noti => {
+            let index = data.findIndex(x => x.notificationId === noti.notificationId);
+            if (index !== -1) {
+                noti = data[index];
+            }
+            return noti;
+        });
+        this.setState({ dataTable: dataTable });
+    }
+
+    onInsertedNewNotification = (notificationIds) => {
+        const gridData = this.state.tableData;
+        console.log(gridData);
+        debugger;
+        const handledNotiIds = getNotExistedNotificationIds(notificationIds, gridData.data);
+        if (handledNotiIds) {
+            const data = getUpdatedNotification(handledNotiIds);
+            let dataTable = { ...this.state.tableData };
+            dataTable.data.splice(0, data.length, data);
+            this.setState({ dataTable: dataTable });
+        }
+    }
+
+    getNotExistedNotificationIds = (notificationIds, notifications) => {
+        const ids = notificationIds.split(',');
+        const existedIds = ids.filter(id => !notifications.some(n => n.notificationIds === parseInt(id, 10)));
+        return existedIds.join(',');
+    }
+
+    getExistedNotificationIds = (notificationIds, notifications) => {
+        const ids = notificationIds.split(',');
+        const existedIds = ids.filter(id => notifications.some(n => n.notificationIds === parseInt(id, 10)));
+        return existedIds.join(',');
+    }
+
+    getUpdatedNotification = (notificationIds) => {
+        if (notificationIds) {
+            axios.get(Site.resolveClientUrl('NotificationList/GetUpdatedNotification'), {
+                params: {
+                    notificationIds
+                }
+            }).then(response => {
+                return response.data;
+            });
+        }
+    }
+
     render() {
         return (
             <div>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification List" />
-                <SignalR />
+                <SignalR
+                    onInsertNewNotification={this.onInsertedNewNotification}
+                    onUpdateNotificationStatus={this.onUpdateNotificationStatus}
+                />
                 <Form className="form-filter" onSubmit={this.handleSearch} >
                     <FormGroup>
                         <Label className="form-label">Notification Type</Label>

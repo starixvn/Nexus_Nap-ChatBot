@@ -62,8 +62,9 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 
 	#Get updated status Notification Ids
 	IF ROW_COUNT() > 0 THEN
-		SET updatedNotificationIds = SELECT GROUP_CONCAT(t.NotificationID SEPARATOR ',')
-										FROM tmp_PlannedNotification t WHERE t.LockSuccess = 1;
+		SELECT GROUP_CONCAT(DISTINCT t.NotificationID SEPARATOR ',')
+		INTO updatedNotificationIds
+		FROM tmp_PlannedNotification t WHERE t.LockSuccess = 1;
 	ELSE
 		SET updatedNotificationIds = '';
 	END IF;									  

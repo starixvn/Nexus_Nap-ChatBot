@@ -29,6 +29,10 @@ export default class SignalR extends PureComponent {
             this.onUpdateNotificationStatus(notificationIds);
         });
 
+        this.connection.on('InsertNewNotifications', (notificationIds) => {
+            this.onInsertNotifications(notificationIds);
+        });
+
         this.connection.start()
             .then(() => console.info('SignalR Connected'))
             .catch(err => console.error('SignalR Connection Error: ', err));
@@ -38,10 +42,14 @@ export default class SignalR extends PureComponent {
         this.connection.stop();
     }
 
+    onInsertNotifications(notificationIds) {
+        this.props.onInsertNewNotification(notificationIds);
+    }
+
     onUpdateNotificationStatus(notificationIds) {
         console.log(notificationIds);
-        let button = document.getElementById('submit-button');
-        if (button) button.click();
+        this.props.onUpdateNotificationStatus(notificationIds);
+       
     }
 
     render() {

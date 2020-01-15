@@ -25,6 +25,7 @@
         private readonly IChatbotService chatbotService;
         private readonly IBaseService baseService;
         private readonly ISignalRService signalRService;
+        private readonly IPushSignalService pushSignalService;
         private readonly IOptionsSnapshot<AppSettings> appSettings;
         private readonly IOptionsSnapshot<MonitorChatbot> monitorOptions;
         private readonly ILogger logger;
@@ -32,6 +33,7 @@
         public SendNotificationService(IChatbotService chatbotService,
             IBaseService baseService,
             ISignalRService signalRService,
+            IPushSignalService pushSignalService,
             IOptionsSnapshot<AppSettings> appSettings,
             IOptionsSnapshot<MonitorChatbot> monitorOptions,
             ILogger logger)
@@ -39,6 +41,7 @@
             this.chatbotService = chatbotService;
             this.baseService = baseService;
             this.signalRService = signalRService;
+            this.pushSignalService = pushSignalService;
             this.appSettings = appSettings;
             this.monitorOptions = monitorOptions;
             this.logger = logger;
@@ -86,7 +89,16 @@
         {
             var criteria = new GetNotificationsToSendCriteria();
             var notifications = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria);
+            if (!string.IsNullOrWhiteSpace(criteria.UpdatedNotificationIds))
+            {
+                PushNotificationUpdateStatus(criteria.UpdatedNotificationIds);
+            }
             return notifications;
+        }
+
+        private void PushNotificationUpdateStatus(string notificationIds)
+        {
+            Task.Run(() => pushSignalService.OnUpdateNotificationStatus(notificationIds));
         }
 
         private static IList<SendMessageResult> ConvertJsonResponse(string json)
@@ -282,6 +294,11 @@
                     SentStatus = Regex.Unescape(json)
                 };
                 await baseService.ExecuteNonQueryAsync(command);
+
+                if (!string.IsNullOrWhiteSpace(command.UpdatedNotificationIds))
+                {
+                    PushNotificationUpdateStatus(command.UpdatedNotificationIds);
+                }
             }
         }
 

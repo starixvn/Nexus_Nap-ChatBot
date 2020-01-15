@@ -13,7 +13,7 @@
         private readonly IRestClient restClient;
         private readonly IOptionsSnapshot<SignalRSettings> signalRSettings;
 
-        public PushSignalService(IRestClient restClient, IOptionsSnapshot<SignalRSettings> signalRSettings)
+        public PushSignalService(IOptionsSnapshot<SignalRSettings> signalRSettings)
         {
             this.restClient = new RestClient { Encoding = Encoding.UTF8 };
             this.signalRSettings = signalRSettings;
