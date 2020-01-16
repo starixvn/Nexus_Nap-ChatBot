@@ -1,0 +1,52 @@
+DROP PROCEDURE IF EXISTS NCB_ResendNotification_Sel;
+
+DELIMITER //
+
+CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_ResendNotification_Sel`(
+     IN notificationID INT
+     , IN isSendAll BIT
+    /*
+		Creator: 20200116@Percy
+        Task: Chatbot For Licensee - Resend Notification
+        Redmine: https://nexdev.net/issues/127217
+        Param:
+				- isSendAll = 0: Resend Error
+		Return Data Set:
+				- #1st dataset: Main Notification Info
+                - #2nd dataset: List of Recipients
+        Revisions:
+				- 20200116@Percy: Initialize SP [RedmineID: #127217]
+    */
+)
+BEGIN
+	DECLARE SENT_STATUSID_ERROR TINYINT UNSIGNED DEFAULT 2;
+    DECLARE SENT_STATUSID_RESOLVED TINYINT UNSIGNED DEFAULT 5;
+    
+	#1st dataset: Main Notification Info
+	SELECT nt.NotificationTypeID
+		, nt.NotificationTypeName
+		, n.Title
+        , n.Content
+    FROM Notification n
+		INNER JOIN NotificationType nt ON n.NotificationTypeID = nt.NotificationTypeID
+    WHERE n.NotificationID = notificationID;
+    
+    #2nd dataset: List of Recipients
+    SELECT DISTINCT r.RecipientID
+		, r.RecipientName
+		, CASE
+				WHEN nrl.ErrMsg LIKE '[Internal Error]%' THEN 1
+                ELSE 0
+			END AS IsChatBotError
+    FROM NotificationRecipientList nrl
+		INNER JOIN Recipient r ON nrl.RecipientID = r.RecipientID
+	WHERE nrl.NotificationID = notificationID
+		AND (isSendAll = 1
+			OR nrl.StatusID IN (SENT_STATUSID_ERROR, SENT_STATUSID_RESOLVED)
+        );
+END;
+
+//
+DELIMITER ;
+
+GRANT EXECUTE ON PROCEDURE NCB_ResendNotification_Sel TO 'ncb.admin'@'%';
