@@ -11,34 +11,42 @@
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Newtonsoft.Json;
+    using ONEbook.UM.Services;
 
     public class SpecialDeleteTicketService : ISpecialDeleteTicketService
     {
         private readonly IBaseService baseService;
         private readonly IChatbotService chatbotService;
         private readonly ISendNotificationService sendNotificationService;
+        private readonly IMaintenanceService maintenanceService;
 
         public SpecialDeleteTicketService(IBaseService baseService,
             IChatbotService chatbotService,
+            IMaintenanceService maintenanceService,
             ISendNotificationService sendNotificationService)
         {
             this.baseService = baseService;
             this.chatbotService = chatbotService;
+            this.maintenanceService = maintenanceService;
             this.sendNotificationService = sendNotificationService;
         }
 
         public async Task PullTicketAndCreateNotification()
         {
-            var systemSettings = await GetSystemSettings();
-
-            if (systemSettings != null)
+            var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
+            if (!maintanceTime.IsUnderMaintenanceTime)
             {
-                var messages = await GetMessageFromSpecialDelete(systemSettings);
-                if (messages.Item1.Any() && messages.Item2.Any())
-                {
-                    var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
+                var systemSettings = await GetSystemSettings();
 
-                    await OnAfterImportData(result.Item1, result.Item2);
+                if (systemSettings != null)
+                {
+                    var messages = await GetMessageFromSpecialDelete(systemSettings);
+                    if (messages.Item1.Any() && messages.Item2.Any())
+                    {
+                        var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
+
+                        await OnAfterImportData(result.Item1, result.Item2);
+                    }
                 }
             }
 

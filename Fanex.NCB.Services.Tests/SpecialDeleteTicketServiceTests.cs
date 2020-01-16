@@ -10,6 +10,8 @@
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
     using Fanex.NCB.Shared.Services.Interfaces;
     using NSubstitute;
+    using ONEbook.UM.Models;
+    using ONEbook.UM.Services;
     using Xunit;
 
     public class SpecialDeleteTicketServiceTests
@@ -17,11 +19,13 @@
         private IBaseService baseService;
         private IChatbotService chatbotService;
         private ISendNotificationService sendNotificationService;
+        private IMaintenanceService maintenanceService;
 
         [Fact]
         public async Task PullTicketAndCreateNotification_WhenGetSettingIsNull_DoNothing()
         {
             var service = GetService();
+
             baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns((SystemSetting)null);
 
             //Actual
@@ -36,6 +40,7 @@
         public async Task PullTicketAndCreateNotification_NoTicketToImport_DoNothing()
         {
             var service = GetService();
+
             baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns(
                 new SystemSetting { BatchSize = 100, MaxMessageID = 1989, MsgContentsTypeLst = "ABC" });
 
@@ -53,6 +58,7 @@
         public async Task PullTicketAndCreateNotification_ImportFailed_NotifyChatGroup()
         {
             var service = GetService();
+
             baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns(
                 new SystemSetting { BatchSize = 100, MaxMessageID = 1989, MsgContentsTypeLst = "ABC" });
 
@@ -88,7 +94,13 @@
             baseService = Substitute.For<IBaseService>();
             chatbotService = Substitute.For<IChatbotService>();
             sendNotificationService = Substitute.For<ISendNotificationService>();
-            return new SpecialDeleteTicketService(baseService, chatbotService, sendNotificationService);
+            maintenanceService = Substitute.For<IMaintenanceService>();
+            var umTime = new UnderMaintenanceTime
+            {
+                IsUnderMaintenanceTime = false
+            };
+            maintenanceService.GetUnderMaintenanceTimeAsync().Returns(umTime);
+            return new SpecialDeleteTicketService(baseService, chatbotService, maintenanceService, sendNotificationService);
         }
     }
 }
