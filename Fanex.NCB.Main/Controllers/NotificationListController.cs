@@ -17,12 +17,17 @@ namespace Fanex.NCB.SkypeBot.Controllers
     public class NotificationListController : Controller
     {
         private readonly INotificationService notificationService;
+        private readonly ISignalRService signalRService;
         private readonly INapSession napSession;
         private readonly IUserService userService;
 
-        public NotificationListController(INotificationService notificationService, INapSession napSession, IUserService userService)
+        public NotificationListController(INotificationService notificationService,
+            ISignalRService signalRService,
+            INapSession napSession,
+            IUserService userService)
         {
             this.notificationService = notificationService;
+            this.signalRService = signalRService;
             this.napSession = napSession;
             this.userService = userService;
         }
@@ -69,7 +74,10 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> Cancel(int notificationId)
         {
             var result = await notificationService.CancelAsync(notificationId, napSession.UserId).ConfigureAwait(false);
-
+            if (result.IsSuccessful)
+            {
+                PushSignalRToClient(notificationId.ToString());
+            }
             return Json(result);
         }
 
@@ -78,13 +86,20 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> Resolve([FromBody]ResolveNotificationViewModel data)
         {
             var result = await notificationService.ResolveAsync(data.NotificationId, data.ResolvedRemark, napSession.UserId).ConfigureAwait(false);
-
+            if (result.IsSuccessful)
+            {
+                PushSignalRToClient(data.NotificationId.ToString());
+            }
             return Json(result);
         }
 
-        [HttpPost]
+        private void PushSignalRToClient(string notificationIds)
+        {
+            Task.Run(() => signalRService.UpdateNotificationStatus(notificationIds));
+        }
+
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
-        public async Task<IActionResult> GetUpdatedNotification([FromBody]string notificationIds)
+        public async Task<IActionResult> GetUpdatedNotification(string notificationIds)
         {
             var result = await notificationService.GetUpdatedNotificationAsync(notificationIds);
 

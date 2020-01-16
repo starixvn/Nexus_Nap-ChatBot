@@ -17,6 +17,7 @@
     public class NotificationServiceTests
     {
         private IBaseService baseService;
+        private ISignalRService signalService;
         private ISendNotificationService sendNotificationService;
 
         [Fact]
@@ -303,8 +304,9 @@
         {
             baseService = Substitute.For<IBaseService>();
             sendNotificationService = Substitute.For<ISendNotificationService>();
+            signalService = Substitute.For<ISignalRService>();
 
-            return new NotificationService(baseService, sendNotificationService);
+            return new NotificationService(baseService, signalService, sendNotificationService);
         }
     }
 }

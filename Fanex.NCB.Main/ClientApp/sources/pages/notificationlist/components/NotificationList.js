@@ -241,54 +241,59 @@ export default class NotificationList extends Component {
 
     onUpdateNotificationStatus = (notificationIds) => {
         const gridData = this.state.tableData;
-        console.log(gridData);
-        debugger;
-        const handledNotiIds = getExistedNotificationIds(notificationIds, gridData.data);
-        const data = getUpdatedNotification(handledNotiIds);
-        let dataTable = { ...this.state.tableData };
-        dataTable.data.map(noti => {
-            let index = data.findIndex(x => x.notificationId === noti.notificationId);
-            if (index !== -1) {
-                noti = data[index];
-            }
-            return noti;
+
+        const handledNotiIds = this.getNotificationIdsToUpdate(notificationIds, gridData.data);
+
+        this.getUpdatedNotification(handledNotiIds, (data) => {
+            let tableData = { ...this.state.tableData };
+            tableData.data.map(noti => {
+                let index = data.findIndex(x => x.notificationId === noti.notificationId);
+
+                if (index !== -1) {
+                    noti = Object.assign(noti, data[index]);
+                }
+                return noti;
+            });
+            this.setState({ tableData: tableData });
         });
-        this.setState({ dataTable: dataTable });
     }
 
     onInsertedNewNotification = (notificationIds) => {
         const gridData = this.state.tableData;
-        console.log(gridData);
-        debugger;
-        const handledNotiIds = getNotExistedNotificationIds(notificationIds, gridData.data);
-        if (handledNotiIds) {
-            const data = getUpdatedNotification(handledNotiIds);
-            let dataTable = { ...this.state.tableData };
-            dataTable.data.splice(0, data.length, data);
-            this.setState({ dataTable: dataTable });
-        }
+        const newNotiIds = this.getNewNotificationIds(notificationIds, gridData.data);
+
+        this.getUpdatedNotification(newNotiIds, (data) => {
+            let tableData = { ...this.state.tableData };
+            data.map(noti => tableData.data.unshift(noti));
+            this.setState({ tableData: tableData });
+        });
     }
 
-    getNotExistedNotificationIds = (notificationIds, notifications) => {
+    getNewNotificationIds = (notificationIds, notifications) => {
         const ids = notificationIds.split(',');
-        const existedIds = ids.filter(id => !notifications.some(n => n.notificationIds === parseInt(id, 10)));
-        return existedIds.join(',');
+        const newIds = ids.filter(id => !notifications.some(n => n.notificationIds === parseInt(id, 10)));
+        return newIds.join(',');
     }
 
-    getExistedNotificationIds = (notificationIds, notifications) => {
+    getNotificationIdsToUpdate = (notificationIds, notifications) => {
         const ids = notificationIds.split(',');
-        const existedIds = ids.filter(id => notifications.some(n => n.notificationIds === parseInt(id, 10)));
-        return existedIds.join(',');
+        const updatedNotificationIds = notifications.filter(noti => ids.some(id => parseInt(id) === noti.notificationId));
+        const result = updatedNotificationIds.map(noti => noti.notificationId);
+        return result.join(',');
     }
 
-    getUpdatedNotification = (notificationIds) => {
+    getUpdatedNotification = (notificationIds, callback) => {
         if (notificationIds) {
             axios.get(Site.resolveClientUrl('NotificationList/GetUpdatedNotification'), {
                 params: {
                     notificationIds
                 }
             }).then(response => {
-                return response.data;
+                response.data.forEach(notification => {
+                    notification.configSendTime = DateTime.fromISO(notification.configSendTime);
+                    notification.recipientSentStatusJson = JSON.parse(notification.recipientSentStatusJson);
+                });
+                callback(response.data);
             });
         }
     }

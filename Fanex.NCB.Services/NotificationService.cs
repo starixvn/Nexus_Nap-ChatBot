@@ -15,11 +15,15 @@
     public class NotificationService : INotificationService
     {
         private readonly IBaseService baseService;
+        private readonly ISignalRService signalRService;
         private readonly ISendNotificationService sendNotificationService;
 
-        public NotificationService(IBaseService baseService, ISendNotificationService sendNotificationService)
+        public NotificationService(IBaseService baseService,
+            ISignalRService signalRService,
+            ISendNotificationService sendNotificationService)
         {
             this.baseService = baseService;
+            this.signalRService = signalRService;
             this.sendNotificationService = sendNotificationService;
         }
 
@@ -39,12 +43,19 @@
 
             var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
 
+            PushSignalR(command.NotificationId);
+
             if (model.SendImmediately)
             {
                 SendNotificationImediately(command.NotificationId);
             }
 
             return result;
+        }
+
+        private void PushSignalR(int notifiactionId)
+        {
+            Task.Run(() => signalRService.InsertNewNotification(notifiactionId.ToString()));
         }
 
         public async Task<IEnumerable<Recipient>> GetRecipientsAsync(int notificationTypeId, int? productId)
@@ -213,7 +224,13 @@
                 NotificationIds = notificationIds
             };
 
-            return await baseService.GetDataAsync<Notification>(criteria);
+            var notifications = await baseService.GetDataAsync<Notification>(criteria);
+            foreach (var notification in notifications)
+            {
+                notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();
+            }
+
+            return notifications;
         }
 
     }

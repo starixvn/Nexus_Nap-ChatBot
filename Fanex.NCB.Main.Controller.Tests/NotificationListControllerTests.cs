@@ -1,8 +1,6 @@
 ﻿namespace Fanex.NCB.Main.Controllers.Tests
 {
-    using System;
     using System.Collections.Generic;
-    using System.Text;
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NAP.Client;
@@ -23,6 +21,7 @@
     public class NotificationListControllerTests
     {
         private INotificationService notificationService;
+        private ISignalRService signalRService;
         private INapSession napSession;
         private IUserService userService;
 
@@ -105,6 +104,7 @@
             var jsonResult = Assert.IsType<JsonResult>(result);
 
             var commandResult = Assert.IsType<CommandResult>(jsonResult.Value);
+            SignalRServiceHasBeenCall(notificationId.ToString());
             Assert.True(commandResult.IsSuccessful);
         }
 
@@ -122,9 +122,15 @@
             var result = await controller.Resolve(data).ConfigureAwait(false);
 
             var jsonResult = Assert.IsType<JsonResult>(result);
+            SignalRServiceHasBeenCall(data.NotificationId.ToString());
 
             var commandResult = Assert.IsType<CommandResult>(jsonResult.Value);
             Assert.True(commandResult.IsSuccessful);
+        }
+
+        private void SignalRServiceHasBeenCall(string notificationIds)
+        {
+            Task.Run(() => signalRService.Received().UpdateNotificationStatus(notificationIds));
         }
 
         private NotificationListController GetController()
@@ -132,8 +138,9 @@
             notificationService = Substitute.For<INotificationService>();
             napSession = Substitute.For<INapSession>();
             userService = Substitute.For<IUserService>();
+            signalRService = Substitute.For<ISignalRService>();
 
-            return new NotificationListController(notificationService, napSession, userService);
+            return new NotificationListController(notificationService, signalRService, napSession, userService);
         }
     }
 }

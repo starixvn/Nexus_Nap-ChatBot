@@ -47,9 +47,7 @@ export default class SignalR extends PureComponent {
     }
 
     onUpdateNotificationStatus(notificationIds) {
-        console.log(notificationIds);
         this.props.onUpdateNotificationStatus(notificationIds);
-       
     }
 
     render() {
