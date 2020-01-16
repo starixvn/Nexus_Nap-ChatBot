@@ -24,7 +24,6 @@
     {
         private readonly IChatbotService chatbotService;
         private readonly IBaseService baseService;
-        private readonly ISignalRService signalRService;
         private readonly IPushSignalService pushSignalService;
         private readonly IOptionsSnapshot<AppSettings> appSettings;
         private readonly IOptionsSnapshot<MonitorChatbot> monitorOptions;
@@ -32,7 +31,6 @@
 
         public SendNotificationService(IChatbotService chatbotService,
             IBaseService baseService,
-            ISignalRService signalRService,
             IPushSignalService pushSignalService,
             IOptionsSnapshot<AppSettings> appSettings,
             IOptionsSnapshot<MonitorChatbot> monitorOptions,
@@ -40,7 +38,6 @@
         {
             this.chatbotService = chatbotService;
             this.baseService = baseService;
-            this.signalRService = signalRService;
             this.pushSignalService = pushSignalService;
             this.appSettings = appSettings;
             this.monitorOptions = monitorOptions;
