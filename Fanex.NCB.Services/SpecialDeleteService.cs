@@ -25,13 +25,13 @@
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
         public SpecialDeleteService(IBaseService baseService,
-       	    IChatbotService chatbotService,
+               IChatbotService chatbotService,
             IPushSignalService pushSignalService,
             IChatbotService chatbotService,
             IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
         {
             this.baseService = baseService;
-            this.pushSignalService = pushSignalService;           
+            this.pushSignalService = pushSignalService;
             this.chatbotService = chatbotService;
             this.jobSettings = jobSettings;
         }
