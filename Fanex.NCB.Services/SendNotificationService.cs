@@ -315,6 +315,7 @@
 
             await SendNotificationToRecipients(notifications.Item1, notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
         }
+
         private async Task WriteLog(Exception exception)
         {
             string errMsg = string.Format(
@@ -327,13 +328,6 @@
                 exception.StackTrace);
             await logger.ErrorAsync(errMsg);
         }
-        
-        private void PushSignalR(int notifiactionId)
-        {
-            Task.Run(
-                () => signalRService.InsertNewNotification(notifiactionId.ToString())
-                );
-	}
 
     }
 }
