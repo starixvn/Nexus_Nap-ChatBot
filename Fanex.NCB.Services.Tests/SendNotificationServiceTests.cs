@@ -104,7 +104,6 @@
             await service.SendNotificationImmediately(1);
 
             //Assert
-            await signalRService.Received().InsertNewNotification(Arg.Any<string>());
             await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
             await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
         }
@@ -143,7 +142,6 @@
         {
             chatbotService = Substitute.For<IChatbotService>();
             baseService = Substitute.For<IBaseService>();
-            signalRService = Substitute.For<ISignalRService>();
             logger = Substitute.For<ILogger>();
             monitor = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
 

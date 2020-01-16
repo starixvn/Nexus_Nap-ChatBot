@@ -24,7 +24,7 @@
     {
         private readonly IChatbotService chatbotService;
         private readonly IBaseService baseService;
-        private readonly IPushSignalService pushSignalService;
+        private readonly ISignalRService signalRService;
         private readonly IPushSignalService pushSignalService;
         private readonly IOptionsSnapshot<AppSettings> appSettings;
         private readonly IOptionsSnapshot<MonitorChatbot> monitorOptions;
@@ -32,7 +32,7 @@
 
         public SendNotificationService(IChatbotService chatbotService,
             IBaseService baseService,
-            IPushSignalService pushSignalService,
+            ISignalRService signalRService,
             IPushSignalService pushSignalService,
             IOptionsSnapshot<AppSettings> appSettings,
             IOptionsSnapshot<MonitorChatbot> monitorOptions,
@@ -40,7 +40,7 @@
         {
             this.chatbotService = chatbotService;
             this.baseService = baseService;
-            this.pushSignalService = pushSignalService;
+            this.signalRService = signalRService;
             this.pushSignalService = pushSignalService;
             this.appSettings = appSettings;
             this.monitorOptions = monitorOptions;
@@ -304,7 +304,6 @@
 
         public async Task SendNotificationImmediately(int notifiactionId)
         {
-            PushSignalR(notifiactionId);
             var criteria = new GetNotificationByIdCriteria
             {
                 NotificationId = notifiactionId

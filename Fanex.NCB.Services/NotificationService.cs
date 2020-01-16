@@ -240,7 +240,13 @@
                 NotificationIds = notificationIds
             };
 
-            return await baseService.GetDataAsync<Notification>(criteria);
+            var notifications = await baseService.GetDataAsync<Notification>(criteria);
+            foreach (var notification in notifications)
+            {
+                notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();
+            }
+
+            return notifications;
         }
     }
 }

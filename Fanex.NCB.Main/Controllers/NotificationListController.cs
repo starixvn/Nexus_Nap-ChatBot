@@ -102,13 +102,16 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> GetUpdatedNotification(string notificationIds)
         {
             var result = await notificationService.GetUpdatedNotificationAsync(notificationIds);
-
             return Json(result);
         }
 
-        [HttpPost]
+        private void PushSignalRToClient(string notificationIds)
+        {
+            Task.Run(() => signalRService.UpdateNotificationStatus(notificationIds));
+        }
+
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
-        public async Task<IActionResult> GetUpdatedNotification([FromBody]string notificationIds)
+        public async Task<IActionResult> GetUpdatedNotification(string notificationIds)
         {
             var result = await notificationService.GetUpdatedNotificationAsync(notificationIds);
 
