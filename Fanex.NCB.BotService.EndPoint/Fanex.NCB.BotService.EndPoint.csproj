@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <LangVersion>latest</LangVersion>
@@ -30,7 +30,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -91,26 +90,5 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Bot.Builder">
-      <HintPath>..\..\NCB_new\Fanex.NCB.BotService.EndPoint\Dependency\Microsoft.Bot.Builder.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bot.Builder.Integration.AspNet.Core">
-      <HintPath>..\..\NCB_new\Fanex.NCB.BotService.EndPoint\Dependency\Microsoft.Bot.Builder.Integration.AspNet.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bot.Configuration">
-      <HintPath>..\..\NCB_new\Fanex.NCB.BotService.EndPoint\Dependency\Microsoft.Bot.Configuration.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bot.Connector">
-      <HintPath>..\..\NCB_new\Fanex.NCB.BotService.EndPoint\Dependency\Microsoft.Bot.Connector.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bot.Schema">
-      <HintPath>..\..\NCB_new\Fanex.NCB.BotService.EndPoint\Dependency\Microsoft.Bot.Schema.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory">
-      <HintPath>Dependency\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Rest.ClientRuntime">
-      <HintPath>..\..\NCB_new\Fanex.NCB.BotService.EndPoint\Dependency\Microsoft.Rest.ClientRuntime.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>
