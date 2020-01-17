@@ -223,9 +223,9 @@
 
         private void BackgroundJobAfterCreateNotification(int notificationId, bool isCreatNotification)
         {
-            Task.Run(
-                () => sendNotificationService.SendNotificationImmediately(notificationId)
-                .ContinueWith(result => isCreatNotification ? signalRService.InsertNewNotification(notificationId.ToString()) : signalRService.UpdateNotificationStatus(notificationId.ToString()))
+            Task.Run(() => sendNotificationService.SendNotificationImmediately(notificationId).ContinueWith(result =>
+            isCreatNotification ? signalRService.InsertNewNotification(notificationId.ToString()) :
+                signalRService.UpdateNotificationStatus(notificationId.ToString()))
                     );
         }
 
