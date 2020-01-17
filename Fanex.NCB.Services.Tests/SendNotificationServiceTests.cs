@@ -93,7 +93,7 @@
         }
 
         [Fact]
-        public async Task SendNotificationImmediately_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
+        public async Task SendNotificationImmediately_IsCreating_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
         {
             var notifications = FakeData();
             var response = FakeResponse();
@@ -101,11 +101,39 @@
             baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationByIdCriteria>()).Returns(notifications);
             chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
             //Actual
-            await service.SendNotificationImmediately(1);
+            await service.SendNotificationImmediately(1, true);
 
+            PushSignalNewNotification("1");
             //Assert
             await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
             await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+        }
+
+        [Fact]
+        public async Task SendNotificationImmediately_NotIsCreating_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
+        {
+            var notifications = FakeData();
+            var response = FakeResponse();
+            var service = GetService();
+            baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationByIdCriteria>()).Returns(notifications);
+            chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
+            //Actual
+            await service.SendNotificationImmediately(1, false);
+
+            PushSignalUpdateNotiStatus("1");
+            //Assert
+            await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+            await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+        }
+
+        private void PushSignalNewNotification(string notificationIds)
+        {
+            Task.Run(() => pushSignalService.Received().OnInsertNotification(notificationIds));
+        }
+
+        private void PushSignalUpdateNotiStatus(string notificationIds)
+        {
+            Task.Run(() => pushSignalService.Received().OnUpdateNotificationStatus(notificationIds));
         }
 
         #region Helper

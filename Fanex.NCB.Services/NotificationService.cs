@@ -43,19 +43,33 @@
 
             var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
 
-            PushSignalR(command.NotificationId);
-
-            if (model.SendImmediately)
+            if (result.IsSuccessful && model.SendImmediately)
             {
-                SendNotificationImediately(command.NotificationId);
+                BackgroundJobAfterCreateNotification(command.NotificationId, true);
+            }
+
+            if (result.IsSuccessful && !model.SendImmediately)
+            {
+                PushSignalRInsert(command.NotificationId);
             }
 
             return result;
         }
 
-        private void PushSignalR(int notifiactionId)
+        private void PushSignalRInsert(int notifiactionId)
         {
-            Task.Run(() => signalRService.InsertNewNotification(notifiactionId.ToString()));
+            if (notifiactionId > 0)
+            {
+                Task.Run(() => signalRService.InsertNewNotification(notifiactionId.ToString()));
+            }
+        }
+
+        private void PushSignalRUpdate(int notifiactionId)
+        {
+            if (notifiactionId > 0)
+            {
+                Task.Run(() => signalRService.UpdateNotificationStatus(notifiactionId.ToString()));
+            }
         }
 
         public async Task<IEnumerable<Recipient>> GetRecipientsAsync(int notificationTypeId, int? productId)
@@ -97,7 +111,13 @@
                 UserId = userId
             };
 
-            return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+
+            if (result.IsSuccessful)
+            {
+                PushSignalRUpdate(notificationId);
+            }
+            return result;
         }
 
         public async Task<NotificationErrorReport> GetNotificationErrorAsync(int notificationId)
@@ -128,7 +148,13 @@
                 UserId = userId
             };
 
-            return await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+
+            if (result.IsSuccessful)
+            {
+                PushSignalRUpdate(notificationId);
+            }
+            return result;
         }
 
         public async Task<EditNotificationInfo> GetEditNotificationInfoAsync(int notificationId)
@@ -164,9 +190,14 @@
 
             var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
 
-            if (model.SendImmediately)
+            if (result.IsSuccessful && model.SendImmediately)
             {
-                SendNotificationImediately(command.NotificationId);
+                BackgroundJobAfterCreateNotification(command.NotificationId, false);
+            }
+
+            if (result.IsSuccessful)
+            {
+                PushSignalRUpdate(command.NotificationId);
             }
 
             return result;
@@ -190,11 +221,12 @@
             }).ConfigureAwait(false);
         }
 
-        private void SendNotificationImediately(int notificationId)
+        private void BackgroundJobAfterCreateNotification(int notificationId, bool isCreatNotification)
         {
             Task.Run(
                 () => sendNotificationService.SendNotificationImmediately(notificationId)
-                ).ConfigureAwait(false);
+                .ContinueWith(result => isCreatNotification ? signalRService.InsertNewNotification(notificationId.ToString()) : signalRService.UpdateNotificationStatus(notificationId.ToString()))
+                    );
         }
 
         public async Task<ResendNotification> GetResendNotificationInfoAsync(int notificationId, bool isResendAll)

@@ -88,14 +88,9 @@
             var notifications = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria);
             if (!string.IsNullOrWhiteSpace(criteria.UpdatedNotificationIds))
             {
-                PushNotificationUpdateStatus(criteria.UpdatedNotificationIds);
+                PushSignalUpdateNotiStatus(criteria.UpdatedNotificationIds);
             }
             return notifications;
-        }
-
-        private void PushNotificationUpdateStatus(string notificationIds)
-        {
-            Task.Run(() => pushSignalService.OnUpdateNotificationStatus(notificationIds));
         }
 
         private static IList<SendMessageResult> ConvertJsonResponse(string json)
@@ -294,7 +289,7 @@
 
                 if (!string.IsNullOrWhiteSpace(command.UpdatedNotificationIds))
                 {
-                    PushNotificationUpdateStatus(command.UpdatedNotificationIds);
+                    PushSignalUpdateNotiStatus(command.UpdatedNotificationIds);
                 }
             }
         }
@@ -311,6 +306,11 @@
             && !r.RecipientStatus.Equals(RecipientStatuses.BotServiceError)));
 
             await SendNotificationToRecipients(notifications.Item1, notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
+        }
+
+        private void PushSignalUpdateNotiStatus(string notificationIds)
+        {
+            Task.Run(() => pushSignalService.OnUpdateNotificationStatus(notificationIds));
         }
 
         private async Task WriteLog(Exception exception)

@@ -52,7 +52,7 @@
             var result = await service.CreateAsync(model).ConfigureAwait(false);
 
             Assert.True(result.IsSuccessful);
-            await Task.Run(() => sendNotificationService.Received().SendNotificationImmediately(command.NotificationId));
+            await Task.Run(() => sendNotificationService.Received().SendNotificationImmediately(command.NotificationId, true));
         }
 
         [Fact]
@@ -220,10 +220,6 @@
             if (model.SendImmediately)
             {
                 Task.Run(() => sendNotificationService.Received().SendNotificationImmediately(model.NotificationId)).Wait();
-            }
-            else
-            {
-                Task.Run(() => sendNotificationService.DidNotReceive().SendNotificationImmediately(model.NotificationId)).Wait();
             }
 
             Assert.Equal(model.NotificationId, command.NotificationId);
