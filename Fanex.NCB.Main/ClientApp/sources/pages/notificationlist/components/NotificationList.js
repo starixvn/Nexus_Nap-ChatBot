@@ -271,7 +271,7 @@ export default class NotificationList extends Component {
 
     getNewNotificationIds = (notificationIds, notifications) => {
         const ids = notificationIds.split(',');
-        const newIds = ids.filter(id => !notifications.some(n => n.notificationIds === parseInt(id, 10)));
+        const newIds = ids.filter(id => !notifications.some(n => n.notificationId === parseInt(id, 10)));
         return newIds.join(',');
     }
 
