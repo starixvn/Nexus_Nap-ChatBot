@@ -220,7 +220,7 @@ export default class EditNotification extends React.Component {
             const index = recipients.indexOf('');
             recipients.splice(index, 1);
         }
-        
+
         this.searchRecipients = [];
         this.allCheckedNodes = [];
         let validRecipients = recipients.filter(recipient => this.isValidSearchRecipients(recipient, this.state.recipientOptions[0]));
@@ -231,9 +231,9 @@ export default class EditNotification extends React.Component {
         }
 
         const formik = this.refs.form;
-        const updateValues = [...formik.state.values.recipients.value,...this.searchRecipients];
-        const updateAllCheckNodes = [...formik.state.values.recipients.allCheckedNodes,...this.allCheckedNodes];
-        formik.setFieldValue('recipients', { value: updateValues, allCheckedNodes: updateAllCheckNodes});
+        const updateValues = [...formik.state.values.recipients.value, ...this.searchRecipients];
+        const updateAllCheckNodes = [...formik.state.values.recipients.allCheckedNodes, ...this.allCheckedNodes];
+        formik.setFieldValue('recipients', { value: updateValues, allCheckedNodes: updateAllCheckNodes });
         this.setState({ searchValue: recipients.join(',') });
     }
 

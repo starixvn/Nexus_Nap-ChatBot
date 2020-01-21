@@ -23,23 +23,26 @@ BEGIN
     DECLARE SENT_STATUSID_RESOLVED TINYINT UNSIGNED DEFAULT 5;
     
 	#1st dataset: Main Notification Info
-	SELECT nt.NotificationTypeID
+	SELECT n.NotificationID 
+		, nt.NotificationTypeID
 		, nt.NotificationTypeName
+		, n.ProductID
+		, p.ProductName
 		, n.Title
         , n.Content
+		, 1 AS SendImmediately
+		, n.ConfigSendTime
     FROM Notification n
 		INNER JOIN NotificationType nt ON n.NotificationTypeID = nt.NotificationTypeID
+		LEFT JOIN Product p ON n.ProductID = p.ProductID
     WHERE n.NotificationID = notificationID;
     
     #2nd dataset: List of Recipients
-    SELECT DISTINCT r.RecipientID
-		, r.RecipientName
-		, CASE
-				WHEN nrl.ErrMsg LIKE '[Internal Error]%' THEN 1
-                ELSE 0
-			END AS IsChatBotError
+    SELECT DISTINCT nrl.RecipientID
+				, r.RecipientName
+				, r.RecipientTypeID
     FROM NotificationRecipientList nrl
-		INNER JOIN Recipient r ON nrl.RecipientID = r.RecipientID
+	INNER JOIN Recipient r ON nrl.RecipientID = r.RecipientID
 	WHERE nrl.NotificationID = notificationID
 		AND (isSendAll = 1
 			OR nrl.StatusID IN (SENT_STATUSID_ERROR, SENT_STATUSID_RESOLVED)

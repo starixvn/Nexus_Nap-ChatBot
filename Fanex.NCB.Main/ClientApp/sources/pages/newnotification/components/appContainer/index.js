@@ -7,6 +7,7 @@ import { DateTime } from 'luxon';
 import { Form, FormGroup, Label, Button, Input, FormFeedback } from 'reactstrap';
 import { stringify } from 'qs';
 import { Formik } from 'formik';
+import axios from 'axios';
 import { object, string, array, date } from 'yup';
 import ReactMde from 'react-mde';
 import { NCBBreadcrum } from '../../../common/breadcrumbs/breadcrumbs';
@@ -22,6 +23,7 @@ import ConfirmPopup from '../../../common/confirm-popup/ConfirmPopup';
 import ContentPreview from '../../../common/ContentPreview';
 import MarkdownRules from '../../../common/markdown-rules';
 import CommonFunction from '../../../common/common-functions/CommonFunctions';
+import errorResponseHandler from '../../../lib/errorResponseHandler';
 
 const SendModeOptions = [
     {
@@ -58,16 +60,69 @@ export class AppContainer extends React.Component {
                 },
                 params: []
             },
-            searchValue: ''
+            searchValue: '',
+            initValue: {
+                notificationTypeId: '',
+                templateId: '',
+                productId: '',
+                recipients: [],
+                title: '',
+                content: '',
+                sendDate: Today,
+                sendMode: '1',
+                params: [],
+                mode: 'write',
+                canEditTitleContent: false
+            }
         };
 
         this.debounceHandleSearchRecipents = CommonFunction.debounce(this.handleSearchRecipents);
         this.searchRecipients = [];
+
+        const windowUrl = window.location.search;
+        const params = new URLSearchParams(windowUrl);
+
+        this.resendNotifcation = {
+            notificationId: params.get('notificationId'),
+            isResendAll: params.get('isResendAll')
+        };
     }
 
     componentDidMount() {
         this.props.getProducts();
         this.props.getNotificationTypes();
+        if (this.resendNotifcation.notificationId) {
+            this.handleInitResendNotification();
+        }
+    }
+
+    handleInitResendNotification = () => {
+        axios.get(Site.resolveClientUrl('NewNotification/GetResendNotification'), {
+            params: { notificationId: this.resendNotifcation.notificationId, isResendAll: this.resendNotifcation.isResendAll }
+        }).then((response) => {
+            const result = response.data;
+            const resendNotification = result.resendNotification;
+            const recipients = result.recipients;
+            const unSelectableRecipients = result.unSelectableRecipients;
+            this.props.setRecipients(recipients);
+            const selectedRecipients = resendNotification.recipients.map(r => {
+                return {
+                    label: r.recipientName,
+                    value: r.recipientTypeId + '-' + r.recipientId
+                };
+            });
+            this.setState({
+                initValue: {
+                    ...this.state.initValue,
+                    notificationTypeId: resendNotification.notificationTypeId,
+                    recipients: selectedRecipients,
+                    title: resendNotification.title,
+                    content: resendNotification.content,
+                    sendDate: Today,
+                    sendMode: '1'
+                }
+            });
+        }).catch(errorResponseHandler);
     }
 
     handleToggleConfirmationPopup = () => {
@@ -290,7 +345,7 @@ export class AppContainer extends React.Component {
             const index = recipients.indexOf('');
             recipients.splice(index, 1);
         }
-        
+
         this.searchRecipients = [];
         let validRecipients = recipients.filter(recipient => this.isValidSearchRecipients(recipient, this.props.recipientOptions[0]));
         while (validRecipients.length > 0) {
@@ -300,7 +355,7 @@ export class AppContainer extends React.Component {
         }
 
         const formik = this.refs.form;
-        const updateValues = [...formik.state.values.recipients,...this.searchRecipients];
+        const updateValues = [...formik.state.values.recipients, ...this.searchRecipients];
         formik.setFieldValue('recipients', updateValues);
         this.setState({ searchValue: recipients.join(',') });
     }
@@ -477,14 +532,33 @@ export class AppContainer extends React.Component {
         );
     }
 
+    initValues = () => {
+        const resendNotification = this.props.resendNotification;
+        let initValue = {
+        };
+        if (resendNotification) {
+            initValue.notificationTypeId = resendNotification.notificationTypeId;
+            initValue.productId = resendNotification.productId;
+            initValue.recipients = resendNotification.recipients;
+            initValue.title = resendNotification.title;
+            initValue.content = resendNotification.content;
+        }
+
+        return initValue;
+    }
+
+    renderPageTitle = () => this.resendNotifcation.notificationId ? "Resend a notification from notification #" + this.resendNotifcation.notificationId : "New Notification";
+
     render() {
         if (!this.props.notificationTypes || !this.props.products) {
             return null;
         }
 
+        const initValue = this.state.initValue;
+        const pageTitle = this.renderPageTitle();
         return (
             <>
-                <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="New Notification" />
+                <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle={pageTitle} />
                 <div className="new-notification">
                     {this.props.createNotificationResult &&
                         <ResponseMessage isSuccessful={this.props.createNotificationResult.isSuccessful}
@@ -492,19 +566,8 @@ export class AppContainer extends React.Component {
                     }
 
                     <Formik ref="form"
-                        initialValues={{
-                            notificationTypeId: '',
-                            templateId: '',
-                            productId: '',
-                            recipients: [],
-                            title: '',
-                            content: '',
-                            sendDate: Today,
-                            sendMode: '1',
-                            params: [],
-                            mode: 'write',
-                            canEditTitleContent: false
-                        }}
+                        enableReinitialize
+                        initialValues={initValue}
                         render={this.renderForm}
                         validationSchema={this.schema}
                         onSubmit={this.handleSubmit}

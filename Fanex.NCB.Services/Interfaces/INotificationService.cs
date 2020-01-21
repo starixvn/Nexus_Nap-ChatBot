@@ -1,10 +1,10 @@
 ﻿namespace Fanex.NCB.Services.Interfaces
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Models.Notification;
     using Fanex.NCB.Shared.Models;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
 
     public interface INotificationService
     {
@@ -27,5 +27,7 @@
         Task<IEnumerable<Recipient>> GetEditNotificationRecipientsAsync(int notificationId, int notificationTypeId, int? productId);
 
         Task<IEnumerable<Template>> GetTemplatesAsync(int notificationTypeId);
+
+        Task<ResendNotification> GetResendNotificationInfoAsync(int notificationId, bool isResendAll);
     }
 }

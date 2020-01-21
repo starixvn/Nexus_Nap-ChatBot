@@ -4,13 +4,13 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Criteria.Notification;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Models.Notification;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
-    using Fanex.NCB.Core.Extensions;
 
     public class NotificationService : INotificationService
     {
@@ -184,6 +184,26 @@
             Task.Run(
                 () => sendNotificationService.SendNotificationImmediately(notificationId)
                 ).ConfigureAwait(false);
+        }
+
+        public async Task<ResendNotification> GetResendNotificationInfoAsync(int notificationId, bool isResendAll)
+        {
+            var criteria = new GetResendNotificationInfoCriteria
+            {
+                NotificationId = notificationId,
+                IsSendAll = isResendAll
+            };
+
+            var result = await baseService.FetchMultipleAsync<ResendNotification, Recipient>(criteria);
+
+            var notification = result.Item1.FirstOrDefault();
+
+            if (notification != null)
+            {
+                notification.Recipients = result.Item2;
+            }
+
+            return notification;
         }
     }
 }

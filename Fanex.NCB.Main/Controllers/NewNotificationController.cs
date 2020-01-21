@@ -1,5 +1,7 @@
 namespace Fanex.NCB.SkypeBot.Controllers
 {
+    using System.Linq;
+    using System.Threading.Tasks;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Main.ViewModel.Notification;
@@ -8,7 +10,6 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
-    using System.Threading.Tasks;
     using static Fanex.NAP.Core.Business.Constant;
 
     [NapChatBotSuperAuth]
@@ -67,6 +68,18 @@ namespace Fanex.NCB.SkypeBot.Controllers
             var result = await notificationService.GetTemplatesAsync(notificationTypeId).ConfigureAwait(false);
 
             return Json(result);
+        }
+
+        [HttpGet]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
+        public async Task<IActionResult> GetResendNotification(int notificationId, bool isResendAll)
+        {
+            var resendNotification = await notificationService.GetResendNotificationInfoAsync(notificationId, isResendAll);
+            var recipients = await notificationService.GetRecipientsAsync(resendNotification.NotificationTypeId, null);
+            var unSelectableRecipients = resendNotification.Recipients.Where(r => !recipients.Any(x => x.RecipientId == r.RecipientId));
+            var tree = GenerateTreeHelper.FromRecipient(recipients);
+
+            return Json(new { resendNotification, recipients = tree, unSelectableRecipients });
         }
     }
 }
