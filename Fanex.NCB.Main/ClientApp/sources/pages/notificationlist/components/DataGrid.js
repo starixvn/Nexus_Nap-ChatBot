@@ -21,7 +21,7 @@ export default class DataGrid extends PureComponent {
     toggleExpandPanels = () => {
         this.setState(prevState => ({ expandPanels: !prevState.expandPanels }), () => {
             if (this.props.tableData.total > 0) {
-                this.panels.filter(x => x.state.isOpen !== this.state.expandPanels).forEach(panel => {
+                this.panels.filter(x => x && (x.state.isOpen !== this.state.expandPanels)).forEach(panel => {
                     panel.set(this.state.expandPanels);
                 });
             }
