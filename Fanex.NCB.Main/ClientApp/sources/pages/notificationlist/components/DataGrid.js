@@ -150,9 +150,9 @@ export default class DataGrid extends PureComponent {
                 );
                 return btns;
             case NotificationStatus.Planned:
-                return <span className="icon-error" data-notificationid={notification.notificationId} onClick={this.handleCancelNotification} />;
+                return <a className="action-button" href="javascipt:;" data-notificationid={notification.notificationId} onClick={this.handleCancelNotification}>{Labels.Cancel}</a>;
             case NotificationStatus.Cancelled:
-                return <a className="icon-edit" href={`EditNotification/Index/${notification.notificationId}`} />;
+                return <a className="action-button" href={`EditNotification/Index/${notification.notificationId}`} >{Labels.Edit}</a>;
             case NotificationStatus.Sent:
                 return this.renderResendBtn(notification.notificationId, Labels.Resend, true);
             default: return null;
