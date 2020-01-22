@@ -70,6 +70,15 @@ namespace Fanex.NCB.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New Notification.
+        /// </summary>
+        public static string NewNotification {
+            get {
+                return ResourceManager.GetString("NewNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No permission on current site.
         /// </summary>
         public static string NoPermision {

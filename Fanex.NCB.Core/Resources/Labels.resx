@@ -129,4 +129,7 @@
   <data name="ChatBotForLicensee" xml:space="preserve">
     <value>ChatBot For Licensee</value>
   </data>
+  <data name="NewNotification" xml:space="preserve">
+    <value>New Notification</value>
+  </data>
 </root>

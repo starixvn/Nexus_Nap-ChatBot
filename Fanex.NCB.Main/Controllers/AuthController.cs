@@ -154,10 +154,10 @@
         {
             var menuItemList = (await userService.GetMenuItemAsync(user.Id, napSettings.SiteId, napSettings.Environment, true)).Where(x => !string.IsNullOrWhiteSpace(x.Url))
                 .OrderBy(x => x.DisplayOrder).ToList();
-            var permission = await userService.GetPermissionAsync(user.Id, napSettings.SiteId, FunctionKey.ChatGroupMapping);
+            var permission = await userService.GetPermissionAsync(user.Id, napSettings.SiteId, FunctionKey.NewNotification );
             if (permission < (int)NAP.Core.Business.Constant.Policy.Host)
             {
-                menuItemList = menuItemList.Where(item => item.Name != "New Notification").ToList();
+                menuItemList = menuItemList.Where(item => item.Name != Labels.NewNotification).ToList();
             }
 
             napSession.UserName = user.Username;
