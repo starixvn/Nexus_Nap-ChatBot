@@ -35,7 +35,7 @@ export const getRealValuesFromExtra = function (result, collection) {
 export const getRealValuesFromAllCheckNodes = function (result, collection) {
     for (let i = 0; i < collection.length; i++) {
         const item = collection[i].node ? collection[i].node : collection[i];
-        if (item.props.children && item.props.children.length > 0) {
+        if (item.props && item.props.children && item.props.children.length > 0) {
             getRealValuesFromAllCheckNodes(result, item.props.children);
         } else {
             const value = item.realValue || item.props.realValue;
