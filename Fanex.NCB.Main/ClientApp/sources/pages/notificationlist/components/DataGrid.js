@@ -72,7 +72,7 @@ export default class DataGrid extends PureComponent {
                 </Cell>
                 <Cell colWidth={12} className="col-status" header>Status</Cell>
                 {
-                    isHost && <Cell colWidth={20} className="col-action" header>{Labels.Action}</Cell>
+                    isHost && <Cell colWidth={15} className="col-action" header>{Labels.Action}</Cell>
                 }
             </Row >);
     };
