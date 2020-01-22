@@ -35,4 +35,14 @@
     .title-date {
         font-weight: bold;
     }
+
+    .action-button {
+        display: block;
+        color: #fff;
+        background-color: $btn-submit-bg;
+        width: 100px;
+        text-align: center;
+        margin: 5px auto 5px auto;
+        padding: 4px 10px;
+    }
 }

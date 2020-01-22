@@ -32,6 +32,7 @@ export default class Header extends React.PureComponent {
                     <div className="line center" />
                     <div className="line bottom" />
                 </div>
+                <div id="header-text" className="header-text-info" />
                 <ul className="list-unstyled userinfo">
                     <li className="user-info">
                         <Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>

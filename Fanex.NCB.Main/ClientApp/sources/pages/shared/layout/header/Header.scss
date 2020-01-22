@@ -9,6 +9,19 @@
     box-shadow: 0 0 3px 1px rgba(0,0,0, .2);
     padding: 0 10px;
     background-color: #fff;
+
+    .header-text-info {
+        position: absolute;
+        left: 60px;
+        top: 12px;
+    }
+
+    .warning-title {
+        padding: 5px 10px;
+        border: 1px solid;
+        color: red;
+        background-color: #ffe8e8;
+    }
 }
 
 // Hambuger Icon

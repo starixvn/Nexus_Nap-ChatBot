@@ -72,7 +72,7 @@ export default class DataGrid extends PureComponent {
                 </Cell>
                 <Cell colWidth={12} className="col-status" header>Status</Cell>
                 {
-                    isHost && <Cell colWidth={10} className="col-action" header>{Labels.Action}</Cell>
+                    isHost && <Cell colWidth={20} className="col-action" header>{Labels.Action}</Cell>
                 }
             </Row >);
     };
@@ -141,14 +141,33 @@ export default class DataGrid extends PureComponent {
         switch (notification.statusId) {
             case NotificationStatus.Error:
             case NotificationStatus.Resolved:
-                return <span className="icon-view" data-notificationid={notification.notificationId} onClick={this.handleShowErrorReport} />;
+                const btns = (
+                    <Fragment>
+                        <a className="action-button" href="javascipt:;" data-notificationid={notification.notificationId} onClick={this.handleShowErrorReport}>{Labels.ViewDetail}</a>
+                        {this.renderResendBtn(notification.notificationId, Labels.ResendAll, true)}
+                        {this.renderResendBtn(notification.notificationId, Labels.ResendError, false)}
+                    </Fragment>
+                );
+                return btns;
             case NotificationStatus.Planned:
                 return <span className="icon-error" data-notificationid={notification.notificationId} onClick={this.handleCancelNotification} />;
             case NotificationStatus.Cancelled:
                 return <a className="icon-edit" href={`EditNotification/Index/${notification.notificationId}`} />;
+            case NotificationStatus.Sent:
+                return this.renderResendBtn(notification.notificationId, Labels.Resend, true);
             default: return null;
         }
     }
+
+    renderResendBtn = (notificationId, label, isSendAll) => {
+        return (
+            <a className="action-button" type="button"
+                href={`NewNotification?notificationId=${notificationId}&isResendAll=${isSendAll}`}
+                target="_blank"
+            >
+                {label}
+            </a>);
+    };
 
     render() {
         const { haveEditNotificationPermission } = this.props;

@@ -76,6 +76,7 @@ export class AppContainer extends React.Component {
             }
         };
 
+        this.selectedNodes = [];
         this.debounceHandleSearchRecipents = CommonFunction.debounce(this.handleSearchRecipents);
         this.searchRecipients = [];
 
@@ -111,6 +112,7 @@ export class AppContainer extends React.Component {
                     value: r.recipientTypeId + '-' + r.recipientId
                 };
             });
+
             this.setState({
                 initValue: {
                     ...this.state.initValue,
@@ -122,7 +124,16 @@ export class AppContainer extends React.Component {
                     sendMode: '1'
                 }
             });
+            this.displayUnselectableRecipients(unSelectableRecipients);
         }).catch(errorResponseHandler);
+    }
+
+    displayUnselectableRecipients = recipients => {
+        if (recipients && recipients.length > 0) {
+            const html = `<div class='warning-title'>
+                            <span class='icon-warning'></span> Unselectable recipient(s): `+ recipients.map(r => r.recipientName).join(', ') + `.</div>`;
+            document.getElementById('header-text').innerHTML = html;
+        }
     }
 
     handleToggleConfirmationPopup = () => {
@@ -143,9 +154,8 @@ export class AppContainer extends React.Component {
 
         const formik = this.refs.form;
         const values = formik.state.values;
-
         const recipientIds = [];
-        this.getRecipientIds(recipientIds, this.selectedNodes);
+        this.getRecipientIds(recipientIds, values.recipients, this.props.recipientOptions);
 
         const data = stringify({
             notificationTypeId: values.notificationTypeId,
@@ -167,14 +177,14 @@ export class AppContainer extends React.Component {
         });
     }
 
-    getRecipientIds = (ids, collection) => {
+    getRecipientIds = (ids, values, collection) => {
         for (let i = 0; i < collection.length; i++) {
             const item = collection[i];
             if (item.children && item.children.length > 0) {
-                this.getRecipientIds(ids, item.children);
+                this.getRecipientIds(ids, values, item.children);
             } else {
-                if (!ids.some(i => i === item.node.props.realValue)) {
-                    ids.push(item.node.props.realValue);
+                if (values.some(value => value.value === collection[i].value)) {
+                    ids.push(collection[i].realValue);
                 }
             }
         }
@@ -269,6 +279,7 @@ export class AppContainer extends React.Component {
     handleRecipientChange = (value, label, extra) => {
         const formik = this.refs.form;
         this.selectedNodes = extra.allCheckedNodes;
+        console.log(this.props.recipientOptions);
         formik.setFieldValue('recipients', value);
     }
 
@@ -424,6 +435,7 @@ export class AppContainer extends React.Component {
                         <TreeSelect value={values.recipients} onChange={this.handleRecipientChange} placeholder={Labels.PleaseSelect}
                             treeData={this.props.recipientOptions} className={touched.recipients && errors.recipients && invalidFieldClass}
                             onSearch={this.onChangeSearch} searchValue={this.state.searchValue} treeDefaultExpandAll
+                            defaultValue={this.state.initValue.recipients}
                         />
                         {touched.recipients && errors.recipients && <FormFeedback>{errors.recipients}</FormFeedback>}
                     </div>
