@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Services.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -273,6 +274,29 @@
 
             Assert.Equal(notificationTypeId, criteria.NotificationTypeId);
             Assert.Equal(templates.Count(), result.Count());
+        }
+
+        [Fact]
+        public async Task GetResendNotificationInfoAsync_WhenCalled_ReturnExpectedResult()
+        {
+            var service = GetService();
+
+            var fixture = new Fixture();
+            var notificationId = fixture.Create<int>();
+            var isSendAll = fixture.Create<bool>();
+            var notification = fixture.Create<IEnumerable<ResendNotification>>();
+            var recipients = fixture.Create<IEnumerable<Recipient>>();
+            var valueTuple = new ValueTuple<IEnumerable<ResendNotification>, IEnumerable<Recipient>>(notification, recipients);
+            var expected = notification.FirstOrDefault();
+            expected.Recipients = recipients;
+
+            var criteria = new GetResendNotificationInfoCriteria { NotificationId = notificationId, IsSendAll = isSendAll };
+
+            baseService.FetchMultipleAsync<ResendNotification, Recipient>(Arg.Do<GetResendNotificationInfoCriteria>(x => criteria = x)).Returns(valueTuple);
+
+            var result = await service.GetResendNotificationInfoAsync(notificationId, isSendAll);
+
+            Assert.Equal(expected, result);
         }
 
         private NotificationService GetService()

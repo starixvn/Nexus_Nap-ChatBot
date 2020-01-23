@@ -1,21 +1,21 @@
 ﻿namespace Fanex.NCB.Main.Controllers.Tests
 {
-    using System;
     using System.Collections.Generic;
-    using System.Text;
-    using NSubstitute;
-    using Xunit;
+    using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.Services.Interfaces;
     using Fanex.NAP.Client.Helpers.Web;
+    using Fanex.NCB.Main.ViewModel.Notification;
+    using Fanex.NCB.Main.ViewModel.TreeSelect;
+    using Fanex.NCB.Models.Common;
+    using Fanex.NCB.Models.Notification;
+    using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models;
     using Fanex.NCB.SkypeBot.Controllers;
     using Microsoft.AspNetCore.Mvc;
-    using Fanex.NCB.Main.ViewModel.Notification;
-    using Fanex.NCB.Models.Notification;
-    using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Models.Common;
-    using Fanex.NCB.Main.ViewModel.TreeSelect;
+    using Newtonsoft.Json;
+    using NSubstitute;
+    using Xunit;
 
     public class NewNotificationControllerTests
     {
@@ -94,6 +94,33 @@
             var json = Assert.IsType<JsonResult>(result);
             var returnedTemplates = Assert.IsAssignableFrom<IEnumerable<Template>>(json.Value);
             Assert.Equal(templates, returnedTemplates);
+        }
+
+        [Fact]
+        public async Task GetResendNotification_WhenCalled_ReturnExpectedJsonResult()
+        {
+            var controller = GetController();
+            var fixture = new Fixture();
+            var notificationId = fixture.Create<int>();
+            var isResendAll = fixture.Create<bool>();
+            var resendNotifictaion = fixture.Create<ResendNotification>();
+            var allRecipients = fixture.Create<IEnumerable<Recipient>>();
+            var unSelectable = resendNotifictaion.Recipients.Where(r => !allRecipients.Any(x => x.RecipientId == r.RecipientId));
+
+            var expected = new
+            {
+                resendNotification = resendNotifictaion,
+                recipients = GenerateTreeHelper.FromRecipient(allRecipients),
+                unSelectableRecipients = unSelectable
+            };
+            notificationService.GetResendNotificationInfoAsync(notificationId, isResendAll).Returns(resendNotifictaion);
+            notificationService.GetRecipientsAsync(resendNotifictaion.NotificationTypeId, null).Returns(allRecipients);
+
+            var result = await controller.GetResendNotification(notificationId, isResendAll);
+
+            var json = Assert.IsType<JsonResult>(result);
+            var obj = Assert.IsAssignableFrom<object>(json.Value);
+            Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(obj));
         }
 
         private NewNotificationController GetController()
