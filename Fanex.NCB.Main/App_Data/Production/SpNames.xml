@@ -40,6 +40,7 @@
     <Setting Key="NCB_NewNotification_Ins" SpName="NCB_NewNotification_Ins" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_NewNotification_Recipient_Sel" SpName="NCB_NewNotification_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_NewNotification_GetTemplates" SpName="NCB_NewNotification_GetTemplates" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_ResendNotification_Sel" SpName="NCB_ResendNotification_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
   <Function Name="Notification List">
     <Setting Key="NCB_NotificationList_Sel" SpName="NCB_NotificationList_Sel" DbName="ChatBot" Plain="0"></Setting>
