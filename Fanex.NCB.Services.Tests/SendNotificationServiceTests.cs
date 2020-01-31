@@ -101,7 +101,7 @@
             baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationByIdCriteria>()).Returns(notifications);
             chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
             //Actual
-
+            await service.SendNotificationImmediately(1);
             PushSignalNewNotification("1");
             //Assert
             await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
@@ -117,6 +117,7 @@
             baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationByIdCriteria>()).Returns(notifications);
             chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
             //Actual
+            await service.SendNotificationImmediately(1);
 
             PushSignalUpdateNotiStatus("1");
             //Assert
