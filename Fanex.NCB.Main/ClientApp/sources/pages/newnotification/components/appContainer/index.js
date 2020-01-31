@@ -109,7 +109,9 @@ export class AppContainer extends React.Component {
             const selectedRecipients = resendNotification.recipients.map(r => {
                 return {
                     label: r.recipientName,
-                    value: r.recipientTypeId + '-' + r.recipientId
+                    value: r.licenseeTypeId ?
+                        r.recipientTypeId + '-' + r.licenseeTypeId + '-' + r.recipientId :
+                        r.recipientTypeId + '-' + r.recipientId
                 };
             });
 

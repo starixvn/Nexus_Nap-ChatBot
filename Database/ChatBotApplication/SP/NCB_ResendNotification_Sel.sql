@@ -41,8 +41,10 @@ BEGIN
     SELECT DISTINCT nrl.RecipientID
 				, r.RecipientName
 				, r.RecipientTypeID
+				, l.LicenseeTypeId
     FROM NotificationRecipientList nrl
 	INNER JOIN Recipient r ON nrl.RecipientID = r.RecipientID
+	LEFT JOIN Licensee l ON r.SourceID = l.LicenseeId
 	WHERE nrl.NotificationID = notificationID
 		AND (isSendAll = 1
 			OR nrl.StatusID IN (SENT_STATUSID_ERROR, SENT_STATUSID_RESOLVED)
