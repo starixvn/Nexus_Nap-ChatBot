@@ -163,7 +163,6 @@ export default class DataGrid extends PureComponent {
         return (
             <a className="action-button" type="button"
                 href={`NewNotification?notificationId=${notificationId}&isResendAll=${isSendAll}`}
-                target="_blank"
             >
                 {label}
             </a>);
