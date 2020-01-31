@@ -52,7 +52,6 @@
             var result = await service.CreateAsync(model).ConfigureAwait(false);
 
             Assert.True(result.IsSuccessful);
-            await Task.Run(() => sendNotificationService.Received().SendNotificationImmediately(command.NotificationId, true));
         }
 
         [Fact]

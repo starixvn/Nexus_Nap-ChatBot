@@ -52,6 +52,7 @@
                         await OnAfterImportData(result.Item1, result.Item2);
                     }
                 }
+            }
         }
 
         private async Task OnAfterImportData(CommandResult commandResult, IEnumerable<NotificationMessage> notifications)
