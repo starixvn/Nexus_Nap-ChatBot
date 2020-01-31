@@ -21,7 +21,7 @@ export default class SignalR extends PureComponent {
         };
 
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl("/Main/signalR", options)
+            .withUrl("signalR", options)
             .withHubProtocol(protocol)
             .build();
 
@@ -46,8 +46,8 @@ export default class SignalR extends PureComponent {
         this.props.onInsertNewNotification(notificationIds);
     }
 
-    onUpdateNotificationStatus(notificationIds) {        
-    	this.props.onUpdateNotificationStatus(notificationIds);
+    onUpdateNotificationStatus(notificationIds) {
+        this.props.onUpdateNotificationStatus(notificationIds);
     }
 
     render() {
