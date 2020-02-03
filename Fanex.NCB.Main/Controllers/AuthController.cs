@@ -12,7 +12,6 @@
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ParameterObject;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Resources;
     using Fanex.NCB.Models.Auth;
     using Fanex.NCB.NAPResolver;
@@ -152,18 +151,12 @@
 
         private async Task DoCheckIn(User user, int onUserId)
         {
-            var menuItemList = (await userService.GetMenuItemAsync(user.Id, napSettings.SiteId, napSettings.Environment, true)).Where(x => !string.IsNullOrWhiteSpace(x.Url))
-                .OrderBy(x => x.DisplayOrder).ToList();
-            var permission = await userService.GetPermissionAsync(user.Id, napSettings.SiteId, FunctionKey.NewNotification );
-            if (permission < (int)NAP.Core.Business.Constant.Policy.Host)
-            {
-                menuItemList = menuItemList.Where(item => item.Name != Labels.NewNotification).ToList();
-            }
-
             napSession.UserName = user.Username;
             napSession.UserId = user.Id;
             napSession.OnUserId = onUserId;
-            napSession.MenuItemList = menuItemList;
+            napSession.MenuItemList = (await userService.GetMenuItemAsync(user.Id, napSettings.SiteId,
+                napSettings.Environment, true)).Where(x => !string.IsNullOrWhiteSpace(x.Url))
+                .OrderBy(x => x.DisplayOrder).ToList();
 
             var claims = new List<Claim>
                         {
