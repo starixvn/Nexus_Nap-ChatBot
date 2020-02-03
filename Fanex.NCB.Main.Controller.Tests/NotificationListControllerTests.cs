@@ -38,7 +38,7 @@
 
             userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotifiactionList, Policy.Host)
                 .Returns(true);
-            var actual = controller.Index();
+            var actual = controller.Index(null, null);
 
             var viewResult = Assert.IsType<ViewResult>(actual);
             var haveHostPermission = Assert.IsType<bool>(viewResult.ViewData["HaveEditNotificationPermission"]);
