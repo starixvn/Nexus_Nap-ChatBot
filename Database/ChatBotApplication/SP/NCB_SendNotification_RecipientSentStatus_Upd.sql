@@ -178,8 +178,7 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
 										INTO updatedNotificationIds
 										FROM Notification n 
 										INNER JOIN tmp_NotificationIDs t ON n.NotificationID = t.NotificationID 
-										AND t.StatusID <> NOTIFICATION_STATUSID_SENDING
-										AND n.StatusID = NOTIFICATION_STATUSID_SENDING;
+										AND t.StatusID <> NOTIFICATION_STATUSID_SENDING;
 	ELSE
 		SET updatedNotificationIds = '';
 	END IF;
