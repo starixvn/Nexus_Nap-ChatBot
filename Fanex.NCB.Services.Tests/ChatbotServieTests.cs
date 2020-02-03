@@ -33,6 +33,10 @@
             tokenRes.StatusCode.Returns(HttpStatusCode.OK);
             tokenRes.Data.Returns(fixture.Create<ChatbotToken>());
             var service = GetService();
+            var fixture = new Fixture();
+            var token = fixture.Create<ChatbotToken>();
+            var resToken = Substitute.For<IRestResponse<ChatbotToken>>();
+            resToken.Data = token;
 
             webClient.ExecutePostTaskAsync<ChatbotToken>(Arg.Any<RestRequest>()).Returns(tokenRes);
             webClient.ExecutePostTaskAsync(Arg.Any<RestRequest>()).Returns(expected);
