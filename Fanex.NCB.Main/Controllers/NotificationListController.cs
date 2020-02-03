@@ -28,14 +28,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
-        public IActionResult Index(int? id, int? pageIndex)
+        public IActionResult Index()
         {
-            if (id.HasValue && pageIndex.HasValue)
-            {
-                ViewBag.HightLightId = id.Value;
-                ViewBag.PageIndex = pageIndex.Value;
-            }
-
             ViewBag.HaveEditNotificationPermission = userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotifiactionList, Policy.Host);
 
             return View("~/Views/SkypeBot/NotificationList/Index.cshtml");
