@@ -75,8 +75,12 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> GetResendNotification(int notificationId, bool isResendAll)
         {
             var resendNotification = await notificationService.GetResendNotificationInfoAsync(notificationId, isResendAll);
+
             var recipients = await notificationService.GetRecipientsAsync(resendNotification.NotificationTypeId, null);
             var unSelectableRecipients = resendNotification.Recipients.Where(r => !recipients.Any(x => x.RecipientId == r.RecipientId));
+
+            resendNotification.Recipients = resendNotification.Recipients.Where(x => !unSelectableRecipients.Any(u => u.RecipientId == x.RecipientId));
+
             var tree = GenerateTreeHelper.FromRecipient(recipients);
 
             return Json(new { resendNotification, recipients = tree, unSelectableRecipients });
