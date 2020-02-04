@@ -6,6 +6,7 @@ import NotificationItem from './NotificationItem';
 import { defaultPageSize, noErrorNotification } from '../../../constants/constants';
 import errorResponseHandler from '../../../lib/errorResponseHandler';
 import { getRealValuesFromExtra } from '../../../common/TreeSelect/index';
+import * as signalR from '@microsoft/signalr';
 
 import './Header.scss';
 
@@ -18,6 +19,55 @@ export default class Header extends React.PureComponent {
             notificationDropdownOpen: false,
             notifications: []
         };
+
+        this.connection = null;
+    }
+
+    componentDidMount = () => {
+        axios.get(Site.resolveClientUrl('NotificationList/GetErrNotification')).then(response => {
+            this.setState({
+                notifications: response.data
+            }, () => this.initSignalR());
+        })
+    }
+
+    initSignalR = () => {
+        const protocol = new signalR.JsonHubProtocol();
+        const transport = signalR.HttpTransportType.WebSockets;
+        const options = {
+            transport,
+            logMessageContent: true,
+            logger: signalR.LogLevel.Trace
+        };
+
+        this.connection = new signalR.HubConnectionBuilder()
+            .withUrl("signalR", options)
+            .withHubProtocol(protocol)
+            .build();
+
+        this.connection.on('NewErrNotification', (notifications) => {
+            this.onHasNewErrNotification(notifications);
+        });
+
+        this.connection.start()
+            .then(() => console.log('SignalR in header connected'))
+            .catch(err => console.error('SignalR Connection Error: ', err));
+    }
+
+    componentWillUnmount() {
+        this.connection.stop();
+    }
+
+    onHasNewErrNotification = (notifications) => {
+        debugger;
+        let notis = [...this.state.notifications];
+        this.setState({
+            notifications: notis.concat(notifications)
+        });
+    }
+
+    collapseExpandHandler = () => {
+        this.props.collapseExpandHandler();
     }
 
     toggle = () => {
@@ -30,36 +80,6 @@ export default class Header extends React.PureComponent {
         this.setState(prevState => ({
             notificationDropdownOpen: !prevState.notificationDropdownOpen
         }));
-    }
-
-    collapseExpandHandler = () => {
-        this.props.collapseExpandHandler();
-    }
-
-    componentDidMount = () => {
-        const promises = [
-            axios(Site.resolveClientUrl('Common/GetNotificationTypes')),
-            axios(Site.resolveClientUrl('Common/GetRecipients'))
-        ];
-
-        Promise.all(promises).then(([notificationTypeResponse, recipientResponse]) => {
-            const notificationTypeIds = notificationTypeResponse.data.map(notification => notification.notificationTypeID);
-            let recipientIds = [];            
-            getRealValuesFromExtra(recipientIds, recipientResponse.data);
-
-            axios.get(Site.resolveClientUrl('NotificationList/GetAllErrorNotifications'), {
-                params: {
-                    notificationTypeIds: notificationTypeIds.toString(),
-                    recipientIds: recipientIds.toString()
-                }
-            }).then(res => {
-                if (res.data) {
-                    this.setState({ notifications: res.data });
-                }
-            }).catch(error => {
-                console.log(error);
-            })
-        }).catch(errorResponseHandler);
     }
 
     render() {
@@ -84,17 +104,17 @@ export default class Header extends React.PureComponent {
                                             this.state.notifications.length > 0 &&
                                             <Badge className='badge-notification' color='danger' pill>{this.state.notifications.length}</Badge>
                                         }
-                                        
+
                                     </span>
                                 </div>
                             </DropdownToggle>
                             <DropdownMenu right={true}>
-								{
+                                {
                                     this.state.notifications.length > 0 ? this.state.notifications.map((notification, index) =>
-                                    <DropdownItem key={index} tag='a' href={Site.resolveClientUrl(`NotificationList/Index?id=${notification.notificationId}&pageIndex=${Math.floor(index / defaultPageSize) + 1}`)}>
-                                        <NotificationItem notification={notification} />
-                                    </DropdownItem>) : <DropdownItem className='text-center' disabled>{noErrorNotification}</DropdownItem>
-								}
+                                        <DropdownItem key={index} tag='a' href={Site.resolveClientUrl(`NotificationList/Index?id=${notification.notificationId}&pageIndex=${Math.floor(index / defaultPageSize) + 1}`)}>
+                                            <NotificationItem notification={notification} />
+                                        </DropdownItem>) : <DropdownItem className='text-center' disabled>{noErrorNotification}</DropdownItem>
+                                }
                             </DropdownMenu>
                         </Dropdown>
                     </li>

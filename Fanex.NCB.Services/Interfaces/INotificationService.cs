@@ -31,8 +31,9 @@
         Task<ResendNotification> GetResendNotificationInfoAsync(int notificationId, bool isResendAll);
         
         Task<IEnumerable<Notification>> GetUpdatedNotificationAsync(string notificationIds);
-        
+
         Task<IEnumerable<Notification>> GetAllErrorNotificationsAsync(GetErrorNotifications model);
-        
+
+        Task<IEnumerable<Notification>> GetErrNotificationsAsync();
     }
 }

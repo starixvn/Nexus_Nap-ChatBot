@@ -123,5 +123,12 @@ namespace Fanex.NCB.SkypeBot.Controllers
             var result = await notificationService.GetUpdatedNotificationAsync(notificationIds);
             return Json(result);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetErrNotifications()
+        {
+            var result = await notificationService.GetErrNotificationsAsync();
+            return Json(result);
+        }
     }
 }

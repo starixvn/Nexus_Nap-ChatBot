@@ -237,7 +237,7 @@
             return result;
         }
 
-	private void BackgroundJobAfterCreateNotification(int notificationId, bool isCreatNotification)
+        private void BackgroundJobAfterCreateNotification(int notificationId, bool isCreatNotification)
         {
             Task.Run(() => sendNotificationService.SendNotificationImmediately(notificationId).ContinueWith(result =>
             isCreatNotification ? signalRService.InsertNewNotification(notificationId.ToString()) :
@@ -272,6 +272,18 @@
                 NotificationIds = notificationIds
             };
 
+            var notifications = await baseService.GetDataAsync<Notification>(criteria);
+            foreach (var notification in notifications)
+            {
+                notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();
+            }
+
+            return notifications;
+        }
+
+        public async Task<IEnumerable<Notification>> GetErrNotificationsAsync()
+        {
+            var criteria = new GetAllErrNotificationsCriteria();
             var notifications = await baseService.GetDataAsync<Notification>(criteria);
             foreach (var notification in notifications)
             {

@@ -6,7 +6,6 @@ export default class SignalR extends PureComponent {
         super(props);
 
         this.connection = null;
-        this.onUpdateNotificationStatus = this.onUpdateNotificationStatus.bind(this);
     }
 
     componentDidMount() {

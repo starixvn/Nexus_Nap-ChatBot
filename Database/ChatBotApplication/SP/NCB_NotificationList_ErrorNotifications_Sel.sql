@@ -1,0 +1,43 @@
+DROP PROCEDURE IF EXISTS NCB_NotificationList_ErrorNotifications_Sel;
+
+DELIMITER //
+
+CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_ErrorNotifications_Sel`(
+     IN notificationTypeIDLst   VARCHAR(1000)
+    , IN recipientIDLst         TEXT
+    /*
+		Creator: 20200204@Oliver
+
+        Revisions:
+            - 20200204@Oliver: init SP -- Redmine ID: #126213
+    */
+)
+BEGIN
+	DECLARE SENT_STATUSID_ERROR TINYINT UNSIGNED DEFAULT 2;
+    
+	SELECT
+        n.NotificationID
+        ,n.CreatorID
+        ,c.username CreatorName
+        ,n.ConfigSendTime
+        ,n.Title
+        ,n.Content
+        ,n.CreatedDate
+        ,n.StatusID
+        ,n.Status
+    FROM Notification n
+    INNER JOIN NotificationType nt ON n.NotificationTypeID = nt.NotificationTypeID
+    INNER JOIN Customer c on n.CreatorID = c.custid    
+    WHERE n.StatusID = SENT_STATUSID_ERROR
+    AND EXISTS (
+			SELECT 1
+            FROM NotificationRecipientList nrl
+            WHERE nrl.NotificationID = n.NotificationID
+    )
+    ORDER BY n.ConfigSendTime DESC, n.NotificationID DESC;
+END;
+
+//
+DELIMITER ;
+
+GRANT EXECUTE ON PROCEDURE NCB_NotificationList_ErrorNotifications_Sel TO 'ncb.admin'@'%';
