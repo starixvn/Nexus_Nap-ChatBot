@@ -16,6 +16,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_ResendNotification_Sel`(
                 - #2nd dataset: List of Recipients
         Revisions:
 				- 20200116@Percy: Initialize SP [RedmineID: #127217]
+				- 20200122@Oliver: Get more info of recipients [RedmineID: #127451]
     */
 )
 BEGIN
