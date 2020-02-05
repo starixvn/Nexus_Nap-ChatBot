@@ -10,6 +10,6 @@
 
         Task InsertNewNotification(string notificationIds);
 
-        Task NewErrNotification(IEnumerable<Notification> notifications);
+        Task HasNewErrNotifications(IEnumerable<Notification> notifications);
     }
 }

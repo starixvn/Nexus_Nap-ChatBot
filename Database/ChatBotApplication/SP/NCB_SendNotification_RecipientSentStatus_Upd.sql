@@ -4,6 +4,7 @@ DELIMITER //
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_RecipientSentStatus_Upd(
     IN sentStatus MEDIUMTEXT CHARACTER SET utf8mb4
 	, OUT updatedNotificationIds TEXT
+	, OUT isHaveErrNotification TINYINT(1)
 	, OUT errCode SMALLINT
 	, OUT errMsg VARCHAR(100)
     /*
@@ -179,6 +180,11 @@ NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
 										FROM Notification n 
 										INNER JOIN tmp_NotificationIDs t ON n.NotificationID = t.NotificationID 
 										AND t.StatusID <> NOTIFICATION_STATUSID_SENDING;
+
+		SELECT CASE WHEN (EXISTS (SELECT 1 FROM tmp_NotificationIDs t WHERE t.StatusID = NOTIFICATION_STATUSID_ERROR)) 
+									THEN 1 ELSE 0 END
+									INTO isHaveErrNotification; 
+		
 	ELSE
 		SET updatedNotificationIds = '';
 	END IF;

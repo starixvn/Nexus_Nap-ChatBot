@@ -32,11 +32,11 @@
             }
         }
 
-        public async Task NewErrNotification(IEnumerable<Notification> notifications)
+        public async Task HasNewErrNotifications(IEnumerable<Notification> notifications)
         {
             if (notifications.Any())
             {
-                await hubContext.Clients.All.SendAsync("NewErrNotification", notifications);
+                await hubContext.Clients.All.SendAsync("UpdateErrNotification", notifications);
             }
         }
     }

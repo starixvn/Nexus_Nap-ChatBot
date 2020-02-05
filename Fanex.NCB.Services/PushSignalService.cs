@@ -12,6 +12,8 @@
     {
         private readonly IRestClient restClient;
         private readonly IOptionsSnapshot<SignalRSettings> signalRSettings;
+        private const string ContentTypeName = "content-type";
+        private const string ContentTypeValue = "application/x-www-form-urlencoded";
 
         public PushSignalService(IOptionsSnapshot<SignalRSettings> signalRSettings)
         {
@@ -29,7 +31,7 @@
                 var request = new RestRequest(signalRSettings.Value.InsertNotificationURL, Method.POST);
                 request.AddHeader("Authorization", $"{token?.TokenType ?? "Bearer"} {token?.AccessToken}");
                 request.AddParameter("notificationIds", notificationIds);
-                request.AddHeader("content-type", "application/x-www-form-urlencoded");
+                request.AddHeader(ContentTypeName, ContentTypeValue);
 
                 await restClient.ExecutePostTaskAsync(request);
             }
@@ -45,20 +47,31 @@
                 var request = new RestRequest(signalRSettings.Value.UpdateNotificationStatusURL, Method.POST);
                 request.AddHeader("Authorization", $"{token?.TokenType ?? "Bearer"} {token?.AccessToken}");
                 request.AddParameter("notificationIds", notificationIds);
-                request.AddHeader("content-type", "application/x-www-form-urlencoded");
+                request.AddHeader(ContentTypeName, ContentTypeValue);
 
                 await restClient.ExecutePostTaskAsync(request);
             }
+        }
+
+        public async Task OnHasNewErrNotifications()
+        {
+            var token = await GetTokenAsync();
+            restClient.BaseUrl = new Uri(signalRSettings.Value.DomainURL);
+
+            var request = new RestRequest(signalRSettings.Value.ErrNotificationURL, Method.POST);
+            request.AddHeader("Authorization", $"{token?.TokenType ?? "Bearer"} {token?.AccessToken}");
+            request.AddHeader(ContentTypeName, ContentTypeValue);
+
+            await restClient.ExecutePostTaskAsync(request);
         }
 
         private async Task<JwtToken> GetTokenAsync()
         {
             restClient.BaseUrl = new Uri(signalRSettings.Value.DomainURL);
             var request = new RestRequest(signalRSettings.Value.TokenURL, Method.POST);
+            request.AddHeader(ContentTypeName, ContentTypeValue);
             request.AddParameter("username", signalRSettings.Value.AppId);
             request.AddParameter("password", signalRSettings.Value.AppPassword);
-
-            request.AddHeader("Content-type", "application/x-www-form-urlencoded");
 
             var response = await restClient.ExecutePostTaskAsync<JwtToken>(request);
 

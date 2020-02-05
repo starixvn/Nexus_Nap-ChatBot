@@ -10,6 +10,8 @@
 
         public string InsertNotificationURL { get; set; }
 
+        public string ErrNotificationURL { get; set; }
+
         public string AppId { get; set; }
 
         public string AppPassword { get; set; }

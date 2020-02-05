@@ -8,6 +8,8 @@
 
         public string UpdatedNotificationIds { get; set; }
 
+        public bool IsHaveErrNotification { get; set; }
+
         public override string GetSettingKey() => "NCB_SendNotification_RecipientSentStatus_Upd";
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(SentStatus);

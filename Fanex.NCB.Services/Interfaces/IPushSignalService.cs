@@ -7,5 +7,7 @@
         Task OnUpdateNotificationStatus(string notificationIds);
 
         Task OnInsertNotification(string notificationIds);
+
+        Task OnHasNewErrNotifications();
     }
 }

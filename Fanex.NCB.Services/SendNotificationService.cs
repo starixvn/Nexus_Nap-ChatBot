@@ -5,7 +5,6 @@
     using System.Globalization;
     using System.Linq;
     using System.Net;
-    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Fanex.Logging;
     using Fanex.NCB.Core.Enum;
@@ -283,13 +282,18 @@
 
                 var command = new UpdateRecipientSendNotifiactionStatusCommand
                 {
-                    SentStatus = Regex.Unescape(json)
+                    SentStatus = json
                 };
                 await baseService.ExecuteNonQueryAsync(command);
 
                 if (!string.IsNullOrWhiteSpace(command.UpdatedNotificationIds))
                 {
                     PushSignalUpdateNotiStatus(command.UpdatedNotificationIds);
+                }
+
+                if (command.IsHaveErrNotification)
+                {
+                    PushSignalNewErrNotification();
                 }
             }
         }
@@ -313,6 +317,11 @@
             Task.Run(() => pushSignalService.OnUpdateNotificationStatus(notificationIds));
         }
 
+        private void PushSignalNewErrNotification()
+        {
+            Task.Run(() => pushSignalService.OnHasNewErrNotifications());
+        }
+
         private async Task WriteLog(Exception exception)
         {
             string errMsg = string.Format(
@@ -325,6 +334,5 @@
                 exception.StackTrace);
             await logger.ErrorAsync(errMsg);
         }
-
     }
 }

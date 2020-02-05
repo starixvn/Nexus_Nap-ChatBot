@@ -3,8 +3,6 @@ DROP PROCEDURE IF EXISTS NCB_NotificationList_ErrorNotifications_Sel;
 DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_ErrorNotifications_Sel`(
-     IN notificationTypeIDLst   VARCHAR(1000)
-    , IN recipientIDLst         TEXT
     /*
 		Creator: 20200204@Oliver
 
@@ -17,14 +15,10 @@ BEGIN
     
 	SELECT
         n.NotificationID
-        ,n.CreatorID
-        ,c.username CreatorName
         ,n.ConfigSendTime
         ,n.Title
         ,n.Content
         ,n.CreatedDate
-        ,n.StatusID
-        ,n.Status
     FROM Notification n
     INNER JOIN NotificationType nt ON n.NotificationTypeID = nt.NotificationTypeID
     INNER JOIN Customer c on n.CreatorID = c.custid    

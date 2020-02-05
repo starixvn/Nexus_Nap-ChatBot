@@ -24,7 +24,7 @@ export default class Header extends React.PureComponent {
     }
 
     componentDidMount = () => {
-        axios.get(Site.resolveClientUrl('NotificationList/GetErrNotification')).then(response => {
+        axios.get(Site.resolveClientUrl('NotificationList/GetErrNotifications')).then(response => {
             this.setState({
                 notifications: response.data
             }, () => this.initSignalR());
@@ -45,8 +45,10 @@ export default class Header extends React.PureComponent {
             .withHubProtocol(protocol)
             .build();
 
-        this.connection.on('NewErrNotification', (notifications) => {
-            this.onHasNewErrNotification(notifications);
+        this.connection.on('UpdateErrNotification', (notifications) => {
+            this.setState({
+                notifications: notifications
+            });
         });
 
         this.connection.start()
@@ -59,10 +61,8 @@ export default class Header extends React.PureComponent {
     }
 
     onHasNewErrNotification = (notifications) => {
-        debugger;
-        let notis = [...this.state.notifications];
         this.setState({
-            notifications: notis.concat(notifications)
+            notifications: notifications
         });
     }
 

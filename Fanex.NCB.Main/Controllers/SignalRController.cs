@@ -18,12 +18,14 @@
     {
         private readonly IOptionsSnapshot<AppSettings> appSettings;
         private readonly ISignalRService signalRService;
+        private readonly INotificationService notificationService;
         private readonly string invalidUsernameOrPasswordText = "Username or password is incorrect";
 
-        public SignalRController(IOptionsSnapshot<AppSettings> appSettings, ISignalRService signalRService)
+        public SignalRController(IOptionsSnapshot<AppSettings> appSettings, ISignalRService signalRService, INotificationService notificationService)
         {
             this.appSettings = appSettings;
             this.signalRService = signalRService;
+            this.notificationService = notificationService;
         }
 
         [HttpPost]
@@ -66,10 +68,31 @@
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
+        [Route("api/signalr/NewNotifications")]
+        public async Task<ObjectResult> PushSignalOnCreateNotifications(string notificationIds)
+        {
+            await signalRService.InsertNewNotification(notificationIds);
+
+            return Ok("Ok");
+        }
+
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
         [Route("api/signalr/UpdateNoti")]
         public async Task<ObjectResult> PushSignalUpdateNotificationStatus(string notificationIds)
         {
             await signalRService.UpdateNotificationStatus(notificationIds);
+
+            return Ok("Ok");
+        }
+
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        [Route("api/signalr/errNoti")]
+        public async Task<ObjectResult> HasNewErrNotification()
+        {
+            var notifications = await notificationService.GetErrNotificationsAsync();
+            await signalRService.HasNewErrNotifications(notifications);
 
             return Ok("Ok");
         }
