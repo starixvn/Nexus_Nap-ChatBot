@@ -1,5 +1,6 @@
 namespace Fanex.NCB.SkypeBot.Controllers
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.NAP.Client;
     using Fanex.NAP.Client.Helpers.Web;
@@ -34,14 +35,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
-        public IActionResult Index(int? id, int? pageIndex)
+        public IActionResult Index()
         {
-            if (id.HasValue && pageIndex.HasValue)
-            {
-                ViewBag.HightLightId = id.Value;
-                ViewBag.PageIndex = pageIndex.Value;
-            }
-
             ViewBag.HaveEditNotificationPermission = userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotifiactionList, Policy.Host);
 
             return View("~/Views/SkypeBot/NotificationList/Index.cshtml");
@@ -105,9 +100,12 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> Resolve([FromBody]ResolveNotificationViewModel data)
         {
             var result = await notificationService.ResolveAsync(data.NotificationId, data.ResolvedRemark, napSession.UserId).ConfigureAwait(false);
+
             if (result.IsSuccessful)
             {
                 PushSignalRToClient(data.NotificationId.ToString());
+                var errNotifications = await notificationService.GetErrNotificationsAsync();
+                PushSignalUpdateErrNotification(errNotifications);
             }
             return Json(result);
         }
@@ -115,6 +113,11 @@ namespace Fanex.NCB.SkypeBot.Controllers
         private void PushSignalRToClient(string notificationIds)
         {
             Task.Run(() => signalRService.UpdateNotificationStatus(notificationIds));
+        }
+
+        private void PushSignalUpdateErrNotification(IEnumerable<Notification> errNotifications)
+        {
+            Task.Run(() => signalRService.HasNewErrNotifications(errNotifications));
         }
 
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]

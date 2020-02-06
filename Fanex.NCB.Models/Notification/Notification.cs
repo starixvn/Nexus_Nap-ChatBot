@@ -8,6 +8,8 @@
 
         public int MessageID { get; set; }
 
+        public int NotificationTypeId { get; set; }
+
         public string NotificationTypeName { get; set; }
 
         public int CreatorId { get; set; }

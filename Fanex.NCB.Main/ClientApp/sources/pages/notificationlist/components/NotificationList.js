@@ -49,6 +49,7 @@ export default class NotificationList extends Component {
             notificationCancellation: {
                 show: false
             },
+
             errorReport: {
                 notificationId: null,
                 report: null,
@@ -57,23 +58,31 @@ export default class NotificationList extends Component {
             }
         };
 
-        this.hightLightId = document.getElementById('hight-light-id').value;
-        this.pageIndex = document.getElementById('hight-light-page-index').value;
+        const windowUrl = window.location.search;
+        const params = new URLSearchParams(windowUrl);
+
+        this.highlightNotification = {
+                notificationId:  params.get('Id'),
+                notificationTypeId: params.get('typeId'),
+                configSendTime: params.get('sendTime'),
+                creatorId: params.get('creatorId')
+            };
     }
+
     componentDidMount() {
+        console.log(this.highlightNotification);
         const promises = [
             axios(Site.resolveClientUrl('Common/GetNotificationTypes')),
             axios(Site.resolveClientUrl('Common/GetRecipients')),
             axios(Site.resolveClientUrl('Common/GetNotificationStatuses')),
             axios(Site.resolveClientUrl('Common/GetUsers'))
-
         ];
 
-        const isError = this.hightLightId && !isNaN(this.hightLightId);
+        const isHasHighlight = this.highlightNotification.notificationId && !isNaN(this.highlightNotification.notificationId);
 
         Promise.all(promises)
             .then(([notificationTypeResponse, recipientResponse, statusResponse, userResponse]) => {
-                if (isError) {
+                if (isHasHighlight) {
                     statusResponse.data.forEach(status => status.checked = status.id === errorId);
                 }
                 else {
@@ -86,10 +95,9 @@ export default class NotificationList extends Component {
                     return {
                         id: x.notificationTypeID,
                         name: x.notificationTypeName,
-                        checked: true
+                        checked: isHasHighlight ? parseInt(this.highlightNotification.notificationTypeId, 10) === x.notificationID : true
                     };
                 });
-
                 this.setState(prevState => ({
                     notificationTypeOptions,
                     recipientOptions: recipientResponse.data,
@@ -99,7 +107,9 @@ export default class NotificationList extends Component {
                         ...prevState.filter,
                         ...{
                             notificationTypes: {
-                                value: notificationTypeIds.toString()
+                                value: isHasHighlight ?
+                                        this.highlightNotification.notificationTypeId.toString() :
+                                        notificationTypeIds.toString()
                             },
                             statuses: {
                                 value: statusResponse.data.filter(x => x.checked).map(x => x.id).toString()
@@ -108,17 +118,12 @@ export default class NotificationList extends Component {
                                 value: recipientResponse.data.map(r => ({ value: r.value, label: r.title })),
                                 allCheckedNodes: recipientResponse.data
                             },
-                            fromDate: isError ? new Date(defaultFromDate) : prevState.filter.fromDate
+                            fromDate: isHasHighlight ? new Date(this.highlightNotification.configSendTime) : prevState.filter.fromDate,
+                            toDate: isHasHighlight ? new Date(this.highlightNotification.configSendTime) : prevState.filter.toDate
                         }
                     }
                 }), () => {
-                    if (isError) {
-                        const pageIndex = this.pageIndex && !isNaN(this.pageIndex) ? parseInt(this.pageIndex) : 1;
-                        this.getNotifications(pageIndex, defaultPageSize)
-                    }
-                    else {
                         this.getNotifications();
-                    }
                 });
             }).catch(errorResponseHandler);
     }
@@ -385,6 +390,7 @@ export default class NotificationList extends Component {
                         onCancelNotification={this.handleOpenNotificationCancellation}
                         onShowErrorReport={this.handleShowErrorReport}
                         haveEditNotificationPermission={this.haveEditNotificationPermission}
+                        highlightId={this.highlightNotification.notificationId}
                     />
                 }
                 <ConfirmPopup

@@ -15,10 +15,12 @@ BEGIN
     
 	SELECT
         n.NotificationID
+        ,n.NotificationTypeID
         ,n.ConfigSendTime
         ,n.Title
         ,n.Content
         ,n.CreatedDate
+        ,n.CreatorID
     FROM Notification n
     INNER JOIN NotificationType nt ON n.NotificationTypeID = nt.NotificationTypeID
     INNER JOIN Customer c on n.CreatorID = c.custid    

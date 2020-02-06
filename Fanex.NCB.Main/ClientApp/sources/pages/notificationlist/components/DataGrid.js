@@ -16,7 +16,7 @@ export default class DataGrid extends PureComponent {
         };
 
         this.panels = [];
-        this.hightLightId = document.getElementById('hight-light-id').value;
+        this.hightLightId = this.props.highlightId;
     }
 
     componentDidMount = () => {
