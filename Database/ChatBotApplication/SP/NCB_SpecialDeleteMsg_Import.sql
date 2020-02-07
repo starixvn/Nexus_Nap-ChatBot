@@ -296,7 +296,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
       SELECT LAST_INSERT_ID() INTO ccNotificationID;
 
        IF ROW_COUNT() > 0 THEN
-            SET insertedNotificationIds = SELECT GROUP_CONCAT(n.NotificationID SEPARATOR ',')
+            SELECT GROUP_CONCAT(DISTINCT n.NotificationID SEPARATOR ',')
                                           FROM ccNotificationID n;
        ELSE
             SET insertedNotificationIds = '';
