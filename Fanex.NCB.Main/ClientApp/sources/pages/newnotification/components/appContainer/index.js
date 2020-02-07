@@ -76,7 +76,7 @@ export class AppContainer extends React.Component {
             }
         };
 
-        this.selectedNodes = [];
+        this.selectedRecipientIds = [];
         this.debounceHandleSearchRecipents = CommonFunction.debounce(this.handleSearchRecipents);
         this.searchRecipients = [];
 
@@ -106,6 +106,9 @@ export class AppContainer extends React.Component {
             const recipients = result.recipients;
             const unSelectableRecipients = result.unSelectableRecipients;
             this.props.setRecipients(recipients);
+
+            this.selectedRecipientIds = resendNotification.recipients.map(r => r.recipientId);
+
             const selectedRecipients = resendNotification.recipients.map(r => {
                 return {
                     label: r.recipientName,
@@ -156,13 +159,10 @@ export class AppContainer extends React.Component {
 
         const formik = this.refs.form;
         const values = formik.state.values;
-        const recipientIds = [];
-        this.getRecipientIds(recipientIds, values.recipients, this.props.recipientOptions);
-
         const data = stringify({
             notificationTypeId: values.notificationTypeId,
             productId: values.productId,
-            recipientIds: recipientIds.toString(),
+            recipientIds: this.selectedRecipientIds.toString(),
             title: values.title,
             content: values.content,
             sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
@@ -177,19 +177,6 @@ export class AppContainer extends React.Component {
                 }, 3000);
             }
         });
-    }
-
-    getRecipientIds = (ids, values, collection) => {
-        for (let i = 0; i < collection.length; i++) {
-            const item = collection[i];
-            if (item.children && item.children.length > 0) {
-                this.getRecipientIds(ids, values, item.children);
-            } else {
-                if (values.some(value => value.value === collection[i].value)) {
-                    ids.push(collection[i].realValue);
-                }
-            }
-        }
     }
 
     schema = object().shape({
@@ -280,9 +267,23 @@ export class AppContainer extends React.Component {
 
     handleRecipientChange = (value, label, extra) => {
         const formik = this.refs.form;
-        this.selectedNodes = extra.allCheckedNodes;
-        console.log(this.props.recipientOptions);
+        const recipientIds = [];
+        this.getRecipientIds(recipientIds, extra.allCheckedNodes);
+        this.selectedRecipientIds = recipientIds;
         formik.setFieldValue('recipients', value);
+    }
+
+    getRecipientIds = (ids, collection) => {
+        for (let i = 0; i < collection.length; i++) {
+            const item = collection[i];
+            if (item.children && item.children.length > 0) {
+                this.getRecipientIds(ids, item.children);
+            } else {
+                if (!ids.some(i => i === item.node.props.realValue)) {
+                    ids.push(item.node.props.realValue);
+                }
+            }
+        }
     }
 
     handleResetTitleContent = () => {
