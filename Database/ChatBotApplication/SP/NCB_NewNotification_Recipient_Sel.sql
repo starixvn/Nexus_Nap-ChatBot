@@ -58,6 +58,11 @@ BEGIN
 							SELECT nrt.RecipientTypeID 
 							FROM NotificationRecipientType nrt 
 							WHERE nrt.NotificationTypeID = notificationTypeID
+		)
+		AND bcri.ChatGroupTypeID IN (
+							SELECT nct.ChatGroupTypeID
+							FROM NotificationChatGroupType nct
+							WHERE nct.NotificationTypeID = notificationTypeID
 		);
     
     #Delete InActive Licensee
