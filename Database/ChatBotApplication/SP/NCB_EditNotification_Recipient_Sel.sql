@@ -69,7 +69,7 @@ BEGIN
 							SELECT nct.ChatGroupTypeID
 							FROM NotificationChatGroupType nct
 							WHERE nct.NotificationTypeID = notificationTypeID
-		);;
+		);
     
     #Delete InActive Licensee
     DELETE main
