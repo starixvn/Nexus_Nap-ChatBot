@@ -12,6 +12,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%'  PROCEDURE NCB_NewNotification_Recipient_Se
         Revisions:
 				- 20190401@Dominic: First Commit
                 - 20191211@Dominic: Filter active chat group - Redmine: #125085
+				- 20200211@Oliver: Add check notification chat group type has been changed [RedmineID: #128273]
         
     */
 )

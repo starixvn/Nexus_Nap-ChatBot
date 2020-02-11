@@ -23,6 +23,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_EditNotification_Upd`(
 				- 20190401@Dominic: First Commit
 				- 20190819@Elton: Update Error Message
                 - 20191021@Dominic: Not check recipients who have at least 1 mapped chat group
+				- 20200211@Oliver: Add check notification chat group type has been changed [RedmineID: #128273]
     */
 )
 NCB_EditNotification_Upd:BEGIN
@@ -230,7 +231,20 @@ NCB_EditNotification_Upd:BEGIN
             SET errMsg = 'The schedule is expired, Please check again!';
 			LEAVE NCB_EditNotification_Upd;
     END IF;
-    
+
+    #Check Chat Group type changed
+	IF NOT EXISTS(
+		SELECT 1
+		FROM NotificationChatGroupType ncgt
+		INNER JOIN Notification n ON ncgt.NotificationTypeID = n.NotificationTypeID
+		WHERE n.NotificationID = notificationID
+	) THEN
+		SET errCode=521;
+		SET errMsg = 'The chat group type of this notification type has been changed.';
+        LEAVE NCB_EditNotification_Upd;
+    END IF;
+
+
     #Check exeption recipient
     IF EXISTS(
 			SELECT 1
