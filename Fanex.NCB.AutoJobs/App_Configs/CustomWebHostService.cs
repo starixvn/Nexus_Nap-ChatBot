@@ -46,9 +46,9 @@
 
         public void RunHangfireJobs()
         {
-            recurringJob.AddOrUpdate<IJobService>(Resources.SpecialDeletePullTicketAndScanNoti,
-               job => job.PullTicketCreateNotificationAndScanNotification(),
-               jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.PullTicketFromSpecialDeleteAndScanNoti))?.CronExpression,
+            recurringJob.AddOrUpdate<IJobService>(Resources.EveryMinuteJobs,
+               job => job.EveryMinuteJobs(),
+               Cron.Minutely,
                TimeZoneInfo.Local, QueuPriority.Critical);
 
             recurringJob.AddOrUpdate<IJobService>(Resources.Job_SyncNapUserControlData,

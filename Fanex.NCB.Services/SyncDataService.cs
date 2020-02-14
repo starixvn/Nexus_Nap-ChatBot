@@ -1,9 +1,12 @@
 ﻿namespace Fanex.NCB.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
     using System.Threading.Tasks;
     using Fanex.Logging;
+    using Fanex.NCB.Core.Constants;
+    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SyncData;
     using Fanex.NCB.Repository.Interfaces;
@@ -19,6 +22,7 @@
     public class SyncDataService : ISyncDataService
     {
         private readonly IOptionsSnapshot<AppSettings> appSettings;
+        private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
         private readonly ISyncDataRepository syncDataRepository;
         private readonly IBaseService baseService;
         private readonly ILogger logger;
@@ -29,23 +33,28 @@
             ISyncDataRepository syncDataRepository,
             IBaseService baseService,
             ILogger logger,
-            IMaintenanceService maintenanceService)
+            IMaintenanceService maintenanceService,
+            IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
         {
             this.appSettings = appSettings;
             this.syncDataRepository = syncDataRepository;
             this.baseService = baseService;
             this.logger = logger;
             this.maintenanceService = maintenanceService;
+            this.jobSettings = jobSettings;
         }
 
         public async Task NapUserControlSyncDataAsync()
         {
-            var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
-
-            if (!maintanceTime.IsUnderMaintenanceTime)
+            if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.SyncNapUserControlData))
             {
-                var data = await GetDataFromNapUserControl(null);
-                await InsertNapData(data);
+                var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
+
+                if (!maintanceTime.IsUnderMaintenanceTime)
+                {
+                    var data = await GetDataFromNapUserControl(null);
+                    await InsertNapData(data);
+                }
             }
         }
 
@@ -71,12 +80,15 @@
 
         public async Task OicSyncDataAsync()
         {
-            var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
-
-            if (!maintanceTime.IsUnderMaintenanceTime)
+            if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.SyncOICData))
             {
-                var data = await GetDataFromOIC();
-                await InsertOICData(data);
+                var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
+
+                if (!maintanceTime.IsUnderMaintenanceTime)
+                {
+                    var data = await GetDataFromOIC();
+                    await InsertOICData(data);
+                }
             }
         }
 

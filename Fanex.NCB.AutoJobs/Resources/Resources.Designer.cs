@@ -61,6 +61,15 @@ namespace Fanex.NCB.AutoJobs.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pull message from Special Delete, then call Scan and Send notifications.
+        /// </summary>
+        internal static string EveryMinuteJobs {
+            get {
+                return ResourceManager.GetString("EveryMinuteJobs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Auto Scan &amp; Send Notification.
         /// </summary>
         internal static string Job_ScanAndSendNotification {

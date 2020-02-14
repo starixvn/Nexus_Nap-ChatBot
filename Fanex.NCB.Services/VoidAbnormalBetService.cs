@@ -13,25 +13,22 @@
     using Newtonsoft.Json;
     using ONEbook.UM.Services;
 
-    public class SpecialDeleteTicketService : ISpecialDeleteTicketService
+    public class VoidAbnormalBetService : IVoidAbnormalBetService
     {
         private readonly IBaseService baseService;
         private readonly IChatbotService chatbotService;
-        private readonly ISendNotificationService sendNotificationService;
         private readonly IMaintenanceService maintenanceService;
 
-        public SpecialDeleteTicketService(IBaseService baseService,
+        public VoidAbnormalBetService(IBaseService baseService,
             IChatbotService chatbotService,
-            IMaintenanceService maintenanceService,
-            ISendNotificationService sendNotificationService)
+            IMaintenanceService maintenanceService)
         {
             this.baseService = baseService;
             this.chatbotService = chatbotService;
             this.maintenanceService = maintenanceService;
-            this.sendNotificationService = sendNotificationService;
         }
 
-        public async Task PullTicketAndCreateNotification()
+        public async Task GetAbnormalBetAndInsertNotification()
         {
             var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
             if (!maintanceTime.IsUnderMaintenanceTime)
@@ -40,24 +37,41 @@
 
                 if (systemSettings != null)
                 {
-                    var messages = await GetMessageFromSpecialDelete(systemSettings);
-                    if (messages.Item1.Any() && messages.Item2.Any())
-                    {
-                        var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
+                    var abnormalBetMsgs = await GetAbnormalBetMessage(systemSettings);
 
-                        await OnAfterImportData(result.Item1, result.Item2);
-                    }
+                    await ImportToChatbotDB(abnormalBetMsgs.Item1, abnormalBetMsgs.Item2);
                 }
             }
+        }
 
-            ExecuteJobScan();
+        private async Task ImportToChatbotDB(IEnumerable<Message> messages, IEnumerable<AbnormalBetMessage> details)
+        {
+            if (messages.Any())
+            {
+                var criteria = new ImportAbnormalBetMessageCriteria
+                {
+                    MessageHeader = JsonConvert.SerializeObject(messages),
+                    MessageDetail = JsonConvert.SerializeObject(details)
+                };
+
+                var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
+
+                var notification = GenerateNotifificationMessage(data.Item2, data.Item1);
+                var command = new CommandResult
+                {
+                    Code = criteria.ErrCode,
+                    Message = criteria.ErrMsg
+                };
+
+                await OnAfterImportData(command, notification);
+            }
         }
 
         private async Task OnAfterImportData(CommandResult commandResult, IEnumerable<NotificationMessage> notifications)
         {
             if (!commandResult.IsSuccessful)
             {
-                await chatbotService.NotifyToGroup(commandResult.Message);
+                await chatbotService.NotifyToChatGroup(commandResult.Message);
             }
             else
             {
@@ -66,32 +80,6 @@
                     await chatbotService.SendMessageToMultitpleAsync(notifications);
                 }
             }
-        }
-
-        private void ExecuteJobScan()
-        {
-            Task.Run(() => sendNotificationService.ScanAndSendNotification()).ConfigureAwait(false);
-        }
-
-        private async Task<ValueTuple<CommandResult, IEnumerable<NotificationMessage>>> ImportMessageToChatbotDB(
-            IEnumerable<Message> messages,
-            IEnumerable<MessageDetail> messageDetails)
-        {
-            var criteria = new ImportMessageFromSpecialDeleteCriteria
-            {
-                MessageHeader = JsonConvert.SerializeObject(messages),
-                MessageDetail = JsonConvert.SerializeObject(messageDetails)
-            };
-
-            var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
-            var notification = GenerateNotifificationMessage(data.Item2, data.Item1);
-            var command = new CommandResult
-            {
-                Code = criteria.ErrCode,
-                Message = criteria.ErrMsg
-            };
-
-            return new ValueTuple<CommandResult, IEnumerable<NotificationMessage>>(command, notification);
         }
 
         private IEnumerable<NotificationMessage> GenerateNotifificationMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
@@ -123,29 +111,16 @@
             return messages;
         }
 
-        private async Task<ValueTuple<IEnumerable<Message>, IEnumerable<MessageDetail>>> GetMessageFromSpecialDelete(SystemSetting systemSettings)
+        private async Task<ValueTuple<IEnumerable<Message>, IEnumerable<AbnormalBetMessage>>>
+            GetAbnormalBetMessage(SystemSetting systemSettings)
         {
-            var criteria = new GetMessageFromSpecialDeleteCriteria
+            var criteria = new GetAbnormalBetMessageCriteria
             {
-                MessageID = systemSettings.MaxMessageID,
-                BatchSize = systemSettings.BatchSize,
-                MsgContentsTypeLst = systemSettings.MsgContentsTypeLst
+                MaxMessageId = systemSettings.MaxMessageID,
+                BatchSize = systemSettings.BatchSize
             };
 
-            var result = await baseService.FetchMultipleAsync<Message, MessageDetail>(criteria);
-
-            if (result.Item1.Any())
-            {
-                foreach (var msg in result.Item1)
-                {
-                    var contentEn = !string.IsNullOrWhiteSpace(msg.Content_en) ? msg.Content_en.Trim() : string.Empty;
-                    var contentCs = !string.IsNullOrWhiteSpace(msg.Content_cs) ? msg.Content_cs.Trim() : string.Empty;
-                    msg.Content_en = contentEn;
-                    msg.Content_cs = contentCs;
-                }
-            }
-
-            return result;
+            return await baseService.FetchMultipleAsync<Message, AbnormalBetMessage>(criteria);
         }
 
         private async Task<SystemSetting> GetSystemSettings()

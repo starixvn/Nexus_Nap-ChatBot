@@ -18,7 +18,7 @@
     {
         private ISyncDataService syncDataService;
         private IChatbotService chatbotService;
-        private ISpecialDeleteTicketService specialDeleteTicketService;
+        private ISpecialDeleteService specialDeleteTicketService;
         private IOptionsMonitor<List<HangfireJobSetting>> jobSettings;
         private IOptionsSnapshot<MonitorChatbot> monitorOptions;
         private ILogger logger;
@@ -78,14 +78,14 @@
             await service.PullTicketCreateNotificationAndScanNotification();
 
             //Assert
-            await specialDeleteTicketService.Received().PullTicketAndCreateNotification();
+            await specialDeleteTicketService.Received().VoidingTicketToLicensee();
         }
 
         [Fact]
         public async Task PullTicketFromSpecialDeleteAndCreateNotification_WhenCalled_ThrowException()
         {
             var service = GetService();
-            specialDeleteTicketService.PullTicketAndCreateNotification().Throws(new Exception());
+            specialDeleteTicketService.VoidingTicketToLicensee().Throws(new Exception());
 
             //Assert
             await Assert.ThrowsAsync<Exception>(() => service.PullTicketCreateNotificationAndScanNotification());
@@ -122,7 +122,7 @@
         {
             syncDataService = Substitute.For<ISyncDataService>();
             chatbotService = Substitute.For<IChatbotService>();
-            specialDeleteTicketService = Substitute.For<ISpecialDeleteTicketService>();
+            specialDeleteTicketService = Substitute.For<ISpecialDeleteService>();
             monitorOptions = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
             jobSettings = Substitute.For<IOptionsMonitor<List<HangfireJobSetting>>>();
             var option = new MonitorChatbot
@@ -140,7 +140,7 @@
                 new HangfireJobSetting {JobName = HangfireJob.SendNotification, CronExpression = "* * * * *", IsEnabled = true},
                 new HangfireJobSetting {JobName = HangfireJob.SyncNapUserControlData, CronExpression = "* * * * *", IsEnabled = true},
                 new HangfireJobSetting {JobName = HangfireJob.SyncOICData, CronExpression = "* * * * *", IsEnabled = true},
-                new HangfireJobSetting {JobName = HangfireJob.PullTicketFromSpecialDeleteAndScanNoti, CronExpression = "* * * * *", IsEnabled = true},
+                new HangfireJobSetting {JobName = HangfireJob.VoidingTicket, CronExpression = "* * * * *", IsEnabled = true},
                 new HangfireJobSetting {JobName = HangfireJob.MonitorSkypebot, CronExpression = "* * * * *", IsEnabled = true}
             };
             jobSettings.CurrentValue.Returns(settings);

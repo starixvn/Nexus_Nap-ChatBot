@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="EveryMinuteJobs" xml:space="preserve">
+    <value>Pull message from Special Delete, then call Scan and Send notifications</value>
+  </data>
   <data name="Job_ScanAndSendNotification" xml:space="preserve">
     <value>Auto Scan &amp; Send Notification</value>
   </data>

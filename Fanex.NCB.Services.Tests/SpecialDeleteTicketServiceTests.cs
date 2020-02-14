@@ -29,7 +29,7 @@
             baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns((SystemSetting)null);
 
             //Actual
-            await service.PullTicketAndCreateNotification();
+            await service.VoidingTicketToLicensee();
 
             //Expected
             await baseService.DidNotReceiveWithAnyArgs().FetchMultipleAsync<Message, MessageDetail>(Arg.Any<GetMessageFromSpecialDeleteCriteria>());
@@ -48,7 +48,7 @@
               (new List<Message>(), new List<MessageDetail>())
                 );
             //Actual
-            await service.PullTicketAndCreateNotification();
+            await service.VoidingTicketToLicensee();
 
             //Expected
             await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
@@ -63,13 +63,13 @@
                 new SystemSetting { BatchSize = 100, MaxMessageID = 1989, MsgContentsTypeLst = "ABC" });
 
             baseService.FetchMultipleAsync<Message, MessageDetail>(Arg.Any<GetMessageFromSpecialDeleteCriteria>()).Returns(
-              (new List<Message> { new Message { MessageID = 1 } }, new List<MessageDetail> { new MessageDetail { MessageID = 1 } })
+              (new List<Message> { new Message { MessageId = 1, MsgContentsType = 103 } }, new List<MessageDetail> { new MessageDetail { MessageID = 1 } })
                 );
             var fakeData = FakeData();
             baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>()).Returns(fakeData);
 
             //Actual
-            await service.PullTicketAndCreateNotification();
+            await service.VoidingTicketToLicensee();
 
             //Expected
             await chatbotService.Received(1).SendMessageToMultitpleAsync(Arg.Any<IEnumerable<NotificationMessage>>());
@@ -89,7 +89,7 @@
             return new ValueTuple<IEnumerable<NotificationRecipient>, IEnumerable<NotificationSendMessage>>(recipients, notifications);
         }
 
-        private SpecialDeleteTicketService GetService()
+        private SpecialDeleteService GetService()
         {
             baseService = Substitute.For<IBaseService>();
             chatbotService = Substitute.For<IChatbotService>();
@@ -100,7 +100,7 @@
                 IsUnderMaintenanceTime = false
             };
             maintenanceService.GetUnderMaintenanceTimeAsync().Returns(umTime);
-            return new SpecialDeleteTicketService(baseService, chatbotService, maintenanceService, sendNotificationService);
+            return new SpecialDeleteService(baseService, chatbotService, maintenanceService, sendNotificationService);
         }
     }
 }

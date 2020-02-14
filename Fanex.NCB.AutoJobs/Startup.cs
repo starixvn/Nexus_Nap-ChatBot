@@ -188,7 +188,7 @@
             services.AddScoped<IChatbotService, ChatbotService>();
             services.AddScoped<ISendNotificationService, SendNotificationService>();
             services.AddScoped<ISyncDataService, SyncDataService>();
-            services.AddScoped<ISpecialDeleteTicketService, SpecialDeleteTicketService>();
+            services.AddScoped<ISpecialDeleteService, SpecialDeleteService>();
             services.AddScoped<IJobService, JobService>();
             services.AddTransient<IRecurringJobManager, RecurringJobManager>();
         }

@@ -8,7 +8,9 @@
 
         public const string SyncOICData = "SyncOICData";
 
-        public const string PullTicketFromSpecialDeleteAndScanNoti = "PullTicketFromSpecialDeleteAndScanNoti";
+        public const string VoidingTicket = "PullTicketFromSpecialDeleteAndScanNoti";
+
+        public const string VoidingAbnormalBets = "VoidingAbnormalBets";
 
         public const string MonitorSkypebot = "MonitorSkypebot";
     }

@@ -8,7 +8,7 @@
 
         Task SyncDataFromOIC();
 
-        Task PullTicketCreateNotificationAndScanNotification();
+        Task EveryMinuteJobs();
 
         Task MonitorChatbot();
     }

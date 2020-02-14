@@ -11,6 +11,8 @@
 
         Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages);
 
-        Task NotifyToGroup(string message);
+        Task MonitorChatbot();
+
+        Task NotifyToChatGroup(string message);
     }
 }

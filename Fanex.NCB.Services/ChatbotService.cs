@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Text;
     using System.Threading.Tasks;
+    using Fanex.NCB.Core.Constants;
+    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models;
     using Fanex.NCB.Services.Interfaces;
@@ -15,15 +17,21 @@
     {
         private readonly IRestClient webClient;
         private readonly IOptionsSnapshot<BotSettings> botSettings;
+        private readonly IOptionsSnapshot<MonitorChatbot> monitorChatbot;
         private readonly IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions;
+        private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
 
         public ChatbotService(
             IOptionsSnapshot<BotSettings> botSettings,
-            IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions)
+            IOptionsSnapshot<MonitorChatbot> monitorChatbot,
+            IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions,
+            IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
         {
             webClient = new RestClient { Encoding = Encoding.UTF8 };
-            this.notifyChatGroupOptions = notifyChatGroupOptions;
+            this.monitorChatbot = monitorChatbot;
             this.botSettings = botSettings;
+            this.jobSettings = jobSettings;
+            this.notifyChatGroupOptions = notifyChatGroupOptions;
         }
 
         public async Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages)
@@ -75,27 +83,55 @@
             return response.Data;
         }
 
-        public async Task NotifyToGroup(string message)
+        public async Task MonitorChatbot()
+        {
+            if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.MonitorSkypebot))
+            {
+                var settings = monitorChatbot.Value;
+                var notificationModel = new List<NotificationMessage>
+                {
+                    new NotificationMessage {
+                        NotifictaionId = -1,
+                        Message = settings.Message,
+                        Recipients = new List<ConversationInfo>
+                        {
+                            new ConversationInfo
+                            {
+                                ConversationId = settings.ConversationId,
+                                ChannelId = settings.ChannelId,
+                                ServiceUrl = settings.ServiceUrl,
+                                BotConversationId = settings.BotConversationId,
+                                BotName = settings.BotName
+                            }
+                        }
+                    }
+                };
+
+                await SendMessageToMultitpleAsync(notificationModel);
+            }
+        }
+
+        public async Task NotifyToChatGroup(string message)
         {
             var settings = notifyChatGroupOptions.Value;
             var notificationModel = new List<NotificationMessage>
-                    {
-                        new NotificationMessage {
-                            NotifictaionId = -1,
-                            Message = message,
-                            Recipients = new List<ConversationInfo>
+                {
+                    new NotificationMessage {
+                        NotifictaionId = -1,
+                        Message = message,
+                        Recipients = new List<ConversationInfo>
+                        {
+                            new ConversationInfo
                             {
-                                new ConversationInfo
-                                {
-                                    ConversationId = settings.ConversationId,
-                                    ChannelId = settings.ChannelId,
-                                    ServiceUrl = settings.ServiceUrl,
-                                    BotConversationId = settings.BotConversationId,
-                                    BotName = settings.BotName
-                                }
+                                ConversationId = settings.ConversationId,
+                                ChannelId = settings.ChannelId,
+                                ServiceUrl = settings.ServiceUrl,
+                                BotConversationId = settings.BotConversationId,
+                                BotName = settings.BotName
                             }
                         }
-                    };
+                    }
+                };
 
             await SendMessageToMultitpleAsync(notificationModel);
         }
