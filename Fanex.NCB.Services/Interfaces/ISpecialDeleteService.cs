@@ -6,6 +6,6 @@
     {
         Task VoidingTicketToLicensee();
 
-        Task VoidingAbnormalBetToInternalDepartment();
+        Task VoidingAbnormalBetsToInternalDepartment();
     }
 }

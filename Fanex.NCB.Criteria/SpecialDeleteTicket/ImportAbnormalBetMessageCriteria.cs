@@ -2,7 +2,7 @@
 {
     using Fanex.Data.Repository;
 
-    public class ImportAbnormalBetMessageCriteria : CriteriaBase
+    public class ImportAbnormalBetsMessageCriteria : CriteriaBase
     {
         public string MessageHeader { get; set; }
 

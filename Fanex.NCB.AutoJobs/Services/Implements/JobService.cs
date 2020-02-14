@@ -67,7 +67,7 @@
             try
             {
                 await Task.WhenAll(
-                specialDeleteTicketService.VoidingAbnormalBetToInternalDepartment(),
+                specialDeleteTicketService.VoidingAbnormalBetsToInternalDepartment(),
                 specialDeleteTicketService.VoidingTicketToLicensee()
                 );
 

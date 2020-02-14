@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class AbnormalBetMessage
+    public class AbnormalBetsMessage
     {
         public int MessageId { get; set; }
 

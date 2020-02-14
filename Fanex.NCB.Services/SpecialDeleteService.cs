@@ -159,14 +159,7 @@
             return await baseService.GetDataEntityAsync<SystemSetting>(criteria);
         }
 
-        private async Task<SystemSetting> GetAbnormalBetSystemSettings()
-        {
-            var criteria = new GetAbnormalBetSystemSettingCriteria();
-
-            return await baseService.GetDataEntityAsync<SystemSetting>(criteria);
-        }
-
-        public async Task VoidingAbnormalBetToInternalDepartment()
+        public async Task VoidingAbnormalBetsToInternalDepartment()
         {
             var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
 
@@ -191,27 +184,34 @@
             }
         }
 
-        private async Task<IEnumerable<AbnormalBetMessage>>
+        private async Task<SystemSetting> GetAbnormalBetSystemSettings()
+        {
+            var criteria = new GetAbnormalBetSystemSettingCriteria();
+
+            return await baseService.GetDataEntityAsync<SystemSetting>(criteria);
+        }
+
+        private async Task<IEnumerable<AbnormalBetsMessage>>
            GetAbnormalBetMessage(string msgIds)
         {
             if (!string.IsNullOrWhiteSpace(msgIds))
             {
-                var criteria = new GetAbnormalBetMessageCriteria
+                var criteria = new GetAbnormalBetsMessageCriteria
                 {
                     MessageIdLst = msgIds
                 };
 
-                return await baseService.GetDataAsync<AbnormalBetMessage>(criteria);
+                return await baseService.GetDataAsync<AbnormalBetsMessage>(criteria);
             }
 
-            return new List<AbnormalBetMessage>();
+            return new List<AbnormalBetsMessage>();
         }
 
-        private async Task ImportAbnormalBetNotificationToChatbotDB(IEnumerable<AbnormalBetMessage> messages)
+        private async Task ImportAbnormalBetNotificationToChatbotDB(IEnumerable<AbnormalBetsMessage> messages)
         {
             if (messages.Any())
             {
-                var criteria = new ImportAbnormalBetMessageCriteria
+                var criteria = new ImportAbnormalBetsMessageCriteria
                 {
                     MessageHeader = JsonConvert.SerializeObject(messages),
                 };

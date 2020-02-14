@@ -2,7 +2,7 @@
 {
     using Fanex.Data.Repository;
 
-    public class GetAbnormalBetMessageCriteria : CriteriaBase
+    public class GetAbnormalBetsMessageCriteria : CriteriaBase
     {
         public string MessageIdLst { get; set; }
 
