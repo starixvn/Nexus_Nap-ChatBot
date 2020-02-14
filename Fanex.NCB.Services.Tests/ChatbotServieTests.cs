@@ -4,7 +4,9 @@
     using System.Net;
     using System.Text;
     using System.Threading.Tasks;
+    using AutoFixture;
     using Fanex.NCB.Core.Models;
+    using Fanex.NCB.Models;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;
     using NSubstitute;
@@ -15,26 +17,30 @@
     {
         private IRestClient webClient;
         private IOptionsSnapshot<BotSettings> botSettings;
+        private IOptionsSnapshot<MonitorChatbot> monitor;
         private IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions;
+        private IOptionsSnapshot<List<HangfireJobSetting>> jobs;
 
         [Fact]
         public async Task SendMessageToMultitpleAsync_WhenCalled_ExecutePostTaskAsync()
         {
+            var fixture = new Fixture();
             var messages = new List<NotificationMessage>();
-            var expected = new RestResponse
-            {
-                StatusCode = HttpStatusCode.OK
-            };
-            var service = GetService();
-            var request = new RestRequest("/Test", Method.POST);
+            var expected = Substitute.For<IRestResponse>();
+            expected.StatusCode.Returns(HttpStatusCode.OK);
 
-            webClient.ExecutePostTaskAsync(Arg.Is(request)).Returns(expected);
+            var tokenRes = Substitute.For<IRestResponse<ChatbotToken>>();
+            tokenRes.StatusCode.Returns(HttpStatusCode.OK);
+            tokenRes.Data.Returns(fixture.Create<ChatbotToken>());
+            var service = GetService();
+
+            webClient.ExecutePostTaskAsync<ChatbotToken>(Arg.Any<RestRequest>()).Returns(tokenRes);
+            webClient.ExecutePostTaskAsync(Arg.Any<RestRequest>()).Returns(expected);
 
             //Act
             var actual = await service.SendMessageToMultitpleAsync(messages);
 
             //Assert
-            Assert.Equal(HttpStatusCode.OK, actual.StatusCode);
             Assert.Equal("/Test", actual.Request.Resource);
         }
 
@@ -73,12 +79,13 @@
         public async Task NotifySponDemoChatGroup_WhenCalled_WebClientExecuted()
         {
             var service = GetService();
-            await service.NotifyToGroup("Test");
+            await service.NotifyToChatGroup("Test");
             webClient.Received(2);
         }
 
         private ChatbotService GetService()
         {
+            var fixture = new Fixture();
             webClient = new RestClient { Encoding = Encoding.UTF8 };
             var settings = new BotSettings
             {
@@ -94,13 +101,25 @@
                 ConversationId = "Conversation",
                 ServiceUrl = "test.com"
             };
+            var monitorOptions = new MonitorChatbot
+            {
+                BotName = "1on1",
+                BotConversationId = "ABC",
+                ChannelId = "ACV",
+                ConversationId = "Conversation",
+                ServiceUrl = "test.com"
+            };
             webClient = Substitute.For<IRestClient>();
             botSettings = Substitute.For<IOptionsSnapshot<BotSettings>>();
             notifyChatGroupOptions = Substitute.For<IOptionsSnapshot<NotifyChatGroupOption>>();
+            monitor = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
+            monitor.Value.Returns(monitorOptions);
+            jobs = Substitute.For<IOptionsSnapshot<List<HangfireJobSetting>>>();
+            jobs.Value.Returns(fixture.Create<List<HangfireJobSetting>>());
             botSettings.Value.Returns(settings);
             notifyChatGroupOptions.Value.Returns(sponGroupOptions);
 
-            return new ChatbotService(botSettings, notifyChatGroupOptions);
+            return new ChatbotService(botSettings, monitor, notifyChatGroupOptions, jobs);
         }
     }
 }

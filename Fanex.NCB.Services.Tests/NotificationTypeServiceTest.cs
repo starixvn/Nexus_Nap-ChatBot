@@ -1,14 +1,13 @@
-﻿using AutoFixture;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoFixture;
 using Fanex.NCB.Criteria.NotificationType;
 using Fanex.NCB.Models.NotificationType;
 using Fanex.NCB.Shared.Services.Interfaces;
 using FluentAssertions;
 using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Fanex.NCB.Services.Tests
@@ -23,7 +22,7 @@ namespace Fanex.NCB.Services.Tests
             // Arrange
             var baseService = Substitute.For<IBaseService>();
             var service = new NotificationTypeService(baseService);
-            var model = _fixture.Create<NotificationTypeViewModel>();            
+            var model = _fixture.Create<NotificationTypeViewModel>();
 
             InsertNotificationTypeCommand command = null;
             await baseService.ExecuteNonQueryAsync(Arg.Do<InsertNotificationTypeCommand>(x => command = x));
@@ -112,7 +111,7 @@ namespace Fanex.NCB.Services.Tests
         {
             var notificationTypes = _fixture.CreateMany<NotificationType>().ToList();
             var notificationRecipientTypes = _fixture.CreateMany<NotificationRecipientType>()
-                .Select(x => { x.NotificationTypeId = notificationTypes.First().Id;  return x; });
+                .Select(x => { x.NotificationTypeId = notificationTypes.First().Id; return x; });
             var notificationChatGroupTypes = _fixture.CreateMany<NotificationChatGroupType>()
                 .Select(x => { x.NotificationTypeId = notificationTypes.Last().Id; return x; });
 

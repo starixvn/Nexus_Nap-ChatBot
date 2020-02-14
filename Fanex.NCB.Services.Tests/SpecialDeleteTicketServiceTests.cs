@@ -3,12 +3,15 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Fanex.NCB.Core.Constants;
+    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Microsoft.Extensions.Options;
     using NSubstitute;
     using ONEbook.UM.Models;
     using ONEbook.UM.Services;
@@ -20,9 +23,10 @@
         private IChatbotService chatbotService;
         private ISendNotificationService sendNotificationService;
         private IMaintenanceService maintenanceService;
+        private IOptionsSnapshot<List<HangfireJobSetting>> jobs;
 
         [Fact]
-        public async Task PullTicketAndCreateNotification_WhenGetSettingIsNull_DoNothing()
+        public async Task VoidingTicketToLicensee_WhenGetSettingIsNull_DoNothing()
         {
             var service = GetService();
 
@@ -34,10 +38,14 @@
             //Expected
             await baseService.DidNotReceiveWithAnyArgs().FetchMultipleAsync<Message, MessageDetail>(Arg.Any<GetMessageFromSpecialDeleteCriteria>());
             await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
+
+            //Assert
+            await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
+            await chatbotService.DidNotReceive().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
         }
 
         [Fact]
-        public async Task PullTicketAndCreateNotification_NoTicketToImport_DoNothing()
+        public async Task VoidingTicketToLicensee_NoTicketToImport_DoNothing()
         {
             var service = GetService();
 
@@ -55,7 +63,7 @@
         }
 
         [Fact]
-        public async Task PullTicketAndCreateNotification_ImportFailed_NotifyChatGroup()
+        public async Task VoidingTicketToLicensee_ImportFailed_NotifyChatGroup()
         {
             var service = GetService();
 
@@ -72,7 +80,6 @@
             await service.VoidingTicketToLicensee();
 
             //Expected
-            await chatbotService.Received(1).SendMessageToMultitpleAsync(Arg.Any<IEnumerable<NotificationMessage>>());
         }
 
         private ValueTuple<IEnumerable<NotificationRecipient>, IEnumerable<NotificationSendMessage>> FakeData()
@@ -95,12 +102,20 @@
             chatbotService = Substitute.For<IChatbotService>();
             sendNotificationService = Substitute.For<ISendNotificationService>();
             maintenanceService = Substitute.For<IMaintenanceService>();
+            jobs = Substitute.For<IOptionsSnapshot<List<HangfireJobSetting>>>();
+            var hangfireJobs = new List<HangfireJobSetting>
+            {
+                new HangfireJobSetting { IsEnabled = true, JobName = HangfireJobName.VoidingTicketForLicensee},
+                new HangfireJobSetting {IsEnabled = true, JobName = HangfireJobName.VoidingAbnormalBets}
+            };
+            jobs.Value.Returns(hangfireJobs);
+
             var umTime = new UnderMaintenanceTime
             {
                 IsUnderMaintenanceTime = false
             };
             maintenanceService.GetUnderMaintenanceTimeAsync().Returns(umTime);
-            return new SpecialDeleteService(baseService, chatbotService, maintenanceService, sendNotificationService);
+            return new SpecialDeleteService(baseService, chatbotService, maintenanceService, jobs);
         }
     }
 }

@@ -1,15 +1,10 @@
 ﻿namespace Fanex.NCB.AutoJobs.Tests.Services
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Logging;
-    using Fanex.NCB.AutoJobs.Constants;
     using Fanex.NCB.AutoJobs.Services.Implements;
-    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Services.Interfaces;
-    using Fanex.NCB.Shared.Models;
-    using Microsoft.Extensions.Options;
     using NSubstitute;
     using NSubstitute.ExceptionExtensions;
     using Xunit;
@@ -19,8 +14,7 @@
         private ISyncDataService syncDataService;
         private IChatbotService chatbotService;
         private ISpecialDeleteService specialDeleteTicketService;
-        private IOptionsMonitor<List<HangfireJobSetting>> jobSettings;
-        private IOptionsSnapshot<MonitorChatbot> monitorOptions;
+        private ISendNotificationService sendNotificationService;
         private ILogger logger;
 
         [Fact]
@@ -75,7 +69,7 @@
             var service = GetService();
 
             //Actual
-            await service.PullTicketCreateNotificationAndScanNotification();
+            await service.EveryMinuteJobs();
 
             //Assert
             await specialDeleteTicketService.Received().VoidingTicketToLicensee();
@@ -88,8 +82,7 @@
             specialDeleteTicketService.VoidingTicketToLicensee().Throws(new Exception());
 
             //Assert
-            await Assert.ThrowsAsync<Exception>(() => service.PullTicketCreateNotificationAndScanNotification());
-            await chatbotService.Received().NotifyToGroup(Arg.Any<string>());
+            await Assert.ThrowsAsync<Exception>(() => service.EveryMinuteJobs());
             await logger.Received().ErrorAsync(Arg.Any<string>());
         }
 
@@ -102,14 +95,14 @@
             await service.MonitorChatbot();
 
             //Assert
-            await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+            await chatbotService.Received().MonitorChatbot();
         }
 
         [Fact]
         public async Task MonitorChatbot_WhenCalled_ThrowException()
         {
             var service = GetService();
-            chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Throws(new Exception());
+            chatbotService.MonitorChatbot().Throws(new Exception());
 
             //Assert
             await Assert.ThrowsAsync<Exception>(() => service.MonitorChatbot());
@@ -123,31 +116,10 @@
             syncDataService = Substitute.For<ISyncDataService>();
             chatbotService = Substitute.For<IChatbotService>();
             specialDeleteTicketService = Substitute.For<ISpecialDeleteService>();
-            monitorOptions = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
-            jobSettings = Substitute.For<IOptionsMonitor<List<HangfireJobSetting>>>();
-            var option = new MonitorChatbot
-            {
-                IsMonitoring = true,
-                BotConversationId = "A",
-                BotName = "A",
-                ChannelId = "A",
-                ConversationId = "",
-                Message = "",
-                ServiceUrl = "dsa"
-            };
-            var settings = new List<HangfireJobSetting>
-            {
-                new HangfireJobSetting {JobName = HangfireJob.SendNotification, CronExpression = "* * * * *", IsEnabled = true},
-                new HangfireJobSetting {JobName = HangfireJob.SyncNapUserControlData, CronExpression = "* * * * *", IsEnabled = true},
-                new HangfireJobSetting {JobName = HangfireJob.SyncOICData, CronExpression = "* * * * *", IsEnabled = true},
-                new HangfireJobSetting {JobName = HangfireJob.VoidingTicket, CronExpression = "* * * * *", IsEnabled = true},
-                new HangfireJobSetting {JobName = HangfireJob.MonitorSkypebot, CronExpression = "* * * * *", IsEnabled = true}
-            };
-            jobSettings.CurrentValue.Returns(settings);
-            monitorOptions.Value.Returns(option);
+            sendNotificationService = Substitute.For<ISendNotificationService>();
             logger = Substitute.For<ILogger>();
             return new JobService(syncDataService, chatbotService, specialDeleteTicketService,
-                logger, jobSettings, monitorOptions);
+                sendNotificationService, logger);
         }
 
         #endregion Helper

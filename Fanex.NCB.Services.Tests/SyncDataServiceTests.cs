@@ -2,10 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.Data.Repository;
     using Fanex.Logging;
+    using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SyncData;
     using Fanex.NCB.Repository.Interfaces;
@@ -26,6 +28,7 @@
         private IBaseService baseService;
         private IMaintenanceService maintenanceService;
         private ILogger logger;
+        private IOptionsSnapshot<List<HangfireJobSetting>> jobs;
 
         [Fact]
         public async Task NapUserControlSyncDataAsync_WhenCalled_ExecuteExpectedMethod()
@@ -41,7 +44,14 @@
             await service.NapUserControlSyncDataAsync();
 
             //Assert
-            await baseService.Received().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+            if (jobs.Value.Any(x => x.JobName.Equals(HangfireJobName.SyncNapUserControlData)))
+            {
+                await baseService.Received().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+            }
+            else
+            {
+                await baseService.DidNotReceive().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+            }
         }
 
         [Fact]
@@ -54,6 +64,7 @@
             await service.SyncNapDataForSSOLogin(1);
 
             //Assert
+
             await baseService.Received().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
         }
 
@@ -83,8 +94,15 @@
             //Actual
             await service.OicSyncDataAsync();
 
+            if (jobs.Value.Any(x => x.JobName.Equals(HangfireJobName.SyncOICData)))
+            {
+                await baseService.Received().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+            }
+            else
+            {
+                await baseService.DidNotReceive().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+            }
             //Assert
-            await baseService.Received().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
         }
 
         #region Helper
@@ -124,20 +142,18 @@
 
         private SyncDataService GetService()
         {
-            var settings = new AppSettings
-            {
-                SiteId = 69,
-                ItemEachBatchSendNotification = 10,
-                DelayTimeEachBatch = 1000
-            };
+            var fixture = new Fixture();
+
             appSettings = Substitute.For<IOptionsSnapshot<AppSettings>>();
-            appSettings.Value.Returns(settings);
+            appSettings.Value.Returns(fixture.Create<AppSettings>());
             syncDataRepository = Substitute.For<ISyncDataRepository>();
             baseService = Substitute.For<IBaseService>();
             maintenanceService = Substitute.For<IMaintenanceService>();
             logger = Substitute.For<ILogger>();
             maintenanceService.IsUnderMaintenanceAsync().Returns(false);
-            return new SyncDataService(appSettings, syncDataRepository, baseService, logger, maintenanceService);
+            jobs = Substitute.For<IOptionsSnapshot<List<HangfireJobSetting>>>();
+            jobs.Value.Returns(fixture.Create<List<HangfireJobSetting>>());
+            return new SyncDataService(appSettings, syncDataRepository, baseService, logger, maintenanceService, jobs);
         }
 
         #endregion Helper
