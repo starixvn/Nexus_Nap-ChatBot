@@ -1,4 +1,4 @@
-DROP PROCEDURE IF EXISTS NCB_SpecialDeleteMsg_Import;
+﻿DROP PROCEDURE IF EXISTS NCB_SpecialDeleteMsg_Import;
 DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SpecialDeleteMsg_Import(
@@ -264,78 +264,48 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     
     UPDATE tmp_MsgHeader h
     SET h.CheckMsgDetail = NULL;
- 
-/*Step 8: Insert NotificationSystemMsg with Chek Message*/    
-	#Insert  NotificationSystemMsg
-    INSERT INTO NotificationSystemMsg(MessageID, NotificationID, CheckMsg, CreatedDate)
-    SELECT h.MessageID, NULL NotificationID, h.CheckMsg, startTime
-    FROM tmp_MsgHeader h
-    WHERE h.MessageID NOT IN (SELECT MessageID FROM NotificationSystemMsg);
-   
-	IF ROW_COUNT()  = 0 THEN
-        LEAVE NCB_SpecialDeleteMsg_Import;
-    END IF;
 
-/*Step 9: Insert Notification*/   
-    #Insert Notification
-     INSERT INTO Notification(NotificationTypeID
-											, ProductID
-											, Title
-                                            , Content
-                                            , ConfigSendTime
-                                            , SendImmediately
-                                            , CreatorID
-                                            , CreatedDate
-                                            , Status
-                                            , StatusID
-                                            , LastModifiedBy)
-         SELECT DISTINCT ct.NotificationTypeID
-						, NULL ProductID
-                        , ct.TemplateTitle Title
-						, REPLACE(REPLACE(REPLACE(ct.TemplateContent, '{EN Announcement}', h.Content_en )
-												, '{CN Announcement}', h.Content_cs) 
-                                                , '@@', '') Content
-                        , startTime ConfigSendTime
-                        , 0 SendImmediately
-                        , STARIXIT_CUSTID CreatorID
-                        , UTC_TIMESTAMP() CreatedDate
-                        , CREATING_NOTIFICATION_STATUS Status
-                        , CREATING_NOTIFICATION_STATUSID StatusID
-                        , h.MessageID LastModifiedBy
-         FROM tmp_MsgHeader h
-         INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType
-         WHERE h.MessageID IN (SELECT nrl.MessageID FROM tmp_NotificationRecipientList nrl);
-         
-         #Update NotificationSystemMsg
-         UPDATE NotificationSystemMsg nm
-         INNER JOIN Notification n ON n.StatusID = CREATING_NOTIFICATION_STATUSID 
-																AND n.ConfigSendTime = startTime
-                                                                AND n.LastModifiedBy = nm.MessageID
-		SET nm.NotificationID = n.NotificationID
-		WHERE nm.MessageID IN (SELECT nrl.MessageID FROM tmp_NotificationRecipientList nrl);
-         
-		#Insert recipient list
-        INSERT INTO NotificationRecipientList(NotificationID, ConversationGroupID
-																		, ChatGroupTypeID, RecipientID
-																		, Status, StatusID)
-        SELECT nm.NotificationID
-					, d.ConversationGroupID
-					, d.ChatGroupTypeID
-                    , d.RecipientID
-					, d.Status
-					, d.StatusID
-        FROM NotificationSystemMsg nm
-        INNER JOIN tmp_NotificationRecipientList d ON d.MessageID = nm.MessageID;
-        
-        #Update Status for Notification
-        UPDATE Notification n
+  /*Step 8: Insert Notification and NotificationSystemMsg*/
+  SET iLoop = 1;
+  SET createdDate = UTC_TIMESTAMP();
+  WHILE (EXISTS (SELECT 1 FROM tmp_MsgHeader WHERE Id = iLoop)) DO
+    SELECT MessageID INTO messageID FROM tmp_MsgHeader WHERE Id = iLoop;
+
+    IF EXISTS (SELECT 1 FROM tmp_NotificationRecipientList WHERE MessageID = MessageID) THEN
+      # Insert Notification
+      INSERT INTO Notification(NotificationTypeID, Title, Content, ConfigSendTime, SendImmediately, CreatorID, CreatedDate, Status, StatusID)
+        SELECT DISTINCT ct.NotificationTypeID, ct.TemplateTitle, REPLACE(REPLACE(REPLACE(ct.TemplateContent, '{EN Announcement}', h.Content_en), '{CN Announcement}', h.Content_cs), '@@', '') Content, startTime, 0, STARIXIT_CUSTID, CreatedDate, CREATING_NOTIFICATION_STATUS, CREATING_NOTIFICATION_STATUSID
+          FROM tmp_MsgHeader h
+          INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType
+          WHERE MessageID = MessageID;
+
+      SELECT notificationID =  LAST_INSERT_ID();
+      
+      # Insert NotificationSystemMsg
+      INSERT INTO NotificationSystemMsg(MessageID, NotificationID, CheckMsg, CreatedDate)
+        SELECT h.MessageID, notificationID, h.CheckMsg, h.startTime
+          FROM tmp_MsgHeader h
+          WHERE h.MessageID = messageID;
+
+      #Insert recipient list
+      INSERT INTO NotificationRecipientList(NotificationID, ConversationGroupID, ChatGroupTypeID, RecipientID, Status, StatusID)
+        SELECT notificationID, d.ConversationGroupID, d.ChatGroupTypeID, d.RecipientID, d.Status, d.StatusID
+        FROM tmp_NotificationRecipientList d
+        WHERE d.MessageID = messageID;
+
+      #Update Status for Notification
+      UPDATE Notification n
         INNER JOIN NotificationSystemMsg nm ON nm.NotificationID = n.NotificationID
-        INNER JOIN (SELECT DISTINCT nrl.MessageID, nrl.Status, nrl.StatusID FROM tmp_NotificationRecipientList nrl) AS t ON t.MessageID = nm.MessageID
-        SET n.Status = t.Status
-				, n.StatusID = t.StatusID
-                , n.LastModifiedBy = NULL;
-        
-        #Update Max MsgID
+        SET n.Status = t.Status,
+				    n.StatusID = t.StatusID
+        WHERE n.NotificationID = notificationID;
+      END IF;
+
+    SET iLoop := iLoop + 1;
+    END WHILE;
+
+  /*Step 9: Update Setting*/
+    #Update Max MsgID
 		UPDATE SystemSetting 
 		SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
 		WHERE ID = 3;
