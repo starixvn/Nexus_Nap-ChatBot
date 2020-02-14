@@ -4,12 +4,10 @@
 
     public class GetAbnormalBetMessageCriteria : CriteriaBase
     {
-        public int MaxMessageId { get; set; }
+        public string MessageIdLst { get; set; }
 
-        public int BatchSize { get; set; }
+        public override string GetSettingKey() => "NAP_Chatbot_SpecialDelete_AbnormalBets_Sel";
 
-        public override string GetSettingKey() => "NAP_Chatbot_SpecialDelete_AbnormalBet_Sel";
-
-        public override bool IsValid() => MaxMessageId > 0 && BatchSize > 0;
+        public override bool IsValid() => !string.IsNullOrWhiteSpace(MessageIdLst);
     }
 }

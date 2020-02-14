@@ -213,7 +213,7 @@ BEGIN
     FROM Recipient r
     LEFT JOIN tmp_Recipient tmp ON r.RecipientTypeID = tmp.RecipientTypeID 
                         AND r.SourceID = tmp.SourceID
-    WHERE tmp.RecipientTypeID IS NULL;
+    WHERE tmp.RecipientTypeID IS NULL AND r.RecipientTypeID IN (1, 2);
 
     IF EXISTS (SELECT 1 FROM tmp_Recipient_Remove) THEN
 

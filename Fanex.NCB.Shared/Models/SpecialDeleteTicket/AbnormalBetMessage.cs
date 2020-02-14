@@ -37,5 +37,9 @@
         public string Site { get; set; }
 
         public bool IsDeposit { get; set; }
+
+        public string Content_en { get; set; }
+
+        public string Content_cs { get; set; }
     }
 }

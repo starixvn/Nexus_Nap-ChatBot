@@ -124,14 +124,7 @@
 
         private async Task<ValueTuple<IEnumerable<Message>, IEnumerable<MessageDetail>>> GetMessageFromVoidingForLicensee(SystemSetting systemSettings)
         {
-            var criteria = new GetMessageFromSpecialDeleteCriteria
-            {
-                MessageID = systemSettings.MaxMessageID,
-                BatchSize = systemSettings.BatchSize,
-                MsgContentsTypeLst = systemSettings.MsgContentsTypeLst
-            };
-
-            var result = await baseService.FetchMultipleAsync<Message, MessageDetail>(criteria);
+            var result = await GetMessageFromSpecialDelete(systemSettings);
 
             if (result.Item1.Any())
             {
@@ -145,6 +138,18 @@
             }
 
             return result;
+        }
+
+        private async Task<ValueTuple<IEnumerable<Message>, IEnumerable<MessageDetail>>> GetMessageFromSpecialDelete(SystemSetting systemSettings)
+        {
+            var criteria = new GetMessageFromSpecialDeleteCriteria
+            {
+                MessageID = systemSettings.MaxMessageID,
+                BatchSize = systemSettings.BatchSize,
+                MsgContentsTypeLst = systemSettings.MsgContentsTypeLst
+            };
+
+            return await baseService.FetchMultipleAsync<Message, MessageDetail>(criteria);
         }
 
         private async Task<SystemSetting> GetVoidingForLicenseeSystemSettings()
@@ -172,33 +177,43 @@
 
                 if (systemSettings != null)
                 {
-                    var abnormalBetMsgs = await GetAbnormalBetMessage(systemSettings);
+                    var result = await GetMessageFromSpecialDelete(systemSettings);
+                    var abnormalBetMsgs = await GetAbnormalBetMessage(string.Join(",", result.Item1.Select(m => m.MessageId)));
 
-                    await ImportAbnormalBetNotificationToChatbotDB(abnormalBetMsgs.Item1, abnormalBetMsgs.Item2);
+                    foreach (var msg in abnormalBetMsgs)
+                    {
+                        msg.Content_en = result.Item1.FirstOrDefault(m => m.MessageId == msg.MessageId)?.Content_en.Trim().Replace("@@", string.Empty);
+                        msg.Content_cs = result.Item1.FirstOrDefault(m => m.MessageId == msg.MessageId)?.Content_cs.Trim().Replace("@@", string.Empty);
+                    }
+
+                    await ImportAbnormalBetNotificationToChatbotDB(abnormalBetMsgs);
                 }
             }
         }
 
-        private async Task<ValueTuple<IEnumerable<Message>, IEnumerable<AbnormalBetMessage>>>
-           GetAbnormalBetMessage(SystemSetting systemSettings)
+        private async Task<IEnumerable<AbnormalBetMessage>>
+           GetAbnormalBetMessage(string msgIds)
         {
-            var criteria = new GetAbnormalBetMessageCriteria
+            if (!string.IsNullOrWhiteSpace(msgIds))
             {
-                MaxMessageId = systemSettings.MaxMessageID,
-                BatchSize = systemSettings.BatchSize
-            };
+                var criteria = new GetAbnormalBetMessageCriteria
+                {
+                    MessageIdLst = msgIds
+                };
 
-            return await baseService.FetchMultipleAsync<Message, AbnormalBetMessage>(criteria);
+                return await baseService.GetDataAsync<AbnormalBetMessage>(criteria);
+            }
+
+            return new List<AbnormalBetMessage>();
         }
 
-        private async Task ImportAbnormalBetNotificationToChatbotDB(IEnumerable<Message> messages, IEnumerable<AbnormalBetMessage> details)
+        private async Task ImportAbnormalBetNotificationToChatbotDB(IEnumerable<AbnormalBetMessage> messages)
         {
             if (messages.Any())
             {
                 var criteria = new ImportAbnormalBetMessageCriteria
                 {
                     MessageHeader = JsonConvert.SerializeObject(messages),
-                    MessageDetail = JsonConvert.SerializeObject(details)
                 };
 
                 var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);

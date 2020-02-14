@@ -17,7 +17,7 @@
     using ONEbook.UM.Services;
     using Xunit;
 
-    public class SpecialDeleteTicketServiceTests
+    public class SpecialDeleteServiceTests
     {
         private IBaseService baseService;
         private IChatbotService chatbotService;
