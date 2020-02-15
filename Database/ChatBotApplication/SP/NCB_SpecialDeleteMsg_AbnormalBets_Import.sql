@@ -117,10 +117,6 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     SET iLoop := iLoop + 1;
     END WHILE;
 
-  IF NOT EXISTS (SELECT 1 FROM tmp_MsgHeader) THEN
-    LEAVE NCB_SpecialDeleteMsg_AbnormalBets_Import;
-    END IF;
-
   #Update Content_Detail
   UPDATE tmp_MsgHeader
     SET Content_Detail = CONCAT(

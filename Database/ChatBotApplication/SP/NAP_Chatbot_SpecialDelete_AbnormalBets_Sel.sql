@@ -41,10 +41,10 @@ BEGIN
 			GROUP BY RequestId, ReasonId, VoidById
 		)
 		INSERT INTO @tblRequestInfo (MessageId, RequestId, DecidedBy, RequestBy, VoidBy, Reason, TotalTickets)
-		SELECT vh.MessageId, rq.RequestId, rq.DecidedBy, rb.username AS RequestBy, vb.username AS VoidBy, rs.ReasonEnglish AS Reason, vh.TotalTickets
+		SELECT vh.MessageId, rq.RequestId, rq.DecidedBy, rb.username AS RequestBy, vb.username AS VoidBy, rs.SubIssueTypeName AS Reason, vh.TotalTickets
 		FROM #VoidingHistory vh
 			INNER JOIN dbo.TicketVoiding_Request rq WITH (NOLOCK) ON rq.RequestId = vh.RequestId
-			LEFT JOIN dbo.TicketVoiding_Reason rs WITH (NOLOCK) ON vh.ReasonId = rs.ReasonId
+			INNER JOIN dbo.TicketVoiding_SubIssueType rs WITH (NOLOCK) ON rq.SubIssueTypeId = rs.SubIssueTypeId
 			LEFT JOIN dbo.Customer rb WITH (NOLOCK) ON rq.UserId = rb.custid
 			LEFT JOIN dbo.Customer vb WITH (NOLOCK) ON vh.VoidById = vb.custid
 		WHERE rq.IssueTypeId = 11 -- Abnormal Bets
@@ -52,18 +52,18 @@ BEGIN
 
 	-- Event Info
 	BEGIN
-		DECLARE @tblEventInfo TABLE (MessageId INT, KickOffTime DATETIME, LeagueName NVARCHAR(500), HomeName NVARCHAR(100), AwayName NVARCHAR(100), HalfTimeHomeScore INT, HalfTimeAwayScore INT, FullTimeHomeScore INT, FullTimeAwayScore INT)
+		DECLARE @tblEventInfo TABLE (MessageId INT, KickOffTime VARCHAR(8), LeagueName NVARCHAR(500), HomeName NVARCHAR(100), AwayName NVARCHAR(100), HalfTimeHomeScore INT, HalfTimeAwayScore INT, FullTimeHomeScore INT, FullTimeAwayScore INT)
 		
 		INSERT INTO @tblEventInfo (MessageId, KickOffTime, LeagueName, HomeName, AwayName, HalfTimeHomeScore, HalfTimeAwayScore, FullTimeHomeScore, FullTimeAwayScore)
-		SELECT vh.MessageId, rd.KickOffTime, l.LeagueName, h.TeamName AS HomeName, a.TeamName AS AwayName, m.hthomescore, m.htawayscore, m.finalhomescore, m.finalawayscore
+		SELECT vh.MessageId, LTRIM(RTRIM(REPLACE(REPLACE(RIGHT(CONVERT(VARCHAR(20), m.GlobalShowTime, 100), 7), 'AM', ' AM'), 'PM', ' PM'))) AS KickOffTime, l.LeagueName, h.TeamName AS HomeName, a.TeamName AS AwayName, m.hthomescore, m.htawayscore, m.finalhomescore, m.finalawayscore
 		FROM #VoidingHistory vh
 			INNER JOIN dbo.TicketVoiding_RequestDetail rd WITH (NOLOCK) ON rd.RequestId = vh.RequestId
 			CROSS APPLY (
-				SELECT m.hthomescore, m.htawayscore, m.finalhomescore, m.finalawayscore
+				SELECT m.hthomescore, m.htawayscore, m.finalhomescore, m.finalawayscore, m.GlobalShowTime
 				FROM dbo.match m WITH(NOLOCK)
 				WHERE m.matchid = rd.matchid
 				UNION
-				SELECT m.hthomescore, m.htawayscore, m.finalhomescore, m.finalawayscore
+				SELECT m.hthomescore, m.htawayscore, m.finalhomescore, m.finalawayscore, m.GlobalShowTime
 				FROM dbo.match14 m WITH(NOLOCK)
 				WHERE m.matchid = rd.matchid
 			) m
@@ -104,7 +104,7 @@ BEGIN
 				,STUFF((SELECT DISTINCT ',' + CONVERT(VARCHAR(20), r2.DecidedBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS DecidedByLst
 				,STUFF((SELECT DISTINCT ',' + CONVERT(VARCHAR(20), r2.RequestBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestByLst
 				,STUFF((SELECT DISTINCT ',' + CONVERT(VARCHAR(20), r2.VoidBy)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS VoidByLst
-				,STUFF((SELECT DISTINCT ',' + CONVERT(VARCHAR(20), r2.Reason)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS ReasonLst
+				,STUFF((SELECT DISTINCT ',' + CONVERT(VARCHAR(150), r2.Reason)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS ReasonLst
 			FROM @tblRequestInfo r1
 			GROUP BY r1.MessageId, r1.TotalTickets
 		)
@@ -127,7 +127,7 @@ BEGIN
 		-- Site
 		,CTE_Site AS
 		(
-			SELECT DISTINCT t.MessageId, c.site, CASE WHEN s.custid IS NULL THEN 0 ELSE 1 END AS isDeposit
+			SELECT DISTINCT t.MessageId, CASE WHEN s.custid IS NULL AND c.site NOT IN ('CN88', '789y') THEN 'NV88' ELSE c.site END AS site, CASE WHEN s.custid IS NULL THEN 0 ELSE 1 END AS isDeposit
 			FROM @tblRecommendBettype t
 				INNER JOIN dbo.Customer c WITH (NOLOCK) ON t.recommend = c.custid
 				LEFT JOIN dbo.Dep_CustSuper s WITH (NOLOCK) ON c.srecommend = s.custid
