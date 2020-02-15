@@ -75,10 +75,10 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     LeagueName TEXT,
     HomeName TEXT,
     AwayName TEXT,
-    HalfTimeHomeScore INT,
-    HalfTimeAwayScore INT,
-    FullTimeHomeScore INT,
-    FullTimeAwayScore INT,
+    HalfTimeHomeScore TEXT,
+    HalfTimeAwayScore TEXT,
+    FullTimeHomeScore TEXT,
+    FullTimeAwayScore TEXT,
     TypeNameLst TEXT,
     TotalTickets INT,
     CreditSiteLst TEXT,
@@ -144,7 +144,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
         , '\r\n'
         , 'Reason: ', ReasonLst
         , '\r\n'
-        , 'Results: ', 'HT ', IFNULL(CONCAT(HalfTimeHomeScore , '-', HalfTimeAwayScore), 'N/A'), ', FT ', IFNULL(CONCAT(FullTimeHomeScore , '-', FullTimeAwayScore), 'N/A')
+        , 'Results: ', 'HT ', IFNULL(CONCAT(NULLIF(HalfTimeHomeScore, 'NULL') , '-', NULLIF(HalfTimeAwayScore, 'NULL')), 'N/A'), ', FT ', IFNULL(CONCAT(NULLIF(FullTimeHomeScore, 'NULL') , '-', NULLIF(FullTimeAwayScore, 'NULL')), 'N/A')
         , '\r\n'
         , 'Decided by: ', DecidedByLst
         , '\r\n'

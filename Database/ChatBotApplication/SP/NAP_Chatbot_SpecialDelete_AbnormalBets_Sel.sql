@@ -36,13 +36,13 @@ BEGIN
 		
 		;WITH CTE_Request AS
 		(
-			SELECT RequestId, ReasonId, VoidById
+			SELECT MessageId, RequestId, ReasonId, VoidById, TotalTickets
 			FROM #VoidingHistory
-			GROUP BY RequestId, ReasonId, VoidById
+			GROUP BY MessageId, RequestId, ReasonId, VoidById, TotalTickets
 		)
 		INSERT INTO @tblRequestInfo (MessageId, RequestId, DecidedBy, RequestBy, VoidBy, Reason, TotalTickets)
 		SELECT vh.MessageId, rq.RequestId, rq.DecidedBy, rb.username AS RequestBy, vb.username AS VoidBy, rs.SubIssueTypeName AS Reason, vh.TotalTickets
-		FROM #VoidingHistory vh
+		FROM CTE_Request vh
 			INNER JOIN dbo.TicketVoiding_Request rq WITH (NOLOCK) ON rq.RequestId = vh.RequestId
 			INNER JOIN dbo.TicketVoiding_SubIssueType rs WITH (NOLOCK) ON rq.SubIssueTypeId = rs.SubIssueTypeId
 			LEFT JOIN dbo.Customer rb WITH (NOLOCK) ON rq.UserId = rb.custid
@@ -55,7 +55,7 @@ BEGIN
 		DECLARE @tblEventInfo TABLE (MessageId INT, KickOffTime VARCHAR(8), LeagueName NVARCHAR(500), HomeName NVARCHAR(100), AwayName NVARCHAR(100), HalfTimeHomeScore INT, HalfTimeAwayScore INT, FullTimeHomeScore INT, FullTimeAwayScore INT)
 		
 		INSERT INTO @tblEventInfo (MessageId, KickOffTime, LeagueName, HomeName, AwayName, HalfTimeHomeScore, HalfTimeAwayScore, FullTimeHomeScore, FullTimeAwayScore)
-		SELECT vh.MessageId, LTRIM(RTRIM(REPLACE(REPLACE(RIGHT(CONVERT(VARCHAR(20), DATEADD(HOUR, 12, m.GlobalShowTime), 100), 7), 'AM', ' AM'), 'PM', ' PM'))) AS KickOffTime, l.LeagueName, h.TeamName AS HomeName, a.TeamName AS AwayName, m.hthomescore, m.htawayscore, m.finalhomescore, m.finalawayscore
+		SELECT DISTINCT vh.MessageId, LTRIM(RTRIM(REPLACE(REPLACE(RIGHT(CONVERT(VARCHAR(20), DATEADD(HOUR, 12, m.GlobalShowTime), 100), 7), 'AM', ' AM'), 'PM', ' PM'))) AS KickOffTime, l.LeagueName, h.TeamName AS HomeName, a.TeamName AS AwayName, m.hthomescore, m.htawayscore, m.finalhomescore, m.finalawayscore
 		FROM #VoidingHistory vh
 			INNER JOIN dbo.TicketVoiding_RequestDetail rd WITH (NOLOCK) ON rd.RequestId = vh.RequestId
 			CROSS APPLY (
@@ -99,14 +99,14 @@ BEGIN
 		(
 			SELECT
 				r1.MessageId
-				,r1.TotalTickets
+				,SUM(r1.TotalTickets) AS TotalTickets
 				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(20), r2.RequestId)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestIdLst
 				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(20), r2.DecidedBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS DecidedByLst
 				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(20), r2.RequestBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestByLst
 				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(20), r2.VoidBy)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS VoidByLst
 				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(150), r2.Reason)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS ReasonLst
 			FROM @tblRequestInfo r1
-			GROUP BY r1.MessageId, r1.TotalTickets
+			GROUP BY r1.MessageId
 		)
 		-- Bettype
 		,CTE_Bettype AS
