@@ -26,9 +26,9 @@
 
         public int HalfTimeAwayScore { get; set; }
 
-        public int FullTimeHomeScore { get; set; }
+        public int? FullTimeHomeScore { get; set; }
 
-        public int FullTimeAwayScore { get; set; }
+        public int? FullTimeAwayScore { get; set; }
 
         public string TypeNameLst { get; set; }
 
