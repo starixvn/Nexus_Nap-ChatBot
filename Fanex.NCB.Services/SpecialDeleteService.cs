@@ -23,6 +23,7 @@
         private readonly IChatbotService chatbotService;
         private readonly IMaintenanceService maintenanceService;
         private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
+        private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
         public SpecialDeleteService(IBaseService baseService,
             IChatbotService chatbotService,
@@ -171,12 +172,13 @@
                 if (systemSettings != null)
                 {
                     var result = await GetMessageFromSpecialDelete(systemSettings);
-                    var abnormalBetMsgs = await GetAbnormalBetMessage(string.Join(",", result.Item1.Select(m => m.MessageId)));
+                    var abnormalBetMsgs = await GetAbnormalBetMessage(string.Join(",", result.Item1.Select(m => m.MessageID)));
 
                     foreach (var msg in abnormalBetMsgs)
                     {
-                        msg.Content_en = result.Item1.FirstOrDefault(m => m.MessageId == msg.MessageId)?.Content_en.Trim().Replace("@@", string.Empty);
-                        msg.Content_cs = result.Item1.FirstOrDefault(m => m.MessageId == msg.MessageId)?.Content_cs.Trim().Replace("@@", string.Empty);
+                        msg.Content_en = result.Item1.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_en.Trim().Replace("@@", string.Empty);
+                        msg.Content_cs = result.Item1.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_cs.Trim().Replace("@@", string.Empty);
+                        msg.MsgContentsType = result.Item1.FirstOrDefault(m => m.MessageID == msg.MessageID).MsgContentsType;
                     }
 
                     await ImportAbnormalBetNotificationToChatbotDB(abnormalBetMsgs);
@@ -213,7 +215,8 @@
             {
                 var criteria = new ImportAbnormalBetsMessageCriteria
                 {
-                    MessageHeader = JsonConvert.SerializeObject(messages),
+                    MessageHeader = JsonConvert.SerializeObject(messages,
+                    new JsonSerializerSettings { DateFormatString = DateTimeFormat })
                 };
 
                 var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);

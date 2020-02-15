@@ -71,7 +71,7 @@
                 new SystemSetting { BatchSize = 100, MaxMessageID = 1989, MsgContentsTypeLst = "ABC" });
 
             baseService.FetchMultipleAsync<Message, MessageDetail>(Arg.Any<GetMessageFromSpecialDeleteCriteria>()).Returns(
-              (new List<Message> { new Message { MessageId = 1, MsgContentsType = 103 } }, new List<MessageDetail> { new MessageDetail { MessageID = 1 } })
+              (new List<Message> { new Message { MessageID = 1, MsgContentsType = 103 } }, new List<MessageDetail> { new MessageDetail { MessageID = 1 } })
                 );
             var fakeData = FakeData();
             baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>()).Returns(fakeData);

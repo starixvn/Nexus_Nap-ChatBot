@@ -1,22 +1,20 @@
 ﻿namespace Fanex.NCB.Shared.Models.SpecialDeleteTicket
 {
-    using System;
-
-    public class AbnormalBetsMessage
+    public class AbnormalBetsMessage : Message
     {
-        public int MessageId { get; set; }
+        public string RequestIDLst { get; set; }
 
-        public string RequestId { get; set; }
+        public string DecidedByLst { get; set; }
 
-        public string DecidedBy { get; set; }
+        public string RequestByLst { get; set; }
 
-        public string RequestBy { get; set; }
+        public string VoidByLst { get; set; }
 
-        public string VoidBy { get; set; }
+        public string ReasonLst { get; set; }
 
-        public string Reason { get; set; }
+        public int TotalTickets { get; set; }
 
-        public DateTime KickOffTime { get; set; }
+        public string KickOffTime { get; set; }
 
         public string LeagueName { get; set; }
 
@@ -34,12 +32,8 @@
 
         public string TypeNameLst { get; set; }
 
-        public string Site { get; set; }
+        public string CreditSiteLst { get; set; }
 
-        public bool IsDeposit { get; set; }
-
-        public string Content_en { get; set; }
-
-        public string Content_cs { get; set; }
+        public string DepositSiteLst { get; set; }
     }
 }
