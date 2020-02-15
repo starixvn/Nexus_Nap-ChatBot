@@ -66,12 +66,14 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 	/*Step 1: Parse JSON data for message header and detaill*/
     DROP TEMPORARY TABLE IF EXISTS tmp_MsgHeader;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgHeader(
+            Id INT NOT NULL AUTO_INCREMENT,
             MessageID INT, 
             MsgContentsType INT,
             Content_en TEXT, 
             Content_cs TEXT,
             CheckMsg TEXT,
             CheckMsgDetail TEXT,
+            PRIMARY KEY (Id),
             UNIQUE INDEX Index_MessageID(MessageID)
             );
     
@@ -288,7 +290,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
       
       # Insert NotificationSystemMsg
       INSERT INTO NotificationSystemMsg(MessageID, NotificationID, CheckMsg, CreatedDate)
-        SELECT h.MessageID, ccNotificationID, h.CheckMsg, h.startTime
+        SELECT h.MessageID, ccNotificationID, h.CheckMsg, startTime
           FROM tmp_MsgHeader h
           WHERE h.MessageID = ccMessageID;
 
