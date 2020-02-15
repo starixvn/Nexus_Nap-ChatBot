@@ -67,8 +67,8 @@
             try
             {
                 await Task.WhenAll(
-                specialDeleteTicketService.VoidingAbnormalBetsToInternalDepartment(),
-                specialDeleteTicketService.VoidingTicketToLicensee()
+                    specialDeleteTicketService.VoidingTicketToLicensee(),
+                    specialDeleteTicketService.VoidingAbnormalBetsToInternalDepartment()
                 );
 
                 await sendNotificationService.ScanAndSendNotification();
