@@ -171,14 +171,14 @@
 
                 if (systemSettings != null)
                 {
-                    var result = await GetMessageFromSpecialDelete(systemSettings);
-                    var abnormalBetMsgs = await GetAbnormalBetMessage(string.Join(",", result.Item1.Select(m => m.MessageID)));
+                    var result = await GetAbnormalBetsMessages(systemSettings);
+                    var abnormalBetMsgs = await GetAbnormalBetMessage(string.Join(",", result.Select(m => m.MessageID)));
 
                     foreach (var msg in abnormalBetMsgs)
                     {
-                        msg.Content_en = result.Item1.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_en.Trim().Replace("@@", string.Empty);
-                        msg.Content_cs = result.Item1.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_cs.Trim().Replace("@@", string.Empty);
-                        msg.MsgContentsType = result.Item1.FirstOrDefault(m => m.MessageID == msg.MessageID).MsgContentsType;
+                        msg.Content_en = result.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_en.Trim().Replace("@@", string.Empty);
+                        msg.Content_cs = result.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_cs.Trim().Replace("@@", string.Empty);
+                        msg.MsgContentsType = result.FirstOrDefault(m => m.MessageID == msg.MessageID).MsgContentsType;
                     }
 
                     await ImportAbnormalBetNotificationToChatbotDB(abnormalBetMsgs);
@@ -193,12 +193,24 @@
             return await baseService.GetDataEntityAsync<SystemSetting>(criteria);
         }
 
+        private async Task<IEnumerable<Message>> GetAbnormalBetsMessages(SystemSetting setting)
+        {
+            var criteria = new GetAbnormalBetsMessageCriteria
+            {
+                MessageID = setting.MaxMessageID,
+                BatchSize = setting.BatchSize,
+                MsgContentsTypeLst = setting.MsgContentsTypeLst
+            };
+
+            return await baseService.GetDataAsync<Message>(criteria);
+        }
+
         private async Task<IEnumerable<AbnormalBetsMessage>>
            GetAbnormalBetMessage(string msgIds)
         {
             if (!string.IsNullOrWhiteSpace(msgIds))
             {
-                var criteria = new GetAbnormalBetsMessageCriteria
+                var criteria = new GetAbnormalBetInfoCriteria
                 {
                     MessageIdLst = msgIds
                 };
