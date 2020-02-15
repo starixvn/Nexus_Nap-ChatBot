@@ -67,8 +67,8 @@
             try
             {
                 await Task.WhenAll(
-                    Task.Run(() => specialDeleteTicketService.VoidingTicketToLicensee()),
-                    Task.Run(() => specialDeleteTicketService.VoidingAbnormalBetsToInternalDepartment())
+                    specialDeleteTicketService.VoidingTicketToLicensee(),
+                    specialDeleteTicketService.VoidingAbnormalBetsToInternalDepartment()
                 );
             }
             catch (Exception ex)
