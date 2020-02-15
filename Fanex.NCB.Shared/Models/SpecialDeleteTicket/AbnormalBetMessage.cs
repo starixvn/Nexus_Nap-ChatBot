@@ -22,9 +22,9 @@
 
         public string AwayName { get; set; }
 
-        public int HalfTimeHomeScore { get; set; }
+        public int? HalfTimeHomeScore { get; set; }
 
-        public int HalfTimeAwayScore { get; set; }
+        public int? HalfTimeAwayScore { get; set; }
 
         public int? FullTimeHomeScore { get; set; }
 
