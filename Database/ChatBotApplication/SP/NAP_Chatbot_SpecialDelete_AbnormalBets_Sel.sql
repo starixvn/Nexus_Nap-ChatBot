@@ -100,11 +100,11 @@ BEGIN
 			SELECT
 				r1.MessageId
 				,r1.TotalTickets
-				,STUFF((SELECT DISTINCT ',' + CONVERT(VARCHAR(20), r2.RequestId)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestIdLst
-				,STUFF((SELECT DISTINCT ',' + CONVERT(VARCHAR(20), r2.DecidedBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS DecidedByLst
-				,STUFF((SELECT DISTINCT ',' + CONVERT(VARCHAR(20), r2.RequestBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestByLst
-				,STUFF((SELECT DISTINCT ',' + CONVERT(VARCHAR(20), r2.VoidBy)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS VoidByLst
-				,STUFF((SELECT DISTINCT ',' + CONVERT(VARCHAR(150), r2.Reason)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS ReasonLst
+				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(20), r2.RequestId)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestIdLst
+				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(20), r2.DecidedBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS DecidedByLst
+				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(20), r2.RequestBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestByLst
+				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(20), r2.VoidBy)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS VoidByLst
+				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(150), r2.Reason)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS ReasonLst
 			FROM @tblRequestInfo r1
 			GROUP BY r1.MessageId, r1.TotalTickets
 		)
@@ -120,7 +120,7 @@ BEGIN
 		(
 			SELECT
 				b1.MessageId
-				,STUFF((SELECT DISTINCT ',' + b2.TypeName FROM CTE_Bettype b2 WHERE b1.MessageId = b2.MessageId FOR XML PATH ('')), 1, 1, '') AS TypeNameLst
+				,STUFF((SELECT DISTINCT ', ' + b2.TypeName FROM CTE_Bettype b2 WHERE b1.MessageId = b2.MessageId FOR XML PATH ('')), 1, 1, '') AS TypeNameLst
 			FROM CTE_Bettype b1
 			GROUP BY b1.MessageId
 		)
@@ -136,8 +136,8 @@ BEGIN
 		(
 			SELECT
 				s1.MessageId
-				,STUFF((SELECT DISTINCT ',' + s2.site FROM CTE_Site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 0 FOR XML PATH ('')), 1, 1, '') AS CreditSiteLst
-				,STUFF((SELECT DISTINCT ',' + s2.site FROM CTE_Site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 1 FOR XML PATH ('')), 1, 1, '') AS DepositSiteLst
+				,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_Site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 0 FOR XML PATH ('')), 1, 1, '') AS CreditSiteLst
+				,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_Site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 1 FOR XML PATH ('')), 1, 1, '') AS DepositSiteLst
 			FROM CTE_Site s1
 			GROUP BY s1.MessageId
 		)
