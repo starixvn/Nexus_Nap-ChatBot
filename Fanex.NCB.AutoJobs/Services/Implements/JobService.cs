@@ -70,13 +70,15 @@
                     specialDeleteTicketService.VoidingTicketToLicensee(),
                     specialDeleteTicketService.VoidingAbnormalBetsToInternalDepartment()
                 );
-
-                await sendNotificationService.ScanAndSendNotification();
             }
             catch (Exception ex)
             {
                 await Logging(ex);
                 throw;
+            }
+            finally
+            {
+                await sendNotificationService.ScanAndSendNotification();
             }
         }
 
