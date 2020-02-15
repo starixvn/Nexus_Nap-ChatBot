@@ -25,6 +25,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SpecialDeleteMsg_Import(
 							]
         Revisions:
 				- 20191211@Dominic: First Commit
+				- 20200214@Percy: Special Delete - Integrate Abnormal Bets [RedmineID: #127944]
         
     */
 )
@@ -38,6 +39,10 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
     DECLARE templateNotifcationType JSON;
     DECLARE ccConversationGroupID INT;
+
+    DECLARE createdDate DATETIME(3);
+    DECLARE ccMessageID INT;
+    DECLARE ccNotificationID INT;
 
     #Constants
 	DECLARE ACTION_ID 	INT DEFAULT 18;
@@ -269,36 +274,37 @@ NCB_SpecialDeleteMsg_Import:BEGIN
   SET iLoop = 1;
   SET createdDate = UTC_TIMESTAMP();
   WHILE (EXISTS (SELECT 1 FROM tmp_MsgHeader WHERE Id = iLoop)) DO
-    SELECT MessageID INTO messageID FROM tmp_MsgHeader WHERE Id = iLoop;
+    SELECT MessageID INTO ccMessageID FROM tmp_MsgHeader WHERE Id = iLoop;
 
-    IF EXISTS (SELECT 1 FROM tmp_NotificationRecipientList WHERE MessageID = MessageID) THEN
+    IF EXISTS (SELECT 1 FROM tmp_NotificationRecipientList WHERE MessageID = ccMessageID) THEN
       # Insert Notification
       INSERT INTO Notification(NotificationTypeID, Title, Content, ConfigSendTime, SendImmediately, CreatorID, CreatedDate, Status, StatusID)
         SELECT DISTINCT ct.NotificationTypeID, ct.TemplateTitle, REPLACE(REPLACE(REPLACE(ct.TemplateContent, '{EN Announcement}', h.Content_en), '{CN Announcement}', h.Content_cs), '@@', '') Content, startTime, 0, STARIXIT_CUSTID, CreatedDate, CREATING_NOTIFICATION_STATUS, CREATING_NOTIFICATION_STATUSID
           FROM tmp_MsgHeader h
           INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType
-          WHERE MessageID = MessageID;
+          WHERE MessageID = ccMessageID;
 
-      SELECT notificationID =  LAST_INSERT_ID();
+      SELECT LAST_INSERT_ID() INTO ccNotificationID;
       
       # Insert NotificationSystemMsg
       INSERT INTO NotificationSystemMsg(MessageID, NotificationID, CheckMsg, CreatedDate)
-        SELECT h.MessageID, notificationID, h.CheckMsg, h.startTime
+        SELECT h.MessageID, ccNotificationID, h.CheckMsg, h.startTime
           FROM tmp_MsgHeader h
-          WHERE h.MessageID = messageID;
+          WHERE h.MessageID = ccMessageID;
 
       #Insert recipient list
       INSERT INTO NotificationRecipientList(NotificationID, ConversationGroupID, ChatGroupTypeID, RecipientID, Status, StatusID)
-        SELECT notificationID, d.ConversationGroupID, d.ChatGroupTypeID, d.RecipientID, d.Status, d.StatusID
+        SELECT ccNotificationID, d.ConversationGroupID, d.ChatGroupTypeID, d.RecipientID, d.Status, d.StatusID
         FROM tmp_NotificationRecipientList d
-        WHERE d.MessageID = messageID;
+        WHERE d.MessageID = ccMessageID;
 
       #Update Status for Notification
       UPDATE Notification n
         INNER JOIN NotificationSystemMsg nm ON nm.NotificationID = n.NotificationID
+        INNER JOIN (SELECT DISTINCT nrl.MessageID, nrl.Status, nrl.StatusID FROM tmp_NotificationRecipientList nrl) AS t ON t.MessageID = nm.MessageID
         SET n.Status = t.Status,
 				    n.StatusID = t.StatusID
-        WHERE n.NotificationID = notificationID;
+        WHERE n.NotificationID = ccNotificationID;
       END IF;
 
     SET iLoop := iLoop + 1;

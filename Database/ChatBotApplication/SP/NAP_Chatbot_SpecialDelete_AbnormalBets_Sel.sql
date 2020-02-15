@@ -18,18 +18,21 @@ BEGIN
 	IF ISNULL(@MessageIDLst , '') = ''
 		RETURN
 
-	CREATE TABLE #VoidingHistory (VoidingHistoryId INT, RequestId INT, MessageId INT, ReasonId INT, VoidById INT, TransIds VARCHAR(MAX))
-	INSERT INTO #VoidingHistory (VoidingHistoryId, RequestId, MessageId, ReasonId, VoidById, TransIds)
-	SELECT VoidingHistoryId, RequestId, MessageId, ReasonId, UserId AS VoidById, TransIds
+	CREATE TABLE #VoidingHistory (VoidingHistoryId INT, RequestId INT, MessageId INT, ReasonId INT, VoidById INT, TransIds VARCHAR(MAX), TotalTickets INT)
+	INSERT INTO #VoidingHistory (VoidingHistoryId, RequestId, MessageId, ReasonId, VoidById, TransIds, TotalTickets)
+	SELECT VoidingHistoryId, RequestId, MessageId, ReasonId, UserId AS VoidById, TransIds, t.TotalTickets
 	FROM dbo.TicketVoiding_VoidingHistory vh WITH (NOLOCK)
 		CROSS APPLY (
 			SELECT s.val FROM dbo.strSplit(@MessageIDLst, ',') s WHERE vh.MessageId = s.val
 		) s
+		CROSS APPLY (
+			SELECT COUNT(1) AS TotalTickets FROM dbo.strSplit(vh.TransIds, ',')
+		) t
 	WHERE vh.StatusId = 2
 
 	-- Request Info
 	BEGIN
-		DECLARE @tblRequestInfo TABLE (MessageId INT, RequestId INT, DecidedBy VARCHAR(50), RequestBy VARCHAR(50), VoidBy VARCHAR(50), Reason NVARCHAR(150))
+		DECLARE @tblRequestInfo TABLE (MessageId INT, RequestId INT, DecidedBy VARCHAR(50), RequestBy VARCHAR(50), VoidBy VARCHAR(50), Reason NVARCHAR(150), TotalTickets INT)
 		
 		;WITH CTE_Request AS
 		(
@@ -37,8 +40,8 @@ BEGIN
 			FROM #VoidingHistory
 			GROUP BY RequestId, ReasonId, VoidById
 		)
-		INSERT INTO @tblRequestInfo (MessageId, RequestId, DecidedBy, RequestBy, VoidBy, Reason)
-		SELECT vh.MessageId, rq.RequestId, rq.DecidedBy, rb.username AS RequestBy, vb.username AS VoidBy, rs.ReasonEnglish AS Reason
+		INSERT INTO @tblRequestInfo (MessageId, RequestId, DecidedBy, RequestBy, VoidBy, Reason, TotalTickets)
+		SELECT vh.MessageId, rq.RequestId, rq.DecidedBy, rb.username AS RequestBy, vb.username AS VoidBy, rs.ReasonEnglish AS Reason, vh.TotalTickets
 		FROM #VoidingHistory vh
 			INNER JOIN dbo.TicketVoiding_Request rq WITH (NOLOCK) ON rq.RequestId = vh.RequestId
 			LEFT JOIN dbo.TicketVoiding_Reason rs WITH (NOLOCK) ON vh.ReasonId = rs.ReasonId
@@ -96,13 +99,14 @@ BEGIN
 		(
 			SELECT
 				r1.MessageId
+				,r1.TotalTickets
 				,STUFF((SELECT DISTINCT ',' + CONVERT(VARCHAR(20), r2.RequestId)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestIdLst
 				,STUFF((SELECT DISTINCT ',' + CONVERT(VARCHAR(20), r2.DecidedBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS DecidedByLst
 				,STUFF((SELECT DISTINCT ',' + CONVERT(VARCHAR(20), r2.RequestBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestByLst
 				,STUFF((SELECT DISTINCT ',' + CONVERT(VARCHAR(20), r2.VoidBy)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS VoidByLst
 				,STUFF((SELECT DISTINCT ',' + CONVERT(VARCHAR(20), r2.Reason)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS ReasonLst
 			FROM @tblRequestInfo r1
-			GROUP BY r1.MessageId
+			GROUP BY r1.MessageId, r1.TotalTickets
 		)
 		-- Bettype
 		,CTE_Bettype AS
@@ -138,9 +142,24 @@ BEGIN
 			GROUP BY s1.MessageId
 		)
 		SELECT
-			r.MessageId, r.RequestIdLst, r.DecidedByLst, r.RequestByLst, r.VoidByLst, r.ReasonLst
-			,e.KickOffTime, e.LeagueName, e.HomeName, e.AwayName, e.HalfTimeHomeScore, e.HalfTimeAwayScore, e.FullTimeHomeScore, e.FullTimeAwayScore
-			,b.TypeNameLst, s.CreditSiteLst, s.DepositSiteLst
+			r.MessageID
+			, r.TotalTickets
+			, ISNULL(r.RequestIDLst, '') RequestIDLst
+			, ISNULL(r.DecidedByLst, '') DecidedByLst
+			, ISNULL(r.RequestByLst, '') RequestByLst
+			, ISNULL(r.VoidByLst, '') VoidByLst
+			, ISNULL(r.ReasonLst, '') ReasonLst
+			, ISNULL(e.KickOffTime, '') KickOffTime
+			, ISNULL(e.LeagueName, '') LeagueName
+			, ISNULL(e.HomeName, '') HomeName
+			, ISNULL(e.AwayName, '') AwayName
+			, e.HalfTimeHomeScore
+			, e.HalfTimeAwayScore
+			, e.FullTimeHomeScore
+			, e.FullTimeAwayScore
+			, ISNULL(b.TypeNameLst, '') TypeNameLst
+			, ISNULL(s.CreditSiteLst, '') CreditSiteLst
+			, ISNULL(s.DepositSiteLst, '') DepositSiteLst
 		FROM CTE_RequestInfo r
 			INNER JOIN @tblEventInfo e ON r.MessageId = e.MessageId
 			INNER JOIN CTE_MsgBettype b ON r.MessageId = b.MessageId

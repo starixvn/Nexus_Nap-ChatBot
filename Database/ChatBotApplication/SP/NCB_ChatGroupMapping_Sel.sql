@@ -134,7 +134,7 @@ BEGIN
 		INSERT INTO tmp_RecipientIDByLicenseeStatus(RecipientID)
 		SELECT r.RecipientID
 		FROM Recipient r
-        WHERE r.RecipientTypeId = RECIPIENT_TYPE_3RD_PRODUCT;
+        WHERE r.RecipientTypeId <> RECIPIENT_TYPE_LICENSEE;
         
         INSERT INTO tmp_RecipientIDByLicenseeStatus(RecipientID) 
         SELECT RECIPIENT_ID_NA;
