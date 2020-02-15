@@ -62,6 +62,12 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 
 	SET  startTime = UTC_TIMESTAMP();
     SET errCode=0, errMsg='';
+
+  DROP TEMPORARY TABLE IF EXISTS tmp_Notification;
+  CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Notification(
+      NotificationID INT,
+      UNIQUE INDEX Index_NotificationID(NotificationID)
+    );
     
 	/*Step 1: Parse JSON data for message header and detaill*/
     DROP TEMPORARY TABLE IF EXISTS tmp_MsgHeader;
@@ -287,6 +293,9 @@ NCB_SpecialDeleteMsg_Import:BEGIN
           WHERE MessageID = ccMessageID;
 
       SELECT LAST_INSERT_ID() INTO ccNotificationID;
+
+      INSERT INTO tmp_Notification(NotificationID)
+        VALUES (ccNotificationID);
       
       # Insert NotificationSystemMsg
       INSERT INTO NotificationSystemMsg(MessageID, NotificationID, CheckMsg, CreatedDate)
@@ -342,12 +351,8 @@ NCB_SpecialDeleteMsg_Import:BEGIN
         
         #Return all imported message content
         SELECT n.NotificationID, n.Title, n.Content
-		FROM Notification n
-        WHERE n.NotificationID IN (	SELECT nm.NotificationID 
-														FROM NotificationSystemMsg nm 
-                                                        WHERE nm.MessageID IN (SELECT nrl.MessageID FROM tmp_NotificationRecipientList nrl)
-                                                        );
-                                                        
+		    FROM Notification n
+        WHERE n.NotificationID IN (SELECT t.NotificationID FROM tmp_Notification t);                                 
     
 		 #Get Finish Time to calcualte execution duration
 		SET finishTime = UTC_TIMESTAMP(3);

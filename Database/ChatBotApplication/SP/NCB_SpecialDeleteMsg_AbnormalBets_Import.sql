@@ -53,6 +53,12 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
 
 	SET startTime = UTC_TIMESTAMP();
   SET errCode = 0, errMsg = '';
+
+  DROP TEMPORARY TABLE IF EXISTS tmp_Notification;
+  CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Notification(
+      NotificationID INT,
+      UNIQUE INDEX Index_NotificationID(NotificationID)
+    );
     
 	/*Step 1: Parse JSON data for message header*/
   DROP TEMPORARY TABLE IF EXISTS tmp_MsgHeader;
@@ -138,7 +144,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
         , '\r\n'
         , 'Reason: ', ReasonLst
         , '\r\n'
-        , 'Results: ', 'HT ', IFNULL(CONCAT(HalfTimeHomeScore , '-', HalfTimeAwayScore), 'NA'), ' FT ', IFNULL(CONCAT(FullTimeHomeScore , '-', FullTimeAwayScore), 'NA')
+        , 'Results: ', 'HT ', IFNULL(CONCAT(HalfTimeHomeScore , '-', HalfTimeAwayScore), 'N/A'), ', FT ', IFNULL(CONCAT(FullTimeHomeScore , '-', FullTimeAwayScore), 'N/A')
         , '\r\n'
         , 'Decided by: ', DecidedByLst
         , '\r\n'
@@ -313,6 +319,9 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
           WHERE h.MessageID = ccMessageID;
 
       SELECT LAST_INSERT_ID() INTO ccNotificationID;
+
+      INSERT INTO tmp_Notification(NotificationID)
+        VALUES (ccNotificationID);
       
       # Insert NotificationSystemMsg
       INSERT INTO NotificationSystemMsg(MessageID, NotificationID, CheckMsg, CreatedDate)
@@ -366,9 +375,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   #Return all imported message content
   SELECT n.NotificationID, n.Title, n.Content
 		FROM Notification n
-    WHERE n.NotificationID IN (SELECT nm.NotificationID
-                                FROM NotificationSystemMsg nm
-                                INNER JOIN tmp_NotificationRecipientList t ON nm.MessageID = t.MessageID);
+    WHERE n.NotificationID IN (SELECT t.NotificationID FROM tmp_Notification t);
 
   #Get Finish Time to calculate execution duration
   SET finishTime = UTC_TIMESTAMP(3);

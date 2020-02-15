@@ -55,7 +55,7 @@ BEGIN
 		DECLARE @tblEventInfo TABLE (MessageId INT, KickOffTime VARCHAR(8), LeagueName NVARCHAR(500), HomeName NVARCHAR(100), AwayName NVARCHAR(100), HalfTimeHomeScore INT, HalfTimeAwayScore INT, FullTimeHomeScore INT, FullTimeAwayScore INT)
 		
 		INSERT INTO @tblEventInfo (MessageId, KickOffTime, LeagueName, HomeName, AwayName, HalfTimeHomeScore, HalfTimeAwayScore, FullTimeHomeScore, FullTimeAwayScore)
-		SELECT vh.MessageId, LTRIM(RTRIM(REPLACE(REPLACE(RIGHT(CONVERT(VARCHAR(20), m.GlobalShowTime, 100), 7), 'AM', ' AM'), 'PM', ' PM'))) AS KickOffTime, l.LeagueName, h.TeamName AS HomeName, a.TeamName AS AwayName, m.hthomescore, m.htawayscore, m.finalhomescore, m.finalawayscore
+		SELECT vh.MessageId, LTRIM(RTRIM(REPLACE(REPLACE(RIGHT(CONVERT(VARCHAR(20), DATEADD(HOUR, 12, m.GlobalShowTime), 100), 7), 'AM', ' AM'), 'PM', ' PM'))) AS KickOffTime, l.LeagueName, h.TeamName AS HomeName, a.TeamName AS AwayName, m.hthomescore, m.htawayscore, m.finalhomescore, m.finalawayscore
 		FROM #VoidingHistory vh
 			INNER JOIN dbo.TicketVoiding_RequestDetail rd WITH (NOLOCK) ON rd.RequestId = vh.RequestId
 			CROSS APPLY (
