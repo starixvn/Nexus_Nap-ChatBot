@@ -111,10 +111,11 @@ BEGIN
 		-- Bettype
 		,CTE_Bettype AS
 		(
-			SELECT t.MessageId, b.typenamee AS TypeName
+			SELECT t.MessageId, ISNULL(d.typenamee, b.typenamee) AS TypeName
 			FROM @tblRecommendBettype t
 				INNER JOIN dbo.bettype b WITH (NOLOCK) ON t.bettype = b.typeid
-			GROUP BY t.MessageId, b.typenamee
+				LEFT JOIN dbo.bettype d WITH (NOLOCK) ON b.DisplayedTypeID = d.typeid
+			GROUP BY t.MessageId, ISNULL(d.typenamee, b.typenamee)
 		)
 		,CTE_MsgBettype AS
 		(
