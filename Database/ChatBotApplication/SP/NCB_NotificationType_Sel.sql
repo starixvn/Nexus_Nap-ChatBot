@@ -13,28 +13,50 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_NotificationType_Sel(
 			Revisions:
 				- 20190729@Oliver: Revised total items to output    
 				- 20191223@Merlin.Le: Get additional UnRemovable field -- Redmine ID: #125707
+            	- 20190215@Oliver: unremovable abnormalbes settings - Redmine: #128430
+
     */
 	)
 SQL SECURITY DEFINER
 BEGIN
 	DECLARE rowStart	INT;
-	DECLARE jsonValue   JSON;
+	DECLARE voidTicketSettings   JSON;
+	DECLARE abnormalBetsSettings JSON;
     DECLARE indexLoop   INT;
     SET rowStart =	pageSize * (pageIndex - 1);  
     
     SET totalItems = (SELECT COUNT(1) FROM NotificationType nt);
     
-	SELECT Value INTO jsonValue FROM SystemSetting WHERE ID = 4 LIMIT 1;
+	SELECT Value INTO voidTicketSettings FROM SystemSetting WHERE ID = 4 LIMIT 1;
+	SELECT Value INTO abnormalBetsSettings FROM SystemSetting WHERE ID = 9 LIMIT 1;
+
     DROP TEMPORARY TABLE IF EXISTS tmpParseJsonTable;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmpParseJsonTable(NotificationTypeID INT);
+
+	#Get setting from Special Delete voiding ticket for licensee settings
     SET indexLoop = 0;
-    WHILE (JSON_EXTRACT(jsonValue, CONCAT('$[',indexLoop, '].NotificationTypeID'))) DO 
+    WHILE (JSON_EXTRACT(voidTicketSettings, CONCAT('$[',indexLoop, '].NotificationTypeID'))) DO 
 		INSERT INTO tmpParseJsonTable(NotificationTypeID)
         VALUES (
             CASE
-                WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(voidTicketSettings, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
                 THEN NULL
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID')))
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(voidTicketSettings, CONCAT('$[', indexLoop, '].NotificationTypeID')))
+            END
+		);
+        
+        SET indexLoop := indexLoop + 1;
+    END WHILE;
+
+	#Get setting from Special Delete AbnormalBets voiding ticket for internal settings
+	SET indexLoop = 0;
+    WHILE (JSON_EXTRACT(abnormalBetsSettings, CONCAT('$[',indexLoop, '].NotificationTypeID'))) DO 
+		INSERT INTO tmpParseJsonTable(NotificationTypeID)
+        VALUES (
+            CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(abnormalBetsSettings, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(abnormalBetsSettings, CONCAT('$[', indexLoop, '].NotificationTypeID')))
             END
 		);
         

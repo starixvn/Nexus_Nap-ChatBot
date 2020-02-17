@@ -16,6 +16,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationTemplate_Upd`(
 		Revisions:
 			- 20190910@Elton: First Commit
 			- 20191217@Merlin: Check valid content before update -- Redmine ID: #125707
+            - 20190215@Oliver: unremovable abnormalbes settings - Redmine: #128430
 	*/
 )
 NCB_NotificationTemplate_Upd:BEGIN
@@ -42,12 +43,13 @@ NCB_NotificationTemplate_Upd:BEGIN
 		LEAVE NCB_NotificationTemplate_Upd;
 	END IF;
 	
+	#Check params for template voiding tickets for licensee
 	SELECT Value INTO jsonValue FROM SystemSetting WHERE ID = 4 LIMIT 1;
-    DROP TEMPORARY TABLE IF EXISTS tmpParseJsonTable;
-    CREATE TEMPORARY TABLE IF NOT EXISTS tmpParseJsonTable(NotificationTypeID INT, NotificationTemplateID INT);
+    DROP TEMPORARY TABLE IF EXISTS tmpSettingData;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmpSettingData(NotificationTypeID INT, NotificationTemplateID INT);
     SET indexLoop = 0;
     WHILE (JSON_EXTRACT(jsonValue, CONCAT('$[',indexLoop, '].NotificationTemplateID'))) DO 
-		INSERT INTO tmpParseJsonTable(NotificationTypeID, NotificationTemplateID)
+		INSERT INTO tmpSettingData(NotificationTypeID, NotificationTemplateID)
         VALUES (
             CASE
                 WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
@@ -66,11 +68,47 @@ NCB_NotificationTemplate_Upd:BEGIN
 	
 	IF (
 		EXISTS (
-			SELECT 1 FROM tmpParseJsonTable tmppjt
+			SELECT 1 FROM tmpSettingData tmppjt
 			WHERE tmppjt.NotificationTemplateID = notificationTemplateID
 				AND tmppjt.NotificationTypeID = notificationTypeID
 		)
         AND NOT (content LIKE '%{EN Announcement}%' AND content LIKE '%{CN Announcement}%')
+    )
+	THEN
+		SET errCode = 102, errMsg = 'Not allow to delete defined params';
+		LEAVE NCB_NotificationTemplate_Upd;
+	END IF;
+
+	#Check params for template voiding abnormalBets for internal
+	SELECT Value INTO jsonValue FROM SystemSetting WHERE ID = 9 LIMIT 1;
+    DROP TEMPORARY TABLE IF EXISTS tmpSettingData;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmpSettingData(NotificationTypeID INT, NotificationTemplateID INT);
+    SET indexLoop = 0;
+    WHILE (JSON_EXTRACT(jsonValue, CONCAT('$[',indexLoop, '].NotificationTemplateID'))) DO 
+		INSERT INTO tmpSettingData(NotificationTypeID, NotificationTemplateID)
+        VALUES (
+            CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID')))
+            END,
+            CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTemplateID'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTemplateID')))
+            END
+		);
+        
+        SET indexLoop := indexLoop + 1;
+    END WHILE;
+	
+	IF (
+		EXISTS (
+			SELECT 1 FROM tmpSettingData tmppjt
+			WHERE tmppjt.NotificationTemplateID = notificationTemplateID
+				AND tmppjt.NotificationTypeID = notificationTypeID
+		)
+        AND NOT (content LIKE '%{General Info}%')
     )
 	THEN
 		SET errCode = 102, errMsg = 'Not allow to delete defined params';

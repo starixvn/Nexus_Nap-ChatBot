@@ -17,7 +17,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_OIC_SyncData(
         Revisions:
 				- 20190909@Oliver: Merge 5 SP into 1
                 - 20190913@Oliver: update table Recipient after sync
-        
+                - 20190215@Oliver: Skip update internal recipients - Redmine: #128430
     */
 )
 SQL SECURITY DEFINER
