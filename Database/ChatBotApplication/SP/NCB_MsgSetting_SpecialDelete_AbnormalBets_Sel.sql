@@ -55,5 +55,5 @@ BEGIN
 END;
 
 //
-DELIMITER;
+DELIMITER ;
 GRANT EXECUTE ON PROCEDURE NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel TO 'ncb.admin'@'%';
