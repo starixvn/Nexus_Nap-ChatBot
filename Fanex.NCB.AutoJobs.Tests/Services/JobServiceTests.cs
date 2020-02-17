@@ -7,6 +7,8 @@
     using Fanex.NCB.Services.Interfaces;
     using NSubstitute;
     using NSubstitute.ExceptionExtensions;
+    using ONEbook.UM.Models;
+    using ONEbook.UM.Services;
     using Xunit;
 
     public class JobServiceTests
@@ -15,6 +17,7 @@
         private IChatbotService chatbotService;
         private ISpecialDeleteService specialDeleteTicketService;
         private ISendNotificationService sendNotificationService;
+        private IMaintenanceService maintenanceService;
         private ILogger logger;
 
         [Fact]
@@ -69,7 +72,7 @@
             var service = GetService();
 
             //Actual
-            await service.EveryMinuteJobs();
+            await service.PullMessageFromSpecialDelete();
 
             //Assert
             await specialDeleteTicketService.Received().VoidingTicketToLicensee();
@@ -82,7 +85,30 @@
             specialDeleteTicketService.VoidingTicketToLicensee().Throws(new Exception());
 
             //Assert
-            await Assert.ThrowsAsync<Exception>(() => service.EveryMinuteJobs());
+            await Assert.ThrowsAsync<Exception>(() => service.PullMessageFromSpecialDelete());
+            await logger.Received().ErrorAsync(Arg.Any<string>());
+        }
+
+        [Fact]
+        public async Task ScanAndScanNotification_WhenCalled_ExecuteSuccessed()
+        {
+            var service = GetService();
+
+            //Actual
+            await service.ScanAndSendNotification();
+
+            //Assert
+            await sendNotificationService.Received().ScanAndSendNotification();
+        }
+
+        [Fact]
+        public async Task ScanAndScanNotification_WhenCalled_ThrowException()
+        {
+            var service = GetService();
+            sendNotificationService.ScanAndSendNotification().Throws(new Exception());
+
+            //Assert
+            await Assert.ThrowsAsync<Exception>(() => service.ScanAndSendNotification());
             await logger.Received().ErrorAsync(Arg.Any<string>());
         }
 
@@ -117,9 +143,11 @@
             chatbotService = Substitute.For<IChatbotService>();
             specialDeleteTicketService = Substitute.For<ISpecialDeleteService>();
             sendNotificationService = Substitute.For<ISendNotificationService>();
+            maintenanceService = Substitute.For<IMaintenanceService>();
+            maintenanceService.GetUnderMaintenanceTimeAsync().Returns(new UnderMaintenanceTime { IsUnderMaintenanceTime = false });
             logger = Substitute.For<ILogger>();
             return new JobService(syncDataService, chatbotService, specialDeleteTicketService,
-                sendNotificationService, logger);
+                sendNotificationService, maintenanceService, logger);
         }
 
         #endregion Helper

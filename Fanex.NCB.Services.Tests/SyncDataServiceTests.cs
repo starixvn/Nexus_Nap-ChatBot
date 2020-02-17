@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.Data.Repository;
@@ -17,8 +16,6 @@
     using Microsoft.Extensions.Options;
     using NSubstitute;
     using NSubstitute.ExceptionExtensions;
-    using ONEbook.UM.Models;
-    using ONEbook.UM.Services;
     using Xunit;
 
     public class SyncDataServiceTests
@@ -26,7 +23,6 @@
         private IOptionsSnapshot<AppSettings> appSettings;
         private ISyncDataRepository syncDataRepository;
         private IBaseService baseService;
-        private IMaintenanceService maintenanceService;
         private ILogger logger;
         private IOptionsSnapshot<List<HangfireJobSetting>> jobs;
 
@@ -35,23 +31,12 @@
         {
             var service = GetService();
             syncDataRepository.FetchDataFromNapUserControl(Arg.Any<GetDataFromNapUserControlCriteria>()).Returns(FakeNapData());
-            var maintainceTime = new UnderMaintenanceTime
-            {
-                IsUnderMaintenanceTime = false
-            };
-            maintenanceService.GetUnderMaintenanceTimeAsync().Returns(maintainceTime);
+
             //Actual
             await service.NapUserControlSyncDataAsync();
 
             //Assert
-            if (jobs.Value.Any(x => x.JobName.Equals(HangfireJobName.SyncNapUserControlData)))
-            {
-                await baseService.Received().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
-            }
-            else
-            {
-                await baseService.DidNotReceive().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
-            }
+            await baseService.Received().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
         }
 
         [Fact]
@@ -86,23 +71,12 @@
         {
             var service = GetService();
             syncDataRepository.FetchDataFromOIC(Arg.Any<GetDataFromOicCriteria>()).Returns(FakeOICData());
-            var maintainceTime = new UnderMaintenanceTime
-            {
-                IsUnderMaintenanceTime = false
-            };
-            maintenanceService.GetUnderMaintenanceTimeAsync().Returns(maintainceTime);
+
             //Actual
             await service.OicSyncDataAsync();
 
-            if (jobs.Value.Any(x => x.JobName.Equals(HangfireJobName.SyncOICData)))
-            {
-                await baseService.Received().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
-            }
-            else
-            {
-                await baseService.DidNotReceive().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
-            }
             //Assert
+            await baseService.Received().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
         }
 
         #region Helper
@@ -148,12 +122,15 @@
             appSettings.Value.Returns(fixture.Create<AppSettings>());
             syncDataRepository = Substitute.For<ISyncDataRepository>();
             baseService = Substitute.For<IBaseService>();
-            maintenanceService = Substitute.For<IMaintenanceService>();
             logger = Substitute.For<ILogger>();
-            maintenanceService.IsUnderMaintenanceAsync().Returns(false);
             jobs = Substitute.For<IOptionsSnapshot<List<HangfireJobSetting>>>();
-            jobs.Value.Returns(fixture.Create<List<HangfireJobSetting>>());
-            return new SyncDataService(appSettings, syncDataRepository, baseService, logger, maintenanceService, jobs);
+            var hangfireJobs = new List<HangfireJobSetting>
+            {
+                new HangfireJobSetting {JobName = HangfireJobName.SyncOICData, IsEnabled = true},
+                new HangfireJobSetting {JobName = HangfireJobName.SyncNapUserControlData, IsEnabled = true},
+            };
+            jobs.Value.Returns(hangfireJobs);
+            return new SyncDataService(appSettings, syncDataRepository, baseService, logger, jobs);
         }
 
         #endregion Helper

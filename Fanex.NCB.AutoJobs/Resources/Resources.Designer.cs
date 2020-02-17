@@ -61,15 +61,6 @@ namespace Fanex.NCB.AutoJobs.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pull message from Special Delete, then call Scan and Send notifications.
-        /// </summary>
-        internal static string EveryMinuteJobs {
-            get {
-                return ResourceManager.GetString("EveryMinuteJobs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Auto Scan &amp; Send Notification.
         /// </summary>
         internal static string Job_ScanAndSendNotification {
@@ -124,11 +115,20 @@ namespace Fanex.NCB.AutoJobs.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pull ticket Create Notifications and Scan Notification.
+        ///   Looks up a localized string similar to Pull messages from Special Delete and Send Notification.
         /// </summary>
-        internal static string SpecialDeletePullTicketAndScanNoti {
+        internal static string PullMessageFromSpectalDelete {
             get {
-                return ResourceManager.GetString("SpecialDeletePullTicketAndScanNoti", resourceCulture);
+                return ResourceManager.GetString("PullMessageFromSpectalDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan and Send Notification.
+        /// </summary>
+        internal static string ScanAndSendNotification {
+            get {
+                return ResourceManager.GetString("ScanAndSendNotification", resourceCulture);
             }
         }
     }

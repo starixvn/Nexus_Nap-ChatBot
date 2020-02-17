@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="EveryMinuteJobs" xml:space="preserve">
-    <value>Pull message from Special Delete, then call Scan and Send notifications</value>
-  </data>
   <data name="Job_ScanAndSendNotification" xml:space="preserve">
     <value>Auto Scan &amp; Send Notification</value>
   </data>
@@ -138,7 +135,10 @@
   <data name="MonitorChatbotService" xml:space="preserve">
     <value>Monitor chatbot service</value>
   </data>
-  <data name="SpecialDeletePullTicketAndScanNoti" xml:space="preserve">
-    <value>Pull ticket Create Notifications and Scan Notification</value>
+  <data name="PullMessageFromSpectalDelete" xml:space="preserve">
+    <value>Pull messages from Special Delete and Send Notification</value>
+  </data>
+  <data name="ScanAndSendNotification" xml:space="preserve">
+    <value>Scan and Send Notification</value>
   </data>
 </root>

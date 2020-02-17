@@ -15,33 +15,26 @@
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
-    using ONEbook.UM.Services;
 
     public class SpecialDeleteService : ISpecialDeleteService
     {
         private readonly IBaseService baseService;
         private readonly IChatbotService chatbotService;
-        private readonly IMaintenanceService maintenanceService;
         private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
         public SpecialDeleteService(IBaseService baseService,
             IChatbotService chatbotService,
-            IMaintenanceService maintenanceService,
             IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
         {
             this.baseService = baseService;
             this.chatbotService = chatbotService;
-            this.maintenanceService = maintenanceService;
             this.jobSettings = jobSettings;
         }
 
         public async Task VoidingTicketToLicensee()
         {
-            var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
-
-            if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.VoidingTicketForLicensee) &&
-                   !maintanceTime.IsUnderMaintenanceTime)
+            if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.VoidingTicketForLicensee))
             {
                 var systemSettings = await GetVoidingForLicenseeSystemSettings();
 
@@ -162,10 +155,7 @@
 
         public async Task VoidingAbnormalBetsToInternalDepartment()
         {
-            var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
-
-            if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.VoidingAbnormalBets) &&
-                   !maintanceTime.IsUnderMaintenanceTime)
+            if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.VoidingAbnormalBets))
             {
                 var systemSettings = await GetAbnormalBetSystemSettings();
 

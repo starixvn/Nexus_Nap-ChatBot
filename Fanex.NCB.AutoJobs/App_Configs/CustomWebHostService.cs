@@ -46,8 +46,13 @@
 
         public void RunHangfireJobs()
         {
-            recurringJob.AddOrUpdate<IJobService>(Resources.EveryMinuteJobs,
-               job => job.EveryMinuteJobs(),
+            recurringJob.AddOrUpdate<IJobService>(Resources.PullMessageFromSpectalDelete,
+               job => job.PullMessageFromSpecialDelete(),
+               Cron.Minutely,
+               TimeZoneInfo.Local, QueuPriority.Critical);
+
+            recurringJob.AddOrUpdate<IJobService>(Resources.ScanAndSendNotification,
+               job => job.ScanAndSendNotification(),
                Cron.Minutely,
                TimeZoneInfo.Local, QueuPriority.Critical);
 

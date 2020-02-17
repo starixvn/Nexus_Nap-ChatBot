@@ -17,7 +17,6 @@
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
-    using ONEbook.UM.Services;
 
     public class SyncDataService : ISyncDataService
     {
@@ -26,21 +25,18 @@
         private readonly ISyncDataRepository syncDataRepository;
         private readonly IBaseService baseService;
         private readonly ILogger logger;
-        private readonly IMaintenanceService maintenanceService;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
         public SyncDataService(IOptionsSnapshot<AppSettings> appSettings,
             ISyncDataRepository syncDataRepository,
             IBaseService baseService,
             ILogger logger,
-            IMaintenanceService maintenanceService,
             IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
         {
             this.appSettings = appSettings;
             this.syncDataRepository = syncDataRepository;
             this.baseService = baseService;
             this.logger = logger;
-            this.maintenanceService = maintenanceService;
             this.jobSettings = jobSettings;
         }
 
@@ -48,13 +44,8 @@
         {
             if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.SyncNapUserControlData))
             {
-                var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
-
-                if (!maintanceTime.IsUnderMaintenanceTime)
-                {
-                    var data = await GetDataFromNapUserControl(null);
-                    await InsertNapData(data);
-                }
+                var data = await GetDataFromNapUserControl(null);
+                await InsertNapData(data);
             }
         }
 
@@ -82,13 +73,8 @@
         {
             if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.SyncOICData))
             {
-                var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
-
-                if (!maintanceTime.IsUnderMaintenanceTime)
-                {
-                    var data = await GetDataFromOIC();
-                    await InsertOICData(data);
-                }
+                var data = await GetDataFromOIC();
+                await InsertOICData(data);
             }
         }
 

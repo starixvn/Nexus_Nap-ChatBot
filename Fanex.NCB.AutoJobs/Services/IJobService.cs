@@ -8,7 +8,9 @@
 
         Task SyncDataFromOIC();
 
-        Task EveryMinuteJobs();
+        Task PullMessageFromSpecialDelete();
+
+        Task ScanAndSendNotification();
 
         Task MonitorChatbot();
     }
