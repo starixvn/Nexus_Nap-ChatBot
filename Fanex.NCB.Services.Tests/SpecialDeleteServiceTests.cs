@@ -13,8 +13,6 @@
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using NSubstitute;
-    using ONEbook.UM.Models;
-    using ONEbook.UM.Services;
     using Xunit;
 
     public class SpecialDeleteServiceTests
@@ -22,7 +20,6 @@
         private IBaseService baseService;
         private IChatbotService chatbotService;
         private ISendNotificationService sendNotificationService;
-        private IMaintenanceService maintenanceService;
         private IOptionsSnapshot<List<HangfireJobSetting>> jobs;
 
         [Fact]
@@ -101,7 +98,6 @@
             baseService = Substitute.For<IBaseService>();
             chatbotService = Substitute.For<IChatbotService>();
             sendNotificationService = Substitute.For<ISendNotificationService>();
-            maintenanceService = Substitute.For<IMaintenanceService>();
             jobs = Substitute.For<IOptionsSnapshot<List<HangfireJobSetting>>>();
             var hangfireJobs = new List<HangfireJobSetting>
             {
@@ -110,12 +106,7 @@
             };
             jobs.Value.Returns(hangfireJobs);
 
-            var umTime = new UnderMaintenanceTime
-            {
-                IsUnderMaintenanceTime = false
-            };
-            maintenanceService.GetUnderMaintenanceTimeAsync().Returns(umTime);
-            return new SpecialDeleteService(baseService, chatbotService, maintenanceService, jobs);
+            return new SpecialDeleteService(baseService, chatbotService, jobs);
         }
     }
 }
