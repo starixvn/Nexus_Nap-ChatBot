@@ -18,30 +18,38 @@ BEGIN
 	IF ISNULL(@MessageIDLst , '') = ''
 		RETURN
 
-	CREATE TABLE #VoidingHistory (VoidingHistoryId INT, RequestId INT, MessageId INT, ReasonId INT, VoidById INT, TransIds VARCHAR(MAX), TotalTickets INT)
-	INSERT INTO #VoidingHistory (VoidingHistoryId, RequestId, MessageId, ReasonId, VoidById, TransIds, TotalTickets)
-	SELECT VoidingHistoryId, RequestId, MessageId, ReasonId, UserId AS VoidById, TransIds, t.TotalTickets
+	CREATE TABLE #MessageLst (MessageId INT)
+
+	DECLARE @XML XML  = NULL
+	SET @XML = N'<root><r>' + REPLACE(@MessageIDLst, ',', '</r><r>') + '</r></root>'
+	
+	INSERT INTO #MessageLst (MessageId)
+	SELECT r.value('.', 'VARCHAR(20)') AS MessageId
+	FROM @xml.nodes('//root/r') AS RECORDS(r)
+	WHERE LEN(ISNULL(r.value('.', 'VARCHAR(20)'), '')) > 0
+
+	CREATE TABLE #VoidingHistory (VoidingHistoryId INT, RequestId INT, MessageId INT, ReasonId INT, VoidById INT, TransId BIGINT)
+	INSERT INTO #VoidingHistory (VoidingHistoryId, RequestId, MessageId, ReasonId, VoidById, TransId)
+	SELECT vh.VoidingHistoryId, vh.RequestId, vh.MessageId, vh.ReasonId, vh.UserId AS VoidById, t.TransId
 	FROM dbo.TicketVoiding_VoidingHistory vh WITH (NOLOCK)
 		CROSS APPLY (
-			SELECT s.val FROM dbo.strSplit(@MessageIDLst, ',') s WHERE vh.MessageId = s.val
-		) s
-		CROSS APPLY (
-			SELECT COUNT(1) AS TotalTickets FROM dbo.strSplit(vh.TransIds, ',')
+			SELECT val AS TransId FROM dbo.strSplit(vh.TransIds, ',')
 		) t
-	WHERE vh.StatusId = 2
+	WHERE EXISTS (SELECT 1 FROM #MessageLst m WHERE vh.MessageId = m.MessageId)
+		AND vh.StatusId = 2
 
 	-- Request Info
 	BEGIN
-		DECLARE @tblRequestInfo TABLE (MessageId INT, RequestId INT, DecidedBy VARCHAR(50), RequestBy VARCHAR(50), VoidBy VARCHAR(50), Reason NVARCHAR(150), TotalTickets INT)
+		DECLARE @tblRequestInfo TABLE (MessageId INT, RequestId INT, DecidedBy VARCHAR(50), RequestBy VARCHAR(50), VoidBy VARCHAR(50), Reason NVARCHAR(150))
 		
 		;WITH CTE_Request AS
 		(
-			SELECT MessageId, RequestId, ReasonId, VoidById, TotalTickets
+			SELECT MessageId, RequestId, ReasonId, VoidById
 			FROM #VoidingHistory
-			GROUP BY MessageId, RequestId, ReasonId, VoidById, TotalTickets
+			GROUP BY MessageId, RequestId, ReasonId, VoidById
 		)
-		INSERT INTO @tblRequestInfo (MessageId, RequestId, DecidedBy, RequestBy, VoidBy, Reason, TotalTickets)
-		SELECT vh.MessageId, rq.RequestId, rq.DecidedBy, rb.username AS RequestBy, vb.username AS VoidBy, rs.SubIssueTypeName AS Reason, vh.TotalTickets
+		INSERT INTO @tblRequestInfo (MessageId, RequestId, DecidedBy, RequestBy, VoidBy, Reason)
+		SELECT vh.MessageId, rq.RequestId, rq.DecidedBy, rb.username AS RequestBy, vb.username AS VoidBy, rs.SubIssueTypeName AS Reason
 		FROM CTE_Request vh
 			INNER JOIN dbo.TicketVoiding_Request rq WITH (NOLOCK) ON rq.RequestId = vh.RequestId
 			INNER JOIN dbo.TicketVoiding_SubIssueType rs WITH (NOLOCK) ON rq.SubIssueTypeId = rs.SubIssueTypeId
@@ -74,39 +82,38 @@ BEGIN
 
 	-- Ticket Info
 	BEGIN
-		DECLARE @transIds TABLE (MessageId INT, TransId BIGINT)
-		INSERT INTO @transIds (MessageId, TransId)
-		SELECT vh.MessageId, t.val AS TransId
-		FROM #VoidingHistory vh
-			CROSS APPLY (
-				SELECT val FROM dbo.strSplit(vh.TransIds, ',')
-			) t
-
 		DECLARE @tblRecommendBettype TABLE (MessageId INT, recommend INT, bettype SMALLINT)
 		INSERT INTO @tblRecommendBettype (MessageId, recommend, bettype)
-		SELECT t.MessageId, b.recommend, b.bettype
-		FROM @transIds t
+		SELECT vh.MessageId, b.recommend, b.bettype
+		FROM #VoidingHistory vh
 			CROSS APPLY (
 				SELECT TOP 1 b.bettype, b.recommend
 				FROM dbo.bettrans b WITH (NOLOCK)
-				WHERE b.transid = t.TransId
+				WHERE b.transid = vh.TransId
 			) b
 	END
 
 	-- Return Data
 	BEGIN
+		-- Request Info
 		;WITH CTE_RequestInfo AS
 		(
 			SELECT
 				r1.MessageId
-				,SUM(r1.TotalTickets) AS TotalTickets
 				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(20), r2.RequestId)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestIdLst
 				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(20), r2.DecidedBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS DecidedByLst
 				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(20), r2.RequestBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestByLst
 				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(20), r2.VoidBy)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS VoidByLst
-				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(150), r2.Reason)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS ReasonLst
+				,STUFF((SELECT DISTINCT ', ' + CONVERT(NVARCHAR(150), r2.Reason)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS ReasonLst
 			FROM @tblRequestInfo r1
 			GROUP BY r1.MessageId
+		)
+		-- Total tickets
+		,CTE_TotalTickets AS
+		(
+			SELECT MessageId, COUNT(DISTINCT TransId) AS TotalTickets
+			FROM #VoidingHistory
+			GROUP BY MessageId
 		)
 		-- Bettype
 		,CTE_Bettype AS
@@ -144,7 +151,7 @@ BEGIN
 		)
 		SELECT
 			r.MessageID
-			, r.TotalTickets
+			, t.TotalTickets
 			, ISNULL(r.RequestIDLst, '') RequestIDLst
 			, ISNULL(r.DecidedByLst, '') DecidedByLst
 			, ISNULL(r.RequestByLst, '') RequestByLst
@@ -163,8 +170,12 @@ BEGIN
 			, ISNULL(s.DepositSiteLst, '') DepositSiteLst
 		FROM CTE_RequestInfo r
 			INNER JOIN @tblEventInfo e ON r.MessageId = e.MessageId
+			INNER JOIN CTE_TotalTickets t ON r.MessageId = t.MessageId
 			INNER JOIN CTE_MsgBettype b ON r.MessageId = b.MessageId
 			INNER JOIN CTE_MsgSite s ON r.MessageId = s.MessageId
 	END
+
+	DROP TABLE #MessageLst
+	DROP TABLE #VoidingHistory
 END
 GO
