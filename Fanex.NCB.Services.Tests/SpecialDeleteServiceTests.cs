@@ -61,27 +61,36 @@
         }
 
         [Fact]
-        public async Task VoidingTicketToLicensee_ImportFailed_NotifyChatGroup()
+        public async Task VoidingAbnormalBetsToInternalDepartment_WhenGetSettingIsNull_DoNothing()
+        {
+            var service = GetService();
+
+            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>()).Returns((SystemSetting)null);
+
+            //Actual
+            await service.VoidingAbnormalBetsToInternalDepartment();
+
+            //Assert
+            await baseService.DidNotReceiveWithAnyArgs().GetDataAsync<Message>(Arg.Any<GetAbnormalBetsMessageCriteria>());
+            await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
+            await chatbotService.DidNotReceive().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+        }
+
+        [Fact]
+        public async Task VoidingAbnormalBetsToInternalDepartment_NoTicketToImport_DoNothing()
         {
             var service = GetService();
             var fixture = new Fixture();
-            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns(
-                new SystemSetting { BatchSize = 100, MaxMessageID = 1989, MsgContentsTypeLst = "ABC" });
+            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>())
+                .Returns(new SystemSetting { BatchSize = 100, MaxMessageID = 1989, MsgContentsTypeLst = "103" });
 
-            var msgs = fixture.Create<ValueTuple<IEnumerable<Message>, IEnumerable<MessageDetail>>>();
-            baseService.FetchMultipleAsync<Message, MessageDetail>(Arg.Any<GetMessageFromSpecialDeleteCriteria>())
-                .Returns(msgs);
-            var criteria = new ImportMessageFromSpecialDeleteCriteria
-            {
-            };
-            var fakeData = FakeData();
-
-            baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>()).Returns(fakeData);
-
+            baseService.GetDataAsync<Message>(Arg.Any<GetAbnormalBetsMessageCriteria>()).Returns(fixture.Create<List<Message>>());
+            baseService.GetDataAsync<AbnormalBetsMessage>(Arg.Any<GetAbnormalBetInfoCriteria>()).Returns(fixture.Create<IEnumerable<AbnormalBetsMessage>>());
             //Actual
-            await service.VoidingTicketToLicensee();
+            await service.VoidingAbnormalBetsToInternalDepartment();
 
             //Expected
+            await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
         }
 
         private ValueTuple<IEnumerable<NotificationRecipient>, IEnumerable<NotificationSendMessage>> FakeData()

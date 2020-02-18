@@ -168,7 +168,7 @@
                     {
                         msg.Content_en = result.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_en.Trim().Replace("@@", string.Empty);
                         msg.Content_cs = result.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_cs.Trim().Replace("@@", string.Empty);
-                        msg.MsgContentsType = result.FirstOrDefault(m => m.MessageID == msg.MessageID).MsgContentsType;
+                        msg.MsgContentsType = result.FirstOrDefault(m => m.MessageID == msg.MessageID) != null ? result.FirstOrDefault(m => m.MessageID == msg.MessageID).MsgContentsType : 0;
                     }
 
                     await ImportAbnormalBetNotificationToChatbotDB(abnormalBetMsgs);
