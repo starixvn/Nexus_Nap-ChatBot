@@ -12,8 +12,8 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalBets
     Params    :
       - @MessageHeader
 							[  
-								{ "MessageID":885128, "MsgContentsType":103, "RequestIDLst":"101,102", "DecidedByLst":"Patrick,Starix", "RequestByLst":"Patrick,Starix", "VoidByLst":"Starix", "ReasonLst":"Group Betting,Others", "KickOffTime":"2020-02-12 03:00:00", "LeagueName":"ENG", "HomeName":"MC", "AwayName":"MU", ""HalfTimeHomeScore"":1, "HalfTimeAwayScore":0, "FullTimeHomeScore":1, "FullTimeAwayScore":1, "TypeNameLst":"Handicap,Over/Under", "TotalTickets": 1, "CreditSiteLst":"CN88,NV88", "DepositSiteLst":"12BET,Haifa" }
-								, { "MessageID":885131, "MsgContentsType":103, "RequestIDLst":"103,104", "DecidedByLst":"Patrick,Starix", "RequestByLst":"Patrick,Starix", "VoidByLst":"Starix", "ReasonLst":"Group Betting,Others", "KickOffTime":"2020-02-12 03:00:00", "LeagueName":"ENG", "HomeName":"MC", "AwayName":"MU", ""HalfTimeHomeScore"":1, "HalfTimeAwayScore":0, "FullTimeHomeScore":1, "FullTimeAwayScore":1, "TypeNameLst":"Moneyline", "TotalTickets": 10, "CreditSiteLst":"CN88,NV88", "DepositSiteLst":"12BET,Haifa" }
+								{ "MessageID":885128, "MsgContentsType":103, "RequestIDLst":"101,102", "DecidedByLst":"Patrick,Starix", "RequestByLst":"Patrick,Starix", "VoidByLst":"Starix", "ReasonLst":"Group Betting,Others", "KickOffTime":"2020-02-12 03:00:00", "LeagueName":"ENG", "HomeName":"MC", "AwayName":"MU", "HalfTimeHomeScore":1, "HalfTimeAwayScore":0, "FullTimeHomeScore":1, "FullTimeAwayScore":1, "TypeNameLst":"Handicap,Over/Under", "TotalTickets": 1, "CreditSiteLst":"CN88,NV88", "DepositSiteLst":"12BET,Haifa" }
+								, { "MessageID":885131, "MsgContentsType":103, "RequestIDLst":"103,104", "DecidedByLst":"Patrick,Starix", "RequestByLst":"Patrick,Starix", "VoidByLst":"Starix", "ReasonLst":"Group Betting,Others", "KickOffTime":"2020-02-12 03:00:00", "LeagueName":"ENG", "HomeName":"MC", "AwayName":"MU", "HalfTimeHomeScore":1, "HalfTimeAwayScore":0, "FullTimeHomeScore":1, "FullTimeAwayScore":1, "TypeNameLst":"Moneyline", "TotalTickets": 10, "CreditSiteLst":"CN88,NV88", "DepositSiteLst":"12BET,Haifa" }
 							]
 
     Revisions :
@@ -34,6 +34,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   DECLARE createdDate DATETIME(3);
   DECLARE ccMessageID INT;
   DECLARE ccNotificationID INT UNSIGNED;
+  DECLARE ccIsTest TINYINT;
 
   # Constants
 	DECLARE ACTION_ID INT DEFAULT 18;
@@ -65,6 +66,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgHeader(
     Id INT NOT NULL AUTO_INCREMENT,
     MessageID INT,
+    IsTest TINYINT,
     MsgContentsType INT,
     RequestIDLst TEXT,
     DecidedByLst TEXT,
@@ -94,9 +96,10 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
 
   SET iLoop = 0;
   WHILE (JSON_EXTRACT(messageHeader, CONCAT('$[',iLoop, '].MessageID')) IS NOT NULL) DO
-		INSERT INTO tmp_MsgHeader(MessageID, MsgContentsType, RequestIDLst, DecidedByLst, RequestByLst, VoidByLst, ReasonLst, KickOffTime, LeagueName, HomeName, AwayName, HalfTimeHomeScore, HalfTimeAwayScore, FullTimeHomeScore, FullTimeAwayScore, TypeNameLst, TotalTickets, CreditSiteLst, DepositSiteLst, Content_en, Content_cs, CheckMsg)
+		INSERT INTO tmp_MsgHeader(MessageID, IsTest, MsgContentsType, RequestIDLst, DecidedByLst, RequestByLst, VoidByLst, ReasonLst, KickOffTime, LeagueName, HomeName, AwayName, HalfTimeHomeScore, HalfTimeAwayScore, FullTimeHomeScore, FullTimeAwayScore, TypeNameLst, TotalTickets, CreditSiteLst, DepositSiteLst, Content_en, Content_cs, CheckMsg)
       VALUES (
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MessageID'))),
+        JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].IsTest')),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MsgContentsType'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].RequestIDLst'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].DecidedByLst'))),
@@ -157,7 +160,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
         , IFNULL(Content_cs, '')
         );
 
-  /*Step 2: Parse JSON data for message template, notification type*/
+  /*Step 2: Parse JSON data for message template, notification type, environment*/
   SELECT Value INTO templateNotifcationType
     FROM SystemSetting
     WHERE ID = 9;
@@ -308,7 +311,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   SET iLoop = 1;
   SET createdDate = UTC_TIMESTAMP();
   WHILE (EXISTS (SELECT 1 FROM tmp_MsgHeader WHERE Id = iLoop)) DO
-    SELECT MessageID INTO ccMessageID FROM tmp_MsgHeader WHERE Id = iLoop;
+    SELECT MessageID, IsTest INTO ccMessageID, ccIsTest FROM tmp_MsgHeader WHERE Id = iLoop;
 
     IF EXISTS (SELECT 1 FROM tmp_NotificationRecipientList WHERE MessageID = ccMessageID) THEN
       # Insert Notification
@@ -336,12 +339,19 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
         WHERE d.MessageID = ccMessageID;
 
       #Update Status for Notification
-      UPDATE Notification n
-        INNER JOIN NotificationSystemMsg nm ON nm.NotificationID = n.NotificationID
-        INNER JOIN (SELECT DISTINCT nrl.MessageID, nrl.Status, nrl.StatusID FROM tmp_NotificationRecipientList nrl) AS t ON t.MessageID = nm.MessageID
-        SET n.Status = t.Status,
-				    n.StatusID = t.StatusID
-        WHERE n.NotificationID = ccNotificationID;
+      IF ccIsTest = 1 THEN
+        UPDATE Notification
+          SET Status = DRAFT_NOTIFICATION_STATUS,
+              StatusID = DRAFT_NOTIFICATION_STATUSID
+          WHERE NotificationID = ccNotificationID;
+      ELSE
+        UPDATE Notification n
+          INNER JOIN NotificationSystemMsg nm ON nm.NotificationID = n.NotificationID
+          INNER JOIN (SELECT DISTINCT nrl.MessageID, nrl.Status, nrl.StatusID FROM tmp_NotificationRecipientList nrl) AS t ON t.MessageID = nm.MessageID
+          SET n.Status = t.Status,
+  				    n.StatusID = t.StatusID
+          WHERE n.NotificationID = ccNotificationID;
+        END IF;
       END IF;
 
     SET iLoop := iLoop + 1;

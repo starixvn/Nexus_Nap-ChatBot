@@ -42,7 +42,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 
     DECLARE createdDate DATETIME(3);
     DECLARE ccMessageID INT;
-    DECLARE ccNotificationID INT;
+    DECLARE ccNotificationID INT UNSIGNED;
 
     #Constants
 	DECLARE ACTION_ID 	INT DEFAULT 18;
@@ -73,7 +73,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_MsgHeader;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgHeader(
             Id INT NOT NULL AUTO_INCREMENT,
-            MessageID INT, 
+            MessageID INT,
             MsgContentsType INT,
             Content_en TEXT, 
             Content_cs TEXT,
@@ -87,7 +87,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     WHILE (JSON_EXTRACT(messageHeader, CONCAT('$[',iLoop, '].MessageID'))  IS NOT NULL) DO 
 		INSERT INTO tmp_MsgHeader(MessageID, MsgContentsType, Content_en, Content_cs, CheckMsg)
         VALUES (
-			JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MessageID'))), 
+			JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MessageID'))),
             JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MsgContentsType'))),
             JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_en'))),
             JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_cs')))
@@ -95,7 +95,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 		);
         
         SET iLoop := iLoop + 1;
-    END WHILE;    
+    END WHILE;
 
 	DROP TEMPORARY TABLE IF EXISTS tmp_MsgDetail;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgDetail(
@@ -116,10 +116,10 @@ NCB_SpecialDeleteMsg_Import:BEGIN
         SET iLoop := iLoop + 1;
     END WHILE;    
     
-    /*Step 2: Parse JSON data for message template, notification type*/
+    /*Step 2: Parse JSON data for message template, notification type, environment*/
     SELECT Value INTO templateNotifcationType 
     FROM SystemSetting ss
-    WHERE ss.ID = 4; 
+    WHERE ss.ID = 4;
     
     DROP TEMPORARY TABLE IF EXISTS tmp_MsgContentTypeTemplate;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgContentTypeTemplate(

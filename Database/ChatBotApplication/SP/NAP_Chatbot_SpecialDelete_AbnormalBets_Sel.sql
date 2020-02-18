@@ -82,15 +82,16 @@ BEGIN
 
 	-- Ticket Info
 	BEGIN
-		DECLARE @tblRecommendBettype TABLE (MessageId INT, recommend INT, bettype SMALLINT)
-		INSERT INTO @tblRecommendBettype (MessageId, recommend, bettype)
-		SELECT vh.MessageId, b.recommend, b.bettype
+		DECLARE @tblRecommendBettype TABLE (MessageId INT, recommend INT, bettype SMALLINT, liveindicator BIT)
+		INSERT INTO @tblRecommendBettype (MessageId, recommend, bettype, liveindicator)
+		SELECT vh.MessageId, b.recommend, b.bettype, ISNULL(b.liveindicator, 0)
 		FROM #VoidingHistory vh
 			CROSS APPLY (
-				SELECT TOP 1 b.bettype, b.recommend
+				SELECT TOP 1 b.bettype, b.liveindicator, b.recommend
 				FROM dbo.bettrans b WITH (NOLOCK)
 				WHERE b.transid = vh.TransId
 			) b
+		GROUP BY vh.MessageId, b.recommend, b.bettype, ISNULL(b.liveindicator, 0)
 	END
 
 	-- Return Data
@@ -118,11 +119,11 @@ BEGIN
 		-- Bettype
 		,CTE_Bettype AS
 		(
-			SELECT t.MessageId, ISNULL(d.typenamee, b.typenamee) AS TypeName
+			SELECT t.MessageId, CASE WHEN t.liveindicator = 0 THEN 'Non-Live ' ELSE 'Live ' END + ISNULL(d.typenamee, b.typenamee) AS TypeName
 			FROM @tblRecommendBettype t
 				INNER JOIN dbo.bettype b WITH (NOLOCK) ON t.bettype = b.typeid
 				LEFT JOIN dbo.bettype d WITH (NOLOCK) ON b.DisplayedTypeID = d.typeid
-			GROUP BY t.MessageId, ISNULL(d.typenamee, b.typenamee)
+			GROUP BY t.MessageId, CASE WHEN t.liveindicator = 0 THEN 'Non-Live ' ELSE 'Live ' END + ISNULL(d.typenamee, b.typenamee)
 		)
 		,CTE_MsgBettype AS
 		(
@@ -149,8 +150,16 @@ BEGIN
 			FROM CTE_Site s1
 			GROUP BY s1.MessageId
 		)
+		,CTE_IsTest AS
+		(
+			SELECT DISTINCT t.MessageId, 0 AS IsTest
+			FROM @tblRecommendBettype t
+				INNER JOIN dbo.Customer c WITH (NOLOCK) ON t.recommend = c.custid
+			WHERE c.currency <> 20
+		)
 		SELECT
 			r.MessageID
+			, CONVERT(BIT, ISNULL(i.IsTest, 1)) AS IsTest
 			, t.TotalTickets
 			, ISNULL(r.RequestIDLst, '') RequestIDLst
 			, ISNULL(r.DecidedByLst, '') DecidedByLst
@@ -173,6 +182,7 @@ BEGIN
 			INNER JOIN CTE_TotalTickets t ON r.MessageId = t.MessageId
 			INNER JOIN CTE_MsgBettype b ON r.MessageId = b.MessageId
 			INNER JOIN CTE_MsgSite s ON r.MessageId = s.MessageId
+			LEFT JOIN CTE_IsTest i ON r.MessageId = i.MessageId
 	END
 
 	DROP TABLE #MessageLst
