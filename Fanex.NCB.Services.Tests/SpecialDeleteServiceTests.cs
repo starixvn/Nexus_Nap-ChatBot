@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AutoFixture;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
@@ -63,14 +64,18 @@
         public async Task VoidingTicketToLicensee_ImportFailed_NotifyChatGroup()
         {
             var service = GetService();
-
+            var fixture = new Fixture();
             baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns(
                 new SystemSetting { BatchSize = 100, MaxMessageID = 1989, MsgContentsTypeLst = "ABC" });
 
-            baseService.FetchMultipleAsync<Message, MessageDetail>(Arg.Any<GetMessageFromSpecialDeleteCriteria>()).Returns(
-              (new List<Message> { new Message { MessageID = 1, MsgContentsType = 103 } }, new List<MessageDetail> { new MessageDetail { MessageID = 1 } })
-                );
+            var msgs = fixture.Create<ValueTuple<IEnumerable<Message>, IEnumerable<MessageDetail>>>();
+            baseService.FetchMultipleAsync<Message, MessageDetail>(Arg.Any<GetMessageFromSpecialDeleteCriteria>())
+                .Returns(msgs);
+            var criteria = new ImportMessageFromSpecialDeleteCriteria
+            {
+            };
             var fakeData = FakeData();
+
             baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>()).Returns(fakeData);
 
             //Actual

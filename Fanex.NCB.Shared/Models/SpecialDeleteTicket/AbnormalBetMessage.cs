@@ -35,5 +35,7 @@
         public string CreditSiteLst { get; set; }
 
         public string DepositSiteLst { get; set; }
+
+        public bool IsTest { get; set; }
     }
 }
