@@ -160,7 +160,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
         , IFNULL(Content_cs, '')
         );
 
-  /*Step 2: Parse JSON data for message template, notification type, environment*/
+  /*Step 2: Parse JSON data for message template, notification type*/
   SELECT Value INTO templateNotifcationType
     FROM SystemSetting
     WHERE ID = 9;

@@ -116,7 +116,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
         SET iLoop := iLoop + 1;
     END WHILE;    
     
-    /*Step 2: Parse JSON data for message template, notification type, environment*/
+    /*Step 2: Parse JSON data for message template, notification type*/
     SELECT Value INTO templateNotifcationType 
     FROM SystemSetting ss
     WHERE ss.ID = 4;
