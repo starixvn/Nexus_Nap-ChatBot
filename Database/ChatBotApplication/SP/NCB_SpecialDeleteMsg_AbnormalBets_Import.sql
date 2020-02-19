@@ -131,7 +131,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     SET Content_Detail = CONCAT(
         'Request No.: ', RequestIDLst
         , '\r\n', '\r\n'
-        , 'Kick Off: ', KickOffTime
+        , 'Event Start Time: ', KickOffTime
         , '\r\n'
         , 'League: ', LeagueName
         , '\r\n'
