@@ -195,8 +195,7 @@
             return await baseService.GetDataAsync<Message>(criteria);
         }
 
-        private async Task<IEnumerable<AbnormalBetsMessage>>
-           GetAbnormalBetMessage(string msgIds)
+        private async Task<IEnumerable<AbnormalBetsMessage>> GetAbnormalBetMessage(string msgIds)
         {
             if (!string.IsNullOrWhiteSpace(msgIds))
             {

@@ -46,7 +46,6 @@
         public async Task VoidingTicketToLicensee_NoTicketToImport_DoNothing()
         {
             var service = GetService();
-
             baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns(
                 new SystemSetting { BatchSize = 100, MaxMessageID = 1989, MsgContentsTypeLst = "ABC" });
 
@@ -58,6 +57,28 @@
 
             //Expected
             await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
+        }
+
+        [Fact]
+        public async Task VoidingTicketToLicensee_HaveTicketToImport_ExecuteSpImportAndSendCarbonNotification()
+        {
+            var service = GetService();
+            var fixture = new Fixture();
+            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns(
+                new SystemSetting { BatchSize = 100, MaxMessageID = 1989, MsgContentsTypeLst = "ABC" });
+
+            baseService.FetchMultipleAsync<Message, MessageDetail>(Arg.Any<GetMessageFromSpecialDeleteCriteria>()).Returns(
+              (fixture.Create<List<Message>>(), fixture.Create<List<MessageDetail>>()));
+
+            baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>()).Returns(FakeData());
+
+            //Actual
+            await service.VoidingTicketToLicensee();
+
+            //Expected
+            await baseService.Received().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
+
+            await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
         }
 
         [Fact]
@@ -97,11 +118,18 @@
         {
             var recipients = new List<NotificationRecipient>
             {
-                new NotificationRecipient { BotConversationId = "", BotName = "", ChatGroupConversationId = "adsa", NotificationId = 1}
+                new NotificationRecipient {
+                    BotConversationId = "",
+                    BotName = "",
+                    ChatGroupConversationId = "ConversationId",
+                    NotificationId = 1,
+                    ChannelId = "ABC",
+                    ServiceUrl = "test.com"
+                }
             };
             var notifications = new List<NotificationSendMessage>
             {
-                new NotificationSendMessage { NotificationId = 1, Content = "ABC", Title = "" }
+                new NotificationSendMessage { NotificationId = 1, Content = "", Title = "" }
             };
 
             return new ValueTuple<IEnumerable<NotificationRecipient>, IEnumerable<NotificationSendMessage>>(recipients, notifications);
