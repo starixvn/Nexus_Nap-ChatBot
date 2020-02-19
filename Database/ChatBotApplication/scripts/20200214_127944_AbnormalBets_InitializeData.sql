@@ -56,8 +56,8 @@ INSERT INTO NotificationRecipientType (NotificationTypeID, RecipientTypeID)
   VALUES (14, 3);
 
 # New Notification Template
-INSERT INTO NotificationTemplate (NotificationTemplateID, NotificationTemplateName, NotificationTypeID, Title, Content, CreatorID, CreatedDate)
-  VALUES (29, '[Internal CSD] Voiding Abnormal Bet Template', 14, '[Internal CSD] Voiding Abnormal Bet Template', '{General Info}', 8, UTC_TIMESTAMP());
+INSERT INTO NotificationTemplate (NotificationTemplateName, NotificationTypeID, Title, Content, CreatorID, CreatedDate)
+  VALUES ('[Internal CSD] Voiding Abnormal Bet Template', 14, '[Internal CSD] Voiding Abnormal Bet Template', '{General Info}', 8, UTC_TIMESTAMP());
 
 # Job Setting
 INSERT INTO SystemSetting (ID, Description, Value)
