@@ -11,7 +11,7 @@ import ErrorReport from './ErrorReport';
 import DatePicker from '../../common/DatePicker/index';
 import { MultipleSelectField } from '../../common/multiple-select-field/MultipleSelectField';
 import Labels from '../../common/Labels';
-import TreeSelect, { getRealValuesFromExtra } from '../../common/TreeSelect/index';
+import TreeSelect, { getRealValuesFromCollection } from '../../common/TreeSelect/index';
 import errorResponseHandler from '../../lib/errorResponseHandler';
 import Site from '../../lib/site';
 import DataGrid from './DataGrid';
@@ -134,7 +134,8 @@ export default class NotificationList extends Component {
         const filter = this.state.filter;
         const recipientIds = [];
 
-        getRealValuesFromExtra(recipientIds, filter.recipients.allCheckedNodes);
+        console.log(filter.recipients.allCheckedNodes);
+        getRealValuesFromCollection(recipientIds, filter.recipients.allCheckedNodes);
         axios.get(Site.resolveClientUrl('NotificationList/Get'), {
             params: {
                 notificationTypeIds: filter.notificationTypes.value,

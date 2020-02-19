@@ -13,7 +13,7 @@ import ReactMde from 'react-mde';
 import { NCBBreadcrum } from '../../../common/breadcrumbs/breadcrumbs';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../../actions/index';
-import TreeSelect from '../../../common/TreeSelect/index';
+import TreeSelect, { getRealValuesFromCollection } from '../../../common/TreeSelect/index';
 import DatePicker from '../../../common/DatePicker/index';
 import Labels from '../../../common/Labels';
 import { DateTimeFormat, editorCommandList, invalidFieldClass } from '../../../constants/constants';
@@ -268,22 +268,9 @@ export class AppContainer extends React.Component {
     handleRecipientChange = (value, label, extra) => {
         const formik = this.refs.form;
         const recipientIds = [];
-        this.getRecipientIds(recipientIds, extra.allCheckedNodes);
+        getRealValuesFromCollection(recipientIds, extra.allCheckedNodes);
         this.selectedRecipientIds = recipientIds;
         formik.setFieldValue('recipients', value);
-    }
-
-    getRecipientIds = (ids, collection) => {
-        for (let i = 0; i < collection.length; i++) {
-            const item = collection[i];
-            if (item.children && item.children.length > 0) {
-                this.getRecipientIds(ids, item.children);
-            } else {
-                if (!ids.some(i => i === item.node.props.realValue)) {
-                    ids.push(item.node.props.realValue);
-                }
-            }
-        }
     }
 
     handleResetTitleContent = () => {

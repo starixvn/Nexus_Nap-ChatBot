@@ -46,3 +46,13 @@ export const getRealValuesFromAllCheckNodes = function (result, collection) {
         }
     }
 };
+
+export const getRealValuesFromCollection = function (result, collection) {
+    if (collection.length > 0) {
+        if (collection[0].props) {
+            getRealValuesFromAllCheckNodes(result, collection);
+        } else {
+            getRealValuesFromExtra(result, collection);
+        }
+    }
+};
