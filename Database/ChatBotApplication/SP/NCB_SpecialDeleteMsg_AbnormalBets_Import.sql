@@ -344,6 +344,11 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
           SET Status = DRAFT_NOTIFICATION_STATUS,
               StatusID = DRAFT_NOTIFICATION_STATUSID
           WHERE NotificationID = ccNotificationID;
+
+        UPDATE NotificationRecipientList
+          SET Status = DRAFT_NOTIFICATION_STATUS,
+              StatusID = DRAFT_NOTIFICATION_STATUSID
+          WHERE NotificationID = ccNotificationID;
       ELSE
         UPDATE Notification n
           INNER JOIN NotificationSystemMsg nm ON nm.NotificationID = n.NotificationID

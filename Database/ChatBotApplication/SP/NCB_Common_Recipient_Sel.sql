@@ -1,7 +1,16 @@
 DROP PROCEDURE IF EXISTS NCB_Common_Recipient_Sel;
 DELIMITER //
 
-CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_Common_Recipient_Sel`()
+CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_Common_Recipient_Sel`(
+	/*
+		Creator: Dominic@20190401
+        Param:
+        Revisions:
+				- 20190401@Dominic: First Commit
+				- 20200214@Percy: Special Delete - Integrate Abnormal Bets [RedmineID: #127944]
+        
+    */
+)
 BEGIN
 	DECLARE RECIPIENT_TYPE_LICENSEES 	SMALLINT DEFAULT 1;
   DECLARE RECIPIENT_TYPE_INTERNAL_CSD 	SMALLINT DEFAULT 3;
