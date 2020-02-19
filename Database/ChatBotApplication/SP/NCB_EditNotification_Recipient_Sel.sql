@@ -17,7 +17,8 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_EditNotification_Recipient_Sel
 SQL SECURITY DEFINER
 BEGIN
 	DECLARE RECIPIENT_TYPE_LICENSEES 	SMALLINT DEFAULT 1;
-    DECLARE LICENSEE_STATUS_ACTIVE 		TINYINT UNSIGNED DEFAULT 3;
+  DECLARE RECIPIENT_TYPE_INTERNAL_CSD SMALLINT DEFAULT 3;
+  DECLARE LICENSEE_STATUS_ACTIVE 		TINYINT UNSIGNED DEFAULT 3;
     
     #Local variables
     DECLARE nowGMTMinus4 DATETIME;
@@ -132,28 +133,31 @@ BEGIN
 		);
     
     (SELECT tmp.RecipientTypeID
-		,rt.RecipientTypeName
-        , lt.LicenseeTypeId
-        , lt.LicenseeTypeName
-		, tmp.RecipientID
-        , tmp.RecipientName
+					, rt.RecipientTypeName
+          , IFNULL(id.InternalDepartmentID, lt.LicenseeTypeId) AS LicenseeTypeId
+          , IFNULL(id.InternalDepartmentName, lt.LicenseeTypeName) AS LicenseeTypeName
+					, tmp.RecipientID
+          , tmp.RecipientName
     FROM tmp_recipientLst tmp
     INNER JOIN RecipientType rt
 			ON rt.RecipientTypeID = tmp.RecipientTypeID
     LEFT JOIN Licensee lic 
 			ON tmp.RecipientTypeID = RECIPIENT_TYPE_LICENSEES
 				AND lic.LicenseeId = tmp.SourceID
-	LEFT JOIN LicenseeType lt
+	  LEFT JOIN LicenseeType lt
 			ON lt.LicenseeTypeId = lic.LicenseeTypeId
+    LEFT JOIN InternalDepartment id
+      ON tmp.RecipientTypeID = RECIPIENT_TYPE_INTERNAL_CSD
+        AND id.InternalDepartmentID = tmp.SourceID
 	)
 	UNION
 	(
 		SELECT tmp.RecipientTypeID
-		,rt.RecipientTypeName
-        , lt.LicenseeTypeId
-        , lt.LicenseeTypeName
-		, tmp.RecipientID
-        , tmp.RecipientName
+					, rt.RecipientTypeName
+          , IFNULL(id.InternalDepartmentID, lt.LicenseeTypeId) AS LicenseeTypeId
+          , IFNULL(id.InternalDepartmentName, lt.LicenseeTypeName) AS LicenseeTypeName
+					, tmp.RecipientID
+          , tmp.RecipientName
 		FROM tmp_errorNotificationRecipient tmp
         INNER JOIN RecipientType rt
 			ON rt.RecipientTypeID = tmp.RecipientTypeID
@@ -162,6 +166,9 @@ BEGIN
 				AND lic.LicenseeId = tmp.SourceID
 		LEFT JOIN LicenseeType lt
 			ON lt.LicenseeTypeId = lic.LicenseeTypeId
+    LEFT JOIN InternalDepartment id
+      ON tmp.RecipientTypeID = RECIPIENT_TYPE_INTERNAL_CSD
+        AND id.InternalDepartmentID = tmp.SourceID
     )
     ORDER BY RecipientTypeID, LicenseeTypeName, RecipientName;
     

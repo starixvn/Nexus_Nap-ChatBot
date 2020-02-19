@@ -19,7 +19,8 @@ CREATE DEFINER = 'ChatBotSystem'@'%'  PROCEDURE NCB_NewNotification_Recipient_Se
 SQL SECURITY DEFINER
 BEGIN
 	DECLARE RECIPIENT_TYPE_LICENSEES 	SMALLINT DEFAULT 1;
-    DECLARE LICENSEE_STATUS_ACTIVE 		TINYINT UNSIGNED DEFAULT 3;
+  DECLARE RECIPIENT_TYPE_INTERNAL_CSD SMALLINT DEFAULT 3;
+  DECLARE LICENSEE_STATUS_ACTIVE 		TINYINT UNSIGNED DEFAULT 3;
     
     #Local variables
     DECLARE nowGMTMinus4 DATETIME;
@@ -104,17 +105,22 @@ BEGIN
     END IF;
     
     SELECT r.RecipientTypeID
-					,rt.RecipientTypeName
-                    , lt.LicenseeTypeId, lt.LicenseeTypeName
-					, r.RecipientID, r.RecipientName
+					, rt.RecipientTypeName
+          , IFNULL(id.InternalDepartmentID, lt.LicenseeTypeId) AS LicenseeTypeId
+          , IFNULL(id.InternalDepartmentName, lt.LicenseeTypeName) AS LicenseeTypeName
+					, r.RecipientID
+          , r.RecipientName
     FROM tmp_recipientLst r
     INNER JOIN RecipientType rt
 			ON rt.RecipientTypeID = r.RecipientTypeID
     LEFT JOIN Licensee lic 
 			ON r.RecipientTypeID = RECIPIENT_TYPE_LICENSEES
 				AND lic.LicenseeId = r.SourceID
-	LEFT JOIN LicenseeType lt
+	  LEFT JOIN LicenseeType lt
 			ON lt.LicenseeTypeId = lic.LicenseeTypeId
+    LEFT JOIN InternalDepartment id
+      ON r.RecipientTypeID = RECIPIENT_TYPE_INTERNAL_CSD
+        AND id.InternalDepartmentID = r.SourceID
     ORDER BY RecipientTypeID,  lt.LicenseeTypeName, RecipientName;
     
     #Drop Unused temporary tables

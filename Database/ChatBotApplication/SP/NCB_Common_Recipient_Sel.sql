@@ -4,16 +4,18 @@ DELIMITER //
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_Common_Recipient_Sel`()
 BEGIN
 	DECLARE RECIPIENT_TYPE_LICENSEES 	SMALLINT DEFAULT 1;
+  DECLARE RECIPIENT_TYPE_INTERNAL_CSD 	SMALLINT DEFAULT 3;
 	SELECT rt.RecipientTypeID
-		,rt.RecipientTypeName
-		, lt.LicenseeTypeId
-        ,lt.LicenseeTypeName
-		, r.RecipientID
+    		,rt.RecipientTypeName
+    		, IFNULL(id.InternalDepartmentID, lt.LicenseeTypeId) AS LicenseeTypeId
+        , IFNULL(id.InternalDepartmentName, lt.LicenseeTypeName) AS LicenseeTypeName
+    		, r.RecipientID
         ,r.RecipientName
     FROM RecipientType rt
 		INNER JOIN Recipient r ON rt.RecipientTypeID = r.RecipientTypeID
 		LEFT JOIN Licensee lic ON r.RecipientTypeID = RECIPIENT_TYPE_LICENSEES AND lic.LicenseeId = r.SourceID
 		LEFT JOIN LicenseeType lt ON lt.LicenseeTypeId = lic.LicenseeTypeId
+    LEFT JOIN InternalDepartment id ON r.RecipientTypeID = RECIPIENT_TYPE_INTERNAL_CSD AND id.InternalDepartmentID = r.SourceID
     ORDER BY RecipientTypeID,  lt.LicenseeTypeName, RecipientName;
 END;
 
