@@ -1,4 +1,4 @@
-﻿DROP PROCEDURE IF EXISTS NCB_SpecialDeleteMsg_Import;
+DROP PROCEDURE IF EXISTS NCB_SpecialDeleteMsg_Import;
 DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SpecialDeleteMsg_Import(
