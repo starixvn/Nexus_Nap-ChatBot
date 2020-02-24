@@ -93,20 +93,23 @@
             return messages ?? new List<SendMessageResult>();
         }
 
+        private static IEnumerable<NotificationRecipient> GetDistinctChatGroupConversationId(IEnumerable<NotificationRecipient> recipients)
+        {
+            var cloneRecipients = new List<NotificationRecipient>(recipients);
+            return cloneRecipients.GroupBy(g => new { g.NotificationId, g.ChatGroupConversationId })
+                .Select(group => group.FirstOrDefault()).OrderBy(r => r.NotificationId);
+        }
+
         private async Task SendNotificationToRecipients(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
-            var batchs = DivideNotificationBatch(notifications, recipients);
+            var distinctRecipients = GetDistinctChatGroupConversationId(recipients);
+            var batchs = DivideNotificationBatch(notifications, distinctRecipients);
             var index = 0;
             foreach (var batch in batchs)
             {
                 index++;
-                var currentRecipients = new List<NotificationRecipient>(batch.Item2);
                 var response = await SendMessageToMultipleWithHandleException(batch.Item1, batch.Item2);
-                await HandleResponse(response, currentRecipients);
-                if (index != currentRecipients.Count)
-                {
-                    await Task.Delay(appSettings.Value.DelayTimeEachBatch);
-                }
+                await HandleResponse(response, recipients);
             }
         }
 
@@ -174,10 +177,10 @@
                 var updateNotiModels = new List<UpdateNotificationModel>();
                 foreach (var recipient in recipients)
                 {
-                    var result = responseMessages.FirstOrDefault(r => r.NotificationId == recipient.NotificationId
+                    var results = responseMessages.Where(r => r.NotificationId == recipient.NotificationId
                     && r.ConversationId == recipient.ChatGroupConversationId);
 
-                    if (result != null)
+                    foreach (var result in results)
                     {
                         var model = new UpdateNotificationModel
                         {
@@ -189,7 +192,7 @@
                             Retry = result.ErrorCode != 0,
                             IsSuccess = result.ErrorCode == 0,
                             ErrMsg = result.ErrorCode == 0 ? string.Empty :
-                                GenerateErrorMessage(RecipientStatuses.BotServiceError, result.ErrorMessage)
+                            GenerateErrorMessage(RecipientStatuses.BotServiceError, result.ErrorMessage)
                         };
                         updateNotiModels.Add(model);
                     }
