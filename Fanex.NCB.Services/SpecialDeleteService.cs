@@ -27,7 +27,6 @@
         public SpecialDeleteService(IBaseService baseService,
                IChatbotService chatbotService,
             IPushSignalService pushSignalService,
-            IChatbotService chatbotService,
             IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
         {
             this.baseService = baseService;
@@ -241,10 +240,10 @@
                 await OnAfterImportData(command, notification);
             }
         }
-        
-         private void PushInsertedNotifications(string notificationIds)
+
+        private void PushInsertedNotifications(string notificationIds)
         {
             Task.Run(() => pushSignalService.OnInsertNotification(notificationIds));
-	}
+        }
     }
 }

@@ -21,6 +21,7 @@
         private IBaseService baseService;
         private IChatbotService chatbotService;
         private ISendNotificationService sendNotificationService;
+        private IPushSignalService pushSignalService;
         private IOptionsSnapshot<List<HangfireJobSetting>> jobs;
 
         [Fact]
@@ -147,8 +148,9 @@
                 new HangfireJobSetting {IsEnabled = true, JobName = HangfireJobName.VoidingAbnormalBets}
             };
             jobs.Value.Returns(hangfireJobs);
+            pushSignalService = Substitute.For<IPushSignalService>();
 
-            return new SpecialDeleteService(baseService, chatbotService, jobs);
+            return new SpecialDeleteService(baseService, chatbotService, pushSignalService, jobs);
         }
     }
 }

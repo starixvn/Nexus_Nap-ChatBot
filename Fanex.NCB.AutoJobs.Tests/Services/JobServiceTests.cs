@@ -72,7 +72,7 @@
             var service = GetService();
 
             //Actual
-            await service.PullTicketCreateNotificationAndScanNotification();
+            await service.PullMessageFromSpecialDelete();
 
             //Assert
             await specialDeleteTicketService.Received().VoidingTicketToLicensee();
@@ -143,32 +143,16 @@
             chatbotService = Substitute.For<IChatbotService>();
             specialDeleteTicketService = Substitute.For<ISpecialDeleteService>();
             sendNotificationService = Substitute.For<ISendNotificationService>();
- 	    monitorOptions = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
-            jobSettings = Substitute.For<IOptionsMonitor<List<HangfireJobSetting>>>();
-            var option = new MonitorChatbot
-            {
-                IsMonitoring = true,
-                BotConversationId = "A",
-                BotName = "A",
-                ChannelId = "A",
-                ConversationId = "",
-                Message = "",
-                ServiceUrl = "dsa"
-            };
-            var settings = new List<HangfireJobSetting>
-            {
-                new HangfireJobSetting {JobName = HangfireJob.SendNotification, CronExpression = "* * * * *", IsEnabled = true},
-                new HangfireJobSetting {JobName = HangfireJob.SyncNapUserControlData, CronExpression = "* * * * *", IsEnabled = true},
-                new HangfireJobSetting {JobName = HangfireJob.SyncOICData, CronExpression = "* * * * *", IsEnabled = true},
-                new HangfireJobSetting {JobName = HangfireJob.PullTicketFromSpecialDeleteAndScanNoti, CronExpression = "* * * * *", IsEnabled = true},
-                new HangfireJobSetting {JobName = HangfireJob.MonitorSkypebot, CronExpression = "* * * * *", IsEnabled = true}
-            };
-            jobSettings.CurrentValue.Returns(settings);
-            monitorOptions.Value.Returns(option);
-
+            maintenanceService = Substitute.For<IMaintenanceService>();
             logger = Substitute.For<ILogger>();
-             return new JobService(syncDataService, chatbotService, specialDeleteTicketService, sendNotificationService,
-                logger, jobSettings, monitorOptions);
+            var um = new UnderMaintenanceTime
+            {
+                IsUnderMaintenanceTime = false
+            };
+            maintenanceService.GetUnderMaintenanceTimeAsync().Returns(um);
+
+            return new JobService(syncDataService, chatbotService, specialDeleteTicketService, sendNotificationService, maintenanceService,
+               logger);
         }
 
         #endregion Helper

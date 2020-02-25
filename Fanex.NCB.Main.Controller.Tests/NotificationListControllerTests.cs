@@ -38,7 +38,7 @@
 
             userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotifiactionList, Policy.Host)
                 .Returns(true);
-            var actual = controller.Index(null, null);
+            var actual = controller.Index();
 
             var viewResult = Assert.IsType<ViewResult>(actual);
             var haveHostPermission = Assert.IsType<bool>(viewResult.ViewData["HaveEditNotificationPermission"]);
@@ -54,13 +54,11 @@
             NapClientManager.UseConfig(napSettings);
             var fixture = new Fixture();
             napSession.UserId = fixture.Create<int>();
-            var id = fixture.Create<int>();
-            var pageIndex = fixture.Create<int>();
             userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotifiactionList, Policy.Host)
                 .Returns(true);
 
             // Action
-            var actual = controller.Index(id, pageIndex);
+            var actual = controller.Index();
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(actual);
@@ -68,8 +66,6 @@
             var actualId = Assert.IsType<int>(viewResult.ViewData["HightLightId"]);
             var actualPageIndex = Assert.IsType<int>(viewResult.ViewData["PageIndex"]);
             Assert.True(haveHostPermission);
-            Assert.Equal(id, actualId);
-            Assert.Equal(pageIndex, actualPageIndex);
         }
 
         [Fact]
