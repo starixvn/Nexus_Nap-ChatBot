@@ -10,7 +10,7 @@ export default class SignalR extends PureComponent {
 
     componentDidMount() {
         const protocol = new signalR.JsonHubProtocol();
-        const transport = signalR.HttpTransportType.ServerSentEvents;
+        const transport = signalR.HttpTransportType.WebSockets;
         const options = {
             transport,
             skipNegotiation: true,

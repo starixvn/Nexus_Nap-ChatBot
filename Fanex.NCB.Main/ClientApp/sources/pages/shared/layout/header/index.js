@@ -33,7 +33,7 @@ export default class Header extends React.PureComponent {
 
     initSignalR = () => {
         const protocol = new signalR.JsonHubProtocol();
-        const transport = signalR.HttpTransportType.ServerSentEvents;
+        const transport = signalR.HttpTransportType.WebSockets;
         const options = {
             transport,
             skipNegotiation: true,

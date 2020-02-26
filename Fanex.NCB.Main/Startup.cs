@@ -164,7 +164,7 @@
             {
                 routes.MapHub<SignalRService>("/signalR", options =>
                 {
-                    options.Transports = HttpTransportType.ServerSentEvents;
+                    options.Transports = HttpTransportType.WebSockets;
                 });
             });
             app.UseMvc(routes =>
