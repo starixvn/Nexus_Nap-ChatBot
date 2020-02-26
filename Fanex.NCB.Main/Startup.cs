@@ -153,20 +153,22 @@
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
             app.UseCookiePolicy();
             app.UseAuthentication();
 
             app.UseSession();
+            app.UseWebSockets();
 
             app.UseSignalR(routes =>
             {
                 routes.MapHub<SignalRService>("/signalR", options =>
                 {
-                    options.Transports = HttpTransportType.WebSockets;
+                    options.Transports = HttpTransportType.LongPolling;
                 });
             });
+            app.UseStaticFiles();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
