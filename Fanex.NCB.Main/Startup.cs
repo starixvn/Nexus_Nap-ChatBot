@@ -137,6 +137,7 @@
             {
                 hubOptions.ClientTimeoutInterval = TimeSpan.FromMinutes(1);
                 hubOptions.EnableDetailedErrors = true;
+                hubOptions.HandshakeTimeout = TimeSpan.FromMinutes(1);
             });
         }
 
@@ -160,18 +161,18 @@
 
             app.UseSession();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Auth}/{action=Index}/{id?}");
-            });
             app.UseSignalR(routes =>
             {
                 routes.MapHub<SignalRService>("/signalR", options =>
                 {
                     options.Transports = HttpTransportType.ServerSentEvents;
                 });
+            });
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Auth}/{action=Index}/{id?}");
             });
 
             NapClientManager
