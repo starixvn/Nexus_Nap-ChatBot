@@ -46,29 +46,6 @@
         }
 
         [Fact]
-        public void Index_WhenCalledWithParams_ReturnExpectedView()
-        {
-            // Arrange
-            var controller = GetController();
-            var napSettings = Substitute.For<INapSettings>();
-            NapClientManager.UseConfig(napSettings);
-            var fixture = new Fixture();
-            napSession.UserId = fixture.Create<int>();
-            userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotifiactionList, Policy.Host)
-                .Returns(true);
-
-            // Action
-            var actual = controller.Index();
-
-            // Assert
-            var viewResult = Assert.IsType<ViewResult>(actual);
-            var haveHostPermission = Assert.IsType<bool>(viewResult.ViewData["HaveEditNotificationPermission"]);
-            var actualId = Assert.IsType<int>(viewResult.ViewData["HightLightId"]);
-            var actualPageIndex = Assert.IsType<int>(viewResult.ViewData["PageIndex"]);
-            Assert.True(haveHostPermission);
-        }
-
-        [Fact]
         public async Task Get_WhenCalled_ReturnJsonResult()
         {
             var controller = GetController();

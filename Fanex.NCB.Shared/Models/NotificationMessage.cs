@@ -4,7 +4,7 @@
 
     public class NotificationMessage
     {
-        public int NotifictaionId { get; set; }
+        public int NotificationId { get; set; }
 
         public string Message { get; set; }
 

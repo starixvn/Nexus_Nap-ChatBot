@@ -65,6 +65,7 @@
                 if (notifications.Any())
                 {
                     await chatbotService.SendMessageToMultitpleAsync(notifications);
+                    PushInsertedNotifications(string.Join(",", notifications.Select(item => item.NotificationId)));
                 }
             }
         }
@@ -81,10 +82,6 @@
 
             var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
 
-            if (!string.IsNullOrWhiteSpace(criteria.InsertedNotificationIds))
-            {
-                PushInsertedNotifications(criteria.InsertedNotificationIds);
-            }
             var notification = GenerateNotifificationMessage(data.Item2, data.Item1);
             var command = new CommandResult
             {
@@ -104,7 +101,7 @@
                 {
                     var notification = new NotificationMessage
                     {
-                        NotifictaionId = noti.NotificationId,
+                        NotificationId = noti.NotificationId,
                         Message = noti.Content,
                         Recipients = recipients.Select(r =>
                             new ConversationInfo

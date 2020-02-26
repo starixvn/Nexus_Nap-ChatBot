@@ -91,7 +91,7 @@
                 var notificationModel = new List<NotificationMessage>
                 {
                     new NotificationMessage {
-                        NotifictaionId = -1,
+                        NotificationId = -1,
                         Message = settings.Message,
                         Recipients = new List<ConversationInfo>
                         {
@@ -117,7 +117,7 @@
             var notificationModel = new List<NotificationMessage>
                 {
                     new NotificationMessage {
-                        NotifictaionId = -1,
+                        NotificationId = -1,
                         Message = message,
                         Recipients = new List<ConversationInfo>
                         {

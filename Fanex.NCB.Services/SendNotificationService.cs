@@ -231,13 +231,13 @@
                                 .Where(noti => listNotificationIds.Any(l => l == noti.NotificationId))
                                 .Select(n => new NotificationMessage
                                 {
-                                    NotifictaionId = n.NotificationId,
+                                    NotificationId = n.NotificationId,
                                     Message = n.Content
                                 }));
 
                 foreach (var item in batch)
                 {
-                    item.Recipients = new List<ConversationInfo>(patchRecipient.Where(r => r.NotificationId == item.NotifictaionId)
+                    item.Recipients = new List<ConversationInfo>(patchRecipient.Where(r => r.NotificationId == item.NotificationId)
                         .Select(r => new ConversationInfo
                         {
                             BotConversationId = r.BotConversationId,

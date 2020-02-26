@@ -391,7 +391,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   SELECT n.NotificationID, n.Title, n.Content
 		FROM Notification n
     WHERE n.NotificationID IN (SELECT t.NotificationID FROM tmp_Notification t);
-
+  
   #Get Finish Time to calculate execution duration
   SET finishTime = UTC_TIMESTAMP(3);
   SET duration = TIMESTAMPDIFF(MICROSECOND, startTime, finishTime) / 1000; 	#miliseconds

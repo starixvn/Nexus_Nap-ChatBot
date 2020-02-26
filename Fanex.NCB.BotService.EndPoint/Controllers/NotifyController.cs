@@ -81,7 +81,7 @@
                     foreach (var conversationInfo in notificationMessage.Recipients)
                     {
                         tasks.Add(
-                            Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotifictaionId, notificationMessage.Message))
+                            Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
                             );
                     }
                 }

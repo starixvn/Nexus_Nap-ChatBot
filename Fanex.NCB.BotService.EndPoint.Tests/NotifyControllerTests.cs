@@ -138,7 +138,7 @@
         public async Task SendMulti_NotificationListIsEmpty_ReturnObjectResultWithEmptyList()
         {
             var controller = GetController();
-            var notificationMessage = new List<NotificationMessage> { new NotificationMessage { NotifictaionId = 1, Recipients = new List<ConversationInfo>() } };
+            var notificationMessage = new List<NotificationMessage> { new NotificationMessage { NotificationId = 1, Recipients = new List<ConversationInfo>() } };
 
             //Actual
             var actual = await controller.SendMulti(notificationMessage);
@@ -160,7 +160,7 @@
             var notificationMessage = new List<NotificationMessage>
             {
                 new NotificationMessage {
-                NotifictaionId = 1,
+                NotificationId = 1,
                 Message = "test",
                 Recipients = new List<ConversationInfo>
                     {
@@ -210,7 +210,7 @@
             var notificationMessage = new List<NotificationMessage>
             {
                 new NotificationMessage {
-                NotifictaionId = 1,
+                NotificationId = 1,
                 Message = "test",
                 Recipients = new List<ConversationInfo>
                     {
