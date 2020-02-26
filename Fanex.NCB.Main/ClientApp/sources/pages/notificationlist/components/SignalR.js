@@ -10,9 +10,7 @@ export default class SignalR extends PureComponent {
 
     componentDidMount() {
         const protocol = new signalR.JsonHubProtocol();
-
-        const transport = signalR.HttpTransportType.WebSockets;
-
+        const transport = signalR.HttpTransportType.ServerSentEvents;
         const options = {
             transport,
             logMessageContent: true,
@@ -33,7 +31,7 @@ export default class SignalR extends PureComponent {
         });
 
         this.connection.start()
-            .then(() => console.info('SignalR Connected'))
+            .then(() => console.info('SignalR in Notification List is Connected'))
             .catch(err => console.error('SignalR Connection Error: ', err));
     }
 

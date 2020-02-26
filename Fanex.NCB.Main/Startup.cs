@@ -170,7 +170,7 @@
             {
                 routes.MapHub<SignalRService>("/signalR", options =>
                 {
-                    options.Transports = HttpTransportType.None;
+                    options.Transports = HttpTransportType.ServerSentEvents;
                 });
             });
 

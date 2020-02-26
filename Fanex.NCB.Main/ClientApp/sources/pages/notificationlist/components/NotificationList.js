@@ -70,7 +70,6 @@ export default class NotificationList extends Component {
     }
 
     componentDidMount() {
-        console.log(this.highlightNotification);
         const promises = [
             axios(Site.resolveClientUrl('Common/GetNotificationTypes')),
             axios(Site.resolveClientUrl('Common/GetRecipients')),
@@ -160,7 +159,6 @@ export default class NotificationList extends Component {
         const filter = this.state.filter;
         const recipientIds = [];
 
-        console.log(filter.recipients.allCheckedNodes);
         getRealValuesFromCollection(recipientIds, filter.recipients.allCheckedNodes);
         axios.get(Site.resolveClientUrl('NotificationList/Get'), {
             params: {

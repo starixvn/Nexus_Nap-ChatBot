@@ -33,7 +33,7 @@ export default class Header extends React.PureComponent {
 
     initSignalR = () => {
         const protocol = new signalR.JsonHubProtocol();
-        const transport = signalR.HttpTransportType.WebSockets;
+        const transport = signalR.HttpTransportType.ServerSentEvents;
         const options = {
             transport,
             logMessageContent: true,
@@ -52,7 +52,7 @@ export default class Header extends React.PureComponent {
         });
 
         this.connection.start()
-            .then(() => console.log('SignalR in header connected'))
+            .then(() => console.log('SignalR notification bell is connected'))
             .catch(err => console.error('SignalR Connection Error: ', err));
     }
 

@@ -74,25 +74,20 @@ export class DataGrid extends Component {
     getEditClassNames = item => CommonFunctions.isBotRemoved(item.mappingStatusID) ? 'icon-edit edit-disabled' : 'icon-edit';
 
     updateActive = async () => {
-        try {
-            const params = {
-                groupID: this.state.item.groupID,
-                isActive: !this.state.item.isActive
-            };
-    
-            const url = Site.resolveClientUrl('ChatGroupMapping/UpdateActive');
-            const headers = {
-                'Content-Type': 'application/json',
-                'RequestVerificationToken': Site.getXsrfToken()
-            };
+        const params = {
+            groupID: this.state.item.groupID,
+            isActive: !this.state.item.isActive
+        };
 
-            const response = await axios.post(url, JSON.stringify(params), { headers: headers });
-            if (response.data && response.data.code === 0) {
-                this.props.getGridData(this.props.gridParams);
-            }
-        }
-        catch(error) {
-            console.log(error);
+        const url = Site.resolveClientUrl('ChatGroupMapping/UpdateActive');
+        const headers = {
+            'Content-Type': 'application/json',
+            'RequestVerificationToken': Site.getXsrfToken()
+        };
+
+        const response = await axios.post(url, JSON.stringify(params), { headers: headers });
+        if (response.data && response.data.code === 0) {
+            this.props.getGridData(this.props.gridParams);
         }
 
         this.toggleActive();
