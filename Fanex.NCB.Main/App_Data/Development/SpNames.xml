@@ -31,8 +31,8 @@
     <Setting Key="NCB_Common_User_Sel" SpName="NCB_Common_User_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
   <Function Name="Send Notification">
-    <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus_xtest" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd_xtest" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SendNotification_GetImmedNotifUpdStatus" SpName="NCB_SendNotification_GetImmedNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>
   </Function>
 
