@@ -128,26 +128,6 @@
             Assert.True(commandResult.IsSuccessful);
         }
 
-        [Fact]
-        public async Task GetAllErrorNotifications_WhenCalled_ReturnJsonResult()
-        {
-            // Arrange
-            var controller = GetController();
-            var fixture = new Fixture();
-            var notificationTypeIds = fixture.Create<string>();
-            var recipientIds = fixture.Create<string>();
-            var notifications = fixture.Create<IEnumerable<Notification>>();
-            var model = new GetErrorNotifications();
-            notificationService.GetAllErrorNotificationsAsync(Arg.Do<GetErrorNotifications>(x => model = x)).Returns(notifications);
-
-            // Action
-            var result = await controller.GetAllErrorNotifications(notificationTypeIds, recipientIds).ConfigureAwait(false);
-
-            // Assert
-            var jsonResult = Assert.IsType<JsonResult>(result);
-            Assert.Equal(notifications, jsonResult.Value);
-        }
-
         private void SignalRServiceHasBeenCall(string notificationIds)
         {
             Task.Run(() => signalRService.Received().UpdateNotificationStatus(notificationIds));

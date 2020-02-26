@@ -105,28 +105,6 @@
         }
 
         [Fact]
-        public async Task GetAllErrorNotificationsAsync_ValidData_ReturnExpectedResult()
-        {
-            // Arrange
-            var service = GetService();
-            var fixture = new Fixture();
-            var model = fixture.Create<GetErrorNotifications>();
-            var notifications = fixture.Create<IEnumerable<Notification>>();
-            var criteria = new GetAllErrorNotificationsCriteria();
-            baseService.GetDataAsync<Notification>(Arg.Do<GetAllErrorNotificationsCriteria>(x => criteria = x))
-                .Returns(notifications);
-
-            // Action
-            var result = await service.GetAllErrorNotificationsAsync(model).ConfigureAwait(false);
-
-
-            // Assert
-            Assert.Equal(notifications, result);
-            Assert.Equal(model.NotificationTypeIds, criteria.NotificationTypeIds);
-            Assert.Equal(model.RecipientIds, criteria.RecipientIds);
-        }
-
-        [Fact]
         public async Task CancelAsync_ValidData_ReturnSuccessResult()
         {
             var service = GetService();

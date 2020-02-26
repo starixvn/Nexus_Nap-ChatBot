@@ -1,7 +1,7 @@
-DROP PROCEDURE IF EXISTS NCB_SendNotification_RecipientSentStatus_Upd_xtest;
+DROP PROCEDURE IF EXISTS NCB_SendNotification_RecipientSentStatus_Upd;
 DELIMITER //
 
-CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_RecipientSentStatus_Upd_xtest(
+CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_RecipientSentStatus_Upd(
     IN sentStatus MEDIUMTEXT CHARACTER SET utf8mb4
 	, OUT updatedNotificationIds TEXT
 	, OUT isHaveErrNotification TINYINT(1)
@@ -40,7 +40,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_RecipientSe
     */
 )
 SQL SECURITY DEFINER
-NCB_SendNotification_RecipientSentStatus_Upd_xtest:BEGIN
+NCB_SendNotification_RecipientSentStatus_Upd:BEGIN
 
 	#Variables used to write User Logs
 	DECLARE startTime 			DATETIME(3);
@@ -209,4 +209,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE NCB_SendNotification_RecipientSentStatus_Upd_xtest TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_SendNotification_RecipientSentStatus_Upd TO 'ncb.admin'@'%';

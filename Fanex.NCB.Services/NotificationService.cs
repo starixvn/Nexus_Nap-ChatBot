@@ -221,22 +221,6 @@
             }).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<Notification>> GetAllErrorNotificationsAsync(GetErrorNotifications model)
-        {
-            var result = await baseService.GetDataAsync<Notification>(new GetAllErrorNotificationsCriteria
-            {
-                NotificationTypeIds = model.NotificationTypeIds,
-                RecipientIds = model.RecipientIds
-            }).ConfigureAwait(false);
-
-            foreach (var notification in result)
-            {
-                notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();
-            }
-
-            return result;
-        }
-
         private void BackgroundJobAfterCreateNotification(int notificationId, bool isCreatNotification)
         {
             Task.Run(() => sendNotificationService.SendNotificationImmediately(notificationId).ContinueWith(result =>
@@ -264,8 +248,8 @@
 
             return notification;
         }
-        
-         public async Task<IEnumerable<Notification>> GetUpdatedNotificationAsync(string notificationIds)
+
+        public async Task<IEnumerable<Notification>> GetUpdatedNotificationAsync(string notificationIds)
         {
             var criteria = new GetUpdatedNotificationCriteria
             {
