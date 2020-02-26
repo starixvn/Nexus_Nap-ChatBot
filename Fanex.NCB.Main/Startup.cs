@@ -135,9 +135,7 @@
             services.RegisterRepositories();
             services.AddSignalR(hubOptions =>
             {
-                hubOptions.ClientTimeoutInterval = TimeSpan.FromMinutes(1);
                 hubOptions.EnableDetailedErrors = true;
-                hubOptions.HandshakeTimeout = TimeSpan.FromMinutes(1);
             });
         }
 
