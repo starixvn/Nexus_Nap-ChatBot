@@ -26,6 +26,7 @@
     using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Http.Connections;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -132,7 +133,11 @@
 
             services.RegisterServices();
             services.RegisterRepositories();
-            services.AddSignalR();
+            services.AddSignalR(hubOptions =>
+            {
+                hubOptions.ClientTimeoutInterval = TimeSpan.FromMinutes(1);
+                hubOptions.EnableDetailedErrors = true;
+            });
         }
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -163,7 +168,10 @@
             });
             app.UseSignalR(routes =>
             {
-                routes.MapHub<SignalRService>("/signalR");
+                routes.MapHub<SignalRService>("/signalR", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
 
             NapClientManager
