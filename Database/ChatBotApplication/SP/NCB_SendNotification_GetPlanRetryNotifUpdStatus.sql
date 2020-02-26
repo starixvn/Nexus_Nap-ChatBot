@@ -2,7 +2,7 @@ DROP PROCEDURE IF EXISTS NCB_SendNotification_GetPlanRetryNotifUpdStatus;
 DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_GetPlanRetryNotifUpdStatus(
-	OUT updatedNotificationIds TEXT
+	OUT updatedNotificationIds VARCHAR(300)
     /*
 		Creator: Dominic@20190417
         Task: Chatbot For Licensee - Phase 1: Sending UM notification using Skype bot
@@ -26,7 +26,7 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
     DECLARE duration 			INT;							
     DECLARE logContent 		TEXT;
     DECLARE ACTION_ID 		INT DEFAULT 8;
-     DECLARE plannedNotifIDLst TEXT;
+    DECLARE plannedNotifIDLst TEXT;
     DECLARE tryingNotifRecipChatGrpIDLst TEXT;
     
 	#Constant
