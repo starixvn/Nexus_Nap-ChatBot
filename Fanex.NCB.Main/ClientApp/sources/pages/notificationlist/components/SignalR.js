@@ -13,6 +13,7 @@ export default class SignalR extends PureComponent {
         const transport = signalR.HttpTransportType.ServerSentEvents;
         const options = {
             transport,
+            skipNegotiation: true,
             logMessageContent: true,
             logger: signalR.LogLevel.Trace
         };
