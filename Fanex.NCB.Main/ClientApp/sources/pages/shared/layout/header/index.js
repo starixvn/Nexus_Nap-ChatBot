@@ -36,8 +36,8 @@ export default class Header extends React.PureComponent {
         const transport = signalR.HttpTransportType.LongPolling;
         const options = {
             transport,
-            logMessageContent: true,
-            logger: signalR.LogLevel.Trace
+            logMessageContent: false,
+            logger: signalR.LogLevel.None
         };
 
         this.connection = new signalR.HubConnectionBuilder()
@@ -51,9 +51,7 @@ export default class Header extends React.PureComponent {
             });
         });
 
-        this.connection.start()
-            .then(() => console.log('SignalR notification bell is connected'))
-            .catch(err => console.error('SignalR Connection Error: ', err));
+        this.connection.start().then().catch(err => console.error('SignalR Connection Error: ', err));
     }
 
     componentWillUnmount() {

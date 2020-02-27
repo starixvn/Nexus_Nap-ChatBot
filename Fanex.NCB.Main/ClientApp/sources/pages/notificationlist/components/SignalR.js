@@ -13,8 +13,8 @@ export default class SignalR extends PureComponent {
         const transport = signalR.HttpTransportType.LongPolling;
         const options = {
             transport,
-            logMessageContent: true,
-            logger: signalR.LogLevel.Trace
+            logMessageContent: false,
+            logger: signalR.LogLevel.None
         };
 
         this.connection = new signalR.HubConnectionBuilder()
@@ -30,9 +30,7 @@ export default class SignalR extends PureComponent {
             this.onInsertNotifications(notificationIds);
         });
 
-        this.connection.start()
-            .then(() => console.info('SignalR in Notification List is Connected'))
-            .catch(err => console.error('SignalR Connection Error: ', err));
+        this.connection.start().then().catch(err => console.error('SignalR Connection Error: ', err));
     }
 
     componentWillUnmount() {
