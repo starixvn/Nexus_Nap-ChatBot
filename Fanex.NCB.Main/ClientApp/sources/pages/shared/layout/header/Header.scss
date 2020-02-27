@@ -248,34 +248,34 @@
     top: 0;
 }
 
-.notification-item {
-    border-radius: 4px;
-    background-color: #F2F5F7;
-    padding: 6px;
+.err-notification-item {
+    padding: 8px 12px !important;
+    border-bottom: 1px solid #ccc;
 
-    * {
-        margin: 0;
-    }
+    .notification-item {
+        * {
+            margin: 0;
+        }
 
-    .notification-title {
-        font-size: 14px;
-        font-weight: 500;
-        line-height: 14px;
-        text-overflow: ellipsis;
-        overflow: hidden;
-    }
+        .notification-title {
+            font-weight: 600;
+            line-height: 15px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
 
-    .notification-content {
-        font-size: 12px;
-        padding: 8px 0;
-        text-overflow: ellipsis;
-        overflow: hidden;
-    }
+        .notification-content {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            line-height: 22px;
+        }
 
-    .notification-time {
-        font-size: 10px;
-        line-height: 10px;
-        text-align: right;
+        .notification-time {
+            line-height: 15px;
+            text-align: right;
+            font-style: italic;
+            font-size: 12px;
+        }
     }
 }
 
