@@ -100,11 +100,6 @@
                 };
             });
 
-            services.AddSignalR(hubOptions =>
-            {
-                hubOptions.EnableDetailedErrors = true;
-            });
-
             services.AddMvc(options =>
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
@@ -138,6 +133,11 @@
 
             services.RegisterServices();
             services.RegisterRepositories();
+
+            services.AddSignalR(hubOptions =>
+            {
+                hubOptions.EnableDetailedErrors = true;
+            }).AddStackExchangeRedis(redisConfig);
         }
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
