@@ -81,6 +81,7 @@
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<BotSettings>(Configuration.GetSection("ChatBotConfigs"));
             services.Configure<MonitorChatbot>(Configuration.GetSection("MonitorChatbot"));
+            services.Configure<SignalRSettings>(Configuration.GetSection("SignalRSettings"));
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>

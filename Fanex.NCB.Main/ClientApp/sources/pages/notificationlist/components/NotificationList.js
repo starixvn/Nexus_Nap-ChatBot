@@ -94,9 +94,10 @@ export default class NotificationList extends Component {
                     return {
                         id: x.notificationTypeID,
                         name: x.notificationTypeName,
-                        checked: isHasHighlight ? parseInt(this.highlightNotification.notificationTypeId, 10) === x.notificationID : true
+                        checked: isHasHighlight ? parseInt(this.highlightNotification.notificationTypeId, 10) === parseInt(x.notificationTypeID,10) : true
                     };
                 });
+
                 this.setState(prevState => ({
                     notificationTypeOptions,
                     recipientOptions: recipientResponse.data,
@@ -118,7 +119,8 @@ export default class NotificationList extends Component {
                                 allCheckedNodes: recipientResponse.data
                             },
                             fromDate: isHasHighlight ? new Date(this.highlightNotification.configSendTime) : prevState.filter.fromDate,
-                            toDate: isHasHighlight ? new Date(this.highlightNotification.configSendTime) : prevState.filter.toDate
+                            toDate: isHasHighlight ? new Date(this.highlightNotification.configSendTime) : prevState.filter.toDate,
+                            creatorId: this.highlightNotification.creatorId
                         }
                     }
                 }), () => {
@@ -162,7 +164,7 @@ export default class NotificationList extends Component {
         getRealValuesFromCollection(recipientIds, filter.recipients.allCheckedNodes);
         axios.get(Site.resolveClientUrl('NotificationList/Get'), {
             params: {
-                notificationTypeIds: filter.notificationTypes.value,
+                notificationTypeIds: filter.notificationTypes.value.toString(),
                 fromDate: filter.fromDate.toDateString(),
                 toDate: filter.toDate.toDateString(),
                 creatorId: filter.creatorId,
@@ -334,7 +336,7 @@ export default class NotificationList extends Component {
                         <Label className="form-label">Notification Type</Label>
                         <MultipleSelectField
                             width={182}
-                            initialValue={this.state.filter.notificationTypes}
+                            initialValue={this.state.filter.notificationTypes.value}
                             data={this.state.notificationTypeOptions}
                             keyField="id"
                             valueField="name"
@@ -354,7 +356,9 @@ export default class NotificationList extends Component {
                     </FormGroup>
                     <FormGroup>
                         <Label className="form-label">Sender</Label>
-                        <Input type="select" name="creatorId" value={this.state.filter.creatorId} onChange={this.handleCreatorChange}>
+                        <Input type="select" name="creatorId"
+                            value={this.state.filter.creatorId ? this.state.filter.creatorId : ''}
+                            onChange={this.handleCreatorChange}>
                             <option value="" >{Labels.All}</option>
                             {this.state.userOptions.map(this.renderUserOption)}
                         </Input>
