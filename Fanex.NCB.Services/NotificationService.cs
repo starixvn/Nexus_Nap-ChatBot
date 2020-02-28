@@ -265,10 +265,10 @@
             return notifications;
         }
 
-        public async Task<IEnumerable<Notification>> GetErrNotificationsAsync()
+        public async Task<IEnumerable<NotificationPaging>> GetErrNotificationsAsync()
         {
             var criteria = new GetAllErrNotificationsCriteria();
-            var notifications = await baseService.GetDataAsync<Notification>(criteria);
+            var notifications = await baseService.GetDataAsync<NotificationPaging>(criteria);
             foreach (var notification in notifications)
             {
                 notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();

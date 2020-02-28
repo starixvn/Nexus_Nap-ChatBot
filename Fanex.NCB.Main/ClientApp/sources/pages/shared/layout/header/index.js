@@ -110,7 +110,7 @@ export default class Header extends React.PureComponent {
                                 {
                                     this.state.notifications.length > 0 ? this.state.notifications.map((notification, index) =>
                                         <DropdownItem key={index} tag='a' className="err-notification-item"
-                                            href={Site.resolveClientUrl(`NotificationList/Index?Id=${notification.notificationId}&typeId=${notification.notificationTypeId}&sendTime=${notification.configSendTime}&creatorId=${notification.creatorId}`)}>
+                                            href={Site.resolveClientUrl(`NotificationList/Index?Id=${notification.notificationId}&typeId=${notification.notificationTypeId}&sendTime=${notification.configSendTime}&creatorId=${notification.creatorId}&pageIndex=${notification.pageIndex}`)}>
                                             <NotificationItem notification={notification} />
                                         </DropdownItem>) : <DropdownItem className='text-center' disabled>{noErrorNotification}</DropdownItem>
                                 }

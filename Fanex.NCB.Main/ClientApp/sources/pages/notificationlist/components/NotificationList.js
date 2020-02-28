@@ -65,7 +65,8 @@ export default class NotificationList extends Component {
                 notificationId:  params.get('Id'),
                 notificationTypeId: params.get('typeId'),
                 configSendTime: params.get('sendTime'),
-                creatorId: params.get('creatorId')
+                creatorId: params.get('creatorId'),
+                pageIndex: params.get('pageIndex')
             };
     }
 
@@ -124,7 +125,8 @@ export default class NotificationList extends Component {
                         }
                     }
                 }), () => {
-                        this.getNotifications();
+                        const pageIndex = this.highlightNotification.pageIndex ? this.highlightNotification.pageIndex : 1;
+                        this.getNotifications(pageIndex);
                 });
             }).catch(errorResponseHandler);
     }
