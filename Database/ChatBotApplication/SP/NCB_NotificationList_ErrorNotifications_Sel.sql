@@ -7,7 +7,8 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_ErrorNotifica
 		Creator: 20200204@Oliver
 
         Revisions:
-            - 20200204@Oliver: init SP -- Redmine ID: #126213
+            - 20200204@Oliver: init SP
+            - 20200302@Oliver: get additional notificationTypeId - RedmineID: #129339
     */
 )
 BEGIN

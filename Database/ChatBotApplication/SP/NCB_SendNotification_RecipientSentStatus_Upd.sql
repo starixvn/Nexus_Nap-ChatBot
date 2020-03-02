@@ -36,6 +36,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_RecipientSe
 				- 20190401@Dominic: First Commit
                 - 20191008@Dominic: Not update RetryTime
 				- 20200113@Oliver: showing MessageID, RedmineID: #126986
+				- 20200302@Oliver: get additional notificationTypeId - RedmineID: #129339
         
     */
 )

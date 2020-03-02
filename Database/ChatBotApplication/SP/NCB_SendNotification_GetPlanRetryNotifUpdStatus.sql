@@ -15,6 +15,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_GetPlanRetr
 				- 20190408@Dominic: First Commit
                 - 20191008@Dominic: Update RetryTime when retry sending a notification
                 - 20191016@Dominic: Limit  number of planned notifs and retrying notifs to send, they are 10 and 100 respectively
+				- 20200302@Oliver: get additional notificationTypeId - RedmineID: #129339
         
     */
 )

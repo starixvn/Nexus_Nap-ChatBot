@@ -29,6 +29,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_Sel`(
 				- 20190814@Elton: change RecipientSentStatusJSON
                 - 20191015@Dominic: extend NotificationTypeName length
 				- 20200109@Merlin: order by ConfigSendTime and NotificationID
+				- 20200302@Oliver: get additional notificationTypeId - RedmineID: #129339
     */
 )
 BEGIN
