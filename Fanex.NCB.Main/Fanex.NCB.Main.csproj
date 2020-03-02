@@ -11,6 +11,7 @@
     <CodeAnalysisRuleSet>Fanex.NCB.Main-1.ruleset</CodeAnalysisRuleSet>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="ClientApp\sources\js\**" />

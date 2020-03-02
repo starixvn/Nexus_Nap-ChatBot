@@ -56,3 +56,18 @@ export const getRealValuesFromCollection = function (result, collection) {
         }
     }
 };
+
+export const getLeafTitleFromCollection = function (result, collection) {
+    for (let i = 0; i < collection.length; i++) {
+        const item = collection[i];
+        if (item.children && item.children.length > 0) {
+            getLeafTitleFromCollection(result, item.children);
+        } else {
+            const title = item.title || item.node.props.title;
+
+            if (!result.some(r => r === title)) {
+                result.push(title);
+            }
+        }
+    }
+}

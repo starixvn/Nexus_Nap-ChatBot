@@ -11,7 +11,7 @@ import ErrorReport from './ErrorReport';
 import DatePicker from '../../common/DatePicker/index';
 import { MultipleSelectField } from '../../common/multiple-select-field/MultipleSelectField';
 import Labels from '../../common/Labels';
-import TreeSelect, { getRealValuesFromCollection } from '../../common/TreeSelect/index';
+import TreeSelect, { getRealValuesFromCollection, getLeafTitleFromCollection } from '../../common/TreeSelect/index';
 import errorResponseHandler from '../../lib/errorResponseHandler';
 import Site from '../../lib/site';
 import DataGrid from './DataGrid';
@@ -125,7 +125,7 @@ export default class NotificationList extends Component {
                         }
                     }
                 }), () => {
-                        const pageIndex = this.highlightNotification.pageIndex ? this.highlightNotification.pageIndex : 1;
+                        const pageIndex = this.highlightNotification.pageIndex ? parseInt(this.highlightNotification.pageIndex, 10) : 1;
                         this.getNotifications(pageIndex);
                 });
             }).catch(errorResponseHandler);
@@ -180,6 +180,7 @@ export default class NotificationList extends Component {
                 notification.configSendTime = DateTime.fromISO(notification.configSendTime);
                 notification.recipientSentStatusJson = JSON.parse(notification.recipientSentStatusJson);
             });
+
             this.setState({
                 tableData: {
                     pageIndex,
@@ -281,6 +282,8 @@ export default class NotificationList extends Component {
                 }
                 return noti;
             });
+            tableData.data = this.compareWithCurrentFilter(tableData.data);
+
             this.setState({ tableData: tableData });
         });
     }
@@ -292,9 +295,30 @@ export default class NotificationList extends Component {
         this.getUpdatedNotification(newNotiIds, (data) => {
             let tableData = { ...this.state.tableData };
             data.map(noti => tableData.data.unshift(noti));
+            tableData.data = this.compareWithCurrentFilter(tableData.data);
+
             this.setState({ tableData: tableData });
         });
     }
+
+    compareWithCurrentFilter = (notifications) => {
+        const filter = this.state.filter;
+        const notificationTypes = filter.notificationTypes.value.split(',');
+        const fromDate = filter.fromDate;
+        const toDate = filter.toDate;
+        const creatorId = filter.creatorId;
+        const recipients = [];
+        getLeafTitleFromCollection(recipients, filter.recipients.allCheckedNodes);
+        const statuses = filter.statuses.value.split(',');
+        let filteredNotifications = notifications.filter(n => notificationTypes.some(t => parseInt(t,10) === n.notificationTypeId))
+                                                 .filter(x => (new Date(x.configSendTime)).toDateString() >= fromDate.toDateString() &&
+                                                                 (new Date(x.configSendTime)).toDateString() <= toDate.toDateString())
+                                                 .filter(i => creatorId === null || parseInt(creatorId,10) === i.creatorId)
+                                                 .filter(t => statuses.some(st => parseInt(st, 10) === t.statusId ))
+                                                 .filter(n => n.recipientSentStatusJson.map(x => x.recipientName).every(v => recipients.includes(v)));
+
+        return filteredNotifications;
+    };
 
     getNewNotificationIds = (notificationIds, notifications) => {
         const ids = notificationIds.split(',');

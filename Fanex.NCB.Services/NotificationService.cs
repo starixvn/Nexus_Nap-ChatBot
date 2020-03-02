@@ -253,9 +253,8 @@
         {
             var criteria = new GetUpdatedNotificationCriteria
             {
-                NotificationIds = notificationIds
+                NotificationIds = notificationIds,
             };
-
             var notifications = await baseService.GetDataAsync<Notification>(criteria);
             foreach (var notification in notifications)
             {

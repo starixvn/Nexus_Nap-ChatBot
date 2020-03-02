@@ -41,6 +41,7 @@ BEGIN
 	CREATE TEMPORARY TABLE tmp_Notification(
 													NotificationID INT
                                                     ,MessageID INT
+													,NotificationTypeID INT
                                                     ,NotificationTypeName VARCHAR(200)
                                                     ,CreatorID INT
                                                     ,CreatorName VARCHAR(30)
@@ -55,6 +56,7 @@ BEGIN
     INSERT INTO tmp_Notification (	
 													NotificationID
                                                     , MessageID
+													, NotificationTypeID
                                                     , NotificationTypeName
                                                     , CreatorID
                                                     , CreatorName
@@ -64,7 +66,7 @@ BEGIN
                                                     , Status
                                                     , StatusID
 												)
-    SELECT n.NotificationID, nsm.MessageID, nt.NotificationTypeName, n.CreatorID, c.username, n.ConfigSendTime, n.Title, n.Content, n.Status, n.StatusID
+    SELECT n.NotificationID, nsm.MessageID, nt.NotificationTypeID,nt.NotificationTypeName, n.CreatorID, c.username, n.ConfigSendTime, n.Title, n.Content, n.Status, n.StatusID
     FROM Notification n
         INNER JOIN tmp_notificationIDs tmp_n ON n.NotificationID = tmp_n.NotificationId
 		INNER JOIN NotificationType nt ON n.NotificationTypeID = nt.NotificationTypeID
