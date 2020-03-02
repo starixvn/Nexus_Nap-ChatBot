@@ -70,4 +70,4 @@ export const getLeafTitleFromCollection = function (result, collection) {
             }
         }
     }
-}
+};
