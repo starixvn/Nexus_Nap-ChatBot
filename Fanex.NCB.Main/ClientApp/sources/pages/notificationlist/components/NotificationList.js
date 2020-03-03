@@ -306,8 +306,8 @@ export default class NotificationList extends Component {
     compareWithCurrentFilter = (notifications) => {
         const filter = this.state.filter;
         const notificationTypes = filter.notificationTypes.value.split(',');
-        const fromDate = filter.fromDate;
-        const toDate = filter.toDate;
+        const fromDate = new Date(filter.fromDate);
+        const toDate = new Date(filter.toDate);
         const creatorId = filter.creatorId;
         const recipients = [];
         getLeafTitleFromCollection(recipients, filter.recipients.allCheckedNodes);
@@ -315,7 +315,7 @@ export default class NotificationList extends Component {
 
         let filteredNotifications = notifications.filter(n => notificationTypes.some(t => parseInt(t,10) === n.notificationTypeId))
                                                  .filter(x => new Date(x.configSendTime) >= new Date(fromDate.toDateString()) &&
-                                                                 new Date(x.configSendTime) <= new Date(toDate.toDateString()))
+                                                                 new Date(new Date(x.configSendTime).toDateString()) <= new Date(toDate.toDateString()))
                                                  .filter(i => creatorId === null || parseInt(creatorId,10) === i.creatorId)
                                                  .filter(t => statuses.some(st => parseInt(st, 10) === t.statusId ))
                                                  .filter(n => n.recipientSentStatusJson.map(x => x.recipientName).every(v => recipients.includes(v)));
