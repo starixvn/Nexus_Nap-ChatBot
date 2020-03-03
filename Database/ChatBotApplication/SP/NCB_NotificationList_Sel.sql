@@ -129,11 +129,11 @@ BEGIN
     #Get data based on Page Index and Page Size
     INSERT INTO tmp_Notification (	
 													NotificationID
-													,MessageID
-													,NotificationTypeId
-                                                    ,NotificationTypeName
+													, MessageID
+													, NotificationTypeID
+                                                    , NotificationTypeName
                                                     , CreatorID
-                                                    ,CreatorName
+                                                    , CreatorName
                                                     , ConfigSendTime
                                                     , Title
                                                     , Content

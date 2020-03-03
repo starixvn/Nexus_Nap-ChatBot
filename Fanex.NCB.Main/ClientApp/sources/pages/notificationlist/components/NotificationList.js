@@ -187,7 +187,7 @@ export default class NotificationList extends Component {
                     pageSize,
                     ...response.data
                 }
-            });
+            }, () => console.log(this.state));
         }).catch(errorResponseHandler);
     }
 
@@ -310,9 +310,11 @@ export default class NotificationList extends Component {
         const recipients = [];
         getLeafTitleFromCollection(recipients, filter.recipients.allCheckedNodes);
         const statuses = filter.statuses.value.split(',');
+        console.log(notifications);
+        console.log(filter);
         let filteredNotifications = notifications.filter(n => notificationTypes.some(t => parseInt(t,10) === n.notificationTypeId))
-                                                 .filter(x => (new Date(x.configSendTime)).toDateString() >= fromDate.toDateString() &&
-                                                                 (new Date(x.configSendTime)).toDateString() <= toDate.toDateString())
+                                                 .filter(x => new Date(x.configSendTime) >= new Date(fromDate.toDateString()) &&
+                                                                 new Date(x.configSendTime) <= new Date(toDate.toDateString()))
                                                  .filter(i => creatorId === null || parseInt(creatorId,10) === i.creatorId)
                                                  .filter(t => statuses.some(st => parseInt(st, 10) === t.statusId ))
                                                  .filter(n => n.recipientSentStatusJson.map(x => x.recipientName).every(v => recipients.includes(v)));
