@@ -187,7 +187,7 @@ export default class NotificationList extends Component {
                     pageSize,
                     ...response.data
                 }
-            }, () => console.log(this.state));
+            });
         }).catch(errorResponseHandler);
     }
 
@@ -337,19 +337,17 @@ export default class NotificationList extends Component {
     }
 
     getUpdatedNotification = (notificationIds, callback) => {
-        if (notificationIds) {
-            axios.get(Site.resolveClientUrl('NotificationList/GetUpdatedNotification'), {
-                params: {
-                    notificationIds
-                }
-            }).then(response => {
-                response.data.forEach(notification => {
-                    notification.configSendTime = DateTime.fromISO(notification.configSendTime);
-                    notification.recipientSentStatusJson = JSON.parse(notification.recipientSentStatusJson);
-                });
-                callback(response.data);
+        axios.get(Site.resolveClientUrl('NotificationList/GetUpdatedNotification'), {
+            params: {
+                notificationIds
+            }
+        }).then(response => {
+            response.data.forEach(notification => {
+                notification.configSendTime = DateTime.fromISO(notification.configSendTime);
+                notification.recipientSentStatusJson = JSON.parse(notification.recipientSentStatusJson);
             });
-        }
+            callback(response.data);
+        });
     }
 
     render() {

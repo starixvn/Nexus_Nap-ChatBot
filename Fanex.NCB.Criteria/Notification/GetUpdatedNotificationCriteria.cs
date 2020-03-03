@@ -8,6 +8,6 @@
 
         public override string GetSettingKey() => "NCB_NotificationList_UpdatedNotification_Sel";
 
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(NotificationIds);
+        public override bool IsValid() => true;
     }
 }
