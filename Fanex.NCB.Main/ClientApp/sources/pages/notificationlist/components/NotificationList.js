@@ -273,18 +273,20 @@ export default class NotificationList extends Component {
         const handledNotiIds = this.getNotificationIdsToUpdate(notificationIds, gridData.data);
 
         this.getUpdatedNotification(handledNotiIds, (data) => {
-            let tableData = { ...this.state.tableData };
-            tableData.data.map(noti => {
-                let index = data.findIndex(x => x.notificationId === noti.notificationId);
+            if (data.length > 0) {
+                let tableData = { ...this.state.tableData };
+                tableData.data.map(noti => {
+                    let index = data.findIndex(x => x.notificationId === noti.notificationId);
 
-                if (index !== -1) {
-                    noti = Object.assign(noti, data[index]);
-                }
-                return noti;
-            });
-            tableData.data = this.compareWithCurrentFilter(tableData.data);
+                    if (index !== -1) {
+                        noti = Object.assign(noti, data[index]);
+                    }
+                    return noti;
+                });
+                tableData.data = this.compareWithCurrentFilter(tableData.data);
 
-            this.setState({ tableData: tableData });
+                this.setState({ tableData: tableData });
+            }
         });
     }
 
@@ -310,8 +312,7 @@ export default class NotificationList extends Component {
         const recipients = [];
         getLeafTitleFromCollection(recipients, filter.recipients.allCheckedNodes);
         const statuses = filter.statuses.value.split(',');
-        console.log(notifications);
-        console.log(filter);
+
         let filteredNotifications = notifications.filter(n => notificationTypes.some(t => parseInt(t,10) === n.notificationTypeId))
                                                  .filter(x => new Date(x.configSendTime) >= new Date(fromDate.toDateString()) &&
                                                                  new Date(x.configSendTime) <= new Date(toDate.toDateString()))
