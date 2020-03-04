@@ -123,7 +123,7 @@
             }
         }
 
-            private async Task Logging(Exception exception)
+        private async Task Logging(Exception exception)
         {
             var logMessage = new LogMessage(exception.Message)
                        .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
@@ -138,7 +138,5 @@
             var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
             return !maintanceTime.IsUnderMaintenanceTime;
         }
-
-       
     }
 }
