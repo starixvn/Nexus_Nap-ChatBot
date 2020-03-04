@@ -1,4 +1,9 @@
-﻿.rc-tree-select {
+﻿.form-control.rc-tree-select {
+    height: auto;
+    min-height: 32px;
+}
+
+.rc-tree-select {
     height: auto;
     min-height: 32px;
     padding: 0;
