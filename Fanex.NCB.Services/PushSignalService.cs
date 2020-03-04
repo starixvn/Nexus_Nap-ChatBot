@@ -39,7 +39,7 @@
                 request.AddHeader(ContentTypeName, ContentTypeValue);
 
                 var response = await restClient.ExecutePostTaskAsync(request);
-                if (!response.IsSuccessful && response.StatusCode != HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.OK)
                 {
                     await WriteLog(response);
                 }
@@ -59,7 +59,7 @@
                 request.AddHeader(ContentTypeName, ContentTypeValue);
 
                 var response = await restClient.ExecutePostTaskAsync(request);
-                if (!response.IsSuccessful && response.StatusCode != HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.OK)
                 {
                     await WriteLog(response);
                 }
@@ -76,7 +76,7 @@
             request.AddHeader(ContentTypeName, ContentTypeValue);
 
             var response = await restClient.ExecutePostTaskAsync(request);
-            if (!response.IsSuccessful && response.StatusCode != HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
                 await WriteLog(response);
             }
@@ -91,7 +91,7 @@
             request.AddParameter("password", signalRSettings.Value.AppPassword);
 
             var response = await restClient.ExecutePostTaskAsync<JwtToken>(request);
-            if (!response.IsSuccessful && response.StatusCode != HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
                 await WriteLog(response);
             }
