@@ -23,6 +23,7 @@
         {
             restClient = new RestClient { Encoding = Encoding.UTF8 };
             this.signalRSettings = signalRSettings;
+            this.logger = logger;
         }
 
         public async Task OnInsertNotification(string notificationIds)
