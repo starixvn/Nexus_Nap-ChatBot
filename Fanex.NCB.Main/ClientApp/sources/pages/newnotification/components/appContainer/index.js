@@ -4,7 +4,7 @@ import "react-mde/lib/styles/css/react-mde-all.css";
 import React from 'react';
 import { connect } from 'react-redux';
 import { DateTime } from 'luxon';
-import { Form, FormGroup, Label, Button, Input, FormFeedback } from 'reactstrap';
+import { Form, FormGroup, Label, Button, Input, FormFeedback, Col } from 'reactstrap';
 import { stringify } from 'qs';
 import { Formik } from 'formik';
 import axios from 'axios';
@@ -425,14 +425,14 @@ export class AppContainer extends React.Component {
                 </FormGroup>
                 <FormGroup>
                     <Label for="productId" className="form-label required">Recipients</Label>
-                    <div>
+                    <Col sm={10}>
                         <TreeSelect value={values.recipients} onChange={this.handleRecipientChange} placeholder={Labels.PleaseSelect}
                             treeData={this.props.recipientOptions} className={touched.recipients && errors.recipients && invalidFieldClass}
                             onSearch={this.onChangeSearch} searchValue={this.state.searchValue} treeDefaultExpandAll
                             defaultValue={this.state.initValue.recipients}
                         />
                         {touched.recipients && errors.recipients && <FormFeedback>{errors.recipients}</FormFeedback>}
-                    </div>
+                    </Col>
                 </FormGroup>
                 <FormGroup className="row-has-reset">
                     <Label for="notificationTypeId" className="form-label">Notification Template</Label>

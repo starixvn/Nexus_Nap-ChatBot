@@ -20,6 +20,7 @@ export default class SignalR extends PureComponent {
         this.connection = new signalR.HubConnectionBuilder()
             .withUrl("signalR", options)
             .withHubProtocol(protocol)
+			.withAutomaticReconnect()
             .build();
 
         this.connection.on('UpdateNotificationStatus', (notificationIds) => {

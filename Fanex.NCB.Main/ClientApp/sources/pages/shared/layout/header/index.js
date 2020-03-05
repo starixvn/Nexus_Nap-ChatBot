@@ -42,6 +42,7 @@ export default class Header extends React.PureComponent {
 
         this.connection = new signalR.HubConnectionBuilder()
             .withUrl("signalR", options)
+			.withAutomaticReconnect()
             .withHubProtocol(protocol)
             .build();
 
