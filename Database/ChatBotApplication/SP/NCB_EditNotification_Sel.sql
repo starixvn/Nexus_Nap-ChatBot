@@ -16,6 +16,9 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_EditNotification_Sel`(
     */
 )
 BEGIN
+
+	DECLARE RECIPIENT_TYPE_LICENSEES 	SMALLINT DEFAULT 1;
+	DECLARE RECIPIENT_TYPE_INTERNAL_CSD SMALLINT DEFAULT 3;
 	#1st dataset: Main info of Notification
 	SELECT n.NotificationID, n.NotificationTypeID, nt.NotificationTypeName,  n.ProductID, p.ProductName, n.Title, n.Content, n.SendImmediately, n.ConfigSendTime
     FROM Notification n
@@ -24,9 +27,20 @@ BEGIN
     WHERE n.NotificationID = notificationID AND n.StatusID = 4;
     
     #2nd dataset: List of recipients
-	SELECT DISTINCT rlst.RecipientID
-    FROM NotificationRecipientList rlst
-	WHERE rlst.NotificationID = notificationID;
+    SELECT DISTINCT nrl.RecipientID
+				, r.RecipientName
+				, r.RecipientTypeID
+				, IFNULL(id.InternalDepartmentID, lt.LicenseeTypeId) AS LicenseeTypeId
+				, IFNULL(id.InternalDepartmentName, lt.LicenseeTypeName) AS LicenseeTypeName
+    FROM NotificationRecipientList nrl
+	INNER JOIN Recipient r ON nrl.RecipientID = r.RecipientID
+	INNER JOIN RecipientType rt ON r.RecipientTypeID = rt.RecipientTypeID
+	LEFT JOIN Licensee l ON r.RecipientTypeID = RECIPIENT_TYPE_LICENSEES AND l.LicenseeId = r.SourceID
+	LEFT JOIN LicenseeType lt ON lt.LicenseeTypeId = l.LicenseeTypeId
+	LEFT JOIN InternalDepartment id ON r.RecipientTypeID = RECIPIENT_TYPE_INTERNAL_CSD
+        				AND id.InternalDepartmentID = r.SourceID
+	WHERE nrl.NotificationID = notificationID;
+
 END;
 
 //

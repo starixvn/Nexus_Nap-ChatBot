@@ -13,7 +13,7 @@ import ReactMde from 'react-mde';
 import { NCBBreadcrum } from '../../../common/breadcrumbs/breadcrumbs';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../../actions/index';
-import TreeSelect, { getRealValuesFromCollection } from '../../../common/TreeSelect/index';
+import TreeSelect, { getRealValueFromTreeSelection  } from '../../../common/TreeSelect/index';
 import DatePicker from '../../../common/DatePicker/index';
 import Labels from '../../../common/Labels';
 import { DateTimeFormat, editorCommandList, invalidFieldClass } from '../../../constants/constants';
@@ -76,7 +76,6 @@ export class AppContainer extends React.Component {
             }
         };
 
-        this.selectedRecipientIds = [];
         this.debounceHandleSearchRecipents = CommonFunction.debounce(this.handleSearchRecipents);
         this.searchRecipients = [];
 
@@ -159,10 +158,13 @@ export class AppContainer extends React.Component {
 
         const formik = this.refs.form;
         const values = formik.state.values;
+        const recipientIds = [];
+        getRealValueFromTreeSelection(recipientIds, values.recipients, this.props.recipientOptions);
+
         const data = stringify({
             notificationTypeId: values.notificationTypeId,
             productId: values.productId,
-            recipientIds: this.selectedRecipientIds.toString(),
+            recipientIds: recipientIds.toString(),
             title: values.title,
             content: values.content,
             sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
@@ -267,9 +269,6 @@ export class AppContainer extends React.Component {
 
     handleRecipientChange = (value, label, extra) => {
         const formik = this.refs.form;
-        const recipientIds = [];
-        getRealValuesFromCollection(recipientIds, extra.allCheckedNodes);
-        this.selectedRecipientIds = recipientIds;
         formik.setFieldValue('recipients', value);
     }
 
@@ -348,7 +347,11 @@ export class AppContainer extends React.Component {
         }
 
         this.searchRecipients = [];
-        let validRecipients = recipients.filter(recipient => this.isValidSearchRecipients(recipient, this.props.recipientOptions[0]));
+        const validRecipients = [];
+		for (let i = 0; i < this.props.recipientOptions.length; i++) {
+			recipients.filter(recipient => this.isValidSearchRecipients(validRecipients, recipient, this.props.recipientOptions[i]));
+		};
+
         while (validRecipients.length > 0) {
             const recipient = validRecipients.shift();
             const index = recipients.indexOf(recipient);
@@ -361,8 +364,9 @@ export class AppContainer extends React.Component {
         this.setState({ searchValue: recipients.join(',') });
     }
 
-    isValidSearchRecipients = (label, recipient) => {
+    isValidSearchRecipients = (result, label, recipient) => {
         if (recipient.title.toUpperCase() === label.toUpperCase()) {
+			result.push(label);
             this.searchRecipients.push({
                 label: label,
                 value: recipient.value
@@ -372,7 +376,7 @@ export class AppContainer extends React.Component {
         }
         else {
             if (recipient.children) {
-                let children = recipient.children.map(child => this.isValidSearchRecipients(label, child));
+                let children = recipient.children.map(child => this.isValidSearchRecipients(result, label, child));
                 if (children.includes(true)) {
                     return true;
                 }

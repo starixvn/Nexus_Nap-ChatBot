@@ -8,7 +8,7 @@ import ReactMde from 'react-mde';
 import { Formik } from 'formik';
 import { object, string, array, date } from 'yup';
 import { NCBBreadcrum } from '../common/breadcrumbs/breadcrumbs';
-import TreeSelect, { getRealValuesFromAllCheckNodes } from '../common/TreeSelect/index';
+import TreeSelect, { getRealValueFromTreeSelection } from '../common/TreeSelect/index';
 import DatePicker from '../common/DatePicker/index';
 import Labels from '../common/Labels';
 import { editorCommandList, invalidFieldClass } from '../constants/constants';
@@ -53,7 +53,6 @@ export default class EditNotification extends React.Component {
 
         this.debounceHandleSearchRecipents = CommonFunction.debounce(this.handleSearchRecipents);
         this.searchRecipients = [];
-        this.allCheckedNodes = [];
     }
 
     componentDidMount() {
@@ -72,35 +71,25 @@ export default class EditNotification extends React.Component {
             }).catch(errorResponseHandler);
     }
 
-    initializeObj = recipientOptions => {
-        const recipientIds = [];
-        this.findRecipientTreeValue(recipientIds, recipientOptions);
+    initializeObj = () => {
         const notification = this.state.notification;
+        const selectedRecipients = notification.recipients.map(r => {
+            return {
+                label: r.recipientName,
+                value: r.licenseeTypeId ?
+                    r.recipientTypeId + '-' + r.licenseeTypeId + '-' + r.recipientId :
+                    r.recipientTypeId + '-' + r.recipientId
+            };
+        });
 
         return {
             title: notification.title,
             content: notification.content,
-            recipients: {
-                value: recipientIds,
-                allCheckedNodes: this.state.notification.recipientIds.map(x => ({ realValue: x }))
-            },
+            recipients: selectedRecipients,
             sendMode: notification.sendImmediately ? '1' : '2',
             sendDate: notification.configSendTime,
             productId: this.state.notification.productId || ''
         };
-    }
-
-    findRecipientTreeValue = (recipientIds, tree) => {
-        for (let i = 0; i < tree.length; i++) {
-            const item = tree[i];
-            if (item.children && item.children.length > 0) {
-                this.findRecipientTreeValue(recipientIds, item.children);
-            } else {
-                if (this.state.notification.recipientIds.some(r => r === item.realValue)) {
-                    recipientIds.push(item.value);
-                }
-            }
-        }
     }
 
     getRecipients = () => {
@@ -112,7 +101,7 @@ export default class EditNotification extends React.Component {
                 productId: notification.productId
             }
         }).then(response => {
-            const initialObj = this.initializeObj(response.data);
+            const initialObj = this.initializeObj();
 
             this.setState({ recipientOptions: response.data, initialObj: initialObj });
         }).catch(errorResponseHandler);
@@ -129,8 +118,7 @@ export default class EditNotification extends React.Component {
         const formik = this.refs.form;
         const values = formik.state.values;
         const recipientIds = [];
-        getRealValuesFromAllCheckNodes(recipientIds, values.recipients.allCheckedNodes);
-
+        getRealValueFromTreeSelection(recipientIds, values.recipients, this.state.recipientOptions);
         const data = {
             notificationId: this.state.notificationId,
             recipientIds: recipientIds.toString(),
@@ -167,9 +155,7 @@ export default class EditNotification extends React.Component {
     schema = object().shape({
         title: string().required(Labels.FieldRequired),
         content: string().required(Labels.FieldRequired),
-        recipients: object({
-            value: array().required(Labels.FieldRequired)
-        }),
+        recipients: array().required(Labels.FieldRequired),
         sendMode: string(),
         sendDate: date()
             .when('sendMode', (sendMode, schema) => sendMode === '2' ?
@@ -190,7 +176,7 @@ export default class EditNotification extends React.Component {
 
     handleRecipientChange = (value, _label, extra) => {
         const formik = this.refs.form;
-        formik.setFieldValue('recipients', { value, allCheckedNodes: extra.allCheckedNodes });
+        formik.setFieldValue('recipients', value);
     }
 
     handleGerneratePreview = markdown => {
@@ -222,8 +208,10 @@ export default class EditNotification extends React.Component {
         }
 
         this.searchRecipients = [];
-        this.allCheckedNodes = [];
-        let validRecipients = recipients.filter(recipient => this.isValidSearchRecipients(recipient, this.state.recipientOptions[0]));
+		const validRecipients = [];
+		for (let i = 0; i < this.state.recipientOptions.length; i++) {
+			recipients.filter(recipient => this.isValidSearchRecipients(validRecipients, recipient, this.state.recipientOptions[i]));
+		};
         while (validRecipients.length > 0) {
             const recipient = validRecipients.shift();
             const index = recipients.indexOf(recipient);
@@ -231,21 +219,23 @@ export default class EditNotification extends React.Component {
         }
 
         const formik = this.refs.form;
-        const updateValues = [...formik.state.values.recipients.value, ...this.searchRecipients];
-        const updateAllCheckNodes = [...formik.state.values.recipients.allCheckedNodes, ...this.allCheckedNodes];
-        formik.setFieldValue('recipients', { value: updateValues, allCheckedNodes: updateAllCheckNodes });
+        const updateValues = [...formik.state.values.recipients, ...this.searchRecipients];
+        formik.setFieldValue('recipients', updateValues);
         this.setState({ searchValue: recipients.join(',') });
     }
 
-    isValidSearchRecipients = (label, recipient) => {
+    isValidSearchRecipients = (result, label, recipient) => {
         if (recipient.title.toUpperCase() === label.toUpperCase()) {
-            this.searchRecipients.push(recipient.value);
-            this.allCheckedNodes.push({ realValue: recipient.realValue });
+			result.push(label);
+            this.searchRecipients.push({
+                label: label,
+                value: recipient.value
+            });
             return true;
         }
         else {
             if (recipient.children) {
-                let children = recipient.children.map(child => this.isValidSearchRecipients(label, child));
+                let children = recipient.children.map(child => this.isValidSearchRecipients(result, label, child));
                 if (children.includes(true)) {
                     return true;
                 }
@@ -296,12 +286,12 @@ export default class EditNotification extends React.Component {
                     </Col>
                 </FormGroup>
                 <FormGroup row>
-                    <Label for="productId" className="form-label required" sm={2}>Recipients</Label>
-
+                    <Label for="Recipients" className="form-label required" sm={2}>Recipients</Label>
                     <Col sm={10}>
-                        <TreeSelect value={values.recipients.value} onChange={this.handleRecipientChange} placeholder={Labels.PleaseSelect}
+                        <TreeSelect value={values.recipients} onChange={this.handleRecipientChange} placeholder={Labels.PleaseSelect}
                             treeData={this.state.recipientOptions} className={isRecipientInvalid && invalidFieldClass}
-                            labelInValue={false} onSearch={this.onChangeSearch} searchValue={this.state.searchValue}
+                            onSearch={this.onChangeSearch} searchValue={this.state.searchValue}
+                            defaultValue={this.state.initialObj.recipients}
                         />
                         {isRecipientInvalid && <FormFeedback>{errors.recipients.value}</FormFeedback>}
                     </Col>
@@ -379,6 +369,7 @@ export default class EditNotification extends React.Component {
                     }
 
                     <Formik ref="form"
+                        enableReinitialize
                         initialValues={this.state.initialObj}
                         render={this.renderForm}
                         validationSchema={this.schema}

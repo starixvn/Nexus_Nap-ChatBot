@@ -159,16 +159,17 @@
 
         public async Task<EditNotificationInfo> GetEditNotificationInfoAsync(int notificationId)
         {
-            var result = await baseService.FetchMultipleAsync<EditNotificationInfo, int>(new GetEditNotificationInfoCriteria
-            {
-                NotificationId = notificationId
-            }).ConfigureAwait(false);
+            var result = await baseService.FetchMultipleAsync<EditNotificationInfo, Recipient>(
+                new GetEditNotificationInfoCriteria
+                {
+                    NotificationId = notificationId
+                }).ConfigureAwait(false);
 
             var notification = result.Item1.FirstOrDefault();
 
             if (notification != null)
             {
-                notification.RecipientIds = result.Item2;
+                notification.Recipients = result.Item2;
                 notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();
             }
 
