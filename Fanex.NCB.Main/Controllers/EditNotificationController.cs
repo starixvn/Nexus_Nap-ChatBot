@@ -8,6 +8,7 @@
     using Fanex.NCB.Models.Notification;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
     using static Fanex.NAP.Core.Business.Constant;
@@ -60,16 +61,26 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Edit([FromBody]EditNotificationViewModel data)
         {
-            var result = await notificationService.EditAsync(new EditNotification
+            var result = new CommandResult();
+
+            if (string.IsNullOrEmpty(data.RecipientIds))
             {
-                NotificationId = data.NotificationId,
-                Title = data.Title,
-                Content = data.Content,
-                RecipientIds = data.RecipientIds,
-                SendDate = data.SendDate,
-                SendImmediately = data.SendImmediately,
-                UserId = napSession.UserId
-            }).ConfigureAwait(false);
+                result.Code = -1;
+                result.Message = "Invaliad data. The recipients cannot be null";
+            }
+            else
+            {
+                result = await notificationService.EditAsync(new EditNotification
+                {
+                    NotificationId = data.NotificationId,
+                    Title = data.Title,
+                    Content = data.Content,
+                    RecipientIds = data.RecipientIds,
+                    SendDate = data.SendDate,
+                    SendImmediately = data.SendImmediately,
+                    UserId = napSession.UserId
+                }).ConfigureAwait(false);
+            }
 
             return Json(result);
         }
