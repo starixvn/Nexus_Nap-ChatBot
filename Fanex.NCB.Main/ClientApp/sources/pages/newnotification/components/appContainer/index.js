@@ -425,14 +425,14 @@ export class AppContainer extends React.Component {
                 </FormGroup>
                 <FormGroup>
                     <Label for="productId" className="form-label required">Recipients</Label>
-                    <Col sm={10}>
+                    <div className="new-notification-select-tree">
                         <TreeSelect value={values.recipients} onChange={this.handleRecipientChange} placeholder={Labels.PleaseSelect}
                             treeData={this.props.recipientOptions} className={touched.recipients && errors.recipients && invalidFieldClass}
                             onSearch={this.onChangeSearch} searchValue={this.state.searchValue} treeDefaultExpandAll
                             defaultValue={this.state.initValue.recipients}
                         />
                         {touched.recipients && errors.recipients && <FormFeedback>{errors.recipients}</FormFeedback>}
-                    </Col>
+                    </div>
                 </FormGroup>
                 <FormGroup className="row-has-reset">
                     <Label for="notificationTypeId" className="form-label">Notification Template</Label>
