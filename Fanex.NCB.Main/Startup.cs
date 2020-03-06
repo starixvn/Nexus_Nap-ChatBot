@@ -152,12 +152,9 @@
             }
 
             app.UseHttpsRedirection();
-
             app.UseCookiePolicy();
             app.UseAuthentication();
-
             app.UseSession();
-            app.UseWebSockets();
 
             app.UseSignalR(routes =>
             {
