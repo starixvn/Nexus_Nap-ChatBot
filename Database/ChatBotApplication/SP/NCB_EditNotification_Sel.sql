@@ -12,6 +12,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_EditNotification_Sel`(
                 - 2nd dataset: List of recipientIDs
         Revisions:
 				- 20190408@Dominic: First Commit
+				- 20200305@Oliver: Fix issue copy paste list recipient not effected. RedmineID: 129762
         
     */
 )
