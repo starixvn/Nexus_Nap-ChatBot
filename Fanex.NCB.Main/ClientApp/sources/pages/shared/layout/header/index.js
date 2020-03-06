@@ -52,11 +52,6 @@ export default class Header extends React.PureComponent {
             });
         });
 
-		this.connection.hub.disconnected(() => {
-		   setTimeout(() => {
-			   this.connection.hub.start();
-		   }, 5000);
-		});
         this.connection.start().then().catch(err => console.error('SignalR Connection Error: ', err));
     }
 
