@@ -46,7 +46,7 @@ BEGIN
 	ORDER BY m.MessageId
 	OPTION(RECOMPILE)
 
-	SELECT MessageId, MsgContentsType, Content_en, Content_cs
+	SELECT MessageId, MsgContentsType, MatchId, Content_en, Content_cs
 	FROM @Msg
 	ORDER BY MessageId
 
