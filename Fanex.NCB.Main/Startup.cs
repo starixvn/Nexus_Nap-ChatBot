@@ -16,7 +16,6 @@
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Web;
-    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Main.AppConfig;
     using Fanex.NCB.NAPResolver;
     using Fanex.NCB.Services;
@@ -78,11 +77,7 @@
                 .UseGetDbExceptionInfo(DatabaseInfoGetters.GetDbExceptionInfo);
 
             services.AddSingleton(Configuration);
-            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-            services.Configure<BotSettings>(Configuration.GetSection("ChatBotConfigs"));
-            services.Configure<MonitorChatbot>(Configuration.GetSection("MonitorChatbot"));
-            services.Configure<SignalRSettings>(Configuration.GetSection("SignalRSettings"));
-
+            services.RegisterConfigs(Configuration);
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
@@ -138,7 +133,10 @@
             services.AddSignalR(hubOptions =>
             {
                 hubOptions.EnableDetailedErrors = true;
-            }).AddStackExchangeRedis(redisConfig);
+            }).AddStackExchangeRedis(redisConfig, options =>
+            {
+                options.Configuration.ChannelPrefix = "ChatbotForLicenseeSignalR";
+            });
         }
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
