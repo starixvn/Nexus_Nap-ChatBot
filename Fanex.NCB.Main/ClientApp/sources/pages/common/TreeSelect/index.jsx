@@ -30,20 +30,24 @@ const pushAllRealValueToResult = (result, collection) => {
     }
 };
 
-const calculate = (result, recipient, collection) => {
+const pushRealValueFromCollection = (result, element) => {
+	 if (element.children && element.children.length > 0) {
+			pushAllRealValueToResult(result, element.children);
+	 } else {
+			if (!result.some(r => r === element.realValue)) {
+				result.push(element.realValue);
+			}
+	}
+};
+
+const getRealValueFromNode = (result, recipient, collection) => {
     for (let i = 0; i < collection.length; i++) {
         const element = collection[i];
         if (recipient.value === element.value) {
-            if (element.children && element.children.length > 0) {
-                pushAllRealValueToResult(result, element.children);
-            } else {
-                if (!result.some(r => r === element.realValue)) {
-                    result.push(element.realValue);
-                }
-            }
+           	pushRealValueFromCollection(result, element)
         } else {
             if (element.children && element.children.length > 0) {
-                calculate(result, recipient, element.children);
+                getRealValueFromNode(result, recipient, element.children);
             }
         }
     }
@@ -51,7 +55,7 @@ const calculate = (result, recipient, collection) => {
 
 export const getRealValueFromTreeSelection = function (result, values, collection) {
     for (let i = 0; i < values.length; i++) {
-        calculate(result, values[i], collection);
+        getRealValueFromNode(result, values[i], collection);
     }
 };
 
