@@ -151,14 +151,17 @@ export default class DataGrid extends PureComponent {
             case NotificationStatus.Resolved:
                 const btns = (
                     <Fragment>
-                        <a className="action-button" href="javascipt:;" data-notificationid={notification.notificationId} onClick={this.handleShowErrorReport}>{Labels.ViewDetail}</a>
+                        <a className="action-button" type="button"
+						   data-notificationid={notification.notificationId}
+						   onClick={this.handleShowErrorReport}>{Labels.ViewDetail}
+						</a>
                         {this.renderResendBtn(notification.notificationId, Labels.ResendAll, true)}
                         {this.renderResendBtn(notification.notificationId, Labels.ResendError, false)}
                     </Fragment>
                 );
                 return btns;
             case NotificationStatus.Planned:
-                return <a className="action-button" href="javascipt:;" data-notificationid={notification.notificationId} onClick={this.handleCancelNotification}>{Labels.Cancel}</a>;
+                return <a className="action-button" type="button" data-notificationid={notification.notificationId} onClick={this.handleCancelNotification}>{Labels.Cancel}</a>;
             case NotificationStatus.Cancelled:
                 return <a className="action-button" href={`EditNotification/Index/${notification.notificationId}`} >{Labels.Edit}</a>;
             case NotificationStatus.Sent:
