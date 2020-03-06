@@ -8,7 +8,7 @@
 
 # New table
 DROP TABLE IF EXISTS MatchInfo;
-CREATE TABLE IF NOT EXISTS InternalDepartment(
+CREATE TABLE IF NOT EXISTS MatchInfo(
   MatchID INT NOT NULL,
   MsgContentsType INT NOT NULL,
   PRIMARY KEY (MatchID, MsgContentsType)
