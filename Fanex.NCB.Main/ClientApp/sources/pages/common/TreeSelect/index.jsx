@@ -31,20 +31,20 @@ const pushAllRealValueToResult = (result, collection) => {
 };
 
 const pushRealValueFromCollection = (result, element) => {
-	 if (element.children && element.children.length > 0) {
-			pushAllRealValueToResult(result, element.children);
-	 } else {
-			if (!result.some(r => r === element.realValue)) {
-				result.push(element.realValue);
-			}
-	}
+    if (element.children && element.children.length > 0) {
+        pushAllRealValueToResult(result, element.children);
+    } else {
+        if (!result.some(r => r === element.realValue)) {
+            result.push(element.realValue);
+        }
+    }
 };
 
 const getRealValueFromNode = (result, recipient, collection) => {
     for (let i = 0; i < collection.length; i++) {
         const element = collection[i];
         if (recipient.value === element.value) {
-           	pushRealValueFromCollection(result, element)
+            pushRealValueFromCollection(result, element);
         } else {
             if (element.children && element.children.length > 0) {
                 getRealValueFromNode(result, recipient, element.children);
