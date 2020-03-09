@@ -91,6 +91,29 @@
         }
 
         [Fact]
+        public async Task PullMessageFromSiteMessage_WhenCalled_ExecuteSuccessed()
+        {
+            var service = GetService();
+
+            //Actual
+            await service.PullMessageFromSiteMessage();
+
+            //Assert
+            await siteMessageService.Received().PullMessageFromSiteMessageThenInsertNotification();
+        }
+
+        [Fact]
+        public async Task PullMessageFromSiteMessage_WhenCalled_ThrowException()
+        {
+            var service = GetService();
+            siteMessageService.PullMessageFromSiteMessageThenInsertNotification().Throws(new Exception());
+
+            //Assert
+            await Assert.ThrowsAsync<Exception>(() => service.PullMessageFromSiteMessage());
+            await logger.Received().ErrorAsync(Arg.Any<string>());
+        }
+
+        [Fact]
         public async Task ScanAndScanNotification_WhenCalled_ExecuteSuccessed()
         {
             var service = GetService();
