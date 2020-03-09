@@ -82,7 +82,7 @@
 
             var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
 
-            var notification = GenerateNotifificationMessage(data.Item2, data.Item1);
+            var notification = chatbotService.GenerateNotifificationMessage(data.Item2, data.Item1);
             var command = new CommandResult
             {
                 Code = criteria.ErrCode,
@@ -90,35 +90,6 @@
             };
 
             return new ValueTuple<CommandResult, IEnumerable<NotificationMessage>>(command, notification);
-        }
-
-        private IEnumerable<NotificationMessage> GenerateNotifificationMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
-        {
-            var messages = new List<NotificationMessage>();
-            if (notifications != null && notifications.Any())
-            {
-                foreach (var noti in notifications)
-                {
-                    var notification = new NotificationMessage
-                    {
-                        NotificationId = noti.NotificationId,
-                        Message = noti.Content,
-                        Recipients = recipients.Select(r =>
-                            new ConversationInfo
-                            {
-                                BotConversationId = r.BotConversationId,
-                                BotName = r.BotName,
-                                ChannelId = r.ChannelId,
-                                ConversationId = r.ChatGroupConversationId,
-                                ServiceUrl = r.ServiceUrl
-                            }
-                        )
-                    };
-                    messages.Add(notification);
-                }
-            }
-
-            return messages;
         }
 
         private async Task<ValueTuple<IEnumerable<Message>, IEnumerable<MessageDetail>>> GetMessageFromVoidingForLicensee(SystemSetting systemSettings)
@@ -227,7 +198,7 @@
 
                 var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
 
-                var notification = GenerateNotifificationMessage(data.Item2, data.Item1);
+                var notification = chatbotService.GenerateNotifificationMessage(data.Item2, data.Item1);
                 var command = new CommandResult
                 {
                     Code = criteria.ErrCode,
