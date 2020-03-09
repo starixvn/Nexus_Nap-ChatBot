@@ -7,6 +7,6 @@
 UPDATE Product
 SET
     IsDisabled = 0
-WHERE ProductName = 'Number Game';
+WHERE ProductID = 5;
 
 /*<info serverAlias="DBALIAS-Database"></info>*/
