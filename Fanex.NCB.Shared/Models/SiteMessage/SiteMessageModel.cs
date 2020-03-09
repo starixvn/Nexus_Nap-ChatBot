@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Shared.Models.SiteMessage
 {
-    public class SiteMessageModel : SiteMessageEventModel
+    public class SiteMessageModel : SiteMessageMatchInfoModel
     {
         public long MessageID { get; set; }
 

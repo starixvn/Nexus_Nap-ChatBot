@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class SiteMessageEventModel
+    public class SiteMessageMatchInfoModel
     {
         public int MatchId { get; set; }
 

@@ -25,7 +25,7 @@
         private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
 
         public SiteMessageService(IBaseService baseService,
-               IChatbotService chatbotService,
+            IChatbotService chatbotService,
             IPushSignalService pushSignalService,
             IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
         {
@@ -46,7 +46,6 @@
                     var matchInfo = await GetMatchInfo(string.Join(",", messages.Item1.Select(m => m.MatchId > 0)));
 
                     MappingData(messages.Item1, matchInfo);
-
                     if (messages.Item1.Any() && messages.Item2.Any())
                     {
                         var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
@@ -93,7 +92,7 @@
             }
         }
 
-        private static void MappingData(IEnumerable<SiteMessageModel> messages, IEnumerable<SiteMessageEventModel> matchInfos)
+        private static void MappingData(IEnumerable<SiteMessageModel> messages, IEnumerable<SiteMessageMatchInfoModel> matchInfos)
         {
             foreach (var message in messages)
             {
@@ -115,14 +114,14 @@
             }
         }
 
-        private async Task<IEnumerable<SiteMessageEventModel>> GetMatchInfo(string matchIds)
+        private async Task<IEnumerable<SiteMessageMatchInfoModel>> GetMatchInfo(string matchIds)
         {
             var criteria = new GetEventInfoCriteria
             {
                 MatchIDLst = matchIds
             };
 
-            var matchInfo = await baseService.GetDataAsync<SiteMessageEventModel>(criteria);
+            var matchInfo = await baseService.GetDataAsync<SiteMessageMatchInfoModel>(criteria);
 
             return matchInfo;
         }
