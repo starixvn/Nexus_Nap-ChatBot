@@ -18,6 +18,7 @@
         private ISpecialDeleteService specialDeleteTicketService;
         private ISendNotificationService sendNotificationService;
         private IMaintenanceService maintenanceService;
+        private ISiteMessageService siteMessageService;
         private ILogger logger;
 
         [Fact]
@@ -144,6 +145,7 @@
             specialDeleteTicketService = Substitute.For<ISpecialDeleteService>();
             sendNotificationService = Substitute.For<ISendNotificationService>();
             maintenanceService = Substitute.For<IMaintenanceService>();
+            siteMessageService = Substitute.For<ISiteMessageService>();
             logger = Substitute.For<ILogger>();
             var um = new UnderMaintenanceTime
             {
@@ -151,8 +153,8 @@
             };
             maintenanceService.GetUnderMaintenanceTimeAsync().Returns(um);
 
-            return new JobService(syncDataService, chatbotService, specialDeleteTicketService, sendNotificationService, maintenanceService,
-               logger);
+            return new JobService(syncDataService, chatbotService, specialDeleteTicketService,
+                sendNotificationService, maintenanceService, siteMessageService, logger);
         }
 
         #endregion Helper

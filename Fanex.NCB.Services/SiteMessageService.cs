@@ -23,7 +23,6 @@
         private readonly IPushSignalService pushSignalService;
         private readonly IChatbotService chatbotService;
         private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
-        private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
         public SiteMessageService(IBaseService baseService,
                IChatbotService chatbotService,
@@ -38,7 +37,7 @@
 
         public async Task PullMessageFromSiteMessageThenInsertNotification()
         {
-            if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.VoidingTicketForLicensee))
+            if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.SiteMessageIntegration))
             {
                 SystemSetting systemSettings = await GetSiteMessageSettings();
                 if (systemSettings != null)

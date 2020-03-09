@@ -28,7 +28,7 @@
             SetupService("OnStarted");
 
             logger.ReceivedCalls();
-            recurringJob.Received(5);
+            recurringJob.Received(6);
         }
 
         private void SetupService(string methodName)
@@ -42,7 +42,8 @@
                 new HangfireJobSetting {JobName = HangfireJob.SyncNapUserControlData, CronExpression = "* * * * *", IsEnabled = true},
                 new HangfireJobSetting {JobName = HangfireJob.SyncOICData, CronExpression = "* * * * *", IsEnabled = true},
                 new HangfireJobSetting {JobName = HangfireJob.VoidingTicket, CronExpression = "* * * * *", IsEnabled = true},
-                new HangfireJobSetting {JobName = HangfireJob.MonitorSkypebot, CronExpression = "* * * * *", IsEnabled = true}
+                new HangfireJobSetting {JobName = HangfireJob.MonitorSkypebot, CronExpression = "* * * * *", IsEnabled = true},
+                new HangfireJobSetting { JobName = HangfireJob.SiteMessageIntegration, CronExpression = "* * * * * *", IsEnabled = true}
             };
             jobSettings.CurrentValue.Returns(settings);
             recurringJob = Substitute.For<IRecurringJobManager>();

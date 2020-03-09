@@ -10,6 +10,8 @@
 
         Task PullMessageFromSpecialDelete();
 
+        Task PullMessageFromSiteMessage();
+
         Task ScanAndSendNotification();
 
         Task MonitorChatbot();
