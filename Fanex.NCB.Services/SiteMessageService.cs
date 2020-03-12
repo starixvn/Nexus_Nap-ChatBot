@@ -23,6 +23,7 @@
         private readonly IPushSignalService pushSignalService;
         private readonly IChatbotService chatbotService;
         private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
+        private const string DateTimeFormat = "HH:mm tt";
 
         public SiteMessageService(IBaseService baseService,
             IChatbotService chatbotService,
@@ -60,7 +61,7 @@
         {
             var criteria = new ImportDataSiteMessageAndGetGroupTestCriteria
             {
-                MessageHeader = JsonConvert.SerializeObject(messages),
+                MessageHeader = JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
                 MessageDetail = JsonConvert.SerializeObject(messageDetails)
             };
 
