@@ -151,9 +151,6 @@ NCB_SiteMessage_Import:BEGIN
     NotificationTemplateID INT,
     TemplateTitle VARCHAR(300),
     TemplateContent MEDIUMTEXT,
-    NotificationTemplateID2 INT,
-    TemplateTitle2 VARCHAR(300),
-    TemplateContent2 MEDIUMTEXT,
     IsTest TINYINT,
     StatusID TINYINT UNSIGNED,
     Status VARCHAR(10)
@@ -161,12 +158,11 @@ NCB_SiteMessage_Import:BEGIN
 
   SET iLoop = 0;
   WHILE (JSON_EXTRACT(templateNotifcationType, CONCAT('$[',iLoop, '].MsgContentsType')) IS NOT NULL) DO
-    INSERT INTO tmp_MsgContentTypeTemplate(MsgContentsType, NotificationTypeID, NotificationTemplateID, NotificationTemplateID2, IsTest)
+    INSERT INTO tmp_MsgContentTypeTemplate(MsgContentsType, NotificationTypeID, NotificationTemplateID, IsTest)
       VALUES (
 			JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].MsgContentsType'))),
       JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTypeID'))),
       JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTemplateID'))),
-      JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTemplateID2'))),
       JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].IsTest')))
 		);
 
@@ -184,11 +180,6 @@ NCB_SiteMessage_Import:BEGIN
     INNER JOIN NotificationTemplate nt ON tmp.NotificationTemplateID = nt.NotificationTemplateID
     SET tmp.TemplateContent = nt.Content,
         tmp.TemplateTitle = nt.Title;
-
-  UPDATE tmp_MsgContentTypeTemplate tmp
-    INNER JOIN NotificationTemplate nt ON tmp.NotificationTemplateID2 = nt.NotificationTemplateID
-    SET tmp.TemplateContent2 = nt.Content,
-        tmp.TemplateTitle2 = nt.Title;
 
   # Check if there are any templates are not existing
   IF EXISTS (
@@ -347,7 +338,8 @@ NCB_SiteMessage_Import:BEGIN
       # Insert Notification
       INSERT INTO Notification(NotificationTypeID, Title, Content, ConfigSendTime, SendImmediately, CreatorID, CreatedDate, Status, StatusID)
         SELECT DISTINCT
-          ct.NotificationTypeID, CASE WHEN m.MatchID IS NOT NULL THEN ct.TemplateTitle2 ELSE ct.TemplateTitle END TemplateTitle
+          ct.NotificationTypeID
+          ,ct.TemplateTitle
           ,REPLACE(
             REPLACE(
               REPLACE(
@@ -355,7 +347,7 @@ NCB_SiteMessage_Import:BEGIN
                   REPLACE(
                     REPLACE(
                       REPLACE(
-                        REPLACE(CASE WHEN m.MatchID IS NOT NULL THEN ct.TemplateContent2 ELSE ct.TemplateContent END
+                        REPLACE(ct.TemplateContent
                           , '{EN Announcement}', h.Content_en)
                         , '{CN Announcement}', h.Content_cs)
                       , '{Sport EN CN}', CONCAT(IFNULL(h.SportNameEN, ''), '/', IFNULL(h.SportNameCS, '')))
@@ -367,7 +359,6 @@ NCB_SiteMessage_Import:BEGIN
           ,startTime, 0 SendImmediately, STARIXIT_CUSTID, CreatedDate, CREATING_NOTIFICATION_STATUS, CREATING_NOTIFICATION_STATUSID
           FROM tmp_MsgHeader h
             INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType
-            LEFT JOIN MatchInfo m ON h.MatchID = m.MatchID AND m.MsgContentsType IN (1, 3)
           WHERE h.MessageID = ccMessageID;
 
       SELECT LAST_INSERT_ID() INTO ccNotificationID;
@@ -407,14 +398,6 @@ NCB_SiteMessage_Import:BEGIN
           WHERE n.NotificationID = ccNotificationID;
         END IF;
 
-      #Insert into MatchInfo
-      IF ccMsgContentsType IN (1, 3) THEN
-        IF NOT EXISTS (SELECT 1 FROM MatchInfo WHERE MatchID = ccMatchID AND MsgContentsType = ccMsgContentsType) THEN
-          INSERT INTO MatchInfo (MatchID, MsgContentsType)
-            VALUES (ccMatchID, ccMsgContentsType);
-          END IF;
-        END IF;
-      
       END IF;
 
     SET iLoop := iLoop + 1;

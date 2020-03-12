@@ -150,8 +150,9 @@ INSERT INTO SystemSetting (ID, Description, Value)
 , {"MsgContentsType":2, "NotificationTypeID":35, "NotificationTemplateID":28, "IsTest":0}
 , {"MsgContentsType":3, "NotificationTypeID":35, "NotificationTemplateID":29, "IsTest":0}
 , {"MsgContentsType":4, "NotificationTypeID":36, "NotificationTemplateID":30, "IsTest":0}
-, {"MsgContentsType":5, "NotificationTypeID":37, "NotificationTemplateID":31, "NotificationTemplateID2":32, "IsTest":0}
+, {"MsgContentsType":5, "NotificationTypeID":37, "NotificationTemplateID":31, "IsTest":0}
 , {"MsgContentsType":6, "NotificationTypeID":38, "NotificationTemplateID":33, "IsTest":0}
 , {"MsgContentsType":7, "NotificationTypeID":39, "NotificationTemplateID":34, "IsTest":0}
+, {"MsgContentsType":8, "NotificationTypeID":37, "NotificationTemplateID":32, "IsTest":0}
  ]')
     ,(15, 'Admin Site - Site Message - Chat group ID which receives carbon copies of all imported messages', '427');
