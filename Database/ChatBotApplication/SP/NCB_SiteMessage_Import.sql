@@ -3,6 +3,7 @@ DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SiteMessage_Import(
   IN messageHeader JSON,
+  IN messageDetail JSON,
   OUT errCode INT,
   OUT errMsg VARCHAR(200)
 
@@ -273,7 +274,7 @@ NCB_SiteMessage_Import:BEGIN
 
   UPDATE tmp_MsgHeader h
     SET h.CheckMsgDetail = (
-		  SELECT GROUP_CONCAT(d.Site ORDER BY d.Site SEPARATOR ', ')
+		  SELECT GROUP_CONCAT(d.SiteName ORDER BY d.SiteName SEPARATOR ', ')
 		    FROM tmp_MsgDetail d
 		    WHERE d.MessageID = h.MessageID
           AND d.RecipientID IS NULL
@@ -291,6 +292,7 @@ NCB_SiteMessage_Import:BEGIN
   DROP TEMPORARY TABLE IF EXISTS tmp_NotificationRecipientList;
   CREATE TEMPORARY TABLE IF NOT EXISTS tmp_NotificationRecipientList(
     MessageID INT,
+    SiteName TEXT,
     RecipientID INT,
     ConversationGroupID INT,
     ChatGroupTypeID SMALLINT,
@@ -299,25 +301,24 @@ NCB_SiteMessage_Import:BEGIN
     INDEX Index_MessageID(MessageID)
     );
 
-  INSERT INTO tmp_NotificationRecipientList(MessageID, RecipientID, ConversationGroupID, ChatGroupTypeID, StatusID, Status)
-    SELECT h.MessageID, r.RecipientID, gr.ConversationGroupID, ngt.ChatGroupTypeID, tpl.StatusID, tpl.Status
+  INSERT INTO tmp_NotificationRecipientList(MessageID, SiteName, RecipientID, ConversationGroupID, ChatGroupTypeID, StatusID, Status)
+    SELECT h.MessageID, d.SiteName, d.RecipientID, gr.ConversationGroupID, ngt.ChatGroupTypeID, tpl.StatusID, tpl.Status
       FROM tmp_MsgHeader h
         INNER JOIN tmp_MsgDetail d ON d.MessageID = h.MessageID
         INNER JOIN tmp_MsgContentTypeTemplate tpl ON h.MsgContentsType = tpl.MsgContentsType
         INNER JOIN NotificationChatGroupType ngt ON tpl.NotificationTypeID = ngt.NotificationTypeID
         INNER JOIN ConversationGroupExtraInfo gri ON ngt.ChatGroupTypeID = gri.ChatGroupTypeID
-        INNER JOIN ConversationGroupRecipient gr ON gri.ConversationGroupID = gr.ConversationGroupID
+        INNER JOIN ConversationGroupRecipient gr ON d.RecipientID = gr.RecipientID AND gri.ConversationGroupID = gr.ConversationGroupID
         INNER JOIN ConversationGroup g ON gr.ConversationGroupID = g.ConversationGroupID
-        INNER JOIN tmp_RecipientList r ON gr.RecipientID = r.RecipientID
       WHERE g.IsActive = 1
         AND h.CheckMsg NOT LIKE '%MsgContentsType%';
 
   UPDATE tmp_MsgHeader h
     SET h.CheckMsgDetail = (
-		  SELECT GROUP_CONCAT(d.Site  ORDER BY d.Site SEPARATOR ', ')
+		  SELECT GROUP_CONCAT(d.SiteName ORDER BY d.SiteName SEPARATOR ', ')
 		    FROM tmp_MsgDetail d
 		    WHERE d.MessageID = h.MessageID
-			    AND d.Site NOT IN (SELECT nrl.Site FROM tmp_NotificationRecipientList nrl)
+			    AND d.SiteName NOT IN (SELECT nrl.SiteName FROM tmp_NotificationRecipientList nrl)
           AND d.RecipientID IS NOT NULL
     );
     
@@ -376,7 +377,9 @@ NCB_SiteMessage_Import:BEGIN
       INSERT INTO NotificationRecipientList(NotificationID, ConversationGroupID, ChatGroupTypeID, RecipientID, Status, StatusID)
         SELECT ccNotificationID, d.ConversationGroupID, d.ChatGroupTypeID, d.RecipientID, d.Status, d.StatusID
         FROM tmp_NotificationRecipientList d
-        WHERE d.MessageID = ccMessageID;
+        WHERE d.MessageID = ccMessageID
+          AND d.RecipientID IS NOT NULL
+          ORDER BY d.RecipientID;
 
       #Update Status for Notification
       IF ccIsTest = 1 THEN
