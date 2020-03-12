@@ -176,6 +176,11 @@
         font-size: 11px;
     }
 }
+
+.new-notification-select-tree {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 /*.icon-edit {
         display: inline-block;
         float: right;

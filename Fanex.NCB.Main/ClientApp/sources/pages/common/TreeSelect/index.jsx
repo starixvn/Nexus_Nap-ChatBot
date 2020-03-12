@@ -17,43 +17,45 @@ export default React.memo(function (props) {
     );
 });
 
-export const getRealValuesFromExtra = function (result, collection) {
+const pushAllRealValueToResult = (result, collection) => {
     for (let i = 0; i < collection.length; i++) {
-        const item = collection[i];
-        if (item.children && item.children.length > 0) {
-            getRealValuesFromExtra(result, item.children);
+        const element = collection[i];
+        if (element.children && element.children.length > 0) {
+            pushAllRealValueToResult(result, element.children);
         } else {
-            const value = item.realValue || item.node.props.realValue;
-
-            if (!result.some(r => r === value)) {
-                result.push(value);
+            if (!result.some(r => r === element.realValue)) {
+                result.push(element.realValue);
             }
         }
     }
 };
 
-export const getRealValuesFromAllCheckNodes = function (result, collection) {
-    for (let i = 0; i < collection.length; i++) {
-        const item = collection[i].node ? collection[i].node : collection[i];
-        if (item.props && item.props.children && item.props.children.length > 0) {
-            getRealValuesFromAllCheckNodes(result, item.props.children);
-        } else {
-            const value = item.realValue || item.props.realValue;
+const pushRealValueFromCollection = (result, element) => {
+    if (element.children && element.children.length > 0) {
+        pushAllRealValueToResult(result, element.children);
+    } else {
+        if (!result.some(r => r === element.realValue)) {
+            result.push(element.realValue);
+        }
+    }
+};
 
-            if (!result.some(r => r === value)) {
-                result.push(value);
+const getRealValueFromNode = (result, recipient, collection) => {
+    for (let i = 0; i < collection.length; i++) {
+        const element = collection[i];
+        if (recipient.value === element.value) {
+            pushRealValueFromCollection(result, element);
+        } else {
+            if (element.children && element.children.length > 0) {
+                getRealValueFromNode(result, recipient, element.children);
             }
         }
     }
 };
 
-export const getRealValuesFromCollection = function (result, collection) {
-    if (collection.length > 0) {
-        if (collection[0].props) {
-            getRealValuesFromAllCheckNodes(result, collection);
-        } else {
-            getRealValuesFromExtra(result, collection);
-        }
+export const getRealValueFromTreeSelection = function (result, values, collection) {
+    for (let i = 0; i < values.length; i++) {
+        getRealValueFromNode(result, values[i], collection);
     }
 };
 

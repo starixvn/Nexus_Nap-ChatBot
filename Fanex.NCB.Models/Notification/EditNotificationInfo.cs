@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using Fanex.NCB.Models.Common;
 
     public class EditNotificationInfo
     {
@@ -23,6 +24,6 @@
 
         public bool SendImmediately { get; set; }
 
-        public IEnumerable<int> RecipientIds { get; set; }
+        public IEnumerable<Recipient> Recipients { get; set; }
     }
 }

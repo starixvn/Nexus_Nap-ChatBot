@@ -187,9 +187,9 @@
 
             var criteria = new GetEditNotificationInfoCriteria();
 
-            baseService.FetchMultipleAsync<EditNotificationInfo, int>
+            baseService.FetchMultipleAsync<EditNotificationInfo, Recipient>
                 (Arg.Do<GetEditNotificationInfoCriteria>(x => criteria = x))
-                .Returns((new List<EditNotificationInfo> { expectedNotification }, expectedNotification.RecipientIds));
+                .Returns((new List<EditNotificationInfo> { expectedNotification }, expectedNotification.Recipients));
 
             var result = await service.GetEditNotificationInfoAsync(notificationId).ConfigureAwait(false);
 

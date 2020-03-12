@@ -68,5 +68,13 @@
                 };
             });
         }
+
+        public static void RegisterConfigs(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
+            services.Configure<BotSettings>(configuration.GetSection("ChatBotConfigs"));
+            services.Configure<MonitorChatbot>(configuration.GetSection("MonitorChatbot"));
+            services.Configure<SignalRSettings>(configuration.GetSection("SignalRSettings"));
+        }
     }
 }

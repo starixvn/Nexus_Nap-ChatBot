@@ -9,6 +9,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using Fanex.NCB.Models.Notification;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
     using static Fanex.NAP.Core.Business.Constant;
@@ -36,17 +37,27 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
         public async Task<IActionResult> Create(CreateNewNotificationViewModel model)
         {
-            var result = await notificationService.CreateAsync(new CreateNotification
+            var result = new CommandResult();
+
+            if (string.IsNullOrEmpty(model.RecipientIds))
             {
-                NotificationTypeId = model.NotificationTypeId,
-                ProductId = model.ProductId,
-                RecipientIds = model.RecipientIds,
-                Title = model.Title,
-                Content = model.Content,
-                SendDate = model.SendDate,
-                SendImmediately = model.SendImmediately,
-                CreatorId = napSession.UserId
-            }).ConfigureAwait(false);
+                result.Code = -1;
+                result.Message = "Invaliad data. The recipients cannot be null";
+            }
+            else
+            {
+                result = await notificationService.CreateAsync(new CreateNotification
+                {
+                    NotificationTypeId = model.NotificationTypeId,
+                    ProductId = model.ProductId,
+                    RecipientIds = model.RecipientIds,
+                    Title = model.Title,
+                    Content = model.Content,
+                    SendDate = model.SendDate,
+                    SendImmediately = model.SendImmediately,
+                    CreatorId = napSession.UserId
+                }).ConfigureAwait(false);
+            }
 
             return Json(result);
         }

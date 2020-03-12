@@ -16,9 +16,12 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_ResendNotification_Sel`(
                 - #2nd dataset: List of Recipients
         Revisions:
 				- 20200116@Percy: Initialize SP [RedmineID: #127217]
+				- 20200305@Oliver: Fix issue copy paste list recipient not effected. RedmineID: 129762
     */
 )
 BEGIN
+	DECLARE RECIPIENT_TYPE_LICENSEES 	SMALLINT DEFAULT 1;
+	DECLARE RECIPIENT_TYPE_INTERNAL_CSD SMALLINT DEFAULT 3;
 	DECLARE SENT_STATUSID_ERROR TINYINT UNSIGNED DEFAULT 2;
     DECLARE SENT_STATUSID_RESOLVED TINYINT UNSIGNED DEFAULT 5;
     
@@ -41,10 +44,15 @@ BEGIN
     SELECT DISTINCT nrl.RecipientID
 				, r.RecipientName
 				, r.RecipientTypeID
-				, l.LicenseeTypeId
+				, IFNULL(id.InternalDepartmentID, lt.LicenseeTypeId) AS LicenseeTypeId
+				, IFNULL(id.InternalDepartmentName, lt.LicenseeTypeName) AS LicenseeTypeName
     FROM NotificationRecipientList nrl
 	INNER JOIN Recipient r ON nrl.RecipientID = r.RecipientID
-	LEFT JOIN Licensee l ON r.SourceID = l.LicenseeId
+	INNER JOIN RecipientType rt ON r.RecipientTypeID = rt.RecipientTypeID
+	LEFT JOIN Licensee l ON r.RecipientTypeID = RECIPIENT_TYPE_LICENSEES AND l.LicenseeId = r.SourceID
+	LEFT JOIN LicenseeType lt ON lt.LicenseeTypeId = l.LicenseeTypeId
+	LEFT JOIN InternalDepartment id ON r.RecipientTypeID = RECIPIENT_TYPE_INTERNAL_CSD
+        				AND id.InternalDepartmentID = r.SourceID
 	WHERE nrl.NotificationID = notificationID
 		AND (isSendAll = 1
 			OR nrl.StatusID IN (SENT_STATUSID_ERROR, SENT_STATUSID_RESOLVED)
