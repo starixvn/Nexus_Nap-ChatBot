@@ -56,7 +56,7 @@
             }
         }
 
-        private async Task<ValueTuple<CommandResult, IEnumerable<NotificationMessage>>> ImportMessageToChatbotDB(IEnumerable<SiteMessageModel> messages, IEnumerable<MessageDetail> messageDetails)
+        private async Task<ValueTuple<CommandResult, IEnumerable<NotificationMessage>>> ImportMessageToChatbotDB(IEnumerable<SiteMessageModel> messages, IEnumerable<SiteMessageDetail> messageDetails)
         {
             var criteria = new ImportDataSiteMessageAndGetGroupTestCriteria
             {
@@ -126,7 +126,7 @@
             return matchInfo;
         }
 
-        private async Task<ValueTuple<IEnumerable<SiteMessageModel>, IEnumerable<MessageDetail>>> GetDataFromSiteMessage(SystemSetting systemSettings)
+        private async Task<ValueTuple<IEnumerable<SiteMessageModel>, IEnumerable<SiteMessageDetail>>> GetDataFromSiteMessage(SystemSetting systemSettings)
         {
             var criteria = new GetMessageInfoFromAdminSite
             {
@@ -134,7 +134,7 @@
                 BatchSize = systemSettings.BatchSize,
                 MsgContentsTypeLst = systemSettings.MsgContentsTypeLst
             };
-            var result = await baseService.FetchMultipleAsync<SiteMessageModel, MessageDetail>(criteria);
+            var result = await baseService.FetchMultipleAsync<SiteMessageModel, SiteMessageDetail>(criteria);
 
             if (result.Item1.Any())
             {

@@ -47,8 +47,8 @@
             baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSiteMessageSettingCriteria>()).Returns(
                 new SystemSetting { BatchSize = 100, MaxMessageID = 1989, MsgContentsTypeLst = "ABC" });
 
-            baseService.FetchMultipleAsync<SiteMessageModel, MessageDetail>(Arg.Any<GetMessageInfoFromAdminSite>()).Returns(
-              (new List<SiteMessageModel>(), new List<MessageDetail>())
+            baseService.FetchMultipleAsync<SiteMessageModel, SiteMessageDetail>(Arg.Any<GetMessageInfoFromAdminSite>()).Returns(
+              (new List<SiteMessageModel>(), new List<SiteMessageDetail>())
                 );
             //Actual
             await service.PullMessageFromSiteMessageThenInsertNotification();
@@ -69,14 +69,14 @@
                 new SiteMessageModel { MessageID = 1000, MatchId = 10, Content_en = "EN", Content_cs = "CN" },
                 fixture.Create<SiteMessageModel>()
             };
-            var details = new List<MessageDetail> { new MessageDetail { MessageID = 1000, Site = "12bet" }, fixture.Create<MessageDetail>() };
+            var details = new List<SiteMessageDetail> { new SiteMessageDetail { MessageID = 1000, SiteName = "12bet" }, fixture.Create<SiteMessageDetail>() };
 
             var matchInfo = new List<SiteMessageMatchInfoModel>
             {
                 new SiteMessageMatchInfoModel { MatchId = 10, IsTest = false },
                 fixture.Create<SiteMessageMatchInfoModel>()
             };
-            baseService.FetchMultipleAsync<SiteMessageModel, MessageDetail>(Arg.Any<GetMessageInfoFromAdminSite>()).Returns(
+            baseService.FetchMultipleAsync<SiteMessageModel, SiteMessageDetail>(Arg.Any<GetMessageInfoFromAdminSite>()).Returns(
               (siteMsgs, details));
 
             baseService.GetDataAsync<SiteMessageMatchInfoModel>(Arg.Any<GetEventInfoCriteria>()).Returns(matchInfo);
@@ -100,14 +100,15 @@
                 new SiteMessageModel { MessageID = 1000, MatchId = 10, Content_en = "EN", Content_cs = "CN" },
                 fixture.Create<SiteMessageModel>()
             };
-            var details = new List<MessageDetail> { new MessageDetail { MessageID = 1000, Site = "12bet" }, fixture.Create<MessageDetail>() };
+            var details = new List<SiteMessageDetail> { new SiteMessageDetail { MessageID = 1000, SiteName = "12bet" },
+                fixture.Create<SiteMessageDetail>() };
 
             var matchInfo = new List<SiteMessageMatchInfoModel>
             {
                 new SiteMessageMatchInfoModel { MatchId = 10, IsTest = false },
                 fixture.Create<SiteMessageMatchInfoModel>()
             };
-            baseService.FetchMultipleAsync<SiteMessageModel, MessageDetail>(Arg.Any<GetMessageInfoFromAdminSite>()).Returns(
+            baseService.FetchMultipleAsync<SiteMessageModel, SiteMessageDetail>(Arg.Any<GetMessageInfoFromAdminSite>()).Returns(
               (siteMsgs, details));
 
             baseService.GetDataAsync<SiteMessageMatchInfoModel>(Arg.Any<GetEventInfoCriteria>()).Returns(matchInfo);
