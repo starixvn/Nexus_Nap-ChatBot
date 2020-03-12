@@ -10,6 +10,7 @@ AS
 
 	Revisions:
 		- 20200214@Percy: Initialize SP [RedmineID: #127944]
+		- 20200305@Percy: Extend length some fields [RedmineID: #129794]
 */
 
 BEGIN
@@ -40,7 +41,7 @@ BEGIN
 
 	-- Request Info
 	BEGIN
-		DECLARE @tblRequestInfo TABLE (MessageId INT, RequestId INT, DecidedBy VARCHAR(50), RequestBy VARCHAR(50), VoidBy VARCHAR(50), Reason NVARCHAR(150))
+		DECLARE @tblRequestInfo TABLE (MessageId INT, RequestId INT, DecidedBy NVARCHAR(50), RequestBy NVARCHAR(200), VoidBy NVARCHAR(50), Reason NVARCHAR(150))
 		
 		;WITH CTE_Request AS
 		(
@@ -101,11 +102,11 @@ BEGIN
 		(
 			SELECT
 				r1.MessageId
-				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(20), r2.RequestId)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestIdLst
-				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(20), r2.DecidedBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS DecidedByLst
-				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(20), r2.RequestBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestByLst
-				,STUFF((SELECT DISTINCT ', ' + CONVERT(VARCHAR(20), r2.VoidBy)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS VoidByLst
-				,STUFF((SELECT DISTINCT ', ' + CONVERT(NVARCHAR(150), r2.Reason)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS ReasonLst
+				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(20), r2.RequestId)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestIdLst
+				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(200), r2.DecidedBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS DecidedByLst
+				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(50), r2.RequestBy)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestByLst
+				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(50), r2.VoidBy)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS VoidByLst
+				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(150), r2.Reason)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS ReasonLst
 			FROM @tblRequestInfo r1
 			GROUP BY r1.MessageId
 		)
