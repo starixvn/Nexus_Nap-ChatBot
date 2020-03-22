@@ -64,7 +64,7 @@ BEGIN
 		);
         
         SET indexLoop := indexLoop + 1;
-    END WHILE;
+    END WHILE; 
 
 	#Get setting from Site Message settings
 	SET indexLoop = 0;
@@ -88,15 +88,13 @@ BEGIN
 		s.SystemName AS SystemName,
         CASE
 			WHEN (
-				EXISTS (
-					SELECT 1 FROM tmpParseJsonTable tmppjt
-					WHERE tmppjt.NotificationTypeID = nt.NotificationTypeID
-				) 
+				tmppjt.NotificationTypeID IS NOT NULL
             ) THEN 1
 			ELSE 0
 		END AS UnRemovable
 	FROM NotificationType nt
 	INNER JOIN `System` s ON nt.SystemID = s.SystemId
+	LEFT JOIN tmpParseJsonTable tmppjt ON nt.NotificationTypeID = tmppjt.NotificationTypeID
     ORDER BY nt.NotificationTypeID
 	LIMIT rowStart, pageSize;
     

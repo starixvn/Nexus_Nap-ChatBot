@@ -28,6 +28,7 @@ NCB_NotificationTemplate_Upd:BEGIN
 	DECLARE ACTION_ID 		INT DEFAULT 13;
     DECLARE jsonValue		JSON;
 	DECLARE indexLoop		INT;
+	DECLARE requiredParams  TEXT;
     
 	#Get Start Time to calcualte execution duration
 	SET startTime = UTC_TIMESTAMP(3);
@@ -46,10 +47,10 @@ NCB_NotificationTemplate_Upd:BEGIN
 	#Check params for template voiding tickets for licensee
 	SELECT Value INTO jsonValue FROM SystemSetting WHERE ID = 4 LIMIT 1;
     DROP TEMPORARY TABLE IF EXISTS tmpSettingData;
-    CREATE TEMPORARY TABLE IF NOT EXISTS tmpSettingData(NotificationTypeID INT, NotificationTemplateID INT);
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmpSettingData(NotificationTypeID INT, NotificationTemplateID INT,TemplateRequiredParams TEXT);
     SET indexLoop = 0;
     WHILE (JSON_EXTRACT(jsonValue, CONCAT('$[',indexLoop, '].NotificationTemplateID'))) DO 
-		INSERT INTO tmpSettingData(NotificationTypeID, NotificationTemplateID)
+		INSERT INTO tmpSettingData(NotificationTypeID, NotificationTemplateID, TemplateRequiredParams)
         VALUES (
             CASE
                 WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
@@ -60,32 +61,22 @@ NCB_NotificationTemplate_Upd:BEGIN
                 WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTemplateID'))) = 'null'
                 THEN NULL
                 ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTemplateID')))
+            END,
+			CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].TemplateRequiredParams'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].TemplateRequiredParams')))
             END
 		);
         
         SET indexLoop := indexLoop + 1;
     END WHILE;
 	
-	IF (
-		EXISTS (
-			SELECT 1 FROM tmpSettingData tmppjt
-			WHERE tmppjt.NotificationTemplateID = notificationTemplateID
-				AND tmppjt.NotificationTypeID = notificationTypeID
-		)
-        AND NOT (content LIKE '%{EN Announcement}%' AND content LIKE '%{CN Announcement}%')
-    )
-	THEN
-		SET errCode = 102, errMsg = 'Not allow to delete defined params';
-		LEAVE NCB_NotificationTemplate_Upd;
-	END IF;
-
 	#Check params for template voiding abnormalBets for internal
 	SELECT Value INTO jsonValue FROM SystemSetting WHERE ID = 9 LIMIT 1;
-    DROP TEMPORARY TABLE IF EXISTS tmpSettingData;
-    CREATE TEMPORARY TABLE IF NOT EXISTS tmpSettingData(NotificationTypeID INT, NotificationTemplateID INT);
     SET indexLoop = 0;
     WHILE (JSON_EXTRACT(jsonValue, CONCAT('$[',indexLoop, '].NotificationTemplateID'))) DO 
-		INSERT INTO tmpSettingData(NotificationTypeID, NotificationTemplateID)
+		INSERT INTO tmpSettingData(NotificationTypeID, NotificationTemplateID, TemplateRequiredParams)
         VALUES (
             CASE
                 WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
@@ -96,19 +87,71 @@ NCB_NotificationTemplate_Upd:BEGIN
                 WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTemplateID'))) = 'null'
                 THEN NULL
                 ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTemplateID')))
+            END,
+			CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].TemplateRequiredParams'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].TemplateRequiredParams')))
             END
 		);
         
         SET indexLoop := indexLoop + 1;
     END WHILE;
-	
+
+	#Check params for template Site Message
+	SELECT Value INTO jsonValue FROM SystemSetting WHERE ID = 14 LIMIT 1;
+    SET indexLoop = 0;
+    WHILE (JSON_EXTRACT(jsonValue, CONCAT('$[',indexLoop, '].NotificationTemplateID'))) DO 
+		INSERT INTO tmpSettingData(NotificationTypeID, NotificationTemplateID, TemplateRequiredParams)
+        VALUES (
+            CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID')))
+            END,
+            CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTemplateID'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTemplateID')))
+            END,
+			CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].TemplateRequiredParams'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].TemplateRequiredParams')))
+            END
+		);
+        
+        SET indexLoop := indexLoop + 1;
+    END WHILE;
+
+	SELECT tmppjt.TemplateRequiredParams INTO requiredParams
+	FROM tmpSettingData tmppjt
+	WHERE tmppjt.NotificationTemplateID = notificationTemplateID
+		AND tmppjt.NotificationTypeID = notificationTypeID LIMIT 1;
+
+
+	DROP TEMPORARY TABLE IF EXISTS tmpParams;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmpParams(Param VARCHAR(50));
+    
+    IF IFNULL(requiredParams, '') <> '' THEN
+		SET @SqlCommand = REPLACE(requiredParams, ',', '''),(''');
+		SET @SqlCommand = CONCAT('(''', @SqlCommand, ''')');
+		SET @SqlCommand= CONCAT('INSERT INTO tmpParams VALUES', @SqlCommand); 
+		
+		PREPARE Stmt FROM  @SqlCommand;
+		EXECUTE Stmt;
+		DEALLOCATE PREPARE Stmt;
+	END IF;
+
 	IF (
 		EXISTS (
 			SELECT 1 FROM tmpSettingData tmppjt
 			WHERE tmppjt.NotificationTemplateID = notificationTemplateID
 				AND tmppjt.NotificationTypeID = notificationTypeID
 		)
-        AND NOT (content LIKE '%{General Info}%')
+        AND EXISTS (
+			SELECT 1 FROM tmpParams 
+			WHERE LOCATE(Param, Content) = 0)
     )
 	THEN
 		SET errCode = 102, errMsg = 'Not allow to delete defined params';
@@ -147,8 +190,7 @@ NCB_NotificationTemplate_Upd:BEGIN
 		,logContent 
 		,startTime 
 		,duration
-	);
-	
+	);	
 END;
 
 //
