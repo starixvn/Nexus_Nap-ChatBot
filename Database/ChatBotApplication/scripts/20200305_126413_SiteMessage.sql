@@ -143,9 +143,9 @@ INSERT INTO SystemSetting (ID, Description, Value)
 , {"MsgContentsType":3, "NotificationTypeID":22, "NotificationTemplateID":22, "TemplateRequiredParams":"{EN Announcement},{CN Announcement},{Sport EN CN},{Kick Off Lable},{KO Time},{League Name EN CN},{Team Name EN CN}", "IsTest":0}
 , {"MsgContentsType":4, "NotificationTypeID":23, "NotificationTemplateID":23, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
 , {"MsgContentsType":5, "NotificationTypeID":24, "NotificationTemplateID":24, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
-, {"MsgContentsType":6, "NotificationTypeID":25, "NotificationTemplateID":25, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
-, {"MsgContentsType":7, "NotificationTypeID":26, "NotificationTemplateID":26, "TemplateRequiredParams":"{EN Announcement},{CN Announcement},{Sport EN CN},{Kick Off Lable},{KO Time},{League Name EN CN},{Team Name EN CN}", "IsTest":0}
-, {"MsgContentsType":8, "NotificationTypeID":24, "NotificationTemplateID":27, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
+, {"MsgContentsType":6, "NotificationTypeID":25, "NotificationTemplateID":26, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
+, {"MsgContentsType":7, "NotificationTypeID":26, "NotificationTemplateID":27, "TemplateRequiredParams":"{EN Announcement},{CN Announcement},{Sport EN CN},{Kick Off Lable},{KO Time},{League Name EN CN},{Team Name EN CN}", "IsTest":0}
+, {"MsgContentsType":8, "NotificationTypeID":24, "NotificationTemplateID":25, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
  ]')
     ,(15, 'Admin Site - Site Message - Chat group ID which receives carbon copies of all imported messages', '206');
 
