@@ -14,7 +14,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_NotificationType_Sel(
 				- 20190729@Oliver: Revised total items to output    
 				- 20191223@Merlin.Le: Get additional UnRemovable field -- Redmine ID: #125707
             	- 20190215@Oliver: unremovable abnormalbes settings - Redmine: #128430
-
+				- 20200323@Oliver: Integrate Site Message -- Redmine ID: #129979
     */
 	)
 SQL SECURITY DEFINER

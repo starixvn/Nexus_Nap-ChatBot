@@ -11,6 +11,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationTemplateList_Sel`(
         Revisions:
 			- 20191218@Merlin.Le: Get additional UnRemovable field -- Redmine ID: #125707
             - 20190215@Oliver: unremovable abnormalbes settings - Redmine: #128430
+            - 20200323@Oliver: Integrate Site Message -- Redmine ID: #129979
     */
 )
 BEGIN

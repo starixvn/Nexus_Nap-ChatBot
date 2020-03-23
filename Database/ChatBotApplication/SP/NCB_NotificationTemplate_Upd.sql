@@ -17,6 +17,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationTemplate_Upd`(
 			- 20190910@Elton: First Commit
 			- 20191217@Merlin: Check valid content before update -- Redmine ID: #125707
             - 20190215@Oliver: unremovable abnormalbes settings - Redmine: #128430
+			- 20200323@Oliver: Integrate Site Message -- Redmine ID: #129979
 	*/
 )
 NCB_NotificationTemplate_Upd:BEGIN

@@ -13,6 +13,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_NotificationType_Del(
 			Revisions:
 				- 20190912@Scofield: Create
 				- 20192312@Merlin.Le: Check not setting type before delete -- Redmine ID: #125707
+				- 20200323@Oliver: Integrate Site Message -- Redmine ID: #129979
     */
    )
 SQL SECURITY DEFINER
