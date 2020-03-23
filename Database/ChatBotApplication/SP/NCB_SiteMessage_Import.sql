@@ -351,11 +351,11 @@ NCB_SiteMessage_Import:BEGIN
                         REPLACE(ct.TemplateContent
                           , '{EN Announcement}', h.Content_en)
                         , '{CN Announcement}', h.Content_cs)
-                      , '{Sport EN CN}', CONCAT(IFNULL(h.SportNameEN, ''), '/', IFNULL(h.SportNameCS, '')))
-                    , '{Kick Off Lable}', '')
+                      , '{Sport EN CN}', CONCAT(IFNULL(h.SportNameEN, ''), ' / ', IFNULL(h.SportNameCS, '')))
+                    , '{Kick Off Lable}', CASE h.SportNameEN WHEN 'Soccer' THEN 'Kick Off' WHEN 'Basketball' THEN 'Tip Off' ELSE 'Event Start Time' END)
                   , '{KO Time}', IFNULL(h.KickOffTime, ''))
-                , '{League Name EN CN}', CONCAT(IFNULL(h.LeagueNameEN, ''), '[', IFNULL(h.LeagueNameCS, ''), ']'))
-              , '{Team Name EN CN}', CONCAT(IFNULL(CONCAT(h.HomeNameEN, ' - vs - ' , h.AwayNameEN), ''), '[', IFNULL(CONCAT(h.HomeNameCS, ' - vs - ' , h.AwayNameCS), ''), ']'))
+                , '{League Name EN CN}', CONCAT(IFNULL(h.LeagueNameEN, ''), ' [', IFNULL(h.LeagueNameCS, ''), ']'))
+              , '{Team Name EN CN}', CONCAT(IFNULL(CONCAT(h.HomeNameEN, ' - vs - ' , h.AwayNameEN), ''), ' [', IFNULL(CONCAT(h.HomeNameCS, ' - vs - ' , h.AwayNameCS), ''), ']'))
             , '@@', '') Content
           ,startTime, 0 SendImmediately, STARIXIT_CUSTID, CreatedDate, CREATING_NOTIFICATION_STATUS, CREATING_NOTIFICATION_STATUSID
           FROM tmp_MsgHeader h
@@ -378,8 +378,7 @@ NCB_SiteMessage_Import:BEGIN
         SELECT ccNotificationID, d.ConversationGroupID, d.ChatGroupTypeID, d.RecipientID, d.Status, d.StatusID
         FROM tmp_NotificationRecipientList d
         WHERE d.MessageID = ccMessageID
-          AND d.RecipientID IS NOT NULL
-          ORDER BY d.RecipientID;
+          AND d.RecipientID IS NOT NULL;
 
       #Update Status for Notification
       IF ccIsTest = 1 THEN

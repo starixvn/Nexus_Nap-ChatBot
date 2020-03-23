@@ -106,7 +106,7 @@ This is 1on1 Customer Service. **Kindly take note of the below message [请注�
 >> 以上赛事已经结算了。谢谢! **
 
 Thank you for your kind attention ~', 8, UTC_TIMESTAMP())
-        ,('Special Bet Type Wrong Result', 38, 'Special Bet Type Wrong Result', '	Good Day!
+        ,('Special Bet Type Wrong Result', 38, 'Special Bet Type Wrong Result', 'Good Day!
 This is 1on1 Customer Service. **Kindly take note of the below message [请注意以下公告]: **
 
 {EN Announcement}
