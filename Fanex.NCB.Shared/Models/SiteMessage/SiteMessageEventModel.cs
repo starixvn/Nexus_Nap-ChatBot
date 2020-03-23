@@ -6,7 +6,7 @@
     {
         public int MatchId { get; set; }
 
-        public string SportType { get; set; } = string.Empty;
+        public int SportType { get; set; }
 
         public string SportNameEN { get; set; } = string.Empty;
 
