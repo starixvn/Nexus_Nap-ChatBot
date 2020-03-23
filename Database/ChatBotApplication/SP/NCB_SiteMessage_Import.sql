@@ -79,6 +79,7 @@ NCB_SiteMessage_Import:BEGIN
     MsgContentsType INT,
     MatchID INT,
     IsTest TINYINT,
+    SportType INT,
     KickOffTime TEXT,
     LeagueNameEN TEXT,
     LeagueNameCS TEXT,
@@ -98,12 +99,13 @@ NCB_SiteMessage_Import:BEGIN
 
   SET iLoop = 0;
   WHILE (JSON_EXTRACT(messageHeader, CONCAT('$[',iLoop, '].MessageID')) IS NOT NULL) DO
-		INSERT INTO tmp_MsgHeader(MessageID, MsgContentsType, MatchID, IsTest, KickOffTime, LeagueNameEN, LeagueNameCS, SportNameEN, SportNameCS, HomeNameEN, HomeNameCS, AwayNameEN, AwayNameCS, Content_en, Content_cs, CheckMsg)
+		INSERT INTO tmp_MsgHeader(MessageID, MsgContentsType, MatchID, IsTest, SportType, KickOffTime, LeagueNameEN, LeagueNameCS, SportNameEN, SportNameCS, HomeNameEN, HomeNameCS, AwayNameEN, AwayNameCS, Content_en, Content_cs, CheckMsg)
       VALUES (
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MessageID'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MsgContentsType'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MatchID'))),
         JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].IsTest')),
+        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].SportType'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].KickOffTime'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].LeagueNameEN'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].LeagueNameCS'))),
@@ -120,6 +122,18 @@ NCB_SiteMessage_Import:BEGIN
     
     SET iLoop := iLoop + 1;
     END WHILE;
+
+  UPDATE tmp_MsgHeader
+    SET KickOffTime = NULL,
+        LeagueNameEN = NULL,
+        LeagueNameCS = NULL,
+        SportNameEN = NULL,
+        SportNameCS = NULL,
+        HomeNameEN = NULL,
+        HomeNameCS = NULL,
+        AwayNameEN = NULL,
+        AwayNameCS = NULL
+    WHERE SportType = 0;
 
   DROP TEMPORARY TABLE IF EXISTS tmp_MsgDetail;
   CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgDetail(

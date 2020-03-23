@@ -1,5 +1,6 @@
 /*<info serverAlias="DBACC-bodb02" executers="bodbAdminNet" isFunction="0" isNested="0"></info>*/
-ALTER PROCEDURE [dbo].[NAP_Chatbot_SiteMesssage_EventInfo_Sel] @MatchIDLst VARCHAR(MAX)
+ALTER PROCEDURE [dbo].[NAP_Chatbot_SiteMesssage_EventInfo_Sel]
+	@MatchIDLst VARCHAR(MAX)
 AS
 /*
 	Created: 20200305@Percy
@@ -26,28 +27,29 @@ BEGIN
 	FROM @xml.nodes('//root/r') AS RECORDS(r)
 	WHERE LEN(ISNULL(r.value('.', 'VARCHAR(30)'), '')) > 0
 
-	SELECT m.MatchId
-		,ISNULL(m.SportType, '')
+	SELECT
+		m.MatchId
+		,m.SportType
 		,LTRIM(RTRIM(REPLACE(REPLACE(RIGHT(CONVERT(VARCHAR(20), DATEADD(HOUR, 12, m.KickOffTime), 100), 7), 'AM', ' AM'), 'PM', ' PM'))) AS KickOffTime
-		,ISNULL(s.SportName, '') AS SportNameEN
-		,ISNULL(s.SportNameCS, '')
+		,s.SportName	AS SportNameEN
+		,s.SportNameCS	AS SportNameCS
 		,l.IsTest
-		,ISNULL(l.leaguename, '') AS LeagueNameEN
-		,ISNULL(l.leaguenamecn, '') AS LeagueNameCS
-		,ISNULL(h.teamname, '') AS HomeNameEN
-		,ISNULL(h.teamnamecn, '') AS HomeNameCS
-		,ISNULL(a.teamname, '') AS AwayNameEN
-		,ISNULL(a.teamnamecn, '') AS AwayNameCS
+		,l.leaguename	AS LeagueNameEN
+		,l.leaguenamecn AS LeagueNameCS
+		,h.teamname		AS HomeNameEN
+		,h.teamnamecn	AS HomeNameCS
+		,a.teamname		AS AwayNameEN
+		,a.teamnamecn	AS AwayNameCS
 	FROM dbo.match m WITH (NOLOCK)
-	INNER JOIN dbo.League l WITH (NOLOCK) ON l.leagueid = m.leagueid
-	INNER JOIN dbo.Sports s WITH (NOLOCK) ON s.SportType = m.sporttype
-	INNER JOIN dbo.Team h WITH (NOLOCK) ON h.teamid = m.homeid
-	INNER JOIN dbo.Team a WITH (NOLOCK) ON a.teamid = m.awayid
+		INNER JOIN dbo.League l WITH (NOLOCK) ON l.leagueid = m.leagueid
+		INNER JOIN dbo.Sports s WITH (NOLOCK) ON s.SportType = m.sporttype
+		INNER JOIN dbo.Team h WITH (NOLOCK) ON h.teamid = m.homeid
+		INNER JOIN dbo.Team a WITH (NOLOCK) ON a.teamid = m.awayid
 	WHERE EXISTS (
-			SELECT 1
-			FROM #MatchLst ml
-			WHERE m.matchid = ml.MatchId
-			)
+		SELECT 1
+		FROM #MatchLst ml
+		WHERE m.matchid = ml.MatchId
+	)
 
 	DROP TABLE #MatchLst
 END
