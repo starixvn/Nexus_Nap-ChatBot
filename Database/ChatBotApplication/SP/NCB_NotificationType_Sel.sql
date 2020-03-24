@@ -94,7 +94,7 @@ BEGIN
 		END AS UnRemovable
 	FROM NotificationType nt
 	INNER JOIN `System` s ON nt.SystemID = s.SystemId
-	LEFT JOIN tmpParseJsonTable tmppjt ON nt.NotificationTypeID = tmppjt.NotificationTypeID
+	LEFT JOIN (SELECT DISTINCT NotificationTypeID FROM tmpParseJsonTable) tmppjt ON nt.NotificationTypeID = tmppjt.NotificationTypeID
     ORDER BY nt.NotificationTypeID
 	LIMIT rowStart, pageSize;
     
