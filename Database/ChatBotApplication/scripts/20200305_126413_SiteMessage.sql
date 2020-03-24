@@ -12,22 +12,22 @@ INSERT INTO ChatBot.System (SystemID, SystemName)
 
 # New Notification Type
 INSERT INTO NotificationType (NotificationTypeID, NotificationTypeName, SystemID)
-  VALUES (21, 'Removed Live Announcement', 3)
-        ,(22, 'Rejected Match Announcement', 3)
-        ,(23, 'Valid Bets Announcement', 3)
-        ,(24, 'Refunded Match Announcement', 3)
-        ,(25, 'Re-settled Match Announcement', 3)
-        ,(26, 'Move Statement Announcement', 3);
+  VALUES (15, 'Removed Live Announcement', 3)
+        ,(16, 'Rejected Match Announcement', 3)
+        ,(17, 'Valid Bets Announcement', 3)
+        ,(18, 'Refunded Match Announcement', 3)
+        ,(19, 'Re-settled Match Announcement', 3)
+        ,(20, 'Move Statement Announcement', 3);
 
 INSERT INTO NotificationChatGroupType (NotificationTypeID, ChatGroupTypeID)
-  VALUES (21, 1), (22, 1), (23, 1), (24, 1), (25, 1), (26, 1);
+  VALUES (15, 1), (16, 1), (17, 1), (18, 1), (19, 1), (20, 1);
 
 INSERT INTO NotificationRecipientType (NotificationTypeID, RecipientTypeID)
-  VALUES (21, 1), (22, 1), (23, 1), (24, 1), (25, 1), (26, 1);
+  VALUES (15, 1), (16, 1), (17, 1), (18, 1), (19, 1), (20, 1);
 
 # New Notification Template
 INSERT INTO NotificationTemplate (NotificationTemplateName, NotificationTypeID, Title, Content, CreatorID, CreatedDate)
-  VALUES ('Remove Live Template', 21, 'Remove Live Template', 'Good Day!
+  VALUES ('Remove Live Template', 15, 'Remove Live Template', 'Good Day!
 This is 1on1 Customer Service. **Kindly take note of the below message** [请注意以下公告]:
 
 【赛事延迟派彩通知】
@@ -45,7 +45,7 @@ League: {League Name EN CN}
 \>> 以上赛事已【取消走地】并 【延迟结算】由于有关部门确认赛事细节。若有任何进展将再另行通知 。谢谢!
 
 Thank you for your kind attention ~', 8, UTC_TIMESTAMP())
-        ,('Ticket Pending Rejected Template', 22, 'Ticket Pending Rejected Template', 'Good Day!
+        ,('Ticket Pending Rejected Template', 16, 'Ticket Pending Rejected Template', 'Good Day!
 This is 1on1 Customer Service. **Kindly take note of the below message** [请注意以下公告]:
 
 {EN Announcement}
@@ -53,7 +53,7 @@ This is 1on1 Customer Service. **Kindly take note of the below message** [请注
 {CN Announcement}
 
 Thank you for your kind attention ~', 8, UTC_TIMESTAMP())
-        ,('Rejected & Removed Live Template', 22, 'Rejected & Removed Live Template', 'Good Day!
+        ,('Rejected & Removed Live Template', 16, 'Rejected & Removed Live Template', 'Good Day!
 This is 1on1 Customer Service. **Kindly take note of the below message** [请注意以下公告]:
 
 【赛事延迟派彩通知】
@@ -71,7 +71,7 @@ League: {League Name EN CN}
 \>> 以上赛事已【取消走地】并 【延迟结算】由于有关部门确认赛事细节。若有任何进展将再另行通知 。谢谢!
 
 Thank you for your kind attention ~', 8, UTC_TIMESTAMP())
-        ,('Neutral Ground Template', 23, 'Neutral Ground Template', 'Good Day!
+        ,('Neutral Ground Template', 17, 'Neutral Ground Template', 'Good Day!
 This is 1on1 Customer Service. **Kindly take note of the below message [请注意以下公告]:**
 
 {EN Announcement}
@@ -79,7 +79,7 @@ This is 1on1 Customer Service. **Kindly take note of the below message [请注�
 {CN Announcement}
 
 Thank you for your kind attention ~', 8, UTC_TIMESTAMP())
-        ,('Refunded Match Template', 24, 'Refunded Match Template', 'Good Day!
+        ,('Refunded Match Template', 18, 'Refunded Match Template', 'Good Day!
 This is 1on1 Customer Service. **Kindly take note of the below message** [请注意以下公告]:
 
 {EN Announcement}
@@ -87,7 +87,7 @@ This is 1on1 Customer Service. **Kindly take note of the below message** [请注
 {CN Announcement}
 
 Thank you for your kind attention ~', 8, UTC_TIMESTAMP())
-        ,('Refunded Match - Done Payout Template', 24, 'Refunded Match - Done Payout Template', 'Good Day! 
+        ,('Refunded Match - Done Payout Template', 18, 'Refunded Match - Done Payout Template', 'Good Day! 
 This is 1on1 Customer Service. **Kindly take note of the below message** [请注意以下公告]:
 
 {EN Announcement}
@@ -98,7 +98,7 @@ This is 1on1 Customer Service. **Kindly take note of the below message** [请注
 \>> 以上赛事已经结算了。谢谢!
 
 Thank you for your kind attention ~', 8, UTC_TIMESTAMP())
-        ,('Special Bet Type Wrong Result', 25, 'Special Bet Type Wrong Result', 'Good Day!
+        ,('Special Bet Type Wrong Result', 19, 'Special Bet Type Wrong Result', 'Good Day!
 This is 1on1 Customer Service. **Kindly take note of the below message** [请注意以下公告]:
 
 {EN Announcement}
@@ -112,7 +112,7 @@ This is 1on1 Customer Service. **Kindly take note of the below message** [请注
 \>> 请知悉，目前所有“重新结算”事项之受影响客户名单将不以邮件方式提供。贵司可透过后台系统登录并点击 “通知” - “重新结算” 查询赛事受影响客户名单。
 
 Thank you for your kind attention ~', 8, UTC_TIMESTAMP())
-        ,('Move Statement Template', 26, 'Move Statement Template', 'Good Day!
+        ,('Move Statement Template', 20, 'Move Statement Template', 'Good Day!
 This is 1on1 Customer Service. **Kindly take note of the below message** [请注意以下公告]:
 
 【赛事延迟派彩通知】
@@ -138,34 +138,34 @@ INSERT INTO SystemSetting (ID, Description, Value)
     ,(12, 'Admin Site - Site Message - Batch Size', '10')
     ,(13, 'Admin Site - Site Message - Previous MaxMessageID', '925230')
     ,(14, 'Admin Site - Site Message - Notification Template ID / MsgContentsType / NotificationType', '[
-{"MsgContentsType":1, "NotificationTypeID":21, "NotificationTemplateID":20, "TemplateRequiredParams":"{EN Announcement},{CN Announcement},{Sport EN CN},{Kick Off Lable},{KO Time},{League Name EN CN},{Team Name EN CN}", "IsTest":0}
-, {"MsgContentsType":2, "NotificationTypeID":22, "NotificationTemplateID":21, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
-, {"MsgContentsType":3, "NotificationTypeID":22, "NotificationTemplateID":22, "TemplateRequiredParams":"{EN Announcement},{CN Announcement},{Sport EN CN},{Kick Off Lable},{KO Time},{League Name EN CN},{Team Name EN CN}", "IsTest":0}
-, {"MsgContentsType":4, "NotificationTypeID":23, "NotificationTemplateID":23, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
-, {"MsgContentsType":5, "NotificationTypeID":24, "NotificationTemplateID":24, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
-, {"MsgContentsType":6, "NotificationTypeID":25, "NotificationTemplateID":26, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
-, {"MsgContentsType":7, "NotificationTypeID":26, "NotificationTemplateID":27, "TemplateRequiredParams":"{EN Announcement},{CN Announcement},{Sport EN CN},{Kick Off Lable},{KO Time},{League Name EN CN},{Team Name EN CN}", "IsTest":0}
-, {"MsgContentsType":8, "NotificationTypeID":24, "NotificationTemplateID":25, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
+{"MsgContentsType":1, "NotificationTypeID":15, "NotificationTemplateID":30, "TemplateRequiredParams":"{EN Announcement},{CN Announcement},{Sport EN CN},{Kick Off Lable},{KO Time},{League Name EN CN},{Team Name EN CN}", "IsTest":1}
+, {"MsgContentsType":2, "NotificationTypeID":16, "NotificationTemplateID":31, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":1}
+, {"MsgContentsType":3, "NotificationTypeID":16, "NotificationTemplateID":32, "TemplateRequiredParams":"{EN Announcement},{CN Announcement},{Sport EN CN},{Kick Off Lable},{KO Time},{League Name EN CN},{Team Name EN CN}", "IsTest":1}
+, {"MsgContentsType":4, "NotificationTypeID":17, "NotificationTemplateID":33, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":1}
+, {"MsgContentsType":5, "NotificationTypeID":18, "NotificationTemplateID":34, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":1}
+, {"MsgContentsType":6, "NotificationTypeID":19, "NotificationTemplateID":36, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":1}
+, {"MsgContentsType":7, "NotificationTypeID":20, "NotificationTemplateID":37, "TemplateRequiredParams":"{EN Announcement},{CN Announcement},{Sport EN CN},{Kick Off Lable},{KO Time},{League Name EN CN},{Team Name EN CN}", "IsTest":1}
+, {"MsgContentsType":8, "NotificationTypeID":18, "NotificationTemplateID":35, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":1}
  ]')
-    ,(15, 'Admin Site - Site Message - Chat group ID which receives carbon copies of all imported messages', '206');
+    ,(15, 'Admin Site - Site Message - Chat group ID which receives carbon copies of all imported messages', '1');
 
 # Update current setting, add require template
 UPDATE SystemSetting
 SET Value = '[
-	{"MsgContentsType":103, "NotificationTypeID":20, "NotificationTemplateID":19, "TemplateRequiredParams":"{General Info}", "IsTest":0}
+	{"MsgContentsType":103, "NotificationTypeID":14, "NotificationTemplateID":29, "TemplateRequiredParams":"{General Info}", "IsTest":0}
  ]'
  WHERE ID = 9;
 
 UPDATE SystemSetting
 SET Value = '[
-   {"MsgContentsType":101, "NotificationTypeID":15, "NotificationTemplateID":14, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
-   ,  {"MsgContentsType":104, "NotificationTypeID":15, "NotificationTemplateID":14, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
-   ,  {"MsgContentsType":105, "NotificationTypeID":15, "NotificationTemplateID":14, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
-   ,  {"MsgContentsType":106, "NotificationTypeID":15, "NotificationTemplateID":14, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
-   ,  {"MsgContentsType":199, "NotificationTypeID":15, "NotificationTemplateID":14, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
-   ,  {"MsgContentsType":102, "NotificationTypeID":16, "NotificationTemplateID":15, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
-   ,  {"MsgContentsType":103, "NotificationTypeID":17, "NotificationTemplateID":16, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
-   ,  {"MsgContentsType":107, "NotificationTypeID":18, "NotificationTemplateID":17, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
-   ,  {"MsgContentsType":108, "NotificationTypeID":19, "NotificationTemplateID":18, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
+   {"MsgContentsType":101, "NotificationTypeID":9, "NotificationTemplateID":23, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
+   ,  {"MsgContentsType":104, "NotificationTypeID":9, "NotificationTemplateID":23, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
+   ,  {"MsgContentsType":105, "NotificationTypeID":9, "NotificationTemplateID":23, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
+   ,  {"MsgContentsType":106, "NotificationTypeID":9, "NotificationTemplateID":23, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
+   ,  {"MsgContentsType":199, "NotificationTypeID":9, "NotificationTemplateID":23, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
+   ,  {"MsgContentsType":102, "NotificationTypeID":10, "NotificationTemplateID":27, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
+   ,  {"MsgContentsType":103, "NotificationTypeID":11, "NotificationTemplateID":26, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
+   ,  {"MsgContentsType":107, "NotificationTypeID":12, "NotificationTemplateID":24, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
+   ,  {"MsgContentsType":108, "NotificationTypeID":13, "NotificationTemplateID":25, "TemplateRequiredParams":"{EN Announcement},{CN Announcement}", "IsTest":0}
  ]'
  WHERE ID = 4;
