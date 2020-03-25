@@ -30,7 +30,7 @@ BEGIN
 	SELECT
 		m.MatchId
 		,m.SportType
-		,LTRIM(RTRIM(REPLACE(REPLACE(RIGHT(CONVERT(VARCHAR(20), DATEADD(HOUR, 12, m.KickOffTime), 100), 7), 'AM', ' AM'), 'PM', ' PM'))) AS KickOffTime
+		,LTRIM(RTRIM(REPLACE(REPLACE(RIGHT(CONVERT(VARCHAR(20), DATEADD(HOUR, 12, m.GlobalShowTime), 100), 7), 'AM', ' AM'), 'PM', ' PM'))) AS KickOffTime
 		,s.SportName	AS SportNameEN
 		,s.SportNameCS	AS SportNameCS
 		,l.IsTest
