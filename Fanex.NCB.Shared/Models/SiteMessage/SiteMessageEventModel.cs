@@ -1,7 +1,5 @@
 ﻿namespace Fanex.NCB.Shared.Models.SiteMessage
 {
-    using System;
-
     public class SiteMessageMatchInfoModel
     {
         public int MatchId { get; set; }
@@ -12,7 +10,7 @@
 
         public string SportNameCS { get; set; } = string.Empty;
 
-        public DateTime? KickOffTime { get; set; }
+        public string KickOffTime { get; set; }
 
         public bool IsTest { get; set; }
 
