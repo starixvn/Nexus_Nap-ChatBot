@@ -26,6 +26,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SiteMessage_Import(
 							]
     Revisions :
       - 20200305@Percy: Initiliaze SP [RedmineID: #126143]
+      - 20200327@Percy: Just send notification to active licensees [RedmineID: #131240]
   */
 )
 SQL SECURITY DEFINER
@@ -51,6 +52,7 @@ NCB_SiteMessage_Import:BEGIN
   DECLARE VALUE_RUNNING TEXT DEFAULT 'Running';
   DECLARE VALUE_DONE TEXT DEFAULT 'Done';
   DECLARE RECIPIENT_TYPE_LICENSEE INT DEFAULT 1;
+  DECLARE ACTIVE_LICENSEE_STATUS INT DEFAULT 3;
   DECLARE STARIXIT_CUSTID INT DEFAULT 10278938;
     
   DECLARE CREATING_NOTIFICATION_STATUSID TINYINT UNSIGNED DEFAULT 7;
@@ -140,6 +142,7 @@ NCB_SiteMessage_Import:BEGIN
     MessageID INT, 
     SiteName TEXT,
     RecipientID INT,
+    LicenseeStatusID INT,
     INDEX Index_MessageID(MessageID)
     );
     
@@ -284,7 +287,8 @@ NCB_SiteMessage_Import:BEGIN
   UPDATE tmp_MsgDetail tmp
     INNER JOIN Licensee l ON l.RegisteredLicenseeName = tmp.SiteName
     INNER JOIN Recipient r ON r.SourceID = l.LicenseeId AND r.RecipientTypeID = RECIPIENT_TYPE_LICENSEE
-    SET tmp.RecipientID = r.RecipientID;
+    SET tmp.RecipientID = r.RecipientID,
+        tmp.LicenseeStatusID = l.LicenseeStatusID;
 
   UPDATE tmp_MsgHeader h
     SET h.CheckMsgDetail = (
@@ -312,11 +316,12 @@ NCB_SiteMessage_Import:BEGIN
     ChatGroupTypeID SMALLINT,
     StatusID TINYINT UNSIGNED,
     Status VARCHAR(10),
+    LicenseeStatusID INT,
     INDEX Index_MessageID(MessageID)
     );
 
-  INSERT INTO tmp_NotificationRecipientList(MessageID, SiteName, RecipientID, ConversationGroupID, ChatGroupTypeID, StatusID, Status)
-    SELECT h.MessageID, d.SiteName, d.RecipientID, gr.ConversationGroupID, ngt.ChatGroupTypeID, tpl.StatusID, tpl.Status
+  INSERT INTO tmp_NotificationRecipientList(MessageID, SiteName, RecipientID, ConversationGroupID, ChatGroupTypeID, StatusID, Status, LicenseeStatusID)
+    SELECT h.MessageID, d.SiteName, d.RecipientID, gr.ConversationGroupID, ngt.ChatGroupTypeID, tpl.StatusID, tpl.Status, d.LicenseeStatusID
       FROM tmp_MsgHeader h
         INNER JOIN tmp_MsgDetail d ON d.MessageID = h.MessageID
         INNER JOIN tmp_MsgContentTypeTemplate tpl ON h.MsgContentsType = tpl.MsgContentsType
@@ -349,7 +354,7 @@ NCB_SiteMessage_Import:BEGIN
   WHILE (EXISTS (SELECT 1 FROM tmp_MsgHeader WHERE Id = iLoop)) DO
     SELECT MessageID, IsTest, MatchID, MsgContentsType INTO ccMessageID, ccIsTest, ccMatchID, ccMsgContentsType FROM tmp_MsgHeader WHERE Id = iLoop;
 
-    IF EXISTS (SELECT 1 FROM tmp_NotificationRecipientList WHERE MessageID = ccMessageID) THEN
+    IF EXISTS (SELECT 1 FROM tmp_NotificationRecipientList WHERE MessageID = ccMessageID AND LicenseeStatusID = ACTIVE_LICENSEE_STATUS) THEN
       # Insert Notification
       INSERT INTO Notification(NotificationTypeID, Title, Content, ConfigSendTime, SendImmediately, CreatorID, CreatedDate, Status, StatusID)
         SELECT DISTINCT
@@ -392,6 +397,7 @@ NCB_SiteMessage_Import:BEGIN
         SELECT ccNotificationID, d.ConversationGroupID, d.ChatGroupTypeID, d.RecipientID, d.Status, d.StatusID
         FROM tmp_NotificationRecipientList d
         WHERE d.MessageID = ccMessageID
+		  AND d.LicenseeStatusID = ACTIVE_LICENSEE_STATUS
           AND d.RecipientID IS NOT NULL;
 
       #Update Status for Notification

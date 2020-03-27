@@ -1,4 +1,4 @@
-DROP PROCEDURE IF EXISTS NCB_SpecialDeleteMsg_Import;
+﻿DROP PROCEDURE IF EXISTS NCB_SpecialDeleteMsg_Import;
 DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SpecialDeleteMsg_Import(
@@ -26,6 +26,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SpecialDeleteMsg_Import(
         Revisions:
 				- 20191211@Dominic: First Commit
 				- 20200214@Percy: Special Delete - Integrate Abnormal Bets [RedmineID: #127944]
+        - 20200327@Percy: Just send notification to active licensees [RedmineID: #131240]
         
     */
 )
@@ -49,6 +50,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     DECLARE VALUE_4_RUNNING 	TEXT  DEFAULT 'Running';
     DECLARE VALUE_4_DONE 	TEXT DEFAULT 'Done';
     DECLARE RECIPIENT_TYPE_LICENSEE INT DEFAULT 1;
+    DECLARE ACTIVE_LICENSEE_STATUS INT DEFAULT 3;
     DECLARE STARIXIT_CUSTID 	INT DEFAULT 10278938;
     
     DECLARE CREATING_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 7;
@@ -102,6 +104,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
             MessageID INT, 
             Site TEXT,
             RecipientID INT,
+            LicenseeStatusID INT,
             INDEX Index_MessageID(MessageID)
             );
     
@@ -216,7 +219,8 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     UPDATE tmp_MsgDetail tmp
     INNER JOIN Licensee l ON l.RegisteredLicenseeName = tmp.Site
     INNER JOIN Recipient r ON r.SourceID = l.LicenseeId AND r.RecipientTypeID = RECIPIENT_TYPE_LICENSEE
-	SET tmp.RecipientID = r.RecipientID;
+	SET tmp.RecipientID = r.RecipientID,
+      tmp.LicenseeStatusID = l.LicenseeStatusID;
     
     UPDATE tmp_MsgHeader h
     SET h.CheckMsgDetail = (
@@ -237,21 +241,23 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     DROP TEMPORARY TABLE IF EXISTS tmp_NotificationRecipientList;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmp_NotificationRecipientList(
 				MessageID INT
-                , Site TEXT
+        , Site TEXT
 				, RecipientID INT
-                , ConversationGroupID INT
-                , ChatGroupTypeID SMALLINT
-                , StatusID TINYINT UNSIGNED
-                , Status VARCHAR(10) 
-                , INDEX Index_MessageID(MessageID)
-            );
+        , ConversationGroupID INT
+        , ChatGroupTypeID SMALLINT
+        , StatusID TINYINT UNSIGNED
+        , Status VARCHAR(10)
+        , LicenseeStatusID INT
+        , INDEX Index_MessageID(MessageID)
+      );
             
-	INSERT INTO tmp_NotificationRecipientList(MessageID, Site, RecipientID, ConversationGroupID, ChatGroupTypeID, StatusID, Status)       
+	INSERT INTO tmp_NotificationRecipientList(MessageID, Site, RecipientID, ConversationGroupID, ChatGroupTypeID, StatusID, Status, LicenseeStatusID)       
     SELECT  d.MessageID, d.Site, d.RecipientID
 					, gri.ConversationGroupID
 					, gri.ChatGroupTypeID
-                    , tpl.StatusID
-                    , tpl.Status
+          , tpl.StatusID
+          , tpl.Status
+          , d.LicenseeStatusID
     FROM tmp_MsgHeader h
         INNER JOIN tmp_MsgDetail d ON d.MessageID = h.MessageID
         INNER JOIN  tmp_MsgContentTypeTemplate tpl ON tpl.MsgContentsType = h.MsgContentsType
@@ -284,7 +290,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
   WHILE (EXISTS (SELECT 1 FROM tmp_MsgHeader WHERE Id = iLoop)) DO
     SELECT MessageID INTO ccMessageID FROM tmp_MsgHeader WHERE Id = iLoop;
 
-    IF EXISTS (SELECT 1 FROM tmp_NotificationRecipientList WHERE MessageID = ccMessageID) THEN
+    IF EXISTS (SELECT 1 FROM tmp_NotificationRecipientList WHERE MessageID = ccMessageID AND LicenseeStatusID = ACTIVE_LICENSEE_STATUS) THEN
       # Insert Notification
       INSERT INTO Notification(NotificationTypeID, Title, Content, ConfigSendTime, SendImmediately, CreatorID, CreatedDate, Status, StatusID)
         SELECT DISTINCT ct.NotificationTypeID, ct.TemplateTitle, REPLACE(REPLACE(REPLACE(ct.TemplateContent, '{EN Announcement}', h.Content_en), '{CN Announcement}', h.Content_cs), '@@', '') Content, startTime, 0, STARIXIT_CUSTID, CreatedDate, CREATING_NOTIFICATION_STATUS, CREATING_NOTIFICATION_STATUSID
@@ -307,7 +313,8 @@ NCB_SpecialDeleteMsg_Import:BEGIN
       INSERT INTO NotificationRecipientList(NotificationID, ConversationGroupID, ChatGroupTypeID, RecipientID, Status, StatusID)
         SELECT ccNotificationID, d.ConversationGroupID, d.ChatGroupTypeID, d.RecipientID, d.Status, d.StatusID
         FROM tmp_NotificationRecipientList d
-        WHERE d.MessageID = ccMessageID;
+        WHERE d.MessageID = ccMessageID
+		   AND LicenseeStatusID = ACTIVE_LICENSEE_STATUS;
 
       #Update Status for Notification
       UPDATE Notification n
