@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Functions>
   <Function Name="Send Notification">
-    <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus_xtest" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd_xtest" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd" DbName="ChatBot" Plain="0"></Setting>
   </Function>
   <Function Name="Sync Data">
     <Setting Key="NAP_ChatBot_GetDataBySiteId" SpName="NAP_ChatBot_GetDataBySiteId" DbName="DBPOL.NAP_UserControl.bodbAdminNet" Plain="0"></Setting>
@@ -18,5 +18,11 @@
     <Setting Key="NAP_Chatbot_SpecialDeleteMsg_Sel" SpName="NAP_Chatbot_SpecialDeleteMsg_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
     <Setting Key="NAP_Chatbot_SpecialDeleteMsg_AbnormalBets_Sel" SpName="NAP_Chatbot_SpecialDeleteMsg_AbnormalBets_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
     <Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
+  </Function>
+  <Function Name="Site Message">
+    <Setting Key="NCB_MsgSetting_SiteMessage_Sel" SpName="NCB_MsgSetting_SiteMessage_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_SiteMesssage_Sel" SpName="NAP_Chatbot_SiteMesssage_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_SiteMesssage_EventInfo_Sel" SpName="NAP_Chatbot_SiteMesssage_EventInfo_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
+    <Setting Key="NCB_SiteMessage_Import" SpName="NCB_SiteMessage_Import" DbName="ChatBot" Plain="0"></Setting>
   </Function>
 </Functions>

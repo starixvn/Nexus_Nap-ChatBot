@@ -2,12 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models;
+    using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;
@@ -134,6 +136,35 @@
                 };
 
             await SendMessageToMultitpleAsync(notificationModel);
+        }
+
+        public IEnumerable<NotificationMessage> GenerateNotifificationMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
+        {
+            var messages = new List<NotificationMessage>();
+            if (notifications != null && notifications.Any())
+            {
+                foreach (var noti in notifications)
+                {
+                    var notification = new NotificationMessage
+                    {
+                        NotificationId = noti.NotificationId,
+                        Message = noti.Content,
+                        Recipients = recipients.Select(r =>
+                            new ConversationInfo
+                            {
+                                BotConversationId = r.BotConversationId,
+                                BotName = r.BotName,
+                                ChannelId = r.ChannelId,
+                                ConversationId = r.ChatGroupConversationId,
+                                ServiceUrl = r.ServiceUrl
+                            }
+                        )
+                    };
+                    messages.Add(notification);
+                }
+            }
+
+            return messages;
         }
     }
 }

@@ -17,6 +17,7 @@
         private readonly ISpecialDeleteService specialDeleteTicketService;
         private readonly ISendNotificationService sendNotificationService;
         private readonly IMaintenanceService maintenanceService;
+        private readonly ISiteMessageService siteMessageService;
         private readonly ILogger logger;
 
         public JobService(ISyncDataService syncDataService,
@@ -24,6 +25,7 @@
             ISpecialDeleteService specialDeleteTicketService,
             ISendNotificationService sendNotificationService,
             IMaintenanceService maintenanceService,
+            ISiteMessageService siteMessageService,
             ILogger logger)
         {
             this.syncDataService = syncDataService;
@@ -31,6 +33,7 @@
             this.specialDeleteTicketService = specialDeleteTicketService;
             this.sendNotificationService = sendNotificationService;
             this.maintenanceService = maintenanceService;
+            this.siteMessageService = siteMessageService;
             this.logger = logger;
         }
 
@@ -81,6 +84,28 @@
                     await Task.WhenAll(
                         specialDeleteTicketService.VoidingTicketToLicensee(),
                         specialDeleteTicketService.VoidingAbnormalBetsToInternalDepartment()
+                    );
+
+                    await sendNotificationService.ScanAndSendNotification();
+                }
+                catch (Exception ex)
+                {
+                    await Logging(ex);
+                    throw;
+                }
+            }
+        }
+
+        [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
+        [Queue(QueuPriority.Critical)]
+        public async Task PullMessageFromSiteMessage()
+        {
+            if (await IsNotUM())
+            {
+                try
+                {
+                    await Task.WhenAll(
+                        siteMessageService.PullMessageFromSiteMessageThenInsertNotification()
                     );
 
                     await sendNotificationService.ScanAndSendNotification();

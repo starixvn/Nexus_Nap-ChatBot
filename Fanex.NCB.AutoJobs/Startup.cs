@@ -193,6 +193,7 @@
             services.AddScoped<ISendNotificationService, SendNotificationService>();
             services.AddScoped<ISyncDataService, SyncDataService>();
             services.AddScoped<ISpecialDeleteService, SpecialDeleteService>();
+            services.AddScoped<ISiteMessageService, SiteMessageService>();
             services.AddScoped<IJobService, JobService>();
             services.AddScoped<IPushSignalService, PushSignalService>();
             services.AddScoped<ISignalRService, SignalRService>();

@@ -18,6 +18,7 @@
         private ISpecialDeleteService specialDeleteTicketService;
         private ISendNotificationService sendNotificationService;
         private IMaintenanceService maintenanceService;
+        private ISiteMessageService siteMessageService;
         private ILogger logger;
 
         [Fact]
@@ -90,6 +91,29 @@
         }
 
         [Fact]
+        public async Task PullMessageFromSiteMessage_WhenCalled_ExecuteSuccessed()
+        {
+            var service = GetService();
+
+            //Actual
+            await service.PullMessageFromSiteMessage();
+
+            //Assert
+            await siteMessageService.Received().PullMessageFromSiteMessageThenInsertNotification();
+        }
+
+        [Fact]
+        public async Task PullMessageFromSiteMessage_WhenCalled_ThrowException()
+        {
+            var service = GetService();
+            siteMessageService.PullMessageFromSiteMessageThenInsertNotification().Throws(new Exception());
+
+            //Assert
+            await Assert.ThrowsAsync<Exception>(() => service.PullMessageFromSiteMessage());
+            await logger.Received().ErrorAsync(Arg.Any<string>());
+        }
+
+        [Fact]
         public async Task ScanAndScanNotification_WhenCalled_ExecuteSuccessed()
         {
             var service = GetService();
@@ -144,6 +168,7 @@
             specialDeleteTicketService = Substitute.For<ISpecialDeleteService>();
             sendNotificationService = Substitute.For<ISendNotificationService>();
             maintenanceService = Substitute.For<IMaintenanceService>();
+            siteMessageService = Substitute.For<ISiteMessageService>();
             logger = Substitute.For<ILogger>();
             var um = new UnderMaintenanceTime
             {
@@ -151,8 +176,8 @@
             };
             maintenanceService.GetUnderMaintenanceTimeAsync().Returns(um);
 
-            return new JobService(syncDataService, chatbotService, specialDeleteTicketService, sendNotificationService, maintenanceService,
-               logger);
+            return new JobService(syncDataService, chatbotService, specialDeleteTicketService,
+                sendNotificationService, maintenanceService, siteMessageService, logger);
         }
 
         #endregion Helper

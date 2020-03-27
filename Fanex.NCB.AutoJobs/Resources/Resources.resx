@@ -144,4 +144,7 @@
   <data name="OneMinuteJobs" xml:space="preserve">
     <value>Execute every minute jobs</value>
   </data>
+  <data name="PullMessageFromSiteMessage" xml:space="preserve">
+    <value>Pull Message From Site Message</value>
+  </data>
 </root>

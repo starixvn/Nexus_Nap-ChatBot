@@ -1,14 +1,17 @@
 ﻿namespace Fanex.NCB.Services.Tests
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net;
     using System.Text;
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models;
+    using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;
+    using Newtonsoft.Json;
     using NSubstitute;
     using RestSharp;
     using Xunit;
@@ -84,6 +87,53 @@
             var service = GetService();
             await service.NotifyToChatGroup("Test");
             webClient.Received(2);
+        }
+
+        [Fact]
+        public void GenerateNotifificationMessage_WhenCalled_ReturnMappedObject()
+        {
+            var fixture = new Fixture();
+            IEnumerable<NotificationSendMessage> notifications = new List<NotificationSendMessage>
+            {
+                new NotificationSendMessage {  NotificationId = 10,  Content = fixture.Create<string>()}
+            };
+
+            IEnumerable<NotificationRecipient> recipients = new List<NotificationRecipient>
+            {
+                new NotificationRecipient
+                {
+                    NotificationId = 10,
+                    BotConversationId = fixture.Create<string>(),
+                    BotName = fixture.Create<string>(),
+                    ServiceUrl = fixture.Create<string>(),
+                    ChannelId = fixture.Create<string>(),
+                    ChatGroupConversationId = fixture.Create<string>(),
+                }
+            };
+
+            var expected = new List<NotificationMessage>
+            {
+                new NotificationMessage
+                {
+                    NotificationId = 10,
+                    Message = notifications.FirstOrDefault().Content,
+                    Recipients = new List<ConversationInfo>
+                    {
+                        new ConversationInfo
+                        {
+                            ConversationId = recipients.FirstOrDefault().ChatGroupConversationId,
+                            BotConversationId = recipients.FirstOrDefault().BotConversationId,
+                            BotName = recipients.FirstOrDefault().BotName,
+                            ChannelId = recipients.FirstOrDefault().ChannelId,
+                            ServiceUrl = recipients.FirstOrDefault().ServiceUrl
+                        },
+                    }
+                }
+            };
+            var service = GetService();
+            var actual = service.GenerateNotifificationMessage(notifications, recipients);
+
+            Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(actual));
         }
 
         private ChatbotService GetService()

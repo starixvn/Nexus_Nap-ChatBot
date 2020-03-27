@@ -13,6 +13,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_NotificationType_Del(
 			Revisions:
 				- 20190912@Scofield: Create
 				- 20192312@Merlin.Le: Check not setting type before delete -- Redmine ID: #125707
+				- 20200323@Oliver: Integrate Site Message -- Redmine ID: #129979
     */
    )
 SQL SECURITY DEFINER
@@ -24,29 +25,65 @@ BEGIN
     DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
     DECLARE ACTION_ID 		INT DEFAULT 17;
 	DECLARE jsonValue   	JSON;
+	DECLARE voidTicketSettings   JSON;
+	DECLARE abnormalBetsSettings JSON;
+	DECLARE siteMessageSettings JSON;
     DECLARE indexLoop   	INT;
 	
 	-- Get Start Time to calcualte execution duration
     SET startTime = UTC_TIMESTAMP(3);
     SET errCode = 0, errMsg = '';
     
-	SELECT Value INTO jsonValue FROM SystemSetting WHERE ID = 4 LIMIT 1;
+	SELECT Value INTO voidTicketSettings FROM SystemSetting WHERE ID = 4 LIMIT 1;
+	SELECT Value INTO abnormalBetsSettings FROM SystemSetting WHERE ID = 9 LIMIT 1;
+	SELECT Value INTO siteMessageSettings FROM SystemSetting WHERE ID = 14 LIMIT 1;
+
     DROP TEMPORARY TABLE IF EXISTS tmpParseJsonTable;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmpParseJsonTable(NotificationTypeID INT);
     SET indexLoop = 0;
-    WHILE (JSON_EXTRACT(jsonValue, CONCAT('$[',indexLoop, '].NotificationTypeID'))) DO 
+    WHILE (JSON_EXTRACT(voidTicketSettings, CONCAT('$[',indexLoop, '].NotificationTypeID'))) DO 
 		INSERT INTO tmpParseJsonTable(NotificationTypeID)
         VALUES (
             CASE
-                WHEN JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(voidTicketSettings, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
                 THEN NULL
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID')))
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(voidTicketSettings, CONCAT('$[', indexLoop, '].NotificationTypeID')))
             END
 		);
         
         SET indexLoop := indexLoop + 1;
     END WHILE;
     
+	#Get setting from Special Delete AbnormalBets voiding ticket for internal settings
+	SET indexLoop = 0;
+    WHILE (JSON_EXTRACT(abnormalBetsSettings, CONCAT('$[',indexLoop, '].NotificationTypeID'))) DO 
+		INSERT INTO tmpParseJsonTable(NotificationTypeID)
+        VALUES (
+            CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(abnormalBetsSettings, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(abnormalBetsSettings, CONCAT('$[', indexLoop, '].NotificationTypeID')))
+            END
+		);
+        
+        SET indexLoop := indexLoop + 1;
+    END WHILE;
+
+	#Get setting from Site Message settings
+	SET indexLoop = 0;
+    WHILE (JSON_EXTRACT(siteMessageSettings, CONCAT('$[',indexLoop, '].NotificationTypeID'))) DO 
+		INSERT INTO tmpParseJsonTable(NotificationTypeID)
+        VALUES (
+            CASE
+                WHEN JSON_UNQUOTE(JSON_EXTRACT(siteMessageSettings, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
+                THEN NULL
+                ELSE JSON_UNQUOTE(JSON_EXTRACT(siteMessageSettings, CONCAT('$[', indexLoop, '].NotificationTypeID')))
+            END
+		);
+        
+        SET indexLoop := indexLoop + 1;
+    END WHILE;
+	
     IF (EXISTS(SELECT * FROM Notification WHERE Notification.NotificationTypeID = notificationTypeId) 
 		OR EXISTS(SELECT * FROM NotificationTemplate WHERE NotificationTemplate.NotificationTypeID = notificationTypeId)) THEN
 			SELECT 1 INTO errCode;

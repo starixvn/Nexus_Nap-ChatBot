@@ -115,7 +115,7 @@ namespace Fanex.NCB.AutoJobs.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pull messages from Special Delete and Send Notification.
+        ///   Looks up a localized string similar to Execute every minute jobs.
         /// </summary>
         internal static string OneMinuteJobs {
             get {
@@ -124,6 +124,16 @@ namespace Fanex.NCB.AutoJobs.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pull Message From Site Message.
+        /// </summary>
+        internal static string PullMessageFromSiteMessage {
+            get {
+                return ResourceManager.GetString("PullMessageFromSiteMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pull messages from Special Delete and Send Notification.
         /// </summary>
         internal static string PullMessageFromSpectalDelete {
             get {
