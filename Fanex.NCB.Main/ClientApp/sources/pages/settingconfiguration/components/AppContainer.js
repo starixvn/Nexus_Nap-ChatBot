@@ -10,8 +10,8 @@ import { NCBBreadcrum } from '../../common/breadcrumbs/breadcrumbs';
 import Filter from './Filter';
 import DataGrid from './DataGrid';
 import Labels from '../../common/Labels';
-import NewNotificationTemplate from './NewNotificationTemplate';
-import EditNotificationTemplate from './EditNotificationTemplate';
+import NewSettingConfiguration from './NewSettingConfiguration';
+import EditSettingConfiguration from './EditSettingConfiguration';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import MarkdownRules from '../../common/markdown-rules';
 
@@ -65,10 +65,10 @@ export class AppContainer extends Component {
                 }
                 <DataGrid haveHostPermission={this.haveHostPermission} />
                 {this.props.createTemplatePopup.show &&
-                    <NewNotificationTemplate onClose={this.handleCloseCreateTemplatePopup} onCreateSuccess={this.handleCreateSuccess} />
+                    <NewSettingConfiguration onClose={this.handleCloseCreateTemplatePopup} onCreateSuccess={this.handleCreateSuccess} />
                 }
 
-                {this.props.editTemplatePopup.show && <EditNotificationTemplate onEditSuccess={this.handleEditSuccess} />}
+                {this.props.editTemplatePopup.show && <EditSettingConfiguration onEditSuccess={this.handleEditSuccess} />}
                 {this.props.deleteTemplatePopup.show &&
                     <ConfirmPopup
                         isOpen={this.props.deleteTemplatePopup.show}

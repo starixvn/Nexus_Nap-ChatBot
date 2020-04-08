@@ -15,22 +15,22 @@
     using static Fanex.NAP.Core.Business.Constant;
 
     [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
-    public class SettingManagementController : Controller
+    public class SettingConfigurationController : Controller
     {
         private readonly INapSession _napSession;
 
-        public SettingManagementController(INapSession napSession)
+        public SettingConfigurationController(INapSession napSession)
         {
             _napSession = napSession;
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.SettingManagement, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
         public IActionResult Index([FromServices]IUserService userService)
         {
             ViewBag.HaveHostPermission = userService.IsHavingPermission(_napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotificationTemplate, Policy.Host);
 
-            return View("~/Views/SkypeBot/SettingManagement/Index.cshtml");
+            return View("~/Views/SkypeBot/SettingConfiguration/Index.cshtml");
         }
     }
 }
