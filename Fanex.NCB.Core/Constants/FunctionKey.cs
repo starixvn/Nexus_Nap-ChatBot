@@ -11,5 +11,7 @@
         public const string ChatGroupMapping = "ChatGroupMapping";
 
         public const string NotificationTemplate = "NotificationTemplate";
+
+        public const string SettingManagement = "SettingManagement";
     }
 }
