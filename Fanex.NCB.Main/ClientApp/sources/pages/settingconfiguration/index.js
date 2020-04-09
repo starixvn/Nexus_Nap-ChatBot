@@ -8,23 +8,23 @@ import reducer from './reducers/index';
 
 // Get the application-wide store instance, prepopulating with state from the server where available.
 const store = Store.createStore(reducer, {
-    notificationTypes: [],
-    createTemplatePopup: {
-        show: false
-    },
-    editTemplatePopup: {
-        show: false
-    },
-    deleteTemplatePopup: {
-        show: false
-    },
-    createTemplateResult: null,
-    editTemplateResult: null,
-    deleteTemplateResult: null,
-    setEditTemplateResult: null,
-    markdownRulesPopup: {
-        show: false
-    }
+    msgContentTypes: [],
+    // createTemplatePopup: {
+    //     show: false
+    // },
+    // editTemplatePopup: {
+    //     show: false
+    // },
+    // deleteTemplatePopup: {
+    //     show: false
+    // },
+    // createTemplateResult: null,
+    // editTemplateResult: null,
+    // deleteTemplateResult: null,
+    // setEditTemplateResult: null,
+    // markdownRulesPopup: {
+    //     show: false
+    // }
 });
 
 renderLayout(

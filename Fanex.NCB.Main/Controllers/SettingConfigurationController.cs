@@ -14,7 +14,7 @@
     using System.Threading.Tasks;
     using static Fanex.NAP.Core.Business.Constant;
 
-    [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    //[NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class SettingConfigurationController : Controller
     {
         private readonly INapSession _napSession;
@@ -28,7 +28,7 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
         public IActionResult Index([FromServices]IUserService userService)
         {
-            ViewBag.HaveHostPermission = userService.IsHavingPermission(_napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotificationTemplate, Policy.Host);
+            ViewBag.HaveHostPermission = userService.IsHavingPermission(_napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.SettingConfiguration, Policy.Host);
 
             return View("~/Views/SkypeBot/SettingConfiguration/Index.cshtml");
         }

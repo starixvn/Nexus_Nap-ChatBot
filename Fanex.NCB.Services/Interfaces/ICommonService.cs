@@ -15,5 +15,7 @@
         Task<IEnumerable<NotificationStatus>> GetNotificationStatusesAsync();
 
         Task<IEnumerable<User>> GetUsersAsync();
+
+        Task<IEnumerable<SettingType>> GetSettingTypesAsync();
     }
 }

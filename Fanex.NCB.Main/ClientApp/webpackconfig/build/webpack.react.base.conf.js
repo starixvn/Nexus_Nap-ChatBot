@@ -16,7 +16,7 @@ function generateConfig(environment) {
             [`${buildPath}/notificationtemplate/notificationtemplate`]: pathConfig.paths.notificationtemplate,
             [`${buildPath}/chatgroupmapping/chatgroupmapping`]: pathConfig.paths.chatgroupmapping,
             [`${buildPath}/notificationtype/notificationtype`]: pathConfig.paths.notificationtype,
-            [`${buildPath}/settingconfiguration/settingconfiguration`]: pathConfig.paths.notificationtype,
+            [`${buildPath}/settingconfiguration/settingconfiguration`]: pathConfig.paths.settingconfiguration,
             [`${buildPath}/login/login`]: pathConfig.paths.login,
             [`${buildPath}/editnotification/editnotification`]: pathConfig.paths.editnotification,
         },

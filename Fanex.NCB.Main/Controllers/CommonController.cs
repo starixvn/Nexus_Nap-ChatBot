@@ -57,5 +57,12 @@
 
             return Json(result);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSettingTypes()
+        {
+            var result = await commonService.GetSettingTypesAsync().ConfigureAwait(false);
+            return Json(result);
+        }
     }
 }

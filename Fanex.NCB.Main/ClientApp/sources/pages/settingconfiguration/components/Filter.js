@@ -10,7 +10,7 @@ class Filter extends Component {
         super(props);
 
         this.state = {
-            notificationTypeId: ''
+            settingType: ''
         };
     }
 
@@ -20,14 +20,14 @@ class Filter extends Component {
         this.props.getGridData(params);
     }
 
-    handleNotificationTypeChange = event =>
+    handleSettingTypeChange = event =>
         this.setState({
-            notificationTypeId: event.target.value
+            settingType: event.target.value
         });
 
     getParams = () => {
         return {
-            notificationTypeId: parseInt(this.state.notificationTypeId, 10),
+            settingType: parseInt(this.state.settingType, 10),
             pageIndex: 1,
             pageSize: 10
         };
@@ -40,20 +40,20 @@ class Filter extends Component {
         this.props.getGridData(params);
     }
 
-    renderNotificationTypeOption = item => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>
+    renderSettingTypeOption = item => <option key={item.MsgContentType} value={item.MsgContentType} >{item.Name}</option>
 
     render() {
         return (
             <Form className="form-filter">
                 <FormGroup>
-                    <Label className="form-label">{Labels.NotificationType}</Label>
+                    <Label className="form-label">{Labels.SettingType}</Label>
                     <Input type="select"
-                        name="notificationTypeId"
-                        onChange={this.handleNotificationTypeChange}
-                        value={this.state.notificationTypeId}
+                        name="settingType"
+                        onChange={this.handleSettingTypeChange}
+                        value={this.state.settingType}
                     >
                         <option value="">{Labels.All}</option>
-                        {this.props.notificationTypes.map(this.renderNotificationTypeOption)}
+                        {this.props.msgContentTypes.map(this.renderSettingTypeOption)}
 
                     </Input>
                 </FormGroup>
@@ -66,9 +66,9 @@ class Filter extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { notificationTypes, gridParams } = state;
+    const { msgContentTypes, gridParams } = state;
     return {
-        notificationTypes,
+        msgContentTypes,
         gridParams
     };
 };

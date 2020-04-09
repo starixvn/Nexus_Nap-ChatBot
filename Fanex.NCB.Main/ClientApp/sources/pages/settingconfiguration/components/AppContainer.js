@@ -19,56 +19,57 @@ export class AppContainer extends Component {
     constructor(props) {
         super(props);
 
-        this.haveHostPermission = document.getElementById('have-host-permission').checked;
+        this.haveHostPermission = document.getElementById('have-host-permission') && document.getElementById('have-host-permission').checked;
     }
 
     componentDidMount() {
-        this.props.getNotificationTypes();
+        console.log(this.props);
+        this.props.getMsgContentTypes();
     }
 
-    handleOpenCreateTemplatePopup = () => this.props.setCreateTemplatePopup({ show: true })
+    handleOpenCreateSettingPopup = () => this.props.setCreateSettingPopup({ show: true })
 
-    handleCloseCreateTemplatePopup = () => this.props.setCreateTemplatePopup({ show: false })
+    // handleCloseCreateTemplatePopup = () => this.props.setCreateSettingPopup({ show: false })
 
-    handleCreateSuccess = () => {
-        this.handleCloseCreateTemplatePopup();
-        this.props.setCreateTemplateResult(null);
-        this.props.getGridData(this.props.gridParams);
-    }
+    // handleCreateSuccess = () => {
+    //     this.handleCloseCreateTemplatePopup();
+    //     this.props.setCreateTemplateResult(null);
+    //     this.props.getGridData(this.props.gridParams);
+    // }
 
-    handleEditSuccess = () => {
-        this.props.setEditTemplatePopup({ show: false });
-        this.props.setEditTemplateResult(null);
-        this.props.getGridData(this.props.gridParams);
-    }
+    // handleEditSuccess = () => {
+    //     this.props.setEditTemplatePopup({ show: false });
+    //     this.props.setEditTemplateResult(null);
+    //     this.props.getGridData(this.props.gridParams);
+    // }
 
-    handleDeleteTemplate = () => {
-        this.props.deleteTemplate(this.props.deleteTemplatePopup.templateId).then(data => {
-            if (data.isSuccessful) {
-                this.props.getGridData(this.props.gridParams);
-                toast.success(Labels.DeleteTemplateSuccessfully);
-            } else {
-                toast.error(data.message);
-            }
-        });
+    // handleDeleteTemplate = () => {
+    //     this.props.deleteTemplate(this.props.deleteTemplatePopup.templateId).then(data => {
+    //         if (data.isSuccessful) {
+    //             this.props.getGridData(this.props.gridParams);
+    //             toast.success(Labels.DeleteTemplateSuccessfully);
+    //         } else {
+    //             toast.error(data.message);
+    //         }
+    //     });
 
-        this.props.closeDeleteTemplatePopup();
-    }
+    //     this.props.closeDeleteTemplatePopup();
+    // }
 
     render() {
         return (
             <>
-                <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Template" />
-                <Filter />
-                {this.haveHostPermission &&
-                    <button className="btn-new" onClick={this.handleOpenCreateTemplatePopup}>{Labels.CreateNewTemplate}</button>
-                }
+                <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Setting Management" />
+                {/* <Filter /> */}
+                {/* {this.haveHostPermission &&
+                    <button className="btn-new" onClick={this.handleOpenCreateSettingPopup}>{Labels.CreateNewTemplate}</button>
+                } */}
                 <DataGrid haveHostPermission={this.haveHostPermission} />
-                {this.props.createTemplatePopup.show &&
+                {/* {this.props.createTemplatePopup.show &&
                     <NewSettingConfiguration onClose={this.handleCloseCreateTemplatePopup} onCreateSuccess={this.handleCreateSuccess} />
-                }
+                } */}
 
-                {this.props.editTemplatePopup.show && <EditSettingConfiguration onEditSuccess={this.handleEditSuccess} />}
+                {/* {this.props.editTemplatePopup.show && <EditSettingConfiguration onEditSuccess={this.handleEditSuccess} />}
                 {this.props.deleteTemplatePopup.show &&
                     <ConfirmPopup
                         isOpen={this.props.deleteTemplatePopup.show}
@@ -80,7 +81,7 @@ export class AppContainer extends Component {
 
                 {this.props.markdownRulesPopup.show &&
                     <MarkdownRules show={this.props.markdownRulesPopup.show} onToggle={this.props.closeMarkdownRulesPopup} />
-                }
+                } */}
 
             </>
         );
@@ -90,13 +91,13 @@ export class AppContainer extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { gridParams, editTemplatePopup, createTemplatePopup, deleteTemplatePopup, markdownRulesPopup } = state;
+    // const { gridParams, editTemplatePopup, createTemplatePopup, deleteTemplatePopup, markdownRulesPopup } = state;
     return {
-        gridParams,
-        editTemplatePopup,
-        createTemplatePopup,
-        deleteTemplatePopup,
-        markdownRulesPopup
+        // gridParams,
+        // editTemplatePopup,
+        // createTemplatePopup,
+        // deleteTemplatePopup,
+        // markdownRulesPopup
     };
 };
 
