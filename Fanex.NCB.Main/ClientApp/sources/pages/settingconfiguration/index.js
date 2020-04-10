@@ -18,7 +18,7 @@ const store = Store.createStore(reducer, {
     // deleteTemplatePopup: {
     //     show: false
     // },
-    // createTemplateResult: null,
+    createSettingTypeResult: null,
     // editTemplateResult: null,
     // deleteTemplateResult: null,
     // setEditTemplateResult: null,

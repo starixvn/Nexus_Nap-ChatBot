@@ -133,4 +133,8 @@
     <Setting Key="NCB_NotificationTemplate_Sel" SpName="NCB_NotificationTemplate_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_NotificationTemplate_Del" SpName="NCB_NotificationTemplate_Del" DbName="ChatBot" Plain="0"></Setting>
   </Function>
+
+  <Function Name="Setting Configuration">
+    <Setting Key="NCB_SettingConfiguration_SettingTypeList_Sel" SpName="NCB_SettingConfiguration_SettingTypeList_Sel" DbName="ChatBot" Plain="0"></Setting>
+  </Function>
 </Functions>

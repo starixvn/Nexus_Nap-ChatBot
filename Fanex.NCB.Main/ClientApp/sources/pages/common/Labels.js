@@ -47,5 +47,8 @@
     Active: 'Active',
     ConfirmUpdateActive: 'When a group is inactivated. The system will not send notifications to the group. Do you want to proceed?',
     ConfirmUpdateInActive: 'When a group is activated. The system will send notifications to the group. Do you want to proceed?',
-    SettingType: 'Setting Type'
+    SettingType: 'Setting Type',
+    CreateNewSetting: 'Create New Setting',
+    MsgContentsType: 'MsgContentsType',
+    Name: 'Name'
 };

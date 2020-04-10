@@ -4,23 +4,22 @@ import types from '../actions/types';
 // Setting
 export const msgContentTypes = createReducer({}, {
     [types.MSGCONTENTTYPES_DATA](state, action) {
-        console.log(action);
         return action.data;
     }
 });
 
-// // Grid
-// export const gridParams = createReducer({}, {
-//     [types.GRID_PARAMS](state, action) {
-//         return action.data;
-//     }
-// });
+// Grid
+export const gridParams = createReducer({}, {
+    [types.GRID_PARAMS](state, action) {
+        return action.data;
+    }
+});
 
-// export const gridData = createReducer({}, {
-//     [types.GRID_DATA](state, action) {
-//         return action.data;
-//     }
-// });
+export const gridData = createReducer({}, {
+    [types.GRID_DATA](state, action) {
+        return action.data;
+    }
+});
 
 // // Delete
 // export const deleteTemplatePopup = createReducer({}, {
@@ -42,18 +41,18 @@ export const msgContentTypes = createReducer({}, {
 //     }
 // });
 
-// // Create Popup
-// export const createTemplatePopup = createReducer({}, {
-//     [types.CREATE_POPUP_DATA](state, action) {
-//         return action.data;
-//     }
-// });
+// Create Popup
+export const createSettingTypePopup = createReducer({}, {
+    [types.CREATE_POPUP_DATA](state, action) {
+        return action.data;
+    }
+});
 
-// export const createTemplateResult = createReducer({}, {
-//     [types.CREATE_TEMPLATE_RESULT_DATA](state, action) {
-//         return action.data;
-//     }
-// });
+export const createSettingTypeResult = createReducer({}, {
+    [types.CREATE_SETTING_TYPE_RESULT_DATA](state, action) {
+        return action.data;
+    }
+});
 
 // export const markdownRulesPopup = createReducer({}, {
 //     [types.MARKDOWNRULE_POPUP_DATA](state, action) {
@@ -63,10 +62,10 @@ export const msgContentTypes = createReducer({}, {
 
 const reducers = {
     msgContentTypes,
-    // gridParams,
-    // gridData,
-    // createTemplatePopup,
-    // createTemplateResult,
+    gridParams,
+    gridData,
+    createSettingTypePopup,
+    createSettingTypeResult,
     // editTemplatePopup,
     // editTemplateResult,
     // deleteTemplatePopup,

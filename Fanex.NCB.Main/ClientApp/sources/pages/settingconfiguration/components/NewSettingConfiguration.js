@@ -5,13 +5,11 @@ import { ActionCreators } from '../actions/index';
 import { Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input, FormFeedback, Col } from 'reactstrap';
 import { Formik } from 'formik';
 import { object, string } from 'yup';
-import ReactMde from "react-mde";
 import Labels from '../../common/Labels';
-import { editorCommandList, invalidFieldClass } from '../../constants/constants';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 import TemplatePreview from '../../common/TemplatePreview/index';
 
-class NewNotificationTemplate extends Component {
+class NewSettingConfiguration extends Component {
     constructor(props) {
         super(props);
     }
@@ -20,13 +18,9 @@ class NewNotificationTemplate extends Component {
         this.props.toggleHandler();
     }
 
-    renderNotificationTypeOption = item => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>
-
     schema = object().shape({
-        notificationTypeId: string().required(Labels.FieldRequired),
-        notificationTemplateName: string().required(Labels.FieldRequired).max(100),
-        title: string().required(Labels.FieldRequired).max(300),
-        content: string().required(Labels.FieldRequired)
+        msgContentType: string().required(Labels.FieldRequired),
+        name: string().required(Labels.FieldRequired).max(250)
     })
 
     handleGerneratePreview = markdown => {
@@ -47,70 +41,38 @@ class NewNotificationTemplate extends Component {
         return (
             <Form onSubmit={handleSubmit}>
                 <FormGroup>
-                    <Label for="notificationTypeId" className="form-label required">Notification Type</Label>
+                    <Label for="msgContentType" className="form-label required">Msg Contents Type</Label>
                     <div>
-                        <Input type="select"
-                            invalid={touched.notificationTypeId && errors.notificationTypeId}
-                            name="notificationTypeId"
+                        <Input invalid={touched.msgContentType && errors.msgContentType}
+                            name="msgContentType"
                             onChange={handleChange}
-                            value={values.notificationTypeId}
-                        >
-                            <option value="" disabled hidden>{Labels.PleaseSelect}</option>
-                            {this.props.notificationTypes.map(this.renderNotificationTypeOption)}
-                        </Input>
-                        {touched.notificationTypeId && errors.notificationTypeId && <FormFeedback>{errors.notificationTypeId}</FormFeedback>}
+                            value={values.msgContentType}
+                        />
+                        {touched.msgContentType && errors.msgContentType && <FormFeedback>{errors.msgContentType}</FormFeedback>}
                     </div>
                 </FormGroup>
                 <FormGroup>
-                    <Label for="title" className="form-label required">Template Name</Label>
+                    <Label for="name" className="form-label required">Name</Label>
                     <div>
-                        <Input value={values.notificationTemplateName} name="notificationTemplateName"
-                            invalid={touched.notificationTemplateName && errors.notificationTemplateName}
+                        <Input invalid={touched.name && errors.name}
+                            name="name"
                             onChange={handleChange}
+                            value={values.name}
                         />
-                        {touched.notificationTemplateName && errors.notificationTemplateName && <FormFeedback>{errors.notificationTemplateName}</FormFeedback>}
-                    </div>
-                </FormGroup>
-                <FormGroup>
-                    <Label for="title" className="form-label required">Title</Label>
-                    <div>
-                        <Input value={values.title} name="title"
-                            invalid={touched.title && errors.title}
-                            onChange={handleChange}
-                        />
-                        {touched.title && errors.title && <FormFeedback>{errors.title}</FormFeedback>}
-                    </div>
-                </FormGroup>
-                <FormGroup>
-                    <Label for="content" className="form-label required">Content</Label>
-
-                    <div>
-                        <ReactMde className={touched.content && errors.content && invalidFieldClass}
-                            value={values.content} commands={editorCommandList}
-                            onChange={content => setFieldValue('content', content)}
-                            selectedTab={values.mode}
-                            onTabChange={selectedTab => setFieldValue('mode', selectedTab)}
-                            generateMarkdownPreview={this.handleGerneratePreview}
-                            maxEditorHeight={400}
-                        />
-                        {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
-                        <div className="markdown-rules" onClick={this.props.openMarkdownRulesPopup}>
-                            Markdown Rules: <span className="icon-book" />
-                        </div>
+                        {touched.name && errors.name && <FormFeedback>{errors.name}</FormFeedback>}
                     </div>
                 </FormGroup>
                 <div className="list-button">
-                    <Button className="btn-submit float-right" disabled={isSubmitting} type="submit">{Labels.Submit}</Button>
+                    <Button className="btn-submit float-right" disabled={isSubmitting} type="submit">{Labels.Save}</Button>
                 </div>
-
             </Form >
         );
     }
 
     handleSubmit = (values, { setSubmitting }) => {
         setSubmitting(true);
-        this.props.createTemplate(values).then(() => {
-            if (this.props.createTemplateResult.isSuccessful) {
+        this.props.createSettingType(values).then(() => {
+            if (this.props.createSettingTypeResult.isSuccessful) {
                 setTimeout(() => {
                     this.props.onCreateSuccess();
                 }, 1000);
@@ -122,21 +84,18 @@ class NewNotificationTemplate extends Component {
 
     render() {
         return (
-            <Modal isOpen toggle={this.props.onClose} className="new-notification-template" backdrop="static">
-                <ModalHeader toggle={this.props.onClose}>Create New Notification Template</ModalHeader>
+            <Modal isOpen toggle={this.props.onClose} className="new-setting-type" backdrop="static">
+                <ModalHeader toggle={this.props.onClose}>New Msg Contents Type</ModalHeader>
                 <ModalBody>
-                    {this.props.createTemplateResult &&
-                        <ResponseMessage isSuccessful={this.props.createTemplateResult.isSuccessful}
-                            message={this.props.createTemplateResult.message || Labels.SubmitSuccessfully}
+                    {this.props.createSettingTypeResult &&
+                        <ResponseMessage isSuccessful={this.props.createSettingTypeResult.isSuccessful}
+                            message={this.props.createSettingTypeResult.message || Labels.SubmitSuccessfully}
                         />
                     }
                     <Formik ref="form"
                         initialValues={{
-                            notificationTypeId: '',
-                            notificationTemplateName: '',
-                            title: '',
-                            content: '',
-                            mode: 'write'
+                            msgContentType: '',
+                            name: ''
                         }}
                         render={this.renderForm}
                         validationSchema={this.schema}
@@ -150,17 +109,16 @@ class NewNotificationTemplate extends Component {
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({
-        createTemplate: ActionCreators.createTemplate,
+        createSettingType: ActionCreators.createSettingType,
         openMarkdownRulesPopup: ActionCreators.openMarkdownRulesPopup
     }, dispatch);
 };
 
 const mapStateToProps = state => {
-    const { createTemplateResult, notificationTypes } = state;
+    const { createSettingTypeResult } = state;
     return {
-        createTemplateResult,
-        notificationTypes
+        createSettingTypeResult
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewNotificationTemplate);
+export default connect(mapStateToProps, mapDispatchToProps)(NewSettingConfiguration);

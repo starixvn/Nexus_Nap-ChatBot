@@ -20,29 +20,29 @@ export const getMsgContentTypes = () => {
     };
 };
 
-// // Grid
-// export const setGridParams = value => {
-//     return {
-//         type: types.GRID_PARAMS,
-//         data: value
-//     };
-// };
+// Grid
+export const setGridParams = value => {
+    return {
+        type: types.GRID_PARAMS,
+        data: value
+    };
+};
 
-// export const setGridData = data => {
-//     return {
-//         type: types.GRID_DATA,
-//         data: data
-//     };
-// };
+export const setGridData = data => {
+    return {
+        type: types.GRID_DATA,
+        data: data
+    };
+};
 
-// export const getGridData = params => {
-//     const url = Site.resolveClientUrl('NotificationTemplate/Get');
-//     return dispatch => {
-//         return axios.get(url, { params: params }).then(response => {
-//             dispatch(setGridData(response.data));
-//         }).catch(errorResponseHandler);
-//     };
-// };
+export const getGridData = params => {
+    const url = Site.resolveClientUrl('SettingConfiguration/GetSettingTypes');
+    return dispatch => {
+        return axios.get(url, { params: params }).then(response => {
+            dispatch(setGridData(response.data));
+        }).catch(errorResponseHandler);
+    };
+};
 
 // // Delete
 // export const openDeleteTemplatePopup = extra => {
@@ -116,20 +116,20 @@ export const getMsgContentTypes = () => {
 //     };
 // };
 
-// //create template
-// export const setCreateTemplatePopup = data => {
-//     return {
-//         type: types.CREATE_POPUP_DATA,
-//         data: data
-//     };
-// };
+//create template
+export const setCreateSettingPopup = data => {
+    return {
+        type: types.CREATE_POPUP_DATA,
+        data: data
+    };
+};
 
-// export const setCreateTemplateResult = data => {
-//     return {
-//         type: types.CREATE_TEMPLATE_RESULT_DATA,
-//         data: data
-//     };
-// };
+export const setCreateSettingTypeResult = data => {
+    return {
+        type: types.CREATE_SETTING_TYPE_RESULT_DATA,
+        data: data
+    };
+};
 
 // export const createTemplate = data => {
 //     return async dispatch => axios({
@@ -141,7 +141,7 @@ export const getMsgContentTypes = () => {
 //             'RequestVerificationToken': Site.getXsrfToken()
 //         }
 //     }).then(response => {
-//         dispatch(setCreateTemplateResult(response.data));
+//         dispatch(setCreateSettingTypeResult(response.data));
 //     }).catch(errorResponseHandler);
 // };
 
@@ -165,10 +165,10 @@ export const getMsgContentTypes = () => {
 const actions = {
     setMsgContentTypes,
     getMsgContentTypes,
-    // setGridParams,
-    // getGridData,
-    // setCreateTemplatePopup,
-    // setCreateTemplateResult,
+    setGridParams,
+    getGridData,
+    setCreateSettingPopup,
+    setCreateSettingTypeResult,
     // createTemplate,
     // setEditTemplatePopup,
     // setEditTemplateResult,

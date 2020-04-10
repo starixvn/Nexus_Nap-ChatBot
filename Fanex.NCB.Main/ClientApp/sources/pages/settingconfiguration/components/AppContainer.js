@@ -23,19 +23,18 @@ export class AppContainer extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props);
         this.props.getMsgContentTypes();
     }
 
     handleOpenCreateSettingPopup = () => this.props.setCreateSettingPopup({ show: true })
 
-    // handleCloseCreateTemplatePopup = () => this.props.setCreateSettingPopup({ show: false })
+    handleCloseCreateSettingTypePopup = () => this.props.setCreateSettingPopup({ show: false })
 
-    // handleCreateSuccess = () => {
-    //     this.handleCloseCreateTemplatePopup();
-    //     this.props.setCreateTemplateResult(null);
-    //     this.props.getGridData(this.props.gridParams);
-    // }
+    handleCreateSuccess = () => {
+        this.handleCloseCreateSettingTypePopup();
+        // this.props.setCreateTemplateResult(null);
+        this.props.getGridData(this.props.gridParams);
+    }
 
     // handleEditSuccess = () => {
     //     this.props.setEditTemplatePopup({ show: false });
@@ -60,14 +59,14 @@ export class AppContainer extends Component {
         return (
             <>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Setting Management" />
-                {/* <Filter /> */}
-                {/* {this.haveHostPermission &&
-                    <button className="btn-new" onClick={this.handleOpenCreateSettingPopup}>{Labels.CreateNewTemplate}</button>
-                } */}
+                <Filter />
+                {this.haveHostPermission &&
+                    <button className="btn-new" onClick={this.handleOpenCreateSettingPopup}>{Labels.CreateNewSetting}</button>
+                }
                 <DataGrid haveHostPermission={this.haveHostPermission} />
-                {/* {this.props.createTemplatePopup.show &&
-                    <NewSettingConfiguration onClose={this.handleCloseCreateTemplatePopup} onCreateSuccess={this.handleCreateSuccess} />
-                } */}
+                {this.props.createSettingTypePopup.show &&
+                    <NewSettingConfiguration onClose={this.handleCloseCreateSettingTypePopup} onCreateSuccess={this.handleCreateSuccess} />
+                }
 
                 {/* {this.props.editTemplatePopup.show && <EditSettingConfiguration onEditSuccess={this.handleEditSuccess} />}
                 {this.props.deleteTemplatePopup.show &&
@@ -91,11 +90,11 @@ export class AppContainer extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    // const { gridParams, editTemplatePopup, createTemplatePopup, deleteTemplatePopup, markdownRulesPopup } = state;
+    const { gridParams, editTemplatePopup, createSettingTypePopup, deleteTemplatePopup, markdownRulesPopup } = state;
     return {
-        // gridParams,
+        gridParams,
         // editTemplatePopup,
-        // createTemplatePopup,
+        createSettingTypePopup,
         // deleteTemplatePopup,
         // markdownRulesPopup
     };

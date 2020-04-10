@@ -40,7 +40,7 @@ class Filter extends Component {
         this.props.getGridData(params);
     }
 
-    renderSettingTypeOption = item => <option key={item.MsgContentType} value={item.MsgContentType} >{item.Name}</option>
+    renderSettingTypeOption = item => <option key={item.msgContentType} value={item.msgContentType} >{item.name}</option>
 
     render() {
         return (

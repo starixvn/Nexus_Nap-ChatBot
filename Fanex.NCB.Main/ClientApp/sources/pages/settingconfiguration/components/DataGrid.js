@@ -12,22 +12,6 @@ import Panel, { PanelHeader } from '../../common/panel/index';
 export class DataGrid extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            expandPanels: false
-        };
-
-        this.panels = [];
-    }
-
-    toggleExpandPanels = () => {
-        this.setState(prevState => ({ expandPanels: !prevState.expandPanels }), () => {
-            if (this.props.gridData.total > 0) {
-                this.panels.filter(x => x && (x.state.isOpen !== this.state.expandPanels)).forEach(panel => {
-                    panel.set(this.state.expandPanels);
-                });
-            }
-        });
     }
 
     onPaging = (pageIndex, pageSize) => {
@@ -42,17 +26,11 @@ export class DataGrid extends Component {
     buildHeader = isHost => {
         return (
             <Row >
-                <Cell colWidth={5} header>{Labels.NumberCol}</Cell>
-                <Cell colWidth={20} header>{Labels.NotificationType}</Cell>
-                <Cell colWidth={20} header>{Labels.TemplateName}</Cell>
-                <Cell colWidth={100} header>
-                    <div className="has-icons">
-                        {Labels.TitleContent}
-                        <span className={this.state.expandPanels ? 'icon-collapse' : 'icon-expand'} onClick={this.toggleExpandPanels} />
-                    </div>
-                </Cell>
+                <Cell colWidth={10} header>{Labels.NumberCol}</Cell>
+                <Cell colWidth={35} header>{Labels.MsgContentsType}</Cell>
+                <Cell colWidth={35} header>{Labels.Name}</Cell>
                 {
-                    isHost && <Cell colWidth={10} header>{Labels.Action}</Cell>
+                    isHost && <Cell colWidth={20} header>{Labels.Action}</Cell>
                 }
             </Row>);
     };
@@ -66,40 +44,33 @@ export class DataGrid extends Component {
             return this.props.gridData.data.map((item, index) => this.renderRow(item, index, isHost));
         }
 
-        return [<Row key={`body${1}`} ><Cell colSpan="5"><NoDataTitle /></Cell></Row>];
+        return [<Row key={`body${1}`} ><Cell colSpan="4"><NoDataTitle /></Cell></Row>];
     }
 
-    handleEditTemplate = e => {
-        const id = parseInt(e.target.dataset.templateid, 10);
-        this.props.getTemplate(id);
-    }
+    // handleEditSettingType = e => {
+    //     const id = parseInt(e.target.dataset.templateid, 10);
+    //     this.props.getTemplate(id);
+    // }
 
-    handleDeleteTemplate = e => {
-        const id = parseInt(e.target.dataset.templateid, 10);
-        this.props.openDeleteTemplatePopup({ templateId: id });
-    }
+    // handleDeleteSettingType = e => {
+    //     const id = parseInt(e.target.dataset.templateid, 10);
+    //     this.props.openDeleteTemplatePopup({ templateId: id });
+    // }
 
     renderRow = (item, index, isHost) => (
-        <Row key={item.notificationTemplateId} >
+        <Row key={item.msgContentType} >
             <Cell className="text-center">{index + this.startIndex}</Cell>
-            <Cell>{item.notificationTypeName}</Cell>
-            <Cell>{item.notificationTemplateName}</Cell>
-            <Cell>
-                <Panel ref={panel => this.panels[index] = panel}>
-                    <PanelHeader>
-                        {item.title}
-                    </PanelHeader>
-                    <TemplatePreview text={item.content} />
-                </Panel></Cell>
+            <Cell>{item.msgContentType}</Cell>
+            <Cell>{item.name}</Cell>
             {
                 isHost &&
                 <Cell className="text-center">
                     <>
-                        <span className="icon-edit" data-templateid={item.notificationTemplateId} onClick={this.handleEditTemplate} />
+                        <span className="icon-edit" data-templateid={item.msgContentType} onClick={this.handleEditSettingType} />
                         {
                             item.unRemovable ?
                             <span className="icon-delete icon-disabled" /> :
-                            <span className="icon-delete" data-templateid={item.notificationTemplateId} onClick={this.handleDeleteTemplate} />
+                            <span className="icon-delete" data-templateid={item.msgContentType} onClick={this.handleDeleteSettingType} />
                         }
                     </>
                 </Cell>
@@ -125,7 +96,7 @@ export class DataGrid extends Component {
 
         return (
             <Table
-                width={1620}
+                width={600}
                 autoWidth={false}
                 header={this.buildHeader(haveHostPermission)}
                 body={this.buildBody(haveHostPermission)}
