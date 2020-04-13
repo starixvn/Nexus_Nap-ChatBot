@@ -40,10 +40,5 @@
         {
             return await baseService.GetDataAsync<User>(new GetUsersCriteria()).ConfigureAwait(false);
         }
-
-        public async Task<IEnumerable<SettingType>> GetSettingTypesAsync()
-        {
-            return await baseService.GetDataAsync<SettingType>(new GetSettingTypeCriteria()).ConfigureAwait(false);
-        }
     }
 }

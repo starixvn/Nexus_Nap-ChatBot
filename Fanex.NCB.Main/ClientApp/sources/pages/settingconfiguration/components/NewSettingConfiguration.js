@@ -14,12 +14,16 @@ class NewSettingConfiguration extends Component {
         super(props);
     }
 
+    componentDidMount = () => {
+        console.log('new', this.props)
+    }
+
     toggleHandler = () => {
         this.props.toggleHandler();
     }
 
     schema = object().shape({
-        msgContentType: string().required(Labels.FieldRequired),
+        type: string().required(Labels.FieldRequired),
         name: string().required(Labels.FieldRequired).max(250)
     })
 
@@ -41,14 +45,14 @@ class NewSettingConfiguration extends Component {
         return (
             <Form onSubmit={handleSubmit}>
                 <FormGroup>
-                    <Label for="msgContentType" className="form-label required">Msg Contents Type</Label>
+                    <Label for="type" className="form-label required">Msg Contents Type</Label>
                     <div>
-                        <Input invalid={touched.msgContentType && errors.msgContentType}
-                            name="msgContentType"
+                        <Input invalid={touched.type && errors.type}
+                            name="type"
                             onChange={handleChange}
-                            value={values.msgContentType}
+                            value={values.type}
                         />
-                        {touched.msgContentType && errors.msgContentType && <FormFeedback>{errors.msgContentType}</FormFeedback>}
+                        {touched.type && errors.type && <FormFeedback>{errors.type}</FormFeedback>}
                     </div>
                 </FormGroup>
                 <FormGroup>
@@ -94,7 +98,7 @@ class NewSettingConfiguration extends Component {
                     }
                     <Formik ref="form"
                         initialValues={{
-                            msgContentType: '',
+                            type: '',
                             name: ''
                         }}
                         render={this.renderForm}

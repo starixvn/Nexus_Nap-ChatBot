@@ -7,6 +7,7 @@
     using Fanex.NCB.Models.SettingConfiguration;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Fanex.NCB.Shared.Models;
 
     public class SettingConfigurationService : ISettingConfigurationService
     {
@@ -26,6 +27,20 @@
             }).ConfigureAwait(false);
 
             return (result.Item1.FirstOrDefault(), result.Item2);
+        }
+
+        public async Task<CommandResult> CreateAsync(CreateSettingType model)
+        {
+            var command = new CreateSettingTypeCommand
+            {
+                Type = model.Type,
+                Name = model.Name,
+                CreatorId = model.CreatorId
+            };
+
+            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+
+            return result;
         }
     }
 }

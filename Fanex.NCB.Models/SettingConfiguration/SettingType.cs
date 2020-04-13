@@ -2,7 +2,7 @@
 {
     public class SettingType
     {
-        public int MsgContentType { get; set; }
+        public int Type { get; set; }
 
         public string Name { get; set; }
     }

@@ -5,10 +5,13 @@
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
+    using Fanex.NCB.Main.ViewModel.SettingConfiguration;
+    using Fanex.NCB.Models.SettingConfiguration;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
     using static Fanex.NAP.Core.Business.Constant;
+    using System.Linq;
 
     //[NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class SettingConfigurationController : Controller
@@ -38,6 +41,26 @@
             var result = await _settingConfigurationService.GetSettingTypesAsync(pageIndex, pageSize).ConfigureAwait(false);
 
             return Json(new { total = result.Item1, data = result.Item2 });
+        }
+
+        [HttpPost]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
+        public async Task<IActionResult> Create([FromBody]CreateSettingTypeViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _settingConfigurationService.CreateAsync(new CreateSettingType
+                {
+                    Type = viewModel.Type,
+                    Name = viewModel.Name,
+                    CreatorId = _napSession.UserId
+                }).ConfigureAwait(false);
+
+                return Json(result);
+            }
+
+            var errors = ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
+            return Json(new { isSuccessful = false, errors });
         }
     }
 }

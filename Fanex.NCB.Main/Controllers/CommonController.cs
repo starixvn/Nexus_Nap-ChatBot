@@ -6,6 +6,8 @@
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
+    using System.Collections.Generic;
+    using Fanex.NCB.Models.Common;
 
     [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class CommonController : Controller
@@ -59,9 +61,17 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetSettingTypes()
+        public IActionResult GetSettingTypes()
         {
-            var result = await commonService.GetSettingTypesAsync().ConfigureAwait(false);
+            var result = new List<SettingType>
+            {
+                new SettingType
+                {
+                    Type = "Msg Contents Type",
+                    Value = 1
+                }
+            };
+
             return Json(result);
         }
     }

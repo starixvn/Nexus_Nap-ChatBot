@@ -40,7 +40,7 @@ class Filter extends Component {
         this.props.getGridData(params);
     }
 
-    renderSettingTypeOption = item => <option key={item.msgContentType} value={item.msgContentType} >{item.name}</option>
+    renderSettingTypeOption = item => <option key={item.value} value={item.value} >{item.type}</option>
 
     render() {
         return (
@@ -53,7 +53,7 @@ class Filter extends Component {
                         value={this.state.settingType}
                     >
                         <option value="">{Labels.All}</option>
-                        {this.props.msgContentTypes.map(this.renderSettingTypeOption)}
+                        {this.props.settingTypes.map(this.renderSettingTypeOption)}
 
                     </Input>
                 </FormGroup>
@@ -66,9 +66,9 @@ class Filter extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { msgContentTypes, gridParams } = state;
+    const { settingTypes, gridParams } = state;
     return {
-        msgContentTypes,
+        settingTypes,
         gridParams
     };
 };

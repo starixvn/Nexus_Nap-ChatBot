@@ -41,6 +41,7 @@ export class DataGrid extends Component {
         this.startIndex = (pageIndex - 1) * pageSize + 1;
 
         if (this.props.gridData.data.length > 0) {
+            console.log(this.props.gridData);
             return this.props.gridData.data.map((item, index) => this.renderRow(item, index, isHost));
         }
 
@@ -58,19 +59,19 @@ export class DataGrid extends Component {
     // }
 
     renderRow = (item, index, isHost) => (
-        <Row key={item.msgContentType} >
+        <Row key={item.type} >
             <Cell className="text-center">{index + this.startIndex}</Cell>
-            <Cell>{item.msgContentType}</Cell>
+            <Cell>{item.type}</Cell>
             <Cell>{item.name}</Cell>
             {
                 isHost &&
                 <Cell className="text-center">
                     <>
-                        <span className="icon-edit" data-templateid={item.msgContentType} onClick={this.handleEditSettingType} />
+                        <span className="icon-edit" data-templateid={item.type} onClick={this.handleEditSettingType} />
                         {
                             item.unRemovable ?
                             <span className="icon-delete icon-disabled" /> :
-                            <span className="icon-delete" data-templateid={item.msgContentType} onClick={this.handleDeleteSettingType} />
+                            <span className="icon-delete" data-templateid={item.type} onClick={this.handleDeleteSettingType} />
                         }
                     </>
                 </Cell>

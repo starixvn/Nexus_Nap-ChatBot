@@ -49,7 +49,7 @@ BEGIN
     FROM MsgContentTypeTable;
 
     SELECT
-        MsgContentType
+        MsgContentType AS Type
         ,Name
     FROM MsgContentTypeTable
     LIMIT rowStart, pageSize;

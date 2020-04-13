@@ -23,7 +23,8 @@ export class AppContainer extends Component {
     }
 
     componentDidMount() {
-        this.props.getMsgContentTypes();
+        this.props.getSettingTypes();
+        console.log('mr', this.props)
     }
 
     handleOpenCreateSettingPopup = () => this.props.setCreateSettingPopup({ show: true })

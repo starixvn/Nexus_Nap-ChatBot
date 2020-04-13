@@ -2,8 +2,8 @@ import createReducer from '../../lib/createReducer';
 import types from '../actions/types';
 
 // Setting
-export const msgContentTypes = createReducer({}, {
-    [types.MSGCONTENTTYPES_DATA](state, action) {
+export const settingTypes = createReducer({}, {
+    [types.SETTING_TYPES_DATA](state, action) {
         return action.data;
     }
 });
@@ -61,7 +61,7 @@ export const createSettingTypeResult = createReducer({}, {
 // });
 
 const reducers = {
-    msgContentTypes,
+    settingTypes,
     gridParams,
     gridData,
     createSettingTypePopup,

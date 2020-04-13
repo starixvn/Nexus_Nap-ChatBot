@@ -4,18 +4,18 @@ import Site from '../../lib/site';
 import errorResponseHandler from '../../lib/errorResponseHandler';
 
 // Settings
-export const setMsgContentTypes = data => {
+export const setSettingTypes = data => {
     return {
-        type: types.MSGCONTENTTYPES_DATA,
+        type: types.SETTING_TYPES_DATA,
         data: data
     };
 };
 
-export const getMsgContentTypes = () => {
+export const getSettingTypes = () => {
     const url = Site.resolveClientUrl('Common/GetSettingTypes');
     return dispatch => {
         return axios.get(url).then(response => {
-            dispatch(setMsgContentTypes(response.data));
+            dispatch(setSettingTypes(response.data));
         }).catch(errorResponseHandler);
     };
 };
@@ -131,19 +131,20 @@ export const setCreateSettingTypeResult = data => {
     };
 };
 
-// export const createTemplate = data => {
-//     return async dispatch => axios({
-//         url: Site.resolveClientUrl('NotificationTemplate/Create'),
-//         method: 'post',
-//         data: data,
-//         headers: {
-//             'X-Requested-With': 'XMLHttpRequest',
-//             'RequestVerificationToken': Site.getXsrfToken()
-//         }
-//     }).then(response => {
-//         dispatch(setCreateSettingTypeResult(response.data));
-//     }).catch(errorResponseHandler);
-// };
+export const createSettingType = data => {
+    console.log(data)
+    return async dispatch => axios({
+        url: Site.resolveClientUrl('SettingConfiguration/Create'),
+        method: 'post',
+        data: data,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'RequestVerificationToken': Site.getXsrfToken()
+        }
+    }).then(response => {
+        dispatch(setCreateSettingTypeResult(response.data));
+    }).catch(errorResponseHandler);
+};
 
 // // Markdown Rule
 // export const openMarkdownRulesPopup = () => {
@@ -163,13 +164,13 @@ export const setCreateSettingTypeResult = data => {
 // };
 
 const actions = {
-    setMsgContentTypes,
-    getMsgContentTypes,
+    setSettingTypes,
+    getSettingTypes,
     setGridParams,
     getGridData,
     setCreateSettingPopup,
     setCreateSettingTypeResult,
-    // createTemplate,
+    createSettingType,
     // setEditTemplatePopup,
     // setEditTemplateResult,
     // getTemplate,
