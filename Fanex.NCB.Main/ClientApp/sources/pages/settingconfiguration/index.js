@@ -12,19 +12,16 @@ const store = Store.createStore(reducer, {
     createSettingTypePopup: {
         show: false
     },
-    // editTemplatePopup: {
-    //     show: false
-    // },
-    // deleteTemplatePopup: {
+    editSettingTypePopup: {
+        show: false
+    },
+    // deleteSettingTypePopup: {
     //     show: false
     // },
     createSettingTypeResult: null,
-    // editTemplateResult: null,
-    // deleteTemplateResult: null,
-    // setEditTemplateResult: null,
-    // markdownRulesPopup: {
-    //     show: false
-    // }
+    editSettingTypeResult: null,
+    // deleteSettingTypeResult: null,
+    // setEditSettingTypeResult: null
 });
 
 renderLayout(

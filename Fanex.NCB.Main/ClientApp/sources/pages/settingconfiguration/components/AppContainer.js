@@ -10,8 +10,8 @@ import { NCBBreadcrum } from '../../common/breadcrumbs/breadcrumbs';
 import Filter from './Filter';
 import DataGrid from './DataGrid';
 import Labels from '../../common/Labels';
-import NewSettingConfiguration from './NewSettingConfiguration';
-import EditSettingConfiguration from './EditSettingConfiguration';
+import NewSettingType from './NewSettingType';
+import EditSettingType from './EditSettingType';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import MarkdownRules from '../../common/markdown-rules';
 
@@ -33,15 +33,15 @@ export class AppContainer extends Component {
 
     handleCreateSuccess = () => {
         this.handleCloseCreateSettingTypePopup();
-        // this.props.setCreateTemplateResult(null);
+        this.props.setCreateSettingTypeResult(null);
         this.props.getGridData(this.props.gridParams);
     }
 
-    // handleEditSuccess = () => {
-    //     this.props.setEditTemplatePopup({ show: false });
-    //     this.props.setEditTemplateResult(null);
-    //     this.props.getGridData(this.props.gridParams);
-    // }
+    handleEditSuccess = () => {
+        this.props.setEditSettingTypePopup({ show: false });
+        this.props.setEditSettignTypeResult(null);
+        this.props.getGridData(this.props.gridParams);
+    }
 
     // handleDeleteTemplate = () => {
     //     this.props.deleteTemplate(this.props.deleteTemplatePopup.templateId).then(data => {
@@ -66,23 +66,18 @@ export class AppContainer extends Component {
                 }
                 <DataGrid haveHostPermission={this.haveHostPermission} />
                 {this.props.createSettingTypePopup.show &&
-                    <NewSettingConfiguration onClose={this.handleCloseCreateSettingTypePopup} onCreateSuccess={this.handleCreateSuccess} />
+                    <NewSettingType onClose={this.handleCloseCreateSettingTypePopup} onCreateSuccess={this.handleCreateSuccess} />
                 }
 
-                {/* {this.props.editTemplatePopup.show && <EditSettingConfiguration onEditSuccess={this.handleEditSuccess} />}
-                {this.props.deleteTemplatePopup.show &&
+                {this.props.editSettingTypePopup && this.props.editSettingTypePopup.show && <EditSettingType onEditSuccess={this.handleEditSuccess} />}
+                {/* {this.props.deleteTemplatePopup.show &&
                     <ConfirmPopup
                         isOpen={this.props.deleteTemplatePopup.show}
                         onToggle={this.props.closeDeleteTemplatePopup}
                         onConfirm={this.handleDeleteTemplate}
                         content=" Do you want to delete the selected notification template?"
                     />
-                }
-
-                {this.props.markdownRulesPopup.show &&
-                    <MarkdownRules show={this.props.markdownRulesPopup.show} onToggle={this.props.closeMarkdownRulesPopup} />
                 } */}
-
             </>
         );
     }
@@ -91,13 +86,12 @@ export class AppContainer extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { gridParams, editTemplatePopup, createSettingTypePopup, deleteTemplatePopup, markdownRulesPopup } = state;
+    const { gridParams, editSettingTypePopup, createSettingTypePopup, deleteTemplatePopup } = state;
     return {
         gridParams,
-        // editTemplatePopup,
+        editSettingTypePopup,
         createSettingTypePopup,
         // deleteTemplatePopup,
-        // markdownRulesPopup
     };
 };
 

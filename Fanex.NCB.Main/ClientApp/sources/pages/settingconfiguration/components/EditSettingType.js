@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
@@ -9,13 +9,13 @@ import Labels from '../../common/Labels';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 import TemplatePreview from '../../common/TemplatePreview/index';
 
-class NewSettingConfiguration extends Component {
+class EditNotificationType extends Component {
     constructor(props) {
         super(props);
-    }
 
-    componentDidMount = () => {
-        console.log('new', this.props)
+        this.state = {
+            settingType: null
+        };
     }
 
     toggleHandler = () => {
@@ -26,12 +26,6 @@ class NewSettingConfiguration extends Component {
         type: string().required(Labels.FieldRequired),
         name: string().required(Labels.FieldRequired).max(250)
     })
-
-    handleGerneratePreview = markdown => {
-        return Promise.resolve(
-            <TemplatePreview text={markdown} />
-        );
-    }
 
     renderForm = ({
         values,
@@ -47,10 +41,9 @@ class NewSettingConfiguration extends Component {
                 <FormGroup>
                     <Label for="type" className="form-label required">Msg Contents Type</Label>
                     <div>
-                        <Input invalid={touched.type && errors.type}
-                            name="type"
+                        <Input value={values.type} name="type"
+                            invalid={touched.type && errors.type}
                             onChange={handleChange}
-                            value={values.type}
                         />
                         {touched.type && errors.type && <FormFeedback>{errors.type}</FormFeedback>}
                     </div>
@@ -58,16 +51,15 @@ class NewSettingConfiguration extends Component {
                 <FormGroup>
                     <Label for="name" className="form-label required">Name</Label>
                     <div>
-                        <Input invalid={touched.name && errors.name}
-                            name="name"
+                        <Input value={values.name} name="name"
+                            invalid={touched.name && errors.name}
                             onChange={handleChange}
-                            value={values.name}
                         />
                         {touched.name && errors.name && <FormFeedback>{errors.name}</FormFeedback>}
                     </div>
                 </FormGroup>
                 <div className="list-button">
-                    <Button className="btn-submit float-right" disabled={isSubmitting} type="submit">{Labels.Save}</Button>
+                    <Button className="btn-submit float-right" disabled={isSubmitting} type="submit">{Labels.Submit}</Button>
                 </div>
             </Form >
         );
@@ -75,10 +67,10 @@ class NewSettingConfiguration extends Component {
 
     handleSubmit = (values, { setSubmitting }) => {
         setSubmitting(true);
-        this.props.createSettingType(values).then(() => {
-            if (this.props.createSettingTypeResult.isSuccessful) {
+        this.props.editSettingType(values).then(() => {
+            if (this.props.editSettingTypeResult.isSuccessful) {
                 setTimeout(() => {
-                    this.props.onCreateSuccess();
+                    this.props.onEditSuccess();
                 }, 1000);
             } else {
                 setSubmitting(false);
@@ -86,21 +78,23 @@ class NewSettingConfiguration extends Component {
         });
     }
 
+    handleClose = () => {
+        this.props.setEditSettingTypeResult(null);
+        this.props.setEditSettingTypePopup({ show: false });
+    }
+
     render() {
         return (
-            <Modal isOpen toggle={this.props.onClose} className="new-setting-type" backdrop="static">
-                <ModalHeader toggle={this.props.onClose}>New Msg Contents Type</ModalHeader>
+            <Modal isOpen toggle={this.handleClose} className="new-setting-type" backdrop="static">
+                <ModalHeader toggle={this.handleClose}>Edit Msg Contents Type</ModalHeader>
                 <ModalBody>
-                    {this.props.createSettingTypeResult &&
-                        <ResponseMessage isSuccessful={this.props.createSettingTypeResult.isSuccessful}
-                            message={this.props.createSettingTypeResult.message || Labels.SubmitSuccessfully}
+                    {this.props.editSettingTypeResult &&
+                        <ResponseMessage isSuccessful={this.props.editSettingTypeResult.isSuccessful}
+                            message={this.props.editSettingTypeResult.message || Labels.SubmitSuccessfully}
                         />
                     }
                     <Formik ref="form"
-                        initialValues={{
-                            type: '',
-                            name: ''
-                        }}
+                        initialValues={this.props.editSettingTypePopup.settingType}
                         render={this.renderForm}
                         validationSchema={this.schema}
                         onSubmit={this.handleSubmit}
@@ -113,16 +107,19 @@ class NewSettingConfiguration extends Component {
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({
-        createSettingType: ActionCreators.createSettingType,
-        openMarkdownRulesPopup: ActionCreators.openMarkdownRulesPopup
+        editSettingType: ActionCreators.editSettingType,
+        setEditSettingTypePopup: ActionCreators.setEditSettingTypePopup,
+        setEditSettingTypeResult: ActionCreators.setEditSettingTypeResult
     }, dispatch);
 };
 
 const mapStateToProps = state => {
-    const { createSettingTypeResult } = state;
+    const { editSettingTypeResult, editSettingTypePopup, notificationTypes } = state;
     return {
-        createSettingTypeResult
+        editSettingTypeResult,
+        editSettingTypePopup,
+        notificationTypes
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewSettingConfiguration);
+export default connect(mapStateToProps, mapDispatchToProps)(EditNotificationType);

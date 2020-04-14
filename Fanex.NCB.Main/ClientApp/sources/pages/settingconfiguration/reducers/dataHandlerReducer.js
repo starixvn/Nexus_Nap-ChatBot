@@ -28,18 +28,18 @@ export const gridData = createReducer({}, {
 //     }
 // });
 
-// // Update Popup
-// export const editTemplatePopup = createReducer({}, {
-//     [types.EDIT_POPUP_DATA](state, action) {
-//         return action.data;
-//     }
-// });
+// Update Popup
+export const editSettingTypePopup = createReducer({}, {
+    [types.EDIT_POPUP_DATA](state, action) {
+        return action.data;
+    }
+});
 
-// export const editTemplateResult = createReducer({}, {
-//     [types.EDIT_RESULT_DATA](state, action) {
-//         return action.data;
-//     }
-// });
+export const editSettingTypeResult = createReducer({}, {
+    [types.EDIT_RESULT_DATA](state, action) {
+        return action.data;
+    }
+});
 
 // Create Popup
 export const createSettingTypePopup = createReducer({}, {
@@ -54,22 +54,15 @@ export const createSettingTypeResult = createReducer({}, {
     }
 });
 
-// export const markdownRulesPopup = createReducer({}, {
-//     [types.MARKDOWNRULE_POPUP_DATA](state, action) {
-//         return action.data;
-//     }
-// });
-
 const reducers = {
     settingTypes,
     gridParams,
     gridData,
     createSettingTypePopup,
     createSettingTypeResult,
-    // editTemplatePopup,
-    // editTemplateResult,
-    // deleteTemplatePopup,
-    // markdownRulesPopup
+    editSettingTypePopup,
+    editSettingTypeResult,
+    // deleteTemplatePopup
 };
 
 export default reducers;

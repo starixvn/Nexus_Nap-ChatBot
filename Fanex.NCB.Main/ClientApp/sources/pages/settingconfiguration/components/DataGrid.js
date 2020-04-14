@@ -48,14 +48,15 @@ export class DataGrid extends Component {
         return [<Row key={`body${1}`} ><Cell colSpan="4"><NoDataTitle /></Cell></Row>];
     }
 
-    // handleEditSettingType = e => {
-    //     const id = parseInt(e.target.dataset.templateid, 10);
-    //     this.props.getTemplate(id);
-    // }
+    handleEditSettingType = e => {
+        const type = parseInt(e.target.dataset.type, 10);
+        console.log(type)
+        this.props.getSettingType(type);
+    }
 
     // handleDeleteSettingType = e => {
-    //     const id = parseInt(e.target.dataset.templateid, 10);
-    //     this.props.openDeleteTemplatePopup({ templateId: id });
+    //     const id = parseInt(e.target.dataset.type, 10);
+    //     this.props.openDeleteTemplatePopup({ type: id });
     // }
 
     renderRow = (item, index, isHost) => (
@@ -67,11 +68,11 @@ export class DataGrid extends Component {
                 isHost &&
                 <Cell className="text-center">
                     <>
-                        <span className="icon-edit" data-templateid={item.type} onClick={this.handleEditSettingType} />
+                        <span className="icon-edit" data-type={item.type} onClick={this.handleEditSettingType} />
                         {
                             item.unRemovable ?
                             <span className="icon-delete icon-disabled" /> :
-                            <span className="icon-delete" data-templateid={item.type} onClick={this.handleDeleteSettingType} />
+                            <span className="icon-delete" data-type={item.type} onClick={this.handleDeleteSettingType} />
                         }
                     </>
                 </Cell>

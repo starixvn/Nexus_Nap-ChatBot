@@ -62,5 +62,34 @@
             var errors = ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
             return Json(new { isSuccessful = false, errors });
         }
+
+        [HttpGet]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
+        public async Task<IActionResult> GetByType(int type)
+        {
+            var result = await _settingConfigurationService.GetByTypeAsync(type).ConfigureAwait(false);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
+        public async Task<IActionResult> Update([FromBody]CreateSettingTypeViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _settingConfigurationService.UpdateAsync(new UpdateSettingType
+                {
+                    Type = viewModel.Type,
+                    Name = viewModel.Name,
+                    ModifiedBy = _napSession.UserId,
+                }).ConfigureAwait(false);
+
+                return Json(result);
+            }
+
+            var errors = ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
+            return Json(new { isSuccessful = false, errors });
+        }
     }
 }

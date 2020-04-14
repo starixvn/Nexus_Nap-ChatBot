@@ -73,48 +73,50 @@ export const getGridData = params => {
 //     }).then(response => response.data).catch(errorResponseHandler);
 // };
 
-// // Edit Popup
+// Edit Popup
 
-// export const setEditTemplatePopup = data => {
-//     return {
-//         type: types.EDIT_POPUP_DATA,
-//         data: data
-//     };
-// };
+export const setEditSettingTypePopup = data => {
+    return {
+        type: types.EDIT_POPUP_DATA,
+        data: data
+    };
+};
 
-// export const setEditTemplateResult = data => {
-//     return {
-//         type: types.EDIT_RESULT_DATA,
-//         data: data
-//     };
-// };
+export const setEditSettingTypeResult = data => {
+    return {
+        type: types.EDIT_RESULT_DATA,
+        data: data
+    };
+};
 
-// export const getTemplate = (templateId) => {
-//     return async dispatch => axios(Site.resolveClientUrl(`NotificationTemplate/GetById/${templateId}`))
-//         .then(response => {
-//             dispatch(setEditTemplatePopup({ show: true, template: response.data }));
-//         }).catch(errorResponseHandler);
-// };
+export const getSettingType = (type) => {
+    console.log('action', type)
+    return async dispatch => axios(Site.resolveClientUrl(`SettingConfiguration/GetByType?type=${type}`))
+        .then(response => {
+            console.log(response)
+            dispatch(setEditSettingTypePopup({ show: true, settingType: response.data }));
+        }).catch(errorResponseHandler);
+};
 
-// export const editTemplate = (data) => {
-//     return async dispatch => axios({
-//         url: Site.resolveClientUrl('NotificationTemplate/Edit'),
-//         method: 'post',
-//         data: data,
-//         headers: {
-//             'X-Requested-With': 'XMLHttpRequest',
-//             'RequestVerificationToken': Site.getXsrfToken()
-//         }
-//     }).then(response => {
-//         dispatch(setEditTemplateResult(response.data));
-//     }).catch(errorResponseHandler);
-// };
+export const editSettingType = (data) => {
+    return async dispatch => axios({
+        url: Site.resolveClientUrl('SettingConfiguration/Edit'),
+        method: 'post',
+        data: data,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'RequestVerificationToken': Site.getXsrfToken()
+        }
+    }).then(response => {
+        dispatch(setEditSettingTypeResult(response.data));
+    }).catch(errorResponseHandler);
+};
 
-// export const refreshUpdateData = () => {
-//     return dispatch => {
-//         dispatch(setUpdateData(null));
-//     };
-// };
+export const refreshUpdateData = () => {
+    return dispatch => {
+        dispatch(setUpdateData(null));
+    };
+};
 
 //create template
 export const setCreateSettingPopup = data => {
@@ -146,23 +148,6 @@ export const createSettingType = data => {
     }).catch(errorResponseHandler);
 };
 
-// // Markdown Rule
-// export const openMarkdownRulesPopup = () => {
-//     return {
-//         type: types.MARKDOWNRULE_POPUP_DATA,
-//         data: {
-//             show: true
-//         }
-//     };
-// };
-
-// export const closeMarkdownRulesPopup = () => {
-//     return {
-//         type: types.MARKDOWNRULE_POPUP_DATA,
-//         data: { show: false }
-//     };
-// };
-
 const actions = {
     setSettingTypes,
     getSettingTypes,
@@ -171,15 +156,13 @@ const actions = {
     setCreateSettingPopup,
     setCreateSettingTypeResult,
     createSettingType,
-    // setEditTemplatePopup,
-    // setEditTemplateResult,
-    // getTemplate,
-    // editTemplate,
-    // deleteTemplate,
-    // openDeleteTemplatePopup,
-    // closeDeleteTemplatePopup,
-    // openMarkdownRulesPopup,
-    // closeMarkdownRulesPopup
+    setEditSettingTypePopup,
+    setEditSettingTypeResult,
+    getSettingType,
+    editSettingType,
+    // deleteSettingType,
+    // openDeleteSettingTypePopup,
+    // closeDeleteSettingTypePopup
 };
 
 export default actions;

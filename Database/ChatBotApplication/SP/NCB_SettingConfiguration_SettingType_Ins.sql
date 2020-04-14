@@ -51,6 +51,7 @@ BEGIN
     IF EXISTS (
         SELECT 1 FROM SettingTypeTable
         WHERE MsgContentType = type
+            OR Name = name
     ) THEN
         SELECT 1 INTO errCode;
         SELECT CONCAT(name,' exists') INTO errMsg;

@@ -136,6 +136,7 @@
 
   <Function Name="Setting Configuration">
     <Setting Key="NCB_SettingConfiguration_SettingTypeList_Sel" SpName="NCB_SettingConfiguration_SettingTypeList_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_SettingConfiguration_SettingType_Sel" SpName="NCB_SettingConfiguration_SettingType_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SettingConfiguration_SettingType_Ins" SpName="NCB_SettingConfiguration_SettingType_Ins" DbName="ChatBot" Plain="0"></Setting>
   </Function>
 </Functions>

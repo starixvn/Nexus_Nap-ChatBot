@@ -10,5 +10,9 @@
         Task<(long, IEnumerable<SettingType>)> GetSettingTypesAsync(int pageIndex, int pageSize);
 
         Task<CommandResult> CreateAsync(CreateSettingType model);
+
+        Task<SettingType> GetByTypeAsync(int type);
+
+        Task<CommandResult> UpdateAsync(UpdateSettingType model);
     }
 }
