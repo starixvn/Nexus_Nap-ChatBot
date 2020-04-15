@@ -14,10 +14,6 @@ class NewSettingType extends Component {
         super(props);
     }
 
-    componentDidMount = () => {
-        console.log('new', this.props)
-    }
-
     toggleHandler = () => {
         this.props.toggleHandler();
     }

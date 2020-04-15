@@ -15,13 +15,11 @@ const store = Store.createStore(reducer, {
     editSettingTypePopup: {
         show: false
     },
-    // deleteSettingTypePopup: {
-    //     show: false
-    // },
+    deleteSettingTypePopup: {
+        show: false
+    },
     createSettingTypeResult: null,
-    editSettingTypeResult: null,
-    // deleteSettingTypeResult: null,
-    // setEditSettingTypeResult: null
+    editSettingTypeResult: null
 });
 
 renderLayout(

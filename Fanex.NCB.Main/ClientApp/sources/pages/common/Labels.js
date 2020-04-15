@@ -50,5 +50,6 @@
     SettingType: 'Setting Type',
     CreateNewSetting: 'Create New Setting',
     MsgContentsType: 'MsgContentsType',
-    Name: 'Name'
+    Name: 'Name',
+    DeleteSettingTypeSuccessfully: 'Delete Setting Type Successfully'
 };

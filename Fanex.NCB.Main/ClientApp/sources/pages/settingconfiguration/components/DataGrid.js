@@ -5,9 +5,6 @@ import { ActionCreators } from '../actions/index';
 import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 import Labels from '../../common/Labels';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';
-import TemplatePreview from '../../common/TemplatePreview/index';
-
-import Panel, { PanelHeader } from '../../common/panel/index';
 
 export class DataGrid extends Component {
     constructor(props) {
@@ -41,7 +38,6 @@ export class DataGrid extends Component {
         this.startIndex = (pageIndex - 1) * pageSize + 1;
 
         if (this.props.gridData.data.length > 0) {
-            console.log(this.props.gridData);
             return this.props.gridData.data.map((item, index) => this.renderRow(item, index, isHost));
         }
 
@@ -50,14 +46,13 @@ export class DataGrid extends Component {
 
     handleEditSettingType = e => {
         const type = parseInt(e.target.dataset.type, 10);
-        console.log(type)
         this.props.getSettingType(type);
     }
 
-    // handleDeleteSettingType = e => {
-    //     const id = parseInt(e.target.dataset.type, 10);
-    //     this.props.openDeleteTemplatePopup({ type: id });
-    // }
+    handleDeleteSettingType = e => {
+        const type = parseInt(e.target.dataset.type, 10);
+        this.props.openDeleteSettingTypePopup({ type });
+    }
 
     renderRow = (item, index, isHost) => (
         <Row key={item.type} >

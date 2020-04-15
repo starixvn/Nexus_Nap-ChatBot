@@ -21,12 +21,12 @@ export const gridData = createReducer({}, {
     }
 });
 
-// // Delete
-// export const deleteTemplatePopup = createReducer({}, {
-//     [types.DELETE_POPUP_DATA](state, action) {
-//         return action.data;
-//     }
-// });
+// Delete
+export const deleteSettingTypePopup = createReducer({}, {
+    [types.DELETE_POPUP_DATA](state, action) {
+        return action.data;
+    }
+});
 
 // Update Popup
 export const editSettingTypePopup = createReducer({}, {
@@ -62,7 +62,7 @@ const reducers = {
     createSettingTypeResult,
     editSettingTypePopup,
     editSettingTypeResult,
-    // deleteTemplatePopup
+    deleteSettingTypePopup
 };
 
 export default reducers;

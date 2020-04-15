@@ -66,5 +66,17 @@
 
             return result;
         }
+
+        public async Task<CommandResult> DeleteAsync(int type)
+        {
+            var command = new DeleteSettingTypeCommand
+            {
+                Type = type
+            };
+
+            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+
+            return result;
+        }
     }
 }

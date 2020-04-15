@@ -44,6 +44,7 @@ class EditNotificationType extends Component {
                         <Input value={values.type} name="type"
                             invalid={touched.type && errors.type}
                             onChange={handleChange}
+                            disabled
                         />
                         {touched.type && errors.type && <FormFeedback>{errors.type}</FormFeedback>}
                     </div>

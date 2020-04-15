@@ -44,34 +44,35 @@ export const getGridData = params => {
     };
 };
 
-// // Delete
-// export const openDeleteTemplatePopup = extra => {
-//     return {
-//         type: types.DELETE_POPUP_DATA,
-//         data: {
-//             show: true,
-//             ...extra
-//         }
-//     };
-// };
+// Delete
+export const openDeleteSettingTypePopup = extra => {
+    console.log(extra)
+    return {
+        type: types.DELETE_POPUP_DATA,
+        data: {
+            show: true,
+            ...extra
+        }
+    };
+};
 
-// export const closeDeleteTemplatePopup = () => {
-//     return {
-//         type: types.DELETE_POPUP_DATA,
-//         data: { show: false }
-//     };
-// };
+export const closeDeleteSettingTypePopup = () => {
+    return {
+        type: types.DELETE_POPUP_DATA,
+        data: { show: false }
+    };
+};
 
-// export const deleteTemplate = notificationTemplateId => {
-//     return async dispatch => axios({
-//         url: Site.resolveClientUrl(`NotificationTemplate/Delete/${notificationTemplateId}`),
-//         method: 'post',
-//         headers: {
-//             'X-Requested-With': 'XMLHttpRequest',
-//             'RequestVerificationToken': Site.getXsrfToken()
-//         }
-//     }).then(response => response.data).catch(errorResponseHandler);
-// };
+export const deleteSettingType = type => {
+    return async dispatch => axios({
+        url: Site.resolveClientUrl(`SettingConfiguration/Delete?type=${type}`),
+        method: 'post',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'RequestVerificationToken': Site.getXsrfToken()
+        }
+    }).then(response => response.data).catch(errorResponseHandler);
+};
 
 // Edit Popup
 
@@ -90,17 +91,16 @@ export const setEditSettingTypeResult = data => {
 };
 
 export const getSettingType = (type) => {
-    console.log('action', type)
+    console.log(type)
     return async dispatch => axios(Site.resolveClientUrl(`SettingConfiguration/GetByType?type=${type}`))
         .then(response => {
-            console.log(response)
             dispatch(setEditSettingTypePopup({ show: true, settingType: response.data }));
         }).catch(errorResponseHandler);
 };
 
 export const editSettingType = (data) => {
     return async dispatch => axios({
-        url: Site.resolveClientUrl('SettingConfiguration/Edit'),
+        url: Site.resolveClientUrl('SettingConfiguration/Update'),
         method: 'post',
         data: data,
         headers: {
@@ -134,7 +134,6 @@ export const setCreateSettingTypeResult = data => {
 };
 
 export const createSettingType = data => {
-    console.log(data)
     return async dispatch => axios({
         url: Site.resolveClientUrl('SettingConfiguration/Create'),
         method: 'post',
@@ -160,9 +159,9 @@ const actions = {
     setEditSettingTypeResult,
     getSettingType,
     editSettingType,
-    // deleteSettingType,
-    // openDeleteSettingTypePopup,
-    // closeDeleteSettingTypePopup
+    deleteSettingType,
+    openDeleteSettingTypePopup,
+    closeDeleteSettingTypePopup
 };
 
 export default actions;

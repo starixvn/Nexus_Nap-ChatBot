@@ -14,5 +14,7 @@
         Task<SettingType> GetByTypeAsync(int type);
 
         Task<CommandResult> UpdateAsync(UpdateSettingType model);
+
+        Task<CommandResult> DeleteAsync(int type);
     }
 }

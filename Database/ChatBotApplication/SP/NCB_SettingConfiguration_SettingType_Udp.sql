@@ -19,7 +19,7 @@ SQL SECURITY DEFINER
 BEGIN
     DECLARE jsonValue		JSON;
     DECLARE iLoop 			INT;
-    DECLARE rowNumber 		INT;
+    DECLARE rowIndex 		INT;
 
     SET errCode = 0, errMsg = ''; 
     SET iLoop = 0;
@@ -30,7 +30,7 @@ BEGIN
 
     DROP TEMPORARY TABLE IF EXISTS SettingTypeTable;
     CREATE TEMPORARY TABLE SettingTypeTable (
-		RowNumber		INT
+		RowIndex		INT
         ,MsgContentType	INT
         ,Name           VARCHAR (250)
     );
@@ -39,7 +39,7 @@ BEGIN
 		JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentType')) IS NOT NULL
 	) DO
         INSERT INTO SettingTypeTable (
-            RowNumber
+            RowIndex
             ,MsgContentType
             ,Name
         )
@@ -52,31 +52,31 @@ BEGIN
     END WHILE;
 
     IF NOT EXISTS (
-        SELECT 1 FROM SettingTypeTable
-        WHERE MsgContentType = type
+        SELECT 1 FROM SettingTypeTable stt
+        WHERE stt.MsgContentType = type
     ) THEN
         SELECT 1 INTO errCode;
         SELECT CONCAT('This setting type not exists') INTO errMsg;
     ELSE
 		IF EXISTS (
-			SELECT 1 FROM SettingTypeTable
-            WHERE MsgContentType != type
-				AND Name = name
+			SELECT 1 FROM SettingTypeTable stt
+            WHERE stt.MsgContentType != type
+				AND stt.Name = name
         ) THEN
 			SELECT 2 INTO errCode;
 			SELECT CONCAT(name, ' exists') INTO errMsg;
+        ELSE
+            SELECT stt.RowIndex INTO rowIndex
+            FROM SettingTypeTable stt
+            WHERE stt.MsgContentType = type;
+            
+            UPDATE SystemSetting
+            SET Value = JSON_SET(jsonValue,
+                CONCAT('$[', rowIndex, '].Name'), name
+                ,CONCAT('$[', rowIndex, '].ModifiedBy'), modifiedBy
+                ,CONCAT('$[', rowIndex, '].ModifiedDate'), DATE_FORMAT(UTC_TIMESTAMP(), '%Y-%m-%d %T' ))
+            WHERE Id = 9999;
         END IF;
-        
-		SELECT RowNumber INTO rowNumber
-        FROM SettingTypeTable
-        WHERE MsgContentType = type;
-        
-        UPDATE SystemSetting
-        SET Value = JSON_SET(jsonValue,
-			CONCAT('$[', rowNumber, '].Name'), name
-            ,CONCAT('$[', rowNumber, '].ModifiedBy'), modifiedBy
-            ,CONCAT('$[', rowNumber, '].ModifiedDate'), DATE_FORMAT(UTC_TIMESTAMP(), '%Y-%m-%d %T' ))
-        WHERE Id = 9999;
     END IF;
 END;
 

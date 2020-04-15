@@ -91,5 +91,20 @@
             var errors = ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
             return Json(new { isSuccessful = false, errors });
         }
+
+        [HttpPost]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
+        public async Task<IActionResult> Delete(int type)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _settingConfigurationService.DeleteAsync(type).ConfigureAwait(false);
+
+                return Json(result);
+            }
+
+            var errors = ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
+            return Json(new { isSuccessful = false, errors });
+        }
     }
 }

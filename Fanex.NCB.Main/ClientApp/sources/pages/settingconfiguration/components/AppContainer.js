@@ -13,7 +13,6 @@ import Labels from '../../common/Labels';
 import NewSettingType from './NewSettingType';
 import EditSettingType from './EditSettingType';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
-import MarkdownRules from '../../common/markdown-rules';
 
 export class AppContainer extends Component {
     constructor(props) {
@@ -24,7 +23,7 @@ export class AppContainer extends Component {
 
     componentDidMount() {
         this.props.getSettingTypes();
-        console.log('mr', this.props)
+        console.log(this.props)
     }
 
     handleOpenCreateSettingPopup = () => this.props.setCreateSettingPopup({ show: true })
@@ -39,22 +38,22 @@ export class AppContainer extends Component {
 
     handleEditSuccess = () => {
         this.props.setEditSettingTypePopup({ show: false });
-        this.props.setEditSettignTypeResult(null);
+        this.props.setEditSettingTypeResult(null);
         this.props.getGridData(this.props.gridParams);
     }
 
-    // handleDeleteTemplate = () => {
-    //     this.props.deleteTemplate(this.props.deleteTemplatePopup.templateId).then(data => {
-    //         if (data.isSuccessful) {
-    //             this.props.getGridData(this.props.gridParams);
-    //             toast.success(Labels.DeleteTemplateSuccessfully);
-    //         } else {
-    //             toast.error(data.message);
-    //         }
-    //     });
+    handleDeleteSettingType = () => {
+        this.props.deleteSettingType(this.props.deleteSettingTypePopup.type).then(data => {
+            if (data.isSuccessful) {
+                this.props.getGridData(this.props.gridParams);
+                toast.success(Labels.DeleteSettingTypeSuccessfully);
+            } else {
+                toast.error(data.message);
+            }
+        });
 
-    //     this.props.closeDeleteTemplatePopup();
-    // }
+        this.props.closeDeleteSettingTypePopup();
+    }
 
     render() {
         return (
@@ -70,14 +69,15 @@ export class AppContainer extends Component {
                 }
 
                 {this.props.editSettingTypePopup && this.props.editSettingTypePopup.show && <EditSettingType onEditSuccess={this.handleEditSuccess} />}
-                {/* {this.props.deleteTemplatePopup.show &&
+
+                {this.props.deleteSettingTypePopup && this.props.deleteSettingTypePopup.show &&
                     <ConfirmPopup
-                        isOpen={this.props.deleteTemplatePopup.show}
-                        onToggle={this.props.closeDeleteTemplatePopup}
-                        onConfirm={this.handleDeleteTemplate}
-                        content=" Do you want to delete the selected notification template?"
+                        isOpen={this.props.deleteSettingTypePopup.show}
+                        onToggle={this.props.closeDeleteSettingTypePopup}
+                        onConfirm={this.handleDeleteSettingType}
+                        content=" Do you want to delete the selected setting type?"
                     />
-                } */}
+                }
             </>
         );
     }
@@ -86,12 +86,12 @@ export class AppContainer extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { gridParams, editSettingTypePopup, createSettingTypePopup, deleteTemplatePopup } = state;
+    const { gridParams, editSettingTypePopup, createSettingTypePopup, deleteSettingTypePopup } = state;
     return {
         gridParams,
         editSettingTypePopup,
         createSettingTypePopup,
-        // deleteTemplatePopup,
+        deleteSettingTypePopup,
     };
 };
 
