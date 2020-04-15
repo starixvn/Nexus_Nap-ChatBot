@@ -6,8 +6,10 @@
     {
         public int Type { get; set; }
 
+        public int ModifiedBy { get; set; }
+
         public override string GetSettingKey() => "NCB_SettingConfiguration_SettingType_Del";
 
-        public override bool IsValid() => true;
+        public override bool IsValid() => Type > 0 && ModifiedBy > 0;
     }
 }

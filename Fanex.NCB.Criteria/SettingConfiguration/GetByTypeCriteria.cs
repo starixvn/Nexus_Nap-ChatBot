@@ -8,6 +8,6 @@
 
         public override string GetSettingKey() => "NCB_SettingConfiguration_SettingType_Sel";
 
-        public override bool IsValid() => true;
+        public override bool IsValid() => Type > 0;
     }
 }

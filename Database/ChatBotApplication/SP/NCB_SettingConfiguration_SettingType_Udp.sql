@@ -17,16 +17,22 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_SettingTy
 )
 SQL SECURITY DEFINER
 BEGIN
-    DECLARE jsonValue		JSON;
-    DECLARE iLoop 			INT;
-    DECLARE rowIndex 		INT;
+	DECLARE startTime	DATETIME(3) DEFAULT UTC_TIMESTAMP(3);
+    DECLARE finishTime	DATETIME(3); 
+    DECLARE duration	INT;							
+    DECLARE logContent	TEXT CHARACTER SET utf8mb4;
+    DECLARE actionId	INT DEFAULT 21;
+    DECLARE updateTime	VARCHAR (20);
+    DECLARE jsonValue	JSON;
+    DECLARE iLoop 		INT;
+    DECLARE rowIndex 	INT;
 
     SET errCode = 0, errMsg = ''; 
     SET iLoop = 0;
     
-    SELECT Value INTO jsonValue
-    FROM SystemSetting
-    WHERE Id = 9999;
+    SELECT ss.Value INTO jsonValue
+    FROM SystemSetting ss
+    WHERE ss.Id = 9999;
 
     DROP TEMPORARY TABLE IF EXISTS SettingTypeTable;
     CREATE TEMPORARY TABLE SettingTypeTable (
@@ -70,12 +76,37 @@ BEGIN
             FROM SettingTypeTable stt
             WHERE stt.MsgContentType = type;
             
+            SET updateTime = DATE_FORMAT(UTC_TIMESTAMP(), '%Y-%m-%d %T' );
+            
             UPDATE SystemSetting
             SET Value = JSON_SET(jsonValue,
                 CONCAT('$[', rowIndex, '].Name'), name
                 ,CONCAT('$[', rowIndex, '].ModifiedBy'), modifiedBy
-                ,CONCAT('$[', rowIndex, '].ModifiedDate'), DATE_FORMAT(UTC_TIMESTAMP(), '%Y-%m-%d %T' ))
+                ,CONCAT('$[', rowIndex, '].ModifiedDate'), updateTime)
             WHERE Id = 9999;
+    
+			#Get Finish Time to calcualte execution duration
+			SET finishTime = UTC_TIMESTAMP(3);
+			SET duration =  TIMESTAMPDIFF(MICROSECOND, startTime, finishTime)  / 1000; 	#miliseconds;
+            
+			#Get Log Content, JSON format
+			SELECT json_object(
+                'msgContentType', type
+				,'name', name
+				,'modifiedBy', modifiedBy
+				,'modifiedDate', updateTime
+			)
+			INTO logContent;
+			
+			#Write User Log
+			CALL NCB_UserLog_RunSP_Ins(
+				actionId
+				,type 
+				,modifiedBy 
+				,logContent 
+				,startTime 
+				,duration
+			);
         END IF;
     END IF;
 END;

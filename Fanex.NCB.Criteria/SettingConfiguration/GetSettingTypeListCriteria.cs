@@ -7,9 +7,11 @@
         public int PageIndex { get; set; }
 
         public int PageSize { get; set; }
+
+        public int? SettingType { get; set; }
         
         public override string GetSettingKey() => "NCB_SettingConfiguration_SettingTypeList_Sel";
 
-        public override bool IsValid() => true;
+        public override bool IsValid() => PageIndex > 0 && PageSize > 0;
     }
 }

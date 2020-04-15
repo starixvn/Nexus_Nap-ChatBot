@@ -23,16 +23,17 @@ export class AppContainer extends Component {
 
     componentDidMount() {
         this.props.getSettingTypes();
-        console.log(this.props)
     }
 
     handleOpenCreateSettingPopup = () => this.props.setCreateSettingPopup({ show: true })
 
-    handleCloseCreateSettingTypePopup = () => this.props.setCreateSettingPopup({ show: false })
+    handleCloseCreateSettingTypePopup = () => {
+        this.props.setCreateSettingPopup({ show: false });
+        this.props.setCreateSettingTypeResult(null);
+    }
 
     handleCreateSuccess = () => {
         this.handleCloseCreateSettingTypePopup();
-        this.props.setCreateSettingTypeResult(null);
         this.props.getGridData(this.props.gridParams);
     }
 
@@ -46,7 +47,7 @@ export class AppContainer extends Component {
         this.props.deleteSettingType(this.props.deleteSettingTypePopup.type).then(data => {
             if (data.isSuccessful) {
                 this.props.getGridData(this.props.gridParams);
-                toast.success(Labels.DeleteSettingTypeSuccessfully);
+                toast.success(Labels.DeleteMsgContentsTypeSuccessfully);
             } else {
                 toast.error(data.message);
             }
@@ -75,7 +76,7 @@ export class AppContainer extends Component {
                         isOpen={this.props.deleteSettingTypePopup.show}
                         onToggle={this.props.closeDeleteSettingTypePopup}
                         onConfirm={this.handleDeleteSettingType}
-                        content=" Do you want to delete the selected setting type?"
+                        content={`Do you want to delete Msg Contents Type ${this.props.deleteSettingTypePopup.name}?`}
                     />
                 }
             </>

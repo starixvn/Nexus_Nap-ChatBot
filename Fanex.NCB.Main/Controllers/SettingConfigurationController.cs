@@ -36,7 +36,7 @@
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
-        public async Task<IActionResult> GetSettingTypes(int pageIndex, int pageSize)
+        public async Task<IActionResult> GetSettingTypes(int pageIndex, int pageSize, int? settingType)
         {
             var result = await _settingConfigurationService.GetSettingTypesAsync(pageIndex, pageSize).ConfigureAwait(false);
 
@@ -98,7 +98,7 @@
         {
             if (ModelState.IsValid)
             {
-                var result = await _settingConfigurationService.DeleteAsync(type).ConfigureAwait(false);
+                var result = await _settingConfigurationService.DeleteAsync(type, _napSession.UserId).ConfigureAwait(false);
 
                 return Json(result);
             }

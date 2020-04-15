@@ -60,7 +60,7 @@ class EditNotificationType extends Component {
                     </div>
                 </FormGroup>
                 <div className="list-button">
-                    <Button className="btn-submit float-right" disabled={isSubmitting} type="submit">{Labels.Submit}</Button>
+                    <Button className="btn-submit float-right" disabled={isSubmitting} type="submit">{Labels.Save}</Button>
                 </div>
             </Form >
         );
@@ -91,7 +91,7 @@ class EditNotificationType extends Component {
                 <ModalBody>
                     {this.props.editSettingTypeResult &&
                         <ResponseMessage isSuccessful={this.props.editSettingTypeResult.isSuccessful}
-                            message={this.props.editSettingTypeResult.message || Labels.SubmitSuccessfully}
+                            message={this.props.editSettingTypeResult.message || Labels.EditMsgContentsTypeSuccessfully}
                         />
                     }
                     <Formik ref="form"

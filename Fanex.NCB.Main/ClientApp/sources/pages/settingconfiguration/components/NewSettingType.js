@@ -83,7 +83,7 @@ class NewSettingType extends Component {
                 <ModalBody>
                     {this.props.createSettingTypeResult &&
                         <ResponseMessage isSuccessful={this.props.createSettingTypeResult.isSuccessful}
-                            message={this.props.createSettingTypeResult.message || Labels.SubmitSuccessfully}
+                            message={this.props.createSettingTypeResult.message || Labels.CreateNewMsgContentsTypeSuccessfully}
                         />
                     }
                     <Formik ref="form"

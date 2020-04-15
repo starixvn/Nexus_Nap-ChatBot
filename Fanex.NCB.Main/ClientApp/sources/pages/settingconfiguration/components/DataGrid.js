@@ -51,7 +51,7 @@ export class DataGrid extends Component {
 
     handleDeleteSettingType = e => {
         const type = parseInt(e.target.dataset.type, 10);
-        this.props.openDeleteSettingTypePopup({ type });
+        this.props.openDeleteSettingTypePopup({ type, name: e.target.dataset.name });
     }
 
     renderRow = (item, index, isHost) => (
@@ -67,7 +67,7 @@ export class DataGrid extends Component {
                         {
                             item.unRemovable ?
                             <span className="icon-delete icon-disabled" /> :
-                            <span className="icon-delete" data-type={item.type} onClick={this.handleDeleteSettingType} />
+                            <span className="icon-delete" data-type={item.type} data-name={item.name} onClick={this.handleDeleteSettingType} />
                         }
                     </>
                 </Cell>

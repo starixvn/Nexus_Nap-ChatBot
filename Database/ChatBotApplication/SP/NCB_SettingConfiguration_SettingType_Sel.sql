@@ -21,9 +21,9 @@ BEGIN
     SET errCode = 0, errMsg = ''; 
     SET iLoop = 0;
     
-    SELECT Value INTO jsonValue
-    FROM SystemSetting
-    WHERE Id = 9999;
+    SELECT ss.Value INTO jsonValue
+    FROM SystemSetting ss
+    WHERE ss.Id = 9999;
 
     DROP TEMPORARY TABLE IF EXISTS SettingTypeTable;
     CREATE TEMPORARY TABLE SettingTypeTable (
@@ -46,17 +46,17 @@ BEGIN
     END WHILE;
 
     IF NOT EXISTS (
-        SELECT 1 FROM SettingTypeTable
-        WHERE MsgContentType = type
+        SELECT 1 FROM SettingTypeTable stt
+        WHERE stt.MsgContentType = type
     ) THEN
         SELECT 1 INTO errCode;
         SELECT CONCAT(name,' not exists') INTO errMsg;
     ELSE
 		SELECT
-			MsgContentType AS Type
-            ,Name
-		FROM SettingTypeTable
-        WHERE MsgContentType = type;
+			stt.MsgContentType AS Type
+            ,stt.Name
+		FROM SettingTypeTable stt
+        WHERE stt.MsgContentType = type;
     END IF;
 END;
 

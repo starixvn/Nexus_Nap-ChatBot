@@ -46,7 +46,6 @@ export const getGridData = params => {
 
 // Delete
 export const openDeleteSettingTypePopup = extra => {
-    console.log(extra)
     return {
         type: types.DELETE_POPUP_DATA,
         data: {
@@ -91,7 +90,6 @@ export const setEditSettingTypeResult = data => {
 };
 
 export const getSettingType = (type) => {
-    console.log(type)
     return async dispatch => axios(Site.resolveClientUrl(`SettingConfiguration/GetByType?type=${type}`))
         .then(response => {
             dispatch(setEditSettingTypePopup({ show: true, settingType: response.data }));

@@ -17,16 +17,21 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_SettingTy
 )
 SQL SECURITY DEFINER
 BEGIN
+	DECLARE startTime	DATETIME(3) DEFAULT UTC_TIMESTAMP(3);
+    DECLARE finishTime	DATETIME(3); 
+    DECLARE duration	INT;							
+    DECLARE logContent	TEXT CHARACTER SET utf8mb4;
     DECLARE jsonValue	JSON;
-    DECLARE iLoop 		INT;
+    DECLARE iLoop 		INT DEFAULT 0;
     DECLARE dataString	VARCHAR (4000);
+    DECLARE actionId	INT DEFAULT 20;
+    DECLARE insertTime	VARCHAR (20);
 
-    SET errCode = 0, errMsg = ''; 
-    SET iLoop = 0;
+    SET errCode = 0, errMsg = '';
     
-    SELECT Value INTO jsonValue
-    FROM SystemSetting
-    WHERE Id = 9999;
+    SELECT ss.Value INTO jsonValue
+    FROM SystemSetting ss
+    WHERE ss.Id = 9999;
 
     DROP TEMPORARY TABLE IF EXISTS SettingTypeTable;
     CREATE TEMPORARY TABLE SettingTypeTable (
@@ -49,14 +54,15 @@ BEGIN
     END WHILE;
 
     IF EXISTS (
-        SELECT 1 FROM SettingTypeTable
-        WHERE MsgContentType = type
-            OR Name = name
+        SELECT 1 FROM SettingTypeTable ss
+        WHERE ss.MsgContentType = type
+            OR ss.Name = name
     ) THEN
         SELECT 1 INTO errCode;
         SELECT CONCAT(name,' exists') INTO errMsg;
     ELSE
-		SET dataString = CONCAT('{"MsgContentType": ', type, ', "Name": "', name, '", "CreatorId": ', creatorId, ', "CreatedDate" : "',  DATE_FORMAT(UTC_TIMESTAMP(), '%Y-%m-%d %T' ), '"}');
+		SET insertTime = DATE_FORMAT(UTC_TIMESTAMP(), '%Y-%m-%d %T' );
+		SET dataString = CONCAT('{"MsgContentType": ', type, ', "Name": "', name, '", "CreatorId": ', creatorId, ', "CreatedDate" : "', insertTime, '"}');
         
         UPDATE SystemSetting
         SET
@@ -71,6 +77,28 @@ BEGIN
                 CAST(dataString AS JSON)
             )
         WHERE Id = 9999;
+    
+        #Get Finish Time to calcualte execution duration
+        SET finishTime = UTC_TIMESTAMP(3);
+        SET duration =  TIMESTAMPDIFF(MICROSECOND, startTime, finishTime)  / 1000; 	#miliseconds;
+        #Get Log Content, JSON format
+        SELECT json_object(
+            'msgContentType', type
+            ,'name', name
+            ,'creatorId', creatorId
+            ,'createdDate', insertTime
+        )
+        INTO logContent;
+        
+        #Write User Log
+        CALL NCB_UserLog_RunSP_Ins(
+            actionId
+            ,type 
+            ,creatorId 
+            ,logContent 
+            ,startTime 
+            ,duration
+        );
     END IF;
 END;
 

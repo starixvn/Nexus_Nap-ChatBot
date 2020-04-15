@@ -52,7 +52,6 @@ class Filter extends Component {
                         onChange={this.handleSettingTypeChange}
                         value={this.state.settingType}
                     >
-                        <option value="">{Labels.All}</option>
                         {this.props.settingTypes.map(this.renderSettingTypeOption)}
 
                     </Input>

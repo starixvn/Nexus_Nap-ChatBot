@@ -67,11 +67,12 @@
             return result;
         }
 
-        public async Task<CommandResult> DeleteAsync(int type)
+        public async Task<CommandResult> DeleteAsync(int type, int modifiedBy)
         {
             var command = new DeleteSettingTypeCommand
             {
-                Type = type
+                Type = type,
+                ModifiedBy = modifiedBy
             };
 
             var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
