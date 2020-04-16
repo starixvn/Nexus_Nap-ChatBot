@@ -8,6 +8,10 @@
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Fanex.NCB.Core.Models;
+    using Fanex.NCB.Core.Enum;
+    using System;
+    using Fanex.NCB.Core.Extensions;
 
     public class SettingConfigurationService : ISettingConfigurationService
     {
@@ -18,7 +22,7 @@
             this.baseService = baseService;
         }
 
-        public async Task<(long, IEnumerable<SettingType>)> GetSettingTypesAsync(int pageIndex, int pageSize)
+        public async Task<(long, IEnumerable<SettingType>)> GetSettingsAsync(int pageIndex, int pageSize)
         {
             var result = await baseService.FetchMultipleAsync<long, SettingType>(new GetSettingTypeListCriteria
             {
@@ -78,6 +82,17 @@
             var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
 
             return result;
+        }
+
+        public IEnumerable<BaseModel> GetAllSettingType()
+        {
+            var types = Enum.GetValues(typeof(SettingTypes)).Cast<SettingTypes>().Select(v => new BaseModel
+            {
+                Id = (int)v,
+                Name = EnumHelper.GetDescription(v)
+            });
+
+            return types;
         }
     }
 }

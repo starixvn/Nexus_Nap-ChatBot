@@ -36,7 +36,7 @@ export const setGridData = data => {
 };
 
 export const getGridData = params => {
-    const url = Site.resolveClientUrl('SettingConfiguration/GetSettingTypes');
+    const url = Site.resolveClientUrl('SettingConfiguration/GetSettings');
     return dispatch => {
         return axios.get(url, { params: params }).then(response => {
             dispatch(setGridData(response.data));

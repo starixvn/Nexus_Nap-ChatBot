@@ -1,0 +1,42 @@
+﻿@import "../../shared/variables";
+@import "../../shared/common.scss";
+@import "../../shared/components/forms.scss";
+@import "../../shared/components/buttons.scss";
+@import "../../shared/components/modals.scss";
+@import "../../shared/components/messages.scss";
+@import "../../shared/components/tables.scss";
+@import "../../shared/components/modals";
+
+.filter .notification-type {
+    width: 160px;
+}
+
+.table-container {
+    margin-top: 10px;
+}
+
+.new-notification-template {
+    max-width: 980px;
+
+    .mde-preview {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .form-group {
+        display: grid;
+        grid-template-columns: 108px 1fr;
+        grid-gap: 10px;
+    }
+
+    .list-button {
+        padding-left: 118px;
+    }
+}
+
+.form-filter {
+    .form-control {
+        display: inline-block;
+        width: 160px;
+    }
+}

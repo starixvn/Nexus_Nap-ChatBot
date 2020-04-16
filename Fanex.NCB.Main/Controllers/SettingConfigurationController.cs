@@ -36,9 +36,9 @@
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
-        public async Task<IActionResult> GetSettingTypes(int pageIndex, int pageSize, int? settingType)
+        public async Task<IActionResult> GetSettings(int pageIndex, int pageSize, int? settingType)
         {
-            var result = await _settingConfigurationService.GetSettingTypesAsync(pageIndex, pageSize).ConfigureAwait(false);
+            var result = await _settingConfigurationService.GetSettingsAsync(pageIndex, pageSize).ConfigureAwait(false);
 
             return Json(new { total = result.Item1, data = result.Item2 });
         }
@@ -105,6 +105,33 @@
 
             var errors = ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
             return Json(new { isSuccessful = false, errors });
+        }
+
+        [HttpGet]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
+        public IActionResult Mapping([FromServices]IUserService userService)
+        {
+            ViewBag.HaveHostPermission = userService.IsHavingPermission(_napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.SettingConfiguration, Policy.Host);
+
+            return View("~/Views/SkypeBot/SettingConfiguration/Mapping.cshtml");
+        }
+
+        [HttpGet]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
+        public IActionResult GetSettingTypes()
+        {
+            var types = _settingConfigurationService.GetAllSettingType();
+
+            return Json(types);
+        }
+
+        [HttpGet]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
+        public IActionResult GetJobInfoAsync(int jobId)
+        {
+            var jobInfo = new { };
+
+            return Json(jobInfo);
         }
     }
 }

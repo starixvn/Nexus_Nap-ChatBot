@@ -2,12 +2,13 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models.SettingConfiguration;
     using Fanex.NCB.Shared.Models;
 
     public interface ISettingConfigurationService
     {
-        Task<(long, IEnumerable<SettingType>)> GetSettingTypesAsync(int pageIndex, int pageSize);
+        Task<(long, IEnumerable<SettingType>)> GetSettingsAsync(int pageIndex, int pageSize);
 
         Task<CommandResult> CreateAsync(CreateSettingType model);
 
@@ -16,5 +17,7 @@
         Task<CommandResult> UpdateAsync(UpdateSettingType model);
 
         Task<CommandResult> DeleteAsync(int type, int modifiedBy);
+
+        IEnumerable<BaseModel> GetAllSettingType();
     }
 }

@@ -53,5 +53,6 @@
     Name: 'Name',
     CreateNewMsgContentsTypeSuccessfully: 'Create New Msg Contents Type Successfully',
     EditMsgContentsTypeSuccessfully: 'Edit Msg Contents Type Successfully',
-    DeleteMsgContentsTypeSuccessfully: 'Delete Msg Contents Type successfully'
+    DeleteMsgContentsTypeSuccessfully: 'Delete Msg Contents Type successfully',
+    MappingSettingType: 'Mapping Setting Type'
 };
