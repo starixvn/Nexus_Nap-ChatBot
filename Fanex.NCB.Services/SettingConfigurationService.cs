@@ -94,5 +94,15 @@
 
             return types;
         }
+
+        public async Task<JobInfo> GetJobInfoAsync(int jobId)
+        {
+            var result = await baseService.GetDataEntityAsync<JobInfo>(new GetJobInfoCriteria
+            {
+                JobId = jobId
+            }).ConfigureAwait(false);
+
+            return result;
+        }
     }
 }

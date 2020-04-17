@@ -127,9 +127,10 @@
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
-        public IActionResult GetJobInfoAsync(int jobId)
+        public async Task<IActionResult> GetJobInfo(int? jobId)
         {
-            var jobInfo = new { };
+            var value = jobId ?? 1;
+            var jobInfo = await _settingConfigurationService.GetJobInfoAsync(value).ConfigureAwait(false);
 
             return Json(jobInfo);
         }

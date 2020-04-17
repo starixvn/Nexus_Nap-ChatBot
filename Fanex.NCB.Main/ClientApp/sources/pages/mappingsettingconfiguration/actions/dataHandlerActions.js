@@ -20,6 +20,23 @@ export const getSettingTypes = () => {
     };
 };
 
+// Job Info
+export const setJobInfo = data => {
+    return {
+        type: types.JOB_INFO_DATA,
+        data: data
+    };
+};
+
+export const getJobInfo = jobId => {
+    const url = Site.resolveClientUrl(`SettingConfiguration/GetJobInfo?jobId=${jobId}`);
+    return dispatch => {
+        return axios.get(url).then(response => {
+            dispatch(setJobInfo(response.data));
+        }).catch(errorResponseHandler);
+    };
+};
+
 // Grid
 export const setGridParams = value => {
     return {
@@ -159,7 +176,8 @@ const actions = {
     editSettingType,
     deleteSettingType,
     openDeleteSettingTypePopup,
-    closeDeleteSettingTypePopup
+    closeDeleteSettingTypePopup,
+    getJobInfo
 };
 
 export default actions;

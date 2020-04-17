@@ -15,9 +15,7 @@ class Filter extends Component {
     }
 
     componentDidMount() {
-        const params = this.getParams();
-        this.props.setGridParams(params);
-        this.props.getGridData(params);
+        this.submitQuery();
     }
 
     handleSettingTypeChange = event =>
@@ -35,6 +33,10 @@ class Filter extends Component {
 
     submitHandler = e => {
         e.preventDefault();
+        this.submitQuery();
+    }
+
+    submitQuery = () => {
         const params = this.getParams();
         this.props.setGridParams(params);
         this.props.getGridData(params);
@@ -65,10 +67,11 @@ class Filter extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { settingTypes, gridParams } = state;
+    const { settingTypes, getJobInfo, gridParams } = state;
     return {
         settingTypes,
-        gridParams
+        gridParams,
+        getJobInfo
     };
 };
 

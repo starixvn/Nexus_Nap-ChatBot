@@ -23,6 +23,7 @@ export class AppContainer extends Component {
 
     componentDidMount() {
         this.props.getSettingTypes();
+        this.props.getJobInfo();
     }
 
     handleOpenCreateSettingPopup = () => this.props.setCreateSettingPopup({ show: true })
@@ -87,12 +88,15 @@ export class AppContainer extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { gridParams, editSettingTypePopup, createSettingTypePopup, deleteSettingTypePopup } = state;
+    const { settingTypes, gridParams, jobInfo, getJobInfo, editSettingTypePopup, createSettingTypePopup, deleteSettingTypePopup } = state;
     return {
+        settingTypes,
         gridParams,
         editSettingTypePopup,
         createSettingTypePopup,
         deleteSettingTypePopup,
+        jobInfo,
+        getJobInfo
     };
 };
 

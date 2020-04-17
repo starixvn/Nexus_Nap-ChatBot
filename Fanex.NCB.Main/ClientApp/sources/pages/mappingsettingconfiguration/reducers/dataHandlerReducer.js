@@ -8,6 +8,13 @@ export const settingTypes = createReducer({}, {
     }
 });
 
+// Job Info
+export const jobInfo = createReducer({}, {
+    [types.JOB_INFO_DATA](state, action) {
+        return action.data;
+    }
+});
+
 // Grid
 export const gridParams = createReducer({}, {
     [types.GRID_PARAMS](state, action) {
@@ -56,6 +63,7 @@ export const createSettingTypeResult = createReducer({}, {
 
 const reducers = {
     settingTypes,
+    jobInfo,
     gridParams,
     gridData,
     createSettingTypePopup,

@@ -9,6 +9,7 @@ import reducer from './reducers/index';
 // Get the application-wide store instance, prepopulating with state from the server where available.
 const store = Store.createStore(reducer, {
     settingTypes: [],
+    jobInfo: null,
     createSettingTypePopup: {
         show: false
     },
