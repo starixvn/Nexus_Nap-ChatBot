@@ -2,6 +2,8 @@
 {
     public class JobInfo
     {
+        public int JobId { get; set; }
+
         public string Status { get; set; }
 
         public int BatchSize { get; set; }

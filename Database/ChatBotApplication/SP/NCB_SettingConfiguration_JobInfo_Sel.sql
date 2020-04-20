@@ -39,7 +39,8 @@ BEGIN
         AND ss.Description LIKE '%Chat group ID%';
 
     SELECT
-        jobStatus       AS  Status
+        jobId           AS  JobId
+        ,jobStatus      AS  Status
         ,jobBatchSize   AS  BatchSize
         ,maxMessageId   AS  PreviousMaxMessageId
         ,testingGroup   AS  TestingGroup;

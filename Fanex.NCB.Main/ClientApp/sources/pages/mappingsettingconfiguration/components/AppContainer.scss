@@ -40,3 +40,26 @@
         width: 160px;
     }
 }
+
+.job-info-container {
+    border: 1px #A6A6A6 solid;
+    background-color: #ECEFF1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding: 10px;
+
+    .job-info-item {
+        display: flex;
+        align-items: center;
+
+        .job-info-title {
+            padding-right: 3px;
+        }
+    }
+
+    p {
+        margin: 0;
+    }
+}

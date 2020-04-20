@@ -28,36 +28,36 @@ BEGIN
 
     DROP TEMPORARY TABLE IF EXISTS SettingTypeTable;
     CREATE TEMPORARY TABLE SettingTypeTable (
-        MsgContentType  INT
+        MsgContentsType INT
         ,Name           VARCHAR (250)
         ,CreatedDate    DATETIME
     );
 
     WHILE (
-		JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentType')) IS NOT NULL
+		JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentsType')) IS NOT NULL
 	) DO
         INSERT INTO SettingTypeTable (
-            MsgContentType
+            MsgContentsType
             ,Name
             ,CreatedDate
         )
         SELECT
-            JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentType'))
+            JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentsType'))
             ,JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].Name')))
             ,JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].CreatedDate')));
             
 		SET iLoop = iLoop + 1;
     END WHILE;
     
-    SELECT COUNT(stt.MsgContentType) AS Total
+    SELECT COUNT(stt.MsgContentsType) AS Total
     FROM SettingTypeTable stt;
 
     SELECT
-        stt.MsgContentType AS Type
+        stt.MsgContentsType AS Type
         ,stt.Name
         ,stt.CreatedDate
     FROM SettingTypeTable stt
-    ORDER BY STT.CreatedDate
+    ORDER BY stt.CreatedDate
     LIMIT rowStart, pageSize;
 END;
 

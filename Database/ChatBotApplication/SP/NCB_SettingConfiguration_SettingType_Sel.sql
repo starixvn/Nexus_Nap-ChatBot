@@ -27,19 +27,19 @@ BEGIN
 
     DROP TEMPORARY TABLE IF EXISTS SettingTypeTable;
     CREATE TEMPORARY TABLE SettingTypeTable (
-        MsgContentType  INT
+        MsgContentsType INT
         ,Name           VARCHAR (250)
     );
 
     WHILE (
-		JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentType')) IS NOT NULL
+		JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentsType')) IS NOT NULL
 	) DO
         INSERT INTO SettingTypeTable (
-            MsgContentType
+            MsgContentsType
             ,Name
         )
         SELECT
-            JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentType'))
+            JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentsType'))
             ,JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].Name')));
             
 		SET iLoop = iLoop + 1;
@@ -47,16 +47,16 @@ BEGIN
 
     IF NOT EXISTS (
         SELECT 1 FROM SettingTypeTable stt
-        WHERE stt.MsgContentType = type
+        WHERE stt.MsgContentsType = type
     ) THEN
         SELECT 1 INTO errCode;
         SELECT CONCAT(name,' not exists') INTO errMsg;
     ELSE
 		SELECT
-			stt.MsgContentType AS Type
+			stt.MsgContentsType AS Type
             ,stt.Name
 		FROM SettingTypeTable stt
-        WHERE stt.MsgContentType = type;
+        WHERE stt.MsgContentsType = type;
     END IF;
 END;
 

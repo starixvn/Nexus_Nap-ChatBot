@@ -35,34 +35,43 @@ BEGIN
 
     DROP TEMPORARY TABLE IF EXISTS SettingTypeTable;
     CREATE TEMPORARY TABLE SettingTypeTable (
-        MsgContentType  INT
+        MsgContentsType INT
         ,Name           VARCHAR (250)
     );
 
     WHILE (
-		JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentType')) IS NOT NULL
+		JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentsType')) IS NOT NULL
 	) DO
         INSERT INTO SettingTypeTable (
-            MsgContentType
+            MsgContentsType
             ,Name
         )
         SELECT
-            JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentType'))
+            JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentsType'))
             ,JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].Name')));
             
 		SET iLoop = iLoop + 1;
     END WHILE;
 
     IF EXISTS (
-        SELECT 1 FROM SettingTypeTable ss
-        WHERE ss.MsgContentType = type
-            OR ss.Name = name
+        SELECT 1 FROM SettingTypeTable stt
+        WHERE stt.MsgContentsType = type
     ) THEN
         SELECT 1 INTO errCode;
-        SELECT CONCAT(name,' exists') INTO errMsg;
-    ELSE
+        SELECT CONCAT('Msg Contents Type exists') INTO errMsg;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM SettingTypeTable stt
+        WHERE stt.Name = name
+    ) THEN
+        SELECT 2 INTO errCode;
+        SELECT 'Name exists' INTO errMsg;
+	END IF;
+    
+    IF (errCode = 0) THEN
 		SET insertTime = DATE_FORMAT(UTC_TIMESTAMP(), '%Y-%m-%d %T' );
-		SET dataString = CONCAT('{"MsgContentType": ', type, ', "Name": "', name, '", "CreatorId": ', creatorId, ', "CreatedDate" : "', insertTime, '"}');
+		SET dataString = CONCAT('{"MsgContentsType": ', type, ', "Name": "', name, '", "CreatorId": ', creatorId, ', "CreatedDate" : "', insertTime, '"}');
         
         UPDATE SystemSetting
         SET
@@ -83,7 +92,7 @@ BEGIN
         SET duration =  TIMESTAMPDIFF(MICROSECOND, startTime, finishTime)  / 1000; 	#miliseconds;
         #Get Log Content, JSON format
         SELECT json_object(
-            'msgContentType', type
+            'msgContentsType', type
             ,'name', name
             ,'creatorId', creatorId
             ,'createdDate', insertTime

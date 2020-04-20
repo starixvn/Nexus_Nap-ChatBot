@@ -13,10 +13,15 @@ import Labels from '../../common/Labels';
 import NewSettingType from './NewSettingType';
 import EditSettingType from './EditSettingType';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
+import JobInfo from './JobInfo';
+import EditJobInfo from './EditJobInfo';
 
 export class AppContainer extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            isEditJobInfo: false
+        }
 
         this.haveHostPermission = document.getElementById('have-host-permission') && document.getElementById('have-host-permission').checked;
     }
@@ -58,14 +63,21 @@ export class AppContainer extends Component {
     }
 
     render() {
+        console.log(this.props)
         return (
             <>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Mapping Setting Management" />
                 <Filter />
-                {this.haveHostPermission &&
-                    <button className="btn-new" onClick={this.handleOpenCreateSettingPopup}>{Labels.CreateNewSetting}</button>
+                
+                {
+                    this.state.isEditJobInfo? <EditJobInfo /> : <JobInfo />
                 }
-                {/* <DataGrid haveHostPermission={this.haveHostPermission} /> */}
+
+                {this.haveHostPermission &&
+                    <button className="btn-new" onClick={this.handleOpenCreateSettingPopup}>{Labels.CreateNewMappingSetting}</button>
+                }
+
+                <DataGrid haveHostPermission={this.haveHostPermission} />
                 {/* {this.props.createSettingTypePopup.show &&
                     <NewSettingType onClose={this.handleCloseCreateSettingTypePopup} onCreateSuccess={this.handleCreateSuccess} />
                 } */}

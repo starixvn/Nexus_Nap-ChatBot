@@ -54,5 +54,10 @@
     CreateNewMsgContentsTypeSuccessfully: 'Create New Msg Contents Type Successfully',
     EditMsgContentsTypeSuccessfully: 'Edit Msg Contents Type Successfully',
     DeleteMsgContentsTypeSuccessfully: 'Delete Msg Contents Type successfully',
-    MappingSettingType: 'Mapping Setting Type'
+    MappingSettingType: 'Mapping Setting Type',
+    CreateNewMappingSetting: 'Create New Mapping Setting',
+    NotificationTemplate: 'Notification Template',
+    System: 'System',
+    RequiedParams: 'Requied Params',
+    IsTest: 'Is Test'
 };

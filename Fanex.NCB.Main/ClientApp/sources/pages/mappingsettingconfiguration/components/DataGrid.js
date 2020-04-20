@@ -23,11 +23,16 @@ export class DataGrid extends Component {
     buildHeader = isHost => {
         return (
             <Row >
-                <Cell colWidth={10} header>{Labels.NumberCol}</Cell>
-                <Cell colWidth={35} header>{Labels.MsgContentsType}</Cell>
-                <Cell colWidth={35} header>{Labels.Name}</Cell>
+                <Cell colWidth={3} header>{Labels.NumberCol}</Cell>
+                <Cell colWidth={15} header>{Labels.NotificationType}</Cell>
+                <Cell colWidth={15} header>{Labels.NotificationType}</Cell>
+                <Cell colWidth={15} header>{Labels.System}</Cell>
+                <Cell colWidth={15} header>{Labels.RecipientType}</Cell>
+                <Cell colWidth={15} header>{Labels.MsgContentsType}</Cell>
+                <Cell colWidth={15} header>{Labels.RequiedParams}</Cell>
+                <Cell colWidth={5} header>{Labels.IsTest}</Cell>
                 {
-                    isHost && <Cell colWidth={20} header>{Labels.Action}</Cell>
+                    isHost && <Cell colWidth={7} header>{Labels.Action}</Cell>
                 }
             </Row>);
     };
@@ -41,7 +46,7 @@ export class DataGrid extends Component {
             return this.props.gridData.data.map((item, index) => this.renderRow(item, index, isHost));
         }
 
-        return [<Row key={`body${1}`} ><Cell colSpan="4"><NoDataTitle /></Cell></Row>];
+        return [<Row key={`body${1}`} ><Cell colSpan="9"><NoDataTitle /></Cell></Row>];
     }
 
     handleEditSettingType = e => {
