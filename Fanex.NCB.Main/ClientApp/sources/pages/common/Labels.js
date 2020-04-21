@@ -49,7 +49,7 @@
     ConfirmUpdateInActive: 'When a group is activated. The system will send notifications to the group. Do you want to proceed?',
     SettingType: 'Setting Type',
     CreateNewSetting: 'Create New Setting',
-    MsgContentsType: 'MsgContentsType',
+    MsgContentsType: 'Msg Contents Type',
     Name: 'Name',
     CreateNewMsgContentsTypeSuccessfully: 'Create New Msg Contents Type Successfully',
     EditMsgContentsTypeSuccessfully: 'Edit Msg Contents Type Successfully',
@@ -58,6 +58,6 @@
     CreateNewMappingSetting: 'Create New Mapping Setting',
     NotificationTemplate: 'Notification Template',
     System: 'System',
-    RequiedParams: 'Requied Params',
+    RequiredParams: 'Required Params',
     IsTest: 'Is Test'
 };

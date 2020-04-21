@@ -8,7 +8,7 @@
 
     public interface ISettingConfigurationService
     {
-        Task<(long, IEnumerable<SettingType>)> GetSettingsAsync(int pageIndex, int pageSize);
+        Task<(long, IEnumerable<SettingType>)> GetSettingsAsync(int pageIndex, int pageSize, int? settingType);
 
         Task<CommandResult> CreateAsync(CreateSettingType model);
 
@@ -21,5 +21,7 @@
         IEnumerable<BaseModel> GetAllSettingType();
 
         Task<JobInfo> GetJobInfoAsync(int jobId);
+
+        Task<(long, IEnumerable<Mapping>)> GetMappingAsync(int jobId, int pageIndex, int pageSize);
     }
 }

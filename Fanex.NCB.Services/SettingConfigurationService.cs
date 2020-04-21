@@ -22,12 +22,13 @@
             this.baseService = baseService;
         }
 
-        public async Task<(long, IEnumerable<SettingType>)> GetSettingsAsync(int pageIndex, int pageSize)
+        public async Task<(long, IEnumerable<SettingType>)> GetSettingsAsync(int pageIndex, int pageSize, int? settingType)
         {
             var result = await baseService.FetchMultipleAsync<long, SettingType>(new GetSettingTypeListCriteria
             {
                 PageIndex = pageIndex,
-                PageSize = pageSize
+                PageSize = pageSize,
+                SettingType = settingType
             }).ConfigureAwait(false);
 
             return (result.Item1.FirstOrDefault(), result.Item2);
@@ -103,6 +104,18 @@
             }).ConfigureAwait(false);
 
             return result;
+        }
+
+        public async Task<(long, IEnumerable<Mapping>)> GetMappingAsync(int jobId, int pageIndex, int pageSize)
+        {
+            var result = await baseService.FetchMultipleAsync<long, Mapping>(new GetMappingCriteria
+            {
+                JobId = jobId,
+                PageIndex = pageIndex,
+                PageSize = pageSize
+            }).ConfigureAwait(false);
+
+            return (result.Item1.FirstOrDefault(), result.Item2);
         }
     }
 }

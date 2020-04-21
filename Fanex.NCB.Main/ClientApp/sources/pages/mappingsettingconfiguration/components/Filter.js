@@ -10,7 +10,7 @@ class Filter extends Component {
         super(props);
 
         this.state = {
-            settingType: ''
+            settingType: 1
         };
     }
 
@@ -25,7 +25,7 @@ class Filter extends Component {
 
     getParams = () => {
         return {
-            settingType: parseInt(this.state.settingType, 10),
+            jobId: parseInt(this.state.settingType, 10),
             pageIndex: 1,
             pageSize: 10
         };

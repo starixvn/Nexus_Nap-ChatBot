@@ -63,7 +63,6 @@ export class AppContainer extends Component {
     }
 
     render() {
-        console.log(this.props)
         return (
             <>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Mapping Setting Management" />

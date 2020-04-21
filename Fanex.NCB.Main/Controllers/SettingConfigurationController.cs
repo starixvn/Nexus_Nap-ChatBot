@@ -38,7 +38,7 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
         public async Task<IActionResult> GetSettings(int pageIndex, int pageSize, int? settingType)
         {
-            var result = await _settingConfigurationService.GetSettingsAsync(pageIndex, pageSize).ConfigureAwait(false);
+            var result = await _settingConfigurationService.GetSettingsAsync(pageIndex, pageSize, settingType).ConfigureAwait(false);
 
             return Json(new { total = result.Item1, data = result.Item2 });
         }
@@ -133,6 +133,15 @@
             var jobInfo = await _settingConfigurationService.GetJobInfoAsync(value).ConfigureAwait(false);
 
             return Json(jobInfo);
+        }
+
+        [HttpGet]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
+        public async Task<IActionResult> GetMappings(int jobId, int pageIndex, int pageSize)
+        {
+            var result = await _settingConfigurationService.GetMappingAsync(jobId, pageIndex, pageSize);
+
+            return Json(new { total = result.Item1, data = result.Item2 });
         }
     }
 }
