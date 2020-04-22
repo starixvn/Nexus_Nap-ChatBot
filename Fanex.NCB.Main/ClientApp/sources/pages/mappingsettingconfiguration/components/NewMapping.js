@@ -20,8 +20,8 @@ class NewMapping extends Component {
     schema = object().shape({
         notificationTypeId: string().required(Labels.FieldRequired),
         notificationTemplateId: string().required(Labels.FieldRequired),
-        // system: string().required(Labels.FieldRequired),
-        // recipientType: string().required(Labels.FieldRequired),
+        systemId: string().required(Labels.FieldRequired),
+        recipientTypeId: string().required(Labels.FieldRequired),
         msgContentsType: string().required(Labels.FieldRequired),
         // isTest: boolean().required(Labels.FieldRequired)
     })
@@ -30,6 +30,7 @@ class NewMapping extends Component {
         const formik = this.refs.form;
         this.props.getRecipients(event.target.value);
         this.props.getTemplates(event.target.value);
+        this.props.getNotificationTypeRef(event.target.value);
 
         formik.setValues({
             ...formik.state.values,
@@ -119,7 +120,29 @@ class NewMapping extends Component {
                     </div>
                 </FormGroup>
                 <FormGroup>
-                    <Label for="msgContentsType" className="form-label required">Notification Type</Label>
+                    <Label for="systemId" className="form-label">System</Label>
+                    <div>
+                        <Input invalid={touched.systemId && errors.systemId}
+                            name="systemId"
+                            disabled={true}
+                            value={this.props.notificationTypeRef ? this.props.notificationTypeRef.systemName : ''}
+                        />
+                        {touched.systemId && errors.systemId && <FormFeedback>{errors.systemId}</FormFeedback>}
+                    </div>
+                </FormGroup>
+                <FormGroup>
+                    <Label for="recipientTypeId" className="form-label">Recipient Type</Label>
+                    <div>
+                        <Input invalid={touched.recipientTypeId && errors.recipientTypeId}
+                            name="recipientTypeId"
+                            disabled={true}
+                            value={this.props.notificationTypeRef ? this.props.notificationTypeRef.recipientTypeName : ''}
+                        />
+                        {touched.recipientTypeId && errors.recipientTypeId && <FormFeedback>{errors.recipientTypeId}</FormFeedback>}
+                    </div>
+                </FormGroup>
+                <FormGroup>
+                    <Label for="msgContentsType" className="form-label required">Msg Contents Type</Label>
                     <div>
                         <Input type="select"
                             invalid={touched.msgContentsType && errors.msgContentsType}
@@ -133,17 +156,28 @@ class NewMapping extends Component {
                         {touched.msgContentsType && errors.msgContentsType && <FormFeedback>{errors.msgContentsType}</FormFeedback>}
                     </div>
                 </FormGroup>
-                {/* <FormGroup>
-                    <Label for="name" className="form-label required">Name</Label>
+                <FormGroup>
+                    <Label for="requiredParam" className="form-label required">Required Param</Label>
                     <div>
-                        <Input invalid={touched.name && errors.name}
-                            name="name"
-                            onChange={handleChange}
-                            value={values.name}
+                        <Input invalid={touched.requiredParam && errors.requiredParam}
+                            name="requiredParam"
+                            onChange={this.handleChange}
+                            value={values.requiredParam}
                         />
-                        {touched.name && errors.name && <FormFeedback>{errors.name}</FormFeedback>}
+                        {touched.requiredParam && errors.requiredParam && <FormFeedback>{errors.requiredParam}</FormFeedback>}
                     </div>
-                </FormGroup> */}
+                </FormGroup>
+                <FormGroup>
+                    <Label for="isTest" className="form-label">Is Test</Label>
+                    <div>
+                        <Input invalid={touched.isTest && errors.isTest}
+                            name="isTest"
+                            onChange={this.handleChange}
+                            value={values.isTest}
+                        />
+                        {touched.isTest && errors.isTest && <FormFeedback>{errors.isTest}</FormFeedback>}
+                    </div>
+                </FormGroup>
                 <div className="list-button">
                     <Button className="btn-submit float-right" disabled={isSubmitting} type="submit">{Labels.Save}</Button>
                 </div>
@@ -171,7 +205,7 @@ class NewMapping extends Component {
     render() {
         return (
             <Modal isOpen toggle={this.props.onClose} className="new-setting-type" backdrop="static">
-                <ModalHeader toggle={this.props.onClose}>New Msg Contents Type</ModalHeader>
+                <ModalHeader toggle={this.props.onClose}>Create New Mapping Setting</ModalHeader>
                 <ModalBody>
                     {this.props.createSettingTypeResult &&
                         <ResponseMessage isSuccessful={this.props.createSettingTypeResult.isSuccessful}
@@ -197,7 +231,8 @@ const mapDispatchToProps = dispatch => {
         createSettingType: ActionCreators.createSettingType,
         getRecipients: ActionCreators.getRecipients,
         getTemplates: ActionCreators.getTemplates,
-        getMsgContentsTypes: ActionCreators.getMsgContentsTypes
+        getMsgContentsTypes: ActionCreators.getMsgContentsTypes,
+        getNotificationTypeRef: ActionCreators.getNotificationTypeRef
     }, dispatch);
 };
 
@@ -207,7 +242,8 @@ const mapStateToProps = state => {
         notificationTypes,
         notificationTemplates,
         recipients,
-        msgContentsTypes
+        msgContentsTypes,
+        notificationTypeRef
     } = state;
 
     return {
@@ -215,7 +251,8 @@ const mapStateToProps = state => {
         notificationTypes,
         notificationTemplates,
         recipients,
-        msgContentsTypes
+        msgContentsTypes,
+        notificationTypeRef
     };
 };
 

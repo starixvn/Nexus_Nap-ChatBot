@@ -8,6 +8,7 @@ import { ActionCreators } from '../actions/index';
 import Labels from '../../common/Labels';
 import { Input } from 'reactstrap';
 import { toast } from 'react-toastify';
+import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 
 export class EditJobInfo extends Component {
     constructor(props) {
@@ -17,13 +18,15 @@ export class EditJobInfo extends Component {
             status: props.jobInfo.status,
             previousMaxMessageId: props.jobInfo.previousMaxMessageId,
             batchSize: props.jobInfo.batchSize,
-            testingGroup: props.jobInfo.testingGroup
+            testingGroup: props.jobInfo.testingGroup,
+            confirmUpdateJobInfo: false
         };
 
         this.haveHostPermission = document.getElementById('have-host-permission') && document.getElementById('have-host-permission').checked;
     }
 
     handleChangeSaveMode = () => {
+        toggleConfirmUpdateJobInfo();
         let rexegNumber = new RegExp('[^0-9]');
         if (rexegNumber.test(this.state.batchSize)) {
             toast.error('Batch Size must be integer');
@@ -48,6 +51,14 @@ export class EditJobInfo extends Component {
         this.setState({
             [e.target.name]: e.target.value
         });
+    }
+
+    handleConfirmUpdateJobInfoPopup = () => {
+        this.setState({ confirmUpdateJobInfo: true });
+    }
+
+    toggleConfirmUpdateJobInfo = () => {
+        this.setState({confirmUpdateJobInfo:!this.state.confirmUpdateJobInfo });
     }
 
     render() {
@@ -82,9 +93,16 @@ export class EditJobInfo extends Component {
                 {
                     this.haveHostPermission &&
                     <div className='job-info-item'>
-                        <button className="btn-new" onClick={this.handleChangeSaveMode}>{Labels.Save}</button>
+                        <button className="btn-new" onClick={this.handleConfirmUpdateJobInfoPopup}>{Labels.Save}</button>
                     </div>
                 }
+
+                <ConfirmPopup
+                    isOpen={this.state.confirmUpdateJobInfo}
+                    onToggle={this.toggleConfirmUpdateJobInfo}
+                    onConfirm={this.handleChangeSaveMode}
+                    content='Do you want to save it?'
+                />
             </div>
         );
     }

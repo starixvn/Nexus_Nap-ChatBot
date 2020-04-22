@@ -25,7 +25,7 @@ export class JobInfo extends Component {
             this.props.jobInfo && <div className='job-info-container'>
                 <div className='job-info-item'>
                     <p className='job-info-title'>Job Sync Status:</p>
-                    <p>{this.props.jobInfo.status}</p>
+                    <p className={this.props.jobInfo.status === 'Done' ? 'status-done' : 'status-running'}>{this.props.jobInfo.status}</p>
                 </div>
                 <div className='job-info-item'>
                     <p className='job-info-title'>Previous Max MessageID:</p>

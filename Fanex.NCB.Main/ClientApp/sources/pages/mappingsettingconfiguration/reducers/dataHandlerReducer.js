@@ -95,6 +95,12 @@ export const msgContentsTypes = createReducer(null, {
     }
 });
 
+export const notificationTypeRef = createReducer(null, {
+    [types.NOTIFICATION_TYPE_REF](state, action) {
+        return action.data;
+    }
+});
+
 const reducers = {
     settingTypes,
     jobInfo,
@@ -109,7 +115,8 @@ const reducers = {
     notificationTypes,
     notificationTemplates,
     recipients,
-    msgContentsTypes
+    msgContentsTypes,
+    notificationTypeRef
 };
 
 export default reducers;

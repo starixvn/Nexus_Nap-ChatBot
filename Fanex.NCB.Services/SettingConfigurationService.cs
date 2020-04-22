@@ -139,5 +139,15 @@
 
             return result;
         }
+
+        public async Task<NotificationTypeData> GetNotificationTypeDataAsync(int notificationTypeId)
+        {
+            var result = await baseService.GetDataEntityAsync<NotificationTypeData>(new GetNotificationTypeDataCriteria
+            {
+                NotificationTypeId = notificationTypeId
+            });
+
+            return result;
+        }
     }
 }

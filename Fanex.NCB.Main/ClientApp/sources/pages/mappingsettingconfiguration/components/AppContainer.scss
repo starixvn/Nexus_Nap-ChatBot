@@ -67,3 +67,16 @@
         margin: 0;
     }
 }
+
+.icon-check:before {
+    color: #05b15b;
+    content: "\2714";
+}
+
+.status-done {
+    color: #05b15b;
+}
+
+.status-running {
+    color: #e74c3c;
+}

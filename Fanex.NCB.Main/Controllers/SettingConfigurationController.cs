@@ -173,5 +173,14 @@
 
             return Json(result);
         }
+
+        [HttpGet]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Read)]
+        public async Task<IActionResult> GetNotificationTypeData(int notificationTypeId)
+        {
+            var result = await _settingConfigurationService.GetNotificationTypeDataAsync(notificationTypeId);
+
+            return Json(result);
+        }
     }
 }

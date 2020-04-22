@@ -27,5 +27,7 @@
         Task<CommandResult> UpdateJobInfoAsync(UpdateJobInfo model);
 
         Task<IEnumerable<SettingType>> GetMsgContentsTypesAsync();
+
+        Task<NotificationTypeData> GetNotificationTypeDataAsync(int notificationTypeId);
     }
 }

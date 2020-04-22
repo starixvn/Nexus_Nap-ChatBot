@@ -144,5 +144,6 @@
     <Setting Key="NCB_SettingConfiguration_MappingList_Sel" SpName="NCB_SettingConfiguration_MappingList_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SettingConfiguration_JobInfo_Udp" SpName="NCB_SettingConfiguration_JobInfo_Udp" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SettingConfiguration_MsgContentsTypeList_Sel" SpName="NCB_SettingConfiguration_MsgContentsTypeList_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_SettingConfiguration_NotificationTypeData_Sel" SpName="NCB_SettingConfiguration_NotificationTypeData_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
 </Functions>

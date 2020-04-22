@@ -264,6 +264,23 @@ export const getMsgContentsTypes = params => {
     };
 };
 
+// Msg Contents Type
+export const setNotificationTypeRef = data => {
+    return {
+        type: types.NOTIFICATION_TYPE_REF,
+        data: data
+    };
+};
+
+export const getNotificationTypeRef = notificationTypeId => {
+    const url = Site.resolveClientUrl(`SettingConfiguration/GetNotificationTypeData?notificationTypeId=${notificationTypeId}`);
+    return dispatch => {
+        return axios.get(url).then(response => {
+            dispatch(setNotificationTypeRef(response.data));
+        }).catch(errorResponseHandler);
+    };
+};
+
 const actions = {
     setSettingTypes,
     getSettingTypes,
@@ -290,7 +307,9 @@ const actions = {
     getRecipients,
     setRecipients,
     getMsgContentsTypes,
-    setMsgContentsTypes
+    setMsgContentsTypes,
+    getNotificationTypeRef,
+    setNotificationTypeRef
 };
 
 export default actions;

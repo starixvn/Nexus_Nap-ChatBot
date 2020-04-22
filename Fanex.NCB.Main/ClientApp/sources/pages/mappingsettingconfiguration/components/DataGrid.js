@@ -68,7 +68,11 @@ export class DataGrid extends Component {
             <Cell>{item.recipientTypeName}</Cell>
             <Cell>{item.msgContentsName}</Cell>
             <Cell>{item.requiredParams}</Cell>
-            <Cell>{item.isTest}</Cell>
+            <Cell className="text-center">
+                {
+                    item.isTest ? <span className='icon-check'></span> : null
+                }
+            </Cell>
             {
                 isHost &&
                 <Cell className="text-center">
