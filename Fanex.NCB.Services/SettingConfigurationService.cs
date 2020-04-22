@@ -117,5 +117,27 @@
 
             return (result.Item1.FirstOrDefault(), result.Item2);
         }
+
+        public async Task<CommandResult> UpdateJobInfoAsync(UpdateJobInfo model)
+        {
+            var command = new UpdateJobInfoCommand
+            {
+                Id = model.Id,
+                BatchSize = model.BatchSize,
+                TestingGroup = model.TestingGroup,
+                ModifiedBy = model.ModifiedBy
+            };
+
+            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+
+            return result;
+        }
+
+        public async Task<IEnumerable<SettingType>> GetMsgContentsTypesAsync()
+        {
+            var result = await baseService.GetDataAsync<SettingType>(new GetMsgContentsTypesCriteria());
+
+            return result;
+        }
     }
 }

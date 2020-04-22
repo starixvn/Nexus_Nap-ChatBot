@@ -15,6 +15,12 @@ export const jobInfo = createReducer({}, {
     }
 });
 
+export const jobInfoFlag = createReducer({}, {
+    [types.JOB_INFO_FLAG](state, action) {
+        return action.data
+    }
+});
+
 // Grid
 export const gridParams = createReducer({}, {
     [types.GRID_PARAMS](state, action) {
@@ -49,7 +55,7 @@ export const editSettingTypeResult = createReducer({}, {
 });
 
 // Create Popup
-export const createSettingTypePopup = createReducer({}, {
+export const createMappingPopup = createReducer({}, {
     [types.CREATE_POPUP_DATA](state, action) {
         return action.data;
     }
@@ -61,16 +67,49 @@ export const createSettingTypeResult = createReducer({}, {
     }
 });
 
+// Notification Type
+export const notificationTypes = createReducer(null, {
+    [types.NOTIFICATION_TYPE_DATA](state, action) {
+        return action.data;
+    }
+});
+
+// Notification Template
+export const notificationTemplates = createReducer(null, {
+    [types.TEMPLATE_DATA](state, action) {
+        return action.data;
+    }
+});
+
+// Recipient
+export const recipients = createReducer(null, {
+    [types.RECIPIENT_DATA](state, action) {
+        return action.data;
+    }
+});
+
+// Recipient
+export const msgContentsTypes = createReducer(null, {
+    [types.MSG_CONTENT_TYPE_DATA](state, action) {
+        return action.data;
+    }
+});
+
 const reducers = {
     settingTypes,
     jobInfo,
     gridParams,
     gridData,
-    createSettingTypePopup,
+    createMappingPopup,
     createSettingTypeResult,
     editSettingTypePopup,
     editSettingTypeResult,
-    deleteSettingTypePopup
+    deleteSettingTypePopup,
+    jobInfoFlag,
+    notificationTypes,
+    notificationTemplates,
+    recipients,
+    msgContentsTypes
 };
 
 export default reducers;

@@ -10,7 +10,7 @@ import { NCBBreadcrum } from '../../common/breadcrumbs/breadcrumbs';
 import Filter from './Filter';
 import DataGrid from './DataGrid';
 import Labels from '../../common/Labels';
-import NewSettingType from './NewSettingType';
+import NewMapping from './NewMapping';
 import EditSettingType from './EditSettingType';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import JobInfo from './JobInfo';
@@ -19,27 +19,25 @@ import EditJobInfo from './EditJobInfo';
 export class AppContainer extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            isEditJobInfo: false
-        }
 
         this.haveHostPermission = document.getElementById('have-host-permission') && document.getElementById('have-host-permission').checked;
     }
 
     componentDidMount() {
         this.props.getSettingTypes();
+        this.props.getNotificationTypes();
         this.props.getJobInfo();
     }
 
-    handleOpenCreateSettingPopup = () => this.props.setCreateSettingPopup({ show: true })
+    handleOpenCreateMappingPopup = () => this.props.setCreateMappingPopup({ show: true })
 
-    handleCloseCreateSettingTypePopup = () => {
-        this.props.setCreateSettingPopup({ show: false });
+    handleCloseCreateMappingPopup = () => {
+        this.props.setCreateMappingPopup({ show: false });
         this.props.setCreateSettingTypeResult(null);
     }
 
     handleCreateSuccess = () => {
-        this.handleCloseCreateSettingTypePopup();
+        this.handleCloseCreateMappingPopup();
         this.props.getGridData(this.props.gridParams);
     }
 
@@ -69,17 +67,17 @@ export class AppContainer extends Component {
                 <Filter />
                 
                 {
-                    this.state.isEditJobInfo? <EditJobInfo /> : <JobInfo />
+                    this.props.jobInfoFlag.isEdit? <EditJobInfo jobInfo={this.props.jobInfo} /> : <JobInfo />
                 }
 
                 {this.haveHostPermission &&
-                    <button className="btn-new" onClick={this.handleOpenCreateSettingPopup}>{Labels.CreateNewMappingSetting}</button>
+                    <button className="btn-new" onClick={this.handleOpenCreateMappingPopup}>{Labels.CreateNewMappingSetting}</button>
                 }
 
                 <DataGrid haveHostPermission={this.haveHostPermission} />
-                {/* {this.props.createSettingTypePopup.show &&
-                    <NewSettingType onClose={this.handleCloseCreateSettingTypePopup} onCreateSuccess={this.handleCreateSuccess} />
-                } */}
+                {this.props.createMappingPopup.show &&
+                    <NewMapping onClose={this.handleCloseCreateMappingPopup} onCreateSuccess={this.handleCreateSuccess} />
+                }
 
                 {/* {this.props.editSettingTypePopup && this.props.editSettingTypePopup.show && <EditSettingType onEditSuccess={this.handleEditSuccess} />} */}
 
@@ -99,15 +97,16 @@ export class AppContainer extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { settingTypes, gridParams, jobInfo, getJobInfo, editSettingTypePopup, createSettingTypePopup, deleteSettingTypePopup } = state;
+    const { settingTypes, getNotificationTypes, gridParams, jobInfoFlag, editSettingTypePopup, createMappingPopup, deleteSettingTypePopup, getRecipients } = state;
     return {
         settingTypes,
         gridParams,
         editSettingTypePopup,
-        createSettingTypePopup,
+        createMappingPopup,
         deleteSettingTypePopup,
-        jobInfo,
-        getJobInfo
+        jobInfoFlag,
+        getNotificationTypes,
+        getRecipients
     };
 };
 

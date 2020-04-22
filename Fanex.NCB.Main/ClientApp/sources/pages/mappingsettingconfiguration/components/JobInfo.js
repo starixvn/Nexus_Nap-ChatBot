@@ -10,14 +10,14 @@ import Labels from '../../common/Labels';
 export class JobInfo extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            count: 10
-        };
 
         this.haveHostPermission = document.getElementById('have-host-permission') && document.getElementById('have-host-permission').checked;
     }
 
-    componentDidMount() {
+    handleChangeEditMode = () => {
+        this.props.setJobInfoFlag({
+            isEdit: true
+        });
     }
 
     render() {
@@ -42,7 +42,7 @@ export class JobInfo extends Component {
                 {
                     this.haveHostPermission &&
                     <div className='job-info-item'>
-                        <button className="btn-new" onClick={this.handleOpenCreateSettingPopup}>{Labels.Edit}</button>
+                        <button className="btn-new" onClick={this.handleChangeEditMode}>{Labels.Edit}</button>
                     </div>
                 }
             </div>
@@ -53,10 +53,11 @@ export class JobInfo extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { jobInfo, setJobInfo } = state;
+    const { jobInfo, jobInfoFlag,setJobInfoFlag } = state;
     return {
         jobInfo,
-        setJobInfo
+        jobInfoFlag,
+        setJobInfoFlag
     };
 };
 

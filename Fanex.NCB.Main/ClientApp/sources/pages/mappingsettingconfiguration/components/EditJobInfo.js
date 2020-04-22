@@ -7,19 +7,47 @@ import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import Labels from '../../common/Labels';
 import { Input } from 'reactstrap';
+import { toast } from 'react-toastify';
 
 export class EditJobInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            count: 10
+            id: props.jobInfo.id,
+            status: props.jobInfo.status,
+            previousMaxMessageId: props.jobInfo.previousMaxMessageId,
+            batchSize: props.jobInfo.batchSize,
+            testingGroup: props.jobInfo.testingGroup
         };
 
         this.haveHostPermission = document.getElementById('have-host-permission') && document.getElementById('have-host-permission').checked;
     }
+
+    handleChangeSaveMode = () => {
+        let rexegNumber = new RegExp('[^0-9]');
+        if (rexegNumber.test(this.state.batchSize)) {
+            toast.error('Batch Size must be integer');
+        }
+        else if (rexegNumber.test(this.state.testingGroup)) {
+            toast.error('Testing Group must be integer');
+        }
+        else {
+            let data = {
+                id: this.state.id,
+                status: this.state.status,
+                previousMaxMessageId: this.state.previousMaxMessageId,
+                batchSize: parseInt(this.state.batchSize),
+                testingGroup: parseInt(this.state.testingGroup)
+            };
+
+            this.props.setJobInfoData(data, () => this.props.setJobInfoFlag({ isEdit: false }));
+        }
+    }
     
     handleChange = e => {
-        console.log(e.taget.value)
+        this.setState({
+            [e.target.name]: e.target.value
+        });
     }
 
     render() {
@@ -36,23 +64,25 @@ export class EditJobInfo extends Component {
                 <div className='job-info-item'>
                     <p className='job-info-title'>Batch Size:</p>
                     <Input
+                        name='batchSize'
                         onChange={this.handleChange}
                         className='job-info-input'
-                        value={this.props.jobInfo.batchSize}
+                        defaultValue={this.props.jobInfo.batchSize}
                     />
                 </div>
                 <div className='job-info-item'>
                     <p className='job-info-title'>Testing Group:</p>
                     <Input
+                        name='testingGroup'
                         onChange={this.handleChange}
                         className='job-info-input'
-                        value={this.props.jobInfo.testingGroup}
+                        defaultValue={this.props.jobInfo.testingGroup}
                     />
                 </div>
                 {
                     this.haveHostPermission &&
                     <div className='job-info-item'>
-                        <button className="btn-new" onClick={this.handleOpenCreateSettingPopup}>{Labels.Edit}</button>
+                        <button className="btn-new" onClick={this.handleChangeSaveMode}>{Labels.Save}</button>
                     </div>
                 }
             </div>
@@ -63,10 +93,11 @@ export class EditJobInfo extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { jobInfo, setJobInfo } = state;
+    const { jobInfo, setJobInfoFlag, setJobInfoData } = state;
     return {
         jobInfo,
-        setJobInfo
+        setJobInfoFlag,
+        setJobInfoData
     };
 };
 

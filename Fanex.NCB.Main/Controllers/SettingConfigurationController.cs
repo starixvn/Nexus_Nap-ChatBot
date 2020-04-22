@@ -143,5 +143,35 @@
 
             return Json(new { total = result.Item1, data = result.Item2 });
         }
+
+        [HttpPost]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
+        public async Task<IActionResult> UpdateJobInfo([FromBody] UpdateJobInfoViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _settingConfigurationService.UpdateJobInfoAsync(new UpdateJobInfo
+                {
+                    Id = viewModel.Id,
+                    BatchSize = viewModel.BatchSize,
+                    TestingGroup = viewModel.TestingGroup,
+                    ModifiedBy = _napSession.UserId
+                }).ConfigureAwait(false);
+
+                return Json(result);
+            }
+
+            var errors = ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
+            return Json(new { isSuccessful = false, errors });
+        }
+
+        [HttpGet]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Read)]
+        public async Task<IActionResult> GetMsgContentsTypes()
+        {
+            var result = await _settingConfigurationService.GetMsgContentsTypesAsync();
+
+            return Json(result);
+        }
     }
 }

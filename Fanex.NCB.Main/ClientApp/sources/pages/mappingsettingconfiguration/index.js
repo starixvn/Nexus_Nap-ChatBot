@@ -10,7 +10,10 @@ import reducer from './reducers/index';
 const store = Store.createStore(reducer, {
     settingTypes: [],
     jobInfo: null,
-    createSettingTypePopup: {
+    jobInfoFlag: {
+        isEdit: false
+    },
+    createMappingPopup: {
         show: false
     },
     editSettingTypePopup: {
