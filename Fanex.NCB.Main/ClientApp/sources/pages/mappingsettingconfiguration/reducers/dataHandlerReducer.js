@@ -35,20 +35,20 @@ export const gridData = createReducer({}, {
 });
 
 // Delete
-export const deleteSettingTypePopup = createReducer({}, {
+export const deleteMappingPopup = createReducer({}, {
     [types.DELETE_POPUP_DATA](state, action) {
         return action.data;
     }
 });
 
 // Update Popup
-export const editSettingTypePopup = createReducer({}, {
+export const editMappingPopup = createReducer({}, {
     [types.EDIT_POPUP_DATA](state, action) {
         return action.data;
     }
 });
 
-export const editSettingTypeResult = createReducer({}, {
+export const editMappingResult = createReducer({}, {
     [types.EDIT_RESULT_DATA](state, action) {
         return action.data;
     }
@@ -61,8 +61,8 @@ export const createMappingPopup = createReducer({}, {
     }
 });
 
-export const createSettingTypeResult = createReducer({}, {
-    [types.CREATE_SETTING_TYPE_RESULT_DATA](state, action) {
+export const createMappingResult = createReducer({}, {
+    [types.CREATE_RESULT_DATA](state, action) {
         return action.data;
     }
 });
@@ -81,14 +81,7 @@ export const notificationTemplates = createReducer(null, {
     }
 });
 
-// Recipient
-export const recipients = createReducer(null, {
-    [types.RECIPIENT_DATA](state, action) {
-        return action.data;
-    }
-});
-
-// Recipient
+// Msg Contents Type
 export const msgContentsTypes = createReducer(null, {
     [types.MSG_CONTENT_TYPE_DATA](state, action) {
         return action.data;
@@ -107,14 +100,13 @@ const reducers = {
     gridParams,
     gridData,
     createMappingPopup,
-    createSettingTypeResult,
-    editSettingTypePopup,
-    editSettingTypeResult,
-    deleteSettingTypePopup,
+    createMappingResult,
+    editMappingPopup,
+    editMappingResult,
+    deleteMappingPopup,
     jobInfoFlag,
     notificationTypes,
     notificationTemplates,
-    recipients,
     msgContentsTypes,
     notificationTypeRef
 };

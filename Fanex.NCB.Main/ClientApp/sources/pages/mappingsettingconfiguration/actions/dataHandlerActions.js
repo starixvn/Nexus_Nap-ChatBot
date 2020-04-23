@@ -40,12 +40,12 @@ export const setJobInfoData = (data, changeModeSaveMode) => {
         }
     }).then(response => {
         if (response.data && response.data.isSuccessful) {
-            toast.success('Successfully');
+            toast.success('Update Job Info sucessfully');
             changeModeSaveMode();
             dispatch(setJobInfo(data));
         }
         else {
-            let message = response.data && response.data.message || 'Unexpected error';
+            let message = response.data && response.data.message || 'Update Job Info unsucessfully';
             toast.error(message);
         }
     }).catch(errorResponseHandler);
@@ -92,7 +92,7 @@ export const getGridData = params => {
 };
 
 // Delete
-export const openDeleteSettingTypePopup = extra => {
+export const openDeleteMappingPopup = extra => {
     return {
         type: types.DELETE_POPUP_DATA,
         data: {
@@ -102,16 +102,16 @@ export const openDeleteSettingTypePopup = extra => {
     };
 };
 
-export const closeDeleteSettingTypePopup = () => {
+export const closeDeleteMappingPopup = () => {
     return {
         type: types.DELETE_POPUP_DATA,
         data: { show: false }
     };
 };
 
-export const deleteSettingType = type => {
+export const deleteMapping = data => {
     return async dispatch => axios({
-        url: Site.resolveClientUrl(`SettingConfiguration/Delete?type=${type}`),
+        url: Site.resolveClientUrl(`SettingConfiguration/DeleteMapping?templateId=${data.templateId}&msgContentsType=${data.msgContentsType}&jobId=${data.jobId}`),
         method: 'post',
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
@@ -122,30 +122,30 @@ export const deleteSettingType = type => {
 
 // Edit Popup
 
-export const setEditSettingTypePopup = data => {
+export const setEditMappingPopup = data => {
     return {
         type: types.EDIT_POPUP_DATA,
         data: data
     };
 };
 
-export const setEditSettingTypeResult = data => {
+export const setEditMappingResult = data => {
     return {
         type: types.EDIT_RESULT_DATA,
         data: data
     };
 };
 
-export const getSettingType = (type) => {
-    return async dispatch => axios(Site.resolveClientUrl(`SettingConfiguration/GetByType?type=${type}`))
+export const getMapping = (templateId, msgContentsType, jobId) => {
+    return async dispatch => axios(Site.resolveClientUrl(`SettingConfiguration/GetMapping?templateId=${templateId}&msgContentsType=${msgContentsType}&jobId=${jobId}`))
         .then(response => {
-            dispatch(setEditSettingTypePopup({ show: true, settingType: response.data }));
+            dispatch(setEditMappingPopup({ show: true, mapping: response.data }));
         }).catch(errorResponseHandler);
 };
 
-export const editSettingType = (data) => {
+export const editMapping = data => {
     return async dispatch => axios({
-        url: Site.resolveClientUrl('SettingConfiguration/Update'),
+        url: Site.resolveClientUrl('SettingConfiguration/UpdateMapping'),
         method: 'post',
         data: data,
         headers: {
@@ -153,7 +153,7 @@ export const editSettingType = (data) => {
             'RequestVerificationToken': Site.getXsrfToken()
         }
     }).then(response => {
-        dispatch(setEditSettingTypeResult(response.data));
+        dispatch(setEditMappingResult(response.data));
     }).catch(errorResponseHandler);
 };
 
@@ -171,16 +171,16 @@ export const setCreateMappingPopup = data => {
     };
 };
 
-export const setCreateSettingTypeResult = data => {
+export const setCreateMappingResult = data => {
     return {
-        type: types.CREATE_SETTING_TYPE_RESULT_DATA,
+        type: types.CREATE_RESULT_DATA,
         data: data
     };
 };
 
-export const createSettingType = data => {
+export const createMapping = data => {
     return async dispatch => axios({
-        url: Site.resolveClientUrl('SettingConfiguration/Create'),
+        url: Site.resolveClientUrl('SettingConfiguration/CreateMapping'),
         method: 'post',
         data: data,
         headers: {
@@ -188,7 +188,7 @@ export const createSettingType = data => {
             'RequestVerificationToken': Site.getXsrfToken()
         }
     }).then(response => {
-        dispatch(setCreateSettingTypeResult(response.data));
+        dispatch(setCreateMappingResult(response.data));
     }).catch(errorResponseHandler);
 };
 
@@ -217,33 +217,12 @@ export const setTemplates = data => {
     };
 };
 
-export const getTemplates = (notificationTypeId) => {
+export const getTemplates = notificationTypeId => {
     const url = Site.resolveClientUrl('NewNotification/GetTemplates');
     return (dispatch) => {
         return axios.get(url, { params: { notificationTypeId } }).then(response => {
             dispatch(setTemplates(response.data));
         }).catch(errorResponseHandler);
-    };
-};
-
-// Recipient
-export const setRecipients = data => {
-    return {
-        type: types.RECIPIENT_DATA,
-        data: data
-    };
-};
-
-export const getRecipients = (notificationTypeId, productId) => {
-    const url = Site.resolveClientUrl('NewNotification/GetRecipients');
-    return dispatch => {
-        axios.get(url, {
-            params: { notificationTypeId, productId }
-        }).then(response => {
-            dispatch(setRecipients(response.data));
-        }).catch(() => {
-            errorResponseHandler();
-        });
     };
 };
 
@@ -264,7 +243,7 @@ export const getMsgContentsTypes = params => {
     };
 };
 
-// Msg Contents Type
+// Notification Type Ref
 export const setNotificationTypeRef = data => {
     return {
         type: types.NOTIFICATION_TYPE_REF,
@@ -287,15 +266,15 @@ const actions = {
     setGridParams,
     getGridData,
     setCreateMappingPopup,
-    setCreateSettingTypeResult,
-    createSettingType,
-    setEditSettingTypePopup,
-    setEditSettingTypeResult,
-    getSettingType,
-    editSettingType,
-    deleteSettingType,
-    openDeleteSettingTypePopup,
-    closeDeleteSettingTypePopup,
+    setCreateMappingResult,
+    createMapping,
+    setEditMappingPopup,
+    setEditMappingResult,
+    getMapping,
+    editMapping,
+    deleteMapping,
+    openDeleteMappingPopup,
+    closeDeleteMappingPopup,
     getJobInfo,
     setJobInfo,
     setJobInfoData,
@@ -304,8 +283,6 @@ const actions = {
     setNotificationTypes,
     getTemplates,
     setTemplates,
-    getRecipients,
-    setRecipients,
     getMsgContentsTypes,
     setMsgContentsTypes,
     getNotificationTypeRef,

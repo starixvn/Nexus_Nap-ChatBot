@@ -49,14 +49,18 @@ export class DataGrid extends Component {
         return [<Row key={`body${1}`} ><Cell colSpan="9"><NoDataTitle /></Cell></Row>];
     }
 
-    handleEditSettingType = e => {
-        const type = parseInt(e.target.dataset.type, 10);
-        this.props.getSettingType(type);
+    handleEditMapping = e => {
+        const templateId = parseInt(e.target.dataset.templateid, 10);
+        const msgContentsType = parseInt(e.target.dataset.msgcontentstype, 10);
+        this.props.getMapping(templateId, msgContentsType, this.props.jobInfo.id);
     }
 
-    handleDeleteSettingType = e => {
-        const type = parseInt(e.target.dataset.type, 10);
-        this.props.openDeleteSettingTypePopup({ type, name: e.target.dataset.name });
+    handleDeleteMapping = e => {
+        const templateId = parseInt(e.target.dataset.templateid, 10);
+        const msgContentsType = parseInt(e.target.dataset.msgcontentstype, 10);
+        const notificationTypeName = e.target.dataset.typename;
+        const notificationTemplateName = e.target.dataset.templatename;
+        this.props.openDeleteMappingPopup({ templateId, msgContentsType, notificationTemplateName, notificationTypeName });
     }
 
     renderRow = (item, index, isHost) => (
@@ -77,11 +81,19 @@ export class DataGrid extends Component {
                 isHost &&
                 <Cell className="text-center">
                     <>
-                        <span className="icon-edit" data-type={item.type} onClick={this.handleEditSettingType} />
+                        <span className="icon-edit"
+                            data-templateid={item.notificationTemplateID}
+                            data-msgcontentstype={item.msgContentsType}
+                            onClick={this.handleEditMapping} />
                         {
                             item.unRemovable ?
                             <span className="icon-delete icon-disabled" /> :
-                            <span className="icon-delete" data-type={item.type} data-name={item.name} onClick={this.handleDeleteSettingType} />
+                            <span className="icon-delete"
+                                data-templateid={item.notificationTemplateID}
+                                data-msgcontentstype={item.msgContentsType}
+                                data-typename={item.notificationTypeName}
+                                data-templatename={item.notificationTypeName}
+                                onClick={this.handleDeleteMapping} />
                         }
                     </>
                 </Cell>
@@ -107,7 +119,7 @@ export class DataGrid extends Component {
 
         return (
             <Table
-                autoWidth={false}
+                autoWidth={true}
                 header={this.buildHeader(haveHostPermission)}
                 body={this.buildBody(haveHostPermission)}
                 isPaging
@@ -123,10 +135,12 @@ export class DataGrid extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { gridParams, gridData } = state;
+    const { gridParams, gridData, jobInfo, openDeleteMappingPopup } = state;
     return {
         gridParams,
-        gridData
+        gridData,
+        jobInfo,
+        openDeleteMappingPopup
     };
 };
 

@@ -109,6 +109,7 @@ BEGIN
 	INNER JOIN RecipientType rt ON rt.RecipientTypeID = nrt.RecipientTypeID
     INNER JOIN NotificationTemplate nte ON nte.NotificationTemplateID = msct.NotificationTemplateID
     INNER JOIN SettingTypeTable stt ON stt.MsgContentsType = msct.MsgContentsType
+    ORDER BY nty.NotificationTypeID ASC
     LIMIT rowStart, pageSize;
 END;
 

@@ -7,31 +7,8 @@
 @import "../../shared/components/tables.scss";
 @import "../../shared/components/modals";
 
-.filter .notification-type {
-    width: 160px;
-}
-
 .table-container {
     margin-top: 10px;
-}
-
-.new-notification-template {
-    max-width: 100%;
-
-    .mde-preview {
-        max-height: 400px;
-        overflow-y: auto;
-    }
-
-    .form-group {
-        display: grid;
-        grid-template-columns: 108px 1fr;
-        grid-gap: 10px;
-    }
-
-    .list-button {
-        padding-left: 118px;
-    }
 }
 
 .form-filter {
@@ -39,6 +16,10 @@
         display: inline-block;
         width: 200px;
     }
+}
+
+.page-container {
+    width: 100% !important;
 }
 
 .job-info-container {
@@ -79,4 +60,37 @@
 
 .status-running {
     color: #e74c3c;
+}
+
+.vertical-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.input-row-container {
+    width: 300px;
+}
+
+.disabled-input {
+    background-color: #fff !important;
+    border: none;
+}
+
+.checkbox-custom {
+    & + label:before {
+        border: 1px solid #ced4da;
+    }
+    
+    &:checked + label:before {
+        background: #fff;
+    }
+    
+    &:checked + label:after {
+        border-right: 1px solid #ced4da;
+        border-bottom: 1px solid #ced4da;
+    }
+}
+
+.hidden {
+    display: none;
 }

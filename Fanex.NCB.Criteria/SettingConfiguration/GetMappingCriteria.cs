@@ -6,12 +6,12 @@
     {
         public int JobId { get; set; }
 
-        public int PageIndex { get; set; }
+        public int NotificationTemplateId { get; set; }
 
-        public int PageSize { get; set; }
+        public int MsgContentsType { get; set; }
 
-        public override string GetSettingKey() => "NCB_SettingConfiguration_MappingList_Sel";
+        public override string GetSettingKey() => "NCB_SettingConfiguration_Mapping_Sel";
 
-        public override bool IsValid() => JobId > 0 && PageIndex > 0 && PageSize > 0;
+        public override bool IsValid() => NotificationTemplateId > 0 && MsgContentsType > 0 && JobId > 0;
     }
 }

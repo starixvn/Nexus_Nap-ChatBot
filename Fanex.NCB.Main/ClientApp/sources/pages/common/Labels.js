@@ -59,5 +59,6 @@
     NotificationTemplate: 'Notification Template',
     System: 'System',
     RequiredParams: 'Required Params',
-    IsTest: 'Is Test'
+    IsTest: 'Is Test',
+    DeleteMappingSettingSuccessfully: 'Delete Mapping Setting successfully'
 };

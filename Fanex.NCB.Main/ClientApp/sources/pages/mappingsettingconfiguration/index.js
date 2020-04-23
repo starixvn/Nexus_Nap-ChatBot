@@ -16,14 +16,14 @@ const store = Store.createStore(reducer, {
     createMappingPopup: {
         show: false
     },
-    editSettingTypePopup: {
+    editMappingPopup: {
         show: false
     },
-    deleteSettingTypePopup: {
+    deleteMappingPopup: {
         show: false
     },
-    createSettingTypeResult: null,
-    editSettingTypeResult: null
+    createMappingResult: null,
+    editMappingResult: null
 });
 
 renderLayout(

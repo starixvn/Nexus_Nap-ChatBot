@@ -26,7 +26,7 @@ export class EditJobInfo extends Component {
     }
 
     handleChangeSaveMode = () => {
-        toggleConfirmUpdateJobInfo();
+        this.toggleConfirmUpdateJobInfo();
         let rexegNumber = new RegExp('[^0-9]');
         if (rexegNumber.test(this.state.batchSize)) {
             toast.error('Batch Size must be integer');
@@ -58,7 +58,8 @@ export class EditJobInfo extends Component {
     }
 
     toggleConfirmUpdateJobInfo = () => {
-        this.setState({confirmUpdateJobInfo:!this.state.confirmUpdateJobInfo });
+        this.setState({confirmUpdateJobInfo: false });
+        this.props.setJobInfoFlag({ isEdit: false });
     }
 
     render() {

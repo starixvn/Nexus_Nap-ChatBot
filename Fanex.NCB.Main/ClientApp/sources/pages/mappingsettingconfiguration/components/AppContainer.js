@@ -11,7 +11,7 @@ import Filter from './Filter';
 import DataGrid from './DataGrid';
 import Labels from '../../common/Labels';
 import NewMapping from './NewMapping';
-import EditSettingType from './EditSettingType';
+import EditMapping from './EditMapping';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import JobInfo from './JobInfo';
 import EditJobInfo from './EditJobInfo';
@@ -33,7 +33,10 @@ export class AppContainer extends Component {
 
     handleCloseCreateMappingPopup = () => {
         this.props.setCreateMappingPopup({ show: false });
-        this.props.setCreateSettingTypeResult(null);
+    }
+
+    handleCloseEditMappingPopup = () => {
+        this.props.setEditMappingPopup({ show: false });
     }
 
     handleCreateSuccess = () => {
@@ -42,22 +45,28 @@ export class AppContainer extends Component {
     }
 
     handleEditSuccess = () => {
-        this.props.setEditSettingTypePopup({ show: false });
-        this.props.setEditSettingTypeResult(null);
+        this.props.setEditMappingPopup({ show: false });
+        this.props.setEditMappingResult(null);
         this.props.getGridData(this.props.gridParams);
     }
 
-    handleDeleteSettingType = () => {
-        this.props.deleteSettingType(this.props.deleteSettingTypePopup.type).then(data => {
+    handleDeleteMapping = () => {
+        let params = {
+            templateId: this.props.deleteMappingPopup.templateId,
+            msgContentsType: this.props.deleteMappingPopup.msgContentsType,
+            jobId: this.props.jobInfo.id
+        };
+
+        this.props.deleteMapping(params).then(data => {
             if (data.isSuccessful) {
                 this.props.getGridData(this.props.gridParams);
-                toast.success(Labels.DeleteMsgContentsTypeSuccessfully);
+                toast.success(Labels.DeleteMappingSettingSuccessfully);
             } else {
                 toast.error(data.message);
             }
         });
 
-        this.props.closeDeleteSettingTypePopup();
+        this.props.closeDeleteMappingPopup();
     }
 
     render() {
@@ -79,16 +88,16 @@ export class AppContainer extends Component {
                     <NewMapping onClose={this.handleCloseCreateMappingPopup} onCreateSuccess={this.handleCreateSuccess} />
                 }
 
-                {/* {this.props.editSettingTypePopup && this.props.editSettingTypePopup.show && <EditSettingType onEditSuccess={this.handleEditSuccess} />} */}
+                {this.props.editMappingPopup && this.props.editMappingPopup.show && <EditMapping onEditSuccess={this.handleEditSuccess} onClose={this.handleCloseEditMappingPopup} />}
 
-                {/* {this.props.deleteSettingTypePopup && this.props.deleteSettingTypePopup.show &&
+                {this.props.deleteMappingPopup && this.props.deleteMappingPopup.show &&
                     <ConfirmPopup
-                        isOpen={this.props.deleteSettingTypePopup.show}
-                        onToggle={this.props.closeDeleteSettingTypePopup}
-                        onConfirm={this.handleDeleteSettingType}
-                        content={`Do you want to delete Msg Contents Type ${this.props.deleteSettingTypePopup.name}?`}
+                        isOpen={this.props.deleteMappingPopup.show}
+                        onToggle={this.props.closeDeleteMappingPopup}
+                        onConfirm={this.handleDeleteMapping}
+                        content={`Do you want to delete Mapping Setting ${this.props.deleteMappingPopup.notificationTypeName} - ${this.props.deleteMappingPopup.notificationTemplateName}?`}
                     />
-                } */}
+                }
             </>
         );
     }
@@ -97,16 +106,26 @@ export class AppContainer extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { settingTypes, getNotificationTypes, gridParams, jobInfoFlag, editSettingTypePopup, createMappingPopup, deleteSettingTypePopup, getRecipients } = state;
+    const {
+        settingTypes,
+        getNotificationTypes,
+        gridParams,
+        jobInfoFlag,
+        editMappingPopup,
+        createMappingPopup,
+        deleteMappingPopup,
+        jobInfo
+    } = state;
+
     return {
         settingTypes,
         gridParams,
-        editSettingTypePopup,
+        editMappingPopup,
         createMappingPopup,
-        deleteSettingTypePopup,
+        deleteMappingPopup,
         jobInfoFlag,
         getNotificationTypes,
-        getRecipients
+        jobInfo
     };
 };
 

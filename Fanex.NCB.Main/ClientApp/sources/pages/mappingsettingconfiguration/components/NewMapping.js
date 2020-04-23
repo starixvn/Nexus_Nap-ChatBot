@@ -13,63 +13,73 @@ class NewMapping extends Component {
         super(props);
     }
 
-    toggleHandler = () => {
-        this.props.toggleHandler();
+    componentDidMount = () => {
+        this.props.setCreateMappingResult(null);
+        this.props.getMsgContentsTypes();
+        this.props.setTemplates(null);
+        this.props.setNotificationTypeRef(null)
+        const formik = this.refs.form;
+
+        formik.setValues({
+            ...formik.state.values,
+            isTest: true
+        });
     }
 
     schema = object().shape({
+        jobId: string(),
         notificationTypeId: string().required(Labels.FieldRequired),
         notificationTemplateId: string().required(Labels.FieldRequired),
-        systemId: string().required(Labels.FieldRequired),
-        recipientTypeId: string().required(Labels.FieldRequired),
         msgContentsType: string().required(Labels.FieldRequired),
-        // isTest: boolean().required(Labels.FieldRequired)
+        requiredParam: string().required(Labels.FieldRequired),
+        isTest: boolean()
     })
 
     handleNotificationTypeChange = event => {
         const formik = this.refs.form;
-        this.props.getRecipients(event.target.value);
         this.props.getTemplates(event.target.value);
         this.props.getNotificationTypeRef(event.target.value);
 
         formik.setValues({
             ...formik.state.values,
-            notificationTypeId: event.target.value,
-            // recipients: [],
-            // templateId: ''
+            notificationTypeId: event.target.value
         });
-        // this.setState({ searchValue: '' });
     }
 
     handleTemplateChange = event => {
         const formik = this.refs.form;
 
-        if (event.target.value) {
-            const selectedTemplate = this.props.notificationTemplates.find(x => x.notificationTemplateId === parseInt(event.target.value, 10));
+        formik.setValues({
+            ...formik.state.values,
+            notificationTemplateId: event.target.value
+        });
+    }
 
-            const paramsInTitle = selectedTemplate.title.match(/{[_-\w\s]+}/g) || [];
-            const paramsInContent = selectedTemplate.content.match(/{[_-\w\s]+}/g) || [];
+    handleMsgContentsTypeChange = event => {
+        const formik = this.refs.form;
 
-            const paramNames = new Set([...paramsInTitle, ...paramsInContent]);
+        formik.setValues({
+            ...formik.state.values,
+            msgContentsType: event.target.value
+        });
+    }
 
-            formik.setValues({
-                ...formik.state.values,
-                templateId: event.target.value,
-                params: [...paramNames].map(x => ({ name: x, value: '' })),
-                title: selectedTemplate.title,
-                content: selectedTemplate.content,
-                canEditTitleContent: false
-            });
-        } else {
-            formik.setValues({
-                ...formik.state.values,
-                templateId: event.target.value,
-                params: [],
-                title: '',
-                content: '',
-                canEditTitleContent: true
-            });
-        }
+    handleRequiredParamChange = event => {
+        const formik = this.refs.form;
+
+        formik.setValues({
+            ...formik.state.values,
+            requiredParam: event.target.value
+        });
+    }
+
+    handleChangeIsTest = event => {
+        const formik = this.refs.form;
+
+        formik.setValues({
+            ...formik.state.values,
+            isTest: !formik.state.values.isTest
+        });
     }
 
     renderNotificationTypeOption = item => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>
@@ -89,9 +99,10 @@ class NewMapping extends Component {
     }) => {
         return (
             <Form onSubmit={handleSubmit}>
-                <FormGroup>
+                <input name='jobId' className='hidden' defaultValue={this.props.jobInfo && this.props.jobInfo.id} />
+                <FormGroup className='vertical-row'>
                     <Label for="notificationTypeId" className="form-label required">Notification Type</Label>
-                    <div>
+                    <div className='input-row-container'>
                         <Input type="select"
                             invalid={touched.notificationTypeId && errors.notificationTypeId}
                             name="notificationTypeId"
@@ -104,9 +115,9 @@ class NewMapping extends Component {
                         {touched.notificationTypeId && errors.notificationTypeId && <FormFeedback>{errors.notificationTypeId}</FormFeedback>}
                     </div>
                 </FormGroup>
-                <FormGroup className="row-has-reset">
+                <FormGroup className='vertical-row'>
                     <Label for="notificationTemplateId" className="form-label required">Notification Template</Label>
-                    <div>
+                    <div className='input-row-container'>
                         <Input type="select"
                             invalid={touched.notificationTemplateId && errors.notificationTemplateId}
                             name="notificationTemplateId"
@@ -119,35 +130,33 @@ class NewMapping extends Component {
                         {touched.notificationTemplateId && errors.notificationTemplateId && <FormFeedback>{errors.notificationTemplateId}</FormFeedback>}
                     </div>
                 </FormGroup>
-                <FormGroup>
-                    <Label for="systemId" className="form-label">System</Label>
-                    <div>
-                        <Input invalid={touched.systemId && errors.systemId}
-                            name="systemId"
+                <FormGroup className='vertical-row'>
+                    <Label for="systemName" className="form-label">System</Label>
+                    <div className='input-row-container'>
+                        <Input className='disabled-input'
+                            name="systemName"
                             disabled={true}
                             value={this.props.notificationTypeRef ? this.props.notificationTypeRef.systemName : ''}
                         />
-                        {touched.systemId && errors.systemId && <FormFeedback>{errors.systemId}</FormFeedback>}
                     </div>
                 </FormGroup>
-                <FormGroup>
+                <FormGroup className='vertical-row'>
                     <Label for="recipientTypeId" className="form-label">Recipient Type</Label>
-                    <div>
-                        <Input invalid={touched.recipientTypeId && errors.recipientTypeId}
+                    <div className='input-row-container'>
+                        <Input className='disabled-input'
                             name="recipientTypeId"
                             disabled={true}
                             value={this.props.notificationTypeRef ? this.props.notificationTypeRef.recipientTypeName : ''}
                         />
-                        {touched.recipientTypeId && errors.recipientTypeId && <FormFeedback>{errors.recipientTypeId}</FormFeedback>}
                     </div>
                 </FormGroup>
-                <FormGroup>
+                <FormGroup className='vertical-row'>
                     <Label for="msgContentsType" className="form-label required">Msg Contents Type</Label>
-                    <div>
+                    <div className='input-row-container'>
                         <Input type="select"
                             invalid={touched.msgContentsType && errors.msgContentsType}
                             name="msgContentsType"
-                            onChange={this.handleNotificationTypeChange}
+                            onChange={this.handleMsgContentsTypeChange}
                             value={values.msgContentsType}
                         >
                             <option value="" disabled hidden>{Labels.PleaseSelect}</option>
@@ -156,25 +165,28 @@ class NewMapping extends Component {
                         {touched.msgContentsType && errors.msgContentsType && <FormFeedback>{errors.msgContentsType}</FormFeedback>}
                     </div>
                 </FormGroup>
-                <FormGroup>
+                <FormGroup className='vertical-row'>
                     <Label for="requiredParam" className="form-label required">Required Param</Label>
-                    <div>
+                    <div className='input-row-container'>
                         <Input invalid={touched.requiredParam && errors.requiredParam}
                             name="requiredParam"
-                            onChange={this.handleChange}
+                            onChange={this.handleRequiredParamChange}
                             value={values.requiredParam}
                         />
                         {touched.requiredParam && errors.requiredParam && <FormFeedback>{errors.requiredParam}</FormFeedback>}
                     </div>
                 </FormGroup>
-                <FormGroup>
+                <FormGroup className='vertical-row'>
                     <Label for="isTest" className="form-label">Is Test</Label>
-                    <div>
-                        <Input invalid={touched.isTest && errors.isTest}
-                            name="isTest"
-                            onChange={this.handleChange}
+                    <div className='input-row-container'>
+                        <input id='is-test'
+                            className="checkbox-custom"
+                            type='checkbox'
+                            defaultChecked={true}
                             value={values.isTest}
+                            onChange={this.handleChangeIsTest}
                         />
+                        <label htmlFor='is-test' />
                         {touched.isTest && errors.isTest && <FormFeedback>{errors.isTest}</FormFeedback>}
                     </div>
                 </FormGroup>
@@ -187,8 +199,8 @@ class NewMapping extends Component {
 
     handleSubmit = (values, { setSubmitting }) => {
         setSubmitting(true);
-        this.props.createSettingType(values).then(() => {
-            if (this.props.createSettingTypeResult.isSuccessful) {
+        this.props.createMapping(values).then(() => {
+            if (this.props.createMappingResult.isSuccessful) {
                 setTimeout(() => {
                     this.props.onCreateSuccess();
                 }, 1000);
@@ -198,23 +210,24 @@ class NewMapping extends Component {
         });
     }
 
-    componentDidMount = () => {
-        this.props.getMsgContentsTypes();
-    }
-
     render() {
         return (
             <Modal isOpen toggle={this.props.onClose} className="new-setting-type" backdrop="static">
                 <ModalHeader toggle={this.props.onClose}>Create New Mapping Setting</ModalHeader>
                 <ModalBody>
-                    {this.props.createSettingTypeResult &&
-                        <ResponseMessage isSuccessful={this.props.createSettingTypeResult.isSuccessful}
-                            message={this.props.createSettingTypeResult.message || Labels.CreateNewMsgContentsTypeSuccessfully}
+                    {this.props.createMappingResult &&
+                        <ResponseMessage isSuccessful={this.props.createMappingResult.isSuccessful}
+                            message={this.props.createMappingResult.message || Labels.CreateNewMsgContentsTypeSuccessfully}
                         />
                     }
                     <Formik ref="form"
                         initialValues={{
-                            notificationTypeId: ''
+                            jobId: this.props.jobInfo && this.props.jobInfo.id,
+                            notificationTypeId: '',
+                            notificationTemplateId: '',
+                            msgContentsType: '',
+                            requiredParam: '',
+                            isTest: true
                         }}
                         render={this.renderForm}
                         validationSchema={this.schema}
@@ -228,31 +241,33 @@ class NewMapping extends Component {
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({
-        createSettingType: ActionCreators.createSettingType,
-        getRecipients: ActionCreators.getRecipients,
+        createMapping: ActionCreators.createMapping,
         getTemplates: ActionCreators.getTemplates,
         getMsgContentsTypes: ActionCreators.getMsgContentsTypes,
-        getNotificationTypeRef: ActionCreators.getNotificationTypeRef
+        getNotificationTypeRef: ActionCreators.getNotificationTypeRef,
+        setTemplates: ActionCreators.setTemplates,
+        setNotificationTypeRef: ActionCreators.setNotificationTypeRef,
+        setCreateMappingResult: ActionCreators.setCreateMappingResult
     }, dispatch);
 };
 
 const mapStateToProps = state => {
     const {
-        createSettingTypeResult,
+        createMappingResult,
         notificationTypes,
         notificationTemplates,
-        recipients,
         msgContentsTypes,
-        notificationTypeRef
+        notificationTypeRef,
+        jobInfo
     } = state;
 
     return {
-        createSettingTypeResult,
+        createMappingResult,
         notificationTypes,
         notificationTemplates,
-        recipients,
         msgContentsTypes,
-        notificationTypeRef
+        notificationTypeRef,
+        jobInfo
     };
 };
 

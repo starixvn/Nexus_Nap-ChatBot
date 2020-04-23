@@ -22,12 +22,20 @@
 
         Task<JobInfo> GetJobInfoAsync(int jobId);
 
-        Task<(long, IEnumerable<Mapping>)> GetMappingAsync(int jobId, int pageIndex, int pageSize);
+        Task<(long, IEnumerable<Mapping>)> GetMappingsAsync(int jobId, int pageIndex, int pageSize);
 
         Task<CommandResult> UpdateJobInfoAsync(UpdateJobInfo model);
 
         Task<IEnumerable<SettingType>> GetMsgContentsTypesAsync();
 
         Task<NotificationTypeData> GetNotificationTypeDataAsync(int notificationTypeId);
+
+        Task<CommandResult> CreateMappingAsync(CreateMapping model);
+
+        Task<Mapping> GetMappingAsync(GetMapping model);
+
+        Task<CommandResult> UpdateMappingAsync(UpdateMapping model);
+
+        Task<CommandResult> DeleteMappingAsync(DeleteMapping model);
     }
 }

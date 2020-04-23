@@ -106,9 +106,9 @@
             return result;
         }
 
-        public async Task<(long, IEnumerable<Mapping>)> GetMappingAsync(int jobId, int pageIndex, int pageSize)
+        public async Task<(long, IEnumerable<Mapping>)> GetMappingsAsync(int jobId, int pageIndex, int pageSize)
         {
-            var result = await baseService.FetchMultipleAsync<long, Mapping>(new GetMappingCriteria
+            var result = await baseService.FetchMultipleAsync<long, Mapping>(new GetMappingsCriteria
             {
                 JobId = jobId,
                 PageIndex = pageIndex,
@@ -146,6 +146,71 @@
             {
                 NotificationTypeId = notificationTypeId
             });
+
+            return result;
+        }
+
+        public async Task<CommandResult> CreateMappingAsync(CreateMapping model)
+        {
+            var command = new CreateMappingCommand
+            {
+                JobId = model.JobId,
+                NotificationTypeId = model.NotificationTypeID,
+                NotificationTemplateId = model.NotificationTemplateID,
+                MsgContentsType = model.MsgContentsType,
+                RequiredParam = model.RequiredParams,
+                IsTest = model.IsTest,
+                CreatorId = model.CreatorId
+            };
+
+            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+
+            return result;
+        }
+
+        public async Task<Mapping> GetMappingAsync(GetMapping model)
+        {
+            var result = await baseService.GetDataEntityAsync<Mapping>(new GetMappingCriteria
+            {
+                NotificationTemplateId = model.TemlateId,
+                MsgContentsType = model.MsgContentsType,
+                JobId = model.JobId
+            });
+
+            return result;
+        }
+
+        public async Task<CommandResult> UpdateMappingAsync(UpdateMapping model)
+        {
+            var command = new UpdateMappingCommand
+            {
+                JobId = model.JobId,
+                NotificationTypeId = model.NotificationTypeID,
+                NotificationTemplateId = model.NotificationTemplateID,
+                MsgContentsType = model.MsgContentsType,
+                RequiredParam = model.RequiredParams,
+                IsTest = model.IsTest,
+                OldTemplateId = model.OldTemplateId,
+                OldMsgContentsType = model.OldMsgContentsType,
+                ModifiedBy = model.ModifiedBy
+            };
+
+            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+
+            return result;
+        }
+
+        public async Task<CommandResult> DeleteMappingAsync(DeleteMapping model)
+        {
+            var command = new DeleteMappingCommand
+            {
+                JobId = model.JobId,
+                NotificationTemplateId = model.TemlateId,
+                MsgContentsType = model.MsgContentsType,
+                ModifiedBy = model.ModifiedBy
+            };
+
+            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
 
             return result;
         }

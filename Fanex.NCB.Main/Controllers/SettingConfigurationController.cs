@@ -139,7 +139,7 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
         public async Task<IActionResult> GetMappings(int jobId, int pageIndex, int pageSize)
         {
-            var result = await _settingConfigurationService.GetMappingAsync(jobId, pageIndex, pageSize);
+            var result = await _settingConfigurationService.GetMappingsAsync(jobId, pageIndex, pageSize);
 
             return Json(new { total = result.Item1, data = result.Item2 });
         }
@@ -179,6 +179,89 @@
         public async Task<IActionResult> GetNotificationTypeData(int notificationTypeId)
         {
             var result = await _settingConfigurationService.GetNotificationTypeDataAsync(notificationTypeId);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
+        public async Task<IActionResult> CreateMapping([FromBody] CreateMappingViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _settingConfigurationService.CreateMappingAsync(new CreateMapping
+                {
+                    JobId = viewModel.JobId,
+                    NotificationTypeID = viewModel.NotificationTypeId,
+                    NotificationTemplateID = viewModel.NotificationTemplateId,
+                    MsgContentsType = viewModel.MsgContentsType,
+                    RequiredParams = viewModel.RequiredParam,
+                    IsTest = viewModel.IsTest,
+                    CreatorId = _napSession.UserId
+                }).ConfigureAwait(false);
+
+                return Json(result);
+            }
+
+            var errors = ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
+            return Json(new { isSuccessful = false, errors });
+        }
+
+        [HttpGet]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
+        public async Task<IActionResult> GetMapping(int templateId, int msgContentsType, int jobId)
+        {
+            var model = new GetMapping
+            {
+                TemlateId = templateId,
+                MsgContentsType = msgContentsType,
+                JobId = jobId
+            };
+
+            var result = await _settingConfigurationService.GetMappingAsync(model);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
+        public async Task<IActionResult> UpdateMapping([FromBody] UpdateMappingViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _settingConfigurationService.UpdateMappingAsync(new UpdateMapping
+                {
+                    JobId = viewModel.JobId,
+                    NotificationTypeID = viewModel.NotificationTypeId,
+                    NotificationTemplateID = viewModel.NotificationTemplateId,
+                    MsgContentsType = viewModel.MsgContentsType,
+                    RequiredParams = viewModel.RequiredParam,
+                    IsTest = viewModel.IsTest,
+                    OldTemplateId = viewModel.OldTemplateId,
+                    OldMsgContentsType = viewModel.OldMsgContentsType,
+                    ModifiedBy = _napSession.UserId
+                }).ConfigureAwait(false);
+
+                return Json(result);
+            }
+
+            var errors = ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
+            return Json(new { isSuccessful = false, errors });
+        }
+
+        [HttpPost]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
+        public async Task<IActionResult> DeleteMapping(int templateId, int msgContentsType, int jobId)
+        {
+            var model = new DeleteMapping
+            {
+                TemlateId = templateId,
+                MsgContentsType = msgContentsType,
+                JobId = jobId,
+                ModifiedBy = _napSession.UserId
+            };
+
+            var result = await _settingConfigurationService.DeleteMappingAsync(model);
 
             return Json(result);
         }
