@@ -7,7 +7,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_MsgConten
 		Creator: 20200423@Merlin
 
         Revisions:
-            - 20200423@Merlin: Get setting type - RedmineID: #132039
+            - 20200423@Merlin: Get msg contents type list - RedmineID: #132039
     */
 )
 SQL SECURITY DEFINER

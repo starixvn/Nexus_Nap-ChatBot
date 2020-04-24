@@ -12,7 +12,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_Mapping_S
 		Creator: 20200423@Merlin
 
         Revisions:
-            - 20200423@Merlin: Create mapping - RedmineID: #132039
+            - 20200423@Merlin: Select mapping - RedmineID: #132039
     */
 )
 SQL SECURITY DEFINER
