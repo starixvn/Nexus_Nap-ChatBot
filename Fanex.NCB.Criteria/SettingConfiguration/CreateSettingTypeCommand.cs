@@ -12,6 +12,6 @@
 
         public override string GetSettingKey() => "NCB_SettingConfiguration_SettingType_Ins";
 
-        public override bool IsValid() => CreatorId > 0 && !string.IsNullOrWhiteSpace(Name);
+        public override bool IsValid() => CreatorId > 0 && !string.IsNullOrWhiteSpace(Name) && Type > 0;
     }
 }
