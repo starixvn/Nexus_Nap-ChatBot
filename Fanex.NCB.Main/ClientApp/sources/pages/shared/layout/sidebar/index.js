@@ -30,6 +30,7 @@ export default class Sidebar extends React.Component {
             case 'Notification Template': return 'icon-template';
             case 'Chat Group Mapping': return 'icon-group-mapping';
             case 'Notification Type': return 'icon-notification-type';
+			case 'Setting Configuration': return 'icon-setting';
         }
     }
 
