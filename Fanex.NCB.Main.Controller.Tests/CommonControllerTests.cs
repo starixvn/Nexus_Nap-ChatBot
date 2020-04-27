@@ -7,6 +7,7 @@
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.SkypeBot.Controllers;
+    using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;
     using NSubstitute;
     using Xunit;
@@ -92,6 +93,27 @@
             var json = Assert.IsType<JsonResult>(result);
             var returnedUsers = Assert.IsAssignableFrom<IEnumerable<User>>(json.Value);
             Assert.Equal(expectedUsers, returnedUsers);
+        }
+
+        [Fact]
+        public void GetSettingTypes_WhenCalled_ReturnsSettingTypes()
+        {
+            // Arrange
+            var controller = GetController();
+            var expected = new List<SettingType>
+            {
+                new SettingType
+                {
+                    Type = "Msg Contents Type",
+                    Value = 1
+                }
+            };
+
+            // Action
+            var actual = controller.GetSettingTypes() as JsonResult;
+
+            // Assert
+            actual.Value.Should().BeEquivalentTo(expected);
         }
 
         private CommonController GetController()

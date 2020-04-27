@@ -1,13 +1,18 @@
 ﻿namespace Fanex.NCB.Services.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
+    using Fanex.NCB.Core.Enum;
+    using Fanex.NCB.Core.Extensions;
+    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SettingConfiguration;
     using Fanex.NCB.Models.SettingConfiguration;
-    using Fanex.NCB.Shared.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services.Interfaces;
+    using FluentAssertions;
     using NSubstitute;
     using Xunit;
 
@@ -129,6 +134,24 @@
             Assert.Equal(modifiedBy, command.ModifiedBy);
             Assert.Equal(0, result.Code);
             Assert.True(result.IsSuccessful);
+        }
+
+        [Fact]
+        public void GetAllSettingType_WhenCalled_ReturnsCorrectList()
+        {
+            // Arrange
+            var service = GetService();
+            var expected = Enum.GetValues(typeof(SettingTypes)).Cast<SettingTypes>().Select(v => new BaseModel
+            {
+                Id = (int)v,
+                Name = EnumHelper.GetDescription(v)
+            });
+
+            // Action
+            var result = service.GetAllSettingType();
+
+            // Assert
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
@@ -323,4 +346,4 @@
             return new SettingConfigurationService(baseService);
         }
     }
-} 
+}
