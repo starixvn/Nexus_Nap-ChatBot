@@ -60,5 +60,6 @@
     System: 'System',
     RequiredParams: 'Required Params',
     IsTest: 'Is Test',
-    DeleteMappingSettingSuccessfully: 'Delete Mapping Setting successfully'
+    DeleteMappingSettingSuccessfully: 'Delete Mapping Setting successfully',
+    UnexpectedErrorsRequestMessage: 'Sorry, an error occurred while processing your request, please notify the administrators.'
 };

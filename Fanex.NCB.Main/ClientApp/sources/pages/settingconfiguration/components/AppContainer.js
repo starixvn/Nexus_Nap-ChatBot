@@ -49,7 +49,12 @@ export class AppContainer extends Component {
                 this.props.getGridData(this.props.gridParams);
                 toast.success(Labels.DeleteMsgContentsTypeSuccessfully);
             } else {
-                toast.error(data.message);
+                if (data.errors && data.errors.length > 0) {
+                    toast.error(data.errors[0].errorMessage);
+                }
+                else {
+                    toast.error(data.message || Labels.UnexpectedErrorsRequestMessage);
+                }
             }
         });
 
