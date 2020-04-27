@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Main.Controllers
 {
+    using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NAP.Client;
     using Fanex.NAP.Client.Helpers.Web;
@@ -9,11 +10,11 @@
     using Fanex.NCB.Models.SettingConfiguration;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
+    using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
     using static Fanex.NAP.Core.Business.Constant;
-    using System.Linq;
 
-    //[NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class SettingConfigurationController : Controller
     {
         private readonly INapSession _napSession;
@@ -253,17 +254,23 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
         public async Task<IActionResult> DeleteMapping(int templateId, int msgContentsType, int jobId)
         {
-            var model = new DeleteMapping
+            if (ModelState.IsValid)
             {
-                TemlateId = templateId,
-                MsgContentsType = msgContentsType,
-                JobId = jobId,
-                ModifiedBy = _napSession.UserId
-            };
+                var model = new DeleteMapping
+                {
+                    TemlateId = templateId,
+                    MsgContentsType = msgContentsType,
+                    JobId = jobId,
+                    ModifiedBy = _napSession.UserId
+                };
 
-            var result = await _settingConfigurationService.DeleteMappingAsync(model);
+                var result = await _settingConfigurationService.DeleteMappingAsync(model);
 
-            return Json(result);
+                return Json(result);
+            }
+            
+            var errors = ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
+            return Json(new { isSuccessful = false, errors });
         }
     }
 }
