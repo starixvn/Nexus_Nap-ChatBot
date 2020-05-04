@@ -48,7 +48,7 @@
         {
             // Arrange
             var expectedName = "~/Views/SkypeBot/SettingConfiguration/Index.cshtml";
-            _userService.IsHavingPermission(_napSession.UserId, _napSettings.SiteId, FunctionKey.SettingConfiguration, Policy.Host)
+            _userService.IsHavingPermission(_napSession.UserId, _napSettings.SiteId, FunctionKey.SettingManagement, Policy.Host)
                 .Returns(expectedPermission);
 
             // Action
@@ -200,7 +200,7 @@
         {
             // Arrange
             var expectedName = "~/Views/SkypeBot/SettingConfiguration/Mapping.cshtml";
-            _userService.IsHavingPermission(_napSession.UserId, _napSettings.SiteId, FunctionKey.SettingConfiguration, Policy.Host)
+            _userService.IsHavingPermission(_napSession.UserId, _napSettings.SiteId, FunctionKey.MappingSettingManagement, Policy.Host)
                 .Returns(expectedPermission);
 
             // Action
