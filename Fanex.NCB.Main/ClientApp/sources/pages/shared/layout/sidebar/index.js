@@ -40,12 +40,14 @@ export default class Sidebar extends React.Component {
         return this.state.menuItems.map(menuItem => menuItem.subMenus.length > 0 ? this.renderSubMenu(menuItem) : this.renderMenuItem(menuItem));
     }
 
+    isCurrentParent = url => url.toLowerCase().includes(`/${this.currentController}`)
+
     renderSubMenu = menuItem => (<li className="menu-item dropdown" key={menuItem.id}>
         <div className="not-link-item dropdown-div">
             <span className={`span-icon ${this.getMenuClassName(menuItem.name)}`} />
             <span className="text">{menuItem.name}</span>
         </div>
-        <ul className="menu dropdown-content">
+        <ul className={`menu${this.isCurrentParent(menuItem.url) ? "" : " dropdown-content"}`}>
             {menuItem.subMenus.map(this.renderMenuItem)}
         </ul>
     </li>);
