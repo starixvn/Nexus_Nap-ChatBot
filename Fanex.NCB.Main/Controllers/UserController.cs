@@ -78,13 +78,20 @@
 
         private IEnumerable<Menu> GetMenus(IEnumerable<MenuItem> menuItems)
         {
-            return menuItems
+            return menuItems.Where(m => m.Parent == null)
                 .Select(m => new Menu
                 {
                     Id = m.Id,
                     Name = m.Name,
                     Url = m.Url,
                     Policy = m.Policy,
+                    SubMenus = menuItems.Where(sm => sm.Parent != null && sm.Parent.Id == m.Id).Select(sm => new Menu
+                    {
+                        Id = sm.Id,
+                        Name = sm.Name,
+                        Url = sm.Url,
+                        Policy = sm.Policy
+                    })
                 });
         }
     }
