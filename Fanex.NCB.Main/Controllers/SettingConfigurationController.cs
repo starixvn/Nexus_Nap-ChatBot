@@ -27,16 +27,16 @@
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingManagement, Policy = Policy.Read)]
         public IActionResult Index([FromServices]IUserService userService)
         {
-            ViewBag.HaveHostPermission = userService.IsHavingPermission(_napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.SettingConfiguration, Policy.Host);
+            ViewBag.HaveHostPermission = userService.IsHavingPermission(_napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.SettingManagement, Policy.Host);
 
             return View("~/Views/SkypeBot/SettingConfiguration/Index.cshtml");
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingManagement, Policy = Policy.Read)]
         public async Task<IActionResult> GetSettings(int pageIndex, int pageSize, int? settingType)
         {
             var result = await _settingConfigurationService.GetSettingsAsync(pageIndex, pageSize, settingType).ConfigureAwait(false);
@@ -45,7 +45,7 @@
         }
 
         [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingManagement, Policy = Policy.Host)]
         public async Task<IActionResult> Create([FromBody]CreateSettingTypeViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -65,7 +65,7 @@
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingManagement, Policy = Policy.Read)]
         public async Task<IActionResult> GetByType(int type)
         {
             var result = await _settingConfigurationService.GetByTypeAsync(type).ConfigureAwait(false);
@@ -74,7 +74,7 @@
         }
 
         [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingManagement, Policy = Policy.Host)]
         public async Task<IActionResult> Update([FromBody]CreateSettingTypeViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -94,7 +94,7 @@
         }
 
         [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.SettingManagement, Policy = Policy.Host)]
         public async Task<IActionResult> Delete(int type)
         {
             if (ModelState.IsValid)
@@ -109,16 +109,16 @@
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Read)]
         public IActionResult Mapping([FromServices]IUserService userService)
         {
-            ViewBag.HaveHostPermission = userService.IsHavingPermission(_napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.SettingConfiguration, Policy.Host);
+            ViewBag.HaveHostPermission = userService.IsHavingPermission(_napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.MappingSettingManagement, Policy.Host);
 
             return View("~/Views/SkypeBot/SettingConfiguration/Mapping.cshtml");
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Read)]
         public IActionResult GetSettingTypes()
         {
             var types = _settingConfigurationService.GetAllSettingType();
@@ -127,7 +127,7 @@
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Read)]
         public async Task<IActionResult> GetJobInfo(int? jobId)
         {
             var value = jobId ?? 1;
@@ -137,7 +137,7 @@
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Read)]
         public async Task<IActionResult> GetMappings(int jobId, int pageIndex, int pageSize)
         {
             var result = await _settingConfigurationService.GetMappingsAsync(jobId, pageIndex, pageSize);
@@ -146,7 +146,7 @@
         }
 
         [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Host)]
         public async Task<IActionResult> UpdateJobInfo([FromBody] UpdateJobInfoViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -167,7 +167,7 @@
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Read)]
         public async Task<IActionResult> GetMsgContentsTypes()
         {
             var result = await _settingConfigurationService.GetMsgContentsTypesAsync();
@@ -176,7 +176,7 @@
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Read)]
         public async Task<IActionResult> GetNotificationTypeData(int notificationTypeId)
         {
             var result = await _settingConfigurationService.GetNotificationTypeDataAsync(notificationTypeId);
@@ -185,7 +185,7 @@
         }
 
         [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Host)]
         public async Task<IActionResult> CreateMapping([FromBody] CreateMappingViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -209,7 +209,7 @@
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Host)]
         public async Task<IActionResult> GetMapping(int templateId, int msgContentsType, int jobId)
         {
             var model = new GetMapping
@@ -225,7 +225,7 @@
         }
 
         [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Host)]
         public async Task<IActionResult> UpdateMapping([FromBody] UpdateMappingViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -251,7 +251,7 @@
         }
 
         [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.SettingConfiguration, Policy = Policy.Host)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Host)]
         public async Task<IActionResult> DeleteMapping(int templateId, int msgContentsType, int jobId)
         {
             if (ModelState.IsValid)

@@ -12,6 +12,8 @@
 
         public const string NotificationTemplate = "NotificationTemplate";
 
-        public const string SettingConfiguration = "SettingConfiguration";
+        public const string SettingManagement = "SettingManagement";
+
+        public const string MappingSettingManagement = "MappingSettingManagement";
     }
 }
