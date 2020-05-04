@@ -8,6 +8,7 @@
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Models;
+    using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json;
     using NSubstitute;
@@ -23,27 +24,28 @@
         [Fact]
         public void GetMenu_WhenCalled_ReturnExpectedJson()
         {
+            // Arrange
             var controller = GetController();
-
+            var item1 = new MenuItem { Id = 1, Name = "Test", Url = "/Test" };
             var expected = new List<Menu>
             {
-                new Menu {Id = 1, Name = "Test", Url = "/Test" },
-                new Menu { Id = 2, Name = "Sub", Url = "Sub"}
+                new Menu {Id = 1, Name = "Test", Url = "/Test", SubMenus = new List<Menu> { new Menu { Id = 3, Name = "Menu Item", Url = "/MenuItem" } } },
+                new Menu { Id = 2, Name = "Sub", Url = "Sub", SubMenus = new List<Menu>()}
             };
+
             var menuItem = new List<MenuItem>
             {
-                new MenuItem {Id = 1, Name = "Test", Url = "/Test"},
-                new MenuItem {Id = 2, Name = "Sub", Url = "Sub" }
+                item1,
+                new MenuItem {Id = 2, Name = "Sub", Url = "Sub" },
+                new MenuItem {Id = 3, Name = "Menu Item", Url = "/MenuItem", Parent = item1}
             };
             napSession.MenuItemList = menuItem;
 
-            //Act
-            var actual = controller.GetMenu();
+            // Act
+            var actual = controller.GetMenu() as JsonResult;
 
-            //Assert
-            var jsonResult = Assert.IsType<JsonResult>(actual);
-            var result = Assert.IsAssignableFrom<IEnumerable<Menu>>(jsonResult.Value);
-            Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(result));
+            // Assert
+            actual.Value.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
