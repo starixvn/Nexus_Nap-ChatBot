@@ -183,7 +183,7 @@ class NewMapping extends Component {
                             className="checkbox-custom"
                             type='checkbox'
                             defaultChecked={true}
-                            value={values.isTest}
+                            defaultValue={values.isTest}
                             onChange={this.handleChangeIsTest}
                         />
                         <label htmlFor='is-test' />
@@ -217,7 +217,7 @@ class NewMapping extends Component {
                 <ModalBody>
                     {this.props.createMappingResult &&
                         <ResponseMessage isSuccessful={this.props.createMappingResult.isSuccessful}
-                            message={this.props.createMappingResult.message || Labels.CreateNewMsgContentsTypeSuccessfully}
+                            message={this.props.createMappingResult.message || Labels.CreateNewMappingSettingSuccessfully}
                         />
                     }
                     <Formik ref="form"

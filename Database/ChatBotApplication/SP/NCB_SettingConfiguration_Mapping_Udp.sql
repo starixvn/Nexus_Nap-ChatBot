@@ -100,9 +100,11 @@ BEGIN
     END IF;
     
     IF (errCode = 0) THEN
+	    SET isTest2Int = isTest;
+    
         UPDATE SystemSetting ss
         SET Value = JSON_SET(jsonValue,
-            CONCAT('$[', rowIndex, '].IsTest'), isTest
+            CONCAT('$[', rowIndex, '].IsTest'), isTest2Int
             ,CONCAT('$[', rowIndex, '].MsgContentsType'), msgContentsType
             ,CONCAT('$[', rowIndex, '].NotificationTemplateID'), notificationTemplateId
             ,CONCAT('$[', rowIndex, '].NotificationTypeID'), notificationTypeId
@@ -110,8 +112,6 @@ BEGIN
         WHERE ss.Description LIKE '%Notification Template ID / MsgContentsType / NotificationType%'
             AND ss.JobIdentify = jobId;
 
-	    SET isTest2Int = isTest;
-    
         #Get Finish Time to calcualte execution duration
         SET finishTime = UTC_TIMESTAMP(3);
         SET duration =  TIMESTAMPDIFF(MICROSECOND, startTime, finishTime)  / 1000; 	#miliseconds;

@@ -192,7 +192,7 @@ class EditMapping extends Component {
                         <input id='is-test'
                             className="checkbox-custom"
                             type='checkbox'
-                            defaultChecked={values.isTest}
+                            checked={values.isTest}
                             value={values.isTest}
                             onChange={this.handleChangeIsTest}
                         />
@@ -227,12 +227,13 @@ class EditMapping extends Component {
                 <ModalBody>
                     {this.props.editMappingResult &&
                         <ResponseMessage isSuccessful={this.props.editMappingResult.isSuccessful}
-                            message={this.props.editMappingResult.message || Labels.CreateNewMsgContentsTypeSuccessfully}
+                            message={this.props.editMappingResult.message || Labels.UpdateMappingSettingSuccessfully}
                         />
                     }
                     <Formik ref="form"
                         initialValues={{
-                            jobId: this.props.jobInfo && this.props.jobInfo.id
+                            jobId: this.props.jobInfo && this.props.jobInfo.id,
+                            isTest: false
                         }}
                         render={this.renderForm}
                         validationSchema={this.schema}
