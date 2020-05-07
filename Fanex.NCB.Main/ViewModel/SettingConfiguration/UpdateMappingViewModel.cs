@@ -23,9 +23,6 @@
         public bool IsTest { get; set; }
 
         [Required]
-        public int OldTemplateId { get; set; }
-
-        [Required]
         public int OldMsgContentsType { get; set; }
     }
 }

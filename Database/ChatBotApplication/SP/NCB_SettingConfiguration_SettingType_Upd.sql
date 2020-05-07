@@ -1,8 +1,8 @@
-DROP PROCEDURE IF EXISTS NCB_SettingConfiguration_SettingType_Udp;
+DROP PROCEDURE IF EXISTS NCB_SettingConfiguration_SettingType_Upd;
 
 DELIMITER //
 
-CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_SettingType_Udp`(
+CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_SettingType_Upd`(
     IN      type        INT
     ,IN		name		VARCHAR (250)
     ,in		modifiedBy	INT
@@ -116,4 +116,4 @@ END;
 //
 DELIMITER ;
 
-GRANT EXECUTE ON PROCEDURE NCB_SettingConfiguration_SettingType_Udp TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_SettingConfiguration_SettingType_Upd TO 'ncb.admin'@'%';

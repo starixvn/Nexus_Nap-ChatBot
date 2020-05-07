@@ -108,14 +108,21 @@
 
         public async Task<(long, IEnumerable<Mapping>)> GetMappingsAsync(int jobId, int pageIndex, int pageSize)
         {
-            var result = await baseService.FetchMultipleAsync<long, Mapping>(new GetMappingsCriteria
+            var criteria = new GetMappingsCriteria
             {
                 JobId = jobId,
                 PageIndex = pageIndex,
                 PageSize = pageSize
-            }).ConfigureAwait(false);
+            };
 
-            return (result.Item1.FirstOrDefault(), result.Item2);
+            var result = await baseService.FetchMultipleAsync<Mapping, MappingRecipients>(criteria).ConfigureAwait(false);
+            var mappings = result.Item1;
+            foreach (var mapping in mappings)
+            {
+                mapping.RecipientTypeNames = result.Item2.FirstOrDefault(mr => mr.NotificationTypeId == mapping.NotificationTypeID).RecipientTypeNames;
+            }
+
+            return (criteria.Total, mappings);
         }
 
         public async Task<CommandResult> UpdateJobInfoAsync(UpdateJobInfo model)
@@ -172,7 +179,6 @@
         {
             var result = await baseService.GetDataEntityAsync<Mapping>(new GetMappingCriteria
             {
-                NotificationTemplateId = model.TemlateId,
                 MsgContentsType = model.MsgContentsType,
                 JobId = model.JobId
             });
@@ -190,7 +196,6 @@
                 MsgContentsType = model.MsgContentsType,
                 RequiredParam = model.RequiredParams,
                 IsTest = model.IsTest,
-                OldTemplateId = model.OldTemplateId,
                 OldMsgContentsType = model.OldMsgContentsType,
                 ModifiedBy = model.ModifiedBy
             };

@@ -29,7 +29,6 @@ class EditMapping extends Component {
                 isTest: editMappingPopup.mapping.isTest,
                 notificationTypeId: editMappingPopup.mapping.notificationTypeID,
                 notificationTemplateId: editMappingPopup.mapping.notificationTemplateID,
-                oldTemplateId: editMappingPopup.mapping.notificationTemplateID,
                 requiredParam: editMappingPopup.mapping.requiredParams,
                 msgContentsType: editMappingPopup.mapping.msgContentsType,
                 oldMsgContentsType: editMappingPopup.mapping.msgContentsType
@@ -44,7 +43,6 @@ class EditMapping extends Component {
         msgContentsType: string().required(Labels.FieldRequired),
         requiredParam: string().required(Labels.FieldRequired),
         isTest: boolean(),
-        oldTemplateId: string(),
         oldMsgContentsType: string()
     })
 
@@ -148,7 +146,7 @@ class EditMapping extends Component {
                             className="disabled-input"
                             name="systemName"
                             disabled={true}
-                            value={this.props.editMappingPopup.mapping ? this.props.editMappingPopup.mapping.systemName : ''}
+                            value={this.props.notificationTypeRef && this.props.notificationTypeRef.systemName ? this.props.notificationTypeRef.systemName : ''}
                         />
                     </div>
                 </FormGroup>
@@ -159,7 +157,7 @@ class EditMapping extends Component {
                             className="disabled-input"
                             name="recipientTypeId"
                             disabled={true}
-                            value={this.props.editMappingPopup.mapping ? this.props.editMappingPopup.mapping.recipientTypeName : ''}
+                            value={this.props.notificationTypeRef && this.props.notificationTypeRef.recipientTypeNames ? this.props.notificationTypeRef.recipientTypeNames : ''}
                         />
                     </div>
                 </FormGroup>
@@ -184,9 +182,9 @@ class EditMapping extends Component {
                             invalid={touched.requiredParam && errors.requiredParam}
                             name="requiredParam"
                             onChange={this.handleRequiredParamChange}
-                            defaultValue={values.requiredParam}
+                            value={values.requiredParam}
                         />
-                        {touched.requiredParam && errors.requiredParam && <FormFeedback>{errors.requiredParam}</FormFeedback>}
+                        {touched.requiredParam && errors.s && <FormFeedback>{errors.requiredParam}</FormFeedback>}
                     </div>
                 </FormGroup>
                 <FormGroup className='vertical-row'>

@@ -1,15 +1,14 @@
-DROP PROCEDURE IF EXISTS NCB_SettingConfiguration_Mapping_Udp;
+DROP PROCEDURE IF EXISTS NCB_SettingConfiguration_Mapping_Upd;
 
 DELIMITER //
 
-CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_Mapping_Udp`(
+CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_Mapping_Upd`(
     IN      notificationTypeId      INT
     ,IN     jobId                   INT
     ,IN     notificationTemplateId  INT
     ,IN     msgContentsType         INT
     ,IN     requiredParam           VARCHAR (1000)
     ,IN     isTest                  BIT
-    ,IN     oldTemplateId           INT
     ,IN     oldMsgContentsType      INT
     ,IN     modifiedBy              INT
     ,OUT    errCode                 SMALLINT
@@ -23,16 +22,18 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_Mapping_U
 )
 SQL SECURITY DEFINER
 BEGIN
-	DECLARE startTime	DATETIME(3) DEFAULT UTC_TIMESTAMP(3);
-    DECLARE finishTime	DATETIME(3); 
-    DECLARE duration	INT;							
-    DECLARE logContent	TEXT CHARACTER SET utf8mb4;
-    DECLARE jsonValue	JSON;
-    DECLARE iLoop 		INT DEFAULT 0;
-    DECLARE dataString	VARCHAR (4000);
-    DECLARE actionId	INT DEFAULT 25;
-    DECLARE isTest2Int	INT;
-    DECLARE rowIndex    INT;
+	DECLARE startTime	            DATETIME(3) DEFAULT UTC_TIMESTAMP(3);
+    DECLARE finishTime	            DATETIME(3); 
+    DECLARE duration                INT;							
+    DECLARE logContent              TEXT CHARACTER SET utf8mb4;
+    DECLARE jsonValue               JSON;
+    DECLARE jsonSettingTypeValue	JSON;
+    DECLARE msgContentsTypeName     VARCHAR (250);
+    DECLARE iLoop 		            INT DEFAULT 0;
+    DECLARE dataString	            VARCHAR (4000);
+    DECLARE actionId	            INT DEFAULT 25;
+    DECLARE isTest2Int	            INT;
+    DECLARE rowIndex                INT;
 
     SET errCode = 0, errMsg = '';
     
@@ -76,15 +77,13 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1 FROM MappingSettingTable mst
         WHERE mst.MsgContentsType = oldMsgContentsType
-			AND mst.NotificationTemplateID = oldTemplateId
     ) THEN
         SELECT 1 INTO errCode;
         SELECT CONCAT('The mapping setting not exists') INTO errMsg;
     ELSE
         SELECT mst.RowIndex INTO rowIndex
         FROM MappingSettingTable mst
-        WHERE mst.MsgContentsType = oldMsgContentsType
-			AND mst.NotificationTemplateID = oldTemplateId;
+        WHERE mst.MsgContentsType = oldMsgContentsType;
 
         DELETE FROM MappingSettingTable mst
         WHERE mst.RowIndex = rowIndex;
@@ -93,10 +92,26 @@ BEGIN
     IF EXISTS (
         SELECT 1 FROM MappingSettingTable mst
         WHERE mst.MsgContentsType = msgContentsType
-			AND mst.NotificationTemplateID = notificationTemplateId
     ) THEN
+        SET iLoop = 0;
+        SELECT ss.Value INTO jsonSettingTypeValue
+        FROM SystemSetting ss
+        WHERE ss.Id = 9999;
+
+        myLoop: WHILE (
+            JSON_EXTRACT(jsonSettingTypeValue, CONCAT('$[', iLoop, '].MsgContentsType')) IS NOT NULL
+        ) DO
+            IF (JSON_EXTRACT(jsonSettingTypeValue, CONCAT('$[', iLoop, '].MsgContentsType')) = msgContentsType) THEN
+                SET msgContentsTypeName = JSON_UNQUOTE(JSON_EXTRACT(jsonSettingTypeValue, CONCAT('$[', iLoop, '].Name')));
+
+                LEAVE myLoop;
+            ELSE
+                SET iLoop = iLoop + 1;
+            END IF;
+        END WHILE myLoop;
+
         SELECT 2 INTO errCode;
-        SELECT CONCAT('The mapping setting exists') INTO errMsg;
+        SELECT CONCAT('The ', msgContentsTypeName, ' has been mapped.') INTO errMsg;
     END IF;
     
     IF (errCode = 0) THEN
@@ -123,7 +138,6 @@ BEGIN
             ,'notificationTemplateId', notificationTemplateId
             ,'notificationTypeId', notificationTypeId
             ,'requiredParam', requiredParam
-            ,'oldTemplateId', oldTemplateId
             ,'oldMsgContentsType', oldMsgContentsType
         )
         INTO logContent;
@@ -143,4 +157,4 @@ END;
 //
 DELIMITER ;
 
-GRANT EXECUTE ON PROCEDURE NCB_SettingConfiguration_Mapping_Udp TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_SettingConfiguration_Mapping_Upd TO 'ncb.admin'@'%';

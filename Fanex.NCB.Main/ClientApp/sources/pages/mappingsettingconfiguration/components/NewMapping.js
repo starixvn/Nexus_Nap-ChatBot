@@ -136,7 +136,7 @@ class NewMapping extends Component {
                         <Input className='disabled-input'
                             name="systemName"
                             disabled={true}
-                            value={this.props.notificationTypeRef ? this.props.notificationTypeRef.systemName : ''}
+                            value={this.props.notificationTypeRef && this.props.notificationTypeRef.systemName ? this.props.notificationTypeRef.systemName : ''}
                         />
                     </div>
                 </FormGroup>
@@ -146,7 +146,7 @@ class NewMapping extends Component {
                         <Input className='disabled-input'
                             name="recipientTypeId"
                             disabled={true}
-                            value={this.props.notificationTypeRef ? this.props.notificationTypeRef.recipientTypeName : ''}
+                            value={this.props.notificationTypeRef && this.props.notificationTypeRef.recipientTypeNames ? this.props.notificationTypeRef.recipientTypeNames : ''}
                         />
                     </div>
                 </FormGroup>

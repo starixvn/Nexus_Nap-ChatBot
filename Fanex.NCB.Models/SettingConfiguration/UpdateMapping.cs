@@ -16,8 +16,6 @@
 
         public int ModifiedBy { get; set; }
 
-        public int OldTemplateId { get; set; }
-
         public int OldMsgContentsType { get; set; }
     }
 }

@@ -62,6 +62,8 @@ export class EditJobInfo extends Component {
         this.props.setJobInfoFlag({ isEdit: false });
     }
 
+    handleCancel = () => this.props.setJobInfoFlag({ isEdit: false })
+
     render() {
         return (
             this.props.jobInfo && <div className='job-info-container'>
@@ -94,7 +96,8 @@ export class EditJobInfo extends Component {
                 {
                     this.haveHostPermission &&
                     <div className='job-info-item'>
-                        <button className="btn-new" onClick={this.handleConfirmUpdateJobInfoPopup}>{Labels.Save}</button>
+                        <button className="btn-new btn-save-job-info" onClick={this.handleConfirmUpdateJobInfoPopup}>{Labels.Save}</button>
+                        <button className="btn-cancel" onClick={this.handleCancel}>{Labels.Cancel}</button>
                     </div>
                 }
 

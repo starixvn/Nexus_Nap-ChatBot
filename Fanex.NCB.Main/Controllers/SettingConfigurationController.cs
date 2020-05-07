@@ -210,11 +210,10 @@
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Host)]
-        public async Task<IActionResult> GetMapping(int templateId, int msgContentsType, int jobId)
+        public async Task<IActionResult> GetMapping(int msgContentsType, int jobId)
         {
             var model = new GetMapping
             {
-                TemlateId = templateId,
                 MsgContentsType = msgContentsType,
                 JobId = jobId
             };
@@ -238,7 +237,6 @@
                     MsgContentsType = viewModel.MsgContentsType,
                     RequiredParams = viewModel.RequiredParam,
                     IsTest = viewModel.IsTest,
-                    OldTemplateId = viewModel.OldTemplateId,
                     OldMsgContentsType = viewModel.OldMsgContentsType,
                     ModifiedBy = _napSession.UserId
                 }).ConfigureAwait(false);

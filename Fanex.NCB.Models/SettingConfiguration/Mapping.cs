@@ -16,13 +16,9 @@
 
         public string NotificationTypeName { get; set; }
 
-        public int SystemID { get; set; }
-
         public string SystemName { get; set; }
 
-        public int RecipientTypeID { get; set; }
-
-        public string RecipientTypeName { get; set; }
+        public string RecipientTypeNames { get; set; }
 
         public string RequiredParams { get; set; }
     }

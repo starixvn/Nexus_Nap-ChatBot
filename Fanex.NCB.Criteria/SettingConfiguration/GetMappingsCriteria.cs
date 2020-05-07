@@ -10,6 +10,8 @@
 
         public int PageSize { get; set; }
 
+        public int Total { get; set; }
+
         public override string GetSettingKey() => "NCB_SettingConfiguration_MappingList_Sel";
 
         public override bool IsValid() => JobId > 0 && PageIndex > 0 && PageSize > 0;

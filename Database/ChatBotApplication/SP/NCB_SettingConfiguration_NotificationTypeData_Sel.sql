@@ -13,36 +13,25 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_Notificat
 )
 SQL SECURITY DEFINER
 BEGIN
-	DECLARE systemId			INT;
     DECLARE systemName			VARCHAR (250);
-    DECLARE recipientTypeId		INT;
-    DECLARE recipientTypeName	VARCHAR (250);
-    
-    SELECT cs.SystemID INTO systemId
-    FROM NotificationType nt
-    INNER JOIN ChatBot.System cs ON cs.SystemID = nt.SystemID
-	WHERE nt.NotificationTypeID = notificationTypeId;
+    DECLARE recipientTypeNames	VARCHAR (250);
     
     SELECT cs.SystemName INTO systemName
     FROM NotificationType nt
     INNER JOIN ChatBot.System cs ON cs.SystemID = nt.SystemID
 	WHERE nt.NotificationTypeID = notificationTypeId;
-        
-	SELECT rt.RecipientTypeID INTO recipientTypeId
-    FROM NotificationRecipientType nrt
+    
+    SELECT GROUP_CONCAT(rt.RecipientTypeName SEPARATOR ', ') INTO recipientTypeNames
+    FROM NotificationType nt
+    INNER JOIN NotificationRecipientType nrt ON nt.NotificationTypeID = nrt.NotificationTypeID
     INNER JOIN RecipientType rt ON rt.RecipientTypeID = nrt.RecipientTypeID
-    WHERE nrt.NotificationTypeID = notificationTypeId;
-        
-	SELECT rt.RecipientTypeName INTO recipientTypeName
-    FROM NotificationRecipientType nrt
-    INNER JOIN RecipientType rt ON rt.RecipientTypeID = nrt.RecipientTypeID
-    WHERE nrt.NotificationTypeID = notificationTypeId;
+    WHERE nt.NotificationTypeID = notificationTypeId
+    GROUP BY nt.NotificationTypeID
+    LIMIT 1;
     
     SELECT 
-	    systemId AS SystemId
-        ,systemName AS SystemName
-        ,recipientTypeId AS RecipientTypeId
-        ,recipientTypeName AS RecipientTypeName;
+        systemName AS SystemName
+        ,recipientTypeNames AS RecipientTypeNames;
 END;
 
 //

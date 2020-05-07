@@ -41,6 +41,7 @@ class Filter extends Component {
         this.props.setGridParams(params);
         this.props.getGridData(params);
         this.props.getJobInfo(params.jobId);
+        this.props.setJobInfoFlag({ isEdit: false });
     }
 
     renderSettingTypeOption = item => <option key={item.id} value={item.id} >{item.name}</option>
@@ -68,10 +69,11 @@ class Filter extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { settingTypes, getJobInfo } = state;
+    const { settingTypes, getJobInfo, setJobInfoFlag } = state;
     return {
         settingTypes,
-        getJobInfo
+        getJobInfo,
+        setJobInfoFlag
     };
 };
 

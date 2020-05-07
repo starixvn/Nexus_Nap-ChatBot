@@ -1,8 +1,8 @@
-DROP PROCEDURE IF EXISTS NCB_SettingConfiguration_JobInfo_Udp;
+DROP PROCEDURE IF EXISTS NCB_SettingConfiguration_JobInfo_Upd;
 
 DELIMITER //
 
-CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_JobInfo_Udp`(
+CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_JobInfo_Upd`(
     IN      id              INT
     ,IN     batchSize       INT
     ,IN     testingGroup    INT
@@ -79,4 +79,4 @@ END;
 //
 DELIMITER ;
 
-GRANT EXECUTE ON PROCEDURE NCB_SettingConfiguration_JobInfo_Udp TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_SettingConfiguration_JobInfo_Upd TO 'ncb.admin'@'%';

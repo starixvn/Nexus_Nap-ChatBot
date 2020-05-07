@@ -136,9 +136,10 @@ export const setEditMappingResult = data => {
     };
 };
 
-export const getMapping = (templateId, msgContentsType, jobId) => {
-    return async dispatch => axios(Site.resolveClientUrl(`SettingConfiguration/GetMapping?templateId=${templateId}&msgContentsType=${msgContentsType}&jobId=${jobId}`))
+export const getMapping = (msgContentsType, jobId, done) => {
+    return async dispatch => axios(Site.resolveClientUrl(`SettingConfiguration/GetMapping?msgContentsType=${msgContentsType}&jobId=${jobId}`))
         .then(response => {
+            done && done(response.data)
             dispatch(setEditMappingPopup({ show: true, mapping: response.data }));
         }).catch(errorResponseHandler);
 };

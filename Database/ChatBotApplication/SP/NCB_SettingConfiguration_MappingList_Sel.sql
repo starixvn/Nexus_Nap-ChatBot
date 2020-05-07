@@ -6,6 +6,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_MappingLi
     IN      jobId       INT
     ,IN     pageIndex   INT
     ,IN     pageSize    INT
+    ,OUT    total       INT
     /*
 		Creator: 20200417@Merlin
 
@@ -80,12 +81,10 @@ BEGIN
 		SET iLoop = iLoop + 1;
     END WHILE;
     
-    SELECT COUNT(msct.NotificationTypeID) AS Total
+    SELECT COUNT(msct.NotificationTypeID) INTO total
 	FROM MappingSettingConfigurationTable msct
     INNER JOIN NotificationType nty ON nty.NotificationTypeID = msct.NotificationTypeID
 	INNER JOIN ChatBot.System s ON s.SystemID = nty.SystemID
-	INNER JOIN NotificationRecipientType nrt ON nty.NotificationTypeID = nrt.NotificationTypeID
-	INNER JOIN RecipientType rt ON rt.RecipientTypeID = nrt.RecipientTypeID
     INNER JOIN NotificationTemplate nte ON nte.NotificationTemplateID = msct.NotificationTemplateID
     INNER JOIN SettingTypeTable stt ON stt.MsgContentsType = msct.MsgContentsType;
     
@@ -97,20 +96,23 @@ BEGIN
         ,nte.NotificationTemplateName
 		,nty.NotificationTypeID
         ,nty.NotificationTypeName
-        ,s.SystemID
         ,s.SystemName
-        ,rt.RecipientTypeID
-        ,rt.RecipientTypeName
         ,msct.TemplateRequiredParams AS RequiredParams
 	FROM MappingSettingConfigurationTable msct
     INNER JOIN NotificationType nty ON nty.NotificationTypeID = msct.NotificationTypeID
 	INNER JOIN ChatBot.System s ON s.SystemID = nty.SystemID
-	INNER JOIN NotificationRecipientType nrt ON nty.NotificationTypeID = nrt.NotificationTypeID
-	INNER JOIN RecipientType rt ON rt.RecipientTypeID = nrt.RecipientTypeID
     INNER JOIN NotificationTemplate nte ON nte.NotificationTemplateID = msct.NotificationTemplateID
     INNER JOIN SettingTypeTable stt ON stt.MsgContentsType = msct.MsgContentsType
     ORDER BY nty.NotificationTypeID ASC
     LIMIT rowStart, pageSize;
+    
+    SELECT
+		nt.NotificationTypeID
+        ,GROUP_CONCAT(rt.RecipientTypeName SEPARATOR ', ') AS RecipientTypeNames
+    FROM NotificationType nt
+	INNER JOIN NotificationRecipientType nrt ON nt.NotificationTypeID = nrt.NotificationTypeID
+	INNER JOIN RecipientType rt ON rt.RecipientTypeID = nrt.RecipientTypeID
+    GROUP BY nt.NotificationTypeID;
 END;
 
 //

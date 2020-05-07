@@ -6,12 +6,10 @@
     {
         public int JobId { get; set; }
 
-        public int NotificationTemplateId { get; set; }
-
         public int MsgContentsType { get; set; }
 
         public override string GetSettingKey() => "NCB_SettingConfiguration_Mapping_Sel";
 
-        public override bool IsValid() => NotificationTemplateId > 0 && MsgContentsType > 0 && JobId > 0;
+        public override bool IsValid() => MsgContentsType > 0 && JobId > 0;
     }
 }

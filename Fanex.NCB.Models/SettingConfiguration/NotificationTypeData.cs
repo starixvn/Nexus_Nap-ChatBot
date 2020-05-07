@@ -2,12 +2,8 @@
 {
     public class NotificationTypeData
     {
-        public int SystemId { get; set; }
-
         public string SystemName { get; set; }
 
-        public int RecipientTypeId { get; set; }
-
-        public string RecipientTypeName { get; set; }
+        public string RecipientTypeNames { get; set; }
     }
 }

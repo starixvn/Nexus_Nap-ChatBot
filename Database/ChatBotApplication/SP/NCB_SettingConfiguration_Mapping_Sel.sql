@@ -3,8 +3,7 @@ DROP PROCEDURE IF EXISTS NCB_SettingConfiguration_Mapping_Sel;
 DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_Mapping_Sel`(
-    IN      notificationTemplateId  INT
-    ,IN     msgContentsType         INT
+    IN      msgContentsType         INT
     ,IN     jobId                   INT
     ,OUT    errCode                 SMALLINT
     ,OUT    errMsg                  VARCHAR (100)
@@ -17,9 +16,11 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_Mapping_S
 )
 SQL SECURITY DEFINER
 BEGIN
-    DECLARE jsonValue	JSON;
-    DECLARE iLoop 		INT DEFAULT 0;
-    DECLARE isError     BIT DEFAULT 1;
+    DECLARE jsonValue           JSON;
+    DECLARE iLoop               INT DEFAULT 0;
+    DECLARE isError             BIT DEFAULT 1;
+    DECLARE recipientTypeNames  VARCHAR (250);
+    DECLARE notificationTypeId  INT;
 
     SET errCode = 0, errMsg = '';
     
@@ -38,11 +39,10 @@ BEGIN
     );
 
     myLoop: WHILE (
-		JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].NotificationTypeID')) IS NOT NULL
+		JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentsType')) IS NOT NULL
 	) DO
         IF (
             JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentsType')) = msgContentsType
-            AND JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].NotificationTemplateID')) = notificationTemplateId
         ) THEN
 			INSERT INTO MappingSettingConfigurationTable (
 				IsTest
@@ -94,6 +94,19 @@ BEGIN
                 
             SET iLoop = iLoop + 1;
         END WHILE;
+
+        SELECT msct.NotificationTypeID INTO notificationTypeId
+        FROM MappingSettingConfigurationTable msct
+        WHERE msct.MsgContentsType = msgContentsType
+        LIMIT 1;
+    
+        SELECT GROUP_CONCAT(rt.RecipientTypeName SEPARATOR ', ') INTO recipientTypeNames
+        FROM NotificationType nt
+        INNER JOIN NotificationRecipientType nrt ON nt.NotificationTypeID = nrt.NotificationTypeID
+        INNER JOIN RecipientType rt ON rt.RecipientTypeID = nrt.RecipientTypeID
+        WHERE nt.NotificationTypeID = notificationTypeId
+        GROUP BY nt.NotificationTypeID
+        LIMIT 1;
                 
         SELECT
             msct.IsTest
@@ -103,16 +116,12 @@ BEGIN
             ,nte.NotificationTemplateName
             ,nty.NotificationTypeID
             ,nty.NotificationTypeName
-            ,s.SystemID
             ,s.SystemName
-            ,rt.RecipientTypeID
-            ,rt.RecipientTypeName
+            ,recipientTypeNames AS RecipientTypeNames
             ,msct.TemplateRequiredParams AS RequiredParams
         FROM MappingSettingConfigurationTable msct
         INNER JOIN NotificationType nty ON nty.NotificationTypeID = msct.NotificationTypeID
         INNER JOIN ChatBot.System s ON s.SystemID = nty.SystemID
-        INNER JOIN NotificationRecipientType nrt ON nty.NotificationTypeID = nrt.NotificationTypeID
-        INNER JOIN RecipientType rt ON rt.RecipientTypeID = nrt.RecipientTypeID
         INNER JOIN NotificationTemplate nte ON nte.NotificationTemplateID = msct.NotificationTemplateID
         INNER JOIN SettingTypeTable stt ON stt.MsgContentsType = msct.MsgContentsType;
     END IF;

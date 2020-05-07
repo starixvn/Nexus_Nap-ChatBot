@@ -53,7 +53,7 @@ export class JobInfo extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { jobInfo, jobInfoFlag,setJobInfoFlag } = state;
+    const { jobInfo, jobInfoFlag, setJobInfoFlag } = state;
     return {
         jobInfo,
         jobInfoFlag,

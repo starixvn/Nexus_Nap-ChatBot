@@ -10,7 +10,7 @@
 
         public int ModifiedBy { get; set; }
 
-        public override string GetSettingKey() => "NCB_SettingConfiguration_SettingType_Udp";
+        public override string GetSettingKey() => "NCB_SettingConfiguration_SettingType_Upd";
 
         public override bool IsValid() => Type > 0 && ModifiedBy > 0 && !string.IsNullOrWhiteSpace(Name);
     }

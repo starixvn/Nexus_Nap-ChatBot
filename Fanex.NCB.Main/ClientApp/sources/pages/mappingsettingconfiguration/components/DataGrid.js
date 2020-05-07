@@ -50,9 +50,13 @@ export class DataGrid extends Component {
     }
 
     handleEditMapping = e => {
-        const templateId = parseInt(e.target.dataset.templateid, 10);
         const msgContentsType = parseInt(e.target.dataset.msgcontentstype, 10);
-        this.props.getMapping(templateId, msgContentsType, this.props.jobInfo.id);
+        this.props.getMapping(msgContentsType, this.props.jobInfo.id, data =>
+            this.props.setNotificationTypeRef({
+                systemName: data.systemName,
+                recipientTypeNames: data.recipientTypeNames
+            })
+        );
     }
 
     handleDeleteMapping = e => {
@@ -69,7 +73,7 @@ export class DataGrid extends Component {
             <Cell>{item.notificationTypeName}</Cell>
             <Cell>{item.notificationTemplateName}</Cell>
             <Cell>{item.systemName}</Cell>
-            <Cell>{item.recipientTypeName}</Cell>
+            <Cell>{item.recipientTypeNames}</Cell>
             <Cell>{item.msgContentsName}</Cell>
             <Cell>{item.requiredParams}</Cell>
             <Cell className="text-center">
@@ -136,12 +140,13 @@ export class DataGrid extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { gridParams, gridData, jobInfo, openDeleteMappingPopup } = state;
+    const { gridParams, gridData, jobInfo, openDeleteMappingPopup, setNotificationTypeRef } = state;
     return {
         gridParams,
         gridData,
         jobInfo,
-        openDeleteMappingPopup
+        openDeleteMappingPopup,
+        setNotificationTypeRef
     };
 };
 

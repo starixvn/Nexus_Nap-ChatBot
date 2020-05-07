@@ -21,16 +21,17 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_Mapping_I
 )
 SQL SECURITY DEFINER
 BEGIN
-	DECLARE startTime	DATETIME(3) DEFAULT UTC_TIMESTAMP(3);
-    DECLARE finishTime	DATETIME(3); 
-    DECLARE duration	INT;							
-    DECLARE logContent	TEXT CHARACTER SET utf8mb4;
-    DECLARE jsonValue	JSON;
-    DECLARE iLoop 		INT DEFAULT 0;
-    DECLARE dataString	VARCHAR (4000);
-    DECLARE actionId	INT DEFAULT 24;
-    DECLARE insertTime	VARCHAR (20);
-    DECLARE isTest2Int	INT;
+	DECLARE startTime               DATETIME(3) DEFAULT UTC_TIMESTAMP(3);
+    DECLARE finishTime              DATETIME(3); 
+    DECLARE duration                INT;							
+    DECLARE logContent              TEXT CHARACTER SET utf8mb4;
+    DECLARE jsonValue               JSON;
+    DECLARE iLoop                   INT DEFAULT 0;
+    DECLARE dataString              VARCHAR (4000);
+    DECLARE msgContentsTypeName     VARCHAR (250);
+    DECLARE actionId                INT DEFAULT 24;
+    DECLARE insertTime              VARCHAR (20);
+    DECLARE isTest2Int              INT;
 
     SET errCode = 0, errMsg = '';
     
@@ -72,10 +73,26 @@ BEGIN
     IF EXISTS (
         SELECT 1 FROM MappingSettingTable mst
         WHERE mst.MsgContentsType = msgContentsType
-			AND mst.NotificationTemplateID = notificationTemplateId
     ) THEN
+        SET iLoop = 0;
+        SELECT ss.Value INTO jsonValue
+        FROM SystemSetting ss
+        WHERE ss.Id = 9999;
+
+        myLoop: WHILE (
+            JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentsType')) IS NOT NULL
+        ) DO
+            IF (JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].MsgContentsType')) = msgContentsType) THEN
+                SET msgContentsTypeName = JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].Name')));
+
+                LEAVE myLoop;
+            ELSE
+                SET iLoop = iLoop + 1;
+            END IF;
+        END WHILE myLoop;
+
         SELECT 1 INTO errCode;
-        SELECT CONCAT('The mapping setting exists') INTO errMsg;
+        SELECT CONCAT('The ', msgContentsTypeName, ' has been mapped.') INTO errMsg;
     END IF;
     
 	SET isTest2Int = isTest;

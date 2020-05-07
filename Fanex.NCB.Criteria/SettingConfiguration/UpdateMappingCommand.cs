@@ -16,13 +16,11 @@
 
         public bool IsTest { get; set; }
 
-        public int OldTemplateId { get; set; }
-
         public int OldMsgContentsType { get; set; }
 
         public int ModifiedBy { get; set; }
 
-        public override string GetSettingKey() => "NCB_SettingConfiguration_Mapping_Udp";
+        public override string GetSettingKey() => "NCB_SettingConfiguration_Mapping_Upd";
 
         public override bool IsValid() => JobId > 0 && NotificationTypeId > 0 && NotificationTemplateId > 0 && MsgContentsType > 0;
     }
