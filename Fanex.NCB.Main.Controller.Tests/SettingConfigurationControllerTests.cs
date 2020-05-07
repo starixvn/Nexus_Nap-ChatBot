@@ -369,7 +369,6 @@
         public async Task GetMapping_WhenCalled_ReturnsMapping()
         {
             // Arrange
-            var templateId = _fixture.Create<int>();
             var msgContentsType = _fixture.Create<int>();
             var jobId = _fixture.Create<int>();
             var model = new GetMapping();
@@ -377,10 +376,9 @@
             _settingConfigurationService.GetMappingAsync(Arg.Do<GetMapping>(x => model = x)).Returns(expected);
 
             // Action
-            var actual = await _controller.GetMapping(templateId, msgContentsType, jobId) as JsonResult;
+            var actual = await _controller.GetMapping(msgContentsType, jobId) as JsonResult;
 
             // Assert
-            Assert.Equal(templateId, model.TemlateId);
             Assert.Equal(msgContentsType, model.MsgContentsType);
             Assert.Equal(jobId, model.JobId);
             Assert.Equal(expected, actual.Value);
@@ -405,7 +403,6 @@
             Assert.Equal(viewModel.MsgContentsType, model.MsgContentsType);
             Assert.Equal(viewModel.RequiredParam, model.RequiredParams);
             Assert.Equal(viewModel.IsTest, model.IsTest);
-            Assert.Equal(viewModel.OldTemplateId, model.OldTemplateId);
             Assert.Equal(viewModel.OldMsgContentsType, model.OldMsgContentsType);
             Assert.Equal(_napSession.UserId, model.ModifiedBy);
             Assert.Equal(expected, actual.Value);

@@ -162,10 +162,26 @@
             var jobId = _fixture.Create<int>();
             var pageIndex = _fixture.Create<int>();
             var pageSize = _fixture.Create<int>();
-            var total = _fixture.Create<int>();
-            var mappings = _fixture.Create<IEnumerable<Mapping>>();
+            var mappings = new List<Mapping>
+            {
+                new Mapping { NotificationTypeID = 1 },
+                new Mapping { NotificationTypeID = 2 }
+            };
+
+            var mappingRecipients = new List<MappingRecipients>
+            {
+                new MappingRecipients { NotificationTypeId = 1, RecipientTypeNames = _fixture.Create<string>() },
+                new MappingRecipients { NotificationTypeId = 2, RecipientTypeNames = _fixture.Create<string>() }
+            };
+
+            var expected = mappings;
+            foreach (var mapping in expected)
+            {
+                mapping.RecipientTypeNames = mappingRecipients.FirstOrDefault(item => item.NotificationTypeId == mapping.NotificationTypeID).RecipientTypeNames;
+            }
+
             var criteria = new GetMappingsCriteria();
-            baseService.FetchMultipleAsync<long, Mapping>(Arg.Do<GetMappingsCriteria>(x => criteria = x)).Returns((new List<long> { total }, mappings));
+            baseService.FetchMultipleAsync<Mapping, MappingRecipients>(Arg.Do<GetMappingsCriteria>(x => criteria = x)).Returns((mappings, mappingRecipients));
 
             // Action
             var result = await service.GetMappingsAsync(jobId, pageIndex, pageSize);
@@ -174,8 +190,8 @@
             Assert.Equal(jobId, criteria.JobId);
             Assert.Equal(pageIndex, criteria.PageIndex);
             Assert.Equal(pageSize, criteria.PageSize);
-            Assert.Equal(total, result.Item1);
-            Assert.Equal(mappings, result.Item2);
+            Assert.Equal(criteria.Total, result.Item1);
+            result.Item2.Should().BeEquivalentTo(mappings);
         }
 
         [Fact]
@@ -286,7 +302,6 @@
             var result = await service.GetMappingAsync(model);
 
             // Assert
-            Assert.Equal(model.TemlateId, criteria.NotificationTemplateId);
             Assert.Equal(model.MsgContentsType, criteria.MsgContentsType);
             Assert.Equal(model.JobId, criteria.JobId);
             Assert.Equal(expectedResult, result);
@@ -312,7 +327,6 @@
             Assert.Equal(model.RequiredParams, command.RequiredParam);
             Assert.Equal(model.IsTest, command.IsTest);
             Assert.Equal(model.ModifiedBy, command.ModifiedBy);
-            Assert.Equal(model.OldTemplateId, command.OldTemplateId);
             Assert.Equal(model.OldMsgContentsType, command.OldMsgContentsType);
             Assert.Equal(0, result.Code);
             Assert.True(result.IsSuccessful);
