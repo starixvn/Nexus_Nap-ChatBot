@@ -23,16 +23,16 @@ export class DataGrid extends Component {
     buildHeader = isHost => {
         return (
             <Row >
-                <Cell colWidth={50} header>{Labels.NumberCol}</Cell>
-                <Cell colWidth={200} header>{Labels.NotificationType}</Cell>
-                <Cell colWidth={200} header>{Labels.NotificationTemplate}</Cell>
-                <Cell colWidth={200} header>{Labels.System}</Cell>
-                <Cell colWidth={150} header>{Labels.RecipientType}</Cell>
-                <Cell colWidth={150} header>{Labels.MsgContentsType}</Cell>
-                <Cell colWidth={150} header>{Labels.RequiredParams}</Cell>
-                <Cell colWidth={80} header>{Labels.IsTest}</Cell>
+                <Cell colWidth={5} header>{Labels.NumberCol}</Cell>
+                <Cell colWidth={15} header>{Labels.NotificationType}</Cell>
+                <Cell colWidth={15} header>{Labels.NotificationTemplate}</Cell>
+                <Cell colWidth={10} header>{Labels.System}</Cell>
+                <Cell colWidth={10} header>{Labels.RecipientType}</Cell>
+                <Cell colWidth={10} header>{Labels.MsgContentsType}</Cell>
+                <Cell colWidth={15} header>{Labels.RequiredParams}</Cell>
+                <Cell colWidth={5} header>{Labels.IsTest}</Cell>
                 {
-                    isHost && <Cell colWidth={80} header>{Labels.Action}</Cell>
+                    isHost && <Cell colWidth={5} header>{Labels.Action}</Cell>
                 }
             </Row>);
     };
@@ -119,7 +119,8 @@ export class DataGrid extends Component {
 
         return (
             <Table
-                autoWidth={true}
+                autoWidth={false}
+                width={1620}
                 header={this.buildHeader(haveHostPermission)}
                 body={this.buildBody(haveHostPermission)}
                 isPaging

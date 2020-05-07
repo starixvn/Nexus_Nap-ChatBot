@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
-import { Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input, FormFeedback, Col } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input, FormFeedback } from 'reactstrap';
 import { Formik } from 'formik';
 import { object, string, boolean } from 'yup';
 import Labels from '../../common/Labels';
@@ -145,6 +145,7 @@ class EditMapping extends Component {
                     <Label for="systemName" className="form-label">System</Label>
                     <div className='input-row-container'>
                         <Input
+                            className="disabled-input"
                             name="systemName"
                             disabled={true}
                             value={this.props.editMappingPopup.mapping ? this.props.editMappingPopup.mapping.systemName : ''}
@@ -155,6 +156,7 @@ class EditMapping extends Component {
                     <Label for="recipientTypeId" className="form-label">Recipient Type</Label>
                     <div className='input-row-container'>
                         <Input
+                            className="disabled-input"
                             name="recipientTypeId"
                             disabled={true}
                             value={this.props.editMappingPopup.mapping ? this.props.editMappingPopup.mapping.recipientTypeName : ''}
@@ -178,7 +180,8 @@ class EditMapping extends Component {
                 <FormGroup className='vertical-row'>
                     <Label for="requiredParam" className="form-label required">Required Param</Label>
                     <div className='input-row-container'>
-                        <Input invalid={touched.requiredParam && errors.requiredParam}
+                        <Input type='textarea'
+                            invalid={touched.requiredParam && errors.requiredParam}
                             name="requiredParam"
                             onChange={this.handleRequiredParamChange}
                             defaultValue={values.requiredParam}

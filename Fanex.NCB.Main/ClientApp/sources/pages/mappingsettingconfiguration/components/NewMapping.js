@@ -168,7 +168,8 @@ class NewMapping extends Component {
                 <FormGroup className='vertical-row'>
                     <Label for="requiredParam" className="form-label required">Required Param</Label>
                     <div className='input-row-container'>
-                        <Input invalid={touched.requiredParam && errors.requiredParam}
+                        <Input type="textarea"
+                            invalid={touched.requiredParam && errors.requiredParam}
                             name="requiredParam"
                             onChange={this.handleRequiredParamChange}
                             value={values.requiredParam}

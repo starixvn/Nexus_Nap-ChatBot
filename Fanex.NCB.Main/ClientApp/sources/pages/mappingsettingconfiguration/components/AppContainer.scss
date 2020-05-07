@@ -80,15 +80,6 @@
     & + label:before {
         border: 1px solid #ced4da;
     }
-    
-    &:checked + label:before {
-        background: #fff;
-    }
-    
-    &:checked + label:after {
-        border-right: 1px solid #ced4da;
-        border-bottom: 1px solid #ced4da;
-    }
 }
 
 .hidden {
