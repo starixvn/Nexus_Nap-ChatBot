@@ -23,22 +23,22 @@
 
     public class SettingConfigurationControllerTests
     {
-        private readonly ISettingConfigurationService _settingConfigurationService;
-        private readonly INapSession _napSession;
-        private readonly INapSettings _napSettings;
-        private readonly IUserService _userService;
-        private readonly SettingConfigurationController _controller;
-        private readonly IFixture _fixture;
+        private readonly ISettingConfigurationService settingConfigurationService;
+        private readonly INapSession napSession;
+        private readonly INapSettings napSettings;
+        private readonly IUserService userService;
+        private readonly SettingConfigurationController controller;
+        private readonly IFixture fixture;
 
         public SettingConfigurationControllerTests()
         {
-            _settingConfigurationService = Substitute.For<ISettingConfigurationService>();
-            _napSession = Substitute.For<INapSession>();
-            _napSettings = Substitute.For<INapSettings>();
-            _userService = Substitute.For<IUserService>();
-            NapClientManager.UseConfig(_napSettings);
-            _controller = new SettingConfigurationController(_napSession, _settingConfigurationService);
-            _fixture = new Fixture();
+            settingConfigurationService = Substitute.For<ISettingConfigurationService>();
+            napSession = Substitute.For<INapSession>();
+            napSettings = Substitute.For<INapSettings>();
+            userService = Substitute.For<IUserService>();
+            NapClientManager.UseConfig(napSettings);
+            controller = new SettingConfigurationController(napSession, settingConfigurationService);
+            fixture = new Fixture();
         }
 
         [Theory]
@@ -48,11 +48,11 @@
         {
             // Arrange
             var expectedName = "~/Views/SkypeBot/SettingConfiguration/Index.cshtml";
-            _userService.IsHavingPermission(_napSession.UserId, _napSettings.SiteId, FunctionKey.SettingManagement, Policy.Host)
+            userService.IsHavingPermission(napSession.UserId, napSettings.SiteId, FunctionKey.SettingManagement, Policy.Host)
                 .Returns(expectedPermission);
 
             // Action
-            var actual = _controller.Index(_userService) as ViewResult;
+            var actual = controller.Index(userService) as ViewResult;
 
             // Assert
             Assert.Equal(expectedPermission, Assert.IsType<bool>(actual.ViewData["HaveHostPermission"]));
@@ -63,17 +63,17 @@
         public async Task GetSettings_ValidParams_ReturnsCorrectResult()
         {
             // Arrange
-            var pageIndex = _fixture.Create<int>();
-            var pageSize = _fixture.Create<int>();
-            var settingType = _fixture.Create<int?>();
-            var total = _fixture.Create<int>();
-            var settingTypes = _fixture.Create<IEnumerable<SettingType>>();
+            var pageIndex = fixture.Create<int>();
+            var pageSize = fixture.Create<int>();
+            var settingType = fixture.Create<int?>();
+            var total = fixture.Create<int>();
+            var settingTypes = fixture.Create<IEnumerable<SettingType>>();
             var data = new ValueTuple<long, IEnumerable<SettingType>>(total, settingTypes);
             var expected = new { total = data.Item1, data = data.Item2 };
-            _settingConfigurationService.GetSettingsAsync(pageIndex, pageSize, settingType).Returns(data);
+            settingConfigurationService.GetSettingsAsync(pageIndex, pageSize, settingType).Returns(data);
 
             // Action
-            var actual = await _controller.GetSettings(pageIndex, pageSize, settingType) as JsonResult;
+            var actual = await controller.GetSettings(pageIndex, pageSize, settingType) as JsonResult;
 
             // Assert
             actual.Value.Should().BeEquivalentTo(expected);
@@ -83,13 +83,13 @@
         public async Task Create_ValidModel_ReturnsResult()
         {
             // Arrange
-            var viewModel = _fixture.Create<CreateSettingTypeViewModel>();
+            var viewModel = fixture.Create<CreateSettingTypeViewModel>();
             var model = new CreateSettingType();
-            var expected = _fixture.Create<CommandResult>();
-            _settingConfigurationService.CreateAsync(Arg.Do<CreateSettingType>(x => model = x)).Returns(expected);
+            var expected = fixture.Create<CommandResult>();
+            settingConfigurationService.CreateAsync(Arg.Do<CreateSettingType>(x => model = x)).Returns(expected);
 
             // Action
-            var actual = await _controller.Create(viewModel) as JsonResult;
+            var actual = await controller.Create(viewModel) as JsonResult;
 
             // Assert
             Assert.Equal(model.Type, viewModel.Type);
@@ -101,13 +101,13 @@
         public async Task Create_InvalidModel_ReturnsErrors()
         {
             // Arrange
-            var viewModel = _fixture.Create<CreateSettingTypeViewModel>();
-            _controller.ModelState.AddModelError("Name", "required");
-            var errors = _controller.ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
-            var expected = new { isSuccessful = false, errors };
+            var viewModel = new CreateSettingTypeViewModel();
+            controller.ModelState.AddModelError("Name", "required");
+            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.First().ErrorMessage;
+            var expected = new { isSuccessful = false, message };
 
             // Action
-            var actual = await _controller.Create(viewModel) as JsonResult;
+            var actual = await controller.Create(viewModel) as JsonResult;
 
             // Assert
             actual.Value.Should().BeEquivalentTo(expected);
@@ -117,12 +117,12 @@
         public async Task GetByType_ValidParams_ReturnsSettingType()
         {
             // Arrange
-            var type = _fixture.Create<int>();
-            var expected = _fixture.Create<SettingType>();
-            _settingConfigurationService.GetByTypeAsync(type).Returns(expected);
+            var type = fixture.Create<int>();
+            var expected = fixture.Create<SettingType>();
+            settingConfigurationService.GetByTypeAsync(type).Returns(expected);
 
             // Action
-            var actual = await _controller.GetByType(type) as JsonResult;
+            var actual = await controller.GetByType(type) as JsonResult;
 
             // Assert
             Assert.Equal(expected, actual.Value);
@@ -132,13 +132,13 @@
         public async Task Update_ValidModel_ReturnsResult()
         {
             // Arrange
-            var viewModel = _fixture.Create<CreateSettingTypeViewModel>();
+            var viewModel = fixture.Create<CreateSettingTypeViewModel>();
             var model = new UpdateSettingType();
-            var expected = _fixture.Create<CommandResult>();
-            _settingConfigurationService.UpdateAsync(Arg.Do<UpdateSettingType>(x => model = x)).Returns(expected);
+            var expected = fixture.Create<CommandResult>();
+            settingConfigurationService.UpdateAsync(Arg.Do<UpdateSettingType>(x => model = x)).Returns(expected);
 
             // Action
-            var actual = await _controller.Update(viewModel) as JsonResult;
+            var actual = await controller.Update(viewModel) as JsonResult;
 
             // Assert
             Assert.Equal(model.Type, viewModel.Type);
@@ -150,13 +150,13 @@
         public async Task Update_InvalidModel_ReturnsErrors()
         {
             // Arrange
-            var viewModel = _fixture.Create<CreateSettingTypeViewModel>();
-            _controller.ModelState.AddModelError("Name", "required");
-            var errors = _controller.ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
-            var expected = new { isSuccessful = false, errors };
+            var viewModel = new CreateSettingTypeViewModel();
+            controller.ModelState.AddModelError("Name", "required");
+            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.First().ErrorMessage;
+            var expected = new { isSuccessful = false, message };
 
             // Action
-            var actual = await _controller.Update(viewModel) as JsonResult;
+            var actual = await controller.Update(viewModel) as JsonResult;
 
             // Assert
             actual.Value.Should().BeEquivalentTo(expected);
@@ -166,12 +166,12 @@
         public async Task Delete_ValidParams_ReturnsResult()
         {
             // Arrange
-            var type = _fixture.Create<int>();
-            var expected = _fixture.Create<CommandResult>();
-            _settingConfigurationService.DeleteAsync(type, _napSession.UserId).Returns(expected);
+            var type = fixture.Create<int>();
+            var expected = fixture.Create<CommandResult>();
+            settingConfigurationService.DeleteAsync(type, napSession.UserId).Returns(expected);
 
             // Actions
-            var actual = await _controller.Delete(type) as JsonResult;
+            var actual = await controller.Delete(type) as JsonResult;
 
             // Assert
             Assert.Equal(expected, actual.Value);
@@ -181,13 +181,13 @@
         public async Task Delete_InvalidModel_ReturnsErrors()
         {
             // Arrange
-            var type = _fixture.Create<int>();
-            _controller.ModelState.AddModelError("Test", "required");
-            var errors = _controller.ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
-            var expected = new { isSuccessful = false, errors };
+            var type = fixture.Create<int>();
+            controller.ModelState.AddModelError("Test", "required");
+            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.First().ErrorMessage;
+            var expected = new { isSuccessful = false, message };
 
             // Action
-            var actual = await _controller.Delete(type) as JsonResult;
+            var actual = await controller.Delete(type) as JsonResult;
 
             // Assert
             actual.Value.Should().BeEquivalentTo(expected);
@@ -200,11 +200,11 @@
         {
             // Arrange
             var expectedName = "~/Views/SkypeBot/SettingConfiguration/Mapping.cshtml";
-            _userService.IsHavingPermission(_napSession.UserId, _napSettings.SiteId, FunctionKey.MappingSettingManagement, Policy.Host)
+            userService.IsHavingPermission(napSession.UserId, napSettings.SiteId, FunctionKey.MappingSettingManagement, Policy.Host)
                 .Returns(expectedPermission);
 
             // Action
-            var actual = _controller.Mapping(_userService) as ViewResult;
+            var actual = controller.Mapping(userService) as ViewResult;
 
             // Assert
             Assert.Equal(expectedPermission, Assert.IsType<bool>(actual.ViewData["HaveHostPermission"]));
@@ -215,11 +215,11 @@
         public async Task GetSettingTypes_WhenCalled_ReturnsAllSettingTypes()
         {
             // Arrange
-            var expected = _fixture.Create<IEnumerable<BaseModel>>();
-            _settingConfigurationService.GetAllSettingType().Returns(expected);
+            var expected = fixture.Create<IEnumerable<BaseModel>>();
+            settingConfigurationService.GetAllSettingType().Returns(expected);
 
             // Action
-            var actual = await _controller.GetSettingTypes() as JsonResult;
+            var actual = await controller.GetSettingTypes() as JsonResult;
 
             // Assert
             Assert.Equal(expected, actual.Value);
@@ -229,13 +229,13 @@
         public async Task GetJobInfo_ValidParams_ReturnsResult()
         {
             // Arrange
-            var jobId = _fixture.Create<int?>();
+            var jobId = fixture.Create<int?>();
             var value = jobId ?? 1;
-            var expected = _fixture.Create<JobInfo>();
-            _settingConfigurationService.GetJobInfoAsync(value).Returns(expected);
+            var expected = fixture.Create<JobInfo>();
+            settingConfigurationService.GetJobInfoAsync(value).Returns(expected);
 
             // Action
-            var actual = await _controller.GetJobInfo(jobId) as JsonResult;
+            var actual = await controller.GetJobInfo(jobId) as JsonResult;
 
             // Assert
             Assert.Equal(expected, actual.Value);
@@ -245,17 +245,17 @@
         public async Task GetMappings_ValidParams_ReturnsResult()
         {
             // Arrange
-            var jobId = _fixture.Create<int>();
-            var pageIndex = _fixture.Create<int>();
-            var pageSize = _fixture.Create<int>();
-            var total = _fixture.Create<int>();
-            var mappings = _fixture.Create<IEnumerable<Mapping>>();
+            var jobId = fixture.Create<int>();
+            var pageIndex = fixture.Create<int>();
+            var pageSize = fixture.Create<int>();
+            var total = fixture.Create<int>();
+            var mappings = fixture.Create<IEnumerable<Mapping>>();
             var data = new ValueTuple<long, IEnumerable<Mapping>>(total, mappings);
             var expected = new { total = data.Item1, data = data.Item2 };
-            _settingConfigurationService.GetMappingsAsync(jobId, pageIndex, pageSize).Returns(data);
+            settingConfigurationService.GetMappingsAsync(jobId, pageIndex, pageSize).Returns(data);
 
             // Action
-            var actual = await _controller.GetMappings(jobId, pageIndex, pageSize) as JsonResult;
+            var actual = await controller.GetMappings(jobId, pageIndex, pageSize) as JsonResult;
 
             // Assert
             actual.Value.Should().BeEquivalentTo(expected);
@@ -265,19 +265,19 @@
         public async Task UpdateJobInfo_ValidModel_ReturnsResult()
         {
             // Arrange
-            var viewModel = _fixture.Create<UpdateJobInfoViewModel>();
+            var viewModel = fixture.Create<UpdateJobInfoViewModel>();
             var model = new UpdateJobInfo();
-            var expected = _fixture.Create<CommandResult>();
-            _settingConfigurationService.UpdateJobInfoAsync(Arg.Do<UpdateJobInfo>(x => model = x)).Returns(expected);
+            var expected = fixture.Create<CommandResult>();
+            settingConfigurationService.UpdateJobInfoAsync(Arg.Do<UpdateJobInfo>(x => model = x)).Returns(expected);
 
             // Action
-            var actual = await _controller.UpdateJobInfo(viewModel) as JsonResult;
+            var actual = await controller.UpdateJobInfo(viewModel) as JsonResult;
 
             // Assert
             Assert.Equal(model.Id, viewModel.Id);
             Assert.Equal(model.BatchSize, viewModel.BatchSize);
             Assert.Equal(model.TestingGroup, viewModel.TestingGroup);
-            Assert.Equal(model.ModifiedBy, _napSession.UserId);
+            Assert.Equal(model.ModifiedBy, napSession.UserId);
             Assert.Equal(expected, actual.Value);
         }
 
@@ -285,13 +285,13 @@
         public async Task UpdateJobInfo_InvalidModel_ReturnsErrors()
         {
             // Arrange
-            var viewModel = _fixture.Create<UpdateJobInfoViewModel>();
-            _controller.ModelState.AddModelError("Test", "Test");
-            var errors = _controller.ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
-            var expected = new { isSuccessful = false, errors };
+            var viewModel = fixture.Create<UpdateJobInfoViewModel>();
+            controller.ModelState.AddModelError("Test", "Test");
+            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.First().ErrorMessage;
+            var expected = new { isSuccessful = false, message };
 
             // Action
-            var actual = await _controller.UpdateJobInfo(viewModel) as JsonResult;
+            var actual = await controller.UpdateJobInfo(viewModel) as JsonResult;
 
             // Assert
             actual.Value.Should().BeEquivalentTo(expected);
@@ -301,11 +301,11 @@
         public async Task GetMsgContentsTypes_WhenCalled_GetAllMsgContentsTypes()
         {
             // Arrange
-            var expected = _fixture.Create<IEnumerable<SettingType>>();
-            _settingConfigurationService.GetMsgContentsTypesAsync().Returns(expected);
+            var expected = fixture.Create<IEnumerable<SettingType>>();
+            settingConfigurationService.GetMsgContentsTypesAsync().Returns(expected);
 
             // Action
-            var actual = await _controller.GetMsgContentsTypes() as JsonResult;
+            var actual = await controller.GetMsgContentsTypes() as JsonResult;
 
             // Assert
             Assert.Equal(expected, actual.Value);
@@ -315,12 +315,12 @@
         public async Task GetNotificationTypeData_WhenCalled_ReturnsNotificationTypeData()
         {
             // Arrange
-            var type = _fixture.Create<int>();
-            var expected = _fixture.Create<NotificationTypeData>();
-            _settingConfigurationService.GetNotificationTypeDataAsync(type).Returns(expected);
+            var type = fixture.Create<int>();
+            var expected = fixture.Create<NotificationTypeData>();
+            settingConfigurationService.GetNotificationTypeDataAsync(type).Returns(expected);
 
             // Action
-            var actual = await _controller.GetNotificationTypeData(type) as JsonResult;
+            var actual = await controller.GetNotificationTypeData(type) as JsonResult;
 
             // Assert
             Assert.Equal(expected, actual.Value);
@@ -330,13 +330,13 @@
         public async Task CreateMapping_ValidModel_ReturnsResult()
         {
             // Arrange
-            var viewModel = _fixture.Create<CreateMappingViewModel>();
+            var viewModel = new CreateMappingViewModel();
             var model = new CreateMapping();
-            var expected = _fixture.Create<CommandResult>();
-            _settingConfigurationService.CreateMappingAsync(Arg.Do<CreateMapping>(x => model = x)).Returns(expected);
+            var expected = fixture.Create<CommandResult>();
+            settingConfigurationService.CreateMappingAsync(Arg.Do<CreateMapping>(x => model = x)).Returns(expected);
 
             // Action
-            var actual = await _controller.CreateMapping(viewModel) as JsonResult;
+            var actual = await controller.CreateMapping(viewModel) as JsonResult;
 
             // Assert
             Assert.Equal(viewModel.JobId, model.JobId);
@@ -345,7 +345,7 @@
             Assert.Equal(viewModel.MsgContentsType, model.MsgContentsType);
             Assert.Equal(viewModel.RequiredParam, model.RequiredParams);
             Assert.Equal(viewModel.IsTest, model.IsTest);
-            Assert.Equal(_napSession.UserId, model.CreatorId);
+            Assert.Equal(napSession.UserId, model.CreatorId);
             Assert.Equal(expected, actual.Value);
         }
 
@@ -353,13 +353,13 @@
         public async Task CreateMapping_InvalidModel_ReturnsErrors()
         {
             // Arrange
-            var viewModel = _fixture.Create<CreateMappingViewModel>();
-            _controller.ModelState.AddModelError("Test", "Test");
-            var errors = _controller.ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
-            var expected = new { isSuccessful = false, errors };
+            var viewModel = new CreateMappingViewModel();
+            controller.ModelState.AddModelError("Test", "Test");
+            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.First().ErrorMessage;
+            var expected = new { isSuccessful = false, message };
 
             // Action
-            var actual = await _controller.CreateMapping(viewModel) as JsonResult;
+            var actual = await controller.CreateMapping(viewModel) as JsonResult;
 
             // Assert
             actual.Value.Should().BeEquivalentTo(expected);
@@ -369,14 +369,14 @@
         public async Task GetMapping_WhenCalled_ReturnsMapping()
         {
             // Arrange
-            var msgContentsType = _fixture.Create<int>();
-            var jobId = _fixture.Create<int>();
+            var msgContentsType = fixture.Create<int>();
+            var jobId = fixture.Create<int>();
             var model = new GetMapping();
-            var expected = _fixture.Create<Mapping>();
-            _settingConfigurationService.GetMappingAsync(Arg.Do<GetMapping>(x => model = x)).Returns(expected);
+            var expected = fixture.Create<Mapping>();
+            settingConfigurationService.GetMappingAsync(Arg.Do<GetMapping>(x => model = x)).Returns(expected);
 
             // Action
-            var actual = await _controller.GetMapping(msgContentsType, jobId) as JsonResult;
+            var actual = await controller.GetMapping(msgContentsType, jobId) as JsonResult;
 
             // Assert
             Assert.Equal(msgContentsType, model.MsgContentsType);
@@ -388,13 +388,13 @@
         public async Task UpdateMapping_ValidModel_ReturnsResult()
         {
             // Arrange
-            var viewModel = _fixture.Create<UpdateMappingViewModel>();
+            var viewModel = new UpdateMappingViewModel();
             var model = new UpdateMapping();
-            var expected = _fixture.Create<CommandResult>();
-            _settingConfigurationService.UpdateMappingAsync(Arg.Do<UpdateMapping>(x => model = x)).Returns(expected);
+            var expected = fixture.Create<CommandResult>();
+            settingConfigurationService.UpdateMappingAsync(Arg.Do<UpdateMapping>(x => model = x)).Returns(expected);
 
             // Action
-            var actual = await _controller.UpdateMapping(viewModel) as JsonResult;
+            var actual = await controller.UpdateMapping(viewModel) as JsonResult;
 
             // Assert
             Assert.Equal(viewModel.JobId, model.JobId);
@@ -404,7 +404,7 @@
             Assert.Equal(viewModel.RequiredParam, model.RequiredParams);
             Assert.Equal(viewModel.IsTest, model.IsTest);
             Assert.Equal(viewModel.OldMsgContentsType, model.OldMsgContentsType);
-            Assert.Equal(_napSession.UserId, model.ModifiedBy);
+            Assert.Equal(napSession.UserId, model.ModifiedBy);
             Assert.Equal(expected, actual.Value);
         }
 
@@ -412,13 +412,13 @@
         public async Task UpdateMapping_InvalidModel_ReturnsErrors()
         {
             // Arrange
-            var viewModel = _fixture.Create<UpdateMappingViewModel>();
-            _controller.ModelState.AddModelError("Test", "Test");
-            var errors = _controller.ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
-            var expected = new { isSuccessful = false, errors };
+            var viewModel = new UpdateMappingViewModel();
+            controller.ModelState.AddModelError("Test", "Test");
+            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.First().ErrorMessage;
+            var expected = new { isSuccessful = false, message };
 
             // Action
-            var actual = await _controller.UpdateMapping(viewModel) as JsonResult;
+            var actual = await controller.UpdateMapping(viewModel) as JsonResult;
 
             // Assert
             actual.Value.Should().BeEquivalentTo(expected);
@@ -428,21 +428,21 @@
         public async Task DeleteMapping_ValidModel_ReturnsResult()
         {
             // Arrange
-            var templateId = _fixture.Create<int>();
-            var msgContentsType = _fixture.Create<int>();
-            var jobId = _fixture.Create<int>();
+            var templateId = fixture.Create<int>();
+            var msgContentsType = fixture.Create<int>();
+            var jobId = fixture.Create<int>();
             var model = new DeleteMapping();
-            var expected = _fixture.Create<CommandResult>();
-            _settingConfigurationService.DeleteMappingAsync(Arg.Do<DeleteMapping>(x => model = x)).Returns(expected);
+            var expected = fixture.Create<CommandResult>();
+            settingConfigurationService.DeleteMappingAsync(Arg.Do<DeleteMapping>(x => model = x)).Returns(expected);
 
             // Action
-            var actual = await _controller.DeleteMapping(templateId, msgContentsType, jobId) as JsonResult;
+            var actual = await controller.DeleteMapping(templateId, msgContentsType, jobId) as JsonResult;
 
             // Assert
             Assert.Equal(jobId, model.JobId);
             Assert.Equal(templateId, model.TemlateId);
             Assert.Equal(msgContentsType, model.MsgContentsType);
-            Assert.Equal(_napSession.UserId, model.ModifiedBy);
+            Assert.Equal(napSession.UserId, model.ModifiedBy);
             Assert.Equal(expected, actual.Value);
         }
 
@@ -450,15 +450,15 @@
         public async Task DeleteMapping_InvalidModel_ReturnsErrors()
         {
             // Arrange
-            var templateId = _fixture.Create<int>();
-            var msgContentsType = _fixture.Create<int>();
-            var jobId = _fixture.Create<int>();
-            _controller.ModelState.AddModelError("Test", "Test");
-            var errors = _controller.ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.First().ErrorMessage });
-            var expected = new { isSuccessful = false, errors };
+            var templateId = fixture.Create<int>();
+            var msgContentsType = fixture.Create<int>();
+            var jobId = fixture.Create<int>();
+            controller.ModelState.AddModelError("Test", "Test");
+            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.First().ErrorMessage;
+            var expected = new { isSuccessful = false, message };
 
             // Action
-            var actual = await _controller.DeleteMapping(templateId, msgContentsType, jobId) as JsonResult;
+            var actual = await controller.DeleteMapping(templateId, msgContentsType, jobId) as JsonResult;
 
             // Assert
             actual.Value.Should().BeEquivalentTo(expected);

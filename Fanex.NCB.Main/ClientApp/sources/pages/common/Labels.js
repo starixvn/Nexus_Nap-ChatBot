@@ -56,6 +56,7 @@
     DeleteMsgContentsTypeSuccessfully: 'Delete Msg Contents Type successfully',
     MappingSettingType: 'Mapping Setting Type',
     CreateNewMappingSetting: 'Create New Mapping Setting',
+    EditMappingSetting: 'Edit Mapping Setting',
     CreateNewMappingSettingSuccessfully: 'Create New Mapping Setting Successfully',
     UpdateMappingSettingSuccessfully: 'Update Mapping Setting Successfully',
     NotificationTemplate: 'Notification Template',

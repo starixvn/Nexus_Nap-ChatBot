@@ -7,7 +7,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_Mapping_U
     ,IN     jobId                   INT
     ,IN     notificationTemplateId  INT
     ,IN     msgContentsType         INT
-    ,IN     requiredParam           VARCHAR (1000)
+    ,IN     requiredParam           VARCHAR (300)
     ,IN     isTest                  BIT
     ,IN     oldMsgContentsType      INT
     ,IN     modifiedBy              INT
@@ -28,7 +28,7 @@ BEGIN
     DECLARE logContent              TEXT CHARACTER SET utf8mb4;
     DECLARE jsonValue               JSON;
     DECLARE jsonSettingTypeValue	JSON;
-    DECLARE msgContentsTypeName     VARCHAR (250);
+    DECLARE msgContentsTypeName     VARCHAR (60);
     DECLARE iLoop 		            INT DEFAULT 0;
     DECLARE dataString	            VARCHAR (4000);
     DECLARE actionId	            INT DEFAULT 25;
@@ -49,7 +49,7 @@ BEGIN
         ,MsgContentsType INT
         ,NotificationTemplateID INT
         ,NotificationTypeID INT
-        ,TemplateRequiredParams VARCHAR (1000)
+        ,TemplateRequiredParams VARCHAR (300)
     );
 
     WHILE (

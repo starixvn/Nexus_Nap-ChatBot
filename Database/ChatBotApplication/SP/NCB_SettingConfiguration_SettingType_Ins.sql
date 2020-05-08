@@ -4,7 +4,7 @@ DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_SettingType_Ins`(
     IN      type        INT
-    ,IN     name        VARCHAR (250)
+    ,IN     name        VARCHAR (60)
     ,IN     creatorId   INT
     ,OUT    errCode     SMALLINT
 	,OUT    errMsg      VARCHAR (100)
@@ -36,7 +36,7 @@ BEGIN
     DROP TEMPORARY TABLE IF EXISTS SettingTypeTable;
     CREATE TEMPORARY TABLE SettingTypeTable (
         MsgContentsType INT
-        ,Name           VARCHAR (250)
+        ,Name           VARCHAR (60)
     );
 
     WHILE (

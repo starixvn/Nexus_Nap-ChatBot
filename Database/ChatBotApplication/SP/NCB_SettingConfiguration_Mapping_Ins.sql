@@ -7,7 +7,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_Mapping_I
     ,IN     jobId                   INT
     ,IN     notificationTemplateId  INT
     ,IN     msgContentsType         INT
-    ,IN     requiredParam           VARCHAR (1000)
+    ,IN     requiredParam           VARCHAR (300)
     ,IN     isTest                  BIT
     ,IN     creatorId               INT
     ,OUT    errCode                 SMALLINT
@@ -28,7 +28,7 @@ BEGIN
     DECLARE jsonValue               JSON;
     DECLARE iLoop                   INT DEFAULT 0;
     DECLARE dataString              VARCHAR (4000);
-    DECLARE msgContentsTypeName     VARCHAR (250);
+    DECLARE msgContentsTypeName     VARCHAR (60);
     DECLARE actionId                INT DEFAULT 24;
     DECLARE insertTime              VARCHAR (20);
     DECLARE isTest2Int              INT;
@@ -47,7 +47,7 @@ BEGIN
         ,MsgContentsType INT
         ,NotificationTemplateID INT
         ,NotificationTypeID INT
-        ,TemplateRequiredParams VARCHAR (1000)
+        ,TemplateRequiredParams VARCHAR (300)
     );
 
     WHILE (

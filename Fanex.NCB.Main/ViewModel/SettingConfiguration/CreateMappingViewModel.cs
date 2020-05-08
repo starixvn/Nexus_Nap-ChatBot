@@ -17,6 +17,7 @@
         public int MsgContentsType { get; set; }
 
         [Required]
+        [RegularExpression(@"({[\w\s]+},)*{[\w\s]+}", ErrorMessage = "Invalid Required Params format")]
         public string RequiredParam { get; set; }
 
         [Required]

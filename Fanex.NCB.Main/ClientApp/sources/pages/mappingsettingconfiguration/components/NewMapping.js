@@ -102,7 +102,7 @@ class NewMapping extends Component {
                 <input name='jobId' className='hidden' defaultValue={this.props.jobInfo && this.props.jobInfo.id} />
                 <FormGroup>
                     <Label for="notificationTypeId" className="form-label required">Notification Type</Label>
-                    <div className='input-row-container'>
+                    <div>
                         <Input type="select"
                             invalid={touched.notificationTypeId && errors.notificationTypeId}
                             name="notificationTypeId"
@@ -117,7 +117,7 @@ class NewMapping extends Component {
                 </FormGroup>
                 <FormGroup>
                     <Label for="notificationTemplateId" className="form-label required">Notification Template</Label>
-                    <div className='input-row-container'>
+                    <div>
                         <Input type="select"
                             invalid={touched.notificationTemplateId && errors.notificationTemplateId}
                             name="notificationTemplateId"
@@ -144,7 +144,7 @@ class NewMapping extends Component {
                 </FormGroup>
                 <FormGroup>
                     <Label for="msgContentsType" className="form-label required">Msg Contents Type</Label>
-                    <div className='input-row-container'>
+                    <div>
                         <Input type="select"
                             invalid={touched.msgContentsType && errors.msgContentsType}
                             name="msgContentsType"
@@ -159,19 +159,21 @@ class NewMapping extends Component {
                 </FormGroup>
                 <FormGroup>
                     <Label for="requiredParam" className="form-label required">Required Param</Label>
-                    <div className='input-row-container'>
+                    <div>
                         <Input type="textarea"
+                            rows={4}
                             invalid={touched.requiredParam && errors.requiredParam}
                             name="requiredParam"
                             onChange={this.handleRequiredParamChange}
                             value={values.requiredParam}
+                            maxLength={300}
                         />
                         {touched.requiredParam && errors.requiredParam && <FormFeedback>{errors.requiredParam}</FormFeedback>}
                     </div>
                 </FormGroup>
                 <FormGroup>
                     <Label for="isTest" className="form-label">Is Test</Label>
-                    <div className='input-row-container'>
+                    <div>
                         <input id='is-test'
                             className="checkbox-custom"
                             type='checkbox'
@@ -204,9 +206,11 @@ class NewMapping extends Component {
     }
 
     render() {
+        let settingType = this.props.settingTypes.filter(x => this.props.jobInfo && x.id === this.props.jobInfo.id);
+        let title = settingType && settingType.length > 0 ? `${Labels.CreateNewMappingSetting} for ${settingType[0].name}` : Labels.CreateNewMappingSetting;
         return (
             <Modal isOpen toggle={this.props.onClose} className="new-setting-type" backdrop="static">
-                <ModalHeader toggle={this.props.onClose}>Create New Mapping Setting</ModalHeader>
+                <ModalHeader toggle={this.props.onClose}>{title}</ModalHeader>
                 <ModalBody>
                     {this.props.createMappingResult &&
                         <ResponseMessage isSuccessful={this.props.createMappingResult.isSuccessful}
@@ -251,7 +255,8 @@ const mapStateToProps = state => {
         notificationTemplates,
         msgContentsTypes,
         notificationTypeRef,
-        jobInfo
+        jobInfo,
+        settingTypes
     } = state;
 
     return {
@@ -260,7 +265,8 @@ const mapStateToProps = state => {
         notificationTemplates,
         msgContentsTypes,
         notificationTypeRef,
-        jobInfo
+        jobInfo,
+        settingTypes
     };
 };
 

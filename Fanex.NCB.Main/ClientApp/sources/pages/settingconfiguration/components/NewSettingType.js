@@ -52,6 +52,7 @@ class NewSettingType extends Component {
                             name="name"
                             onChange={handleChange}
                             value={values.name}
+                            maxLength={60}
                         />
                         {touched.name && errors.name && <FormFeedback>{errors.name}</FormFeedback>}
                     </div>

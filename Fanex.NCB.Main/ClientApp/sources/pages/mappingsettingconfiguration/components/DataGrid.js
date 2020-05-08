@@ -67,6 +67,8 @@ export class DataGrid extends Component {
         this.props.openDeleteMappingPopup({ templateId, msgContentsType, notificationTemplateName, notificationTypeName });
     }
 
+    handleRequiredParams = value => value.split(',').join(', ')
+
     renderRow = (item, index, isHost) => (
         <Row key={index + this.startIndex} >
             <Cell className="text-center">{index + this.startIndex}</Cell>
@@ -75,7 +77,7 @@ export class DataGrid extends Component {
             <Cell>{item.systemName}</Cell>
             <Cell>{item.recipientTypeNames}</Cell>
             <Cell>{item.msgContentsName}</Cell>
-            <Cell>{item.requiredParams}</Cell>
+            <Cell>{this.handleRequiredParams(item.requiredParams)}</Cell>
             <Cell className="text-center">
                 {
                     item.isTest ? <span className='icon-check'></span> : null

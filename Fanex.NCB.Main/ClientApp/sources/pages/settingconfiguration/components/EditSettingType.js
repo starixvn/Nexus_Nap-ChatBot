@@ -55,6 +55,7 @@ class EditNotificationType extends Component {
                         <Input value={values.name} name="name"
                             invalid={touched.name && errors.name}
                             onChange={handleChange}
+                            maxLength={60}
                         />
                         {touched.name && errors.name && <FormFeedback>{errors.name}</FormFeedback>}
                     </div>
