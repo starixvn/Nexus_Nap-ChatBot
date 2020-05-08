@@ -3,15 +3,12 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SettingConfiguration;
     using Fanex.NCB.Models.SettingConfiguration;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
-    using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Core.Enum;
-    using System;
-    using Fanex.NCB.Core.Extensions;
 
     public class SettingConfigurationService : ISettingConfigurationService
     {
@@ -85,13 +82,9 @@
             return result;
         }
 
-        public IEnumerable<BaseModel> GetAllSettingType()
+        public async Task<IEnumerable<BaseModel>> GetAllSettingType()
         {
-            var types = Enum.GetValues(typeof(SettingTypes)).Cast<SettingTypes>().Select(v => new BaseModel
-            {
-                Id = (int)v,
-                Name = EnumHelper.GetDescription(v)
-            });
+            var types = await baseService.GetDataAsync<BaseModel>(new GetAllSettingTypeCriteria()).ConfigureAwait(false);
 
             return types;
         }

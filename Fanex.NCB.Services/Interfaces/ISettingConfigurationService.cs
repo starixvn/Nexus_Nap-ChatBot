@@ -18,7 +18,7 @@
 
         Task<CommandResult> DeleteAsync(int type, int modifiedBy);
 
-        IEnumerable<BaseModel> GetAllSettingType();
+        Task<IEnumerable<BaseModel>> GetAllSettingType();
 
         Task<JobInfo> GetJobInfoAsync(int jobId);
 

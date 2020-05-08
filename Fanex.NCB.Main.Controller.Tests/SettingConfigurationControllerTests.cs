@@ -212,14 +212,14 @@
         }
 
         [Fact]
-        public void GetSettingTypes_WhenCalled_ReturnsAllSettingTypes()
+        public async Task GetSettingTypes_WhenCalled_ReturnsAllSettingTypes()
         {
             // Arrange
             var expected = _fixture.Create<IEnumerable<BaseModel>>();
             _settingConfigurationService.GetAllSettingType().Returns(expected);
 
             // Action
-            var actual = _controller.GetSettingTypes() as JsonResult;
+            var actual = await _controller.GetSettingTypes() as JsonResult;
 
             // Assert
             Assert.Equal(expected, actual.Value);

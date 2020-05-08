@@ -119,9 +119,9 @@
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Read)]
-        public IActionResult GetSettingTypes()
+        public async Task<IActionResult> GetSettingTypes()
         {
-            var types = _settingConfigurationService.GetAllSettingType();
+            var types = await _settingConfigurationService.GetAllSettingType().ConfigureAwait(false);
 
             return Json(types);
         }

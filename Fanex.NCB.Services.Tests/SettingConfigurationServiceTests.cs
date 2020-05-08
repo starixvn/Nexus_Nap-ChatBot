@@ -137,21 +137,19 @@
         }
 
         [Fact]
-        public void GetAllSettingType_WhenCalled_ReturnsCorrectList()
+        public async Task GetAllSettingType_WhenCalled_ReturnsCorrectList()
         {
             // Arrange
             var service = GetService();
-            var expected = Enum.GetValues(typeof(SettingTypes)).Cast<SettingTypes>().Select(v => new BaseModel
-            {
-                Id = (int)v,
-                Name = EnumHelper.GetDescription(v)
-            });
+            var expected = _fixture.Create<IEnumerable<BaseModel>>();
+            var criteria = new GetAllSettingTypeCriteria();
+            baseService.GetDataAsync<BaseModel>(Arg.Do<GetAllSettingTypeCriteria>(x => criteria = x)).Returns(expected);
 
             // Action
-            var result = service.GetAllSettingType();
+            var result = await service.GetAllSettingType();
 
             // Assert
-            result.Should().BeEquivalentTo(expected);
+            Assert.Equal(expected, result);
         }
 
         [Fact]

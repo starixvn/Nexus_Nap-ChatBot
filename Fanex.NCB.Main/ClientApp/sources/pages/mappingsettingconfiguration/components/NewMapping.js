@@ -100,7 +100,7 @@ class NewMapping extends Component {
         return (
             <Form onSubmit={handleSubmit}>
                 <input name='jobId' className='hidden' defaultValue={this.props.jobInfo && this.props.jobInfo.id} />
-                <FormGroup className='vertical-row'>
+                <FormGroup>
                     <Label for="notificationTypeId" className="form-label required">Notification Type</Label>
                     <div className='input-row-container'>
                         <Input type="select"
@@ -115,7 +115,7 @@ class NewMapping extends Component {
                         {touched.notificationTypeId && errors.notificationTypeId && <FormFeedback>{errors.notificationTypeId}</FormFeedback>}
                     </div>
                 </FormGroup>
-                <FormGroup className='vertical-row'>
+                <FormGroup>
                     <Label for="notificationTemplateId" className="form-label required">Notification Template</Label>
                     <div className='input-row-container'>
                         <Input type="select"
@@ -130,27 +130,19 @@ class NewMapping extends Component {
                         {touched.notificationTemplateId && errors.notificationTemplateId && <FormFeedback>{errors.notificationTemplateId}</FormFeedback>}
                     </div>
                 </FormGroup>
-                <FormGroup className='vertical-row'>
-                    <Label for="systemName" className="form-label">System</Label>
-                    <div className='input-row-container'>
-                        <Input className='disabled-input'
-                            name="systemName"
-                            disabled={true}
-                            value={this.props.notificationTypeRef && this.props.notificationTypeRef.systemName ? this.props.notificationTypeRef.systemName : ''}
-                        />
-                    </div>
+                <FormGroup>
+                    <Label className="form-label">System</Label>
+                    <Label className="form-label">
+                        {this.props.notificationTypeRef && this.props.notificationTypeRef.systemName ? this.props.notificationTypeRef.systemName : ''}
+                    </Label>
                 </FormGroup>
-                <FormGroup className='vertical-row'>
-                    <Label for="recipientTypeId" className="form-label">Recipient Type</Label>
-                    <div className='input-row-container'>
-                        <Input className='disabled-input'
-                            name="recipientTypeId"
-                            disabled={true}
-                            value={this.props.notificationTypeRef && this.props.notificationTypeRef.recipientTypeNames ? this.props.notificationTypeRef.recipientTypeNames : ''}
-                        />
-                    </div>
+                <FormGroup>
+                    <Label className="form-label">Recipient Type</Label>
+                    <Label className="form-label">
+                        {this.props.notificationTypeRef && this.props.notificationTypeRef.recipientTypeNames ? this.props.notificationTypeRef.recipientTypeNames : ''}
+                    </Label>
                 </FormGroup>
-                <FormGroup className='vertical-row'>
+                <FormGroup>
                     <Label for="msgContentsType" className="form-label required">Msg Contents Type</Label>
                     <div className='input-row-container'>
                         <Input type="select"
@@ -165,7 +157,7 @@ class NewMapping extends Component {
                         {touched.msgContentsType && errors.msgContentsType && <FormFeedback>{errors.msgContentsType}</FormFeedback>}
                     </div>
                 </FormGroup>
-                <FormGroup className='vertical-row'>
+                <FormGroup>
                     <Label for="requiredParam" className="form-label required">Required Param</Label>
                     <div className='input-row-container'>
                         <Input type="textarea"
@@ -177,7 +169,7 @@ class NewMapping extends Component {
                         {touched.requiredParam && errors.requiredParam && <FormFeedback>{errors.requiredParam}</FormFeedback>}
                     </div>
                 </FormGroup>
-                <FormGroup className='vertical-row'>
+                <FormGroup>
                     <Label for="isTest" className="form-label">Is Test</Label>
                     <div className='input-row-container'>
                         <input id='is-test'

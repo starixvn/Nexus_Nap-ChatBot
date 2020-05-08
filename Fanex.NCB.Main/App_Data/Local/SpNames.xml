@@ -148,5 +148,6 @@
     <Setting Key="NCB_SettingConfiguration_Mapping_Sel" SpName="NCB_SettingConfiguration_Mapping_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SettingConfiguration_Mapping_Upd" SpName="NCB_SettingConfiguration_Mapping_Upd" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SettingConfiguration_Mapping_Del" SpName="NCB_SettingConfiguration_Mapping_Del" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_SettingConfiguration_MappingSettingTypeList_Sel" SpName="NCB_SettingConfiguration_MappingSettingTypeList_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
 </Functions>

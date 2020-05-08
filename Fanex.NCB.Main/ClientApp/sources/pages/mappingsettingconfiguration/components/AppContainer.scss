@@ -62,13 +62,10 @@
     color: #e74c3c;
 }
 
-.vertical-row {
-    display: flex;
-    justify-content: space-between;
-}
-
-.input-row-container {
-    width: 300px;
+.form-group {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    grid-gap: 10px;
 }
 
 .disabled-input {
