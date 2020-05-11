@@ -7,7 +7,6 @@ import { Formik } from 'formik';
 import { object, string } from 'yup';
 import Labels from '../../common/Labels';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
-import TemplatePreview from '../../common/TemplatePreview/index';
 
 class EditNotificationType extends Component {
     constructor(props) {
@@ -23,8 +22,8 @@ class EditNotificationType extends Component {
     }
 
     schema = object().shape({
-        type: string().required(Labels.FieldRequired),
-        name: string().required(Labels.FieldRequired).max(250)
+        type: string().required(Labels.FieldRequired).max(10),
+        name: string().required(Labels.FieldRequired).max(60)
     })
 
     renderForm = ({

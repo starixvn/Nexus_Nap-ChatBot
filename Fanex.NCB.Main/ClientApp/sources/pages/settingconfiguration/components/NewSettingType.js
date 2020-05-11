@@ -7,8 +7,6 @@ import { Formik } from 'formik';
 import { object, string } from 'yup';
 import Labels from '../../common/Labels';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
-import TemplatePreview from '../../common/TemplatePreview/index';
-
 class NewSettingType extends Component {
     constructor(props) {
         super(props);
@@ -19,8 +17,8 @@ class NewSettingType extends Component {
     }
 
     schema = object().shape({
-        type: string().required(Labels.FieldRequired),
-        name: string().required(Labels.FieldRequired).max(250)
+        type: string().required(Labels.FieldRequired).max(10),
+        name: string().required(Labels.FieldRequired).max(60)
     })
 
     renderForm = ({
@@ -41,6 +39,7 @@ class NewSettingType extends Component {
                             name="type"
                             onChange={handleChange}
                             value={values.type}
+                            maxLength={10}
                         />
                         {touched.type && errors.type && <FormFeedback>{errors.type}</FormFeedback>}
                     </div>
