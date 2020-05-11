@@ -38,12 +38,19 @@ export class DataGrid extends Component {
     };
 
     buildBody = isHost => {
-        const { pageIndex, pageSize } = this.props.gridParams;
+        const { pageIndex, pageSize, jobId } = this.props.gridParams;
 
         this.startIndex = (pageIndex - 1) * pageSize + 1;
 
         if (this.props.gridData.data.length > 0) {
             return this.props.gridData.data.map((item, index) => this.renderRow(item, index, isHost));
+        }
+        else {
+            if (pageIndex > 1) {
+                this.props.getGridData({
+                    jobId, pageIndex: pageIndex - 1, pageSize
+                });
+            }
         }
 
         return [<Row key={`body${1}`} ><Cell colSpan="9"><NoDataTitle /></Cell></Row>];

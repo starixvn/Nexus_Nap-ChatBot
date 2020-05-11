@@ -25,19 +25,19 @@ export class JobInfo extends Component {
             this.props.jobInfo && <div className='job-info-container'>
                 <div className='job-info-item'>
                     <p className='job-info-title'>Job Sync Status:</p>
-                    <p className={this.props.jobInfo.status === 'Done' ? 'status-done' : 'status-running'}>{this.props.jobInfo.status}</p>
+                    <p className={`job-info-value ${this.props.jobInfo.status === 'Done' ? 'status-done' : 'status-running'}`}>{this.props.jobInfo.status}</p>
                 </div>
                 <div className='job-info-item'>
                     <p className='job-info-title'>Previous Max MessageID:</p>
-                    <p>{this.props.jobInfo.previousMaxMessageId}</p>
+                    <p className='job-info-value'>{this.props.jobInfo.previousMaxMessageId}</p>
                 </div>
                 <div className='job-info-item'>
                     <p className='job-info-title'>Batch Size:</p>
-                    <p>{this.props.jobInfo.batchSize}</p>
+                    <p className='job-info-value'>{this.props.jobInfo.batchSize}</p>
                 </div>
                 <div className='job-info-item'>
                     <p className='job-info-title'>Testing Group:</p>
-                    <p>{this.props.jobInfo.testingGroup}</p>
+                    <p className='job-info-value'>{this.props.jobInfo.testingGroup}</p>
                 </div>
                 {
                     this.haveHostPermission &&

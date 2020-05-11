@@ -40,6 +40,13 @@ export class DataGrid extends Component {
         if (this.props.gridData.data.length > 0) {
             return this.props.gridData.data.map((item, index) => this.renderRow(item, index, isHost));
         }
+        else {
+            if (pageIndex > 1) {
+                this.props.getGridData({
+                    pageIndex: pageIndex - 1, pageSize
+                });
+            }
+        }
 
         return [<Row key={`body${1}`} ><Cell colSpan="4"><NoDataTitle /></Cell></Row>];
     }
