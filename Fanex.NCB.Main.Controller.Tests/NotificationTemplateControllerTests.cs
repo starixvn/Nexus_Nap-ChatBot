@@ -1,8 +1,6 @@
 ﻿namespace Fanex.NCB.Main.Controllers.Tests
 {
-    using System;
     using System.Collections.Generic;
-    using System.Text;
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NAP.Client;
@@ -11,7 +9,6 @@
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Main.ViewModel.NotificationTemplate;
-    using Fanex.NCB.Models.Notification;
     using Fanex.NCB.Models.NotificationTemplate;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
@@ -25,6 +22,7 @@
     {
         private INotificationTemplaceService notificationTemplaceService;
         private INapSession napSession;
+        private IUserService userService;
 
         [Fact]
         public void Index_WhenCalled_ReturnExpectedView()
@@ -32,14 +30,13 @@
             var controller = GetController();
 
             var napSettings = Substitute.For<INapSettings>();
-            var userService = Substitute.For<IUserService>();
             NapClientManager.UseConfig(napSettings);
 
             var fixture = new Fixture();
             napSession.UserId = fixture.Create<int>();
 
             userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotificationTemplate, Policy.Host).Returns(true);
-            var actual = controller.Index(userService);
+            var actual = controller.Index();
 
             var viewResult = Assert.IsType<ViewResult>(actual);
             var haveHostPermission = Assert.IsType<bool>(viewResult.ViewData["HaveHostPermission"]);
@@ -193,8 +190,9 @@
         {
             notificationTemplaceService = Substitute.For<INotificationTemplaceService>();
             napSession = Substitute.For<INapSession>();
+            userService = Substitute.For<IUserService>();
 
-            return new NotificationTemplateController(notificationTemplaceService, napSession);
+            return new NotificationTemplateController(notificationTemplaceService, napSession, userService);
         }
     }
 }

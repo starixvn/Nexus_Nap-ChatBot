@@ -1,12 +1,9 @@
 ﻿namespace Fanex.NCB.Services.Tests
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.Core.Enum;
-    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SettingConfiguration;
     using Fanex.NCB.Models.SettingConfiguration;

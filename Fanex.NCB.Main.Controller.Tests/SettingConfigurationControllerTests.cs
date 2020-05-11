@@ -37,7 +37,7 @@
             napSettings = Substitute.For<INapSettings>();
             userService = Substitute.For<IUserService>();
             NapClientManager.UseConfig(napSettings);
-            controller = new SettingConfigurationController(napSession, settingConfigurationService);
+            controller = new SettingConfigurationController(napSession, settingConfigurationService, userService);
             fixture = new Fixture();
         }
 
@@ -52,7 +52,7 @@
                 .Returns(expectedPermission);
 
             // Action
-            var actual = controller.Index(userService) as ViewResult;
+            var actual = controller.Index() as ViewResult;
 
             // Assert
             Assert.Equal(expectedPermission, Assert.IsType<bool>(actual.ViewData["HaveHostPermission"]));
@@ -204,7 +204,7 @@
                 .Returns(expectedPermission);
 
             // Action
-            var actual = controller.Mapping(userService) as ViewResult;
+            var actual = controller.Mapping() as ViewResult;
 
             // Assert
             Assert.Equal(expectedPermission, Assert.IsType<bool>(actual.ViewData["HaveHostPermission"]));

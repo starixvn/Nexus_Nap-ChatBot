@@ -19,16 +19,18 @@ namespace Fanex.NCB.SkypeBot.Controllers
     {
         private readonly INotificationTemplaceService notificationTemplaceService;
         private readonly INapSession napSession;
+        private readonly IUserService userService;
 
-        public NotificationTemplateController(INotificationTemplaceService notificationTemplaceService, INapSession napSession)
+        public NotificationTemplateController(INotificationTemplaceService notificationTemplaceService, INapSession napSession, IUserService userService)
         {
             this.notificationTemplaceService = notificationTemplaceService;
             this.napSession = napSession;
+            this.userService = userService;
         }
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Read)]
-        public IActionResult Index([FromServices]IUserService userService)
+        public IActionResult Index()
         {
             ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotificationTemplate, Policy.Host);
 

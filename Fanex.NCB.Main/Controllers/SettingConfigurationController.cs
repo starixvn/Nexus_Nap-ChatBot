@@ -19,16 +19,18 @@
     {
         private readonly INapSession napSession;
         private readonly ISettingConfigurationService settingConfigurationService;
+        private readonly IUserService userService;
 
-        public SettingConfigurationController(INapSession napSession, ISettingConfigurationService settingConfigurationService)
+        public SettingConfigurationController(INapSession napSession, ISettingConfigurationService settingConfigurationService, IUserService userService)
         {
             this.napSession = napSession;
             this.settingConfigurationService = settingConfigurationService;
+            this.userService = userService;
         }
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.SettingManagement, Policy = Policy.Read)]
-        public IActionResult Index([FromServices]IUserService userService)
+        public IActionResult Index()
         {
             ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.SettingManagement, Policy.Host);
 
@@ -110,7 +112,7 @@
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Read)]
-        public IActionResult Mapping([FromServices]IUserService userService)
+        public IActionResult Mapping()
         {
             ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.MappingSettingManagement, Policy.Host);
 
