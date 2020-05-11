@@ -99,6 +99,8 @@ BEGIN
     IF (errCode = 0) THEN
 		SET insertTime = DATE_FORMAT(UTC_TIMESTAMP(), '%Y-%m-%d %T' );
 		SET dataString = CONCAT('{"IsTest": ', isTest2Int, ', "MsgContentsType": ', msgContentsType, ', "NotificationTemplateID": ', notificationTemplateId, ', "NotificationTypeID" : ', notificationTypeId,', "TemplateRequiredParams": ', '"', requiredParam, '"}');
+        SET dataString = REPLACE(dataString, '\n', '\\n');
+        
         UPDATE SystemSetting
         SET
 			Value = IF (
