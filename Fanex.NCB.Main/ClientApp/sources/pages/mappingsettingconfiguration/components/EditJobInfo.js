@@ -69,11 +69,11 @@ export class EditJobInfo extends Component {
             this.props.jobInfo && <div className='job-info-container'>
                 <div className='job-info-item'>
                     <p className='job-info-title'>Job Sync Status:</p>
-                    <p>{this.props.jobInfo.status}</p>
+                    <p className={`job-info-value ${this.props.jobInfo.status === 'Done' ? 'status-done' : 'status-running'}`}>{this.props.jobInfo.status}</p>
                 </div>
                 <div className='job-info-item'>
                     <p className='job-info-title'>Previous Max MessageID:</p>
-                    <p>{this.props.jobInfo.previousMaxMessageId}</p>
+                    <p className='job-info-value'>{this.props.jobInfo.previousMaxMessageId}</p>
                 </div>
                 <div className='job-info-item'>
                     <p className='job-info-title'>Batch Size:</p>
