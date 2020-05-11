@@ -59,7 +59,7 @@ export class AppContainer extends Component {
 
         this.props.deleteMapping(params).then(data => {
             if (data.isSuccessful) {
-                this.props.getGridData(this.props.gridParams);
+                this.props.getGridData(this.props.gridParams, this.props.setGridParams);
                 toast.success(Labels.DeleteMappingSettingSuccessfully);
             } else {
                 if (data.errors && data.errors.length > 0) {
@@ -119,7 +119,8 @@ const mapStateToProps = state => {
         editMappingPopup,
         createMappingPopup,
         deleteMappingPopup,
-        jobInfo
+        jobInfo,
+        setGridParams
     } = state;
 
     return {
@@ -130,7 +131,8 @@ const mapStateToProps = state => {
         deleteMappingPopup,
         jobInfoFlag,
         getNotificationTypes,
-        jobInfo
+        jobInfo,
+        setGridParams
     };
 };
 

@@ -82,11 +82,21 @@ export const setGridData = data => {
     };
 };
 
-export const getGridData = params => {
+export const getGridData = (params, setParamsWhenDelete) => {
     const url = Site.resolveClientUrl('SettingConfiguration/GetMappings');
     return dispatch => {
         return axios.get(url, { params: params }).then(response => {
-            dispatch(setGridData(response.data));
+            if (response.data.data.length === 0 && params.pageIndex > 1) {
+                let preParams = params;
+                preParams.pageIndex = preParams.pageIndex - 1;
+                setParamsWhenDelete && setParamsWhenDelete(preParams);
+                axios.get(url, { params: preParams }).then(res => {
+                    dispatch(setGridData(res.data));
+                })
+            }
+            else {
+                dispatch(setGridData(response.data));
+            }
         }).catch(errorResponseHandler);
     };
 };

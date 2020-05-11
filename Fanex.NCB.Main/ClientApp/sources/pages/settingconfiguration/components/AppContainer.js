@@ -46,7 +46,7 @@ export class AppContainer extends Component {
     handleDeleteSettingType = () => {
         this.props.deleteSettingType(this.props.deleteSettingTypePopup.type).then(data => {
             if (data.isSuccessful) {
-                this.props.getGridData(this.props.gridParams);
+                this.props.getGridData(this.props.gridParams, this.props.setGridParams);
                 toast.success(Labels.DeleteMsgContentsTypeSuccessfully);
             } else {
                 if (data.errors && data.errors.length > 0) {
@@ -92,12 +92,13 @@ export class AppContainer extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { gridParams, editSettingTypePopup, createSettingTypePopup, deleteSettingTypePopup } = state;
+    const { gridParams, editSettingTypePopup, createSettingTypePopup, deleteSettingTypePopup, setGridParams } = state;
     return {
         gridParams,
         editSettingTypePopup,
         createSettingTypePopup,
         deleteSettingTypePopup,
+        setGridParams
     };
 };
 
