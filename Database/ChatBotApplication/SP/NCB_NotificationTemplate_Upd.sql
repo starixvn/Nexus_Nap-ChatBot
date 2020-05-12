@@ -152,7 +152,7 @@ NCB_NotificationTemplate_Upd:BEGIN
 		)
         AND EXISTS (
 			SELECT 1 FROM tmpParams 
-			WHERE LOCATE(Param, Content) = 0)
+			WHERE LOCATE(TRIM(Param), Content) = 0)
     )
 	THEN
 		SET errCode = 102, errMsg = 'Not allow to delete defined params';
