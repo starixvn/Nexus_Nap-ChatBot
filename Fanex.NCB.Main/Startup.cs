@@ -104,8 +104,8 @@
             var redisConfig = Configuration.GetSection("AuthSettings:RedisConfig").Value;
             var redis = ConnectionMultiplexer.Connect(redisConfig);
             services.AddDataProtection()
-                .SetApplicationName("CharBotForLicensee")
-                .PersistKeysToStackExchangeRedis(redis, "CharBotForLicensee-Keys");
+                .SetApplicationName("ChatBotForLicensee")
+                .PersistKeysToStackExchangeRedis(redis, "ChatBotForLicensee-Keys");
 
             services.AddStackExchangeRedisCache(options =>
             {
