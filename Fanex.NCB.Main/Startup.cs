@@ -107,11 +107,11 @@
                 .SetApplicationName("ChatBotForLicensee")
                 .PersistKeysToStackExchangeRedis(redis, "ChatBotForLicensee-Keys");
 
-            //services.AddStackExchangeRedisCache(options =>
-            //{
-            //    options.Configuration = redisConfig;
-            //    options.InstanceName = $"Fanex.NCB.Session-";
-            //});
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConfig;
+                options.InstanceName = $"Fanex.NCB.Session-";
+            });
 
             services.AddSession(options =>
             {
