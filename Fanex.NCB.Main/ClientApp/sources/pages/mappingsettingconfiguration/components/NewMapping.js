@@ -16,7 +16,6 @@ class NewMapping extends Component {
     componentDidMount = () => {
         this.props.setCreateMappingResult(null);
         this.props.getMsgContentsTypes();
-        this.props.setTemplates(null);
         this.props.setNotificationTypeRef(null)
         const formik = this.refs.form;
 
@@ -37,7 +36,6 @@ class NewMapping extends Component {
 
     handleNotificationTypeChange = event => {
         const formik = this.refs.form;
-        this.props.getTemplates(event.target.value);
         this.props.getNotificationTypeRef(event.target.value);
 
         formik.setValues({
@@ -239,10 +237,8 @@ class NewMapping extends Component {
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({
         createMapping: ActionCreators.createMapping,
-        getTemplates: ActionCreators.getTemplates,
         getMsgContentsTypes: ActionCreators.getMsgContentsTypes,
         getNotificationTypeRef: ActionCreators.getNotificationTypeRef,
-        setTemplates: ActionCreators.setTemplates,
         setNotificationTypeRef: ActionCreators.setNotificationTypeRef,
         setCreateMappingResult: ActionCreators.setCreateMappingResult
     }, dispatch);

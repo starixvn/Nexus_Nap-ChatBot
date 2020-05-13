@@ -220,23 +220,6 @@ export const getNotificationTypes = () => {
     };
 };
 
-// Notification Template
-export const setTemplates = data => {
-    return {
-        type: types.TEMPLATE_DATA,
-        data: data
-    };
-};
-
-export const getTemplates = notificationTypeId => {
-    const url = Site.resolveClientUrl('NewNotification/GetTemplates');
-    return (dispatch) => {
-        return axios.get(url, { params: { notificationTypeId } }).then(response => {
-            dispatch(setTemplates(response.data));
-        }).catch(errorResponseHandler);
-    };
-};
-
 // Msg Contents Type
 export const setMsgContentsTypes = data => {
     return {
@@ -292,8 +275,6 @@ const actions = {
     setJobInfoFlag,
     getNotificationTypes,
     setNotificationTypes,
-    getTemplates,
-    setTemplates,
     getMsgContentsTypes,
     setMsgContentsTypes,
     getNotificationTypeRef,

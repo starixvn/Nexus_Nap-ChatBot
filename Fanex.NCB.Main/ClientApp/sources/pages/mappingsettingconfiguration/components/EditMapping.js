@@ -21,6 +21,7 @@ class EditMapping extends Component {
         const { editMappingPopup } = this.props;
         
         if (editMappingPopup.mapping) {
+            this.props.getNotificationTypeRef(editMappingPopup.mapping.notificationTypeID);
             const formik = this.refs.form;
 
             formik.setValues({
@@ -132,7 +133,7 @@ class EditMapping extends Component {
                             onChange={this.handleTemplateChange}
                             value={values.notificationTemplateId}
                         >
-                            {this.props.notificationTypeRef && this.props.notificationTypeRef.templates.map(this.renderNotificationTemplateOption)}
+                            {this.props.notificationTypeRef && this.props.notificationTypeRef.templates && this.props.notificationTypeRef.templates.map(this.renderNotificationTemplateOption)}
                         </Input>
                         {touched.notificationTemplateId && errors.notificationTemplateId && <FormFeedback>{errors.notificationTemplateId}</FormFeedback>}
                     </div>
@@ -243,7 +244,6 @@ const mapDispatchToProps = dispatch => {
         editMapping: ActionCreators.editMapping,
         getMsgContentsTypes: ActionCreators.getMsgContentsTypes,
         getNotificationTypeRef: ActionCreators.getNotificationTypeRef,
-        setTemplates: ActionCreators.setTemplates,
         setNotificationTypeRef: ActionCreators.setNotificationTypeRef,
         setEditMappingResult: ActionCreators.setEditMappingResult
     }, dispatch);
