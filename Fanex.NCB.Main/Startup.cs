@@ -100,7 +100,7 @@
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            //var redisConfig = Configuration.GetSection("AuthSettings:RedisConfig").Value;
+            var redisConfig = Configuration.GetSection("AuthSettings:RedisConfig").Value;
             //var redis = ConnectionMultiplexer.Connect(redisConfig);
             //services.AddDataProtection()
             //    .SetApplicationName("ChatBotForLicensee")
