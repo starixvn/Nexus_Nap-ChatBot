@@ -1,11 +1,13 @@
 ﻿namespace Fanex.NCB.Services.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SettingConfiguration;
+    using Fanex.NCB.Models.Notification;
     using Fanex.NCB.Models.SettingConfiguration;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
@@ -232,9 +234,11 @@
             // Arrange
             var service = GetService();
             var notificationTypeId = _fixture.Create<int>();
-            var expectedResult = _fixture.Create<NotificationTypeData>();
             var criteria = new GetNotificationTypeDataCriteria();
-            baseService.GetDataEntityAsync<NotificationTypeData>(Arg.Do<GetNotificationTypeDataCriteria>(x => criteria = x)).Returns(expectedResult);
+            var tuple = _fixture.Create<ValueTuple<IEnumerable<NotificationTypeData>, IEnumerable<Template>>>();
+            var expectedResult = tuple.Item1.FirstOrDefault();
+            expectedResult.Templates = tuple.Item2;
+            baseService.FetchMultipleAsync<NotificationTypeData, Template>(Arg.Do<GetNotificationTypeDataCriteria>(x => criteria = x)).Returns(tuple);
 
             // Action
             var result = await service.GetNotificationTypeDataAsync(notificationTypeId);

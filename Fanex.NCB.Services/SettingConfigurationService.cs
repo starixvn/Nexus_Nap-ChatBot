@@ -5,11 +5,11 @@
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SettingConfiguration;
+    using Fanex.NCB.Models.Notification;
     using Fanex.NCB.Models.SettingConfiguration;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
-    using Fanex.NCB.Models.Notification;
 
     public class SettingConfigurationService : ISettingConfigurationService
     {
@@ -143,13 +143,17 @@
 
         public async Task<NotificationTypeData> GetNotificationTypeDataAsync(int notificationTypeId)
         {
+            NotificationTypeData data = null;
             var result = await baseService.FetchMultipleAsync<NotificationTypeData, Template>(new GetNotificationTypeDataCriteria
             {
                 NotificationTypeId = notificationTypeId
             });
 
-            var data = result.Item1.FirstOrDefault();
-            data.Templates = result.Item2;
+            if (result.Item1 != null)
+            {
+                data = result.Item1.FirstOrDefault();
+                data.Templates = result.Item2;
+            }
 
             return data;
         }
