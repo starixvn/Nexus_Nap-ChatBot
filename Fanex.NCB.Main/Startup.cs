@@ -22,7 +22,6 @@
     using Fanex.NCB.Shared.Middlewares;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Connections;
@@ -101,17 +100,17 @@
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            var redisConfig = Configuration.GetSection("AuthSettings:RedisConfig").Value;
-            var redis = ConnectionMultiplexer.Connect(redisConfig);
-            services.AddDataProtection()
-                .SetApplicationName("ChatBotForLicensee")
-                .PersistKeysToStackExchangeRedis(redis, "ChatBotForLicensee-Keys");
+            //var redisConfig = Configuration.GetSection("AuthSettings:RedisConfig").Value;
+            //var redis = ConnectionMultiplexer.Connect(redisConfig);
+            //services.AddDataProtection()
+            //    .SetApplicationName("ChatBotForLicensee")
+            //    .PersistKeysToStackExchangeRedis(redis, "ChatBotForLicensee-Keys");
 
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = redisConfig;
-                options.InstanceName = $"Fanex.NCB.Session-";
-            });
+            //services.AddStackExchangeRedisCache(options =>
+            //{
+            //    options.Configuration = redisConfig;
+            //    options.InstanceName = $"Fanex.NCB.Session-";
+            //});
 
             services.AddSession(options =>
             {
