@@ -125,7 +125,7 @@ class NewMapping extends Component {
                             value={values.notificationTemplateId}
                         >
                             <option value="" disabled hidden>{Labels.PleaseSelect}</option>
-                            {this.props.notificationTemplates && this.props.notificationTemplates.map(this.renderNotificationTemplateOption)}
+                            {this.props.notificationTypeRef && this.props.notificationTypeRef.templates.map(this.renderNotificationTemplateOption)}
                         </Input>
                         {touched.notificationTemplateId && errors.notificationTemplateId && <FormFeedback>{errors.notificationTemplateId}</FormFeedback>}
                     </div>
@@ -252,7 +252,6 @@ const mapStateToProps = state => {
     const {
         createMappingResult,
         notificationTypes,
-        notificationTemplates,
         msgContentsTypes,
         notificationTypeRef,
         jobInfo,
@@ -262,7 +261,6 @@ const mapStateToProps = state => {
     return {
         createMappingResult,
         notificationTypes,
-        notificationTemplates,
         msgContentsTypes,
         notificationTypeRef,
         jobInfo,

@@ -32,6 +32,14 @@ BEGIN
     SELECT 
         systemName AS SystemName
         ,recipientTypeNames AS RecipientTypeNames;
+
+	SELECT nt.NotificationTemplateId
+		,nt.NotificationTemplateName
+        ,nt.Title
+        ,nt.Content
+    FROM NotificationTemplate nt
+    WHERE nt.NotificationTypeID = notificationTypeId
+    ORDER BY nt.NotificationTemplateName;
 END;
 
 //

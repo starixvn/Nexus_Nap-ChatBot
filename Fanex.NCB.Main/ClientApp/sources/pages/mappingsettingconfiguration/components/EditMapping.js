@@ -21,7 +21,6 @@ class EditMapping extends Component {
         const { editMappingPopup } = this.props;
         
         if (editMappingPopup.mapping) {
-            this.props.getTemplates(editMappingPopup.mapping.notificationTypeID)
             const formik = this.refs.form;
 
             formik.setValues({
@@ -48,7 +47,6 @@ class EditMapping extends Component {
 
     handleNotificationTypeChange = event => {
         const formik = this.refs.form;
-        this.props.getTemplates(event.target.value);
         this.props.getNotificationTypeRef(event.target.value);
 
         formik.setValues({
@@ -134,7 +132,7 @@ class EditMapping extends Component {
                             onChange={this.handleTemplateChange}
                             value={values.notificationTemplateId}
                         >
-                            {this.props.notificationTemplates && this.props.notificationTemplates.map(this.renderNotificationTemplateOption)}
+                            {this.props.notificationTypeRef && this.props.notificationTypeRef.templates.map(this.renderNotificationTemplateOption)}
                         </Input>
                         {touched.notificationTemplateId && errors.notificationTemplateId && <FormFeedback>{errors.notificationTemplateId}</FormFeedback>}
                     </div>
@@ -243,7 +241,6 @@ class EditMapping extends Component {
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({
         editMapping: ActionCreators.editMapping,
-        getTemplates: ActionCreators.getTemplates,
         getMsgContentsTypes: ActionCreators.getMsgContentsTypes,
         getNotificationTypeRef: ActionCreators.getNotificationTypeRef,
         setTemplates: ActionCreators.setTemplates,
@@ -257,7 +254,6 @@ const mapStateToProps = state => {
         editMappingPopup,
         editMappingResult,
         notificationTypes,
-        notificationTemplates,
         msgContentsTypes,
         notificationTypeRef,
         jobInfo,
@@ -268,7 +264,6 @@ const mapStateToProps = state => {
         editMappingPopup,
         editMappingResult,
         notificationTypes,
-        notificationTemplates,
         msgContentsTypes,
         notificationTypeRef,
         jobInfo,

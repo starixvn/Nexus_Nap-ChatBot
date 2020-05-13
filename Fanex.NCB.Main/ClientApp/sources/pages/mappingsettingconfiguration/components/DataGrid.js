@@ -52,10 +52,7 @@ export class DataGrid extends Component {
     handleEditMapping = e => {
         const msgContentsType = parseInt(e.target.dataset.msgcontentstype, 10);
         this.props.getMapping(msgContentsType, this.props.jobInfo.id, data =>
-            this.props.setNotificationTypeRef({
-                systemName: data.systemName,
-                recipientTypeNames: data.recipientTypeNames
-            })
+            this.props.setNotificationTypeRef(data)
         );
     }
 

@@ -9,6 +9,7 @@
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Fanex.NCB.Models.Notification;
 
     public class SettingConfigurationService : ISettingConfigurationService
     {
@@ -142,12 +143,15 @@
 
         public async Task<NotificationTypeData> GetNotificationTypeDataAsync(int notificationTypeId)
         {
-            var result = await baseService.GetDataEntityAsync<NotificationTypeData>(new GetNotificationTypeDataCriteria
+            var result = await baseService.FetchMultipleAsync<NotificationTypeData, Template>(new GetNotificationTypeDataCriteria
             {
                 NotificationTypeId = notificationTypeId
             });
 
-            return result;
+            var data = result.Item1.FirstOrDefault();
+            data.Templates = result.Item2;
+
+            return data;
         }
 
         public async Task<CommandResult> CreateMappingAsync(CreateMapping model)
