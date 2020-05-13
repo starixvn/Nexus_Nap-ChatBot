@@ -108,11 +108,11 @@
                 .PersistKeysToStackExchangeRedis(redis, "ChatBotForLicensee-Keys")
                 .ProtectKeysWithDpapiNG();
 
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = redisConfig;
-                options.InstanceName = $"Fanex.NCB.Session-";
-            });
+            //services.AddStackExchangeRedisCache(options =>
+            //{
+            //    options.Configuration = redisConfig;
+            //    options.InstanceName = $"Fanex.NCB.Session-";
+            //});
 
             services.AddSession(options =>
             {
