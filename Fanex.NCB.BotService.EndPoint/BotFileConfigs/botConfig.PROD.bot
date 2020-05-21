@@ -4,7 +4,7 @@
   "services": [
     {
       "type": "endpoint",
-      "name": "ONEBook",
+      "name": "SABASports",
       "endpoint": "https://licbot.starixsoft.com/api/messages",
       "appId": "e63aedd7-660c-46ca-8637-1df5fb133f96",
       "appPassword": "Lrb@U45PXP4F=3t:kAyjLdoBNqnlCQr-",
@@ -12,7 +12,7 @@
     },
     {
       "type": "endpoint",
-      "name": "OW",
+      "name": "SABA",
       "endpoint": "https://licbot.starixsoft.com/api/messages",
       "appId": "6de2b90e-03b5-4bf7-9268-6cec3ed6f87b",
       "appPassword": ":DQdaPNlj2n1]dx[R4YkTjsNq?cYDd3Z",

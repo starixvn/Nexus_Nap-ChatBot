@@ -4,7 +4,7 @@
   "services": [
     {
       "type": "endpoint",
-      "name": "1on1notify_Local",
+      "name": "SABASports_Local",
       "endpoint": "https://licbot.nexdev.net/api/messages",
       "appId": "826950ba-ae02-4978-960d-f8edcaf8c050",
       "appPassword": "cY@/VrBJmUGT/1oy:oRbOo5zxlhpCK17",
@@ -12,7 +12,7 @@
     },
     {
       "type": "endpoint",
-      "name": "OWnotify_Local",
+      "name": "SABA_Local",
       "endpoint": "https://licbot.nexdev.net/api/messages",
       "appId": "bfe9dd48-8d08-4714-9fe2-e028ea80ca5f",
       "appPassword": "aEUcvdsU4g]rKcnG40F4nabO-blPXQ?@",
