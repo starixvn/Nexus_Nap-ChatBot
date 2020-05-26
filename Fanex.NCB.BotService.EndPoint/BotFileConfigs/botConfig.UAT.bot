@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "Fanex.NCB.BotService",
   "description": "",
   "services": [
@@ -17,6 +17,14 @@
       "appId": "efd1cd73-a9a2-4c54-818c-1fa2ef6b8c78",
       "appPassword": "?8Ti3CSQ1BSi4XwJNNWHAmI+gLmdcM?[",
       "id": "2"
+    },
+    {
+      "type": "endpoint",
+      "name": "沙巴体育 公告 / Saba Sports Announcement_UAT",
+      "endpoint": "https://licbot-api.starific.net/api/messages",
+      "appId": "023ce7c5-1ef3-4653-ae7a-1ce4114ef4bb",
+      "appPassword": "Gu99TpHWo~c_07Eh74Z~aCWh8S~tyx.Rs~",
+      "id": "3"
     }
   ],
   "padlock": "",
