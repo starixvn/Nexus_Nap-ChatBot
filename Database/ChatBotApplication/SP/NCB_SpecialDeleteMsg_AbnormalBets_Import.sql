@@ -19,6 +19,8 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalBets
 
     Revisions :
       - 20200214@Percy: Initiliaze SP [RedmineID: #127944]
+      - 2020603@Oliver: Add MaxMessageID param [RedmineID: #135312]
+
   */
 )
 SQL SECURITY DEFINER
