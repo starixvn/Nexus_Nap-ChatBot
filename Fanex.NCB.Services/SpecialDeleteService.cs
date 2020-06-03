@@ -137,18 +137,27 @@
 
                 if (systemSettings != null)
                 {
-                    var result = await GetAbnormalBetsMessages(systemSettings);
-                    var abnormalBetMsgs = await GetAbnormalBetMessage(string.Join(",", result.Select(m => m.MessageID)));
-
-                    foreach (var msg in abnormalBetMsgs)
+                    var messages = await GetAbnormalBetsMessages(systemSettings);
+                    if (messages.Any())
                     {
-                        msg.Content_en = result.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_en.Trim().Replace("@@", string.Empty);
-                        msg.Content_cs = result.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_cs.Trim().Replace("@@", string.Empty);
-                        msg.MsgContentsType = result.FirstOrDefault(m => m.MessageID == msg.MessageID) != null ? result.FirstOrDefault(m => m.MessageID == msg.MessageID).MsgContentsType : 0;
-                    }
+                        var abnormalBetMsgs = await GetVoidingHistory(string.Join(",", messages.Select(m => m.MessageID)));
 
-                    await ImportAbnormalBetNotificationToChatbotDB(abnormalBetMsgs);
+                        MappingAbnormalBetsData(messages, abnormalBetMsgs);
+
+                        int maxMsgId = messages.Max(m => m.MessageID);
+                        await ImportAbnormalBetNotificationToChatbotDB(abnormalBetMsgs, maxMsgId);
+                    }
                 }
+            }
+        }
+
+        private static void MappingAbnormalBetsData(IEnumerable<Message> messages, IEnumerable<AbnormalBetsMessage> abnormalBetsMsgs)
+        {
+            foreach (var msg in abnormalBetsMsgs)
+            {
+                msg.Content_en = messages.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_en.Trim().Replace("@@", string.Empty);
+                msg.Content_cs = messages.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_cs.Trim().Replace("@@", string.Empty);
+                msg.MsgContentsType = messages.FirstOrDefault(m => m.MessageID == msg.MessageID) != null ? messages.FirstOrDefault(m => m.MessageID == msg.MessageID).MsgContentsType : 0;
             }
         }
 
@@ -171,7 +180,7 @@
             return await baseService.GetDataAsync<Message>(criteria);
         }
 
-        private async Task<IEnumerable<AbnormalBetsMessage>> GetAbnormalBetMessage(string msgIds)
+        private async Task<IEnumerable<AbnormalBetsMessage>> GetVoidingHistory(string msgIds)
         {
             if (!string.IsNullOrWhiteSpace(msgIds))
             {
@@ -186,27 +195,24 @@
             return new List<AbnormalBetsMessage>();
         }
 
-        private async Task ImportAbnormalBetNotificationToChatbotDB(IEnumerable<AbnormalBetsMessage> messages)
+        private async Task ImportAbnormalBetNotificationToChatbotDB(IEnumerable<AbnormalBetsMessage> messages, int maxMessageId)
         {
-            if (messages.Any())
+            var criteria = new ImportAbnormalBetsMessageCriteria
             {
-                var criteria = new ImportAbnormalBetsMessageCriteria
-                {
-                    MessageHeader = JsonConvert.SerializeObject(messages,
-                    new JsonSerializerSettings { DateFormatString = DateTimeFormat })
-                };
+                MessageHeader = JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
+                MaxMessageId = maxMessageId
+            };
 
-                var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
+            var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
 
-                var notification = chatbotService.GenerateNotifificationMessage(data.Item2, data.Item1);
-                var command = new CommandResult
-                {
-                    Code = criteria.ErrCode,
-                    Message = criteria.ErrMsg
-                };
+            var notification = chatbotService.GenerateNotifificationMessage(data.Item2, data.Item1);
+            var command = new CommandResult
+            {
+                Code = criteria.ErrCode,
+                Message = criteria.ErrMsg
+            };
 
-                await OnAfterImportData(command, notification);
-            }
+            await OnAfterImportData(command, notification);
         }
 
         private void PushInsertedNotifications(string notificationIds)

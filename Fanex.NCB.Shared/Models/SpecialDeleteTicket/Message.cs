@@ -2,7 +2,7 @@
 {
     public class Message
     {
-        public long MessageID { get; set; }
+        public int MessageID { get; set; }
 
         public int MsgContentsType { get; set; }
 

@@ -6,6 +6,8 @@
     {
         public string MessageHeader { get; set; }
 
+        public int MaxMessageId { get; set; }
+
         public int ErrCode { get; set; }
 
         public string ErrMsg { get; set; }

@@ -3,6 +3,7 @@ DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalBets_Import(
   IN messageHeader JSON,
+  IN maxMessageId INT,
   OUT errCode INT,
   OUT errMsg VARCHAR(200)
 
@@ -125,6 +126,14 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     
     SET iLoop := iLoop + 1;
     END WHILE;
+
+  IF NOT EXISTS (SELECT 1 FROM tmp_MsgHeader) THEN
+    UPDATE SystemSetting
+		SET Value = maxMessageId
+		WHERE ID = 8;
+
+    LEAVE NCB_SpecialDeleteMsg_AbnormalBets_Import;
+  END IF;
 
   #Update Content_Detail
   UPDATE tmp_MsgHeader
