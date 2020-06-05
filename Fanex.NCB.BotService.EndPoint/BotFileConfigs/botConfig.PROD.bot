@@ -20,7 +20,7 @@
     },
     {
       "type": "endpoint",
-      "name": "沙巴体育 公告 / Saba Sports Announcement",
+      "name": "沙巴体育公告 / Saba Sports Announcement",
       "endpoint": "https://licbot.starixsoft.com/api/messages",
       "appId": "3eb816dc-4b12-4614-a539-3a789b37a456",
       "appPassword": "6c06ENM.MaWI.AwG3Bk3PRwji0nS.-nKS4",
