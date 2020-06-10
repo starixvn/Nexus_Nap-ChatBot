@@ -3,7 +3,6 @@ DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalBets_Import(
   IN messageHeader JSON,
-  IN maxMessageId INT,
   OUT errCode INT,
   OUT errMsg VARCHAR(200)
 
@@ -20,7 +19,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalBets
     Revisions :
       - 20200214@Percy: Initiliaze SP [RedmineID: #127944]
       - 2020603@Oliver: Add MaxMessageID param [RedmineID: #135312]
-
+      - 2020610@Oliver: remove MaxMessageID [RedmineID: #135686]
   */
 )
 SQL SECURITY DEFINER
@@ -129,13 +128,6 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     SET iLoop := iLoop + 1;
     END WHILE;
 
-  IF NOT EXISTS (SELECT 1 FROM tmp_MsgHeader) THEN
-    UPDATE SystemSetting
-		SET Value = maxMessageId
-		WHERE ID = 8;
-
-    LEAVE NCB_SpecialDeleteMsg_AbnormalBets_Import;
-  END IF;
 
   #Update Content_Detail
   UPDATE tmp_MsgHeader
