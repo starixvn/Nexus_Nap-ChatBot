@@ -140,24 +140,27 @@
                     var messages = await GetAbnormalBetsMessages(systemSettings);
                     if (messages.Any())
                     {
-                        var abnormalBetMsgs = await GetVoidingHistory(string.Join(",", messages.Select(m => m.MessageID)));
+                        var voidingHistories = await GetVoidingHistory(string.Join(",", messages.Select(m => m.MessageID)));
 
-                        MappingAbnormalBetsData(messages, abnormalBetMsgs);
+                        MappingAbnormalBetsData(messages, voidingHistories);
 
                         int maxMsgId = messages.Max(m => m.MessageID);
-                        await ImportAbnormalBetNotificationToChatbotDB(abnormalBetMsgs, maxMsgId);
+                        await ImportAbnormalBetNotificationToChatbotDB(voidingHistories, maxMsgId);
                     }
                 }
             }
         }
 
-        private static void MappingAbnormalBetsData(IEnumerable<Message> messages, IEnumerable<AbnormalBetsMessage> abnormalBetsMsgs)
+        private static void MappingAbnormalBetsData(IEnumerable<Message> messages, IEnumerable<AbnormalBetsMessage> voidingHistories)
         {
-            foreach (var msg in abnormalBetsMsgs)
+            if (voidingHistories.Any())
             {
-                msg.Content_en = messages.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_en.Trim().Replace("@@", string.Empty);
-                msg.Content_cs = messages.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_cs.Trim().Replace("@@", string.Empty);
-                msg.MsgContentsType = messages.FirstOrDefault(m => m.MessageID == msg.MessageID) != null ? messages.FirstOrDefault(m => m.MessageID == msg.MessageID).MsgContentsType : 0;
+                foreach (var msg in voidingHistories)
+                {
+                    msg.Content_en = messages.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_en.Trim().Replace("@@", string.Empty);
+                    msg.Content_cs = messages.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_cs.Trim().Replace("@@", string.Empty);
+                    msg.MsgContentsType = messages.FirstOrDefault(m => m.MessageID == msg.MessageID) != null ? messages.FirstOrDefault(m => m.MessageID == msg.MessageID).MsgContentsType : 0;
+                }
             }
         }
 
@@ -197,22 +200,25 @@
 
         private async Task ImportAbnormalBetNotificationToChatbotDB(IEnumerable<AbnormalBetsMessage> messages, int maxMessageId)
         {
-            var criteria = new ImportAbnormalBetsMessageCriteria
+            if (messages.Any())
             {
-                MessageHeader = JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
-                MaxMessageId = maxMessageId
-            };
+                var criteria = new ImportAbnormalBetsMessageCriteria
+                {
+                    MessageHeader = JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
+                    MaxMessageId = maxMessageId
+                };
 
-            var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
+                var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
 
-            var notification = chatbotService.GenerateNotifificationMessage(data.Item2, data.Item1);
-            var command = new CommandResult
-            {
-                Code = criteria.ErrCode,
-                Message = criteria.ErrMsg
-            };
+                var notification = chatbotService.GenerateNotifificationMessage(data.Item2, data.Item1);
+                var command = new CommandResult
+                {
+                    Code = criteria.ErrCode,
+                    Message = criteria.ErrMsg
+                };
 
-            await OnAfterImportData(command, notification);
+                await OnAfterImportData(command, notification);
+            }
         }
 
         private void PushInsertedNotifications(string notificationIds)
