@@ -12,6 +12,7 @@ AS
 
 	Revisions:
 		- 20200214@Percy: Initialize SP [RedmineID: #127944]
+		- 20200610@Percy: Exclude message void by BetId [RedmineID: #135686]
 */
 
 BEGIN
@@ -36,6 +37,7 @@ BEGIN
 		AND EXISTS (SELECT 1 FROM #MsgContentsTypeLst mct WHERE m.MsgContentsType = mct.MsgContentsType)
 		AND m.isbatch = 1
 		AND m.Content_en LIKE '%@@%'
+		AND m.matchid > 0
 	ORDER BY m.MessageId
 	OPTION(RECOMPILE)
 
