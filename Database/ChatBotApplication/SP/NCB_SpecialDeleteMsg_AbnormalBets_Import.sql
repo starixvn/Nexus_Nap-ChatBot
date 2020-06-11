@@ -3,6 +3,7 @@ DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalBets_Import(
   IN messageHeader JSON,
+  IN maxMessageID INT,
   OUT errCode INT,
   OUT errMsg VARCHAR(200)
 
