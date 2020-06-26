@@ -13,6 +13,7 @@
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.SiteMessage;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
+    using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
@@ -44,6 +45,7 @@
                 if (systemSettings != null)
                 {
                     var messages = await GetDataFromSiteMessage(systemSettings);
+                    Writelog(messages.Item2);
                     var matchInfo = await GetMatchInfo(string.Join(",", messages.Item1.Where(m => m.MatchId > 0).Select(m => m.MatchId)));
 
                     MappingData(messages.Item1, matchInfo);
@@ -55,6 +57,15 @@
                     }
                 }
             }
+        }
+
+        private void Writelog(IEnumerable<SiteMessageDetail> data)
+        {
+            Task.Run(() => WriteLogToFile.Writelog(new
+            {
+                Data = data,
+                Count = data.Count()
+            }, "Site Message details"));
         }
 
         private async Task<ValueTuple<CommandResult, IEnumerable<NotificationMessage>>> ImportMessageToChatbotDB(IEnumerable<SiteMessageModel> messages, IEnumerable<SiteMessageDetail> messageDetails)
