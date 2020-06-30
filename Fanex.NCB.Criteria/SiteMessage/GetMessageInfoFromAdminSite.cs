@@ -10,6 +10,8 @@
 
         public string MsgContentsTypeLst { get; set; }
 
+        public string Environment { get; set; } = "UAT";
+
         public override string GetSettingKey() => "NAP_Chatbot_SiteMesssage_Sel";
 
         public override bool IsValid() => MessageID > 0 &&
