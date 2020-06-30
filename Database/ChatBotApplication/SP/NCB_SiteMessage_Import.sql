@@ -1,3 +1,4 @@
+USE ChatBot;
 DROP PROCEDURE IF EXISTS NCB_SiteMessage_Import;
 DELIMITER //
 
@@ -13,9 +14,9 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SiteMessage_Import(
     Params    :
       - @MessageHeader
 							[  
-								{ "MessageID":1234, "MsgContentsType":1, "Content_en":"abc", "Content_cs":"xyz", "MatchID":123, "IsTest":1, "SportType":1, "KickOffTime":"2020-03-03 23:59:59", "SportNameEN":"abc", "SportNameCS":"xyz", "LeagueNameEN":"abc", "LeagueNameCS":"xyz", "HomeNameEN":"abc", "HomeNameCS":"xyz", "AwayNameEN":"abc", "AwayNameCS":"xyz" }
-								, { "MessageID":1235, "MsgContentsType":2, "Content_en":"abc", "Content_cs":"xyz", "MatchID":124, "IsTest":0, "SportType":2, "KickOffTime":"2020-03-03 23:59:59", "SportNameEN":"abc", "SportNameCS":"xyz", "LeagueNameEN":"abc", "LeagueNameCS":"xyz", "HomeNameEN":"abc", "HomeNameCS":"xyz", "AwayNameEN":"abc", "AwayNameCS":"xyz" }
-                , { "MessageID":1236, "MsgContentsType":3, "Content_en":"abc", "Content_cs":"xyz" }
+								{ "MessageID":1234, "MsgContentsType":1, "Content_en":"abc", "Content_cs":"xyz", "MatchID":123, "IsTest":1, "SportType":1, "KickOffTime":"2020-03-03 23:59:59", "SportNameEN":"abc", "SportNameCS":"xyz", "LeagueNameEN":"abc", "LeagueNameCS":"xyz", "HomeNameEN":"abc", "HomeNameCS":"xyz", "AwayNameEN":"abc", "AwayNameCS":"xyz", "PostTime":"2020-06-30 10:00:51", "IsNew":0 }
+								, { "MessageID":1235, "MsgContentsType":2, "Content_en":"abc", "Content_cs":"xyz", "MatchID":124, "IsTest":0, "SportType":2, "KickOffTime":"2020-03-03 23:59:59", "SportNameEN":"abc", "SportNameCS":"xyz", "LeagueNameEN":"abc", "LeagueNameCS":"xyz", "HomeNameEN":"abc", "HomeNameCS":"xyz", "AwayNameEN":"abc", "AwayNameCS":"xyz", "PostTime":"2020-06-30 10:00:51", "IsNew":1 }
+								, { "MessageID":1236, "MsgContentsType":3, "Content_en":"abc", "Content_cs":"xyz", "PostTime":"2020-06-30 10:00:51", "IsNew":1 }
 							]
       - @MessageDetail
 							[  
@@ -27,6 +28,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SiteMessage_Import(
     Revisions :
       - 20200305@Percy: Initiliaze SP [RedmineID: #126143]
       - 20200327@Percy: Just send notification to active licensees [RedmineID: #131240]
+      - 20200630@Percy: Remove sent recipients for rescan messages [RedmineID: #136492]
   */
 )
 SQL SECURITY DEFINER
@@ -46,6 +48,7 @@ NCB_SiteMessage_Import:BEGIN
   DECLARE ccIsTest TINYINT;
   DECLARE ccMatchID INT;
   DECLARE ccMsgContentsType INT;
+  DECLARE ccIsNew TINYINT;
 
   # Constants
 	DECLARE ACTION_ID INT DEFAULT 20;
@@ -93,6 +96,8 @@ NCB_SiteMessage_Import:BEGIN
     AwayNameCS TEXT,
     Content_en TEXT,
     Content_cs TEXT,
+    PostTime TEXT,
+    IsNew TINYINT,
     CheckMsg TEXT,
     CheckMsgDetail TEXT,
     PRIMARY KEY (Id),
@@ -119,6 +124,7 @@ NCB_SiteMessage_Import:BEGIN
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].AwayNameCS'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_en'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_cs'))),
+        JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].IsNew')),
         ''
       );
     
@@ -352,8 +358,16 @@ NCB_SiteMessage_Import:BEGIN
   SET iLoop = 1;
   SET createdDate = UTC_TIMESTAMP();
   WHILE (EXISTS (SELECT 1 FROM tmp_MsgHeader WHERE Id = iLoop)) DO
-    SELECT MessageID, IsTest, MatchID, MsgContentsType INTO ccMessageID, ccIsTest, ccMatchID, ccMsgContentsType FROM tmp_MsgHeader WHERE Id = iLoop;
-
+    SELECT MessageID, IsTest, MatchID, MsgContentsType, IsNew INTO ccMessageID, ccIsTest, ccMatchID, ccMsgContentsType, ccIsNew FROM tmp_MsgHeader WHERE Id = iLoop;
+    
+    IF ccIsNew = 0 THEN
+		DELETE t
+        FROM tmp_NotificationRecipientList t
+			INNER JOIN NotificationSystemMsg nsm ON t.MessageID = tnrl.MessageID
+            INNER JOIN NotificationRecipientList nrl ON nsm.NotificationID = nrl.NotificationID
+		WHERE t.RecipientID = nrl.RecipientID;
+		END IF;
+        
     IF EXISTS (SELECT 1 FROM tmp_NotificationRecipientList WHERE MessageID = ccMessageID AND LicenseeStatusID = ACTIVE_LICENSEE_STATUS) THEN
       # Insert Notification
       INSERT INTO Notification(NotificationTypeID, Title, Content, ConfigSendTime, SendImmediately, CreatorID, CreatedDate, Status, StatusID)
@@ -431,6 +445,11 @@ NCB_SiteMessage_Import:BEGIN
 		SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
 		WHERE ID = 13;
         
+	#Update Last PostTime
+    UPDATE SystemSetting
+		SET Value = (SELECT MAX(STR_TO_DATE(PostTime, '')) FROM tmp_MsgHeader)
+        WHERE ID = 16;
+        
   #Update flag to 'Done'
   UPDATE SystemSetting
     SET Value = VALUE_DONE
@@ -460,7 +479,7 @@ NCB_SiteMessage_Import:BEGIN
   SET duration = TIMESTAMPDIFF(MICROSECOND, startTime, finishTime) / 1000; 	#miliseconds
 		
   #Get Log Content, JSON format
-  SET logContent = JSON_OBJECT('MessageHeader - SiteMessage', messageHeader);
+  SET logContent = JSON_OBJECT('SiteMessage - MessageHeader', messageHeader, ' - MessageDetail', messageDetail);
 						
   #Write User Log
   IF EXISTS (SELECT 1 FROM tmp_MsgHeader) THEN
