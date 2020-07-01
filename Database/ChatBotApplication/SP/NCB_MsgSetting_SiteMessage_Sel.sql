@@ -21,7 +21,7 @@ BEGIN
   DECLARE previousMaxMsgID INT;
   DECLARE templateContentType JSON;
   DECLARE msgContentTypeLst TEXT;
-  DECLARE postTime DATETIME;
+  DECLARE lastPostTime DATETIME;
   
   # Get setting  
   SELECT Value INTO batchSize
@@ -36,7 +36,7 @@ BEGIN
     FROM SystemSetting ss
     WHERE ss.ID = 14;
     
-	SELECT Value INTO postTime
+	SELECT Value INTO lastPostTime
 	FROM SystemSetting
     WHERE ID = 16;
 
@@ -58,7 +58,7 @@ BEGIN
   SELECT GROUP_CONCAT(MsgContentType ORDER BY MsgContentType SEPARATOR ',') INTO msgContentTypeLst
     FROM tmp_MsgContentType;
 
-  SELECT previousMaxMsgID AS MaxMessageID, batchSize AS BatchSize, msgContentTypeLst AS MsgContentsTypeLst, postTime;
+  SELECT previousMaxMsgID AS MaxMessageID, batchSize AS BatchSize, msgContentTypeLst AS MsgContentsTypeLst, lastPostTime AS LastPostTime;
 END;
 
 //

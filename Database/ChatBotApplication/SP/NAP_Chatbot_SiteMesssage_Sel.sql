@@ -74,6 +74,13 @@ BEGIN
 		)
 	ORDER BY m.MessageId
 
+	DELETE m
+	FROM (
+		SELECT MessageId, IsNew, ROW_NUMBER() OVER(PARTITION BY MessageId ORDER BY IsNew) AS RN
+		FROM @Msg
+	) m
+	WHERE m.RN > 1
+
 	SELECT MessageId, MsgContentsType, MatchId, Content_en, Content_cs, PostTime, IsNew
 	FROM @Msg
 	ORDER BY MessageId

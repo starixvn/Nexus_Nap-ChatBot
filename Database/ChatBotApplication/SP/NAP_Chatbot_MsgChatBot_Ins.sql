@@ -33,7 +33,7 @@ BEGIN
 		SELECT
 			t.c.value('@MessageID', 'INT') AS MessageID
 			,t.c.value('@TargetID', 'INT') AS TargetID
-			,0 AS IsInsert
+			,1 AS IsInsert
 		FROM @MessageIDLst.nodes('root/r') AS t(c)
 		OPTION (OPTIMIZE FOR (@MessageIDLst = NULL))
 		
@@ -64,6 +64,11 @@ BEGIN
 		SELECT MessageId, TargetId, @JobIdentify
 		FROM @MsgChatBot
 		WHERE IsInsert = 1
+
+		-- delete old msg
+		DELETE dbo.MsgChatBot WITH (ROWLOCK, UPDLOCK)
+		WHERE IsFinished = 1
+			AND CheckInTime < DATEADD(MONTH, -1, GETDATE())
 	END TRY
 	BEGIN CATCH
 		SELECT @ErrCode = ERROR_NUMBER(), @ErrMsg = ERROR_MESSAGE()

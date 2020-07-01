@@ -38,9 +38,10 @@ NCB_SiteMessage_Import:BEGIN
   DECLARE startTime DATETIME(3);
   DECLARE finishTime DATETIME(3);
   DECLARE duration INT;
-  DECLARE logContent TEXT CHARACTER SET utf8mb4;
+  DECLARE logContent MEDIUMTEXT CHARACTER SET utf8mb4;
   DECLARE templateNotifcationType JSON;
   DECLARE ccConversationGroupID INT;
+  DECLARE lastPostTime DATETIME;
 
   DECLARE createdDate DATETIME(3);
   DECLARE ccMessageID INT;
@@ -106,7 +107,7 @@ NCB_SiteMessage_Import:BEGIN
 
   SET iLoop = 0;
   WHILE (JSON_EXTRACT(messageHeader, CONCAT('$[',iLoop, '].MessageID')) IS NOT NULL) DO
-		INSERT INTO tmp_MsgHeader(MessageID, MsgContentsType, MatchID, IsTest, SportType, KickOffTime, LeagueNameEN, LeagueNameCS, SportNameEN, SportNameCS, HomeNameEN, HomeNameCS, AwayNameEN, AwayNameCS, Content_en, Content_cs, CheckMsg)
+		INSERT INTO tmp_MsgHeader(MessageID, MsgContentsType, MatchID, IsTest, SportType, KickOffTime, LeagueNameEN, LeagueNameCS, SportNameEN, SportNameCS, HomeNameEN, HomeNameCS, AwayNameEN, AwayNameCS, Content_en, Content_cs, PostTime, IsNew, CheckMsg)
       VALUES (
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MessageID'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MsgContentsType'))),
@@ -124,6 +125,7 @@ NCB_SiteMessage_Import:BEGIN
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].AwayNameCS'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_en'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_cs'))),
+        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].PostTime'))),
         JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].IsNew')),
         ''
       );
@@ -363,7 +365,7 @@ NCB_SiteMessage_Import:BEGIN
     IF ccIsNew = 0 THEN
 		DELETE t
         FROM tmp_NotificationRecipientList t
-			INNER JOIN NotificationSystemMsg nsm ON t.MessageID = tnrl.MessageID
+			INNER JOIN NotificationSystemMsg nsm ON t.MessageID = nsm.MessageID
             INNER JOIN NotificationRecipientList nrl ON nsm.NotificationID = nrl.NotificationID
 		WHERE t.RecipientID = nrl.RecipientID;
 		END IF;
@@ -446,9 +448,13 @@ NCB_SiteMessage_Import:BEGIN
 		WHERE ID = 13;
         
 	#Update Last PostTime
+    /*
+    SELECT MAX(CAST(PostTime AS DATETIME)) INTO lastPostTime FROM tmp_MsgHeader;
+    
     UPDATE SystemSetting
-		SET Value = (SELECT MAX(STR_TO_DATE(PostTime, '')) FROM tmp_MsgHeader)
+		SET Value = lastPostTime
         WHERE ID = 16;
+        */
         
   #Update flag to 'Done'
   UPDATE SystemSetting
