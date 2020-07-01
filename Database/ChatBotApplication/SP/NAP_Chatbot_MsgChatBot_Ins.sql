@@ -1,7 +1,8 @@
 /*<info serverAlias="DBMSG-bodb_Message" executers="bodbAdminNet" isFunction="0" isNested="0"></info>*/
-CREATE PROCEDURE [dbo].[NAP_Chatbot_MsgChatBot_Ins]
+ALTER PROCEDURE [dbo].[NAP_Chatbot_MsgChatBot_Ins]
 	@MessageIDLst	XML
-	,@Environment	VARCHAR(50)
+	,@Environment	VARCHAR(50) = 'UAT'
+	,@JobIdentify	TINYINT = 0
 	,@ErrCode		INT = 0 OUTPUT
 	,@ErrMsg		NVARCHAR(2000) = '' OUTPUT
 AS
@@ -40,6 +41,7 @@ BEGIN
 		SET m.IsInsert = 0
 		FROM @MsgChatBot m
 			INNER JOIN dbo.MsgChatBot mc WITH (NOLOCK) ON m.MessageId = mc.MessageId AND m.TargetId = mc.TargetId
+		WHERE mc.JobIdentify = @JobIdentify
 
 		-- update exists msg
 		IF @Environment = 'UAT'
@@ -48,16 +50,18 @@ BEGIN
 			FROM dbo.MsgChatBot mc
 				INNER JOIN @MsgChatBot m ON mc.MessageId = m.MessageId AND mc.TargetId = m.TargetId
 			WHERE mc.IsFinished = 0
+				AND mc.JobIdentify = @JobIdentify
 		ELSE IF @Environment IN ('Local', 'Production')
 			UPDATE mc WITH (ROWLOCK)
 			SET mc.IsFinished_UAT = 1, mc.FinishedTime_UAT = GETDATE()
 			FROM dbo.MsgChatBot mc
 				INNER JOIN @MsgChatBot m ON mc.MessageId = m.MessageId AND mc.TargetId = m.TargetId
 			WHERE mc.IsFinished_UAT = 0
+				AND mc.JobIdentify = @JobIdentify
 
 		-- insert new msg
-		INSERT INTO dbo.MsgChatBot (MessageId, TargetId)
-		SELECT MessageId, TargetId
+		INSERT INTO dbo.MsgChatBot (MessageId, TargetId, JobIdentify)
+		SELECT MessageId, TargetId, @JobIdentify
 		FROM @MsgChatBot
 		WHERE IsInsert = 1
 	END TRY

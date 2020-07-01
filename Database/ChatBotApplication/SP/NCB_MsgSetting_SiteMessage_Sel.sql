@@ -1,3 +1,4 @@
+USE ChatBot;
 DROP PROCEDURE IF EXISTS NCB_MsgSetting_SiteMessage_Sel;
 DELIMITER //
 
@@ -9,6 +10,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_MsgSetting_SiteMessage_Sel(
 
     Revisions :
       - 20200305@Percy: Initiliaze SP [RedmineID: #126143]
+      - 20200630@Percy: Add more setting PostTime [RedmineID: #136492]
   */
 )
 SQL SECURITY DEFINER
@@ -19,6 +21,7 @@ BEGIN
   DECLARE previousMaxMsgID INT;
   DECLARE templateContentType JSON;
   DECLARE msgContentTypeLst TEXT;
+  DECLARE postTime DATETIME;
   
   # Get setting  
   SELECT Value INTO batchSize
@@ -32,6 +35,10 @@ BEGIN
 	SELECT ss.Value INTO templateContentType
     FROM SystemSetting ss
     WHERE ss.ID = 14;
+    
+	SELECT Value INTO postTime
+	FROM SystemSetting
+    WHERE ID = 16;
 
   DROP TEMPORARY TABLE IF EXISTS tmp_MsgContentType;
   CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgContentType(
@@ -51,7 +58,7 @@ BEGIN
   SELECT GROUP_CONCAT(MsgContentType ORDER BY MsgContentType SEPARATOR ',') INTO msgContentTypeLst
     FROM tmp_MsgContentType;
 
-  SELECT previousMaxMsgID AS MaxMessageID, batchSize AS BatchSize, msgContentTypeLst AS MsgContentsTypeLst;
+  SELECT previousMaxMsgID AS MaxMessageID, batchSize AS BatchSize, msgContentTypeLst AS MsgContentsTypeLst, postTime;
 END;
 
 //

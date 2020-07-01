@@ -65,6 +65,7 @@ BEGIN
 			FROM dbo.MsgChatBot mc WITH (NOLOCK)
 				INNER JOIN dbo.MsgTarget mt WITH (NOLOCK) ON mc.MessageId = mt.MessageId AND mc.TargetId = mt.TargetId
 			WHERE mt.MessageId = m.MessageId
+				AND mc.JobIdentify = 3
 				AND 1 = CASE
 						WHEN @Environment = 'Local' AND mc.IsFinished = 0 THEN 1
 						WHEN @Environment = 'UAT' AND mc.IsFinished_UAT = 0 THEN 1
@@ -77,7 +78,7 @@ BEGIN
 	FROM @Msg
 	ORDER BY MessageId
 
-	SELECT mt.MessageId, ms.SiteName
+	SELECT mt.MessageId, mt.TargetId, ms.SiteName
 	FROM dbo.MsgTarget mt WITH (NOLOCK)
 		INNER JOIN @Msg m ON mt.MessageId = m.MessageId
 		INNER JOIN dbo.MsgSite ms WITH (NOLOCK) ON mt.TargetId = ms.SiteId
@@ -89,6 +90,7 @@ BEGIN
 			FROM dbo.MsgChatBot mc WITH (NOLOCK)
 			WHERE mc.MessageId = mt.MessageId
 				AND mc.TargetId = mt.TargetId
+				AND mc.JobIdentify = 3
 				AND 1 = CASE
 						WHEN @Environment = 'Local' AND mc.IsFinished = 0 THEN 1
 						WHEN @Environment = 'UAT' AND mc.IsFinished_UAT = 0 THEN 1
