@@ -2,8 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Xml.Serialization;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
@@ -103,19 +105,25 @@
             {
                 if (notifications.Any())
                 {
-                    await InsertMessageHistory(messages);
+                    await InsertMessageHistory(messages.Item2);
                     await chatbotService.SendMessageToMultitpleAsync(notifications);
                     PushInsertedNotifications(string.Join(",", notifications.Select(item => item.NotificationId)));
                 }
             }
         }
 
-        private async Task InsertMessageHistory((IEnumerable<SiteMessageModel>, IEnumerable<SiteMessageDetail>) messages)
+        private async Task InsertMessageHistory(IEnumerable<SiteMessageDetail> messageDetails)
         {
+            var msgHistory = messageDetails.Select(x => new MessageHistory { MessageID = x.MessageID, TargetID = x.TargetID });
+            var serializer = new XmlSerializer(typeof(List<MessageHistory>),
+                                   new XmlRootAttribute("root"));
+
+            var stream = new StringWriter();
+            serializer.Serialize(stream, msgHistory);
+
             var command = new InsertMessageHistoryCommand
             {
-                MessageHeader = JsonConvert.SerializeObject(messages.Item1, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
-                MessageDetail = JsonConvert.SerializeObject(messages.Item2),
+                MessageIDLst = stream.ToString(),
                 Environment = Environment
             };
 
@@ -162,6 +170,7 @@
             {
                 MessageID = systemSettings.MaxMessageID,
                 BatchSize = systemSettings.BatchSize,
+                LastPostTime = systemSettings.LastPostTime,
                 MsgContentsTypeLst = systemSettings.MsgContentsTypeLst,
                 Environment = Environment
             };

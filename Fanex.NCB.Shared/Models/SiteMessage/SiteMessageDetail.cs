@@ -4,6 +4,8 @@
     {
         public long MessageID { get; set; }
 
+        public int TargetID { get; set; }
+
         public string SiteName { get; set; }
     }
 }

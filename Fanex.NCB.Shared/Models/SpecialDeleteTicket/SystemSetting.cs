@@ -12,6 +12,6 @@
 
         public string MsgContentsTypeLst { get; set; }
 
-        public DateTime? LastPullTime { get; set; }
+        public DateTime? LastPostTime { get; set; }
     }
 }
