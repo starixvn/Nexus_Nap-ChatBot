@@ -14,6 +14,7 @@
     using Fanex.NCB.Shared.Models.SiteMessage;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Options;
     using NSubstitute;
     using Xunit;
@@ -25,6 +26,7 @@
         private ISendNotificationService sendNotificationService;
         private IPushSignalService pushSignalService;
         private IOptionsSnapshot<List<HangfireJobSetting>> jobs;
+        private IConfiguration configuration;
 
         [Fact]
         public async Task PullMessageFromSiteMessageThenInsertNotification_NoSettings_DoNothing()
@@ -155,6 +157,7 @@
             baseService = Substitute.For<IBaseService>();
             chatbotService = Substitute.For<IChatbotService>();
             sendNotificationService = Substitute.For<ISendNotificationService>();
+            configuration = Substitute.For<IConfiguration>();
             jobs = Substitute.For<IOptionsSnapshot<List<HangfireJobSetting>>>();
             var hangfireJobs = new List<HangfireJobSetting>
             {
@@ -163,7 +166,7 @@
             jobs.Value.Returns(hangfireJobs);
             pushSignalService = Substitute.For<IPushSignalService>();
 
-            return new SiteMessageService(baseService, chatbotService, pushSignalService, jobs);
+            return new SiteMessageService(baseService, chatbotService, pushSignalService, configuration, jobs);
         }
     }
 }
