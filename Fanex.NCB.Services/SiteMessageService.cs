@@ -103,7 +103,7 @@
 
         private async Task InsertMessageHistory(IEnumerable<SiteMessageDetail> messageDetails)
         {
-            var msgHistory = messageDetails.Select(x => new MessageHistory { MessageID = x.MessageID, TargetID = x.TargetID });
+            var msgHistory = messageDetails.Select(x => new MessageHistory { MessageID = x.MessageID, TargetID = x.TargetID }).ToList();
             var serializer = new XmlSerializer(typeof(List<MessageHistory>),
                                    new XmlRootAttribute("root"));
 
