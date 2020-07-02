@@ -448,13 +448,11 @@ NCB_SiteMessage_Import:BEGIN
 		WHERE ID = 13;
         
 	#Update Last PostTime
-    /*
     SELECT MAX(CAST(PostTime AS DATETIME)) INTO lastPostTime FROM tmp_MsgHeader;
     
     UPDATE SystemSetting
 		SET Value = lastPostTime
         WHERE ID = 16;
-        */
         
   #Update flag to 'Done'
   UPDATE SystemSetting

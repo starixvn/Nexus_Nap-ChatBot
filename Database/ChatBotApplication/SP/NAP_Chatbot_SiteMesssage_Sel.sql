@@ -4,7 +4,7 @@ ALTER PROCEDURE [dbo].[NAP_Chatbot_SiteMesssage_Sel]
 	,@LastPostTime			DATETIME
 	,@BatchSize				INT
 	,@MsgContentsTypeLst	VARCHAR(2000)
-	,@Environment			VARCHAR(20) = ''
+	,@Environment			VARCHAR(20)
 AS
 
 /*
@@ -20,7 +20,7 @@ AS
 BEGIN
 	SET NOCOUNT ON
 
-	SELECT @LastPostTime = DATEADD(MINUTE, -30, @LastPostTime)
+	SELECT @LastPostTime = DATEADD(HOUR, -1, @LastPostTime)
 
 	CREATE TABLE #MsgContentsTypeLst(MsgContentsType TINYINT)
 	CREATE UNIQUE CLUSTERED INDEX PK_MsgContentsType ON #MsgContentsTypeLst(MsgContentsType)
@@ -60,20 +60,17 @@ BEGIN
 		AND m.msgtype = 3
 		AND EXISTS (SELECT 1 FROM #MsgContentsTypeLst mct WHERE m.MsgContentsType = mct.MsgContentsType)
 		AND m.isbatch = 0
-		AND EXISTS (
+		AND NOT EXISTS (
 			SELECT 1
 			FROM dbo.MsgChatBot mc WITH (NOLOCK)
 				INNER JOIN dbo.MsgTarget mt WITH (NOLOCK) ON mc.MessageId = mt.MessageId AND mc.TargetId = mt.TargetId
 			WHERE mt.MessageId = m.MessageId
 				AND mc.JobIdentify = 3
-				AND 1 = CASE
-						WHEN @Environment = 'Local' AND mc.IsFinished = 0 THEN 1
-						WHEN @Environment = 'UAT' AND mc.IsFinished_UAT = 0 THEN 1
-						WHEN @Environment = 'Production' AND mc.IsFinished = 0 THEN 1
-						ELSE 0 END
+				AND mc.Environment = @Environment
 		)
 	ORDER BY m.MessageId
 
+	-- Remove duplicate message if exists (for case update max message ID)
 	DELETE m
 	FROM (
 		SELECT MessageId, IsNew, ROW_NUMBER() OVER(PARTITION BY MessageId ORDER BY IsNew) AS RN
@@ -92,17 +89,13 @@ BEGIN
 		INNER JOIN bodb02.dbo.Site s WITH (NOLOCK) ON ms.SiteName = s.site AND s.isDeposit = 1
 	WHERE
 		m.IsNew = 1
-		OR EXISTS (
+		OR NOT EXISTS (
 			SELECT 1
 			FROM dbo.MsgChatBot mc WITH (NOLOCK)
 			WHERE mc.MessageId = mt.MessageId
 				AND mc.TargetId = mt.TargetId
 				AND mc.JobIdentify = 3
-				AND 1 = CASE
-						WHEN @Environment = 'Local' AND mc.IsFinished = 0 THEN 1
-						WHEN @Environment = 'UAT' AND mc.IsFinished_UAT = 0 THEN 1
-						WHEN @Environment = 'Production' AND mc.IsFinished = 0 THEN 1
-						ELSE 0 END
+				AND mc.Environment = @Environment
 		)
 	ORDER BY mt.MessageId
 
