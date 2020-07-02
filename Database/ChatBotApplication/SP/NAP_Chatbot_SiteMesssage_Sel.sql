@@ -48,7 +48,12 @@ BEGIN
 					FROM dbo.MsgTarget mt WITH (NOLOCK)
 						INNER JOIN dbo.MsgSite ms WITH (NOLOCK) ON mt.TargetId = ms.SiteId
 						INNER JOIN bodb02.dbo.Site s WITH (NOLOCK) ON ms.SiteName = s.site AND s.isDeposit = 1
-					WHERE mt.MessageId = m.MessageId)
+					WHERE mt.MessageId = m.MessageId
+						AND NOT EXISTS (SELECT 1 FROM dbo.MsgChatBot mc WITH (NOLOCK)
+										WHERE mc.MessageId = mt.MessageId AND mc.TargetId = mt.TargetId
+											AND mc.JobIdentify = 3 AND mc.Environment = @Environment
+						)
+		)
 	ORDER BY m.MessageId
 	OPTION(RECOMPILE)
 
@@ -60,20 +65,20 @@ BEGIN
 		AND m.msgtype = 3
 		AND EXISTS (SELECT 1 FROM #MsgContentsTypeLst mct WHERE m.MsgContentsType = mct.MsgContentsType)
 		AND m.isbatch = 0
-		AND NOT EXISTS (
-			SELECT 1
-			FROM dbo.MsgChatBot mc WITH (NOLOCK)
-				INNER JOIN dbo.MsgTarget mt WITH (NOLOCK) ON mc.MessageId = mt.MessageId AND mc.TargetId = mt.TargetId
-			WHERE mt.MessageId = m.MessageId
-				AND mc.JobIdentify = 3
-				AND mc.Environment = @Environment
+		AND EXISTS (SELECT 1
+					FROM dbo.MsgTarget mt WITH (NOLOCK)
+					WHERE mt.MessageId = m.MessageId
+						AND NOT EXISTS (SELECT 1 FROM dbo.MsgChatBot mc WITH (NOLOCK)
+										WHERE mc.MessageId = mt.MessageId AND mc.TargetId = mt.TargetId
+											AND mc.JobIdentify = 3 AND mc.Environment = @Environment
+						)
 		)
 	ORDER BY m.MessageId
 
 	-- Remove duplicate message if exists (for case update max message ID)
 	DELETE m
 	FROM (
-		SELECT MessageId, IsNew, ROW_NUMBER() OVER(PARTITION BY MessageId ORDER BY IsNew) AS RN
+		SELECT MessageId, IsNew, ROW_NUMBER() OVER(PARTITION BY MessageId ORDER BY IsNew DESC) AS RN
 		FROM @Msg
 	) m
 	WHERE m.RN > 1

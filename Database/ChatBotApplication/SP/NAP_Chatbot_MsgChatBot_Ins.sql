@@ -37,8 +37,8 @@ BEGIN
 		FROM @MessageIDLst.nodes('root/r') AS t(c)
 		OPTION (OPTIMIZE FOR (@MessageIDLst = NULL))
 
-		INSERT INTO dbo.MsgChatBot (MessageId, TargetId, JobIdentify, Environment)
-		SELECT m.MessageId, m.TargetId, @JobIdentify, @Environment
+		INSERT INTO dbo.MsgChatBot (MessageId, TargetId, JobIdentify, Environment, IsFinished)
+		SELECT m.MessageId, m.TargetId, @JobIdentify, @Environment, CASE WHEN @JobIdentify = 3 THEN 1 ELSE 0 END
 		FROM @MsgChatBot m
 			LEFT JOIN dbo.MsgChatBot mc WITH (NOLOCK) ON m.MessageId = mc.MessageId AND m.TargetId = mc.TargetId AND mc.Environment = @Environment
 		WHERE mc.MessageId IS NULL
@@ -46,6 +46,7 @@ BEGIN
 		-- delete old msg
 		DELETE dbo.MsgChatBot WITH (ROWLOCK, UPDLOCK)
 		WHERE CheckInTime < DATEADD(MONTH, -1, GETDATE())
+			AND IsFinished = 1
 	END TRY
 	BEGIN CATCH
 		SELECT @ErrCode = ERROR_NUMBER(), @ErrMsg = ERROR_MESSAGE()

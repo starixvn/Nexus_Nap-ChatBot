@@ -41,6 +41,7 @@ NCB_SiteMessage_Import:BEGIN
   DECLARE logContent MEDIUMTEXT CHARACTER SET utf8mb4;
   DECLARE templateNotifcationType JSON;
   DECLARE ccConversationGroupID INT;
+  DECLARE maxMessageID INT;
   DECLARE lastPostTime DATETIME;
 
   DECLARE createdDate DATETIME(3);
@@ -443,20 +444,26 @@ NCB_SiteMessage_Import:BEGIN
 
   /*Step 9: Update Setting*/
   #Update Max MsgID
-  UPDATE SystemSetting
-		SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
-		WHERE ID = 13;
+  SELECT MAX(MessageID) INTO maxMessageID FROM tmp_MsgHeader WHERE IsNew = 1;
+  
+	IF maxMessageID IS NOT NULL THEN
+		UPDATE SystemSetting
+			SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
+			WHERE ID = 13;
+		END IF;
         
 	#Update Last PostTime
-    SELECT MAX(CAST(PostTime AS DATETIME)) INTO lastPostTime FROM tmp_MsgHeader;
+    SELECT MAX(CAST(PostTime AS DATETIME)) INTO lastPostTime FROM tmp_MsgHeader WHERE IsNew = 1;
     
-    UPDATE SystemSetting
-		SET Value = lastPostTime
-        WHERE ID = 16;
+    IF lastPostTime IS NOT NULL THEN
+		UPDATE SystemSetting
+			SET Value = lastPostTime
+			WHERE ID = 16;
+		END IF;
         
   #Update flag to 'Done'
-  UPDATE SystemSetting
-    SET Value = VALUE_DONE
+	UPDATE SystemSetting
+		SET Value = VALUE_DONE
 		WHERE ID = 11 AND Value = VALUE_RUNNING;
 
   /*Step 10: Return imported messages*/
