@@ -2,8 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Xml.Serialization;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
@@ -13,8 +15,8 @@
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.SiteMessage;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
-    using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 
@@ -24,16 +26,19 @@
         private readonly IPushSignalService pushSignalService;
         private readonly IChatbotService chatbotService;
         private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
-        private const string DateTimeFormat = "HH:mm tt";
+        private readonly string Environment;
+        private const int SiteMessageJobIdentify = 3;
 
         public SiteMessageService(IBaseService baseService,
             IChatbotService chatbotService,
             IPushSignalService pushSignalService,
+            IConfiguration configuration,
             IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
         {
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;
             this.chatbotService = chatbotService;
+            Environment = configuration.GetSection("Environment")?.Value;
             this.jobSettings = jobSettings;
         }
 
@@ -45,7 +50,6 @@
                 if (systemSettings != null)
                 {
                     var messages = await GetDataFromSiteMessage(systemSettings);
-                    Writelog(messages.Item2);
                     var matchInfo = await GetMatchInfo(string.Join(",", messages.Item1.Where(m => m.MatchId > 0).Select(m => m.MatchId)));
 
                     MappingData(messages.Item1, matchInfo);
@@ -53,26 +57,17 @@
                     {
                         var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
 
-                        await OnAfterImportData(result.Item1, result.Item2);
+                        await OnAfterImportData(result.Item1, result.Item2, messages);
                     }
                 }
             }
-        }
-
-        private void Writelog(IEnumerable<SiteMessageDetail> data)
-        {
-            Task.Run(() => WriteLogToFile.Writelog(new
-            {
-                Data = data,
-                Count = data.Count()
-            }, "Site Message details"));
         }
 
         private async Task<ValueTuple<CommandResult, IEnumerable<NotificationMessage>>> ImportMessageToChatbotDB(IEnumerable<SiteMessageModel> messages, IEnumerable<SiteMessageDetail> messageDetails)
         {
             var criteria = new ImportDataSiteMessageAndGetGroupTestCriteria
             {
-                MessageHeader = JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
+                MessageHeader = JsonConvert.SerializeObject(messages),
                 MessageDetail = JsonConvert.SerializeObject(messageDetails)
             };
 
@@ -88,7 +83,8 @@
             return new ValueTuple<CommandResult, IEnumerable<NotificationMessage>>(command, notification);
         }
 
-        private async Task OnAfterImportData(CommandResult commandResult, IEnumerable<NotificationMessage> notifications)
+        private async Task OnAfterImportData(CommandResult commandResult, IEnumerable<NotificationMessage> notifications,
+            (IEnumerable<SiteMessageModel>, IEnumerable<SiteMessageDetail>) messages)
         {
             if (!commandResult.IsSuccessful)
             {
@@ -98,10 +94,30 @@
             {
                 if (notifications.Any())
                 {
+                    await InsertMessageHistory(messages.Item2);
                     await chatbotService.SendMessageToMultitpleAsync(notifications);
                     PushInsertedNotifications(string.Join(",", notifications.Select(item => item.NotificationId)));
                 }
             }
+        }
+
+        private async Task InsertMessageHistory(IEnumerable<SiteMessageDetail> messageDetails)
+        {
+            var msgHistory = messageDetails.Select(x => new MessageHistory { MessageID = x.MessageID, TargetID = x.TargetID }).ToList();
+            var serializer = new XmlSerializer(typeof(List<MessageHistory>),
+                                   new XmlRootAttribute("root"));
+
+            var stream = new StringWriter();
+            serializer.Serialize(stream, msgHistory);
+
+            var command = new InsertMessageHistoryCommand
+            {
+                JobIdentify = SiteMessageJobIdentify,
+                MessageIDLst = stream.ToString(),
+                Environment = Environment
+            };
+
+            await baseService.ExecuteNonQueryAsync(command);
         }
 
         private static void MappingData(IEnumerable<SiteMessageModel> messages, IEnumerable<SiteMessageMatchInfoModel> matchInfos)
@@ -144,7 +160,9 @@
             {
                 MessageID = systemSettings.MaxMessageID,
                 BatchSize = systemSettings.BatchSize,
-                MsgContentsTypeLst = systemSettings.MsgContentsTypeLst
+                LastPostTime = systemSettings.LastPostTime,
+                MsgContentsTypeLst = systemSettings.MsgContentsTypeLst,
+                Environment = Environment
             };
             var result = await baseService.FetchMultipleAsync<SiteMessageModel, SiteMessageDetail>(criteria);
 

@@ -1,3 +1,4 @@
+USE ChatBot;
 DROP PROCEDURE IF EXISTS NCB_UserLog_RunSP_Ins;
 DELIMITER //
 
@@ -5,7 +6,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_UserLog_RunSP_Ins(
 	IN actionID SMALLINT
     , IN referenceID INT
 	, IN userID INT
-    , IN logContent TEXT
+    , IN logContent MEDIUMTEXT
     , IN logTime DATETIME(3)
     , IN duration INT
     /*
@@ -18,6 +19,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_UserLog_RunSP_Ins(
                 - userID: Who run SP
         Revisions:
 				- 20190401@Dominic: First Commit
+                - 20200630@Percy: Expand length of logContent [RedmineID: #136492]
 		
     */
 )

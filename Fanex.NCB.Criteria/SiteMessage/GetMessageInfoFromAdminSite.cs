@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.SiteMessage
 {
+    using System;
     using Fanex.Data.Repository;
 
     public class GetMessageInfoFromAdminSite : CriteriaBase
@@ -9,6 +10,10 @@
         public int BatchSize { get; set; }
 
         public string MsgContentsTypeLst { get; set; }
+
+        public DateTime? LastPostTime { get; set; }
+
+        public string Environment { get; set; } = "UAT";
 
         public override string GetSettingKey() => "NAP_Chatbot_SiteMesssage_Sel";
 
