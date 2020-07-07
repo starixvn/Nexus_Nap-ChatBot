@@ -12,6 +12,7 @@
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Options;
     using NSubstitute;
     using Xunit;
@@ -23,6 +24,7 @@
         private ISendNotificationService sendNotificationService;
         private IPushSignalService pushSignalService;
         private IOptionsSnapshot<List<HangfireJobSetting>> jobs;
+        private IConfiguration configuration;
 
         [Fact]
         public async Task VoidingTicketToLicensee_WhenGetSettingIsNull_DoNothing()
@@ -147,8 +149,9 @@
             };
             jobs.Value.Returns(hangfireJobs);
             pushSignalService = Substitute.For<IPushSignalService>();
+            configuration = Substitute.For<IConfiguration>();
 
-            return new SpecialDeleteService(baseService, chatbotService, pushSignalService, jobs);
+            return new SpecialDeleteService(baseService, chatbotService, pushSignalService, configuration, jobs);
         }
     }
 }
