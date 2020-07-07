@@ -2,17 +2,22 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Xml.Serialization;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
+    using Fanex.NCB.Criteria.SiteMessage;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Models.SiteMessage;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 
@@ -21,17 +26,22 @@
         private readonly IBaseService baseService;
         private readonly IPushSignalService pushSignalService;
         private readonly IChatbotService chatbotService;
+        private readonly string Environment;
+        private const int VoidAbnormalbetsJobIdentify = 2;
+
         private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
         public SpecialDeleteService(IBaseService baseService,
-               IChatbotService chatbotService,
+            IChatbotService chatbotService,
             IPushSignalService pushSignalService,
+            IConfiguration configuration,
             IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
         {
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;
             this.chatbotService = chatbotService;
+            Environment = configuration.GetSection("Environment")?.Value;
             this.jobSettings = jobSettings;
         }
 
@@ -137,7 +147,8 @@
 
                 if (systemSettings != null)
                 {
-                    var messages = await GetAbnormalBetsMessages(systemSettings);
+                    var listMsgYesterdayToCurrent = await GetMessageListFromYesterdayToCurrent();
+                    var messages = await GetAbnormalBetsMessages(systemSettings, string.Join(',', listMsgYesterdayToCurrent));
                     if (messages.Any())
                     {
                         var voidingHistories = await GetVoidingHistory(string.Join(",", messages.Select(m => m.MessageID)));
@@ -149,6 +160,11 @@
                     }
                 }
             }
+        }
+
+        private async Task<IEnumerable<string>> GetMessageListFromYesterdayToCurrent()
+        {
+            return await baseService.GetDataAsync<string>(new GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria());
         }
 
         private static void MappingAbnormalBetsData(IEnumerable<Message> messages, IEnumerable<AbnormalBetsMessage> voidingHistories)
@@ -171,13 +187,14 @@
             return await baseService.GetDataEntityAsync<SystemSetting>(criteria);
         }
 
-        private async Task<IEnumerable<Message>> GetAbnormalBetsMessages(SystemSetting setting)
+        private async Task<IEnumerable<Message>> GetAbnormalBetsMessages(SystemSetting setting, string listMessages)
         {
             var criteria = new GetAbnormalBetsMessageCriteria
             {
-                MessageID = setting.MaxMessageID,
+                MessageIDLst = listMessages,
                 BatchSize = setting.BatchSize,
-                MsgContentsTypeLst = setting.MsgContentsTypeLst
+                MsgContentsTypeLst = setting.MsgContentsTypeLst,
+                Environment = Environment
             };
 
             return await baseService.GetDataAsync<Message>(criteria);
@@ -217,8 +234,32 @@
                     Message = criteria.ErrMsg
                 };
 
+                if (command.IsSuccessful)
+                {
+                    await InsertToMessageChatbot(messages);
+                }
+
                 await OnAfterImportData(command, notification);
             }
+        }
+
+        private async Task InsertToMessageChatbot(IEnumerable<AbnormalBetsMessage> messages)
+        {
+            var msgHistory = messages.Select(x => new MessageHistory { MessageID = x.MessageID, TargetID = 0 }).ToList();
+            var serializer = new XmlSerializer(typeof(List<MessageHistory>),
+                                   new XmlRootAttribute("root"));
+
+            var stream = new StringWriter();
+            serializer.Serialize(stream, msgHistory);
+
+            var command = new InsertMessageHistoryCommand
+            {
+                JobIdentify = VoidAbnormalbetsJobIdentify,
+                MessageIDLst = stream.ToString(),
+                Environment = Environment
+            };
+
+            await baseService.ExecuteNonQueryAsync(command);
         }
 
         private void PushInsertedNotifications(string notificationIds)
