@@ -148,9 +148,9 @@
                 if (systemSettings != null)
                 {
                     var listMsgYesterdayToCurrent = await GetMessageListFromYesterdayToCurrent();
-                    var messages = await GetAbnormalBetsMessages(systemSettings, string.Join(',', listMsgYesterdayToCurrent));
-                    if (messages.Any())
+                    if (listMsgYesterdayToCurrent.Any())
                     {
+                        var messages = await GetAbnormalBetsMessages(systemSettings, string.Join(',', listMsgYesterdayToCurrent));
                         var voidingHistories = await GetVoidingHistory(string.Join(",", messages.Select(m => m.MessageID)));
 
                         MappingAbnormalBetsData(messages, voidingHistories);
