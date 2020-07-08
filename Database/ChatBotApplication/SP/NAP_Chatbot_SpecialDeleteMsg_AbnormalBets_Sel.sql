@@ -32,8 +32,8 @@ BEGIN
 	FROM @xml.nodes('//root/r') AS RECORDS(r)
 	WHERE LEN(ISNULL(r.value('.', 'NVARCHAR(20)'), '')) > 0
 
-	INSERT INTO dbo.MsgChatBot (MessageId, TargetId, JobIdentify)
-	SELECT m.MessageId, m.TargetId, m.JobIdentify
+	INSERT INTO dbo.MsgChatBot (MessageId, TargetId, JobIdentify, Environment, IsFinished)
+	SELECT m.MessageId, m.TargetId, m.JobIdentify, @Environment, 0
 	FROM #Message m
 		LEFT JOIN dbo.MsgChatBot mc WITH (NOLOCK)
 			ON m.MessageId = mc.MessageId
