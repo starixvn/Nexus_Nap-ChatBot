@@ -14,6 +14,7 @@ AS
 
 	Revisions:
 		- 20200630@Percy: Initialize SP [RedmineID: #136492]
+		- 20200701@Percy: Add update code for IsFinished=1 [RedmineID: #135686]
 
 	Param Explanation:
 		@MessageIDLst:
@@ -37,10 +38,15 @@ BEGIN
 		FROM @MessageIDLst.nodes('root/r') AS t(c)
 		OPTION (OPTIMIZE FOR (@MessageIDLst = NULL))
 
+		UPDATE mc WITH (ROWLOCK)
+		SET mc.IsFinished = 1
+		FROM dbo.MsgChatBot mc
+			INNER JOIN @MsgChatBot m ON m.MessageId = mc.MessageId AND m.TargetId = mc.TargetId AND mc.JobIdentify = @JobIdentify AND mc.Environment = @Environment
+
 		INSERT INTO dbo.MsgChatBot (MessageId, TargetId, JobIdentify, Environment, IsFinished)
 		SELECT m.MessageId, m.TargetId, @JobIdentify, @Environment, CASE WHEN @JobIdentify = 3 THEN 1 ELSE 0 END
 		FROM @MsgChatBot m
-			LEFT JOIN dbo.MsgChatBot mc WITH (NOLOCK) ON m.MessageId = mc.MessageId AND m.TargetId = mc.TargetId AND mc.Environment = @Environment
+			LEFT JOIN dbo.MsgChatBot mc WITH (NOLOCK) ON m.MessageId = mc.MessageId AND m.TargetId = mc.TargetId AND mc.JobIdentify = @JobIdentify AND mc.Environment = @Environment
 		WHERE mc.MessageId IS NULL
 		
 		-- delete old msg
