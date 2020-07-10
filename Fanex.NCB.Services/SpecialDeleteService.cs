@@ -148,16 +148,24 @@
                 if (systemSettings != null)
                 {
                     var listMsgYesterdayToCurrent = await GetMessageListFromYesterdayToCurrent();
-                    if (listMsgYesterdayToCurrent.Any())
-                    {
-                        var messages = await GetAbnormalBetsMessages(systemSettings, string.Join(',', listMsgYesterdayToCurrent));
-                        var voidingHistories = await GetVoidingHistory(string.Join(",", messages.Select(m => m.MessageID)));
+                    await GetMessageAndImportToChatbot(listMsgYesterdayToCurrent, systemSettings);
+                }
+            }
+        }
 
-                        MappingAbnormalBetsData(messages, voidingHistories);
+        private async Task GetMessageAndImportToChatbot(IEnumerable<string> listMsgYesterdayToCurrent, SystemSetting settings)
+        {
+            if (listMsgYesterdayToCurrent.Any())
+            {
+                var messages = await GetAbnormalBetsMessages(settings, string.Join(',', listMsgYesterdayToCurrent));
+                if (messages.Any())
+                {
+                    var voidingHistories = await GetVoidingHistory(string.Join(",", messages.Select(m => m.MessageID)));
 
-                        int maxMsgId = messages.Max(m => m.MessageID);
-                        await ImportAbnormalBetNotificationToChatbotDB(voidingHistories, maxMsgId);
-                    }
+                    MappingAbnormalBetsData(messages, voidingHistories);
+
+                    int maxMsgId = messages.Max(m => m.MessageID);
+                    await ImportAbnormalBetNotificationToChatbotDB(voidingHistories, maxMsgId);
                 }
             }
         }
