@@ -75,7 +75,7 @@
 
             var matchInfo = new List<SiteMessageMatchInfoModel>
             {
-                new SiteMessageMatchInfoModel { MatchId = 10, IsTest = false },
+                new SiteMessageMatchInfoModel { MatchId = 10, IsTestMatch = false },
                 fixture.Create<SiteMessageMatchInfoModel>()
             };
             baseService.FetchMultipleAsync<SiteMessageModel, SiteMessageDetail>(Arg.Any<GetMessageInfoFromAdminSite>()).Returns(
@@ -107,7 +107,7 @@
 
             var matchInfo = new List<SiteMessageMatchInfoModel>
             {
-                new SiteMessageMatchInfoModel { MatchId = 10, IsTest = false },
+                new SiteMessageMatchInfoModel { MatchId = 10, IsTestMatch = false },
                 fixture.Create<SiteMessageMatchInfoModel>()
             };
             baseService.FetchMultipleAsync<SiteMessageModel, SiteMessageDetail>(Arg.Any<GetMessageInfoFromAdminSite>()).Returns(

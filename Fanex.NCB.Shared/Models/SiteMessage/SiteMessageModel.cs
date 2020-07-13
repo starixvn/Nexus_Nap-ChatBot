@@ -15,5 +15,9 @@
         public string Content_cs { get; set; }
 
         public bool IsNew { get; set; }
+
+        public bool IsTest { get; set; }
+
+        public bool IsTestMessage { get; set; }
     }
 }

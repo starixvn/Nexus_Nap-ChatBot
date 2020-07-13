@@ -15,7 +15,8 @@ export const NotificationStatus = {
     Sending: 3,
     Cancelled: 4,
     Resolved: 5,
-    Draft: 9
+    Draft: 9,
+	Invalid: 10
 };
 
 export const DateFormat = 'MM/dd/yyyy';

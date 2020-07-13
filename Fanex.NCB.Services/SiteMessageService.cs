@@ -131,13 +131,15 @@
                     message.SportNameEN = matchInfo.SportNameEN;
                     message.SportNameCS = matchInfo.SportNameCS;
                     message.KickOffTime = matchInfo.KickOffTime;
-                    message.IsTest = matchInfo.IsTest;
+                    message.IsTestMatch = matchInfo.IsTestMatch;
                     message.LeagueNameEN = matchInfo.LeagueNameEN;
                     message.LeagueNameCS = matchInfo.LeagueNameCS;
                     message.HomeNameEN = matchInfo.HomeNameEN;
                     message.HomeNameCS = matchInfo.HomeNameCS;
                     message.AwayNameEN = matchInfo.AwayNameEN;
                     message.AwayNameCS = matchInfo.AwayNameCS;
+                    message.IsTestMatch = matchInfo.IsTestMatch;
+                    message.IsTest = matchInfo.IsTestMatch && message.IsTestMessage;
                 }
             }
         }

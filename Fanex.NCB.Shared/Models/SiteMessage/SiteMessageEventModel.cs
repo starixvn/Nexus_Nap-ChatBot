@@ -12,7 +12,7 @@
 
         public string KickOffTime { get; set; }
 
-        public bool IsTest { get; set; }
+        public bool IsTestMatch { get; set; }
 
         public string LeagueNameEN { get; set; } = string.Empty;
 
