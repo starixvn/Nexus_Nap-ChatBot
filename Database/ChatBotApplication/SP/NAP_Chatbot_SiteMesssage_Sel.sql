@@ -15,6 +15,7 @@ AS
 	Revisions:
 		- 20200305@Percy: Initialize SP [RedmineID: #126143]
 		- 20200630@Percy: Add LastPostTime for rescan message [RedmineID: #136492]
+		- 20200715@Percy: Return isTest [RedmineID: #135686]
 */
 
 BEGIN
@@ -34,11 +35,11 @@ BEGIN
 	FROM @xml.nodes('//root/r') AS RECORDS(r)
 	WHERE LEN(ISNULL(r.value('.', 'NVARCHAR(15)'), '')) > 0
 
-	DECLARE @Msg TABLE (MessageId INT, MsgContentsType TINYINT, MatchId INT, Content_en NVARCHAR(4000), Content_cs NVARCHAR(4000), PostTime DATETIME, IsNew TINYINT)
+	DECLARE @Msg TABLE (MessageId INT, MsgContentsType TINYINT, MatchId INT, Content_en NVARCHAR(4000), Content_cs NVARCHAR(4000), PostTime DATETIME, IsNew TINYINT, IsTest TINYINT)
 	
 	-- New messages from @MessageID
-	INSERT INTO @Msg (MessageId, MsgContentsType, MatchId, Content_en, Content_cs, PostTime, IsNew)
-	SELECT TOP (@BatchSize) m.MessageId, m.MsgContentsType, m.MatchId, m.Content_en, m.Content_cs, m.PostTime, 1
+	INSERT INTO @Msg (MessageId, MsgContentsType, MatchId, Content_en, Content_cs, PostTime, IsNew, IsTest)
+	SELECT TOP (@BatchSize) m.MessageId, m.MsgContentsType, m.MatchId, m.Content_en, m.Content_cs, m.PostTime, 1, ISNULL(m.IsTest, 0)
 	FROM dbo.Msg m WITH (NOLOCK)
 	WHERE m.MessageId > @MessageID
 		AND m.msgtype = 3
@@ -58,8 +59,8 @@ BEGIN
 	OPTION(RECOMPILE)
 
 	-- Rescan messages from @LastPostTime
-	INSERT INTO @Msg (MessageId, MsgContentsType, MatchId, Content_en, Content_cs, PostTime, IsNew)
-	SELECT m.MessageId, m.MsgContentsType, m.MatchId, m.Content_en, m.Content_cs, m.PostTime, 0
+	INSERT INTO @Msg (MessageId, MsgContentsType, MatchId, Content_en, Content_cs, PostTime, IsNew, IsTest)
+	SELECT m.MessageId, m.MsgContentsType, m.MatchId, m.Content_en, m.Content_cs, m.PostTime, 0, ISNULL(m.IsTest, 0)
 	FROM dbo.Msg m WITH (NOLOCK)
 	WHERE m.PostTime >= @LastPostTime
 		AND m.msgtype = 3
@@ -83,7 +84,7 @@ BEGIN
 	) m
 	WHERE m.RN > 1
 
-	SELECT MessageId, MsgContentsType, MatchId, Content_en, Content_cs, PostTime, IsNew
+	SELECT MessageId, MsgContentsType, MatchId, Content_en, Content_cs, PostTime, IsNew, IsTest
 	FROM @Msg
 	ORDER BY MessageId
 

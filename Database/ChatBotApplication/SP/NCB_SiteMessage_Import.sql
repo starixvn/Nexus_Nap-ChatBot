@@ -29,6 +29,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SiteMessage_Import(
       - 20200305@Percy: Initiliaze SP [RedmineID: #126143]
       - 20200327@Percy: Just send notification to active licensees [RedmineID: #131240]
       - 20200630@Percy: Remove sent recipients for rescan messages [RedmineID: #136492]
+      - 20200715@Percy: Add Invalid status for invalid match [RedmineID: #135686]
   */
 )
 SQL SECURITY DEFINER
@@ -51,6 +52,7 @@ NCB_SiteMessage_Import:BEGIN
   DECLARE ccMatchID INT;
   DECLARE ccMsgContentsType INT;
   DECLARE ccIsNew TINYINT;
+  DECLARE ccIsInvalid TINYINT;
 
   # Constants
 	DECLARE ACTION_ID INT DEFAULT 20;
@@ -63,11 +65,14 @@ NCB_SiteMessage_Import:BEGIN
   DECLARE CREATING_NOTIFICATION_STATUSID TINYINT UNSIGNED DEFAULT 7;
   DECLARE CREATING_NOTIFICATION_STATUS VARCHAR(10) DEFAULT 'Creating';
     
-  DECLARE DRAFT_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 9;
+  DECLARE DRAFT_NOTIFICATION_STATUSID TINYINT UNSIGNED DEFAULT 9;
   DECLARE DRAFT_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Draft';
+  
+  DECLARE INVALID_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 10;
+  DECLARE INVALID_NOTIFICATION_STATUS VARCHAR(10) DEFAULT 'Invalid';
     
   DECLARE PLANNED_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 0;
-  DECLARE PLANNED_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Planned';
+  DECLARE PLANNED_NOTIFICATION_STATUS VARCHAR(10) DEFAULT 'Planned';
 
 	SET startTime = UTC_TIMESTAMP();
   SET errCode = 0, errMsg = '';
@@ -100,6 +105,7 @@ NCB_SiteMessage_Import:BEGIN
     Content_cs TEXT,
     PostTime TEXT,
     IsNew TINYINT,
+    IsInvalid TINYINT,
     CheckMsg TEXT,
     CheckMsgDetail TEXT,
     PRIMARY KEY (Id),
@@ -108,7 +114,7 @@ NCB_SiteMessage_Import:BEGIN
 
   SET iLoop = 0;
   WHILE (JSON_EXTRACT(messageHeader, CONCAT('$[',iLoop, '].MessageID')) IS NOT NULL) DO
-		INSERT INTO tmp_MsgHeader(MessageID, MsgContentsType, MatchID, IsTest, SportType, KickOffTime, LeagueNameEN, LeagueNameCS, SportNameEN, SportNameCS, HomeNameEN, HomeNameCS, AwayNameEN, AwayNameCS, Content_en, Content_cs, PostTime, IsNew, CheckMsg)
+		INSERT INTO tmp_MsgHeader(MessageID, MsgContentsType, MatchID, IsTest, SportType, KickOffTime, LeagueNameEN, LeagueNameCS, SportNameEN, SportNameCS, HomeNameEN, HomeNameCS, AwayNameEN, AwayNameCS, Content_en, Content_cs, PostTime, IsNew, IsInvalid, CheckMsg)
       VALUES (
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MessageID'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MsgContentsType'))),
@@ -128,6 +134,7 @@ NCB_SiteMessage_Import:BEGIN
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_cs'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].PostTime'))),
         JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].IsNew')),
+        0,
         ''
       );
     
@@ -178,6 +185,7 @@ NCB_SiteMessage_Import:BEGIN
     NotificationTemplateID INT,
     TemplateTitle VARCHAR(300),
     TemplateContent MEDIUMTEXT,
+    IsRequiredMatch TINYINT,
     IsTest TINYINT,
     StatusID TINYINT UNSIGNED,
     Status VARCHAR(10)
@@ -185,12 +193,13 @@ NCB_SiteMessage_Import:BEGIN
 
   SET iLoop = 0;
   WHILE (JSON_EXTRACT(templateNotifcationType, CONCAT('$[',iLoop, '].MsgContentsType')) IS NOT NULL) DO
-    INSERT INTO tmp_MsgContentTypeTemplate(MsgContentsType, NotificationTypeID, NotificationTemplateID, IsTest)
+    INSERT INTO tmp_MsgContentTypeTemplate(MsgContentsType, NotificationTypeID, NotificationTemplateID, IsTest, IsRequiredMatch)
       VALUES (
-			JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].MsgContentsType'))),
-      JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTypeID'))),
-      JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTemplateID'))),
-      JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].IsTest')))
+		JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].MsgContentsType'))),
+		JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTypeID'))),
+		JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTemplateID'))),
+		JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].IsTest'))),
+		0
 		);
 
     SET iLoop := iLoop + 1;
@@ -269,6 +278,10 @@ NCB_SiteMessage_Import:BEGIN
 
     LEAVE NCB_SiteMessage_Import;
     END IF;
+    
+UPDATE tmp_MsgContentTypeTemplate
+	SET IsRequiredMatch = 1
+    WHERE MsgContentsType IN (1, 3, 7);
 
   /*Step 4: Update flag to running*/
   UPDATE SystemSetting
@@ -289,6 +302,21 @@ NCB_SiteMessage_Import:BEGIN
     SET CheckMsg = CONCAT(CheckMsg, CONCAT('- Unsupported MsgContentsType value: ', CheckMsgDetail), 'rn')
     WHERE CheckMsgDetail IS NOT NULL;
 
+  UPDATE tmp_MsgHeader
+    SET CheckMsgDetail = NULL;
+    
+  /*Step 5.1 Check invalid match*/
+  UPDATE tmp_MsgHeader h
+    INNER JOIN tmp_MsgContentTypeTemplate tpl ON h.MsgContentsType = tpl.MsgContentsType
+    SET h.CheckMsgDetail = h.MatchID,
+		h.IsInvalid = 1
+    WHERE h.SportType = 0
+		AND (tpl.IsRequiredMatch = 1 OR h.MatchID > 0);
+        
+  UPDATE tmp_MsgHeader
+    SET CheckMsg = CONCAT(CheckMsg, CONCAT('- Invalid matchid: ', CheckMsgDetail), 'rn')
+    WHERE CheckMsgDetail IS NOT NULL;
+    
   UPDATE tmp_MsgHeader
     SET CheckMsgDetail = NULL;
 
@@ -361,7 +389,7 @@ NCB_SiteMessage_Import:BEGIN
   SET iLoop = 1;
   SET createdDate = UTC_TIMESTAMP();
   WHILE (EXISTS (SELECT 1 FROM tmp_MsgHeader WHERE Id = iLoop)) DO
-    SELECT MessageID, IsTest, MatchID, MsgContentsType, IsNew INTO ccMessageID, ccIsTest, ccMatchID, ccMsgContentsType, ccIsNew FROM tmp_MsgHeader WHERE Id = iLoop;
+    SELECT MessageID, IsTest, MatchID, MsgContentsType, IsNew, IsInvalid INTO ccMessageID, ccIsTest, ccMatchID, ccMsgContentsType, ccIsNew, ccIsInvalid FROM tmp_MsgHeader WHERE Id = iLoop;
     
     IF ccIsNew = 0 THEN
 		DELETE t
@@ -418,15 +446,15 @@ NCB_SiteMessage_Import:BEGIN
           AND d.RecipientID IS NOT NULL;
 
       #Update Status for Notification
-      IF ccIsTest = 1 THEN
+      IF ccIsInvalid = 1 OR ccIsTest = 1 THEN
         UPDATE Notification
-          SET Status = DRAFT_NOTIFICATION_STATUS,
-              StatusID = DRAFT_NOTIFICATION_STATUSID
+          SET Status = CASE WHEN ccIsInvalid = 1 THEN INVALID_NOTIFICATION_STATUS ELSE DRAFT_NOTIFICATION_STATUS END,
+              StatusID = CASE WHEN ccIsInvalid = 1 THEN INVALID_NOTIFICATION_STATUSID ELSE DRAFT_NOTIFICATION_STATUSID END
           WHERE NotificationID = ccNotificationID;
 
         UPDATE NotificationRecipientList
-          SET Status = DRAFT_NOTIFICATION_STATUS,
-              StatusID = DRAFT_NOTIFICATION_STATUSID
+          SET Status = CASE WHEN ccIsInvalid = 1 THEN INVALID_NOTIFICATION_STATUS ELSE DRAFT_NOTIFICATION_STATUS END,
+              StatusID = CASE WHEN ccIsInvalid = 1 THEN INVALID_NOTIFICATION_STATUSID ELSE DRAFT_NOTIFICATION_STATUSID END
           WHERE NotificationID = ccNotificationID;
       ELSE
         UPDATE Notification n
