@@ -34,7 +34,7 @@ BEGIN
 		,m.KickOffTime
 		,m.SportNameEN
 		,m.SportNameCS
-		,m.IsTest
+		,m.IsTest AS IsTestMatch
 		,m.LeagueNameEN
 		,m.LeagueNameCS
 		,m.HomeNameEN

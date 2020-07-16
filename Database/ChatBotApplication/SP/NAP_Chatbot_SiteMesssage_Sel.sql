@@ -84,7 +84,7 @@ BEGIN
 	) m
 	WHERE m.RN > 1
 
-	SELECT MessageId, MsgContentsType, MatchId, Content_en, Content_cs, PostTime, IsNew, IsTest
+	SELECT MessageId, MsgContentsType, MatchId, Content_en, Content_cs, PostTime, IsNew, IsTest AS IsTestMsg
 	FROM @Msg
 	ORDER BY MessageId
 
