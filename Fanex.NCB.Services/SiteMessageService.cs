@@ -50,7 +50,7 @@
                 if (systemSettings != null)
                 {
                     var messages = await GetDataFromSiteMessage(systemSettings);
-                    var matchInfo = await GetMatchInfo(string.Join(",", messages.Item1.Where(m => m.MatchId > 0).Select(m => m.MatchId)));
+                    var matchInfo = await GetMatchInfo(string.Join(",", messages.Item1.Select(m => m.MatchId)));
 
                     MappingData(messages.Item1, matchInfo);
                     if (messages.Item1.Any() && messages.Item2.Any())
@@ -138,8 +138,7 @@
                     message.HomeNameCS = matchInfo.HomeNameCS;
                     message.AwayNameEN = matchInfo.AwayNameEN;
                     message.AwayNameCS = matchInfo.AwayNameCS;
-                    message.IsTestMatch = matchInfo.IsTestMatch;
-                    message.IsTest = matchInfo.IsTestMatch && message.IsTestMessage;
+                    message.IsTest = matchInfo.IsTestMatch || message.IsTestMsg;
                 }
             }
         }

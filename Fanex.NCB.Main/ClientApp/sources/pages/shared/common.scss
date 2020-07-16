@@ -116,8 +116,11 @@ body {
     background-color: #1F5C2F;
 }
 
+.badge-yellow-dark {
+    @extend %badge;
+    background-color: #A7A606;
+}
 //markdown-rules
-
 .markdown-rules {
     padding: 10px 0;
 

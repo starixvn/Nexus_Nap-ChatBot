@@ -18,6 +18,6 @@
 
         public bool IsTest { get; set; }
 
-        public bool IsTestMessage { get; set; }
+        public bool IsTestMsg { get; set; }
     }
 }

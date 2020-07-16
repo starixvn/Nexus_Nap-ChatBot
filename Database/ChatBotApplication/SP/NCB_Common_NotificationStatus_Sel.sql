@@ -9,6 +9,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_Common_NotificationStatus_Se
         Revisions:
 				- 20190408@Dominic: First Commit
 				- 20191223@Dominic: Add Draft status -- Redmnine ID: #124743
+				- 20200716@Oliver: Add Invalid status [RedmineID: #135686]
 
         
     */
@@ -32,6 +33,8 @@ BEGIN
 		SELECT 5 StatusID,  'Resolved' StatusName
 		UNION ALL
 		SELECT 9 StatusID,  'Draft' StatusName
+		UNION ALL
+		SELECT 10 StatusID,  'Invalid' StatusName
     ) AS tmp
     ORDER BY StatusID;
 END;
