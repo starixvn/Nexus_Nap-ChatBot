@@ -50,7 +50,7 @@
                 if (systemSettings != null)
                 {
                     var messages = await GetDataFromSiteMessage(systemSettings);
-                    var matchInfo = await GetMatchInfo(string.Join(",", messages.Item1.Select(m => m.MatchId)));
+                    var matchInfo = await GetMatchInfo(string.Join(",", messages.Item1.Select(m => m.MatchID)));
 
                     MappingData(messages.Item1, matchInfo);
                     if (messages.Item1.Any() && messages.Item2.Any())
@@ -124,7 +124,7 @@
         {
             foreach (var message in messages)
             {
-                var matchInfo = matchInfos.FirstOrDefault(i => i.MatchId == message.MatchId);
+                var matchInfo = matchInfos.FirstOrDefault(i => i.MatchID == message.MatchID);
                 if (matchInfo != null)
                 {
                     message.SportType = matchInfo.SportType;

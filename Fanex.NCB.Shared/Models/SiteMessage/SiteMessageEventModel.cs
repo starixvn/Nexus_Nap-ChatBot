@@ -2,7 +2,7 @@
 {
     public class SiteMessageMatchInfoModel
     {
-        public int MatchId { get; set; }
+        public int MatchID { get; set; }
 
         public int SportType { get; set; }
 

@@ -68,14 +68,14 @@
 
             var siteMsgs = new List<SiteMessageModel>
             {
-                new SiteMessageModel { MessageID = 1000, MatchId = 10, Content_en = "EN", Content_cs = "CN" },
+                new SiteMessageModel { MessageID = 1000, MatchID = 10, Content_en = "EN", Content_cs = "CN" },
                 fixture.Create<SiteMessageModel>()
             };
             var details = new List<SiteMessageDetail> { new SiteMessageDetail { MessageID = 1000, SiteName = "12bet" }, fixture.Create<SiteMessageDetail>() };
 
             var matchInfo = new List<SiteMessageMatchInfoModel>
             {
-                new SiteMessageMatchInfoModel { MatchId = 10, IsTestMatch = false },
+                new SiteMessageMatchInfoModel { MatchID = 10, IsTestMatch = false },
                 fixture.Create<SiteMessageMatchInfoModel>()
             };
             baseService.FetchMultipleAsync<SiteMessageModel, SiteMessageDetail>(Arg.Any<GetMessageInfoFromAdminSite>()).Returns(
@@ -99,7 +99,7 @@
 
             var siteMsgs = new List<SiteMessageModel>
             {
-                new SiteMessageModel { MessageID = 1000, MatchId = 10, Content_en = "EN", Content_cs = "CN" },
+                new SiteMessageModel { MessageID = 1000, MatchID = 10, Content_en = "EN", Content_cs = "CN" },
                 fixture.Create<SiteMessageModel>()
             };
             var details = new List<SiteMessageDetail> { new SiteMessageDetail { MessageID = 1000, SiteName = "12bet" },
@@ -107,7 +107,7 @@
 
             var matchInfo = new List<SiteMessageMatchInfoModel>
             {
-                new SiteMessageMatchInfoModel { MatchId = 10, IsTestMatch = false },
+                new SiteMessageMatchInfoModel { MatchID = 10, IsTestMatch = false },
                 fixture.Create<SiteMessageMatchInfoModel>()
             };
             baseService.FetchMultipleAsync<SiteMessageModel, SiteMessageDetail>(Arg.Any<GetMessageInfoFromAdminSite>()).Returns(
