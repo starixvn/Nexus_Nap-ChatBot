@@ -311,7 +311,7 @@ UPDATE tmp_MsgContentTypeTemplate
     SET h.CheckMsgDetail = h.MatchID,
 		h.IsInvalid = 1
     WHERE h.SportType = 0
-		AND (tpl.IsRequiredMatch = 1 OR h.MatchID > 0)
+		AND (tpl.IsRequiredMatch = 1 OR h.MatchID <> 0)
         AND tpl.IsTest = 0;
         
   UPDATE tmp_MsgHeader
