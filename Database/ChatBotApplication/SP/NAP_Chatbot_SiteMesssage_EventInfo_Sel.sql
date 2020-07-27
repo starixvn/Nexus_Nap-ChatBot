@@ -24,7 +24,7 @@ BEGIN
 	SET @XML = N'<root><r>' + REPLACE(@MatchIDLst, ',', '</r><r>') + '</r></root>'
 
 	INSERT INTO #MatchLst (MatchId)
-	SELECT r.value('.', 'VARCHAR(30)') AS MatchId
+	SELECT DISTINCT r.value('.', 'VARCHAR(30)') AS MatchId
 	FROM @xml.nodes('//root/r') AS RECORDS(r)
 	WHERE LEN(ISNULL(r.value('.', 'VARCHAR(30)'), '')) > 0
 
