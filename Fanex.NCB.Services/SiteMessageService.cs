@@ -50,7 +50,7 @@
                 if (systemSettings != null)
                 {
                     var messages = await GetDataFromSiteMessage(systemSettings);
-                    var matchInfo = await GetMatchInfo(string.Join(",", messages.Item1.Select(m => m.MatchID)));
+                    var matchInfo = await GetMatchInfo(string.Join(",", messages.Item1.Select(m => m.MatchID).Distinct()));
 
                     MappingData(messages.Item1, matchInfo);
                     if (messages.Item1.Any() && messages.Item2.Any())
