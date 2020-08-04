@@ -1,6 +1,6 @@
 /*<info serverAlias="DBACC-bodb02" executers="bodbAdminNet" isFunction="0" isNested="0"></info>*/
 ALTER PROCEDURE [dbo].[NAP_Chatbot_SpecialDelete_AbnormalBets_Sel]
-	@MessageIDLst VARCHAR(MAX)
+	@MessageIDLst XML
 AS
 
 /*
@@ -11,23 +11,28 @@ AS
 	Revisions:
 		- 20200214@Percy: Initialize SP [RedmineID: #127944]
 		- 20200305@Percy: Extend length some fields [RedmineID: #129794]
+		- 20200804@Percy: Add RequestId for Ticket Voiding Abnormal Bets - Phase 3 [RedmineID: #135686]
+
+	Param's Explanation:
+		@MessageIDLst:
+			<root>
+				<r MessageID=1 RequestID=1 />
+				<r MessageID=1 RequestID=2 />
+				<r MessageID=3 RequestID=2 />
+			</root>
 */
 
 BEGIN
 	SET NOCOUNT ON
 
-	IF ISNULL(@MessageIDLst , '') = ''
-		RETURN
+	CREATE TABLE #Message (MessageId INT, RequestId INT)
+	INSERT INTO  #Message (MessageId, RequestId)
+	SELECT
+		t.c.value('@MessageID', 'INT') AS MessageId
+		,t.c.value('@RequestID', 'INT') AS RequestId
+	FROM @MessageIDLst.nodes('root/r') AS t(c)
+	OPTION (OPTIMIZE FOR (@MessageIDLst = NULL))
 
-	CREATE TABLE #MessageLst (MessageId INT)
-
-	DECLARE @XML XML  = NULL
-	SET @XML = N'<root><r>' + REPLACE(@MessageIDLst, ',', '</r><r>') + '</r></root>'
-	
-	INSERT INTO #MessageLst (MessageId)
-	SELECT r.value('.', 'VARCHAR(20)') AS MessageId
-	FROM @xml.nodes('//root/r') AS RECORDS(r)
-	WHERE LEN(ISNULL(r.value('.', 'VARCHAR(20)'), '')) > 0
 
 	CREATE TABLE #VoidingHistory (VoidingHistoryId INT, RequestId INT, MessageId INT, ReasonId INT, VoidById INT, TransId BIGINT)
 	INSERT INTO #VoidingHistory (VoidingHistoryId, RequestId, MessageId, ReasonId, VoidById, TransId)
@@ -36,7 +41,7 @@ BEGIN
 		CROSS APPLY (
 			SELECT val AS TransId FROM dbo.strSplit(vh.TransIds, ',')
 		) t
-	WHERE EXISTS (SELECT 1 FROM #MessageLst m WHERE vh.MessageId = m.MessageId)
+	WHERE EXISTS (SELECT 1 FROM #MessageLst m WHERE vh.MessageId = m.MessageId AND vh.RequestId = m.RequestId)
 		AND vh.StatusId = 2
 
 	-- Request Info

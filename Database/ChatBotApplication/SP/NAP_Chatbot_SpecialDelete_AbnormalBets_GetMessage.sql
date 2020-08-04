@@ -9,12 +9,13 @@ AS
 
 	Revisions:
 		- 20200701@Percy: Initialize SP [RedmineID: #135686]
+		- 20200804@Percy: Add RequestId for Ticket Voiding Abnormal Bets - Phase 3 [RedmineID: #135686]
 */
 
 BEGIN
 	SET NOCOUNT ON
 
-	SELECT DISTINCT MessageId
+	SELECT DISTINCT vh.MessageId, vh.RequestId
 	FROM dbo.TicketVoiding_VoidingHistory vh WITH (NOLOCK)
 		INNER JOIN TicketVoiding_Request r WITH (NOLOCK) ON vh.RequestId = r.RequestId AND r.IssueTypeId = 11 -- abnormal bets
 	WHERE vh.CreatedDate >= GETDATE() - 1

@@ -15,13 +15,14 @@ AS
 	Revisions:
 		- 20200630@Percy: Initialize SP [RedmineID: #136492]
 		- 20200701@Percy: Add update code for IsFinished=1 [RedmineID: #135686]
+		- 20200804@Percy: Add RequestId for Ticket Voiding Abnormal Bets - Phase 3 [RedmineID: #135686]
 
-	Param Explanation:
+	Param's Explanation:
 		@MessageIDLst:
 			<root>
 				<r MessageID=1 TargetID=1 />
-				<r MessageID=1 TargetID=2 />
-				<r MessageID=2 TargetID=2 />
+				<r MessageID=2 RequestID=1 />
+				<r MessageID=2 RequestID=2 />
 			</root>
 */
 
@@ -29,11 +30,12 @@ BEGIN
 	SET NOCOUNT ON
 
 	BEGIN TRY
-		DECLARE @MsgChatBot TABLE (MessageId INT, TargetId INT, IsInsert BIT)
-		INSERT INTO @MsgChatBot (MessageId, TargetId, IsInsert)
+		DECLARE @MsgChatBot TABLE (MessageId INT, TargetId INT, RequestId INT, IsInsert BIT)
+		INSERT INTO @MsgChatBot (MessageId, TargetId, RequestId, IsInsert)
 		SELECT
 			t.c.value('@MessageID', 'INT') AS MessageID
 			,t.c.value('@TargetID', 'INT') AS TargetID
+			,t.c.value('@RequestID', 'INT') AS RequestID
 			,1 AS IsInsert
 		FROM @MessageIDLst.nodes('root/r') AS t(c)
 		OPTION (OPTIMIZE FOR (@MessageIDLst = NULL))
@@ -41,12 +43,22 @@ BEGIN
 		UPDATE mc WITH (ROWLOCK)
 		SET mc.IsFinished = 1
 		FROM dbo.MsgChatBot mc
-			INNER JOIN @MsgChatBot m ON m.MessageId = mc.MessageId AND m.TargetId = mc.TargetId AND mc.JobIdentify = @JobIdentify AND mc.Environment = @Environment
+			INNER JOIN @MsgChatBot m
+				ON		m.MessageId = mc.MessageId
+					AND m.TargetId = mc.TargetId
+					AND m.RequestId = mc.RequestId
+					AND mc.JobIdentify = @JobIdentify
+					AND mc.Environment = @Environment
 
-		INSERT INTO dbo.MsgChatBot (MessageId, TargetId, JobIdentify, Environment, IsFinished)
-		SELECT m.MessageId, m.TargetId, @JobIdentify, @Environment, CASE WHEN @JobIdentify = 3 THEN 1 ELSE 0 END
+		INSERT INTO dbo.MsgChatBot (MessageId, TargetId, RequestId, JobIdentify, Environment, IsFinished)
+		SELECT m.MessageId, m.TargetId, m.RequestId, @JobIdentify, @Environment, CASE WHEN @JobIdentify = 3 THEN 1 ELSE 0 END
 		FROM @MsgChatBot m
-			LEFT JOIN dbo.MsgChatBot mc WITH (NOLOCK) ON m.MessageId = mc.MessageId AND m.TargetId = mc.TargetId AND mc.JobIdentify = @JobIdentify AND mc.Environment = @Environment
+			LEFT JOIN dbo.MsgChatBot mc WITH (NOLOCK)
+				ON		m.MessageId = mc.MessageId
+					AND m.TargetId = mc.TargetId
+					AND m.RequestId = mc.RequestId
+					AND mc.JobIdentify = @JobIdentify
+					AND mc.Environment = @Environment
 		WHERE mc.MessageId IS NULL
 		
 		-- delete old msg
