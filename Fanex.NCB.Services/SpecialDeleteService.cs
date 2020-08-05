@@ -2,8 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Xml.Serialization;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
@@ -140,15 +142,22 @@
 
         public async Task VoidingAbnormalBetsToInternalDepartment()
         {
-            if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.VoidingAbnormalBets))
+            try
             {
-                var systemSettings = await GetAbnormalBetSystemSettings();
-
-                if (systemSettings != null)
+                if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.VoidingAbnormalBets))
                 {
-                    var listMsgYesterdayToCurrent = await GetMessageListFromYesterdayToCurrent();
-                    await GetMessageAndImportToChatbot(listMsgYesterdayToCurrent, systemSettings);
+                    var systemSettings = await GetAbnormalBetSystemSettings();
+
+                    if (systemSettings != null)
+                    {
+                        var listMsgYesterdayToCurrent = await GetMessageListFromYesterdayToCurrent();
+                        await GetMessageAndImportToChatbot(listMsgYesterdayToCurrent, systemSettings);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
 
@@ -197,9 +206,14 @@
 
         private async Task<IEnumerable<Message>> GetAbnormalBetsMessages(SystemSetting setting, IEnumerable<MessageHistory> listMsgs)
         {
+            var serializer = new XmlSerializer(typeof(List<MessageHistory>),
+                                   new XmlRootAttribute("root"));
+
+            var stream = new StringWriter();
+            serializer.Serialize(stream, listMsgs.ToList());
             var criteria = new GetAbnormalBetsMessageCriteria
             {
-                MessageIDLst = XmlHelper.Serialize(listMsgs),
+                MessageIDLst = stream.ToString(),
                 BatchSize = setting.BatchSize,
                 MsgContentsTypeLst = setting.MsgContentsTypeLst,
                 Environment = Environment
@@ -254,11 +268,15 @@
         private async Task InsertToMessageChatbot(IEnumerable<AbnormalBetsMessage> messages)
         {
             var msgHistory = messages.Select(x => new MessageHistory { MessageID = x.MessageID, TargetID = 0 }).ToList();
+            var serializer = new XmlSerializer(typeof(List<MessageHistory>),
+                                   new XmlRootAttribute("root"));
 
+            var stream = new StringWriter();
+            serializer.Serialize(stream, msgHistory);
             var command = new InsertMessageHistoryCommand
             {
                 JobIdentify = VoidAbnormalbetsJobIdentify,
-                MessageIDLst = XmlHelper.Serialize(msgHistory),
+                MessageIDLst = stream.ToString(),
                 Environment = Environment
             };
 
