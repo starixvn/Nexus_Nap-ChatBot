@@ -10,5 +10,8 @@
 
         [XmlAttribute("TargetID")]
         public int TargetID { get; set; }
+
+        [XmlAttribute("TargetID")]
+        public int RequestID { get; set; }
     }
 }

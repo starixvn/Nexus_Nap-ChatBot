@@ -2,10 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-    using System.Xml.Serialization;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
@@ -13,6 +11,7 @@
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Extensions;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.SiteMessage;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
@@ -153,14 +152,15 @@
             }
         }
 
-        private async Task GetMessageAndImportToChatbot(IEnumerable<string> listMsgYesterdayToCurrent, SystemSetting settings)
+        private async Task GetMessageAndImportToChatbot(IEnumerable<MessageHistory> listMsgYesterdayToCurrent, SystemSetting settings)
         {
             if (listMsgYesterdayToCurrent.Any())
             {
-                var messages = await GetAbnormalBetsMessages(settings, string.Join(',', listMsgYesterdayToCurrent));
+                var messages = await GetAbnormalBetsMessages(settings, listMsgYesterdayToCurrent);
                 if (messages.Any())
                 {
-                    var voidingHistories = await GetVoidingHistory(string.Join(",", messages.Select(m => m.MessageID)));
+                    var listMsg = messages.Select(m => new MessageHistory { MessageID = m.MessageID, RequestID = m.RequestID }).ToList();
+                    var voidingHistories = await GetVoidingHistory(XmlHelper.Serialize(listMsg));
 
                     MappingAbnormalBetsData(messages, voidingHistories);
 
@@ -170,9 +170,9 @@
             }
         }
 
-        private async Task<IEnumerable<string>> GetMessageListFromYesterdayToCurrent()
+        private async Task<IEnumerable<MessageHistory>> GetMessageListFromYesterdayToCurrent()
         {
-            return await baseService.GetDataAsync<string>(new GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria());
+            return await baseService.GetDataAsync<MessageHistory>(new GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria());
         }
 
         private static void MappingAbnormalBetsData(IEnumerable<Message> messages, IEnumerable<AbnormalBetsMessage> voidingHistories)
@@ -195,11 +195,11 @@
             return await baseService.GetDataEntityAsync<SystemSetting>(criteria);
         }
 
-        private async Task<IEnumerable<Message>> GetAbnormalBetsMessages(SystemSetting setting, string listMessages)
+        private async Task<IEnumerable<Message>> GetAbnormalBetsMessages(SystemSetting setting, IEnumerable<MessageHistory> listMsgs)
         {
             var criteria = new GetAbnormalBetsMessageCriteria
             {
-                MessageIDLst = listMessages,
+                MessageIDLst = XmlHelper.Serialize(listMsgs),
                 BatchSize = setting.BatchSize,
                 MsgContentsTypeLst = setting.MsgContentsTypeLst,
                 Environment = Environment
@@ -254,16 +254,11 @@
         private async Task InsertToMessageChatbot(IEnumerable<AbnormalBetsMessage> messages)
         {
             var msgHistory = messages.Select(x => new MessageHistory { MessageID = x.MessageID, TargetID = 0 }).ToList();
-            var serializer = new XmlSerializer(typeof(List<MessageHistory>),
-                                   new XmlRootAttribute("root"));
-
-            var stream = new StringWriter();
-            serializer.Serialize(stream, msgHistory);
 
             var command = new InsertMessageHistoryCommand
             {
                 JobIdentify = VoidAbnormalbetsJobIdentify,
-                MessageIDLst = stream.ToString(),
+                MessageIDLst = XmlHelper.Serialize(msgHistory),
                 Environment = Environment
             };
 
