@@ -187,6 +187,7 @@
                     msg.Content_en = messages.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_en.Trim().Replace("@@", string.Empty);
                     msg.Content_cs = messages.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_cs.Trim().Replace("@@", string.Empty);
                     msg.MsgContentsType = messages.FirstOrDefault(m => m.MessageID == msg.MessageID) != null ? messages.FirstOrDefault(m => m.MessageID == msg.MessageID).MsgContentsType : 0;
+                    msg.RequestID = messages.FirstOrDefault(m => m.MessageID == msg.MessageID).RequestID;
                 }
             }
         }
