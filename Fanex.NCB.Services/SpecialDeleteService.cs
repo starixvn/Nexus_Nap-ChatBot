@@ -142,26 +142,19 @@
 
         public async Task VoidingAbnormalBetsToInternalDepartment()
         {
-            try
+            if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.VoidingAbnormalBets))
             {
-                if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.VoidingAbnormalBets))
-                {
-                    var systemSettings = await GetAbnormalBetSystemSettings();
+                var systemSettings = await GetAbnormalBetSystemSettings();
 
-                    if (systemSettings != null)
-                    {
-                        var listMsgYesterdayToCurrent = await GetMessageListFromYesterdayToCurrent();
-                        await GetMessageAndImportToChatbot(listMsgYesterdayToCurrent, systemSettings);
-                    }
+                if (systemSettings != null)
+                {
+                    var listMsgYesterdayToCurrent = await GetMessageListFromYesterdayToCurrent();
+                    await GetMessageAndImportToChatbot(listMsgYesterdayToCurrent, systemSettings);
                 }
-            }
-            catch (Exception ex)
-            {
-                throw;
             }
         }
 
-        private async Task GetMessageAndImportToChatbot(IEnumerable<MessageHistory> listMsgYesterdayToCurrent, SystemSetting settings)
+        private async Task GetMessageAndImportToChatbot(List<MessageHistory> listMsgYesterdayToCurrent, SystemSetting settings)
         {
             if (listMsgYesterdayToCurrent.Any())
             {
@@ -179,9 +172,10 @@
             }
         }
 
-        private async Task<IEnumerable<MessageHistory>> GetMessageListFromYesterdayToCurrent()
+        private async Task<List<MessageHistory>> GetMessageListFromYesterdayToCurrent()
         {
-            return await baseService.GetDataAsync<MessageHistory>(new GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria());
+            var result = await baseService.GetDataAsync<MessageHistory>(new GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria());
+            return result.ToList();
         }
 
         private static void MappingAbnormalBetsData(IEnumerable<Message> messages, IEnumerable<AbnormalBetsMessage> voidingHistories)
@@ -204,16 +198,11 @@
             return await baseService.GetDataEntityAsync<SystemSetting>(criteria);
         }
 
-        private async Task<IEnumerable<Message>> GetAbnormalBetsMessages(SystemSetting setting, IEnumerable<MessageHistory> listMsgs)
+        private async Task<IEnumerable<Message>> GetAbnormalBetsMessages(SystemSetting setting, List<MessageHistory> listMsgs)
         {
-            var serializer = new XmlSerializer(typeof(List<MessageHistory>),
-                                   new XmlRootAttribute("root"));
-
-            var stream = new StringWriter();
-            serializer.Serialize(stream, listMsgs.ToList());
             var criteria = new GetAbnormalBetsMessageCriteria
             {
-                MessageIDLst = stream.ToString(),
+                MessageIDLst = XmlHelper.Serialize(listMsgs),
                 BatchSize = setting.BatchSize,
                 MsgContentsTypeLst = setting.MsgContentsTypeLst,
                 Environment = Environment

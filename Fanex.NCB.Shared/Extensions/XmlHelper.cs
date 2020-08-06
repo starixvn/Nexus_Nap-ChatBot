@@ -6,7 +6,7 @@ namespace Fanex.NCB.Shared.Extensions
 {
     public static class XmlHelper
     {
-        public static string Serialize<T>(IEnumerable<T> input)
+        public static string Serialize<T>(List<T> input)
         {
             var serializer = new XmlSerializer(typeof(List<T>),
                                    new XmlRootAttribute("root"));
