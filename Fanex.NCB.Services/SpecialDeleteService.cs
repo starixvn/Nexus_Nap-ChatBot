@@ -256,7 +256,7 @@
 
         private async Task InsertToMessageChatbot(IEnumerable<AbnormalBetsMessage> messages)
         {
-            var msgHistory = messages.Select(x => new MessageHistory { MessageID = x.MessageID, TargetID = 0 }).ToList();
+            var msgHistory = messages.Select(x => new MessageHistory { MessageID = x.MessageID, RequestID = x.RequestID, TargetID = 0 }).ToList();
             var serializer = new XmlSerializer(typeof(List<MessageHistory>),
                                    new XmlRootAttribute("root"));
 
