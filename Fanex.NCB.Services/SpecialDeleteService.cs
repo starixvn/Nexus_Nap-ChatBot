@@ -167,7 +167,7 @@
                     MappingAbnormalBetsData(messages, voidingHistories);
 
                     int maxMsgId = messages.Max(m => m.MessageID);
-                    await ImportAbnormalBetNotificationToChatbotDB(voidingHistories, maxMsgId);
+                    await ImportAbnormalBetNotificationToChatbotDB(voidingHistories, listMsg, maxMsgId);
                 }
             }
         }
@@ -187,7 +187,6 @@
                     msg.Content_en = messages.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_en.Trim().Replace("@@", string.Empty);
                     msg.Content_cs = messages.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_cs.Trim().Replace("@@", string.Empty);
                     msg.MsgContentsType = messages.FirstOrDefault(m => m.MessageID == msg.MessageID) != null ? messages.FirstOrDefault(m => m.MessageID == msg.MessageID).MsgContentsType : 0;
-                    msg.RequestID = messages.FirstOrDefault(m => m.MessageID == msg.MessageID).RequestID;
                 }
             }
         }
@@ -227,7 +226,8 @@
             return new List<AbnormalBetsMessage>();
         }
 
-        private async Task ImportAbnormalBetNotificationToChatbotDB(IEnumerable<AbnormalBetsMessage> messages, int maxMessageId)
+        private async Task ImportAbnormalBetNotificationToChatbotDB(IEnumerable<AbnormalBetsMessage> messages,
+            IEnumerable<MessageHistory> msgHistories, int maxMessageId)
         {
             if (messages.Any())
             {
@@ -248,21 +248,20 @@
 
                 if (command.IsSuccessful)
                 {
-                    await InsertToMessageChatbot(messages);
+                    await InsertToMessageChatbot(msgHistories);
                 }
 
                 await OnAfterImportData(command, notification);
             }
         }
 
-        private async Task InsertToMessageChatbot(IEnumerable<AbnormalBetsMessage> messages)
+        private async Task InsertToMessageChatbot(IEnumerable<MessageHistory> messages)
         {
-            var msgHistory = messages.Select(x => new MessageHistory { MessageID = x.MessageID, RequestID = x.RequestID, TargetID = 0 }).ToList();
             var serializer = new XmlSerializer(typeof(List<MessageHistory>),
                                    new XmlRootAttribute("root"));
 
             var stream = new StringWriter();
-            serializer.Serialize(stream, msgHistory);
+            serializer.Serialize(stream, messages);
             var command = new InsertMessageHistoryCommand
             {
                 JobIdentify = VoidAbnormalbetsJobIdentify,
