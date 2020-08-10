@@ -25,8 +25,8 @@ AS
 BEGIN
 	SET NOCOUNT ON
 
-	CREATE TABLE #Message (MessageId INT, RequestId INT)
-	INSERT INTO  #Message (MessageId, RequestId)
+	CREATE TABLE #MessageLst (MessageId INT, RequestId INT)
+	INSERT INTO  #MessageLst (MessageId, RequestId)
 	SELECT
 		t.c.value('@MessageID', 'INT') AS MessageId
 		,t.c.value('@RequestID', 'INT') AS RequestId
