@@ -41,5 +41,6 @@ ALTER TABLE dbo.MsgChatBot
 		,TargetId ASC
 		,RequestId ASC
 		,JobIdentify ASC
+		,Environment ASC
 	)
 GO
