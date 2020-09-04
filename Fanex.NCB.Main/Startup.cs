@@ -105,12 +105,12 @@
             var redis = ConnectionMultiplexer.Connect(redisConfig);
             services.AddDataProtection()
                 .SetApplicationName("ChatBotForLicensee")
-                .PersistKeysToStackExchangeRedis(redis, "ChatBotForLicensee-Keys");
+                .PersistKeysToStackExchangeRedis(redis, "ChatBotForLicensee:DataProtection:Keys");
 
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = redisConfig;
-                options.InstanceName = $"Fanex.NCB.Session-";
+                options.InstanceName = $"ChatBotForLicensee:Session:";
             });
 
             services.AddSession(options =>
@@ -135,7 +135,7 @@
                 hubOptions.EnableDetailedErrors = true;
             }).AddStackExchangeRedis(redisConfig, options =>
             {
-                options.Configuration.ChannelPrefix = "ChatbotForLicenseeSignalR";
+                options.Configuration.ChannelPrefix = "ChatBotForLicensee:SignalR";
             });
         }
 
