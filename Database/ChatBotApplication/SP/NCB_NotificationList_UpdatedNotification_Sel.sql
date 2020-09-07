@@ -6,7 +6,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_UpdatedNotifi
      IN notificationIds VARCHAR(1000)
     /*
 		Creator: Oliver@20201401
-        Redmine: https://nexdev.net/issues/129399
+        Redmine: https://nexdev.net/issues/129363
         Param:
 				- notificationIds
 		Return Data Set:
@@ -15,7 +15,8 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_UpdatedNotifi
 									Ex: RecipientSentStatusJSON = [{"IsError": 0, "RecipientName": "Happy8"}, {"IsError": 0, "RecipientName": "SALONCS"}]
         Revisions:
 				- 20201401@Oliver: First Commit
-				- 20200302@Oliver: get additional notificationTypeId - RedmineID: #129339
+				- 20200302@Oliver: get additional notificationTypeId - RedmineID: #129363
+                - 20200907@Oliver: change data type of NotificationId temporary table - RedmineID: #141015
     */
 )
 BEGIN
