@@ -24,7 +24,7 @@ BEGIN
 
 	#Insert comma seperated list notificationIDs to temporary tables
     DROP TEMPORARY TABLE IF EXISTS tmp_notificationIDs;
-	CREATE TEMPORARY TABLE tmp_notificationIDs(NotificationId SMALLINT);
+	CREATE TEMPORARY TABLE tmp_notificationIDs(NotificationId INT);
     
 	IF IFNULL(notificationIds,'') <> ''THEN
 		SET @sqlCommand = REPLACE(notificationIds, ',', '),(');
