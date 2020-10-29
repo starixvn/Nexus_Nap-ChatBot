@@ -1,74 +1,113 @@
-/*<info serverAlias="DBMSG-bodb_Message" executers="bodbAdminNet" viewers="" isFunction="0" isNested="0"></info>*/
-CREATE PROCEDURE [dbo].[NAP_Chatbot_SpecialDeleteMsg_Sel]
-	@MessageID INT
-	, @BatchSize INT
-	, @MsgContentsTypeLst VARCHAR(2000)
+/*<info serverAlias="DBMSG-bodb_Message" executers="bodbAdminNet" isFunction="0" isNested="0"></info>*/
+ALTER PROCEDURE [dbo].[NAP_Chatbot_SpecialDeleteMsg_Sel]
+	@MessageID				INT
+	,@LastPostTime			DATETIME
+	,@BatchSize				INT
+	,@MsgContentsTypeLst	VARCHAR(2000)
+	,@Environment			VARCHAR(20)
 AS
+
 /*
-	Created: Dominic
-	Date: 20191127
+	Created: 20191127@Dominic
+	DB: DBMSG-bodb_Message
 	Task: Get messages of special delete site[RedmineID #122905]
-	DB: DBMSG/bodb_Message  
 
 	Revisions:
 		- 20191127@Dominic: init
+		- 20201029@Percy: Add LastPostTime for rescan message [RedmineID: #144274]
 */
+
 BEGIN
 	SET NOCOUNT ON
 
-	CREATE TABLE #TmpMsg(MessageId INT , MsgContentsType INT, Content_en NVARCHAR(4000), Content_cs NVARCHAR(4000))
-	CREATE TABLE #MsgContentsTypeLst(Val INT)
-	CREATE UNIQUE CLUSTERED INDEX PK_MsgContentsType ON #MsgContentsTypeLst(Val)
+	SELECT @LastPostTime = DATEADD(HOUR, -1, @LastPostTime)
+
+	CREATE TABLE #MsgContentsTypeLst(MsgContentsType TINYINT)
+	CREATE UNIQUE CLUSTERED INDEX PK_MsgContentsType ON #MsgContentsTypeLst(MsgContentsType)
 
 	DECLARE @XML XML  = NULL
 
 	SET @XML = N'<root><r>' + REPLACE(@MsgContentsTypeLst, ',', '</r><r>') + '</r></root>'
 	
-	INSERT INTO #MsgContentsTypeLst(val)
-	SELECT r.value('.', 'NVARCHAR(15)') Val
+	INSERT INTO #MsgContentsTypeLst(MsgContentsType)
+	SELECT r.value('.', 'NVARCHAR(15)') AS MsgContentsType
 	FROM @xml.nodes('//root/r') AS RECORDS(r)
 	WHERE LEN(ISNULL(r.value('.', 'NVARCHAR(15)'), '')) > 0
 
+	DECLARE @Msg TABLE (MessageId INT, MsgContentsType TINYINT, Content_en NVARCHAR(4000), Content_cs NVARCHAR(4000), PostTime DATETIME, IsNew TINYINT)
 	
-
-	INSERT INTO #TmpMsg(MessageId,  MsgContentsType, Content_en, Content_cs)
-	SELECT TOP (@BatchSize) m.MessageId, m.MsgContentsType, m.Content_en ,m.Content_cs
-	from MsgTarget mt (NOLOCK)
-	INNER JOIN msg m (NOLOCK) on mt.MessageId = m.MessageId	
-	INNER JOIN bodb02.dbo.Dep_CustSuper dc (NOLOCK) on mt. TargetId = dc. custid	
-	where  m.MessageId > @MessageID
-	AND m.msgtype = 1	
-	AND m.MsgContentsType IN (SELECT Val FROM #MsgContentsTypeLst)
-	AND m.isbatch = 1	
-	AND mt.isDeleted = 0
-	AND m.Content_en LIKE '%@@%'
-	AND mt.BetTransId IS NOT NULL
-	AND (site IN ('spondemo' ,'Athena000')
-				OR currency NOT IN (20,27,28)
-			)
-	GROUP BY m.MessageId,  m.MsgContentsType, Content_en, Content_cs
+	-- New messages from @MessageID
+	INSERT INTO @Msg (MessageId, MsgContentsType, Content_en, Content_cs, PostTime, IsNew)
+	SELECT TOP (@BatchSize) m.MessageId, m.MsgContentsType, m.Content_en, m.Content_cs, m.PostTime, 1
+	FROM dbo.Msg m WITH (NOLOCK)
+		INNER JOIN dbo.MsgTarget mt WITH (NOLOCK) ON m.MessageId = mt.MessageId
+		INNER JOIN bodb02.dbo.Dep_CustSuper ds WITH (NOLOCK) ON mt.TargetId = ds.CustId
+	WHERE m.MessageId > @MessageID
+		AND m.msgtype = 1	
+		AND EXISTS (SELECT 1 FROM #MsgContentsTypeLst mct WHERE m.MsgContentsType = mct.MsgContentsType)
+		AND m.isbatch = 1	
+		AND mt.isDeleted = 0
+		AND m.Content_en LIKE '%@@%'
+		AND mt.BetTransId IS NOT NULL
+		AND (ds.site IN ('spondemo' ,'Athena000')
+					OR ds.currency NOT IN (20, 27, 28)
+				)
+	GROUP BY m.MessageId, m.MsgContentsType, m.Content_en, m.Content_cs, m.PostTime
 	ORDER BY m.MessageId
-	OPTION(RECOMPILE)
+	OPTION (RECOMPILE)
 
-	CREATE UNIQUE CLUSTERED INDEX PK_MessageID ON #TmpMsg(MessageId)
+	-- Rescan messages from @LastPostTime
+	INSERT INTO @Msg (MessageId, MsgContentsType, Content_en, Content_cs, PostTime, IsNew)
+	SELECT m.MessageId, m.MsgContentsType, m.Content_en, m.Content_cs, m.PostTime, 0
+	FROM dbo.Msg m WITH (NOLOCK)
+		INNER JOIN dbo.MsgTarget mt WITH (NOLOCK) ON m.MessageId = mt.MessageId
+		INNER JOIN bodb02.dbo.Dep_CustSuper ds WITH (NOLOCK) ON mt.TargetId = ds.CustId
+	WHERE m.PostTime >= @LastPostTime
+		AND m.msgtype = 1	
+		AND EXISTS (SELECT 1 FROM #MsgContentsTypeLst mct WHERE m.MsgContentsType = mct.MsgContentsType)
+		AND m.isbatch = 1	
+		AND mt.isDeleted = 0
+		AND m.Content_en LIKE '%@@%'
+		AND mt.BetTransId IS NOT NULL
+		AND (ds.site IN ('spondemo' ,'Athena000')
+					OR ds.currency NOT IN (20, 27, 28)
+				)
+		AND NOT EXISTS (SELECT 1 FROM dbo.MsgChatBot mc WITH (NOLOCK)
+						WHERE mc.MessageId = mt.MessageId AND mc.TargetId = mt.TargetId
+							AND mc.JobIdentify = 1 AND mc.Environment = @Environment
+		)
+	GROUP BY m.MessageId, m.MsgContentsType, m.Content_en, m.Content_cs, m.PostTime
+	ORDER BY m.MessageId
+
+	-- Remove duplicate message if exists (for case update max message ID)
+	DELETE m
+	FROM (
+		SELECT MessageId, IsNew, ROW_NUMBER() OVER(PARTITION BY MessageId ORDER BY IsNew DESC) AS RN
+		FROM @Msg
+	) m
+	WHERE m.RN > 1
 	
 	--1st dataset: message header
-	SELECT MessageId, MsgContentsType, Content_en, Content_cs 
-	FROM #TmpMsg
+	SELECT MessageId, MsgContentsType, Content_en, Content_cs, PostTime, IsNew
+	FROM @Msg
 	ORDER BY MessageId
 
 	--2nd dataset: message detail
-	SELECT DISTINCT m.MessageId, dc.site
-	FROM MsgTarget mt (NOLOCK)	
-		INNER JOIN #TmpMsg m (NOLOCK) ON mt.MessageId = m.MessageId	
-		INNER JOIN bodb02. dbo. Dep_CustSuper dc (NOLOCK) ON mt. TargetId = dc. custid	
-	WHERE mt.isDeleted = 0 
-		AND mt.BetTransId IS NOT NULL
-		AND (
-			site IN ('spondemo' ,'Athena000')
-			OR currency NOT IN (20,27,28)
+	SELECT mt.MessageId, mt.TargetId, ds.site
+	FROM dbo.MsgTarget mt WITH (NOLOCK)
+		INNER JOIN @Msg m ON mt.MessageId = m.MessageId
+		INNER JOIN bodb02.dbo.Dep_CustSuper ds (NOLOCK) ON mt.TargetId = ds.CustId
+	WHERE
+		m.IsNew = 1
+		OR NOT EXISTS (
+			SELECT 1
+			FROM dbo.MsgChatBot mc WITH (NOLOCK)
+			WHERE mc.MessageId = mt.MessageId
+				AND mc.TargetId = mt.TargetId
+				AND mc.JobIdentify = 1
+				AND mc.Environment = @Environment
 		)
-	ORDER BY m.MessageId, dc.site
-
-	DROP TABLE #TmpMsg
+	GROUP BY mt.MessageId, mt.TargetId, ds.site
+	ORDER BY mt.MessageId, ds.site
 END
+GO

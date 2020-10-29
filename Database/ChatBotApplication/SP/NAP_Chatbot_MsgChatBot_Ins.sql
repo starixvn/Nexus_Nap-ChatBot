@@ -16,6 +16,7 @@ AS
 		- 20200630@Percy: Initialize SP [RedmineID: #136492]
 		- 20200701@Percy: Add update code for IsFinished=1 [RedmineID: #135686]
 		- 20200804@Percy: Add RequestId for Ticket Voiding Abnormal Bets - Phase 3 [RedmineID: #135686]
+		- 20201029@Percy: Add job for licensee (@JobIdentify = 1) [RedmineID: #144274]
 
 	Param's Explanation:
 		@MessageIDLst:
@@ -51,7 +52,7 @@ BEGIN
 					AND mc.Environment = @Environment
 
 		INSERT INTO dbo.MsgChatBot (MessageId, TargetId, RequestId, JobIdentify, Environment, IsFinished)
-		SELECT m.MessageId, m.TargetId, m.RequestId, @JobIdentify, @Environment, CASE WHEN @JobIdentify = 3 THEN 1 ELSE 0 END
+		SELECT m.MessageId, m.TargetId, m.RequestId, @JobIdentify, @Environment, CASE WHEN @JobIdentify IN (1, 3) THEN 1 ELSE 0 END
 		FROM @MsgChatBot m
 			LEFT JOIN dbo.MsgChatBot mc WITH (NOLOCK)
 				ON		m.MessageId = mc.MessageId
