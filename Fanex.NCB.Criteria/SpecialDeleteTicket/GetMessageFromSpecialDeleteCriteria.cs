@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.SpecialDeleteTicket
 {
+    using System;
     using Fanex.Data.Repository;
 
     public class GetMessageFromSpecialDeleteCriteria : CriteriaBase
@@ -9,6 +10,8 @@
         public int BatchSize { get; set; }
 
         public string MsgContentsTypeLst { get; set; }
+
+        public DateTime? LastPostTime { get; set; }
 
         public override string GetSettingKey() => "NAP_Chatbot_SpecialDeleteMsg_Sel";
 

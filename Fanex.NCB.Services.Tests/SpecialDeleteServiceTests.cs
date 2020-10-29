@@ -107,8 +107,8 @@
                 .Returns(new SystemSetting { BatchSize = 100, MaxMessageID = 1989, MsgContentsTypeLst = "103" });
 
             baseService.GetDataAsync<Message>(Arg.Any<GetAbnormalBetsMessageCriteria>()).Returns(fixture.Create<List<Message>>());
-            baseService.GetDataAsync<string>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>()).Returns(fixture.Create<List<string>>());
             baseService.GetDataAsync<AbnormalBetsMessage>(Arg.Any<GetAbnormalBetInfoCriteria>()).Returns(fixture.Create<IEnumerable<AbnormalBetsMessage>>());
+
             //Actual
             await service.VoidingAbnormalBetsToInternalDepartment();
 

@@ -28,6 +28,7 @@
         private readonly IPushSignalService pushSignalService;
         private readonly IChatbotService chatbotService;
         private readonly string Environment;
+        private const int VoidTicketForLicenseeJobIdentify = 1;
         private const int VoidAbnormalbetsJobIdentify = 2;
 
         private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
@@ -59,9 +60,20 @@
                     {
                         var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
 
+                        await UpdateMessageHistoryVoidingForLicensee(result.Item1, messages.Item2);
+
                         await OnAfterImportData(result.Item1, result.Item2);
                     }
                 }
+            }
+        }
+
+        private async Task UpdateMessageHistoryVoidingForLicensee(CommandResult commandResult, IEnumerable<MessageDetail> msgDetails)
+        {
+            if (commandResult.IsSuccessful)
+            {
+                var msgHistories = msgDetails.Select(x => new MessageHistory { MessageID = x.MessageID, TargetID = x.TargetID }).ToList();
+                await InsertToMessageChatbot(msgHistories);
             }
         }
 
@@ -127,7 +139,8 @@
             {
                 MessageID = systemSettings.MaxMessageID,
                 BatchSize = systemSettings.BatchSize,
-                MsgContentsTypeLst = systemSettings.MsgContentsTypeLst
+                MsgContentsTypeLst = systemSettings.MsgContentsTypeLst,
+                LastPostTime = systemSettings.LastPostTime
             };
 
             return await baseService.FetchMultipleAsync<Message, MessageDetail>(criteria);

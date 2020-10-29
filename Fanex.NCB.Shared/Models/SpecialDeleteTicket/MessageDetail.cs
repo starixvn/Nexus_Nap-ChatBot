@@ -5,5 +5,7 @@
         public long MessageID { get; set; }
 
         public string Site { get; set; }
+
+        public int TargetID { get; set; }
     }
 }
