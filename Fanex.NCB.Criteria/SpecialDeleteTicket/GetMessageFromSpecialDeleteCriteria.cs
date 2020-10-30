@@ -9,6 +9,8 @@
 
         public int BatchSize { get; set; }
 
+        public string Environment { get; set; }
+
         public string MsgContentsTypeLst { get; set; }
 
         public DateTime? LastPostTime { get; set; }

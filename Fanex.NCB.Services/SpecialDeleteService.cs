@@ -140,7 +140,8 @@
                 MessageID = systemSettings.MaxMessageID,
                 BatchSize = systemSettings.BatchSize,
                 MsgContentsTypeLst = systemSettings.MsgContentsTypeLst,
-                LastPostTime = systemSettings.LastPostTime
+                LastPostTime = systemSettings.LastPostTime,
+                Environment = Environment
             };
 
             return await baseService.FetchMultipleAsync<Message, MessageDetail>(criteria);
