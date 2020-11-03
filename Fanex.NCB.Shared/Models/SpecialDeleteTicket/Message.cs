@@ -16,6 +16,6 @@
 
         public bool IsNew { get; set; }
 
-        public DateTime? LastPostTime { get; set; }
+        public DateTime? PostTime { get; set; }
     }
 }
