@@ -261,7 +261,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
       );
             
 	INSERT INTO tmp_NotificationRecipientList(MessageID, Site, RecipientID, ConversationGroupID, ChatGroupTypeID, StatusID, Status, LicenseeStatusID)       
-    SELECT  d.MessageID, d.Site, d.RecipientID
+    SELECT DISTINCT d.MessageID, d.Site, d.RecipientID
 					, gri.ConversationGroupID
 					, gri.ChatGroupTypeID
           , tpl.StatusID
