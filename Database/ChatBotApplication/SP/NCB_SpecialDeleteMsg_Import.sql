@@ -1,4 +1,5 @@
-﻿DROP PROCEDURE IF EXISTS NCB_SpecialDeleteMsg_Import;
+USE ChatBot;
+DROP PROCEDURE IF EXISTS NCB_SpecialDeleteMsg_Import;
 DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SpecialDeleteMsg_Import(
@@ -26,20 +27,24 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SpecialDeleteMsg_Import(
         Revisions:
 				- 20191211@Dominic: First Commit
 				- 20200214@Percy: Special Delete - Integrate Abnormal Bets [RedmineID: #127944]
-        - 20200327@Percy: Just send notification to active licensees [RedmineID: #131240]
+				- 20200327@Percy: Just send notification to active licensees [RedmineID: #131240]
+				- 20201029@Percy: Remove sent recipients for rescan messages [RedmineID: #144274]
         
     */
 )
 SQL SECURITY DEFINER
 NCB_SpecialDeleteMsg_Import:BEGIN
     # Variables
-	DECLARE iLoop INT;
-    DECLARE startTime 			DATETIME(3);
+	DECLARE iLoop 			INT;
+    DECLARE startTime 		DATETIME(3);
     DECLARE finishTime 		DATETIME(3); 
-    DECLARE duration 			INT;							
-    DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
+    DECLARE duration 		INT;							
+    DECLARE logContent 		MEDIUMTEXT CHARACTER SET utf8mb4;
     DECLARE templateNotifcationType JSON;
-    DECLARE ccConversationGroupID INT;
+    DECLARE ccConversationGroupID 	INT;
+    DECLARE maxMessageID 	INT;
+    DECLARE lastPostTime 	DATETIME;
+    DECLARE ccIsNew 		TINYINT;
 
     DECLARE createdDate DATETIME(3);
     DECLARE ccMessageID INT;
@@ -79,6 +84,8 @@ NCB_SpecialDeleteMsg_Import:BEGIN
             MsgContentsType INT,
             Content_en TEXT, 
             Content_cs TEXT,
+            PostTime TEXT,
+			IsNew TINYINT,
             CheckMsg TEXT,
             CheckMsgDetail TEXT,
             PRIMARY KEY (Id),
@@ -87,13 +94,15 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     
     SET iLoop = 0;
     WHILE (JSON_EXTRACT(messageHeader, CONCAT('$[',iLoop, '].MessageID'))  IS NOT NULL) DO 
-		INSERT INTO tmp_MsgHeader(MessageID, MsgContentsType, Content_en, Content_cs, CheckMsg)
+		INSERT INTO tmp_MsgHeader(MessageID, MsgContentsType, Content_en, Content_cs, PostTime, IsNew, CheckMsg)
         VALUES (
 			JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MessageID'))),
             JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MsgContentsType'))),
             JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_en'))),
-            JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_cs')))
-            , ''
+            JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_cs'))),
+			JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].PostTime'))),
+            JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].IsNew')),
+            ''
 		);
         
         SET iLoop := iLoop + 1;
@@ -252,7 +261,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
       );
             
 	INSERT INTO tmp_NotificationRecipientList(MessageID, Site, RecipientID, ConversationGroupID, ChatGroupTypeID, StatusID, Status, LicenseeStatusID)       
-    SELECT  d.MessageID, d.Site, d.RecipientID
+    SELECT DISTINCT d.MessageID, d.Site, d.RecipientID
 					, gri.ConversationGroupID
 					, gri.ChatGroupTypeID
           , tpl.StatusID
@@ -288,7 +297,15 @@ NCB_SpecialDeleteMsg_Import:BEGIN
   SET iLoop = 1;
   SET createdDate = UTC_TIMESTAMP();
   WHILE (EXISTS (SELECT 1 FROM tmp_MsgHeader WHERE Id = iLoop)) DO
-    SELECT MessageID INTO ccMessageID FROM tmp_MsgHeader WHERE Id = iLoop;
+    SELECT MessageID, IsNew INTO ccMessageID, ccIsNew FROM tmp_MsgHeader WHERE Id = iLoop;
+    
+    IF ccIsNew = 0 THEN
+		DELETE t
+        FROM tmp_NotificationRecipientList t
+			INNER JOIN NotificationSystemMsg nsm ON t.MessageID = nsm.MessageID
+            INNER JOIN NotificationRecipientList nrl ON nsm.NotificationID = nrl.NotificationID
+		WHERE t.RecipientID = nrl.RecipientID;
+		END IF;
 
     IF EXISTS (SELECT 1 FROM tmp_NotificationRecipientList WHERE MessageID = ccMessageID AND LicenseeStatusID = ACTIVE_LICENSEE_STATUS) THEN
       # Insert Notification
@@ -330,9 +347,22 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 
   /*Step 9: Update Setting*/
     #Update Max MsgID
-		UPDATE SystemSetting 
-		SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
-		WHERE ID = 3;
+		SELECT MAX(MessageID) INTO maxMessageID FROM tmp_MsgHeader WHERE IsNew = 1;
+        
+        IF maxMessageID IS NOT NULL THEN
+			UPDATE SystemSetting
+			SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
+			WHERE ID = 3;
+		END IF;
+        
+        #Update Last PostTime
+        SELECT MAX(CAST(PostTime AS DATETIME)) INTO lastPostTime FROM tmp_MsgHeader WHERE IsNew = 1;
+        
+		IF lastPostTime IS NOT NULL THEN
+			UPDATE SystemSetting
+			SET Value = lastPostTime
+			WHERE ID = 17;
+		END IF;
         
         #Update flag to 'Done'
 		UPDATE SystemSetting 

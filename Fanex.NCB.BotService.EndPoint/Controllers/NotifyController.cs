@@ -11,7 +11,6 @@
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Services;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Bot.Builder.Integration;
@@ -86,19 +85,6 @@
                     }
                 }
                 results = (await Task.WhenAll(tasks)).ToList();
-
-                if (results.Count != notificationMessages.Sum(n => n.Recipients.Count()))
-                {
-                    try
-                    {
-                        WriteLogToFile.Writelog(notificationMessages, "From body data:");
-                        WriteLogToFile.Writelog(results, "Result");
-                    }
-                    catch (Exception ex)
-                    {
-                        await WriteLog(ex);
-                    }
-                }
             }
 
             return Ok(results);
@@ -106,13 +92,28 @@
 
         private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo, int notifictaionId, string message)
         {
-            var conversationReference = GetConversationReference(conversationInfo);
-            var appId = GetAppId(conversationInfo.BotName);
-            var result = await SendMessageNotification(appId, notifictaionId, conversationReference, message);
-            var thread = new Thread(async () => await AddMessageLog(conversationReference, message, result));
-            thread.Start();
+            try
+            {
+                var conversationReference = GetConversationReference(conversationInfo);
+                var appId = GetAppId(conversationInfo.BotName);
+                var result = await SendMessageNotification(appId, notifictaionId, conversationReference, message);
+                var thread = new Thread(async () => await AddMessageLog(conversationReference, message, result));
+                thread.Start();
 
-            return result;
+                return result;
+            }
+            catch (Exception exception)
+            {
+                await WriteLog(exception);
+                return new SendMessageResult
+                {
+                    NotificationId = notifictaionId,
+                    ConversationId = conversationInfo.ConversationId,
+                    SentTime = DateTime.Now,
+                    ErrorCode = 1,
+                    ErrorMessage = exception.Message
+                };
+            }
         }
 
         private async Task<SendMessageResult> SendMessageNotification(string appId, int notificationId, ConversationReference conversationReference, string message)
@@ -161,17 +162,24 @@
 
         private async Task AddMessageLog(ConversationReference conversationReference, string messageContent, SendMessageResult result)
         {
-            var command = new AddMessageLogCommand
+            try
             {
-                FromConversationId = conversationReference.Bot.Id,
-                ToConversationId = conversationReference.Conversation.Id,
-                Content = messageContent,
-                ReferenceId = result.NotificationId,
-                IsSuccessfull = result.ErrorCode == 0,
-                ErrorMessage = result.ErrorMessage
-            };
+                var command = new AddMessageLogCommand
+                {
+                    FromConversationId = conversationReference.Bot.Id,
+                    ToConversationId = conversationReference.Conversation.Id,
+                    Content = messageContent,
+                    ReferenceId = result.NotificationId,
+                    IsSuccessfull = result.ErrorCode == 0,
+                    ErrorMessage = result.ErrorMessage
+                };
 
-            await conversationService.AddMessageLog(command);
+                await conversationService.AddMessageLog(command);
+            }
+            catch (Exception ex)
+            {
+                await WriteLog(ex);
+            }
         }
 
         private async Task<ConversationReference> GetConversationReference(string conversationId, string botName)

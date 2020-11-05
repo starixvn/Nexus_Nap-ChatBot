@@ -28,7 +28,8 @@
         private readonly IPushSignalService pushSignalService;
         private readonly IChatbotService chatbotService;
         private readonly string Environment;
-        private const int VoidAbnormalbetsJobIdentify = 2;
+        private const int VoidTicketForLicenseeJobIdentity = 1;
+        private const int VoidAbnormalbetsJobIdentity = 2;
 
         private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
@@ -59,9 +60,20 @@
                     {
                         var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
 
+                        await UpdateMessageHistoryVoidingForLicensee(result.Item1, messages.Item2);
+
                         await OnAfterImportData(result.Item1, result.Item2);
                     }
                 }
+            }
+        }
+
+        private async Task UpdateMessageHistoryVoidingForLicensee(CommandResult commandResult, IEnumerable<MessageDetail> msgDetails)
+        {
+            if (commandResult.IsSuccessful)
+            {
+                var msgHistories = msgDetails.Select(x => new MessageHistory { MessageID = x.MessageID, TargetID = x.TargetID }).ToList();
+                await InsertToMessageChatbot(msgHistories, VoidTicketForLicenseeJobIdentity);
             }
         }
 
@@ -127,7 +139,9 @@
             {
                 MessageID = systemSettings.MaxMessageID,
                 BatchSize = systemSettings.BatchSize,
-                MsgContentsTypeLst = systemSettings.MsgContentsTypeLst
+                MsgContentsTypeLst = systemSettings.MsgContentsTypeLst,
+                LastPostTime = systemSettings.LastPostTime,
+                Environment = Environment
             };
 
             return await baseService.FetchMultipleAsync<Message, MessageDetail>(criteria);
@@ -248,14 +262,14 @@
 
                 if (command.IsSuccessful)
                 {
-                    await InsertToMessageChatbot(msgHistories);
+                    await InsertToMessageChatbot(msgHistories, VoidAbnormalbetsJobIdentity);
                 }
 
                 await OnAfterImportData(command, notification);
             }
         }
 
-        private async Task InsertToMessageChatbot(IEnumerable<MessageHistory> messages)
+        private async Task InsertToMessageChatbot(IEnumerable<MessageHistory> messages, int jobIdentity)
         {
             var serializer = new XmlSerializer(typeof(List<MessageHistory>),
                                    new XmlRootAttribute("root"));
@@ -264,7 +278,7 @@
             serializer.Serialize(stream, messages);
             var command = new InsertMessageHistoryCommand
             {
-                JobIdentify = VoidAbnormalbetsJobIdentify,
+                JobIdentify = jobIdentity,
                 MessageIDLst = stream.ToString(),
                 Environment = Environment
             };

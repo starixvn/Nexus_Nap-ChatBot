@@ -1,3 +1,4 @@
+USE ChatBot;
 DROP PROCEDURE IF EXISTS NCB_MsgSetting_SpecialDelete_Sel;
 DELIMITER //
 
@@ -9,6 +10,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_MsgSetting_SpecialDelete_Sel
 
         Revisions:
 				- 20191211@Dominic: First Commit
+                - 20201029@Percy: Add more setting PostTime [RedmineID: #144274]
         
     */
 )
@@ -20,6 +22,7 @@ BEGIN
     DECLARE previousMaxMsgID INT;
     DECLARE templateContentType JSON;
     DECLARE msgContentTypeLst TEXT;
+    DECLARE lastPostTime DATETIME;
     
     SELECT Value INTO batchSize 
     FROM SystemSetting ss
@@ -31,7 +34,11 @@ BEGIN
     
 	SELECT Value INTO templateContentType 
     FROM SystemSetting ss
-    WHERE ss.ID = 4; 
+    WHERE ss.ID = 4;
+    
+    SELECT Value INTO lastPostTime
+	FROM SystemSetting ss
+    WHERE ss.ID = 17;
 	
     DROP TEMPORARY TABLE IF EXISTS tmp_MsgContentType;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgContentType(
@@ -53,7 +60,7 @@ BEGIN
 	INTO msgContentTypeLst
     FROM tmp_MsgContentType mct;
     
-    SELECT previousMaxMsgID AS MaxMessageID, batchSize AS BatchSize, msgContentTypeLst AS MsgContentsTypeLst;
+    SELECT previousMaxMsgID AS MaxMessageID, batchSize AS BatchSize, msgContentTypeLst AS MsgContentsTypeLst, lastPostTime AS LastPostTime;
 END;
 
 //
