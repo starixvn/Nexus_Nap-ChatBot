@@ -7,13 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Main", "Fanex.NCB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fanex.NCB.BackgroundJob", "Fanex.NCB.BackgroundJob", "{C765879E-B820-46B3-AE53-37F5D614E630}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SonarQube", "SonarQube", "{4D1CE239-F640-49CE-A6D6-B4AA61719BD1}"
-	ProjectSection(SolutionItems) = preProject
-		SonarQube\FANEX.NCBCSharp.ruleset = SonarQube\FANEX.NCBCSharp.ruleset
-		SonarQube\NAPCHATBOTCSharp.ruleset = SonarQube\NAPCHATBOTCSharp.ruleset
-		SonarQube\SolutionBinding.sqconfig = SonarQube\SolutionBinding.sqconfig
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Criteria", "Fanex.NCB.Criteria\Fanex.NCB.Criteria.csproj", "{2B059B6A-2132-4123-95E3-D664262EDB39}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Services", "Fanex.NCB.Services\Fanex.NCB.Services.csproj", "{4CBB6B50-1976-41D3-AAB7-0A9337A0A8E9}"
