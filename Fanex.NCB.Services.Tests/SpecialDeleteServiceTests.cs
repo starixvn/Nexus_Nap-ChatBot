@@ -10,6 +10,7 @@
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Models.SiteMessage;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Configuration;
@@ -107,6 +108,7 @@
                 .Returns(new SystemSetting { BatchSize = 100, MaxMessageID = 1989, MsgContentsTypeLst = "103" });
 
             baseService.GetDataAsync<Message>(Arg.Any<GetAbnormalBetsMessageCriteria>()).Returns(fixture.Create<List<Message>>());
+            baseService.GetDataAsync<MessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>()).Returns(fixture.Create<List<MessageHistory>>());
             baseService.GetDataAsync<AbnormalBetsMessage>(Arg.Any<GetAbnormalBetInfoCriteria>()).Returns(fixture.Create<IEnumerable<AbnormalBetsMessage>>());
 
             //Actual

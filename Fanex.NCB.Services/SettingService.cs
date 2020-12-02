@@ -84,7 +84,7 @@
                 Keyword = query
             };
             return baseService.GetDataAsync<Recipient>(criteria);
-        }     
+        }
 
         public Task<IEnumerable<BaseModel>> GetSystemAsync()
         {

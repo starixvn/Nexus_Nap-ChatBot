@@ -100,7 +100,7 @@
 
         private async Task WriteLog(IRestResponse response)
         {
-            var logMessage = JsonConvert.SerializeObject(response);
+            var logMessage = JsonConvert.SerializeObject(response.ErrorException);
             await logger.ErrorAsync(logMessage);
         }
     }
