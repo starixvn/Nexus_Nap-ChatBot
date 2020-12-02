@@ -26,7 +26,7 @@ export default class ErrorReport extends Component {
                 <td className="text-red">{recipient.errorMessage}</td>
             </tr>
         );
-    }
+    };
 
     copyToClipboard = () => {
         const input = document.createElement('input');
@@ -36,7 +36,7 @@ export default class ErrorReport extends Component {
         document.execCommand('copy');
         document.body.removeChild(input);
         CommonFunctions.displayCopiedToClipboard();
-    }
+    };
 
     handleResolveNotification = () => {
         if (this.state.remark !== '') {
@@ -46,7 +46,7 @@ export default class ErrorReport extends Component {
                 this.setState({ remarkTouched: true });
             }
         }
-    }
+    };
 
     render() {
         const { isOpen, report, toggle, haveHostPermission } = this.props;

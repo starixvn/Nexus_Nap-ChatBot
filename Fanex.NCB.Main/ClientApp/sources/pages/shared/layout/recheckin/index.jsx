@@ -33,11 +33,11 @@ export default class AuthRecheck extends PureComponent {
                 }
             }).catch(errorResponseHandler);
         }
-    }
+    };
 
     handleRedirect = () => {
         window.location.href = Site.resolveClientUrl('Auth/Index');
-    }
+    };
 
     render() {
         return (

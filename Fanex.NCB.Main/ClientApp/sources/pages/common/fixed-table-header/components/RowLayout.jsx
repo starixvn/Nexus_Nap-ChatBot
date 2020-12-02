@@ -8,7 +8,7 @@ class RowLayout extends Component {
 
     static propTypes = {
         columnLayout: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string])).isRequired
-    }
+    };
 
     _getRowLayout() {
         const { columnLayout } = this.props;

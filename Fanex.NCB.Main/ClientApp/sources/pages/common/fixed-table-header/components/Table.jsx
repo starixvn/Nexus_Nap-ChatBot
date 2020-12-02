@@ -10,8 +10,7 @@ const scrollToTop = (element, scrollDuration) => {
     const scrollInterval = setInterval(function () {
         if (element.scrollTop !== 0) {
             element.scrollBy(0, scrollStep);
-        }
-        else {
+        } else {
             clearInterval(scrollInterval);
         }
     }, 15);
@@ -47,7 +46,7 @@ class Table extends Component {
         onPaging: PropTypes.func,
         pageOption: PropTypes.object,
         adjustedHeight: PropTypes.number
-    }
+    };
 
     static defaultProps = {
         width: MAX_WIDTH,
@@ -57,7 +56,7 @@ class Table extends Component {
         adjustedHeight: 0,
         bodyHeight: 0,
         autoHeight: true
-    }
+    };
 
     constructor(props) {
         super(props);
@@ -138,8 +137,7 @@ class Table extends Component {
             const nextColspanCells = this._getNextColspanCells(nextCells, fromNextCellIndex, toNextCellIndex);
             currentNextCellIndexByRow[nextRowIndex] += nextColspanCells.length;
             this._getWidthByCells(nextColspanCells, nextRowIndex, headerRows, currentNextCellIndexByRow, columnsWidth);
-        }
-        else {
+        } else {
             const cellWidth = cellProps.colWidth ? cellProps.colWidth : DEFAULT_COLUMN_WIDTH;
             columnsWidth.push(cellWidth);
         }
@@ -147,7 +145,9 @@ class Table extends Component {
 
     _getWidthByCells(cells, currentRowIndex, headerRows, currentNextCellIndexByRow, columnsWidth){
         cells.map(cell => {
-            if (!cell) { return; }
+            if (!cell) {
+                return; 
+            }
 
             this._getWidthByCell(cell, currentRowIndex, headerRows, currentNextCellIndexByRow, columnsWidth);
         });
@@ -182,7 +182,7 @@ class Table extends Component {
         if (this.state.maxWidth !== maxWidth) {
             this.setState({ maxWidth });
         }
-    }
+    };
 
     _calculateBodyHeight() {
         const windowHeight = window.innerHeight;

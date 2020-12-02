@@ -8,7 +8,7 @@ class Cell extends Component {
         onClick: PropTypes.func,
         sortable: PropTypes.bool,
         sorting: PropTypes.bool
-    }
+    };
 
     static defaultProps = {
         header: false,
@@ -17,7 +17,7 @@ class Cell extends Component {
         asc: true,
         // nothing by default
         onClick: () => null
-    }
+    };
 
     constructor(props) {
         super(props);

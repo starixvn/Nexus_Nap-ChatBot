@@ -13,7 +13,7 @@ export default class TemplatePreview extends PureComponent {
         }
 
         return formattedText;
-    }
+    };
 
     render() {
         return (

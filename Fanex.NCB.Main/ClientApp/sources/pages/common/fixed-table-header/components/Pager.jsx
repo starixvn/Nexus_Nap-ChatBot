@@ -18,7 +18,7 @@ export default class Pager extends Component {
 
     goToPage = (pageIndex, pageSize) => {
         this.props.onPaging(pageIndex, pageSize);
-    }
+    };
 
     renderPageSizeSelection = (pageSize, pageList) => {
         return (
@@ -28,7 +28,7 @@ export default class Pager extends Component {
                 }
             </select>
         );
-    }
+    };
 
     renderPageIcon = (iconClass, isDisable, onClickFunc) => {
         return (
@@ -37,7 +37,7 @@ export default class Pager extends Component {
                 onClick={() => !isDisable && onClickFunc()}
             />
         );
-    }
+    };
 
     renderPageInfo = (index, pageSize, totalItem) => {
         const viewFrom = ((index - 1) * pageSize) + 1;
@@ -47,7 +47,7 @@ export default class Pager extends Component {
                 {`Displaying ${viewFrom} to ${viewTo > totalItem ? totalItem : viewTo} of ${totalItem} item(s)`}
             </span>
         );
-    }
+    };
 
     calculatePages = (pageIndex, totalPage) => {
         const pages = [];
@@ -55,8 +55,7 @@ export default class Pager extends Component {
             for (let i = 1; i <= totalPage; i++) {
                 pages.push(i);
             }
-        }
-        else {
+        } else {
             pages.push(1);
 
             // left of pageIndex
@@ -77,7 +76,7 @@ export default class Pager extends Component {
         }
 
         return pages;
-    }
+    };
 
     renderPages = (pageIndex, pageSize, totalPage) => {
         const pages = this.calculatePages(pageIndex, totalPage);
@@ -89,7 +88,7 @@ export default class Pager extends Component {
                 }
             </div>
         );
-    }
+    };
 
     render() {
         const { PageIndex, PageSize, TotalItem, PageList } = this.props.pageOption;
