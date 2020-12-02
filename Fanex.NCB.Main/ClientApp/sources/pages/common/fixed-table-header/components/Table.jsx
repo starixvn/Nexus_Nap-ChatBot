@@ -146,7 +146,7 @@ class Table extends Component {
     _getWidthByCells(cells, currentRowIndex, headerRows, currentNextCellIndexByRow, columnsWidth){
         cells.map(cell => {
             if (!cell) {
-                return; 
+                return;
             }
 
             this._getWidthByCell(cell, currentRowIndex, headerRows, currentNextCellIndexByRow, columnsWidth);
