@@ -23,6 +23,7 @@
     using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Middlewares;
     using Fanex.NCB.Shared.Repositories;
     using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
@@ -147,6 +148,7 @@
             }
             else
             {
+                app.UseMiddleware<ErrorHandlingMiddleware>();
                 app.UseExceptionHandler("/Error");
             }
 
