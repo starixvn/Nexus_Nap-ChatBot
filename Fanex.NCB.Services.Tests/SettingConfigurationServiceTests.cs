@@ -152,6 +152,20 @@
         }
 
         [Fact]
+        public async Task GetJobInfoAsync_WhenCalled_ReturnExpectedResult()
+        {
+            var service = GetService();
+            var info = new JobInfo
+            {
+                Id = 1,
+                BatchSize = 10
+            };
+            baseService.GetDataEntityAsync<JobInfo>(Arg.Any<GetJobInfoCriteria>()).Returns(info);
+            var actual = await service.GetJobInfoAsync(1);
+            Assert.Equal(info, actual);
+        }
+
+        [Fact]
         public async Task GetMappingAsync_ValidParams_ReturnsMappings()
         {
             // Arrange

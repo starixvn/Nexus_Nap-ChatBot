@@ -6,6 +6,7 @@
     using System.Text;
     using System.Threading.Tasks;
     using AutoFixture;
+    using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models;
     using Fanex.NCB.Models.NotifictaionSendMessage;
@@ -90,6 +91,15 @@
         }
 
         [Fact]
+        public async Task MonitorChatbot_WhenCalled_DoExpectedActions()
+        {
+            var service = GetService();
+            await service.MonitorChatbot();
+
+            webClient.ReceivedCalls();
+        }
+
+        [Fact]
         public void GenerateNotifificationMessage_WhenCalled_ReturnMappedObject()
         {
             var fixture = new Fixture();
@@ -168,7 +178,10 @@
             monitor = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
             monitor.Value.Returns(monitorOptions);
             jobs = Substitute.For<IOptionsSnapshot<List<HangfireJobSetting>>>();
-            jobs.Value.Returns(fixture.Create<List<HangfireJobSetting>>());
+
+            var jobList = fixture.Create<List<HangfireJobSetting>>();
+            jobList.Add(new HangfireJobSetting { JobName = HangfireJobName.MonitorSkypebot, IsEnabled = true });
+            jobs.Value.Returns(jobList);
             botSettings.Value.Returns(settings);
             notifyChatGroupOptions.Value.Returns(sponGroupOptions);
 

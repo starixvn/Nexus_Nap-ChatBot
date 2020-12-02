@@ -295,6 +295,34 @@
             Assert.Equal(expected, result);
         }
 
+        [Fact]
+        public async Task GetUpdatedNotificationAsync_WhenCalled_ReturnExpectedResult()
+        {
+            var service = GetService();
+
+            var fixture = new Fixture();
+            var notifications = fixture.Create<IEnumerable<Notification>>();
+            baseService.GetDataAsync<Notification>(Arg.Any<GetUpdatedNotificationCriteria>()).Returns(notifications);
+
+            var result = await service.GetUpdatedNotificationAsync("1,2,3,4");
+
+            Assert.Equal(notifications, result);
+        }
+
+        [Fact]
+        public async Task GetErrNotificationsAsync_WhenCalled_ReturnExpectedResult()
+        {
+            var service = GetService();
+
+            var fixture = new Fixture();
+            var notifications = fixture.Create<IEnumerable<NotificationPaging>>();
+            baseService.GetDataAsync<NotificationPaging>(Arg.Any<GetAllErrNotificationsCriteria>()).Returns(notifications);
+
+            var result = await service.GetErrNotificationsAsync();
+
+            Assert.Equal(notifications, result);
+        }
+
         private NotificationService GetService()
         {
             baseService = Substitute.For<IBaseService>();
