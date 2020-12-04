@@ -1,6 +1,7 @@
 use ChatBot;
 
 SELECT cg.Name AS GroupName, l.LicenseeName
+FROM ConversationGroup cg
 	INNER JOIN ConversationGroupRecipient cgr ON cg.ConversationGroupID = cgr.ConversationGroupID
     INNER JOIN Recipient r ON cgr.RecipientID = r.RecipientID
     INNER JOIN Licensee l ON r.SourceID = l.LicenseeID
