@@ -33,10 +33,18 @@
         <Content Include="logs\log.txt">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="web.config" />
-        <Content Include="web.local.config" />
-        <Content Include="web.prod.config" />
-        <Content Include="web.uat.config" />
+        <Content Include="web.config">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="web.local.config">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="web.prod.config">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="web.uat.config">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
