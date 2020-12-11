@@ -15,6 +15,10 @@
         <None Remove="App_Data\PROD\SpNames.xml" />
         <None Remove="App_Data\UAT\SpNames.xml" />
         <None Remove="logs\log.txt" />
+        <None Remove="web.config" />
+        <None Remove="web.local.config" />
+        <None Remove="web.prod.config" />
+        <None Remove="web.uat.config" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="App_Data\Development\SpNames.xml">
@@ -29,6 +33,10 @@
         <Content Include="logs\log.txt">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
+        <Content Include="web.config" />
+        <Content Include="web.local.config" />
+        <Content Include="web.prod.config" />
+        <Content Include="web.uat.config" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />

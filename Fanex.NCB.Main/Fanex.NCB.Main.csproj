@@ -41,6 +41,7 @@
         <None Remove="App_Data\Production\SpNames.xml" />
         <None Remove="App_Data\UAT\SpNames.xml" />
         <None Remove="logs\log.txt" />
+        <None Remove="web.config" />
         <None Remove="web.dev.config" />
         <None Remove="web.local.config" />
         <None Remove="web.pro.config" />
@@ -60,6 +61,9 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include="logs\log.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="web.config">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include="web.dev.config" />
