@@ -1,124 +1,125 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-  <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-    <UserSecretsId>e71ec825-3c75-46af-9929-4a6fb891e103</UserSecretsId>
-    <LangVersion>7.1</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <CodeAnalysisRuleSet>Fanex.NCB.Main-1.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <CodeAnalysisRuleSet>Fanex.NCB.Main-1.ruleset</CodeAnalysisRuleSet>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>false</Optimize>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="ClientApp\sources\js\**" />
-    <Compile Remove="ClientApp\sources\pages\common\multiple-select-field\_tests_\NewFolder\**" />
-    <Compile Remove="ClientApp\sources\pages\common\multiple-select\**" />
-    <Compile Remove="ClientApp\sources\sass\**" />
-    <Compile Remove="wwwroot\js\**" />
-    <Content Remove="ClientApp\sources\js\**" />
-    <Content Remove="ClientApp\sources\pages\common\multiple-select-field\_tests_\NewFolder\**" />
-    <Content Remove="ClientApp\sources\pages\common\multiple-select\**" />
-    <Content Remove="ClientApp\sources\sass\**" />
-    <Content Remove="wwwroot\js\**" />
-    <EmbeddedResource Remove="ClientApp\sources\js\**" />
-    <EmbeddedResource Remove="ClientApp\sources\pages\common\multiple-select-field\_tests_\NewFolder\**" />
-    <EmbeddedResource Remove="ClientApp\sources\pages\common\multiple-select\**" />
-    <EmbeddedResource Remove="ClientApp\sources\sass\**" />
-    <EmbeddedResource Remove="wwwroot\js\**" />
-    <None Remove="ClientApp\sources\js\**" />
-    <None Remove="ClientApp\sources\pages\common\multiple-select-field\_tests_\NewFolder\**" />
-    <None Remove="ClientApp\sources\pages\common\multiple-select\**" />
-    <None Remove="ClientApp\sources\sass\**" />
-    <None Remove="wwwroot\js\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="App_Data\Development\SpNames.xml" />
-    <None Remove="App_Data\Local\SpNames.xml" />
-    <None Remove="App_Data\Production\SpNames.xml" />
-    <None Remove="App_Data\UAT\SpNames.xml" />
-    <None Remove="logs\log.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="App_Data\Development\SpNames.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\Local\SpNames.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\Production\SpNames.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\UAT\SpNames.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="logs\log.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Fanex.Data.MySql" Version="4.1.4" />
-    <PackageReference Include="Fanex.Data.SqlServer" Version="4.1.4" />
-    <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="2.2.5" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="1.1.5" />
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="2.2.5" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="T4.TemplateFileManager" Version="2.2.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Fanex.NCB.NAPResolver\Fanex.NCB.NAPResolver.csproj" />
-    <ProjectReference Include="..\Fanex.NCB.Services\Fanex.NCB.Services.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Update="Views\SkypeBot\Index.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\LOCAL\" />
-    <Folder Include="ClientApp\sources\pages\chatgroupmapping\components\__tests__\__snapshots__\" />
-    <Folder Include="ClientApp\sources\pages\common\confirm-popup\_tests_\__snapshots__\" />
-    <Folder Include="ClientApp\sources\pages\common\fixed-table-header\components\__tests__\__snapshots__\" />
-    <Folder Include="ClientApp\sources\pages\common\response-message\__tests__\__snapshots__\" />
-    <Folder Include="ClientApp\sources\pages\newnotification\store\" />
-    <Folder Include="ClientApp\sources\pages\shared\backupnapchatbotfont\" />
-    <Folder Include="ClientApp\sources\pages\shared\layout\__tests__\__snapshots__\" />
-    <Folder Include="logs\" />
-    <Folder Include="wwwroot\dev\common\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="App_Data\SpNames.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Startup.cs" />
-    <Compile Include="Startup.cs">
-      <SonarQubeExclude>true</SonarQubeExclude>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Program.cs" />
-    <Compile Include="Program.cs">
-      <SonarQubeExclude>true</SonarQubeExclude>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="AppConfig\ServiceExtensions.cs" />
-    <Compile Include="AppConfig\ServiceExtensions.cs">
-      <SonarQubeExclude>true</SonarQubeExclude>
-    </Compile>
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
+        <UserSecretsId>e71ec825-3c75-46af-9929-4a6fb891e103</UserSecretsId>
+        <LangVersion>7.1</LangVersion>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <CodeAnalysisRuleSet>Fanex.NCB.Main-1.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <CodeAnalysisRuleSet>Fanex.NCB.Main-1.ruleset</CodeAnalysisRuleSet>
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <Optimize>false</Optimize>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Remove="ClientApp\sources\js\**" />
+        <Compile Remove="ClientApp\sources\pages\common\multiple-select-field\_tests_\NewFolder\**" />
+        <Compile Remove="ClientApp\sources\pages\common\multiple-select\**" />
+        <Compile Remove="ClientApp\sources\sass\**" />
+        <Compile Remove="wwwroot\js\**" />
+        <Content Remove="ClientApp\sources\js\**" />
+        <Content Remove="ClientApp\sources\pages\common\multiple-select-field\_tests_\NewFolder\**" />
+        <Content Remove="ClientApp\sources\pages\common\multiple-select\**" />
+        <Content Remove="ClientApp\sources\sass\**" />
+        <Content Remove="wwwroot\js\**" />
+        <EmbeddedResource Remove="ClientApp\sources\js\**" />
+        <EmbeddedResource Remove="ClientApp\sources\pages\common\multiple-select-field\_tests_\NewFolder\**" />
+        <EmbeddedResource Remove="ClientApp\sources\pages\common\multiple-select\**" />
+        <EmbeddedResource Remove="ClientApp\sources\sass\**" />
+        <EmbeddedResource Remove="wwwroot\js\**" />
+        <None Remove="ClientApp\sources\js\**" />
+        <None Remove="ClientApp\sources\pages\common\multiple-select-field\_tests_\NewFolder\**" />
+        <None Remove="ClientApp\sources\pages\common\multiple-select\**" />
+        <None Remove="ClientApp\sources\sass\**" />
+        <None Remove="wwwroot\js\**" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Remove="App_Data\Development\SpNames.xml" />
+        <None Remove="App_Data\Local\SpNames.xml" />
+        <None Remove="App_Data\Production\SpNames.xml" />
+        <None Remove="App_Data\UAT\SpNames.xml" />
+        <None Remove="logs\log.txt" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="App_Data\Development\SpNames.xml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="App_Data\Local\SpNames.xml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="App_Data\Production\SpNames.xml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="App_Data\UAT\SpNames.xml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="logs\log.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Fanex.Data.MySql" Version="4.1.4" />
+        <PackageReference Include="Fanex.Data.SqlServer" Version="4.1.4" />
+        <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
+        <PackageReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Microsoft.NET.Sdk.Razor" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="2.2.5" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="1.1.5" />
+        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="2.2.5" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="T4.TemplateFileManager" Version="2.2.1" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Fanex.NCB.NAPResolver\Fanex.NCB.NAPResolver.csproj" />
+        <ProjectReference Include="..\Fanex.NCB.Services\Fanex.NCB.Services.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Update="Views\SkypeBot\Index.cshtml">
+            <Pack>$(IncludeRazorContentInPack)</Pack>
+        </Content>
+    </ItemGroup>
+    <ItemGroup>
+        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    </ItemGroup>
+    <ItemGroup>
+        <Folder Include="App_Data\LOCAL\" />
+        <Folder Include="ClientApp\sources\pages\chatgroupmapping\components\__tests__\__snapshots__\" />
+        <Folder Include="ClientApp\sources\pages\common\confirm-popup\_tests_\__snapshots__\" />
+        <Folder Include="ClientApp\sources\pages\common\fixed-table-header\components\__tests__\__snapshots__\" />
+        <Folder Include="ClientApp\sources\pages\common\response-message\__tests__\__snapshots__\" />
+        <Folder Include="ClientApp\sources\pages\newnotification\store\" />
+        <Folder Include="ClientApp\sources\pages\shared\backupnapchatbotfont\" />
+        <Folder Include="ClientApp\sources\pages\shared\layout\__tests__\__snapshots__\" />
+        <Folder Include="logs\" />
+        <Folder Include="wwwroot\dev\common\" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Update="App_Data\SpNames.xml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Startup.cs" />
+        <Compile Include="Startup.cs">
+            <SonarQubeExclude>true</SonarQubeExclude>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Program.cs" />
+        <Compile Include="Program.cs">
+            <SonarQubeExclude>true</SonarQubeExclude>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="AppConfig\ServiceExtensions.cs" />
+        <Compile Include="AppConfig\ServiceExtensions.cs">
+            <SonarQubeExclude>true</SonarQubeExclude>
+        </Compile>
+    </ItemGroup>
 </Project>

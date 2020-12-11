@@ -1,11 +1,11 @@
 ﻿namespace Fanex.NCB.Services
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Fanex.NCB.Models.Notification;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.SignalR;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public class SignalRService : Hub, ISignalRService
     {

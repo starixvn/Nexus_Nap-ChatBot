@@ -1,8 +1,5 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Logging.Extensions;
@@ -14,6 +11,7 @@
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.HttpOverrides;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Bot.Builder.Integration.AspNet.Core;
     using Microsoft.Extensions.Configuration;
@@ -22,6 +20,9 @@
     using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
     using Sentry;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
 
     public class Startup
     {
@@ -53,6 +54,12 @@
                .Use(connections)
                .WithMySql(resourcePath: $"~/App_Data/{Environment.EnvironmentName}")
                .Run();
+
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
 
             Logging.LogManager
             .SetDefaultLogCategory(Configuration.GetSection("LogCategory").Value)
@@ -97,10 +104,12 @@
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseForwardedHeaders();
             }
             else
             {
                 app.UseMiddleware<ErrorHandlingMiddleware>();
+                app.UseForwardedHeaders();
                 app.UseHsts();
             }
 

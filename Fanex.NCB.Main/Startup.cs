@@ -1,9 +1,5 @@
 ﻿namespace Fanex.NCB.Main
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Data.SqlServer;
@@ -26,6 +22,7 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Connections;
+    using Microsoft.AspNetCore.HttpOverrides;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +30,10 @@
     using ONEbook.UM.Configurations;
     using Sentry;
     using StackExchange.Redis;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public class Startup
     {
@@ -60,6 +61,12 @@
                .WithSqlServer()
                .UseDefaultDbSettingProvider(resourcePath: $"~/App_Data/{evn}")
                .Run();
+
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
 
             LogManager
             .SetDefaultLogCategory(Configuration.GetSection("LogCategory").Value)
@@ -144,10 +151,12 @@
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseForwardedHeaders();
             }
             else
             {
                 app.UseMiddleware<ErrorHandlingMiddleware>();
+                app.UseForwardedHeaders();
                 app.UseHsts();
             }
 

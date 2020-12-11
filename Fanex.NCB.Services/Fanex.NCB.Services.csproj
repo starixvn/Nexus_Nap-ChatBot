@@ -1,34 +1,35 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <CodeAnalysisRuleSet>Fanex.NCB.Services-1.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <CodeAnalysisRuleSet>Fanex.NCB.Services-1.ruleset</CodeAnalysisRuleSet>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Fanex.Logging" Version="2.0.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="ONEbook.UM.AspNetCore" Version="3.0.0-beta2" />
-    <PackageReference Include="ONEbook.UM.Transport" Version="3.0.0-beta3" />
-    <PackageReference Include="RestSharp" Version="106.5.4" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Fanex.NCB.Core\Fanex.NCB.Core.csproj" />
-    <ProjectReference Include="..\Fanex.NCB.Models\Fanex.NCB.Models.csproj" />
-    <ProjectReference Include="..\Fanex.NCB.Repository\Fanex.NCB.Repository.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.AspNetCore.SignalR.Core">
-      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.aspnetcore.signalr.core\1.1.0\lib\netstandard2.0\Microsoft.AspNetCore.SignalR.Core.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <CodeAnalysisRuleSet>Fanex.NCB.Services-1.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <CodeAnalysisRuleSet>Fanex.NCB.Services-1.ruleset</CodeAnalysisRuleSet>
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Fanex.Logging" Version="2.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+        <PackageReference Include="ONEbook.UM.AspNetCore" Version="3.0.0-beta2" />
+        <PackageReference Include="ONEbook.UM.Transport" Version="3.0.0-beta3" />
+        <PackageReference Include="RestSharp" Version="106.5.4" />
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Fanex.NCB.Core\Fanex.NCB.Core.csproj" />
+        <ProjectReference Include="..\Fanex.NCB.Models\Fanex.NCB.Models.csproj" />
+        <ProjectReference Include="..\Fanex.NCB.Repository\Fanex.NCB.Repository.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Reference Include="Microsoft.AspNetCore.SignalR.Core">
+            <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.aspnetcore.signalr.core\1.1.0\lib\netstandard2.0\Microsoft.AspNetCore.SignalR.Core.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 </Project>
