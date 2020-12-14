@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
         <TargetFramework>netcoreapp2.2</TargetFramework>
         <UserSecretsId>e71ec825-3c75-46af-9929-4a6fb891e103</UserSecretsId>
@@ -41,11 +41,6 @@
         <None Remove="App_Data\Production\SpNames.xml" />
         <None Remove="App_Data\UAT\SpNames.xml" />
         <None Remove="logs\log.txt" />
-        <None Remove="web.config" />
-        <None Remove="web.dev.config" />
-        <None Remove="web.local.config" />
-        <None Remove="web.pro.config" />
-        <None Remove="web.uat.config" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="App_Data\Development\SpNames.xml">
@@ -61,21 +56,6 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include="logs\log.txt">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="web.config">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="web.dev.config">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="web.local.config">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="web.pro.config">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="web.uat.config">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
