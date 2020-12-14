@@ -11,6 +11,9 @@
         <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
     <ItemGroup>
+      <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+    </ItemGroup>
+    <ItemGroup>
         <PackageReference Include="Fanex.Logging" Version="2.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
         <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />

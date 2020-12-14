@@ -14,6 +14,9 @@
     <None Remove="Repositories\**" />
   </ItemGroup>
   <ItemGroup>
+    <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Fanex.Data.MySql" Version="4.1.4" />
     <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">

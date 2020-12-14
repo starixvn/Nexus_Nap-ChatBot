@@ -43,6 +43,7 @@
         <None Remove="logs\log.txt" />
     </ItemGroup>
     <ItemGroup>
+        <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
         <Content Include="App_Data\Development\SpNames.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>

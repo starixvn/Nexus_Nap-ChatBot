@@ -9,6 +9,9 @@
     <CodeAnalysisRuleSet>Fanex.NCB.Repository-1.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Fanex.NCB.Criteria\Fanex.NCB.Criteria.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Models\Fanex.NCB.Models.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Shared\Fanex.NCB.Shared.csproj" />

@@ -22,6 +22,9 @@
     <PropertyGroup>
         <EnableDefaultContentItems>false</EnableDefaultContentItems>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+      <CodeAnalysisRuleSet>..\.sonarlint\napchatbotcsharp.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
     <ItemGroup>
         <None Remove="appsettings.Development.json" />
         <None Remove="appsettings.json" />
@@ -37,6 +40,7 @@
         <None Remove="Views\Auth\Login.cshtml" />
     </ItemGroup>
     <ItemGroup>
+        <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
         <Content Include="appsettings.Development.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
