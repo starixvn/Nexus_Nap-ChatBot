@@ -38,7 +38,6 @@
         <PackageReference Include="Microsoft.Bot.Configuration" Version="4.7.0" />
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
         <PackageReference Include="RestSharp" Version="106.5.4" />
-        <PackageReference Include="Microsoft.NET.Sdk.Razor" Version="2.2.0" />
         <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

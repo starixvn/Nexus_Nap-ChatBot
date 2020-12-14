@@ -64,7 +64,6 @@
         <PackageReference Include="Fanex.Data.SqlServer" Version="4.1.4" />
         <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
         <PackageReference Include="Microsoft.AspNetCore.App" />
-        <PackageReference Include="Microsoft.NET.Sdk.Razor" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="2.2.5" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="1.1.5" />
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="2.2.5" />
