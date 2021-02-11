@@ -172,7 +172,17 @@
                 });
 
                 await UpdateFailedRecipientStatus(updatedRecipients, true);
-                await WriteLog(response.ErrorException);
+                if (response.ErrorException != null)
+                {
+                    await WriteLog(response.ErrorException);
+                }
+                else
+                {
+                    var recipient = updatedRecipients.FirstOrDefault();
+                    var logInfo = string.Format("NotificationId: {0}, RecipientId: {1}, ChatGroupId: {2}, ErrCode: {3}, ErrorMessage: {4}",
+                        recipient.NotificationId, recipient.RecipientId, recipient.ChatGroupId, recipient.ErrCode, recipient.ErrorMessage);
+                    await logger.ErrorAsync(logInfo);
+                }
             }
         }
 
