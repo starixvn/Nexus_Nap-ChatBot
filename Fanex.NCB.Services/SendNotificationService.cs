@@ -182,6 +182,14 @@
                     var logInfo = string.Format("NotificationId: {0}, RecipientId: {1}, ChatGroupId: {2}, ErrCode: {3}, ErrorMessage: {4}",
                         recipient.NotificationId, recipient.RecipientId, recipient.ChatGroupId, recipient.ErrCode, recipient.ErrorMessage);
                     await logger.ErrorAsync(logInfo);
+                    var otherLog = new
+                    {
+                        Status = response.StatusCode,
+                        IsSuccessful = response.IsSuccessful,
+                        ErrorMessage = response.ErrorMessage,
+                        Info = response.Content
+                    };
+                    await logger.InfoAsync(JsonConvert.SerializeObject(otherLog));
                 }
             }
         }
