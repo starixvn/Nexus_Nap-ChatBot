@@ -9,7 +9,7 @@
 
     public class JobService : IJobService
     {
-        private const short DisableConcurrentExecutionTimeoutInSeconds = 0;
+        private const short DisableConcurrentExecutionTimeoutInSeconds = 30;
         private const int MaxRandom = 1000;
         private readonly ISyncDataService syncDataService;
         private readonly IChatbotService chatbotService;
@@ -74,7 +74,7 @@
 
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         [Queue(QueuPriority.Critical)]
-        //// [DisableConcurrentExecution(0)]
+        [DisableConcurrentExecution(DisableConcurrentExecutionTimeoutInSeconds)]
         public async Task PullMessageFromSpecialDelete()
         {
             var timeStamp = DateTime.Now.ToString("yyyyMMddHHmmssffff");
