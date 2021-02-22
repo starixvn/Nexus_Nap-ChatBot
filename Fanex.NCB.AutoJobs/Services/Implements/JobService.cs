@@ -1,14 +1,11 @@
 ﻿namespace Fanex.NCB.AutoJobs.Services.Implements
 {
-    using System;
-    using System.Threading.Tasks;
-    using Fanex.Logging;
-    using Fanex.Logging.Extensions;
-    using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.AutoJobs.Constants;
     using Fanex.NCB.Services.Interfaces;
     using Hangfire;
     using ONEbook.UM.Services;
+    using System;
+    using System.Threading.Tasks;
 
     public class JobService : IJobService
     {
@@ -18,7 +15,7 @@
         private readonly ISendNotificationService sendNotificationService;
         private readonly IMaintenanceService maintenanceService;
         private readonly ISiteMessageService siteMessageService;
-        private readonly ILogger logger;
+        private readonly ILogServiceExt logger;
 
         public JobService(ISyncDataService syncDataService,
             IChatbotService chatbotService,
@@ -26,7 +23,7 @@
             ISendNotificationService sendNotificationService,
             IMaintenanceService maintenanceService,
             ISiteMessageService siteMessageService,
-            ILogger logger)
+            ILogServiceExt logger)
         {
             this.syncDataService = syncDataService;
             this.chatbotService = chatbotService;
@@ -49,7 +46,7 @@
                 }
                 catch (Exception ex)
                 {
-                    await Logging(ex);
+                    await logger.WriteError(ex);
                     throw;
                 }
             }
@@ -67,7 +64,7 @@
                 }
                 catch (Exception ex)
                 {
-                    await Logging(ex);
+                    await logger.WriteError(ex);
                     throw;
                 }
             }
@@ -77,6 +74,7 @@
         [Queue(QueuPriority.Critical)]
         public async Task PullMessageFromSpecialDelete()
         {
+            logger.WriteInfo("");
             if (await IsNotUM())
             {
                 try
@@ -90,7 +88,7 @@
                 }
                 catch (Exception ex)
                 {
-                    await Logging(ex);
+                    await logger.WriteError(ex);
                     throw;
                 }
             }
@@ -112,7 +110,7 @@
                 }
                 catch (Exception ex)
                 {
-                    await Logging(ex);
+                    await logger.WriteError(ex);
                     throw;
                 }
             }
@@ -128,7 +126,7 @@
             }
             catch (Exception ex)
             {
-                await Logging(ex);
+                await logger.WriteError(ex);
                 throw;
             }
         }
@@ -143,19 +141,9 @@
             }
             catch (Exception ex)
             {
-                await Logging(ex);
+                await logger.WriteError(ex);
                 throw;
             }
-        }
-
-        private async Task Logging(Exception exception)
-        {
-            var logMessage = new LogMessage(exception.Message)
-                       .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
-                       .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
-                       .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
-                       .ToString();
-            await logger.ErrorAsync(logMessage);
         }
 
         private async Task<bool> IsNotUM()
