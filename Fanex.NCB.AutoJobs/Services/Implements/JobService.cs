@@ -76,15 +76,22 @@
         [DisableConcurrentExecution(0)]
         public async Task PullMessageFromSpecialDelete()
         {
-            logger.WriteInfo("");
+            var timeStamp = DateTime.Now.ToString("yyyyMMddHHmmssffff");
+            logger.WriteInfo($"{timeStamp} - Start PullMessageFromSpecialDelete job");
             if (await IsNotUM())
             {
                 try
                 {
+                    logger.WriteInfo($"{timeStamp} - Inprogress PullMessageFromSpecialDelete job - after Check UM");
                     await Task.WhenAll(
                         specialDeleteTicketService.VoidingTicketToLicensee(),
                         specialDeleteTicketService.VoidingAbnormalBetsToInternalDepartment()
                     );
+
+                    logger.WriteInfo($"{timeStamp} - Inprogress PullMessageFromSpecialDelete job - after pull msg");
+
+                    await sendNotificationService.ScanAndSendNotification();
+                    logger.WriteInfo($"{timeStamp} - Inprogress PullMessageFromSpecialDelete job - after send notification");
                 }
                 catch (Exception ex)
                 {
