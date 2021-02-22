@@ -10,6 +10,7 @@
     public class JobService : IJobService
     {
         private const short DisableConcurrentExecutionTimeoutInSeconds = 0;
+        private const int MaxRandom = 1000;
         private readonly ISyncDataService syncDataService;
         private readonly IChatbotService chatbotService;
         private readonly ISpecialDeleteService specialDeleteTicketService;
@@ -73,10 +74,13 @@
 
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         [Queue(QueuPriority.Critical)]
-        [DisableConcurrentExecution(0)]
+        //// [DisableConcurrentExecution(0)]
         public async Task PullMessageFromSpecialDelete()
         {
             var timeStamp = DateTime.Now.ToString("yyyyMMddHHmmssffff");
+            Random random = new Random();
+            timeStamp = timeStamp + random.Next(0, MaxRandom).ToString();
+
             logger.WriteInfo($"{timeStamp} - Start PullMessageFromSpecialDelete job");
             if (await IsNotUM())
             {

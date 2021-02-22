@@ -10,6 +10,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.EventLog;
+    using NLog.Web;
 
     public static class Program
     {
@@ -42,12 +43,17 @@
             return WebHost.CreateDefaultBuilder(args)
                .ConfigureLogging((hostingContext, logging) =>
                {
-                   logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                   logging.AddEventLog(new EventLogSettings
-                   {
-                       Filter = (x, logLevel) => x.Contains("Fanex.NCB.AutoJobs") && logLevel >= LogLevel.Information
-                   });
+                   logging.ClearProviders();
+                   logging.SetMinimumLevel(LogLevel.Error);
+
+                   //logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                   
+                   //logging.AddEventLog(new EventLogSettings
+                   //{
+                   //    Filter = (x, logLevel) => x.Contains("Fanex.NCB.AutoJobs") && logLevel >= LogLevel.Information
+                   //});
                })
+               .UseNLog()
                .UseContentRoot(Directory.GetCurrentDirectory())
                .UseConfiguration(configuration)
                .UseEnvironment(evn)

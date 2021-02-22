@@ -4,19 +4,17 @@
     using Fanex.Logging.Extensions.Database;
     using System;
     using System.Threading.Tasks;
-    using Microsoft.Extensions.Logging;
 
     public class LogServiceExt : ILogServiceExt
     {
         private readonly Logging.ILogger logger;
-        private readonly ILogger infoLogger;
+
+        private readonly NLog.Logger infoLogger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 
         public LogServiceExt(
-            Logging.ILogger logger
-            , ILogger<LogServiceExt> infoLogger)
+            Logging.ILogger logger)
         {
             this.logger = logger;
-            this.infoLogger = infoLogger;
         }
 
 
@@ -32,7 +30,7 @@
 
         public void WriteInfo(string logMessage)
         {
-             infoLogger.LogError($"{DateTime.Now}: {logMessage}");
+            infoLogger.Error(logMessage);
         }
     }
 }
