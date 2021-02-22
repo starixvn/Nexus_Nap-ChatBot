@@ -28,7 +28,7 @@
     using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Hangfire;
-    using Hangfire.Storage.MySql;
+    using Hangfire.Redis;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -43,12 +43,16 @@
     using ONEbook.UM.Services;
     using ONEbook.UM.Transport;
     using Sentry;
+    using StackExchange.Redis;
 
     public class Startup
     {
+        private readonly ConnectionMultiplexer Redis;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Redis = ConnectionMultiplexer.Connect(Configuration.GetSection("RedisConfig:ConnectionString").Value);
         }
 
         public IConfiguration Configuration { get; }
@@ -135,7 +139,7 @@
 
             services.AddSignalR();
 
-            RegisterHangfire(services, connections.FirstOrDefault(x => x.Key.Equals("Hangfire")).Value.ConnectionString);
+            RegisterHangfire(services, Redis, Configuration);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -162,7 +166,7 @@
                 Authorization = new[] { new HangfireAuthorizationFilter() }
             }).UseHangfireServer(options: new BackgroundJobServerOptions
             {
-                WorkerCount = Configuration.GetValue<int>("WorkerCount"),
+                WorkerCount = Configuration.GetValue<int>("HangfireConfigurations:WorkerCount"),
                 ServerName = Environment.MachineName,
                 Queues = new[] { QueuPriority.Critical, QueuPriority.Default }
             });
@@ -210,20 +214,18 @@
             services.AddTransient<ISyncDataRepository, SyncDataRepository>();
         }
 
-        private static void RegisterHangfire(IServiceCollection services, string connectionString)
+        private static void RegisterHangfire(IServiceCollection services, ConnectionMultiplexer redis, IConfiguration configuration)
         {
-            var connection = Cryptography.DecryptConnectionString(connectionString);
-            var options = new MySqlStorageOptions
+            services.AddHangfire(x =>
             {
-                QueuePollInterval = TimeSpan.FromSeconds(2),
-                JobExpirationCheckInterval = TimeSpan.FromHours(1),
-                CountersAggregateInterval = TimeSpan.FromMinutes(5),
-                PrepareSchemaIfNecessary = true,
-                DashboardJobListLimit = 50000,
-                TransactionTimeout = TimeSpan.FromMinutes(2),
-                TablesPrefix = "ChatbotHangfire_"
-            };
-            services.AddHangfire(x => x.UseStorage(new MySqlStorage(connection, options)));
+                x.UseRedisStorage(redis, new RedisStorageOptions
+                {
+                    Prefix = configuration.GetSection("HangfireConfigurations:Prefix")?.Value,
+                    SucceededListSize = int.Parse(configuration.GetSection("HangfireConfigurations:SucceededListSize")?.Value),
+                    DeletedListSize = int.Parse(configuration.GetSection("HangfireConfigurations:DeletedListSize")?.Value),
+                    Db = int.Parse(configuration.GetSection("HangfireConfigurations:Db")?.Value)
+                });
+            });
         }
     }
 }
