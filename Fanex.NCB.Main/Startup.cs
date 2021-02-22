@@ -1,5 +1,9 @@
 ﻿namespace Fanex.NCB.Main
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Data.SqlServer;
@@ -30,10 +34,6 @@
     using ONEbook.UM.Configurations;
     using Sentry;
     using StackExchange.Redis;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     public class Startup
     {
@@ -85,23 +85,8 @@
 
             services.AddSingleton(Configuration);
             services.RegisterConfigs(Configuration);
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie(options =>
-            {
-                options.LoginPath = Configuration.GetSection("AuthSettings:LoginPath").Value;
-                options.LogoutPath = Configuration.GetSection("AuthSettings:LogoutPath").Value;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(int.Parse(Configuration.GetSection("AuthSettings:CookieTimeOut").Value));
-                options.Cookie = new CookieBuilder
-                {
-                    Name = "Fanex.NCB.Cookie",
-                    SecurePolicy = CookieSecurePolicy.SameAsRequest
-                };
-                options.Events.OnSigningOut = context =>
-                {
-                    context.Response.Redirect(options.LoginPath);
-                    return Task.CompletedTask;
-                };
-            });
+
+            RegisterAuthenticationCookie(services, Configuration);
 
             services.AddMvc(options =>
             {
@@ -144,6 +129,27 @@
             {
                 options.Configuration.ChannelPrefix = "ChatBotForLicensee:SignalR";
             });
+        }
+
+        private static void RegisterAuthenticationCookie(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                       .AddCookie(options =>
+                       {
+                           options.LoginPath = configuration.GetSection("AuthSettings:LoginPath").Value;
+                           options.LogoutPath = configuration.GetSection("AuthSettings:LogoutPath").Value;
+                           options.ExpireTimeSpan = TimeSpan.FromMinutes(int.Parse(configuration.GetSection("AuthSettings:CookieTimeOut").Value));
+                           options.Cookie = new CookieBuilder
+                           {
+                               Name = "Fanex.NCB.Cookie",
+                               SecurePolicy = CookieSecurePolicy.SameAsRequest
+                           };
+                           options.Events.OnSigningOut = context =>
+                           {
+                               context.Response.Redirect(options.LoginPath);
+                               return Task.CompletedTask;
+                           };
+                       });
         }
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)

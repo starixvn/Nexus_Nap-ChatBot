@@ -9,6 +9,7 @@
 
     public class JobService : IJobService
     {
+        private const short DisableConcurrentExecutionTimeoutInSeconds = 0;
         private readonly ISyncDataService syncDataService;
         private readonly IChatbotService chatbotService;
         private readonly ISpecialDeleteService specialDeleteTicketService;
@@ -72,6 +73,7 @@
 
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         [Queue(QueuPriority.Critical)]
+        [DisableConcurrentExecution(0)]
         public async Task PullMessageFromSpecialDelete()
         {
             logger.WriteInfo("");
@@ -83,8 +85,6 @@
                         specialDeleteTicketService.VoidingTicketToLicensee(),
                         specialDeleteTicketService.VoidingAbnormalBetsToInternalDepartment()
                     );
-
-                    await sendNotificationService.ScanAndSendNotification();
                 }
                 catch (Exception ex)
                 {
@@ -96,17 +96,14 @@
 
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         [Queue(QueuPriority.Critical)]
+        [DisableConcurrentExecution(DisableConcurrentExecutionTimeoutInSeconds)]
         public async Task PullMessageFromSiteMessage()
         {
             if (await IsNotUM())
             {
                 try
                 {
-                    await Task.WhenAll(
-                        siteMessageService.PullMessageFromSiteMessageThenInsertNotification()
-                    );
-
-                    await sendNotificationService.ScanAndSendNotification();
+                    await siteMessageService.PullMessageFromSiteMessageThenInsertNotification();
                 }
                 catch (Exception ex)
                 {
