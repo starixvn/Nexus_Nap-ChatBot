@@ -9,7 +9,6 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Logging.EventLog;
     using NLog.Web;
 
     public static class Program
@@ -45,13 +44,6 @@
                {
                    logging.ClearProviders();
                    logging.SetMinimumLevel(LogLevel.Error);
-
-                   //logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                   
-                   //logging.AddEventLog(new EventLogSettings
-                   //{
-                   //    Filter = (x, logLevel) => x.Contains("Fanex.NCB.AutoJobs") && logLevel >= LogLevel.Information
-                   //});
                })
                .UseNLog()
                .UseContentRoot(Directory.GetCurrentDirectory())

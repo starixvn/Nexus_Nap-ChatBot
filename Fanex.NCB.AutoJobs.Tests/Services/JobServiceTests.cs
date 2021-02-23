@@ -2,7 +2,7 @@
 {
     using System;
     using System.Threading.Tasks;
-    using Fanex.Logging;
+    using Fanex.NCB.AutoJobs.Services;
     using Fanex.NCB.AutoJobs.Services.Implements;
     using Fanex.NCB.Services.Interfaces;
     using NSubstitute;
@@ -19,7 +19,7 @@
         private ISendNotificationService sendNotificationService;
         private IMaintenanceService maintenanceService;
         private ISiteMessageService siteMessageService;
-        private ILogger logger;
+        private ILogServiceExt logger;
 
         [Fact]
         public async Task SyncDataFromNapUserControl_WhenCalled_ExecuteSuccessed()
@@ -41,7 +41,7 @@
 
             //Assert
             await Assert.ThrowsAsync<Exception>(() => service.SyncDataFromNapUserControl());
-            await logger.Received().ErrorAsync(Arg.Any<string>());
+            await logger.Received().WriteError(Arg.Any<Exception>());
         }
 
         [Fact]
@@ -64,7 +64,7 @@
 
             //Assert
             await Assert.ThrowsAsync<Exception>(() => service.SyncDataFromOIC());
-            await logger.Received().ErrorAsync(Arg.Any<string>());
+            await logger.Received().WriteError(Arg.Any<Exception>());
         }
 
         [Fact]
@@ -87,7 +87,7 @@
 
             //Assert
             await Assert.ThrowsAsync<Exception>(() => service.PullMessageFromSpecialDelete());
-            await logger.Received().ErrorAsync(Arg.Any<string>());
+            await logger.Received().WriteError(Arg.Any<Exception>());
         }
 
         [Fact]
@@ -110,7 +110,7 @@
 
             //Assert
             await Assert.ThrowsAsync<Exception>(() => service.PullMessageFromSiteMessage());
-            await logger.Received().ErrorAsync(Arg.Any<string>());
+            await logger.Received().WriteError(Arg.Any<Exception>());
         }
 
         [Fact]
@@ -133,7 +133,7 @@
 
             //Assert
             await Assert.ThrowsAsync<Exception>(() => service.ScanAndSendNotification());
-            await logger.Received().ErrorAsync(Arg.Any<string>());
+            await logger.Received().WriteError(Arg.Any<Exception>());
         }
 
         [Fact]
@@ -156,7 +156,7 @@
 
             //Assert
             await Assert.ThrowsAsync<Exception>(() => service.MonitorChatbot());
-            await logger.Received().ErrorAsync(Arg.Any<string>());
+            await logger.Received().WriteError(Arg.Any<Exception>());
         }
 
         #region Helper
@@ -169,7 +169,7 @@
             sendNotificationService = Substitute.For<ISendNotificationService>();
             maintenanceService = Substitute.For<IMaintenanceService>();
             siteMessageService = Substitute.For<ISiteMessageService>();
-            logger = Substitute.For<ILogger>();
+            logger = Substitute.For<ILogServiceExt>();
             var um = new UnderMaintenanceTime
             {
                 IsUnderMaintenanceTime = false
