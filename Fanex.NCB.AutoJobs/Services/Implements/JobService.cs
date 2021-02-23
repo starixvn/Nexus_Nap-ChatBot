@@ -1,15 +1,12 @@
 ﻿namespace Fanex.NCB.AutoJobs.Services.Implements
 {
-    using Fanex.NCB.AutoJobs.Constants;
     using Fanex.NCB.Services.Interfaces;
-    using Hangfire;
     using ONEbook.UM.Services;
     using System;
     using System.Threading.Tasks;
 
     public class JobService : IJobService
     {
-        private const short DisableConcurrentExecutionTimeoutInSeconds = 30;
         private const int MaxRandom = 1000;
         private readonly ISyncDataService syncDataService;
         private readonly IChatbotService chatbotService;
@@ -36,8 +33,6 @@
             this.logger = logger;
         }
 
-        [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
-        [Queue(QueuPriority.Default)]
         public async Task SyncDataFromNapUserControl()
         {
             if (await IsNotUM())
@@ -54,8 +49,6 @@
             }
         }
 
-        [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
-        [Queue(QueuPriority.Default)]
         public async Task SyncDataFromOIC()
         {
             if (await IsNotUM())
@@ -72,9 +65,6 @@
             }
         }
 
-        [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
-        [Queue(QueuPriority.Critical)]
-        [DisableConcurrentExecution(DisableConcurrentExecutionTimeoutInSeconds)]
         public async Task PullMessageFromSpecialDelete()
         {
             var timeStamp = DateTime.Now.ToString("yyyyMMddHHmmssffff");
@@ -105,9 +95,6 @@
             }
         }
 
-        [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
-        [Queue(QueuPriority.Critical)]
-        [DisableConcurrentExecution(DisableConcurrentExecutionTimeoutInSeconds)]
         public async Task PullMessageFromSiteMessage()
         {
             if (await IsNotUM())
@@ -124,8 +111,6 @@
             }
         }
 
-        [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
-        [Queue(QueuPriority.Critical)]
         public async Task ScanAndSendNotification()
         {
             try
@@ -139,8 +124,6 @@
             }
         }
 
-        [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
-        [Queue(QueuPriority.Default)]
         public async Task MonitorChatbot()
         {
             try
