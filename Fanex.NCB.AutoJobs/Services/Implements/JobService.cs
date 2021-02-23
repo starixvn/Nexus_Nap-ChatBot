@@ -1,9 +1,9 @@
 ﻿namespace Fanex.NCB.AutoJobs.Services.Implements
 {
-    using Fanex.NCB.Services.Interfaces;
-    using ONEbook.UM.Services;
     using System;
     using System.Threading.Tasks;
+    using Fanex.NCB.Services.Interfaces;
+    using ONEbook.UM.Services;
 
     public class JobService : IJobService
     {
@@ -69,7 +69,7 @@
         {
             var timeStamp = DateTime.Now.ToString("yyyyMMddHHmmssffff");
             Random random = new Random();
-            timeStamp = timeStamp + random.Next(0, MaxRandom).ToString();
+            timeStamp += random.Next(0, MaxRandom).ToString();
 
             logger.WriteInfo($"{timeStamp} - Start PullMessageFromSpecialDelete job");
             if (await IsNotUM())
@@ -83,9 +83,6 @@
                     );
 
                     logger.WriteInfo($"{timeStamp} - Inprogress PullMessageFromSpecialDelete job - after pull msg");
-
-                    await sendNotificationService.ScanAndSendNotification();
-                    logger.WriteInfo($"{timeStamp} - Inprogress PullMessageFromSpecialDelete job - after send notification");
                 }
                 catch (Exception ex)
                 {

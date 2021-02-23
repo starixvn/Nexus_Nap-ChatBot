@@ -1,9 +1,9 @@
 ﻿namespace Fanex.NCB.AutoJobs.Services.Implements
 {
-    using Fanex.Logging.Extensions;
-    using Fanex.Logging.Extensions.Database;
     using System;
     using System.Threading.Tasks;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
 
     public class LogServiceExt : ILogServiceExt
     {
@@ -16,7 +16,6 @@
         {
             this.logger = logger;
         }
-
 
         public async Task WriteError(Exception exception)
         {
