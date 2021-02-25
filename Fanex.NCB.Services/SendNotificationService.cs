@@ -1,10 +1,5 @@
 ﻿namespace Fanex.NCB.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Threading.Tasks;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
@@ -15,7 +10,11 @@
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
-    using RestSharp;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Threading.Tasks;
 
     public class SendNotificationService : ISendNotificationService
     {
@@ -118,13 +117,12 @@
             {
                 index++;
                 logService.WriteLogFileInfo($"Start batch {index} ");
-                var response = await SendMessageToMultipleWithHandleException(batch.Item1, batch.Item2, index);
-                await HandleResponse(response, recipients, index);
+                await SendMessageToMultipleWithHandleException(batch.Item1, batch.Item2, index);
                 logService.WriteLogFileInfo($"End batch {index} ");
             }
         }
 
-        private async Task<IRestResponse> SendMessageToMultipleWithHandleException(
+        private async Task SendMessageToMultipleWithHandleException(
             IEnumerable<NotificationMessage> messages,
             IEnumerable<NotificationRecipient> recipients, int index)
         {
@@ -134,63 +132,48 @@
                 var response = await chatbotService.SendMessageToMultitpleAsync(messages);
                 logService.WriteLogFileInfo($"End SendMessageToMultitpleAsync for batch {index} ");
 
-                return response;
+                if (response.IsSuccessful && response.StatusCode.Equals(HttpStatusCode.OK))
+                {
+                    logService.WriteLogFileInfo($"Start handle response success for batch {index}");
+                    var responseMessages = ConvertJsonResponse(response.Content);
+                    await UpdateStatusAfterSendNotification(recipients, responseMessages);
+                }
+                else
+                {
+                    logService.WriteLogFileInfo($"Start handle response fail for batch {index}, data: {response.ErrorMessage}");
+                    await PrepareUpdateFailedRecipientStatus(recipients, response.ErrorMessage);
+                    if (response.ErrorException != null)
+                    {
+                        await logService.WriteExceptionSentryErrorAsync(response.ErrorException);
+                    }
+                }
+
+                logService.WriteLogFileInfo($"End handle response for batch {index}");
             }
             catch (Exception exception)
             {
                 logService.WriteLogFileInfo($"SendMessageToMutipleAsync throws exception: batch {index}, data: {JsonConvert.SerializeObject(messages)}");
-                var updateRecipients = recipients.Select(r =>
-                    {
-                        return new NotificationRecipient
-                        {
-                            NotificationId = r.NotificationId,
-                            RecipientId = r.RecipientId,
-                            BotId = r.BotId,
-                            ChatGroupId = r.ChatGroupId,
-                            ErrCode = (int)RecipientStatuses.BotServiceError,
-                            ErrorMessage = exception.Message
-                        };
-                    });
-
-                await UpdateFailedRecipientStatus(updateRecipients, true);
-
+                await PrepareUpdateFailedRecipientStatus(recipients, exception.Message);
                 await logService.WriteExceptionSentryErrorAsync(exception);
-                return new RestResponse();
             }
         }
 
-        private async Task HandleResponse(IRestResponse response, IEnumerable<NotificationRecipient> recipients, int index)
+        private async Task PrepareUpdateFailedRecipientStatus(IEnumerable<NotificationRecipient> recipients, string errorMessage)
         {
-            logService.WriteLogFileInfo($"Start handle response for batch {index}");
-            if (response.IsSuccessful && response.StatusCode.Equals(HttpStatusCode.OK))
+            var updatedRecipients = recipients.Select(r =>
             {
-                var responseMessages = ConvertJsonResponse(response.Content);
-                await UpdateStatusAfterSendNotification(recipients, responseMessages);
-            }
-            else
-            {
-                logService.WriteLogFileInfo($"Push message error batch {index}, data: {response.ErrorMessage}");
-
-                var updatedRecipients = recipients.Select(r =>
+                return new NotificationRecipient
                 {
-                    return new NotificationRecipient
-                    {
-                        NotificationId = r.NotificationId,
-                        RecipientId = r.RecipientId,
-                        BotId = r.BotId,
-                        ChatGroupId = r.ChatGroupId,
-                        ErrCode = (int)RecipientStatuses.BotServiceError,
-                        ErrorMessage = response.ErrorMessage
-                    };
-                });
+                    NotificationId = r.NotificationId,
+                    RecipientId = r.RecipientId,
+                    BotId = r.BotId,
+                    ChatGroupId = r.ChatGroupId,
+                    ErrCode = (int)RecipientStatuses.BotServiceError,
+                    ErrorMessage = errorMessage
+                };
+            });
 
-                await UpdateFailedRecipientStatus(updatedRecipients, true);
-                if (response.ErrorException != null)
-                {
-                    await logService.WriteExceptionSentryErrorAsync(response.ErrorException);
-                }
-                logService.WriteLogFileInfo($"End handle response for batch {index}");
-            }
+            await UpdateFailedRecipientStatus(updatedRecipients, true);
         }
 
         private async Task UpdateStatusAfterSendNotification(IEnumerable<NotificationRecipient> recipients, IEnumerable<SendMessageResult> responseMessages)
