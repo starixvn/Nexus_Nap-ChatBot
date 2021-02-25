@@ -1,23 +1,25 @@
-﻿namespace Fanex.NCB.AutoJobs.Services.Implements
+﻿namespace Fanex.NCB.Services
 {
     using System;
     using System.Threading.Tasks;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
+    using Fanex.NCB.Services.Interfaces;
+    using NLog;
+    using NLog.Web;
 
-    public class LogServiceExt : ILogServiceExt
+    public class LogServiceExtend : ILogService
     {
         private readonly Logging.ILogger logger;
+        private readonly Logger infoLogger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 
-        private readonly NLog.Logger infoLogger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
-
-        public LogServiceExt(
+        public LogServiceExtend(
             Logging.ILogger logger)
         {
             this.logger = logger;
         }
 
-        public async Task WriteError(Exception exception)
+        public async Task WriteExceptionSentryErrorAsync(Exception exception)
         {
             var logMessage = new LogMessage(exception.Message)
                        .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
@@ -27,9 +29,9 @@
             await logger.ErrorAsync(logMessage);
         }
 
-        public void WriteInfo(string logMessage)
+        public void WriteLogFileInfo(string logMessage)
         {
-            infoLogger.Error(logMessage);
+            infoLogger.Error($"{logMessage} at {DateTime.Now}");
         }
     }
 }

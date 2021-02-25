@@ -10,6 +10,7 @@
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models;
     using Fanex.NCB.Models.NotifictaionSendMessage;
+    using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
@@ -20,6 +21,7 @@
     public class ChatbotServieTests
     {
         private IRestClient webClient;
+        private ILogService logService;
         private IOptionsSnapshot<BotSettings> botSettings;
         private IOptionsSnapshot<MonitorChatbot> monitor;
         private IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions;
@@ -175,6 +177,7 @@
             webClient = Substitute.For<IRestClient>();
             botSettings = Substitute.For<IOptionsSnapshot<BotSettings>>();
             notifyChatGroupOptions = Substitute.For<IOptionsSnapshot<NotifyChatGroupOption>>();
+            logService = Substitute.For<ILogService>();
             monitor = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
             monitor.Value.Returns(monitorOptions);
             jobs = Substitute.For<IOptionsSnapshot<List<HangfireJobSetting>>>();
@@ -185,7 +188,7 @@
             botSettings.Value.Returns(settings);
             notifyChatGroupOptions.Value.Returns(sponGroupOptions);
 
-            return new ChatbotService(botSettings, monitor, notifyChatGroupOptions, jobs);
+            return new ChatbotService(logService, botSettings, monitor, notifyChatGroupOptions, jobs);
         }
     }
 }

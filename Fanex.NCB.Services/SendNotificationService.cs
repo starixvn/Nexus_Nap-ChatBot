@@ -2,11 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
-    using Fanex.Logging;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
@@ -26,26 +24,28 @@
         private readonly IPushSignalService pushSignalService;
         private readonly IOptionsSnapshot<AppSettings> appSettings;
         private readonly IOptionsSnapshot<MonitorChatbot> monitorOptions;
-        private readonly ILogger logger;
+        private readonly ILogService logService;
 
         public SendNotificationService(IChatbotService chatbotService,
             IBaseService baseService,
             IPushSignalService pushSignalService,
             IOptionsSnapshot<AppSettings> appSettings,
             IOptionsSnapshot<MonitorChatbot> monitorOptions,
-            ILogger logger)
+            ILogService logger)
         {
             this.chatbotService = chatbotService;
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;
             this.appSettings = appSettings;
             this.monitorOptions = monitorOptions;
-            this.logger = logger;
+            this.logService = logger;
         }
 
         public async Task ScanAndSendNotification()
         {
             var notifications = await GetNotificationPlannedToSend();
+            await logService.WriteExceptionSentryErrorAsync(new Exception("Test sentry"));
+            logService.WriteLogFileInfo("Test write log file");
             if (notifications.Item1.Any())
             {
                 await UpdateFailedRecipientStatus(notifications.Item2.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
@@ -109,26 +109,33 @@
         private async Task SendNotificationToRecipients(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
             var distinctRecipients = GetDistinctChatGroupConversationId(recipients);
-            var batchs = DivideNotificationBatch(notifications, distinctRecipients);
+            var batches = DivideNotificationBatch(notifications, distinctRecipients);
             var index = 0;
-            foreach (var batch in batchs)
+            foreach (var batch in batches)
             {
                 index++;
-                var response = await SendMessageToMultipleWithHandleException(batch.Item1, batch.Item2);
-                await HandleResponse(response, recipients);
+                logService.WriteLogFileInfo($"Start batch {index} ");
+                var response = await SendMessageToMultipleWithHandleException(batch.Item1, batch.Item2, index);
+                await HandleResponse(response, recipients, index);
+                logService.WriteLogFileInfo($"End batch {index} ");
             }
         }
 
         private async Task<IRestResponse> SendMessageToMultipleWithHandleException(
             IEnumerable<NotificationMessage> messages,
-            IEnumerable<NotificationRecipient> recipients)
+            IEnumerable<NotificationRecipient> recipients, int index)
         {
             try
             {
-                return await chatbotService.SendMessageToMultitpleAsync(messages);
+                logService.WriteLogFileInfo($"Start SendMessageToMultitpleAsync for batch {index} ");
+                var response = await chatbotService.SendMessageToMultitpleAsync(messages);
+                logService.WriteLogFileInfo($"End SendMessageToMultitpleAsync for batch {index} ");
+
+                return response;
             }
             catch (Exception exception)
             {
+                logService.WriteLogFileInfo($"SendMessageToMutipleAsync throws exception: batch {index}, data: {JsonConvert.SerializeObject(messages)}");
                 var updateRecipients = recipients.Select(r =>
                     {
                         return new NotificationRecipient
@@ -144,13 +151,14 @@
 
                 await UpdateFailedRecipientStatus(updateRecipients, true);
 
-                await WriteLog(exception);
-                throw;
+                await logService.WriteExceptionSentryErrorAsync(exception);
+                return new RestResponse();
             }
         }
 
-        private async Task HandleResponse(IRestResponse response, IEnumerable<NotificationRecipient> recipients)
+        private async Task HandleResponse(IRestResponse response, IEnumerable<NotificationRecipient> recipients, int index)
         {
+            logService.WriteLogFileInfo($"Start handle response for batch {index}");
             if (response.IsSuccessful && response.StatusCode.Equals(HttpStatusCode.OK))
             {
                 var responseMessages = ConvertJsonResponse(response.Content);
@@ -158,6 +166,8 @@
             }
             else
             {
+                logService.WriteLogFileInfo($"Push message error batch {index}, data: {response.ErrorMessage}");
+
                 var updatedRecipients = recipients.Select(r =>
                 {
                     return new NotificationRecipient
@@ -174,23 +184,9 @@
                 await UpdateFailedRecipientStatus(updatedRecipients, true);
                 if (response.ErrorException != null)
                 {
-                    await WriteLog(response.ErrorException);
+                    await logService.WriteExceptionSentryErrorAsync(response.ErrorException);
                 }
-                else
-                {
-                    var recipient = updatedRecipients.FirstOrDefault();
-                    var logInfo = string.Format("NotificationId: {0}, RecipientId: {1}, ChatGroupId: {2}, ErrCode: {3}, ErrorMessage: {4}",
-                        recipient.NotificationId, recipient.RecipientId, recipient.ChatGroupId, recipient.ErrCode, recipient.ErrorMessage);
-                    await logger.ErrorAsync(logInfo);
-                    var otherLog = new
-                    {
-                        Status = response.StatusCode,
-                        IsSuccessful = response.IsSuccessful,
-                        ErrorMessage = response.ErrorMessage,
-                        Info = response.Content
-                    };
-                    await logger.InfoAsync(JsonConvert.SerializeObject(otherLog));
-                }
+                logService.WriteLogFileInfo($"End handle response for batch {index}");
             }
         }
 
@@ -226,14 +222,14 @@
             }
             catch (Exception exception)
             {
-                await WriteLog(exception);
+                await logService.WriteExceptionSentryErrorAsync(exception);
             }
         }
 
         private IEnumerable<ValueTuple<List<NotificationMessage>, List<NotificationRecipient>>>
             DivideNotificationBatch(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
-            var batchs = new List<ValueTuple<List<NotificationMessage>, List<NotificationRecipient>>>();
+            var batches = new List<ValueTuple<List<NotificationMessage>, List<NotificationRecipient>>>();
             var batchRecipients = new List<List<NotificationRecipient>>();
             int itemEachBatch = appSettings.Value.ItemEachBatchSendNotification;
             int totalBatch = (int)Math.Ceiling((double)recipients.Count() / itemEachBatch);
@@ -242,10 +238,10 @@
                 batchRecipients.Add(recipients.Skip(i * itemEachBatch).Take(itemEachBatch).ToList());
             }
 
-            foreach (var patchRecipient in batchRecipients)
+            foreach (var batch in batchRecipients)
             {
-                var listNotificationIds = patchRecipient.Select(p => p.NotificationId).Distinct();
-                var batch = new List<NotificationMessage>(notifications
+                var listNotificationIds = batch.Select(p => p.NotificationId).Distinct();
+                var newBatches = new List<NotificationMessage>(notifications
                                 .Where(noti => listNotificationIds.Any(l => l == noti.NotificationId))
                                 .Select(n => new NotificationMessage
                                 {
@@ -253,9 +249,9 @@
                                     Message = n.Content
                                 }));
 
-                foreach (var item in batch)
+                foreach (var item in newBatches)
                 {
-                    item.Recipients = new List<ConversationInfo>(patchRecipient.Where(r => r.NotificationId == item.NotificationId)
+                    item.Recipients = new List<ConversationInfo>(batch.Where(r => r.NotificationId == item.NotificationId)
                         .Select(r => new ConversationInfo
                         {
                             BotConversationId = r.BotConversationId,
@@ -265,11 +261,11 @@
                             BotName = r.BotName
                         }).DistinctBy(r => r.ConversationId));
                 }
-                batchs.Add(new ValueTuple<List<NotificationMessage>, List<NotificationRecipient>>(batch, patchRecipient));
+                batches.Add(new ValueTuple<List<NotificationMessage>, List<NotificationRecipient>>(newBatches, batch));
             }
 
-            batchs.Last().Item1.Last().Recipients = AddMonitorRecipient(batchs.Last().Item1.Last().Recipients);
-            return batchs;
+            batches.Last().Item1.Last().Recipients = AddMonitorRecipient(batches.Last().Item1.Last().Recipients);
+            return batches;
         }
 
         private IEnumerable<ConversationInfo> AddMonitorRecipient(IEnumerable<ConversationInfo> conversations)
@@ -338,19 +334,6 @@
         private void PushSignalNewErrNotification()
         {
             Task.Run(() => pushSignalService.OnHasNewErrNotifications());
-        }
-
-        private async Task WriteLog(Exception exception)
-        {
-            string errMsg = string.Format(
-                CultureInfo.InvariantCulture,
-                "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
-                exception.Message,
-                exception.Source,
-                string.Empty,
-                exception.TargetSite,
-                exception.StackTrace);
-            await logger.ErrorAsync(errMsg);
         }
     }
 }

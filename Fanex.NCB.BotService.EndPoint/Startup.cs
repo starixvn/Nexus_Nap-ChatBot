@@ -1,5 +1,8 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Logging.Extensions;
@@ -20,9 +23,6 @@
     using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
     using Sentry;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
 
     public class Startup
     {

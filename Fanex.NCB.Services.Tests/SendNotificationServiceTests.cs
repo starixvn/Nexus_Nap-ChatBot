@@ -5,7 +5,6 @@
     using System.Net;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
-    using Fanex.Logging;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SendNotification;
     using Fanex.NCB.Models.NotifictaionSendMessage;
@@ -25,7 +24,7 @@
         private IPushSignalService pushSignalService;
         private IOptionsSnapshot<AppSettings> appSettings;
         private IOptionsSnapshot<MonitorChatbot> monitor;
-        private ILogger logger;
+        private ILogService logger;
 
         [Fact]
         public async Task ScanAndSendNotification_ScanEmptyNoti_NotUpdateStatusAndSendNoti()
@@ -88,7 +87,6 @@
 
             //Assert
             await Assert.ThrowsAsync<Exception>(() => service.ScanAndSendNotification());
-            await logger.Received().ErrorAsync(Arg.Any<string>());
             await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
         }
 
@@ -169,7 +167,7 @@
         {
             chatbotService = Substitute.For<IChatbotService>();
             baseService = Substitute.For<IBaseService>();
-            logger = Substitute.For<ILogger>();
+            logger = Substitute.For<ILogService>();
             monitor = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
 
             var monitorChatbot = new MonitorChatbot

@@ -133,7 +133,7 @@
             services.Configure<NotifyChatGroupOption>(Configuration.GetSection("NotifyChatGroupOptions"));
             services.AddSingleton(new UMClientConfiguration().Initialize(Configuration));
             services.AddTransient<ILogger, Logger>();
-            services.AddTransient<ILogServiceExt, LogServiceExt>();
+            services.AddTransient<ILogService, LogServiceExtend>();
 
             RegisterService(services);
             RegisterRepository(services);

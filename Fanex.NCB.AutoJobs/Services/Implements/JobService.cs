@@ -14,7 +14,7 @@
         private readonly ISendNotificationService sendNotificationService;
         private readonly IMaintenanceService maintenanceService;
         private readonly ISiteMessageService siteMessageService;
-        private readonly ILogServiceExt logger;
+        private readonly ILogService logger;
 
         public JobService(ISyncDataService syncDataService,
             IChatbotService chatbotService,
@@ -22,7 +22,7 @@
             ISendNotificationService sendNotificationService,
             IMaintenanceService maintenanceService,
             ISiteMessageService siteMessageService,
-            ILogServiceExt logger)
+            ILogService logger)
         {
             this.syncDataService = syncDataService;
             this.chatbotService = chatbotService;
@@ -43,7 +43,7 @@
                 }
                 catch (Exception ex)
                 {
-                    await logger.WriteError(ex);
+                    await logger.WriteExceptionSentryErrorAsync(ex);
                     throw;
                 }
             }
@@ -59,7 +59,7 @@
                 }
                 catch (Exception ex)
                 {
-                    await logger.WriteError(ex);
+                    await logger.WriteExceptionSentryErrorAsync(ex);
                     throw;
                 }
             }
@@ -71,22 +71,22 @@
             Random random = new Random();
             timeStamp += random.Next(0, MaxRandom).ToString();
 
-            logger.WriteInfo($"{timeStamp} - Start PullMessageFromSpecialDelete job");
+            logger.WriteLogFileInfo($"{timeStamp} - Start PullMessageFromSpecialDelete job");
             if (await IsNotUM())
             {
                 try
                 {
-                    logger.WriteInfo($"{timeStamp} - Inprogress PullMessageFromSpecialDelete job - after Check UM");
+                    logger.WriteLogFileInfo($"{timeStamp} - Inprogress PullMessageFromSpecialDelete job - after Check UM");
                     await Task.WhenAll(
                         specialDeleteTicketService.VoidingTicketToLicensee(),
                         specialDeleteTicketService.VoidingAbnormalBetsToInternalDepartment()
                     );
 
-                    logger.WriteInfo($"{timeStamp} - Inprogress PullMessageFromSpecialDelete job - after pull msg");
+                    logger.WriteLogFileInfo($"{timeStamp} - Inprogress PullMessageFromSpecialDelete job - after pull msg");
                 }
                 catch (Exception ex)
                 {
-                    await logger.WriteError(ex);
+                    await logger.WriteExceptionSentryErrorAsync(ex);
                     throw;
                 }
             }
@@ -102,7 +102,7 @@
                 }
                 catch (Exception ex)
                 {
-                    await logger.WriteError(ex);
+                    await logger.WriteExceptionSentryErrorAsync(ex);
                     throw;
                 }
             }
@@ -116,7 +116,7 @@
             }
             catch (Exception ex)
             {
-                await logger.WriteError(ex);
+                await logger.WriteExceptionSentryErrorAsync(ex);
                 throw;
             }
         }
@@ -129,7 +129,7 @@
             }
             catch (Exception ex)
             {
-                await logger.WriteError(ex);
+                await logger.WriteExceptionSentryErrorAsync(ex);
                 throw;
             }
         }

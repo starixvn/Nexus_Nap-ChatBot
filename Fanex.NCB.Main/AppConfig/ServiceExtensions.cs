@@ -25,6 +25,7 @@
         {
             services.AddTransient<IBaseService, BaseService>();
             services.AddTransient<IChatbotService, ChatbotService>();
+            services.AddTransient<ILogService, LogServiceExtend>();
             services.AddScoped<IChatGroupMappingService, ChatGroupMappingService>();
             services.AddScoped<ISettingService, SettingService>();
             services.AddScoped<INotificationTypeService, NotificationTypeService>();

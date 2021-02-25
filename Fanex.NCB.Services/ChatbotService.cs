@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Text;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Constants;
@@ -18,18 +19,21 @@
     public class ChatbotService : IChatbotService
     {
         private readonly IRestClient webClient;
+        private readonly ILogService logService;
         private readonly IOptionsSnapshot<BotSettings> botSettings;
         private readonly IOptionsSnapshot<MonitorChatbot> monitorChatbot;
         private readonly IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions;
         private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
 
         public ChatbotService(
+            ILogService logService,
             IOptionsSnapshot<BotSettings> botSettings,
             IOptionsSnapshot<MonitorChatbot> monitorChatbot,
             IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions,
             IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
         {
             webClient = new RestClient { Encoding = Encoding.UTF8 };
+            this.logService = logService;
             this.monitorChatbot = monitorChatbot;
             this.botSettings = botSettings;
             this.jobSettings = jobSettings;
@@ -81,7 +85,10 @@
             request.AddHeader("Content-type", "application/x-www-form-urlencoded");
 
             var response = await webClient.ExecutePostTaskAsync<ChatbotToken>(request);
-
+            if (!response.IsSuccessful || response.StatusCode != HttpStatusCode.OK)
+            {
+                await logService.WriteExceptionSentryErrorAsync(response.ErrorException);
+            }
             return response.Data;
         }
 

@@ -11,12 +11,13 @@
         <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
     <ItemGroup>
-      <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+        <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Fanex.Logging" Version="2.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
         <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+        <PackageReference Include="NLog.Web.AspNetCore" Version="4.10.0" />
         <PackageReference Include="ONEbook.UM.AspNetCore" Version="3.0.0-beta2" />
         <PackageReference Include="ONEbook.UM.Transport" Version="3.0.0-beta3" />
         <PackageReference Include="RestSharp" Version="106.5.4" />
