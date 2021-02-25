@@ -31,14 +31,14 @@
             IPushSignalService pushSignalService,
             IOptionsSnapshot<AppSettings> appSettings,
             IOptionsSnapshot<MonitorChatbot> monitorOptions,
-            ILogService logger)
+            ILogService logService)
         {
             this.chatbotService = chatbotService;
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;
             this.appSettings = appSettings;
             this.monitorOptions = monitorOptions;
-            this.logService = logger;
+            this.logService = logService;
         }
 
         public async Task ScanAndSendNotification()
