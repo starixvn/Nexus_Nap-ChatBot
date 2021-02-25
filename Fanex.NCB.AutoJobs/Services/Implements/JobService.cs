@@ -44,7 +44,6 @@
                 catch (Exception ex)
                 {
                     await logger.WriteExceptionSentryErrorAsync(ex);
-                    throw;
                 }
             }
         }
@@ -60,7 +59,6 @@
                 catch (Exception ex)
                 {
                     await logger.WriteExceptionSentryErrorAsync(ex);
-                    throw;
                 }
             }
         }
@@ -87,7 +85,6 @@
                 catch (Exception ex)
                 {
                     await logger.WriteExceptionSentryErrorAsync(ex);
-                    throw;
                 }
             }
         }
@@ -103,7 +100,6 @@
                 catch (Exception ex)
                 {
                     await logger.WriteExceptionSentryErrorAsync(ex);
-                    throw;
                 }
             }
         }
@@ -117,7 +113,6 @@
             catch (Exception ex)
             {
                 await logger.WriteExceptionSentryErrorAsync(ex);
-                throw;
             }
         }
 
@@ -130,7 +125,6 @@
             catch (Exception ex)
             {
                 await logger.WriteExceptionSentryErrorAsync(ex);
-                throw;
             }
         }
 

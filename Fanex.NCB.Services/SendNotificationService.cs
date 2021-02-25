@@ -43,15 +43,18 @@
 
         public async Task ScanAndSendNotification()
         {
+            logService.WriteLogFileInfo($"Start ScanAndSendNotification job");
+
             var notifications = await GetNotificationPlannedToSend();
-            await logService.WriteExceptionSentryErrorAsync(new Exception("Test sentry"));
-            logService.WriteLogFileInfo("Test write log file");
+            logService.WriteLogFileInfo($"GetNotification: {notifications.Item1.Count()}");
             if (notifications.Item1.Any())
             {
                 await UpdateFailedRecipientStatus(notifications.Item2.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
-
+                logService.WriteLogFileInfo($"After UpdateFailedRecipientStatus: {notifications.Item2.Count()}");
                 await SendNotificationToRecipients(notifications.Item1, notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
             }
+
+            logService.WriteLogFileInfo("End ScanAndSendNotification job");
         }
 
         private async Task UpdateFailedRecipientStatus(IEnumerable<NotificationRecipient> recipients, bool isRetry = false)
