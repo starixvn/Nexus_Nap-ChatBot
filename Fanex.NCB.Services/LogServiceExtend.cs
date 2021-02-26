@@ -29,9 +29,14 @@
             await logger.ErrorAsync(logMessage);
         }
 
+        public async Task WriteMessageSentryErrorAsync(string logMessage)
+        {
+            await logger.ErrorAsync(logMessage);
+        }
+
         public void WriteLogFileInfo(string logMessage)
         {
-            infoLogger.Error($"{logMessage} at {DateTime.Now}");
+            infoLogger.Error(logMessage);
         }
     }
 }

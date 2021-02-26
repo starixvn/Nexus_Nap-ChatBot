@@ -43,14 +43,14 @@
         public async Task ScanAndSendNotification()
         {
             logService.WriteLogFileInfo($"Start ScanAndSendNotification job");
-
             var notifications = await GetNotificationPlannedToSend();
-            logService.WriteLogFileInfo($"GetNotification: {notifications.Item1.Count()}");
             if (notifications.Item1.Any())
             {
                 await UpdateFailedRecipientStatus(notifications.Item2.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
-                logService.WriteLogFileInfo($"After UpdateFailedRecipientStatus: {notifications.Item2.Count()}");
-                await SendNotificationToRecipients(notifications.Item1, notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
+                var readyToSendRecipients = notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend));
+                logService.WriteLogFileInfo($"Get Notification: Total recipients: {notifications.Item2.Count()}, ready to send: ");
+
+                await SendNotificationToRecipients(notifications.Item1, readyToSendRecipients);
             }
 
             logService.WriteLogFileInfo("End ScanAndSendNotification job");
@@ -117,18 +117,20 @@
             {
                 index++;
                 logService.WriteLogFileInfo($"Start batch {index} ");
-                await SendMessageToMultipleWithHandleException(batch.Item1, batch.Item2, index);
+                await SendMessageToMultipleWithHandleException(batch.Item1, batch.Item2, recipients, index);
                 logService.WriteLogFileInfo($"End batch {index} ");
             }
         }
 
         private async Task SendMessageToMultipleWithHandleException(
             IEnumerable<NotificationMessage> messages,
-            IEnumerable<NotificationRecipient> recipients, int index)
+            IEnumerable<NotificationRecipient> recipients,
+            IEnumerable<NotificationRecipient> originRecipients,
+            int index)
         {
             try
             {
-                logService.WriteLogFileInfo($"Start SendMessageToMultitpleAsync for batch {index} ");
+                logService.WriteLogFileInfo($"Start SendMessageToMultitpleAsync for batch {index} - {recipients.Count()} recipients ");
                 var response = await chatbotService.SendMessageToMultitpleAsync(messages);
                 logService.WriteLogFileInfo($"End SendMessageToMultitpleAsync for batch {index} ");
 
@@ -136,15 +138,22 @@
                 {
                     logService.WriteLogFileInfo($"Start handle response success for batch {index}");
                     var responseMessages = ConvertJsonResponse(response.Content);
-                    await UpdateStatusAfterSendNotification(recipients, responseMessages);
+                    await UpdateStatusAfterSendNotification(originRecipients, responseMessages);
                 }
                 else
                 {
                     logService.WriteLogFileInfo($"Start handle response fail for batch {index}, data: {response.ErrorMessage}");
-                    await PrepareUpdateFailedRecipientStatus(recipients, response.ErrorMessage);
+
+                    await UpdateFailedStatusForBatch(recipients, originRecipients, response.ErrorMessage);
+
                     if (response.ErrorException != null)
                     {
                         await logService.WriteExceptionSentryErrorAsync(response.ErrorException);
+                    }
+                    else
+                    {
+                        await logService.WriteMessageSentryErrorAsync($"Send Message fail: {JsonConvert.SerializeObject(response)}");
+                        logService.WriteLogFileInfo($"SendMessageToMutipleAsync fail: batch {index}, data: {JsonConvert.SerializeObject(response)}");
                     }
                 }
 
@@ -153,63 +162,66 @@
             catch (Exception exception)
             {
                 logService.WriteLogFileInfo($"SendMessageToMutipleAsync throws exception: batch {index}, data: {JsonConvert.SerializeObject(messages)}");
-                await PrepareUpdateFailedRecipientStatus(recipients, exception.Message);
+                await UpdateFailedStatusForBatch(recipients, originRecipients, exception.Message);
                 await logService.WriteExceptionSentryErrorAsync(exception);
             }
         }
 
-        private async Task PrepareUpdateFailedRecipientStatus(IEnumerable<NotificationRecipient> recipients, string errorMessage)
+        private async Task UpdateFailedStatusForBatch(IEnumerable<NotificationRecipient> recipients, IEnumerable<NotificationRecipient> originRecipients, string errorMessage)
         {
-            var updatedRecipients = recipients.Select(r =>
+            var updateNotiModels = new List<UpdateNotificationModel>();
+            foreach (var recipient in originRecipients)
             {
-                return new NotificationRecipient
-                {
-                    NotificationId = r.NotificationId,
-                    RecipientId = r.RecipientId,
-                    BotId = r.BotId,
-                    ChatGroupId = r.ChatGroupId,
-                    ErrCode = (int)RecipientStatuses.BotServiceError,
-                    ErrorMessage = errorMessage
-                };
-            });
+                var results = recipients.Where(r => r.NotificationId == recipient.NotificationId
+                && r.ChatGroupConversationId == recipient.ChatGroupConversationId);
 
-            await UpdateFailedRecipientStatus(updatedRecipients, true);
+                foreach (var result in results)
+                {
+                    var model = new UpdateNotificationModel
+                    {
+                        NotificationID = recipient.NotificationId,
+                        RecipientID = recipient.RecipientId,
+                        SentTime = DateTimeExtension.ConvertToDateTimeString(DateTime.UtcNow),
+                        ConversationGroupID = recipient.ChatGroupId,
+                        ConversationBotID = recipient.BotId,
+                        Retry = true,
+                        IsSuccess = false,
+                        ErrMsg = GenerateErrorMessage(RecipientStatuses.BotServiceError, errorMessage)
+                    };
+                    updateNotiModels.Add(model);
+                }
+            }
+
+            await UpdateSentNotificationStatus(updateNotiModels);
         }
 
         private async Task UpdateStatusAfterSendNotification(IEnumerable<NotificationRecipient> recipients, IEnumerable<SendMessageResult> responseMessages)
         {
-            try
+            var updateNotiModels = new List<UpdateNotificationModel>();
+            foreach (var recipient in recipients)
             {
-                var updateNotiModels = new List<UpdateNotificationModel>();
-                foreach (var recipient in recipients)
+                var results = responseMessages.Where(r => r.NotificationId == recipient.NotificationId
+                && r.ConversationId == recipient.ChatGroupConversationId);
+
+                foreach (var result in results)
                 {
-                    var results = responseMessages.Where(r => r.NotificationId == recipient.NotificationId
-                    && r.ConversationId == recipient.ChatGroupConversationId);
-
-                    foreach (var result in results)
+                    var model = new UpdateNotificationModel
                     {
-                        var model = new UpdateNotificationModel
-                        {
-                            NotificationID = recipient.NotificationId,
-                            RecipientID = recipient.RecipientId,
-                            SentTime = DateTimeExtension.ConvertToDateTimeString(result.SentTime),
-                            ConversationGroupID = recipient.ChatGroupId,
-                            ConversationBotID = recipient.BotId,
-                            Retry = result.ErrorCode != 0,
-                            IsSuccess = result.ErrorCode == 0,
-                            ErrMsg = result.ErrorCode == 0 ? string.Empty :
-                            GenerateErrorMessage(RecipientStatuses.BotServiceError, result.ErrorMessage)
-                        };
-                        updateNotiModels.Add(model);
-                    }
+                        NotificationID = recipient.NotificationId,
+                        RecipientID = recipient.RecipientId,
+                        SentTime = DateTimeExtension.ConvertToDateTimeString(result.SentTime),
+                        ConversationGroupID = recipient.ChatGroupId,
+                        ConversationBotID = recipient.BotId,
+                        Retry = result.ErrorCode != 0,
+                        IsSuccess = result.ErrorCode == 0,
+                        ErrMsg = result.ErrorCode == 0 ? string.Empty :
+                        GenerateErrorMessage(RecipientStatuses.BotServiceError, result.ErrorMessage)
+                    };
+                    updateNotiModels.Add(model);
                 }
+            }
 
-                await UpdateSentNotificationStatus(updateNotiModels);
-            }
-            catch (Exception exception)
-            {
-                await logService.WriteExceptionSentryErrorAsync(exception);
-            }
+            await UpdateSentNotificationStatus(updateNotiModels);
         }
 
         private IEnumerable<ValueTuple<List<NotificationMessage>, List<NotificationRecipient>>>

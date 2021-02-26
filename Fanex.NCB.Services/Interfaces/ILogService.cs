@@ -7,6 +7,8 @@
     {
         Task WriteExceptionSentryErrorAsync(Exception exception);
 
+        Task WriteMessageSentryErrorAsync(string logMessage);
+
         void WriteLogFileInfo(string logMessage);
     }
 }
