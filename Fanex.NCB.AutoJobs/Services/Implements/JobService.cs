@@ -128,10 +128,11 @@
             }
         }
 
-        private async Task<bool> IsNotUM()
+        private static async Task<bool> IsNotUM()
         {
-            var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
-            return !maintanceTime.IsUnderMaintenanceTime;
+            return true;
+            //// var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
+            //// return !maintanceTime.IsUnderMaintenanceTime;
         }
     }
 }
