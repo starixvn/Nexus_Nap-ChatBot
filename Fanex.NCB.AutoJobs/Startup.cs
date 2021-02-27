@@ -42,6 +42,7 @@
     using ONEbook.UM.Helpers;
     using ONEbook.UM.Services;
     using ONEbook.UM.Transport;
+    using RestSharp;
     using Sentry;
     using StackExchange.Redis;
 
@@ -195,6 +196,7 @@
 
             #endregion ONEbookUM
 
+            services.AddSingleton<IRestClient, RestClient>();
             services.AddSingleton<IBaseService, BaseService>();
             services.AddScoped<IChatbotService, ChatbotService>();
             services.AddScoped<ISendNotificationService, SendNotificationService>();

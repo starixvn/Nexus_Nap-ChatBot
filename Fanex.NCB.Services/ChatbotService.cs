@@ -26,13 +26,14 @@
         private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
 
         public ChatbotService(
+            IRestClient webClient,
             ILogService logService,
             IOptionsSnapshot<BotSettings> botSettings,
             IOptionsSnapshot<MonitorChatbot> monitorChatbot,
             IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions,
             IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
         {
-            webClient = new RestClient { Encoding = Encoding.UTF8 };
+            this.webClient = webClient;
             this.logService = logService;
             this.monitorChatbot = monitorChatbot;
             this.botSettings = botSettings;

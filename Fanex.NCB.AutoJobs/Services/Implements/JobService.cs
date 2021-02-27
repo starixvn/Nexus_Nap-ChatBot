@@ -35,6 +35,7 @@
 
         public async Task SyncDataFromNapUserControl()
         {
+            logger.WriteLogFileInfo("Start SyncDataFromNapUserControl");
             if (await IsNotUM())
             {
                 try
@@ -46,10 +47,13 @@
                     await logger.WriteExceptionSentryErrorAsync(ex);
                 }
             }
+
+            logger.WriteLogFileInfo("End SyncDataFromNapUserControl");
         }
 
         public async Task SyncDataFromOIC()
         {
+            logger.WriteLogFileInfo("Start SyncDataFromNapUserControl");
             if (await IsNotUM())
             {
                 try
@@ -61,6 +65,8 @@
                     await logger.WriteExceptionSentryErrorAsync(ex);
                 }
             }
+
+            logger.WriteLogFileInfo("End SyncDataFromOIC");
         }
 
         public async Task PullMessageFromSpecialDelete()
@@ -91,6 +97,8 @@
 
         public async Task PullMessageFromSiteMessage()
         {
+            logger.WriteLogFileInfo("Start PullMessageFromSiteMessage");
+
             if (await IsNotUM())
             {
                 try
@@ -102,10 +110,14 @@
                     await logger.WriteExceptionSentryErrorAsync(ex);
                 }
             }
+
+            logger.WriteLogFileInfo("End PullMessageFromSiteMessage");
         }
 
         public async Task ScanAndSendNotification()
         {
+            logger.WriteLogFileInfo("Start ScanAndSendNotification");
+
             try
             {
                 await sendNotificationService.ScanAndSendNotification();
@@ -114,10 +126,14 @@
             {
                 await logger.WriteExceptionSentryErrorAsync(ex);
             }
+
+            logger.WriteLogFileInfo("End ScanAndSendNotification");
         }
 
         public async Task MonitorChatbot()
         {
+            logger.WriteLogFileInfo("Start MonitorChatbot");
+
             try
             {
                 await chatbotService.MonitorChatbot();
@@ -126,6 +142,8 @@
             {
                 await logger.WriteExceptionSentryErrorAsync(ex);
             }
+
+            logger.WriteLogFileInfo("End MonitorChatbot");
         }
 
         private static async Task<bool> IsNotUM()

@@ -115,7 +115,6 @@
             services.RegisterJWTAuthenticate(Configuration);
 
             services.AddNapServices(Configuration);
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<ILogger, Logger>();
             services.AddSingleton(new UMClientConfiguration().Initialize(Configuration));
 

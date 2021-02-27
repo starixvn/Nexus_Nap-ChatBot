@@ -42,7 +42,6 @@
 
         public async Task ScanAndSendNotification()
         {
-            logService.WriteLogFileInfo($"Start ScanAndSendNotification job");
             var notifications = await GetNotificationPlannedToSend();
             if (notifications.Item1.Any())
             {
@@ -52,8 +51,6 @@
 
                 await SendNotificationToRecipients(notifications.Item1, readyToSendRecipients);
             }
-
-            logService.WriteLogFileInfo("End ScanAndSendNotification job");
         }
 
         private async Task UpdateFailedRecipientStatus(IEnumerable<NotificationRecipient> recipients, bool isRetry = false)
