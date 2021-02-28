@@ -131,27 +131,26 @@
                 var response = await chatbotService.SendMessageToMultitpleAsync(messages);
                 logService.WriteLogFileInfo($"End SendMessageToMultitpleAsync for batch {index} ");
 
-                if (response.IsSuccessful && response.StatusCode.Equals(HttpStatusCode.OK))
+                if (response.IsSuccessStatusCode && response.StatusCode.Equals(HttpStatusCode.OK))
                 {
                     logService.WriteLogFileInfo($"Start handle response success for batch {index}");
-                    var responseMessages = ConvertJsonResponse(response.Content);
-                    await UpdateStatusAfterSendNotification(originRecipients, responseMessages);
-                }
-                else
-                {
-                    logService.WriteLogFileInfo($"Start handle response fail for batch {index}, data: {response.ErrorMessage}");
+                    var responseData = await response.Content.ReadAsStringAsync();
+                    var responseMessages = ConvertJsonResponse(responseData);
 
-                    await UpdateFailedStatusForBatch(recipients, originRecipients, response.ErrorMessage);
-
-                    if (response.ErrorException != null)
+                    if (responseMessages.Any())
                     {
-                        await logService.WriteExceptionSentryErrorAsync(response.ErrorException);
+                        await UpdateStatusAfterSendNotification(originRecipients, responseMessages);
                     }
                     else
                     {
-                        await logService.WriteMessageSentryErrorAsync($"Send Message fail: {JsonConvert.SerializeObject(response)}");
-                        logService.WriteLogFileInfo($"SendMessageToMutipleAsync fail: batch {index}, data: {JsonConvert.SerializeObject(response)}");
+                        await UpdateFailedStatusForBatch(recipients, originRecipients, "Bot Service Error");
                     }
+                }
+                else
+                {
+                    logService.WriteLogFileInfo($"Start handle response fail for batch {index}, Status Code: {response.StatusCode}");
+                    await UpdateFailedStatusForBatch(recipients, originRecipients, $"Status Code: { response.StatusCode}");
+                    await logService.WriteMessageSentryErrorAsync($"Send Message fail: {JsonConvert.SerializeObject(response)}");
                 }
 
                 logService.WriteLogFileInfo($"End handle response for batch {index}");

@@ -54,37 +54,6 @@
         }
 
         [Fact]
-        public async Task SendMessageAsync_EmptyConversationId_WebClientNotCalled()
-        {
-            var service = GetService();
-
-            //Actual
-            await service.SendMessageAsync(string.Empty, string.Empty, "Test");
-
-            //Assert
-            await webClient.DidNotReceiveWithAnyArgs()
-                .ExecutePostTaskAsync(Arg.Any<RestRequest>());
-        }
-
-        [Fact]
-        public async Task SendMessageAsync_ValidConversationId_WebClientExecuted()
-        {
-            var service = GetService();
-            var expected = new RestResponse
-            {
-                StatusCode = HttpStatusCode.OK
-            };
-            var request = new RestRequest("/Test", Method.POST);
-
-            webClient.ExecutePostTaskAsync(Arg.Do<RestRequest>(x => request = x)).Returns(expected);
-            //Actual
-            await service.SendMessageAsync("", "Test conversationId", "Test");
-
-            //Assert
-            webClient.ReceivedCalls();
-        }
-
-        [Fact]
         public async Task NotifySponDemoChatGroup_WhenCalled_WebClientExecuted()
         {
             var service = GetService();
@@ -188,7 +157,7 @@
             botSettings.Value.Returns(settings);
             notifyChatGroupOptions.Value.Returns(sponGroupOptions);
 
-            return new ChatbotService(logService, botSettings, monitor, notifyChatGroupOptions, jobs);
+            return new ChatbotService(botSettings, monitor, notifyChatGroupOptions, jobs);
         }
     }
 }

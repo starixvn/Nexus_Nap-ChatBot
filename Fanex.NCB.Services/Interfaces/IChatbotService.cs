@@ -1,16 +1,14 @@
 ﻿namespace Fanex.NCB.Services.Interfaces
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Shared.Models;
-    using RestSharp;
+    using System.Collections.Generic;
+    using System.Net.Http;
+    using System.Threading.Tasks;
 
     public interface IChatbotService
     {
-        Task SendMessageAsync(string botName, string conversationId, string message);
-
-        Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages);
+        Task<HttpResponseMessage> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages);
 
         Task MonitorChatbot();
 

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.Http;
     using System.Threading.Tasks;
     using Fanex.Data;
     using Fanex.Data.MySql;
@@ -196,6 +197,7 @@
 
             #endregion ONEbookUM
 
+            services.AddSingleton<HttpClient, HttpClient>();
             services.AddSingleton<IRestClient, RestClient>();
             services.AddSingleton<IBaseService, BaseService>();
             services.AddScoped<IChatbotService, ChatbotService>();

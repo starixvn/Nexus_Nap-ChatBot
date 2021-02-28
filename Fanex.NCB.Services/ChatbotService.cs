@@ -1,11 +1,5 @@
 ﻿namespace Fanex.NCB.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Text;
-    using System.Threading.Tasks;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
@@ -14,83 +8,68 @@
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;
-    using RestSharp;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Text;
+    using System.Threading.Tasks;
 
     public class ChatbotService : IChatbotService
     {
-        private readonly IRestClient webClient;
-        private readonly ILogService logService;
+        private readonly HttpClient httpClient;
         private readonly IOptionsSnapshot<BotSettings> botSettings;
         private readonly IOptionsSnapshot<MonitorChatbot> monitorChatbot;
         private readonly IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions;
         private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
 
         public ChatbotService(
-            IRestClient webClient,
-            ILogService logService,
+            HttpClient httpClient,
             IOptionsSnapshot<BotSettings> botSettings,
             IOptionsSnapshot<MonitorChatbot> monitorChatbot,
             IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions,
             IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
         {
-            this.webClient = webClient;
-            this.logService = logService;
+            this.httpClient = httpClient;
             this.monitorChatbot = monitorChatbot;
             this.botSettings = botSettings;
             this.jobSettings = jobSettings;
             this.notifyChatGroupOptions = notifyChatGroupOptions;
         }
 
-        public async Task<IRestResponse> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages)
+        public async Task<HttpResponseMessage> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages)
         {
-            ChatbotToken token = await GetTokenAsync();
-            webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
-            var request = new RestRequest(botSettings.Value.BotServiceUrl, Method.POST);
-            request.AddHeader("Authorization", $"Bearer {token?.AccessToken}");
-            request.AddJsonBody(messages);
+            var token = await GetTokenAsync();
+            var messagesJson = JsonConvert.SerializeObject(messages,
+                new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                });
 
-            return await webClient.ExecutePostTaskAsync(request);
-        }
+            httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
-        public async Task SendMessageAsync(string botName, string conversationId, string message)
-        {
-            if (!string.IsNullOrWhiteSpace(conversationId))
-            {
-                ChatbotToken token = await GetTokenAsync();
+            var url = new Uri($"{botSettings.Value.BotDomain}{botSettings.Value.BotServiceUrl}");
 
-                await ForwardToBotAsync(botName, message, conversationId, token);
-            }
-        }
+            var content = new StringContent(messagesJson, Encoding.UTF8, "application/json");
+            var response = await httpClient.PostAsync(url, content);
 
-        private async Task ForwardToBotAsync(string botName, string message, string conversationId, ChatbotToken token)
-        {
-            webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
-
-            var request = new RestRequest(botSettings.Value.SendSingleMessage, Method.POST);
-            request.AddHeader("Authorization", $"{token?.TokenType} {token?.AccessToken}");
-            request.AddHeader("content-type", "application/x-www-form-urlencoded");
-            request.AddParameter("botName", botName);
-            request.AddParameter("message", message);
-            request.AddParameter("conversationId", conversationId);
-
-            await webClient.ExecutePostTaskAsync(request);
+            return response;
         }
 
         private async Task<ChatbotToken> GetTokenAsync()
         {
-            webClient.BaseUrl = new Uri(botSettings.Value.BotDomain);
-            var request = new RestRequest(botSettings.Value.AuthenticateUrl, Method.POST);
-            request.AddParameter("username", botSettings.Value.AppCredentialId);
-            request.AddParameter("password", botSettings.Value.AppCredentialPassword);
-
-            request.AddHeader("Content-type", "application/x-www-form-urlencoded");
-
-            var response = await webClient.ExecutePostTaskAsync<ChatbotToken>(request);
-            if (!response.IsSuccessful || response.StatusCode != HttpStatusCode.OK)
-            {
-                await logService.WriteExceptionSentryErrorAsync(response.ErrorException);
-            }
-            return response.Data;
+            var url = new Uri($"{botSettings.Value.BotDomain}{botSettings.Value.AuthenticateUrl}");
+            var authData = new Dictionary<string, string>();
+            authData.Add("username", botSettings.Value.AppCredentialId);
+            authData.Add("password", botSettings.Value.AppCredentialPassword);
+            var response = await httpClient.PostAsync(url, new FormUrlEncodedContent(authData));
+            var responseData = await response.Content.ReadAsStringAsync();
+            var token = JsonConvert.DeserializeObject<ChatbotToken>(responseData);
+            return token;
         }
 
         public async Task MonitorChatbot()
