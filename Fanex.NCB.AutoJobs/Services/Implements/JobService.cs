@@ -36,7 +36,7 @@
         public async Task SyncDataFromNapUserControl()
         {
             logger.WriteLogFileInfo("Start SyncDataFromNapUserControl");
-            if (await IsNotUM())
+            if (!await IsUM())
             {
                 try
                 {
@@ -54,7 +54,7 @@
         public async Task SyncDataFromOIC()
         {
             logger.WriteLogFileInfo("Start SyncDataFromNapUserControl");
-            if (await IsNotUM())
+            if (!await IsUM())
             {
                 try
                 {
@@ -76,7 +76,7 @@
             timeStamp += random.Next(0, MaxRandom).ToString();
 
             logger.WriteLogFileInfo($"{timeStamp} - Start PullMessageFromSpecialDelete job");
-            if (await IsNotUM())
+            if (!await IsUM())
             {
                 try
                 {
@@ -99,7 +99,7 @@
         {
             logger.WriteLogFileInfo("Start PullMessageFromSiteMessage");
 
-            if (await IsNotUM())
+            if (!await IsUM())
             {
                 try
                 {
@@ -146,11 +146,10 @@
             logger.WriteLogFileInfo("End MonitorChatbot");
         }
 
-        private static async Task<bool> IsNotUM()
+        private async Task<bool> IsUM()
         {
-            return true;
-            //// var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
-            //// return !maintanceTime.IsUnderMaintenanceTime;
+            var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
+            return maintanceTime.IsUnderMaintenanceTime;
         }
     }
 }
