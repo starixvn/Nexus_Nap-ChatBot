@@ -19,16 +19,13 @@ FROM (
 		, ROW_NUMBER() OVER(PARTITION BY nrl.NotificationId, nrl.ConversationGroupId ORDER BY nrl.SentTime) AS RN
 	FROM NotificationRecipientList nrl
 	WHERE nrl.NotificationId IN (51216,51217,51218,51219,51220)
-		AND nrl.StatusId = 1
 ) t
 WHERE t.RN = 1;
 
-/*
-SELECT *
-FROM Notification n
-WHERE n.NotificationId IN (SELECT t.NotificationId FROM tmp_NotificationRecipientList t)
-	AND n.StatusId = 3; #Sending
-*/
+UPDATE tmp_NotificationRecipientList nrl
+	INNER JOIN Notification n ON nrl.NotificationId = n.NotificationId
+SET nrl.SentTime = n.CreatedDate
+WHERE nrl.SentTime IS NULL;
     
 UPDATE Notification n
 SET n.Status = 'Sent', n.StatusId = 1
