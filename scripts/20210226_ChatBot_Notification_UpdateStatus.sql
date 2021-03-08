@@ -3,6 +3,9 @@
     DB: ChatBot
     Task: Manually update data notification due to issue from service
     RedmineID: #150241
+	
+    Revisions:
+		- 20210308@Percy: Update NotificationId list
 */
 
 USE ChatBot;
@@ -15,15 +18,17 @@ FROM (
 	SELECT nrl.NotificationId, nrl.ConversationGroupId, nrl.SentTime
 		, ROW_NUMBER() OVER(PARTITION BY nrl.NotificationId, nrl.ConversationGroupId ORDER BY nrl.SentTime) AS RN
 	FROM NotificationRecipientList nrl
-	WHERE nrl.NotificationId IN (50542,50543,50545,50547,50549,50552,50555,50557,50558,50559,50561,50562,50568,50570,50573)
+	WHERE nrl.NotificationId IN (51216,51217,51218,51219,51220)
 		AND nrl.StatusId = 1
 ) t
 WHERE t.RN = 1;
 
+/*
 SELECT *
 FROM Notification n
 WHERE n.NotificationId IN (SELECT t.NotificationId FROM tmp_NotificationRecipientList t)
 	AND n.StatusId = 3; #Sending
+*/
     
 UPDATE Notification n
 SET n.Status = 'Sent', n.StatusId = 1
