@@ -1,5 +1,12 @@
 ﻿namespace Fanex.NCB.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Text;
+    using System.Threading.Tasks;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
@@ -10,30 +17,23 @@
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Text;
-    using System.Threading.Tasks;
 
     public class ChatbotService : IChatbotService
     {
-        private readonly HttpClient httpClient;
+        private readonly IHttpClientFactory httpClientFactory;
         private readonly IOptionsSnapshot<BotSettings> botSettings;
         private readonly IOptionsSnapshot<MonitorChatbot> monitorChatbot;
         private readonly IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions;
         private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
 
         public ChatbotService(
-            HttpClient httpClient,
+            IHttpClientFactory httpClientFactory,
             IOptionsSnapshot<BotSettings> botSettings,
             IOptionsSnapshot<MonitorChatbot> monitorChatbot,
             IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions,
             IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
         {
-            this.httpClient = httpClient;
+            this.httpClientFactory = httpClientFactory;
             this.monitorChatbot = monitorChatbot;
             this.botSettings = botSettings;
             this.jobSettings = jobSettings;
@@ -49,6 +49,7 @@
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 });
 
+            var httpClient = httpClientFactory.CreateClient();
             httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
@@ -63,9 +64,13 @@
         private async Task<ChatbotToken> GetTokenAsync()
         {
             var url = new Uri($"{botSettings.Value.BotDomain}{botSettings.Value.AuthenticateUrl}");
-            var authData = new Dictionary<string, string>();
-            authData.Add("username", botSettings.Value.AppCredentialId);
-            authData.Add("password", botSettings.Value.AppCredentialPassword);
+            var authData = new Dictionary<string, string>
+            {
+                { "username", botSettings.Value.AppCredentialId },
+                { "password", botSettings.Value.AppCredentialPassword }
+            };
+
+            var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.PostAsync(url, new FormUrlEncodedContent(authData));
             var responseData = await response.Content.ReadAsStringAsync();
             var token = JsonConvert.DeserializeObject<ChatbotToken>(responseData);

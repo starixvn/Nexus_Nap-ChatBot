@@ -3,25 +3,23 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
-    using System.Text;
+    using System.Net.Http;
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models;
     using Fanex.NCB.Models.NotifictaionSendMessage;
-    using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Services.Tests.Helper;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
     using NSubstitute;
-    using RestSharp;
     using Xunit;
 
     public class ChatbotServieTests
     {
-        private IRestClient webClient;
-        private ILogService logService;
+        private IHttpClientFactory httpClientFactory;
         private IOptionsSnapshot<BotSettings> botSettings;
         private IOptionsSnapshot<MonitorChatbot> monitor;
         private IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions;
@@ -32,42 +30,37 @@
         {
             var fixture = new Fixture();
             var messages = new List<NotificationMessage>();
-            var expected = Substitute.For<IRestResponse>();
-            expected.StatusCode.Returns(HttpStatusCode.OK);
 
-            var tokenRes = Substitute.For<IRestResponse<ChatbotToken>>();
-            tokenRes.StatusCode.Returns(HttpStatusCode.OK);
-            tokenRes.Data.Returns(fixture.Create<ChatbotToken>());
             var service = GetService();
+
             var token = fixture.Create<ChatbotToken>();
-            var resToken = Substitute.For<IRestResponse<ChatbotToken>>();
-            resToken.Data = token;
-
-            webClient.ExecutePostTaskAsync<ChatbotToken>(Arg.Any<RestRequest>()).Returns(tokenRes);
-            webClient.ExecutePostTaskAsync(Arg.Any<RestRequest>()).Returns(expected);
-
-            //Act
-            var actual = await service.SendMessageToMultitpleAsync(messages);
-
-            //Assert
-            Assert.Equal("/Test", actual.Request.Resource);
+            var msgs = new Dictionary<string, HttpResponseMessage>
+            {
+                { botSettings.Value.AuthenticateUrl, new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(JsonConvert.SerializeObject(token))} },
+                { botSettings.Value.BotServiceUrl, new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(JsonConvert.SerializeObject(messages))} }
+            };
+            var httpClient = new HttpClient(new MockHttpMessageHandler(msgs));
+            httpClientFactory.CreateClient().Returns(httpClient);
+            var result = await service.SendMessageToMultitpleAsync(messages);
+            var responseData = await result.Content.ReadAsStringAsync();
+            Assert.Equal(responseData, JsonConvert.SerializeObject(messages));
         }
 
         [Fact]
         public async Task NotifySponDemoChatGroup_WhenCalled_WebClientExecuted()
         {
-            var service = GetService();
+            var service = SetupHttpClientFactory();
             await service.NotifyToChatGroup("Test");
-            webClient.Received(2);
+            httpClientFactory.Received(2).CreateClient();
         }
 
         [Fact]
         public async Task MonitorChatbot_WhenCalled_DoExpectedActions()
         {
-            var service = GetService();
+            var service = SetupHttpClientFactory();
             await service.MonitorChatbot();
 
-            webClient.ReceivedCalls();
+            httpClientFactory.Received(2);
         }
 
         [Fact]
@@ -117,15 +110,36 @@
             Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(actual));
         }
 
+        private ChatbotService SetupHttpClientFactory()
+        {
+            var fixture = new Fixture();
+            var messages = new List<NotificationMessage>();
+
+            var service = GetService();
+
+            var token = fixture.Create<ChatbotToken>();
+            var msgs = new Dictionary<string, HttpResponseMessage>
+            {
+                { botSettings.Value.AuthenticateUrl, new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(JsonConvert.SerializeObject(token))} },
+                { botSettings.Value.BotServiceUrl, new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(JsonConvert.SerializeObject(messages))} }
+            };
+            var httpClient = new HttpClient(new MockHttpMessageHandler(msgs));
+            httpClientFactory.CreateClient().Returns(httpClient);
+
+            return service;
+        }
+
         private ChatbotService GetService()
         {
             var fixture = new Fixture();
-            webClient = new RestClient { Encoding = Encoding.UTF8 };
             var settings = new BotSettings
             {
                 BotDomain = "http://test.com",
+                AuthenticateUrl = "api/Authemticate",
                 BotServiceUrl = "/Test",
-                TokenUrl = "ABC/test"
+                TokenUrl = "ABC/test",
+                AppCredentialId = "AppId",
+                AppCredentialPassword = "pwd"
             };
             var sponGroupOptions = new NotifyChatGroupOption
             {
@@ -143,21 +157,19 @@
                 ConversationId = "Conversation",
                 ServiceUrl = "test.com"
             };
-            webClient = Substitute.For<IRestClient>();
             botSettings = Substitute.For<IOptionsSnapshot<BotSettings>>();
             notifyChatGroupOptions = Substitute.For<IOptionsSnapshot<NotifyChatGroupOption>>();
-            logService = Substitute.For<ILogService>();
             monitor = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
             monitor.Value.Returns(monitorOptions);
             jobs = Substitute.For<IOptionsSnapshot<List<HangfireJobSetting>>>();
-
+            httpClientFactory = Substitute.For<IHttpClientFactory>();
             var jobList = fixture.Create<List<HangfireJobSetting>>();
             jobList.Add(new HangfireJobSetting { JobName = HangfireJobName.MonitorSkypebot, IsEnabled = true });
             jobs.Value.Returns(jobList);
             botSettings.Value.Returns(settings);
             notifyChatGroupOptions.Value.Returns(sponGroupOptions);
 
-            return new ChatbotService(botSettings, monitor, notifyChatGroupOptions, jobs);
+            return new ChatbotService(httpClientFactory, botSettings, monitor, notifyChatGroupOptions, jobs);
         }
     }
 }

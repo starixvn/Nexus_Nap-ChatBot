@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Net;
+    using System.Net.Http;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using Fanex.NCB.Core.Models;
@@ -12,9 +13,9 @@
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
+    using Newtonsoft.Json;
     using NSubstitute;
     using NSubstitute.ExceptionExtensions;
-    using RestSharp;
     using Xunit;
 
     public class SendNotificationServiceTests
@@ -48,7 +49,7 @@
         {
             var notifications = FakeData();
             var service = GetService();
-            var response = FakeResponse();
+            var response = FakeResponse(false);
             baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
             chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
 
@@ -64,7 +65,7 @@
         public async Task ScanAndSendNotification_ScanHasNoti_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
         {
             var notifications = FakeData();
-            var response = FakeResponse();
+            var response = FakeResponse(true);
             var service = GetService();
             baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
             chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
@@ -84,9 +85,8 @@
             baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
 
             chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Throws(new Exception());
-
+            await service.ScanAndSendNotification();
             //Assert
-            await Assert.ThrowsAsync<Exception>(() => service.ScanAndSendNotification());
             await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
         }
 
@@ -94,7 +94,7 @@
         public async Task SendNotificationImmediately_IsCreating_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
         {
             var notifications = FakeData();
-            var response = FakeResponse();
+            var response = FakeResponse(true);
             var service = GetService();
             baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationByIdCriteria>()).Returns(notifications);
             chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
@@ -110,7 +110,7 @@
         public async Task SendNotificationImmediately_NotIsCreating_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
         {
             var notifications = FakeData();
-            var response = FakeResponse();
+            var response = FakeResponse(true);
             var service = GetService();
             baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationByIdCriteria>()).Returns(notifications);
             chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
@@ -152,15 +152,15 @@
             return new ValueTuple<IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>>(notifications, recipients);
         }
 
-        private IRestResponse FakeResponse()
+        private HttpResponseMessage FakeResponse(bool isSuccess)
         {
-            return new RestResponse
+            var content = "[{\"NotificationId\": 1, \"ConversationId\": \"ABC\", \"ErrCode\": 0,\"ErrorMessage\": \"\", \"SentTime\": \"2019-01-01\"},{\"NotificationId\": 2, \"ConversationId\": \"DEF\", \"ErrCode\": 1,\"ErrorMessage\": \"\", \"SentTime\": \"2019-01-01\"}]";
+            var response = new HttpResponseMessage
             {
-                StatusCode = HttpStatusCode.OK,
-                ResponseStatus = ResponseStatus.Completed,
-                ContentType = "application/json",
-                Content = "[{\"NotificationId\": 1, \"ConversationId\": \"ABC\", \"ErrCode\": 0,\"ErrorMessage\": \"\", \"SentTime\": \"2019-01-01\"},{\"NotificationId\": 2, \"ConversationId\": \"DEF\", \"ErrCode\": 1,\"ErrorMessage\": \"\", \"SentTime\": \"2019-01-01\"}]"
+                StatusCode = isSuccess ? HttpStatusCode.OK : HttpStatusCode.BadRequest,
+                Content = new StringContent(JsonConvert.SerializeObject(content))
             };
+            return response;
         }
 
         private SendNotificationService GetService()

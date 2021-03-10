@@ -38,8 +38,8 @@
             var service = GetService();
             syncDataService.NapUserControlSyncDataAsync().Throws(new Exception());
 
+            await service.SyncDataFromNapUserControl();
             //Assert
-            await Assert.ThrowsAsync<Exception>(() => service.SyncDataFromNapUserControl());
             await logger.Received().WriteExceptionSentryErrorAsync(Arg.Any<Exception>());
         }
 
@@ -61,8 +61,8 @@
             var service = GetService();
             syncDataService.OicSyncDataAsync().Throws(new Exception());
 
+            await service.SyncDataFromOIC();
             //Assert
-            await Assert.ThrowsAsync<Exception>(() => service.SyncDataFromOIC());
             await logger.Received().WriteExceptionSentryErrorAsync(Arg.Any<Exception>());
         }
 
@@ -84,8 +84,8 @@
             var service = GetService();
             specialDeleteTicketService.VoidingTicketToLicensee().Throws(new Exception());
 
+            await service.PullMessageFromSpecialDelete();
             //Assert
-            await Assert.ThrowsAsync<Exception>(() => service.PullMessageFromSpecialDelete());
             await logger.Received().WriteExceptionSentryErrorAsync(Arg.Any<Exception>());
         }
 
@@ -107,8 +107,8 @@
             var service = GetService();
             siteMessageService.PullMessageFromSiteMessageThenInsertNotification().Throws(new Exception());
 
+            await service.PullMessageFromSiteMessage();
             //Assert
-            await Assert.ThrowsAsync<Exception>(() => service.PullMessageFromSiteMessage());
             await logger.Received().WriteExceptionSentryErrorAsync(Arg.Any<Exception>());
         }
 
@@ -130,8 +130,8 @@
             var service = GetService();
             sendNotificationService.ScanAndSendNotification().Throws(new Exception());
 
+            await service.ScanAndSendNotification();
             //Assert
-            await Assert.ThrowsAsync<Exception>(() => service.ScanAndSendNotification());
             await logger.Received().WriteExceptionSentryErrorAsync(Arg.Any<Exception>());
         }
 
@@ -153,8 +153,8 @@
             var service = GetService();
             chatbotService.MonitorChatbot().Throws(new Exception());
 
+            await service.MonitorChatbot();
             //Assert
-            await Assert.ThrowsAsync<Exception>(() => service.MonitorChatbot());
             await logger.Received().WriteExceptionSentryErrorAsync(Arg.Any<Exception>());
         }
 

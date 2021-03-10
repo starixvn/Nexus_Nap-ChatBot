@@ -1,6 +1,5 @@
 ﻿namespace Fanex.NCB.Main.AppConfig
 {
-    using System.Net.Http;
     using System.Text;
     using Fanex.Data.Repository;
     using Fanex.NCB.Core.Models;
@@ -45,7 +44,7 @@
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IHttpContextHelper, HttpContextHelper>();
             services.AddSingleton<IMaintenanceService, MaintenanceService>();
-            services.AddSingleton<HttpClient>();
+            services.AddHttpClient();
         }
 
         public static void RegisterRepositories(this IServiceCollection services)
