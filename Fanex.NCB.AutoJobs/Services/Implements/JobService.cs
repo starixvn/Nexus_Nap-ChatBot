@@ -7,7 +7,6 @@
 
     public class JobService : IJobService
     {
-        private const int MaxRandom = 1000;
         private readonly ISyncDataService syncDataService;
         private readonly IChatbotService chatbotService;
         private readonly ISpecialDeleteService specialDeleteTicketService;
@@ -35,7 +34,6 @@
 
         public async Task SyncDataFromNapUserControl()
         {
-            logger.WriteLogFileInfo("Start SyncDataFromNapUserControl");
             if (!await IsUM())
             {
                 try
@@ -47,13 +45,10 @@
                     await logger.WriteExceptionSentryErrorAsync(ex);
                 }
             }
-
-            logger.WriteLogFileInfo("End SyncDataFromNapUserControl");
         }
 
         public async Task SyncDataFromOIC()
         {
-            logger.WriteLogFileInfo("Start SyncDataFromNapUserControl");
             if (!await IsUM())
             {
                 try
@@ -65,28 +60,18 @@
                     await logger.WriteExceptionSentryErrorAsync(ex);
                 }
             }
-
-            logger.WriteLogFileInfo("End SyncDataFromOIC");
         }
 
         public async Task PullMessageFromSpecialDelete()
         {
-            var timeStamp = DateTime.Now.ToString("yyyyMMddHHmmssffff");
-            Random random = new Random();
-            timeStamp += random.Next(0, MaxRandom).ToString();
-
-            logger.WriteLogFileInfo($"{timeStamp} - Start PullMessageFromSpecialDelete job");
             if (!await IsUM())
             {
                 try
                 {
-                    logger.WriteLogFileInfo($"{timeStamp} - Inprogress PullMessageFromSpecialDelete job - after Check UM");
                     await Task.WhenAll(
                         specialDeleteTicketService.VoidingTicketToLicensee(),
                         specialDeleteTicketService.VoidingAbnormalBetsToInternalDepartment()
                     );
-
-                    logger.WriteLogFileInfo($"{timeStamp} - Inprogress PullMessageFromSpecialDelete job - after pull msg");
                 }
                 catch (Exception ex)
                 {
@@ -97,8 +82,6 @@
 
         public async Task PullMessageFromSiteMessage()
         {
-            logger.WriteLogFileInfo("Start PullMessageFromSiteMessage");
-
             if (!await IsUM())
             {
                 try
@@ -110,14 +93,10 @@
                     await logger.WriteExceptionSentryErrorAsync(ex);
                 }
             }
-
-            logger.WriteLogFileInfo("End PullMessageFromSiteMessage");
         }
 
         public async Task ScanAndSendNotification()
         {
-            logger.WriteLogFileInfo("Start ScanAndSendNotification");
-
             try
             {
                 await sendNotificationService.ScanAndSendNotification();
@@ -126,14 +105,10 @@
             {
                 await logger.WriteExceptionSentryErrorAsync(ex);
             }
-
-            logger.WriteLogFileInfo("End ScanAndSendNotification");
         }
 
         public async Task MonitorChatbot()
         {
-            logger.WriteLogFileInfo("Start MonitorChatbot");
-
             try
             {
                 await chatbotService.MonitorChatbot();
@@ -142,8 +117,6 @@
             {
                 await logger.WriteExceptionSentryErrorAsync(ex);
             }
-
-            logger.WriteLogFileInfo("End MonitorChatbot");
         }
 
         private async Task<bool> IsUM()
