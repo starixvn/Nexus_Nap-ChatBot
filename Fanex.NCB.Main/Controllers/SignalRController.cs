@@ -34,7 +34,6 @@
         [IgnoreAntiforgeryToken]
         public ObjectResult Authenticate(string username, string password)
         {
-            var token = string.Empty;
             if (IsValidCredential(username, password))
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
@@ -48,7 +47,7 @@
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
                 var sercurityToken = tokenHandler.CreateToken(tokenDescriptor);
-                token = tokenHandler.WriteToken(sercurityToken);
+                var token = tokenHandler.WriteToken(sercurityToken);
 
                 return Ok(new { AccessToken = token });
             }
