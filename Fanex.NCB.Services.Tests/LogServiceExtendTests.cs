@@ -24,5 +24,13 @@
             await service.WriteExceptionSentryErrorAsync(exception);
             await logger.Received().ErrorAsync(Arg.Is<string>(err => err.Contains(errMsg)));
         }
+
+        [Fact]
+        public async Task WriteMessageSentryErrorAsync_WhenCall_WriteLogSentry()
+        {
+            string errMsg = "Error message";
+            await service.WriteMessageSentryErrorAsync(errMsg);
+            await logger.Received().ErrorAsync(errMsg);
+        }
     }
 }
