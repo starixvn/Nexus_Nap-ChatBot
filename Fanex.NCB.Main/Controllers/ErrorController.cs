@@ -1,4 +1,4 @@
-﻿namespace NexGoal.Controllers
+﻿namespace Fanex.NCB.Main.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
 

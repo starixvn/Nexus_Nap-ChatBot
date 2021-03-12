@@ -14,6 +14,7 @@
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.SkypeBot.Controllers;
     using Microsoft.AspNetCore.Mvc;
+    using Newtonsoft.Json;
     using NSubstitute;
     using Xunit;
     using static Fanex.NAP.Core.Business.Constant;
@@ -126,6 +127,35 @@
 
             var commandResult = Assert.IsType<CommandResult>(jsonResult.Value);
             Assert.True(commandResult.IsSuccessful);
+        }
+
+        [Fact]
+        public async Task GetUpdatedNotification_WhenCalledReturnExpectedJsonResult()
+        {
+            var fixture = new Fixture();
+            var controller = GetController();
+            var notifictaionIds = fixture.Create<string>();
+            var notifications = fixture.Create<IEnumerable<Notification>>();
+            notificationService.GetUpdatedNotificationAsync(Arg.Is(notifictaionIds)).Returns(notifications);
+
+            var result = await controller.GetUpdatedNotification(notifictaionIds);
+
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            Assert.Equal(JsonConvert.SerializeObject(notifications), JsonConvert.SerializeObject(jsonResult.Value));
+        }
+
+        [Fact]
+        public async Task GetErrNotifications_WhenCalledReturnExpectedJsonResult()
+        {
+            var fixture = new Fixture();
+            var controller = GetController();
+            var notifications = fixture.Create<IEnumerable<NotificationPaging>>();
+            notificationService.GetErrNotificationsAsync().Returns(notifications);
+
+            var result = await controller.GetErrNotifications();
+
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            Assert.Equal(JsonConvert.SerializeObject(notifications), JsonConvert.SerializeObject(jsonResult.Value));
         }
 
         private void SignalRServiceHasBeenCall(string notificationIds)

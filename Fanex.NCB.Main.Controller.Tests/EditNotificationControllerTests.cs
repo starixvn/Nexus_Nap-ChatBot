@@ -1,8 +1,6 @@
 ﻿namespace Fanex.NCB.Main.Controllers.Tests
 {
-    using System;
     using System.Collections.Generic;
-    using System.Text;
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NAP.Client.Helpers.Web;
@@ -61,6 +59,21 @@
             Assert.Equal(viewModel.SendImmediately, model.SendImmediately);
             Assert.Equal(viewModel.RecipientIds, model.RecipientIds);
             Assert.Equal(napSession.UserId, model.UserId);
+        }
+
+        [Fact]
+        public async Task Edit_InvalidModel_ReturnErrorCommandResult()
+        {
+            var controller = GetController();
+            var fixture = new Fixture();
+
+            var viewModel = fixture.Create<EditNotificationViewModel>();
+            viewModel.RecipientIds = string.Empty;
+            var result = await controller.Edit(viewModel).ConfigureAwait(false);
+            var json = Assert.IsType<JsonResult>(result);
+            var commandResult = Assert.IsType<CommandResult>(json.Value);
+            Assert.False(commandResult.IsSuccessful);
+            Assert.Equal("Invaliad data. The recipients cannot be null", commandResult.Message);
         }
 
         [Fact]

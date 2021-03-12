@@ -61,6 +61,22 @@
         }
 
         [Fact]
+        public async Task Create_InvalidModel_ReturnErrorCommandResult()
+        {
+            var controller = GetController();
+            var fixture = new Fixture();
+            napSession.UserId = fixture.Create<int>();
+
+            var viewModel = fixture.Create<CreateNewNotificationViewModel>();
+            viewModel.RecipientIds = string.Empty;
+            var result = await controller.Create(viewModel).ConfigureAwait(false);
+            var json = Assert.IsType<JsonResult>(result);
+            var commandResult = Assert.IsType<CommandResult>(json.Value);
+            Assert.False(commandResult.IsSuccessful);
+            Assert.Equal("Invaliad data. The recipients cannot be null", commandResult.Message);
+        }
+
+        [Fact]
         public async Task GetRecipients_WhenCalled_ReturnJsonResult()
         {
             var controller = GetController();
