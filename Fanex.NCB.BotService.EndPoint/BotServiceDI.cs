@@ -45,7 +45,13 @@
                 options.HttpClient = GetDefaultHttpClient(configuration);
                 options.OnTurnError = (turnContext, exception) =>
                 {
-                    logger.LogError($"Exception caught : {exception.Message}");
+                    try
+                    {
+                        logger.LogError($"{DateTime.UtcNow}: Exception caught : {exception}");
+                    }
+                    catch
+                    { }
+
                     throw exception;
                 };
             });
@@ -65,6 +71,7 @@
             var isUseProxy = bool.Parse(configuration.GetSection("ProxySettings:IsUseProxy").Value);
             var proxyAddress = configuration.GetSection("ProxySettings:ProxyAddress").Value;
             var bypassOnLocal = bool.Parse(configuration.GetSection("ProxySettings:BypassOnLocal").Value);
+            var htttClientTimeOut = double.Parse(configuration.GetSection("ProxySettings:TimeOut").Value);
 
             HttpClient httpClient;
 
@@ -78,6 +85,7 @@
                 };
 
                 httpClient = new HttpClient(handler: socketsHttpHandler);
+                httpClient.Timeout = TimeSpan.FromSeconds(htttClientTimeOut);
             }
             else
             {
