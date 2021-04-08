@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Net;
     using System.Net.Http;
@@ -37,6 +38,7 @@
             services.AddTransient<ICredentialProvider, MultiCredentialProvider>();
             services.AddTransient<IBot, LicBot>();
             services.AddTransient<Logging.ILogger, Logging.Logger>();
+            services.AddScoped<ITelegramBotService, TelegramBotService>();
             var botConfig = GetBotConfig(environment, appSettings, logger);
             services.AddSingleton(botConfig);
             services.AddSingleton(appSettings);
@@ -55,6 +57,8 @@
                     throw exception;
                 };
             });
+
+            services.Configure<List<TelegramBotConfigurations>>(options => configuration.GetSection("TelegramBotConfigurations").Bind(options));
         }
 
         [Obsolete]

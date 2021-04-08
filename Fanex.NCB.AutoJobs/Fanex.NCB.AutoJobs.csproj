@@ -18,7 +18,7 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <PlatformTarget>AnyCPU</PlatformTarget>
-        <CodeAnalysisRuleSet>Fanex.NCB.AutoJobs.ruleset</CodeAnalysisRuleSet>
+        <CodeAnalysisRuleSet>Fanex.NCB.AutoJobs.Debug.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
     <PropertyGroup>
         <EnableDefaultContentItems>false</EnableDefaultContentItems>
@@ -95,7 +95,7 @@
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="5.0.0" />
         <PackageReference Include="NLog.Web.AspNetCore" Version="4.12.0" />
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.1.0.13383">
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>

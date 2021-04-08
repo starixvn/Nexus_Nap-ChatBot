@@ -1,6 +1,5 @@
 ﻿namespace Fanex.NCB.BotService.Core.Services
 {
-    using System;
     using System.Threading.Tasks;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Models;

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RuleSet Name="SonarQube - Nexus / NAP ChatBot Nexcel CSharp" ToolsVersion="16.0">
   <Include Path="..\.sonarlint\napchatbotcsharp.ruleset" Action="Default" />
-  <Include Path="..\sonarqube\napchatbotcsharp.ruleset" Action="Default" />
+  <Include Path="fanex.ncb.autojobs.ruleset" Action="Default" />
 </RuleSet>

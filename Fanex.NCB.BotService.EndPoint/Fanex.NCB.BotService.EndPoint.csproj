@@ -27,12 +27,12 @@
         <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.13.0" />
         <PackageReference Include="Microsoft.Bot.Configuration" Version="4.13.0" />
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
         <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
         <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
+        <PackageReference Include="Telegram.Bot" Version="15.7.1" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Fanex.NCB.BotService.Core\Fanex.NCB.BotService.Core.csproj" />
@@ -88,7 +88,5 @@
         <Compile Include="BotServiceDI.cs">
             <SonarQubeExclude>true</SonarQubeExclude>
         </Compile>
-    </ItemGroup>
-    <ItemGroup>
     </ItemGroup>
 </Project>
