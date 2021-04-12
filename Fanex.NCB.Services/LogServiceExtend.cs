@@ -27,7 +27,6 @@
                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
                        .ToString();
             await logger.ErrorAsync(logMessage);
-            infoLogger.Error(logMessage);
         }
 
         public async Task WriteMessageSentryErrorAsync(string logMessage)
@@ -37,7 +36,7 @@
 
         public void WriteLogFileInfo(string logMessage)
         {
-            infoLogger.Error(logMessage);
+            //infoLogger.Error(logMessage);
         }
     }
 }
