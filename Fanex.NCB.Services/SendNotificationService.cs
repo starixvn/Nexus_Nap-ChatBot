@@ -47,7 +47,6 @@
             {
                 await UpdateFailedRecipientStatus(notifications.Item2.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
                 var readyToSendRecipients = notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend));
-                logService.WriteLogFileInfo($"Get Notification: Total recipients: {notifications.Item2.Count()}, ready to send: ");
 
                 await SendNotificationToRecipients(notifications.Item1, readyToSendRecipients);
             }
@@ -113,27 +112,22 @@
             foreach (var batch in batches)
             {
                 index++;
-                logService.WriteLogFileInfo($"Start batch {index} ");
-                await SendMessageToMultipleWithHandleException(batch.Item1, batch.Item2, recipients, index);
-                logService.WriteLogFileInfo($"End batch {index} ");
+                await SendMessageToMultipleWithHandleException(batch.Item1, batch.Item2, recipients);
             }
         }
 
         private async Task SendMessageToMultipleWithHandleException(
             IEnumerable<NotificationMessage> messages,
             IEnumerable<NotificationRecipient> recipients,
-            IEnumerable<NotificationRecipient> originRecipients,
-            int index)
+            IEnumerable<NotificationRecipient> originRecipients)
         {
             try
             {
-                logService.WriteLogFileInfo($"Start SendMessageToMultitpleAsync for batch {index} - {recipients.Count()} recipients ");
                 var response = await chatbotService.SendMessageToMultitpleAsync(messages);
-                logService.WriteLogFileInfo($"End SendMessageToMultitpleAsync for batch {index} ");
 
                 if (response.IsSuccessStatusCode && response.StatusCode.Equals(HttpStatusCode.OK))
                 {
-                    logService.WriteLogFileInfo($"Start handle response success for batch {index}");
+ 
                     var responseData = await response.Content.ReadAsStringAsync();
                     var responseMessages = ConvertJsonResponse(responseData);
 
@@ -148,16 +142,13 @@
                 }
                 else
                 {
-                    logService.WriteLogFileInfo($"Start handle response fail for batch {index}, Status Code: {response.StatusCode}");
                     await UpdateFailedStatusForBatch(recipients, originRecipients, $"Status Code: { response.StatusCode}");
                     await logService.WriteMessageSentryErrorAsync($"Send Message fail: {JsonConvert.SerializeObject(response)}");
                 }
 
-                logService.WriteLogFileInfo($"End handle response for batch {index}");
             }
             catch (Exception exception)
             {
-                logService.WriteLogFileInfo($"SendMessageToMutipleAsync throws exception: batch {index}, data: {JsonConvert.SerializeObject(messages)}");
                 await UpdateFailedStatusForBatch(recipients, originRecipients, exception.Message);
                 await logService.WriteExceptionSentryErrorAsync(exception);
             }

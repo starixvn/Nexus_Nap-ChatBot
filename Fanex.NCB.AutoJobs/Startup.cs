@@ -1,9 +1,5 @@
 ﻿namespace Fanex.NCB.AutoJobs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Data.Repository;
@@ -42,9 +38,12 @@
     using ONEbook.UM.Helpers;
     using ONEbook.UM.Services;
     using ONEbook.UM.Transport;
-    using RestSharp;
     using Sentry;
     using StackExchange.Redis;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public class Startup
     {
@@ -136,7 +135,7 @@
             services.AddTransient<ILogger, Logger>();
             services.AddTransient<ILogService, LogServiceExtend>();
 
-            RegisterService(services);
+            RegisterService(services, Configuration);
             RegisterRepository(services);
 
             services.AddSignalR();
@@ -183,21 +182,18 @@
         }
 
         //Extensions
-        private static void RegisterService(IServiceCollection services)
+        private static void RegisterService(IServiceCollection services, IConfiguration Configuration)
         {
             #region ONEbookUM
 
+            services.AddSingleton(new UMClientConfiguration().Initialize(Configuration));
             services.AddSingleton<IUMCacheService, UMCacheService>();
             services.AddSingleton<IUMRestClient, UMRestClient>();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<IHttpContextHelper, HttpContextHelper>();
             services.AddSingleton<IMaintenanceService, MaintenanceService>();
-            services.AddSession();
 
             #endregion ONEbookUM
 
             services.AddHttpClient();
-            services.AddSingleton<IRestClient, RestClient>();
             services.AddSingleton<IBaseService, BaseService>();
             services.AddScoped<IChatbotService, ChatbotService>();
             services.AddScoped<ISendNotificationService, SendNotificationService>();
@@ -205,7 +201,7 @@
             services.AddScoped<ISpecialDeleteService, SpecialDeleteService>();
             services.AddScoped<ISiteMessageService, SiteMessageService>();
             services.AddScoped<IJobService, JobService>();
-            services.AddScoped<IPushSignalService, PushSignalService>();
+            //services.AddScoped<IPushSignalService, PushSignalService>();
             services.AddScoped<ISignalRService, SignalRService>();
             services.AddTransient<IRecurringJobManager, RecurringJobManager>();
             services.AddScoped<SignalRService>();

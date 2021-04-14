@@ -149,7 +149,7 @@
 
         private void PushSignalRReceiveCall()
         {
-            Task.Run(() => pushSignalService.Received().OnInsertNotification(Arg.Any<string>()));
+            //Task.Run(() => pushSignalService.Received().OnInsertNotification(Arg.Any<string>()));
         }
 
         private SiteMessageService GetService()

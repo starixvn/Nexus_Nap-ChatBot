@@ -38,7 +38,7 @@
             {
                 try
                 {
-                    //await syncDataService.NapUserControlSyncDataAsync();
+                    await syncDataService.NapUserControlSyncDataAsync();
                 }
                 catch (Exception ex)
                 {
@@ -53,7 +53,7 @@
             {
                 try
                 {
-                    //await syncDataService.OicSyncDataAsync();
+                    await syncDataService.OicSyncDataAsync();
                 }
                 catch (Exception ex)
                 {
@@ -68,10 +68,10 @@
             {
                 try
                 {
-                    //await Task.WhenAll(
-                    //    specialDeleteTicketService.VoidingTicketToLicensee(),
-                    //    specialDeleteTicketService.VoidingAbnormalBetsToInternalDepartment()
-                    //);
+                    await Task.WhenAll(
+                        specialDeleteTicketService.VoidingTicketToLicensee(),
+                        specialDeleteTicketService.VoidingAbnormalBetsToInternalDepartment()
+                    );
                 }
                 catch (Exception ex)
                 {
@@ -86,7 +86,7 @@
             {
                 try
                 {
-                    //await siteMessageService.PullMessageFromSiteMessageThenInsertNotification();
+                    await siteMessageService.PullMessageFromSiteMessageThenInsertNotification();
                 }
                 catch (Exception ex)
                 {
@@ -99,7 +99,7 @@
         {
             try
             {
-                //await sendNotificationService.ScanAndSendNotification();
+                await sendNotificationService.ScanAndSendNotification();
             }
             catch (Exception ex)
             {
@@ -111,7 +111,7 @@
         {
             try
             {
-                //await chatbotService.MonitorChatbot();
+                await chatbotService.MonitorChatbot();
             }
             catch (Exception ex)
             {
@@ -121,9 +121,8 @@
 
         private async Task<bool> IsUM()
         {
-            //var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
-            //return maintanceTime.IsUnderMaintenanceTime;
-            return false;
+            var maintanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
+            return maintanceTime.IsUnderMaintenanceTime;
         }
     }
 }
