@@ -96,7 +96,7 @@
                 {
                     await InsertMessageHistory(messages.Item2);
                     await chatbotService.SendMessageToMultitpleAsync(notifications);
-                    PushInsertedNotifications(string.Join(",", notifications.Select(item => item.NotificationId)));
+                    await PushInsertedNotifications(string.Join(",", notifications.Select(item => item.NotificationId)));
                 }
             }
         }
@@ -186,9 +186,9 @@
             return await baseService.GetDataEntityAsync<SystemSetting>(new GetSiteMessageSettingCriteria());
         }
 
-        private void PushInsertedNotifications(string notificationIds)
+        private async Task PushInsertedNotifications(string notificationIds)
         {
-            Task.Run(() => pushSignalService.OnInsertNotification(notificationIds));
+            await pushSignalService.OnInsertNotification(notificationIds);
         }
     }
 }
