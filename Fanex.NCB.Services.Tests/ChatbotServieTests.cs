@@ -169,7 +169,7 @@
             botSettings.Value.Returns(settings);
             notifyChatGroupOptions.Value.Returns(sponGroupOptions);
 
-            return new ChatbotService(httpClientFactory, botSettings, monitor, notifyChatGroupOptions, jobs);
+            return new ChatbotService(httpClientFactory, botSettings, monitor, notifyChatGroupOptions);
         }
     }
 }

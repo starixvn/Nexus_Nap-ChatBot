@@ -6,9 +6,6 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Xml.Serialization;
-    using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.Core.Extensions;
-    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SiteMessage;
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
@@ -17,7 +14,6 @@
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 
     public class SiteMessageService : ISiteMessageService
@@ -25,40 +21,34 @@
         private readonly IBaseService baseService;
         private readonly IPushSignalService pushSignalService;
         private readonly IChatbotService chatbotService;
-        private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
         private readonly string Environment;
         private const int SiteMessageJobIdentify = 3;
 
         public SiteMessageService(IBaseService baseService,
             IChatbotService chatbotService,
             IPushSignalService pushSignalService,
-            IConfiguration configuration,
-            IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
+            IConfiguration configuration)
         {
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;
             this.chatbotService = chatbotService;
             Environment = configuration.GetSection("Environment")?.Value;
-            this.jobSettings = jobSettings;
         }
 
-        public async Task PullMessageFromSiteMessageThenInsertNotification()
+        public async Task PullMessageFromSiteMessage()
         {
-            if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.SiteMessageIntegration))
+            SystemSetting systemSettings = await GetSiteMessageSettings();
+            if (systemSettings != null)
             {
-                SystemSetting systemSettings = await GetSiteMessageSettings();
-                if (systemSettings != null)
+                var messages = await GetDataFromSiteMessage(systemSettings);
+                var matchInfo = await GetMatchInfo(string.Join(",", messages.Item1.Select(m => m.MatchID).Distinct()));
+
+                MappingData(messages.Item1, matchInfo);
+                if (messages.Item1.Any() && messages.Item2.Any())
                 {
-                    var messages = await GetDataFromSiteMessage(systemSettings);
-                    var matchInfo = await GetMatchInfo(string.Join(",", messages.Item1.Select(m => m.MatchID).Distinct()));
+                    var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
 
-                    MappingData(messages.Item1, matchInfo);
-                    if (messages.Item1.Any() && messages.Item2.Any())
-                    {
-                        var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
-
-                        await OnAfterImportData(result.Item1, result.Item2, messages);
-                    }
+                    await OnAfterImportData(result.Item1, result.Item2, messages);
                 }
             }
         }

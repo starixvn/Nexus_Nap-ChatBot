@@ -19,7 +19,7 @@ namespace Fanex.NCB.AutoJobs.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -135,9 +135,27 @@ namespace Fanex.NCB.AutoJobs.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Pull messages from Special Delete and Send Notification.
         /// </summary>
-        internal static string PullMessageFromSpectalDelete {
+        internal static string PullMessageFromSpecialDelete {
             get {
-                return ResourceManager.GetString("PullMessageFromSpectalDelete", resourceCulture);
+                return ResourceManager.GetString("PullMessageFromSpecialDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pull voiding message which send to internal department.
+        /// </summary>
+        internal static string PullVoidingMessageInternalDepartment {
+            get {
+                return ResourceManager.GetString("PullVoidingMessageInternalDepartment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pull voiding message which send to licensee.
+        /// </summary>
+        internal static string PullVoidingMessageLicensee {
+            get {
+                return ResourceManager.GetString("PullVoidingMessageLicensee", resourceCulture);
             }
         }
         

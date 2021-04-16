@@ -135,7 +135,7 @@
   <data name="MonitorChatbotService" xml:space="preserve">
     <value>Monitor chatbot service</value>
   </data>
-  <data name="PullMessageFromSpectalDelete" xml:space="preserve">
+  <data name="PullMessageFromSpecialDelete" xml:space="preserve">
     <value>Pull messages from Special Delete and Send Notification</value>
   </data>
   <data name="ScanAndSendNotification" xml:space="preserve">
@@ -146,5 +146,11 @@
   </data>
   <data name="PullMessageFromSiteMessage" xml:space="preserve">
     <value>Pull Message From Site Message</value>
+  </data>
+  <data name="PullVoidingMessageInternalDepartment" xml:space="preserve">
+    <value>Pull voiding message which send to internal department</value>
+  </data>
+  <data name="PullVoidingMessageLicensee" xml:space="preserve">
+    <value>Pull voiding message which send to licensee</value>
   </data>
 </root>

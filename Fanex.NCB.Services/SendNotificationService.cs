@@ -87,7 +87,7 @@
             var notifications = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria);
             if (!string.IsNullOrWhiteSpace(criteria.UpdatedNotificationIds))
             {
-                PushSignalUpdateNotiStatus(criteria.UpdatedNotificationIds);
+                await PushSignalUpdateNotiStatus(criteria.UpdatedNotificationIds);
             }
             return notifications;
         }
@@ -297,7 +297,7 @@
 
                 if (!string.IsNullOrWhiteSpace(command.UpdatedNotificationIds))
                 {
-                    PushSignalUpdateNotiStatus(command.UpdatedNotificationIds);
+                    await PushSignalUpdateNotiStatus(command.UpdatedNotificationIds);
                 }
 
                 if (command.IsHaveErrNotification)
@@ -321,9 +321,9 @@
             await SendNotificationToRecipients(notifications.Item1, notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
         }
 
-        private void PushSignalUpdateNotiStatus(string notificationIds)
+        private async Task PushSignalUpdateNotiStatus(string notificationIds)
         {
-            Task.Run(() => pushSignalService.OnUpdateNotificationStatus(notificationIds));
+            await pushSignalService.OnUpdateNotificationStatus(notificationIds);
         }
 
         private async Task PushSignalNewErrNotification()

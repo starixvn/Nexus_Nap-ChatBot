@@ -4,6 +4,6 @@
 
     public interface ISiteMessageService
     {
-        Task PullMessageFromSiteMessageThenInsertNotification();
+        Task PullMessageFromSiteMessage();
     }
 }

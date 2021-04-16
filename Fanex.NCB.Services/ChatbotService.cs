@@ -24,19 +24,16 @@
         private readonly IOptionsSnapshot<BotSettings> botSettings;
         private readonly IOptionsSnapshot<MonitorChatbot> monitorChatbot;
         private readonly IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions;
-        private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
 
         public ChatbotService(
             IHttpClientFactory httpClientFactory,
             IOptionsSnapshot<BotSettings> botSettings,
             IOptionsSnapshot<MonitorChatbot> monitorChatbot,
-            IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions,
-            IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
+            IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions)
         {
             this.httpClientFactory = httpClientFactory;
             this.monitorChatbot = monitorChatbot;
             this.botSettings = botSettings;
-            this.jobSettings = jobSettings;
             this.notifyChatGroupOptions = notifyChatGroupOptions;
         }
 
@@ -79,30 +76,27 @@
 
         public async Task MonitorChatbot()
         {
-            if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.MonitorSkypebot))
+            var settings = monitorChatbot.Value;
+            var notificationModel = new List<NotificationMessage>
             {
-                var settings = monitorChatbot.Value;
-                var notificationModel = new List<NotificationMessage>
-                {
-                    new NotificationMessage {
-                        NotificationId = -1,
-                        Message = settings.Message,
-                        Recipients = new List<ConversationInfo>
+                new NotificationMessage {
+                    NotificationId = -1,
+                    Message = settings.Message,
+                    Recipients = new List<ConversationInfo>
+                    {
+                        new ConversationInfo
                         {
-                            new ConversationInfo
-                            {
-                                ConversationId = settings.ConversationId,
-                                ChannelId = settings.ChannelId,
-                                ServiceUrl = settings.ServiceUrl,
-                                BotConversationId = settings.BotConversationId,
-                                BotName = settings.BotName
-                            }
+                            ConversationId = settings.ConversationId,
+                            ChannelId = settings.ChannelId,
+                            ServiceUrl = settings.ServiceUrl,
+                            BotConversationId = settings.BotConversationId,
+                            BotName = settings.BotName
                         }
                     }
-                };
+                }
+            };
 
-                await SendMessageToMultitpleAsync(notificationModel);
-            }
+            await SendMessageToMultitpleAsync(notificationModel);
         }
 
         public async Task NotifyToChatGroup(string message)

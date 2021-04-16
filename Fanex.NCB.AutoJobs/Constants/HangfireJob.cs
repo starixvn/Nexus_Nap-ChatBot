@@ -8,14 +8,12 @@
 
         public const string SyncOICData = "SyncOICData";
 
-        public const string VoidingTicket = "PullTicketFromSpecialDeleteAndScanNoti";
+        public const string PullVoidingMessageLicensee = "PullVoidingMessageLicensee";
 
-        public const string VoidingAbnormalBets = "VoidingAbnormalBets";
+        public const string PullVoidingMessageInternalDepartment = "PullVoidingMessageInternalDepartment";
 
-        public const string SiteMessageIntegration = "SiteMessageIntegration";
+        public const string PullMessageFromSiteMessage = "PullMessageFromSiteMessage";
 
         public const string MonitorSkypebot = "MonitorSkypebot";
-
-        public const string OneMinuteJobs = "OneMinuteJobs";
     }
 }

@@ -4,8 +4,8 @@
 
     public interface ISpecialDeleteService
     {
-        Task VoidingTicketToLicensee();
+        Task PullVoidingMessageLicensee();
 
-        Task VoidingAbnormalBetsToInternalDepartment();
+        Task PullVoidingMessageInternalDepartment();
     }
 }

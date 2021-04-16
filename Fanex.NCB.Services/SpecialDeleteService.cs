@@ -6,9 +6,6 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Xml.Serialization;
-    using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.Core.Extensions;
-    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SiteMessage;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Models.NotifictaionSendMessage;
@@ -19,7 +16,6 @@
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 
     public class SpecialDeleteService : ISpecialDeleteService
@@ -30,40 +26,34 @@
         private readonly string Environment;
         private const int VoidTicketForLicenseeJobIdentity = 1;
         private const int VoidAbnormalbetsJobIdentity = 2;
-
-        private readonly IOptionsSnapshot<List<HangfireJobSetting>> jobSettings;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
         public SpecialDeleteService(IBaseService baseService,
             IChatbotService chatbotService,
             IPushSignalService pushSignalService,
-            IConfiguration configuration,
-            IOptionsSnapshot<List<HangfireJobSetting>> jobSettings)
+            IConfiguration configuration
+            )
         {
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;
             this.chatbotService = chatbotService;
             Environment = configuration.GetSection("Environment")?.Value;
-            this.jobSettings = jobSettings;
         }
 
-        public async Task VoidingTicketToLicensee()
+        public async Task PullVoidingMessageLicensee()
         {
-            if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.VoidingTicketForLicensee))
+            var systemSettings = await GetVoidingForLicenseeSystemSettings();
+
+            if (systemSettings != null)
             {
-                var systemSettings = await GetVoidingForLicenseeSystemSettings();
-
-                if (systemSettings != null)
+                var messages = await GetMessageFromVoidingForLicensee(systemSettings);
+                if (messages.Item1.Any() && messages.Item2.Any())
                 {
-                    var messages = await GetMessageFromVoidingForLicensee(systemSettings);
-                    if (messages.Item1.Any() && messages.Item2.Any())
-                    {
-                        var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
+                    var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
 
-                        await UpdateMessageHistoryVoidingForLicensee(result.Item1, messages.Item2);
+                    await UpdateMessageHistoryVoidingForLicensee(result.Item1, messages.Item2);
 
-                        await OnAfterImportData(result.Item1, result.Item2);
-                    }
+                    await OnAfterImportData(result.Item1, result.Item2);
                 }
             }
         }
@@ -154,17 +144,14 @@
             return await baseService.GetDataEntityAsync<SystemSetting>(criteria);
         }
 
-        public async Task VoidingAbnormalBetsToInternalDepartment()
+        public async Task PullVoidingMessageInternalDepartment()
         {
-            if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.VoidingAbnormalBets))
-            {
-                var systemSettings = await GetAbnormalBetSystemSettings();
+            var systemSettings = await GetAbnormalBetSystemSettings();
 
-                if (systemSettings != null)
-                {
-                    var listMsgYesterdayToCurrent = await GetMessageListFromYesterdayToCurrent();
-                    await GetMessageAndImportToChatbot(listMsgYesterdayToCurrent, systemSettings);
-                }
+            if (systemSettings != null)
+            {
+                var listMsgYesterdayToCurrent = await GetMessageListFromYesterdayToCurrent();
+                await GetMessageAndImportToChatbot(listMsgYesterdayToCurrent, systemSettings);
             }
         }
 

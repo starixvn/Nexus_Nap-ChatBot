@@ -41,9 +41,9 @@
                 new HangfireJobSetting {JobName = HangfireJob.SendNotification, CronExpression = "* * * * *", IsEnabled = true},
                 new HangfireJobSetting {JobName = HangfireJob.SyncNapUserControlData, CronExpression = "* * * * *", IsEnabled = true},
                 new HangfireJobSetting {JobName = HangfireJob.SyncOICData, CronExpression = "* * * * *", IsEnabled = true},
-                new HangfireJobSetting {JobName = HangfireJob.VoidingTicket, CronExpression = "* * * * *", IsEnabled = true},
+                new HangfireJobSetting {JobName = HangfireJob.PullVoidingMessageLicensee, CronExpression = "* * * * *", IsEnabled = true},
                 new HangfireJobSetting {JobName = HangfireJob.MonitorSkypebot, CronExpression = "* * * * *", IsEnabled = true},
-                new HangfireJobSetting { JobName = HangfireJob.SiteMessageIntegration, CronExpression = "* * * * * *", IsEnabled = true}
+                new HangfireJobSetting { JobName = HangfireJob.PullMessageFromSiteMessage, CronExpression = "* * * * * *", IsEnabled = true}
             };
             jobSettings.CurrentValue.Returns(settings);
             recurringJob = Substitute.For<IRecurringJobManager>();

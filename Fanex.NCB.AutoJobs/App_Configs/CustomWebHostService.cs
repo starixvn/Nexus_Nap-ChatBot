@@ -46,20 +46,10 @@
 
         public void RunHangfireJobs()
         {
-            recurringJob.AddOrUpdate<IJobService>(Resources.PullMessageFromSpectalDelete,
-               job => job.PullMessageFromSpecialDelete(),
-               Cron.Minutely,
-               TimeZoneInfo.Local, QueuPriority.Critical);
-
-            recurringJob.AddOrUpdate<IJobService>(Resources.PullMessageFromSiteMessage,
-              job => job.PullMessageFromSiteMessage(),
-              Cron.Minutely,
-              TimeZoneInfo.Local, QueuPriority.Critical);
-
             recurringJob.AddOrUpdate<IJobService>(Resources.ScanAndSendNotification,
-               job => job.ScanAndSendNotification(),
-               Cron.Minutely,
-               TimeZoneInfo.Local, QueuPriority.Critical);
+                job => job.ScanAndSendNotification(),
+                jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.SendNotification))?.CronExpression,
+                TimeZoneInfo.Local, QueuPriority.Critical);
 
             recurringJob.AddOrUpdate<IJobService>(Resources.Job_SyncNapUserControlData,
                 job => job.SyncDataFromNapUserControl(),
@@ -70,6 +60,21 @@
                 job => job.SyncDataFromOIC(),
                 jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.SyncOICData))?.CronExpression,
                 TimeZoneInfo.Local);
+
+            recurringJob.AddOrUpdate<IJobService>(Resources.PullVoidingMessageLicensee,
+               job => job.PullVoidingMessageLicensee(),
+               jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.PullVoidingMessageLicensee))?.CronExpression,
+               TimeZoneInfo.Local, QueuPriority.Critical);
+
+            recurringJob.AddOrUpdate<IJobService>(Resources.PullVoidingMessageInternalDepartment,
+               job => job.PullVoidingMessageInternalDepartment(),
+               jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.PullVoidingMessageInternalDepartment))?.CronExpression,
+               TimeZoneInfo.Local, QueuPriority.Critical);
+
+            recurringJob.AddOrUpdate<IJobService>(Resources.PullMessageFromSiteMessage,
+              job => job.PullMessageFromSiteMessage(),
+              jobSettings.CurrentValue.FirstOrDefault(j => j.JobName.Equals(HangfireJob.PullMessageFromSiteMessage))?.CronExpression,
+              TimeZoneInfo.Local, QueuPriority.Critical);
 
             recurringJob.AddOrUpdate<IJobService>(Resources.MonitorChatbotService,
                 job => job.MonitorChatbot(),

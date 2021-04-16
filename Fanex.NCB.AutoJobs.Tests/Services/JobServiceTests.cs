@@ -1,9 +1,13 @@
 ﻿namespace Fanex.NCB.AutoJobs.Tests.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Fanex.NCB.AutoJobs.Constants;
     using Fanex.NCB.AutoJobs.Services.Implements;
+    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Services.Interfaces;
+    using Microsoft.Extensions.Options;
     using NSubstitute;
     using NSubstitute.ExceptionExtensions;
     using ONEbook.UM.Models;
@@ -18,6 +22,7 @@
         private ISendNotificationService sendNotificationService;
         private IMaintenanceService maintenanceService;
         private ISiteMessageService siteMessageService;
+        private IOptionsSnapshot<List<HangfireJobSetting>> jobs;
         private ILogService logger;
 
         [Fact]
@@ -67,24 +72,47 @@
         }
 
         [Fact]
-        public async Task PullTicketFromSpecialDeleteAndCreateNotification_WhenCalled_ExecuteSuccessed()
+        public async Task PullVoidingMessageLicensee_WhenCalled_ExecuteSuccessed()
         {
             var service = GetService();
 
             //Actual
-            await service.PullMessageFromSpecialDelete();
+            await service.PullVoidingMessageLicensee();
 
             //Assert
-            await specialDeleteTicketService.Received().VoidingTicketToLicensee();
+            await specialDeleteTicketService.Received().PullVoidingMessageLicensee();
         }
 
         [Fact]
-        public async Task PullTicketFromSpecialDeleteAndCreateNotification_WhenCalled_ThrowException()
+        public async Task PullVoidingMessageLicensee_WhenCalled_ThrowException()
         {
             var service = GetService();
-            specialDeleteTicketService.VoidingTicketToLicensee().Throws(new Exception());
+            specialDeleteTicketService.PullVoidingMessageLicensee().Throws(new Exception());
 
-            await service.PullMessageFromSpecialDelete();
+            await service.PullVoidingMessageLicensee();
+            //Assert
+            await logger.Received().WriteExceptionSentryErrorAsync(Arg.Any<Exception>());
+        }
+
+        [Fact]
+        public async Task PullVoidingMessageInternalDepartment_WhenCalled_ExecuteSuccessed()
+        {
+            var service = GetService();
+
+            //Actual
+            await service.PullVoidingMessageInternalDepartment();
+
+            //Assert
+            await specialDeleteTicketService.Received().PullVoidingMessageInternalDepartment();
+        }
+
+        [Fact]
+        public async Task PullVoidingMessageInternalDepartment_WhenCalled_ThrowException()
+        {
+            var service = GetService();
+            specialDeleteTicketService.PullVoidingMessageInternalDepartment().Throws(new Exception());
+
+            await service.PullVoidingMessageInternalDepartment();
             //Assert
             await logger.Received().WriteExceptionSentryErrorAsync(Arg.Any<Exception>());
         }
@@ -98,14 +126,14 @@
             await service.PullMessageFromSiteMessage();
 
             //Assert
-            await siteMessageService.Received().PullMessageFromSiteMessageThenInsertNotification();
+            await siteMessageService.Received().PullMessageFromSiteMessage();
         }
 
         [Fact]
         public async Task PullMessageFromSiteMessage_WhenCalled_ThrowException()
         {
             var service = GetService();
-            siteMessageService.PullMessageFromSiteMessageThenInsertNotification().Throws(new Exception());
+            siteMessageService.PullMessageFromSiteMessage().Throws(new Exception());
 
             await service.PullMessageFromSiteMessage();
             //Assert
@@ -169,6 +197,15 @@
             maintenanceService = Substitute.For<IMaintenanceService>();
             siteMessageService = Substitute.For<ISiteMessageService>();
             logger = Substitute.For<ILogService>();
+            jobs = Substitute.For<IOptionsSnapshot<List<HangfireJobSetting>>>();
+            jobs = Substitute.For<IOptionsSnapshot<List<HangfireJobSetting>>>();
+            var hangfireJobs = new List<HangfireJobSetting>
+            {
+                new HangfireJobSetting {JobName = HangfireJob.SyncOICData, IsEnabled = true},
+                new HangfireJobSetting {JobName = HangfireJob.SyncNapUserControlData, IsEnabled = true},
+            };
+            jobs.Value.Returns(hangfireJobs);
+
             var um = new UnderMaintenanceTime
             {
                 IsUnderMaintenanceTime = false
@@ -176,7 +213,7 @@
             maintenanceService.GetUnderMaintenanceTimeAsync().Returns(um);
 
             return new JobService(syncDataService, chatbotService, specialDeleteTicketService,
-                sendNotificationService, maintenanceService, siteMessageService, logger);
+                sendNotificationService, maintenanceService, siteMessageService, jobs, logger);
         }
 
         #endregion Helper

@@ -24,7 +24,6 @@
         private ISyncDataRepository syncDataRepository;
         private IBaseService baseService;
         private ILogger logger;
-        private IOptionsSnapshot<List<HangfireJobSetting>> jobs;
 
         [Fact]
         public async Task NapUserControlSyncDataAsync_WhenCalled_ExecuteExpectedMethod()
@@ -123,14 +122,7 @@
             syncDataRepository = Substitute.For<ISyncDataRepository>();
             baseService = Substitute.For<IBaseService>();
             logger = Substitute.For<ILogger>();
-            jobs = Substitute.For<IOptionsSnapshot<List<HangfireJobSetting>>>();
-            var hangfireJobs = new List<HangfireJobSetting>
-            {
-                new HangfireJobSetting {JobName = HangfireJobName.SyncOICData, IsEnabled = true},
-                new HangfireJobSetting {JobName = HangfireJobName.SyncNapUserControlData, IsEnabled = true},
-            };
-            jobs.Value.Returns(hangfireJobs);
-            return new SyncDataService(appSettings, syncDataRepository, baseService, logger, jobs);
+            return new SyncDataService(appSettings, syncDataRepository, baseService, logger);
         }
 
         #endregion Helper
