@@ -7,8 +7,6 @@
     using System.Net.Http.Headers;
     using System.Text;
     using System.Threading.Tasks;
-    using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models;
     using Fanex.NCB.Models.NotifictaionSendMessage;

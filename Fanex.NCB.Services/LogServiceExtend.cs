@@ -5,13 +5,11 @@
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.Services.Interfaces;
-    using NLog;
-    using NLog.Web;
 
     public class LogServiceExtend : ILogService
     {
         private readonly Logging.ILogger logger;
-        private readonly Logger infoLogger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+        //private readonly Logger infoLogger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 
         public LogServiceExtend(
             Logging.ILogger logger)

@@ -263,6 +263,8 @@
 
             var stream = new StringWriter();
             serializer.Serialize(stream, messages);
+            stream.Close();
+            
             var command = new InsertMessageHistoryCommand
             {
                 JobIdentify = jobIdentity,

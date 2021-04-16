@@ -47,9 +47,7 @@
             {
                 if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.SendNotification))
                 {
-                    //await sendNotificationService.ScanAndSendNotification();
-                    await specialDeleteTicketService.PullVoidingMessageLicensee();
-                    await specialDeleteTicketService.PullVoidingMessageLicensee();
+                    await sendNotificationService.ScanAndSendNotification();
                 }
             }
             catch (Exception ex)
@@ -64,8 +62,7 @@
             {
                 if (!await IsUM() && HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.SyncNapUserControlData))
                 {
-                    await specialDeleteTicketService.PullVoidingMessageLicensee();
-                    await specialDeleteTicketService.PullVoidingMessageLicensee();
+                    await syncDataService.NapUserControlSyncDataAsync();
                 } 
             }
             catch (Exception ex)
@@ -80,9 +77,7 @@
             {
                 if (!await IsUM() && HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.SyncOICData))
                 {
-                    //await syncDataService.OicSyncDataAsync();
-                    await specialDeleteTicketService.PullVoidingMessageLicensee();
-                    await specialDeleteTicketService.PullVoidingMessageLicensee();
+                    await syncDataService.OicSyncDataAsync();
                 }
                         
             }
@@ -98,8 +93,6 @@
             {
                 if (!await IsUM() && HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJob.PullVoidingMessageLicensee))
                 {
-                    //await specialDeleteTicketService.PullVoidingMessageLicensee();
-                    await specialDeleteTicketService.PullVoidingMessageLicensee();
                     await specialDeleteTicketService.PullVoidingMessageLicensee();
                 }
             }
@@ -115,9 +108,7 @@
             {
                 if (!await IsUM() && HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJob.PullVoidingMessageInternalDepartment))
                 {
-                    //await specialDeleteTicketService.PullVoidingMessageInternalDepartment();
-                    await specialDeleteTicketService.PullVoidingMessageLicensee();
-                    await specialDeleteTicketService.PullVoidingMessageLicensee();
+                    await specialDeleteTicketService.PullVoidingMessageInternalDepartment();
                 }
             }
             catch (Exception ex)
@@ -132,9 +123,7 @@
             {
                 if (!await IsUM() && HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJob.PullMessageFromSiteMessage))
                 {
-                    //await siteMessageService.PullMessageFromSiteMessage();
-                    await specialDeleteTicketService.PullVoidingMessageLicensee();
-                    await specialDeleteTicketService.PullVoidingMessageLicensee();
+                    await siteMessageService.PullMessageFromSiteMessage();
                 }
             }
             catch (Exception ex)
@@ -149,9 +138,7 @@
             {
                 if (HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.MonitorSkypebot))
                 {
-                    //await chatbotService.MonitorChatbot();
-                    await specialDeleteTicketService.PullVoidingMessageLicensee();
-                    await specialDeleteTicketService.PullVoidingMessageLicensee();
+                    await chatbotService.MonitorChatbot();
                 }     
             }
             catch (Exception ex)

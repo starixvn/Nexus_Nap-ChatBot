@@ -50,25 +50,25 @@
 
             if (result.IsSuccessful && !model.SendImmediately)
             {
-                PushSignalRInsert(command.NotificationId);
+                await PushSignalRInsert(command.NotificationId);
             }
 
             return result;
         }
 
-        private void PushSignalRInsert(int notifiactionId)
+        private async Task PushSignalRInsert(int notifiactionId)
         {
             if (notifiactionId > 0)
             {
-                Task.Run(() => signalRService.InsertNewNotification(notifiactionId.ToString()));
+                await signalRService.InsertNewNotification(notifiactionId.ToString());
             }
         }
 
-        private void PushSignalRUpdate(int notifiactionId)
+        private async Task PushSignalRUpdate(int notifiactionId)
         {
             if (notifiactionId > 0)
             {
-                Task.Run(() => signalRService.UpdateNotificationStatus(notifiactionId.ToString()));
+                await signalRService.UpdateNotificationStatus(notifiactionId.ToString());
             }
         }
 
@@ -115,7 +115,7 @@
 
             if (result.IsSuccessful)
             {
-                PushSignalRUpdate(notificationId);
+                await PushSignalRUpdate(notificationId);
             }
             return result;
         }
@@ -152,7 +152,7 @@
 
             if (result.IsSuccessful)
             {
-                PushSignalRUpdate(notificationId);
+                await PushSignalRUpdate(notificationId);
             }
             return result;
         }
@@ -198,7 +198,7 @@
 
             if (result.IsSuccessful)
             {
-                PushSignalRUpdate(command.NotificationId);
+                await PushSignalRUpdate(command.NotificationId);
             }
 
             return result;

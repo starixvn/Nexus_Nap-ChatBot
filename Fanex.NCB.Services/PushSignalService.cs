@@ -45,7 +45,7 @@
 
                 var response = await httpClient.PostAsync(url, new FormUrlEncodedContent(notificationData));
 
-                if (response.IsSuccessStatusCode)
+                if (!response.IsSuccessStatusCode)
                 {
                     await WriteLog(response);
                 }
@@ -70,7 +70,7 @@
 
                 var response = await httpClient.PostAsync(url, new FormUrlEncodedContent(notificationData));
 
-                if (response.IsSuccessStatusCode)
+                if (!response.IsSuccessStatusCode)
                 {
                     await WriteLog(response);
                 }
@@ -86,9 +86,9 @@
             httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
-            var response = await httpClient.PostAsync(url, new StringContent(""));
+            var response = await httpClient.PostAsync(url, new StringContent(string.Empty));
 
-            if (response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
                 await WriteLog(response);
             }
