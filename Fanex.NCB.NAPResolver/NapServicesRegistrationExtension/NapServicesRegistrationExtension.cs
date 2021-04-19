@@ -6,8 +6,6 @@
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
-    using Fanex.NAP.Client.Transport;
-    using Fanex.NAP.Client.Web;
     using Fanex.NCB.NAPResolver.LocalServices;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +18,6 @@
         {
             services.AddSingleton<INapSettings>(new NapSettings(configuration));
             services.AddSingleton<INapSession, NapSession>();
-            services.AddSingleton<IRestClient, RestClient>();
 
             NAPResolverType = Enum.Parse<NapResolverType>(configuration["NapOption:NAPResolverType"]);
             if (NAPResolverType == NapResolverType.Remote)

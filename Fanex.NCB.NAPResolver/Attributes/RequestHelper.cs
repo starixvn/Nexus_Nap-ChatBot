@@ -2,7 +2,6 @@
 {
     using System;
     using System.Net;
-    using Fanex.NAP.Client.Resources;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;
@@ -15,7 +14,7 @@
             if (IsAjaxRequest(context.HttpContext.Request))
             {
                 var response = context.HttpContext.Response;
-                var messageContent = $"<center><b>{ViewResources.UnauthorizeMsg}</b></center>";
+                var messageContent = $"<center><b>UnAuthorize</b></center>";
                 response.StatusCode = (int)HttpStatusCode.Forbidden;
                 response.WriteAsync(messageContent);
             }

@@ -98,23 +98,23 @@
                     DateTimeZoneHandling = DateTimeZoneHandling.Utc
                 };
             };
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-            {
-                options.LoginPath = Configuration.GetSection("AuthSettings:LoginPath").Value;
-                options.LogoutPath = Configuration.GetSection("AuthSettings:LogoutPath").Value;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(int.Parse(Configuration.GetSection("AuthSettings:CookieTimeOut").Value));
-                options.Cookie = new CookieBuilder
-                {
-                    Name = "Fanex.NCB.AutoJobs.Cookie",
-                    SecurePolicy = CookieSecurePolicy.SameAsRequest
-                };
-                options.Events.OnSigningOut = context =>
-                {
-                    context.Response.Redirect(options.LoginPath);
-                    return Task.CompletedTask;
-                };
-            });
+            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            //    .AddCookie(options =>
+            //{
+            //    options.LoginPath = Configuration.GetSection("AuthSettings:LoginPath").Value;
+            //    options.LogoutPath = Configuration.GetSection("AuthSettings:LogoutPath").Value;
+            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(int.Parse(Configuration.GetSection("AuthSettings:CookieTimeOut").Value));
+            //    options.Cookie = new CookieBuilder
+            //    {
+            //        Name = "Fanex.NCB.AutoJobs.Cookie",
+            //        SecurePolicy = CookieSecurePolicy.SameAsRequest
+            //    };
+            //    options.Events.OnSigningOut = context =>
+            //    {
+            //        context.Response.Redirect(options.LoginPath);
+            //        return Task.CompletedTask;
+            //    };
+            //});
 
             services.AddSession(options =>
             {
@@ -160,12 +160,10 @@
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseCookiePolicy();
             app.UseSession();
-            app.UseAuthentication();
+            app.UseRouting();
+            //app.UseAuthentication();
 
-            app.UseHangfireDashboard(options: new DashboardOptions
-            {
-                Authorization = new[] { new HangfireAuthorizationFilter() }
-            }).UseHangfireServer(options: new BackgroundJobServerOptions
+            app.UseHangfireDashboard().UseHangfireServer(options: new BackgroundJobServerOptions
             {
                 WorkerCount = Configuration.GetValue<int>("HangfireConfigurations:WorkerCount"),
                 ServerName = Environment.MachineName,
@@ -173,11 +171,11 @@
             });
 
             app.UseStaticFiles();
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Auth}/{action=Login}/{id?}");
+                    pattern: "{controller=Auth}/{action=Index}/{id?}");
             });
         }
 
@@ -194,7 +192,7 @@
             #endregion ONEbookUM
 
             services.AddHttpClient();
-            services.AddSingleton<IBaseService, BaseService>();
+            services.AddScoped<IBaseService, BaseService>();
             services.AddScoped<IChatbotService, ChatbotService>();
             services.AddScoped<ISendNotificationService, SendNotificationService>();
             services.AddScoped<ISyncDataService, SyncDataService>();
@@ -209,9 +207,9 @@
 
         private static void RegisterRepository(IServiceCollection services)
         {
-            services.AddSingleton<IDynamicRepository, DynamicRepository>();
-            services.AddTransient<IBaseRepository, BaseRepository>();
-            services.AddTransient<ISyncDataRepository, SyncDataRepository>();
+            services.AddScoped<IDynamicRepository, DynamicRepository>();
+            services.AddScoped<IBaseRepository, BaseRepository>();
+            services.AddScoped<ISyncDataRepository, SyncDataRepository>();
         }
 
         private static void RegisterHangfire(IServiceCollection services, ConnectionMultiplexer redis, IConfiguration configuration)

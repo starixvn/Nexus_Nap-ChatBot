@@ -18,7 +18,6 @@
     using ONEbook.UM.Helpers;
     using ONEbook.UM.Services;
     using ONEbook.UM.Transport;
-    using RestSharp;
 
     public static class ServiceExtensions
     {

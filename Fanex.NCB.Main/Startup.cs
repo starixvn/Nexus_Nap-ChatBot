@@ -15,7 +15,6 @@
     using Fanex.NAP.Client;
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
-    using Fanex.NAP.Client.Web;
     using Fanex.NCB.Main.AppConfig;
     using Fanex.NCB.NAPResolver;
     using Fanex.NCB.Services;
@@ -91,7 +90,7 @@
             services.AddMvc(options =>
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            });
 
             var redisConfig = Configuration.GetSection("AuthSettings:RedisConfig").Value;
             var redis = ConnectionMultiplexer.Connect(redisConfig);
@@ -170,25 +169,22 @@
             app.UseAuthentication();
             app.UseSession();
 
-            app.UseSignalR(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapHub<SignalRService>("/signalR", options =>
+                endpoints.MapHub<SignalRService>("/signalR", options =>
                 {
                     options.Transports = HttpTransportType.LongPolling;
                 });
-            });
-            app.UseStaticFiles();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Auth}/{action=Index}/{id?}");
+                    pattern: "{controller=Auth}/{action=Index}/{id?}");
             });
+
+            app.UseStaticFiles();
 
             NapClientManager
                .UseConfig(app.ApplicationServices.GetService<INapSettings>())
-               .UseRestClient(app.ApplicationServices.GetService<IRestClient>())
                .UseSession(app.ApplicationServices.GetService<INapSession>());
         }
     }
