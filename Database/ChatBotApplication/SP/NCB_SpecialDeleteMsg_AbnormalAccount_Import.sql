@@ -124,7 +124,7 @@ NCB_SpecialDeleteMsg_AbnormalAccount_Import:BEGIN
   /*Step 2: Parse JSON data for message template, notification type*/
   SELECT Value INTO templateNotifcationType
     FROM SystemSetting
-    WHERE ID = 9;
+    WHERE ID = 20;
 
   DROP TEMPORARY TABLE IF EXISTS tmp_MsgContentTypeTemplate;
   CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgContentTypeTemplate(
@@ -204,7 +204,7 @@ NCB_SpecialDeleteMsg_AbnormalAccount_Import:BEGIN
   /*Step 4: Update flag to running*/
   UPDATE SystemSetting
     SET Value = VALUE_RUNNING
-    WHERE ID = 6 AND Value = VALUE_DONE;
+    WHERE ID = 18 AND Value = VALUE_DONE;
 
   IF ROW_COUNT() = 0 THEN
     LEAVE NCB_SpecialDeleteMsg_AbnormalAccount_Import;
@@ -322,23 +322,17 @@ NCB_SpecialDeleteMsg_AbnormalAccount_Import:BEGIN
 
     SET iLoop := iLoop + 1;
     END WHILE;
-
-  /*Step 9: Update Setting*/
-  #Update Max MsgID
-  UPDATE SystemSetting
-		SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
-		WHERE ID = 8;
         
   #Update flag to 'Done'
   UPDATE SystemSetting
     SET Value = VALUE_DONE
-		WHERE ID = 6 AND Value = VALUE_RUNNING;
+		WHERE ID = 18 AND Value = VALUE_RUNNING;
 
   /*Step 10: Return imported messages*/
   #Get ChatGroupID which receives carbon coppies of all imported messages
   SELECT Value INTO ccConversationGroupID
     FROM SystemSetting
-    WHERE ID = 10;
+    WHERE ID = 21;
 
   #Return Bot, Chatgroup
   SELECT g.ConversationID AS ChatGroupConversationID, g.ServiceUrl, g.ChannelID, b.ConversationID AS BotConversationID, b.Name AS BotName
@@ -375,4 +369,4 @@ END;
 
 //
 DELIMITER ;
-GRANT EXECUTE ON PROCEDURE NCB_SpecialDeleteMsg_AbnormalBets_Import TO 'ncb.admin'@'%';
+GRANT EXECUTE ON PROCEDURE NCB_SpecialDeleteMsg_AbnormalAccount_Import TO 'ncb.admin'@'%';

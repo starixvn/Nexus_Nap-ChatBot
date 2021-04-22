@@ -1,5 +1,5 @@
 /*<info serverAlias="DBMSG-bodb_Message" executers="bodbAdminNet" isFunction="0" isNested="0"></info>*/
-ALTER PROCEDURE [dbo].[NAP_Chatbot_SpecialDeleteMsg_AbnormalAccount_Sel]
+CREATE PROCEDURE [dbo].[NAP_Chatbot_SpecialDeleteMsg_AbnormalAccount_Sel]
 	@MessageIDLst		XML,
 	@BatchSize			INT,
 	@MsgContentsTypeLst VARCHAR(2000),
@@ -37,7 +37,7 @@ BEGIN
 		,4 AS JobIdentify
 		,t.c.value('@RequestID', 'INT') AS RequestID
 	FROM @MessageIDLst.nodes('root/r') AS t(c)
-	OPTION(OPTIMIZER FOR (@MessageIDLst = NULL))
+	OPTION(OPTIMIZE FOR (@MessageIDLst = NULL))
 
 	INSERT INTO dbo.MsgChatBot (MessageId, TargetId, JobIdentify, RequestId, IsFinished, Environment)
 	SELECT MessageId, TargetId, JobIdentify, RequestId, 0, @Environment
