@@ -40,11 +40,11 @@
             string evn = configuration["Environment"] ?? string.Empty;
 
             return WebHost.CreateDefaultBuilder(args)
-               .ConfigureLogging((hostingContext, logging) =>
-               {
-                   logging.ClearProviders();
-                   logging.SetMinimumLevel(LogLevel.Error);
-               })
+               //.ConfigureLogging((hostingContext, logging) =>
+               //{
+               //    logging.ClearProviders();
+               //    logging.SetMinimumLevel(LogLevel.Error);
+               //})
                .UseNLog()
                .UseContentRoot(Directory.GetCurrentDirectory())
                .UseConfiguration(configuration)

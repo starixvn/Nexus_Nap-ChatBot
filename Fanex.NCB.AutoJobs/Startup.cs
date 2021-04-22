@@ -91,13 +91,13 @@
                 .UseConfig(new LoggingConfiguration())
                 .UseGetDbExceptionInfo(DatabaseInfoGetters.GetDbExceptionInfo);
 
-            JsonConvert.DefaultSettings = () =>
-            {
-                return new JsonSerializerSettings
-                {
-                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
-                };
-            };
+            //JsonConvert.DefaultSettings = () =>
+            //{
+            //    return new JsonSerializerSettings
+            //    {
+            //        DateTimeZoneHandling = DateTimeZoneHandling.Utc
+            //    };
+            //};
             //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             //    .AddCookie(options =>
             //{
