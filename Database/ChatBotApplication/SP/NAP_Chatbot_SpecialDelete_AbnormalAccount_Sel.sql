@@ -15,8 +15,8 @@ AS
 		@MessageIDLst:
 			<root>
 				<r MessageID=1 RequestID=1 />
-				<r MessageID=1 RequestID=2 />
-				<r MessageID=3 RequestID=2 />
+				<r MessageID=2 RequestID=2 />
+				<r MessageID=3 RequestID=3 />
 			</root>
 */
 
@@ -31,9 +31,9 @@ BEGIN
 	FROM @MessageIDLst.nodes('root/r') AS t(c)
 	OPTION (OPTIMIZE FOR (@MessageIDLst = NULL))
 
-	CREATE TABLE #VoidingHistory (VoidingHistoryId INT, RequestId INT, MessageId INT, ReasonId INT, VoidById INT)
-	INSERT INTO #VoidingHistory (VoidingHistoryId, RequestId, MessageId, ReasonId, VoidById)
-	SELECT vh.VoidingHistoryId, vh.RequestId, vh.MessageId, vh.ReasonId, vh.UserId AS VoidById
+	CREATE TABLE #VoidingHistory (VoidingHistoryId INT, RequestId INT, MessageId INT, VoidById INT)
+	INSERT INTO #VoidingHistory (VoidingHistoryId, RequestId, MessageId, VoidById)
+	SELECT vh.VoidingHistoryId, vh.RequestId, vh.MessageId, vh.UserId AS VoidById
 	FROM dbo.TicketVoiding_VoidingHistory vh WITH (NOLOCK)
 	WHERE EXISTS (SELECT 1 FROM #MessageLst m WHERE vh.MessageId = m.MessageId AND vh.RequestId = m.RequestId)
 		AND vh.StatusId = 2
@@ -42,22 +42,22 @@ BEGIN
 	BEGIN
 		DECLARE @tblRequestInfo TABLE 
 		(
-			MessageId INT, 
-			RequestId INT, 
-			RequestBy NVARCHAR(200), 
-			VoidBy NVARCHAR(50), 
-			Usernames NVARCHAR(MAX), 
-			MaxWinlostDate DATETIME,
-			MinWinlostDate DATETIME,
-			CreditSite NVARCHAR(MAX),
-			DepositSite NVARCHAR(MAX)
+			MessageId 		INT, 
+			RequestId 		INT, 
+			RequestBy 		NVARCHAR(200), 
+			VoidBy 			NVARCHAR(50), 
+			Usernames 		NVARCHAR(MAX), 
+			MaxWinlostDate 	DATETIME,
+			MinWinlostDate 	DATETIME,
+			CreditSite 		NVARCHAR(MAX),
+			DepositSite 	NVARCHAR(MAX)
 		)
 		
 		;WITH CTE_Request AS
 		(
-			SELECT MessageId, RequestId, ReasonId, VoidById
+			SELECT MessageId, RequestId, VoidById
 			FROM #VoidingHistory
-			GROUP BY MessageId, RequestId, ReasonId, VoidById
+			GROUP BY MessageId, RequestId, VoidById
 		)
 		INSERT INTO @tblRequestInfo (MessageId, RequestId, RequestBy, VoidBy)
 		SELECT vh.MessageId, rq.RequestId, rb.username AS RequestBy, vb.username AS VoidBy
@@ -69,14 +69,14 @@ BEGIN
 	END
 
 	UPDATE t
-		SET t.Usernames = _Usernames
+		SET t.Usernames = UsernameLst
 	FROM @tblRequestInfo t
 	CROSS APPLY
 	(
 		SELECT TOP 1 Usernames
 		FROM dbo.TicketVoiding_RequestDetail d WITH(NOLOCK)
 		WHERE d.RequestId = t.RequestId
-	)_(_Usernames)
+	)_(UsernameLst)
 
 	;WITH CTE AS
 	(
@@ -90,11 +90,12 @@ BEGIN
 	(
 		SELECT 
 			e.MessageId 
-			,STUFF((SELECT ',' + c.site FROM CTE c WHERE c.MessageId = e.MessageId AND c.IsCredit = 1 FOR XML PATH('')),1,1,'') AS CreditSite
-			,STUFF((SELECT ',' + d.site FROM CTE d WHERE d.MessageId = e.MessageId AND d.IsCredit = 0 FOR XML PATH('')),1,1,'') AS DepositSite		 
+			,STUFF((SELECT DISTINCT ',' + c.site FROM CTE c WHERE c.MessageId = e.MessageId AND c.IsCredit = 1 FOR XML PATH('')),1,1,'') AS CreditSiteLst
+			,STUFF((SELECT DISTINCT ',' + d.site FROM CTE d WHERE d.MessageId = e.MessageId AND d.IsCredit = 0 FOR XML PATH('')),1,1,'') AS DepositSiteLst	 
 		FROM CTE e
+		GROUP BY e.MessageId
 	)
-	SELECT t.MessageId, t.RequestId, t.RequestBy, t.VoidBy, t.Usernames, s.CreditSite, s.DepositSite
+	SELECT t.MessageId, t.RequestId, t.RequestBy, t.VoidBy, t.Usernames, s.CreditSiteLst, s.DepositSiteLst
 	FROM @tblRequestInfo t
 		INNER JOIN CTE_Site s ON t.MessageId = s.MessageId
 

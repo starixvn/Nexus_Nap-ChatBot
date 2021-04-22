@@ -39,8 +39,8 @@ BEGIN
 	FROM @MessageIDLst.nodes('root/r') AS t(c)
 	OPTION(OPTIMIZER FOR (@MessageIDLst = NULL))
 
-	INSERT INTO dbo.MsgChatBot (MessageId, TargetId, JobIdentify, RequestId, IsFinished, Environment, CheckInTime)
-	SELECT MessageId, TargetId, JobIdentify, RequestId, 0, @Environment, GETDATE()
+	INSERT INTO dbo.MsgChatBot (MessageId, TargetId, JobIdentify, RequestId, IsFinished, Environment)
+	SELECT MessageId, TargetId, JobIdentify, RequestId, 0, @Environment
 	FROM #Message
 
 	CREATE TABLE #MsgContentsTypeLst (MsgContentsType INT)
@@ -68,7 +68,7 @@ BEGIN
 			AND c.TargetId = 0
 	) AND EXISTS (SELECT 1 FROM #MsgContentsTypeLst l WHERE l.MsgContentsType = m.MsgContentsType)
 	
-	SELECT t.MessageId, t.MsgContentsType, t.Content_en, t.Content_en, mcb.RequestId
+	SELECT t.MessageId, mcb.RequestId, t.MsgContentsType, t.Content_en, t.Content_cs
 	FROM @tblMessage t
 		INNER JOIN dbo.MsgChatBot mcb WITH(NOLOCK) ON mcb.MessageId = t.MessageId
 	WHERE mcb.Environment = @Environment

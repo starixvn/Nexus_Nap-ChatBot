@@ -13,8 +13,8 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalAcco
     Params    :
       - @MessageHeader
 							[  
-								{ "MessageID":885128, "MsgContentsType":103, "RequestIDLst":"101,102", "DecidedByLst":"Patrick,Starix", "RequestByLst":"Patrick,Starix", "VoidByLst":"Starix", "ReasonLst":"Group Betting,Others", "KickOffTime":"2020-02-12 03:00:00", "LeagueName":"ENG", "HomeName":"MC", "AwayName":"MU", "HalfTimeHomeScore":1, "HalfTimeAwayScore":0, "FullTimeHomeScore":1, "FullTimeAwayScore":1, "TypeNameLst":"Handicap,Over/Under", "TotalTickets": 1, "CreditSiteLst":"CN88,NV88", "DepositSiteLst":"12BET,Haifa" }
-								, { "MessageID":885131, "MsgContentsType":103, "RequestIDLst":"103,104", "DecidedByLst":"Patrick,Starix", "RequestByLst":"Patrick,Starix", "VoidByLst":"Starix", "ReasonLst":"Group Betting,Others", "KickOffTime":"2020-02-12 03:00:00", "LeagueName":"ENG", "HomeName":"MC", "AwayName":"MU", "HalfTimeHomeScore":1, "HalfTimeAwayScore":0, "FullTimeHomeScore":1, "FullTimeAwayScore":1, "TypeNameLst":"Moneyline", "TotalTickets": 10, "CreditSiteLst":"CN88,NV88", "DepositSiteLst":"12BET,Haifa" }
+								{ "MessageID":885128, "MsgContentsType":103, "RequestID":"101", "RequestBy":"Patrick", "VoidBy":"Starix", "CreditSiteLst":"CN88,BEST-ODDS", "DepositSiteLst":"12BET,Haifa" , "Content_en" : "en", "Content_sc" : "sc"}
+								,{ "MessageID":885131, "MsgContentsType":103, "RequestID":"103", "RequestBy":"Patrick", "VoidBy":"Starix", "CreditSiteLst":"CN88,BEST-ODDS", "DepositSiteLst":"12BET,Haifa", "Content_en" : "en", "Content_sc" : "sc"}
 							]
 
 	Revisions:
@@ -69,10 +69,9 @@ NCB_SpecialDeleteMsg_AbnormalAccount_Import:BEGIN
     MessageID INT,
     IsTest TINYINT,
     MsgContentsType INT,
-    RequestIDLst TEXT,
-    DecidedByLst TEXT,
-    RequestByLst TEXT,
-    VoidByLst TEXT,
+    RequestID INT,
+    RequestBy TEXT,
+    VoidBy TEXT,
     CreditSiteLst TEXT,
     DepositSiteLst TEXT,
     Content_en TEXT,
@@ -86,15 +85,14 @@ NCB_SpecialDeleteMsg_AbnormalAccount_Import:BEGIN
 
   SET iLoop = 0;
   WHILE (JSON_EXTRACT(messageHeader, CONCAT('$[',iLoop, '].MessageID')) IS NOT NULL) DO
-		INSERT INTO tmp_MsgHeader(MessageID, IsTest, MsgContentsType, RequestIDLst, DecidedByLst, RequestByLst, VoidByLst, CreditSiteLst, DepositSiteLst, Content_en, Content_cs)
+		INSERT INTO tmp_MsgHeader(MessageID, IsTest, MsgContentsType, RequestID, RequestBy, VoidBy, CreditSiteLst, DepositSiteLst, Content_en, Content_cs)
       VALUES (
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MessageID'))),
         JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].IsTest')),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MsgContentsType'))),
-        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].RequestIDLst'))),
-        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].DecidedByLst'))),
-        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].RequestByLst'))),
-        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].VoidByLst'))),
+        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].RequestID'))),
+        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].RequestBy'))),
+        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].VoidBy'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].CreditSiteLst'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].DepositSiteLst'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_en'))),
@@ -108,15 +106,15 @@ NCB_SpecialDeleteMsg_AbnormalAccount_Import:BEGIN
   #Update Content_Detail
   UPDATE tmp_MsgHeader
     SET Content_Detail = CONCAT(
-        'Request No.: ', RequestIDLst
+        'Request No.: ', RequestID
         , '\r\n', '\r\n'
         , 'Affected Credit sites:', CreditSiteLst
         , '\r\n'
         , 'Affected Licensee sites:', DepositSiteLst 
         , '\r\n', '\r\n'
-        , 'Requested by: ', RequestByLst
+        , 'Requested by: ', RequestBy
         , '\r\n'
-        , 'Voided by: ', VoidByLst
+        , 'Voided by: ', VoidBy
         , '\r\n', '\r\n'
         , IFNULL(Content_en, '')
         , '\r\n', '\r\n'
