@@ -201,7 +201,7 @@
             services.AddScoped<IJobService, JobService>();
             services.AddScoped<IPushSignalService, PushSignalService>();
             services.AddScoped<ISignalRService, SignalRService>();
-            services.AddTransient<IRecurringJobManager, RecurringJobManager>();
+            services.AddSingleton<IRecurringJobManager, RecurringJobManager>();
             services.AddScoped<SignalRService>();
         }
 
