@@ -60,10 +60,10 @@
         {
             try
             {
-                //if (!await IsUM() && HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.SyncNapUserControlData))
-                //{
-                await syncDataService.NapUserControlSyncDataAsync();
-                //} 
+                if (!await IsUM() && HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.SyncNapUserControlData))
+                {
+                    //await syncDataService.NapUserControlSyncDataAsync();
+                }
             }
             catch (Exception ex)
             {
@@ -75,10 +75,10 @@
         {
             try
             {
-                //if (!await IsUM() && HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.SyncOICData))
-                //{
-                await syncDataService.OicSyncDataAsync();
-                //}
+                if (!await IsUM() && HangfireHelper.IsEnabledJob(jobSettings.Value, HangfireJobName.SyncOICData))
+                {
+                    //await syncDataService.OicSyncDataAsync();
+                }
 
             }
             catch (Exception ex)
