@@ -17,13 +17,13 @@
 
     public class SyncDataService : ISyncDataService
     {
-        private readonly IOptionsSnapshot<AppSettings> appSettings;
+        private readonly IOptions<AppSettings> appSettings;
         private readonly ISyncDataRepository syncDataRepository;
         private readonly IBaseService baseService;
         private readonly ILogger logger;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
-        public SyncDataService(IOptionsSnapshot<AppSettings> appSettings,
+        public SyncDataService(IOptions<AppSettings> appSettings,
             ISyncDataRepository syncDataRepository,
             IBaseService baseService,
             ILogger logger)

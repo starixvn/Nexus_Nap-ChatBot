@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.AutoJobs.Constants
 {
-    public static class HangfireJob
+    public static class JobConstants
     {
         public const string SendNotification = "SendNotification";
 

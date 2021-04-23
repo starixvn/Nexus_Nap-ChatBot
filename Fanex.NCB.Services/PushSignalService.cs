@@ -14,11 +14,11 @@
     public class PushSignalService : IPushSignalService
     {
         private readonly IHttpClientFactory httpClientFactory;
-        private readonly IOptionsSnapshot<SignalRSettings> signalRSettings;
+        private readonly IOptions<SignalRSettings> signalRSettings;
         private readonly ILogger logger;
 
         public PushSignalService(
-            IOptionsSnapshot<SignalRSettings> signalRSettings, 
+            IOptions<SignalRSettings> signalRSettings, 
             IHttpClientFactory httpClientFactory, 
             ILogger logger)
         {

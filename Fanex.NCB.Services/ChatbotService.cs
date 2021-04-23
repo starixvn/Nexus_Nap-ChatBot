@@ -19,15 +19,15 @@
     public class ChatbotService : IChatbotService
     {
         private readonly IHttpClientFactory httpClientFactory;
-        private readonly IOptionsSnapshot<BotSettings> botSettings;
-        private readonly IOptionsSnapshot<MonitorChatbot> monitorChatbot;
-        private readonly IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions;
+        private readonly IOptions<BotSettings> botSettings;
+        private readonly IOptions<MonitorChatbot> monitorChatbot;
+        private readonly IOptions<NotifyChatGroupOption> notifyChatGroupOptions;
 
         public ChatbotService(
             IHttpClientFactory httpClientFactory,
-            IOptionsSnapshot<BotSettings> botSettings,
-            IOptionsSnapshot<MonitorChatbot> monitorChatbot,
-            IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions)
+            IOptions<BotSettings> botSettings,
+            IOptions<MonitorChatbot> monitorChatbot,
+            IOptions<NotifyChatGroupOption> notifyChatGroupOptions)
         {
             this.httpClientFactory = httpClientFactory;
             this.monitorChatbot = monitorChatbot;

@@ -27,49 +27,43 @@
       <CodeAnalysisRuleSet>..\.sonarlint\napchatbotcsharp.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
     <ItemGroup>
-        <None Remove="appsettings.Development.json" />
+      <Compile Remove="Views\**" />
+      <EmbeddedResource Remove="Views\**" />
+      <None Remove="Views\**" />
+    </ItemGroup>
+    <ItemGroup>
         <None Remove="appsettings.json" />
         <None Remove="appsettings.LOCAL.json" />
-        <None Remove="appsettings.Production.json" />
+        <None Remove="appsettings.PROD.json" />
         <None Remove="appsettings.UAT.json" />
-        <None Remove="App_Data\Development\SpNames.xml" />
-        <None Remove="App_Data\LOCAL\SpNames.xml" />
-        <None Remove="App_Data\Production\SpNames.xml" />
         <None Remove="App_Data\SpNames.xml" />
-        <None Remove="App_Data\UAT\SpNames.xml" />
         <None Remove="logs\log.txt" />
         <None Remove="nlog.config" />
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
-        <Content Include="appsettings.Development.json">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
         <Content Include="appsettings.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include="appsettings.LOCAL.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="appsettings.Production.json">
+        <Content Include="appsettings.PROD.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include="appsettings.UAT.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="App_Data\Development\SpNames.xml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="App_Data\LOCAL\SpNames.xml">
+        <Content Include="App_Data\SpNames.LOCAL.xml">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="App_Data\Production\SpNames.xml">
+        <Content Include="App_Data\SpNames.PROD.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include="App_Data\SpNames.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="App_Data\UAT\SpNames.xml">
+        <Content Include="App_Data\SpNames.UAT.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include="logs\log.txt">
@@ -87,6 +81,7 @@
         <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
         <PackageReference Include="Hangfire.AspNetCore" Version="1.7.22" />
         <PackageReference Include="HangFire.Redis.StackExchange" Version="1.8.4" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
         <PackageReference Include="Microsoft.NET.Sdk.Razor" Version="3.1.14" />
         <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="5.0.5" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
@@ -108,12 +103,6 @@
         </Compile>
     </ItemGroup>
     <ItemGroup>
-        <Compile Remove="Startup.cs" />
-        <Compile Include="Startup.cs">
-            <SonarQubeExclude>true</SonarQubeExclude>
-        </Compile>
-    </ItemGroup>
-    <ItemGroup>
         <Compile Remove="Program.cs" />
         <Compile Include="Program.cs">
             <SonarQubeExclude>true</SonarQubeExclude>
@@ -124,8 +113,5 @@
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>Resources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Views\Auth\" />
     </ItemGroup>
 </Project>
