@@ -30,11 +30,11 @@ BEGIN
     SET totalItems = (SELECT COUNT(1) FROM NotificationType nt);
 	
 	DROP TEMPORARY TABLE IF EXISTS tmpNotificationTypeTable;
-	CREATE TEMPORARY TABLE IF NOT EXISTS tmpNotificationTypeTable (ID NOT NULL AUTO_INCREMENT, JsonSetting JSON)
+	CREATE TEMPORARY TABLE IF NOT EXISTS tmpNotificationTypeTable (ID INT NOT NULL AUTO_INCREMENT, JsonSetting JSON, PRIMARY KEY(ID));
 	
 	INSERT INTO tmpNotificationTypeTable (JsonSetting)
 	SELECT Value
-	FROM SystemSetting WHERE ID IN (4, 9, 14, 20)
+	FROM SystemSetting WHERE ID IN (4, 9, 14, 20);
 
     DROP TEMPORARY TABLE IF EXISTS tmpParseJsonTable;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmpParseJsonTable(NotificationTypeID INT);
@@ -42,10 +42,10 @@ BEGIN
 	#Get Settings
 	SET _ID = 1;
 	
-	WHILE (EXISTS(SELECT 1 FROM tmpNotificationTypeTable WHERE ID =  _ID))) DO
+	WHILE (EXISTS(SELECT 1 FROM tmpNotificationTypeTable WHERE ID =  _ID)) DO
 		SELECT JsonSetting INTO Jsetting FROM  tmpNotificationTypeTable WHERE ID = _ID;	
 		SET indexLoop = 0;	
-		WHILE (JSON_EXTRACT(voidTicketSettings, CONCAT('$[',indexLoop, '].NotificationTypeID'))) DO 
+		WHILE (JSON_EXTRACT(Jsetting, CONCAT('$[',indexLoop, '].NotificationTypeID'))) DO 
 			INSERT INTO tmpParseJsonTable(NotificationTypeID)
 			VALUES (
 				CASE

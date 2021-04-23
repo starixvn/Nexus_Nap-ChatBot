@@ -31,7 +31,12 @@ VALUES (18, 'Special Delete Site - Abnormal Bets - Job Sync Status (Running/Done
 SELECT RecipientTypeID INTO @RecipientTypeID FROM RecipientType WHERE RecipientTypeName = 'Internal Department';
 
 INSERT INTO NotificationRecipientType (NotificationTypeID, RecipientTypeID)
-VALUES (@NotificationTypeId, @RecipientTypeID)
+VALUES (@NotificationTypeId, @RecipientTypeID);
+
+SELECT ChatGroupTypeID INTO @ChatGroupTypeID FROM ChatGroupType WHERE ChatGroupTypeName = 'Normal Group' LIMIT 1;
+
+INSERT INTO NotificationChatGroupType (NotificationTypeID, ChatGroupTypeID)
+VALUES (@NotificationTypeID, @ChatGroupTypeID)
 
 
 

@@ -3,7 +3,6 @@ DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalAccount_Import(
   IN messageHeader JSON,
-  IN maxMessageID INT,
   OUT errCode INT,
   OUT errMsg VARCHAR(200)
 
@@ -96,7 +95,7 @@ NCB_SpecialDeleteMsg_AbnormalAccount_Import:BEGIN
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].CreditSiteLst'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].DepositSiteLst'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_en'))),
-        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_cs')))
+        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_sc')))
       );
     
     SET iLoop := iLoop + 1;
@@ -322,6 +321,12 @@ NCB_SpecialDeleteMsg_AbnormalAccount_Import:BEGIN
 
     SET iLoop := iLoop + 1;
     END WHILE;
+
+  /*Step 9: Update Setting*/
+  #Update Max MsgID
+  UPDATE SystemSetting
+		SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
+		WHERE ID = 22;
         
   #Update flag to 'Done'
   UPDATE SystemSetting
