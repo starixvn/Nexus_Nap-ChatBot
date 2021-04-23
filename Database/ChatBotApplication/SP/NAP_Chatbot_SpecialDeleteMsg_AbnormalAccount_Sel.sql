@@ -41,7 +41,14 @@ BEGIN
 
 	INSERT INTO dbo.MsgChatBot (MessageId, TargetId, JobIdentify, RequestId, IsFinished, Environment)
 	SELECT MessageId, TargetId, JobIdentify, RequestId, 0, @Environment
-	FROM #Message
+	FROM #Message m
+	WHERE NOT EXISTS(
+		SELECT 1 FROM MsgChatBot mc WITH(NOLOCK) 
+			WHERE mc.MessageId = m.MessageId 
+				AND mc.TargetId = 0 
+				AND mc.JobIdentify = 4 
+				AND mc.RequestId = m.RequestId 
+				AND mc.Environment = @Environment)
 
 	CREATE TABLE #MsgContentsTypeLst (MsgContentsType INT)
 

@@ -31,62 +31,54 @@ BEGIN
 	FROM @MessageIDLst.nodes('root/r') AS t(c)
 	OPTION (OPTIMIZE FOR (@MessageIDLst = NULL))
 
-	CREATE TABLE #VoidingHistory (VoidingHistoryId INT, RequestId INT, MessageId INT, VoidById INT)
-	INSERT INTO #VoidingHistory (VoidingHistoryId, RequestId, MessageId, VoidById)
-	SELECT vh.VoidingHistoryId, vh.RequestId, vh.MessageId, vh.UserId AS VoidById
+	CREATE TABLE #VoidingHistory 
+	(
+		VoidingHistoryId	INT, 
+		RequestId			INT, 
+		MessageId			INT, 
+		VoidById			INT, 
+		VoidBy				VARCHAR(30),
+		RequestBy	        VARCHAR(30),
+		MinWinlostdate		DATETIME, 
+		MaxWinlostdate		DATETIME,
+		Usernames 			NVARCHAR(MAX), 
+		CreditSite 			NVARCHAR(MAX),
+		DepositSite 		NVARCHAR(MAX)
+	)
+	INSERT INTO #VoidingHistory (VoidingHistoryId, RequestId, MessageId, VoidById, MinWinlostdate, MaxWinlostdate)
+	SELECT vh.VoidingHistoryId, vh.RequestId, vh.MessageId, vh.UserId AS VoidById, vh.MinWinlostdate, vh.MaxWinlostdate
 	FROM dbo.TicketVoiding_VoidingHistory vh WITH (NOLOCK)
 	WHERE EXISTS (SELECT 1 FROM #MessageLst m WHERE vh.MessageId = m.MessageId AND vh.RequestId = m.RequestId)
 		AND vh.StatusId = 2
 
-	-- Request Info
-	BEGIN
-		DECLARE @tblRequestInfo TABLE 
-		(
-			MessageId 		INT, 
-			RequestId 		INT, 
-			RequestBy 		NVARCHAR(200), 
-			VoidBy 			NVARCHAR(50), 
-			Usernames 		NVARCHAR(MAX), 
-			MaxWinlostDate 	DATETIME,
-			MinWinlostDate 	DATETIME,
-			CreditSite 		NVARCHAR(MAX),
-			DepositSite 	NVARCHAR(MAX)
-		)
-		
-		;WITH CTE_Request AS
-		(
-			SELECT MessageId, RequestId, VoidById
-			FROM #VoidingHistory
-			GROUP BY MessageId, RequestId, VoidById
-		)
-		INSERT INTO @tblRequestInfo (MessageId, RequestId, RequestBy, VoidBy)
-		SELECT vh.MessageId, rq.RequestId, rb.username AS RequestBy, vb.username AS VoidBy
-		FROM CTE_Request vh
-			INNER JOIN dbo.TicketVoiding_Request rq WITH (NOLOCK) ON rq.RequestId = vh.RequestId
-			LEFT JOIN dbo.Customer rb WITH (NOLOCK) ON rq.UserId = rb.custid
-			LEFT JOIN dbo.Customer vb WITH (NOLOCK) ON vh.VoidById = vb.custid
-		WHERE rq.IssueTypeId = 13 -- Abnormal Account
-	END
+	UPDATE vh
+		SET vh.RequestBy = rb.username
+			,vh.VoidBy = vb.username
+	FROM #VoidingHistory vh
+		INNER JOIN dbo.TicketVoiding_Request rq WITH (NOLOCK) ON rq.RequestId = vh.RequestId
+		LEFT JOIN dbo.Customer rb WITH (NOLOCK) ON rq.UserId = rb.custid
+		LEFT JOIN dbo.Customer vb WITH (NOLOCK) ON vh.VoidById = vb.custid
+	WHERE rq.IssueTypeId = 13 -- Abnormal Account
 
-	UPDATE t
-		SET t.Usernames = UsernameLst
-	FROM @tblRequestInfo t
+	UPDATE vh
+		SET vh.Usernames = UsernameLst
+	FROM #VoidingHistory vh
 	CROSS APPLY
 	(
 		SELECT TOP 1 Usernames
 		FROM dbo.TicketVoiding_RequestDetail d WITH(NOLOCK)
-		WHERE d.RequestId = t.RequestId
+		WHERE d.RequestId = vh.RequestId
 	)_(UsernameLst)
 
 	;WITH CTE AS
 	(
-		SELECT t.MessageId, c.site, CASE WHEN s.custid IS NULL THEN 1 ELSE 0 END AS IsCredit
-		FROM @tblRequestInfo t
-		CROSS APPLY strSplit(t.Usernames, ',') f
-			INNER JOIN dbo.Customer c WITH(NOLOCK) ON c.username = f.val
+		SELECT vh.MessageId, c.site, CASE WHEN s.custid IS NULL THEN 1 ELSE 0 END AS IsCredit
+		FROM #VoidingHistory vh
+		CROSS APPLY strSplit(vh.Usernames, ',') f
+			INNER JOIN dbo.Customer c WITH(NOLOCK) ON c.username = CONVERT(VARCHAR(30), f.val)
 			LEFT JOIN dbo.Dep_CustSuper s WITH(NOLOCK) ON s.custid = c.srecommend
 		
-	), CTE_Site AS
+	),CTE_Site AS
 	(
 		SELECT 
 			e.MessageId 
@@ -95,9 +87,9 @@ BEGIN
 		FROM CTE e
 		GROUP BY e.MessageId
 	)
-	SELECT t.MessageId, t.RequestId, t.RequestBy, t.VoidBy, t.Usernames, s.CreditSiteLst, s.DepositSiteLst
-	FROM @tblRequestInfo t
-		INNER JOIN CTE_Site s ON t.MessageId = s.MessageId
+	SELECT vh.MessageId, vh.RequestId, vh.RequestBy, vh.VoidBy, vh.Usernames, s.CreditSiteLst, s.DepositSiteLst
+	FROM #VoidingHistory vh
+		INNER JOIN CTE_Site s ON vh.MessageId = s.MessageId
 
 	DROP TABLE #MessageLst
 	DROP TABLE #VoidingHistory
