@@ -23,9 +23,17 @@ SET @Description = CONCAT('[{"IsTest": 0, "MsgContentsType": 101, "NotificationT
 
 INSERT INTO SystemSetting (ID, Description, Value, JobIdentify, JobDescription)
 VALUES (18, 'Special Delete Site - Abnormal Bets - Job Sync Status (Running/Done)', 'Done', 4 ,'Special Delete - Abnormal Account- Internal CSD')
-,(19, 'Special Delete Site - Abnormal Bets - Batch Size', 10, 4 ,'Special Delete - Abnormal Account- Internal CSD')
-,(20, 'Special Delete Site - Abnormal Bets - Notification Template ID / MsgContentsType / NotificationType', @Description, 4 ,'Special Delete - Abnormal Account- Internal CSD')
-,(21, 'Special Delete Site - Abnormal Bets - Chat group ID which receives carbon copies of all imported messages', 426, 4 ,'Special Delete - Abnormal Account- Internal CSD');
+,(19, 'Special Delete Site - Abnormal Account - Batch Size', 10, 4 ,'Special Delete - Abnormal Account- Internal CSD')
+,(20, 'Special Delete Site - Abnormal Account - Notification Template ID / MsgContentsType / NotificationType', @Description, 4 ,'Special Delete - Abnormal Account- Internal CSD')
+,(21, 'Special Delete Site - Abnormal Account - Chat group ID which receives carbon copies of all imported messages', 426, 4 ,'Special Delete - Abnormal Account- Internal CSD')
+,(22, 'Special Delete Site - Abnormal Account - Previous MaxMessageID', 0, 4 ,'Special Delete - Abnormal Account- Internal CSD');
+
+SELECT RecipientTypeID INTO @RecipientTypeID FROM RecipientType WHERE RecipientTypeName = 'Internal Department';
+
+INSERT INTO NotificationRecipientType (NotificationTypeID, RecipientTypeID)
+VALUES (@NotificationTypeId, @RecipientTypeID)
+
+
 
 
 
