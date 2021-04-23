@@ -12,8 +12,8 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalAcco
     Params    :
       - @MessageHeader
 							[  
-								{ "MessageID":885128, "MsgContentsType":103, "RequestID":"101", "RequestBy":"Patrick", "VoidBy":"Starix", "CreditSiteLst":"CN88,BEST-ODDS", "DepositSiteLst":"12BET,Haifa" , "Content_en" : "en", "Content_sc" : "sc"}
-								,{ "MessageID":885131, "MsgContentsType":103, "RequestID":"103", "RequestBy":"Patrick", "VoidBy":"Starix", "CreditSiteLst":"CN88,BEST-ODDS", "DepositSiteLst":"12BET,Haifa", "Content_en" : "en", "Content_sc" : "sc"}
+								{ "MessageID":885128, "MsgContentsType":101, "RequestID":"1001", "RequestBy":"Patrick", "VoidBy":"Starix", "CreditSiteLst":"CN88,BEST-ODDS", "DepositSiteLst":"12BET,Haifa" , "Content_en" : "en", "Content_sc" : "sc", "MinWinlostDate" : "2021-01-01", "MaxWinlostDate" : "2021-04-02", "UsernameLst" : "Malcoln1"}
+								,{ "MessageID":885131, "MsgContentsType":102, "RequestID":"1003", "RequestBy":"Patrick", "VoidBy":"Starix", "CreditSiteLst":"CN88,BEST-ODDS", "DepositSiteLst":"12BET,Haifa", "Content_en" : "en", "Content_sc" : "sc", "MinWinlostDate" : "2021-01-01", "MaxWinlostDate" : "2021-04-02", "UsernameLst" : "Malcoln1,m2"}
 							]
 
 	Revisions:
@@ -37,7 +37,7 @@ NCB_SpecialDeleteMsg_AbnormalAccount_Import:BEGIN
   DECLARE ccIsTest TINYINT;
 
   # Constants
-	DECLARE ACTION_ID INT DEFAULT 19;
+	DECLARE ACTION_ID INT DEFAULT 28;
   DECLARE VALUE_RUNNING TEXT DEFAULT 'Running';
   DECLARE VALUE_DONE TEXT DEFAULT 'Done';
   DECLARE RECIPIENT_TYPE_INTERNAL_CSD INT DEFAULT 3;
@@ -78,13 +78,16 @@ NCB_SpecialDeleteMsg_AbnormalAccount_Import:BEGIN
     Content_Detail TEXT,
     CheckMsg TEXT,
     CheckMsgDetail TEXT,
+	MinWinlostDate DATETIME(3),
+	MaxWinlostDate DATETIME(3),
+	UsernameLst TEXT,
     PRIMARY KEY (Id),
     UNIQUE INDEX Index_MessageID(MessageID)
     );
 
   SET iLoop = 0;
   WHILE (JSON_EXTRACT(messageHeader, CONCAT('$[',iLoop, '].MessageID')) IS NOT NULL) DO
-		INSERT INTO tmp_MsgHeader(MessageID, IsTest, MsgContentsType, RequestID, RequestBy, VoidBy, CreditSiteLst, DepositSiteLst, Content_en, Content_cs)
+		INSERT INTO tmp_MsgHeader(MessageID, IsTest, MsgContentsType, RequestID, RequestBy, VoidBy, CreditSiteLst, DepositSiteLst, Content_en, Content_cs, MinWinlostDate, MaxWinlostDate, UsernameLst, CheckMsg)
       VALUES (
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MessageID'))),
         JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].IsTest')),
@@ -95,7 +98,11 @@ NCB_SpecialDeleteMsg_AbnormalAccount_Import:BEGIN
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].CreditSiteLst'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].DepositSiteLst'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_en'))),
-        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_sc')))
+        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_sc'))),
+		JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MinWinlostDate'))),
+		JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MaxWinlostDate'))),
+		JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].UsernameLst'))),
+		''
       );
     
     SET iLoop := iLoop + 1;
@@ -107,10 +114,14 @@ NCB_SpecialDeleteMsg_AbnormalAccount_Import:BEGIN
     SET Content_Detail = CONCAT(
         'Request No.: ', RequestID
         , '\r\n', '\r\n'
-        , 'Affected Credit sites:', CreditSiteLst
+        , 'Affected Credit sites: ', CreditSiteLst
         , '\r\n'
-        , 'Affected Licensee sites:', DepositSiteLst 
+        , 'Affected Licensee sites: ', DepositSiteLst 
         , '\r\n', '\r\n'
+		, 'Event Date: ', DATE_FORMAT(MinWinlostDate,'%b %d, %Y'),' - ',DATE_FORMAT(MaxWinlostDate,'%b %d, %Y')
+		,'\r\n'
+		,'Member: ', UsernameLst
+		,'\r\n'
         , 'Requested by: ', RequestBy
         , '\r\n'
         , 'Voided by: ', VoidBy
