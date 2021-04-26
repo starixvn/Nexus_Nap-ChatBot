@@ -61,18 +61,36 @@ BEGIN
 	WHERE rq.IssueTypeId = 13 -- Abnormal Account
 
 	UPDATE vh
-		SET vh.Usernames = UsernameLst
+		SET vh.Usernames = l.UsernameLst
 	FROM #VoidingHistory vh
 	CROSS APPLY
 	(
 		SELECT TOP 1 Usernames
 		FROM dbo.TicketVoiding_RequestDetail d WITH(NOLOCK)
 		WHERE d.RequestId = vh.RequestId
-	)_(UsernameLst)
+	)l(UsernameLst)
 
-	;WITH CTE AS
+	DECLARE @Tmp TABLE 
 	(
-		SELECT vh.MessageId, c.site, CASE WHEN s.custid IS NULL THEN 1 ELSE 0 END AS IsCredit
+		MessageId			INT, 
+		RequestIdLst		NVARCHAR(MAX), 	
+		VoidByLst			NVARCHAR(MAX),
+		RequestByLst	    VARCHAR(30),
+		MinWinlostdate		DATETIME, 
+		MaxWinlostdate		DATETIME,
+		Usernames 			NVARCHAR(MAX), 
+		CreditSite 			NVARCHAR(MAX),
+		DepositSite 		NVARCHAR(MAX)
+	)
+	
+	;WITH CTE_Message AS
+	(
+		SELECT MessageId, MIN(MinWinlostdate) AS MinWinlostdate, MAX(MaxWinlostdate) AS MaxWinlostdate
+		FROM #VoidingHistory vh
+		GROUP BY vh.MessageId
+	),CTE_UserInfo AS
+	(
+		SELECT vh.MessageId, f.val AS Username ,c.site, CASE WHEN s.custid IS NULL THEN 1 ELSE 0 END AS IsCredit
 		FROM #VoidingHistory vh
 		CROSS APPLY strSplit(vh.Usernames, ',') f
 			INNER JOIN dbo.Customer c WITH(NOLOCK) ON c.username = CONVERT(VARCHAR(30), f.val)
@@ -82,14 +100,23 @@ BEGIN
 	(
 		SELECT 
 			e.MessageId 
-			,STUFF((SELECT DISTINCT ',' + c.site FROM CTE c WHERE c.MessageId = e.MessageId AND c.IsCredit = 1 FOR XML PATH('')),1,1,'') AS CreditSiteLst
-			,STUFF((SELECT DISTINCT ',' + d.site FROM CTE d WHERE d.MessageId = e.MessageId AND d.IsCredit = 0 FOR XML PATH('')),1,1,'') AS DepositSiteLst	 
-		FROM CTE e
-		GROUP BY e.MessageId
+			,STUFF((SELECT DISTINCT ',' + c.site FROM CTE_UserInfo c WHERE c.MessageId = e.MessageId AND c.IsCredit = 1 FOR XML PATH('')),1,1,'') AS CreditSiteLst
+			,STUFF((SELECT DISTINCT ',' + c.site FROM CTE_UserInfo c WHERE c.MessageId = e.MessageId AND c.IsCredit = 0 FOR XML PATH('')),1,1,'') AS DepositSiteLst	 
+			,STUFF((SELECT DISTINCT ',' + c.Username FROM CTE_UserInfo c WHERE c.MessageId = e.MessageId FOR XML PATH('')),1,1,'') AS Usernames
+		FROM CTE_Message e
+	),CTE_RequestInfo AS
+	(
+		SELECT 
+			m.MessageId
+			,STUFF((SELECT DISTINCT ',' + VoidBy FROM #VoidingHistory vh WHERE vh.MessageId = m.MessageId AND VoidBy IS NOT NULL FOR XML PATH('')), 1, 1, '') AS VoidByLst
+			,STUFF((SELECT DISTINCT ',' + RequestBy FROM #VoidingHistory vh WHERE vh.MessageId = m.MessageId AND RequestBy IS NOT NULL FOR XML PATH('')), 1, 1, '') AS RquestByLst
+			,STUFF((SELECT DISTINCT ',' + CONVERT(VARCHAR(30), RequestId) FROM #VoidingHistory vh WHERE vh.MessageId = m.MessageId FOR XML PATH('')), 1, 1, '') AS RequestIdLst
+		FROM CTE_Message m	
 	)
-	SELECT vh.MessageId, vh.RequestId, vh.RequestBy, vh.VoidBy, vh.Usernames, s.CreditSiteLst, s.DepositSiteLst
-	FROM #VoidingHistory vh
-		INNER JOIN CTE_Site s ON vh.MessageId = s.MessageId
+	SELECT m.MessageId, r.RequestIDLst, r.RquestByLst, r.VoidByLst, s.Usernames, s.CreditSiteLst, s.DepositSiteLst, m.MinWinlostdate, m.MaxWinlostdate
+	FROM CTE_Message m
+		INNER JOIN CTE_Site s ON s.MessageId = m.MessageId
+		LEFT JOIN CTE_RequestInfo r ON r.MessageId = m.MessageId
 
 	DROP TABLE #MessageLst
 	DROP TABLE #VoidingHistory

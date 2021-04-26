@@ -9,7 +9,7 @@ AS
 /*
 	Created: 20210419@Malcolm
 	Task: ChatBot - Get Message List of Voiding Abnormal Account from special delete site
-	DB: DBACC.bodb02
+	DB: DBMSG.bodb_Message
 
 	Revisions:
 		- 20210419@Malcolm: Initialize SP [RedmineID: #152175]

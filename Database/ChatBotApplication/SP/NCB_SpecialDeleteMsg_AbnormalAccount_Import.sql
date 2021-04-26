@@ -12,8 +12,8 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalAcco
     Params    :
       - @MessageHeader
 							[  
-								{ "MessageID":885128, "MsgContentsType":101, "RequestID":"1001", "RequestBy":"Patrick", "VoidBy":"Starix", "CreditSiteLst":"CN88,BEST-ODDS", "DepositSiteLst":"12BET,Haifa" , "Content_en" : "en", "Content_sc" : "sc", "MinWinlostDate" : "2021-01-01", "MaxWinlostDate" : "2021-04-02", "UsernameLst" : "Malcoln1"}
-								,{ "MessageID":885131, "MsgContentsType":102, "RequestID":"1003", "RequestBy":"Patrick", "VoidBy":"Starix", "CreditSiteLst":"CN88,BEST-ODDS", "DepositSiteLst":"12BET,Haifa", "Content_en" : "en", "Content_sc" : "sc", "MinWinlostDate" : "2021-01-01", "MaxWinlostDate" : "2021-04-02", "UsernameLst" : "Malcoln1,m2"}
+								{ "MessageID":885128, "MsgContentsType":101, "RequestIDLst":"1001", "RequestByLst":"Patrick", "VoidByLst":"Starix", "CreditSiteLst":"CN88,BEST-ODDS", "DepositSiteLst":"12BET,Haifa" , "Content_en" : "en", "Content_sc" : "sc", "MinWinlostDate" : "2021-01-01", "MaxWinlostDate" : "2021-04-02", "UsernameLst" : "Malcoln1"}
+								,{ "MessageID":885131, "MsgContentsType":102, "RequestIDLst":"1003", "RequestByLst":"Patrick", "VoidByLst":"Starix", "CreditSiteLst":"CN88,BEST-ODDS", "DepositSiteLst":"12BET,Haifa", "Content_en" : "en", "Content_sc" : "sc", "MinWinlostDate" : "2021-01-01", "MaxWinlostDate" : "2021-04-02", "UsernameLst" : "Malcoln1,m2"}
 							]
 
 	Revisions:
@@ -68,9 +68,9 @@ NCB_SpecialDeleteMsg_AbnormalAccount_Import:BEGIN
     MessageID INT,
     IsTest TINYINT,
     MsgContentsType INT,
-    RequestID INT,
-    RequestBy TEXT,
-    VoidBy TEXT,
+    RequestIDlst TEXT,
+    RequestByLst TEXT,
+    VoidByLst TEXT,
     CreditSiteLst TEXT,
     DepositSiteLst TEXT,
     Content_en TEXT,
@@ -87,14 +87,14 @@ NCB_SpecialDeleteMsg_AbnormalAccount_Import:BEGIN
 
   SET iLoop = 0;
   WHILE (JSON_EXTRACT(messageHeader, CONCAT('$[',iLoop, '].MessageID')) IS NOT NULL) DO
-		INSERT INTO tmp_MsgHeader(MessageID, IsTest, MsgContentsType, RequestID, RequestBy, VoidBy, CreditSiteLst, DepositSiteLst, Content_en, Content_cs, MinWinlostDate, MaxWinlostDate, UsernameLst, CheckMsg)
+		INSERT INTO tmp_MsgHeader(MessageID, IsTest, MsgContentsType, RequestIDLst, RequestByLst, VoidByLst, CreditSiteLst, DepositSiteLst, Content_en, Content_cs, MinWinlostDate, MaxWinlostDate, UsernameLst, CheckMsg)
       VALUES (
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MessageID'))),
         JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].IsTest')),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MsgContentsType'))),
-        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].RequestID'))),
-        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].RequestBy'))),
-        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].VoidBy'))),
+        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].RequestIDLst'))),
+        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].RequestByLst'))),
+        JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].VoidByLst'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].CreditSiteLst'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].DepositSiteLst'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_en'))),
@@ -112,7 +112,7 @@ NCB_SpecialDeleteMsg_AbnormalAccount_Import:BEGIN
   #Update Content_Detail
   UPDATE tmp_MsgHeader
     SET Content_Detail = CONCAT(
-        'Request No.: ', RequestID
+        'Request No.: ', RequestIDLst
         , '\r\n', '\r\n'
         , 'Affected Credit sites: ', CreditSiteLst
         , '\r\n'
@@ -122,9 +122,9 @@ NCB_SpecialDeleteMsg_AbnormalAccount_Import:BEGIN
 		,'\r\n'
 		,'Member: ', UsernameLst
 		,'\r\n'
-        , 'Requested by: ', RequestBy
+        , 'Requested by: ', RequestByLst
         , '\r\n'
-        , 'Voided by: ', VoidBy
+        , 'Voided by: ', VoidByLst
         , '\r\n', '\r\n'
         , IFNULL(Content_en, '')
         , '\r\n', '\r\n'
