@@ -6,8 +6,6 @@
     using Fanex.NCB.AutoJobs.Extensions;
     using Fanex.NCB.AutoJobs.Models;
     using Fanex.NCB.Services.Interfaces;
-    using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using ONEbook.UM.Services;
 
@@ -19,9 +17,8 @@
             ISendNotificationService sendNotificationService,
             IMaintenanceService maintenanceService,
             IOptions<List<JobSetting>> jobSettings,
-            ILogger<BaseWorker> logger,
             ILogService logService)
-                : base(maintenanceService, logger, logService)
+                : base(maintenanceService, logService)
         {
             this.sendNotificationService = sendNotificationService;
             jobSetting = JobHelper.GetJobConfig(jobSettings.Value, JobConstants.SendNotification);

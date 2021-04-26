@@ -34,9 +34,19 @@
             await logger.ErrorAsync(logMessage);
         }
 
-        public void WriteLogFileInfo(string logMessage)
+        public void WriteLogFileError(string logMessage)
         {
             infoLogger.Error(logMessage);
+        }
+
+        public void WriteLogFileWarning(string logMessage)
+        {
+            infoLogger.Warn(logMessage);
+        }
+
+        public void WriteLogFileInfo(string logMessage)
+        {
+            infoLogger.Info(logMessage);
         }
     }
 }

@@ -1,21 +1,16 @@
 ﻿namespace Fanex.NCB.AutoJobs.Workers
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Models;
-    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
     using ONEbook.UM.Services;
 
     public class BaseWorker : BackgroundService
     {
         private readonly IMaintenanceService maintenanceService;
-        private readonly ILogger<BaseWorker> logger;
         private readonly ILogService logService;
 
         private Timer timer;
@@ -25,12 +20,10 @@
 
         public BaseWorker(
             IMaintenanceService maintenanceService,
-            ILogger<BaseWorker> logger,
             ILogService logService)
         {
             this.maintenanceService = maintenanceService;
             this.logService = logService;
-            this.logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -45,7 +38,8 @@
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            logger.LogInformation($"{jobSetting.JobName}: Service Starting");
+
+            logService.WriteLogFileInfo($"{jobSetting.JobName}: Service Starting");
             return base.StartAsync(cancellationToken);
         }
 
@@ -58,14 +52,14 @@
                     && (!jobSetting.HasCheckUM || !IsUM()))
                 {
                     isRunning = true;
-                    logger.LogInformation($"{jobSetting.JobName}: Doing...");
+                    logService.WriteLogFileWarning($"{jobSetting.JobName}: Doing...");
                     await ExecuteJobAsync();
-                    logger.LogInformation($"{jobSetting.JobName}: Done.");
+                    logService.WriteLogFileWarning($"{jobSetting.JobName}: Done.");
                 }
             }
             catch (Exception ex)
             {
-                logger.LogInformation($"{jobSetting.JobName}: Error - {ex}");
+                logService.WriteLogFileError($"{jobSetting.JobName}: Error - {ex}");
                 await logService.WriteExceptionSentryErrorAsync(ex);
             }
             finally
@@ -81,7 +75,7 @@
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            logger.LogInformation($"{jobSetting.JobName}: Stopping Service");
+            logService.WriteLogFileWarning($"{jobSetting.JobName}: Stopping Service");
             timer?.Change(Timeout.Infinite, 0);
 
             await base.StopAsync(cancellationToken);
@@ -89,7 +83,7 @@
 
         public override void Dispose()
         {
-            logger.LogInformation($"{jobSetting.JobName}: Disposing Service");
+            logService.WriteLogFileWarning($"{jobSetting.JobName}: Disposing Service");
             timer.Dispose();
             base.Dispose();
         }

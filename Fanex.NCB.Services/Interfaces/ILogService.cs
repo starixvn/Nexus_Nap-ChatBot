@@ -9,6 +9,10 @@
 
         Task WriteMessageSentryErrorAsync(string logMessage);
 
+        void WriteLogFileError(string logMessage);
+
+        void WriteLogFileWarning(string logMessage);
+
         void WriteLogFileInfo(string logMessage);
     }
 }
