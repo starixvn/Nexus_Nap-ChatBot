@@ -110,8 +110,8 @@
 
             #endregion ONEbookUM
 
-            services.AddScoped<Logging.ILogger, Logger>();
-            services.AddScoped<ILogService, LogServiceExtend>();
+            services.AddScoped<ILogger, Logger>();
+            services.AddSingleton<ILogService, LogServiceExtend>();
 
             services.AddHttpClient();
             services.AddScoped<IBaseService, BaseService>();
