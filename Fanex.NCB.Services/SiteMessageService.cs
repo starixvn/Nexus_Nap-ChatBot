@@ -2,13 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-    using System.Xml.Serialization;
     using Fanex.NCB.Criteria.SiteMessage;
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Extensions;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.SiteMessage;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
@@ -94,16 +93,10 @@
         private async Task InsertMessageHistory(IEnumerable<SiteMessageDetail> messageDetails)
         {
             var msgHistory = messageDetails.Select(x => new MessageHistory { MessageID = x.MessageID, TargetID = x.TargetID }).ToList();
-            var serializer = new XmlSerializer(typeof(List<MessageHistory>),
-                                   new XmlRootAttribute("root"));
-
-            var stream = new StringWriter();
-            serializer.Serialize(stream, msgHistory);
-
             var command = new InsertMessageHistoryCommand
             {
                 JobIdentify = SiteMessageJobIdentify,
-                MessageIDLst = stream.ToString(),
+                MessageIDLst = XmlHelper.Serialize(msgHistory),
                 Environment = Environment
             };
 

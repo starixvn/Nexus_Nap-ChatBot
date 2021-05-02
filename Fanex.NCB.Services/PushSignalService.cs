@@ -43,7 +43,7 @@
                 httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
-                var response = await httpClient.PostAsync(url, new FormUrlEncodedContent(notificationData));
+                using var response = await httpClient.PostAsync(url, new FormUrlEncodedContent(notificationData));
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -68,7 +68,7 @@
                 httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
-                var response = await httpClient.PostAsync(url, new FormUrlEncodedContent(notificationData));
+                using var response = await httpClient.PostAsync(url, new FormUrlEncodedContent(notificationData));
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -86,7 +86,7 @@
             httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
-            var response = await httpClient.PostAsync(url, new StringContent(string.Empty));
+            using var response = await httpClient.PostAsync(url, new StringContent(string.Empty));
 
             if (!response.IsSuccessStatusCode)
             {
@@ -104,7 +104,7 @@
             };
 
             var httpClient = httpClientFactory.CreateClient();
-            var response = await httpClient.PostAsync(url, new FormUrlEncodedContent(authData));
+            using var response = await httpClient.PostAsync(url, new FormUrlEncodedContent(authData));
             var responseData = await response.Content.ReadAsStringAsync();
             var token = JsonConvert.DeserializeObject<JwtToken>(responseData);
 

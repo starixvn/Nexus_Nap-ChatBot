@@ -50,7 +50,7 @@
 
             var url = new Uri($"{botSettings.Value.BotDomain}{botSettings.Value.BotServiceUrl}");
 
-            var content = new StringContent(messagesJson, Encoding.UTF8, "application/json");
+            using var content = new StringContent(messagesJson, Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync(url, content);
 
             return response;
@@ -66,7 +66,8 @@
             };
 
             var httpClient = httpClientFactory.CreateClient();
-            var response = await httpClient.PostAsync(url, new FormUrlEncodedContent(authData));
+            using var authDataContent = new FormUrlEncodedContent(authData);
+            using var response = await httpClient.PostAsync(url, authDataContent);
             var responseData = await response.Content.ReadAsStringAsync();
             var token = JsonConvert.DeserializeObject<ChatbotToken>(responseData);
             return token;

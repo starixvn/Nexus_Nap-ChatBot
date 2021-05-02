@@ -257,18 +257,11 @@
         }
 
         private async Task InsertToMessageChatbot(IEnumerable<MessageHistory> messages, int jobIdentity)
-        {
-            var serializer = new XmlSerializer(typeof(List<MessageHistory>),
-                                   new XmlRootAttribute("root"));
-
-            var stream = new StringWriter();
-            serializer.Serialize(stream, messages);
-            stream.Close();
-            
+        {   
             var command = new InsertMessageHistoryCommand
             {
                 JobIdentify = jobIdentity,
-                MessageIDLst = stream.ToString(),
+                MessageIDLst = XmlHelper.Serialize(messages.ToList()),
                 Environment = Environment
             };
 
