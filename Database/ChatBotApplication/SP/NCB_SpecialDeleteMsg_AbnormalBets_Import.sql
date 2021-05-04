@@ -27,7 +27,8 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalBets
 SQL SECURITY DEFINER
 NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   # Variables
-	DECLARE iLoop INT;
+  DECLARE iLoop INT;
+  DECLARE jLoop INT;
   DECLARE startTime DATETIME(3);
   DECLARE finishTime DATETIME(3);
   DECLARE duration INT;
@@ -196,9 +197,12 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
 	WHERE Type = 2;
 
   /*Step 2: Parse JSON data for message template, notification type*/
-  SELECT Value INTO templateNotifcationType
+  DROP TEMPORARY TABLE IF EXISTS Tmp_templateNotifcationType;
+  CREATE TEMPORARY TABLE Tmp_templateNotifcationType (ID INT AUTO_INCREMENT ,templateNotifcationTypeValue JSON, PRIMARY KEY (ID));
+  INSERT INTO Tmp_templateNotifcationType (templateNotifcationTypeValue)
+  SELECT Value 
     FROM SystemSetting
-    WHERE ID = 9;
+    WHERE ID IN (9, 20);
 
   DROP TEMPORARY TABLE IF EXISTS tmp_MsgContentTypeTemplate;
   CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgContentTypeTemplate(
@@ -211,20 +215,24 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     StatusID TINYINT UNSIGNED,
     Status VARCHAR(10)
   );
-
-  SET iLoop = 0;
-  WHILE (JSON_EXTRACT(templateNotifcationType, CONCAT('$[',iLoop, '].MsgContentsType')) IS NOT NULL) DO
-    INSERT INTO tmp_MsgContentTypeTemplate(MsgContentsType, NotificationTypeID, NotificationTemplateID, IsTest)
-      VALUES (
-			JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].MsgContentsType'))),
-      JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTypeID'))),
-      JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTemplateID'))),
-      JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].IsTest')))
-		);
-
-    SET iLoop := iLoop + 1;
-    END WHILE;
-
+ 
+  SET jLoop = 1;
+  WHILE (EXISTS(SELECT 1 FROM Tmp_templateNotifcationType WHERE ID = jLoop)) DO
+	 SET iLoop = 0;
+     SELECT templateNotifcationTypeValue INTO templateNotifcationType FROM Tmp_templateNotifcationType WHERE ID = jLoop;
+	 WHILE (JSON_EXTRACT(templateNotifcationType, CONCAT('$[',iLoop, '].MsgContentsType')) IS NOT NULL) DO
+		 INSERT INTO tmp_MsgContentTypeTemplate(MsgContentsType, NotificationTypeID, NotificationTemplateID, IsTest)
+		   VALUES (
+				 JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].MsgContentsType'))),
+				 JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTypeID'))),
+				 JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTemplateID'))),
+				 JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].IsTest')))
+			);
+		 SET iLoop := iLoop + 1;
+      END WHILE;
+	SET jLoop := jLoop + 1;
+  END WHILE;
+ 
   # Update Default status: if IsTest=1 then 'Draft', else 'Planned'
   UPDATE tmp_MsgContentTypeTemplate
     SET StatusID = CASE WHEN IsTest = 1 THEN DRAFT_NOTIFICATION_STATUSID ELSE PLANNED_NOTIFICATION_STATUSID END,
