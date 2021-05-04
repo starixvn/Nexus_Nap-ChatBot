@@ -76,6 +76,7 @@ BEGIN
 		FROM dbo.TicketVoiding_RequestDetail d WITH(NOLOCK)
 		WHERE d.RequestId = vh.RequestId
 	) l(UsernameLst)
+	WHERE vh.IssueTypeId = 13
 
 	-- Request Info
 	BEGIN
@@ -230,6 +231,7 @@ BEGIN
 		)
 		SELECT
 			r.MessageID
+			,r.IssueTypeId
 			, CONVERT(BIT, ISNULL(s.IsTest, 1)) AS IsTest
 			, t.TotalTickets
 			, ISNULL(r.RequestIDLst, '') RequestIDLst
