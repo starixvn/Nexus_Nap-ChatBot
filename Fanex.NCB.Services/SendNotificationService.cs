@@ -90,13 +90,6 @@
             return notifications;
         }
 
-        private static IList<SendMessageResult> ConvertJsonResponse(string json)
-        {
-            var messages = JsonConvert.DeserializeObject<List<SendMessageResult>>(json);
-
-            return messages ?? new List<SendMessageResult>();
-        }
-
         private static IEnumerable<NotificationRecipient> GetDistinctChatGroupConversationId(IEnumerable<NotificationRecipient> recipients)
         {
             var cloneRecipients = new List<NotificationRecipient>(recipients);
@@ -125,12 +118,9 @@
 
                 if (response.IsSuccessStatusCode && response.StatusCode.Equals(HttpStatusCode.OK))
                 {
-                    var responseData = await response.Content.ReadAsStringAsync();
-                    var responseMessages = ConvertJsonResponse(responseData);
-
-                    if (responseMessages.Any())
+                    if (response.NotificationMessageResult.Any())
                     {
-                        await UpdateStatusAfterSendNotification(originRecipients, responseMessages);
+                        await UpdateStatusAfterSendNotification(originRecipients, response.NotificationMessageResult);
                     }
                     else
                     {
@@ -140,7 +130,7 @@
                 else
                 {
                     await UpdateFailedStatusForBatch(recipients, originRecipients, $"Status Code: { response.StatusCode}");
-                    await logService.WriteMessageSentryErrorAsync($"Send Message fail: {JsonConvert.SerializeObject(response)}");
+                    await logService.WriteMessageSentryErrorAsync($"Send Message fail - Status Code: {response.StatusCode}");
                 }
             }
             catch (Exception exception)

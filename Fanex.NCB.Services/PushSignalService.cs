@@ -47,7 +47,7 @@
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    await WriteLog(response);
+                    await logger.ErrorAsync($"Send OnInsertNotification fail - Status Code: {response.StatusCode}");
                 }
             }
         }
@@ -72,7 +72,7 @@
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    await WriteLog(response);
+                    await logger.ErrorAsync($"Send OnUpdateNotificationStatus fail - Status Code: {response.StatusCode}");
                 }
             }
         }
@@ -90,7 +90,7 @@
 
             if (!response.IsSuccessStatusCode)
             {
-                await WriteLog(response);
+                await logger.ErrorAsync($"Send OnHasNewErrNotifications fail - Status Code: {response.StatusCode}");
             }
         }
 
@@ -104,18 +104,12 @@
             };
 
             var httpClient = httpClientFactory.CreateClient();
-            using var response = await httpClient.PostAsync(url, new FormUrlEncodedContent(authData));
+            using var authDataContent = new FormUrlEncodedContent(authData);
+            using var response = await httpClient.PostAsync(url, authDataContent);
             var responseData = await response.Content.ReadAsStringAsync();
             var token = JsonConvert.DeserializeObject<JwtToken>(responseData);
 
             return token;
-        }
-
-        private async Task WriteLog(HttpResponseMessage response)
-        {
-
-            var logMessage = JsonConvert.SerializeObject(response.Content);
-            await logger.ErrorAsync(logMessage);
         }
     }
 }

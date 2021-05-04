@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
-    using System.Text;
+    using System.Net.Http.Json;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models;
@@ -14,7 +14,6 @@
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Serialization;
 
     public class ChatbotService : IChatbotService
     {
@@ -35,14 +34,10 @@
             this.notifyChatGroupOptions = notifyChatGroupOptions;
         }
 
-        public async Task<HttpResponseMessage> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages)
+        public async Task<NotificationMessageResponse> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages)
         {
+            var notificationMessageResponse = new NotificationMessageResponse();
             var token = await GetTokenAsync();
-            var messagesJson = JsonConvert.SerializeObject(messages,
-                new JsonSerializerSettings
-                {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                });
 
             var httpClient = httpClientFactory.CreateClient();
             httpClient.DefaultRequestHeaders.Authorization =
@@ -50,10 +45,19 @@
 
             var url = new Uri($"{botSettings.Value.BotDomain}{botSettings.Value.BotServiceUrl}");
 
-            using var content = new StringContent(messagesJson, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync(url, content);
+            using (var response = await httpClient.PostAsJsonAsync(url, messages))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseData = await response.Content.ReadAsStringAsync();
+                    notificationMessageResponse.NotificationMessageResult =
+                            JsonConvert.DeserializeObject<List<SendMessageResult>>(responseData);
+                    notificationMessageResponse.IsSuccessStatusCode = true;
+                    notificationMessageResponse.StatusCode = response.StatusCode;
+                }
+            }
 
-            return response;
+            return notificationMessageResponse;
         }
 
         private async Task<ChatbotToken> GetTokenAsync()
