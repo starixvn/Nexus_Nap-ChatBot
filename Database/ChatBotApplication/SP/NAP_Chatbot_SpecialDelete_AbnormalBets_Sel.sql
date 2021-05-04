@@ -88,7 +88,7 @@ BEGIN
 			RequestBy		NVARCHAR(200), 
 			VoidBy			NVARCHAR(50), 
 			Reason			NVARCHAR(150), 
-			IssueTypeId		TINYINT,
+			[Type]			TINYINT,
 			MinWinlostdate	DATETIME,
 			MaxWinlostdate	DATETIME
 		)
@@ -106,6 +106,8 @@ BEGIN
 						INNER JOIN dbo.TicketVoiding_SubIssueType rs WITH (NOLOCK) ON rqd.SubIssueTypeId = rs.SubIssueTypeId
 					WHERE rq.RequestId = rqd.RequestId
 					FOR XML PATH('')), 1, 2, '') AS ReasonLst
+			rs.SubIssueTypeName AS Reason, 
+			CASE WHEN rq.IssueTypeId IN (11) THEN 1 WHEN rq.IssueTypeId IN (13) THEN 2 ELSE NULL END AS [Type]
 		FROM CTE_Request vh
 			INNER JOIN dbo.TicketVoiding_Request rq WITH (NOLOCK) ON rq.RequestId = vh.RequestId
 			LEFT JOIN dbo.Customer rb WITH (NOLOCK) ON rq.UserId = rb.custid
@@ -160,7 +162,7 @@ BEGIN
 		(
 			SELECT
 				r1.MessageId
-				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(20), r2.RequestId)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 2, '') AS RequestIdLst
+				,MAX(r1.Type) AS [Type]
 				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(200), r2.DecidedBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 2, '') AS DecidedByLst
 				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(50), r2.RequestBy)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 2, '') AS RequestByLst
 				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(50), r2.VoidBy)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 2, '') AS VoidByLst
@@ -231,7 +233,7 @@ BEGIN
 		)
 		SELECT
 			r.MessageID
-			,r.IssueTypeId
+			,r.[Type]
 			, CONVERT(BIT, ISNULL(s.IsTest, 1)) AS IsTest
 			, t.TotalTickets
 			, ISNULL(r.RequestIDLst, '') RequestIDLst
@@ -244,10 +246,10 @@ BEGIN
 			, ISNULL(e.LeagueName, '') LeagueName
 			, ISNULL(e.HomeName, '') HomeName
 			, ISNULL(e.AwayName, '') AwayName
-			, e.HalfTimeHomeScore
-			, e.HalfTimeAwayScore
-			, e.FullTimeHomeScore
-			, e.FullTimeAwayScore
+			, ISNULL(e.HalfTimeHomeScore, '') AS HalfTimeHomeScore
+			, ISNULL(e.HalfTimeAwayScore, '') AS HalfTimeAwayScore
+			, ISNULL(e.FullTimeHomeScore, '') AS FullTimeHomeScore
+			, ISNULL(e.FullTimeAwayScore, '') AS FullTimeAwayScore
 			, ISNULL(b.TypeNameLst, '') TypeNameLst
 			, ISNULL(s.CreditSiteLst, '') CreditSiteLst
 			, ISNULL(s.DepositSiteLst, '') DepositSiteLst
