@@ -13,14 +13,15 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalBets
     Params    :
       - @MessageHeader
 							[  
-								{ "MessageID":885128, "MsgContentsType":103, "RequestIDLst":"101,102", "DecidedByLst":"Patrick,Starix", "RequestByLst":"Patrick,Starix", "VoidByLst":"Starix", "ReasonLst":"Group Betting,Others", "KickOffTime":"2020-02-12 03:00:00", "LeagueName":"ENG", "HomeName":"MC", "AwayName":"MU", "HalfTimeHomeScore":1, "HalfTimeAwayScore":0, "FullTimeHomeScore":1, "FullTimeAwayScore":1, "TypeNameLst":"Handicap,Over/Under", "TotalTickets": 1, "CreditSiteLst":"CN88,NV88", "DepositSiteLst":"12BET,Haifa" }
-								, { "MessageID":885131, "MsgContentsType":103, "RequestIDLst":"103,104", "DecidedByLst":"Patrick,Starix", "RequestByLst":"Patrick,Starix", "VoidByLst":"Starix", "ReasonLst":"Group Betting,Others", "KickOffTime":"2020-02-12 03:00:00", "LeagueName":"ENG", "HomeName":"MC", "AwayName":"MU", "HalfTimeHomeScore":1, "HalfTimeAwayScore":0, "FullTimeHomeScore":1, "FullTimeAwayScore":1, "TypeNameLst":"Moneyline", "TotalTickets": 10, "CreditSiteLst":"CN88,NV88", "DepositSiteLst":"12BET,Haifa" }
+								{ "MessageID":885128, "MsgContentsType":103, "RequestIDLst":"101,102", "DecidedByLst":"Patrick,Starix", "RequestByLst":"Patrick,Starix", "VoidByLst":"Starix", "ReasonLst":"Group Betting,Others", "KickOffTime":"2020-02-12 03:00:00", "LeagueName":"ENG", "HomeName":"MC", "AwayName":"MU", "HalfTimeHomeScore":1, "HalfTimeAwayScore":0, "FullTimeHomeScore":1, "FullTimeAwayScore":1, "TypeNameLst":"Handicap,Over/Under", "TotalTickets": 1, "CreditSiteLst":"CN88,NV88", "DepositSiteLst":"12BET,Haifa", "MinWinlostDate" : "2021-01-01", "MaxWinlostDate" : "2021-04-02", "UsernameLst" : "Malcoln1" IssueTypeId="11"}
+								, { "MessageID":885131, "MsgContentsType":103, "RequestIDLst":"103,104", "DecidedByLst":"Patrick,Starix", "RequestByLst":"Patrick,Starix", "VoidByLst":"Starix", "ReasonLst":"Group Betting,Others", "KickOffTime":"2020-02-12 03:00:00", "LeagueName":"ENG", "HomeName":"MC", "AwayName":"MU", "HalfTimeHomeScore":1, "HalfTimeAwayScore":0, "FullTimeHomeScore":1, "FullTimeAwayScore":1, "TypeNameLst":"Moneyline", "TotalTickets": 10, "CreditSiteLst":"CN88,NV88", "DepositSiteLst":"12BET,Haifa", "MinWinlostDate" : "2021-01-01", "MaxWinlostDate" : "2021-04-02", "UsernameLst" : "Malcoln1" IssueTypeId="13"}
 							]
 
     Revisions :
       - 20200214@Percy: Initiliaze SP [RedmineID: #127944]
       - 2020603@Oliver: Add MaxMessageID param [RedmineID: #135312]
       - 2020610@Oliver: remove MaxMessageID [RedmineID: #135686]
+	  - 20210405@Malcolm: Import data for voiding abnormal accounts [RedmineId : #152175] 
   */
 )
 SQL SECURITY DEFINER
@@ -93,13 +94,17 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     Content_Detail TEXT,
     CheckMsg TEXT,
     CheckMsgDetail TEXT,
+	MinWinlostDate DATETIME(3),
+	MaxWinlostDate DATETIME(3),
+	UsernameLst TEXT,
+	IssueTypeId	INT,
     PRIMARY KEY (Id),
     UNIQUE INDEX Index_MessageID(MessageID)
     );
 
   SET iLoop = 0;
   WHILE (JSON_EXTRACT(messageHeader, CONCAT('$[',iLoop, '].MessageID')) IS NOT NULL) DO
-		INSERT INTO tmp_MsgHeader(MessageID, IsTest, MsgContentsType, RequestIDLst, DecidedByLst, RequestByLst, VoidByLst, ReasonLst, KickOffTime, LeagueName, HomeName, AwayName, HalfTimeHomeScore, HalfTimeAwayScore, FullTimeHomeScore, FullTimeAwayScore, TypeNameLst, TotalTickets, CreditSiteLst, DepositSiteLst, Content_en, Content_cs, CheckMsg)
+		INSERT INTO tmp_MsgHeader(MessageID, IsTest, MsgContentsType, RequestIDLst, DecidedByLst, RequestByLst, VoidByLst, ReasonLst, KickOffTime, LeagueName, HomeName, AwayName, HalfTimeHomeScore, HalfTimeAwayScore, FullTimeHomeScore, FullTimeAwayScore, TypeNameLst, TotalTickets, CreditSiteLst, DepositSiteLst, Content_en, Content_cs, MinWinlostDate, MaxWinlostDate, UsernameLst, CheckMsg)
       VALUES (
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MessageID'))),
         JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].IsTest')),
@@ -123,13 +128,15 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].DepositSiteLst'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_en'))),
         JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].Content_cs'))),
-        ''
+		JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MinWinlostDate'))),
+		JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].MaxWinlostDate'))),
+		JSON_UNQUOTE(JSON_EXTRACT(messageHeader, CONCAT('$[', iLoop, '].UsernameLst'))),
+        ''	
       );
     
     SET iLoop := iLoop + 1;
     END WHILE;
-
-
+    
   #Update Content_Detail
   UPDATE tmp_MsgHeader
     SET Content_Detail = CONCAT(
@@ -162,7 +169,30 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
         , IFNULL(Content_en, '')
         , '\r\n', '\r\n'
         , IFNULL(Content_cs, '')
-        );
+        )
+	WHERE IssueTypeId = 11;
+    
+    UPDATE tmp_MsgHeader
+    SET Content_Detail = CONCAT(
+        'Request No.: ', RequestIDLst
+        , '\r\n', '\r\n'
+        , 'Affected Credit sites:', CreditSiteLst
+        , '\r\n'
+        , 'Affected Licensee sites:', DepositSiteLst
+        , '\r\n', '\r\n'
+        , 'Event Date: ', DATE_FORMAT(MinWinlostDate,'%b %d, %Y'),' - ',DATE_FORMAT(MaxWinlostDate,'%b %d, %Y')
+        , '\r\n'
+        ,'Member: ', UsernameLst
+        , '\r\n'
+        , 'Requested by: ', RequestByLst
+        , '\r\n'
+        , 'Voided by: ', VoidByLst
+        , '\r\n', '\r\n'
+        , IFNULL(Content_en, '')
+        , '\r\n', '\r\n'
+        , IFNULL(Content_cs, '')
+        )
+	WHERE IssueTypeId = 13;
 
   /*Step 2: Parse JSON data for message template, notification type*/
   SELECT Value INTO templateNotifcationType

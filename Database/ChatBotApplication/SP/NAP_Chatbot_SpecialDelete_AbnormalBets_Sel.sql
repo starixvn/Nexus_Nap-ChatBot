@@ -21,9 +21,9 @@ AS
 	Param's Explanation:
 		@MessageIDLst:
 			<root>
-				<r MessageID=1 RequestID=1 />
-				<r MessageID=1 RequestID=2 />
-				<r MessageID=3 RequestID=2 />
+				<r MessageID="1" RequestID="1"/>
+				<r MessageID="1" RequestID="2"/>
+				<r MessageID="3" RequestID="2"/>
 			</root>
 */
 
@@ -38,20 +38,59 @@ BEGIN
 	FROM @MessageIDLst.nodes('root/r') AS t(c)
 	OPTION (OPTIMIZE FOR (@MessageIDLst = NULL))
 
+	CREATE TABLE #VoidingHistory 
+	(
+		VoidingHistoryId	INT, 
+		RequestId			INT, 
+		MessageId			INT, 
+		ReasonId			INT, 
+		VoidById			INT, 
+		TransId				BIGINT, 
+		MinWinlostdate		DATETIME, 
+		MaxWinlostdate		DATETIME, 
+		UsernamLst			NVARCHAR(MAX),
+		IssueTypeId			TINYINT
+	)
 
-	CREATE TABLE #VoidingHistory (VoidingHistoryId INT, RequestId INT, MessageId INT, ReasonId INT, VoidById INT, TransId BIGINT)
-	INSERT INTO #VoidingHistory (VoidingHistoryId, RequestId, MessageId, ReasonId, VoidById, TransId)
-	SELECT vh.VoidingHistoryId, vh.RequestId, vh.MessageId, vh.ReasonId, vh.UserId AS VoidById, t.TransId
+	--Get data for Abnormal Bets
+	INSERT INTO #VoidingHistory (VoidingHistoryId, RequestId, MessageId, ReasonId, VoidById, TransId, MinWinlostdate, MaxWinlostdate)
+	SELECT vh.VoidingHistoryId, vh.RequestId, vh.MessageId, vh.ReasonId, vh.UserId AS VoidById, t.TransId, vh.MinWinlostdate, vh.MaxWinlostdate
 	FROM dbo.TicketVoiding_VoidingHistory vh WITH (NOLOCK)
-		CROSS APPLY (
-			SELECT val AS TransId FROM dbo.strSplit(vh.TransIds, ',')
+		OUTER APPLY (
+			SELECT val AS TransId FROM dbo.strSplit(vh.TransIds, ',') WHERE val <> ''
 		) t
-	WHERE EXISTS (SELECT 1 FROM #MessageLst m WHERE vh.MessageId = m.MessageId AND vh.RequestId = m.RequestId)
+	WHERE EXISTS (SELECT 1 FROM #MessageLst m WHERE vh.MessageId = m.MessageId AND vh.RequestId = m.RequestId) 
 		AND vh.StatusId = 2
+
+	UPDATE vh
+		SET vh.IssueTypeId = r.IssueTypeId
+	FROM #VoidingHistory vh
+		INNER JOIN dbo.TicketVoiding_Request r WITH(NOLOCK) ON r.RequestId = vh.RequestId
+
+	UPDATE vh
+		SET vh.UsernamLst = l.UsernameLst
+	FROM #VoidingHistory vh
+	CROSS APPLY
+	(
+		SELECT TOP 1 d.Usernames
+		FROM dbo.TicketVoiding_RequestDetail d WITH(NOLOCK)
+		WHERE d.RequestId = vh.RequestId
+	) l(UsernameLst)
 
 	-- Request Info
 	BEGIN
 		DECLARE @tblRequestInfo TABLE (MessageId INT, RequestId INT, DecidedBy NVARCHAR(50), RequestBy NVARCHAR(200), VoidBy NVARCHAR(50), ReasonLst NVARCHAR(MAX))
+		(
+			MessageId		INT, 
+			RequestId		INT, 
+			DecidedBy		NVARCHAR(50), 
+			RequestBy		NVARCHAR(200), 
+			VoidBy			NVARCHAR(50), 
+			Reason			NVARCHAR(150), 
+			IssueTypeId		TINYINT,
+			MinWinlostdate	DATETIME,
+			MaxWinlostdate	DATETIME
+		)
 		
 		;WITH CTE_Request AS
 		(
@@ -70,7 +109,9 @@ BEGIN
 			INNER JOIN dbo.TicketVoiding_Request rq WITH (NOLOCK) ON rq.RequestId = vh.RequestId
 			LEFT JOIN dbo.Customer rb WITH (NOLOCK) ON rq.UserId = rb.custid
 			LEFT JOIN dbo.Customer vb WITH (NOLOCK) ON vh.VoidById = vb.custid
-		WHERE rq.IssueTypeId IN (11, 15) -- Abnormal Bets, AB (real member)
+		WHERE rq.IssueTypeId IN (11, 13, 15) -- Abnormal Bets, Abnormal Accounts, AB (real member)
+
+		--Get Max
 	END
 
 	-- Event Info
@@ -93,6 +134,7 @@ BEGIN
 			INNER JOIN dbo.League l WITH (NOLOCK) ON rd.LeagueId = l.LeagueID
 			INNER JOIN dbo.Team h WITH (NOLOCK) ON rd.HomeId = h.TeamId
 			INNER JOIN dbo.Team a WITH (NOLOCK) ON rd.AwayId = a.TeamId
+		WHERE vh.IssueTypeId IN (11, 15) -- Abnormal Bets
 	END
 
 	-- Ticket Info
@@ -106,6 +148,7 @@ BEGIN
 				FROM dbo.bettrans b WITH (NOLOCK)
 				WHERE b.transid = vh.TransId
 			) b
+		WHERE vh.IssueTypeId IN (11, 15)
 		GROUP BY vh.MessageId, b.recommend, b.bettype, ISNULL(b.liveindicator, 0)
 	END
 
@@ -127,7 +170,7 @@ BEGIN
 		-- Total tickets
 		,CTE_TotalTickets AS
 		(
-			SELECT MessageId, COUNT(DISTINCT TransId) AS TotalTickets
+			SELECT MessageId, COUNT(DISTINCT TransId) AS TotalTickets, MAX(MaxWinlostdate) AS MaxWinlostdate, MIN(MinWinlostdate) AS MinWinlostdate
 			FROM #VoidingHistory
 			GROUP BY MessageId
 		)
@@ -148,10 +191,19 @@ BEGIN
 			FROM CTE_Bettype b1
 			GROUP BY b1.MessageId
 		)
-		-- Site
-		,CTE_Site AS
+		--Info of Username (Abnormal Accounts)
+		,CTE_AbnornamlAccounts_Site AS
 		(
-			SELECT DISTINCT t.MessageId, CASE WHEN s.custid IS NULL AND c.site NOT IN ('CN88', '789y') THEN 'NV88' ELSE c.site END AS site, CASE WHEN s.custid IS NULL THEN 0 ELSE 1 END AS isDeposit
+			SELECT vh.MessageId, f.val AS Username ,c.site, CASE WHEN s.custid IS NULL THEN 0 ELSE 1 END AS isDeposit, CASE WHEN c.currency = 20 THEN 1 ELSE 0 END AS IsTest
+			FROM #VoidingHistory vh
+			CROSS APPLY strSplit(vh.UsernamLst, ',') f
+				INNER JOIN dbo.Customer c WITH(NOLOCK) ON c.username = CONVERT(VARCHAR(30), f.val)
+				LEFT JOIN dbo.Dep_CustSuper s WITH(NOLOCK) ON s.custid = c.srecommend
+			WHERE vh.IssueTypeId = 13
+		)
+		,CTE_AbnormalBets_Site AS
+		(
+			SELECT t.MessageId, CASE WHEN s.custid IS NULL AND c.site NOT IN ('CN88', '789y') THEN 'NV88' ELSE c.site END AS site, CASE WHEN s.custid IS NULL THEN 0 ELSE 1 END AS isDeposit, CASE WHEN c.currency = 20 THEN 1 ELSE 0 END AS IsTest
 			FROM @tblRecommendBettype t
 				INNER JOIN dbo.Customer c WITH (NOLOCK) ON t.recommend = c.custid
 				LEFT JOIN dbo.Dep_CustSuper s WITH (NOLOCK) ON c.srecommend = s.custid
@@ -162,25 +214,30 @@ BEGIN
 				s1.MessageId
 				,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_Site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 0 FOR XML PATH ('')), 1, 2, '') AS CreditSiteLst
 				,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_Site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 1 FOR XML PATH ('')), 1, 2, '') AS DepositSiteLst
-			FROM CTE_Site s1
+				,'' AS UsernameLst
+				,MAX(IsTest) AS IsTest		
+			FROM CTE_AbnormalBets_Site s1
 			GROUP BY s1.MessageId
-		)
-		,CTE_IsTest AS
-		(
-			SELECT DISTINCT t.MessageId, 0 AS IsTest
-			FROM @tblRecommendBettype t
-				INNER JOIN dbo.Customer c WITH (NOLOCK) ON t.recommend = c.custid
-			WHERE c.currency <> 20
+			UNION ALL
+			SELECT
+				s1.MessageId
+				,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_AbnornamlAccounts_Site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 0 FOR XML PATH ('')), 1, 1, '') AS CreditSiteLst
+				,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_AbnornamlAccounts_Site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 1 FOR XML PATH ('')), 1, 1, '') AS DepositSiteLst
+				,STUFF((SELECT DISTINCT ',' + s2.Username FROM CTE_AbnornamlAccounts_Site s2 WHERE s2.MessageId = s1.MessageId FOR XML PATH('')),1,1,'') AS UsernameLst
+				,MAX(IsTest) AS IsTest		
+			FROM CTE_AbnornamlAccounts_Site s1
+			GROUP BY s1.MessageId
 		)
 		SELECT
 			r.MessageID
-			, CONVERT(BIT, ISNULL(i.IsTest, 1)) AS IsTest
+			, CONVERT(BIT, ISNULL(s.IsTest, 1)) AS IsTest
 			, t.TotalTickets
 			, ISNULL(r.RequestIDLst, '') RequestIDLst
 			, ISNULL(r.DecidedByLst, '') DecidedByLst
 			, ISNULL(r.RequestByLst, '') RequestByLst
 			, ISNULL(r.VoidByLst, '') VoidByLst
 			, ISNULL(r.ReasonLst, '') ReasonLst
+			, ISNULL(s.UsernameLst, '') AS UsernameLst
 			, ISNULL(e.KickOffTime, '') KickOffTime
 			, ISNULL(e.LeagueName, '') LeagueName
 			, ISNULL(e.HomeName, '') HomeName
@@ -193,11 +250,11 @@ BEGIN
 			, ISNULL(s.CreditSiteLst, '') CreditSiteLst
 			, ISNULL(s.DepositSiteLst, '') DepositSiteLst
 		FROM CTE_RequestInfo r
-			INNER JOIN @tblEventInfo e ON r.MessageId = e.MessageId
-			INNER JOIN CTE_TotalTickets t ON r.MessageId = t.MessageId
-			INNER JOIN CTE_MsgBettype b ON r.MessageId = b.MessageId
-			INNER JOIN CTE_MsgSite s ON r.MessageId = s.MessageId
-			LEFT JOIN CTE_IsTest i ON r.MessageId = i.MessageId
+			LEFT JOIN @tblEventInfo e ON r.MessageId = e.MessageId
+			LEFT JOIN CTE_TotalTickets t ON r.MessageId = t.MessageId
+			LEFT JOIN CTE_MsgBettype b ON r.MessageId = b.MessageId
+			LEFT JOIN CTE_MsgSite s ON r.MessageId = s.MessageId
+			
 	END
 
 	DROP TABLE #MessageLst
