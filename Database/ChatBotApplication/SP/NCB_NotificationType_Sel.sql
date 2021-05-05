@@ -34,7 +34,7 @@ BEGIN
 	
 	INSERT INTO tmpNotificationTypeTable (JsonSetting)
 	SELECT Value
-	FROM SystemSetting WHERE ID IN (4, 9, 14, 20);
+	FROM SystemSetting WHERE ID IN (4, 9, 14);
 
     DROP TEMPORARY TABLE IF EXISTS tmpParseJsonTable;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmpParseJsonTable(NotificationTypeID INT);

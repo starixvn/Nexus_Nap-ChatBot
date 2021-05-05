@@ -253,6 +253,8 @@ BEGIN
 			, ISNULL(b.TypeNameLst, '') TypeNameLst
 			, ISNULL(s.CreditSiteLst, '') CreditSiteLst
 			, ISNULL(s.DepositSiteLst, '') DepositSiteLst
+			, t.MinWinlostdate
+			, t.MaxWinlostdate 
 		FROM CTE_RequestInfo r
 			LEFT JOIN @tblEventInfo e ON r.MessageId = e.MessageId
 			LEFT JOIN CTE_TotalTickets t ON r.MessageId = t.MessageId
