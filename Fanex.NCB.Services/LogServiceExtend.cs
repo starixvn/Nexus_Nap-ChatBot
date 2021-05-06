@@ -21,12 +21,20 @@
 
         public async Task WriteExceptionSentryErrorAsync(Exception exception)
         {
-            var logMessage = new LogMessage(exception.Message)
+            try
+            {
+                var logMessage = new LogMessage(exception.Message)
                        .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
                        .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
                        .ToString();
-            await logger.ErrorAsync(logMessage);
+                await logger.ErrorAsync(logMessage);
+            }
+            catch (Exception ex)
+            {
+                infoLogger.Error(ex.ToString());
+            }
+            
         }
 
         public async Task WriteMessageSentryErrorAsync(string logMessage)
