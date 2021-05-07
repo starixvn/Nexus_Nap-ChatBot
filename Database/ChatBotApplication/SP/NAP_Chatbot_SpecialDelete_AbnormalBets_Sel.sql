@@ -113,8 +113,6 @@ BEGIN
 			LEFT JOIN dbo.Customer rb WITH (NOLOCK) ON rq.UserId = rb.custid
 			LEFT JOIN dbo.Customer vb WITH (NOLOCK) ON vh.VoidById = vb.custid
 		WHERE rq.IssueTypeId IN (11, 13, 15) -- Abnormal Bets, Abnormal Accounts, AB (real member)
-
-		--Get Max
 	END
 
 	-- Event Info
@@ -194,7 +192,7 @@ BEGIN
 			FROM CTE_Bettype b1
 			GROUP BY b1.MessageId
 		)
-		--Info of Username (Abnormal Accounts)
+		--Info of User (Abnormal Accounts)
 		,CTE_AbnornamlAccounts_Site AS
 		(
 			SELECT vh.MessageId, f.val AS Username ,c.site, CASE WHEN s.custid IS NULL THEN 0 ELSE 1 END AS isDeposit, CASE WHEN c.currency = 20 THEN 1 ELSE 0 END AS IsTest
@@ -210,6 +208,11 @@ BEGIN
 			FROM @tblRecommendBettype t
 				INNER JOIN dbo.Customer c WITH (NOLOCK) ON t.recommend = c.custid
 				LEFT JOIN dbo.Dep_CustSuper s WITH (NOLOCK) ON c.srecommend = s.custid
+		),CTE_site AS
+		(
+			SELECT MessageId, Username, site, isDeposit, IsTest FROM CTE_AbnornamlAccounts_Site
+			UNION ALL 
+			SELECT MessageId, NULL AS Username, Site, isDeposit, IsTest FROM CTE_AbnormalBets_Site
 		)
 		,CTE_MsgSite AS
 		(
@@ -217,24 +220,14 @@ BEGIN
 				s1.MessageId
 				,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_Site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 0 FOR XML PATH ('')), 1, 2, '') AS CreditSiteLst
 				,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_Site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 1 FOR XML PATH ('')), 1, 2, '') AS DepositSiteLst
-				,'' AS UsernameLst
-				,MAX(IsTest) AS IsTest		
-			FROM CTE_AbnormalBets_Site s1
-			GROUP BY s1.MessageId
-			UNION ALL
-			SELECT
-				s1.MessageId
-				,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_AbnornamlAccounts_Site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 0 FOR XML PATH ('')), 1, 1, '') AS CreditSiteLst
-				,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_AbnornamlAccounts_Site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 1 FOR XML PATH ('')), 1, 1, '') AS DepositSiteLst
-				,STUFF((SELECT DISTINCT ',' + s2.Username FROM CTE_AbnornamlAccounts_Site s2 WHERE s2.MessageId = s1.MessageId FOR XML PATH('')),1,1,'') AS UsernameLst
-				,MAX(IsTest) AS IsTest		
-			FROM CTE_AbnornamlAccounts_Site s1
+				,STUFF((SELECT DISTINCT ', ' + s2.Username FROM CTE_site s2 WHERE s1.MessageId = s2.MessageId FOR XML PATH('')),1,1,'') AS UsernameLst
+				,MAX(IsTest) AS IsTest	
+			FROM CTE_site s1
 			GROUP BY s1.MessageId
 		)
 		SELECT
 			r.MessageID
-			,r.[Type]
-			, CONVERT(BIT, ISNULL(s.IsTest, 1)) AS IsTest
+			, CONVERT(BIT, s.IsTest) AS IsTest
 			, t.TotalTickets
 			, ISNULL(r.RequestIDLst, '') RequestIDLst
 			, ISNULL(r.DecidedByLst, '') DecidedByLst
@@ -246,21 +239,21 @@ BEGIN
 			, ISNULL(e.LeagueName, '') LeagueName
 			, ISNULL(e.HomeName, '') HomeName
 			, ISNULL(e.AwayName, '') AwayName
-			, ISNULL(e.HalfTimeHomeScore, '') AS HalfTimeHomeScore
-			, ISNULL(e.HalfTimeAwayScore, '') AS HalfTimeAwayScore
-			, ISNULL(e.FullTimeHomeScore, '') AS FullTimeHomeScore
-			, ISNULL(e.FullTimeAwayScore, '') AS FullTimeAwayScore
+			, e.HalfTimeHomeScore 
+			, e.HalfTimeAwayScore
+			, e.FullTimeHomeScore
+			, e.FullTimeAwayScore
 			, ISNULL(b.TypeNameLst, '') TypeNameLst
 			, ISNULL(s.CreditSiteLst, '') CreditSiteLst
 			, ISNULL(s.DepositSiteLst, '') DepositSiteLst
 			, t.MinWinlostdate
 			, t.MaxWinlostdate 
+			,r.[Type]
 		FROM CTE_RequestInfo r
 			LEFT JOIN @tblEventInfo e ON r.MessageId = e.MessageId
 			LEFT JOIN CTE_TotalTickets t ON r.MessageId = t.MessageId
 			LEFT JOIN CTE_MsgBettype b ON r.MessageId = b.MessageId
-			LEFT JOIN CTE_MsgSite s ON r.MessageId = s.MessageId
-			
+			LEFT JOIN CTE_MsgSite s ON r.MessageId = s.MessageId			
 	END
 
 	DROP TABLE #MessageLst
