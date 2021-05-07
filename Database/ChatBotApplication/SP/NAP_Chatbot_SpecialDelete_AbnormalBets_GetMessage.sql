@@ -19,7 +19,7 @@ BEGIN
 
 	SELECT DISTINCT vh.MessageId, vh.RequestId
 	FROM dbo.TicketVoiding_VoidingHistory vh WITH (NOLOCK)
-		INNER JOIN TicketVoiding_Request r WITH (NOLOCK) ON vh.RequestId = r.RequestId AND r.IssueTypeId IN (11, 15, 13) -- abnormal bet, AB (real member), Abnormal Accounts
+		INNER JOIN TicketVoiding_Request r WITH (NOLOCK) ON vh.RequestId = r.RequestId AND r.IssueTypeId IN (11, 13, 15) -- abnormal bet, Abnormal Accounts, AB (real member)
 	WHERE vh.CreatedDate >= GETDATE() - 1
 		AND vh.StatusId = 2 -- tickets void successfully
 	ORDER BY MessageId

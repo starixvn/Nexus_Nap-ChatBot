@@ -107,7 +107,7 @@ BEGIN
 					WHERE rq.RequestId = rqd.RequestId
 					FOR XML PATH('')), 1, 2, '') AS ReasonLst
 			rs.SubIssueTypeName AS Reason, 
-			CASE WHEN rq.IssueTypeId IN (11) THEN 1 WHEN rq.IssueTypeId IN (13) THEN 2 ELSE NULL END AS [Type]
+			CASE WHEN rq.IssueTypeId IN (11, 15) THEN 1 WHEN rq.IssueTypeId = 13 THEN 2 ELSE NULL END AS [Type]
 		FROM CTE_Request vh
 			INNER JOIN dbo.TicketVoiding_Request rq WITH (NOLOCK) ON rq.RequestId = vh.RequestId
 			LEFT JOIN dbo.Customer rb WITH (NOLOCK) ON rq.UserId = rb.custid
@@ -137,7 +137,7 @@ BEGIN
 			INNER JOIN dbo.League l WITH (NOLOCK) ON rd.LeagueId = l.LeagueID
 			INNER JOIN dbo.Team h WITH (NOLOCK) ON rd.HomeId = h.TeamId
 			INNER JOIN dbo.Team a WITH (NOLOCK) ON rd.AwayId = a.TeamId
-		WHERE vh.IssueTypeId IN (11, 15) -- Abnormal Bets
+		WHERE vh.IssueTypeId IN (11, 15) -- Abnormal Bets, AB (real member)
 	END
 
 	-- Ticket Info
@@ -151,7 +151,7 @@ BEGIN
 				FROM dbo.bettrans b WITH (NOLOCK)
 				WHERE b.transid = vh.TransId
 			) b
-		WHERE vh.IssueTypeId IN (11, 15)
+		WHERE vh.IssueTypeId IN (11, 15)-- Abnormal Bets, AB (real member)
 		GROUP BY vh.MessageId, b.recommend, b.bettype, ISNULL(b.liveindicator, 0)
 	END
 
