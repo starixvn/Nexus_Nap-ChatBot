@@ -2,10 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-    using System.Xml.Serialization;
     using Fanex.NCB.Criteria.SiteMessage;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Models.NotifictaionSendMessage;
@@ -257,7 +255,7 @@
         }
 
         private async Task InsertToMessageChatbot(IEnumerable<MessageHistory> messages, int jobIdentity)
-        {   
+        {
             var command = new InsertMessageHistoryCommand
             {
                 JobIdentify = jobIdentity,
