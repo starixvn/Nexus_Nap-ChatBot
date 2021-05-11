@@ -177,7 +177,7 @@
             return result.ToList();
         }
 
-        private static void MappingAbnormalBetsData(IEnumerable<Message> messages, IEnumerable<AbnormalBetsMessage> voidingHistories)
+        private static void MappingAbnormalBetsData(IEnumerable<Message> messages, IEnumerable<AbnormalMessage> voidingHistories)
         {
             if (voidingHistories.Any())
             {
@@ -210,7 +210,7 @@
             return await baseService.GetDataAsync<Message>(criteria);
         }
 
-        private async Task<IEnumerable<AbnormalBetsMessage>> GetVoidingHistory(string msgIds)
+        private async Task<IEnumerable<AbnormalMessage>> GetVoidingHistory(string msgIds)
         {
             if (!string.IsNullOrWhiteSpace(msgIds))
             {
@@ -219,13 +219,13 @@
                     MessageIdLst = msgIds
                 };
 
-                return await baseService.GetDataAsync<AbnormalBetsMessage>(criteria);
+                return await baseService.GetDataAsync<AbnormalMessage>(criteria);
             }
 
-            return new List<AbnormalBetsMessage>();
+            return new List<AbnormalMessage>();
         }
 
-        private async Task ImportAbnormalBetNotificationToChatbotDB(IEnumerable<AbnormalBetsMessage> messages,
+        private async Task ImportAbnormalBetNotificationToChatbotDB(IEnumerable<AbnormalMessage> messages,
             IEnumerable<MessageHistory> msgHistories, int maxMessageId)
         {
             if (messages.Any())

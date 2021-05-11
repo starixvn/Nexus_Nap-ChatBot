@@ -2,7 +2,7 @@
 
 namespace Fanex.NCB.Shared.Models.SpecialDeleteTicket
 {
-    public class AbnormalBetsMessage : Message
+    public class AbnormalMessage : Message
     {
         public string RequestIDLst { get; set; }
 
@@ -38,9 +38,14 @@ namespace Fanex.NCB.Shared.Models.SpecialDeleteTicket
 
         public string DepositSiteLst { get; set; }
 
+        public string UsernameLst { get; set; }
+
+        public int Type { get; set; }
+
         public bool IsTest { get; set; }
 
         public DateTime? MinWinlostDate { get; set; }
+
         public DateTime? MaxWinlostDate { get; set; }
     }
 }
