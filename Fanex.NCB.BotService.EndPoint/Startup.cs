@@ -41,7 +41,7 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc();
 
             Dictionary<string, ConnectionConfiguration> connections = Configuration
                 .GetSection("ConnectionStrings")
@@ -113,15 +113,17 @@
                 app.UseHsts();
             }
 
+            app.UseRouting();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseBotFramework();
-            app.UseMvc(routes =>
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
