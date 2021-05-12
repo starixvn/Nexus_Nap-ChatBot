@@ -164,11 +164,15 @@
                 app.UseHsts();
             }
 
+            NapClientManager
+               .UseConfig(app.ApplicationServices.GetService<INapSettings>())
+               .UseSession(app.ApplicationServices.GetService<INapSession>());
+
             app.UseHttpsRedirection();
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseSession();
-
+            app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<SignalRService>("/signalR", options =>
@@ -182,10 +186,6 @@
             });
 
             app.UseStaticFiles();
-
-            NapClientManager
-               .UseConfig(app.ApplicationServices.GetService<INapSettings>())
-               .UseSession(app.ApplicationServices.GetService<INapSession>());
-        }
+        }   
     }
 }

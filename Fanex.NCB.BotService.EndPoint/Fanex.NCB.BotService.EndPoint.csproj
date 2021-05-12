@@ -2,6 +2,7 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <LangVersion>latest</LangVersion>
+        <UserSecretsId>09022fac-ef2e-4453-8d16-926f18bff5b5</UserSecretsId>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <CodeAnalysisRuleSet>Fanex.NCB.BotService.EndPoint.ruleset</CodeAnalysisRuleSet>

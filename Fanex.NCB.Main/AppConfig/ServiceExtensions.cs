@@ -2,6 +2,7 @@
 {
     using System.Text;
     using Fanex.Data.Repository;
+    using Fanex.NAP.Client.AspNetCore.Session;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Repository;
     using Fanex.NCB.Repository.Interfaces;
@@ -43,6 +44,7 @@
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IHttpContextHelper, HttpContextHelper>();
             services.AddSingleton<IMaintenanceService, MaintenanceService>();
+            
             services.AddHttpClient();
         }
 
