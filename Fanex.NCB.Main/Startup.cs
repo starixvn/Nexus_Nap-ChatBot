@@ -173,6 +173,7 @@
             app.UseAuthentication();
             app.UseSession();
             app.UseRouting();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<SignalRService>("/signalR", options =>
@@ -186,6 +187,6 @@
             });
 
             app.UseStaticFiles();
-        }   
+        }
     }
 }

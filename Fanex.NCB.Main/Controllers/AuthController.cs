@@ -7,7 +7,6 @@
     using System.Security.Claims;
     using System.Threading.Tasks;
     using Fanex.NAP.Client.Configuration;
-    using Fanex.NAP.Client.Helpers.Common;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ParameterObject;
@@ -220,7 +219,7 @@
 
         private static bool ValidatePassword(User user, UserLogin userLogin)
         {
-            return string.Equals(user.Password, Cryptography.CfsEnCode(userLogin.Password), StringComparison.CurrentCulture);
+            return string.Equals(user.Password, userLogin.Password, StringComparison.CurrentCulture);
         }
 
         private async Task<bool> IsExistNapSite(User user)
