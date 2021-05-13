@@ -22,6 +22,7 @@ CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_AddBotToGroup`(
                 - updatedBy: Conversation of user which add BOT into group.
         Revisions:
 				- 20190726@Quinn: First Commit
+				- 20210513@Malcolm: filter following Bot Service - RedmineID: #151807
         
     */
 )
@@ -46,8 +47,8 @@ BEGIN
     
 	IF (NOT EXISTS (SELECT 1 FROM ConversationBot AS cb WHERE cb.ConversationId = botConversationId)) 
     THEN
-		INSERT INTO ConversationBot(`ConversationId`, `Name`)
-        VALUES (botConversationId, botName);
+		INSERT INTO ConversationBot(`ConversationId`, `Name`, `ChannelID``)
+        VALUES (botConversationId, botName, ChannelID);
         
         SET conversationBotID = LAST_INSERT_ID();
 	ELSE 

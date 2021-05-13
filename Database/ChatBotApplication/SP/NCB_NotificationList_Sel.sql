@@ -7,6 +7,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_Sel`(
     , IN recipientIDLst TEXT
 	, IN creatorID	INT
     , IN notificationStatusIDLst VARCHAR(1000)
+    , IN ChannelIDLst TEXT
 	, IN configSendTimeFrom DATETIME #UTC
     , IN configSendTimeTo DATETIME #UTC
 	, IN pageIndex INT
@@ -30,6 +31,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_Sel`(
                 - 20191015@Dominic: extend NotificationTypeName length
 				- 20200109@Merlin: order by ConfigSendTime and NotificationID
 				- 20200302@Oliver: get additional notificationTypeId - RedmineID: #129339
+                - 20210513@Malcolm: filter following Bot Service - RedmineID: #151807
     */
 )
 BEGIN
@@ -86,6 +88,19 @@ BEGIN
 		DEALLOCATE PREPARE stmt;
 	END IF;
     
+    DROP TEMPORARY TABLE IF EXISTS tmp_ChannelIDLst;
+    CREATE TEMPORARY TABLE tmp_ChannelIDLst (ChannelID VARCHAR(45));
+    
+    IF IFNULL(ChannelIDLst, '') <> '' THEN
+		SET @sqlCommand = REPLACE(ChannelIDLst, ',', '),(');
+        SET @sqlCommand = CONCAT('(', @sqlcommand, ')');
+        SET @sqlCommand = CONCAT('INSERT INTO tmp_ChannelIDLst VALUES', @sqlcommand);
+        
+        PREPARE stmt FROM @sqlcommand;
+        EXECUTE stmt;
+        DEALLOCATE PREPARE stmt;
+	END IF;
+    
     #1st dataset: Return Total_Row for paging
     SELECT COUNT(1) Total_Row
     FROM Notification n
@@ -96,10 +111,8 @@ BEGIN
 	AND n.ConfigSendTime >= configSendTimeFrom
     AND n.ConfigSendTime < configSendTimeTo
 	AND (creatorID IS NULL OR n.CreatorID = creatorID)
-    AND n.StatusID IN (
-									SELECT	tmp_stt.StatusID
-                                    FROM tmp_notificationStatusIDLst tmp_stt
-								)
+    AND n.StatusID IN (SELECT	tmp_stt.StatusID FROM tmp_notificationStatusIDLst tmp_stt)
+	AND n.ChannelID IN (SELECT tmp_c.ChannelID FROM tmp_ChannelIDLst tmp_c)
     AND EXISTS (
 			SELECT 1
             FROM NotificationRecipientList nrl
@@ -125,6 +138,7 @@ BEGIN
                                                     , Status VARCHAR(10)
                                                     , StatusID TINYINT UNSIGNED
                                                     , RecipientSentStatusJSON TEXT
+                                                    ,ChannelID VARCHAR(45)
 											);
     #Get data based on Page Index and Page Size
     INSERT INTO tmp_Notification (	
@@ -139,8 +153,9 @@ BEGIN
                                                     , Content
                                                     , Status
                                                     , StatusID
+                                                    , ChannelID
 												)
-    SELECT n.NotificationID, nsm.MessageID, nt.NotificationTypeID ,nt.NotificationTypeName, n.CreatorID, c.username, n.ConfigSendTime, n.Title, n.Content, n.Status, n.StatusID
+    SELECT n.NotificationID, nsm.MessageID, nt.NotificationTypeID ,nt.NotificationTypeName, n.CreatorID, c.username, n.ConfigSendTime, n.Title, n.Content, n.Status, n.StatusID, n.ChannelID
     FROM Notification n
 		INNER JOIN NotificationType nt ON n.NotificationTypeID = nt.NotificationTypeID
         INNER JOIN Customer c ON n.CreatorID = c.custid
@@ -156,6 +171,7 @@ BEGIN
 									SELECT	tmp_stt.StatusID
                                     FROM tmp_notificationStatusIDLst tmp_stt
 								)
+	AND n.ChannelID IN (SELECT tmp_c.ChannelID FROM tmp_ChannelIDLst tmp_c)
     AND EXISTS (
 			SELECT 1
             FROM NotificationRecipientList nrl
