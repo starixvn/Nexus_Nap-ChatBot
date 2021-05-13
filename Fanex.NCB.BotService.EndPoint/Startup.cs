@@ -15,7 +15,6 @@
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.HttpOverrides;
-    using Microsoft.AspNetCore.Mvc;
     using Microsoft.Bot.Builder.Integration.AspNet.Core;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +27,7 @@
     {
         private readonly ILogger logger;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env, ILogger<Startup> logger)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             Configuration = configuration;
             Environment = env;
@@ -37,7 +36,7 @@
 
         public IConfiguration Configuration { get; }
 
-        public IHostingEnvironment Environment { get; }
+        public IWebHostEnvironment Environment { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -52,7 +51,7 @@
             DbSettingProviderManager
                .StartNewSession()
                .Use(connections)
-               .WithMySql(resourcePath: $"~/App_Data/{Environment.EnvironmentName}")
+               .WithMySql(resourcePath: $"~/App_Data/SpNames.xml")
                .Run();
 
             services.Configure<ForwardedHeadersOptions>(options =>
@@ -99,7 +98,7 @@
             BotServiceDI.Init(services, Configuration, Environment, appSettings, logger);
         }
 
-        public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {

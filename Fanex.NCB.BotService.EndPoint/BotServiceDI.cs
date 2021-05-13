@@ -23,7 +23,7 @@
 
     public static class BotServiceDI
     {
-        public static void Init(IServiceCollection services, IConfiguration configuration, IHostingEnvironment environment, AppSettings appSettings, ILogger logger)
+        public static void Init(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment, AppSettings appSettings, ILogger logger)
         {
             services.AddTransient<IBaseRepository, BaseRepository>();
             services.AddTransient<IDynamicRepository, DynamicRepository>();

@@ -11,23 +11,10 @@
         <CodeAnalysisRuleSet>Fanex.NCB.BotService.EndPoint.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
     <ItemGroup>
-        <None Remove="App_Data\Development\SpNames.xml" />
-        <None Remove="App_Data\Local\SpNames.xml" />
-        <None Remove="App_Data\PROD\SpNames.xml" />
-        <None Remove="App_Data\UAT\SpNames.xml" />
         <None Remove="logs\log.txt" />
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
-        <Content Include="App_Data\Development\SpNames.xml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="App_Data\Local\SpNames.xml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="App_Data\UAT\SpNames.xml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
         <Content Include="logs\log.txt">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
@@ -54,6 +41,21 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
+        <None Update="App_Data\SpNames.PROD.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="App_Data\SpNames.Development.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="App_Data\SpNames.UAT.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="App_Data\SpNames.Production.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="App_Data\SpNames.LOCAL.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="App_Data\SpNames.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
@@ -72,9 +74,6 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Remove="Startup.cs" />
-        <Content Include="App_Data\PROD\SpNames.xml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
         <Compile Include="Startup.cs">
             <SonarQubeExclude>true</SonarQubeExclude>
         </Compile>
