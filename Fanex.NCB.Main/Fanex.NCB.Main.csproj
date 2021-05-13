@@ -36,24 +36,24 @@
         <None Remove="wwwroot\js\**" />
     </ItemGroup>
     <ItemGroup>
-        <None Remove="App_Data\Development\SpNames.xml" />
-        <None Remove="App_Data\Local\SpNames.xml" />
-        <None Remove="App_Data\Production\SpNames.xml" />
-        <None Remove="App_Data\UAT\SpNames.xml" />
+        <None Remove="App_Data\SpNames.PROD.xml" />
         <None Remove="logs\log.txt" />
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
-        <Content Include="App_Data\Development\SpNames.xml">
+        <Content Include="App_Data\SpNames.PROD.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="App_Data\SpNames.Development.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="App_Data\Local\SpNames.xml">
+        <Content Include="App_Data\SpNames.LOCAL.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="App_Data\Production\SpNames.xml">
+        <Content Include="App_Data\SpNames.Production.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="App_Data\UAT\SpNames.xml">
+        <Content Include="App_Data\SpNames.UAT.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include="logs\log.txt">
@@ -91,7 +91,6 @@
         <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
     </ItemGroup>
     <ItemGroup>
-        <Folder Include="App_Data\LOCAL\" />
         <Folder Include="ClientApp\sources\pages\chatgroupmapping\components\__tests__\__snapshots__\" />
         <Folder Include="ClientApp\sources\pages\common\confirm-popup\_tests_\__snapshots__\" />
         <Folder Include="ClientApp\sources\pages\common\fixed-table-header\components\__tests__\__snapshots__\" />

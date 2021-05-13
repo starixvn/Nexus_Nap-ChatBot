@@ -58,7 +58,7 @@
                .Use(connections)
                .WithMySql()
                .WithSqlServer()
-               .UseDefaultDbSettingProvider(resourcePath: $"~/App_Data/{evn}")
+               .UseDefaultDbSettingProvider(resourcePath: $"~/App_Data/SpNames.xml")
                .Run();
 
             services.Configure<ForwardedHeadersOptions>(options =>
