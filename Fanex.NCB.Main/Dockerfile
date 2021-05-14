@@ -2,10 +2,10 @@ FROM registry.nexdev.net:5050/docker/dotnet/core/sdk:5.0.102-ca-patch-buster-sli
 
 WORKDIR /src
 
-COPY ["Fanex.NCB.Shared", "Fanex.NCB.Shared"]
 COPY ["Fanex.NCB.Core", "Fanex.NCB.Core"]
 COPY ["Fanex.NCB.Criteria", "Fanex.NCB.Criteria"]
 COPY ["Fanex.NCB.Models", "Fanex.NCB.Models"]
+COPY ["Fanex.NCB.Shared/Fanex.NCB.Shared", "Fanex.NCB.Shared"]
 COPY ["Fanex.NCB.NAPResolver", "Fanex.NCB.NAPResolver"]
 COPY ["Fanex.NCB.Services", "Fanex.NCB.Services"]
 COPY ["Fanex.NCB.Repository", "Fanex.NCB.Repository"]
