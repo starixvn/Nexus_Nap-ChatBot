@@ -12,7 +12,7 @@ COPY ["Fanex.NCB.Repository", "Fanex.NCB.Repository"]
 COPY ["Fanex.NCB.Main.csproj", "./"]
 COPY ["nuget.config", ""]
 
-WORKDIR "/Fanex.NCB.Main"
+WORKDIR "/src/Fanex.NCB.Main"
 RUN dotnet restore -v n
 
 COPY ./Fanex.NCB.Main .
