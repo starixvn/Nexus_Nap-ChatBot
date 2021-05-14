@@ -1,6 +1,5 @@
 FROM registry.nexdev.net:5050/docker/dotnet/core/sdk:5.0.102-ca-patch-buster-slim AS builder
 
-WORKDIR /src
 
 COPY ["Fanex.NCB.Core", "Fanex.NCB.Core"]
 COPY ["Fanex.NCB.Criteria", "Fanex.NCB.Criteria"]
@@ -12,7 +11,7 @@ COPY ["Fanex.NCB.Repository", "Fanex.NCB.Repository"]
 COPY ["Fanex.NCB.Main.csproj", "./"]
 COPY ["nuget.config", ""]
 
-WORKDIR "/src/Fanex.NCB.Main"
+WORKDIR "/Fanex.NCB.Main"
 RUN dotnet restore -v n
 
 COPY ./Fanex.NCB.Main .
