@@ -1,5 +1,5 @@
 include:
-  - project: 'ci/repos-ci/nexus_nap_chatbot_website'
+  - project: 'ci/repos-ci/nexus_chatbot_ncb_main'
     ref: master
     file: 'gitlab-ci.yml'
     
