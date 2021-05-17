@@ -3,6 +3,8 @@
         <TargetFramework>net5.0</TargetFramework>
         <UserSecretsId>e71ec825-3c75-46af-9929-4a6fb891e103</UserSecretsId>
         <LangVersion>7.1</LangVersion>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <CodeAnalysisRuleSet>Fanex.NCB.Main-1.ruleset</CodeAnalysisRuleSet>
@@ -42,7 +44,7 @@
     <ItemGroup>
         <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
         <Content Include="App_Data\SpNames.PROD.xml">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include="App_Data\SpNames.Development.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -68,6 +70,7 @@
         <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="5.0.5" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="5.0.5" />
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="5.0.1" />
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
         <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">
             <PrivateAssets>all</PrivateAssets>
@@ -81,7 +84,7 @@
     </ItemGroup>
     <ItemGroup>
         <Content Update="nlog.config">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Update="Views\SkypeBot\Index.cshtml">
             <Pack>$(IncludeRazorContentInPack)</Pack>
