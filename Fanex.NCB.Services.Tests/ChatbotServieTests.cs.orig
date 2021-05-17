@@ -1,0 +1,168 @@
+﻿namespace Fanex.NCB.Services.Tests
+{
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http;
+    using System.Threading.Tasks;
+    using AutoFixture;
+    using Fanex.NCB.Core.Models;
+    using Fanex.NCB.Models;
+    using Fanex.NCB.Models.NotifictaionSendMessage;
+    using Fanex.NCB.Services.Tests.Helper;
+    using Fanex.NCB.Shared.Models;
+    using Microsoft.Extensions.Options;
+    using Newtonsoft.Json;
+    using NSubstitute;
+    using Xunit;
+
+    public class ChatbotServieTests
+    {
+        private IHttpClientFactory httpClientFactory;
+        private IOptionsSnapshot<BotSettings> botSettings;
+        private IOptionsSnapshot<MonitorChatbot> monitor;
+        private IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions;
+
+        [Fact]
+        public async Task SendMessageToMultitpleAsync_WhenCalled_ExecutePostTaskAsync()
+        {
+            var fixture = new Fixture();
+            var messages = new List<NotificationMessage>();
+
+            var service = GetService();
+
+            var token = fixture.Create<ChatbotToken>();
+            var msgs = new Dictionary<string, HttpResponseMessage>
+            {
+                { botSettings.Value.AuthenticateUrl, new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(JsonConvert.SerializeObject(token))} },
+                { botSettings.Value.BotServiceUrl, new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(JsonConvert.SerializeObject(messages))} }
+            };
+            var httpClient = new HttpClient(new MockHttpMessageHandler(msgs));
+            httpClientFactory.CreateClient().Returns(httpClient);
+            var result = await service.SendMessageToMultitpleAsync(messages);
+<<<<<<< HEAD
+            var responseData = result.NotificationMessageResult;
+            Assert.Equal(JsonConvert.SerializeObject(responseData), JsonConvert.SerializeObject(messages));
+=======
+
+            Assert.Equal(JsonConvert.SerializeObject(result.NotificationMessageResult), JsonConvert.SerializeObject(messages));
+>>>>>>> 000 - add nuget.config
+        }
+
+        [Fact]
+        public async Task NotifySponDemoChatGroup_WhenCalled_WebClientExecuted()
+        {
+            var service = SetupHttpClientFactory();
+            await service.NotifyToChatGroup("Test");
+            httpClientFactory.Received(2).CreateClient();
+        }
+
+        [Fact]
+        public async Task MonitorChatbot_WhenCalled_DoExpectedActions()
+        {
+            var service = SetupHttpClientFactory();
+            await service.MonitorChatbot();
+
+            httpClientFactory.Received(2);
+        }
+
+        [Fact]
+        public void GenerateNotifificationMessage_WhenCalled_ReturnMappedObject()
+        {
+            var fixture = new Fixture();
+            IEnumerable<NotificationSendMessage> notifications = new List<NotificationSendMessage>
+            {
+                new NotificationSendMessage {  NotificationId = 10,  Content = fixture.Create<string>()}
+            };
+
+            IEnumerable<NotificationRecipient> recipients = new List<NotificationRecipient>
+            {
+                new NotificationRecipient
+                {
+                    NotificationId = 10,
+                    BotConversationId = fixture.Create<string>(),
+                    BotName = fixture.Create<string>(),
+                    ServiceUrl = fixture.Create<string>(),
+                    ChannelId = fixture.Create<string>(),
+                    ChatGroupConversationId = fixture.Create<string>(),
+                }
+            };
+
+            var expected = new List<NotificationMessage>
+            {
+                new NotificationMessage
+                {
+                    NotificationId = 10,
+                    Message = notifications.FirstOrDefault().Content,
+                    Recipients = new List<ConversationInfo>
+                    {
+                        new ConversationInfo
+                        {
+                            ConversationId = recipients.FirstOrDefault().ChatGroupConversationId,
+                            BotConversationId = recipients.FirstOrDefault().BotConversationId,
+                            BotName = recipients.FirstOrDefault().BotName,
+                            ChannelId = recipients.FirstOrDefault().ChannelId,
+                            ServiceUrl = recipients.FirstOrDefault().ServiceUrl
+                        },
+                    }
+                }
+            };
+            var service = GetService();
+            var actual = service.GenerateNotifificationMessage(notifications, recipients);
+
+            Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(actual));
+        }
+
+        private ChatbotService SetupHttpClientFactory()
+        {
+            var fixture = new Fixture();
+            var messages = new List<NotificationMessage>();
+
+            var service = GetService();
+
+            var token = fixture.Create<ChatbotToken>();
+            var msgs = new Dictionary<string, HttpResponseMessage>
+            {
+                { botSettings.Value.AuthenticateUrl, new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(JsonConvert.SerializeObject(token))} },
+                { botSettings.Value.BotServiceUrl, new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(JsonConvert.SerializeObject(messages))} }
+            };
+            var httpClient = new HttpClient(new MockHttpMessageHandler(msgs));
+            httpClientFactory.CreateClient().Returns(httpClient);
+
+            return service;
+        }
+
+        private ChatbotService GetService()
+        {
+            var sponGroupOptions = new NotifyChatGroupOption
+            {
+                BotName = "1on1",
+                BotConversationId = "ABC",
+                ChannelId = "ACV",
+                ConversationId = "Conversation",
+                ServiceUrl = "test.com"
+            };
+            var monitorOptions = new MonitorChatbot
+            {
+                BotName = "1on1",
+                BotConversationId = "ABC",
+                ChannelId = "ACV",
+                ConversationId = "Conversation",
+                ServiceUrl = "test.com"
+            };
+            botSettings = Substitute.For<IOptionsSnapshot<BotSettings>>();
+            notifyChatGroupOptions = Substitute.For<IOptionsSnapshot<NotifyChatGroupOption>>();
+            monitor = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
+            monitor.Value.Returns(monitorOptions);
+            httpClientFactory = Substitute.For<IHttpClientFactory>();
+<<<<<<< HEAD
+=======
+
+            botSettings.Value.Returns(settings);
+>>>>>>> 000 - add nuget.config
+            notifyChatGroupOptions.Value.Returns(sponGroupOptions);
+
+            return new ChatbotService(httpClientFactory, botSettings, monitor, notifyChatGroupOptions);
+        }
+    }
+}

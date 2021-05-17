@@ -40,8 +40,8 @@
             var httpClient = new HttpClient(new MockHttpMessageHandler(msgs));
             httpClientFactory.CreateClient().Returns(httpClient);
             var result = await service.SendMessageToMultitpleAsync(messages);
-            var responseData = result.NotificationMessageResult;
-            Assert.Equal(JsonConvert.SerializeObject(responseData), JsonConvert.SerializeObject(messages));
+
+            Assert.Equal(JsonConvert.SerializeObject(result.NotificationMessageResult), JsonConvert.SerializeObject(messages));
         }
 
         [Fact]
@@ -150,6 +150,8 @@
             monitor = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
             monitor.Value.Returns(monitorOptions);
             httpClientFactory = Substitute.For<IHttpClientFactory>();
+
+            botSettings.Value.Returns(settings);
             notifyChatGroupOptions.Value.Returns(sponGroupOptions);
 
             return new ChatbotService(httpClientFactory, botSettings, monitor, notifyChatGroupOptions);
