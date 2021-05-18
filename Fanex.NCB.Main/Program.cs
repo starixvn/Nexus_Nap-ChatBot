@@ -23,6 +23,7 @@
 
                      config.AddEnvironmentVariables();
                  })
+                .UseUrls($"http://*:5000")
                 .UseStartup<Startup>();
     }
 }
