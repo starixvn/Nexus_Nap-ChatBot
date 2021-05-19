@@ -47,12 +47,12 @@ NCB_NotificationTemplate_Ins:BEGIN
     
     SET notificationTemplateID = LAST_INSERT_ID();
 
-    DROP TEMPORARY TABLE IF EXISTS Tmp_Content;
-    CREATE TEMPORARY TABLE Tmp_Content (ChannelId TINYINT UNSIGNED NOT NULL, Content MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci);
+    DROP TEMPORARY TABLE IF EXISTS tmpContent;
+    CREATE TEMPORARY TABLE tmpContent (ChannelId TINYINT UNSIGNED NOT NULL, Content MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci);
     
     SET iLoop = 0;
     WHILE (JSON_EXTRACT(ContentLst, CONCAT('$', iLoop, '].ChannelId')) IS NOT NULL) DO
-		INSERT INTO Tmp_Content (ChannelId, Content)
+		INSERT INTO tmpContent (ChannelId, Content)
         VALUES 
         (
 			JSON_UNQUOTE(JSON_EXTRACT(ContentLst, CONCAT('$[', iLoop, '].ChannelId'))),
@@ -63,31 +63,20 @@ NCB_NotificationTemplate_Ins:BEGIN
     
     INSERT INTO NotificationTemplateContent (`NotificationTemplateId`, `ChannelId`, `Content`)
 	SELECT notificationTemplateID, ChannelId, Content
-    FROM Tmp_Content;
+    FROM tmpContent;
     
 	#Get Finish Time to calcualte execution duration
     SET finishTime = UTC_TIMESTAMP(3);
     SET duration =  TIMESTAMPDIFF(MICROSECOND, startTime, finishTime)  / 1000; 	#miliseconds;
     
     #Get Log Content, JSON format
-    SELECT json_object	('notificationTypeID', nt.NotificationTypeID
-						 ,'notificationTemplateName', nt.NotificationTemplateName
-						 ,'title', nt.Title
-						 ,ContentLst
-						 ,'creatorID', nt.CreatorID
-						 ,'createdDate', nt.CreatedDate)
+    SELECT json_object ('notificationTypeID', nt.NotificationTypeID ,'notificationTemplateName', nt.NotificationTemplateName ,'title', nt.Title, 'Content',ContentLst ,'creatorID', nt.CreatorID ,'createdDate', nt.CreatedDate)
 	INTO logContent
 	FROM NotificationTemplate nt
     WHERE nt.NotificationTemplateID = notificationTemplateID;
     
 	#Write User Log
-	CALL NCB_UserLog_RunSP_Ins(ACTION_ID
-							,notificationTemplateID 
-							,creatorID 
-							,logContent 
-							,startTime 
-							,duration
-							);
+	CALL NCB_UserLog_RunSP_Ins(ACTION_ID, notificationTemplateID, creatorID, logContent, startTime, duration);
 END;
 //
 DELIMITER ;

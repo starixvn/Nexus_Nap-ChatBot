@@ -14,10 +14,11 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationTemplateList_Sel`(
     */
 )
 BEGIN
-	DECLARE rowStart    INT;
+	DECLARE rowStart INT;
+    DECLARE iLoop    INT;
+    DECLARE jLoop 	 INT;
 	DECLARE NotificationSetting	JSON;
-    DECLARE indexLoop   INT;
-    DECLARE JLoop INT;
+	
     SET rowStart =	pageSize * (pageIndex - 1);   
     
     SELECT COUNT(1)
@@ -25,40 +26,35 @@ BEGIN
 		INNER JOIN NotificationType t ON nt.NotificationTypeID = t.NotificationTypeID
 	WHERE notificationTypeID IS NULL OR t.NotificationTypeID = notificationTypeID;
 	
-	DROP TEMPORARY TABLE IF EXISTS Tmp_Setting;
-    CREATE TEMPORARY TABLE Tmp_Setting (ID TINYINT UNSIGNED NOT NULL AUTO_INCREMENT, SettingId INT UNSIGNED NOT NULL);
+	DROP TEMPORARY TABLE IF EXISTS tmpSetting;
+    CREATE TEMPORARY TABLE tmpSetting (ID TINYINT UNSIGNED NOT NULL AUTO_INCREMENT, SettingId INT UNSIGNED NOT NULL);
     
-    INSERT INTO Tmp_Setting (SettingId)
+    INSERT INTO tmpSetting (SettingId)
     VALUES (4), (9), (14);
-    
-	SELECT Value INTO voidTicketSettings FROM SystemSetting WHERE ID = 4 LIMIT 1;
-	SELECT Value INTO abnormalBetsSettings FROM SystemSetting WHERE ID = 9 LIMIT 1;
-	SELECT Value INTO siteMessageSettings FROM SystemSetting WHERE ID = 14 LIMIT 1;
 
     DROP TEMPORARY TABLE IF EXISTS tmpParseJsonTable;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmpParseJsonTable(NotificationTypeID INT, NotificationTemplateID INT);
 
 	#Get setting from Special Delete voiding ticket for licensee settings
-    SET JLoop = 1;
-    WHILE EXISTS (SELECT 1 FROM Tmp_Setting s WHERE s.ID = JLoop) DO
+    SET jLoop = 1;
+    WHILE EXISTS (SELECT 1 FROM tmpSetting s WHERE s.ID = jLoop) DO
 		
-        SELECT Value
-			INTO NotificationSetting
+        SELECT Value INTO NotificationSetting
         FROM SystemSetting s
-			INNER JOIN Tmp_Setting t ON t.SettingId = s.Id
-		WHERE t.Id = JLoop;
+			INNER JOIN tmpSetting t ON t.SettingId = s.Id
+		WHERE t.Id = jLoop;
         
-		SET indexLoop = 0;
-		WHILE (JSON_EXTRACT(NotificationSetting, CONCAT('$[',indexLoop, '].NotificationTemplateID'))) DO 
+		SET iLoop = 0;
+		WHILE (JSON_EXTRACT(NotificationSetting, CONCAT('$[',iLoop, '].NotificationTemplateID'))) DO 
 			INSERT INTO tmpParseJsonTable(NotificationTypeID, NotificationTemplateID)
 			VALUES 
             (
-				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(NotificationSetting, CONCAT('$[', indexLoop, '].NotificationTypeID'))), 'null'),
-				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(NotificationSetting, CONCAT('$[', indexLoop, '].NotificationTemplateID'))), 'null')
+				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(NotificationSetting, CONCAT('$[', iLoop, '].NotificationTypeID'))), 'null'),
+				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(NotificationSetting, CONCAT('$[', iLoop, '].NotificationTemplateID'))), 'null')
 			);
-			SET indexLoop := indexLoop + 1;
+			SET iLoop := iLoop + 1;
 		END WHILE;
-        SET JLoop := JLoop + 1;
+        SET jLoop := jLoop + 1;
     END WHILE;
 
 	SELECT DISTINCT nt.NotificationTemplateID
@@ -67,12 +63,7 @@ BEGIN
         ,ntc.Content
         ,t.NotificationTypeID
         ,t.NotificationTypeName
-        ,CASE
-			WHEN (
-				tmppjt.NotificationTemplateID IS NOT NULL 
-            ) THEN 1
-			ELSE 0
-		END AS UnRemovable
+        ,CASE WHEN tmppjt.NotificationTemplateID IS NOT NULL THEN 1 ELSE 0 END AS UnRemovable
     FROM NotificationTemplate nt
 		INNER JOIN NotificationTemplateContent ntc ON ntc.NotificationTemplateId = nt.NotificationTemplateId 
         INNER JOIN ConversationChannel cc ON cc.ChannelId = ntc.ChannelId

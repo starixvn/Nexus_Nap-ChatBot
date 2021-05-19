@@ -21,6 +21,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_NotificationType_Upd(
                         - userId: User Id
 				Revisions:
 						- 20190912@Scofield: Create
+                        - 20210513@Malcolm: Integrate Telegram - RedmineID: #151807
     */
    )
 SQL SECURITY DEFINER
@@ -36,9 +37,8 @@ BEGIN
     SET startTime = UTC_TIMESTAMP(3);
     SET errCode = 0, errMsg = '';
     
-	IF EXISTS(SELECT * FROM NotificationType nt WHERE nt.NotificationTypeName =  notificationTypeName and nt.NotificationTypeId <> notificationTypeId) THEN
-		SELECT 1 INTO errCode;
-        SELECT "Notification Type Name exists" INTO errMsg;
+	IF EXISTS(SELECT 1 FROM NotificationType nt WHERE nt.NotificationTypeName =  notificationTypeName and nt.NotificationTypeId <> notificationTypeId) THEN
+		SELECT 1, "Notification Type Name exists" INTO errCode, errMsg;
     ELSE
 		UPDATE NotificationType nt
         SET nt.NotificationTypeName = notificationTypeName, nt.SystemId = systemId
@@ -93,11 +93,7 @@ BEGIN
 		SET duration =  TIMESTAMPDIFF(MICROSECOND, startTime,finishTime) / 1000;
 		
 		-- Get Log Content, JSON format
-		SET logContent = json_object('notificationTypeId', notificationTypeId,
-									'notificationTypeName', notificationTypeName,
-									'recipientTypeIds', recipientTypeIds,
-									'chatGroupTypeIds', chatGroupTypeIds,
-									'systemId', systemId);
+		SET logContent = json_object ('notificationTypeId', notificationTypeId, 'notificationTypeName', notificationTypeName, 'recipientTypeIds', recipientTypeIds, 'chatGroupTypeIds', chatGroupTypeIds, 'systemId', systemId);
 						
 		-- Write User Log
 		CALL NCB_UserLog_RunSP_Ins(ACTION_ID, notificationTypeId, userId, logContent, startTime, duration);

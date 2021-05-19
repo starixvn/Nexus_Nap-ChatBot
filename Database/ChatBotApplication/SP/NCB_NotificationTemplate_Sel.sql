@@ -54,19 +54,12 @@ NCB_NotificationTemplate_Sel:BEGIN
         ,nt.Title
         ,nt.Content
         ,nt.NotificationTypeID
-        ,CASE
-			WHEN (
-				EXISTS (
-					SELECT 1 FROM tmpParseJsonTable tmppjt
-					WHERE tmppjt.NotificationTemplateID = nt.NotificationTemplateID
-						AND tmppjt.NotificationTypeID = nt.NotificationTypeID
-				) 
-            ) THEN 1
-			ELSE 0
-		END AS UnRemovable
+        ,CASE WHEN (m.NotificationTemplateID IS NOT NULL) THEN 1 ELSE 0 END AS UnRemovable
     FROM NotificationTemplate nt
 		INNER JOIN NotificationTemplateContent ntc ON ntc.NotificationTemplateID = nt.NotificationTemplateID
         INNER JOIN ConversationChannel c ON c.ChannelID = ntc.ChannelID
+        LEFT JOIN (SELECT DISTINCT NotificationTypeID, NotificationTemplateID FROM tmpParseJsonTable) m 
+			ON m.NotificationTemplateID = nt.NotificationTemplateID AND m.NotificationTypeID = nt.NotificationTypeID
 	WHERE nt.NotificationTemplateID = notificationTemplateID AND c.ChannelName = 'Skype';
 END;
 

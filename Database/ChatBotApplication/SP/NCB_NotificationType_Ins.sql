@@ -19,6 +19,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_NotificationType_Ins(
                         - userId: User Id
 				Revisions:
 						- 20190912@Scofield: Create
+                        - 20210513@Malcolm: Integrate Telegram - RedmineID: #151807
     */
    )
 SQL SECURITY DEFINER
@@ -36,9 +37,8 @@ BEGIN
     SET startTime = UTC_TIMESTAMP(3);
     SET errCode = 0, errMsg = '';
         
-	IF EXISTS(SELECT * FROM NotificationType nt WHERE nt.NotificationTypeName =  notificationTypeName) THEN
-		SELECT 1 INTO errCode;
-        SELECT "Notification Type Name exists" INTO errMsg;
+	IF EXISTS (SELECT 1 FROM NotificationType nt WHERE nt.NotificationTypeName =  notificationTypeName) THEN
+		SELECT 1, "Notification Type Name exists"  INTO errCode, errMsg;
     ELSE
 		INSERT INTO NotificationType(NotificationTypeName, SystemId)
         VALUES (notificationTypeName, systemId);
@@ -51,14 +51,13 @@ BEGIN
 		
 		SET @SqlCommand = REPLACE(recipientTypeIds, ',', '),(');
 		SET @SqlCommand = CONCAT('(', @SqlCommand, ')');
-		SET @SqlCommand= CONCAT('INSERT INTO tmp_RecipientTypes VALUES'
-															, @SqlCommand); 
+		SET @SqlCommand= CONCAT('INSERT INTO tmp_RecipientTypes VALUES', @SqlCommand); 
 		
 		PREPARE Stmt FROM  @SqlCommand;
 		EXECUTE Stmt;
 		DEALLOCATE PREPARE Stmt;        
        
-        INSERT INTO NotificationRecipientType(NotificationTypeID, RecipientTypeID)
+        INSERT INTO NotificationRecipientType (NotificationTypeID, RecipientTypeID)
         SELECT notificationTypeId, tmp.RecipientTypeID
         FROM tmp_RecipientTypes tmp;		        
         
@@ -68,8 +67,7 @@ BEGIN
 		
 		SET @SqlCommand = REPLACE(chatGroupTypeIds, ',', '),(');
 		SET @SqlCommand = CONCAT('(', @SqlCommand, ')');
-		SET @SqlCommand= CONCAT('INSERT INTO tmp_ChatGroupTypes VALUES'
-															, @SqlCommand); 
+		SET @SqlCommand= CONCAT('INSERT INTO tmp_ChatGroupTypes VALUES', @SqlCommand); 
 		
 		PREPARE Stmt FROM  @SqlCommand;
 		EXECUTE Stmt;
@@ -88,10 +86,7 @@ BEGIN
 		SET duration =  TIMESTAMPDIFF(MICROSECOND, startTime,finishTime) / 1000;
 		
 		-- Get Log Content, JSON format
-		SET logContent = json_object('notificationTypeName', notificationTypeName,
-									'recipientTypeIds', recipientTypeIds,
-									'chatGroupTypeIds', chatGroupTypeIds,
-									'systemId', systemId);
+		SET logContent = json_object('notificationTypeName', notificationTypeName, 'recipientTypeIds', recipientTypeIds, 'chatGroupTypeIds', chatGroupTypeIds, 'systemId', systemId);
 						
 		-- Write User Log
 		CALL NCB_UserLog_RunSP_Ins(ACTION_ID, notificationTypeId, userId, logContent, startTime, duration);

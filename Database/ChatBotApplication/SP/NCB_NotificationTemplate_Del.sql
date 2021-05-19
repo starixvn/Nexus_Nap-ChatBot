@@ -51,7 +51,7 @@ NCB_NotificationTemplate_Del:BEGIN
 		
         SELECT s.Value INTO jsonSetting
         FROM SystemSetting s 
-			INNER JOIN tmpSetting t ON t.SettingId = s.SettingId
+			INNER JOIN tmpSetting t ON t.SettingId = s.Id
 	    WHERE t.Id = jLoop;
         
 		SET iLoop = 0;
