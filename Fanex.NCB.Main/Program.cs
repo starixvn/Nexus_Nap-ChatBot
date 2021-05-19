@@ -12,7 +12,8 @@
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseUrls($"http://*:5000")
-                .UseStartup<Startup>();
+                .UseKestrel()
+                .UseStartup<Startup>()
+                .UseUrls("http://0.0.0.0:5000");
     }
 }
