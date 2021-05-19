@@ -10,82 +10,44 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationTemplate_Sel`(
 			- 20190910@Elton: First Commit
 			- 20191218@Merlin.Le: Get additional UnRemovable field -- Redmine ID: #125707
             - 20190215@Oliver: unremovable abnormalbes settings - Redmine: #128430
+            - 20210513@Malcolm: Integrate Telegram - RedmineID: #151807
 
     */
 )
 NCB_NotificationTemplate_Sel:BEGIN
-	DECLARE voidTicketSettings	JSON;
-	DECLARE abnormalBetsSettings JSON;
-	DECLARE siteMessageSettings JSON;
-
-    DECLARE indexLoop   INT;
-	
-	SELECT Value INTO voidTicketSettings FROM SystemSetting WHERE ID = 4 LIMIT 1;
-	SELECT Value INTO abnormalBetsSettings FROM SystemSetting WHERE ID = 9 LIMIT 1;
-	SELECT Value INTO siteMessageSettings FROM SystemSetting WHERE ID = 14 LIMIT 1;
-
+	DECLARE jsonSetting	JSON;
+	DECLARE iLoop   INT;
+	DECLARE jLoop   INT;
+    
+	DROP TEMPORARY TABLE IF EXISTS tmpSetting;
+    CREATE TEMPORARY TABLE tmpSetting (Id INT AUTO_INCREMENT NOT NULL, SettingId INT UNSIGNED NOT NULL);
+    INSERT INTO tmpSetting (SettingId)
+    VALUES (4), (9), (14);
+    
     DROP TEMPORARY TABLE IF EXISTS tmpParseJsonTable;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmpParseJsonTable(NotificationTypeID INT, NotificationTemplateID INT);
-
-	#Get Special Delete voiding ticket for licensee settings
-    SET indexLoop = 0;
-    WHILE (JSON_EXTRACT(voidTicketSettings, CONCAT('$[',indexLoop, '].NotificationTemplateID'))) DO 
-		INSERT INTO tmpParseJsonTable(NotificationTypeID, NotificationTemplateID)
-        VALUES (
-            CASE
-                WHEN JSON_UNQUOTE(JSON_EXTRACT(voidTicketSettings, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
-                THEN NULL
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(voidTicketSettings, CONCAT('$[', indexLoop, '].NotificationTypeID')))
-            END,
-            CASE
-                WHEN JSON_UNQUOTE(JSON_EXTRACT(voidTicketSettings, CONCAT('$[', indexLoop, '].NotificationTemplateID'))) = 'null'
-                THEN NULL
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(voidTicketSettings, CONCAT('$[', indexLoop, '].NotificationTemplateID')))
-            END
-		);
+    
+    SET jLoop = 1;
+    WHILE (SELECT 1 FROM tmpSetting WHERE Id = jLoop) DO
+		SELECT s.Value INTO jsonSetting
+        FROM SystemSetting s 
+			INNER JOIN tmpSetting t ON t.SettingId = s.Id 
+		WHERE t.Id = jLoop;
         
-        SET indexLoop := indexLoop + 1;
-    END WHILE;
-
-    #Get Special Delete AbnormalBets voiding ticket for internal settings
-	SET indexLoop = 0;
-    WHILE (JSON_EXTRACT(abnormalBetsSettings, CONCAT('$[',indexLoop, '].NotificationTypeID'))) DO 
-		INSERT INTO tmpParseJsonTable(NotificationTypeID, NotificationTemplateID)
-        VALUES (
-            CASE
-                WHEN JSON_UNQUOTE(JSON_EXTRACT(abnormalBetsSettings, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
-                THEN NULL
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(abnormalBetsSettings, CONCAT('$[', indexLoop, '].NotificationTypeID')))
-            END,
-            CASE
-                WHEN JSON_UNQUOTE(JSON_EXTRACT(abnormalBetsSettings, CONCAT('$[', indexLoop, '].NotificationTemplateID'))) = 'null'
-                THEN NULL
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(abnormalBetsSettings, CONCAT('$[', indexLoop, '].NotificationTemplateID')))
-            END
-		);
+		SET iLoop = 0;
+		WHILE (JSON_EXTRACT(jsonSetting, CONCAT('$[',iLoop, '].NotificationTypeID'))) DO 
+			INSERT INTO tmpParseJsonTable(NotificationTypeID, NotificationTemplateID)
+			VALUES 
+            (
+				 NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonSetting, CONCAT('$[', iLoop, '].NotificationTypeID'))), 'null'),
+				 NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonSetting, CONCAT('$[', iLoop, '].NotificationTemplateID'))), 'null')
+			);
+			
+			SET iLoop := iLoop + 1;
+		END WHILE;
         
-        SET indexLoop := indexLoop + 1;
-    END WHILE;
-
-    #Get Site Message settings
-	SET indexLoop = 0;
-    WHILE (JSON_EXTRACT(siteMessageSettings, CONCAT('$[',indexLoop, '].NotificationTypeID'))) DO 
-		INSERT INTO tmpParseJsonTable(NotificationTypeID, NotificationTemplateID)
-        VALUES (
-            CASE
-                WHEN JSON_UNQUOTE(JSON_EXTRACT(siteMessageSettings, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
-                THEN NULL
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(siteMessageSettings, CONCAT('$[', indexLoop, '].NotificationTypeID')))
-            END,
-            CASE
-                WHEN JSON_UNQUOTE(JSON_EXTRACT(siteMessageSettings, CONCAT('$[', indexLoop, '].NotificationTemplateID'))) = 'null'
-                THEN NULL
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(siteMessageSettings, CONCAT('$[', indexLoop, '].NotificationTemplateID')))
-            END
-		);
-        
-        SET indexLoop := indexLoop + 1;
-    END WHILE;
+        SET jLoop := jLoop + 1;
+	END WHILE;
 
 	SELECT nt.NotificationTemplateID
 		,nt.NotificationTemplateName
@@ -103,7 +65,9 @@ NCB_NotificationTemplate_Sel:BEGIN
 			ELSE 0
 		END AS UnRemovable
     FROM NotificationTemplate nt
-	WHERE nt.NotificationTemplateID = notificationTemplateID;
+		INNER JOIN NotificationTemplateContent ntc ON ntc.NotificationTemplateID = nt.NotificationTemplateID
+        INNER JOIN ConversationChannel c ON c.ChannelID = ntc.ChannelID
+	WHERE nt.NotificationTemplateID = notificationTemplateID AND c.ChannelName = 'Skype';
 END;
 
 //

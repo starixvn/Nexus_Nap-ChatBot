@@ -35,7 +35,7 @@ NCB_NotificationTemplate_Upd:BEGIN
 	DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
 	DECLARE ACTION_ID 		INT DEFAULT 13;
     DECLARE jsonValue		JSON;
-	DECLARE indexLoop		INT;
+	DECLARE iLoop		INT;
     DECLARE jLoop 			INT;
 	DECLARE requiredParams  TEXT;
     
@@ -44,51 +44,64 @@ NCB_NotificationTemplate_Upd:BEGIN
 	SET errCode = 0, errMsg = '';
   
 	IF EXISTS(
-	SELECT 1 FROM NotificationTemplate nt
-	WHERE nt.NotificationTemplateName = notificationTemplateName
-		AND nt.NotificationTemplateID <> notificationTemplateID
+		SELECT 1 FROM NotificationTemplate nt
+		WHERE nt.NotificationTemplateName = notificationTemplateName
+			AND nt.NotificationTemplateID <> notificationTemplateID
 	) 
 	THEN
 		SET errCode = 101, errMsg = 'The selected template name has already been taken';
 		LEAVE NCB_NotificationTemplate_Upd;
 	END IF;
 	
-    DROP TEMPORARY TABLE IF EXISTS Tmp_Setting;
-    CREATE TEMPORARY TABLE Tmp_Setting (ID INT AUTO_INCREMENT NOT NULL,SettingId INT UNSIGNED NOT NULL);
-    INSERT INTO Tmp_Setting (SettingId)
+    DROP TEMPORARY TABLE IF EXISTS tmpSetting;
+    CREATE TEMPORARY TABLE tmpSetting (ID INT AUTO_INCREMENT NOT NULL,SettingId INT UNSIGNED NOT NULL);
+    INSERT INTO tmpSetting (SettingId)
     VALUES (4), (9), (14);
     
-	#Check params for template voiding tickets for licensee
-	SELECT Value INTO jsonValue FROM SystemSetting WHERE ID = 4 LIMIT 1;
+    DROP TEMPORARY TABLE IF EXISTS tmpContent;
+    CREATE TEMPORARY TABLE tmpContent (ChannelId TINYINT UNSIGNED NOT NULL, Content MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci);
+
+	SET iLoop = 0;
+    WHILE (JSON_EXTRACT(ContentLst, CONCAT('$', iLoop, '].ChannelId')) IS NOT NULL) DO
+		INSERT INTO Tmp_Content (ChannelId, Content)
+        VALUES 
+        (
+			JSON_UNQUOTE(JSON_EXTRACT(ContentLst, CONCAT('$[', iLoop, '].ChannelId'))),
+            JSON_UNQUOTE(JSON_EXTRACT(ContentLst, CONCAT('$[', iLoop, '].Content')))
+        );
+        SET iLoop := iLoop + 1;
+    END WHILE;
+    
     DROP TEMPORARY TABLE IF EXISTS tmpSettingData;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmpSettingData(NotificationTypeID INT, NotificationTemplateID INT,TemplateRequiredParams TEXT);
     
     SET jLoop = 1;
-    WHILE (SELECT 1 FROM Tmp_Setting WHERE Id = jLoop) DO
+    WHILE (SELECT 1 FROM tmpSetting WHERE Id = jLoop) DO
     
 		SELECT s.Value INTO jsonValue 
         FROM SystemSetting s 
-			INNER JOIN Tmp_Setting t ON t.SettingId = s.Id 
+			INNER JOIN tmpSetting t ON t.SettingId = s.Id 
 		WHERE t.ID = jLoop
         LIMIT 1;
         
-		SET indexLoop = 0;
-		WHILE (JSON_EXTRACT(jsonValue, CONCAT('$[',indexLoop, '].NotificationTemplateID'))) DO 
+		SET iLoop = 0;
+		WHILE (JSON_EXTRACT(jsonValue, CONCAT('$[',iLoop, '].NotificationTemplateID'))) DO 
 			INSERT INTO tmpSettingData(NotificationTypeID, NotificationTemplateID, TemplateRequiredParams)
 			VALUES 
             (
-				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTypeID'))), 'null'),
-				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].NotificationTemplateID'))), 'null'),
-				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', indexLoop, '].TemplateRequiredParams'))), 'null')
+				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].NotificationTypeID'))), 'null'),
+				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].NotificationTemplateID'))), 'null'),
+				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonValue, CONCAT('$[', iLoop, '].TemplateRequiredParams'))), 'null')
 			);
-			SET indexLoop := indexLoop + 1;
+			SET iLoop := iLoop + 1;
 		END WHILE;
     END WHILE;
 
-	SELECT tmppjt.TemplateRequiredParams INTO requiredParams
+	SELECT tmppjt.TemplateRequiredParams
+		INTO requiredParams 
 	FROM tmpSettingData tmppjt
-	WHERE tmppjt.NotificationTemplateID = notificationTemplateID
-		AND tmppjt.NotificationTypeID = notificationTypeID LIMIT 1;
+	WHERE tmppjt.NotificationTemplateID = notificationTemplateID AND tmppjt.NotificationTypeID = notificationTypeID
+	LIMIT 1;
 
 	DROP TEMPORARY TABLE IF EXISTS tmpParams;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmpParams(Param VARCHAR(50));
@@ -103,7 +116,8 @@ NCB_NotificationTemplate_Upd:BEGIN
 		DEALLOCATE PREPARE Stmt;
 	END IF;
 
-	IF (
+	IF 
+	(
 		EXISTS (
 			SELECT 1 FROM tmpSettingData tmppjt
 			WHERE tmppjt.NotificationTemplateID = notificationTemplateID
@@ -111,41 +125,55 @@ NCB_NotificationTemplate_Upd:BEGIN
 		)
         AND EXISTS (
 			SELECT 1 FROM tmpParams 
-			WHERE LOCATE(TRIM(Param), Content) = 0)
+			WHERE LOCATE(TRIM(Param), Content) = 0
+		)
     )
 	THEN
 		SET errCode = 102, errMsg = 'Not allow to delete defined params';
 		LEAVE NCB_NotificationTemplate_Upd;
 	END IF;
     
-	UPDATE NotificationTemplate nt
-	SET nt.NotificationTemplateName = notificationTemplateName
-		,nt.NotificationTypeID = notificationTypeID
-		,nt.Title = title
-		,nt.Content =content
-		,nt.LastModifiedDate = UTC_TIMESTAMP()
-		,nt.LastModifiedBy = modifierID
-	WHERE nt.NotificationTemplateID = notificationTemplateID;
+	UPDATE NotificationTemplate nt 
+	SET 
+		nt.NotificationTemplateName = notificationTemplateName,
+		nt.NotificationTypeID = notificationTypeID,
+		nt.Title = title,
+		nt.LastModifiedDate = UTC_TIMESTAMP(),
+		nt.LastModifiedBy = modifierID
+	WHERE
+		nt.NotificationTemplateID = notificationTemplateID;
+        
+	DELETE ntc
+    FROM NotificationTemplateContent ntc
+    WHERE ntc.NotificationTemplateID = notificationTemplateID;
+	
+    INSERT INTO NotificationTemplateContent (`notificationTemplateID`, `ChannelId`, `Content`)
+    SELECT notificationTemplateID, t.ChannelID, t.Content
+    FROM tmpContent t;
 
 	#Get Finish Time to calcualte execution duration
 	SET finishTime = UTC_TIMESTAMP(3);
-	SET duration = TIMESTAMPDIFF(MICROSECOND, startTime, finishTime) / 1000; 	#miliseconds;
-	
-	#Get Log Content, JSON format
-	SELECT json_object('notificationTypeID', nt.NotificationTypeID
-		,'notificationTemplateName', nt.NotificationTemplateName
-		,'title', nt.Title
-		,'content', nt.content
-		,'lastModifiedBy', nt.LastModifiedBy
-		,'lastModifiedDate', nt.LastModifiedDate
-	)
-	INTO logContent
-	FROM NotificationTemplate nt
-	WHERE nt.NotificationTemplateID = notificationTemplateID;
-    
+	SET duration = TIMESTAMPDIFF(MICROSECOND, startTime, finishTime) / 1000;	
+    SELECT  JSON_OBJECT('notificationTypeID',
+            nt.NotificationTypeID,
+            'notificationTemplateName',
+            nt.NotificationTemplateName,
+            'title',
+            nt.Title,
+            'content',
+            ContentLst,
+            'lastModifiedBy',
+            nt.LastModifiedBy,
+            'lastModifiedDate',
+            nt.LastModifiedDate)
+	INTO logContent FROM
+		NotificationTemplate nt
+	WHERE
+		nt.NotificationTemplateID = notificationTemplateID;
+		
 	#Write User Log
 	CALL NCB_UserLog_RunSP_Ins(ACTION_ID, notificationTemplateID, modifierID, logContent, startTime, duration);	
-END;
+	END;
 
 //
 DELIMITER ;

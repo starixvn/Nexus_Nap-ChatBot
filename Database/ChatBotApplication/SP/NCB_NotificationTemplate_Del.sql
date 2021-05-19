@@ -13,6 +13,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationTemplate_Del`(
 			- 20190910@Elton: First Commit
             - 20191218@Merlin.Le: Check not setting template before delete -- Redmine ID: #125707
             - 20200323@Oliver: Integrate Site Message -- Redmine ID: #129979
+			- 20210513@Malcolm: Integrate Telegram - RedmineID: #151807
 	*/
 )
 NCB_NotificationTemplate_Del:BEGIN
@@ -22,10 +23,9 @@ NCB_NotificationTemplate_Del:BEGIN
 	DECLARE duration 		INT;							
 	DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
 	DECLARE ACTION_ID 		INT DEFAULT 14;
-	DECLARE voidTicketSettings   JSON;
-	DECLARE abnormalBetsSettings JSON;
-	DECLARE siteMessageSettings JSON;
-	DECLARE indexLoop 		INT;
+	DECLARE iLoop 			INT;
+    DECLARE jLoop 			INT;
+    DECLARE jsonSetting 	JSON;
 
 	#Get Start Time to calcualte execution duration
 	SET  startTime = UTC_TIMESTAMP(3);
@@ -37,69 +37,35 @@ NCB_NotificationTemplate_Del:BEGIN
 		LEAVE NCB_NotificationTemplate_Del;
 	END IF;
 
-	SELECT Value INTO voidTicketSettings FROM SystemSetting WHERE ID = 4 LIMIT 1;
-	SELECT Value INTO abnormalBetsSettings FROM SystemSetting WHERE ID = 9 LIMIT 1;
-	SELECT Value INTO siteMessageSettings FROM SystemSetting WHERE ID = 14 LIMIT 1;
+	DROP TEMPORARY TABLE IF EXISTS tmpSetting;
+    CREATE TEMPORARY TABLE tmpSetting (Id INT AUTO_INCREMENT NOT NULL, SettingId INT);
+    
+    INSERT INTO tmpSetting (SettingId)
+    VALUES (4), (9), (14);
 
     DROP TEMPORARY TABLE IF EXISTS tmpParseJsonTable;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmpParseJsonTable(NotificationTypeID INT, NotificationTemplateID INT);
-    SET indexLoop = 0;
-    WHILE (JSON_EXTRACT(voidTicketSettings, CONCAT('$[',indexLoop, '].NotificationTemplateID'))) DO 
-		INSERT INTO tmpParseJsonTable(NotificationTypeID, NotificationTemplateID)
-        VALUES (
-            CASE
-                WHEN JSON_UNQUOTE(JSON_EXTRACT(voidTicketSettings, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
-                THEN NULL
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(voidTicketSettings, CONCAT('$[', indexLoop, '].NotificationTypeID')))
-            END,
-            CASE
-                WHEN JSON_UNQUOTE(JSON_EXTRACT(voidTicketSettings, CONCAT('$[', indexLoop, '].NotificationTemplateID'))) = 'null'
-                THEN NULL
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(voidTicketSettings, CONCAT('$[', indexLoop, '].NotificationTemplateID')))
-            END
-		);
+    
+    SET jLoop = 1;
+    WHILE (SELECT 1 FROM tmpSetting WHERE Id = jLoop) DO
+		
+        SELECT s.Value INTO jsonSetting
+        FROM SystemSetting s 
+			INNER JOIN tmpSetting t ON t.SettingId = s.SettingId
+	    WHERE t.Id = jLoop;
         
-        SET indexLoop := indexLoop + 1;
-    END WHILE;
-
-	 #Get Special Delete AbnormalBets voiding ticket for internal settings
-	SET indexLoop = 0;
-    WHILE (JSON_EXTRACT(abnormalBetsSettings, CONCAT('$[',indexLoop, '].NotificationTypeID'))) DO 
-		INSERT INTO tmpParseJsonTable(NotificationTypeID, NotificationTemplateID)
-        VALUES (
-            CASE
-                WHEN JSON_UNQUOTE(JSON_EXTRACT(abnormalBetsSettings, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
-                THEN NULL
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(abnormalBetsSettings, CONCAT('$[', indexLoop, '].NotificationTypeID')))
-            END,
-            CASE
-                WHEN JSON_UNQUOTE(JSON_EXTRACT(abnormalBetsSettings, CONCAT('$[', indexLoop, '].NotificationTemplateID'))) = 'null'
-                THEN NULL
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(abnormalBetsSettings, CONCAT('$[', indexLoop, '].NotificationTemplateID')))
-            END
-		);
+		SET iLoop = 0;
+		WHILE (JSON_EXTRACT(jsonSetting, CONCAT('$[',iLoop, '].NotificationTemplateID'))) DO 
+			INSERT INTO tmpParseJsonTable(NotificationTypeID, NotificationTemplateID)
+			VALUES (
+				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonSetting, CONCAT('$[', iLoop, '].NotificationTypeID'))) = 'null'),
+				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonSetting, CONCAT('$[', iLoop, '].NotificationTemplateID'))) = 'null')
+			);
+			
+			SET iLoop := iLoop + 1;
+		END WHILE;
         
-        SET indexLoop := indexLoop + 1;
-    END WHILE;
-
-    #Get Site Message settings
-	SET indexLoop = 0;
-    WHILE (JSON_EXTRACT(siteMessageSettings, CONCAT('$[',indexLoop, '].NotificationTypeID'))) DO 
-		INSERT INTO tmpParseJsonTable(NotificationTypeID, NotificationTemplateID)
-        VALUES (
-            CASE
-                WHEN JSON_UNQUOTE(JSON_EXTRACT(siteMessageSettings, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
-                THEN NULL
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(siteMessageSettings, CONCAT('$[', indexLoop, '].NotificationTypeID')))
-            END,
-            CASE
-                WHEN JSON_UNQUOTE(JSON_EXTRACT(siteMessageSettings, CONCAT('$[', indexLoop, '].NotificationTemplateID'))) = 'null'
-                THEN NULL
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(siteMessageSettings, CONCAT('$[', indexLoop, '].NotificationTemplateID')))
-            END
-		);
-        
-        SET indexLoop := indexLoop + 1;
+        SET jLoop := jLoop + 1;
     END WHILE;
 
 	IF EXISTS (
@@ -115,6 +81,9 @@ NCB_NotificationTemplate_Del:BEGIN
     
 	DELETE FROM NotificationTemplate nt
 	WHERE nt.NotificationTemplateID = notificationTemplateID;
+    
+    DELETE FROM NotificationTemplateContent ntc
+    WHERE ntc.NotificationTemplateID = NotificationTemplateID;
 
 	#Get Finish Time to calcualte execution duration
 	SET finishTime = UTC_TIMESTAMP(3);
@@ -124,15 +93,8 @@ NCB_NotificationTemplate_Del:BEGIN
 	SET logContent = json_object('notificationTemplateID', notificationTemplateID);
     
 	#Write User Log
-	CALL NCB_UserLog_RunSP_Ins(ACTION_ID
-		,notificationTemplateID 
-		,userID 
-		,logContent 
-		,startTime 
-		,duration
-	);
+	CALL NCB_UserLog_RunSP_Ins(ACTION_ID, notificationTemplateID, userID, logContent, startTime, duration);
 END;
-
 
 //
 DELIMITER ;
