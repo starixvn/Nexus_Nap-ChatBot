@@ -2,8 +2,6 @@ FROM registry.nexdev.net:5050/docker/dotnet/core/sdk:5.0.102-ca-patch-buster-sli
 
 WORKDIR /src
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
-WORKDIR /src
 COPY ["nuget.config", "."]
 COPY ["Fanex.NCB.BotService.EndPoint/Fanex.NCB.BotService.EndPoint.csproj", "Fanex.NCB.BotService.EndPoint/"]
 COPY ["Fanex.NCB.BotService.Core/Fanex.NCB.BotService.Core.csproj", "Fanex.NCB.BotService.Core/"]
