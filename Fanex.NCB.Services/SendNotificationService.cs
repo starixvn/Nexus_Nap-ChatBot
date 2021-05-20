@@ -1,5 +1,10 @@
 ﻿namespace Fanex.NCB.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Threading.Tasks;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
@@ -10,11 +15,6 @@
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Threading.Tasks;
 
     public class SendNotificationService : ISendNotificationService
     {
@@ -47,7 +47,7 @@
             {
                 await UpdateFailedRecipientStatus(notifications.Item2.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
                 var readyToSendRecipients = notifications.Item2.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend));
-               
+
                 await SendNotificationToRecipients(notifications.Item1, readyToSendRecipients);
             }
         }

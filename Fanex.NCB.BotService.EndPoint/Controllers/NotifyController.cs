@@ -11,6 +11,7 @@
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Bot.Builder.Integration;
@@ -18,7 +19,7 @@
     using Microsoft.Bot.Connector.Authentication;
     using Microsoft.Bot.Schema;
 
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class NotifyController : ControllerBase
     {
         private readonly IAdapterIntegration adapter;
@@ -68,7 +69,7 @@
         [HttpPost]
         [Route("api/notifymulti")]
         [HttpPost]
-        public async Task<ObjectResult> SendMulti([FromBody]IList<NotificationMessage> notificationMessages)
+        public async Task<ObjectResult> SendMulti([FromBody] IList<NotificationMessage> notificationMessages)
         {
             var results = new List<SendMessageResult>();
             var tasks = new List<Task<SendMessageResult>>();
