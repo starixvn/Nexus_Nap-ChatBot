@@ -95,7 +95,7 @@
             return httpClient;
         }
 
-        private static BotConfiguration GetBotConfig(IHostingEnvironment environment, AppSettings appSettings, ILogger logger)
+        private static BotConfiguration GetBotConfig(IWebHostEnvironment environment, AppSettings appSettings, ILogger logger)
         {
             BotConfiguration botConfig = null;
             try
