@@ -2,6 +2,10 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/Fanex.NCB.Main",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:56114/Main",
       "sslPort": 0
@@ -45,9 +49,9 @@
       }
     },
     "Docker": {
-      "commandName": "Docker",
-      "launchBrowser": true,
+      "commandName": "IISExpress",
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "ancmHostingModel": "OutOfProcess",
       "publishAllPorts": true
     }
   }
