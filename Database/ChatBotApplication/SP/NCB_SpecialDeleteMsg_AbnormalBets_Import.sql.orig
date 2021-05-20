@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 USE ChatBot;
 
+=======
+>>>>>>> 08c0dec8... 000 - remove unuse file
 DROP PROCEDURE IF EXISTS NCB_SpecialDeleteMsg_AbnormalBets_Import;
 DELIMITER //
 
@@ -24,10 +27,21 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalBets
       - 2020603@Oliver: Add MaxMessageID param [RedmineID: #135312]
       - 2020610@Oliver: remove MaxMessageID [RedmineID: #135686]
 	  - 20210405@Malcolm: Import data for voiding abnormal accounts [RedmineId : #152175] 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+	  - 20210513@Malcolm: Integrate Telegram [RedmineID: #151807]
+
+=======
+>>>>>>> 08c0dec8... 000 - remove unuse file
 	  - 20210722@Malcolm: Change msg content type for abnormal accounts [RedmineId : #158723] 
 	Param's Explanation:
 		- Type = 1: for message of abnormal bets (issue type = 11, 15)
 		- Type = 2: for message of abnormal accounts (issue type = 13)
+<<<<<<< HEAD
+=======
+>>>>>>> 158723 - add Scripts
+>>>>>>> 08c0dec8... 000 - remove unuse file
   */
 )
 SQL SECURITY DEFINER
@@ -63,7 +77,15 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     
   DECLARE PLANNED_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 0;
   DECLARE PLANNED_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Planned';
+<<<<<<< HEAD
   
+=======
+<<<<<<< HEAD
+  
+=======
+
+>>>>>>> 158723 - add Scripts
+>>>>>>> 08c0dec8... 000 - remove unuse file
   SET startTime = UTC_TIMESTAMP();
   SET errCode = 0, errMsg = '';
 
@@ -374,7 +396,10 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     SET h.CheckMsg = CONCAT(h.CheckMsg, '- Internal CSD recipients do not have any suitable chat groups')
     WHERE h.MessageID NOT IN (SELECT MessageID FROM tmp_NotificationRecipientList);
 	
+<<<<<<< HEAD
   /*Step 7: Insert Notification and NotificationSystemMsg*/
+=======
+>>>>>>> 08c0dec8... 000 - remove unuse file
   DROP TEMPORARY TABLE IF EXISTS tmpMessageChannel;
   CREATE TEMPORARY TABLE tmpMessageChannel (MessageID INT, ChannelID TINYINT, INDEX Index_PK (MessageID, ChannelID));
   
@@ -383,6 +408,10 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   FROM tmp_NotificationRecipientList r;
 
 
+<<<<<<< HEAD
+=======
+  /*Step 7: Insert Notification and NotificationSystemMsg*/
+>>>>>>> 08c0dec8... 000 - remove unuse file
   SET iLoop = 1;
   SET createdDate = UTC_TIMESTAMP();
   WHILE (EXISTS (SELECT 1 FROM tmp_MsgHeader WHERE Id = iLoop)) DO
@@ -395,7 +424,15 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
       INSERT INTO Notification(NotificationTypeID, Title, Content, ConfigSendTime, SendImmediately, CreatorID, CreatedDate, Status, StatusID, ChannelId)
         SELECT DISTINCT ct.NotificationTypeID, ct.TemplateTitle, REPLACE(REPLACE(ct.TemplateContent, '{General Info}', h.Content_Detail), '@@', '') Content, startTime, 0 SendImmediately, STARIXIT_CUSTID, CreatedDate, CREATING_NOTIFICATION_STATUS, CREATING_NOTIFICATION_STATUSID, ccChannelId
           FROM tmp_MsgHeader h
+<<<<<<< HEAD
           INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.Type = h.Type
+=======
+<<<<<<< HEAD
+          INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType 
+=======
+          INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.Type = h.Type
+>>>>>>> 158723 - add Scripts
+>>>>>>> 08c0dec8... 000 - remove unuse file
           WHERE h.MessageID = ccMessageID;
 
       SELECT LAST_INSERT_ID() INTO ccNotificationID;
@@ -444,9 +481,21 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
 	/*Step 9: Update Setting*/
   #Update Max MsgID
   UPDATE SystemSetting
+<<<<<<< HEAD
 	SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
   WHERE ID = 8;
          
+=======
+<<<<<<< HEAD
+  	SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
+  WHERE ID = 8;
+         
+=======
+	SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
+		WHERE ID = 8;
+        
+>>>>>>> 158723 - add Scripts
+>>>>>>> 08c0dec8... 000 - remove unuse file
   #Update flag to 'Done'
   UPDATE SystemSetting
   	SET Value = VALUE_DONE

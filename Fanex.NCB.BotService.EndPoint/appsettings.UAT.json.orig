@@ -1,4 +1,12 @@
+<<<<<<< HEAD
 {
+=======
+<<<<<<< HEAD
+﻿{
+=======
+{
+>>>>>>> 000 - update UAT db config
+>>>>>>> 08c0dec8... 000 - remove unuse file
     "Logging": {
         "LogLevel": {
             "Default": "Debug",
@@ -7,10 +15,31 @@
         }
     },
     "AppSettings": {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        "Domain": "",
+=======
+>>>>>>> 000 - update UAT db config
+>>>>>>> 08c0dec8... 000 - remove unuse file
         "AppCredentialId": "ChatBotForLicensee",
         "AppCredentialPassword": "NiIsInR5cCI6IkpXVCJ",
         "Secret": "ZSI6IjMiLCJuYmYiOjE1eyJhbGciOiJIUzI1",
         "AllowedHosts": "*",
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        "BotFilePath": "BotFileConfigs/botConfig.UAT.bot",
+        "BotFileSecret": "",
+        "TokenUrl": "https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token",
+        "SkypeServiceUrl": "https://smba.trafficmanager.net/apis/",
+        "HealthCheckUrl": "https://login.botframework.com/",
+        "EnableChannelIds": "1,2"
+    },
+    "ConnectionStrings": {
+        "ChatBot": "Data Source=10.40.40.135;Port=3306;SslMode=none;Initial Catalog=ChatBot;Persist Security Info=True;User ID=ncb.bot;Password=p6eM0gMBKxM9cc0HaY+q/JK1PyHJEn/3RHZyjU22Cf8Tx/rVEoNLWQ==; CharSet=utf8mb4;"
+=======
+>>>>>>> 08c0dec8... 000 - remove unuse file
         "BotFilePath": "BotFileConfigs\\botConfig.UAT.bot",
         "BotFileSecret": "",
         "TokenUrl": "https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token",
@@ -19,6 +48,10 @@
     },
     "ConnectionStrings": {
         "ChatBot": "Data Source=10.40.40.78;Port=3306;SslMode=none;Initial Catalog=ChatBot;Persist Security Info=True;User ID=ncb.bot;Password=p6eM0gMBKxM9cc0HaY+q/JK1PyHJEn/3RHZyjU22Cf8Tx/rVEoNLWQ==; CharSet=utf8mb4;"
+<<<<<<< HEAD
+=======
+>>>>>>> 000 - update UAT db config
+>>>>>>> 08c0dec8... 000 - remove unuse file
     },
     "LogCategory": "ncb-botserviceendpoint-uat",
     "SentryEngineOptions": {
@@ -30,5 +63,43 @@
         "ProxyAddress": "10.2.252.100:8801",
         "BypassOnLocal": true,
         "TimeOut": 200
+<<<<<<< HEAD
     }
+=======
+<<<<<<< HEAD
+    },
+    "Fanex.Caching.Redis": {
+        "ConnectionString": "ha.nexdev.net:16379,password=foo1@bared,defaultDatabase=6",
+        "ApplicationName": "Fanex.NCB.BotService:EndPoint_UAT",
+        "Db": 6
+    },
+    "CheckDuplicateMessageLogSettings": {
+        "IsEnabled": true,
+        "TimeSpanInMinutes": 5,
+        "ExceptionConversatiionIDs": []
+    },
+    "TelegramBotConfigurations": [
+        {
+            "BotId": 1748739374,
+            "Token": "1748739374:AAHby2jhbix9hPiYlpGkKwb6g3bwakHyoik",
+            "Username": "saba247_uat1_bot",
+            "FirstName": "SABASports_UAT"
+        },
+        {
+            "BotId": 1814107813,
+            "Token": "1814107813:AAE-su8GRLDlSeBr2Bq2pRuFRJZSxyDDW-4",
+            "Username": "saba247_uat2_bot",
+            "FirstName": "SABA_UAT"
+        },
+        {
+            "BotId": 1850090891,
+            "Token": "1850090891:AAFziVmjBk0i4PCi4bNXybh6kYnbVtKM5XE",
+            "Username": "saba247_uat3_bot",
+            "FirstName": "沙巴体育 公告 / Saba Sports Announcement_UAT"
+        }
+    ]
+=======
+    }
+>>>>>>> 000 - update UAT db config
+>>>>>>> 08c0dec8... 000 - remove unuse file
 }
