@@ -116,6 +116,7 @@
             app.UseRouting();
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseAuthorization();
             app.UseAuthentication();
             app.UseBotFramework();
 
