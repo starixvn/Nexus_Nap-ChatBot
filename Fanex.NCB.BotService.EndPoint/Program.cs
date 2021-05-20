@@ -29,13 +29,9 @@
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseUrls($"http://*:5000")
+                .UseKestrel()
+                .UseIISIntegration()
                 .UseStartup<Startup>()
-                .ConfigureLogging(logging =>
-                {
-                    logging.ClearProviders();
-                    logging.SetMinimumLevel(LogLevel.Trace);
-                })
-                .UseNLog();
+                .UseUrls("http://0.0.0.0:5000");
     }
 }
