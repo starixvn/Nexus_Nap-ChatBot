@@ -2,7 +2,6 @@
 {
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.Configuration;
 
     public static class Program
     {
@@ -13,14 +12,9 @@
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-             .ConfigureAppConfiguration((hostingContext, config) =>
-             {
-                 var env = hostingContext.HostingEnvironment;
-                 config.SetBasePath(env.ContentRootPath);
-                 config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-                 config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
-                 config.AddEnvironmentVariables();
-             })
-            .UseStartup<Startup>();
+                .UseKestrel()
+                .UseIISIntegration()
+                .UseStartup<Startup>()
+                .UseUrls("http://0.0.0.0:5000");
     }
 }
