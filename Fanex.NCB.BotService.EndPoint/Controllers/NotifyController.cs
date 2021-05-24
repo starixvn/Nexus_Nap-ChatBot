@@ -9,6 +9,8 @@
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.BotService.Core.Criteria;
+    using Fanex.NCB.BotService.Core.Enum;
+    using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -25,13 +27,22 @@
         private readonly IAdapterIntegration adapter;
         private readonly BotConfiguration botConfig;
         private readonly IConversationService conversationService;
+        private readonly IMessageLogService messageLogService;
+        private readonly CheckDuplicatedMessageLogSetting settings;
         private readonly ILogger logger;
 
-        public NotifyController(IAdapterIntegration adapter, BotConfiguration botConfig, IConversationService conversationService, ILogger logger)
+        public NotifyController(IAdapterIntegration adapter,
+            IMessageLogService messageLogService,
+            BotConfiguration botConfig,
+            IConversationService conversationService,
+            CheckDuplicatedMessageLogSetting settings,
+            ILogger logger)
         {
             this.adapter = adapter;
             this.botConfig = botConfig;
             this.conversationService = conversationService;
+            this.messageLogService = messageLogService;
+            this.settings = settings;
             this.logger = logger;
         }
 
@@ -60,13 +71,13 @@
             catch (Exception ex)
             {
                 errorMessage = ex.Message;
-                await WriteLog(ex);
+                //await WriteLog(ex);
             }
 
             return Ok(errorMessage);
         }
 
-        [HttpPost]
+        [AllowAnonymous]
         [Route("api/notifymulti")]
         [HttpPost]
         public async Task<ObjectResult> SendMulti([FromBody] IList<NotificationMessage> notificationMessages)
@@ -80,15 +91,37 @@
                 {
                     foreach (var conversationInfo in notificationMessage.Recipients)
                     {
-                        tasks.Add(
-                            Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
-                            );
+                        await AddTaskSendNotification(tasks, conversationInfo, notificationMessage);
                     }
                 }
                 results = (await Task.WhenAll(tasks)).ToList();
             }
 
             return Ok(results);
+        }
+
+        private async Task AddTaskSendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
+        {
+            if (settings.IsEnabled)
+            {
+                bool IsExistedOnCacheOrExceptionList = await messageLogService.IsExistedOnCacheOrExceptionList(conversationInfo.ConversationId, notificationMessage.Message);
+
+                tasks.Add(IsExistedOnCacheOrExceptionList ? Task.Run(() => new SendMessageResult
+                {
+                    ConversationId = conversationInfo.ConversationId,
+                    SentTime = DateTime.UtcNow,
+                    ErrorCode = -1,
+                    ErrorMessage = $"The same message to this group has been send during {settings.TimeSpanInMinutes} minutes",
+                    NotificationId = notificationMessage.NotificationId
+                }) : Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
+);
+            }
+            else
+            {
+                tasks.Add(
+                    Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
+                    );
+            }
         }
 
         private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo, int notifictaionId, string message)
@@ -101,6 +134,11 @@
                 var thread = new Thread(async () => await AddMessageLog(conversationReference, message, result));
                 thread.Start();
 
+                if (settings.IsEnabled)
+                {
+                    InsertMessageInCache(result, message);
+                }
+
                 return result;
             }
             catch (Exception exception)
@@ -110,11 +148,24 @@
                 {
                     NotificationId = notifictaionId,
                     ConversationId = conversationInfo.ConversationId,
-                    SentTime = DateTime.Now,
+                    SentTime = DateTime.UtcNow,
                     ErrorCode = 1,
                     ErrorMessage = exception.Message
                 };
             }
+        }
+
+        private void InsertMessageInCache(SendMessageResult sendMessageResult, string messageContent)
+        {
+            var logMessage = new ConversationMessageLog
+            {
+                ConversationId = sendMessageResult.ConversationId,
+                Message = messageContent,
+                Status = sendMessageResult.ErrorCode == 0 ? SentMessageStatus.Success : SentMessageStatus.Fail,
+                SentDate = DateTime.UtcNow
+            };
+            var threadInsertInRedis = new Thread(async () => await messageLogService.InserMessageLogInRedisCache(logMessage));
+            threadInsertInRedis.Start();
         }
 
         private async Task<SendMessageResult> SendMessageNotification(string appId, int notificationId, ConversationReference conversationReference, string message)
@@ -131,19 +182,10 @@
             }
             catch (Exception exception)
             {
+                result.ErrorCode = 1;
+                result.ErrorMessage = exception.Message;
+
                 await WriteLog(exception);
-
-                try
-                {
-                    await SendMessage(appId, conversationReference, message);
-                }
-                catch (Exception ex)
-                {
-                    result.ErrorCode = 1;
-                    result.ErrorMessage = ex.Message;
-
-                    await WriteLog(ex);
-                }
             }
 
             result.SentTime = DateTime.UtcNow;
@@ -197,7 +239,7 @@
             return coversation;
         }
 
-        private ConversationReference GetConversationReference(ConversationInfo conversationInfo)
+        private static ConversationReference GetConversationReference(ConversationInfo conversationInfo)
         {
             var coversation = new ConversationReference
             {

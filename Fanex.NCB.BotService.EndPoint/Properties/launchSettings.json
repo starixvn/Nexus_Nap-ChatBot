@@ -25,9 +25,10 @@
       "applicationUrl": "https://localhost:3979;http://localhost:3978"
     },
     "Docker": {
-      "commandName": "Docker",
+      "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "launchUrl": "http://localhost:3979",
+      "ancmHostingModel": "OutOfProcess",
       "publishAllPorts": true
     }
   }

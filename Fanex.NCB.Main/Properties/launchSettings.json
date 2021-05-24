@@ -50,7 +50,8 @@
     },
     "Docker": {
       "commandName": "IISExpress",
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "launchBrowser": true,
+      "launchUrl": "http://localhost:56114/Main",
       "ancmHostingModel": "OutOfProcess",
       "publishAllPorts": true
     }

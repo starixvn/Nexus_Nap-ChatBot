@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using Fanex.Caching.Redis;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Logging.Extensions;
@@ -13,6 +14,7 @@
     using Fanex.NCB.Shared.Middlewares;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.HttpOverrides;
     using Microsoft.Bot.Builder.Integration.AspNet.Core;
@@ -23,15 +25,18 @@
     using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
     using Sentry;
+    using StackExchange.Redis;
 
     public class Startup
     {
         private readonly ILogger logger;
+        private readonly ConnectionMultiplexer Redis;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             Configuration = configuration;
             Environment = env;
+            Redis = ConnectionMultiplexer.Connect(Configuration.GetSection("Fanex.Caching.Redis:ConnectionString").Value);
             this.logger = logger;
         }
 
@@ -97,6 +102,12 @@
 
             IdentityModelEventSource.ShowPII = true;
             BotServiceDI.Init(services, Configuration, Environment, appSettings, logger);
+
+            services.AddDataProtection()
+                .SetApplicationName(Configuration.GetSection("Fanex.Caching.Redis:ApplicationName").Value)
+                .PersistKeysToStackExchangeRedis(Redis, "Fanex.NCB.BotService.Endpoint-Keys");
+
+            services.AddRedisCache(Configuration.GetSection("Fanex.Caching.Redis"));
         }
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)

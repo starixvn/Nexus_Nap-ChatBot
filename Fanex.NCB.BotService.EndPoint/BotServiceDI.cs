@@ -4,8 +4,10 @@
     using System.IO;
     using System.Net;
     using System.Net.Http;
+    using Fanex.Caching;
     using Fanex.Data.Repository;
     using Fanex.NCB.BotService.Core;
+    using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.BotService.EndPoint.Bots;
@@ -29,12 +31,16 @@
             services.AddTransient<IDynamicRepository, DynamicRepository>();
             services.AddTransient<IBaseService, BaseService>();
             services.AddTransient<IConversationService, ConversationService>();
+            services.AddTransient<IMessageLogService, MessageLogService>();
+            services.AddTransient<ICacheService, CacheService>();
             services.AddTransient<ICredentialProvider, MultiCredentialProvider>();
             services.AddTransient<IBot, LicBot>();
             services.AddTransient<Logging.ILogger, Logging.Logger>();
             var botConfig = GetBotConfig(environment, appSettings, logger);
             services.AddSingleton(botConfig);
             services.AddSingleton(appSettings);
+
+            RegisterCheckDuplicateMessageLogSettings(services, configuration);
 
             var botFrameworkHttpAdapter = GetBotFrameworkHttpAdapter(botConfig, configuration);
             services.AddSingleton(botFrameworkHttpAdapter);
@@ -45,13 +51,6 @@
                 options.HttpClient = GetDefaultHttpClient(configuration);
                 options.OnTurnError = (turnContext, exception) =>
                 {
-                    try
-                    {
-                        logger.LogError($"{DateTime.UtcNow}: Exception caught : {exception}");
-                    }
-                    catch
-                    { }
-
                     throw exception;
                 };
             });
@@ -115,6 +114,14 @@
             }
 
             return botConfig;
+        }
+
+        private static void RegisterCheckDuplicateMessageLogSettings(IServiceCollection services, IConfiguration configuration)
+        {
+            var settingConfiguration = configuration.GetSection("CheckDuplicateMessageLogSettings");
+            services.Configure<CheckDuplicatedMessageLogSetting>(settingConfiguration);
+            var checkDuplicatedMessageSettings = settingConfiguration.Get<CheckDuplicatedMessageLogSetting>();
+            services.AddSingleton(checkDuplicatedMessageSettings);
         }
     }
 }
