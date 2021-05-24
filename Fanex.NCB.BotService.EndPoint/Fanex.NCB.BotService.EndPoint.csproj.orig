@@ -4,16 +4,7 @@
         <LangVersion>latest</LangVersion>
         <UserSecretsId>09022fac-ef2e-4453-8d16-926f18bff5b5</UserSecretsId>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-<<<<<<< HEAD
         <CodeAnalysisRuleSet>..\.sonarlint\napchatbotcsharp.ruleset</CodeAnalysisRuleSet>
-=======
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-        <CodeAnalysisRuleSet>Fanex.NCB.BotService.EndPoint.ruleset</CodeAnalysisRuleSet>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <CodeAnalysisRuleSet>Fanex.NCB.BotService.EndPoint.ruleset</CodeAnalysisRuleSet>
->>>>>>> 000 - update dockerfile botservice endpoint
     </PropertyGroup>
     <ItemGroup>
         <None Remove="logs\log.txt" />
@@ -25,27 +16,25 @@
     <ItemGroup>
         <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.5" />
-<<<<<<< HEAD
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.6" />
         <PackageReference Include="Microsoft.Bot.Builder" Version="4.13.2" />
         <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.13.2" />
         <PackageReference Include="Microsoft.Bot.Configuration" Version="4.13.2" />
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
+<<<<<<< HEAD
         <PackageReference Include="NLog.Web.AspNetCore" Version="4.12.0" />
 =======
-        <PackageReference Include="Microsoft.Bot.Builder" Version="4.13.0" />
-        <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.13.0" />
-        <PackageReference Include="Microsoft.Bot.Configuration" Version="4.13.0" />
-        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
-        <PackageReference Include="RestSharp" Version="106.5.4" />
->>>>>>> 000 - update dockerfile botservice endpoint
+>>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
         <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
         <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
+<<<<<<< HEAD
         <PackageReference Include="Telegram.Bot" Version="16.0.0" />
+=======
+>>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Fanex.NCB.BotService.Core\Fanex.NCB.BotService.Core.csproj" />

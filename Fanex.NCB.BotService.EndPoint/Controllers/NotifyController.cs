@@ -11,6 +11,7 @@
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Enum;
+    using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -29,6 +30,7 @@
         private readonly IAdapterIntegration adapter;
         private readonly IConversationService conversationService;
         private readonly IMessageLogService messageLogService;
+        private readonly CheckDuplicatedMessageLogSetting settings;
         private readonly ILogger logger;
 
         [Obsolete]
@@ -48,6 +50,7 @@
             this.botConfig = botConfig;
             this.conversationService = conversationService;
             this.messageLogService = messageLogService;
+            this.settings = settings;
             this.logger = logger;
         }
 
@@ -82,14 +85,13 @@
             catch (Exception ex)
             {
                 errorMessage = ex.Message;
-                await WriteLog(ex);
+                //await WriteLog(ex);
             }
 
             return Ok(errorMessage);
         }
 
         [Obsolete]
-        [HttpPost]
         [Route("api/notifymulti")]
         public async Task<ObjectResult> SendMulti([FromBody] IList<NotificationMessage> notificationMessages)
         {
@@ -130,6 +132,14 @@
         }
 
         [Obsolete]
+            else
+            {
+                tasks.Add(
+                    Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
+                    );
+            }
+        }
+
         private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo, int notifictaionId, string message)
         {
             bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, message);
@@ -166,6 +176,11 @@
                 var thread = new Thread(async () => await AddMessageLogOnDb(conversationReference, message, result));
                 thread.Start();
 
+                if (settings.IsEnabled)
+                {
+                    InsertMessageInCache(result, message);
+                }
+
                 return result;
             }
             catch (Exception exception)
@@ -185,6 +200,18 @@
         }
 
         [Obsolete]
+        {
+            var logMessage = new ConversationMessageLog
+            {
+                ConversationId = sendMessageResult.ConversationId,
+                Message = messageContent,
+                Status = sendMessageResult.ErrorCode == 0 ? SentMessageStatus.Success : SentMessageStatus.Fail,
+                SentDate = DateTime.UtcNow
+            };
+            var threadInsertInRedis = new Thread(async () => await messageLogService.InserMessageLogInRedisCache(logMessage));
+            threadInsertInRedis.Start();
+        }
+
         private async Task<SendMessageResult> SendMessageNotification(string appId, int notificationId, ConversationReference conversationReference, string message)
         {
             var result = new SendMessageResult

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 {
 =======
 <<<<<<< HEAD
@@ -7,6 +8,9 @@
 {
 >>>>>>> 000 - update UAT db config
 >>>>>>> 08c0dec8... 000 - remove unuse file
+=======
+﻿{
+>>>>>>> d7b03ba8... 000 - Handle avoid send duplicate message to group in few minutes
     "Logging": {
         "LogLevel": {
             "Default": "Debug",
@@ -16,19 +20,26 @@
     },
     "AppSettings": {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
         "Domain": "",
 =======
 >>>>>>> 000 - update UAT db config
 >>>>>>> 08c0dec8... 000 - remove unuse file
+=======
+        "Domain": "",
+>>>>>>> d7b03ba8... 000 - Handle avoid send duplicate message to group in few minutes
         "AppCredentialId": "ChatBotForLicensee",
         "AppCredentialPassword": "NiIsInR5cCI6IkpXVCJ",
         "Secret": "ZSI6IjMiLCJuYmYiOjE1eyJhbGciOiJIUzI1",
         "AllowedHosts": "*",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
+=======
+>>>>>>> d7b03ba8... 000 - Handle avoid send duplicate message to group in few minutes
         "BotFilePath": "BotFileConfigs/botConfig.UAT.bot",
         "BotFileSecret": "",
         "TokenUrl": "https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token",
@@ -37,6 +48,7 @@
         "EnableChannelIds": "1,2"
     },
     "ConnectionStrings": {
+<<<<<<< HEAD
         "ChatBot": "Data Source=10.40.40.135;Port=3306;SslMode=none;Initial Catalog=ChatBot;Persist Security Info=True;User ID=ncb.bot;Password=p6eM0gMBKxM9cc0HaY+q/JK1PyHJEn/3RHZyjU22Cf8Tx/rVEoNLWQ==; CharSet=utf8mb4;"
 =======
 >>>>>>> 08c0dec8... 000 - remove unuse file
@@ -52,6 +64,9 @@
 =======
 >>>>>>> 000 - update UAT db config
 >>>>>>> 08c0dec8... 000 - remove unuse file
+=======
+        "ChatBot": "Data Source=10.40.40.78;Port=3306;SslMode=none;Initial Catalog=ChatBot;Persist Security Info=True;User ID=ncb.bot;Password=p6eM0gMBKxM9cc0HaY+q/JK1PyHJEn/3RHZyjU22Cf8Tx/rVEoNLWQ==; CharSet=utf8mb4;"
+>>>>>>> d7b03ba8... 000 - Handle avoid send duplicate message to group in few minutes
     },
     "LogCategory": "ncb-botserviceendpoint-uat",
     "SentryEngineOptions": {
@@ -64,19 +79,27 @@
         "BypassOnLocal": true,
         "TimeOut": 200
 <<<<<<< HEAD
+<<<<<<< HEAD
     }
 =======
 <<<<<<< HEAD
+=======
+>>>>>>> d7b03ba8... 000 - Handle avoid send duplicate message to group in few minutes
     },
     "Fanex.Caching.Redis": {
         "ConnectionString": "ha.nexdev.net:16379,password=foo1@bared,defaultDatabase=6",
+<<<<<<< HEAD
         "ApplicationName": "Fanex.NCB.BotService:EndPoint_UAT",
         "Db": 6
+=======
+        "ApplicationName": "Fanex.NCB.BotService:EndPoint_UAT"
+>>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
     },
     "CheckDuplicateMessageLogSettings": {
         "IsEnabled": true,
         "TimeSpanInMinutes": 5,
         "ExceptionConversatiionIDs": []
+<<<<<<< HEAD
     },
     "TelegramBotConfigurations": [
         {
@@ -100,6 +123,10 @@
     ]
 =======
     }
+<<<<<<< HEAD
 >>>>>>> 000 - update UAT db config
 >>>>>>> 08c0dec8... 000 - remove unuse file
+=======
+>>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
+>>>>>>> d7b03ba8... 000 - Handle avoid send duplicate message to group in few minutes
 }
