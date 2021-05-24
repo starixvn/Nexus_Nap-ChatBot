@@ -195,7 +195,7 @@ BEGIN
 		--Info of User (Abnormal Accounts)
 		,CTE_AbnornamlAccounts_Site AS
 		(
-			SELECT vh.MessageId, f.val AS Username ,c.site, CASE WHEN s.custid IS NULL THEN 0 ELSE 1 END AS isDeposit, CASE WHEN c.currency = 20 THEN 1 ELSE 0 END AS IsTest
+			SELECT vh.MessageId, f.val AS Username ,CASE WHEN s.custid IS NULL AND c.site NOT IN ('CN88', '789y') THEN 'NV88' ELSE c.site END AS site, CASE WHEN s.custid IS NULL THEN 0 ELSE 1 END AS isDeposit, CASE WHEN c.currency = 20 THEN 1 ELSE 0 END AS IsTest
 			FROM #VoidingHistory vh
 			CROSS APPLY strSplit(vh.UsernamLst, ',') f
 				INNER JOIN dbo.Customer c WITH(NOLOCK) ON c.username = CONVERT(VARCHAR(30), f.val)

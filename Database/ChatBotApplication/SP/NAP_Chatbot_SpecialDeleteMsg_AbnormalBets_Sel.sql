@@ -16,7 +16,6 @@ AS
 		- 20200610@Percy: Exclude message void by BetId [RedmineID: #135686]
 		- 20200701@Percy: Enhance mechaism to get new MessageID - Phase 2 [RedmineID: #135686]
 		- 20200804@Percy: Add RequestId for Ticket Voiding Abnormal Bets - Phase 3 [RedmineID: #135686]
-		- 20210405@Malcolm: Add RequestId for Ticket Voiding Abnormal Accounts [RedmineID: #152175]
 
 	Param's Explanation:
 		@MessageIDLst:
@@ -73,7 +72,9 @@ BEGIN
 	INSERT INTO @tblMessage (MessageId, MsgContentsType, Content_en, Content_cs)
 	SELECT TOP (@BatchSize) m.MessageId, m.MsgContentsType, m.Content_en, m.Content_cs
 	FROM dbo.Msg m WITH (NOLOCK)
-	WHERE m.Content_en LIKE '%@@%'
+	WHERE m.msgtype = 1
+		AND m.isbatch = 1
+		AND m.Content_en LIKE '%@@%'
 		AND EXISTS (
 			SELECT 1 FROM dbo.MsgChatBot mc WITH (NOLOCK)
 			WHERE m.MessageId = mc.MessageId

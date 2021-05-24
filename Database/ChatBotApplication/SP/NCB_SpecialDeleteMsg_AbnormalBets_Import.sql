@@ -231,7 +231,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   INSERT INTO Tmp_templateNotifcationType (templateNotifcationTypeValue)
   SELECT Value 
     FROM SystemSetting
-    WHERE ID IN (9, 20);
+    WHERE ID = 9;
 
   DROP TEMPORARY TABLE IF EXISTS tmp_MsgContentTypeTemplate;
   CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgContentTypeTemplate(
