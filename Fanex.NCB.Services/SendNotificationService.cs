@@ -185,7 +185,7 @@
                         SentTime = DateTimeExtension.ConvertToDateTimeString(result.SentTime),
                         ConversationGroupID = recipient.ChatGroupId,
                         ConversationBotID = recipient.BotId,
-                        Retry = result.ErrorCode != 0,
+                        Retry = result.ErrorCode != 0 && !result.IsIgnoreRetry,
                         IsSuccess = result.ErrorCode == 0,
                         ErrMsg = result.ErrorCode == 0 ? string.Empty :
                         GenerateErrorMessage(RecipientStatuses.BotServiceError, result.ErrorMessage)

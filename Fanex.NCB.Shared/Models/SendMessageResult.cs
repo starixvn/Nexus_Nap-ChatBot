@@ -13,5 +13,7 @@
         public int ErrorCode { get; set; }
 
         public string ErrorMessage { get; set; }
+
+        public bool IsIgnoreRetry { get; set; }
     }
 }

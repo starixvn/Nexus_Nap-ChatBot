@@ -112,7 +112,8 @@
                     SentTime = DateTime.UtcNow,
                     ErrorCode = -1,
                     ErrorMessage = $"The same message to this group has been send during {settings.TimeSpanInMinutes} minutes",
-                    NotificationId = notificationMessage.NotificationId
+                    NotificationId = notificationMessage.NotificationId,
+                    IsIgnoreRetry = true
                 }) : Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
 );
             }
