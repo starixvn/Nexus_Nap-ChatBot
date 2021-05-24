@@ -169,6 +169,7 @@
                .UseSession(app.ApplicationServices.GetService<INapSession>());
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseSession();
@@ -185,8 +186,6 @@
                     name: "default",
                     pattern: "{controller=Auth}/{action=Index}/{id?}");
             });
-
-            app.UseStaticFiles();
         }
     }
 }
