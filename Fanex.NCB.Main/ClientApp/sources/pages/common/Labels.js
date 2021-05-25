@@ -2,6 +2,7 @@
     All: 'All',
     Action: 'Action',
     BotName: 'Bot Name',
+    BotService: 'Bot Service',
     Cancel: 'Cancel',
     ChatGroupMapping: 'Chat Group Mapping',
     ChatGroupType: 'Chat Group Type',

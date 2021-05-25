@@ -43,6 +43,7 @@ export class DataGrid extends Component {
             <Row style={{ height: 32 }}>
                 <Cell colWidth={50} header>{Labels.NumberCol}</Cell>
                 <Cell colWidth={100} header>{Labels.BotName}</Cell>
+                <Cell colWidth={80} header>{Labels.BotService}</Cell>
                 <Cell colWidth={60} header>{Labels.GroupID}</Cell>
                 <Cell colWidth={200} header>{Labels.GroupName}</Cell>
                 <Cell colWidth={110} header>{Labels.ChatGroupType}</Cell>
@@ -113,6 +114,7 @@ export class DataGrid extends Component {
                 rows.push(<Row key={`body${index}`} >
                     <Cell className="text-center">{index + startIndex}</Cell>
                     <Cell>{item.mappingStatusID === mappingStatus.BotRemoved ? '' : item.botName}</Cell>
+                    <Cell>Telegram</Cell>
                     <Cell className="text-center">
                         <span
                             onClick={() => this.copyGroupIdToClipboard(item.conversationID)}
@@ -152,7 +154,7 @@ export class DataGrid extends Component {
                 </Row>);
             });
         } else {
-            rows.push(<Row key={`body${1}`} ><Cell colSpan={isHost ? 12 : 11}><NoDataTitle /></Cell></Row >);
+            rows.push(<Row key={`body${1}`} ><Cell colSpan={isHost ? 13 : 12}><NoDataTitle /></Cell></Row >);
         }
 
         return rows;
