@@ -251,7 +251,7 @@
             adapter = Substitute.For<IAdapterIntegration>();
             messageLogService = Substitute.For<IMessageLogService>();
             botConfig = Substitute.For<BotConfiguration>();
-            checkDuplicatedMessageLogSetting = Substitute.For<CheckDuplicatedMessageLogSetting>();
+            checkDuplicatedMessageLogSetting = new CheckDuplicatedMessageLogSetting { IsEnabled = true, TimeSpanInMinutes = 1, ExceptionConversatiionIDs = ["ABC"] };
             conversationService = Substitute.For<IConversationService>();
             logger = Substitute.For<ILogger>();
             return new NotifyController(adapter, messageLogService, botConfig, conversationService, checkDuplicatedMessageLogSetting, logger);

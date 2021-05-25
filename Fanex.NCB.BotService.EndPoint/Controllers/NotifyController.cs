@@ -55,7 +55,6 @@
         public async Task<ObjectResult> Test()
         {
             await logger.ErrorAsync("test sentry");
-
             return Ok("ok");
         }
 
@@ -81,7 +80,6 @@
             return Ok(errorMessage);
         }
 
-        [AllowAnonymous]
         [Route("api/notifymulti")]
         [HttpPost]
         [Obsolete]

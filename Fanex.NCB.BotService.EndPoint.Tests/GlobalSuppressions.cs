@@ -7,3 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Major Code Smell", "S1123:\"Obsolete\" attributes should include explanations", Justification = "<Pending>", Scope = "member",
     Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.NotifyControllerTests.GetController~Fanex.NCB.BotService.EndPoint.Controllers.NotifyController")]
+[assembly: SuppressMessage("Major Code Smell", "S1123:\"Obsolete\" attributes should include explanations", Justification = "<Pending>", Scope = "member",
+    Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.NotifyControllerTests." +
+    "SendMulti_NotificationListIsNotEmpty_ReturnObjectResultWithErrorList~System.Threading.Tasks.Task")]

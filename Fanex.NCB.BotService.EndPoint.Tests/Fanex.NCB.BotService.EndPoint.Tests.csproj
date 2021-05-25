@@ -3,6 +3,7 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="AutoFixture" Version="4.11.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0">
       <AllowExplicitVersion>true</AllowExplicitVersion>
     </PackageReference>
