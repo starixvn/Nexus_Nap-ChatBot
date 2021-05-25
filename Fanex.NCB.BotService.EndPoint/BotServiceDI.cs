@@ -25,6 +25,7 @@
 
     public static class BotServiceDI
     {
+        [Obsolete]
         public static void Init(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment, AppSettings appSettings, ILogger logger)
         {
             services.AddTransient<IBaseRepository, BaseRepository>();
@@ -56,6 +57,7 @@
             });
         }
 
+        [Obsolete]
         private static IBotFrameworkHttpAdapter GetBotFrameworkHttpAdapter(BotConfiguration botConfig, IConfiguration configuration)
         {
             var credentialProvider = new MultiCredentialProvider(botConfig);
@@ -83,8 +85,10 @@
                     Proxy = proxy,
                 };
 
-                httpClient = new HttpClient(handler: socketsHttpHandler);
-                httpClient.Timeout = TimeSpan.FromSeconds(htttClientTimeOut);
+                httpClient = new HttpClient(handler: socketsHttpHandler)
+                {
+                    Timeout = TimeSpan.FromSeconds(htttClientTimeOut)
+                };
             }
             else
             {
@@ -94,6 +98,7 @@
             return httpClient;
         }
 
+        [Obsolete]
         private static BotConfiguration GetBotConfig(IWebHostEnvironment environment, AppSettings appSettings, ILogger logger)
         {
             BotConfiguration botConfig = null;

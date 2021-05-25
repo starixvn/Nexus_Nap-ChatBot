@@ -1,15 +1,17 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint
 {
-    using Microsoft.Bot.Configuration;
-    using Microsoft.Bot.Connector.Authentication;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Microsoft.Bot.Configuration;
+    using Microsoft.Bot.Connector.Authentication;
 
     public class MultiCredentialProvider : ICredentialProvider
     {
         private readonly Dictionary<string, string> Credentials;
 
+        [Obsolete]
         public MultiCredentialProvider(BotConfiguration botConfig)
         {
             Credentials = botConfig.Services.ToDictionary(t => ((EndpointService)t).AppId, t => ((EndpointService)t).AppPassword);

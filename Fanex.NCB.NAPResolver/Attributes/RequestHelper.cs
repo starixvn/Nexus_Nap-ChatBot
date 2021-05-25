@@ -14,7 +14,7 @@
             if (IsAjaxRequest(context.HttpContext.Request))
             {
                 var response = context.HttpContext.Response;
-                var messageContent = $"<center><b>UnAuthorize</b></center>";
+                const string messageContent = "<center><b>UnAuthorize</b></center>";
                 response.StatusCode = (int)HttpStatusCode.Forbidden;
                 response.WriteAsync(messageContent);
             }

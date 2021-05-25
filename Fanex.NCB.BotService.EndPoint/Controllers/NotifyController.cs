@@ -29,8 +29,11 @@
         private readonly IMessageLogService messageLogService;
         private readonly ILogger logger;
         private readonly CheckDuplicatedMessageLogSetting checkDuplicatedMessageSettings;
+
+        [Obsolete]
         private readonly BotConfiguration botConfig;
 
+        [Obsolete]
         public NotifyController(IAdapterIntegration adapter,
             IMessageLogService messageLogService,
             BotConfiguration botConfig,
@@ -58,6 +61,7 @@
 
         [HttpPost]
         [Route("api/notify")]
+        [Obsolete]
         public async Task<ObjectResult> Send(string botName, string conversationId, string message)
         {
             var appId = GetAppId(botName);
@@ -80,6 +84,7 @@
         [AllowAnonymous]
         [Route("api/notifymulti")]
         [HttpPost]
+        [Obsolete]
         public async Task<ObjectResult> SendMulti([FromBody] IList<NotificationMessage> notificationMessages)
         {
             var results = new List<SendMessageResult>();
@@ -100,6 +105,7 @@
             return Ok(results);
         }
 
+        [Obsolete]
         private async Task SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
         {
             if (checkDuplicatedMessageSettings.IsEnabled)
@@ -125,6 +131,7 @@
             }
         }
 
+        [Obsolete]
         private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo, int notifictaionId, string message)
         {
             try
@@ -169,6 +176,7 @@
             threadInsertInRedis.Start();
         }
 
+        [Obsolete]
         private async Task<SendMessageResult> SendMessageNotification(string appId, int notificationId, ConversationReference conversationReference, string message)
         {
             var result = new SendMessageResult
@@ -193,13 +201,14 @@
             return result;
         }
 
+        [Obsolete]
         private async Task SendMessage(string appId, ConversationReference conversationReference, string message)
         {
             await adapter.ContinueConversationAsync(appId, conversationReference,
                     async (context, token) =>
                     {
-                        MicrosoftAppCredentials.TrustServiceUrl(conversationReference.ServiceUrl);
-                        await context.SendActivityAsync(message);
+                        AppCredentials.TrustServiceUrl(conversationReference.ServiceUrl);
+                        await context.SendActivityAsync(message, cancellationToken: token);
                     },
                     new CancellationToken());
         }
@@ -253,6 +262,7 @@
             return coversation;
         }
 
+        [Obsolete]
         private string GetAppId(string botName)
         {
             var endpoint = (EndpointService)botConfig.Services.FirstOrDefault(t => t.Name.Equals(botName, StringComparison.InvariantCultureIgnoreCase));

@@ -40,13 +40,8 @@
             var httpClient = new HttpClient(new MockHttpMessageHandler(msgs));
             httpClientFactory.CreateClient().Returns(httpClient);
             var result = await service.SendMessageToMultitpleAsync(messages);
-<<<<<<< HEAD
-            var responseData = result.NotificationMessageResult;
-            Assert.Equal(JsonConvert.SerializeObject(responseData), JsonConvert.SerializeObject(messages));
-=======
 
             Assert.Equal(JsonConvert.SerializeObject(result.NotificationMessageResult), JsonConvert.SerializeObject(messages));
->>>>>>> 000 - add nuget.config
         }
 
         [Fact]
@@ -134,6 +129,18 @@
 
         private ChatbotService GetService()
         {
+<<<<<<< HEAD
+=======
+            var settings = new BotSettings
+            {
+                BotDomain = "http://test.com",
+                AuthenticateUrl = "api/Authemticate",
+                BotServiceUrl = "/Test",
+                TokenUrl = "ABC/test",
+                AppCredentialId = "AppId",
+                AppCredentialPassword = "pwd"
+            };
+>>>>>>> 000 - suppress some code smell
             var sponGroupOptions = new NotifyChatGroupOption
             {
                 BotName = "1on1",
@@ -155,11 +162,8 @@
             monitor = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
             monitor.Value.Returns(monitorOptions);
             httpClientFactory = Substitute.For<IHttpClientFactory>();
-<<<<<<< HEAD
-=======
 
             botSettings.Value.Returns(settings);
->>>>>>> 000 - add nuget.config
             notifyChatGroupOptions.Value.Returns(sponGroupOptions);
 
             return new ChatbotService(httpClientFactory, botSettings, monitor, notifyChatGroupOptions);

@@ -24,10 +24,14 @@
         private IMessageLogService messageLogService;
         private IConversationService conversationService;
         private ILogger logger;
+
+        [Obsolete]
         private BotConfiguration botConfig;
+
         private CheckDuplicatedMessageLogSetting checkDuplicatedMessageLogSetting;
 
         [Fact]
+        [Obsolete]
         public async Task Send_InValidBotName_SendContinueWithDefaultAppId()
         {
             var controller = GetController();
@@ -58,6 +62,7 @@
         }
 
         [Fact]
+        [Obsolete]
         public async Task Send_ValidBotName_ReturOkObjectResult()
         {
             var controller = GetController();
@@ -92,6 +97,7 @@
         }
 
         [Fact]
+        [Obsolete]
         public async Task Send_GetGroupConversationThrowException_ReturnExpectedErrorMessage()
         {
             var controller = GetController();
@@ -124,6 +130,7 @@
         }
 
         [Fact]
+        [Obsolete]
         public async Task SendMulti_NotificationListIsNull_ReturnObjectResultWithEmptyList()
         {
             var controller = GetController();
@@ -137,6 +144,7 @@
         }
 
         [Fact]
+        [Obsolete]
         public async Task SendMulti_NotificationListIsEmpty_ReturnObjectResultWithEmptyList()
         {
             var controller = GetController();
@@ -151,6 +159,7 @@
         }
 
         [Fact]
+        [Obsolete]
         public async Task SendMulti_NotificationListIsNotEmpty_ReturnObjectResultWithSuccessList()
         {
             var controller = GetController();
@@ -190,6 +199,7 @@
         }
 
         [Fact]
+        [Obsolete]
         public async Task SendMulti_NotificationListIsNotEmpty_ReturnObjectResultWithErrorList()
         {
             var controller = GetController();
@@ -235,6 +245,7 @@
                 Arg.Any<CancellationToken>());
         }
 
+        [Obsolete]
         private NotifyController GetController()
         {
             adapter = Substitute.For<IAdapterIntegration>();
