@@ -13,8 +13,9 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE `NCB_Setting_BotName_Sel`(
 ) 
 SQL SECURITY DEFINER
 BEGIN
-	SELECT DISTINCT b.ConversationBotID AS Id, b.Name AS Name, b.ChannelID
+	SELECT DISTINCT b.ConversationBotID AS Id, b.Name AS Name, b.ChannelId, c.ChannelName 
     FROM ConversationBot b
+		INNER JOIN ConversationChannel c ON c.ChannelId = b.ChannelId
     WHERE Name IS NOT NULL AND Name <> ''
     ORDER BY b.ChannelID, b.Name;
 END;

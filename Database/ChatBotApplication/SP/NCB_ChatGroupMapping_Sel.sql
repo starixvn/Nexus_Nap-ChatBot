@@ -3,7 +3,7 @@ DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_ChatGroupMapping_Sel (
 		IN botIDs VARCHAR(500) ,
-		IN channelIDs TEXT,
+		IN channelIDs VARCHAR(100),
         IN recipientTypeIds VARCHAR(1000),
         IN recipientName VARCHAR(100)  ,
         IN groupName VARCHAR(500) ,
@@ -136,17 +136,13 @@ BEGIN
     FROM Recipient r
     INNER JOIN Licensee l ON r.SourceId = l.LicenseeID 
 			AND r.RecipientTypeId = RECIPIENT_TYPE_LICENSEE
-    WHERE l.LicenseeStatusId IN (
-														SELECT tls.LicenseeStatusId 
-                                                        FROM tmp_LicenseeStatusIds tls 
-                                                        WHERE tls.LicenseeStatusId <> LICENSEE_STATUSID_NA
-													);
+    WHERE l.LicenseeStatusId IN (SELECT tls.LicenseeStatusId FROM tmp_LicenseeStatusIds tls WHERE tls.LicenseeStatusId <> LICENSEE_STATUSID_NA);
 	
-    IF EXISTS(
-						SELECT 1 
-						FROM tmp_LicenseeStatusIds tls 
-                        WHERE tls.LicenseeStatusId = LICENSEE_STATUSID_NA
-                        )
+    IF EXISTS (
+		SELECT 1 
+		FROM tmp_LicenseeStatusIds tls 
+		WHERE tls.LicenseeStatusId = LICENSEE_STATUSID_NA
+    )
 	THEN
 		INSERT INTO tmp_RecipientIDByLicenseeStatus(RecipientID)
 		SELECT r.RecipientID
@@ -159,11 +155,12 @@ BEGIN
         
 	
     DROP TEMPORARY TABLE IF EXISTS tmp_ConversationID_FIRSTBot;
-	CREATE TEMPORARY TABLE tmp_ConversationID_FIRSTBot(
-																					ConversationGroupID INT
-                                                                                    , ConversationBotID INT
-                                                                                    , UNIQUE INDEX Index_ConversationGroupID(ConversationGroupID)
-																		);
+	CREATE TEMPORARY TABLE tmp_ConversationID_FIRSTBot
+	(
+		ConversationGroupID INT
+		,ConversationBotID INT
+	    ,UNIQUE INDEX Index_ConversationGroupID(ConversationGroupID)
+	);
      
 	INSERT INTO tmp_ConversationID_FIRSTBot (ConversationGroupID, ConversationBotID)
 	SELECT GroupBot.ConversationGroupID, MIN(GroupBot.ConversationBotID) ConversationBotID
@@ -212,29 +209,16 @@ BEGIN
 		AND EXISTS (
 			SELECT 1 
             FROM tmp_MappingStatusIDs t1 
-            WHERE t1.MappingStatusID = CASE 
-																	WHEN FirstBot.ConversationBotID IS NULL 
-																		THEN MAPPING_STATUS_BOT_REMOVED
-																	 WHEN r.RecipientName IS NULL  OR  grpinfo.ChatGroupTypeID IS NULL 
-																		THEN MAPPING_STATUS_NOT_MAPPED
-																	WHEN r.RecipientName IS NOT NULL  AND grpinfo.ChatGroupTypeID IS NOT NULL 
-																		THEN MAPPING_STATUS_MAPPED
-                                                            END
+            WHERE t1.MappingStatusID = CASE WHEN FirstBot.ConversationBotID IS NULL THEN MAPPING_STATUS_BOT_REMOVED
+											WHEN r.RecipientName IS NULL OR grpinfo.ChatGroupTypeID IS NULL THEN MAPPING_STATUS_NOT_MAPPED
+											WHEN r.RecipientName IS NOT NULL AND grpinfo.ChatGroupTypeID IS NOT NULL THEN MAPPING_STATUS_MAPPED
+                                       END
 		)
-        AND (
-					IFNULL(r.RecipientId, RECIPIENT_ID_NA) IN (SELECT rbls.RecipientId FROM tmp_RecipientIDByLicenseeStatus rbls)
-		)
-		AND (
-					IFNULL(r.RecipientTypeID, RECIPIENT_TYPE_ID_NA)  IN (SELECT trt.RecipientTypeId FROM tmp_RecipientTypeIds trt)
-		)
-        AND (
-					IFNULL(r.RecipientName,'') LIKE CONCAT('%', recipientName, '%') 
-		)
-		AND (
-					IFNULL(cgrp.Name,'') LIKE CONCAT( '%', groupName, '%') 
-		)
-		AND (cgrp.ChannelID IN (SELECT tmp_c.ChannelID FROM tmp_ChannelIDs tmp_c))
-		;
+        AND (IFNULL(r.RecipientId, RECIPIENT_ID_NA) IN (SELECT rbls.RecipientId FROM tmp_RecipientIDByLicenseeStatus rbls))
+		AND (IFNULL(r.RecipientTypeID, RECIPIENT_TYPE_ID_NA)  IN (SELECT trt.RecipientTypeId FROM tmp_RecipientTypeIds trt))
+        AND (IFNULL(r.RecipientName,'') LIKE CONCAT('%', recipientName, '%'))
+		AND (IFNULL(cgrp.Name,'') LIKE CONCAT( '%', groupName, '%') )
+		AND (cgrp.ChannelID IN (SELECT tmp_c.ChannelID FROM tmp_ChannelIDs tmp_c));
     
 	-- Get BotConversations for current paging page
     DROP TEMPORARY TABLE IF EXISTS tmp_PagedBotConversation;
@@ -242,6 +226,7 @@ BEGIN
     SELECT tmp.GroupName, 
 		tmp.GroupID, 
 		tmp.ChannelID,
+        c.ChannelName,
         tmp.ChatGroupTypeID, 
         tmp.ChatGroupTypeName, 
         tmp.ConversationID, 
@@ -253,6 +238,7 @@ BEGIN
         tmp.BotMemberID,
         tmp.IsActive
 	FROM tmp_AllBotConversation tmp
+		INNER JOIN ConversationChannel c ON c.ChannelId = tmp.ChannelID
     ORDER BY tmp.GroupName
     LIMIT rowStart, pageSize;
     

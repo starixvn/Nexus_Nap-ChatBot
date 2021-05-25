@@ -5,9 +5,10 @@ DELIMITER //
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_Sel`(
      IN notificationTypeIDLst VARCHAR(1000)
     , IN recipientIDLst TEXT
+    , IN messageId INT UNSIGNED
 	, IN creatorID	INT
     , IN notificationStatusIDLst VARCHAR(1000)
-    , IN ChannelIDLst TEXT
+    , IN ChannelIDLst VARCHAR(1000)
 	, IN configSendTimeFrom DATETIME #UTC
     , IN configSendTimeTo DATETIME #UTC
 	, IN pageIndex INT
@@ -89,7 +90,7 @@ BEGIN
 	END IF;
     
     DROP TEMPORARY TABLE IF EXISTS tmp_ChannelIDLst;
-    CREATE TEMPORARY TABLE tmp_ChannelIDLst (ChannelID VARCHAR(45));
+    CREATE TEMPORARY TABLE tmp_ChannelIDLst (ChannelID TINYINT UNSIGNED);
     
     IF IFNULL(ChannelIDLst, '') <> '' THEN
 		SET @sqlCommand = REPLACE(ChannelIDLst, ',', '),(');
@@ -121,7 +122,7 @@ BEGIN
 												SELECT	tmp_rid.RecipientID
 												FROM tmp_recipientIDLst tmp_rid
                                             )
-    );
+    ) AND (EXISTS (SELECT 1 FROM NotificationSystemMsg m WHERE m.NotificationID = n.NotificationID AND m.MessageID = messageId) OR IFNULL(messageId, 0) = 0);
     
 	#Get data based on Page Index and Page Size
     DROP TEMPORARY TABLE IF EXISTS tmp_Notification;
@@ -138,7 +139,7 @@ BEGIN
                                                     , Status VARCHAR(10)
                                                     , StatusID TINYINT UNSIGNED
                                                     , RecipientSentStatusJSON TEXT
-                                                    ,ChannelID VARCHAR(45)
+                                                    ,ChannelID TINYINT UNSIGNED
 											);
     #Get data based on Page Index and Page Size
     INSERT INTO tmp_Notification (	
@@ -181,6 +182,7 @@ BEGIN
 												FROM tmp_recipientIDLst tmp_rid
                                             )
     )
+	AND (EXISTS (SELECT 1 FROM NotificationSystemMsg m WHERE m.NotificationID = n.NotificationID AND m.MessageID = messageId) OR IFNULL(messageId, 0) = 0)
     ORDER BY n.ConfigSendTime DESC, n.NotificationID DESC
     LIMIT rowStart, pageSize; 
     
@@ -211,8 +213,22 @@ BEGIN
 		);
     
     #2nd dataset: Get data based on Page Index and Page Size
-    SELECT *
-    FROM tmp_Notification n;
+    SELECT 
+		n.NotificationID
+		,n.MessageID
+		,n.NotificationTypeID
+		,n.NotificationTypeName
+		,n.CreatorID
+		,n.CreatorName
+		,n.ConfigSendTime
+		,n.Title
+		,n.Content
+		,n.Status
+		,n.StatusID
+		,n.ChannelID
+        ,c.ChannelName
+    FROM tmp_Notification n
+		INNER JOIN ConversationChannel c ON c.ChannelId = n.ChannelId;
 END;
 
 //

@@ -16,6 +16,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_GetPlanRetr
                 - 20191008@Dominic: Update RetryTime when retry sending a notification
                 - 20191016@Dominic: Limit  number of planned notifs and retrying notifs to send, they are 10 and 100 respectively
 				- 20200302@Oliver: get additional notificationTypeId - RedmineID: #129339
+				- 20210513@Malcolm: Integrate Telegram - RedmineID: #151807
         
     */
 )
@@ -41,11 +42,11 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
     SET  startTime = UTC_TIMESTAMP(3);
     
 	DROP TEMPORARY TABLE IF EXISTS tmp_PlannedNotification;
-	CREATE TEMPORARY TABLE tmp_PlannedNotification(NotificationID INT, LockSuccess BIT);
+	CREATE TEMPORARY TABLE tmp_PlannedNotification(NotificationID INT, ChannelId TINYINT UNSIGNED,LockSuccess BIT);
     
     #Get planned notifications
-    INSERT INTO tmp_PlannedNotification(NotificationID, LockSuccess)
-	SELECT n.NotificationID, 0
+    INSERT INTO tmp_PlannedNotification(NotificationID, ChannelId, LockSuccess)
+	SELECT n.NotificationID, n.ChannelId, 0
 	FROM Notification n
 	WHERE n.StatusID = NOTIFICATION_STATUSID_PLANNED
 		AND n.ConfigSendTime <= UTC_TIMESTAMP()
@@ -79,8 +80,7 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 	 WHERE t.LockSuccess = 1;
 		
 	DROP TEMPORARY TABLE IF EXISTS tmp_TryingNotification;
-	CREATE TEMPORARY TABLE tmp_TryingNotification(NotificationID INT, RecipientID INT, ConversationGroupID INT
-																					, LockSuccess BIT);
+	CREATE TEMPORARY TABLE tmp_TryingNotification(NotificationID INT, RecipientID INT, ConversationGroupID INT, LockSuccess BIT, ChannelId TINYINT UNSIGNED);
     
     #Get Trying notifications
     INSERT INTO tmp_TryingNotification(NotificationID, RecipientID, ConversationGroupID, LockSuccess)
@@ -90,6 +90,10 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
     ORDER BY n.NotificationID
     LIMIT 100;
     
+	#Get ChannelId
+	UPDATE tmp_TryingNotification t
+		INNER JOIN Notification n ON t.NotificationId = n.NotificationId
+	SET t.ChannelId = n.ChannelId;
     
     #Lock Trying notifications to send
 	 UPDATE NotificationRecipientList AS n
@@ -102,8 +106,9 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 	 WHERE n.StatusID = NOTIFICATION_STATUSID_RETRYING;
     
     #1st dataset: Main Notification Info such as title, content
-	SELECT n.NotificationID, n.Title, n.Content
+	SELECT n.NotificationID, n.Title, n.Content, n.ChannelId, c.ChannelName
     FROM Notification n
+		INNER JOIN ConversationChannel c ON c.ChannelId = n.ChannelId
     WHERE n.NotificationID IN (
 		SELECT t1.NotificationID FROM tmp_PlannedNotification t1 WHERE t1.LockSuccess = 1
         UNION ALL
@@ -112,10 +117,11 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
     
     #2nd dataset: List of recipient,bot,conversation
     DROP TEMPORARY TABLE IF EXISTS tmp_ConversationID_FIRSTBot1;
-	CREATE TEMPORARY TABLE tmp_ConversationID_FIRSTBot1(
-																					ConversationGroupID INT
-                                                                                    , ConversationBotID INT
-																		);
+	CREATE TEMPORARY TABLE tmp_ConversationID_FIRSTBot1
+	(
+		ConversationGroupID INT
+		,ConversationBotID  INT
+	);
      
 	INSERT INTO tmp_ConversationID_FIRSTBot1 (ConversationGroupID, ConversationBotID)
 	SELECT GroupBot.ConversationGroupID, MIN(GroupBot.ConversationBotID) ConversationBotID
@@ -130,10 +136,11 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
     
     
 	DROP TEMPORARY TABLE IF EXISTS tmp_ConversationID_FIRSTBot2;
-	CREATE TEMPORARY TABLE tmp_ConversationID_FIRSTBot2(
-																					ConversationGroupID INT
-                                                                                    , ConversationBotID INT
-																		);
+	CREATE TEMPORARY TABLE tmp_ConversationID_FIRSTBot2
+	(
+		ConversationGroupID INT
+		,ConversationBotID INT
+	);
                                                                         
 	INSERT INTO tmp_ConversationID_FIRSTBot2 (ConversationGroupID, ConversationBotID)
     SELECT ConversationGroupID, ConversationBotID
@@ -146,6 +153,7 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 					, grp.ConversationID AS ChatGroupConversationID 
                     , grp.ServiceUrl
                     , grp.ChannelID
+					, c.ChannelName
                     , bot.ConversationBotID AS BotID 
                     , bot.Name AS BotName
                     , bot.ConversationID AS BotConversationID 
@@ -157,26 +165,24 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
                                 ELSE 0 #Ready to send
 						END ErrCode
 	 FROM NotificationRecipientList nrl
-	 INNER JOIN ConversationGroup grp
-			ON grp.ConversationGroupID = nrl.ConversationGroupID
+	 INNER JOIN ConversationGroup grp ON grp.ConversationGroupID = nrl.ConversationGroupID
+	 INNER JOIN ConversationChannel c ON c.ChannelId = grp.ChannelId
      INNER JOIN Recipient r ON r.RecipientID = nrl.RecipientID
-     LEFT JOIN ConversationGroupBot GroupBot 
-			ON GroupBot.ConversationGroupID = nrl.ConversationGroupID
+     LEFT JOIN ConversationGroupBot GroupBot ON GroupBot.ConversationGroupID = nrl.ConversationGroupID
 	 LEFT JOIN tmp_ConversationID_FIRSTBot1 tmp ON GroupBot.ConversationGroupID = tmp.ConversationGroupID
-	LEFT JOIN ConversationBot bot ON bot.ConversationBotID = GroupBot.ConversationBotID
-	LEFT JOIN ConversationGroupExtraInfo gri ON gri.ConversationGroupID = nrl.ConversationGroupID
-    LEFT JOIN ConversationGroupRecipient cgr 
-			ON cgr.ConversationGroupID = nrl.ConversationGroupID 
-				AND cgr.RecipientID = nrl.RecipientID 
-	WHERE nrl.NotificationID IN (SELECT t1.NotificationID FROM tmp_PlannedNotification t1 WHERE t1.LockSuccess = 1)
-    #Trying Nofitication List
-    UNION ALL
-    SELECT nrl.NotificationID AS NotificationID
+	 LEFT JOIN ConversationBot bot ON bot.ConversationBotID = GroupBot.ConversationBotID
+	 LEFT JOIN ConversationGroupExtraInfo gri ON gri.ConversationGroupID = nrl.ConversationGroupID
+     LEFT JOIN ConversationGroupRecipient cgr ON cgr.ConversationGroupID = nrl.ConversationGroupID AND cgr.RecipientID = nrl.RecipientID 
+	 WHERE nrl.NotificationID IN (SELECT t1.NotificationID FROM tmp_PlannedNotification t1 WHERE t1.LockSuccess = 1 AND t1.ChannelId = grp.ChannelId)
+     #Trying Nofitication List
+     UNION ALL
+     SELECT nrl.NotificationID AS NotificationID
 					, r.RecipientID, r.RecipientName
 					, nrl.ConversationGroupID AS ChatGroupID
 					, grp.ConversationID AS ChatGroupConversationID 
                     , grp.ServiceUrl
-                    , grp.ChannelID
+                    , c.ChannelID
+					, c.ChannelName
                     , bot.ConversationBotID AS BotID 
                     , bot.Name AS BotName
                     , bot.ConversationID AS BotConversationID 
@@ -193,15 +199,14 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 					AND nrl.RecipientID = tnlst.RecipientID  
                     AND nrl.ConversationGroupID = tnlst.ConversationGroupID
                     AND tnlst.LockSuccess = 1
-	 INNER JOIN ConversationGroup grp
-			ON grp.ConversationGroupID = nrl.ConversationGroupID
+	 INNER JOIN ConversationGroup grp ON grp.ConversationGroupID = nrl.ConversationGroupID AND tnlst.ChannelId = grp.ChannelId
+	 INNER JOIN ConversationChannel c ON c.ChannelId = grp.ChannelId
      INNER JOIN Recipient r ON r.RecipientID = nrl.RecipientID
-     LEFT JOIN ConversationGroupBot GroupBot 
-			ON GroupBot.ConversationGroupID = nrl.ConversationGroupID
+     LEFT JOIN ConversationGroupBot GroupBot ON GroupBot.ConversationGroupID = nrl.ConversationGroupID
 	 LEFT JOIN tmp_ConversationID_FIRSTBot2 tmp ON GroupBot.ConversationGroupID = tmp.ConversationGroupID
-	LEFT JOIN ConversationBot bot ON bot.ConversationBotID = GroupBot.ConversationBotID
-	LEFT JOIN ConversationGroupExtraInfo gri ON gri.ConversationGroupID = nrl.ConversationGroupID
-    LEFT JOIN ConversationGroupRecipient cgr 
+	 LEFT JOIN ConversationBot bot ON bot.ConversationBotID = GroupBot.ConversationBotID
+	 LEFT JOIN ConversationGroupExtraInfo gri ON gri.ConversationGroupID = nrl.ConversationGroupID
+     LEFT JOIN ConversationGroupRecipient cgr 
 			ON cgr.ConversationGroupID = nrl.ConversationGroupID 
 				AND cgr.RecipientID = nrl.RecipientID;
     

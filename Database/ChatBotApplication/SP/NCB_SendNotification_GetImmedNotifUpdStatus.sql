@@ -26,6 +26,8 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
     DECLARE duration 			INT;							
     DECLARE logContent 		TEXT;
     DECLARE ACTION_ID 		INT DEFAULT 6;
+	DECLARE _ChannelName 	VARCHAR(45);
+	DECLARE _ChannelId 	    TINYINT UNSIGNED;
     
     #Constants
 	DECLARE NOTIFICATION_STATUSID_SENDING	INT DEFAULT 3;
@@ -39,9 +41,11 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
     SET errCode=0, errMsg='';
     
     #Check param
-	IF  NOT EXISTS(SELECT 1 
-									FROM Notification  n
-                                    WHERE n.NotificationID = notificationID ) THEN
+	IF  NOT EXISTS(
+		SELECT 1 
+		FROM Notification  n
+        WHERE n.NotificationID = notificationID 
+	) THEN
 		SET errCode=601, errMsg='Invalid NotificationID';
         LEAVE NCB_SendNotification_GetImmedNotifUpdStatus;
 	END IF;
@@ -62,6 +66,13 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
     SET rlst.Status = NOTIFICATION_STATUS_SENDING
 			, rlst.StatusID = NOTIFICATION_STATUSID_SENDING
     WHERE rlst.NotificationID = notificationID;
+	
+	#Get ChannelName;
+	SELECT n.ChannelId ,c.ChannelName
+		INTO _ChannelId, _ChannelName
+	FROM Notification n
+		INNER JOIN ConversationChannel c ON n.ChannelId = c.ChannelId
+	WHERE n.NotificationId = notificationID;
     
     #1st dataset: Main Notification Info such as title, content
 	SELECT n.NotificationID, n.Title, n.Content
@@ -70,10 +81,11 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
 
 	#2nd dataset: List of recipient,bot,conversation
     DROP TEMPORARY TABLE IF EXISTS tmp_ConversationID_FIRSTBot;
-	CREATE TEMPORARY TABLE tmp_ConversationID_FIRSTBot(
-																					ConversationGroupID INT
-                                                                                    , ConversationBotID INT
-																		);
+	CREATE TEMPORARY TABLE tmp_ConversationID_FIRSTBot
+	(
+		ConversationGroupID INT
+		,ConversationBotID INT
+	);
      
 	INSERT INTO tmp_ConversationID_FIRSTBot (ConversationGroupID, ConversationBotID)
 	SELECT GroupBot.ConversationGroupID, MIN(GroupBot.ConversationBotID) ConversationBotID
@@ -91,7 +103,8 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
 					, nrl.ConversationGroupID AS ChatGroupID
 					, grp.ConversationID AS ChatGroupConversationID 
                     , grp.ServiceUrl
-                    , grp.ChannelID
+                    , _ChannelId AS ChannelId
+					, _ChannelName AS ChannelName
                     , bot.ConversationBotID AS BotID 
                     , bot.Name AS BotName
                     , bot.ConversationID AS BotConversationID 
