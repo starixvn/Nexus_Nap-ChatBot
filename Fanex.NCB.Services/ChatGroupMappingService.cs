@@ -66,7 +66,7 @@
             return await baseService.ExecuteNonQueryAsync(command);
         }
 
-        private IEnumerable<ChatGroupMappingResult> MappingData(IEnumerable<BotConversation> conversations,
+        private static IEnumerable<ChatGroupMappingResult> MappingData(IEnumerable<BotConversation> conversations,
             IEnumerable<BotConversationMember> members,
             IEnumerable<ConversationRecipient> conversationRecipients)
         {

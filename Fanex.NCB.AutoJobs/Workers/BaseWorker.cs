@@ -38,12 +38,11 @@
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-
             logService.WriteLogFileInfo($"{jobSetting.JobName}: Service Starting");
             return base.StartAsync(cancellationToken);
         }
 
-        private async void Execute(object state)
+        private void Execute(object state)
         {
             try
             {
@@ -53,14 +52,14 @@
                 {
                     isRunning = true;
                     logService.WriteLogFileWarning($"{jobSetting.JobName}: Doing...");
-                    await ExecuteJobAsync();
+                    _ = ExecuteJobAsync();
                     logService.WriteLogFileWarning($"{jobSetting.JobName}: Done.");
                 }
             }
             catch (Exception ex)
             {
-                await logService.WriteExceptionSentryErrorAsync(ex);
-                await logService.WriteMessageSentryErrorAsync(ex.ToString());
+                _ = logService.WriteExceptionSentryErrorAsync(ex);
+                _ = logService.WriteMessageSentryErrorAsync(ex.ToString());
                 logService.WriteLogFileError($"{jobSetting.JobName}: Error - {ex}");
             }
             finally
@@ -86,6 +85,7 @@
         {
             logService.WriteLogFileWarning($"{jobSetting.JobName}: Disposing Service");
             timer.Dispose();
+            GC.SuppressFinalize(this);
             base.Dispose();
         }
 

@@ -76,7 +76,7 @@
             return Json(menu);
         }
 
-        private IEnumerable<Menu> GetMenus(IEnumerable<MenuItem> menuItems)
+        private static IEnumerable<Menu> GetMenus(IEnumerable<MenuItem> menuItems)
         {
             return menuItems.Where(m => m.Parent == null)
                 .Select(m => new Menu

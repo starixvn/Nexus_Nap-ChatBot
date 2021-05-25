@@ -43,13 +43,13 @@
             var onUserId = await UserCheckIn(parameter);
             if (onUserId > 0)
             {
-                await LogUserLoginAsync(parameter);
+                _ = LogUserLoginAsync(parameter);
             }
 
             return onUserId;
         }
 
-        private async Task LogUserLoginAsync(LoginParameter parameter)
+        private static async Task LogUserLoginAsync(LoginParameter parameter)
         {
             var logCriteria = new LogUserLoginCriteria
             {
@@ -69,7 +69,7 @@
             }
         }
 
-        private async Task<int> UserCheckIn(LoginParameter parameter)
+        private static async Task<int> UserCheckIn(LoginParameter parameter)
         {
             var criteria = new UserCheckInCriteria
             {
@@ -154,7 +154,7 @@
             return onUserId;
         }
 
-        private async Task<int> SSOCheckIn(SSOLoginParameter parameter)
+        private static async Task<int> SSOCheckIn(SSOLoginParameter parameter)
         {
             var criteria = new UserSsoCheckInUserCriteria
             {
@@ -175,7 +175,7 @@
             }
         }
 
-        private async Task LogSSOLoginAsync(SSOLoginParameter parameter)
+        private static async Task LogSSOLoginAsync(SSOLoginParameter parameter)
         {
             var logCriteria = new LogUserLoginCriteria
             {
@@ -215,7 +215,7 @@
             throw new NotImplementedException();
         }
 
-        private async Task<bool> IsActivatedAsync(int siteId)
+        private static async Task<bool> IsActivatedAsync(int siteId)
         {
             var criteria = new GetByIdSiteCriteria
             {
