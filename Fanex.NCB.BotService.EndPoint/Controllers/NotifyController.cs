@@ -93,6 +93,7 @@
 
         [Obsolete]
         [Route("api/notifymulti")]
+        [Obsolete]
         public async Task<ObjectResult> SendMulti([FromBody] IList<NotificationMessage> notificationMessages)
         {
             var results = new List<SendMessageResult>();
@@ -140,6 +141,7 @@
             }
         }
 
+        [Obsolete]
         private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo, int notifictaionId, string message)
         {
             bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, message);
@@ -212,6 +214,7 @@
             threadInsertInRedis.Start();
         }
 
+        [Obsolete]
         private async Task<SendMessageResult> SendMessageNotification(string appId, int notificationId, ConversationReference conversationReference, string message)
         {
             var result = new SendMessageResult

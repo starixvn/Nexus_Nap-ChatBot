@@ -30,6 +30,7 @@
         [Obsolete]
         private BotConfiguration botConfig;
 
+
         [Fact]
         [Obsolete]
         public async Task Send_InValidBotName_SendContinueWithDefaultAppId()
@@ -93,6 +94,7 @@
         }
 
         [Fact]
+        [Obsolete]
         [Obsolete]
         public async Task SendMulti_NotificationListIsNull_ReturnObjectResultWithEmptyList()
         {

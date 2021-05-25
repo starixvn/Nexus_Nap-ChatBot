@@ -11,10 +11,7 @@
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Enum;
-<<<<<<< HEAD
-=======
     using Fanex.NCB.BotService.Core.Models;
->>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -33,29 +30,27 @@
         private readonly IAdapterIntegration adapter;
         private readonly IConversationService conversationService;
         private readonly IMessageLogService messageLogService;
-<<<<<<< HEAD
+        private readonly CheckDuplicatedMessageLogSetting settings;
         private readonly ILogger logger;
+<<<<<<< HEAD
+=======
+        private readonly CheckDuplicatedMessageLogSetting checkDuplicatedMessageSettings;
+>>>>>>> 000 - suppress some code smell
 
         [Obsolete]
         private readonly BotConfiguration botConfig;
 
         [Obsolete]
+<<<<<<< HEAD
         public NotifyController(
             IOptions<AppSettings> appSettings,
             IAdapterIntegration adapter,
-            IMessageLogService messageLogService,
-            BotConfiguration botConfig,
-            IConversationService conversationService,
 =======
-        private readonly CheckDuplicatedMessageLogSetting settings;
-        private readonly ILogger logger;
-
         public NotifyController(IAdapterIntegration adapter,
+>>>>>>> 000 - suppress some code smell
             IMessageLogService messageLogService,
             BotConfiguration botConfig,
             IConversationService conversationService,
-            CheckDuplicatedMessageLogSetting settings,
->>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
             ILogger logger)
         {
             this.appSettings = appSettings.Value;
@@ -63,10 +58,7 @@
             this.botConfig = botConfig;
             this.conversationService = conversationService;
             this.messageLogService = messageLogService;
-<<<<<<< HEAD
-=======
             this.settings = settings;
->>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
             this.logger = logger;
         }
 
@@ -81,8 +73,13 @@
 
         [HttpPost]
         [Route("api/notify")]
+<<<<<<< HEAD
         [Obsolete("Pending")]
         public async Task<ObjectResult> Send([FromBody] ConversationInfo conversationInfo)
+=======
+        [Obsolete]
+        public async Task<ObjectResult> Send(string botName, string conversationId, string message)
+>>>>>>> 000 - suppress some code smell
         {
             var errorMessage = string.Empty;
             try
@@ -107,13 +104,13 @@
             return Ok(errorMessage);
         }
 
-<<<<<<< HEAD
         [Obsolete]
-        [HttpPost]
-=======
-        [AllowAnonymous]
->>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
         [Route("api/notifymulti")]
+<<<<<<< HEAD
+=======
+        [HttpPost]
+        [Obsolete]
+>>>>>>> 000 - suppress some code smell
         public async Task<ObjectResult> SendMulti([FromBody] IList<NotificationMessage> notificationMessages)
         {
             var results = new List<SendMessageResult>();
@@ -127,11 +124,7 @@
                 {
                     foreach (var conversationInfo in notification.Recipients)
                     {
-<<<<<<< HEAD
                         SendNotification(tasks, conversationInfo, notification);
-=======
-                        await AddTaskSendNotification(tasks, conversationInfo, notificationMessage);
->>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
                     }
                 }
 
@@ -141,9 +134,12 @@
             return Ok(results);
         }
 
-<<<<<<< HEAD
         [Obsolete]
+<<<<<<< HEAD
         private void SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
+=======
+        private async Task SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
+>>>>>>> 000 - suppress some code smell
         {
             bool isEnabledSkypeChannel = appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype);
             tasks.Add(!isEnabledSkypeChannel ? Task.Run(() => new SendMessageResult
@@ -158,23 +154,6 @@
         }
 
         [Obsolete]
-=======
-        private async Task AddTaskSendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
-        {
-            if (settings.IsEnabled)
-            {
-                bool IsExistedOnCacheOrExceptionList = await messageLogService.IsExistedOnCacheOrExceptionList(conversationInfo.ConversationId, notificationMessage.Message);
-
-                tasks.Add(IsExistedOnCacheOrExceptionList ? Task.Run(() => new SendMessageResult
-                {
-                    ConversationId = conversationInfo.ConversationId,
-                    SentTime = DateTime.UtcNow,
-                    ErrorCode = -1,
-                    ErrorMessage = $"The same message to this group has been send during {settings.TimeSpanInMinutes} minutes",
-                    NotificationId = notificationMessage.NotificationId
-                }) : Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
-);
-            }
             else
             {
                 tasks.Add(
@@ -183,7 +162,7 @@
             }
         }
 
->>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
+        [Obsolete]
         private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo, int notifictaionId, string message)
         {
             bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, message);
@@ -243,10 +222,7 @@
             }
         }
 
-<<<<<<< HEAD
         [Obsolete]
-=======
-        private void InsertMessageInCache(SendMessageResult sendMessageResult, string messageContent)
         {
             var logMessage = new ConversationMessageLog
             {
@@ -259,7 +235,7 @@
             threadInsertInRedis.Start();
         }
 
->>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
+        [Obsolete]
         private async Task<SendMessageResult> SendMessageNotification(string appId, int notificationId, ConversationReference conversationReference, string message)
         {
             var result = new SendMessageResult
@@ -318,23 +294,6 @@
             }
         }
 
-<<<<<<< HEAD
-=======
-        private async Task<ConversationReference> GetConversationReference(string conversationId, string botName)
-        {
-            var conversationGroup = await conversationService.GetGroupConversation(conversationId, botName);
-            var coversation = new ConversationReference
-            {
-                Bot = new ChannelAccount { Id = conversationGroup.BotConversationId, Name = conversationGroup.BotName, Role = "bot" },
-                Conversation = new ConversationAccount { Id = conversationId },
-                ServiceUrl = conversationGroup.ServiceUrl,
-                ChannelId = conversationGroup.ChannelId
-            };
-
-            return coversation;
-        }
-
->>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
         private static ConversationReference GetConversationReference(ConversationInfo conversationInfo)
         {
             var coversation = new ConversationReference
