@@ -225,7 +225,7 @@
             {
                 { "ReturnUrl", userLogin.ReturnUrl },
                 { "invalidLogin", true },
-                { "errorMsg", Labels.NoPermision }
+                { "errorMsg", Labels.WrongPassword }
             };
             var user = new User
             {
@@ -253,7 +253,7 @@
             var userLogin = new UserLogin
             {
                 Username = "sa",
-                Password = "1234",
+                Password = NAP.Client.Helpers.Common.Cryptography.CfsEnCode("1234"),
                 ReturnUrl = "/Test"
             };
 
