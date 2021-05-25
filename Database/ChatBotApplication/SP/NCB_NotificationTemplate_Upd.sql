@@ -54,7 +54,7 @@ NCB_NotificationTemplate_Upd:BEGIN
 	END IF;
 	
     DROP TEMPORARY TABLE IF EXISTS tmpSetting;
-    CREATE TEMPORARY TABLE tmpSetting (ID INT AUTO_INCREMENT NOT NULL,SettingId INT UNSIGNED NOT NULL);
+    CREATE TEMPORARY TABLE tmpSetting (ID INT AUTO_INCREMENT NOT NULL,SettingId INT UNSIGNED NOT NULL, PRIMARY KEY (ID));
     INSERT INTO tmpSetting (SettingId)
     VALUES (4), (9), (14);
     
@@ -62,8 +62,8 @@ NCB_NotificationTemplate_Upd:BEGIN
     CREATE TEMPORARY TABLE tmpContent (ChannelId TINYINT UNSIGNED NOT NULL, Content MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci);
 
 	SET iLoop = 0;
-    WHILE (JSON_EXTRACT(ContentLst, CONCAT('$', iLoop, '].ChannelId')) IS NOT NULL) DO
-		INSERT INTO Tmp_Content (ChannelId, Content)
+    WHILE (JSON_EXTRACT(ContentLst, CONCAT('$[', iLoop, '].ChannelId')) IS NOT NULL) DO
+		INSERT INTO tmpContent (ChannelId, Content)
         VALUES 
         (
 			JSON_UNQUOTE(JSON_EXTRACT(ContentLst, CONCAT('$[', iLoop, '].ChannelId'))),
@@ -95,6 +95,7 @@ NCB_NotificationTemplate_Upd:BEGIN
 			);
 			SET iLoop := iLoop + 1;
 		END WHILE;
+		SET jLoop := jLoop + 1;
     END WHILE;
 
 	SELECT tmppjt.TemplateRequiredParams
@@ -129,8 +130,8 @@ NCB_NotificationTemplate_Upd:BEGIN
         EXISTS 
         (
 			SELECT 1 
-            FROM tmpParams 
-			WHERE LOCATE(TRIM(Param), Content) = 0
+            FROM tmpParams t, tmpContent c
+			WHERE LOCATE(TRIM(t.Param), c.Content) = 0
 		)
     )
 	THEN

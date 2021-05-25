@@ -25,16 +25,16 @@ BEGIN
     DECLARE duration 		INT;							
     DECLARE logContent 		TEXT CHARACTER SET utf8mb4;
     DECLARE ACTION_ID 		INT DEFAULT 17;
-	DECLARE jsonSettings    JSON;
-    DECLARE iLoop   	INT;
-	DECLARE jLoop   	INT;
+	DECLARE jsonSetting     JSON;
+    DECLARE iLoop   	    INT;
+	DECLARE jLoop   	    INT;
 	
 	-- Get Start Time to calcualte execution duration
     SET startTime = UTC_TIMESTAMP(3);
     SET errCode = 0, errMsg = '';
     
     DROP TEMPORARY TABLE IF EXISTS tmpSetting;
-    CREATE TEMPORARY TABLE tmpSetting (Id INT AUTO_INCREMENT NOT NULL, SettingId INT UNSIGNED NOT NULL);
+    CREATE TEMPORARY TABLE tmpSetting (Id INT AUTO_INCREMENT NOT NULL, SettingId INT UNSIGNED NOT NULL, PRIMARY KEY (Id));
     INSERT INTO tmpSetting (SettingId)
     VALUES (4), (9), (14);
 

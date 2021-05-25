@@ -51,7 +51,7 @@ NCB_NotificationTemplate_Ins:BEGIN
     CREATE TEMPORARY TABLE tmpContent (ChannelId TINYINT UNSIGNED NOT NULL, Content MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci);
     
     SET iLoop = 0;
-    WHILE (JSON_EXTRACT(ContentLst, CONCAT('$', iLoop, '].ChannelId')) IS NOT NULL) DO
+    WHILE (JSON_EXTRACT(ContentLst, CONCAT('$[', iLoop, '].ChannelId')) IS NOT NULL) DO
 		INSERT INTO tmpContent (ChannelId, Content)
         VALUES 
         (

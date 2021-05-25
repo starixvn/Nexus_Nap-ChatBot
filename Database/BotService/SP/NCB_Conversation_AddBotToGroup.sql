@@ -47,7 +47,7 @@ BEGIN
     
 	IF (NOT EXISTS (SELECT 1 FROM ConversationBot AS cb WHERE cb.ConversationId = botConversationId)) 
     THEN
-		INSERT INTO ConversationBot(`ConversationId`, `Name`, `ChannelID``)
+		INSERT INTO ConversationBot(`ConversationId`, `Name`, `ChannelID`)
         VALUES (botConversationId, botName, ChannelID);
         
         SET conversationBotID = LAST_INSERT_ID();

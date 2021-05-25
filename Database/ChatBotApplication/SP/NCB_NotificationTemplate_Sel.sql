@@ -20,7 +20,7 @@ NCB_NotificationTemplate_Sel:BEGIN
 	DECLARE jLoop   INT;
     
 	DROP TEMPORARY TABLE IF EXISTS tmpSetting;
-    CREATE TEMPORARY TABLE tmpSetting (Id INT AUTO_INCREMENT NOT NULL, SettingId INT UNSIGNED NOT NULL);
+    CREATE TEMPORARY TABLE tmpSetting (Id INT AUTO_INCREMENT NOT NULL, SettingId INT UNSIGNED NOT NULL, PRIMARY KEY (ID));
     INSERT INTO tmpSetting (SettingId)
     VALUES (4), (9), (14);
     
@@ -52,7 +52,7 @@ NCB_NotificationTemplate_Sel:BEGIN
 	SELECT nt.NotificationTemplateID
 		,nt.NotificationTemplateName
         ,nt.Title
-        ,nt.Content
+        ,ntc.Content
         ,nt.NotificationTypeID
         ,CASE WHEN (m.NotificationTemplateID IS NOT NULL) THEN 1 ELSE 0 END AS UnRemovable
     FROM NotificationTemplate nt

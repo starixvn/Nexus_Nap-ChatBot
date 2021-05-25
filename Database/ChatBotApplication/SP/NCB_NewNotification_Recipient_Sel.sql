@@ -29,7 +29,7 @@ BEGIN
     DECLARE nowGMTMinus4 DATETIME;
     
 	DROP TEMPORARY TABLE IF EXISTS tmp_ChannelIdLst;
-	CREATE TEMPORARY TABLE tmp_ChannelIdLst(ChannelId TINYINT UNSIGNED);;
+	CREATE TEMPORARY TABLE tmp_ChannelIdLst(ChannelId TINYINT UNSIGNED);
 	
 	SET @sqlCommand = REPLACE(ChannelIdLst, ',', '),(');
 	SET @sqlCommand = CONCAT('(', @sqlCommand, ')');

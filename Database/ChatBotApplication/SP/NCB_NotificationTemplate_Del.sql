@@ -38,7 +38,7 @@ NCB_NotificationTemplate_Del:BEGIN
 	END IF;
 
 	DROP TEMPORARY TABLE IF EXISTS tmpSetting;
-    CREATE TEMPORARY TABLE tmpSetting (Id INT AUTO_INCREMENT NOT NULL, SettingId INT);
+    CREATE TEMPORARY TABLE tmpSetting (Id INT AUTO_INCREMENT NOT NULL, SettingId INT, PRIMARY KEY (Id));
     
     INSERT INTO tmpSetting (SettingId)
     VALUES (4), (9), (14);
@@ -58,8 +58,8 @@ NCB_NotificationTemplate_Del:BEGIN
 		WHILE (JSON_EXTRACT(jsonSetting, CONCAT('$[',iLoop, '].NotificationTemplateID'))) DO 
 			INSERT INTO tmpParseJsonTable(NotificationTypeID, NotificationTemplateID)
 			VALUES (
-				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonSetting, CONCAT('$[', iLoop, '].NotificationTypeID'))) = 'null'),
-				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonSetting, CONCAT('$[', iLoop, '].NotificationTemplateID'))) = 'null')
+				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonSetting, CONCAT('$[', iLoop, '].NotificationTypeID'))), 'null'),
+				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonSetting, CONCAT('$[', iLoop, '].NotificationTemplateID'))), 'null')
 			);
 			
 			SET iLoop := iLoop + 1;
