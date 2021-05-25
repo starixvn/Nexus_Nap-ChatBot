@@ -10,7 +10,7 @@
 
         public string Title { get; set; }
 
-        public string Content { get; set; }
+        public string ContentLst { get; set; }
 
         public int CreatorId { get; set; }
 
@@ -21,7 +21,7 @@
 #pragma warning disable S1067 // Expressions should not be too complex
 
         public override bool IsValid() => NotificationTypeId > 0 && CreatorId > 0 && !string.IsNullOrWhiteSpace(NotificationTemplateName)
-            && !string.IsNullOrWhiteSpace(Title) && !string.IsNullOrWhiteSpace(Content);
+            && !string.IsNullOrWhiteSpace(Title) && !string.IsNullOrWhiteSpace(ContentLst);
 
 #pragma warning restore S1067 // Expressions should not be too complex
     }

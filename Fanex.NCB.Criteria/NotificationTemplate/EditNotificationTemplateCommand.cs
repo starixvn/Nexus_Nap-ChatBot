@@ -12,7 +12,7 @@
 
         public string Title { get; set; }
 
-        public string Content { get; set; }
+        public string ContentLst { get; set; }
 
         public int ModifierId { get; set; }
 
@@ -22,6 +22,6 @@
 
         public override bool IsValid() => isValidIntParam() &&
             !string.IsNullOrWhiteSpace(NotificationTemplateName)
-            && !string.IsNullOrWhiteSpace(Title) && !string.IsNullOrWhiteSpace(Content);
+            && !string.IsNullOrWhiteSpace(Title) && !string.IsNullOrWhiteSpace(ContentLst);
     }
 }

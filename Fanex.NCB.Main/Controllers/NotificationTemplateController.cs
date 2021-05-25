@@ -1,17 +1,22 @@
 namespace Fanex.NCB.SkypeBot.Controllers
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NAP.Client;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
+    using Fanex.NCB.Core.Enum;
+    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Main.ViewModel.NotificationTemplate;
     using Fanex.NCB.Models.NotificationTemplate;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
+    using Newtonsoft.Json;
     using static Fanex.NAP.Core.Business.Constant;
 
     [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
@@ -41,7 +46,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Read)]
         public async Task<IActionResult> Get(int? notificationTypeId, int pageIndex, int pageSize)
         {
-            var result = await notificationTemplaceService.GetAsync(notificationTypeId, pageIndex, pageSize).ConfigureAwait(false);
+            var result = await notificationTemplaceService.GetAsync(notificationTypeId, pageIndex, pageSize);
 
             return Json(new { total = result.Item1, data = result.Item2 });
         }
@@ -50,9 +55,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Read)]
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await notificationTemplaceService.GetByIdAsync(id).ConfigureAwait(false);
-
-            return Json(result);
+            NotificationTemplate template = await notificationTemplaceService.GetByIdAsync(id);
+            return Json(template);
         }
 
         [HttpPost]
@@ -61,14 +65,20 @@ namespace Fanex.NCB.SkypeBot.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await notificationTemplaceService.CreateAsync(new CreateNotificationTemplate
+                var contents = new List<NotificationTemplateContent>
+                {
+                    new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Skype, Content = viewModel.Content },
+                    new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content.ToTelegramFormat() }
+                };
+
+                CommandResult result = await notificationTemplaceService.CreateAsync(new CreateNotificationTemplate
                 {
                     NotificationTypeId = viewModel.NotificationTypeId,
                     NotificationTemplateName = viewModel.NotificationTemplateName,
                     Title = viewModel.Title,
-                    Content = viewModel.Content,
+                    Content = JsonConvert.SerializeObject(contents),
                     CreatorId = napSession.UserId
-                }).ConfigureAwait(false);
+                });
 
                 return Json(result);
             }
@@ -83,15 +93,20 @@ namespace Fanex.NCB.SkypeBot.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await notificationTemplaceService.EditAsync(new EditNotificationTemplate
+                var contents = new List<NotificationTemplateContent>
+                {
+                    new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Skype, Content = viewModel.Content },
+                    new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content.ToTelegramFormat() }
+                };
+                CommandResult result = await notificationTemplaceService.EditAsync(new EditNotificationTemplate
                 {
                     NotificationTemplateId = viewModel.NotificationTemplateId,
                     NotificationTypeId = viewModel.NotificationTypeId,
                     NotificationTemplateName = viewModel.NotificationTemplateName,
                     Title = viewModel.Title,
-                    Content = viewModel.Content,
+                    Content = JsonConvert.SerializeObject(contents),
                     ModifierId = napSession.UserId
-                }).ConfigureAwait(false);
+                });
 
                 return Json(result);
             }
@@ -104,7 +119,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Host)]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await notificationTemplaceService.DeleteAsync(id, napSession.UserId).ConfigureAwait(false);
+            CommandResult result = await notificationTemplaceService.DeleteAsync(id, napSession.UserId);
 
             return Json(result);
         }

@@ -45,7 +45,7 @@ namespace Fanex.NCB.Criteria.Tests.NotificationTemplate
             criteria.CreatorId = creatorId;
             criteria.NotificationTemplateName = notificationTemplateName;
             criteria.Title = title;
-            criteria.Content = content;
+            criteria.ContentLst = content;
 
             // Act
             var result = criteria.IsValid();

@@ -25,7 +25,7 @@
                 NotificationTypeId = notificationTypeId,
                 PageIndex = pageIndex,
                 PageSize = pageSize
-            }).ConfigureAwait(false);
+            });
 
             return (result.Item1.FirstOrDefault(), result.Item2);
         }
@@ -37,13 +37,10 @@
                 NotificationTypeId = model.NotificationTypeId,
                 NotificationTemplateName = model.NotificationTemplateName,
                 Title = model.Title,
-                Content = model.Content,
+                ContentLst = model.Content,
                 CreatorId = model.CreatorId
             };
-
-            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
-
-            return result;
+            return await baseService.ExecuteNonQueryAsync(command);
         }
 
         public async Task<CommandResult> EditAsync(EditNotificationTemplate model)
@@ -54,23 +51,19 @@
                 NotificationTypeId = model.NotificationTypeId,
                 NotificationTemplateName = model.NotificationTemplateName,
                 Title = model.Title,
-                Content = model.Content,
+                ContentLst = model.Content,
                 ModifierId = model.ModifierId
             };
-
-            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
-
-            return result;
+            return await baseService.ExecuteNonQueryAsync(command);
         }
 
         public async Task<NotificationTemplate> GetByIdAsync(int notificationTemplateId)
         {
-            var result = await baseService.GetDataEntityAsync<NotificationTemplate>(new GetTemplateByIdCriteria
+            var criteria = new GetTemplateByIdCriteria
             {
                 NotificationTemplateId = notificationTemplateId
-            }).ConfigureAwait(false);
-
-            return result;
+            };
+            return await baseService.GetDataEntityAsync<NotificationTemplate>(criteria);
         }
 
         public async Task<CommandResult> DeleteAsync(int notificationTemplateId, int userId)
@@ -80,10 +73,7 @@
                 NotificationTemplateId = notificationTemplateId,
                 UserId = userId
             };
-
-            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
-
-            return result;
+            return await baseService.ExecuteNonQueryAsync(command);
         }
     }
 }
