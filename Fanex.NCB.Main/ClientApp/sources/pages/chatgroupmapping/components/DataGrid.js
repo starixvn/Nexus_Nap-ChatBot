@@ -1,13 +1,13 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 import { bindActionCreators } from 'redux';
-import { ActionCreators } from '../actions/index';
+import axios from 'axios';
+import { Table, Row, Cell } from '../../common/fixed-table-header/index';
+import { ActionCreators } from '../actions';
 import CommonFunctions from '../../common/common-functions/CommonFunctions';
 import { PAGING_SIZES, mappingStatus } from '../../constants/constants';
 import Labels from '../../common/Labels';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';
-import axios from 'axios';
 import Site from '../../lib/site';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 
@@ -33,8 +33,35 @@ export class DataGrid extends Component {
 
     openEditPopup = item => {
         if (!CommonFunctions.isBotRemoved(item.mappingStatusID)) {
-            this.props.filterRecipients(this.props.settingData.recipients, item.recipientTypeID);
-            this.props.openEditPopup(item);
+            this.props.filterRecipients({ recipients: this.props.settings.recipients, recipientTypeId: item.recipientTypeID });
+            this.props.setEditPopupData({
+                isShowed: true,
+                editingItem: {
+                    groupID: item.groupID,
+                    conversationID: item.conversationID,
+                    mappingStatusId: item.mappingStatusID,
+                    mappingStatusName: item.mappingStatusName,
+                    botName: item.botName,
+                    groupName: item.groupName,
+                    recipientTypeId: {
+                        value: item.recipientTypeID,
+                        isValid: item.recipientTypeID !== 0
+                    },
+                    recipientIds: {
+                        value: item.recipientIDs,
+                        isValid: item.recipientIDs !== ''
+                    },
+                    recipientStatusNames: item.recipientStatusNames,
+                    chatGroupTypeId: {
+                        value: item.chatGroupTypeID,
+                        isValid: item.chatGroupTypeID !== 0
+                    },
+                    remark: {
+                        value: item.remark,
+                        isValid: item.remark !== null
+                    }
+                }
+            });
         }
     }
 
@@ -79,19 +106,14 @@ export class DataGrid extends Component {
             groupID: this.state.item.groupID,
             isActive: !this.state.item.isActive
         };
+        this.props.editActive(params).then(response => {
+            const data = response.data;
+            if (data && data.isSuccessful) {
+                this.props.getGridData(this.props.gridParams);
+            }
 
-        const url = Site.resolveClientUrl('ChatGroupMapping/UpdateActive');
-        const headers = {
-            'Content-Type': 'application/json',
-            'RequestVerificationToken': Site.getXsrfToken()
-        };
-
-        const response = await axios.post(url, JSON.stringify(params), { headers: headers });
-        if (response.data && response.data.code === 0) {
-            this.props.getGridData(this.props.gridParams);
-        }
-
-        this.toggleActive();
+            this.toggleActive();
+        });
     };
 
     changeActive = item => {
@@ -203,11 +225,11 @@ export class DataGrid extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { gridParams, gridData, settingData } = state;
+    const { gridParams, gridData, settings } = state;
     return {
         gridParams,
         gridData,
-        settingData
+        settings
     };
 };
 

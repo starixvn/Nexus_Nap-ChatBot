@@ -1,11 +1,11 @@
 ﻿import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Filter from './Filter';
 import DataGrid from './DataGrid';
 import { NCBBreadcrum } from '../../common/breadcrumbs/breadcrumbs';
-import { bindActionCreators } from 'redux';
-import { ActionCreators } from '../actions/index';
-import UpdatePopup from './UpdatePopup';
+import { ActionCreators } from '../actions';
+import EditPopup from './EditPopup';
 import './AppContainer.scss';
 import Labels from '../../common/Labels';
 
@@ -14,10 +14,10 @@ export class AppContainer extends Component {
         super(props);
     }
 
-    closeUpdatePopupHandler = () => {
-        this.props.closeEditPopup();
-        this.props.refreshUpdateData();
-        !this.props.updatePopupData.isShowed && this.props.getGridData(this.props.gridParams);
+    handleCloseEditPopup = () => {
+        this.props.setEditPopupData({ isShowed: false, editingItem: {} });
+        this.props.setEditResult(null);
+        !this.props.editPopupData.isShowed && this.props.getGridData(this.props.gridParams);
     }
 
     render() {
@@ -27,8 +27,8 @@ export class AppContainer extends Component {
                 <Filter />
                 <DataGrid />
                 {
-                    this.props.updatePopupData.isShowed &&
-                    <UpdatePopup closeUpdatePopupHandler={this.closeUpdatePopupHandler} />}
+                    this.props.editPopupData.isShowed &&
+                    <EditPopup onClosePopup={this.handleCloseEditPopup} />}
             </div>
         );
     }
@@ -37,10 +37,10 @@ export class AppContainer extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { gridParams, updatePopupData } = state;
+    const { gridParams, editPopupData } = state;
     return {
         gridParams,
-        updatePopupData
+        editPopupData
     };
 };
 

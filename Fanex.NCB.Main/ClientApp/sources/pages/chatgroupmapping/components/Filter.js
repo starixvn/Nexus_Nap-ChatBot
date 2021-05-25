@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import { Form, FormGroup, Label } from 'reactstrap';
 import { bindActionCreators } from 'redux';
-import { ActionCreators } from '../actions/index';
+import { ActionCreators } from '../actions';
 import { MultipleSelectField } from '../../common/multiple-select-field/MultipleSelectField';
 import Labels from '../../common/Labels';
 import AutoComplete from '../../common/auto-complete';
@@ -32,7 +32,7 @@ export class Filter extends Component {
             mappingStatuses: {
                 value: ''
             },
-            settingData: {
+            settings: {
                 bots: [],
                 recipientTypes: [],
                 mappingStatuses: [],
@@ -45,33 +45,29 @@ export class Filter extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (prevState.settingData.bots.length === 0 && nextProps.settingData.bots) {
-            const bots = nextProps.settingData.bots;
+        if (prevState.settings.bots.length === 0 && nextProps.settings.bots) {
             const selectedbotIds = [];
-            bots.map(v => {
-                v['checked'] = true;
-                selectedbotIds.push(v['id']);
+            const bots = nextProps.settings.bots.map(item => {
+                selectedbotIds.push(item['id']);
+                return { ...item, checked: true };
             });
 
-            const recipientTypes = nextProps.settingData.recipientTypes;
             const selectedRecipientTypes = [];
-            recipientTypes.map(v => {
-                v['checked'] = true;
-                selectedRecipientTypes.push(v['id']);
+            const recipientTypes = nextProps.settings.recipientTypes.map(item => {
+                selectedRecipientTypes.push(item['id']);
+                return { ...item, checked: true };
             });
 
-            const mappingStatuses = nextProps.settingData.mappingStatuses;
             const selectedMappingStatuses = [];
-            mappingStatuses.map(v => {
-                v['checked'] = true;
-                selectedMappingStatuses.push(v['id']);
+            const mappingStatuses = nextProps.settings.mappingStatuses.map(item => {
+                selectedMappingStatuses.push(item['id']);
+                return { ...item, checked: true };
             });
 
-            const licenseeStatuses = nextProps.settingData.licenseeStatuses;
             const selectedlicenseeStatuses = [];
-            licenseeStatuses.map(v => {
-                v['checked'] = true;
-                selectedlicenseeStatuses.push(v['id']);
+            const licenseeStatuses = nextProps.settings.licenseeStatuses.map(item => {
+                selectedlicenseeStatuses.push(item.id);
+                return { ...item, checked: true };
             });
 
             const state = {
@@ -90,7 +86,7 @@ export class Filter extends Component {
                 mappingStatuses: {
                     value: selectedMappingStatuses.join(',')
                 },
-                settingData: {
+                settings: {
                     bots: bots,
                     recipientTypes: recipientTypes,
                     mappingStatuses: mappingStatuses,
@@ -144,7 +140,7 @@ export class Filter extends Component {
                         id={'recipientTypes'}
                         width={150}
                         initialValue={this.state.recipientTypes}
-                        data={this.state.settingData.recipientTypes}
+                        data={this.state.settings.recipientTypes}
                         keyField={'id'}
                         valueField={'name'}
                         statusField={'checked'}
@@ -178,7 +174,7 @@ export class Filter extends Component {
                         id={'licenseeStatuses'}
                         width={150}
                         initialValue={this.state.licenseeStatuses}
-                        data={this.state.settingData.licenseeStatuses}
+                        data={this.state.settings.licenseeStatuses}
                         keyField={'id'}
                         valueField={'name'}
                         statusField={'checked'}
@@ -194,7 +190,7 @@ export class Filter extends Component {
                         id={'mappingStatuses'}
                         width={150}
                         initialValue={this.state.mappingStatuses}
-                        data={this.state.settingData.mappingStatuses}
+                        data={this.state.settings.mappingStatuses}
                         keyField={'id'}
                         valueField={'name'}
                         statusField={'checked'}
@@ -210,7 +206,7 @@ export class Filter extends Component {
                         id={'botIds'}
                         width={150}
                         initialValue={this.state.botIds}
-                        data={this.state.settingData.bots}
+                        data={this.state.settings.bots}
                         keyField={'id'}
                         valueField={'name'}
                         statusField={'checked'}
@@ -229,9 +225,9 @@ export class Filter extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { settingData } = state;
+    const { settings } = state;
     return {
-        settingData
+        settings
     };
 };
 
