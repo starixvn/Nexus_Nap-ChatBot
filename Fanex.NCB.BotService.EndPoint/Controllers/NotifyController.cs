@@ -25,24 +25,24 @@
     public class NotifyController : ControllerBase
     {
         private readonly IAdapterIntegration adapter;
-        private readonly BotConfiguration botConfig;
         private readonly IConversationService conversationService;
         private readonly IMessageLogService messageLogService;
-        private readonly CheckDuplicatedMessageLogSetting settings;
         private readonly ILogger logger;
+        private readonly CheckDuplicatedMessageLogSetting checkDuplicatedMessageSettings;
+        private readonly BotConfiguration botConfig;
 
         public NotifyController(IAdapterIntegration adapter,
             IMessageLogService messageLogService,
             BotConfiguration botConfig,
             IConversationService conversationService,
-            CheckDuplicatedMessageLogSetting settings,
+            CheckDuplicatedMessageLogSetting checkDuplicatedMessageSettings,
             ILogger logger)
         {
             this.adapter = adapter;
             this.botConfig = botConfig;
             this.conversationService = conversationService;
             this.messageLogService = messageLogService;
-            this.settings = settings;
+            this.checkDuplicatedMessageSettings = checkDuplicatedMessageSettings;
             this.logger = logger;
         }
 
@@ -71,7 +71,7 @@
             catch (Exception ex)
             {
                 errorMessage = ex.Message;
-                //await WriteLog(ex);
+                await WriteLog(ex);
             }
 
             return Ok(errorMessage);
@@ -91,7 +91,7 @@
                 {
                     foreach (var conversationInfo in notificationMessage.Recipients)
                     {
-                        await AddTaskSendNotification(tasks, conversationInfo, notificationMessage);
+                        await SendNotification(tasks, conversationInfo, notificationMessage);
                     }
                 }
                 results = (await Task.WhenAll(tasks)).ToList();
@@ -100,9 +100,9 @@
             return Ok(results);
         }
 
-        private async Task AddTaskSendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
+        private async Task SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
         {
-            if (settings.IsEnabled)
+            if (checkDuplicatedMessageSettings.IsEnabled)
             {
                 bool IsExistedOnCacheOrExceptionList = await messageLogService.IsExistedOnCacheOrExceptionList(conversationInfo.ConversationId, notificationMessage.Message);
 
@@ -111,7 +111,7 @@
                     ConversationId = conversationInfo.ConversationId,
                     SentTime = DateTime.UtcNow,
                     ErrorCode = -1,
-                    ErrorMessage = $"The same message to this group has been send during {settings.TimeSpanInMinutes} minutes",
+                    ErrorMessage = $"The same message to this group has been send during {checkDuplicatedMessageSettings.TimeSpanInMinutes} minutes",
                     NotificationId = notificationMessage.NotificationId,
                     IsIgnoreRetry = true
                 }) : Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
@@ -135,7 +135,7 @@
                 var thread = new Thread(async () => await AddMessageLog(conversationReference, message, result));
                 thread.Start();
 
-                if (settings.IsEnabled)
+                if (checkDuplicatedMessageSettings.IsEnabled)
                 {
                     InsertMessageInCache(result, message);
                 }
