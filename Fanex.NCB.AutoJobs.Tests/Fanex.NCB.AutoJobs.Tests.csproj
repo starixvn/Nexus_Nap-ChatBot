@@ -4,6 +4,11 @@
         <IsPackable>false</IsPackable>
     </PropertyGroup>
     <ItemGroup>
+      <Compile Remove="Extensions\**" />
+      <EmbeddedResource Remove="Extensions\**" />
+      <None Remove="Extensions\**" />
+    </ItemGroup>
+    <ItemGroup>
         <PackageReference Include="AutoFixture" Version="4.11.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
         <PackageReference Include="NSubstitute" Version="4.2.1" />
@@ -11,12 +16,13 @@
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
     </ItemGroup>
     <ItemGroup>
-        <Folder Include="App_Configs\" />
+        <ProjectReference Include="..\Fanex.NCB.AutoJobs\Fanex.NCB.AutoJobs.csproj" />
         <Folder Include="Controllers\" />
-        <Folder Include="Extensions\" />
         <Folder Include="Services\" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Fanex.NCB.AutoJobs\Fanex.NCB.AutoJobs.csproj" />
+      <Folder Include="App_Configs\" />
+      <Folder Include="Controllers\" />
+      <Folder Include="Services\" />
     </ItemGroup>
 </Project>

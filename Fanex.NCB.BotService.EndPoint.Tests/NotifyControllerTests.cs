@@ -21,9 +21,11 @@
     public class NotifyControllerTests
     {
         private IAdapterIntegration adapter;
-        private BotConfiguration botConfig;
+        private IMessageLogService messageLogService;
         private IConversationService conversationService;
         private ILogger logger;
+        private BotConfiguration botConfig;
+        private CheckDuplicatedMessageLogSetting checkDuplicatedMessageLogSetting;
 
         [Fact]
         public async Task Send_InValidBotName_SendContinueWithDefaultAppId()
@@ -236,10 +238,12 @@
         private NotifyController GetController()
         {
             adapter = Substitute.For<IAdapterIntegration>();
+            messageLogService = Substitute.For<IMessageLogService>();
             botConfig = Substitute.For<BotConfiguration>();
+            checkDuplicatedMessageLogSetting = Substitute.For<CheckDuplicatedMessageLogSetting>();
             conversationService = Substitute.For<IConversationService>();
             logger = Substitute.For<ILogger>();
-            return new NotifyController(adapter, botConfig, conversationService, logger);
+            return new NotifyController(adapter, messageLogService, botConfig, conversationService, checkDuplicatedMessageLogSetting, logger);
         }
     }
 }

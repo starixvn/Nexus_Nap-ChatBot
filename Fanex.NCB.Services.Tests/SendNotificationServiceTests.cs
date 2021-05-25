@@ -160,6 +160,16 @@
                 IsSuccessStatusCode = isSuccess,
                 StatusCode = isSuccess ? HttpStatusCode.OK : HttpStatusCode.BadRequest,
                 NotificationMessageResult = result
+                {
+                    new SendMessageResult
+                    {
+                        NotificationId = 1, ConversationId = "ABC", ErrorCode = 0, ErrorMessage = "", SentTime = new DateTime(2020, 10, 1)
+                    },
+                    new SendMessageResult
+                    {
+                        NotificationId = 2, ConversationId = "DEF", ErrorCode = 1, ErrorMessage = "Error", SentTime = new DateTime(2020, 10, 1)
+                    }
+                }
             };
         }
 
