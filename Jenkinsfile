@@ -45,7 +45,7 @@ pipeline{
         always{
           script{
             if(manager.logContains(".*Quality gate status.*")){
-              pipelineLib.generateSonarQubeReport("NAP ChatBot")
+              pipelineLib.generateSonarQubeReport("NAPCHATBOT")
             }
           }
           archiveArtifacts "*.xml,*.email"
