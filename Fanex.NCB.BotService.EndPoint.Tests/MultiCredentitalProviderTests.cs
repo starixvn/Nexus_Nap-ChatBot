@@ -6,12 +6,12 @@
     using Microsoft.Bot.Configuration;
     using Xunit;
 
-    [Obsolete]
     public class MultiCredentitalProviderTests
     {
         [Theory]
         [InlineData("BotId", false)]
         [InlineData("Bot_1", true)]
+        [Obsolete]
         public async Task IsValidAppIdAsync_WhenCalled_ReturnExpectedResult(string appId, bool expected)
         {
             var provider = SetUp();
@@ -23,6 +23,7 @@
         }
 
         [Fact]
+        [Obsolete]
         public async Task GetAppPasswordAsync_WhenExistsAppId_ReturnPassword()
         {
             var provider = SetUp();
@@ -34,6 +35,7 @@
         }
 
         [Fact]
+        [Obsolete]
         public async Task GetAppPasswordAsync_WhenNotExistsAppId_ReturnNull()
         {
             var provider = SetUp();
@@ -45,6 +47,7 @@
         }
 
         [Fact]
+        [Obsolete]
         public async Task IsAuthenticationDisabledAsync_WhenCalled_ReturnExpected()
         {
             var provider = SetUp();

@@ -35,3 +35,14 @@ using System.Diagnostics.CodeAnalysis;
     Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.MultiCredentitalProviderTests.SetUp~Fanex.NCB.BotService.EndPoint.MultiCredentialProvider")]
 [assembly: SuppressMessage("Major Code Smell", "S1123:\"Obsolete\" attributes should include explanations", Justification = "<Pending>", Scope = "type",
     Target = "~T:Fanex.NCB.BotService.EndPoint.Tests.MultiCredentitalProviderTests")]
+[assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
+    Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.MultiCredentitalProviderTests.GetAppPasswordAsync_WhenNotExistsAppId_ReturnNull~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
+    Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.MultiCredentitalProviderTests.IsValidAppIdAsync_WhenCalled_ReturnExpectedResult" +
+    "(System.String,System.Boolean)~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
+    Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.MultiCredentitalProviderTests.GetAppPasswordAsync_WhenExistsAppId_ReturnPassword~System." +
+    "Threading.Tasks.Task")]
+[assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
+    Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.MultiCredentitalProviderTests.IsAuthenticationDisabledAsync_WhenCalled_ReturnExpected~System." +
+    "Threading.Tasks.Task")]
