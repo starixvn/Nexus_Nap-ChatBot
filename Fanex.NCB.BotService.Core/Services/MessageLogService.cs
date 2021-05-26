@@ -19,13 +19,16 @@
             this.cacheService = cacheService;
         }
 
-        public async Task<bool> IsExistedOnCacheOrExceptionList(string conversationId, string message)
+        public async Task<bool> IsInvalidSendMessageToBotService(string conversationId, string message)
         {
-            bool isExistedOnExceptionList = settings.ExceptionConversatiionIDs != null && settings.ExceptionConversatiionIDs.Contains(conversationId);
-
-            if (isExistedOnExceptionList)
+            if (!settings.IsEnabled)
             {
-                return isExistedOnExceptionList;
+                return false;
+            }
+
+            if (settings.ExceptionConversatiionIDs != null && settings.ExceptionConversatiionIDs.Contains(conversationId))
+            {
+                return false;
             }
 
             var messageLogJson = await cacheService.GetAsync<string>(conversationId.Replace(':', '-'));
@@ -34,15 +37,18 @@
             return messageLog != null && messageLog.Message.Equals(message) && messageLog.IsSuccessful;
         }
 
-        public async Task InserMessageLogInRedisCache(ConversationMessageLog messageLog)
+        public async Task InserMessageLogIntoCache(ConversationMessageLog messageLog)
         {
-            await cacheService.SetAsync(
+            if (settings.IsEnabled)
+            {
+                await cacheService.SetAsync(
                 messageLog.ConversationId.Replace(':', '-'),
                 JsonConvert.SerializeObject(messageLog),
                 new CacheItemOptions
                 {
                     RelativeExpiration = TimeSpan.FromMinutes(settings.TimeSpanInMinutes)
                 });
+            }
         }
     }
 }

@@ -28,7 +28,7 @@
         private readonly IConversationService conversationService;
         private readonly IMessageLogService messageLogService;
         private readonly ILogger logger;
-        private readonly CheckDuplicatedMessageLogSetting checkDuplicatedMessageSettings;
+        private const string DuplicatedErrorMessage = "The content of the message sent to this group is duplicated for a period of time.";
 
         [Obsolete]
         private readonly BotConfiguration botConfig;
@@ -38,14 +38,12 @@
             IMessageLogService messageLogService,
             BotConfiguration botConfig,
             IConversationService conversationService,
-            CheckDuplicatedMessageLogSetting checkDuplicatedMessageSettings,
             ILogger logger)
         {
             this.adapter = adapter;
             this.botConfig = botConfig;
             this.conversationService = conversationService;
             this.messageLogService = messageLogService;
-            this.checkDuplicatedMessageSettings = checkDuplicatedMessageSettings;
             this.logger = logger;
         }
 
@@ -97,6 +95,7 @@
                         await SendNotification(tasks, conversationInfo, notificationMessage);
                     }
                 }
+
                 results = (await Task.WhenAll(tasks)).ToList();
             }
 
@@ -106,27 +105,18 @@
         [Obsolete]
         private async Task SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
         {
-            if (checkDuplicatedMessageSettings.IsEnabled)
-            {
-                bool IsExistedOnCacheOrExceptionList = await messageLogService.IsExistedOnCacheOrExceptionList(conversationInfo.ConversationId, notificationMessage.Message);
+            bool isInvalidSendToBotService = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
 
-                tasks.Add(IsExistedOnCacheOrExceptionList ? Task.Run(() => new SendMessageResult
-                {
-                    ConversationId = conversationInfo.ConversationId,
-                    SentTime = DateTime.UtcNow,
-                    ErrorCode = -1,
-                    ErrorMessage = $"The same message to this group has been send during {checkDuplicatedMessageSettings.TimeSpanInMinutes} minutes",
-                    NotificationId = notificationMessage.NotificationId,
-                    IsIgnoreRetry = true
-                }) : Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
-);
-            }
-            else
+            tasks.Add(isInvalidSendToBotService ? Task.Run(() => new SendMessageResult
             {
-                tasks.Add(
-                    Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
-                    );
-            }
+                ConversationId = conversationInfo.ConversationId,
+                SentTime = DateTime.UtcNow,
+                ErrorCode = -1,
+                ErrorMessage = DuplicatedErrorMessage,
+                NotificationId = notificationMessage.NotificationId,
+                IsIgnoreRetry = true
+            }) : Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
+);
         }
 
         [Obsolete]
@@ -139,11 +129,6 @@
                 var result = await SendMessageNotification(appId, notifictaionId, conversationReference, message);
                 var thread = new Thread(async () => await AddMessageLog(conversationReference, message, result));
                 thread.Start();
-
-                if (checkDuplicatedMessageSettings.IsEnabled)
-                {
-                    InsertMessageInCache(result, message);
-                }
 
                 return result;
             }
@@ -161,7 +146,7 @@
             }
         }
 
-        private void InsertMessageInCache(SendMessageResult sendMessageResult, string messageContent)
+        private async Task AddMessageLogIntoCache(SendMessageResult sendMessageResult, string messageContent)
         {
             var logMessage = new ConversationMessageLog
             {
@@ -170,8 +155,8 @@
                 Status = sendMessageResult.ErrorCode == 0 ? SentMessageStatus.Success : SentMessageStatus.Fail,
                 SentDate = DateTime.UtcNow
             };
-            var threadInsertInRedis = new Thread(async () => await messageLogService.InserMessageLogInRedisCache(logMessage));
-            threadInsertInRedis.Start();
+
+            await messageLogService.InserMessageLogIntoCache(logMessage);
         }
 
         [Obsolete]
@@ -211,7 +196,7 @@
                     new CancellationToken());
         }
 
-        private async Task AddMessageLog(ConversationReference conversationReference, string messageContent, SendMessageResult result)
+        private async Task AddMessageLogOnDb(ConversationReference conversationReference, string messageContent, SendMessageResult result)
         {
             try
             {
@@ -231,6 +216,12 @@
             {
                 await WriteLog(ex);
             }
+        }
+
+        private async Task AddMessageLog(ConversationReference conversationReference, string messageContent, SendMessageResult result)
+        {
+            await AddMessageLogOnDb(conversationReference, messageContent, result);
+            await AddMessageLogIntoCache(result, messageContent);
         }
 
         private async Task<ConversationReference> GetConversationReference(string conversationId, string botName)

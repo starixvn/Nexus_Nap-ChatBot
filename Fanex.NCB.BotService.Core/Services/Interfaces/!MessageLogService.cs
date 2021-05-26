@@ -5,8 +5,8 @@
 
     public interface IMessageLogService
     {
-        Task<bool> IsExistedOnCacheOrExceptionList(string conversationId, string message);
+        Task<bool> IsInvalidSendMessageToBotService(string conversationId, string message);
 
-        Task InserMessageLogInRedisCache(ConversationMessageLog messageLog);
+        Task InserMessageLogIntoCache(ConversationMessageLog messageLog);
     }
 }

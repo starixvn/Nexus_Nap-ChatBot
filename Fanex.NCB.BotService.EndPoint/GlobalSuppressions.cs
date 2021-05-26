@@ -14,9 +14,7 @@ using System.Diagnostics.CodeAnalysis;
     Target = "~M:Fanex.NCB.BotService.EndPoint.BotServiceDI.Init(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration," +
     "Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Fanex.NCB.BotService.Core.AppSettings,Microsoft.Extensions.Logging.ILogger)")]
 [assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
-    Target = "~M:Fanex.NCB.BotService.EndPoint.Controllers.NotifyController.#ctor(Microsoft.Bot.Builder.Integration.IAdapterIntegration,Fanex.NCB.BotService." +
-    "Core.Services.Interfaces.IMessageLogService,Microsoft.Bot." +
-    "Configuration.BotConfiguration,Fanex.NCB.BotService.Core.Services.Interfaces.IConversationService,Fanex.NCB.BotService.Core.Models" +
-    ".CheckDuplicatedMessageLogSetting,Fanex.Logging.ILogger)")]
-[assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
     Target = "~M:Fanex.NCB.BotService.EndPoint.MultiCredentialProvider.#ctor(Microsoft.Bot.Configuration.BotConfiguration)")]
+[assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
+    Target = "~M:Fanex.NCB.BotService.EndPoint.Controllers.NotifyController.#ctor(Microsoft.Bot.Builder.Integration.IAdapterIntegration,Fanex.NCB.BotService.Core.Services.Interfaces." +
+    "IMessageLogService,Microsoft.Bot.Configuration.BotConfiguration,Fanex.NCB.BotService.Core.Services.Interfaces.IConversationService,Fanex.Logging.ILogger)")]

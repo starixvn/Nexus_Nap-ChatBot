@@ -15,24 +15,45 @@
         private ICacheService cacheService;
 
         [Fact]
-        public async Task IsExistedOnCacheOrExceptionList_OnExceptionList_ReturnTrueAndDidNotGetCache()
+        public async Task IsInvalidSendMessageToBotService_IsDisbaledSetting_ReturnFalse()
         {
-            settings.ExceptionConversatiionIDs = new[] { "ABC" };
+            settings.IsEnabled = false;
             var service = GetService();
-            var actual = await service.IsExistedOnCacheOrExceptionList("ABC", "messsage");
-            Assert.True(actual);
+            var actual = await service.IsInvalidSendMessageToBotService("ABC", "messsage");
+            Assert.False(actual);
             await cacheService.DidNotReceive().GetAsync<string>(Arg.Any<string>());
         }
 
         [Fact]
-        public async Task IsExistedOnCacheOrExceptionList_OnNotInExceptionList_ReturnTrueWhenNotInCache()
+        public async Task IsInvalidSendMessageToBotService_OnExceptionList_ReturnFalse()
         {
-            settings.ExceptionConversatiionIDs = new[] { "ADE" };
+            settings.ExceptionConversatiionIDs = new[] { "ABC" };
+            var service = GetService();
+            var actual = await service.IsInvalidSendMessageToBotService("ABC", "messsage");
+            Assert.False(actual);
+            await cacheService.DidNotReceive().GetAsync<string>(Arg.Any<string>());
+        }
+
+        [Fact]
+        public async Task IsInvalidSendMessageToBotService_WhenExistedOnCache_ReturnFalse()
+        {
+            settings.ExceptionConversatiionIDs = new[] { "ABC" };
             var service = GetService();
             var logMsg = new ConversationMessageLog { ConversationId = "ABC", Message = "Msg", Status = SentMessageStatus.Success };
             cacheService.GetAsync<string>(Arg.Is("ABC")).Returns(JsonConvert.SerializeObject(logMsg));
 
-            var actual = await service.IsExistedOnCacheOrExceptionList("ABC", "Msg");
+            var actual = await service.IsInvalidSendMessageToBotService("ABC", "Msg");
+            Assert.False(actual);
+        }
+
+        [Fact]
+        public async Task IsInvalidSendMessageToBotService_WhenNotExistedOnCache_ReturnTrue()
+        {
+            var service = GetService();
+            var logMsg = new ConversationMessageLog { ConversationId = "ABC", Message = "Msg", Status = SentMessageStatus.Success };
+            cacheService.GetAsync<string>(Arg.Is("ABC")).Returns(JsonConvert.SerializeObject(logMsg));
+
+            var actual = await service.IsInvalidSendMessageToBotService("ABC", "Msg");
             Assert.True(actual);
         }
 
@@ -41,7 +62,7 @@
         {
             var conversationLogMsg = new ConversationMessageLog { ConversationId = "A:1234", Message = "ABC" };
             var service = GetService();
-            await service.InserMessageLogInRedisCache(conversationLogMsg);
+            await service.InserMessageLogIntoCache(conversationLogMsg);
             await cacheService.Received().SetAsync(Arg.Is("A-1234"),
                 Arg.Is(JsonConvert.SerializeObject(conversationLogMsg)),
                 Arg.Any<CacheItemOptions>());

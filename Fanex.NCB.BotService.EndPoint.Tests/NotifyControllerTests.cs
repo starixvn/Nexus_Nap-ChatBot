@@ -28,8 +28,6 @@
         [Obsolete]
         private BotConfiguration botConfig;
 
-        private CheckDuplicatedMessageLogSetting checkDuplicatedMessageLogSetting;
-
         [Fact]
         [Obsolete]
         public async Task Send_InValidBotName_SendContinueWithDefaultAppId()
@@ -251,10 +249,9 @@
             adapter = Substitute.For<IAdapterIntegration>();
             messageLogService = Substitute.For<IMessageLogService>();
             botConfig = Substitute.For<BotConfiguration>();
-            checkDuplicatedMessageLogSetting = new CheckDuplicatedMessageLogSetting { IsEnabled = true, TimeSpanInMinutes = 1, ExceptionConversatiionIDs = new[] { "ABC" } };
             conversationService = Substitute.For<IConversationService>();
             logger = Substitute.For<ILogger>();
-            return new NotifyController(adapter, messageLogService, botConfig, conversationService, checkDuplicatedMessageLogSetting, logger);
+            return new NotifyController(adapter, messageLogService, botConfig, conversationService, logger);
         }
     }
 }
