@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.Bot.Configuration;
@@ -53,6 +54,7 @@
             Assert.False(actual);
         }
 
+        [Obsolete]
         private MultiCredentialProvider SetUp()
         {
             var listBotConfig = new List<ConnectedService>
@@ -60,8 +62,10 @@
                 new EndpointService {AppId = "Bot_1", AppPassword = "Pass1"}
             };
 
-            var botConfig = new BotConfiguration();
-            botConfig.Services = listBotConfig;
+            var botConfig = new BotConfiguration
+            {
+                Services = listBotConfig
+            };
             return new MultiCredentialProvider(botConfig);
         }
     }

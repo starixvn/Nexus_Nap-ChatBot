@@ -31,3 +31,5 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
     Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.NotifyControllerTests.SendMulti_NotificationListIsNotEmpty_ReturnObjectResultWithErrorList~System." +
     "Threading.Tasks.Task")]
+[assembly: SuppressMessage("Major Code Smell", "S1123:\"Obsolete\" attributes should include explanations", Justification = "<Pending>", Scope = "member",
+    Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.MultiCredentitalProviderTests.SetUp~Fanex.NCB.BotService.EndPoint.MultiCredentialProvider")]
