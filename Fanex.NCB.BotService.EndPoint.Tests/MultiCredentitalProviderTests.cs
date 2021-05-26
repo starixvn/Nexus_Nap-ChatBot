@@ -6,6 +6,7 @@
     using Microsoft.Bot.Configuration;
     using Xunit;
 
+    [Obsolete]
     public class MultiCredentitalProviderTests
     {
         [Theory]

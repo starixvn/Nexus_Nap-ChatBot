@@ -33,3 +33,5 @@ using System.Diagnostics.CodeAnalysis;
     "Threading.Tasks.Task")]
 [assembly: SuppressMessage("Major Code Smell", "S1123:\"Obsolete\" attributes should include explanations", Justification = "<Pending>", Scope = "member",
     Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.MultiCredentitalProviderTests.SetUp~Fanex.NCB.BotService.EndPoint.MultiCredentialProvider")]
+[assembly: SuppressMessage("Major Code Smell", "S1123:\"Obsolete\" attributes should include explanations", Justification = "<Pending>", Scope = "type",
+    Target = "~T:Fanex.NCB.BotService.EndPoint.Tests.MultiCredentitalProviderTests")]
