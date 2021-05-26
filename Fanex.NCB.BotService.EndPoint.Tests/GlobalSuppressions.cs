@@ -10,3 +10,24 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Major Code Smell", "S1123:\"Obsolete\" attributes should include explanations", Justification = "<Pending>", Scope = "member",
     Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.NotifyControllerTests." +
     "SendMulti_NotificationListIsNotEmpty_ReturnObjectResultWithErrorList~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Major Code Smell", "S1123:\"Obsolete\" attributes should include explanations", Justification = "<Pending>", Scope = "type",
+    Target = "~T:Fanex.NCB.BotService.EndPoint.Tests.NotifyControllerTests")]
+[assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
+    Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.NotifyControllerTests.Send_InValidBotName_SendContinueWithDefaultAppId~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
+    Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.NotifyControllerTests.Send_ValidBotName_ReturOkObjectResult~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
+    Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.NotifyControllerTests.Send_GetGroupConversationThrowException_ReturnExpectedErrorMessage~System." +
+    "Threading.Tasks.Task")]
+[assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
+    Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.NotifyControllerTests.SendMulti_NotificationListIsNull_ReturnObjectResultWithEmptyList~System." +
+    "Threading.Tasks.Task")]
+[assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
+    Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.NotifyControllerTests.SendMulti_NotificationListIsEmpty_ReturnObjectResultWithEmptyList~System." +
+    "Threading.Tasks.Task")]
+[assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
+    Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.NotifyControllerTests.SendMulti_NotificationListIsNotEmpty_ReturnObjectResultWithSuccessList~System." +
+    "Threading.Tasks.Task")]
+[assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
+    Target = "~M:Fanex.NCB.BotService.EndPoint.Tests.NotifyControllerTests.SendMulti_NotificationListIsNotEmpty_ReturnObjectResultWithErrorList~System." +
+    "Threading.Tasks.Task")]

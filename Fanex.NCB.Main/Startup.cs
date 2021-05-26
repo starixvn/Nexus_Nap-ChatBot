@@ -53,7 +53,6 @@
                                     .ToDictionary(x => x.GetValue<string>("Name"),
                                     y => new ConnectionConfiguration(y.GetValue<string>("Name"), y.GetValue<string>("ConnectionString"), y.GetValue<string>("ProviderName")));
 
-            string evn = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             DbSettingProviderManager
                .StartNewSession()
                .Use(connections)
