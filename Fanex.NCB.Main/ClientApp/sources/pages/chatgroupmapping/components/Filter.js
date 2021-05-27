@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Form, FormGroup, Label } from 'reactstrap';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions';
-import { MultipleSelectField } from '../../common/multiple-select-field/MultipleSelectField';
+import MultiselectTreeView from '../../common/react-multiselect-treeview/MultiselectTreeView';
 import Labels from '../../common/Labels';
 import AutoComplete from '../../common/auto-complete';
 import Site from '../../lib/site';
@@ -14,24 +14,17 @@ export class Filter extends Component {
         super(props);
 
         this.state = {
-            botIds: {
-                value: ''
-            },
-            recipientTypes: {
-                value: ''
-            },
+            channelIds: '',
+            botIds: '',
+            recipientTypeIds: '',
             recipient: {
                 value: ''
             },
             groupName: {
                 value: ''
             },
-            licenseeStatuses: {
-                value: ''
-            },
-            mappingStatuses: {
-                value: ''
-            },
+            licenseeStatusIds: '',
+            mappingStatusIds: '',
             settings: {
                 bots: [],
                 recipientTypes: [],
@@ -46,47 +39,61 @@ export class Filter extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (prevState.settings.bots.length === 0 && nextProps.settings.bots) {
+            const selectedChannelIds = [];
+            const channels = [
+                {
+                    id: 1, text: 'Skype', isLeaf: true
+                }, {
+                    id: 2, text: 'Telegram', isLeaf: true
+                }
+            ].map(item => {
+                selectedChannelIds.push(item['id']);
+                return { ...item, checked: true };
+            });
+
             const selectedbotIds = [];
-            const bots = nextProps.settings.bots.map(item => {
+            const bots = [
+                {
+                    id: 1, text: 'Skype', isLeaf: false,
+                    items: [{ id: 1, text: 'Bot 1', isLeaf: true }, { id: 2, text: 'Bot 2', isLeaf: true }]
+                }, {
+                    id: 2, text: 'Telegram', isLeaf: false,
+                    items: [{ id: 3, text: 'Bot 3', isLeaf: true }, { id: 4, text: 'Bot 4', isLeaf: true }]
+                }
+            ].map(item => {
                 selectedbotIds.push(item['id']);
                 return { ...item, checked: true };
             });
 
-            const selectedRecipientTypes = [];
+            const selectedRecipientTypeIds = [];
             const recipientTypes = nextProps.settings.recipientTypes.map(item => {
-                selectedRecipientTypes.push(item['id']);
-                return { ...item, checked: true };
+                selectedRecipientTypeIds.push(item['id']);
+                return { id: item.id, text: item.name, checked: true, isLeaf: true };
             });
 
-            const selectedMappingStatuses = [];
+            const selectedMappingStatusIds = [];
             const mappingStatuses = nextProps.settings.mappingStatuses.map(item => {
-                selectedMappingStatuses.push(item['id']);
-                return { ...item, checked: true };
+                selectedMappingStatusIds.push(item['id']);
+                return { id: item.id, text: item.name, checked: true, isLeaf: true };
             });
 
-            const selectedlicenseeStatuses = [];
+            const selectedlicenseeStatusIds = [];
             const licenseeStatuses = nextProps.settings.licenseeStatuses.map(item => {
-                selectedlicenseeStatuses.push(item.id);
-                return { ...item, checked: true };
+                selectedlicenseeStatusIds.push(item.id);
+                return { id: item.id, text: item.name, checked: true, isLeaf: true };
             });
 
             const state = {
-                botIds: {
-                    value: selectedbotIds.join(',')
-                },
-                recipientTypes: {
-                    value: selectedRecipientTypes.join(',')
-                },
+                channelIds: selectedChannelIds.join(','),
+                botIds: selectedbotIds.join(','),
+                recipientTypeIds: selectedRecipientTypeIds.join(','),
                 recipient: {
                     value: ''
                 },
-                licenseeStatuses: {
-                    value: selectedlicenseeStatuses.join(',')
-                },
-                mappingStatuses: {
-                    value: selectedMappingStatuses.join(',')
-                },
+                licenseeStatusIds: selectedlicenseeStatusIds.join(','),
+                mappingStatusIds: selectedMappingStatusIds.join(','),
                 settings: {
+                    channels: channels,
                     bots: bots,
                     recipientTypes: recipientTypes,
                     mappingStatuses: mappingStatuses,
@@ -108,21 +115,23 @@ export class Filter extends Component {
 
     getParams = () => {
         return {
-            botIds: this.state.botIds.value,
-            recipientTypeIds: this.state.recipientTypes.value,
+            channelIds: this.state.channelIds,
+            botIds: this.state.botIds,
+            recipientTypeIds: this.state.recipientTypeIds,
             recipientName: this.state.recipient.value,
             groupName: this.state.groupName.value,
-            mappingStatusIds: this.state.mappingStatuses.value,
-            licenseeStatusIds: this.state.licenseeStatuses.value,
+            mappingStatusIds: this.state.mappingStatusIds,
+            licenseeStatusIds: this.state.licenseeStatusIds,
             pageIndex: 1,
             pageSize: PAGING_SIZES[0]
         };
     }
 
-    checkValidParams = () => this.state.botIds.value !== '' &&
-        this.state.recipientTypes.value !== '' &&
-        this.state.mappingStatuses.value !== '' &&
-        this.state.licenseeStatuses.value !== '';
+    checkValidParams = () => {
+        const { channelIds, botIds, recipientTypeIds, mappingStatusIds, licenseeStatusIds } = this.state;
+        return channelIds != '' && botIds !== ''
+            && recipientTypeIds !== '' && mappingStatusIds !== '' && licenseeStatusIds !== '';
+    }
 
     submitHandler = e => {
         e.preventDefault();
@@ -136,18 +145,10 @@ export class Filter extends Component {
             <Form className="form-filter" tag='div' >
                 <FormGroup>
                     <Label className="form-label">{Labels.RecipientType}</Label>
-                    <MultipleSelectField
-                        id={'recipientTypes'}
-                        width={150}
-                        initialValue={this.state.recipientTypes}
+                    <MultiselectTreeView width={150}
                         data={this.state.settings.recipientTypes}
-                        keyField={'id'}
-                        valueField={'name'}
-                        statusField={'checked'}
-                        isSummited={false}
-                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: '# selected' }}
-                        isAllTextShown
-                        onChange={value => this.onChange('recipientTypes', value)}
+                        isSelectedAll
+                        onChange={selectedItems => this.onChange('recipientTypeIds', selectedItems.map(item => item.id).join(','))}
                     />
                 </FormGroup>
                 <FormGroup>
@@ -170,50 +171,34 @@ export class Filter extends Component {
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label">{Labels.LicenseeStatus}</Label>
-                    <MultipleSelectField
-                        id={'licenseeStatuses'}
-                        width={150}
-                        initialValue={this.state.licenseeStatuses}
+                    <MultiselectTreeView width={150}
                         data={this.state.settings.licenseeStatuses}
-                        keyField={'id'}
-                        valueField={'name'}
-                        statusField={'checked'}
-                        isSummited={false}
-                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: '# selected' }}
-                        isAllTextShown
-                        onChange={value => this.onChange('licenseeStatuses', value)}
+                        isSelectedAll
+                        onChange={selectedItems => this.onChange('licenseeStatusIds', selectedItems.map(item => item.id).join(','))}
                     />
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label">{Labels.MappingStatus}</Label>
-                    <MultipleSelectField
-                        id={'mappingStatuses'}
-                        width={150}
-                        initialValue={this.state.mappingStatuses}
+                    <MultiselectTreeView width={150}
                         data={this.state.settings.mappingStatuses}
-                        keyField={'id'}
-                        valueField={'name'}
-                        statusField={'checked'}
-                        isSummited={false}
-                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: '# selected' }}
-                        isAllTextShown
-                        onChange={value => this.onChange('mappingStatuses', value)}
+                        isSelectedAll
+                        onChange={selectedItems => this.onChange('mappingStatusIds', selectedItems.map(item => item.id).join(','))}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label className="form-label">{Labels.BotService}</Label>
+                    <MultiselectTreeView width={150}
+                        data={this.state.settings.channels}
+                        isSelectedAll
+                        onChange={selectedItems => this.onChange('channelIds', selectedItems.map(item => item.id).join(','))}
                     />
                 </FormGroup>
                 <FormGroup>
                     <Label className="form-label">{Labels.BotName}</Label>
-                    <MultipleSelectField
-                        id={'botIds'}
-                        width={150}
-                        initialValue={this.state.botIds}
+                    <MultiselectTreeView width={150}
                         data={this.state.settings.bots}
-                        keyField={'id'}
-                        valueField={'name'}
-                        statusField={'checked'}
-                        isSummited={false}
-                        texts={{ SelectOptions: Labels.PleaseSelect, All: Labels.All, SelectedItemCount: '# selected' }}
-                        isAllTextShown
-                        onChange={value => this.onChange('botIds', value)}
+                        isSelectedAll
+                        onChange={selectedItems => this.onChange('botIds', selectedItems.map(item => item.id).join(','))}
                     />
                 </FormGroup>
                 <button type="submit" id="submit-button" disabled={!this.checkValidParams()} className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>

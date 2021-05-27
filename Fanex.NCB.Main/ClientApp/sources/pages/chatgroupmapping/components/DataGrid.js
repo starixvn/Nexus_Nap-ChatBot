@@ -59,7 +59,9 @@ export class DataGrid extends Component {
                     remark: {
                         value: item.remark,
                         isValid: item.remark !== null
-                    }
+                    },
+                    channelId: item.channelId,
+                    channelName: item.channelName
                 }
             });
         }
@@ -136,7 +138,7 @@ export class DataGrid extends Component {
                 rows.push(<Row key={`body${index}`} >
                     <Cell className="text-center">{index + startIndex}</Cell>
                     <Cell>{item.mappingStatusID === mappingStatus.BotRemoved ? '' : item.botName}</Cell>
-                    <Cell>Telegram</Cell>
+                    <Cell>{item.channelName}</Cell>
                     <Cell className="text-center">
                         <span
                             onClick={() => this.copyGroupIdToClipboard(item.conversationID)}

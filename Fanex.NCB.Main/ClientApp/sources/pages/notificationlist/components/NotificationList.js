@@ -363,6 +363,7 @@ export default class NotificationList extends Component {
                         <Label className="form-label">Notification Type</Label>
                         <MultipleSelectField
                             width={182}
+                            isSearchable
                             initialValue={this.state.filter.notificationTypes.value}
                             data={this.state.notificationTypeOptions}
                             keyField="id"

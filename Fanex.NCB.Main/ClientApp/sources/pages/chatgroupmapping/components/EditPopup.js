@@ -141,7 +141,7 @@ export class UpdatePopup extends Component {
                     <Form className="form-edit" tag='div'>
                         <FormGroup>
                             <Label className="form-label">{Labels.BotService}</Label>
-                            <Label className="form-label"></Label>
+                            <Label className="form-label">{editingItem.channelName}</Label>
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label">{Labels.BotName}</Label>

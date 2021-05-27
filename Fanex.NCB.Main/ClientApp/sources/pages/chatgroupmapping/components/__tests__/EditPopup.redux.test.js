@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import { shallow, render, configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import UpdatePopup from '../UpdatePopup';
+import EditPopup from '../EditPopup';
 import configureMockStore from 'redux-mock-store';
 
 const mockStore = configureMockStore();
@@ -14,7 +14,7 @@ describe('Filter redux', () => {
         store = mockStore(initialState);
 
         wrapper = shallow(
-            <UpdatePopup store={store} />
+            <EditPopup store={store} />
         );
     });
 

@@ -1,6 +1,8 @@
 ﻿namespace Fanex.NCB.Models.ChatGroupMapping
 {
-    public class ChatGroupMappingResult
+    using Fanex.NCB.Models.Common;
+
+    public class ChatGroupMappingResult : ConversationChannel
     {
         public string BotName { get; set; }
         public int GroupID { get; set; }

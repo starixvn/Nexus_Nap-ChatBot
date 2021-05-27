@@ -1,11 +1,11 @@
 ﻿import React from 'react';
-import { UpdatePopup } from '../UpdatePopup';
+import { EditPopup } from '../EditPopup';
 import renderer from 'react-test-renderer';
 import ShallowRenderer from 'react-test-renderer/shallow';
 //import { getLicenseeStatus, isMapped } from '../../../common/CommonFunctions';
 import CommonFunctions from '../../../common/common-functions/CommonFunctions';
 
-describe("UpdatePopup", () => {
+describe("EditPopup", () => {
     const defaultProps = {
         updatePopupData: {
             editingItem: {
@@ -28,7 +28,7 @@ describe("UpdatePopup", () => {
             };
 
             // Act
-            let updatePopup = new UpdatePopup(props);
+            let updatePopup = new EditPopup(props);
 
             // Assert
             expect(updatePopup.state.groupID).toEqual(props.updatePopupData.editingItem.groupID);
@@ -49,7 +49,7 @@ describe("UpdatePopup", () => {
                     isShowed: false
                 }
             };
-            let updatePopup = new UpdatePopup(props);
+            let updatePopup = new EditPopup(props);
 
             // Act
             let result = updatePopup.render();
@@ -67,7 +67,7 @@ describe("UpdatePopup", () => {
                 },
                 filteredRecipients: null
             };
-            let updatePopup = new UpdatePopup(props);
+            let updatePopup = new EditPopup(props);
 
             // Act
             let result = updatePopup.render();
@@ -91,7 +91,7 @@ describe("UpdatePopup", () => {
             };
 
             // Act
-            let result = (new ShallowRenderer()).render(<UpdatePopup {...props} />);
+            let result = (new ShallowRenderer()).render(<EditPopup {...props} />);
 
             // Assert
             expect(result).toMatchSnapshot();
@@ -112,7 +112,7 @@ describe("UpdatePopup", () => {
             };
 
             // Act
-            let result = (new ShallowRenderer()).render(<UpdatePopup {...props} />);
+            let result = (new ShallowRenderer()).render(<EditPopup {...props} />);
 
             // Assert
             expect(result).toMatchSnapshot();
@@ -125,7 +125,7 @@ describe("UpdatePopup", () => {
             let props = {
                 ...defaultProps
             };
-            let updatePopup = new UpdatePopup(props);
+            let updatePopup = new EditPopup(props);
             let event = { preventDefault: jest.fn() };
             updatePopup.setState = jest.fn();
             updatePopup.checkValidParams = jest.fn(() => { return false; });
@@ -147,7 +147,7 @@ describe("UpdatePopup", () => {
                 update: jest.fn(() => Promise.resolve(response)),
                 updateData: { isSuccessful: true }
             };
-            let updatePopup = new UpdatePopup(props);
+            let updatePopup = new EditPopup(props);
             let event = { preventDefault: jest.fn() };
             updatePopup.setState = jest.fn();
             updatePopup.checkValidParams = jest.fn(() => { return true; });
@@ -180,7 +180,7 @@ describe("UpdatePopup", () => {
                 update: jest.fn(() => Promise.resolve(response)),
                 updateData: { isSuccessful: false }
             };
-            let updatePopup = new UpdatePopup(props);
+            let updatePopup = new EditPopup(props);
             let event = { preventDefault: jest.fn() };
             updatePopup.setState = jest.fn();
             updatePopup.checkValidParams = jest.fn(() => { return true; });
@@ -209,7 +209,7 @@ describe("UpdatePopup", () => {
             let props = {
                 ...defaultProps
             };
-            let updatePopup = new UpdatePopup(props);
+            let updatePopup = new EditPopup(props);
             updatePopup.state = {
                 groupID: 1,
                 conversationID: 2,
@@ -245,7 +245,7 @@ describe("UpdatePopup", () => {
             let props = {
                 ...defaultProps
             };
-            let updatePopup = new UpdatePopup(props);
+            let updatePopup = new EditPopup(props);
             updatePopup.state = {
                 recipientTypeId: { isValid: true },
                 recipientIds: { isValid: true },
@@ -264,7 +264,7 @@ describe("UpdatePopup", () => {
             let props = {
                 ...defaultProps
             };
-            let updatePopup = new UpdatePopup(props);
+            let updatePopup = new EditPopup(props);
             updatePopup.state = {
                 recipientTypeId: { isValid: false },
                 recipientIds: { isValid: true },
@@ -284,7 +284,7 @@ describe("UpdatePopup", () => {
             let props = {
                 ...defaultProps
             };
-            let updatePopup = new UpdatePopup(props);
+            let updatePopup = new EditPopup(props);
             updatePopup.state = {
                 recipientTypeId: { isValid: true },
                 recipientIds: { isValid: false },
@@ -304,7 +304,7 @@ describe("UpdatePopup", () => {
             let props = {
                 ...defaultProps
             };
-            let updatePopup = new UpdatePopup(props);
+            let updatePopup = new EditPopup(props);
             updatePopup.state = {
                 recipientTypeId: { isValid: true },
                 recipientIds: { isValid: true },
@@ -326,7 +326,7 @@ describe("UpdatePopup", () => {
             let props = {
                 ...defaultProps
             };
-            let updatePopup = new UpdatePopup(props);
+            let updatePopup = new EditPopup(props);
             updatePopup.setState = jest.fn();
             let fieldName = "field name";
             let fieldValue = 123;
@@ -346,7 +346,7 @@ describe("UpdatePopup", () => {
                 ...defaultProps,
                 closeUpdatePopupHandler: jest.fn()
             };
-            let updatePopup = new UpdatePopup(props);
+            let updatePopup = new EditPopup(props);
 
             // Act
             updatePopup.closePopupOnSuccess();
@@ -369,7 +369,7 @@ describe("UpdatePopup", () => {
                 },
                 filterRecipients: jest.fn()
             };
-            let updatePopup = new UpdatePopup(props);
+            let updatePopup = new EditPopup(props);
             updatePopup.setState = jest.fn();
             let recipientTypeId = 1;
 

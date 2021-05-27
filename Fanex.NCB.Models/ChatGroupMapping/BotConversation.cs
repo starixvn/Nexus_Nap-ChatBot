@@ -1,8 +1,8 @@
-﻿using Fanex.NCB.Core.Enum;
-
-namespace Fanex.NCB.Model.ChatGroupMapping
+﻿namespace Fanex.NCB.Model.ChatGroupMapping
 {
-    public class BotConversation
+    using Fanex.NCB.Core.Enum;
+
+    public class BotConversation : Models.Common.ConversationChannel
     {
         public string GroupName { get; set; }
 
@@ -24,12 +24,6 @@ namespace Fanex.NCB.Model.ChatGroupMapping
 
         public bool IsActive { get; set; }
 
-        public MappingStatus MappingStatus
-        {
-            get
-            {
-                return (MappingStatus)MappingStatusCode;
-            }
-        }
+        public MappingStatus MappingStatus => (MappingStatus)MappingStatusCode;
     }
 }

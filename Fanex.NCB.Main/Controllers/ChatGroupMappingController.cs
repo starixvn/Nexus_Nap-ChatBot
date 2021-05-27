@@ -46,21 +46,13 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSettings()
         {
-            var bots = settingService.GetBotNameAsync();
-            var recipientTypes = settingService.GetFilterRecipientTypesAsync();
-            var recipients = settingService.GetRecipientsAsync();
-            var chatgroupTypes = settingService.GetChatGroupTypeAsync();
-            var licenseeStatus = settingService.GetLicenseeStatusAsync();
-
-            await Task.WhenAll(bots, recipientTypes, recipients, chatgroupTypes, licenseeStatus);
-
             var viewModel = new ChatGroupMappingFilterViewModel
             {
-                Bots = await bots,
-                RecipientTypes = await recipientTypes,
-                Recipients = await recipients,
-                ChatGroupTypes = await chatgroupTypes,
-                LicenseeStatuses = await licenseeStatus,
+                Bots = await settingService.GetBotNameAsync(),
+                RecipientTypes = await settingService.GetFilterRecipientTypesAsync(),
+                Recipients = await settingService.GetRecipientsAsync(),
+                ChatGroupTypes = await settingService.GetChatGroupTypeAsync(),
+                LicenseeStatuses = await settingService.GetLicenseeStatusAsync(),
                 MappingStatuses = settingService.GetAllMappingStatus()
             };
 

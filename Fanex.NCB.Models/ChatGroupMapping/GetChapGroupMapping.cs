@@ -2,6 +2,7 @@
 {
     public class GetChapGroupMapping
     {
+        public string ChannelIds { get; set; }
         public string BotIDs { get; set; }
 
         public string RecipientTypeIDs { get; set; }

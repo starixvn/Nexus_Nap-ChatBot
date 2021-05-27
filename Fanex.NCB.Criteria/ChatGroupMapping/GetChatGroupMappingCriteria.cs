@@ -4,6 +4,7 @@
 
     public class GetChatGroupMappingCriteria : CriteriaBase
     {
+        public string ChannelIds { get; set; }
         public string BotIds { get; set; }
 
         public string RecipientTypeIDs { get; set; }

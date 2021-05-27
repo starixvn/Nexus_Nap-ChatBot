@@ -22,7 +22,7 @@
         [HttpGet]
         public async Task<IActionResult> GetNotificationTypes()
         {
-            var result = await commonService.GetNotificationTypesAsync().ConfigureAwait(false);
+            var result = await commonService.GetNotificationTypesAsync();
 
             return Json(result);
         }
@@ -30,7 +30,7 @@
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
-            var result = await commonService.GetProductsAsync().ConfigureAwait(false);
+            var result = await commonService.GetProductsAsync();
 
             return Json(result);
         }
@@ -38,7 +38,7 @@
         [HttpGet]
         public async Task<IActionResult> GetNotificationStatuses()
         {
-            var result = await commonService.GetNotificationStatusesAsync().ConfigureAwait(false);
+            var result = await commonService.GetNotificationStatusesAsync();
 
             return Json(result);
         }
@@ -46,7 +46,7 @@
         [HttpGet]
         public async Task<IActionResult> GetRecipients()
         {
-            var result = await commonService.GetRecipientsAsync().ConfigureAwait(false);
+            var result = await commonService.GetRecipientsAsync();
             var tree = GenerateTreeHelper.FromRecipient(result);
 
             return Json(tree);
@@ -55,7 +55,7 @@
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            var result = await commonService.GetUsersAsync().ConfigureAwait(false);
+            var result = await commonService.GetUsersAsync();
 
             return Json(result);
         }

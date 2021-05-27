@@ -24,6 +24,7 @@
         {
             var critera = new GetChatGroupMappingCriteria
             {
+                ChannelIds = model.ChannelIds,
                 BotIds = model.BotIDs,
                 RecipientName = model.RecipientName,
                 GroupName = model.GroupName,
@@ -31,7 +32,7 @@
                 LicenseeStatusIds = model.LicenseeStatusIds,
                 MappingStatusIds = model.MappingStatusIds,
                 PageIndex = model.PageIndex,
-                PageSize = model.PageSize,
+                PageSize = model.PageSize
             };
 
             var result = await baseService.FetchMultipleAsync<BotConversation, BotConversationMember, ConversationRecipient>(critera);
@@ -77,6 +78,8 @@
                 var recipients = conversationRecipients.Where(r => r.GroupID == conversation.GroupID);
                 var chatGroupMapping = new ChatGroupMappingResult
                 {
+                    ChannelId = conversation.ChannelId,
+                    ChannelName = conversation.ChannelName,
                     BotName = member?.BotName,
                     GroupID = conversation.GroupID,
                     ConversationID = conversation.ConversationID,
