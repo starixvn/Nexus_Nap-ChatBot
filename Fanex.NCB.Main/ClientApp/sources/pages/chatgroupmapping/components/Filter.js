@@ -10,6 +10,21 @@ import Site from '../../lib/site';
 import { PAGING_SIZES } from '../../constants/constants';
 
 export class Filter extends Component {
+    static defaultProps = {
+        settings: {
+            bots: [],
+            recipientTypes: [],
+            mappingStatuses: [],
+            licenseeStatuses: []
+        },
+        getSettings: function () {
+            // do nothing
+        },
+        filterRecipients: function () {
+            // do nothing
+        }
+    };
+
     constructor(props) {
         super(props);
 
@@ -32,39 +47,15 @@ export class Filter extends Component {
                 licenseeStatuses: []
             }
         };
+    }
 
+    componentDidMount() {
         this.props.getSettings();
         this.props.filterRecipients([], 0);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (prevState.settings.bots.length === 0 && nextProps.settings.bots) {
-            const selectedChannelIds = [];
-            const channels = [
-                {
-                    id: 1, text: 'Skype', isLeaf: true
-                }, {
-                    id: 2, text: 'Telegram', isLeaf: true
-                }
-            ].map(item => {
-                selectedChannelIds.push(item['id']);
-                return { ...item, checked: true };
-            });
-
-            const selectedbotIds = [];
-            const bots = [
-                {
-                    id: 1, text: 'Skype', isLeaf: false,
-                    items: [{ id: 1, text: 'Bot 1', isLeaf: true }, { id: 2, text: 'Bot 2', isLeaf: true }]
-                }, {
-                    id: 2, text: 'Telegram', isLeaf: false,
-                    items: [{ id: 3, text: 'Bot 3', isLeaf: true }, { id: 4, text: 'Bot 4', isLeaf: true }]
-                }
-            ].map(item => {
-                selectedbotIds.push(item['id']);
-                return { ...item, checked: true };
-            });
-
             const selectedRecipientTypeIds = [];
             const recipientTypes = nextProps.settings.recipientTypes.map(item => {
                 selectedRecipientTypeIds.push(item['id']);
@@ -84,8 +75,8 @@ export class Filter extends Component {
             });
 
             const state = {
-                channelIds: selectedChannelIds.join(','),
-                botIds: selectedbotIds.join(','),
+                channelIds: nextProps.settings.channelIds,
+                botIds: nextProps.settings.botIds,
                 recipientTypeIds: selectedRecipientTypeIds.join(','),
                 recipient: {
                     value: ''
@@ -93,8 +84,8 @@ export class Filter extends Component {
                 licenseeStatusIds: selectedlicenseeStatusIds.join(','),
                 mappingStatusIds: selectedMappingStatusIds.join(','),
                 settings: {
-                    channels: channels,
-                    bots: bots,
+                    channels: nextProps.settings.channels,
+                    bots: nextProps.settings.bots,
                     recipientTypes: recipientTypes,
                     mappingStatuses: mappingStatuses,
                     licenseeStatuses: licenseeStatuses

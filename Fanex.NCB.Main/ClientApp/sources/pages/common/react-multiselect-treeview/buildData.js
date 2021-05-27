@@ -4,7 +4,7 @@
         const key = parentKey + '-' + i;
 
         floatData.push({ ...data[i], checked: isChecked, key: key, parentKey: parentKey });
-        data[i] = { ...data[i], checked: isChecked, key: key };
+        data[i] = { ...data[i], checked: isChecked, key: key, items: data[i].items ? [...data[i].items] : [] };
         if (data[i].items && data[i].items.length > 0) {
             getChilds(floatData, data[i].items, key, isChecked);
         }
@@ -12,17 +12,18 @@
 };
 
 export default (data, isChecked = false) => {
-    let floatData = [];
-    const totalItems = data.length;
+    const tempData = [],
+        floatData = [],
+        totalItems = data.length;
     for (let i = 0; i < totalItems; i++) {
         const key = 'item-' + i;
 
         floatData.push({ ...data[i], checked: isChecked, key: key, parentKey: '' });
-        data[i] = { ...data[i], checked: isChecked, key: key };
-        if (data[i].items && data[i].items.length > 0) {
-            getChilds(floatData, data[i].items, key, isChecked);
+        tempData.push({ ...data[i], checked: isChecked, key: key, items: data[i].items ? [...data[i].items] : [] });
+        if (tempData[i].items && tempData[i].items.length > 0) {
+            getChilds(floatData, tempData[i].items, key, isChecked);
         }
     }
 
-    return { data, floatData };
+    return { data: tempData, floatData };
 };

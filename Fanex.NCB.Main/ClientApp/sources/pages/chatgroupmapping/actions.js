@@ -42,6 +42,7 @@ const editActive = params => async () => {
 
 export const ActionCreators = {
     setGridParams,
+    setGridData,
     filterRecipients,
     getSettings,
     getGridData,

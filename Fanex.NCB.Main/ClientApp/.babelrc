@@ -1,18 +1,21 @@
 {
-    "presets": ["@babel/preset-react",["@babel/preset-env",{
-      "targets": {
-        "chrome": "71",
-        "firefox": "64",
-		"edge": "40",
-        }}]
+    "presets": [
+        "@babel/preset-react",
+        [
+            "@babel/preset-env",
+            {
+                "targets": {
+                    "chrome": "71",
+                    "firefox": "64",
+                    "edge": "40"
+                }
+            }
+        ]
     ],
-   "plugins": ["@babel/plugin-syntax-jsx","@babel/plugin-transform-react-jsx","@babel/plugin-transform-react-display-name","@babel/plugin-transform-react-jsx-source",
-    "@babel/plugin-transform-react-jsx-self","@babel/plugin-proposal-class-properties"],
+    "plugins": [ "@babel/proposal-object-rest-spread", "@babel/proposal-class-properties", "@babel/syntax-dynamic-import" ],
     "env": {
-      "test": {
-        "presets":  ["@babel/preset-react","@babel/preset-env"],
-        "plugins": ["@babel/plugin-syntax-jsx","@babel/plugin-transform-react-jsx","@babel/plugin-transform-react-display-name",
-          "@babel/plugin-transform-react-jsx-source","@babel/plugin-transform-react-jsx-self","@babel/plugin-proposal-class-properties"]
-      }
-    }   
+        "test": {
+            "plugins": [ "dynamic-import-node" ]
+        }
+    }
 }

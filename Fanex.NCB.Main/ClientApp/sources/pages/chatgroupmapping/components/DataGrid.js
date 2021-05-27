@@ -1,14 +1,12 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import axios from 'axios';
 import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 import { ActionCreators } from '../actions';
 import CommonFunctions from '../../common/common-functions/CommonFunctions';
 import { PAGING_SIZES, mappingStatus } from '../../constants/constants';
 import Labels from '../../common/Labels';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';
-import Site from '../../lib/site';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 
 export class DataGrid extends Component {

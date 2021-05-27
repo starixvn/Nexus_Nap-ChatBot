@@ -1,5 +1,5 @@
 ﻿module.exports = {
-    //setupTestFrameworkScriptFile: "raf/polyfill",
+    setupFilesAfterEnv: ['<rootDir>/setupTests/setupEnzyme.js'],
     moduleNameMapper: {
         '^.+\\.(css|scss)$': 'identity-obj-proxy'
     }

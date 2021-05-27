@@ -15,7 +15,22 @@ import { NotAvailabeId } from '../../constants/constants';
 const CONFIRM_CLOSE = 1;
 const CONFIRM_UPDATE = 2;
 
-export class UpdatePopup extends Component {
+export class EditPopup extends Component {
+    static defaultProps = {
+        editPopupData: {
+            isShowed: false,
+            editingItem: {
+                groupID: 1,
+                conversationID: 1,
+                recipientTypeId: 1,
+                chatGroupTypeId: 1,
+                recipientIds: '',
+                remark: ''
+            }
+        },
+        filteredRecipients: []
+    };
+
     constructor(props) {
         super(props);
 
@@ -228,4 +243,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UpdatePopup);
+export default connect(mapStateToProps, mapDispatchToProps)(EditPopup);

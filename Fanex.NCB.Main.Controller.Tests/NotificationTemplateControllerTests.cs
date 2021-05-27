@@ -8,12 +8,15 @@
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
+    using Fanex.NCB.Core.Enum;
+    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Main.ViewModel.NotificationTemplate;
     using Fanex.NCB.Models.NotificationTemplate;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.SkypeBot.Controllers;
     using Microsoft.AspNetCore.Mvc;
+    using Newtonsoft.Json;
     using NSubstitute;
     using Xunit;
     using static Fanex.NAP.Core.Business.Constant;
@@ -57,7 +60,7 @@
 
             notificationTemplaceService.GetAsync(notificationTypeId, pageIndex, pageSize).Returns((total, templates));
 
-            var result = await controller.Get(notificationTypeId, pageIndex, pageSize).ConfigureAwait(false);
+            var result = await controller.Get(notificationTypeId, pageIndex, pageSize);
 
             Assert.IsType<JsonResult>(result);
         }
@@ -74,7 +77,7 @@
 
             notificationTemplaceService.GetByIdAsync(templateId).Returns(template);
 
-            var result = await controller.GetById(templateId).ConfigureAwait(false);
+            var result = await controller.GetById(templateId);
 
             var jsonResult = Assert.IsType<JsonResult>(result);
             var returnedTemplate = Assert.IsType<NotificationTemplate>(jsonResult.Value);
@@ -90,11 +93,16 @@
             napSession.UserId = fixture.Create<int>();
 
             var viewModel = fixture.Create<CreateNotificationTemplateViewModel>();
+            var contents = new List<NotificationTemplateContent>
+            {
+                new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Skype, Content = viewModel.Content },
+                new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content.ToTelegramFormat() }
+            };
             var model = new CreateNotificationTemplate();
 
             notificationTemplaceService.CreateAsync(Arg.Do<CreateNotificationTemplate>(x => model = x)).Returns(new CommandResult { Code = 0 });
 
-            var result = await controller.Create(viewModel).ConfigureAwait(false);
+            var result = await controller.Create(viewModel);
 
             var json = Assert.IsType<JsonResult>(result);
             var commandResult = Assert.IsType<CommandResult>(json.Value);
@@ -103,7 +111,7 @@
             Assert.Equal(viewModel.NotificationTypeId, model.NotificationTypeId);
             Assert.Equal(viewModel.NotificationTemplateName, model.NotificationTemplateName);
             Assert.Equal(viewModel.Title, model.Title);
-            Assert.Equal(viewModel.Content, model.Content);
+            Assert.Equal(JsonConvert.SerializeObject(contents), model.Content);
             Assert.Equal(napSession.UserId, model.CreatorId);
         }
 
@@ -118,7 +126,7 @@
 
             var viewModel = fixture.Create<CreateNotificationTemplateViewModel>();
 
-            var result = await controller.Create(viewModel).ConfigureAwait(false);
+            var result = await controller.Create(viewModel);
 
             var jsonResult = Assert.IsType<JsonResult>(result);
             Assert.False((bool)jsonResult.Value.GetType().GetProperty("isSuccessful").GetValue(jsonResult.Value));
@@ -133,11 +141,16 @@
             napSession.UserId = fixture.Create<int>();
 
             var viewModel = fixture.Create<EditNotificationTemplateViewModel>();
+            var contents = new List<NotificationTemplateContent>
+            {
+                new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Skype, Content = viewModel.Content },
+                new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content.ToTelegramFormat() }
+            };
             var model = new EditNotificationTemplate();
 
             notificationTemplaceService.EditAsync(Arg.Do<EditNotificationTemplate>(x => model = x)).Returns(new CommandResult { Code = 0 });
 
-            var result = await controller.Edit(viewModel).ConfigureAwait(false);
+            var result = await controller.Edit(viewModel);
 
             var json = Assert.IsType<JsonResult>(result);
             var commandResult = Assert.IsType<CommandResult>(json.Value);
@@ -146,7 +159,7 @@
             Assert.Equal(viewModel.NotificationTypeId, model.NotificationTypeId);
             Assert.Equal(viewModel.NotificationTemplateName, model.NotificationTemplateName);
             Assert.Equal(viewModel.Title, model.Title);
-            Assert.Equal(viewModel.Content, model.Content);
+            Assert.Equal(JsonConvert.SerializeObject(contents), model.Content);
             Assert.Equal(napSession.UserId, model.ModifierId);
         }
 
@@ -161,7 +174,7 @@
 
             var viewModel = fixture.Create<EditNotificationTemplateViewModel>();
 
-            var result = await controller.Edit(viewModel).ConfigureAwait(false);
+            var result = await controller.Edit(viewModel);
 
             var jsonResult = Assert.IsType<JsonResult>(result);
             Assert.False((bool)jsonResult.Value.GetType().GetProperty("isSuccessful").GetValue(jsonResult.Value));
@@ -178,7 +191,7 @@
 
             notificationTemplaceService.DeleteAsync(templateId, napSession.UserId).Returns(new CommandResult { Code = 0 });
 
-            var result = await controller.Delete(templateId).ConfigureAwait(false);
+            var result = await controller.Delete(templateId);
 
             var jsonResult = Assert.IsType<JsonResult>(result);
 

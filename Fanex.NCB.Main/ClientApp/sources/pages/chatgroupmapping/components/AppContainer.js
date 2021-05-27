@@ -10,6 +10,10 @@ import './AppContainer.scss';
 import Labels from '../../common/Labels';
 
 export class AppContainer extends Component {
+    static defaultProps = {
+        editPopupData: { isShowed: false }
+    };
+
     constructor(props) {
         super(props);
     }

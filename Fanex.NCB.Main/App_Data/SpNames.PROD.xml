@@ -29,6 +29,7 @@
     <Setting Key="NCB_Common_NotificationStatus_Sel" SpName="NCB_Common_NotificationStatus_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_Common_Recipient_Sel" SpName="NCB_Common_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_Common_User_Sel" SpName="NCB_Common_User_Sel" DbName="ChatBot" Plain="0"></Setting>
+      <Setting Key="NCB_Channel_Sel" SpName="NCB_Channel_Sel" DbName="ChatBot" Plain="0" />
   </Function>
   <Function Name="Send Notification">
     <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>

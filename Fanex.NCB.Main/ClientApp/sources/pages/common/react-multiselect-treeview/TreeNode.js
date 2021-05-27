@@ -10,6 +10,10 @@ export default class TreeNode extends PureComponent {
         const { id, data, floatData } = this.props;
         const itemIndex = floatData.findIndex(item => item.key === data.key);
 
+        if (itemIndex < 0) {
+            return null;
+        }
+
         return (
             <Fragment>
                 <div className="checkbox-wrapper">

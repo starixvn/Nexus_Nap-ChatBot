@@ -1,96 +1,105 @@
 ﻿import React from 'react';
+import { shallow } from 'enzyme';
 import { AppContainer } from '../AppContainer';
-import { Provider } from "react-redux";
-import configureMockStore from "redux-mock-store";
-import ShallowRenderer from 'react-test-renderer/shallow';
+import { NCBBreadcrum } from '../../../common/breadcrumbs/breadcrumbs';
+import Filter from '../Filter';
+import DataGrid from '../DataGrid';
+import EditPopup from '../EditPopup';
 
-const mockStore = configureMockStore();
-const store = mockStore({});
+describe('AppContainer', () => {
+    afterAll(() => {
+        jest.clearAllMocks();
+    });
 
-describe("AppContainer", () => {
-    describe("render", () => {
-        it("hide updatePopup", () => {
-            // Arrange
-            const props = {
-                updatePopupData: {
-                    isShowed: false
-                }
-            };
-
+    describe('render', () => {
+        it('should render correctly default components', () => {
             // Act
-            let appContainer = (new ShallowRenderer()).render(
-                <Provider store={store}>
-                    <AppContainer {...props} />
-                </Provider>
-            );
+            const container = shallow(<AppContainer />);
 
             // Assert
-            expect(appContainer).toMatchSnapshot();
+            expect(container).toMatchSnapshot();
+            expect(container.find(NCBBreadcrum).length).toBe(1);
+            expect(container.find(Filter).length).toBe(1);
+            expect(container.find(DataGrid).length).toBe(1);
+            expect(container.find(EditPopup).length).toBe(0);
         });
 
-        it("show updatePopup", () => {
+        it('should render correctly EditPopup component', () => {
             // Arrange
             let props = {
-                updatePopupData: {
-                    isShowed: true
-                }
+                editPopupData: { isShowed: true }
             };
 
             // Act
-            let appContainer = (new ShallowRenderer()).render(
-                <Provider store={store}>
-                    <AppContainer {...props} />
-                </Provider>
-            );
+            const container = shallow(<AppContainer {...props} />);
 
             // Assert
-            expect(appContainer).toMatchSnapshot();
+            expect(container).toMatchSnapshot();
+            expect(container.find(NCBBreadcrum).length).toBe(1);
+            expect(container.find(Filter).length).toBe(1);
+            expect(container.find(DataGrid).length).toBe(1);
+            expect(container.find(EditPopup).length).toBe(1);
         });
     });
 
-    describe("closeUpdatePopupHandler", () => {
-        it("when UpdatePopup is showed", () => {
+    describe('handleCloseEditPopup', () => {
+        it('popup is showed - should call exactly functions when close popup', () => {
             // Arrange
             let props = {
-                closeEditPopup: jest.fn(),
-                refreshUpdateData: jest.fn(),
-                updatePopupData: {
+                editPopupData: {
                     isShowed: true
                 },
-                getGridData: jest.fn(),
-                gridParams: "some data"
+                gridParams: {
+                    channelIds: '',
+                    botIds: '',
+                    pageIndex: 1,
+                    pageSize: 100
+                },
+                setEditPopupData: jest.fn(),
+                setEditResult: jest.fn(),
+                getGridData: jest.fn()
             };
-            let appContainer = new AppContainer(props);
+            let container = shallow(<AppContainer {...props} />).instance();
 
             // Act
-            appContainer.closeUpdatePopupHandler();
+            container.handleCloseEditPopup();
 
             // Assert
-            expect(props.closeEditPopup).toHaveBeenCalled();
-            expect(props.refreshUpdateData).toHaveBeenCalled();
+            expect(props.setEditPopupData).toHaveBeenCalledWith({ isShowed: false, editingItem: {} });
+            expect(props.setEditResult).toHaveBeenCalledWith(null);
             expect(props.getGridData).toBeCalledTimes(0);
         });
 
-        it("when UpdatePopup is not showed", () => {
+        it('popup is not show - should call exactly functions when close popup', () => {
             // Arrange
             let props = {
-                closeEditPopup: jest.fn(),
-                refreshUpdateData: jest.fn(),
-                updatePopupData: {
+                editPopupData: {
                     isShowed: false
                 },
-                getGridData: jest.fn(),
-                gridParams: "some data"
+                gridParams: {
+                    channelIds: '',
+                    botIds: '',
+                    pageIndex: 1,
+                    pageSize: 100
+                },
+                setEditPopupData: jest.fn(),
+                setEditResult: jest.fn(),
+                getGridData: jest.fn()
             };
-            let appContainer = new AppContainer(props);
+            let container = shallow(<AppContainer {...props} />).instance();
 
             // Act
-            appContainer.closeUpdatePopupHandler();
+            container.handleCloseEditPopup();
 
             // Assert
-            expect(props.closeEditPopup).toHaveBeenCalled();
-            expect(props.refreshUpdateData).toHaveBeenCalled();
-            expect(props.getGridData).toHaveBeenCalledWith(props.gridParams);
+            expect(props.setEditPopupData).toHaveBeenCalledWith({ isShowed: false, editingItem: {} });
+            expect(props.setEditResult).toHaveBeenCalledWith(null);
+            expect(props.getGridData).toHaveBeenCalledWith({
+                channelIds: '',
+                botIds: '',
+                pageIndex: 1,
+                pageSize: 100
+            });
         });
     });
 });

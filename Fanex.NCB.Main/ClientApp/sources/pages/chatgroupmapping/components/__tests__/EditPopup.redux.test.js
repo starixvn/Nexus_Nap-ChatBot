@@ -1,27 +1,59 @@
-﻿import React from 'react';
-import { shallow, render, configure } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-import EditPopup from '../EditPopup';
-import configureMockStore from 'redux-mock-store';
+﻿jest.mock('react-redux');
+jest.mock('redux');
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { ActionCreators } from '../../actions';
 
-const mockStore = configureMockStore();
-configure({ adapter: new Adapter() });
+describe('connect ', () => {
+    let mapStateToProps, mapDispatchToProps;
+    const connectMock = jest.fn();
 
-describe('Filter redux', () => {
-    let wrapper, store;
-    beforeEach(() => {
-        const initialState = { settingData: "data 1", updatePopupData: "data 2", updateData: "data 3", filteredRecipients: "data 4" };
-        store = mockStore(initialState);
-
-        wrapper = shallow(
-            <EditPopup store={store} />
-        );
+    beforeAll(() => {
+        connect.mockImplementation((mapStateToPropsFunc, mapDispatchToPropsFunc) => {
+            mapStateToProps = mapStateToPropsFunc;
+            mapDispatchToProps = mapDispatchToPropsFunc;
+            return connectMock;
+        });
+        require('../EditPopup').default;
     });
 
-    it('should map state to props correctly', () => {
-        expect(wrapper.props().settingData).toEqual("data 1");
-        expect(wrapper.props().updatePopupData).toEqual("data 2");
-        expect(wrapper.props().updateData).toEqual("data 3");
-        expect(wrapper.props().filteredRecipients).toEqual("data 4");
+    afterAll(() => {
+        jest.clearAllMocks();
+    });
+
+    it('props should be mapped correctly', () => {
+        // Arrange
+        const expected = {
+            settings: { channels: [], bots: [] },
+            editPopupData: { isShowed: false },
+            editResult: { isSuccessful: true, message: '' },
+            filteredRecipients: []
+        };
+        const state = {
+            anotherState: 123,
+            settings: { channels: [], bots: [] },
+            editPopupData: { isShowed: false },
+            editResult: { isSuccessful: true, message: '' },
+            filteredRecipients: []
+        };
+
+        // Act
+        const actual = mapStateToProps(state);
+
+        // Assert
+        expect(actual).toEqual(expected);
+    });
+
+    it('bindActionCreators should be called with correct parameter', () => {
+        // Arrange
+        const mockBindAction = jest.fn();
+        bindActionCreators.mockImplementationOnce(mockBindAction);
+        const dispatch = {};
+
+        // Act
+        mapDispatchToProps(dispatch);
+
+        // Assert
+        expect(mockBindAction).toHaveBeenCalledWith(ActionCreators, dispatch);
     });
 });
