@@ -65,28 +65,6 @@ export class DataGrid extends Component {
         }
     }
 
-    buildHeader = (isHost) => {
-        return (
-            <Row style={{ height: 32 }}>
-                <Cell colWidth={50} header>{Labels.NumberCol}</Cell>
-                <Cell colWidth={100} header>{Labels.BotName}</Cell>
-                <Cell colWidth={80} header>{Labels.BotService}</Cell>
-                <Cell colWidth={60} header>{Labels.GroupID}</Cell>
-                <Cell colWidth={200} header>{Labels.GroupName}</Cell>
-                <Cell colWidth={110} header>{Labels.ChatGroupType}</Cell>
-                <Cell colWidth={100} header>{Labels.RecipientType}</Cell>
-                <Cell colWidth={130} header>{Labels.Recipient}</Cell>
-                <Cell colWidth={100} header>{Labels.LicenseeStatus}</Cell>
-                <Cell colWidth={100} header>{Labels.MappingStatus}</Cell>
-                <Cell colWidth={50} header>{Labels.Active}</Cell>
-                <Cell colWidth={200} header>{Labels.Remark}</Cell>
-                {
-                    isHost &&
-                    <Cell colWidth={60} header>{Labels.Action}</Cell>
-                }
-            </Row>);
-    };
-
     copyGroupIdToClipboard = text => {
         const input = document.createElement('textarea');
         input.value = text;
@@ -128,52 +106,78 @@ export class DataGrid extends Component {
         this.setState({ isShowActivePopup: !this.state.isShowActivePopup });
     }
 
+    buildHeader = (isHost) => {
+        return (
+            <Row style={{ height: 32 }}>
+                <Cell colWidth={50} header>{Labels.NumberCol}</Cell>
+                <Cell colWidth={100} header>{Labels.BotName}</Cell>
+                <Cell colWidth={80} header>{Labels.BotService}</Cell>
+                <Cell colWidth={60} header>{Labels.GroupID}</Cell>
+                <Cell colWidth={200} header>{Labels.GroupName}</Cell>
+                <Cell colWidth={110} header>{Labels.ChatGroupType}</Cell>
+                <Cell colWidth={100} header>{Labels.RecipientType}</Cell>
+                <Cell colWidth={130} header>{Labels.Recipient}</Cell>
+                <Cell colWidth={100} header>{Labels.LicenseeStatus}</Cell>
+                <Cell colWidth={100} header>{Labels.MappingStatus}</Cell>
+                <Cell colWidth={50} header>{Labels.Active}</Cell>
+                <Cell colWidth={200} header>{Labels.Remark}</Cell>
+                {
+                    isHost &&
+                    <Cell colWidth={60} header>{Labels.Action}</Cell>
+                }
+            </Row>);
+    };
+
+    renderRow = (item, index, startIndex, isHost) => {
+        return (<Row key={`body${index}`}>
+            <Cell className="text-center">{index + startIndex}</Cell>
+            <Cell>{item.mappingStatusID === mappingStatus.BotRemoved ? '' : item.botName}</Cell>
+            <Cell>{item.channelName}</Cell>
+            <Cell className="text-center">
+                <span
+                    onClick={() => this.copyGroupIdToClipboard(item.conversationID)}
+                    className="icon-copy" title={item.conversationID}
+                />
+            </Cell>
+            <Cell>{item.groupName}</Cell>
+            <Cell>{item.chatGroupTypeName}</Cell>
+            <Cell>{item.recipientTypeName}</Cell>
+            <Cell>{item.recipientNames}</Cell>
+            <Cell>{this.getLicenseeStatus(item)}</Cell>
+            <Cell>
+                <span className={CommonFunctions.getMappingClass(item.mappingStatusID)}>{item.mappingStatusName}</span>
+            </Cell>
+            <Cell className="text-center">
+                <input id={index + startIndex}
+                    className="checkbox-custom"
+                    type='checkbox'
+                    checked={item.isActive}
+                    disabled={!(isHost && (CommonFunctions.isBotRemoved(item.mappingStatusID) || CommonFunctions.isMapped(item.mappingStatusID)))}
+                    onChange={() => this.changeActive(item)}
+                />
+                <label htmlFor={index + startIndex} />
+            </Cell>
+            <Cell>{item.remark}</Cell>
+            {
+                isHost &&
+                <Cell className="text-center col-action">
+                    <div>
+                        {
+                            item.mappingStatusID !== mappingStatus.BotRemoved &&
+                            <span className={this.getEditClassNames(item)} id={'edit-' + index} onClick={() => this.openEditPopup(item)} />
+                        }
+                    </div>
+                </Cell>
+            }
+        </Row>);
+    }
+
     buildBody = (data, pageIndex, pageSize, isHost) => {
         const rows = [];
         const startIndex = (pageIndex - 1) * pageSize + 1;
         if (data.length > 0) {
             data.map((item, index) => {
-                rows.push(<Row key={`body${index}`} >
-                    <Cell className="text-center">{index + startIndex}</Cell>
-                    <Cell>{item.mappingStatusID === mappingStatus.BotRemoved ? '' : item.botName}</Cell>
-                    <Cell>{item.channelName}</Cell>
-                    <Cell className="text-center">
-                        <span
-                            onClick={() => this.copyGroupIdToClipboard(item.conversationID)}
-                            className="icon-copy" title={item.conversationID}
-                        />
-                    </Cell>
-                    <Cell>{item.groupName}</Cell>
-                    <Cell>{item.chatGroupTypeName}</Cell>
-                    <Cell>{item.recipientTypeName}</Cell>
-                    <Cell>{item.recipientNames}</Cell>
-                    <Cell>{this.getLicenseeStatus(item)}</Cell>
-                    <Cell>
-                        <span className={CommonFunctions.getMappingClass(item.mappingStatusID)}>{item.mappingStatusName}</span>
-                    </Cell>
-                    <Cell className="text-center">
-                        <input id={index + startIndex}
-                            className="checkbox-custom"
-                            type='checkbox'
-                            checked={item.isActive}
-                            disabled={!(isHost && (CommonFunctions.isBotRemoved(item.mappingStatusID) || CommonFunctions.isMapped(item.mappingStatusID)))}
-                            onChange={() => this.changeActive(item)}
-                        />
-                        <label htmlFor={index + startIndex}/>
-                    </Cell>
-                    <Cell>{item.remark}</Cell>
-                    {
-                        isHost &&
-                        <Cell className="text-center col-action">
-                            <div>
-                                {
-                                    item.mappingStatusID !== mappingStatus.BotRemoved &&
-                                    <span className={this.getEditClassNames(item)} id={'edit-' + index} onClick={() => this.openEditPopup(item)} />
-                                }
-                            </div>
-                        </Cell>
-                    }
-                </Row>);
+                rows.push(this.renderRow(item, index, startIndex, isHost));
             });
         } else {
             rows.push(<Row key={`body${1}`} ><Cell colSpan={isHost ? 13 : 12}><NoDataTitle /></Cell></Row >);
@@ -209,14 +213,16 @@ export class DataGrid extends Component {
                     onPaging={this.onPaging}
                     containerPadding={0}
                     adjustedHeight={50}
-
                 />
-                <ConfirmPopup
-                    isOpen={this.state.isShowActivePopup}
-                    onConfirm={this.updateActive}
-                    onToggle={this.toggleActive}
-                    content={this.state.activeContent}
-                />
+                {
+                    this.state.isShowActivePopup &&
+                    <ConfirmPopup
+                        isOpen={this.state.isShowActivePopup}
+                        onConfirm={this.updateActive}
+                        onToggle={this.toggleActive}
+                        content={this.state.activeContent}
+                    />
+                }
             </div>
         );
     }
