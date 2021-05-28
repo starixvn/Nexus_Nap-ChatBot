@@ -11,86 +11,97 @@
 
     public class CommonServiceTests
     {
+        private readonly IFixture fixture = new Fixture();
         private IBaseService baseService;
 
         [Fact]
         public async Task GetNotificationTypesAsync_WhenCalled_ReturnExpectedResult()
         {
+            // Arrange
             var service = GetService();
-
-            var fixture = new Fixture();
-
             var types = fixture.Create<IEnumerable<NotificationType>>();
-
             baseService.GetDataAsync<NotificationType>(Arg.Any<GetNotificationTypesCriteria>()).Returns(types);
 
-            var result = await service.GetNotificationTypesAsync().ConfigureAwait(false);
+            // Act
+            var result = await service.GetNotificationTypesAsync();
 
+            // Assert
             Assert.Equal(types, result);
         }
 
         [Fact]
         public async Task GetProductsAsync_WhenCalled_ReturnExpectedResult()
         {
+            // Arrange
             var service = GetService();
-
-            var fixture = new Fixture();
-
             var products = fixture.Create<IEnumerable<Product>>();
-
             baseService.GetDataAsync<Product>(Arg.Any<GetProductsCriteria>()).Returns(products);
 
-            var result = await service.GetProductsAsync().ConfigureAwait(false);
+            // Act
+            var result = await service.GetProductsAsync();
 
+            // Assert
             Assert.Equal(products, result);
         }
 
         [Fact]
         public async Task GetNotificationStatusesAsync_WhenCalled_ReturnExpectedResult()
         {
+            // Arrange
             var service = GetService();
-
-            var fixture = new Fixture();
-
             var statuses = fixture.Create<IEnumerable<NotificationStatus>>();
-
             baseService.GetDataAsync<NotificationStatus>(Arg.Any<GetNotificationStatusCriteria>()).Returns(statuses);
 
-            var result = await service.GetNotificationStatusesAsync().ConfigureAwait(false);
+            // act
+            var result = await service.GetNotificationStatusesAsync();
 
+            // Assert
             Assert.Equal(statuses, result);
         }
 
         [Fact]
         public async Task GetRecipientsAsync_WhenCalled_ReturnExpectedResult()
         {
+            // Arrange
             var service = GetService();
-
-            var fixture = new Fixture();
-
             var recipients = fixture.Create<IEnumerable<Recipient>>();
-
             baseService.GetDataAsync<Recipient>(Arg.Any<GetRecipientsCriteria>()).Returns(recipients);
 
-            var result = await service.GetRecipientsAsync().ConfigureAwait(false);
+            // Act
+            var result = await service.GetRecipientsAsync();
 
+            // Assert
             Assert.Equal(recipients, result);
         }
 
         [Fact]
         public async Task GetUsersAsync_WhenCalled_ReturnExpectedResult()
         {
+            // Arrange
             var service = GetService();
-
-            var fixture = new Fixture();
-
             var users = fixture.Create<IEnumerable<User>>();
-
             baseService.GetDataAsync<User>(Arg.Any<GetUsersCriteria>()).Returns(users);
 
-            var result = await service.GetUsersAsync().ConfigureAwait(false);
+            // Act
+            var result = await service.GetUsersAsync();
 
+            // Assert
             Assert.Equal(users, result);
+        }
+
+        [Fact]
+        public async Task GetConversationChannelAsync_WhenCalled_ReturnExpectedChannels()
+        {
+            // Arrange
+            var channels = fixture.Create<IEnumerable<ConversationChannel>>();
+            var service = GetService();
+            baseService.GetDataAsync<ConversationChannel>(Arg.Any<GetConversationChannelCriteria>()).Returns(channels);
+
+            // Act
+            var result = await service.GetConversationChannelAsync();
+
+            // Assert
+            Assert.Equal(channels, result);
         }
 
         private CommonService GetService()

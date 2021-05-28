@@ -40,7 +40,7 @@
         {
             var expected = new List<BotName>
             {
-                new BotName { Id = "1", Name = "1on1Notify"}
+                new BotName { Id = 1, Name = "1on1Notify"}
             };
 
             var criteria = new GetBotNameCriteria();
@@ -48,11 +48,10 @@
             baseService.GetDataAsync<BotName>(Arg.Do<GetBotNameCriteria>(x => criteria = x)).Returns(expected);
 
             //Act
-            var actual = await service.GetBotNameAsync().ConfigureAwait(false);
+            var actual = await service.GetBotNameAsync();
 
             //Assert
-            Assert.Equal("1", actual.FirstOrDefault().Id);
-            Assert.Equal("1on1Notify", actual.FirstOrDefault().Name);
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
@@ -68,7 +67,7 @@
             baseService.GetDataAsync<BaseModel>(Arg.Do<GetFilterRecipientTypeCriteria>(x => criteria = x)).Returns(expected);
 
             //Act
-            var actual = await service.GetFilterRecipientTypesAsync().ConfigureAwait(false);
+            var actual = await service.GetFilterRecipientTypesAsync();
 
             //Assert
             Assert.Equal(1, actual.FirstOrDefault().Id);
@@ -88,7 +87,7 @@
             baseService.GetDataAsync<BaseModel>(Arg.Do<GetLicenseeStatusCriteria>(x => criteria = x)).Returns(expected);
 
             //Act
-            var actual = await service.GetLicenseeStatusAsync().ConfigureAwait(false);
+            var actual = await service.GetLicenseeStatusAsync();
 
             //Assert
             Assert.Equal(1, actual.FirstOrDefault().Id);
@@ -108,7 +107,7 @@
             baseService.GetDataAsync<ChatGroupType>(Arg.Do<GetChatGroupTypeCriteria>(x => criteria = x)).Returns(expected);
 
             //Act
-            var actual = await service.GetChatGroupTypeAsync().ConfigureAwait(false);
+            var actual = await service.GetChatGroupTypeAsync();
 
             //Assert
             Assert.Equal("1", actual.FirstOrDefault().Id);
@@ -128,7 +127,7 @@
             baseService.GetDataAsync<Recipient>(Arg.Do<GetRecipientCriteria>(x => criteria = x)).Returns(expected);
 
             //Act
-            var actual = await service.GetRecipientsAsync().ConfigureAwait(false);
+            var actual = await service.GetRecipientsAsync();
 
             //Assert
             Assert.Equal(1, actual.FirstOrDefault().Id);
@@ -148,7 +147,7 @@
             baseService.GetDataAsync<BaseModel>(Arg.Do<GetRecipientTypeCriteria>(x => criteria = x)).Returns(expected);
 
             //Act
-            var actual = await service.GetRecipientTypesAsync().ConfigureAwait(false);
+            var actual = await service.GetRecipientTypesAsync();
 
             //Assert
             Assert.Equal(1, actual.FirstOrDefault().Id);
@@ -167,7 +166,7 @@
             baseService.GetDataAsync<BaseModel>(Arg.Do<SearchChatGroupNameCriteria>(x => criteria = x)).Returns(expected);
 
             //Act
-            var actual = await service.SearchChatGroupAsync("Test").ConfigureAwait(false);
+            var actual = await service.SearchChatGroupAsync("Test");
 
             //Assert
             Assert.Equal(1, actual.FirstOrDefault().Id);
@@ -186,7 +185,7 @@
             baseService.GetDataAsync<Recipient>(Arg.Do<SearchRecipientCriteria>(x => criteria = x)).Returns(expected);
 
             //Act
-            var actual = await service.SearchRecipientsAsync("Test").ConfigureAwait(false);
+            var actual = await service.SearchRecipientsAsync("Test");
 
             //Assert
             Assert.Equal(1, actual.FirstOrDefault().Id);

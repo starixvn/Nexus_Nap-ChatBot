@@ -8,6 +8,7 @@
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Models;
+    using Fanex.NCB.Main.ViewModel;
     using Fanex.NCB.Main.ViewModel.ChatGroupMapping;
     using Fanex.NCB.Models.ChatGroupMapping;
     using Fanex.NCB.Models.Setting;
@@ -24,6 +25,7 @@
     {
         private IChatGroupMappingService chatGroupMappingService;
         private ISettingService settingService;
+        private ICommonService commonService;
         private INapSettings napSettings;
         private INapSession napSession;
         private IUserService userService;
@@ -62,12 +64,17 @@
         {
             var controller = GetController();
 
-            var bots = new List<BotName> { new BotName { Id = "1", Name = "Test" } };
+            var channels = new List<Models.Common.ConversationChannel>
+            {
+                new Models.Common.ConversationChannel { ChannelId = 1, ChannelName = "skype" }
+            };
+            var bots = new List<BotName> { new BotName { Id = 1, Name = "Test", ChannelId = 1, ChannelName = "skype" } };
             var recipientTypes = new List<BaseModel> { new BaseModel { Id = 1, Name = "Test" } };
             var recipients = new List<Recipient> { new Recipient { Id = 2, Name = "", RecipientTypeId = 1, Status = "" } };
             var chatGroupTypes = new List<ChatGroupType> { new ChatGroupType { Id = "2", Name = "Licensee" } };
             var licenseeStatuses = new List<BaseModel> { new BaseModel { Id = 1, Name = "Terminated" } };
             var mappingStatus = new List<BaseModel> { new BaseModel { Id = 1, Name = "Mapped" } };
+            commonService.GetConversationChannelAsync().Returns(channels);
             settingService.GetBotNameAsync().Returns(bots);
             settingService.GetFilterRecipientTypesAsync().Returns(recipientTypes);
             settingService.GetRecipientsAsync().Returns(recipients);
@@ -77,7 +84,20 @@
 
             var expected = new ChatGroupMappingFilterViewModel
             {
-                Bots = bots,
+                ChannelIds = "1",
+                BotIds = "1",
+                Channels = new List<MultiSelectViewModel> { new MultiSelectViewModel { Id = 1, Text = "skype", Checked = true, IsLeaf = true } },
+                Bots = new List<MultiSelectViewModel>
+                {
+                    new MultiSelectViewModel {
+                        Id = -1, Text = "skype",
+                        Checked = true, IsLeaf = false,
+                        Items = new List<MultiSelectViewModel>
+                        {
+                            new MultiSelectViewModel { Id = 1, Text = "Test", Checked = true, IsLeaf = true }
+                        }
+                    }
+                },
                 RecipientTypes = recipientTypes,
                 Recipients = recipients,
                 ChatGroupTypes = chatGroupTypes,
@@ -197,13 +217,15 @@
         {
             chatGroupMappingService = Substitute.For<IChatGroupMappingService>();
             settingService = Substitute.For<ISettingService>();
+            commonService = Substitute.For<ICommonService>();
             napSettings = Substitute.For<INapSettings>();
             napSession = Substitute.For<INapSession>();
             userService = Substitute.For<IUserService>();
 
             napSession.UserId = 8;
 
-            return new ChatGroupMappingController(chatGroupMappingService, settingService, napSettings, napSession, userService);
+            return new ChatGroupMappingController(chatGroupMappingService, settingService, commonService,
+                napSettings, napSession, userService);
         }
 
         #endregion helper
