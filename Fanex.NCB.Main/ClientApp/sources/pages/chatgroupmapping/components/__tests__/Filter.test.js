@@ -292,25 +292,25 @@ describe('Filter', () => {
         });
     });
 
-    //    describe('render', () => {
-    //        it('render correctly', () => {
-    //            // Arrange
-    //            let props = {
-    //                getSettings: jest.fn(),
-    //                filterRecipients: jest.fn(),
-    //                settingData: {
-    //                    bots: [],
-    //                    recipientTypes: [],
-    //                    mappingStatuses: [],
-    //                    licenseeStatuses: []
-    //                }
-    //            };
+    describe('render', () => {
+        it('should match snapshot', () => {
+            // Arrange
+            let props = {
+                getSettings: jest.fn(),
+                filterRecipients: jest.fn(),
+                settings: {
+                    bots: [{ id: 1 }],
+                    recipientTypes: [],
+                    mappingStatuses: [],
+                    licenseeStatuses: []
+                }
+            };
 
-    //            // Act
-    //            let filter = (new ShallowRenderer()).render(<Filter {...props} />);
+            // Act
+            const container = shallow(<Filter {...props} />);
 
-    //            // Assert
-    //            expect(filter).toMatchSnapshot();
-    //        });
-    //    });
+            // Assert
+            expect(container).toMatchSnapshot();
+        });
+    });
 });

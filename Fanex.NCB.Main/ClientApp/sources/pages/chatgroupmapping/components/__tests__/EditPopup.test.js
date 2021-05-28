@@ -1,210 +1,146 @@
 ﻿import React from 'react';
 import { EditPopup } from '../EditPopup';
 import { shallow } from 'enzyme';
-//import { getLicenseeStatus, isMapped } from '../../../common/CommonFunctions';
-//import CommonFunctions from '../../../common/common-functions/CommonFunctions';
+import CommonFunctions from '../../../common/common-functions/CommonFunctions';
 
 describe('EditPopup', () => {
     afterAll(() => {
         jest.clearAllMocks();
     });
 
-    //    const defaultProps = {
-    //        updatePopupData: {
-    //            editingItem: {
-    //                groupID: 1,
-    //                conversationID: 2,
-    //                recipientTypeId: { value: 3 },
-    //                chatGroupTypeId: { value: 1 },
-    //                recipientIds: { value: '4,5' },
-    //                remark: { value: 'remark 1' },
-    //                mappingStatusId: 1
-    //            }
-    //        }
-    //    };
+    describe('submitHandler', () => {
+        const props = {
+            editPopupData: {
+                isShowed: false,
+                editingItem: {
+                    groupID: 1, conversationID: 1, recipientTypeId: 1,
+                    chatGroupTypeId: 1, mappingStatusId: 1, recipientIds: '', remark: ''
+                }
+            }
+        };
 
-    //    describe('constructor', () => {
-    //        it('get state from prop', () => {
-    //            // Arrange
-    //            let props = {
-    //                ...defaultProps
-    //            };
+        it('should call correctly functions when params are invalid', () => {
+            // Arrange
+            const event = { preventDefault: jest.fn() };
+            CommonFunctions.isMapped = jest.fn();
+            const container = shallow(<EditPopup />).instance();
+            container.setSubmittedState = jest.fn();
+            container.checkValidParams = jest.fn(() => false);
+            container.submitData = jest.fn();
 
-    //            // Act
-    //            let updatePopup = new EditPopup(props);
+            // Act
+            container.submitHandler(event);
 
-    //            // Assert
-    //            expect(updatePopup.state.groupID).toEqual(props.updatePopupData.editingItem.groupID);
-    //            expect(updatePopup.state.conversationID).toEqual(props.updatePopupData.editingItem.conversationID);
-    //            expect(updatePopup.state.recipientTypeId).toEqual(props.updatePopupData.editingItem.recipientTypeId);
-    //            expect(updatePopup.state.recipientIds).toEqual(props.updatePopupData.editingItem.recipientIds);
-    //            expect(updatePopup.state.remark).toEqual(props.updatePopupData.editingItem.remark);
-    //            expect(updatePopup.state.isSummited).toEqual(false);
-    //        });
-    //    });
+            // Assert
+            expect(event.preventDefault).toHaveBeenCalled();
+            expect(container.setSubmittedState).toHaveBeenCalled();
+            expect(CommonFunctions.isMapped).not.toHaveBeenCalled();
+            expect(container.submitData).not.toHaveBeenCalled();
+        });
 
-    //    describe('render', () => {
-    //        it('when isShowed is false - return null', () => {
-    //            // Arrange
-    //            let props = {
-    //                updatePopupData: {
-    //                    ...defaultProps.updatePopupData,
-    //                    isShowed: false
-    //                }
-    //            };
-    //            let updatePopup = new EditPopup(props);
+        it('should update correctly state when mappingStatusId = mapped', () => {
+            // Arrange
+            const event = { preventDefault: jest.fn() };
+            CommonFunctions.isMapped = jest.fn(() => true);
+            const container = shallow(<EditPopup {...props} />);
+            container.setState = jest.fn();
+            const instance = container.instance();
+            instance.setSubmittedState = jest.fn();
+            instance.checkValidParams = jest.fn(() => true);
+            instance.submitData = jest.fn();
 
-    //            // Act
-    //            let result = updatePopup.render();
+            // Act
+            instance.submitHandler(event);
 
-    //            // Assert
-    //            expect(result).toBe(null);
-    //        });
+            // Assert
+            expect(event.preventDefault).toHaveBeenCalled();
+            expect(instance.setSubmittedState).toHaveBeenCalled();
+            expect(CommonFunctions.isMapped).toHaveBeenCalledWith(1);
+            expect(instance.submitData).not.toHaveBeenCalled();
+            expect(container.setState).toHaveBeenCalledWith({
+                isShowedConfirm: true,
+                confirmTitle: 'Confirm Message',
+                confirmContent: 'Change setting will impact sending notification to a group. Are you sure to proceed?',
+                confirmType: 2
+            });
+        });
 
-    //        it('when filteredRecipients is null - return null', () => {
-    //            // Arrange
-    //            let props = {
-    //                updatePopupData: {
-    //                    ...defaultProps.updatePopupData,
-    //                    isShowed: true
-    //                },
-    //                filteredRecipients: null
-    //            };
-    //            let updatePopup = new EditPopup(props);
+        it('should call correctly functions when mappingStatusId != mapped', () => {
+            // Arrange
+            const event = { preventDefault: jest.fn() };
+            CommonFunctions.isMapped = jest.fn(() => false);
+            const container = shallow(<EditPopup {...props} />);
+            container.setState = jest.fn();
+            const instance = container.instance();
+            instance.setSubmittedState = jest.fn();
+            instance.checkValidParams = jest.fn(() => true);
+            instance.submitData = jest.fn();
 
-    //            // Act
-    //            let result = updatePopup.render();
+            // Act
+            instance.submitHandler(event);
 
-    //            // Assert
-    //            expect(result).toBe(null);
-    //        });
+            // Assert
+            expect(event.preventDefault).toHaveBeenCalled();
+            expect(instance.setSubmittedState).toHaveBeenCalled();
+            expect(CommonFunctions.isMapped).toHaveBeenCalledWith(1);
+            expect(instance.submitData).toHaveBeenCalled();
+            expect(container.setState).not.toHaveBeenCalled();
+        });
+    });
 
-    //        it('when SuccessMsg shown', () => {
-    //            // Arrange
-    //            let props = {
-    //                updatePopupData: {
-    //                    ...defaultProps.updatePopupData,
-    //                    isShowed: true
-    //                },
-    //                filteredRecipients: [],
-    //                settingData: {
-    //                    recipientTypes: []
-    //                },
-    //                updateData: { addedresult: true }
-    //            };
+    describe('submitData', () => {
+        const editPopupData = {
+            isShowed: false,
+            editingItem: {
+                groupID: 1, conversationID: 1, recipientTypeId: 1,
+                chatGroupTypeId: 1, mappingStatusId: 1, recipientIds: '', remark: ''
+            }
+        };
 
-    //            // Act
-    //            let result = (new ShallowRenderer()).render(<EditPopup {...props} />);
+        it('should close popup when edit successfully', async () => {
+            // Arrange
+            const promise = Promise.resolve({});
+            const props = {
+                editPopupData,
+                editMapping: jest.fn(() => promise),
+                editResult: { isSuccessful: true }
+            };
+            const expectedParam = { groupId: 1 };
+            const container = shallow(<EditPopup {...props} />).instance();
+            container.getParams = jest.fn(() => expectedParam);
+            container.closePopupOnSuccess = jest.fn();
 
-    //            // Assert
-    //            expect(result).toMatchSnapshot();
-    //        });
+            // Act
+            container.submitData();
+            await promise;
 
-    //        it('when SuccessMsg is not shown', () => {
-    //            // Arrange
-    //            let props = {
-    //                updatePopupData: {
-    //                    ...defaultProps.updatePopupData,
-    //                    isShowed: true
-    //                },
-    //                filteredRecipients: [],
-    //                settingData: {
-    //                    recipientTypes: []
-    //                },
-    //                updateData: { addedresult: false }
-    //            };
+            // Assert
+            expect(props.editMapping).toHaveBeenCalledWith(expectedParam);
+            expect(container.closePopupOnSuccess).toHaveBeenCalled();
+        });
 
-    //            // Act
-    //            let result = (new ShallowRenderer()).render(<EditPopup {...props} />);
+        it('do nothing when edit unsuccessfully', async () => {
+            // Arrange
+            const promise = Promise.resolve({});
+            const props = {
+                editPopupData,
+                editMapping: jest.fn(() => promise),
+                editResult: { isSuccessful: false }
+            };
+            const expectedParam = { groupId: 1 };
+            const container = shallow(<EditPopup {...props} />).instance();
+            container.getParams = jest.fn(() => expectedParam);
+            container.closePopupOnSuccess = jest.fn();
 
-    //            // Assert
-    //            expect(result).toMatchSnapshot();
-    //        });
-    //    });
+            // Act
+            container.submitData();
+            await promise;
 
-    //    describe('submitHandler', () => {
-    //        it('when not valid params - not call update', () => {
-    //            // Arrange
-    //            let props = {
-    //                ...defaultProps
-    //            };
-    //            let updatePopup = new EditPopup(props);
-    //            let event = { preventDefault: jest.fn() };
-    //            updatePopup.setState = jest.fn();
-    //            updatePopup.checkValidParams = jest.fn(() => { return false; });
-    //            updatePopup.state.isSummited = false;
-
-    //            // Act
-    //            updatePopup.submitHandler(event);
-
-    //            // Assert
-    //            expect(event.preventDefault).toHaveBeenCalled();
-    //            expect(updatePopup.setState).toHaveBeenCalledWith({ isSummited: true });
-    //        });
-
-    //        it('when valid params and updateData isSuccessful - call update', (done) => {
-    //            // Arrange
-    //            let response = {};
-    //            let props = {
-    //                ...defaultProps,
-    //                update: jest.fn(() => Promise.resolve(response)),
-    //                updateData: { isSuccessful: true }
-    //            };
-    //            let updatePopup = new EditPopup(props);
-    //            let event = { preventDefault: jest.fn() };
-    //            updatePopup.setState = jest.fn();
-    //            updatePopup.checkValidParams = jest.fn(() => { return true; });
-    //            updatePopup.state.isSummited = true;
-    //            let params = 'params';
-    //            updatePopup.getParams = jest.fn(() => { return params; });
-    //            updatePopup.closePopupOnSuccess = jest.fn();
-
-    //            let isMapped = jest.fn(() => { return false; });
-    //            CommonFunctions.isMapped = isMapped.bind(CommonFunctions);
-
-    //            // Act
-    //            updatePopup.submitHandler(event);
-
-    //            // Assert
-    //            expect(event.preventDefault).toHaveBeenCalled();
-    //            expect(updatePopup.setState).not.toHaveBeenCalled();
-    //            expect(props.update).toHaveBeenCalledWith(params);
-    //            props.update().then(() => {
-    //                expect(updatePopup.closePopupOnSuccess).toHaveBeenCalled();
-    //                done();
-    //            });
-    //        });
-
-    //        it('when valid params and updateData errorCode is NOT 0 - do not call closePopup', (done) => {
-    //            // Arrange
-    //            let response = {};
-    //            let props = {
-    //                ...defaultProps,
-    //                update: jest.fn(() => Promise.resolve(response)),
-    //                updateData: { isSuccessful: false }
-    //            };
-    //            let updatePopup = new EditPopup(props);
-    //            let event = { preventDefault: jest.fn() };
-    //            updatePopup.setState = jest.fn();
-    //            updatePopup.checkValidParams = jest.fn(() => { return true; });
-    //            updatePopup.state.isSummited = true;
-    //            let params = 'params';
-    //            updatePopup.getParams = jest.fn(() => { return params; });
-    //            updatePopup.closePopup = jest.fn();
-
-    //            // Act
-    //            updatePopup.submitHandler(event);
-
-    //            // Assert
-    //            expect(event.preventDefault).toHaveBeenCalled();
-    //            expect(updatePopup.setState).not.toHaveBeenCalled();
-    //            expect(props.update).toHaveBeenCalledWith(params);
-    //            props.update().then(() => {
-    //                expect(updatePopup.closePopup).not.toHaveBeenCalled();
-    //                done();
-    //            });
-    //        });
-    //    });
+            // Assert
+            expect(props.editMapping).toHaveBeenCalledWith(expectedParam);
+            expect(container.closePopupOnSuccess).not.toHaveBeenCalled();
+        });
+    });
 
     //    describe('getParams', () => {
     //        it('get params from state', () => {
@@ -386,4 +322,83 @@ describe('EditPopup', () => {
             expect(container.setState).toHaveBeenCalledWith({ recipientIds: { value: '', isValid: false } });
         });
     });
+
+    //    describe('render', () => {
+    //        it('when isShowed is false - return null', () => {
+    //            // Arrange
+    //            let props = {
+    //                updatePopupData: {
+    //                    ...defaultProps.updatePopupData,
+    //                    isShowed: false
+    //                }
+    //            };
+    //            let updatePopup = new EditPopup(props);
+
+    //            // Act
+    //            let result = updatePopup.render();
+
+    //            // Assert
+    //            expect(result).toBe(null);
+    //        });
+
+    //        it('when filteredRecipients is null - return null', () => {
+    //            // Arrange
+    //            let props = {
+    //                updatePopupData: {
+    //                    ...defaultProps.updatePopupData,
+    //                    isShowed: true
+    //                },
+    //                filteredRecipients: null
+    //            };
+    //            let updatePopup = new EditPopup(props);
+
+    //            // Act
+    //            let result = updatePopup.render();
+
+    //            // Assert
+    //            expect(result).toBe(null);
+    //        });
+
+    //        it('when SuccessMsg shown', () => {
+    //            // Arrange
+    //            let props = {
+    //                updatePopupData: {
+    //                    ...defaultProps.updatePopupData,
+    //                    isShowed: true
+    //                },
+    //                filteredRecipients: [],
+    //                settingData: {
+    //                    recipientTypes: []
+    //                },
+    //                updateData: { addedresult: true }
+    //            };
+
+    //            // Act
+    //            let result = (new ShallowRenderer()).render(<EditPopup {...props} />);
+
+    //            // Assert
+    //            expect(result).toMatchSnapshot();
+    //        });
+
+    //        it('when SuccessMsg is not shown', () => {
+    //            // Arrange
+    //            let props = {
+    //                updatePopupData: {
+    //                    ...defaultProps.updatePopupData,
+    //                    isShowed: true
+    //                },
+    //                filteredRecipients: [],
+    //                settingData: {
+    //                    recipientTypes: []
+    //                },
+    //                updateData: { addedresult: false }
+    //            };
+
+    //            // Act
+    //            let result = (new ShallowRenderer()).render(<EditPopup {...props} />);
+
+    //            // Assert
+    //            expect(result).toMatchSnapshot();
+    //        });
+    //    });
 });

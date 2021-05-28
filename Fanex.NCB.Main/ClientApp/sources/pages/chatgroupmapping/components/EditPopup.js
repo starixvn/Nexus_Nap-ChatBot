@@ -62,8 +62,7 @@ export class EditPopup extends Component {
                     confirmContent: Labels.ConfirmUpdate,
                     confirmType: CONFIRM_UPDATE
                 });
-            }
-            else {
+            } else {
                 this.submitData();
             }
         }
