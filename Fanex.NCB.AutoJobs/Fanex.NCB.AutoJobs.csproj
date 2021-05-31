@@ -32,16 +32,21 @@
       <None Remove="Views\**" />
     </ItemGroup>
     <ItemGroup>
+        <None Remove="appsettings.AWS.json" />
         <None Remove="appsettings.json" />
         <None Remove="appsettings.LOCAL.json" />
         <None Remove="appsettings.PROD.json" />
         <None Remove="appsettings.UAT.json" />
+        <None Remove="App_Data\SpNames.AWS.xml" />
         <None Remove="App_Data\SpNames.xml" />
         <None Remove="logs\log.txt" />
         <None Remove="nlog.config" />
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+        <Content Include="appsettings.AWS.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
         <Content Include="appsettings.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
@@ -53,6 +58,9 @@
         </Content>
         <Content Include="appsettings.UAT.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="App_Data\SpNames.AWS.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include="App_Data\SpNames.LOCAL.xml">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
