@@ -16,7 +16,7 @@ pipeline{
     stage('Build'){
       steps {
         script{
-          pipelineLib.beginSonarQubeForMsBuild("NAPCHATBOT", "Nexus / NAP ChatBot", "/d:sonar.cs.opencover.reportsPaths=\"${WORKSPACE}\\CoverageReports\\*.xml\" /d:sonar.cs.vstest.reportsPaths=\"${WORKSPACE}\\TestResults\\*.trx\"")
+          pipelineLib.beginSonarQubeForMsBuild("NAPCHATBOT", "Nexus / NAP ChatBot", "/d:sonar.cs.opencover.reportsPaths=\"${WORKSPACE}\\CoverageReports\\*.xml\" /d:sonar.cs.vstest.reportsPaths=\"${WORKSPACE}\\TestResults\\*.trx\" /d:sonar.javascript.lcov.reportPaths=\"${WORKSPACE}\\js-lcov\\lcov.info\" /d:sonar.testExecutionReportPaths=\"${WORKSPACE}\\js-test-report.xml\" /d:sonar.tests=__tests__ /d:sonar.test.inclusions=**/*.test.js")
           pipelineLib.msBuild16("Fanex.NCB.sln")
         }
       }
@@ -30,8 +30,15 @@ pipeline{
               pipelineLib.xUnitForNet5()
             }
           }
-		    }
-	    }
+		}
+		
+		stage("JS Unit Test"){
+		  steps{
+            script{
+		      pipelineLib.jsJest("Fanex.NCB.Main\\ClientApp")
+            }
+          }
+		}
     }
 
     stage("SonarQube Analysis"){
