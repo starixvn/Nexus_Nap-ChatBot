@@ -1,0 +1,133 @@
+@import "../../shared/variables";
+@import "../../shared/common.scss";
+@import "../../shared/components/forms.scss";
+@import "../../shared/components/buttons.scss";
+@import "../../shared/components/modals.scss";
+@import "../../shared/components/messages";
+
+.send-date-area {
+    display: grid;
+    grid-template-columns: 293px 212px 1fr;
+    grid-gap: 15px;
+    align-items: center;
+
+    .react-datepicker__input-container {
+        display: block !important;
+        margin-right: 0 !important;
+    }
+}
+
+.new-notification {
+    width: 1000px;
+
+    .form-group {
+        display: grid;
+        grid-template-columns: 130px 1fr;
+        grid-gap: 10px;
+
+        &.row-has-reset {
+            grid-template-columns: 130px 1fr 80px;
+        }
+    }
+
+    .list-buttons {
+        padding-left: 140px;
+    }
+
+    .mde-preview {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .parameter-area {
+        grid-column-start: 2;
+        border: 1px solid #ced4da;
+        padding: 20px;
+
+        legend {
+            width: auto;
+            margin-bottom: 0;
+            padding: 0 8px;
+            border-bottom: none;
+            font-size: $font-size + 1;
+            font-weight: 500;
+        }
+    }
+
+    .parameters {
+        grid-template-columns: 1fr 1fr;
+        flex-wrap: wrap;
+        grid-gap: 16px;
+    }
+
+    .parameter-col {
+        display: grid;
+        grid-template-columns: 100px 1fr;
+        grid-gap: 10px;
+    }
+
+    .action {
+        margin-bottom: 15px;
+        line-height: 32px;
+        color: #066896;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    .action:hover {
+        .circle.orange {
+            background-color: darken(#ff9913, 10%);
+        }
+
+        .circle.blue {
+            background-color: darken(#58709a, 10%);
+        }
+
+        .text {
+            text-decoration: underline;
+        }
+    }
+
+    .circle {
+        float: left;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 32px;
+        height: 32px;
+        margin-right: 8px;
+        border-radius: 50%;
+        color: #fff;
+
+        &.orange {
+            background-color: #ff9913;
+        }
+
+        &.blue {
+            background-color: #58709a;
+        }
+    }
+
+    .icon-reset {
+        font-size: 11px;
+    }
+
+    .extension-content-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .content-counter {
+            &.invalid {
+                color: #ff0101;
+            }
+        }
+    }
+}
+
+.new-notification-select-tree {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -1,29 +1,13 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
 import { renderLayout } from '../shared/layout/layout/index';
 
-import { Provider } from 'react-redux';
-import Store from '../lib/store';
-import AppContainer from './components/appContainer';
-import reducer from './reducers';
-// Get the application-wide store instance, prepopulating with state from the server where available.
-const store = Store.createStore(reducer,
-    {
-        createNotificationResult: null,
-        confimrationPopup: {
-            isOpen: false,
-            content: ''
-        },
-        resetConfimrationPopup: {
-            isOpen: false
-        },
-        editConfimrationPopup: {
-            isOpen: false
-        },
-        markdownRulesPopup: {
-            isOpen: false
-        },
-        notificationTemplates: []
-    });
+import AppContainer from './components/AppContainer';
+import newNotificationReducer from './newNotificationSlice';
+const store = configureStore({
+    reducer: newNotificationReducer
+});
 
 renderLayout(
     <Provider store={store}>

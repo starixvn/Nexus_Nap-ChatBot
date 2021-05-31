@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Fanex.NCB.Core.Models
+@using Microsoft.Extensions.Options
+@inject IOptionsSnapshot<AppSettings> appSettings
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -16,7 +19,6 @@
 </head>
 
 <body>
-
     @Html.AntiForgeryToken()
 
     <div id="layout">
@@ -26,6 +28,7 @@
     <input type="hidden" id="logged-username" value="@User.Identity.Name" />
     <input type="hidden" id="current-controller" value="@ViewContext.RouteData.Values["Controller"].ToString()" />
     <input type="hidden" id="current-action" value="@ViewContext.RouteData.Values["Action"].ToString()" />
+    <input type="hidden" id="MessageContentLength" value="@appSettings.Value.MessageContentLength" />
     @Html.Raw(Fanex.Logging.LogManager.RenderJavascriptLogger())
     <environment include="Development">
         <script src="~/dev/common/reactvendor.chunk.js" asp-append-version="true"></script>

@@ -5,8 +5,8 @@
     public class GetRecipientsCriteria : CriteriaBase
     {
         public int NotificationTypeId { get; set; }
-
         public int? ProductId { get; set; }
+        public string ChannelIdLst { get; set; }
 
         public override string GetSettingKey() => "NCB_NewNotification_Recipient_Sel";
 

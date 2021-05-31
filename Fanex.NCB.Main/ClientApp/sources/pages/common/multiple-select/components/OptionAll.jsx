@@ -1,11 +1,23 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Option from './Option'
-import Translation from './translation'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Option from './Option';
+import Translation from './translation';
 
 const DEFAULT_CHECKED = false;
 
 export default class OptionAll extends Component {
+    static propTypes = {
+        language: PropTypes.string,
+        onChange: PropTypes.func,
+        id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+        checked: PropTypes.bool
+    };
+
+    static defaultProps = {
+        language: 'en-US',
+        checked: DEFAULT_CHECKED
+    };
+
     constructor(props) {
         super(props);
 
@@ -13,18 +25,6 @@ export default class OptionAll extends Component {
             key: 'All',
             value: Translation[this.props.language].All
         }
-    }
-
-    static propTypes = {
-        language: PropTypes.string,
-        onChange: PropTypes.func,
-        id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-        checked: PropTypes.bool
-    }
-
-    static defaultProps = {
-        language: 'en-US',
-        checked: DEFAULT_CHECKED
     }
 
     changeHandler = ({ checked }) => {

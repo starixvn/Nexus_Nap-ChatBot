@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using Fanex.NCB.Models.Common;
-
-namespace Fanex.NCB.Models.Notification
+﻿namespace Fanex.NCB.Models.Notification
 {
-    public class ResendNotification
+    using System.Collections.Generic;
+    using Fanex.NCB.Models.Common;
+
+    public class ResendNotification : ConversationChannel
     {
         public int NotificationId { get; set; }
 

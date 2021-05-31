@@ -41,7 +41,7 @@
                 CreatorId = model.CreatorId
             };
 
-            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            var result = await baseService.ExecuteNonQueryAsync(command);
 
             if (result.IsSuccessful && model.SendImmediately)
             {
@@ -72,13 +72,14 @@
             }
         }
 
-        public async Task<IEnumerable<Recipient>> GetRecipientsAsync(int notificationTypeId, int? productId)
+        public async Task<IEnumerable<Recipient>> GetRecipientsAsync(int notificationTypeId, int? productId = null, string channelIds = null)
         {
             return await baseService.GetDataAsync<Recipient>(new GetRecipientsCriteria
             {
                 NotificationTypeId = notificationTypeId,
                 ProductId = productId,
-            }).ConfigureAwait(false);
+                ChannelIdLst = channelIds
+            });
         }
 
         public async Task<(long, IEnumerable<Notification>)> GetNotificationsAsync(GetNotifications model)
@@ -93,7 +94,7 @@
                 RecipientIds = model.RecipientIds,
                 PageIndex = model.PageIndex,
                 PageSize = model.PageSize
-            }).ConfigureAwait(false);
+            });
 
             foreach (var notification in result.Item2)
             {
@@ -111,7 +112,7 @@
                 UserId = userId
             };
 
-            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            var result = await baseService.ExecuteNonQueryAsync(command);
 
             if (result.IsSuccessful)
             {
@@ -125,7 +126,7 @@
             var result = await baseService.FetchMultipleAsync<NotificationErrorReport, string, NotificationErrorDetail>(new GetNotificationErrorDetailCriteria
             {
                 NotificationId = notificationId
-            }).ConfigureAwait(false);
+            });
 
             var report = result.Item1.FirstOrDefault();
 
@@ -148,7 +149,7 @@
                 UserId = userId
             };
 
-            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            var result = await baseService.ExecuteNonQueryAsync(command);
 
             if (result.IsSuccessful)
             {
@@ -163,7 +164,7 @@
                 new GetEditNotificationInfoCriteria
                 {
                     NotificationId = notificationId
-                }).ConfigureAwait(false);
+                });
 
             var notification = result.Item1.FirstOrDefault();
 
@@ -189,7 +190,7 @@
                 UserId = model.UserId
             };
 
-            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            var result = await baseService.ExecuteNonQueryAsync(command);
 
             if (result.IsSuccessful && model.SendImmediately)
             {
@@ -211,7 +212,7 @@
                 NotificationId = notificationId,
                 NotificationTypeId = notificationTypeId,
                 ProductId = productId,
-            }).ConfigureAwait(false);
+            });
         }
 
         public async Task<IEnumerable<Template>> GetTemplatesAsync(int notificationTypeId)
@@ -219,7 +220,7 @@
             return await baseService.GetDataAsync<Template>(new GetTemplatesCriteria
             {
                 NotificationTypeId = notificationTypeId,
-            }).ConfigureAwait(false);
+            });
         }
 
         private void BackgroundJobAfterCreateNotification(int notificationId, bool isCreatNotification)

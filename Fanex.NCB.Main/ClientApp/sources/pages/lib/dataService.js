@@ -17,7 +17,7 @@ export default class DataService {
             params,
             {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
                     'RequestVerificationToken': Site.getXsrfToken()
                 }
             }).then(response => response).catch(errorResponseHandler);

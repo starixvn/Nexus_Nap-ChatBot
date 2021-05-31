@@ -1,4 +1,4 @@
-import MultipleSelect from './components/MultipleSelect'
+import MultipleSelect from './components/MultipleSelect';
 import './style.scss';
 
 export default MultipleSelect

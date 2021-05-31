@@ -5,19 +5,19 @@ import Translation from './translation'
 const MAX_SELECTED_ITEM_FOR_DISPLAY = 3;
 
 export default class MultipleSelectLabel extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     static propTypes = {
         language: PropTypes.string,
         selectedItems: PropTypes.arrayOf(PropTypes.object).isRequired,
         maxDisplayItemCount: PropTypes.number
-    }
+    };
 
     static defaultProps = {
         language: 'en-US',
         maxDisplayItemCount: MAX_SELECTED_ITEM_FOR_DISPLAY
+    };
+
+    constructor(props) {
+        super(props);
     }
 
     get selectedItemsString() {

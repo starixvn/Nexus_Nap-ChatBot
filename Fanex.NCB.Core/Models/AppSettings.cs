@@ -13,5 +13,6 @@
         public string AppCredentialPassword { get; set; }
 
         public string SecretKey { get; set; }
+        public int MessageContentLength { get; set; }
     }
 }

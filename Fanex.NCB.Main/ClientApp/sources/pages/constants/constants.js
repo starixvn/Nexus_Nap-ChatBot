@@ -47,3 +47,8 @@ export const defaultPageSize = 20;
 export const errorId = 2;
 
 export const noErrorNotification = 'No error notification';
+
+export const Channels = {
+    Skype: 1,
+    Telegram: 2
+};

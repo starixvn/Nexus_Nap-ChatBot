@@ -130,7 +130,7 @@
                 unSelectableRecipients = unSelectable
             };
             notificationService.GetResendNotificationInfoAsync(notificationId, isResendAll).Returns(resendNotifictaion);
-            notificationService.GetRecipientsAsync(resendNotifictaion.NotificationTypeId, null).Returns(allRecipients);
+            notificationService.GetRecipientsAsync(resendNotifictaion.NotificationTypeId, null, resendNotifictaion.ChannelId.ToString()).Returns(allRecipients);
 
             var result = await controller.GetResendNotification(notificationId, isResendAll);
 

@@ -4,36 +4,28 @@ import "react-mde/lib/styles/css/react-mde-all.css";
 import React from 'react';
 import { connect } from 'react-redux';
 import { DateTime } from 'luxon';
-import { Form, FormGroup, Label, Button, Input, FormFeedback, Col } from 'reactstrap';
+import { Form, FormGroup, Label, Button, Input, FormFeedback } from 'reactstrap';
 import { stringify } from 'qs';
 import { Formik } from 'formik';
-import axios from 'axios';
 import { object, string, array, date } from 'yup';
 import ReactMde from 'react-mde';
-import { NCBBreadcrum } from '../../../common/breadcrumbs/breadcrumbs';
+import { NCBBreadcrum } from '../../common/breadcrumbs/breadcrumbs';
 import { bindActionCreators } from 'redux';
-import { ActionCreators } from '../../actions/index';
-import TreeSelect, { getRealValueFromTreeSelection  } from '../../../common/TreeSelect/index';
-import DatePicker from '../../../common/DatePicker/index';
-import Labels from '../../../common/Labels';
-import { DateTimeFormat, editorCommandList, invalidFieldClass } from '../../../constants/constants';
-import ResponseMessage from '../../../common/response-message/ResponseMessage';
-import Site from '../../../lib/site';
-import ConfirmPopup from '../../../common/confirm-popup/ConfirmPopup';
-import ContentPreview from '../../../common/ContentPreview';
-import MarkdownRules from '../../../common/markdown-rules';
-import CommonFunction from '../../../common/common-functions/CommonFunctions';
-import errorResponseHandler from '../../../lib/errorResponseHandler';
+import { ActionCreators } from '../actions';
+import TreeSelect, { getRealValueFromTreeSelection } from '../../common/TreeSelect/index';
+import DatePicker from '../../common/DatePicker/index';
+import Labels from '../../common/Labels';
+import { DateTimeFormat, editorCommandList, invalidFieldClass, Channels } from '../../constants/constants';
+import ResponseMessage from '../../common/response-message/ResponseMessage';
+import Site from '../../lib/site';
+import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
+import ContentPreview from '../../common/ContentPreview';
+import MarkdownRules from '../../common/markdown-rules';
+import CommonFunction from '../../common/common-functions/CommonFunctions';
 
 const SendModeOptions = [
-    {
-        value: '1',
-        label: 'Send Immediately'
-    },
-    {
-        value: '2',
-        label: 'Send At'
-    }
+    { value: '1', label: 'Send Immediately' },
+    { value: '2', label: 'Send At' }
 ];
 
 const Today = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
@@ -43,6 +35,7 @@ export class AppContainer extends React.Component {
         super(props);
 
         this.state = {
+            channelIds: `${Channels.Skype},${Channels.Telegram}`,
             isSummited: false,
             manuallyEditted: false,
             template: {
@@ -62,6 +55,7 @@ export class AppContainer extends React.Component {
             },
             searchValue: '',
             initValue: {
+                channel: '',
                 notificationTypeId: '',
                 templateId: '',
                 productId: '',
@@ -76,6 +70,7 @@ export class AppContainer extends React.Component {
             }
         };
 
+        this.messageContentLength = parseInt(document.getElementById('MessageContentLength').value, 10);
         this.debounceHandleSearchRecipents = CommonFunction.debounce(this.handleSearchRecipents);
         this.searchRecipients = [];
 
@@ -97,17 +92,11 @@ export class AppContainer extends React.Component {
     }
 
     handleInitResendNotification = () => {
-        axios.get(Site.resolveClientUrl('NewNotification/GetResendNotification'), {
-            params: { notificationId: this.resendNotifcation.notificationId, isResendAll: this.resendNotifcation.isResendAll }
-        }).then((response) => {
-            const result = response.data;
-            const resendNotification = result.resendNotification;
-            const recipients = result.recipients;
-            const unSelectableRecipients = result.unSelectableRecipients;
+        const { notificationId, isResendAll } = this.resendNotifcation;
+        this.props.getResendNotification(notificationId, isResendAll).then(response => {
+            const { resendNotification, recipients, unSelectableRecipients } = response.data;
             this.props.setRecipients(recipients);
-
             this.selectedRecipientIds = resendNotification.recipients.map(r => r.recipientId);
-
             const selectedRecipients = resendNotification.recipients.map(r => {
                 return {
                     label: r.recipientName,
@@ -118,8 +107,10 @@ export class AppContainer extends React.Component {
             });
 
             this.setState({
+                channelIds: resendNotification.channelId.toString(),
                 initValue: {
                     ...this.state.initValue,
+                    channel: resendNotification.channelName,
                     notificationTypeId: resendNotification.notificationTypeId,
                     recipients: selectedRecipients,
                     title: resendNotification.title,
@@ -129,7 +120,7 @@ export class AppContainer extends React.Component {
                 }
             });
             this.displayUnselectableRecipients(unSelectableRecipients);
-        }).catch(errorResponseHandler);
+        });
     }
 
     displayUnselectableRecipients = recipients => {
@@ -141,20 +132,20 @@ export class AppContainer extends React.Component {
     }
 
     handleToggleConfirmationPopup = () => {
-        this.props.toggleConfirmationPopup(!this.props.confimrationPopup.isOpen);
+        this.props.setConfirmationPopup({ isOpen: !this.props.confirmationPopup.isOpen });
         this.refs.form.setSubmitting(false);
     }
 
     handleToggleResetConfirmationPopup = () => {
-        this.props.toggleResetConfirmationPopup(false);
+        this.props.setResetConfirmationPopup({ isOpen: false });
     }
 
     handleToggleEditConfirmationPopup = () => {
-        this.props.toggleEditConfirmationPopup(false);
+        this.props.setEditConfirmationPopup({ isOpen: false });
     }
 
     handleConfirm = () => {
-        this.props.toggleConfirmationPopup(false);
+        this.props.setConfirmationPopup({ isOpen: false });
 
         const formik = this.refs.form;
         const values = formik.state.values;
@@ -202,18 +193,23 @@ export class AppContainer extends React.Component {
     renderSendModeOption = item => <option key={item.value} value={item.value} >{item.label}</option>;
 
     handleSubmit = values => {
+        const isValidContentLength = values.content.trim().length <= this.messageContentLength;
+        if (!isValidContentLength) {
+            return;
+        }
+
         const formatDate = values.sendDate.toLocaleString('en-US',
             { hour12: true, month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
         const message = values.sendMode === '1' ? 'Do you want to send the notification to the selected recipient(s) immediately?'
             : `Do you want to send the notification to the selected recipient(s)  at ${formatDate}?`;
-        this.props.toggleConfirmationPopup(true, message);
+        this.props.setConfirmationPopup({ isOpen: true, content: message });
     }
 
     handleNotificationTypeChange = event => {
         const formik = this.refs.form;
-        this.props.getRecipients(event.target.value, formik.state.values.productId);
-        this.props.getTemplates(event.target.value);
+        this.props.getRecipients(event.target.value, formik.state.values.productId, this.state.channelIds);
+        this.props.getNotificationTemplates(event.target.value);
 
         formik.setValues({
             ...formik.state.values,
@@ -231,11 +227,11 @@ export class AppContainer extends React.Component {
         const formik = this.refs.form;
 
         if (event.target.value) {
-            const selectedTemplate = this.props.notificationTemplates.find(x => x.notificationTemplateId === parseInt(event.target.value, 10));
+            const selectedTemplate = this.props.notificationTemplates
+                .find(x => x.notificationTemplateId === parseInt(event.target.value, 10));
 
             const paramsInTitle = selectedTemplate.title.match(/{[_-\w\s]+}/g) || [];
             const paramsInContent = selectedTemplate.content.match(/{[_-\w\s]+}/g) || [];
-
             const paramNames = new Set([...paramsInTitle, ...paramsInContent]);
 
             formik.setValues({
@@ -260,7 +256,7 @@ export class AppContainer extends React.Component {
 
     handleProductChange = event => {
         const formik = this.refs.form;
-        this.props.getRecipients(formik.state.values.notificationTypeId, event.target.value);
+        this.props.getRecipients(formik.state.values.notificationTypeId, event.target.value, this.state.channelIds);
         formik.handleChange(event);
         if (formik.state.values.recipients.length > 0) {
             formik.setFieldValue('recipients', []);
@@ -274,14 +270,15 @@ export class AppContainer extends React.Component {
 
     handleResetTitleContent = () => {
         const message = 'Reset Title and Content will recover the original template and discard your changes.';
-        this.props.toggleResetConfirmationPopup(true, message);
+        this.props.setResetConfirmationPopup({ isOpen: true, content: message });
     }
 
     handleConfirmResetTitleContent = () => {
-        this.props.toggleResetConfirmationPopup(false);
+        this.props.setResetConfirmationPopup({ isOpen: false });
 
         const formik = this.refs.form;
-        const selectedTemplate = this.props.notificationTemplates.find(x => x.notificationTemplateId === parseInt(formik.state.values.templateId, 10));
+        const selectedTemplate = this.props.notificationTemplates
+            .find(x => x.notificationTemplateId === parseInt(formik.state.values.templateId, 10));
 
         formik.setValues({
             ...formik.state.values,
@@ -294,11 +291,11 @@ export class AppContainer extends React.Component {
 
     handleEditTitleContent = () => {
         const message = 'You can edit the Title and Content but the system doesn\'t support manually change the text in {}';
-        this.props.toggleEditConfirmationPopup(true, message);
+        this.props.setEditConfirmationPopup({ isOpen: true, content: message });
     }
 
     handleConfirmEditTitleContent = () => {
-        this.props.toggleEditConfirmationPopup(false);
+        this.props.setEditConfirmationPopup({ isOpen: false });
         const formik = this.refs.form;
         formik.setFieldValue('canEditTitleContent', true);
     }
@@ -306,7 +303,8 @@ export class AppContainer extends React.Component {
     handleReplaceParamsWithValue = () => {
         const formik = this.refs.form;
         const params = formik.state.values.params;
-        const selectedTemplate = this.props.notificationTemplates.find(x => x.notificationTemplateId === parseInt(formik.state.values.templateId, 10));
+        const selectedTemplate = this.props.notificationTemplates
+            .find(x => x.notificationTemplateId === parseInt(formik.state.values.templateId, 10));
 
         let { title, content } = selectedTemplate;
 
@@ -348,9 +346,9 @@ export class AppContainer extends React.Component {
 
         this.searchRecipients = [];
         const validRecipients = [];
-		for (let i = 0; i < this.props.recipientOptions.length; i++) {
-			recipients.filter(recipient => this.isValidSearchRecipients(validRecipients, recipient, this.props.recipientOptions[i]));
-		};
+        for (let i = 0; i < this.props.recipientOptions.length; i++) {
+            recipients.filter(recipient => this.isValidSearchRecipients(validRecipients, recipient, this.props.recipientOptions[i]));
+        };
 
         while (validRecipients.length > 0) {
             const recipient = validRecipients.shift();
@@ -366,7 +364,7 @@ export class AppContainer extends React.Component {
 
     isValidSearchRecipients = (result, label, recipient) => {
         if (recipient.title.toUpperCase() === label.toUpperCase()) {
-			result.push(label);
+            result.push(label);
             this.searchRecipients.push({
                 label: label,
                 value: recipient.value
@@ -384,6 +382,10 @@ export class AppContainer extends React.Component {
         }
     }
 
+    handleOpenMarkdownRulesPopup = () => this.props.setMarkdownRulesPopup({ isOpen: true });
+
+    handleCloseMarkdownRulesPopup = () => this.props.setMarkdownRulesPopup({ isOpen: false });
+
     renderForm = ({
         values,
         errors,
@@ -393,10 +395,18 @@ export class AppContainer extends React.Component {
         setFieldValue,
         isSubmitting
     }) => {
+        const isValidContentLength = values.content.trim().length <= this.messageContentLength;
         return (
             <Form onSubmit={handleSubmit} className="new-notification-form">
+                {
+                    this.resendNotifcation.notificationId &&
+                    <FormGroup>
+                        <Label className="form-label">{Labels.BotService}</Label>
+                        <div>{values.channel}</div>
+                    </FormGroup>
+                }
                 <FormGroup>
-                    <Label for="notificationTypeId" className="form-label required">Notification Type</Label>
+                    <Label for="notificationTypeId" className="form-label required">{Labels.NotificationType}</Label>
                     <div>
                         <Input type="select"
                             invalid={touched.notificationTypeId && errors.notificationTypeId}
@@ -462,7 +472,7 @@ export class AppContainer extends React.Component {
                 <FormGroup>
                     <Label for="title" className="form-label required">Title</Label>
                     <div>
-                        <Input value={values.title} name="title"
+                        <Input value={values.title} name="title" autoComplete="off"
                             invalid={touched.title && errors.title}
                             onChange={handleChange} readOnly={!values.canEditTitleContent && values.templateId}
                         />
@@ -472,7 +482,7 @@ export class AppContainer extends React.Component {
                 <FormGroup>
                     <Label for="content" className="form-label required">Content</Label>
                     <div>
-                        <ReactMde className={touched.content && errors.content && invalidFieldClass}
+                        <ReactMde className={(touched.content && errors.content) || !isValidContentLength ? invalidFieldClass : ''}
                             value={values.content} commands={editorCommandList}
                             onChange={content => setFieldValue('content', content)}
                             selectedTab={values.mode}
@@ -481,8 +491,13 @@ export class AppContainer extends React.Component {
                             maxEditorHeight={400} readOnly={!values.canEditTitleContent && values.templateId}
                         />
                         {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
-                        <div className="markdown-rules" onClick={this.props.openMarkdownRulesPopup}>
-                            Markdown Rules: <span className="icon-book" />
+                        <div className="extension-content-section">
+                            <div className="markdown-rules" onClick={this.handleOpenMarkdownRulesPopup}>
+                                Markdown Rules: <span className="icon-book" />
+                            </div>
+                            <div className={`content-counter ${isValidContentLength ? '' : 'invalid'}`}>
+                                Maximum Length {values.content.trim().length}/{this.messageContentLength}
+                            </div>
                         </div>
                     </div>
                 </FormGroup>
@@ -492,16 +507,16 @@ export class AppContainer extends React.Component {
                             <legend>Parameters</legend>
                             <FormGroup className="parameters">
                                 {values.params.map((x, i) =>
-                                    (
-                                        <div className="parameter-col">
-                                            <Label for={`params.${i}.value`} className="form-label">{x.name}</Label>
-                                            <div>
-                                                <Input value={x.values} name={`params.${i}.value`} disabled={values.mode === 'preview'}
-                                                    onChange={handleChange} onBlur={this.handleReplaceParamsWithValue}
-                                                />
-                                            </div>
+                                (
+                                    <div className="parameter-col">
+                                        <Label for={`params.${i}.value`} className="form-label">{x.name}</Label>
+                                        <div>
+                                            <Input value={x.values} name={`params.${i}.value`} disabled={values.mode === 'preview'}
+                                                onChange={handleChange} onBlur={this.handleReplaceParamsWithValue}
+                                            />
                                         </div>
-                                    )
+                                    </div>
+                                )
                                 )}
                             </FormGroup>
                         </fieldset>
@@ -566,7 +581,8 @@ export class AppContainer extends React.Component {
             <>
                 <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle={pageTitle} />
                 <div className="new-notification">
-                    {this.props.createNotificationResult &&
+                    {
+                        this.props.createNotificationResult &&
                         <ResponseMessage isSuccessful={this.props.createNotificationResult.isSuccessful}
                             message={this.props.createNotificationResult.message || Labels.CreateNotificationSuccessfully} />
                     }
@@ -583,25 +599,26 @@ export class AppContainer extends React.Component {
                 <ConfirmPopup
                     onConfirm={this.handleConfirm}
                     onToggle={this.handleToggleConfirmationPopup}
-                    isOpen={this.props.confimrationPopup.isOpen}
-                    content={this.props.confimrationPopup.content}
+                    isOpen={this.props.confirmationPopup.isOpen}
+                    content={this.props.confirmationPopup.content}
                 />
                 <ConfirmPopup
                     onConfirm={this.handleConfirmResetTitleContent}
                     onToggle={this.handleToggleResetConfirmationPopup}
-                    isOpen={this.props.resetConfimrationPopup.isOpen}
-                    content={this.props.resetConfimrationPopup.content}
+                    isOpen={this.props.resetConfirmationPopup.isOpen}
+                    content={this.props.resetConfirmationPopup.content}
                     warningIcon
                 />
                 <ConfirmPopup
                     onConfirm={this.handleConfirmEditTitleContent}
                     onToggle={this.handleToggleEditConfirmationPopup}
-                    isOpen={this.props.editConfimrationPopup.isOpen}
-                    content={this.props.editConfimrationPopup.content}
+                    isOpen={this.props.editConfirmationPopup.isOpen}
+                    content={this.props.editConfirmationPopup.content}
                     warningIcon
                 />
-                {this.props.markdownRulesPopup.isOpen &&
-                    <MarkdownRules show onToggle={this.props.closeMarkdownRulesPopup} />
+                {
+                    this.props.markdownRulesPopup.isOpen &&
+                    <MarkdownRules show onToggle={this.handleCloseMarkdownRulesPopup} />
                 }
             </>
         );
@@ -616,10 +633,10 @@ const mapStateToProps = state => {
         products: state.products,
         recipientOptions: state.recipients,
         createNotificationResult: state.createNotificationResult,
-        confimrationPopup: state.confimrationPopup,
+        confirmationPopup: state.confirmationPopup,
         notificationTemplates: state.notificationTemplates,
-        resetConfimrationPopup: state.resetConfimrationPopup,
-        editConfimrationPopup: state.editConfimrationPopup,
+        resetConfirmationPopup: state.resetConfirmationPopup,
+        editConfirmationPopup: state.editConfirmationPopup,
         markdownRulesPopup: state.markdownRulesPopup
     };
 };

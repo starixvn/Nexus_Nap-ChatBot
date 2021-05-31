@@ -3,14 +3,14 @@ import PropTypes from 'prop-types'
 import Option from './Option'
 
 export default class MultipleSelectOptionList extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     static propTypes = {
         dataSource: PropTypes.arrayOf(PropTypes.object).isRequired,
         id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
         onChange: PropTypes.func
+    };
+
+    constructor(props) {
+        super(props);
     }
 
     _renderOptionList() {

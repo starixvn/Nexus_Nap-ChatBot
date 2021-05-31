@@ -1,11 +1,13 @@
 namespace Fanex.NCB.SkypeBot.Controllers
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Main.ViewModel.Notification;
     using Fanex.NCB.Main.ViewModel.TreeSelect;
+    using Fanex.NCB.Models.Common;
     using Fanex.NCB.Models.Notification;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
@@ -56,7 +58,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
                     SendDate = model.SendDate,
                     SendImmediately = model.SendImmediately,
                     CreatorId = napSession.UserId
-                }).ConfigureAwait(false);
+                });
             }
 
             return Json(result);
@@ -64,11 +66,10 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
-        public async Task<IActionResult> GetRecipients(int notificationTypeId, int? productId)
+        public async Task<IActionResult> GetRecipients(int notificationTypeId, int? productId = null, string channelIds = null)
         {
-            var result = await notificationService.GetRecipientsAsync(notificationTypeId, productId).ConfigureAwait(false);
-
-            var tree = GenerateTreeHelper.FromRecipient(result);
+            IEnumerable<Recipient> recipients = await notificationService.GetRecipientsAsync(notificationTypeId, productId, channelIds);
+            var tree = GenerateTreeHelper.FromRecipient(recipients);
 
             return Json(tree);
         }
@@ -77,7 +78,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
         public async Task<IActionResult> GetTemplates(int notificationTypeId)
         {
-            var result = await notificationService.GetTemplatesAsync(notificationTypeId).ConfigureAwait(false);
+            var result = await notificationService.GetTemplatesAsync(notificationTypeId);
 
             return Json(result);
         }
@@ -86,12 +87,12 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
         public async Task<IActionResult> GetResendNotification(int notificationId, bool isResendAll)
         {
-            var resendNotification = await notificationService.GetResendNotificationInfoAsync(notificationId, isResendAll);
+            ResendNotification resendNotification = await notificationService.GetResendNotificationInfoAsync(notificationId, isResendAll);
+            var channelIds = resendNotification.ChannelId.ToString();
+            IEnumerable<Recipient> recipients = await notificationService.GetRecipientsAsync(resendNotification.NotificationTypeId, channelIds: channelIds);
+            IEnumerable<Recipient> unSelectableRecipients = resendNotification.Recipients.Where(r => !recipients.Any(x => x.RecipientId == r.RecipientId)).ToList();
 
-            var recipients = await notificationService.GetRecipientsAsync(resendNotification.NotificationTypeId, null);
-            var unSelectableRecipients = resendNotification.Recipients.Where(r => !recipients.Any(x => x.RecipientId == r.RecipientId));
-
-            resendNotification.Recipients = resendNotification.Recipients.Where(x => !unSelectableRecipients.Any(u => u.RecipientId == x.RecipientId));
+            resendNotification.Recipients = resendNotification.Recipients.Where(x => !unSelectableRecipients.Any(u => u.RecipientId == x.RecipientId)).ToList();
 
             var tree = GenerateTreeHelper.FromRecipient(recipients);
 

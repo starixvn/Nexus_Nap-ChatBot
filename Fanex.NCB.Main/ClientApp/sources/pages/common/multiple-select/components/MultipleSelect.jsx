@@ -22,19 +22,6 @@ function convertDataSourceToState({ keyField, valueField, statusField, dataSourc
 }
 
 export default class MultipleSelect extends Component {
-    constructor(props) {
-        super(props);
-        this.searchInputBox = null;
-        this.id = `multiple-select-${props.id || id++}`;
-
-        this.state = {
-            originalDataSource: null,
-            searchText: '',
-            showOptionList: false,
-            dataSource: []
-        }
-    }
-
     static propTypes = {
         language: PropTypes.string,
         dataSource: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -47,7 +34,7 @@ export default class MultipleSelect extends Component {
         hasSearchBox: PropTypes.bool,
         isAllTextShown: PropTypes.bool,
         texts: PropTypes.object
-    }
+    };
 
     static defaultProps = {
         language: 'en-US',
@@ -56,6 +43,19 @@ export default class MultipleSelect extends Component {
         statusField: STATUS_NAME,
         hasAllOption: true,
         hasSearchBox: false
+    };
+
+    constructor(props) {
+        super(props);
+        this.searchInputBox = null;
+        this.id = `multiple-select-${props.id || id++}`;
+
+        this.state = {
+            originalDataSource: null,
+            searchText: '',
+            showOptionList: false,
+            dataSource: []
+        }
     }
 
     static getDerivedStateFromProps(props, state) {
