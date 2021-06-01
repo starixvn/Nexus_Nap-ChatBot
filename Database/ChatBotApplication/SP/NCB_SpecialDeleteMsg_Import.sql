@@ -29,6 +29,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SpecialDeleteMsg_Import(
 				- 20200214@Percy: Special Delete - Integrate Abnormal Bets [RedmineID: #127944]
 				- 20200327@Percy: Just send notification to active licensees [RedmineID: #131240]
 				- 20201029@Percy: Remove sent recipients for rescan messages [RedmineID: #144274]
+				- 20210513@Malcolm: Integrate Telegram - RedmineID: #151807
         
     */
 )

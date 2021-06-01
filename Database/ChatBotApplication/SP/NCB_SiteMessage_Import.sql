@@ -30,6 +30,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SiteMessage_Import(
       - 20200327@Percy: Just send notification to active licensees [RedmineID: #131240]
       - 20200630@Percy: Remove sent recipients for rescan messages [RedmineID: #136492]
       - 20200715@Percy: Add Invalid status for invalid match [RedmineID: #135686]
+	  - 20210513@Malcolm: Integrate Telegram - RedmineID: #151807
   */
 )
 SQL SECURITY DEFINER
@@ -424,80 +425,78 @@ UPDATE tmp_MsgContentTypeTemplate
 		END IF;
 	
 	WHILE EXISTS(SELECT 1 FROM tmpMessageChannel m WHERE m.MessageId = ccMessageID) DO
-		SELECT ChannelId INTO ccChannelId FROM tmpMessageChannel m WHERE m.MessageId = ccMessageID LIMIT 1; 
-		
-		# Insert Notification
-		INSERT INTO Notification(NotificationTypeID, Title, Content, ConfigSendTime, SendImmediately, CreatorID, CreatedDate, Status, StatusID, ChannelId)
-		SELECT DISTINCT
-		  ct.NotificationTypeID
-		  ,ct.TemplateTitle
-		  ,REPLACE(
-			REPLACE(
-			  REPLACE(
-				REPLACE(
-				  REPLACE(
-					REPLACE(
-					  REPLACE(
-						REPLACE(ct.TemplateContent
-						  , '{EN Announcement}', h.Content_en)
-						, '{CN Announcement}', h.Content_cs)
-					  , '{Sport EN CN}', IFNULL(CONCAT(h.SportNameEN, ' / ', h.SportNameCS), ''))
-					, '{Kick Off Lable}', CASE h.SportNameEN WHEN 'Soccer' THEN 'Kick Off' WHEN 'Basketball' THEN 'Tip Off' ELSE 'Event Start Time' END)
-				  , '{KO Time}', IFNULL(h.KickOffTime, ''))
-				, '{League Name EN CN}', IFNULL(CONCAT(h.LeagueNameEN, ' [', h.LeagueNameCS, ']'), ''))
-			  , '{Team Name EN CN}', IFNULL(CONCAT('***', h.HomeNameEN, ' - vs - ' , h.AwayNameEN, ' [',h.HomeNameCS, ' - vs - ' , h.AwayNameCS, ']', '***'), ''))
-			, '@@', '') Content
-		  ,startTime, 0 SendImmediately, STARIXIT_CUSTID, CreatedDate, CREATING_NOTIFICATION_STATUS, CREATING_NOTIFICATION_STATUSID, ccChannelId
-		  FROM tmp_MsgHeader h
-			INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType AND ct.ChannelId = ccChannelId
-		  WHERE h.MessageID = ccMessageID;
-
-		SELECT LAST_INSERT_ID() INTO ccNotificationID;
-
-		INSERT INTO tmp_Notification(NotificationID)
-		VALUES (ccNotificationID);
-		
-		# Insert NotificationSystemMsg
-		INSERT INTO NotificationSystemMsg(MessageID, NotificationID, CheckMsg, CreatedDate)
-		SELECT h.MessageID, ccNotificationID, h.CheckMsg, startTime
-		FROM tmp_MsgHeader h
-		WHERE h.MessageID = ccMessageID;
-
-		#Insert recipient list
-		INSERT INTO NotificationRecipientList(NotificationID, ConversationGroupID, ChatGroupTypeID, RecipientID, Status, StatusID)
-		SELECT ccNotificationID, d.ConversationGroupID, d.ChatGroupTypeID, d.RecipientID, d.Status, d.StatusID
-		FROM tmp_NotificationRecipientList d
-		WHERE d.MessageID = ccMessageID
-		  AND d.LicenseeStatusID = ACTIVE_LICENSEE_STATUS
-		  AND d.RecipientID IS NOT NULL
-		  AND d.ChannelId = ccChannelId;
-
-		#Update Status for Notification
-		IF ccIsInvalid = 1 OR ccIsTest = 1 THEN
-		UPDATE Notification
-		  SET Status = CASE WHEN ccIsInvalid = 1 THEN INVALID_NOTIFICATION_STATUS ELSE DRAFT_NOTIFICATION_STATUS END,
-			  StatusID = CASE WHEN ccIsInvalid = 1 THEN INVALID_NOTIFICATION_STATUSID ELSE DRAFT_NOTIFICATION_STATUSID END
-		  WHERE NotificationID = ccNotificationID;
-
-		UPDATE NotificationRecipientList
-		  SET Status = CASE WHEN ccIsInvalid = 1 THEN INVALID_NOTIFICATION_STATUS ELSE DRAFT_NOTIFICATION_STATUS END,
-			  StatusID = CASE WHEN ccIsInvalid = 1 THEN INVALID_NOTIFICATION_STATUSID ELSE DRAFT_NOTIFICATION_STATUSID END
-		  WHERE NotificationID = ccNotificationID;
-		ELSE
-		UPDATE Notification n
-		  INNER JOIN NotificationSystemMsg nm ON nm.NotificationID = n.NotificationID
-		  INNER JOIN (SELECT DISTINCT nrl.MessageID, nrl.Status, nrl.StatusID FROM tmp_NotificationRecipientList nrl) AS t ON t.MessageID = nm.MessageID
-		  SET n.Status = t.Status,
-					n.StatusID = t.StatusID
-		  WHERE n.NotificationID = ccNotificationID;
-		END IF;		
-	  DELETE FROM tmpMessageChannel m WHERE m.MessageId = ccMessageID AND m.ChannelId = ccChannelId;
-	END WHILE;
+	  SELECT ChannelId INTO ccChannelId FROM tmpMessageChannel m WHERE m.MessageId = ccMessageID LIMIT 1; 
+	  
+	  # Insert Notification
+	  INSERT INTO Notification(NotificationTypeID, Title, Content, ConfigSendTime, SendImmediately, CreatorID, CreatedDate, Status, StatusID, ChannelId)
+	  SELECT DISTINCT
+	    ct.NotificationTypeID
+	    ,ct.TemplateTitle
+	    ,REPLACE(
+	  	REPLACE(
+	  	  REPLACE(
+	  		REPLACE(
+	  		  REPLACE(
+	  			REPLACE(
+	  			  REPLACE(
+	  				REPLACE(ct.TemplateContent
+	  				  , '{EN Announcement}', h.Content_en)
+	  				, '{CN Announcement}', h.Content_cs)
+	  			  , '{Sport EN CN}', IFNULL(CONCAT(h.SportNameEN, ' / ', h.SportNameCS), ''))
+	  			, '{Kick Off Lable}', CASE h.SportNameEN WHEN 'Soccer' THEN 'Kick Off' WHEN 'Basketball' THEN 'Tip Off' ELSE 'Event Start Time' END)
+	  		  , '{KO Time}', IFNULL(h.KickOffTime, ''))
+	  		, '{League Name EN CN}', IFNULL(CONCAT(h.LeagueNameEN, ' [', h.LeagueNameCS, ']'), ''))
+	  	  , '{Team Name EN CN}', IFNULL(CONCAT('***', h.HomeNameEN, ' - vs - ' , h.AwayNameEN, ' [',h.HomeNameCS, ' - vs - ' , h.AwayNameCS, ']', '***'), ''))
+	  	, '@@', '') Content
+	    ,startTime, 0 SendImmediately, STARIXIT_CUSTID, CreatedDate, CREATING_NOTIFICATION_STATUS, CREATING_NOTIFICATION_STATUSID, ccChannelId
+	    FROM tmp_MsgHeader h
+	  	INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType AND ct.ChannelId = ccChannelId
+	    WHERE h.MessageID = ccMessageID;
+	  
+	  SELECT LAST_INSERT_ID() INTO ccNotificationID;
+	  
+	  INSERT INTO tmp_Notification(NotificationID)
+	  VALUES (ccNotificationID);
+	  
+	  # Insert NotificationSystemMsg
+	  INSERT INTO NotificationSystemMsg(MessageID, NotificationID, CheckMsg, CreatedDate)
+	  SELECT h.MessageID, ccNotificationID, h.CheckMsg, startTime
+	  FROM tmp_MsgHeader h
+	  WHERE h.MessageID = ccMessageID;
+	  
+	  #Insert recipient list
+	  INSERT INTO NotificationRecipientList(NotificationID, ConversationGroupID, ChatGroupTypeID, RecipientID, Status, StatusID)
+	  SELECT ccNotificationID, d.ConversationGroupID, d.ChatGroupTypeID, d.RecipientID, d.Status, d.StatusID
+	  FROM tmp_NotificationRecipientList d
+	  WHERE d.MessageID = ccMessageID
+	    AND d.LicenseeStatusID = ACTIVE_LICENSEE_STATUS
+	    AND d.RecipientID IS NOT NULL
+	    AND d.ChannelId = ccChannelId;
+	  
+	  #Update Status for Notification
+	  IF ccIsInvalid = 1 OR ccIsTest = 1 THEN
+	  UPDATE Notification
+	    SET Status = CASE WHEN ccIsInvalid = 1 THEN INVALID_NOTIFICATION_STATUS ELSE DRAFT_NOTIFICATION_STATUS END,
+	  	  StatusID = CASE WHEN ccIsInvalid = 1 THEN INVALID_NOTIFICATION_STATUSID ELSE DRAFT_NOTIFICATION_STATUSID END
+	    WHERE NotificationID = ccNotificationID;
+	  
+	  UPDATE NotificationRecipientList
+	    SET Status = CASE WHEN ccIsInvalid = 1 THEN INVALID_NOTIFICATION_STATUS ELSE DRAFT_NOTIFICATION_STATUS END,
+	  	  StatusID = CASE WHEN ccIsInvalid = 1 THEN INVALID_NOTIFICATION_STATUSID ELSE DRAFT_NOTIFICATION_STATUSID END
+	    WHERE NotificationID = ccNotificationID;
+	  ELSE
+	  UPDATE Notification n
+	    INNER JOIN NotificationSystemMsg nm ON nm.NotificationID = n.NotificationID
+	    INNER JOIN (SELECT DISTINCT nrl.MessageID, nrl.Status, nrl.StatusID FROM tmp_NotificationRecipientList nrl) AS t ON t.MessageID = nm.MessageID
+	    SET n.Status = t.Status,
+	  			n.StatusID = t.StatusID
+	    WHERE n.NotificationID = ccNotificationID;
+	  END IF;		
+	   DELETE FROM tmpMessageChannel m WHERE m.MessageId = ccMessageID AND m.ChannelId = ccChannelId;
+	 END WHILE;
 	SET iLoop := iLoop + 1;	
   END WHILE;
         
-   
-
   /*Step 9: Update Setting*/
   #Update Max MsgID
   SELECT MAX(MessageID) INTO maxMessageID FROM tmp_MsgHeader WHERE IsNew = 1;
