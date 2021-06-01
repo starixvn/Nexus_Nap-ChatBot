@@ -174,7 +174,7 @@ NCB_SiteMessage_Import:BEGIN
 		  );
         
     SET iLoop := iLoop + 1;
-    END WHILE;
+   END WHILE;
 
   /*Step 2: Parse JSON data for message template, notification type*/
   SELECT Value INTO templateNotifcationType
@@ -282,7 +282,7 @@ NCB_SiteMessage_Import:BEGIN
     LEAVE NCB_SiteMessage_Import;
     END IF;
     
-UPDATE tmp_MsgContentTypeTemplate
+  UPDATE tmp_MsgContentTypeTemplate
 	SET IsRequiredMatch = 1
     WHERE MsgContentsType IN (1, 3, 7);
 
@@ -496,25 +496,25 @@ UPDATE tmp_MsgContentTypeTemplate
   #Update Max MsgID
   SELECT MAX(MessageID) INTO maxMessageID FROM tmp_MsgHeader WHERE IsNew = 1;
   
-	IF maxMessageID IS NOT NULL THEN
-		UPDATE SystemSetting
-			SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
-			WHERE ID = 13;
-		END IF;
+  IF maxMessageID IS NOT NULL THEN
+	UPDATE SystemSetting
+		SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
+		WHERE ID = 13;
+   END IF;
         
-	#Update Last PostTime
-    SELECT MAX(CAST(PostTime AS DATETIME)) INTO lastPostTime FROM tmp_MsgHeader WHERE IsNew = 1;
+   #Update Last PostTime
+   SELECT MAX(CAST(PostTime AS DATETIME)) INTO lastPostTime FROM tmp_MsgHeader WHERE IsNew = 1;
     
-    IF lastPostTime IS NOT NULL THEN
-		UPDATE SystemSetting
-			SET Value = lastPostTime
-			WHERE ID = 16;
-		END IF;
+   IF lastPostTime IS NOT NULL THEN
+	UPDATE SystemSetting
+		SET Value = lastPostTime
+		WHERE ID = 16;
+	END IF;
         
   #Update flag to 'Done'
-	UPDATE SystemSetting
-		SET Value = VALUE_DONE
-		WHERE ID = 11 AND Value = VALUE_RUNNING;
+   UPDATE SystemSetting
+	SET Value = VALUE_DONE
+	WHERE ID = 11 AND Value = VALUE_RUNNING;
 
   /*Step 10: Return imported messages*/
   #Get ChatGroupID which receives carbon coppies of all imported messages
