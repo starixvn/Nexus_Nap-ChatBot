@@ -5,7 +5,7 @@ CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_AddBotToGroup`(
 	IN botConversationId VARCHAR(200)  
 	, IN botName VARCHAR(70)
     , IN conversationId VARCHAR(200)  
-	, IN channelId VARCHAR(45)
+	, IN channelId TINYINT UNSIGNED
     , IN serviceUrl VARCHAR(500)
 	, IN updatedBy VARCHAR(200)
 	, OUT errCode SMALLINT
@@ -17,12 +17,12 @@ CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_AddBotToGroup`(
                 - botName: Bot Name
                 - conversationId: Conversation Id of Group
                 - groupName: Topic of Group
-                - channelId: Channel Id (skype, telegram, facebook, ..)
+                - channelId: Channel Id of Channel 
                 - serviceUrl: 
                 - updatedBy: Conversation of user which add BOT into group.
         Revisions:
 				- 20190726@Quinn: First Commit
-				- 20210513@Malcolm: filter following Bot Service - RedmineID: #151807
+				- 20210513@Malcolm: add ChannelId - RedmineID: #151807
         
     */
 )

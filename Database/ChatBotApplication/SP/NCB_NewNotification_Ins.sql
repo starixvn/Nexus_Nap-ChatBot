@@ -3,7 +3,6 @@ DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NewNotification_Ins`(
 	IN notificationTypeID SMALLINT
-	, IN ChannelIdLst VARCHAR(1000)
 	, IN productID SMALLINT
 	, IN recipientIDLst TEXT
 	, IN title VARCHAR(300) CHARACTER SET utf8mb4
@@ -80,9 +79,6 @@ NCB_NewNotification_Ins:BEGIN
 	ELSEIF configSendTime IS NULL THEN
 		SET errCode=105, errMsg='ConfigSendTime can not be null';
         LEAVE NCB_NewNotification_Ins;
-	ELSEIF IFNULL(ChannelIdLst, '') = '' THEN
-		SET errCode=110, errMsg = 'Channel list can not be null';
-		LEAVE NCB_NewNotification_Ins;
 	END IF;
 	
 	#Insert Content 
@@ -99,25 +95,22 @@ NCB_NewNotification_Ins:BEGIN
         );
         SET iLoop := iLoop + 1;
     END WHILE;
-	#Get channel
-	DROP TEMPORARY TABLE IF EXISTS tmpChannelIdLst;
-	CREATE TEMPORARY TABLE tmpChannelIdLst (ChannelId TINYINT UNSIGNED);
-	
-	SET @sqlCommand = REPLACE(ChannelIdLst, ',', '),(');
-	SET @sqlCommand = CONCAT('(', @sqlCommand, ')');
-	SET @sqlCommand = CONCAT('INSERT INTO tmpChannelIdLst VALUES', @sqlCommand);
-	PREPARE stmt FROM @sqlCommand;
-	EXECUTE stmt;
-	DEALLOCATE PREPARE stmt;
 	
 	#Check content
 	
 	IF EXISTS (
-		SELECT 1 FROM tmpChannelIdLst tcl 
-			LEFT JOIN tmpContent tc ON tc.ChannelId = tcl.ChannelId
+		SELECT 1 FROM tmpContent tc 
 		WHERE IFNULL(tc.Content, '') = ''
 	) THEN
 		SET errCode=111, errMsg = 'Content must not be empty';
+		LEAVE NCB_NewNotification_Ins;
+	END IF;
+	
+	IF EXISTS (
+		SELECT 1 FROM tmpContent tc 
+		WHERE NOT EXISTS (SELECT 1 FROM ConversationChannel c WHERE c.ChannelId = tc.ChannelId)
+	) THEN
+		SET errCode=111, errMsg = 'Invalid ChannelId';
 		LEAVE NCB_NewNotification_Ins;
 	END IF;
 
@@ -148,9 +141,9 @@ NCB_NewNotification_Ins:BEGIN
 				ON con.ConversationGroupID = bcr.ConversationGroupID AND con.IsActive = 1
 	INNER JOIN ConversationGroupBot cgb
 			ON cgb.ConversationGroupID = bcr.ConversationGroupID
-	WHERE con.ChannelId IN (SELECT tcl.ChannelId FROM tmpChannelIdLst tcl);
+	WHERE con.ChannelId IN (SELECT tcl.ChannelId FROM tmpContent tcl);
 	
-	DELETE FROM tmpChannelIdLst tcl WHERE NOT EXISTS (SELECT 1 FROM tmp_mappedRecipientIDLst r WHERE r.ChannelId = tcl.ChannelId);
+	DELETE FROM tmpContent tc WHERE NOT EXISTS (SELECT 1 FROM tmp_mappedRecipientIDLst r WHERE r.ChannelId = tc.ChannelId);
                 
     #Check Not-Mapping/Removed-Bot Recipients
     IF EXISTS(
@@ -291,12 +284,11 @@ NCB_NewNotification_Ins:BEGIN
     
     #Insert a new Notification
 	
-	WHILE (EXISTS(SELECT 1 FROM tmpChannelIdLst)) DO
+	WHILE (EXISTS(SELECT 1 FROM tmpContent)) DO
 		
-		SELECT tcl.ChannelId,  tc.Content INTO _ChannelId, _Content
-		FROM tmpChannelIdLst tcl
-			INNER JOIN tmpContent tc ON tc.ChannelId = tcl.ChannelId 
-		ORDER BY tcl.ChannelId ASC
+		SELECT tc.ChannelId,  tc.Content INTO _ChannelId, _Content
+		FROM tmpContent tc 
+		ORDER BY tc.ChannelId ASC
 		LIMIT 1;
 		
 		INSERT INTO Notification
@@ -351,7 +343,7 @@ NCB_NewNotification_Ins:BEGIN
 			, Status = NEW_NOTIFICATION_STATUS
 		WHERE n.NotificationID = notificationID;
 		
-		DELETE FROM tmpChannelIdLst WHERE ChannelId = _ChannelId;
+		DELETE FROM tmpContent WHERE ChannelId = _ChannelId;
 	END WHILE;
 	
 	SET notificationIDLst = CONCAT('[', LEFT(_notificationIDLst, LENGTH(_notificationIDLst) - 1),']');

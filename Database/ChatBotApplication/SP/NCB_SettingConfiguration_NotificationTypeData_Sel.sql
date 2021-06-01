@@ -37,7 +37,7 @@ BEGIN
 	SELECT nt.NotificationTemplateId
 		,nt.NotificationTemplateName
         ,nt.Title
-        ,nt.Content
+        ,ntc.Content
     FROM NotificationTemplate nt
 		INNER JOIN NotificationTemplateContent ntc ON ntc.NotificationTemplateID = nt.NotificationTemplateID
         INNER JOIN ConversationChannel c ON c.ChannelID = ntc.ChannelID
