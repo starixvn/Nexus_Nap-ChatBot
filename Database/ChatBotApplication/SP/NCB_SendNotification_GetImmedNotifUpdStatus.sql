@@ -14,6 +14,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_GetImmedNot
                  
         Revisions:
 				- 20190417@Dominic: First Commit
+				- 20210513@Malcolm: Integrate Telegram [RedmineID: #151807]
         
     */
 )

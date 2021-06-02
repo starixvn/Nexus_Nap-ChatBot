@@ -282,8 +282,8 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   );
   
   # Get content
-   INSERT INTO tmp_MsgContentTypeTemplate (MsgContentsType ,NotificationTypeID, NotificationTemplateID, TemplateTitle, TemplateContent, IsRequiredMatch, IsTest, ChannelId)
-   SELECT t.MsgContentsType, t.NotificationTypeID, t.NotificationTemplateID, nt.Title, ntc.Content, 0, t.IsTest, ntc.ChannelId	
+   INSERT INTO tmp_MsgContentTypeTemplate (MsgContentsType ,NotificationTypeID, NotificationTemplateID, TemplateTitle, TemplateContent, IsTest, ChannelId)
+   SELECT t.MsgContentsType, t.NotificationTypeID, t.NotificationTemplateID, nt.Title, ntc.Content, t.IsTest, ntc.ChannelId	
    FROM tmpSetting t 
 		INNER JOIN NotificationTemplate nt ON nt.NotificationTemplateID = t.NotificationTemplateID
 		INNER JOIN NotificationTemplateContent ntc ON ntc.NotificationTemplateID = nt.NotificationTemplateID; 
@@ -294,12 +294,6 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
         Status = CASE WHEN IsTest = 1 THEN DRAFT_NOTIFICATION_STATUS ELSE PLANNED_NOTIFICATION_STATUS END;
 
   /*Step 3: Validate templates*/
-  # Get template content
-  UPDATE tmp_MsgContentTypeTemplate tmp
-    INNER JOIN NotificationTemplate nt ON tmp.NotificationTemplateID = nt.NotificationTemplateID
-    SET tmp.TemplateContent = nt.Content,
-        tmp.TemplateTitle = nt.Title;
-
   # Check if there are any templates are not existing
   IF EXISTS (
     SELECT 1
@@ -398,8 +392,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   
   INSERT INTO tmpMessageChannel (MessageID, ChannelId)
   SELECT DISTINCT MessageId, ChannelId
-  FROM tmp_NotificationRecipientList r
-  WHERE r.LicenseeStatusID = ACTIVE_LICENSEE_STATUS;
+  FROM tmp_NotificationRecipientList r;
 
   SET iLoop = 1;
   SET createdDate = UTC_TIMESTAMP();
@@ -413,7 +406,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
       INSERT INTO Notification(NotificationTypeID, Title, Content, ConfigSendTime, SendImmediately, CreatorID, CreatedDate, Status, StatusID, ChannelId)
         SELECT DISTINCT ct.NotificationTypeID, ct.TemplateTitle, REPLACE(REPLACE(ct.TemplateContent, '{General Info}', h.Content_Detail), '@@', '') Content, startTime, 0 SendImmediately, STARIXIT_CUSTID, CreatedDate, CREATING_NOTIFICATION_STATUS, CREATING_NOTIFICATION_STATUSID, ccChannelId
           FROM tmp_MsgHeader h
-          INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType AND ct.ChannelID = h.ChannelID
+          INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType AND ct.ChannelId = ccChannelId
           WHERE h.MessageID = ccMessageID;
 
       SELECT LAST_INSERT_ID() INTO ccNotificationID;
@@ -485,9 +478,10 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   LIMIT 1;
   
   #Return all imported message content
-  SELECT n.NotificationID, n.Title, n.Content
-  	FROM Notification n
-     WHERE n.NotificationID IN (SELECT t.NotificationID FROM tmp_Notification t);
+  SELECT n.NotificationID, n.Title, n.Content, n.ChannelID, c.ChannelName
+  FROM Notification n
+	INNER JOIN ConversationChannel c ON c.ChannelID = n.ChannelId
+  WHERE n.NotificationID IN (SELECT t.NotificationID FROM tmp_Notification t);
     
   #Get Finish Time to calculate execution duration
   SET finishTime = UTC_TIMESTAMP(3);

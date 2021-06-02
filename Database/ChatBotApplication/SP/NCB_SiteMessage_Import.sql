@@ -496,7 +496,7 @@ NCB_SiteMessage_Import:BEGIN
 	  			n.StatusID = t.StatusID
 	    WHERE n.NotificationID = ccNotificationID;
 	  END IF;		
-	   DELETE FROM tmpMessageChannel m WHERE m.MessageId = ccMessageID AND m.ChannelId = ccChannelId;
+	  DELETE FROM tmpMessageChannel m WHERE m.MessageId = ccMessageID AND m.ChannelId = ccChannelId;
 	 END WHILE;
 	SET iLoop := iLoop + 1;	
   END WHILE;
@@ -540,9 +540,10 @@ NCB_SiteMessage_Import:BEGIN
   LIMIT 1;
 
   #Return all imported message content
-  SELECT n.NotificationID, n.Title, n.Content
-		FROM Notification n
-    WHERE n.NotificationID IN (SELECT t.NotificationID FROM tmp_Notification t);
+  SELECT n.NotificationID, n.Title, n.Content, n.ChannelID, c.ChannelName
+  FROM Notification n
+	INNER JOIN ConversationChannel c ON c.ChannelID = n.ChannelId
+  WHERE n.NotificationID IN (SELECT t.NotificationID FROM tmp_Notification t);
   
   #Get Finish Time to calculate execution duration
   SET finishTime = UTC_TIMESTAMP(3);
