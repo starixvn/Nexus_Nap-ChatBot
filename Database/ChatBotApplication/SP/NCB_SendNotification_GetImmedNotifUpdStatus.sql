@@ -75,7 +75,7 @@ NCB_SendNotification_GetImmedNotifUpdStatus:BEGIN
 	WHERE n.NotificationId = notificationID;
     
     #1st dataset: Main Notification Info such as title, content
-	SELECT n.NotificationID, n.Title, n.Content
+	SELECT n.NotificationID, n.Title, n.Content, _ChannelId AS ChannelId, _ChannelName AS ChannelName
     FROM Notification n
     WHERE n.NotificationID = notificationID;
 
