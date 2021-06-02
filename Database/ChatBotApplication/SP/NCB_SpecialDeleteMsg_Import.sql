@@ -328,7 +328,14 @@ NCB_SpecialDeleteMsg_Import:BEGIN
           FROM tmp_NotificationRecipientList t
     		INNER JOIN NotificationSystemMsg nsm ON t.MessageID = nsm.MessageID
               INNER JOIN NotificationRecipientList nrl ON nsm.NotificationID = nrl.NotificationID
-    	WHERE t.RecipientID = nrl.RecipientID;
+    	WHERE t.RecipientID = nrl.RecipientID;	
+		
+		DELETE tmc
+		  FROM tmpMessageChannel tmc
+		WHERE tmc.MessageID = ccMessageID
+			AND NOT EXISTS (
+				SELECT 1 FROM tmp_NotificationRecipientList t 
+				WHERE t.MessageId = ccMessageID AND t.ChannelId = tmc.ChannelID);
     	END IF;
     
       WHILE EXISTS(SELECT 1 FROM tmpMessageChannel m WHERE m.MessageId = ccMessageID) DO
