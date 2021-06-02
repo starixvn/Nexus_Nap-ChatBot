@@ -170,8 +170,8 @@ NCB_SpecialDeleteMsg_Import:BEGIN
             );
 			
     # Get content
-    INSERT INTO tmp_MsgContentTypeTemplate (MsgContentsType ,NotificationTypeID, NotificationTemplateID, TemplateTitle, TemplateContent, IsRequiredMatch, IsTest, ChannelId)
-    SELECT t.MsgContentsType, t.NotificationTypeID, t.NotificationTemplateID, nt.Title, ntc.Content, 0, t.IsTest, ntc.ChannelId	
+    INSERT INTO tmp_MsgContentTypeTemplate (MsgContentsType ,NotificationTypeID, NotificationTemplateID, TemplateTitle, TemplateContent, IsTest, ChannelId)
+    SELECT t.MsgContentsType, t.NotificationTypeID, t.NotificationTemplateID, nt.Title, ntc.Content, t.IsTest, ntc.ChannelId	
     FROM tmpSetting t 
 		INNER JOIN NotificationTemplate nt ON nt.NotificationTemplateID = t.NotificationTemplateID
 		INNER JOIN NotificationTemplateContent ntc ON ntc.NotificationTemplateID = nt.NotificationTemplateID;
