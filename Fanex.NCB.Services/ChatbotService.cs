@@ -8,6 +8,7 @@
     using System.Net.Http.Json;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Enum;
+    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models;
     using Fanex.NCB.Models.NotifictaionSendMessage;
@@ -134,7 +135,8 @@
                     var notification = new NotificationMessage
                     {
                         NotificationId = noti.NotificationId,
-                        Message = noti.Content,
+                        Message = noti.ChannelId == (byte)ConversationChannel.Telegram
+                            ? noti.Content.ToMarkdownV2().EscapedMarkdownV2() : noti.Content,
                         ChannelId = noti.ChannelId,
                         Recipients = recipients.Select(r =>
                             new ConversationInfo

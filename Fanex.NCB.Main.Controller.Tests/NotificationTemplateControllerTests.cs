@@ -96,7 +96,7 @@
             var contents = new List<NotificationTemplateContent>
             {
                 new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Skype, Content = viewModel.Content },
-                new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content.ToTelegramFormat() }
+                new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content.ToMarkdownV2() }
             };
             var model = new CreateNotificationTemplate();
 
@@ -144,7 +144,7 @@
             var contents = new List<NotificationTemplateContent>
             {
                 new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Skype, Content = viewModel.Content },
-                new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content.ToTelegramFormat() }
+                new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content.ToMarkdownV2() }
             };
             var model = new EditNotificationTemplate();
 

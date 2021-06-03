@@ -35,7 +35,6 @@ export class AppContainer extends React.Component {
         super(props);
 
         this.state = {
-            channelIds: `${Channels.Skype},${Channels.Telegram}`,
             isSummited: false,
             manuallyEditted: false,
             template: {
@@ -55,7 +54,8 @@ export class AppContainer extends React.Component {
             },
             searchValue: '',
             initValue: {
-                channel: '',
+                channelIds: `${Channels.Skype},${Channels.Telegram}`,
+                channelName: '',
                 notificationTypeId: '',
                 templateId: '',
                 productId: '',
@@ -107,10 +107,10 @@ export class AppContainer extends React.Component {
             });
 
             this.setState({
-                channelIds: resendNotification.channelId.toString(),
                 initValue: {
                     ...this.state.initValue,
-                    channel: resendNotification.channelName,
+                    channelIds: resendNotification.channelId.toString(),
+                    channelName: resendNotification.channelName,
                     notificationTypeId: resendNotification.notificationTypeId,
                     recipients: selectedRecipients,
                     title: resendNotification.title,
@@ -153,6 +153,7 @@ export class AppContainer extends React.Component {
         getRealValueFromTreeSelection(recipientIds, values.recipients, this.props.recipientOptions);
 
         const data = stringify({
+            channelIds: values.channelIds,
             notificationTypeId: values.notificationTypeId,
             productId: values.productId,
             recipientIds: recipientIds.toString(),
@@ -208,7 +209,7 @@ export class AppContainer extends React.Component {
 
     handleNotificationTypeChange = event => {
         const formik = this.refs.form;
-        this.props.getRecipients(event.target.value, formik.state.values.productId, this.state.channelIds);
+        this.props.getRecipients(event.target.value, formik.state.values.productId, formik.state.values.channelIds);
         this.props.getNotificationTemplates(event.target.value);
 
         formik.setValues({
@@ -256,7 +257,7 @@ export class AppContainer extends React.Component {
 
     handleProductChange = event => {
         const formik = this.refs.form;
-        this.props.getRecipients(formik.state.values.notificationTypeId, event.target.value, this.state.channelIds);
+        this.props.getRecipients(formik.state.values.notificationTypeId, event.target.value, formik.state.values.channelIds);
         formik.handleChange(event);
         if (formik.state.values.recipients.length > 0) {
             formik.setFieldValue('recipients', []);
@@ -402,7 +403,7 @@ export class AppContainer extends React.Component {
                     this.resendNotifcation.notificationId &&
                     <FormGroup>
                         <Label className="form-label">{Labels.BotService}</Label>
-                        <div>{values.channel}</div>
+                        <div>{values.channelName}</div>
                     </FormGroup>
                 }
                 <FormGroup>
@@ -551,21 +552,6 @@ export class AppContainer extends React.Component {
                 </div>
             </Form >
         );
-    }
-
-    initValues = () => {
-        const resendNotification = this.props.resendNotification;
-        let initValue = {
-        };
-        if (resendNotification) {
-            initValue.notificationTypeId = resendNotification.notificationTypeId;
-            initValue.productId = resendNotification.productId;
-            initValue.recipients = resendNotification.recipients;
-            initValue.title = resendNotification.title;
-            initValue.content = resendNotification.content;
-        }
-
-        return initValue;
     }
 
     renderPageTitle = () => this.resendNotifcation.notificationId ? "Resend a notification from notification #" + this.resendNotifcation.notificationId : "New Notification";

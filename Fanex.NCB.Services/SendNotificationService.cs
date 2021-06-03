@@ -99,8 +99,10 @@
 
         private async Task SendNotificationToRecipients(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
-            await SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications, recipients);
-            await SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications, recipients);
+            await Task.WhenAll(
+                SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications, recipients),
+                SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications, recipients)
+            );
         }
 
         private async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)

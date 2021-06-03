@@ -44,22 +44,22 @@
         ////    Assert.Equal(JsonConvert.SerializeObject(result.NotificationMessageResult), JsonConvert.SerializeObject(messages));
         ////}
 
-        [Fact]
-        public async Task NotifySponDemoChatGroup_WhenCalled_WebClientExecuted()
-        {
-            var service = SetupHttpClientFactory();
-            await service.NotifyToChatGroup("Test");
-            httpClientFactory.Received(2).CreateClient();
-        }
+        ////[Fact]
+        ////public async Task NotifySponDemoChatGroup_WhenCalled_WebClientExecuted()
+        ////{
+        ////    var service = SetupHttpClientFactory();
+        ////    await service.NotifyToChatGroup("Test");
+        ////    httpClientFactory.Received(2).CreateClient();
+        ////}
 
-        [Fact]
-        public async Task MonitorChatbot_WhenCalled_DoExpectedActions()
-        {
-            var service = SetupHttpClientFactory();
-            await service.MonitorChatbot();
+        ////[Fact]
+        ////public async Task MonitorChatbot_WhenCalled_DoExpectedActions()
+        ////{
+        ////    var service = SetupHttpClientFactory();
+        ////    await service.MonitorChatbot();
 
-            httpClientFactory.Received(2);
-        }
+        ////    httpClientFactory.Received(2);
+        ////}
 
         [Fact]
         public void GenerateNotifificationMessage_WhenCalled_ReturnMappedObject()
@@ -106,24 +106,24 @@
             Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(actual));
         }
 
-        private ChatbotService SetupHttpClientFactory()
-        {
-            var fixture = new Fixture();
-            var messages = new List<NotificationMessage>();
+        ////private ChatbotService SetupHttpClientFactory()
+        ////{
+        ////    var fixture = new Fixture();
+        ////    var messages = new List<NotificationMessage>();
 
-            var service = GetService();
+        ////    var service = GetService();
 
-            var token = fixture.Create<ChatbotToken>();
-            var msgs = new Dictionary<string, HttpResponseMessage>
-            {
-                { botSettings.Value.AuthenticateUrl, new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(JsonConvert.SerializeObject(token))} },
-                { botSettings.Value.BotServiceUrl, new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(JsonConvert.SerializeObject(messages))} }
-            };
-            var httpClient = new HttpClient(new MockHttpMessageHandler(msgs));
-            httpClientFactory.CreateClient().Returns(httpClient);
+        ////    var token = fixture.Create<ChatbotToken>();
+        ////    var msgs = new Dictionary<string, HttpResponseMessage>
+        ////    {
+        ////        { botSettings.Value.AuthenticateUrl, new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(JsonConvert.SerializeObject(token))} },
+        ////        { botSettings.Value.BotServiceUrl, new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(JsonConvert.SerializeObject(messages))} }
+        ////    };
+        ////    var httpClient = new HttpClient(new MockHttpMessageHandler(msgs));
+        ////    httpClientFactory.CreateClient().Returns(httpClient);
 
-            return service;
-        }
+        ////    return service;
+        ////}
 
         private ChatbotService GetService()
         {

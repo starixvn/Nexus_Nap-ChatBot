@@ -68,7 +68,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
                 var contents = new List<NotificationTemplateContent>
                 {
                     new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Skype, Content = viewModel.Content },
-                    new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content.ToTelegramFormat() }
+                    new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content.ToMarkdownV2() }
                 };
 
                 CommandResult result = await notificationTemplaceService.CreateAsync(new CreateNotificationTemplate
@@ -96,7 +96,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
                 var contents = new List<NotificationTemplateContent>
                 {
                     new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Skype, Content = viewModel.Content },
-                    new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content.ToTelegramFormat() }
+                    new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content.ToMarkdownV2() }
                 };
                 CommandResult result = await notificationTemplaceService.EditAsync(new EditNotificationTemplate
                 {

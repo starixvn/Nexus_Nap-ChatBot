@@ -5,20 +5,11 @@
     public class BotSettings
     {
         public string BotDomain { get; set; }
-
-        public string BotServiceUrl { get; set; }
-
-        public string SendSingleMessage { get; set; }
-
         public string TokenUrl { get; set; }
-
         public string AuthenticateUrl { get; set; }
-
         public string AppCredentialId { get; set; }
-
         public string AppCredentialPassword { get; set; }
-
-        public IEnumerable<BotServiceEndPointConfigs> ApiConfigs { get; set; } = new List<BotServiceEndPointConfigs>();
+        public IList<BotServiceEndPointConfigs> ApiConfigs { get; set; } = new List<BotServiceEndPointConfigs>();
     }
 
     public class BotServiceEndPointConfigs

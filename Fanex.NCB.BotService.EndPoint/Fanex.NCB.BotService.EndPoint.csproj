@@ -23,6 +23,7 @@
     <ItemGroup>
         <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.5" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.6" />
         <PackageReference Include="Microsoft.Bot.Builder" Version="4.13.0" />
         <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.13.0" />
         <PackageReference Include="Microsoft.Bot.Configuration" Version="4.13.0" />

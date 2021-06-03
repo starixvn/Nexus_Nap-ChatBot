@@ -46,8 +46,6 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
-
             Dictionary<string, ConnectionConfiguration> connections = Configuration
                 .GetSection("ConnectionStrings")
                 .GetChildren()
@@ -108,6 +106,8 @@
                 .PersistKeysToStackExchangeRedis(Redis, "Fanex.NCB.BotService.Endpoint-Keys");
 
             services.AddRedisCache(Configuration.GetSection("Fanex.Caching.Redis"));
+
+            services.AddMvc().AddNewtonsoftJson();
         }
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)

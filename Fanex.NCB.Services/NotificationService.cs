@@ -11,6 +11,7 @@
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Newtonsoft.Json;
 
     public class NotificationService : INotificationService
     {
@@ -45,15 +46,15 @@
 
             if (result.IsSuccessful)
             {
-                var notificationIds = command.NotificationIDLst.Split(",").Select(x => int.Parse(x)).ToList();
-                foreach(var notificationId in notificationIds)
+                var notifications = JsonConvert.DeserializeObject<List<NotificationMessage>>(command.NotificationIDLst);
+                foreach(var notification in notifications)
                 {
                     if (model.SendImmediately)
                     {
-                        BackgroundJobAfterCreateNotification(notificationId, true);
+                        BackgroundJobAfterCreateNotification(notification.NotificationId, true);
                     } else
                     {
-                        await PushSignalRInsert(notificationId);
+                        await PushSignalRInsert(notification.NotificationId);
                     }
                 }
             }
@@ -224,7 +225,7 @@
         {
             return await baseService.GetDataAsync<Template>(new GetTemplatesCriteria
             {
-                NotificationTypeId = notificationTypeId,
+                NotificationTypeId = notificationTypeId
             });
         }
 

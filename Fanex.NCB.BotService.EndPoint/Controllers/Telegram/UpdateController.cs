@@ -96,6 +96,7 @@
                 BotConversationId = bot.Id.ToString(),
                 BotName = bot.FirstName,
                 ConversationId = message.Chat.Id.ToString(),
+                GroupName = message.Chat.Title,
                 ChannelId = (byte)ConversationChannel.Telegram,
                 ServiceUrl = string.Empty,
                 UpdatedBy = message.From.Id.ToString()
