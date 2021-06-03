@@ -40,8 +40,7 @@
                 };
 
                 var httpClient = httpClientFactory.CreateClient();
-                httpClient.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", token.AccessToken);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
                 using var response = await httpClient.PostAsync(url, new FormUrlEncodedContent(notificationData));
 

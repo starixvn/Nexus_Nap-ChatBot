@@ -1,13 +1,10 @@
-﻿using AutoFixture;
-using Fanex.NCB.Criteria.Notification;
-using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
-
-namespace Fanex.NCB.Criteria.Tests.Notification
+﻿namespace Fanex.NCB.Criteria.Tests.Notification
 {
+    using AutoFixture;
+    using Fanex.NCB.Criteria.Notification;
+    using FluentAssertions;
+    using Xunit;
+
     public class CreateNewNotificationCommandTest
     {
         [Fact]
@@ -31,7 +28,7 @@ namespace Fanex.NCB.Criteria.Tests.Notification
         [InlineData(1, 1, "1", "1", "", false)]
         [InlineData(1, 1, "1", "1", "1", true)]
         public void CreateNewNotificationCommand_IsValid_CheckCorrectly(
-            int notificationTypeId, 
+            int notificationTypeId,
             int creatorId,
             string recipientIds,
             string title,
@@ -45,7 +42,7 @@ namespace Fanex.NCB.Criteria.Tests.Notification
             criteria.CreatorId = creatorId;
             criteria.RecipientIDLst = recipientIds;
             criteria.Title = title;
-            criteria.Content = content;
+            criteria.ContentLst = content;
 
             // Act
             var result = criteria.IsValid();

@@ -78,8 +78,8 @@
         {
             try
             {
-                int.TryParse(conversationInfo.BotConversationId, out int botId);
-                long.TryParse(conversationInfo.ConversationId, out long chatId);
+                _ = int.TryParse(conversationInfo.BotConversationId, out int botId);
+                _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
                 SendMessageResult result = await SendMessage(botId, chatId, notificationId, text);
                 var thread = new Thread(async () => await AddMessageLog(conversationInfo, text, result));
                 thread.Start();

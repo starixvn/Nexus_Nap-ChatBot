@@ -25,6 +25,7 @@
         private IOptionsSnapshot<MonitorChatbot> monitor;
         private ILogService logger;
 
+<<<<<<< HEAD
         [Fact]
         public async Task ScanAndSendNotification_ScanEmptyNoti_NotUpdateStatusAndSendNoti()
         {
@@ -119,6 +120,103 @@
             await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
             await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
         }
+=======
+        ////[Fact]
+        ////public async Task ScanAndSendNotification_ScanEmptyNoti_NotUpdateStatusAndSendNoti()
+        ////{
+        ////    var notifications = new List<NotificationSendMessage>();
+        ////    var recipients = new List<NotificationRecipient>();
+        ////    var emptyListNoti = new ValueTuple<IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>>(notifications, recipients);
+        ////    var service = GetService();
+        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(emptyListNoti);
+
+        ////    //Actual
+        ////    await service.ScanAndSendNotification();
+
+        ////    //Assert
+        ////    await chatbotService.DidNotReceive().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+        ////    await baseService.DidNotReceive().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+        ////}
+
+        ////[Fact]
+        ////public async Task ScanAndSendNotification_ScanHasNoti_UpdateStatusAndSendNoti_UpdateWhenSendFailed()
+        ////{
+        ////    var notifications = FakeData();
+        ////    var service = GetService();
+        ////    var response = FakeResponse(false);
+        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
+        ////    chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
+
+        ////    //Actual
+        ////    await service.ScanAndSendNotification();
+
+        ////    //Assert
+        ////    await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+        ////    await baseService.Received().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+        ////}
+
+        ////[Fact]
+        ////public async Task ScanAndSendNotification_ScanHasNoti_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
+        ////{
+        ////    var notifications = FakeData();
+        ////    var response = FakeResponse(true);
+        ////    var service = GetService();
+        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
+        ////    chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
+        ////    //Actual
+        ////    await service.ScanAndSendNotification();
+
+        ////    //Assert
+        ////    await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+        ////    await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+        ////}
+
+        ////[Fact]
+        ////public async Task ScanAndSendNotification_ScanHasNoti_ChatbotServiceThrowExceptions()
+        ////{
+        ////    var notifications = FakeData();
+        ////    var service = GetService();
+        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
+
+        ////    chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Throws(new Exception());
+        ////    await service.ScanAndSendNotification();
+        ////    //Assert
+        ////    await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+        ////}
+
+        ////[Fact]
+        ////public async Task SendNotificationImmediately_IsCreating_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
+        ////{
+        ////    var notifications = FakeData();
+        ////    var response = FakeResponse(true);
+        ////    var service = GetService();
+        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationByIdCriteria>()).Returns(notifications);
+        ////    chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
+        ////    //Actual
+        ////    await service.SendNotificationImmediately(1);
+        ////    PushSignalNewNotification("1");
+        ////    //Assert
+        ////    await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+        ////    await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+        ////}
+
+        ////[Fact]
+        ////public async Task SendNotificationImmediately_NotIsCreating_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
+        ////{
+        ////    var notifications = FakeData();
+        ////    var response = FakeResponse(true);
+        ////    var service = GetService();
+        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationByIdCriteria>()).Returns(notifications);
+        ////    chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
+        ////    //Actual
+        ////    await service.SendNotificationImmediately(1);
+
+        ////    PushSignalUpdateNotiStatus("1");
+        ////    //Assert
+        ////    await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+        ////    await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+        ////}
+>>>>>>> 156153 - enhance New Notification
 
         private void PushSignalNewNotification(string notificationIds)
         {
@@ -151,7 +249,6 @@
 
         private static NotificationMessageResponse FakeResponse(bool isSuccess)
         {
-<<<<<<< HEAD
             var result = new List<SendMessageResult>
             {
                 new SendMessageResult { NotificationId = 1, ConversationId = "1", ErrorCode = 0, ErrorMessage = "", SentTime = DateTime.Now }
@@ -161,13 +258,6 @@
                 IsSuccessStatusCode = isSuccess,
                 StatusCode = isSuccess ? HttpStatusCode.OK : HttpStatusCode.BadRequest,
                 NotificationMessageResult = result
-            };
-=======
-            var result = new NotificationMessageResponse
-            {
-                IsSuccessStatusCode = isSuccess,
-                StatusCode = isSuccess ? HttpStatusCode.OK : HttpStatusCode.BadRequest,
-                NotificationMessageResult = new List<SendMessageResult>
                 {
                     new SendMessageResult
                     {
@@ -179,8 +269,6 @@
                     }
                 }
             };
-            return result;
->>>>>>> 000 - fix unit tests
         }
 
         private SendNotificationService GetService()

@@ -5,15 +5,18 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using System.Threading.Tasks;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NCB.Core.Constants;
+    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Main.ViewModel.Notification;
     using Fanex.NCB.Main.ViewModel.TreeSelect;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Models.Notification;
+    using Fanex.NCB.Models.NotificationTemplate;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
+    using Newtonsoft.Json;
     using static Fanex.NAP.Core.Business.Constant;
 
     [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
@@ -40,7 +43,6 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> Create(CreateNewNotificationViewModel model)
         {
             var result = new CommandResult();
-
             if (string.IsNullOrEmpty(model.RecipientIds))
             {
                 result.Code = -1;
@@ -48,13 +50,20 @@ namespace Fanex.NCB.SkypeBot.Controllers
             }
             else
             {
+                var contents = model.ChannelIds.Split(",").Select(x => byte.Parse(x))
+                    .Select(x => new NotificationTemplateContent
+                    {
+                        ChannelId = x,
+                        Content = x == (byte)Core.Enum.ConversationChannel.Telegram ? model.Content.ToTelegramFormat() : model.Content
+                    });
+
                 result = await notificationService.CreateAsync(new CreateNotification
                 {
                     NotificationTypeId = model.NotificationTypeId,
                     ProductId = model.ProductId,
                     RecipientIds = model.RecipientIds,
                     Title = model.Title,
-                    Content = model.Content,
+                    Content = JsonConvert.SerializeObject(contents),
                     SendDate = model.SendDate,
                     SendImmediately = model.SendImmediately,
                     CreatorId = napSession.UserId

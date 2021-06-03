@@ -33,9 +33,9 @@
       <Setting Key="NCB_Channel_Sel" SpName="NCB_Channel_Sel_xtest" DbName="ChatBot" Plain="0" />
   </Function>
   <Function Name="Send Notification">
-    <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus_xtest" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SendNotification_GetImmedNotifUpdStatus" SpName="NCB_SendNotification_GetImmedNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_SendNotification_GetImmedNotifUpdStatus" SpName="NCB_SendNotification_GetImmedNotifUpdStatus_xtest" DbName="ChatBot" Plain="0"></Setting>
   </Function>
 
   <Function Name="New Notification">
@@ -145,7 +145,7 @@
     <Setting Key="NCB_SettingConfiguration_MappingList_Sel" SpName="NCB_SettingConfiguration_MappingList_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SettingConfiguration_JobInfo_Upd" SpName="NCB_SettingConfiguration_JobInfo_Upd" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SettingConfiguration_MsgContentsTypeList_Sel" SpName="NCB_SettingConfiguration_MsgContentsTypeList_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SettingConfiguration_NotificationTypeData_Sel" SpName="NCB_SettingConfiguration_NotificationTypeData_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_SettingConfiguration_NotificationTypeData_Sel" SpName="NCB_SettingConfiguration_NotificationTypeData_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SettingConfiguration_Mapping_Ins" SpName="NCB_SettingConfiguration_Mapping_Ins" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SettingConfiguration_Mapping_Sel" SpName="NCB_SettingConfiguration_Mapping_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SettingConfiguration_Mapping_Upd" SpName="NCB_SettingConfiguration_Mapping_Upd" DbName="ChatBot" Plain="0"></Setting>

@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Fanex.Logging;
     using Fanex.NCB.BotService.Core.Criteria;
+    using Fanex.NCB.BotService.Core.Enum;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
@@ -95,7 +96,7 @@
                 BotConversationId = bot.Id.ToString(),
                 BotName = bot.FirstName,
                 ConversationId = message.Chat.Id.ToString(),
-                ChannelId = string.Empty,
+                ChannelId = (byte)ConversationChannel.Telegram,
                 ServiceUrl = string.Empty,
                 UpdatedBy = message.From.Id.ToString()
             };

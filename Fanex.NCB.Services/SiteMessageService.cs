@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Criteria.SiteMessage;
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
@@ -72,7 +73,9 @@
             return new ValueTuple<CommandResult, IEnumerable<NotificationMessage>>(command, notification);
         }
 
-        private async Task OnAfterImportData(CommandResult commandResult, IEnumerable<NotificationMessage> notifications,
+        private async Task OnAfterImportData(
+            CommandResult commandResult,
+            IEnumerable<NotificationMessage> notifications,
             (IEnumerable<SiteMessageModel>, IEnumerable<SiteMessageDetail>) messages)
         {
             if (!commandResult.IsSuccessful)
@@ -84,7 +87,7 @@
                 if (notifications.Any())
                 {
                     await InsertMessageHistory(messages.Item2);
-                    await chatbotService.SendMessageToMultitpleAsync(notifications);
+                    await chatbotService.SendMultiMessageAsync((byte)ConversationChannel.Skype, notifications);
                     await PushInsertedNotifications(string.Join(",", notifications.Select(item => item.NotificationId)));
                 }
             }

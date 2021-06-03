@@ -7,6 +7,7 @@
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
+    using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models;
     using Fanex.NCB.Models.NotifictaionSendMessage;
@@ -18,9 +19,9 @@
     public class ChatbotService : IChatbotService
     {
         private readonly IHttpClientFactory httpClientFactory;
-        private readonly IOptions<BotSettings> botSettings;
-        private readonly IOptions<MonitorChatbot> monitorChatbot;
-        private readonly IOptions<NotifyChatGroupOption> notifyChatGroupOptions;
+        private readonly BotSettings botSettings;
+        private readonly MonitorChatbot monitorChatbot;
+        private readonly NotifyChatGroupOption notifyChatGroupOptions;
 
         public ChatbotService(
             IHttpClientFactory httpClientFactory,
@@ -29,44 +30,42 @@
             IOptions<NotifyChatGroupOption> notifyChatGroupOptions)
         {
             this.httpClientFactory = httpClientFactory;
-            this.monitorChatbot = monitorChatbot;
-            this.botSettings = botSettings;
-            this.notifyChatGroupOptions = notifyChatGroupOptions;
+            this.monitorChatbot = monitorChatbot.Value;
+            this.botSettings = botSettings.Value;
+            this.notifyChatGroupOptions = notifyChatGroupOptions.Value;
         }
 
-        public async Task<NotificationMessageResponse> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages)
+        public async Task<NotificationMessageResponse> SendMultiMessageAsync(byte channelId, IEnumerable<NotificationMessage> messages)
         {
-            var notificationMessageResponse = new NotificationMessageResponse();
+            BotServiceEndPointConfigs apiConfigs = botSettings.ApiConfigs.First(x => x.ChannelId == channelId);
+            var messageResponse = new NotificationMessageResponse();
             var token = await GetTokenAsync();
 
             var httpClient = httpClientFactory.CreateClient();
-            httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token.AccessToken);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
-            var url = new Uri($"{botSettings.Value.BotDomain}{botSettings.Value.BotServiceUrl}");
-
+            var url = new Uri($"{botSettings.BotDomain}{apiConfigs.SendMultiMessageUrl}");
             using (var response = await httpClient.PostAsJsonAsync(url, messages))
             {
                 if (response.IsSuccessStatusCode)
                 {
                     var responseData = await response.Content.ReadAsStringAsync();
-                    notificationMessageResponse.NotificationMessageResult =
-                            JsonConvert.DeserializeObject<List<SendMessageResult>>(responseData);
-                    notificationMessageResponse.IsSuccessStatusCode = true;
-                    notificationMessageResponse.StatusCode = response.StatusCode;
+                    messageResponse.NotificationMessageResult = JsonConvert.DeserializeObject<List<SendMessageResult>>(responseData);
+                    messageResponse.IsSuccessStatusCode = true;
+                    messageResponse.StatusCode = response.StatusCode;
                 }
             }
 
-            return notificationMessageResponse;
+            return messageResponse;
         }
 
         private async Task<ChatbotToken> GetTokenAsync()
         {
-            var url = new Uri($"{botSettings.Value.BotDomain}{botSettings.Value.AuthenticateUrl}");
+            var url = new Uri($"{botSettings.BotDomain}{botSettings.AuthenticateUrl}");
             var authData = new Dictionary<string, string>
             {
-                { "username", botSettings.Value.AppCredentialId },
-                { "password", botSettings.Value.AppCredentialPassword }
+                { "username", botSettings.AppCredentialId },
+                { "password", botSettings.AppCredentialPassword }
             };
 
             var httpClient = httpClientFactory.CreateClient();
@@ -79,32 +78,30 @@
 
         public async Task MonitorChatbot()
         {
-            var settings = monitorChatbot.Value;
             var notificationModel = new List<NotificationMessage>
             {
                 new NotificationMessage {
                     NotificationId = -1,
-                    Message = settings.Message,
+                    Message = monitorChatbot.Message,
                     Recipients = new List<ConversationInfo>
                     {
                         new ConversationInfo
                         {
-                            ConversationId = settings.ConversationId,
-                            ChannelId = settings.ChannelId,
-                            ServiceUrl = settings.ServiceUrl,
-                            BotConversationId = settings.BotConversationId,
-                            BotName = settings.BotName
+                            ConversationId = monitorChatbot.ConversationId,
+                            ChannelId = monitorChatbot.ChannelId,
+                            ServiceUrl = monitorChatbot.ServiceUrl,
+                            BotConversationId = monitorChatbot.BotConversationId,
+                            BotName = monitorChatbot.BotName
                         }
                     }
                 }
             };
 
-            await SendMessageToMultitpleAsync(notificationModel);
+            await SendMultiMessageAsync((byte)ConversationChannel.Skype, notificationModel);
         }
 
         public async Task NotifyToChatGroup(string message)
         {
-            var settings = notifyChatGroupOptions.Value;
             var notificationModel = new List<NotificationMessage>
                 {
                     new NotificationMessage {
@@ -114,17 +111,17 @@
                         {
                             new ConversationInfo
                             {
-                                ConversationId = settings.ConversationId,
-                                ChannelId = settings.ChannelId,
-                                ServiceUrl = settings.ServiceUrl,
-                                BotConversationId = settings.BotConversationId,
-                                BotName = settings.BotName
+                                ConversationId = notifyChatGroupOptions.ConversationId,
+                                ChannelId = notifyChatGroupOptions.ChannelId,
+                                ServiceUrl = notifyChatGroupOptions.ServiceUrl,
+                                BotConversationId = notifyChatGroupOptions.BotConversationId,
+                                BotName = notifyChatGroupOptions.BotName
                             }
                         }
                     }
                 };
 
-            await SendMessageToMultitpleAsync(notificationModel);
+            await SendMultiMessageAsync((byte)ConversationChannel.Skype, notificationModel);
         }
 
         public IEnumerable<NotificationMessage> GenerateNotifificationMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
@@ -138,12 +135,13 @@
                     {
                         NotificationId = noti.NotificationId,
                         Message = noti.Content,
+                        ChannelId = noti.ChannelId,
                         Recipients = recipients.Select(r =>
                             new ConversationInfo
                             {
                                 BotConversationId = r.BotConversationId,
                                 BotName = r.BotName,
-                                ChannelId = r.ChannelId,
+                                ChannelId = r.ChannelName,
                                 ConversationId = r.ChatGroupConversationId,
                                 ServiceUrl = r.ServiceUrl
                             }

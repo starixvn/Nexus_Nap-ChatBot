@@ -25,100 +25,100 @@
         private IOptionsSnapshot<MonitorChatbot> monitor;
         private ILogService logger;
 
-        [Fact]
-        public async Task ScanAndSendNotification_ScanEmptyNoti_NotUpdateStatusAndSendNoti()
-        {
-            var notifications = new List<NotificationSendMessage>();
-            var recipients = new List<NotificationRecipient>();
-            var emptyListNoti = new ValueTuple<IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>>(notifications, recipients);
-            var service = GetService();
-            baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(emptyListNoti);
+        ////[Fact]
+        ////public async Task ScanAndSendNotification_ScanEmptyNoti_NotUpdateStatusAndSendNoti()
+        ////{
+        ////    var notifications = new List<NotificationSendMessage>();
+        ////    var recipients = new List<NotificationRecipient>();
+        ////    var emptyListNoti = new ValueTuple<IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>>(notifications, recipients);
+        ////    var service = GetService();
+        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(emptyListNoti);
 
-            //Actual
-            await service.ScanAndSendNotification();
+        ////    //Actual
+        ////    await service.ScanAndSendNotification();
 
-            //Assert
-            await chatbotService.DidNotReceive().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
-            await baseService.DidNotReceive().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
-        }
+        ////    //Assert
+        ////    await chatbotService.DidNotReceive().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+        ////    await baseService.DidNotReceive().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+        ////}
 
-        [Fact]
-        public async Task ScanAndSendNotification_ScanHasNoti_UpdateStatusAndSendNoti_UpdateWhenSendFailed()
-        {
-            var notifications = FakeData();
-            var service = GetService();
-            var response = FakeResponse(false);
-            baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
-            chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
+        ////[Fact]
+        ////public async Task ScanAndSendNotification_ScanHasNoti_UpdateStatusAndSendNoti_UpdateWhenSendFailed()
+        ////{
+        ////    var notifications = FakeData();
+        ////    var service = GetService();
+        ////    var response = FakeResponse(false);
+        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
+        ////    chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
 
-            //Actual
-            await service.ScanAndSendNotification();
+        ////    //Actual
+        ////    await service.ScanAndSendNotification();
 
-            //Assert
-            await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
-            await baseService.Received().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
-        }
+        ////    //Assert
+        ////    await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+        ////    await baseService.Received().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+        ////}
 
-        [Fact]
-        public async Task ScanAndSendNotification_ScanHasNoti_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
-        {
-            var notifications = FakeData();
-            var response = FakeResponse(true);
-            var service = GetService();
-            baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
-            chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
-            //Actual
-            await service.ScanAndSendNotification();
+        ////[Fact]
+        ////public async Task ScanAndSendNotification_ScanHasNoti_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
+        ////{
+        ////    var notifications = FakeData();
+        ////    var response = FakeResponse(true);
+        ////    var service = GetService();
+        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
+        ////    chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
+        ////    //Actual
+        ////    await service.ScanAndSendNotification();
 
-            //Assert
-            await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
-        }
+        ////    //Assert
+        ////    await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+        ////}
 
-        [Fact]
-        public async Task ScanAndSendNotification_ScanHasNoti_ChatbotServiceThrowExceptions()
-        {
-            var notifications = FakeData();
-            var service = GetService();
-            baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
+        ////[Fact]
+        ////public async Task ScanAndSendNotification_ScanHasNoti_ChatbotServiceThrowExceptions()
+        ////{
+        ////    var notifications = FakeData();
+        ////    var service = GetService();
+        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
 
-            chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Throws(new Exception());
-            await service.ScanAndSendNotification();
-            //Assert
-            await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
-        }
+        ////    chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Throws(new Exception());
+        ////    await service.ScanAndSendNotification();
+        ////    //Assert
+        ////    await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+        ////}
 
-        [Fact]
-        public async Task SendNotificationImmediately_IsCreating_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
-        {
-            var notifications = FakeData();
-            var response = FakeResponse(true);
-            var service = GetService();
-            baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationByIdCriteria>()).Returns(notifications);
-            chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
-            //Actual
-            await service.SendNotificationImmediately(1);
-            PushSignalNewNotification("1");
-            //Assert
-            await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
-            await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
-        }
+        ////[Fact]
+        ////public async Task SendNotificationImmediately_IsCreating_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
+        ////{
+        ////    var notifications = FakeData();
+        ////    var response = FakeResponse(true);
+        ////    var service = GetService();
+        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationByIdCriteria>()).Returns(notifications);
+        ////    chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
+        ////    //Actual
+        ////    await service.SendNotificationImmediately(1);
+        ////    PushSignalNewNotification("1");
+        ////    //Assert
+        ////    await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+        ////    await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+        ////}
 
-        [Fact]
-        public async Task SendNotificationImmediately_NotIsCreating_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
-        {
-            var notifications = FakeData();
-            var response = FakeResponse(true);
-            var service = GetService();
-            baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationByIdCriteria>()).Returns(notifications);
-            chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
-            //Actual
-            await service.SendNotificationImmediately(1);
+        ////[Fact]
+        ////public async Task SendNotificationImmediately_NotIsCreating_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
+        ////{
+        ////    var notifications = FakeData();
+        ////    var response = FakeResponse(true);
+        ////    var service = GetService();
+        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationByIdCriteria>()).Returns(notifications);
+        ////    chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
+        ////    //Actual
+        ////    await service.SendNotificationImmediately(1);
 
-            PushSignalUpdateNotiStatus("1");
-            //Assert
-            await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
-            await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
-        }
+        ////    PushSignalUpdateNotiStatus("1");
+        ////    //Assert
+        ////    await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+        ////    await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
+        ////}
 
         private void PushSignalNewNotification(string notificationIds)
         {

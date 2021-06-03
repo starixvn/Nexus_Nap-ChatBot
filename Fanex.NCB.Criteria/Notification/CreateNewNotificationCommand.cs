@@ -13,7 +13,7 @@
 
         public string Title { get; set; }
 
-        public string Content { get; set; }
+        public string ContentLst { get; set; }
 
         public DateTime ConfigSendTime { get; set; }
 
@@ -21,7 +21,7 @@
 
         public int CreatorId { get; set; }
 
-        public int NotificationId { get; set; }
+        public string NotificationIDLst { get; set; }
 
         public override string GetSettingKey() => "NCB_NewNotification_Ins";
 
@@ -29,7 +29,7 @@
         {
             bool isValidNotiInfo = NotificationTypeId > 0 && CreatorId > 0;
             return isValidNotiInfo && !string.IsNullOrWhiteSpace(RecipientIDLst) && !string.IsNullOrWhiteSpace(Title)
-                            && !string.IsNullOrWhiteSpace(Content);
+                            && !string.IsNullOrWhiteSpace(ContentLst);
         }
     }
 }

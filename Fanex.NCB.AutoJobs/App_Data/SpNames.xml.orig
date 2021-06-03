@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Functions>
+<<<<<<< HEAD
+    <Function Name="Send Notification">
+        <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd" DbName="ChatBot" Plain="0"></Setting>
+    </Function>
+    <Function Name="Sync Data">
+        <Setting Key="NAP_ChatBot_GetDataBySiteId" SpName="NAP_ChatBot_GetDataBySiteId" DbName="DBPOL.NAP_UserControl.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_UserControl_SyncData" SpName="NAP_UserControl_SyncData" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_GetDataToSync" SpName="NAP_Chatbot_GetDataToSync" DbName="DBOIC.bodb_OIC.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NCB_OIC_SyncData" SpName="NCB_OIC_SyncData" DbName="ChatBot" Plain="0"></Setting>
+    </Function>
+    <Function Name="Special Delete">
+        <Setting Key="NCB_MsgSetting_SpecialDelete_Sel" SpName="NCB_MsgSetting_SpecialDelete_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel" SpName="NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SpecialDeleteMsg_AbnormalBets_Import" SpName="NCB_SpecialDeleteMsg_AbnormalBets_Import_xpre" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SpecialDeleteMsg_Import" SpName="NCB_SpecialDeleteMsg_Import" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_SpecialDeleteMsg_Sel" SpName="NAP_Chatbot_SpecialDeleteMsg_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_SpecialDeleteMsg_AbnormalBets_Sel" SpName="NAP_Chatbot_SpecialDeleteMsg_AbnormalBets_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel_xpre" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage_xpre" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_GetUsernameList" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_GetUsernameList_xpre" DbName="DBTRANS.bodb02.bodbAdminNet" Plain="0"></Setting>
+    </Function>
+    <Function Name="Site Message">
+        <Setting Key="NCB_MsgSetting_SiteMessage_Sel" SpName="NCB_MsgSetting_SiteMessage_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_SiteMesssage_Sel" SpName="NAP_Chatbot_SiteMesssage_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_MsgChatBot_Ins" SpName="NAP_Chatbot_MsgChatBot_Ins" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_SiteMesssage_EventInfo_Sel" SpName="NAP_Chatbot_SiteMesssage_EventInfo_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NCB_SiteMessage_Import" SpName="NCB_SiteMessage_Import" DbName="ChatBot" Plain="0"></Setting>
+    </Function>
+=======
+  <Function Name="Send Notification">
+    <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd" DbName="ChatBot" Plain="0"></Setting>
+  </Function>
+  <Function Name="Sync Data">
+    <Setting Key="NAP_ChatBot_GetDataBySiteId" SpName="NAP_ChatBot_GetDataBySiteId" DbName="DBPOL.NAP_UserControl.bodbAdminNet" Plain="0"></Setting>
+    <Setting Key="NAP_UserControl_SyncData" SpName="NAP_UserControl_SyncData" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_GetDataToSync" SpName="NAP_Chatbot_GetDataToSync" DbName="DBOIC.bodb_OIC.bodbAdminNet" Plain="0"></Setting>
+    <Setting Key="NCB_OIC_SyncData" SpName="NCB_OIC_SyncData" DbName="ChatBot" Plain="0"></Setting>
+  </Function>
+  <Function Name="Special Delete">
+    <Setting Key="NCB_MsgSetting_SpecialDelete_Sel" SpName="NCB_MsgSetting_SpecialDelete_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel" SpName="NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_SpecialDeleteMsg_AbnormalBets_Import" SpName="NCB_SpecialDeleteMsg_AbnormalBets_Import_xtest" DbName="ChatBot" Plain="0" />
+    <Setting Key="NCB_SpecialDeleteMsg_Import" SpName="NCB_SpecialDeleteMsg_Import_xtest" DbName="ChatBot" Plain="0" />
+    <Setting Key="NAP_Chatbot_SpecialDeleteMsg_Sel" SpName="NAP_Chatbot_SpecialDeleteMsg_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_SpecialDeleteMsg_AbnormalBets_Sel" SpName="NAP_Chatbot_SpecialDeleteMsg_AbnormalBets_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
+  </Function>
+  <Function Name="Site Message">
+    <Setting Key="NCB_MsgSetting_SiteMessage_Sel" SpName="NCB_MsgSetting_SiteMessage_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_SiteMesssage_Sel" SpName="NAP_Chatbot_SiteMesssage_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_MsgChatBot_Ins" SpName="NAP_Chatbot_MsgChatBot_Ins" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_SiteMesssage_EventInfo_Sel" SpName="NAP_Chatbot_SiteMesssage_EventInfo_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
+    <Setting Key="NCB_SiteMessage_Import" SpName="NCB_SiteMessage_Import_xtest" DbName="ChatBot" Plain="0" />
+  </Function>
+>>>>>>> 156153 - enhance New Notification
+</Functions>

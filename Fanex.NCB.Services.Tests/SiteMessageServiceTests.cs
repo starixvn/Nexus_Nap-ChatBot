@@ -86,40 +86,40 @@
         }
 
         [Fact]
-        public async Task PullMessageFromSiteMessage_ImportSucess_SendMessageToCarbonGroup()
-        {
-            var service = GetService();
-            var fixture = new Fixture();
-            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSiteMessageSettingCriteria>()).Returns(fixture.Create<SystemSetting>());
+        ////public async Task PullMessageFromSiteMessage_ImportSucess_SendMessageToCarbonGroup()
+        ////{
+        ////    var service = GetService();
+        ////    var fixture = new Fixture();
+        ////    baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSiteMessageSettingCriteria>()).Returns(fixture.Create<SystemSetting>());
 
-            var siteMsgs = new List<SiteMessageModel>
-            {
-                new SiteMessageModel { MessageID = 1000, MatchID = 10, Content_en = "EN", Content_cs = "CN" },
-                fixture.Create<SiteMessageModel>()
-            };
-            var details = new List<SiteMessageDetail> { new SiteMessageDetail { MessageID = 1000, SiteName = "12bet" },
-                fixture.Create<SiteMessageDetail>() };
+        ////    var siteMsgs = new List<SiteMessageModel>
+        ////    {
+        ////        new SiteMessageModel { MessageID = 1000, MatchID = 10, Content_en = "EN", Content_cs = "CN" },
+        ////        fixture.Create<SiteMessageModel>()
+        ////    };
+        ////    var details = new List<SiteMessageDetail> { new SiteMessageDetail { MessageID = 1000, SiteName = "12bet" },
+        ////        fixture.Create<SiteMessageDetail>() };
 
-            var matchInfo = new List<SiteMessageMatchInfoModel>
-            {
-                new SiteMessageMatchInfoModel { MatchID = 10, IsTestMatch = false },
-                fixture.Create<SiteMessageMatchInfoModel>()
-            };
-            baseService.FetchMultipleAsync<SiteMessageModel, SiteMessageDetail>(Arg.Any<GetMessageInfoFromAdminSite>()).Returns(
-              (siteMsgs, details));
+        ////    var matchInfo = new List<SiteMessageMatchInfoModel>
+        ////    {
+        ////        new SiteMessageMatchInfoModel { MatchID = 10, IsTestMatch = false },
+        ////        fixture.Create<SiteMessageMatchInfoModel>()
+        ////    };
+        ////    baseService.FetchMultipleAsync<SiteMessageModel, SiteMessageDetail>(Arg.Any<GetMessageInfoFromAdminSite>()).Returns(
+        ////      (siteMsgs, details));
 
-            baseService.GetDataAsync<SiteMessageMatchInfoModel>(Arg.Any<GetEventInfoCriteria>()).Returns(matchInfo);
-            baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportDataSiteMessageAndGetGroupTestCriteria>()).Returns(FakeData());
-            chatbotService.GenerateNotifificationMessage(Arg.Any<List<NotificationSendMessage>>(), Arg.Any<List<NotificationRecipient>>())
-                .Returns(fixture.Create<List<NotificationMessage>>());
+        ////    baseService.GetDataAsync<SiteMessageMatchInfoModel>(Arg.Any<GetEventInfoCriteria>()).Returns(matchInfo);
+        ////    baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportDataSiteMessageAndGetGroupTestCriteria>()).Returns(FakeData());
+        ////    chatbotService.GenerateNotifificationMessage(Arg.Any<List<NotificationSendMessage>>(), Arg.Any<List<NotificationRecipient>>())
+        ////        .Returns(fixture.Create<List<NotificationMessage>>());
 
-            //Actual
-            await service.PullMessageFromSiteMessage();
+        ////    //Actual
+        ////    await service.PullMessageFromSiteMessage();
 
-            //Expected
-            await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
-            await PushSignalRReceiveCall();
-        }
+        ////    //Expected
+        ////    await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+        ////    await PushSignalRReceiveCall();
+        ////}
 
         private ValueTuple<IEnumerable<NotificationRecipient>, IEnumerable<NotificationSendMessage>> FakeData()
         {
@@ -130,7 +130,6 @@
                     BotName = "",
                     ChatGroupConversationId = "ConversationId",
                     NotificationId = 1,
-                    ChannelId = "ABC",
                     ServiceUrl = "test.com"
                 }
             };

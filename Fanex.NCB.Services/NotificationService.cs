@@ -35,7 +35,7 @@
                 ProductId = model.ProductId,
                 RecipientIDLst = model.RecipientIds,
                 Title = model.Title,
-                Content = model.Content,
+                ContentLst = model.Content,
                 ConfigSendTime = model.SendImmediately ? DateTime.UtcNow : model.SendDate.ConvertToUTC(),
                 SendImmediately = model.SendImmediately,
                 CreatorId = model.CreatorId
@@ -43,14 +43,19 @@
 
             var result = await baseService.ExecuteNonQueryAsync(command);
 
-            if (result.IsSuccessful && model.SendImmediately)
+            if (result.IsSuccessful)
             {
-                BackgroundJobAfterCreateNotification(command.NotificationId, true);
-            }
-
-            if (result.IsSuccessful && !model.SendImmediately)
-            {
-                await PushSignalRInsert(command.NotificationId);
+                var notificationIds = command.NotificationIDLst.Split(",").Select(x => int.Parse(x)).ToList();
+                foreach(var notificationId in notificationIds)
+                {
+                    if (model.SendImmediately)
+                    {
+                        BackgroundJobAfterCreateNotification(notificationId, true);
+                    } else
+                    {
+                        await PushSignalRInsert(notificationId);
+                    }
+                }
             }
 
             return result;
@@ -223,12 +228,11 @@
             });
         }
 
-        private void BackgroundJobAfterCreateNotification(int notificationId, bool isCreatNotification)
+        private void BackgroundJobAfterCreateNotification(int notificationId, bool isCreateNotification)
         {
-            Task.Run(() => sendNotificationService.SendNotificationImmediately(notificationId).ContinueWith(result =>
-            isCreatNotification ? signalRService.InsertNewNotification(notificationId.ToString()) :
-                signalRService.UpdateNotificationStatus(notificationId.ToString()))
-                    );
+            Task.Run(() => sendNotificationService.SendNotificationImmediately(notificationId)
+                .ContinueWith(result => isCreateNotification ? signalRService.InsertNewNotification(notificationId.ToString()) :
+                        signalRService.UpdateNotificationStatus(notificationId.ToString())));
         }
 
         public async Task<ResendNotification> GetResendNotificationInfoAsync(int notificationId, bool isResendAll)

@@ -9,15 +9,7 @@
         public void GetSettingKey_ReturnCorrectSettingKey()
         {
             // Arrange
-            var command = new AddBotToGroupCommand
-            {
-                BotConversationId = string.Empty,
-                ConversationId = string.Empty,
-                BotName = string.Empty,
-                ChannelId = string.Empty,
-                ServiceUrl = string.Empty,
-                UpdatedBy = string.Empty
-            };
+            var command = new AddBotToGroupCommand();
 
             var expected = "NCB_Conversation_AddBotToGroup";
 
@@ -28,31 +20,19 @@
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
-        public void IsValid_ConversationIdIsEmpty_ReturnFalse()
+        [Theory]
+        [InlineData("", "", 0)]
+        [InlineData("", "", 1)]
+        [InlineData("", "1", 0)]
+        [InlineData("", "1", 1)]
+        public void IsValid_ParamsAreInvalid_ReturnFalse(string botConversationId, string conversationId, byte channelId)
         {
             // Arrange
             var command = new AddBotToGroupCommand
             {
-                ConversationId = string.Empty,
-                BotConversationId = "bb"
-            };
-
-            // Act
-            var actual = command.IsValid();
-
-            // Assert
-            Assert.False(actual);
-        }
-
-        [Fact]
-        public void IsValid_BotConversationIdIsEmpty_ReturnFalse()
-        {
-            // Arrange
-            var command = new AddBotToGroupCommand
-            {
-                ConversationId = "aa",
-                BotConversationId = string.Empty
+                ConversationId = conversationId,
+                BotConversationId = botConversationId,
+                ChannelId = channelId
             };
 
             // Act
@@ -69,7 +49,8 @@
             var command = new AddBotToGroupCommand
             {
                 ConversationId = "aa",
-                BotConversationId = "bb"
+                BotConversationId = "bb",
+                ChannelId = 1
             };
 
             // Act

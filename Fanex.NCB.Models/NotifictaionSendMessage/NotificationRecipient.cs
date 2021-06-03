@@ -1,7 +1,7 @@
-﻿using Fanex.NCB.Core.Enum;
-
-namespace Fanex.NCB.Models.NotifictaionSendMessage
+﻿namespace Fanex.NCB.Models.NotifictaionSendMessage
 {
+    using Fanex.NCB.Core.Enum;
+
     public class NotificationRecipient
     {
         public int NotificationId { get; set; }
@@ -20,7 +20,8 @@ namespace Fanex.NCB.Models.NotifictaionSendMessage
 
         public string BotConversationId { get; set; }
 
-        public string ChannelId { get; set; }
+        public byte ChannelId { get; set; }
+        public string ChannelName { get; set; }
 
         public string ServiceUrl { get; set; }
 

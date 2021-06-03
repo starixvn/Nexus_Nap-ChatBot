@@ -22,24 +22,24 @@
         private IPushSignalService pushSignalService;
         private IConfiguration configuration;
 
-        [Fact]
-        public async Task PullVoidingMessageLicensee_WhenGetSettingIsNull_DoNothing()
-        {
-            var service = GetService();
+        ////[Fact]
+        ////public async Task PullVoidingMessageLicensee_WhenGetSettingIsNull_DoNothing()
+        ////{
+        ////    var service = GetService();
 
-            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns((SystemSetting)null);
+        ////    baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns((SystemSetting)null);
 
-            //Actual
-            await service.PullVoidingMessageLicensee();
+        ////    //Actual
+        ////    await service.PullVoidingMessageLicensee();
 
-            //Expected
-            await baseService.DidNotReceiveWithAnyArgs().FetchMultipleAsync<Message, MessageDetail>(Arg.Any<GetMessageFromSpecialDeleteCriteria>());
-            await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
+        ////    //Expected
+        ////    await baseService.DidNotReceiveWithAnyArgs().FetchMultipleAsync<Message, MessageDetail>(Arg.Any<GetMessageFromSpecialDeleteCriteria>());
+        ////    await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
 
-            //Assert
-            await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
-            await chatbotService.DidNotReceive().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
-        }
+        ////    //Assert
+        ////    await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
+        ////    await chatbotService.DidNotReceive().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+        ////}
 
         [Fact]
         public async Task PullVoidingMessageLicensee_NoTicketToImport_DoNothing()
@@ -78,21 +78,21 @@
             await baseService.Received().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
         }
 
-        [Fact]
-        public async Task PullVoidingMessageInternalDepartment_WhenGetSettingIsNull_DoNothing()
-        {
-            var service = GetService();
+        ////[Fact]
+        ////public async Task PullVoidingMessageInternalDepartment_WhenGetSettingIsNull_DoNothing()
+        ////{
+        ////    var service = GetService();
 
-            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>()).Returns((SystemSetting)null);
+        ////    baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>()).Returns((SystemSetting)null);
 
-            //Actual
-            await service.PullVoidingMessageInternalDepartment();
+        ////    //Actual
+        ////    await service.PullVoidingMessageInternalDepartment();
 
-            //Assert
-            await baseService.DidNotReceiveWithAnyArgs().GetDataAsync<Message>(Arg.Any<GetAbnormalBetsMessageCriteria>());
-            await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
-            await chatbotService.DidNotReceive().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
-        }
+        ////    //Assert
+        ////    await baseService.DidNotReceiveWithAnyArgs().GetDataAsync<Message>(Arg.Any<GetAbnormalBetsMessageCriteria>());
+        ////    await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
+        ////    await chatbotService.DidNotReceive().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
+        ////}
 
         [Fact]
         public async Task PullVoidingMessageInternalDepartment_HaveTicketToImport_CallSPImport()
@@ -122,7 +122,6 @@
                     BotName = "",
                     ChatGroupConversationId = "ConversationId",
                     NotificationId = 1,
-                    ChannelId = "ABC",
                     ServiceUrl = "test.com"
                 }
             };

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Criteria.SiteMessage;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Models.NotifictaionSendMessage;
@@ -78,7 +79,7 @@
             {
                 if (notifications.Any())
                 {
-                    await chatbotService.SendMessageToMultitpleAsync(notifications);
+                    await chatbotService.SendMultiMessageAsync((byte)ConversationChannel.Skype, notifications);
                     await PushInsertedNotifications(string.Join(",", notifications.Select(item => item.NotificationId)));
                 }
             }

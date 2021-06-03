@@ -7,13 +7,12 @@
 
     public interface IChatbotService
     {
-        Task<NotificationMessageResponse> SendMessageToMultitpleAsync(IEnumerable<NotificationMessage> messages);
+        Task<NotificationMessageResponse> SendMultiMessageAsync(byte channelId, IEnumerable<NotificationMessage> messages);
 
         Task MonitorChatbot();
 
         Task NotifyToChatGroup(string message);
 
-        IEnumerable<NotificationMessage> GenerateNotifificationMessage(IEnumerable<NotificationSendMessage> notifications,
-                                                                        IEnumerable<NotificationRecipient> recipients);
+        IEnumerable<NotificationMessage> GenerateNotifificationMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients);
     }
 }

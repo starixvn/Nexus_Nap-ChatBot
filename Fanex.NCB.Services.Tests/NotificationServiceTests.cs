@@ -31,7 +31,7 @@
 
             baseService.ExecuteNonQueryAsync(Arg.Any<CreateNewNotificationCommand>()).Returns(new CommandResult { Code = 0 });
 
-            var result = await service.CreateAsync(model).ConfigureAwait(false);
+            var result = await service.CreateAsync(model);
 
             Assert.True(result.IsSuccessful);
         }
@@ -47,9 +47,9 @@
 
             var command = new CreateNewNotificationCommand();
 
-            baseService.ExecuteNonQueryAsync(Arg.Do<CreateNewNotificationCommand>(x => command = x)).Returns(new CommandResult { Code = 0 }).AndDoes(x => command.NotificationId = 1);
+            baseService.ExecuteNonQueryAsync(Arg.Do<CreateNewNotificationCommand>(x => command = x)).Returns(new CommandResult { Code = 0 }).AndDoes(x => command.NotificationIDLst = "1");
 
-            var result = await service.CreateAsync(model).ConfigureAwait(false);
+            var result = await service.CreateAsync(model);
 
             Assert.True(result.IsSuccessful);
         }
@@ -68,7 +68,7 @@
 
             baseService.GetDataAsync<Recipient>(Arg.Do<GetRecipientsCriteria>(x => criteria = x)).Returns(recipients);
 
-            var result = await service.GetRecipientsAsync(notificationTypeId, productId).ConfigureAwait(false);
+            var result = await service.GetRecipientsAsync(notificationTypeId, productId);
 
             Assert.Equal(notificationTypeId, criteria.NotificationTypeId);
             Assert.Equal(productId, criteria.ProductId);
@@ -90,7 +90,7 @@
             baseService.FetchMultipleAsync<long, Notification>(Arg.Do<GetNotificationsCriteria>(x => criteria = x))
                 .Returns((new List<long> { total }, notifications));
 
-            var result = await service.GetNotificationsAsync(model).ConfigureAwait(false);
+            var result = await service.GetNotificationsAsync(model);
 
             Assert.Equal(total, result.Item1);
             Assert.Equal(notifications.Count(), result.Item2.Count());
@@ -117,7 +117,7 @@
 
             baseService.ExecuteNonQueryAsync(Arg.Do<CancelNotificationCommand>(x => command = x)).Returns(new CommandResult { Code = 0 });
 
-            var result = await service.CancelAsync(notificationId, userId).ConfigureAwait(false);
+            var result = await service.CancelAsync(notificationId, userId);
 
             Assert.True(result.IsSuccessful);
             Assert.Equal(notificationId, command.NotificationId);
@@ -140,7 +140,7 @@
                 (Arg.Do<GetNotificationErrorDetailCriteria>(x => criteria = x))
                 .Returns((new List<NotificationErrorReport> { report }, report.SuccessRecipients, report.ErrorDetails));
 
-            var result = await service.GetNotificationErrorAsync(notificationId).ConfigureAwait(false);
+            var result = await service.GetNotificationErrorAsync(notificationId);
 
             Assert.Equal(notificationId, criteria.NotificationId);
             Assert.Equal(report.NotificationId, result.NotificationId);
@@ -167,7 +167,7 @@
 
             baseService.ExecuteNonQueryAsync(Arg.Do<ResolveNotificationCommand>(x => command = x)).Returns(new CommandResult { Code = 0 });
 
-            var result = await service.ResolveAsync(notificationId, resolvedRemark, userId).ConfigureAwait(false);
+            var result = await service.ResolveAsync(notificationId, resolvedRemark, userId);
 
             Assert.True(result.IsSuccessful);
             Assert.Equal(notificationId, command.NotificationId);
@@ -191,7 +191,7 @@
                 (Arg.Do<GetEditNotificationInfoCriteria>(x => criteria = x))
                 .Returns((new List<EditNotificationInfo> { expectedNotification }, expectedNotification.Recipients));
 
-            var result = await service.GetEditNotificationInfoAsync(notificationId).ConfigureAwait(false);
+            var result = await service.GetEditNotificationInfoAsync(notificationId);
 
             Assert.Equal(notificationId, criteria.NotificationId);
             Assert.Equal(expectedNotification.NotificationId, result.NotificationId);
@@ -213,7 +213,7 @@
 
             baseService.ExecuteNonQueryAsync(Arg.Do<EditNotificationCommand>(x => command = x)).Returns(new CommandResult { Code = 0 });
 
-            var result = await service.EditAsync(model).ConfigureAwait(false);
+            var result = await service.EditAsync(model);
 
             Assert.True(result.IsSuccessful);
             if (model.SendImmediately)
@@ -245,7 +245,7 @@
 
             baseService.GetDataAsync<Recipient>(Arg.Do<GetEditNotificationRecipientsCriteria>(x => criteria = x)).Returns(recipients);
 
-            var result = await service.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId).ConfigureAwait(false);
+            var result = await service.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId);
 
             Assert.Equal(notificationId, criteria.NotificationId);
             Assert.Equal(notificationTypeId, criteria.NotificationTypeId);
@@ -266,7 +266,7 @@
 
             baseService.GetDataAsync<Template>(Arg.Do<GetTemplatesCriteria>(x => criteria = x)).Returns(templates);
 
-            var result = await service.GetTemplatesAsync(notificationTypeId).ConfigureAwait(false);
+            var result = await service.GetTemplatesAsync(notificationTypeId);
 
             Assert.Equal(notificationTypeId, criteria.NotificationTypeId);
             Assert.Equal(templates.Count(), result.Count());

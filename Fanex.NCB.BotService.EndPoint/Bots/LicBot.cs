@@ -7,6 +7,7 @@
     using System.Web;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
+    using Fanex.NCB.BotService.Core.Enum;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Schema;
@@ -31,7 +32,7 @@
                 {
                     if (turnContext.Activity.MembersAdded.Any(m => m.Id == turnContext.Activity.Recipient?.Id))
                     {
-                        await OnBotAddedAsync(turnContext, cancellationToken).ConfigureAwait(false);
+                        await OnBotAddedAsync(turnContext, cancellationToken);
                     }
                 }
                 else
@@ -39,7 +40,7 @@
                     if (turnContext.Activity.MembersRemoved != null
                     && turnContext.Activity.MembersRemoved.Any(m => m.Id == turnContext.Activity.Recipient?.Id))
                     {
-                        await OnBotRemovedAsync(turnContext, cancellationToken).ConfigureAwait(false);
+                        await OnBotRemovedAsync(turnContext, cancellationToken);
                     }
                 }
 
@@ -83,7 +84,7 @@
                 BotConversationId = turnContext.Activity?.Recipient.Id,
                 BotName = turnContext.Activity?.Recipient.Name,
                 ConversationId = turnContext.Activity?.Conversation.Id,
-                ChannelId = turnContext.Activity?.ChannelId,
+                ChannelId = (byte)ConversationChannel.Skype,
                 ServiceUrl = turnContext.Activity?.ServiceUrl,
                 UpdatedBy = turnContext.Activity?.From.Id
             };
