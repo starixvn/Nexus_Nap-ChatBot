@@ -5,6 +5,7 @@ CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_AddBotToGroup`(
 	IN botConversationId VARCHAR(200)  
 	, IN botName VARCHAR(70)
     , IN conversationId VARCHAR(200)  
+    , IN groupName VARCHAR(500) CHARACTER SET 'utf8mb4'
 	, IN channelId TINYINT UNSIGNED
     , IN serviceUrl VARCHAR(500)
 	, IN updatedBy VARCHAR(200)
@@ -62,12 +63,14 @@ BEGIN
     THEN
 		INSERT INTO ConversationGroup(
             `ConversationID`
+            ,`Name`
             ,`ChannelID`
             ,`ServiceUrl`
             ,`UpdatedBy`
             ,`LastUpdate`)
         VALUES (
 			conversationId
+            ,groupName
             ,channelId
             ,serviceUrl
             ,updatedBy
@@ -105,6 +108,7 @@ BEGIN
     
     #Get Log Content, JSON format
     SET logContent = json_object('conversationGroupId', conversationGroupId
+										,'groupName', groupName
 										, 'conversationBotID', conversationBotID
                                         , 'botName', botName
                                         , 'channelId', channelId
