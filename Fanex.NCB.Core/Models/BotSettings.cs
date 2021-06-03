@@ -17,5 +17,6 @@
         public byte ChannelId { get; set; }
         public string SendMessageUrl { get; set; }
         public string SendMultiMessageUrl { get; set; }
+        public string SendMultiMessageUrl { get; set; }
     }
 }

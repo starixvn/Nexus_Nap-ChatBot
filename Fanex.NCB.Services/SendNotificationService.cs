@@ -292,6 +292,7 @@
                 ? AddMonitorRecipientForTelegram(batches.Last().Item1.Last().Recipients)
                 : AddMonitorRecipient(batches.Last().Item1.Last().Recipients);
 
+
             return batches;
         }
 

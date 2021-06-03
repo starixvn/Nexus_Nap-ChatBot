@@ -10,11 +10,6 @@
         {
             // Arrange
             var command = new RemoveBotOutGroupCommand
-            {
-                BotConversationId = string.Empty,
-                ConversationId = string.Empty,
-                UpdatedBy = string.Empty
-            };
 
             var expected = "NCB_Conversation_RemoveBotOutGroup";
 
@@ -25,31 +20,19 @@
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
-        public void IsValid_ConversationIdIsEmpty_ReturnFalse()
+        [Theory]
+        [InlineData("", "", 0)]
+        [InlineData("", "", 1)]
+        [InlineData("", "1", 0)]
+            var command = new RemoveBotOutGroupCommand
+        public void IsValid_ParamsAreInvalid_ReturnFalse(string botConversationId, string conversationId, byte channelId)
         {
             // Arrange
             var command = new RemoveBotOutGroupCommand
             {
-                ConversationId = string.Empty,
-                BotConversationId = "bb"
-            };
-
-            // Act
-            var actual = command.IsValid();
-
-            // Assert
-            Assert.False(actual);
-        }
-
-        [Fact]
-        public void IsValid_BotConversationIdIsEmpty_ReturnFalse()
-        {
-            // Arrange
-            var command = new RemoveBotOutGroupCommand
-            {
-                ConversationId = "aa",
-                BotConversationId = string.Empty
+                ConversationId = conversationId,
+                BotConversationId = botConversationId,
+                ChannelId = channelId
             };
 
             // Act
@@ -66,7 +49,8 @@
             var command = new RemoveBotOutGroupCommand
             {
                 ConversationId = "aa",
-                BotConversationId = "bb"
+                BotConversationId = "bb",
+                ChannelId = 1
             };
 
             // Act
