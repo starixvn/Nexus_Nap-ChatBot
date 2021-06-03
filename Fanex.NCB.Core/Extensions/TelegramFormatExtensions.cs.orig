@@ -1,0 +1,122 @@
+﻿namespace Fanex.NCB.Core.Extensions
+{
+    using System.Text.RegularExpressions;
+
+    public static class TelegramFormatExtensions
+    {
+        public static string ToMarkdownV2(this string text)
+        {
+<<<<<<< HEAD
+            // bold & italic
+            text = Regex.Replace(text, "(\\*\\*\\*)(.+?)(\\*\\*\\*)", "<b>_$2_</b>");
+
+            // bold
+            text = Regex.Replace(text, "(\\*\\*)(.+?)(\\*\\*)", "<b>$2</b>");
+
+            // italic
+            text = Regex.Replace(text, "(\\*)(.+?)(\\*)", "_$2_");
+
+            // strikethrough
+            text = Regex.Replace(text, "(~~)(.+?)(~~)", "~$2~");
+
+            // revert
+            text = Regex.Replace(text, "(<b>)(.+?)(</b>)", "*$2*");
+=======
+            // bold
+            var pattern = new Regex("(\\*\\*)(.*?)(\\*\\*)");
+            text = pattern.Replace(text, $"<b>$2</b>");
+
+            // italic
+            pattern = new Regex("(\\*)(.*?)(\\*)");
+            text = pattern.Replace(text, "_$2_");
+
+            // strikethrough
+            pattern = new Regex("(~~)(.*?)(~~)");
+            text = pattern.Replace(text, "~$2~");
+
+            // revert
+            pattern = new Regex("(<b>)(.*?)(</b>)");
+            text = pattern.Replace(text, $"*$2*");
+>>>>>>> 156153 - enhance New Notification
+
+            return text;
+        }
+
+        public static string EscapedMarkdownV2(this string text)
+        {
+            // bold
+<<<<<<< HEAD
+            text = Regex.Replace(text, "(\\*)(.+?)(\\*)", "<b>$2</b>");
+
+            // italic
+            text = Regex.Replace(text, "(_)(.+?)(_)", "<i>$2</i>");
+
+            // strikethrough
+            text = Regex.Replace(text, "(~)(.+?)(~)", "<s>$2</s>");
+
+            // escape
+            text = Regex.Replace(text, @"(.*?)(_|[\\][_])", "$1\\_");
+            text = Regex.Replace(text, @"(.*?)(\*|[\\][*])", "$1\\*");
+            text = Regex.Replace(text, @"(.*?)(\[|[\\][\[])", "$1\\[");
+            text = Regex.Replace(text, @"(.*?)(]|[\\][\]])", "$1\\]");
+            text = Regex.Replace(text, @"(.*?)(\(|[\\][\(])", "$1\\(");
+            text = Regex.Replace(text, @"(.*?)(\)|[\\][\)])", "$1\\)");
+            text = Regex.Replace(text, @"(.*?)(~|[\\][~])", "$1\\~");
+            text = Regex.Replace(text, @"(.*?)(`|[\\][`])", "$1\\`");
+            text = Regex.Replace(text, @"(.*?)(#|[\\][#])", "$1\\#");
+            text = Regex.Replace(text, @"(.*?)(\+|[\\][\+])", "$1\\+");
+            text = Regex.Replace(text, @"(.*?)(-|[\\][-])", "$1\\-");
+            text = Regex.Replace(text, @"(.*?)(=|[\\][=])", "$1\\=");
+            text = Regex.Replace(text, @"(.*?)(\||[\\][\|])", "$1\\|");
+            text = Regex.Replace(text, @"(.*?)(\{|[\\][\{])", "$1\\{");
+            text = Regex.Replace(text, @"(.*?)(}|[\\][}])", "$1\\}");
+            text = Regex.Replace(text, @"(.*?)(\.|[\\][\.])", "$1\\.");
+            text = Regex.Replace(text, @"(.*?)(!|[\\][!])", "$1\\!");
+
+            // revert
+            text = Regex.Replace(text, "(<b>)(.+?)(</b>)", "*$2*");
+            text = Regex.Replace(text, "(<i>)(.+?)(</i>)", "_$2_");
+            text = Regex.Replace(text, "(<s>)(.+?)(</s>)", "~$2~");
+
+            // escape
+            text = Regex.Replace(text, @"(.*?)(>|[\\][>])", "$1\\>");
+=======
+            var pattern = new Regex("(\\*)(.*?)(\\*)");
+            text = pattern.Replace(text, $"<b>$2</b>");
+
+            // italic
+            pattern = new Regex("(_)(.*?)(_)");
+            text = pattern.Replace(text, "<i>$2</i>");
+
+            // strikethrough
+            pattern = new Regex("(~)(.*?)(~)");
+            text = pattern.Replace(text, "<s>$2</s>");
+
+            // escape
+            text = text.Replace("_", "\\_").Replace("*", "\\*")
+                .Replace("[", "\\[").Replace("]", "\\]")
+                .Replace("(", "\\(").Replace(")", "\\)")
+                .Replace("~", "\\~").Replace("`", "\\`").Replace("#", "\\#")
+                .Replace("+", "\\+").Replace("-", "\\-")
+                .Replace("=", "\\=").Replace("|", "\\|")
+                .Replace("{", "\\{").Replace("}", "\\}")
+                .Replace(".", "\\.").Replace("!", "\\!");
+
+            // revert
+            pattern = new Regex("(<b>)(.*?)(</b>)");
+            text = pattern.Replace(text, $"*$2*");
+
+            pattern = new Regex("(<i>)(.*?)(</i>)");
+            text = pattern.Replace(text, "_$2_");
+
+            pattern = new Regex("(<s>)(.*?)(</s>)");
+            text = pattern.Replace(text, "~$2~");
+
+            // escape
+            text = text.Replace(">", "\\>");
+>>>>>>> 156153 - enhance New Notification
+
+            return text;
+        }
+    }
+}

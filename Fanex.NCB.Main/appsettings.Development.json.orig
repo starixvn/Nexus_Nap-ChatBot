@@ -41,10 +41,11 @@
     "ChatBotConfigs": {
         "AppCredentialId": "ChatBotForLicensee",
         "AppCredentialPassword": "ZSI6IjMiLCJuYmYiOjE1",
-<<<<<<< HEAD
         "BotDomain": "http://localhost:3979",
+<<<<<<< HEAD
 =======
-        "BotDomain": "https://licbot.nexdev.net",
+        "AuthenticateUrl": "/api/authenticate",
+>>>>>>> 156153 - enhance New Notification
         "ApiConfigs": [
             {
                 "ChannelId": 1,
@@ -57,7 +58,7 @@
                 "SendMultiMessageUrl": "/api/telegram/sendMultiMessage"
             }
         ],
->>>>>>> 156153 - enhance New Notification
+<<<<<<< HEAD
         "AuthenticateUrl": "/api/authenticate",
         "ApiConfigs": [
             {
@@ -71,6 +72,8 @@
                 "SendMultiMessageUrl": "/api/telegram/sendMultiMessage"
             }
         ],
+=======
+>>>>>>> 156153 - enhance New Notification
         "TokenUrl": "https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token"
     },
     "LogCategory": "chatbot-for-licensee",

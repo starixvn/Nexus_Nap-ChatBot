@@ -61,10 +61,11 @@ namespace Fanex.NCB.SkypeBot.Controllers
                     .Select(x => new NotificationTemplateContent
                     {
                         ChannelId = x,
-                        Content = x == (byte)Core.Enum.ConversationChannel.Telegram ? model.Content.ToTelegramFormat() : model.Content
+                        Content = x == (byte)Core.Enum.ConversationChannel.Telegram
+                            ? model.Content.ToMarkdownV2().EscapedMarkdownV2() : model.Content
                     });
-
 >>>>>>> 156153 - enhance New Notification
+
                 result = await notificationService.CreateAsync(new CreateNotification
                 {
                     NotificationTypeId = model.NotificationTypeId,

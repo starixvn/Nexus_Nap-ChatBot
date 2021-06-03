@@ -59,7 +59,7 @@
                 }
                     } else
                     {
-                        await PushSignalRInsert(notificationId);
+                        await PushSignalRInsert(notification.NotificationId);
                     }
                 }
             }

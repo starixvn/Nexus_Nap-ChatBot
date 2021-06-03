@@ -106,10 +106,8 @@
                 .PersistKeysToStackExchangeRedis(Redis, "Fanex.NCB.BotService.Endpoint-Keys");
 
             services.AddRedisCache(Configuration.GetSection("Fanex.Caching.Redis"));
-<<<<<<< HEAD
             services.AddMvc().AddNewtonsoftJson();
-=======
->>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
+            services.AddMvc().AddNewtonsoftJson();
         }
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)

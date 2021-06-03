@@ -69,7 +69,6 @@
             return Ok(errorMessage);
         }
 
-        [HttpPost]
         [Route("api/telegram/sendMultiMessage")]
         public async Task<ObjectResult> SendMultiMessage([FromBody] IList<NotificationMessage> notificationMessages)
         {
