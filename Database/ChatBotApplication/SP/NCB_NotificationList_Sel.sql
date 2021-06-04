@@ -226,6 +226,7 @@ BEGIN
 		,n.Status
 		,n.StatusID
 		,n.ChannelID
+		,n.RecipientSentStatusJSON
         ,c.ChannelName
     FROM tmp_Notification n
 		INNER JOIN ConversationChannel c ON c.ChannelId = n.ChannelId;
