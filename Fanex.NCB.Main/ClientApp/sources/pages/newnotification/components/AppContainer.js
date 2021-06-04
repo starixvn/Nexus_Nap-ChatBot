@@ -157,8 +157,8 @@ export class AppContainer extends React.Component {
             notificationTypeId: values.notificationTypeId,
             productId: values.productId,
             recipientIds: recipientIds.toString(),
-            title: values.title,
-            content: values.content,
+            title: values.title.trim(),
+            content: values.content.trim(),
             sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
             sendImmediately: values.sendMode === '1'
         });

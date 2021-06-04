@@ -1,8 +1,9 @@
 ﻿namespace Fanex.NCB.Models.Notification
 {
     using System;
+    using Fanex.NCB.Models.Common;
 
-    public class Notification
+    public class Notification : ConversationChannel
     {
         public int NotificationId { get; set; }
 

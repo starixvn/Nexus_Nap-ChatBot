@@ -73,6 +73,7 @@ export default class DataGrid extends PureComponent {
                 </Cell>
                 <Cell colWidth={20} header>Sender/Notification Type</Cell>
                 <Cell colWidth={18} header>Send Date/Time (GMT+8)</Cell>
+                <Cell colWidth={18} header>{Labels.BotService}</Cell>
                 <Cell colWidth={100} header>
                     <div className="has-icons">
                         Title/Content
@@ -93,7 +94,7 @@ export default class DataGrid extends PureComponent {
             return data.map((item, index) => this.renderRow(item, index, isHost));
         }
 
-        return [<Row key={`body${1}`} ><Cell colSpan="6"><NoDataTitle /></Cell></Row>];
+        return [<Row key={`body${1}`} ><Cell colSpan="7"><NoDataTitle /></Cell></Row>];
     }
 
     renderRecipient = (recipient, index) => {
@@ -117,7 +118,7 @@ export default class DataGrid extends PureComponent {
 
     renderRow = (item, index, isHost) => {
         return (
-            <Row className={this.hightLightId && !isNaN(this.hightLightId) && (parseInt(this.hightLightId) === item.notificationId) ?'hight-light-notification notification' : 'notification'} key={item.notificationId} >
+            <Row className={this.hightLightId && !isNaN(this.hightLightId) && (parseInt(this.hightLightId) === item.notificationId) ? 'hight-light-notification notification' : 'notification'} key={item.notificationId} >
                 <Cell className="col-order text-center">
                     {this.renderNotificationId(item.notificationId, item.messageID)}
                 </Cell>
@@ -129,6 +130,7 @@ export default class DataGrid extends PureComponent {
                     {item.configSendTime.toFormat(TimeFormat)}
                     <div>{item.configSendTime.toFormat(DateFormat)}</div>
                 </Cell>
+                <Cell className="text-center">{item.channelName}</Cell>
                 <Cell className="col-content">
                     <Panel ref={panel => this.panels[index] = panel}>
                         <PanelHeader>
@@ -153,9 +155,9 @@ export default class DataGrid extends PureComponent {
                 const btns = (
                     <Fragment>
                         <a className="action-button" type="button"
-						   data-notificationid={notification.notificationId}
-						   onClick={this.handleShowErrorReport}>{Labels.ViewDetail}
-						</a>
+                            data-notificationid={notification.notificationId}
+                            onClick={this.handleShowErrorReport}>{Labels.ViewDetail}
+                        </a>
                         {this.renderResendBtn(notification.notificationId, Labels.ResendAll, true)}
                         {this.renderResendBtn(notification.notificationId, Labels.ResendError, false)}
                     </Fragment>

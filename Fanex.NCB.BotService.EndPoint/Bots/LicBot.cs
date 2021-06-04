@@ -84,6 +84,7 @@
                 BotConversationId = turnContext.Activity?.Recipient.Id,
                 BotName = turnContext.Activity?.Recipient.Name,
                 ConversationId = turnContext.Activity?.Conversation.Id,
+                GroupName = turnContext.Activity?.TopicName,
                 ChannelId = (byte)ConversationChannel.Skype,
                 ServiceUrl = turnContext.Activity?.ServiceUrl,
                 UpdatedBy = turnContext.Activity?.From.Id

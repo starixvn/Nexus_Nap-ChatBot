@@ -2,6 +2,7 @@
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { DateTimeFormat, NotificationStatus, invalidFieldClass } from '../../constants/constants';
 import CommonFunctions from '../../common/common-functions/CommonFunctions';
+import Labels from '../../common/Labels';
 
 import './ErrorReport.scss';
 
@@ -57,21 +58,24 @@ export default class ErrorReport extends Component {
                     <ModalHeader toggle={toggle}>Notification Sending Error Report</ModalHeader>
                     <ModalBody>
                         <p>
-                            Error report for the notification titled:<br />
-                            <span className="bold text-uppercase">{report.title}</span>
+                            {Labels.BotService}: <span className="bold">{report.channelName}</span>
                         </p>
                         <p>
-                            Send at:<br />
-                            <span className="bold">{report.configSendTime.toFormat(DateTimeFormat)}</span>
+                            Error report for the notification titled: <span className="bold text-uppercase">{report.title}</span>
+                        </p>
+                        <p>
+                            Send at: <span className="bold">{report.configSendTime.toFormat(DateTimeFormat)}</span>
                         </p>
 
-                        {report.successRecipients.length > 0 &&
+                        {
+                            report.successRecipients.length > 0 &&
                             <div className="msg-success">
                                 Notification has been successfully sent to the following recipient(s): <strong>{report.successRecipients.join(', ')}</strong>
                             </div>
                         }
 
-                        {report.errorDetails.length > 0 &&
+                        {
+                            report.errorDetails.length > 0 &&
                             <>
                                 <div className="msg-error">Error(s) occoured while sending the notification to the following recipient(s)</div>
                                 <table className="tbl w-100">
@@ -92,7 +96,8 @@ export default class ErrorReport extends Component {
                             </>
                         }
 
-                        {report.statusId === NotificationStatus.Error && haveHostPermission &&
+                        {
+                            report.statusId === NotificationStatus.Error && haveHostPermission &&
                             <div className="remark">
                                 <span>Remark:</span>
                                 <input type="text" className={`form-control ${this.state.remarkTouched && this.state.remark === '' && invalidFieldClass}`}
@@ -103,7 +108,8 @@ export default class ErrorReport extends Component {
                                 <button className="btn-mark" onClick={this.handleResolveNotification} disabled={this.props.isSubmitting}>Mark As Resolved</button>
                             </div>
                         }
-                        {report.statusId === NotificationStatus.Resolved &&
+                        {
+                            report.statusId === NotificationStatus.Resolved &&
                             <div className="resolved-remark">
                                 <p>Remark: <span className="text-italic">{report.resolvedRemark}</span></p>
                                 <p><span className="text-red">*</span> Resolved by: <strong>{report.resolvedByUserName}</strong></p>

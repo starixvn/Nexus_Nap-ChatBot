@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Fanex.NCB.Models.Common;
 
-    public class EditNotificationInfo
+    public class EditNotificationInfo : ConversationChannel
     {
         public int NotificationId { get; set; }
 

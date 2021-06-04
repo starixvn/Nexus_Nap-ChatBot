@@ -60,6 +60,7 @@ export default class MultiselectTreeView extends React.Component {
         texts: PropTypes.object,
         isSelectedAll: PropTypes.bool,
         maxDisplayItemCount: PropTypes.number,
+        hasSearchBox: PropTypes.bool,
         onChange: PropTypes.func
     }
 
@@ -72,6 +73,7 @@ export default class MultiselectTreeView extends React.Component {
         },
         isSelectedAll: false,
         maxDisplayItemCount: 1,
+        hasSearchBox: false,
         onChange: function () { }
     }
 
@@ -87,6 +89,7 @@ export default class MultiselectTreeView extends React.Component {
         super(props);
         this.id = `multiselect-treeview-${props.id || id++}`;
         this.state = {
+            searchTerm: '',
             selectedText: props.texts.placeholder,
             opened: false
         };
@@ -136,6 +139,37 @@ export default class MultiselectTreeView extends React.Component {
         this.setState({ floatData });
     }
 
+    handleSearch = value => {
+        this.setState(prevState => {
+            const floatData = prevState.floatData.slice(0);
+            floatData.forEach(item => item.visible = item.text.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+
+            return {
+                searchTerm: value,
+                floatData
+            };
+        });
+    }
+
+    handleClearSearch = () => {
+        this.handleSearch('');
+    }
+
+    renderSearchBox() {
+        if (!this.props.hasSearchBox) {
+            return null;
+        }
+
+        return (
+            <div className="multiselect-treeview-search-box">
+                <input autoFocus onChange={event => this.handleSearch(event.target.value)}
+                    ref={element => this.searchInputBox = element}
+                    value={this.state.searchTerm} type="text" placeholder="Search data" />
+                <span className="clear-search-box" onClick={this.handleClearSearch}>x</span>
+            </div>
+        );
+    }
+
     render() {
         const { floatData, data } = this.state;
         const selected = floatData.filter(item => item.checked);
@@ -149,6 +183,7 @@ export default class MultiselectTreeView extends React.Component {
                     <span className="up-down-icon"><span className={this.state.opened ? 'up' : 'down'} /></span>
                 </div>
                 <div className={`multiselect-treeview-dropdown-list ${this.state.opened ? '' : 'hidden'}`}>
+                    {this.renderSearchBox()}
                     {
                         floatData && floatData.length > 0 &&
                         <div className="multiselect-treeview-select-all">
@@ -163,18 +198,20 @@ export default class MultiselectTreeView extends React.Component {
                     }
                     <div className="multiselect-treeview-items">
                         {
-                            data.map(item =>
-                                <ul key={item.key}>
-                                    <li className="multiselect-treeview-item">
-                                        <TreeNode
-                                            id={this.id}
-                                            data={item}
-                                            floatData={floatData}
-                                            onSelect={this.handleSelect}
-                                        />
-                                    </li>
-                                </ul>
-                            )
+                            data.map(item => {
+                                const itemIndex = floatData.findIndex(child => child.key === item.key);
+                                return floatData[itemIndex].visible ?
+                                    <ul key={item.key}>
+                                        <li className="multiselect-treeview-item">
+                                            <TreeNode
+                                                id={this.id}
+                                                data={item}
+                                                floatData={floatData}
+                                                onSelect={this.handleSelect}
+                                            />
+                                        </li>
+                                    </ul> : null;
+                            })
                         }
                     </div>
                 </div>

@@ -21,14 +21,8 @@ import MarkdownRules from '../common/markdown-rules';
 import CommonFunction from '../common/common-functions/CommonFunctions';
 
 const SendModeOptions = [
-    {
-        value: '1',
-        label: 'Send Immediately'
-    },
-    {
-        value: '2',
-        label: 'Send At'
-    }
+    { value: '1', label: 'Send Immediately' },
+    { value: '2', label: 'Send At' }
 ];
 
 const Today = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
@@ -51,6 +45,7 @@ export default class EditNotification extends React.Component {
             searchValue: ''
         };
 
+        this.messageContentLength = parseInt(document.getElementById('MessageContentLength').value, 10);
         this.debounceHandleSearchRecipents = CommonFunction.debounce(this.handleSearchRecipents);
         this.searchRecipients = [];
     }
@@ -83,6 +78,8 @@ export default class EditNotification extends React.Component {
         });
 
         return {
+            channelId: notification.channelId,
+            channelName: notification.channelName,
             title: notification.title,
             content: notification.content,
             recipients: selectedRecipients,
@@ -121,9 +118,10 @@ export default class EditNotification extends React.Component {
         getRealValueFromTreeSelection(recipientIds, values.recipients, this.state.recipientOptions);
         const data = {
             notificationId: this.state.notificationId,
+            channelId: values.channelId,
             recipientIds: recipientIds.toString(),
-            title: values.title,
-            content: values.content,
+            title: values.title.trim(),
+            content: values.content.trim(),
             sendDate: values.sendDate.toLocaleString('en-US'),
             sendImmediately: values.sendMode === '1'
         };
@@ -166,6 +164,11 @@ export default class EditNotification extends React.Component {
     renderSendModeOption = item => <option key={item.value} value={item.value} >{item.label}</option>;
 
     handleSubmit = values => {
+        const isValidContentLength = values.content.trim().length <= this.messageContentLength;
+        if (!isValidContentLength) {
+            return;
+        }
+
         const formatDate = values.sendDate.toLocaleString('en-US',
             { hour12: true, month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
@@ -208,10 +211,10 @@ export default class EditNotification extends React.Component {
         }
 
         this.searchRecipients = [];
-		const validRecipients = [];
-		for (let i = 0; i < this.state.recipientOptions.length; i++) {
-			recipients.filter(recipient => this.isValidSearchRecipients(validRecipients, recipient, this.state.recipientOptions[i]));
-		};
+        const validRecipients = [];
+        for (let i = 0; i < this.state.recipientOptions.length; i++) {
+            recipients.filter(recipient => this.isValidSearchRecipients(validRecipients, recipient, this.state.recipientOptions[i]));
+        };
         while (validRecipients.length > 0) {
             const recipient = validRecipients.shift();
             const index = recipients.indexOf(recipient);
@@ -226,7 +229,7 @@ export default class EditNotification extends React.Component {
 
     isValidSearchRecipients = (result, label, recipient) => {
         if (recipient.title.toUpperCase() === label.toUpperCase()) {
-			result.push(label);
+            result.push(label);
             this.searchRecipients.push({
                 label: label,
                 value: recipient.value
@@ -256,9 +259,14 @@ export default class EditNotification extends React.Component {
         const isTitleInvalid = this.touchedAndErrors(touched, errors, 'title');
         const isContentInvalid = this.touchedAndErrors(touched, errors, 'content');
         const isSendDateInvalid = this.touchedAndErrors(touched, errors, 'sendDate');
+        const isValidContentLength = values.content.trim().length <= this.messageContentLength;
 
         return (
             <Form onSubmit={handleSubmit} className="edit-notification-form">
+                <FormGroup row>
+                    <Label className="form-label" sm={2}>{Labels.BotService}</Label>
+                    <Label className="form-label" sm={10}>{values.channelName}</Label>
+                </FormGroup>
                 <FormGroup row>
                     <Label for="notificationTypeId" className="form-label required" sm={2}>Notification Type</Label>
                     <Col sm={10}>
@@ -266,7 +274,9 @@ export default class EditNotification extends React.Component {
                             onChange={this.handleNotificationTypeChange}
                             value={this.state.notification.notificationTypeId}
                         >
-                            <option value={this.state.notification.notificationTypeId} disabled hidden>{this.state.notification.notificationTypeName}</option>
+                            <option value={this.state.notification.notificationTypeId} disabled hidden>
+                                {this.state.notification.notificationTypeName}
+                            </option>
                         </Input>
                     </Col>
                 </FormGroup>
@@ -308,7 +318,7 @@ export default class EditNotification extends React.Component {
                 <FormGroup row>
                     <Label for="content" className="form-label required" sm={2}>Content</Label>
                     <Col sm={10}>
-                        <ReactMde className={isContentInvalid && invalidFieldClass}
+                        <ReactMde className={isContentInvalid || !isValidContentLength ? invalidFieldClass : ''}
                             value={values.content} commands={editorCommandList}
                             onChange={content => setFieldValue('content', content)}
                             selectedTab={values.mode}
@@ -317,8 +327,13 @@ export default class EditNotification extends React.Component {
                             maxEditorHeight={400}
                         />
                         {isContentInvalid && <FormFeedback>{errors.content}</FormFeedback>}
-                        <div className="markdown-rules" onClick={this.handleOpenMarkdownRulesPopup}>
-                            Markdown Rules: <span className="icon-book" />
+                        <div className="extension-content-section">
+                            <div className="markdown-rules" onClick={this.handleOpenMarkdownRulesPopup}>
+                                Markdown Rules: <span className="icon-book" />
+                            </div>
+                            <div className={`content-counter ${isValidContentLength ? '' : 'invalid'}`}>
+                                Maximum Length {values.content.trim().length}/{this.messageContentLength}
+                            </div>
                         </div>
                     </Col>
                 </FormGroup>

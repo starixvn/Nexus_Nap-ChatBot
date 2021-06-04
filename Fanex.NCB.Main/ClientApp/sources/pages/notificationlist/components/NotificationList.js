@@ -9,7 +9,6 @@ import { NCBBreadcrum } from '../../common/breadcrumbs/breadcrumbs';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
 import ErrorReport from './ErrorReport';
 import DatePicker from '../../common/DatePicker/index';
-import { MultipleSelectField } from '../../common/multiple-select-field/MultipleSelectField';
 import Labels from '../../common/Labels';
 import TreeSelect, { getRealValueFromTreeSelection, getLeafTitleFromCollection } from '../../common/TreeSelect/index';
 import errorResponseHandler from '../../lib/errorResponseHandler';
@@ -17,7 +16,8 @@ import Site from '../../lib/site';
 import DataGrid from './DataGrid';
 import SignalR from './SignalR';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
-import { defaultFromDate, defaultPageSize, errorId } from '../../constants/constants';
+import MultiselectTreeView from '../../common/react-multiselect-treeview/MultiselectTreeView';
+import { defaultPageSize, errorId } from '../../constants/constants';
 
 export default class NotificationList extends Component {
     constructor(props) {
@@ -25,26 +25,27 @@ export default class NotificationList extends Component {
 
         const toDate = new Date();
         const fromDate = new Date();
-        fromDate.setDate(fromDate.getDate() - 7);
+        fromDate.setDate(fromDate.getDate() - 1);
 
         this.haveEditNotificationPermission = document.getElementById('have-edit-notification-permission').checked;
 
         this.state = {
             isRemark: null,
             filter: {
-                notificationTypes: {
-                    value: ''
-                },
+                notificationTypeIds: '',
                 fromDate: fromDate,
                 toDate: toDate,
                 creatorId: '',
                 recipients: [],
-                statuses: ''
+                statusId: '',
+                channelIds: '',
+                messageId: ''
             },
             notificationTypeOptions: [],
             recipientOptions: [],
             statusOptions: [],
             userOptions: [],
+            channelOptions: [],
             tableData: null,
             notificationCancellation: {
                 show: false
@@ -75,17 +76,17 @@ export default class NotificationList extends Component {
             axios(Site.resolveClientUrl('Common/GetNotificationTypes')),
             axios(Site.resolveClientUrl('Common/GetRecipients')),
             axios(Site.resolveClientUrl('Common/GetNotificationStatuses')),
-            axios(Site.resolveClientUrl('Common/GetUsers'))
+            axios(Site.resolveClientUrl('Common/GetUsers')),
+            axios(Site.resolveClientUrl('Common/GetConversationChannels'))
         ];
 
         const isHasHighlight = this.highlightNotification.notificationId && !isNaN(this.highlightNotification.notificationId);
 
         Promise.all(promises)
-            .then(([notificationTypeResponse, recipientResponse, statusResponse, userResponse]) => {
+            .then(([notificationTypeResponse, recipientResponse, statusResponse, userResponse, channelResponse]) => {
                 if (isHasHighlight) {
                     statusResponse.data.forEach(status => status.checked = status.id === errorId);
-                }
-                else {
+                } else {
                     statusResponse.data.forEach(status => status.checked = true);
                 }
 
@@ -94,35 +95,53 @@ export default class NotificationList extends Component {
                     notificationTypeIds.push(x.notificationTypeID);
                     return {
                         id: x.notificationTypeID,
-                        name: x.notificationTypeName,
-                        checked: isHasHighlight ? parseInt(this.highlightNotification.notificationTypeId, 10) === parseInt(x.notificationTypeID,10) : true
+                        text: x.notificationTypeName,
+                        checked: isHasHighlight ? parseInt(this.highlightNotification.notificationTypeId, 10) === parseInt(x.notificationTypeID, 10) : true,
+                        isLeaf: true
+                    };
+                });
+
+                const statusIds = [];
+                const statusOptions = statusResponse.data.map(item => {
+                    statusIds.push(item.id);
+                    return {
+                        id: item.id,
+                        text: item.name,
+                        checked: true,
+                        isLeaf: true
+                    };
+                });
+
+                const channelIds = [];
+                const channelOptions = channelResponse.data.map(item => {
+                    channelIds.push(item.channelId);
+                    return {
+                        id: item.channelId,
+                        text: item.channelName,
+                        checked: true,
+                        isLeaf: true
                     };
                 });
 
                 this.setState(prevState => ({
                     notificationTypeOptions,
                     recipientOptions: recipientResponse.data,
-                    statusOptions: statusResponse.data,
+                    statusOptions,
                     userOptions: userResponse.data,
+                    channelOptions,
                     filter: {
                         ...prevState.filter,
-                        ...{
-                            notificationTypes: {
-                                value: isHasHighlight ?
-                                        this.highlightNotification.notificationTypeId.toString() :
-                                        notificationTypeIds.toString()
-                            },
-                            statuses: {
-                                value: statusResponse.data.filter(x => x.checked).map(x => x.id).toString()
-                            },
-                            recipients: {
-                                value: recipientResponse.data.map(r => ({ value: r.value, label: r.title })),
-                                allCheckedNodes: recipientResponse.data
-                            },
-                            fromDate: isHasHighlight ? new Date(this.highlightNotification.configSendTime) : prevState.filter.fromDate,
-                            toDate: isHasHighlight ? new Date(this.highlightNotification.configSendTime) : prevState.filter.toDate,
-                            creatorId: this.highlightNotification.creatorId
-                        }
+                        notificationTypeIds: isHasHighlight ?
+                            this.highlightNotification.notificationTypeId.toString() : notificationTypeIds.join(','),
+                        statusIds: statusIds.join(','),
+                        recipients: {
+                            value: recipientResponse.data.map(r => ({ value: r.value, label: r.title })),
+                            allCheckedNodes: recipientResponse.data
+                        },
+                        fromDate: isHasHighlight ? new Date(this.highlightNotification.configSendTime) : prevState.filter.fromDate,
+                        toDate: isHasHighlight ? new Date(this.highlightNotification.configSendTime) : prevState.filter.toDate,
+                        creatorId: this.highlightNotification.creatorId,
+                        channelIds: channelIds.join(',')
                     }
                 }), () => {
                         const pageIndex = this.highlightNotification.pageIndex ? parseInt(this.highlightNotification.pageIndex, 10) : 1;
@@ -166,12 +185,14 @@ export default class NotificationList extends Component {
 
         axios.get(Site.resolveClientUrl('NotificationList/Get'), {
             params: {
-                notificationTypeIds: filter.notificationTypes.value.toString(),
+                notificationTypeIds: filter.notificationTypeIds,
                 fromDate: filter.fromDate.toDateString(),
                 toDate: filter.toDate.toDateString(),
                 creatorId: filter.creatorId,
                 recipientIds: recipientIds.toString(),
-                notificationStatusIds: filter.statuses.value,
+                notificationStatusIds: filter.statusIds,
+                channelIds: filter.channelIds,
+                messageId: filter.messageId,
                 pageIndex: pageIndex,
                 pageSize: pageSize
             }
@@ -201,11 +222,14 @@ export default class NotificationList extends Component {
 
     handleToDateChange = value => this.handleFilterChange('toDate', value)
 
-    handleNotificationTypeChange = value => this.handleFilterChange('notificationTypes', value)
-
     handleCreatorChange = e => this.handleFilterChange('creatorId', e.target.value)
 
-    handleStatusChange = value => this.handleFilterChange('statuses', value)
+    handleMessageIdChange = event => {
+        const regex = /^[0-9\b]+$/;
+        if (event.target.value === '' || regex.test(event.target.value)) {
+            this.handleFilterChange('messageId', event.target.value);
+        }
+    }
 
     handleRecipientChange = (value, label, extra) => {
         this.handleFilterChange('recipients', { value, allCheckedNodes: extra.allCheckedNodes });
@@ -305,20 +329,25 @@ export default class NotificationList extends Component {
 
     compareWithCurrentFilter = (notifications) => {
         const filter = this.state.filter;
-        const notificationTypes = filter.notificationTypes.value.split(',');
+        const notificationTypeIds = filter.notificationTypeIds.split(',');
         const fromDate = new Date(filter.fromDate);
         const toDate = new Date(filter.toDate);
         const creatorId = filter.creatorId;
         const recipients = [];
         getLeafTitleFromCollection(recipients, filter.recipients.allCheckedNodes);
-        const statuses = filter.statuses.value.split(',');
+        const statusIds = filter.statusIds.split(','),
+            channelIds = filter.channelIds.split(','),
+            messageId = filter.messageId;
 
-        let filteredNotifications = notifications.filter(n => notificationTypes.some(t => parseInt(t,10) === n.notificationTypeId))
-                                                 .filter(x => new Date(x.configSendTime) >= new Date(fromDate.toDateString()) &&
-                                                                 new Date(new Date(x.configSendTime).toDateString()) <= new Date(toDate.toDateString()))
-                                                 .filter(i => creatorId === null || parseInt(creatorId,10) === i.creatorId)
-                                                 .filter(t => statuses.some(st => parseInt(st, 10) === t.statusId ))
-                                                 .filter(n => n.recipientSentStatusJson.map(x => x.recipientName).every(v => recipients.includes(v)));
+        let filteredNotifications = notifications
+            .filter(n => notificationTypeIds.some(t => parseInt(t, 10) === n.notificationTypeId))
+            .filter(x => new Date(x.configSendTime) >= new Date(fromDate.toDateString()) &&
+                new Date(new Date(x.configSendTime).toDateString()) <= new Date(toDate.toDateString()))
+            .filter(i => creatorId === null || parseInt(creatorId, 10) === i.creatorId)
+            .filter(t => statusIds.some(st => parseInt(st, 10) === t.statusId ))
+            .filter(n => n.recipientSentStatusJson.map(x => x.recipientName).every(v => recipients.includes(v)))
+            .filter(noti => channelIds.some(x => parseInt(x, 10) === noti.channelId))
+            .filter(noti => messageId === '' || parseInt(messageId, 10) === noti.messageID);
 
         return filteredNotifications;
     };
@@ -361,17 +390,10 @@ export default class NotificationList extends Component {
                 <Form className="form-filter" onSubmit={this.handleSearch} >
                     <FormGroup>
                         <Label className="form-label">Notification Type</Label>
-                        <MultipleSelectField
-                            width={182}
-                            isSearchable
-                            initialValue={this.state.filter.notificationTypes.value}
+                        <MultiselectTreeView width={180}
                             data={this.state.notificationTypeOptions}
-                            keyField="id"
-                            valueField="name"
-                            statusField="checked"
-                            isSummited={false}
-                            isAllTextShown
-                            onChange={this.handleNotificationTypeChange}
+                            isSelectedAll hasSearchBox
+                            onChange={selectedItems => this.handleFilterChange('notificationTypeIds', selectedItems.map(item => item.id).join(','))}
                         />
                     </FormGroup>
                     <FormGroup>
@@ -400,17 +422,23 @@ export default class NotificationList extends Component {
                     </FormGroup>
                     <FormGroup>
                         <Label className="form-label">Status</Label>
-                        <MultipleSelectField
-                            width={182}
-                            initialValue={this.state.filter.statusIds}
+                        <MultiselectTreeView width={150}
                             data={this.state.statusOptions}
-                            keyField="id"
-                            valueField="name"
-                            statusField="checked"
-                            isSummited={false}
-                            isAllTextShown
-                            onChange={this.handleStatusChange}
+                            isSelectedAll
+                            onChange={selectedItems => this.handleFilterChange('statusIds', selectedItems.map(item => item.id).join(','))}
                         />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label className="form-label">{Labels.BotService}</Label>
+                        <MultiselectTreeView width={150}
+                            data={this.state.channelOptions}
+                            isSelectedAll
+                            onChange={selectedItems => this.handleFilterChange('channelIds', selectedItems.map(item => item.id).join(','))}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label className="form-label">MessageID</Label>
+                        <Input type="text" value={this.state.filter.messageId} onChange={this.handleMessageIdChange} />
                     </FormGroup>
                     <button id="submit-button" className="btn-submit" type="submit">Submit</button>
                 </Form>

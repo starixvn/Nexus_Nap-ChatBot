@@ -5,7 +5,7 @@
     public class EditNotificationViewModel
     {
         public int NotificationId { get; set; }
-
+        public byte ChannelId { get; set; }
         public string RecipientIds { get; set; }
 
         public string Title { get; set; }

@@ -24,15 +24,17 @@ export default class TreeNode extends PureComponent {
                     data.items && data.items.length > 0 &&
                     <ul>
                         {
-                            data.items.map(item =>
-                                <li key={item.key} className="multiselect-treeview-item is-child">
-                                    <TreeNode
-                                        data={item}
-                                        floatData={floatData}
-                                        onSelect={this.props.onSelect}
-                                    />
-                                </li>
-                            )
+                            data.items.map(item => {
+                                const childIndex = floatData.findIndex(child => child.key === item.key);
+                                return floatData[childIndex].visible ?
+                                    <li key={item.key} className="multiselect-treeview-item is-child">
+                                        <TreeNode
+                                            data={item}
+                                            floatData={floatData}
+                                            onSelect={this.props.onSelect}
+                                        />
+                                    </li> : null;
+                            })
                         }
                     </ul>
                 }

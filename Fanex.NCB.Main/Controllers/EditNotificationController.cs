@@ -3,6 +3,8 @@
     using System.Threading.Tasks;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NCB.Core.Constants;
+    using Fanex.NCB.Core.Enum;
+    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Main.ViewModel.Notification;
     using Fanex.NCB.Main.ViewModel.TreeSelect;
     using Fanex.NCB.Models.Notification;
@@ -36,8 +38,7 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Get(int id)
         {
-            var notification = await notificationService.GetEditNotificationInfoAsync(id).ConfigureAwait(false);
-
+            var notification = await notificationService.GetEditNotificationInfoAsync(id);
             if (notification != null)
             {
                 return Json(notification);
@@ -50,7 +51,7 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> GetRecipients(int notificationId, int notificationTypeId, int? productId)
         {
-            var result = await notificationService.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId).ConfigureAwait(false);
+            var result = await notificationService.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId);
 
             var tree = GenerateTreeHelper.FromRecipient(result);
 
@@ -74,12 +75,13 @@
                 {
                     NotificationId = data.NotificationId,
                     Title = data.Title,
-                    Content = data.Content,
+                    Content = data.ChannelId == (byte)ConversationChannel.Telegram
+                        ? data.Content.ToMarkdownV2().EscapedMarkdownV2() : data.Content,
                     RecipientIds = data.RecipientIds,
                     SendDate = data.SendDate,
                     SendImmediately = data.SendImmediately,
                     UserId = napSession.UserId
-                }).ConfigureAwait(false);
+                });
             }
 
             return Json(result);

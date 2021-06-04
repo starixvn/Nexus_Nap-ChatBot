@@ -98,6 +98,8 @@
                 CreatorId = model.CreatorId,
                 NotificationStatusIds = model.NotificationStatusIds,
                 RecipientIds = model.RecipientIds,
+                ChannelIds = model.ChannelIds,
+                MessageId = model.MessageId,
                 PageIndex = model.PageIndex,
                 PageSize = model.PageSize
             });
@@ -129,7 +131,8 @@
 
         public async Task<NotificationErrorReport> GetNotificationErrorAsync(int notificationId)
         {
-            var result = await baseService.FetchMultipleAsync<NotificationErrorReport, string, NotificationErrorDetail>(new GetNotificationErrorDetailCriteria
+            var result = await baseService.FetchMultipleAsync<NotificationErrorReport, string, NotificationErrorDetail>(
+                new GetNotificationErrorDetailCriteria
             {
                 NotificationId = notificationId
             });

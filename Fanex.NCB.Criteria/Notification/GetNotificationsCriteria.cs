@@ -17,6 +17,11 @@
         [SpParam(SqlParamName = "notificationStatusIDLst")]
         public string NotificationStatusIds { get; set; }
 
+        [SpParam(SqlParamName = "ChannelIDLst")]
+        public string ChannelIds { get; set; }
+
+        public int? MessageId { get; set; }
+
         public DateTime ConfigSendTimeFrom { get; set; }
 
         public DateTime ConfigSendTimeTo { get; set; }

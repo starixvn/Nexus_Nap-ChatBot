@@ -11,6 +11,8 @@
         public int? CreatorId { get; set; }
 
         public string NotificationStatusIds { get; set; }
+        public string ChannelIds { get; set; }
+        public int? MessageId { get; set; }
 
         public DateTime FromDate { get; set; }
 

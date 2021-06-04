@@ -74,5 +74,11 @@
 
             return Json(result);
         }
+
+        public async Task<IActionResult> GetConversationChannels()
+        {
+            IEnumerable<ConversationChannel> channels = await commonService.GetConversationChannelAsync();
+            return Json(channels);
+        }
     }
 }

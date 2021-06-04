@@ -54,9 +54,11 @@ namespace Fanex.NCB.SkypeBot.Controllers
                 CreatorId = filter.CreatorId,
                 NotificationStatusIds = filter.NotificationStatusIds,
                 RecipientIds = filter.RecipientIds,
+                ChannelIds = filter.ChannelIds,
+                MessageId = filter.MessageId,
                 PageIndex = filter.PageIndex,
                 PageSize = filter.PageSize
-            }).ConfigureAwait(false);
+            });
 
             return Json(new { total = result.Item1, data = result.Item2 });
         }
@@ -65,7 +67,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
         public async Task<IActionResult> GetNotificationError(int notificationId)
         {
-            var result = await notificationService.GetNotificationErrorAsync(notificationId).ConfigureAwait(false);
+            var result = await notificationService.GetNotificationErrorAsync(notificationId);
 
             return Json(result);
         }
@@ -74,11 +76,12 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Cancel(int notificationId)
         {
-            var result = await notificationService.CancelAsync(notificationId, napSession.UserId).ConfigureAwait(false);
+            var result = await notificationService.CancelAsync(notificationId, napSession.UserId);
             if (result.IsSuccessful)
             {
                 PushSignalRToClient(notificationId.ToString());
             }
+
             return Json(result);
         }
 
@@ -86,7 +89,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Resolve([FromBody]ResolveNotificationViewModel data)
         {
-            var result = await notificationService.ResolveAsync(data.NotificationId, data.ResolvedRemark, napSession.UserId).ConfigureAwait(false);
+            var result = await notificationService.ResolveAsync(data.NotificationId, data.ResolvedRemark, napSession.UserId);
 
             if (result.IsSuccessful)
             {

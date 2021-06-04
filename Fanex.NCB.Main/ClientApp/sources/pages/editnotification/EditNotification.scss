@@ -36,4 +36,16 @@
         max-height: 400px;
         overflow-y: auto;
     }
+
+    .extension-content-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .content-counter {
+            &.invalid {
+                color: #ff0101;
+            }
+        }
+    }
 }

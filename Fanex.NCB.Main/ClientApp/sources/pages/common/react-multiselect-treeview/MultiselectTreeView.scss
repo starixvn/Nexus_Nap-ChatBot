@@ -42,6 +42,25 @@
         }
     }
 
+    .multiselect-treeview-search-box {
+        position: relative;
+
+        input {
+            width: 100%;
+            border: 1px solid #ccc;
+            padding: 5px 20px 5px 10px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .clear-search-box {
+            position: absolute;
+            right: 5px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    }
+
     .multiselect-treeview-dropdown-list {
         position: absolute;
         min-width: 200px;
