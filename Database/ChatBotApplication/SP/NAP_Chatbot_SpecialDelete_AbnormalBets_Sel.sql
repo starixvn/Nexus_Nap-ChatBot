@@ -171,7 +171,7 @@ BEGIN
 		-- Total tickets
 		,CTE_TotalTickets AS
 		(
-			SELECT MessageId, COUNT(DISTINCT TransId) AS TotalTickets, MAX(MaxWinlostdate) AS MaxWinlostdate, MIN(MinWinlostdate) AS MinWinlostdate
+			SELECT MessageId, COUNT(DISTINCT TransId) AS TotalTickets, MAX(MaxWinlostdate) AS MaxWinlostdate, MIN(MinWinlostdate) AS MinWinlostdate, MAX(VoidingHistoryId) AS VoidingHistoryId
 			FROM #VoidingHistory
 			GROUP BY MessageId
 		)
@@ -248,6 +248,7 @@ BEGIN
 			, ISNULL(s.DepositSiteLst, '') DepositSiteLst
 			, t.MinWinlostdate
 			, t.MaxWinlostdate 
+			, t.VoidingHistoryId
 			,r.[Type]
 		FROM CTE_RequestInfo r
 			LEFT JOIN @tblEventInfo e ON r.MessageId = e.MessageId
