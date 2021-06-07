@@ -4,11 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-<<<<<<< HEAD
-=======
-    using System.Xml.Serialization;
     using Fanex.NCB.Core.Enum;
->>>>>>> 156153 - enhance New Notification
     using Fanex.NCB.Criteria.SiteMessage;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Models.NotifictaionSendMessage;
@@ -26,6 +22,7 @@
         private readonly IBaseService baseService;
         private readonly IPushSignalService pushSignalService;
         private readonly IChatbotService chatbotService;
+        private readonly ILogService logService;
         private readonly string Environment;
         private const int AbnormalAccountType = 2;
         private const int VoidTicketForLicenseeJobIdentity = 1;
@@ -35,12 +32,16 @@
         public SpecialDeleteService(IBaseService baseService,
             IChatbotService chatbotService,
             IPushSignalService pushSignalService,
-            IConfiguration configuration
-            )
+<<<<<<< HEAD
+=======
+            ILogService logService,
+>>>>>>> 156488 - enhance Notification List
+            IConfiguration configuration)
         {
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;
             this.chatbotService = chatbotService;
+            this.logService = logService;
             Environment = configuration.GetSection("Environment")?.Value;
         }
 
@@ -53,6 +54,7 @@
             if (systemSettings != null)
             {
                 var messages = await GetMessageFromVoidingForLicensee(systemSettings);
+
                 if (messages.Item1.Any() && messages.Item2.Any())
                 {
                     var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
@@ -83,7 +85,10 @@
             {
                 if (notifications.Any())
                 {
-                    await chatbotService.SendMultiMessageAsync((byte)ConversationChannel.Skype, notifications);
+                    await Task.WhenAll(
+                        SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications),
+                        SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications)
+                    );
                     await PushInsertedNotifications(string.Join(",", notifications.Select(item => item.NotificationId)));
                 }
             }
@@ -178,12 +183,11 @@
                 var listMsg = messages.Select(m => new MessageHistory { MessageID = m.MessageID, RequestID = m.RequestID }).ToList();
 
                 var voidingHistories = await GetVoidingHistory(listMsg);
+
                 if (voidingHistories.Item1.Any(m => m.Type == AbnormalAccountType))
                 {
-                    var abnormalMessges = voidingHistories.Item2
-                        .Where(i2 => voidingHistories.Item1.Where(i1 => i1.Type == AbnormalAccountType)
-                                                           .Any(m => m.MessageID == i2.MessageId));
-                    var updatedUsernames = await GetAbnormalAccountUpdatedUsernames(abnormalMessges);
+                    var updatedUsernames = await GetAbnormalAccountUpdatedUsernames(voidingHistories.Item2);
+
                     UpdateAbnormalAccountUpdatedUsernames(voidingHistories.Item1, updatedUsernames);
                 }
 
@@ -211,9 +215,13 @@
             {
                 foreach (var message in origMessages)
                 {
-                    message.UsernameLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.UsernameLst));
-                    message.CreditSiteLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.CreditSiteLst));
-                    message.DepositSiteLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.DepositSiteLst));
+                    var updatedMsg = updatedUsernames.Where(m => m.MessageID == message.MessageID);
+                    if (updatedMsg != null && updatedMsg.Any())
+                    {
+                        message.UsernameLst = string.Join(",", updatedMsg.Select(x => x.UsernameLst));
+                        message.CreditSiteLst = string.Join(",", updatedMsg.Select(x => x.CreditSiteLst));
+                        message.DepositSiteLst = string.Join(",", updatedMsg.Select(x => x.DepositSiteLst));
+                    }
                 }
             }
         }
@@ -318,6 +326,22 @@
         private async Task PushInsertedNotifications(string notificationIds)
         {
             await pushSignalService.OnInsertNotification(notificationIds);
+        }
+
+        protected internal virtual async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications)
+        {
+            try
+            {
+                var filterNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
+                if (filterNotifications.Any())
+                {
+                    await chatbotService.SendMultiMessageAsync(channelId, filterNotifications);
+                }
+            }
+            catch (Exception ex)
+            {
+                logService.WriteLogFileError(ex.Message);
+            }
         }
 
         #endregion Pull voiding ticket and send to internal department

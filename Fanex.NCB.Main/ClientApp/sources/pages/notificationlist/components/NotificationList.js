@@ -10,13 +10,13 @@ import { Form, FormGroup, Label, Input } from 'reactstrap';
 import ErrorReport from './ErrorReport';
 import DatePicker from '../../common/DatePicker/index';
 import Labels from '../../common/Labels';
-import TreeSelect, { getRealValueFromTreeSelection, getLeafTitleFromCollection } from '../../common/TreeSelect/index';
 import errorResponseHandler from '../../lib/errorResponseHandler';
 import Site from '../../lib/site';
 import DataGrid from './DataGrid';
 import SignalR from './SignalR';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import MultiselectTreeView from '../../common/react-multiselect-treeview/MultiselectTreeView';
+import buildFloatData from '../../common/react-multiselect-treeview/buildData';
 import { defaultPageSize, errorId } from '../../constants/constants';
 
 export default class NotificationList extends Component {
@@ -36,12 +36,13 @@ export default class NotificationList extends Component {
                 fromDate: fromDate,
                 toDate: toDate,
                 creatorId: '',
-                recipients: [],
+                recipientIds: '',
                 statusId: '',
                 channelIds: '',
                 messageId: ''
             },
             notificationTypeOptions: [],
+            floatRecipients: [],
             recipientOptions: [],
             statusOptions: [],
             userOptions: [],
@@ -50,7 +51,6 @@ export default class NotificationList extends Component {
             notificationCancellation: {
                 show: false
             },
-
             errorReport: {
                 notificationId: null,
                 report: null,
@@ -63,91 +63,51 @@ export default class NotificationList extends Component {
         const params = new URLSearchParams(windowUrl);
 
         this.highlightNotification = {
-                notificationId:  params.get('Id'),
-                notificationTypeId: params.get('typeId'),
-                configSendTime: params.get('sendTime'),
-                creatorId: params.get('creatorId'),
-                pageIndex: params.get('pageIndex')
-            };
+            notificationId: params.get('Id'),
+            notificationTypeId: params.get('typeId'),
+            configSendTime: params.get('sendTime'),
+            creatorId: params.get('creatorId'),
+            pageIndex: params.get('pageIndex')
+        };
     }
 
     componentDidMount() {
-        const promises = [
-            axios(Site.resolveClientUrl('Common/GetNotificationTypes')),
-            axios(Site.resolveClientUrl('Common/GetRecipients')),
-            axios(Site.resolveClientUrl('Common/GetNotificationStatuses')),
-            axios(Site.resolveClientUrl('Common/GetUsers')),
-            axios(Site.resolveClientUrl('Common/GetConversationChannels'))
-        ];
-
         const isHasHighlight = this.highlightNotification.notificationId && !isNaN(this.highlightNotification.notificationId);
+        axios(Site.resolveClientUrl('NotificationList/GetSettings')).then(response => {
+            const data = response.data;
+            if (isHasHighlight) {
+                data.notificationStatuses.forEach(status => status.checked = status.id === errorId);
+                data.notificationTypes.forEach(item => item.checked = parseInt(this.highlightNotification.notificationTypeId, 10) === item.id);
+            }
 
-        Promise.all(promises)
-            .then(([notificationTypeResponse, recipientResponse, statusResponse, userResponse, channelResponse]) => {
-                if (isHasHighlight) {
-                    statusResponse.data.forEach(status => status.checked = status.id === errorId);
-                } else {
-                    statusResponse.data.forEach(status => status.checked = true);
+            const notificationTypeIds = data.notificationTypes.filter(item => item.checked).map(item => item.id).join(',');
+            const statusIds = data.notificationStatuses.filter(item => item.checked).map(item => item.id).join(',');
+
+            const recipientData = buildFloatData(data.recipients, true);
+
+            this.setState(prevState => ({
+                notificationTypeOptions: data.notificationTypes,
+                floatRecipients: recipientData.floatData,
+                recipientOptions: data.recipients,
+                statusOptions: data.notificationStatuses,
+                userOptions: data.senders,
+                channelOptions: data.channels,
+                filter: {
+                    ...prevState.filter,
+                    notificationTypeIds: isHasHighlight ?
+                        this.highlightNotification.notificationTypeId.toString() : notificationTypeIds,
+                    statusIds,
+                    recipientIds: data.recipientIds,
+                    fromDate: isHasHighlight ? new Date(this.highlightNotification.configSendTime) : prevState.filter.fromDate,
+                    toDate: isHasHighlight ? new Date(this.highlightNotification.configSendTime) : prevState.filter.toDate,
+                    creatorId: this.highlightNotification.creatorId,
+                    channelIds: data.channelIds
                 }
-
-                const notificationTypeIds = [];
-                const notificationTypeOptions = notificationTypeResponse.data.map(x => {
-                    notificationTypeIds.push(x.notificationTypeID);
-                    return {
-                        id: x.notificationTypeID,
-                        text: x.notificationTypeName,
-                        checked: isHasHighlight ? parseInt(this.highlightNotification.notificationTypeId, 10) === parseInt(x.notificationTypeID, 10) : true,
-                        isLeaf: true
-                    };
-                });
-
-                const statusIds = [];
-                const statusOptions = statusResponse.data.map(item => {
-                    statusIds.push(item.id);
-                    return {
-                        id: item.id,
-                        text: item.name,
-                        checked: true,
-                        isLeaf: true
-                    };
-                });
-
-                const channelIds = [];
-                const channelOptions = channelResponse.data.map(item => {
-                    channelIds.push(item.channelId);
-                    return {
-                        id: item.channelId,
-                        text: item.channelName,
-                        checked: true,
-                        isLeaf: true
-                    };
-                });
-
-                this.setState(prevState => ({
-                    notificationTypeOptions,
-                    recipientOptions: recipientResponse.data,
-                    statusOptions,
-                    userOptions: userResponse.data,
-                    channelOptions,
-                    filter: {
-                        ...prevState.filter,
-                        notificationTypeIds: isHasHighlight ?
-                            this.highlightNotification.notificationTypeId.toString() : notificationTypeIds.join(','),
-                        statusIds: statusIds.join(','),
-                        recipients: {
-                            value: recipientResponse.data.map(r => ({ value: r.value, label: r.title })),
-                            allCheckedNodes: recipientResponse.data
-                        },
-                        fromDate: isHasHighlight ? new Date(this.highlightNotification.configSendTime) : prevState.filter.fromDate,
-                        toDate: isHasHighlight ? new Date(this.highlightNotification.configSendTime) : prevState.filter.toDate,
-                        creatorId: this.highlightNotification.creatorId,
-                        channelIds: channelIds.join(',')
-                    }
-                }), () => {
-                        const pageIndex = this.highlightNotification.pageIndex ? parseInt(this.highlightNotification.pageIndex, 10) : 1;
-                        this.getNotifications(pageIndex);
-                });
-            }).catch(errorResponseHandler);
+            }), () => {
+                const pageIndex = this.highlightNotification.pageIndex ? parseInt(this.highlightNotification.pageIndex, 10) : 1;
+                this.getNotifications(pageIndex);
+            });
+        }).catch(errorResponseHandler);
     }
 
     handleOpenNotificationCancellation = notificationId => this.setState({ notificationCancellation: { show: true, notificationId: notificationId } });
@@ -180,16 +140,13 @@ export default class NotificationList extends Component {
 
     getNotifications = (pageIndex = 1, pageSize = defaultPageSize) => {
         const filter = this.state.filter;
-        const recipientIds = [];
-        getRealValueFromTreeSelection(recipientIds, filter.recipients.value, this.state.recipientOptions);
-
         axios.get(Site.resolveClientUrl('NotificationList/Get'), {
             params: {
                 notificationTypeIds: filter.notificationTypeIds,
                 fromDate: filter.fromDate.toDateString(),
                 toDate: filter.toDate.toDateString(),
                 creatorId: filter.creatorId,
-                recipientIds: recipientIds.toString(),
+                recipientIds: filter.recipientIds,
                 notificationStatusIds: filter.statusIds,
                 channelIds: filter.channelIds,
                 messageId: filter.messageId,
@@ -231,9 +188,6 @@ export default class NotificationList extends Component {
         }
     }
 
-    handleRecipientChange = (value, label, extra) => {
-        this.handleFilterChange('recipients', { value, allCheckedNodes: extra.allCheckedNodes });
-    }
     renderStatus = status => <option key={status.id} value={status.id}>{status.name}</option>
 
     handleSearch = event => {
@@ -333,8 +287,7 @@ export default class NotificationList extends Component {
         const fromDate = new Date(filter.fromDate);
         const toDate = new Date(filter.toDate);
         const creatorId = filter.creatorId;
-        const recipients = [];
-        getLeafTitleFromCollection(recipients, filter.recipients.allCheckedNodes);
+        const recipientNames = this.state.floatRecipients.filter(item => item.isLeaf).map(item => item.text);
         const statusIds = filter.statusIds.split(','),
             channelIds = filter.channelIds.split(','),
             messageId = filter.messageId;
@@ -344,8 +297,8 @@ export default class NotificationList extends Component {
             .filter(x => new Date(x.configSendTime) >= new Date(fromDate.toDateString()) &&
                 new Date(new Date(x.configSendTime).toDateString()) <= new Date(toDate.toDateString()))
             .filter(i => creatorId === null || parseInt(creatorId, 10) === i.creatorId)
-            .filter(t => statusIds.some(st => parseInt(st, 10) === t.statusId ))
-            .filter(n => n.recipientSentStatusJson.map(x => x.recipientName).every(v => recipients.includes(v)))
+            .filter(t => statusIds.some(st => parseInt(st, 10) === t.statusId))
+            .filter(n => n.recipientSentStatusJson.map(x => x.recipientName).every(v => recipientNames.includes(v)))
             .filter(noti => channelIds.some(x => parseInt(x, 10) === noti.channelId))
             .filter(noti => messageId === '' || parseInt(messageId, 10) === noti.messageID);
 
@@ -416,8 +369,10 @@ export default class NotificationList extends Component {
 
                     <FormGroup>
                         <Label className="form-label">Recipient</Label>
-                        <TreeSelect value={this.state.filter.recipients.value} onChange={this.handleRecipientChange}
-                            placeholder={Labels.PleaseSelect} maxTagCount={2} treeData={this.state.recipientOptions}
+                        <MultiselectTreeView width={180}
+                            data={this.state.recipientOptions}
+                            isSelectedAll hasSearchBox
+                            onChange={selectedItems => this.handleFilterChange('recipientIds', selectedItems.map(item => item.id).join(','))}
                         />
                     </FormGroup>
                     <FormGroup>

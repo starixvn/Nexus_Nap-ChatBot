@@ -165,12 +165,13 @@
 
         private NotificationListController GetController()
         {
+            var commonService = Substitute.For<ICommonService>();
             notificationService = Substitute.For<INotificationService>();
             napSession = Substitute.For<INapSession>();
             userService = Substitute.For<IUserService>();
             signalRService = Substitute.For<ISignalRService>();
 
-            return new NotificationListController(notificationService, signalRService, napSession, userService);
+            return new NotificationListController(commonService, notificationService, signalRService, napSession, userService);
         }
     }
 }

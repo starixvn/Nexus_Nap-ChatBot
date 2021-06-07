@@ -21,17 +21,20 @@
         private readonly IBaseService baseService;
         private readonly IPushSignalService pushSignalService;
         private readonly IChatbotService chatbotService;
+        private readonly ILogService logService;
         private readonly string Environment;
         private const int SiteMessageJobIdentify = 3;
 
         public SiteMessageService(IBaseService baseService,
             IChatbotService chatbotService,
             IPushSignalService pushSignalService,
+            ILogService logService,
             IConfiguration configuration)
         {
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;
             this.chatbotService = chatbotService;
+            this.logService = logService;
             Environment = configuration.GetSection("Environment")?.Value;
         }
 
@@ -87,7 +90,12 @@
                 if (notifications.Any())
                 {
                     await InsertMessageHistory(messages.Item2);
-                    await chatbotService.SendMultiMessageAsync((byte)ConversationChannel.Skype, notifications);
+
+                    await Task.WhenAll(
+                        SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications),
+                        SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications)
+                    );
+
                     await PushInsertedNotifications(string.Join(",", notifications.Select(item => item.NotificationId)));
                 }
             }
@@ -175,6 +183,22 @@
         private async Task PushInsertedNotifications(string notificationIds)
         {
             await pushSignalService.OnInsertNotification(notificationIds);
+        }
+
+        protected internal virtual async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications)
+        {
+            try
+            {
+                var filterNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
+                if (filterNotifications.Any())
+                {
+                    await chatbotService.SendMultiMessageAsync(channelId, filterNotifications);
+                }
+            }
+            catch (Exception ex)
+            {
+                logService.WriteLogFileError(ex.Message);
+            }
         }
     }
 }

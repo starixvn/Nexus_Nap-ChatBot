@@ -8,6 +8,7 @@
             checked: isChecked,
             key: key,
             visible: true,
+            expanded: true,
             parentKey: parentKey
         });
         data[i] = {
@@ -15,6 +16,7 @@
             checked: isChecked,
             key: key,
             visible: true,
+            expanded: true,
             items: data[i].items ? [...data[i].items] : []
         };
         if (data[i].items && data[i].items.length > 0) {
@@ -35,6 +37,7 @@ export default (data, isChecked = false) => {
             checked: isChecked,
             key: key,
             visible: true,
+            expanded: true,
             parentKey: ''
         });
         tempData.push({
@@ -42,6 +45,7 @@ export default (data, isChecked = false) => {
             checked: isChecked,
             key: key,
             visible: true,
+            expanded: true,
             items: data[i].items ? [...data[i].items] : []
         });
         if (tempData[i].items && tempData[i].items.length > 0) {

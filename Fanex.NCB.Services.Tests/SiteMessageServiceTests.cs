@@ -152,8 +152,9 @@
             chatbotService = Substitute.For<IChatbotService>();
             configuration = Substitute.For<IConfiguration>();
             pushSignalService = Substitute.For<IPushSignalService>();
+            var logService = Substitute.For<ILogService>();
 
-            return new SiteMessageService(baseService, chatbotService, pushSignalService, configuration);
+            return new SiteMessageService(baseService, chatbotService, pushSignalService, logService, configuration);
         }
     }
 }

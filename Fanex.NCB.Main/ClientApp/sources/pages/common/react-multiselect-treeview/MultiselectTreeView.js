@@ -139,10 +139,63 @@ export default class MultiselectTreeView extends React.Component {
         this.setState({ floatData });
     }
 
+    handleCollaseExpand = item => {
+        let floatData = [...this.state.floatData];
+        const itemkey = item.key,
+            expanded = !item.expanded,
+            totalItems = floatData.length;
+        const index = floatData.findIndex(item => item.key === itemkey);
+        floatData[index] = { ...floatData[index], expanded: expanded };
+
+        for (let i = 0; i < totalItems; i++) {
+            if (floatData[i].parentKey === itemkey) {
+                floatData[i] = { ...floatData[i], visible: expanded };
+            }
+        }
+
+        this.setState({ floatData });
+    }
+
     handleSearch = value => {
+        const _updateParent = function (floatData, itemKeys) {
+            const totalKeys = itemKeys.length,
+                parentKeys = [];
+            for (let i = 0; i < totalKeys; i++) {
+                const index = floatData.findIndex(item => item.key === itemKeys[i]),
+                    siblings = floatData.filter(item => item.parentKey === itemKeys[i]);
+                floatData[index] = {
+                    ...floatData[index],
+                    visible: siblings.filter(item => item.visible).length > 0,
+                    expanded: siblings.filter(item => item.visible).length > 0 ? true : floatData[index].expanded
+                };
+
+                if (floatData[index].parentKey && parentKeys.indexOf(floatData[index].parentKey) === -1) {
+                    parentKeys.push(floatData[index].parentKey);
+                }
+            }
+
+            if (parentKeys.length > 0) {
+                _updateParent(floatData, parentKeys);
+            }
+        };
+
         this.setState(prevState => {
-            const floatData = prevState.floatData.slice(0);
-            floatData.forEach(item => item.visible = item.text.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+            const floatData = [...prevState.floatData],
+                totalItems = floatData.length,
+                parentKeys = [];
+            for (let i = 0; i < totalItems; i++) {
+                if (floatData[i].isLeaf) {
+                    floatData[i] = { ...floatData[i], visible: floatData[i].text.toLowerCase().indexOf(value.toLowerCase()) !== -1 };
+
+                    if (floatData[i].parentKey && parentKeys.indexOf(floatData[i].parentKey) === -1) {
+                        parentKeys.push(floatData[i].parentKey);
+                    }
+                }
+            }
+
+            if (parentKeys.length > 0) {
+                _updateParent(floatData, parentKeys);
+            }
 
             return {
                 searchTerm: value,
@@ -188,11 +241,13 @@ export default class MultiselectTreeView extends React.Component {
                         floatData && floatData.length > 0 &&
                         <div className="multiselect-treeview-select-all">
                             <div className="checkbox-wrapper">
-                                <input type="checkbox" id={`${this.id}-selectAll`}
-                                    checked={floatData.length === selected.length}
-                                    onChange={this.handleSelectAll}
-                                />
-                                <label htmlFor={`${this.id}-selectAll`}> All</label>
+                                <div>
+                                    <input type="checkbox" id={`${this.id}-selectAll`}
+                                        checked={floatData.length === selected.length}
+                                        onChange={this.handleSelectAll}
+                                    />
+                                    <label htmlFor={`${this.id}-selectAll`}> All</label>
+                                </div>
                             </div>
                         </div>
                     }
@@ -207,6 +262,7 @@ export default class MultiselectTreeView extends React.Component {
                                                 id={this.id}
                                                 data={item}
                                                 floatData={floatData}
+                                                onCollaseExpand={this.handleCollaseExpand}
                                                 onSelect={this.handleSelect}
                                             />
                                         </li>

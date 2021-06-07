@@ -138,9 +138,10 @@
             baseService = Substitute.For<IBaseService>();
             chatbotService = Substitute.For<IChatbotService>();
             pushSignalService = Substitute.For<IPushSignalService>();
+            var logService = Substitute.For<ILogService>();
             configuration = Substitute.For<IConfiguration>();
 
-            return new SpecialDeleteService(baseService, chatbotService, pushSignalService, configuration);
+            return new SpecialDeleteService(baseService, chatbotService, pushSignalService, logService, configuration);
         }
     }
 }
