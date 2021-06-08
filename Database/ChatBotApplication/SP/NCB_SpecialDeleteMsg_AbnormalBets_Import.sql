@@ -468,14 +468,27 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   SELECT Value INTO ccConversationGroupID
      FROM SystemSetting
      WHERE ID = 10;
+	 
+  DROP TEMPORARY TABLE IF EXISTS tmp_Carbon;
+  CREATE TEMPORARY TABLE tmp_Carbon(ConversationGroupID INT UNSIGNED);
+    
+    IF IFNULL(ccConversationGroupID, '') <> '' THEN
+		SET @SqlCommand = REPLACE(ccConversationGroupID, ',', '''),(''');
+		SET @SqlCommand = CONCAT('(''', @SqlCommand, ''')');
+		SET @SqlCommand= CONCAT('INSERT INTO tmp_Carbon VALUES', @SqlCommand); 
+		
+		PREPARE Stmt FROM  @SqlCommand;
+		EXECUTE Stmt;
+		DEALLOCATE PREPARE Stmt;
+	END IF;
   
   #Return Bot, Chatgroup
   SELECT g.ConversationID AS ChatGroupConversationID, g.ServiceUrl, g.ChannelID, b.ConversationID AS BotConversationID, b.Name AS BotName
   FROM ConversationGroup g
   	INNER JOIN ConversationGroupBot gb ON g.ConversationGroupID = gb.ConversationGroupID
   	INNER JOIN ConversationBot b ON b.ConversationBotID = gb.ConversationBotID
-  	WHERE g.ConversationGroupID = ccConversationGroupID
-  LIMIT 1;
+  	WHERE g.ConversationGroupID IN (SELECT ConversationGroupID FROM tmp_Carbon)
+ 
   
   #Return all imported message content
   SELECT n.NotificationID, n.Title, n.Content, n.ChannelID, c.ChannelName
