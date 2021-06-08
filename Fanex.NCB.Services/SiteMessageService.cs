@@ -190,10 +190,7 @@
             try
             {
                 var filterNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
-                if (filterNotifications.Any())
-                {
-                    await chatbotService.SendMultiMessageAsync(channelId, filterNotifications);
-                }
+                await chatbotService.SendMultiMessageAsync(channelId, filterNotifications);
             }
             catch (Exception ex)
             {

@@ -58,7 +58,7 @@
                 };
             });
 
-            services.Configure<List<TelegramBotConfigurations>>(options => configuration.GetSection("TelegramBotConfigurations").Bind(options));
+            RegisterTelegramBots(services, configuration);
         }
 
         [Obsolete]
@@ -131,6 +131,19 @@
             services.Configure<CheckDuplicatedMessageLogSetting>(settingConfiguration);
             var checkDuplicatedMessageSettings = settingConfiguration.Get<CheckDuplicatedMessageLogSetting>();
             services.AddSingleton(checkDuplicatedMessageSettings);
+        }
+
+        private static void RegisterTelegramBots(IServiceCollection services, IConfiguration configuration)
+        {
+            var configs = configuration.GetSection("TelegramBotConfigurations");
+            services.Configure<List<TelegramBotConfigurations>>(configs);
+            var bots = configs.Get<List<TelegramBotConfigurations>>();
+            foreach(var bot in bots)
+            {
+                bot.HttpClient = GetDefaultHttpClient(configuration);
+            }
+
+            services.AddSingleton(bots);
         }
     }
 }

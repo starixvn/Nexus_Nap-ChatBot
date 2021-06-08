@@ -38,8 +38,13 @@
 
         public async Task<NotificationMessageResponse> SendMultiMessageAsync(byte channelId, IEnumerable<NotificationMessage> messages)
         {
-            BotServiceEndPointConfigs apiConfigs = botSettings.ApiConfigs.First(x => x.ChannelId == channelId);
             var messageResponse = new NotificationMessageResponse();
+            if(messages == null || !messages.Any())
+            {
+                return messageResponse;
+            }
+
+            BotServiceEndPointConfigs apiConfigs = botSettings.ApiConfigs.First(x => x.ChannelId == channelId);
             var token = await GetTokenAsync();
 
             var httpClient = httpClientFactory.CreateClient();

@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Main.Controllers.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -9,6 +10,7 @@
     using Fanex.NCB.Main.ViewModel.TreeSelect;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Models.Notification;
+    using Fanex.NCB.Models.NotificationTemplate;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.SkypeBot.Controllers;
@@ -19,6 +21,7 @@
 
     public class NewNotificationControllerTests
     {
+        private readonly IFixture fixture = new Fixture();
         private INotificationService notificationService;
         private INapSession napSession;
 
@@ -36,15 +39,29 @@
         public async Task Create_ValidModel_ReturnSuccessCommandResult()
         {
             var controller = GetController();
-            var fixture = new Fixture();
             napSession.UserId = fixture.Create<int>();
 
-            var viewModel = fixture.Create<CreateNewNotificationViewModel>();
+            var viewModel = new CreateNewNotificationViewModel
+            {
+                ChannelIds = "1,2",
+                NotificationTypeId = 1,
+                ProductId = 1,
+                RecipientIds = "1,2",
+                Title = "title",
+                Content = "**content**",
+                SendDate = DateTime.Now,
+                SendImmediately = true
+            };
+            var contents = new List<NotificationTemplateContent>
+            {
+                new NotificationTemplateContent { ChannelId = 1, Content = "**content**" },
+                new NotificationTemplateContent { ChannelId = 2, Content = "*content*" }
+            };
             var model = new CreateNotification();
 
             notificationService.CreateAsync(Arg.Do<CreateNotification>(x => model = x)).Returns(new CommandResult { Code = 0 });
 
-            var result = await controller.Create(viewModel).ConfigureAwait(false);
+            var result = await controller.Create(viewModel);
 
             var json = Assert.IsType<JsonResult>(result);
             var commandResult = Assert.IsType<CommandResult>(json.Value);
@@ -53,7 +70,7 @@
             Assert.Equal(viewModel.NotificationTypeId, model.NotificationTypeId);
             Assert.Equal(viewModel.ProductId, model.ProductId);
             Assert.Equal(viewModel.Title, model.Title);
-            Assert.Equal(viewModel.Content, model.Content);
+            Assert.Equal(JsonConvert.SerializeObject(contents), model.Content);
             Assert.Equal(viewModel.SendDate, model.SendDate);
             Assert.Equal(viewModel.SendImmediately, model.SendImmediately);
             Assert.Equal(viewModel.RecipientIds, model.RecipientIds);
@@ -64,12 +81,11 @@
         public async Task Create_InvalidModel_ReturnErrorCommandResult()
         {
             var controller = GetController();
-            var fixture = new Fixture();
             napSession.UserId = fixture.Create<int>();
 
             var viewModel = fixture.Create<CreateNewNotificationViewModel>();
             viewModel.RecipientIds = string.Empty;
-            var result = await controller.Create(viewModel).ConfigureAwait(false);
+            var result = await controller.Create(viewModel);
             var json = Assert.IsType<JsonResult>(result);
             var commandResult = Assert.IsType<CommandResult>(json.Value);
             Assert.False(commandResult.IsSuccessful);
@@ -80,7 +96,6 @@
         public async Task GetRecipients_WhenCalled_ReturnJsonResult()
         {
             var controller = GetController();
-            var fixture = new Fixture();
             var notificationTypeId = fixture.Create<int>();
             var productId = fixture.Create<int?>();
 
@@ -88,7 +103,7 @@
 
             notificationService.GetRecipientsAsync(notificationTypeId, productId).Returns(recipients);
 
-            var result = await controller.GetRecipients(notificationTypeId, productId).ConfigureAwait(false);
+            var result = await controller.GetRecipients(notificationTypeId, productId);
 
             var json = Assert.IsType<JsonResult>(result);
             Assert.IsAssignableFrom<IEnumerable<TreeNodeItem>>(json.Value);
@@ -98,14 +113,13 @@
         public async Task GetTemplates_WhenCalled_ReturnJsonResult()
         {
             var controller = GetController();
-            var fixture = new Fixture();
             var notificationTypeId = fixture.Create<int>();
 
             var templates = fixture.Create<IEnumerable<Template>>();
 
             notificationService.GetTemplatesAsync(notificationTypeId).Returns(templates);
 
-            var result = await controller.GetTemplates(notificationTypeId).ConfigureAwait(false);
+            var result = await controller.GetTemplates(notificationTypeId);
 
             var json = Assert.IsType<JsonResult>(result);
             var returnedTemplates = Assert.IsAssignableFrom<IEnumerable<Template>>(json.Value);
@@ -116,7 +130,6 @@
         public async Task GetResendNotification_WhenCalled_ReturnExpectedJsonResult()
         {
             var controller = GetController();
-            var fixture = new Fixture();
             var notificationId = fixture.Create<int>();
             var isResendAll = fixture.Create<bool>();
             var resendNotifictaion = fixture.Create<ResendNotification>();

@@ -2,6 +2,7 @@ namespace Fanex.NCB.BotService.Core
 {
     public class AppSettings
     {
+        public string Domain { get; set; }
         public string AppCredentialId { get; set; }
 
         public string AppCredentialPassword { get; set; }
