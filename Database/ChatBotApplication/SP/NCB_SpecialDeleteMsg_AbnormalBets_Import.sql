@@ -41,7 +41,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   DECLARE duration INT;
   DECLARE logContent TEXT CHARACTER SET utf8mb4;
   DECLARE templateNotifcationType JSON;
-  DECLARE ccConversationGroupID INT;
+  DECLARE ccConversationGroupID TEXT;
 
   DECLARE createdDate DATETIME(3);
   DECLARE ccMessageID INT;
@@ -483,12 +483,12 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
 	END IF;
   
   #Return Bot, Chatgroup
-  SELECT g.ConversationID AS ChatGroupConversationID, g.ServiceUrl, g.ChannelID, b.ConversationID AS BotConversationID, b.Name AS BotName
+  SELECT g.ConversationID AS ChatGroupConversationID, g.ServiceUrl, g.ChannelID, cc.ChannelName,b.ConversationID AS BotConversationID, b.Name AS BotName
   FROM ConversationGroup g
   	INNER JOIN ConversationGroupBot gb ON g.ConversationGroupID = gb.ConversationGroupID
   	INNER JOIN ConversationBot b ON b.ConversationBotID = gb.ConversationBotID
-  	WHERE g.ConversationGroupID IN (SELECT ConversationGroupID FROM tmp_Carbon)
- 
+	INNER JOIN ConversationChannel cc ON cc.ChannelId = g.ChannelId
+  	WHERE g.ConversationGroupID IN (SELECT ConversationGroupID FROM tmp_Carbon);
   
   #Return all imported message content
   SELECT n.NotificationID, n.Title, n.Content, n.ChannelID, c.ChannelName

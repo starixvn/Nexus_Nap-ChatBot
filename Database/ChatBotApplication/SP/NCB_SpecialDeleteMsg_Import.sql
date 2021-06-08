@@ -42,7 +42,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     DECLARE duration 		INT;							
     DECLARE logContent 		MEDIUMTEXT CHARACTER SET utf8mb4;
     DECLARE templateNotifcationType JSON;
-    DECLARE ccConversationGroupID 	INT;
+    DECLARE ccConversationGroupID 	TEXT;
     DECLARE maxMessageID 	INT;
     DECLARE lastPostTime 	DATETIME;
     DECLARE ccIsNew 		TINYINT;
@@ -433,13 +433,14 @@ NCB_SpecialDeleteMsg_Import:BEGIN
      SELECT g.ConversationID AS ChatGroupConversationID
 	 			, g.ServiceUrl
                  , g.ChannelID
+				 , cc.ChannelName
                  , b.ConversationID AS BotConversationID 
                  , b.Name AS BotName
      FROM ConversationGroup g
      INNER JOIN ConversationGroupBot gb ON g.ConversationGroupID = gb.ConversationGroupID
+	 INNER JOIN ConversationChannel cc ON cc.ChannelId = g.ChannelId
      INNER JOIN ConversationBot b ON b.ConversationBotID = gb.ConversationBotID
-     WHERE g.ConversationGroupID IN (SELECT ConversationGroupID FROM tmp_Carbon)
-    
+     WHERE g.ConversationGroupID IN (SELECT ConversationGroupID FROM tmp_Carbon);    
      
      #Return all imported message content
      SELECT n.NotificationID, n.Title, n.Content, n.ChannelID, c.ChannelName
