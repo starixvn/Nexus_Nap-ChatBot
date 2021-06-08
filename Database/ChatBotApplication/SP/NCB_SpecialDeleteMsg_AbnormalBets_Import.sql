@@ -207,9 +207,9 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     SET Content_Detail = CONCAT(
         'Request No.: ', RequestIDLst
         , '\r\n', '\r\n'
-        , 'Affected Credit sites:', IFNULL(CreditSiteLst,'')
+        , '**Affected Credit sites:', IFNULL(CreditSiteLst,''), '**'
         , '\r\n'
-        , 'Affected Licensee sites:', IFNULL(DepositSiteLst,'')
+        , '**Affected Licensee sites:', IFNULL(DepositSiteLst,''), '**'
         , '\r\n', '\r\n'
         , 'Event Date: ', IFNULL(DATE_FORMAT(MinWinlostDate,'%b %d, %Y'),''),' - ',IFNULL(DATE_FORMAT(MaxWinlostDate,'%b %d, %Y'),'')
         , '\r\n'
