@@ -50,10 +50,10 @@ BEGIN
 		WHERE c.username = m.Username
 	) l
 
-	CREATE TABLE #Resutl (VoidingHistoryId INT,TransId BIGINT)
-	CREATE CLUSTERED INDEX Ix_Result ON #Resutl (VoidingHistoryId)
+	CREATE TABLE #Result (VoidingHistoryId INT,TransId BIGINT)
+	CREATE CLUSTERED INDEX Ix_Result ON #Result (VoidingHistoryId)
 
-	INSERT INTO #Resutl (VoidingHistoryId, TransId)
+	INSERT INTO #Result (VoidingHistoryId, TransId)
 	SELECT VoidingHistoryId, transid
 	FROM dbo.zzzbettrans b WITH(NOLOCK)
 	WHERE EXISTS(SELECT 1 FROM #MessageLst m WHERE b.VoidingHistoryId = m.VoidingHistoryId)
@@ -62,7 +62,7 @@ BEGIN
 		SET m.IsValid = 1
 	FROM #MessageLst m
 	WHERE EXISTS (
-		SELECT 1 FROM #Resutl r 
+		SELECT 1 FROM #Result r 
 		CROSS APPLY
 		(
 			SELECT TOP 1 b.custid, b.recommend, b.mrecommend, b.srecommend
@@ -113,7 +113,9 @@ BEGIN
 	FROM CTE_Message m
 		LEFT JOIN CTE_MsgSite s ON s.MessageId = m.MessageId
 
-	DROP TABLE #MessageLst, #Resutl, #tmpMessageId
+	DROP TABLE #MessageLst
+	DROP TABLE #Result
+	DROP TABLE #tmpMessageId
 
 END
 GO
