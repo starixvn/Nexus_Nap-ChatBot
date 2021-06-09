@@ -171,7 +171,7 @@ BEGIN
 		-- Total tickets
 		,CTE_TotalTickets AS
 		(
-			SELECT MessageId, COUNT(DISTINCT TransId) AS TotalTickets, MAX(MaxWinlostdate) AS MaxWinlostdate, MIN(MinWinlostdate) AS MinWinlostdate, MAX(VoidingHistoryId) AS VoidingHistoryId
+			SELECT MessageId, COUNT(DISTINCT TransId) AS TotalTickets, MAX(MaxWinlostdate) AS MaxWinlostdate, MIN(MinWinlostdate) AS MinWinlostdate
 			FROM #VoidingHistory
 			GROUP BY MessageId
 		)
@@ -248,13 +248,17 @@ BEGIN
 			, ISNULL(s.DepositSiteLst, '') DepositSiteLst
 			, t.MinWinlostdate
 			, t.MaxWinlostdate 
-			, t.VoidingHistoryId
 			,r.[Type]
 		FROM CTE_RequestInfo r
 			LEFT JOIN @tblEventInfo e ON r.MessageId = e.MessageId
 			LEFT JOIN CTE_TotalTickets t ON r.MessageId = t.MessageId
 			LEFT JOIN CTE_MsgBettype b ON r.MessageId = b.MessageId
-			LEFT JOIN CTE_MsgSite s ON r.MessageId = s.MessageId			
+			LEFT JOIN CTE_MsgSite s ON r.MessageId = s.MessageId		
+		
+		-- Get MessageID and VoidingHistoryId of abnormal accounts
+		SELECT vh.MessageId, vh.VoidingHistoryId, vh.UsernamLst
+		FROM #VoidingHistory vh
+		WHERE vh.IssueTypeId = 13
 	END
 
 	DROP TABLE #MessageLst

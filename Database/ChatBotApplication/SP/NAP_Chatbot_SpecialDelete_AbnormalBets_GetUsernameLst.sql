@@ -84,9 +84,9 @@ BEGIN
 
 	;WITH CTE_Message AS
 	(
-		SELECT m.MessageId, m.VoidingHistoryId
+		SELECT m.MessageId
 		FROM #MessageLst m
-		GROUP BY m.MessageId, m.VoidingHistoryId
+		GROUP BY m.MessageId
 	)
 	,CTE_Site AS
 	(
@@ -107,7 +107,6 @@ BEGIN
 	)
 	SELECT 
 		m.MessageId
-		,m.VoidingHistoryId
 		,s.UsernameLst
 		,ISNULL(s.CreditSiteLst, '') AS CreditSiteLst
 		,ISNULL(s.DepositSiteLst, '') AS DepositSiteLst
