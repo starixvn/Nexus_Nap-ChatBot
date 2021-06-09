@@ -5,7 +5,6 @@
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
-    using Fanex.NAP.Client.Web;
     using Fanex.NCB.NAPResolver.Attributes;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -23,7 +22,6 @@
         private IUserService userService;
         private INapSettings napSettings;
         private INapSession napSession;
-        private IRestClient restClient;
 
         [Fact]
         public async Task OnAuthorizationAsync_NoPermissionCache_DoExpectedMethods()
@@ -93,7 +91,6 @@
             napSettings = Substitute.For<INapSettings>();
             napSettings.CacheDuration.Returns(120);
             napSession = Substitute.For<INapSession>();
-            restClient = Substitute.For<IRestClient>();
             return new NapChatBotAuthAttribute(userService, napSettings, napSession, cache);
         }
     }

@@ -104,7 +104,7 @@
 
             baseService.GetDataAsync<Message>(Arg.Any<GetAbnormalBetsMessageCriteria>()).Returns(fixture.Create<List<Message>>());
             baseService.GetDataAsync<MessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>()).Returns(fixture.Create<List<MessageHistory>>());
-            baseService.GetDataAsync<AbnormalBetsMessage>(Arg.Any<GetAbnormalBetInfoCriteria>()).Returns(fixture.Create<IEnumerable<AbnormalBetsMessage>>());
+            baseService.GetDataAsync<AbnormalMessage>(Arg.Any<GetAbnormalBetInfoCriteria>()).Returns(fixture.Create<IEnumerable<AbnormalMessage>>());
 
             //Actual
             await service.PullVoidingMessageInternalDepartment();
@@ -113,7 +113,7 @@
             await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
         }
 
-        private ValueTuple<IEnumerable<NotificationRecipient>, IEnumerable<NotificationSendMessage>> FakeData()
+        private static ValueTuple<IEnumerable<NotificationRecipient>, IEnumerable<NotificationSendMessage>> FakeData()
         {
             var recipients = new List<NotificationRecipient>
             {

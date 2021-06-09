@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Net;
-    using System.Net.Http;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using Fanex.NCB.Core.Models;
@@ -13,7 +12,6 @@
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
-    using Newtonsoft.Json;
     using NSubstitute;
     using NSubstitute.ExceptionExtensions;
     using Xunit;
@@ -74,7 +72,6 @@
 
             //Assert
             await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
-            await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
         }
 
         [Fact]
@@ -135,7 +132,7 @@
 
         #region Helper
 
-        private ValueTuple<IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>> FakeData()
+        private static ValueTuple<IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>> FakeData()
         {
             var notifications = new List<NotificationSendMessage>
             {
@@ -152,15 +149,18 @@
             return new ValueTuple<IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>>(notifications, recipients);
         }
 
-        private HttpResponseMessage FakeResponse(bool isSuccess)
+        private static NotificationMessageResponse FakeResponse(bool isSuccess)
         {
-            var content = "[{\"NotificationId\": 1, \"ConversationId\": \"ABC\", \"ErrCode\": 0,\"ErrorMessage\": \"\", \"SentTime\": \"2019-01-01\"},{\"NotificationId\": 2, \"ConversationId\": \"DEF\", \"ErrCode\": 1,\"ErrorMessage\": \"\", \"SentTime\": \"2019-01-01\"}]";
-            var response = new HttpResponseMessage
+            var result = new List<SendMessageResult>
             {
-                StatusCode = isSuccess ? HttpStatusCode.OK : HttpStatusCode.BadRequest,
-                Content = new StringContent(JsonConvert.SerializeObject(content))
+                new SendMessageResult { NotificationId = 1, ConversationId = "1", ErrorCode = 0, ErrorMessage = "", SentTime = DateTime.Now }
             };
-            return response;
+            return new NotificationMessageResponse
+            {
+                IsSuccessStatusCode = isSuccess,
+                StatusCode = isSuccess ? HttpStatusCode.OK : HttpStatusCode.BadRequest,
+                NotificationMessageResult = result
+            };
         }
 
         private SendNotificationService GetService()

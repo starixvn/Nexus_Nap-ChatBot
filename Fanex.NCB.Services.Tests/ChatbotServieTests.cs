@@ -6,7 +6,6 @@
     using System.Net.Http;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models;
     using Fanex.NCB.Models.NotifictaionSendMessage;
@@ -23,7 +22,6 @@
         private IOptionsSnapshot<BotSettings> botSettings;
         private IOptionsSnapshot<MonitorChatbot> monitor;
         private IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions;
-        private IOptionsSnapshot<List<HangfireJobSetting>> jobs;
 
         [Fact]
         public async Task SendMessageToMultitpleAsync_WhenCalled_ExecutePostTaskAsync()
@@ -42,8 +40,8 @@
             var httpClient = new HttpClient(new MockHttpMessageHandler(msgs));
             httpClientFactory.CreateClient().Returns(httpClient);
             var result = await service.SendMessageToMultitpleAsync(messages);
-            var responseData = await result.Content.ReadAsStringAsync();
-            Assert.Equal(responseData, JsonConvert.SerializeObject(messages));
+            var responseData = result.NotificationMessageResult;
+            Assert.Equal(JsonConvert.SerializeObject(responseData), JsonConvert.SerializeObject(messages));
         }
 
         [Fact]
@@ -131,16 +129,6 @@
 
         private ChatbotService GetService()
         {
-            var fixture = new Fixture();
-            var settings = new BotSettings
-            {
-                BotDomain = "http://test.com",
-                AuthenticateUrl = "api/Authemticate",
-                BotServiceUrl = "/Test",
-                TokenUrl = "ABC/test",
-                AppCredentialId = "AppId",
-                AppCredentialPassword = "pwd"
-            };
             var sponGroupOptions = new NotifyChatGroupOption
             {
                 BotName = "1on1",
@@ -161,12 +149,7 @@
             notifyChatGroupOptions = Substitute.For<IOptionsSnapshot<NotifyChatGroupOption>>();
             monitor = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
             monitor.Value.Returns(monitorOptions);
-            jobs = Substitute.For<IOptionsSnapshot<List<HangfireJobSetting>>>();
             httpClientFactory = Substitute.For<IHttpClientFactory>();
-            var jobList = fixture.Create<List<HangfireJobSetting>>();
-            jobList.Add(new HangfireJobSetting { JobName = HangfireJobName.MonitorSkypebot, IsEnabled = true });
-            jobs.Value.Returns(jobList);
-            botSettings.Value.Returns(settings);
             notifyChatGroupOptions.Value.Returns(sponGroupOptions);
 
             return new ChatbotService(httpClientFactory, botSettings, monitor, notifyChatGroupOptions);

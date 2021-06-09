@@ -22,6 +22,7 @@
         private readonly IPushSignalService pushSignalService;
         private readonly IChatbotService chatbotService;
         private readonly string Environment;
+        private const int AbnormalAccountType = 2;
         private const int VoidTicketForLicenseeJobIdentity = 1;
         private const int VoidAbnormalbetsJobIdentity = 2;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
@@ -37,6 +38,8 @@
             this.chatbotService = chatbotService;
             Environment = configuration.GetSection("Environment")?.Value;
         }
+
+        #region Pull voiding ticket send to Licensee
 
         public async Task PullVoidingMessageLicensee()
         {
@@ -142,6 +145,10 @@
             return await baseService.GetDataEntityAsync<SystemSetting>(criteria);
         }
 
+        #endregion Pull voiding ticket send to Licensee
+
+        #region Pull voiding ticket and send to internal department
+
         public async Task PullVoidingMessageInternalDepartment()
         {
             var systemSettings = await GetAbnormalBetSystemSettings();
@@ -149,25 +156,57 @@
             if (systemSettings != null)
             {
                 var listMsgYesterdayToCurrent = await GetMessageListFromYesterdayToCurrent();
-                await GetMessageAndImportToChatbot(listMsgYesterdayToCurrent, systemSettings);
+
+                if (listMsgYesterdayToCurrent.Any())
+                {
+                    await GetMessageAndImportToChatbot(listMsgYesterdayToCurrent, systemSettings);
+                }
             }
         }
 
         private async Task GetMessageAndImportToChatbot(List<MessageHistory> listMsgYesterdayToCurrent, SystemSetting settings)
         {
-            if (listMsgYesterdayToCurrent.Any())
+            var messages = await GetAbnormalBetsMessages(settings, listMsgYesterdayToCurrent);
+
+            if (messages.Any())
             {
-                var messages = await GetAbnormalBetsMessages(settings, listMsgYesterdayToCurrent);
-                if (messages.Any())
+                var listMsg = messages.Select(m => new MessageHistory { MessageID = m.MessageID, RequestID = m.RequestID }).ToList();
+
+                var voidingHistories = await GetVoidingHistory(listMsg);
+                if (voidingHistories.Item1.Any(m => m.Type == AbnormalAccountType))
                 {
-                    var listMsg = messages.Select(m => new MessageHistory { MessageID = m.MessageID, RequestID = m.RequestID }).ToList();
-                    var voidingHistories = await GetVoidingHistory(XmlHelper.Serialize(listMsg));
-
-                    MappingAbnormalBetsData(messages, voidingHistories);
-
-                    int maxMsgId = messages.Max(m => m.MessageID);
-                    await ImportAbnormalBetNotificationToChatbotDB(voidingHistories, listMsg, maxMsgId);
+                    var abnormalMessges = voidingHistories.Item2
+                        .Where(i2 => voidingHistories.Item1.Where(i1 => i1.Type == AbnormalAccountType)
+                                                           .Any(m => m.MessageID == i2.MessageId));
+                    var updatedUsernames = await GetAbnormalAccountUsernames(abnormalMessges);
+                    UpdateAbnormalAccountUpdatedUsernames(voidingHistories.Item1, updatedUsernames);
                 }
+
+                MappingAbnormalBetsData(messages, voidingHistories.Item1);
+
+                int maxMsgId = messages.Max(m => m.MessageID);
+                await ImportAbnormalBetNotificationToChatbotDB(voidingHistories.Item1, listMsg, maxMsgId);
+            }
+        }
+
+        private async Task<IEnumerable<VoidingHistoryUsername>> GetAbnormalAccountUsernames(IEnumerable<AbnormalMessageHistory> messages)
+        {
+            var criteria = new GetAbnormalAccountUsernameLstCriteria
+            {
+                MessageIDLst = XmlHelper.Serialize(messages.ToList())
+            };
+
+            var result = await baseService.GetDataAsync<VoidingHistoryUsername>(criteria);
+            return result;
+        }
+
+        private static void UpdateAbnormalAccountUpdatedUsernames(IEnumerable<AbnormalMessage> origMessages, IEnumerable<VoidingHistoryUsername> updatedUsernames)
+        {
+            foreach (var message in origMessages)
+            {
+                message.UsernameLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.UsernameLst));
+                message.CreditSiteLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.CreditSiteLst));
+                message.DepositSiteLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.DepositSiteLst));
             }
         }
 
@@ -210,19 +249,21 @@
             return await baseService.GetDataAsync<Message>(criteria);
         }
 
-        private async Task<IEnumerable<AbnormalMessage>> GetVoidingHistory(string msgIds)
+        private async Task<(IEnumerable<AbnormalMessage>, IEnumerable<AbnormalMessageHistory>)> GetVoidingHistory(List<MessageHistory> messages)
         {
-            if (!string.IsNullOrWhiteSpace(msgIds))
+            string messageIdLst = XmlHelper.Serialize(messages);
+
+            if (!string.IsNullOrWhiteSpace(messageIdLst))
             {
                 var criteria = new GetAbnormalBetInfoCriteria
                 {
-                    MessageIdLst = msgIds
+                    MessageIdLst = messageIdLst
                 };
 
-                return await baseService.GetDataAsync<AbnormalMessage>(criteria);
+                return await baseService.FetchMultipleAsync<AbnormalMessage, AbnormalMessageHistory>(criteria);
             }
 
-            return new List<AbnormalMessage>();
+            return (new List<AbnormalMessage>(), new List<AbnormalMessageHistory>());
         }
 
         private async Task ImportAbnormalBetNotificationToChatbotDB(IEnumerable<AbnormalMessage> messages,
@@ -270,5 +311,7 @@
         {
             await pushSignalService.OnInsertNotification(notificationIds);
         }
+
+        #endregion Pull voiding ticket and send to internal department
     }
 }
