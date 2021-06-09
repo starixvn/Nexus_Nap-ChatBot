@@ -73,7 +73,14 @@ BEGIN
 			AND m.CustId IN (l.custid, l.recommend, l.mrecommend, l.srecommend)
 	)
 
-	DELETE #MessageLst WHERE IsValid = 0
+	CREATE TABLE #tmpMessageId (MessageId INT)
+
+	DELETE #MessageLst 
+	OUTPUT deleted.MessageId
+		INTO #tmpMessageId
+	WHERE IsValid = 0
+
+	DELETE m FROM #MessageLst m WHERE NOT EXISTS (SELECT 1 FROM #tmpMessageId t WHERE t.MessageId = m.MessageId)
 
 	;WITH CTE_Message AS
 	(
@@ -81,13 +88,33 @@ BEGIN
 		FROM #MessageLst m
 		GROUP BY m.MessageId, m.VoidingHistoryId
 	)
+	,CTE_Site AS
+	(
+			SELECT vh.MessageId, vh.username, CASE WHEN s.custid IS NULL AND c.site NOT IN ('CN88', '789y') THEN 'NV88' ELSE c.site END AS site, CASE WHEN s.custid IS NULL THEN 0 ELSE 1 END AS isDeposit, CASE WHEN c.currency = 20 THEN 1 ELSE 0 END AS IsTest
+			FROM #MessageLst vh
+				INNER JOIN CustDB.dbo.Customer c WITH(NOLOCK) ON c.CustId = vh.CustId
+				LEFT JOIN CustDB.dbo.Dep_CustSuper s WITH(NOLOCK) ON s.custid = c.srecommend
+	)
+	,CTE_MsgSite AS
+	(
+		SELECT
+			s1.MessageId
+			,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 0 FOR XML PATH ('')), 1, 1, '') AS CreditSiteLst
+			,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 1 FOR XML PATH ('')), 1, 1, '') AS DepositSiteLst
+			,STUFF((SELECT DISTINCT ', ' + s2.username FROM CTE_site s2 WHERE s1.MessageId = s2.MessageId FOR XML PATH ('')), 1, 1, '') AS UsernameLst
+		FROM CTE_Site s1
+		GROUP BY s1.MessageId
+	)
 	SELECT 
 		m.MessageId
 		,m.VoidingHistoryId
-		,STUFF((SELECT ',' + Username FROM #MessageLst l WHERE l.MessageId = m.MessageId AND l.VoidingHistoryId = m.VoidingHistoryId ORDER BY Username FOR XML PATH ('')), 1, 1, '') AS UsernameLst
+		,s.UsernameLst
+		,ISNULL(s.CreditSiteLst, '') AS CreditSiteLst
+		,ISNULL(s.DepositSiteLst, '') AS DepositSiteLst
 	FROM CTE_Message m
+		LEFT JOIN CTE_MsgSite s ON s.MessageId = m.MessageId
 
-	DROP TABLE #MessageLst, #Resutl
+	DROP TABLE #MessageLst, #Resutl, #tmpMessageId
 
 END
 GO
