@@ -39,6 +39,7 @@ pipeline{
             }
           }
 		}
+	  }
     }
 
     stage("SonarQube Analysis"){
