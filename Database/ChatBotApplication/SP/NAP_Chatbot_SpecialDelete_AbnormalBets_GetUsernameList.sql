@@ -1,5 +1,5 @@
 /*<info serverAlias="DBTXN-bodb02" executers="bodbAdminNet" isFunction="0" isNested="0"></info>*/
-ALTER PROCEDURE [dbo].[NAP_Chatbot_SpecialDelete_AbnormalBets_GetUsernameLst]
+ALTER PROCEDURE [dbo].[NAP_Chatbot_SpecialDelete_AbnormalBets_GetUsernameList]
 	@MessageIDLst XML
 AS
 
@@ -45,16 +45,16 @@ BEGIN
 	FROM #MessageLst m
 	CROSS APPLY
 	(
-		SELECT TOP 1 c.roleid, c.custid
+		SELECT TOP 1 c.custid
 		FROM CustDB.dbo.Customer c WITH(NOLOCK)
 		WHERE c.username = m.Username
 	) l
 
-	CREATE TABLE #Result (VoidingHistoryId INT,TransId BIGINT)
+	CREATE TABLE #Result (VoidingHistoryId INT,CustId INT)
 	CREATE CLUSTERED INDEX Ix_Result ON #Result (VoidingHistoryId)
 
-	INSERT INTO #Result (VoidingHistoryId, TransId)
-	SELECT VoidingHistoryId, transid
+	INSERT INTO #Result (VoidingHistoryId, CustId)
+	SELECT DISTINCT VoidingHistoryId, CustId
 	FROM dbo.zzzbettrans b WITH(NOLOCK)
 	WHERE EXISTS(SELECT 1 FROM #MessageLst m WHERE b.VoidingHistoryId = m.VoidingHistoryId)
 
@@ -66,8 +66,8 @@ BEGIN
 		CROSS APPLY
 		(
 			SELECT TOP 1 b.custid, b.recommend, b.mrecommend, b.srecommend
-			FROM dbo.bettrans b WITH(NOLOCK)
-			WHERE b.transid = r.TransId
+			FROM CustDB.dbo.Customer b WITH(NOLOCK)
+			WHERE b.CustId = r.CustId
 		) AS l
 		WHERE m.VoidingHistoryId = r.VoidingHistoryId	
 			AND m.CustId IN (l.custid, l.recommend, l.mrecommend, l.srecommend)
