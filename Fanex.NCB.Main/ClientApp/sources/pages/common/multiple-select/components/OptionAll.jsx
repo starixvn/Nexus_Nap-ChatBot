@@ -24,12 +24,12 @@ export default class OptionAll extends Component {
         this.itemData = {
             key: 'All',
             value: Translation[this.props.language].All
-        }
+        };
     }
 
     changeHandler = ({ checked }) => {
         this.props.onChange && this.props.onChange(checked);
-    }
+    };
 
     render() {
         const { id, checked } = this.props;
@@ -42,6 +42,6 @@ export default class OptionAll extends Component {
                     itemData={this.itemData}
                     onChange={this.changeHandler} />
             </ul>
-        )
+        );
     }
 }

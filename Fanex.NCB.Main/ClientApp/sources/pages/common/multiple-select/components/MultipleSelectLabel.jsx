@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Translation from './translation'
+import Translation from './translation';
 
 const MAX_SELECTED_ITEM_FOR_DISPLAY = 3;
 
@@ -30,12 +30,10 @@ export default class MultipleSelectLabel extends Component {
 
         if(this.props.isAllTextShown && selectedItemCount === this.props.dataSourceSize){
             displayText = texts.All;
-        }
-        else if (selectedItemCount > maxDisplayItemCount) {
+        } else if (selectedItemCount > maxDisplayItemCount) {
             displayText = texts.SelectedItemCount.replace('#', selectedItemCount);
-        }
-        else if (selectedItemCount >= 1) {
-            displayText = selectedValues.join(", ");
+        } else if (selectedItemCount >= 1) {
+            displayText = selectedValues.join(', ');
         }
 
         return displayText;
@@ -48,6 +46,6 @@ export default class MultipleSelectLabel extends Component {
                 <span className="text-display">{this.selectedItemsString}</span>
                 <b className="caret"></b>
             </button>
-        )
+        );
     }
 }
