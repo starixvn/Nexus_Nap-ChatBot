@@ -96,7 +96,7 @@
             var command = new InsertMessageHistoryCommand
             {
                 JobIdentify = SiteMessageJobIdentify,
-                MessageIDLst = XmlHelper.Serialize(msgHistory),
+                MessageIDLst = XmlHelper<MessageHistory>.Serialize(msgHistory),
                 Environment = Environment
             };
 

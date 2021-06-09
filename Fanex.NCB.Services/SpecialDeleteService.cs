@@ -178,7 +178,7 @@
                     var abnormalMessges = voidingHistories.Item2
                         .Where(i2 => voidingHistories.Item1.Where(i1 => i1.Type == AbnormalAccountType)
                                                            .Any(m => m.MessageID == i2.MessageId));
-                    var updatedUsernames = await GetAbnormalAccountUsernames(abnormalMessges);
+                    var updatedUsernames = await GetAbnormalAccountUpdatedUsernames(abnormalMessges);
                     UpdateAbnormalAccountUpdatedUsernames(voidingHistories.Item1, updatedUsernames);
                 }
 
@@ -189,11 +189,11 @@
             }
         }
 
-        private async Task<IEnumerable<VoidingHistoryUsername>> GetAbnormalAccountUsernames(IEnumerable<AbnormalMessageHistory> messages)
+        private async Task<IEnumerable<VoidingHistoryUsername>> GetAbnormalAccountUpdatedUsernames(IEnumerable<AbnormalMessageHistory> messages)
         {
             var criteria = new GetAbnormalAccountUsernameLstCriteria
             {
-                MessageIDLst = XmlHelper.Serialize(messages.ToList())
+                MessageIDLst = XmlHelper<AbnormalMessageHistory>.Serialize(messages.ToList())
             };
 
             var result = await baseService.GetDataAsync<VoidingHistoryUsername>(criteria);
@@ -202,11 +202,14 @@
 
         private static void UpdateAbnormalAccountUpdatedUsernames(IEnumerable<AbnormalMessage> origMessages, IEnumerable<VoidingHistoryUsername> updatedUsernames)
         {
-            foreach (var message in origMessages)
+            if (updatedUsernames.Any())
             {
-                message.UsernameLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.UsernameLst));
-                message.CreditSiteLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.CreditSiteLst));
-                message.DepositSiteLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.DepositSiteLst));
+                foreach (var message in origMessages)
+                {
+                    message.UsernameLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.UsernameLst));
+                    message.CreditSiteLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.CreditSiteLst));
+                    message.DepositSiteLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.DepositSiteLst));
+                }
             }
         }
 
@@ -240,7 +243,7 @@
         {
             var criteria = new GetAbnormalBetsMessageCriteria
             {
-                MessageIDLst = XmlHelper.Serialize(listMsgs),
+                MessageIDLst = XmlHelper<MessageHistory>.Serialize(listMsgs),
                 BatchSize = setting.BatchSize,
                 MsgContentsTypeLst = setting.MsgContentsTypeLst,
                 Environment = Environment
@@ -251,7 +254,7 @@
 
         private async Task<(IEnumerable<AbnormalMessage>, IEnumerable<AbnormalMessageHistory>)> GetVoidingHistory(List<MessageHistory> messages)
         {
-            string messageIdLst = XmlHelper.Serialize(messages);
+            string messageIdLst = XmlHelper<MessageHistory>.Serialize(messages);
 
             if (!string.IsNullOrWhiteSpace(messageIdLst))
             {
@@ -300,7 +303,7 @@
             var command = new InsertMessageHistoryCommand
             {
                 JobIdentify = jobIdentity,
-                MessageIDLst = XmlHelper.Serialize(messages.ToList()),
+                MessageIDLst = XmlHelper<MessageHistory>.Serialize(messages.ToList()),
                 Environment = Environment
             };
 
