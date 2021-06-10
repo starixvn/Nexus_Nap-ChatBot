@@ -1,4 +1,7 @@
 /*<info serverAlias="DBACC-bodb02" executers="bodbAdminNet" isFunction="0" isNested="0"></info>*/
+USE bodb02
+GO
+
 ALTER PROCEDURE [dbo].[NAP_Chatbot_SpecialDelete_AbnormalBets_Sel]
 	@MessageIDLst XML
 AS
@@ -13,6 +16,7 @@ AS
 		- 20200305@Percy: Extend length some fields [RedmineID: #129794]
 		- 20200804@Percy: Add RequestId for Ticket Voiding Abnormal Bets - Phase 3 [RedmineID: #135686]
 		- 20210413@Malcolm: Integrate AB (Real member) voiding tickets [RedmineID: #153112]
+		- 20210610@Percy: Change source to get Reason (SubIssueTypeName) [RedmineID: #156724]
 
 	Param's Explanation:
 		@MessageIDLst:
@@ -47,7 +51,7 @@ BEGIN
 
 	-- Request Info
 	BEGIN
-		DECLARE @tblRequestInfo TABLE (MessageId INT, RequestId INT, DecidedBy NVARCHAR(50), RequestBy NVARCHAR(200), VoidBy NVARCHAR(50), Reason NVARCHAR(150))
+		DECLARE @tblRequestInfo TABLE (MessageId INT, RequestId INT, DecidedBy NVARCHAR(50), RequestBy NVARCHAR(200), VoidBy NVARCHAR(50), ReasonLst NVARCHAR(MAX))
 		
 		;WITH CTE_Request AS
 		(
@@ -55,11 +59,15 @@ BEGIN
 			FROM #VoidingHistory
 			GROUP BY MessageId, RequestId, ReasonId, VoidById
 		)
-		INSERT INTO @tblRequestInfo (MessageId, RequestId, DecidedBy, RequestBy, VoidBy, Reason)
-		SELECT vh.MessageId, rq.RequestId, rq.DecidedBy, rb.username AS RequestBy, vb.username AS VoidBy, rs.SubIssueTypeName AS Reason
+		INSERT INTO @tblRequestInfo (MessageId, RequestId, DecidedBy, RequestBy, VoidBy, ReasonLst)
+		SELECT vh.MessageId, rq.RequestId, rq.DecidedBy, rb.username AS RequestBy, vb.username AS VoidBy
+			,STUFF((SELECT N', ' + rs.SubIssueTypeName
+					FROM dbo.TicketVoiding_RequestDetail rqd WITH (NOLOCK)
+						INNER JOIN dbo.TicketVoiding_SubIssueType rs WITH (NOLOCK) ON rqd.SubIssueTypeId = rs.SubIssueTypeId
+					WHERE rq.RequestId = rqd.RequestId
+					FOR XML PATH('')), 1, 2, '') AS ReasonLst
 		FROM CTE_Request vh
 			INNER JOIN dbo.TicketVoiding_Request rq WITH (NOLOCK) ON rq.RequestId = vh.RequestId
-			INNER JOIN dbo.TicketVoiding_SubIssueType rs WITH (NOLOCK) ON rq.SubIssueTypeId = rs.SubIssueTypeId
 			LEFT JOIN dbo.Customer rb WITH (NOLOCK) ON rq.UserId = rb.custid
 			LEFT JOIN dbo.Customer vb WITH (NOLOCK) ON vh.VoidById = vb.custid
 		WHERE rq.IssueTypeId IN (11, 15) -- Abnormal Bets, AB (real member)
@@ -108,11 +116,11 @@ BEGIN
 		(
 			SELECT
 				r1.MessageId
-				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(20), r2.RequestId)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestIdLst
-				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(200), r2.DecidedBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS DecidedByLst
-				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(50), r2.RequestBy)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS RequestByLst
-				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(50), r2.VoidBy)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS VoidByLst
-				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(150), r2.Reason)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 1, '') AS ReasonLst
+				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(20), r2.RequestId)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 2, '') AS RequestIdLst
+				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(200), r2.DecidedBy)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 2, '') AS DecidedByLst
+				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(50), r2.RequestBy)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 2, '') AS RequestByLst
+				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(50), r2.VoidBy)		FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 2, '') AS VoidByLst
+				,STUFF((SELECT DISTINCT N', ' + CONVERT(NVARCHAR(150), r2.ReasonLst)	FROM @tblRequestInfo r2 WHERE r1.MessageId = r2.MessageId FOR XML PATH ('')), 1, 2, '') AS ReasonLst
 			FROM @tblRequestInfo r1
 			GROUP BY r1.MessageId
 		)
@@ -136,7 +144,7 @@ BEGIN
 		(
 			SELECT
 				b1.MessageId
-				,STUFF((SELECT DISTINCT ', ' + b2.TypeName FROM CTE_Bettype b2 WHERE b1.MessageId = b2.MessageId FOR XML PATH ('')), 1, 1, '') AS TypeNameLst
+				,STUFF((SELECT DISTINCT ', ' + b2.TypeName FROM CTE_Bettype b2 WHERE b1.MessageId = b2.MessageId FOR XML PATH ('')), 1, 2, '') AS TypeNameLst
 			FROM CTE_Bettype b1
 			GROUP BY b1.MessageId
 		)
@@ -152,8 +160,8 @@ BEGIN
 		(
 			SELECT
 				s1.MessageId
-				,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_Site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 0 FOR XML PATH ('')), 1, 1, '') AS CreditSiteLst
-				,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_Site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 1 FOR XML PATH ('')), 1, 1, '') AS DepositSiteLst
+				,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_Site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 0 FOR XML PATH ('')), 1, 2, '') AS CreditSiteLst
+				,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_Site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 1 FOR XML PATH ('')), 1, 2, '') AS DepositSiteLst
 			FROM CTE_Site s1
 			GROUP BY s1.MessageId
 		)
