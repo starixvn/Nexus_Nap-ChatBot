@@ -44,19 +44,22 @@ class Filter extends Component {
 
     render() {
         return (
-            <Form className="form-filter">
-                <FormGroup>
-                    <Label className="form-label">{Labels.SettingType}</Label>
-                    <Input type="select"
-                        name="settingType"
-                        onChange={this.handleSettingTypeChange}
-                        value={this.state.settingType}
-                    >
-                        {this.props.settingTypes.map(this.renderSettingTypeOption)}
-
-                    </Input>
-                </FormGroup>
-                <button className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
+            <Form className="form-filter-new">
+                <div className="form-row">
+                    <FormGroup>
+                        <Label className="form-label">{Labels.SettingType}</Label>
+                        <Input type="select"
+                            name="settingType"
+                            onChange={this.handleSettingTypeChange}
+                            value={this.state.settingType}
+                        >
+                            {this.props.settingTypes.map(this.renderSettingTypeOption)}
+                        </Input>
+                    </FormGroup>
+                    <FormGroup>
+                        <button className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
+                    </FormGroup>
+                </div>
             </Form>
         );
     }

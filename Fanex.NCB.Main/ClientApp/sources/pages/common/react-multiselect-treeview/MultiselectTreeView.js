@@ -230,7 +230,7 @@ export default class MultiselectTreeView extends React.Component {
 
         return (
             <div id={this.id} className="multiselect-treeview" ref={element => this.wrapper = element}
-                style={{ width: this.props.width ? this.props.width : 'auto' }}>
+                style={{ width: this.props.width ? this.props.width : '100%' }}>
                 <div className="multiselect-treeview-dropdown-button" onClick={this.onToggle}>
                     <span className="selected-text">{selectedText}</span>
                     <span className="up-down-icon"><span className={this.state.opened ? 'up' : 'down'} /></span>

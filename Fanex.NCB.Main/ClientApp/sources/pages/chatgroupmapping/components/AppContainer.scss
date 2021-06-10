@@ -1,14 +1,11 @@
 @import "../../shared/variables";
 @import "../../shared/common.scss";
 @import "../../shared/components/forms.scss";
+@import "../../shared/components/_form-filter.scss";
 @import "../../shared/components/buttons.scss";
 @import "../../shared/components/modals.scss";
 @import "../../shared/components/messages.scss";
 @import "../../shared/components/tables.scss";
-
-.form-filter .btn-submit {
-    margin-bottom: 12px;
-}
 
 .modal-title {
     font-weight: bold;

@@ -1,0 +1,67 @@
+﻿.form-filter-new {
+    padding: 0;
+
+    .form-row {
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+
+        .form-group {
+            width: 200px;
+            margin-right: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+
+            .form-label {
+                display: block;
+                width: 100%;
+                margin-bottom: 3px;
+            }
+
+            .form-control, .react-datepicker-wrapper, .ac-container {
+                width: 100%;
+            }
+
+            input.form-control {
+                height: 30px;
+                background: none;
+                border-radius: 0;
+                border-color: #E5E5E5;
+                border-radius: 2px;
+                padding: 0 8px;
+
+                &::-webkit-input-placeholder {
+                    color: #474747;
+                }
+
+                &:-ms-input-placeholder {
+                    color: #474747;
+                }
+
+                &::placeholder {
+                    color: #474747;
+                }
+            }
+
+            .form-control:focus {
+                box-shadow: none;
+            }
+
+            .multiple-select-container, select.form-control {
+                border: 1px solid #e5e5e5;
+                border-radius: 2px;
+                height: 30px;
+            }
+
+            button {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                -ms-appearance: none;
+                -o-appearance: none;
+                appearance: none;
+            }
+        }
+    }
+}

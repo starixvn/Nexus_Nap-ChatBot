@@ -41,7 +41,7 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.SettingManagement, Policy = Policy.Read)]
         public async Task<IActionResult> GetSettings(int pageIndex, int pageSize, int? settingType)
         {
-            var result = await settingConfigurationService.GetSettingsAsync(pageIndex, pageSize, settingType).ConfigureAwait(false);
+            var result = await settingConfigurationService.GetSettingsAsync(pageIndex, pageSize, settingType);
 
             return Json(new { total = result.Item1, data = result.Item2 });
         }
@@ -57,7 +57,7 @@
                     Type = viewModel.Type,
                     Name = viewModel.Name,
                     CreatorId = napSession.UserId
-                }).ConfigureAwait(false);
+                });
 
                 return Json(result);
             }
@@ -70,7 +70,7 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.SettingManagement, Policy = Policy.Read)]
         public async Task<IActionResult> GetByType(int type)
         {
-            var result = await settingConfigurationService.GetByTypeAsync(type).ConfigureAwait(false);
+            var result = await settingConfigurationService.GetByTypeAsync(type);
 
             return Json(result);
         }
@@ -86,7 +86,7 @@
                     Type = viewModel.Type,
                     Name = viewModel.Name,
                     ModifiedBy = napSession.UserId,
-                }).ConfigureAwait(false);
+                });
 
                 return Json(result);
             }
@@ -101,7 +101,7 @@
         {
             if (ModelState.IsValid)
             {
-                var result = await settingConfigurationService.DeleteAsync(type, napSession.UserId).ConfigureAwait(false);
+                var result = await settingConfigurationService.DeleteAsync(type, napSession.UserId);
 
                 return Json(result);
             }
@@ -123,7 +123,7 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Read)]
         public async Task<IActionResult> GetSettingTypes()
         {
-            var types = await settingConfigurationService.GetAllSettingType().ConfigureAwait(false);
+            var types = await settingConfigurationService.GetAllSettingType();
 
             return Json(types);
         }
@@ -133,7 +133,7 @@
         public async Task<IActionResult> GetJobInfo(int? jobId)
         {
             var value = jobId ?? 1;
-            var jobInfo = await settingConfigurationService.GetJobInfoAsync(value).ConfigureAwait(false);
+            var jobInfo = await settingConfigurationService.GetJobInfoAsync(value);
 
             return Json(jobInfo);
         }
@@ -159,7 +159,7 @@
                     BatchSize = viewModel.BatchSize,
                     TestingGroup = viewModel.TestingGroup,
                     ModifiedBy = napSession.UserId
-                }).ConfigureAwait(false);
+                });
 
                 return Json(result);
             }
@@ -201,7 +201,7 @@
                     RequiredParams = viewModel.RequiredParam,
                     IsTest = viewModel.IsTest,
                     CreatorId = napSession.UserId
-                }).ConfigureAwait(false);
+                });
 
                 return Json(result);
             }
@@ -241,7 +241,7 @@
                     IsTest = viewModel.IsTest,
                     OldMsgContentsType = viewModel.OldMsgContentsType,
                     ModifiedBy = napSession.UserId
-                }).ConfigureAwait(false);
+                });
 
                 return Json(result);
             }

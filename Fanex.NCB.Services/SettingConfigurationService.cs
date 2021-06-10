@@ -27,7 +27,7 @@
                 PageIndex = pageIndex,
                 PageSize = pageSize,
                 SettingType = settingType
-            }).ConfigureAwait(false);
+            });
 
             return (result.Item1.FirstOrDefault(), result.Item2);
         }
@@ -41,7 +41,7 @@
                 CreatorId = model.CreatorId
             };
 
-            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            var result = await baseService.ExecuteNonQueryAsync(command);
 
             return result;
         }
@@ -51,7 +51,7 @@
             var result = await baseService.GetDataEntityAsync<SettingType>(new GetByTypeCriteria
             {
                 Type = type
-            }).ConfigureAwait(false);
+            });
 
             return result;
         }
@@ -65,7 +65,7 @@
                 ModifiedBy = model.ModifiedBy
             };
 
-            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            var result = await baseService.ExecuteNonQueryAsync(command);
 
             return result;
         }
@@ -78,14 +78,14 @@
                 ModifiedBy = modifiedBy
             };
 
-            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            var result = await baseService.ExecuteNonQueryAsync(command);
 
             return result;
         }
 
         public async Task<IEnumerable<BaseModel>> GetAllSettingType()
         {
-            var types = await baseService.GetDataAsync<BaseModel>(new GetAllSettingTypeCriteria()).ConfigureAwait(false);
+            var types = await baseService.GetDataAsync<BaseModel>(new GetAllSettingTypeCriteria());
 
             return types;
         }
@@ -95,7 +95,7 @@
             var result = await baseService.GetDataEntityAsync<JobInfo>(new GetJobInfoCriteria
             {
                 JobId = jobId
-            }).ConfigureAwait(false);
+            });
 
             return result;
         }
@@ -109,7 +109,7 @@
                 PageSize = pageSize
             };
 
-            var result = await baseService.FetchMultipleAsync<Mapping, MappingRecipients>(criteria).ConfigureAwait(false);
+            var result = await baseService.FetchMultipleAsync<Mapping, MappingRecipients>(criteria);
             var mappings = result.Item1;
             foreach (var mapping in mappings)
             {
@@ -129,7 +129,7 @@
                 ModifiedBy = model.ModifiedBy
             };
 
-            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            var result = await baseService.ExecuteNonQueryAsync(command);
 
             return result;
         }
@@ -171,7 +171,7 @@
                 CreatorId = model.CreatorId
             };
 
-            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            var result = await baseService.ExecuteNonQueryAsync(command);
 
             return result;
         }
@@ -201,7 +201,7 @@
                 ModifiedBy = model.ModifiedBy
             };
 
-            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            var result = await baseService.ExecuteNonQueryAsync(command);
 
             return result;
         }
@@ -216,7 +216,7 @@
                 ModifiedBy = model.ModifiedBy
             };
 
-            var result = await baseService.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+            var result = await baseService.ExecuteNonQueryAsync(command);
 
             return result;
         }

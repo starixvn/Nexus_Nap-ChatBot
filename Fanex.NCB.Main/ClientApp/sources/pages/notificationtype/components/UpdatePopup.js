@@ -60,7 +60,7 @@ export class UpdatePopup extends Component {
                     this.setState({ isLoading: false });
                 }
             }
-        );    
+        );
     }
 
     getParams = () => {
@@ -96,8 +96,8 @@ export class UpdatePopup extends Component {
             this.props.closeUpdatePopupHandler();
         }
         else {
-            setTimeout(function () { this.setState({ isLoading: false }); }.bind(this), 4000);        
-        }        
+            setTimeout(function () { this.setState({ isLoading: false }); }.bind(this), 4000);
+        }
     }
 
     closeConfirmation = () => {
@@ -114,7 +114,7 @@ export class UpdatePopup extends Component {
         }
         else {
             this.props.closeUpdatePopupHandler();
-        }      
+        }
     }
 
     updateDropdownData = (items, selectedIds) => {
@@ -130,77 +130,77 @@ export class UpdatePopup extends Component {
 
         return (
             <Modal isOpen wrapClassName="new-notification-type">
-            <ModalHeader toggle={this.togglePopup}>{this.props.updatePopupData.popupTitle}</ModalHeader>
-            <ModalBody>
-                <Form className="form-create">
-                <FormGroup>
-                    <Label className="form-label required">Notification Type Name</Label>
+                <ModalHeader toggle={this.togglePopup}>{this.props.updatePopupData.popupTitle}</ModalHeader>
+                <ModalBody>
+                    <Form className="form-create">
+                        <FormGroup>
+                            <Label className="form-label required">Notification Type Name</Label>
                             <InputField initialValue={this.props.updatePopupData.editingItem.notificationTypeName.value}
                                 maxLength={200}
-                        isSummited={this.state.isSummited}
-                        onChange={value => this.onChange('notificationTypeName', value)}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <Label className="form-label required">Recipient Type</Label>
-                    <MultipleSelectField
-                    selectedValue={this.state.recipientTypeIds.value}
-                    data={this.props.settingData.recipientTypes}
-                    keyField={'id'}
-                    valueField={'name'}
-                    statusField={'checked'}
-                    isSummited={this.state.isSummited}
-                    onChange={value => this.onChange('recipientTypeIds', value)}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <Label className="form-label required">Chat Group Type</Label>
-                    <MultipleSelectField
-                    selectedValue={this.state.chatGroupTypeIds.value}
-                    data={this.props.settingData.chatGroupTypes}
-                    keyField={'id'}
-                    valueField={'name'}
-                    statusField={'checked'}
-                    isSummited={this.state.isSummited}
-                    onChange={value => this.onChange('chatGroupTypeIds', value)}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <Label className="form-label required">System</Label>
-                    <SelectField initialValue={this.props.updatePopupData.editingItem.systemId.value}
-                    data={this.props.settingData.notificationSystems}
-                    isSummited={this.state.isSummited}
-                    onChange={value => this.onChange('systemId', value)}
-                    />
+                                isSummited={this.state.isSummited}
+                                onChange={value => this.onChange('notificationTypeName', value)}
+                            />
                         </FormGroup>
-                <button disabled={this.state.isLoading} className="btn-submit" onClick={this.submitHandler}>Save</button>
-                </Form>
-            </ModalBody>
+                        <FormGroup>
+                            <Label className="form-label required">Recipient Type</Label>
+                            <MultipleSelectField
+                                selectedValue={this.state.recipientTypeIds.value}
+                                data={this.props.settingData.recipientTypes}
+                                keyField={'id'}
+                                valueField={'name'}
+                                statusField={'checked'}
+                                isSummited={this.state.isSummited}
+                                onChange={value => this.onChange('recipientTypeIds', value)}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label className="form-label required">Chat Group Type</Label>
+                            <MultipleSelectField
+                                selectedValue={this.state.chatGroupTypeIds.value}
+                                data={this.props.settingData.chatGroupTypes}
+                                keyField={'id'}
+                                valueField={'name'}
+                                statusField={'checked'}
+                                isSummited={this.state.isSummited}
+                                onChange={value => this.onChange('chatGroupTypeIds', value)}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label className="form-label required">System</Label>
+                            <SelectField initialValue={this.props.updatePopupData.editingItem.systemId.value}
+                                data={this.props.settingData.notificationSystems}
+                                isSummited={this.state.isSummited}
+                                onChange={value => this.onChange('systemId', value)}
+                            />
+                        </FormGroup>
+                        <button disabled={this.state.isLoading} className="btn-submit" onClick={this.submitHandler}>Save</button>
+                    </Form>
+                </ModalBody>
 
-            <ConfirmPopup
-                onConfirm={this.props.closeUpdatePopupHandler}
-                onToggle={this.closeConfirmation}
-                isOpen={this.state.isShowedConfirm}
-                content={"There might be some unsaved changes in the form. The changes shall not be saved if you close this form. Are you sure you want to close this form?"}
-            />
+                <ConfirmPopup
+                    onConfirm={this.props.closeUpdatePopupHandler}
+                    onToggle={this.closeConfirmation}
+                    isOpen={this.state.isShowedConfirm}
+                    content={"There might be some unsaved changes in the form. The changes shall not be saved if you close this form. Are you sure you want to close this form?"}
+                />
             </Modal>
         );
     }
 }
 
 UpdatePopup.propTypes = {
-  closeUpdatePopupHandler: PropTypes.func.isRequired
+    closeUpdatePopupHandler: PropTypes.func.isRequired
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-  const { settingData, updatePopupData, updateData } = state;
-  return {
-    settingData,
-    updatePopupData,
-    updateData
-  };
+    const { settingData, updatePopupData, updateData } = state;
+    return {
+        settingData,
+        updatePopupData,
+        updateData
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UpdatePopup);

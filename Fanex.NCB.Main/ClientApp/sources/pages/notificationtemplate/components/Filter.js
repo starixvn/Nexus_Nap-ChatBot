@@ -44,20 +44,24 @@ class Filter extends Component {
 
     render() {
         return (
-            <Form className="form-filter">
-                <FormGroup>
-                    <Label className="form-label">{Labels.NotificationType}</Label>
-                    <Input type="select"
-                        name="notificationTypeId"
-                        onChange={this.handleNotificationTypeChange}
-                        value={this.state.notificationTypeId}
-                    >
-                        <option value="">{Labels.All}</option>
-                        {this.props.notificationTypes.map(this.renderNotificationTypeOption)}
+            <Form className="form-filter-new">
+                <div className="form-row">
+                    <FormGroup>
+                        <Label className="form-label">{Labels.NotificationType}</Label>
+                        <Input type="select"
+                            name="notificationTypeId"
+                            onChange={this.handleNotificationTypeChange}
+                            value={this.state.notificationTypeId}
+                        >
+                            <option value="">{Labels.All}</option>
+                            {this.props.notificationTypes.map(this.renderNotificationTypeOption)}
 
-                    </Input>
-                </FormGroup>
-                <button className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
+                        </Input>
+                    </FormGroup>
+                    <FormGroup>
+                        <button className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
+                    </FormGroup>
+                </div>
             </Form>
         );
     }

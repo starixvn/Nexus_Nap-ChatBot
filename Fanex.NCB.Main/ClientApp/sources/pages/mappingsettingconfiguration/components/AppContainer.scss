@@ -1,6 +1,7 @@
 ﻿@import "../../shared/variables";
 @import "../../shared/common.scss";
 @import "../../shared/components/forms.scss";
+@import "../../shared/components/_form-filter.scss";
 @import "../../shared/components/buttons.scss";
 @import "../../shared/components/modals.scss";
 @import "../../shared/components/messages.scss";
@@ -9,13 +10,6 @@
 
 .table-container {
     margin-top: 10px;
-}
-
-.form-filter {
-    .form-control {
-        display: inline-block;
-        width: 200px;
-    }
 }
 
 .job-info-container {

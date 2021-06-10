@@ -133,66 +133,67 @@ export class Filter extends Component {
 
     render() {
         return (
-            <Form className="form-filter" tag='div' >
-                <FormGroup>
-                    <Label className="form-label">{Labels.RecipientType}</Label>
-                    <MultiselectTreeView width={150}
-                        data={this.state.settings.recipientTypes}
-                        isSelectedAll
-                        onChange={selectedItems => this.onChange('recipientTypeIds', selectedItems.map(item => item.id).join(','))}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <Label className="form-label">{Labels.Recipient}</Label>
-                    <AutoComplete
-                        url={Site.resolveClientUrl('ChatGroupMapping/SearchRecipient')}
-                        onSelect={value => this.onChange('recipient', { value: value })}
-                        onInput={value => this.onChange('recipient', { value: value })}
-                        htmlAttributes={{ maxLength: 50 }}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <Label className="form-label">{Labels.GroupName}</Label>
-                    <AutoComplete
-                        url={Site.resolveClientUrl('ChatGroupMapping/SearchChatGroup')}
-                        onSelect={value => this.onChange('groupName', { value: value })}
-                        onInput={value => this.onChange('groupName', { value: value })}
-                        htmlAttributes={{ maxLength: 50 }}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <Label className="form-label">{Labels.LicenseeStatus}</Label>
-                    <MultiselectTreeView width={150}
-                        data={this.state.settings.licenseeStatuses}
-                        isSelectedAll
-                        onChange={selectedItems => this.onChange('licenseeStatusIds', selectedItems.map(item => item.id).join(','))}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <Label className="form-label">{Labels.MappingStatus}</Label>
-                    <MultiselectTreeView width={150}
-                        data={this.state.settings.mappingStatuses}
-                        isSelectedAll
-                        onChange={selectedItems => this.onChange('mappingStatusIds', selectedItems.map(item => item.id).join(','))}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <Label className="form-label">{Labels.BotService}</Label>
-                    <MultiselectTreeView width={150}
-                        data={this.state.settings.channels}
-                        isSelectedAll
-                        onChange={selectedItems => this.onChange('channelIds', selectedItems.map(item => item.id).join(','))}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <Label className="form-label">{Labels.BotName}</Label>
-                    <MultiselectTreeView width={150}
-                        data={this.state.settings.bots}
-                        isSelectedAll
-                        onChange={selectedItems => this.onChange('botIds', selectedItems.map(item => item.id).join(','))}
-                    />
-                </FormGroup>
-                <button type="submit" id="submit-button" disabled={!this.checkValidParams()} className="btn-submit" onClick={this.submitHandler}>{Labels.Submit}</button>
+            <Form className="form-filter-new" tag='div'>
+                <div className="form-row">
+                    <FormGroup>
+                        <Label className="form-label">{Labels.RecipientType}</Label>
+                        <MultiselectTreeView
+                            data={this.state.settings.recipientTypes} isSelectedAll
+                            onChange={selectedItems => this.onChange('recipientTypeIds', selectedItems.map(item => item.id).join(','))}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label className="form-label">{Labels.Recipient}</Label>
+                        <AutoComplete
+                            url={Site.resolveClientUrl('ChatGroupMapping/SearchRecipient')}
+                            onSelect={value => this.onChange('recipient', { value: value })}
+                            onInput={value => this.onChange('recipient', { value: value })}
+                            htmlAttributes={{ maxLength: 50 }}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label className="form-label">{Labels.GroupName}</Label>
+                        <AutoComplete
+                            url={Site.resolveClientUrl('ChatGroupMapping/SearchChatGroup')}
+                            onSelect={value => this.onChange('groupName', { value: value })}
+                            onInput={value => this.onChange('groupName', { value: value })}
+                            htmlAttributes={{ maxLength: 50 }}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label className="form-label">{Labels.LicenseeStatus}</Label>
+                        <MultiselectTreeView
+                            data={this.state.settings.licenseeStatuses} isSelectedAll
+                            onChange={selectedItems => this.onChange('licenseeStatusIds', selectedItems.map(item => item.id).join(','))}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label className="form-label">{Labels.MappingStatus}</Label>
+                        <MultiselectTreeView
+                            data={this.state.settings.mappingStatuses} isSelectedAll
+                            onChange={selectedItems => this.onChange('mappingStatusIds', selectedItems.map(item => item.id).join(','))}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label className="form-label">{Labels.BotService}</Label>
+                        <MultiselectTreeView
+                            data={this.state.settings.channels} isSelectedAll
+                            onChange={selectedItems => this.onChange('channelIds', selectedItems.map(item => item.id).join(','))}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label className="form-label">{Labels.BotName}</Label>
+                        <MultiselectTreeView
+                            data={this.state.settings.bots} isSelectedAll
+                            onChange={selectedItems => this.onChange('botIds', selectedItems.map(item => item.id).join(','))}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <button type="submit" id="submit-button" disabled={!this.checkValidParams()}
+                            className="btn-submit" onClick={this.submitHandler}
+                        >{Labels.Submit}</button>
+                    </FormGroup>
+                </div>
             </Form>
         );
     }

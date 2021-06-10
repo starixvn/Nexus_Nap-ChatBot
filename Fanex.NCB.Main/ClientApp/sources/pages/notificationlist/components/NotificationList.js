@@ -340,62 +340,65 @@ export default class NotificationList extends Component {
                     onInsertNewNotification={this.onInsertedNewNotification}
                     onUpdateNotificationStatus={this.onUpdateNotificationStatus}
                 />
-                <Form className="form-filter" onSubmit={this.handleSearch} >
-                    <FormGroup>
-                        <Label className="form-label">Notification Type</Label>
-                        <MultiselectTreeView width={180}
-                            data={this.state.notificationTypeOptions}
-                            isSelectedAll hasSearchBox
-                            onChange={selectedItems => this.handleFilterChange('notificationTypeIds', selectedItems.map(item => item.id).join(','))}
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label className="form-label">From</Label>
-                        <DatePicker selected={this.state.filter.fromDate} onChange={this.handleFromDateChange} />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label className="form-label">To</Label>
-                        <DatePicker selected={this.state.filter.toDate} onChange={this.handleToDateChange} />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label className="form-label">Sender</Label>
-                        <Input type="select" name="creatorId"
-                            value={this.state.filter.creatorId ? this.state.filter.creatorId : ''}
-                            onChange={this.handleCreatorChange}>
-                            <option value="" >{Labels.All}</option>
-                            {this.state.userOptions.map(this.renderUserOption)}
-                        </Input>
-                    </FormGroup>
-
-                    <FormGroup>
-                        <Label className="form-label">Recipient</Label>
-                        <MultiselectTreeView width={180}
-                            data={this.state.recipientOptions}
-                            isSelectedAll hasSearchBox
-                            onChange={selectedItems => this.handleFilterChange('recipientIds', selectedItems.map(item => item.id).join(','))}
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label className="form-label">Status</Label>
-                        <MultiselectTreeView width={150}
-                            data={this.state.statusOptions}
-                            isSelectedAll
-                            onChange={selectedItems => this.handleFilterChange('statusIds', selectedItems.map(item => item.id).join(','))}
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label className="form-label">{Labels.BotService}</Label>
-                        <MultiselectTreeView width={150}
-                            data={this.state.channelOptions}
-                            isSelectedAll
-                            onChange={selectedItems => this.handleFilterChange('channelIds', selectedItems.map(item => item.id).join(','))}
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label className="form-label">MessageID</Label>
-                        <Input type="text" value={this.state.filter.messageId} onChange={this.handleMessageIdChange} />
-                    </FormGroup>
-                    <button id="submit-button" className="btn-submit" type="submit">Submit</button>
+                <Form className="form-filter-new" onSubmit={this.handleSearch}>
+                    <div className="form-row">
+                        <FormGroup>
+                            <Label className="form-label">Notification Type</Label>
+                            <MultiselectTreeView
+                                data={this.state.notificationTypeOptions}
+                                isSelectedAll hasSearchBox
+                                onChange={selectedItems => this.handleFilterChange('notificationTypeIds', selectedItems.map(item => item.id).join(','))}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label className="form-label">From</Label>
+                            <DatePicker selected={this.state.filter.fromDate} onChange={this.handleFromDateChange} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label className="form-label">To</Label>
+                            <DatePicker selected={this.state.filter.toDate} onChange={this.handleToDateChange} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label className="form-label">Sender</Label>
+                            <Input type="select" name="creatorId"
+                                value={this.state.filter.creatorId ? this.state.filter.creatorId : ''}
+                                onChange={this.handleCreatorChange}>
+                                <option value="" >{Labels.All}</option>
+                                {this.state.userOptions.map(this.renderUserOption)}
+                            </Input>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label className="form-label">Recipient</Label>
+                            <MultiselectTreeView
+                                data={this.state.recipientOptions}
+                                isSelectedAll hasSearchBox
+                                onChange={selectedItems => this.handleFilterChange('recipientIds', selectedItems.map(item => item.id).join(','))}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label className="form-label">Status</Label>
+                            <MultiselectTreeView
+                                data={this.state.statusOptions}
+                                isSelectedAll
+                                onChange={selectedItems => this.handleFilterChange('statusIds', selectedItems.map(item => item.id).join(','))}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label className="form-label">{Labels.BotService}</Label>
+                            <MultiselectTreeView
+                                data={this.state.channelOptions}
+                                isSelectedAll
+                                onChange={selectedItems => this.handleFilterChange('channelIds', selectedItems.map(item => item.id).join(','))}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label className="form-label">MessageID</Label>
+                            <Input type="text" value={this.state.filter.messageId} onChange={this.handleMessageIdChange} />
+                        </FormGroup>
+                        <FormGroup>
+                            <button id="submit-button" className="btn-submit" type="submit">Submit</button>
+                        </FormGroup>
+                    </div>
                 </Form>
                 {this.state.tableData &&
                     <DataGrid tableData={this.state.tableData}

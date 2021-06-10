@@ -32,8 +32,7 @@ export default class Pager extends Component {
 
     renderPageIcon = (iconClass, isDisable, onClickFunc) => {
         return (
-            <a href='javascript:;'
-                className={`icon ${iconClass} ${isDisable ? 'disable' : ''}`}
+            <a className={`icon ${iconClass} ${isDisable ? 'disable' : ''}`}
                 onClick={() => !isDisable && onClickFunc()}
             />
         );
