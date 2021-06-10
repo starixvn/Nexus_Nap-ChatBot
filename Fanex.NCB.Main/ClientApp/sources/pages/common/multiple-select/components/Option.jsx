@@ -12,7 +12,7 @@ export default class Option extends Component {
         super(props);
     }
 
-    onChange = (event) => {
+    onChange = event => {
         event.stopPropagation();
 
         const { itemData, onChange } = this.props;
@@ -21,7 +21,8 @@ export default class Option extends Component {
             key: itemData.key,
             value: itemData.value,
             checked: !itemData.checked
-        }
+        };
+
         onChange && onChange(newItemData);
     };
 

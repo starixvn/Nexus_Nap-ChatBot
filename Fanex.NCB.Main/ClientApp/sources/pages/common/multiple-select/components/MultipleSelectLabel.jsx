@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Translation from './translation';
-
-const MAX_SELECTED_ITEM_FOR_DISPLAY = 3;
+import { MAX_SELECTED_ITEM_FOR_DISPLAY } from '../constants';
 
 export default class MultipleSelectLabel extends Component {
     static propTypes = {

@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Option from './Option';
 import Translation from './translation';
-
-const DEFAULT_CHECKED = false;
+import { DEFAULT_CHECKED_ALL } from '../constants';
 
 export default class OptionAll extends Component {
     static propTypes = {
@@ -15,7 +14,7 @@ export default class OptionAll extends Component {
 
     static defaultProps = {
         language: 'en-US',
-        checked: DEFAULT_CHECKED
+        checked: DEFAULT_CHECKED_ALL
     };
 
     constructor(props) {
