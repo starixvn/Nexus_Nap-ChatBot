@@ -8,26 +8,34 @@
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
+    using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
+    using Fanex.NCB.BotService.Core.Enum;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Options;
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class MessageController : Controller
     {
+        private const string DisableChannelErrorMessage = "Chatbot service has been stopped due to turning off the configuration by admin.";
+
+        private readonly AppSettings appSettings;
         private readonly ILogger logger;
         private readonly IConversationService conversationService;
         private readonly ITelegramBotService botService;
 
         public MessageController(
+            IOptions<AppSettings> appSettings,
             ILogger logger,
             IConversationService conversationService,
             ITelegramBotService botService)
         {
+            this.appSettings = appSettings.Value;
             this.logger = logger;
             this.conversationService = conversationService;
             this.botService = botService;
@@ -38,14 +46,21 @@
         public async Task<ObjectResult> SendMessage(int botId, long chatId, string text)
         {
             var errorMessage = string.Empty;
-            try
+            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
             {
-                await botService.SendTextMessageAsync(botId, chatId, text);
+                errorMessage = DisableChannelErrorMessage;
             }
-            catch (Exception ex)
+            else
             {
-                errorMessage = ex.Message;
-                await WriteLog(ex);
+                try
+                {
+                    await botService.SendTextMessageAsync(botId, chatId, text);
+                }
+                catch (Exception ex)
+                {
+                    errorMessage = ex.Message;
+                    await WriteLog(ex);
+                }
             }
 
             return Ok(errorMessage);
@@ -64,7 +79,7 @@
                     foreach (ConversationInfo conversationInfo in notificationMessage.Recipients)
                     {
                         tasks.Add(
-                            Task.Run(() => SendMessage(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
+                            Task.Run(() => SendMessageAsync(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
                             );
                     }
                 }
@@ -74,33 +89,47 @@
             return Ok(results);
         }
 
-        private async Task<SendMessageResult> SendMessage(ConversationInfo conversationInfo, int notificationId, string text)
+        private async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo, int notificationId, string text)
         {
-            try
+            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
             {
-                _ = int.TryParse(conversationInfo.BotConversationId, out int botId);
-                _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
-                SendMessageResult result = await SendMessage(botId, chatId, notificationId, text);
-                var thread = new Thread(async () => await AddMessageLog(conversationInfo, text, result));
-                thread.Start();
-
-                return result;
-            }
-            catch (Exception exception)
-            {
-                await WriteLog(exception);
                 return new SendMessageResult
                 {
                     NotificationId = notificationId,
                     ConversationId = conversationInfo.ConversationId,
                     SentTime = DateTime.Now,
                     ErrorCode = 1,
-                    ErrorMessage = exception.Message
+                    ErrorMessage = DisableChannelErrorMessage
                 };
+            }
+            else
+            {
+                try
+                {
+                    _ = int.TryParse(conversationInfo.BotConversationId, out int botId);
+                    _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
+                    SendMessageResult result = await SendMessageAsync(botId, chatId, notificationId, text);
+                    var thread = new Thread(async () => await AddMessageLogAsync(conversationInfo, text, result));
+                    thread.Start();
+
+                    return result;
+                }
+                catch (Exception exception)
+                {
+                    await WriteLog(exception);
+                    return new SendMessageResult
+                    {
+                        NotificationId = notificationId,
+                        ConversationId = conversationInfo.ConversationId,
+                        SentTime = DateTime.Now,
+                        ErrorCode = 1,
+                        ErrorMessage = exception.Message
+                    };
+                }
             }
         }
 
-        private async Task<SendMessageResult> SendMessage(int botId, long chatId, int notificationId, string text)
+        private async Task<SendMessageResult> SendMessageAsync(int botId, long chatId, int notificationId, string text)
         {
             var result = new SendMessageResult
             {
@@ -124,7 +153,7 @@
             return result;
         }
 
-        private async Task AddMessageLog(ConversationInfo conversationInfo, string text, SendMessageResult result)
+        private async Task AddMessageLogAsync(ConversationInfo conversationInfo, string text, SendMessageResult result)
         {
             try
             {

@@ -5,6 +5,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Fanex.Logging;
+    using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.BotService.EndPoint.Controllers;
@@ -14,12 +15,14 @@
     using Microsoft.Bot.Builder.Integration;
     using Microsoft.Bot.Configuration;
     using Microsoft.Bot.Schema;
+    using Microsoft.Extensions.Options;
     using NSubstitute;
     using NSubstitute.ExceptionExtensions;
     using Xunit;
 
     public class NotifyControllerTests
     {
+        private AppSettings appSettings;
         private IAdapterIntegration adapter;
         private IMessageLogService messageLogService;
         private IConversationService conversationService;
@@ -246,12 +249,16 @@
         [Obsolete]
         private NotifyController GetController()
         {
+            appSettings = new AppSettings { EnableChannelIds = "1" };
+            var appSettingOptions = Substitute.For<IOptions<AppSettings>>();
+            appSettingOptions.Value.Returns(appSettings);
+
             adapter = Substitute.For<IAdapterIntegration>();
             messageLogService = Substitute.For<IMessageLogService>();
             botConfig = Substitute.For<BotConfiguration>();
             conversationService = Substitute.For<IConversationService>();
             logger = Substitute.For<ILogger>();
-            return new NotifyController(adapter, messageLogService, botConfig, conversationService, logger);
+            return new NotifyController(appSettingOptions, adapter, messageLogService, botConfig, conversationService, logger);
         }
     }
 }

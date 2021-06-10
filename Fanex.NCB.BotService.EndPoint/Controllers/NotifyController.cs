@@ -8,6 +8,7 @@
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
+    using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Enum;
     using Fanex.NCB.BotService.Core.Models;
@@ -20,26 +21,32 @@
     using Microsoft.Bot.Configuration;
     using Microsoft.Bot.Connector.Authentication;
     using Microsoft.Bot.Schema;
+    using Microsoft.Extensions.Options;
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class NotifyController : ControllerBase
     {
+        private readonly AppSettings appSettings;
         private readonly IAdapterIntegration adapter;
         private readonly IConversationService conversationService;
         private readonly IMessageLogService messageLogService;
         private readonly ILogger logger;
+        private const string DisableChannelErrorMessage = "Chatbot service has been stopped due to turning off the configuration by admin.";
         private const string DuplicatedErrorMessage = "The content of the message sent to this group is duplicated for a period of time.";
 
         [Obsolete]
         private readonly BotConfiguration botConfig;
 
         [Obsolete]
-        public NotifyController(IAdapterIntegration adapter,
+        public NotifyController(
+            IOptions<AppSettings> appSettings,
+            IAdapterIntegration adapter,
             IMessageLogService messageLogService,
             BotConfiguration botConfig,
             IConversationService conversationService,
             ILogger logger)
         {
+            this.appSettings = appSettings.Value;
             this.adapter = adapter;
             this.botConfig = botConfig;
             this.conversationService = conversationService;
@@ -61,18 +68,24 @@
         [Obsolete]
         public async Task<ObjectResult> Send(string botName, string conversationId, string message)
         {
-            var appId = GetAppId(botName);
-            var conversationReference = await GetConversationReference(conversationId, botName);
             var errorMessage = string.Empty;
-
-            try
+            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
             {
-                await SendMessage(appId, conversationReference, message);
+                errorMessage = DisableChannelErrorMessage;
             }
-            catch (Exception ex)
+            else
             {
-                errorMessage = ex.Message;
-                await WriteLog(ex);
+                try
+                {
+                    var appId = GetAppId(botName);
+                    var conversationReference = await GetConversationReference(conversationId, botName);
+                    await SendMessage(appId, conversationReference, message);
+                }
+                catch (Exception ex)
+                {
+                    errorMessage = ex.Message;
+                    await WriteLog(ex);
+                }
             }
 
             return Ok(errorMessage);
@@ -105,18 +118,31 @@
         [Obsolete]
         private async Task SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
         {
-            bool isInvalidSendToBotService = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
-
-            tasks.Add(isInvalidSendToBotService ? Task.Run(() => new SendMessageResult
+            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
             {
-                ConversationId = conversationInfo.ConversationId,
-                SentTime = DateTime.UtcNow,
-                ErrorCode = -1,
-                ErrorMessage = DuplicatedErrorMessage,
-                NotificationId = notificationMessage.NotificationId,
-                IsIgnoreRetry = true
-            }) : Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
-);
+                tasks.Add(Task.Run(() => new SendMessageResult
+                {
+                    NotificationId = notificationMessage.NotificationId,
+                    ConversationId = conversationInfo.ConversationId,
+                    SentTime = DateTime.Now,
+                    ErrorCode = 1,
+                    ErrorMessage = DisableChannelErrorMessage
+                }));
+            }
+            else
+            {
+                bool isInvalidSendToBotService = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
+
+                tasks.Add(isInvalidSendToBotService ? Task.Run(() => new SendMessageResult
+                {
+                    ConversationId = conversationInfo.ConversationId,
+                    SentTime = DateTime.UtcNow,
+                    ErrorCode = -1,
+                    ErrorMessage = DuplicatedErrorMessage,
+                    NotificationId = notificationMessage.NotificationId,
+                    IsIgnoreRetry = true
+                }) : Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message)));
+            }
         }
 
         [Obsolete]

@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Fanex.NCB.BotService.Core
 {
     public class AppSettings
@@ -20,5 +23,7 @@ namespace Fanex.NCB.BotService.Core
         public string SkypeServiceUrl { get; set; }
 
         public string HealthCheckUrl { get; set; }
+        public string EnableChannelIds { get; set; }
+        public IEnumerable<byte> EnableChannels => EnableChannelIds.Split(',').Select(x => byte.Parse(x));
     }
 }
