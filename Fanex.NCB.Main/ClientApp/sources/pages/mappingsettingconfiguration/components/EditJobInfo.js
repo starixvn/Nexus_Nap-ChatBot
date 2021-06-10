@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import Labels from '../../common/Labels';
-import { Input } from 'reactstrap';
+import { Input, Tooltip } from 'reactstrap';
 import { toast } from 'react-toastify';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 
@@ -19,7 +19,8 @@ export class EditJobInfo extends Component {
             previousMaxMessageId: props.jobInfo.previousMaxMessageId,
             batchSize: props.jobInfo.batchSize,
             testingGroup: props.jobInfo.testingGroup,
-            confirmUpdateJobInfo: false
+            confirmUpdateJobInfo: false,
+            tooltipOpen: false
         };
 
         this.haveHostPermission = document.getElementById('have-host-permission') && document.getElementById('have-host-permission').checked;
@@ -27,20 +28,19 @@ export class EditJobInfo extends Component {
 
     handleChangeSaveMode = () => {
         this.toggleConfirmUpdateJobInfo();
+        const groupIds = this.state.testingGroup.trim().split(',');
         let rexegNumber = new RegExp('[^0-9]');
         if (rexegNumber.test(this.state.batchSize)) {
             toast.error('Batch Size must be integer');
-        }
-        else if (rexegNumber.test(this.state.testingGroup)) {
-            toast.error('Testing Group must be integer');
-        }
-        else {
+        } else if (groupIds.length === 0 || groupIds.filter(item => rexegNumber.test(item)).length > 0) {
+            toast.error('Testing Group must be integer and separated by \',\' for multiple group.');
+        } else {
             let data = {
                 id: this.state.id,
                 status: this.state.status,
                 previousMaxMessageId: this.state.previousMaxMessageId,
                 batchSize: parseInt(this.state.batchSize),
-                testingGroup: parseInt(this.state.testingGroup)
+                testingGroup: this.state.testingGroup
             };
 
             this.props.setJobInfoData(data, () => this.props.setJobInfoFlag({ isEdit: false }));
@@ -63,6 +63,14 @@ export class EditJobInfo extends Component {
     }
 
     handleCancel = () => this.props.setJobInfoFlag({ isEdit: false })
+
+    toggleTooltip = () => {
+        this.setState(prevState => {
+            return {
+                tooltipOpen: !prevState.tooltipOpen
+            };
+        });
+    }
 
     render() {
         return (
@@ -87,11 +95,14 @@ export class EditJobInfo extends Component {
                 <div className='job-info-item'>
                     <p className='job-info-title'>Testing Group:</p>
                     <Input
-                        name='testingGroup'
+                        name='testingGroup' id="testingGroup"
                         onChange={this.handleChange}
                         className='job-info-input'
                         defaultValue={this.props.jobInfo.testingGroup}
                     />
+                    <Tooltip placement="auto" isOpen={this.state.tooltipOpen} target="testingGroup" toggle={this.toggleTooltip}>
+                        Separated by ',' for multiple group
+                    </Tooltip>
                 </div>
                 {
                     this.haveHostPermission &&

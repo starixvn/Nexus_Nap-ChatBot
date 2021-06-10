@@ -11,6 +11,6 @@
         public int BatchSize { get; set; }
 
         [Required]
-        public int TestingGroup { get; set; }
+        public string TestingGroup { get; set; }
     }
 }

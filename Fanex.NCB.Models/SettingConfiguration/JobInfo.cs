@@ -10,6 +10,6 @@
 
         public int PreviousMaxMessageId { get; set; }
 
-        public int TestingGroup { get; set; }
+        public string TestingGroup { get; set; }
     }
 }

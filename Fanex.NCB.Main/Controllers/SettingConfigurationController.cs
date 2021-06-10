@@ -10,6 +10,7 @@
     using Fanex.NCB.Models.SettingConfiguration;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
     using static Fanex.NAP.Core.Business.Constant;
@@ -133,8 +134,7 @@
         public async Task<IActionResult> GetJobInfo(int? jobId)
         {
             var value = jobId ?? 1;
-            var jobInfo = await settingConfigurationService.GetJobInfoAsync(value);
-
+            JobInfo jobInfo = await settingConfigurationService.GetJobInfoAsync(value);
             return Json(jobInfo);
         }
 
@@ -153,14 +153,13 @@
         {
             if (ModelState.IsValid)
             {
-                var result = await settingConfigurationService.UpdateJobInfoAsync(new UpdateJobInfo
+                CommandResult result = await settingConfigurationService.UpdateJobInfoAsync(new UpdateJobInfo
                 {
                     Id = viewModel.Id,
                     BatchSize = viewModel.BatchSize,
                     TestingGroup = viewModel.TestingGroup,
                     ModifiedBy = napSession.UserId
                 });
-
                 return Json(result);
             }
 

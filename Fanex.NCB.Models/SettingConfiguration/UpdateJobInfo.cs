@@ -6,7 +6,7 @@
 
         public int BatchSize { get; set; }
 
-        public int TestingGroup { get; set; }
+        public string TestingGroup { get; set; }
 
         public int ModifiedBy { get; set; }
     }
