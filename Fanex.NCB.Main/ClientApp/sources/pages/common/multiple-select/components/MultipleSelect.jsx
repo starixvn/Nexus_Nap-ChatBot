@@ -35,7 +35,6 @@ export default class MultipleSelect extends Component {
     constructor(props) {
         super(props);
         this.searchInputBox = null;
-        this.id = `multiple-select-${props.id || id++}`;
 
         this.state = {
             originalDataSource: null,
@@ -43,6 +42,12 @@ export default class MultipleSelect extends Component {
             showOptionList: false,
             dataSource: []
         };
+
+        if (!props.id) {
+            id += 1;
+        }
+
+        this.id = `multiple-select-${props.id || id}`;
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -68,7 +73,7 @@ export default class MultipleSelect extends Component {
         return this.state.dataSource.filter(item => item.checked);
     }
 
-    onChangeHandler = (item) => {
+    onChangeHandler = item => {
         const { keyField, valueField, statusField } = this.props;
 
         const selectedItem = {
