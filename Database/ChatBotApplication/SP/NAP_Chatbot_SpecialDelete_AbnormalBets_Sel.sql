@@ -12,6 +12,7 @@ AS
 		- 20200214@Percy: Initialize SP [RedmineID: #127944]
 		- 20200305@Percy: Extend length some fields [RedmineID: #129794]
 		- 20200804@Percy: Add RequestId for Ticket Voiding Abnormal Bets - Phase 3 [RedmineID: #135686]
+		- 20210413@Malcolm: Integrate AB (Real member) voiding tickets [RedmineID: #153112]
 
 	Param's Explanation:
 		@MessageIDLst:
@@ -61,7 +62,7 @@ BEGIN
 			INNER JOIN dbo.TicketVoiding_SubIssueType rs WITH (NOLOCK) ON rq.SubIssueTypeId = rs.SubIssueTypeId
 			LEFT JOIN dbo.Customer rb WITH (NOLOCK) ON rq.UserId = rb.custid
 			LEFT JOIN dbo.Customer vb WITH (NOLOCK) ON vh.VoidById = vb.custid
-		WHERE rq.IssueTypeId = 11 -- Abnormal Bets
+		WHERE rq.IssueTypeId IN (11, 15) -- Abnormal Bets, AB (real member)
 	END
 
 	-- Event Info
