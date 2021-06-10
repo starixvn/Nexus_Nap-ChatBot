@@ -17,8 +17,7 @@ BEGIN
     DECLARE jobStatus       VARCHAR (10);
     DECLARE jobBatchSize    INT;
     DECLARE maxMessageId    INT;
-    DECLARE testingGroup    INT;
-	DECLARE testingGrouplst TEXT;
+    DECLARE testingGroup    TEXT;
 
     SELECT ss.Value INTO jobStatus
     FROM SystemSetting ss
@@ -35,31 +34,11 @@ BEGIN
     WHERE ss.JobIdentify = jobId
         AND ss.Description LIKE '%Previous MaxMessageID%';
 
-    SELECT ss.Value INTO testingGrouplst
+    SELECT ss.Value INTO testingGroup
     FROM SystemSetting ss
     WHERE ss.JobIdentify = jobId
         AND ss.Description LIKE '%Chat group ID%';
 		
-		
-	DROP TEMPORARY TABLE IF EXISTS tmpGroupId;
-	CREATE TEMPORARY TABLE tmpGroupId(ConversationGroupID INT UNSIGNED);
-    
-    IF IFNULL(testingGrouplst, '') <> '' THEN
-		SET @SqlCommand = REPLACE(testingGrouplst, ',', '''),(''');
-		SET @SqlCommand = CONCAT('(''', @SqlCommand, ''')');
-		SET @SqlCommand= CONCAT('INSERT INTO tmpGroupId VALUES', @SqlCommand); 
-		
-		PREPARE Stmt FROM  @SqlCommand;
-		EXECUTE Stmt;
-		DEALLOCATE PREPARE Stmt;
-	END IF;
-		
-	SELECT t.ConversationGroupID INTO testingGroup
-	FROM tmpGroupId t
-		INNER JOIN ConversationGroup g ON g.ConversationGroupID = t.ConversationGroupID
-		INNER JOIN ConversationChannel cc ON cc.ChannelId = g.ChannelId
-	WHERE cc.ChannelName = 'Skype';
-
     SELECT
         jobId           AS  Id
         ,jobStatus      AS  Status
