@@ -34,20 +34,17 @@
         private readonly ILogger logger;
 <<<<<<< HEAD
 =======
-        private readonly CheckDuplicatedMessageLogSetting checkDuplicatedMessageSettings;
->>>>>>> 000 - suppress some code smell
+        private const string DisableChannelErrorMessage = "Chatbot service has been stopped due to turning off the configuration by admin.";
+        private const string DuplicatedErrorMessage = "The content of the message sent to this group is duplicated for a period of time.";
+>>>>>>> 000 - add more configuration: turn on/off send message to skype/telegram
 
         [Obsolete]
         private readonly BotConfiguration botConfig;
 
         [Obsolete]
-<<<<<<< HEAD
         public NotifyController(
             IOptions<AppSettings> appSettings,
             IAdapterIntegration adapter,
-=======
-        public NotifyController(IAdapterIntegration adapter,
->>>>>>> 000 - suppress some code smell
             IMessageLogService messageLogService,
             BotConfiguration botConfig,
             IConversationService conversationService,
@@ -73,15 +70,11 @@
 
         [HttpPost]
         [Route("api/notify")]
-<<<<<<< HEAD
         [Obsolete("Pending")]
         public async Task<ObjectResult> Send([FromBody] ConversationInfo conversationInfo)
-=======
-        [Obsolete]
-        public async Task<ObjectResult> Send(string botName, string conversationId, string message)
->>>>>>> 000 - suppress some code smell
         {
             var errorMessage = string.Empty;
+<<<<<<< HEAD
             try
             {
                 if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
@@ -94,11 +87,30 @@
                     var conversationReference = GetConversationReference(conversationInfo);
                     await SendMessage(appId, conversationReference, conversationInfo.Message);
                 }
-            }
-            catch (Exception ex)
+=======
+            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
             {
+                errorMessage = DisableChannelErrorMessage;
+>>>>>>> 000 - add more configuration: turn on/off send message to skype/telegram
+            }
+            else
+            {
+<<<<<<< HEAD
                 errorMessage = ex.Message;
                 //await WriteLog(ex);
+=======
+                try
+                {
+                    var appId = GetAppId(botName);
+                    var conversationReference = await GetConversationReference(conversationId, botName);
+                    await SendMessage(appId, conversationReference, message);
+                }
+                catch (Exception ex)
+                {
+                    errorMessage = ex.Message;
+                    await WriteLog(ex);
+                }
+>>>>>>> 000 - add more configuration: turn on/off send message to skype/telegram
             }
 
             return Ok(errorMessage);
@@ -106,11 +118,7 @@
 
         [Obsolete]
         [Route("api/notifymulti")]
-<<<<<<< HEAD
-=======
-        [HttpPost]
         [Obsolete]
->>>>>>> 000 - suppress some code smell
         public async Task<ObjectResult> SendMulti([FromBody] IList<NotificationMessage> notificationMessages)
         {
             var results = new List<SendMessageResult>();
@@ -135,12 +143,9 @@
         }
 
         [Obsolete]
-<<<<<<< HEAD
         private void SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
-=======
-        private async Task SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
->>>>>>> 000 - suppress some code smell
         {
+<<<<<<< HEAD
             bool isEnabledSkypeChannel = appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype);
             tasks.Add(!isEnabledSkypeChannel ? Task.Run(() => new SendMessageResult
             {
@@ -159,6 +164,32 @@
                 tasks.Add(
                     Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
                     );
+=======
+            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
+            {
+                tasks.Add(Task.Run(() => new SendMessageResult
+                {
+                    NotificationId = notificationMessage.NotificationId,
+                    ConversationId = conversationInfo.ConversationId,
+                    SentTime = DateTime.Now,
+                    ErrorCode = 1,
+                    ErrorMessage = DisableChannelErrorMessage
+                }));
+            }
+            else
+            {
+                bool isInvalidSendToBotService = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
+
+                tasks.Add(isInvalidSendToBotService ? Task.Run(() => new SendMessageResult
+                {
+                    ConversationId = conversationInfo.ConversationId,
+                    SentTime = DateTime.UtcNow,
+                    ErrorCode = -1,
+                    ErrorMessage = DuplicatedErrorMessage,
+                    NotificationId = notificationMessage.NotificationId,
+                    IsIgnoreRetry = true
+                }) : Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message)));
+>>>>>>> 000 - add more configuration: turn on/off send message to skype/telegram
             }
         }
 

@@ -23,6 +23,8 @@
     public class MessageController : Controller
     {
         private readonly AppSettings appSettings;
+
+        private readonly AppSettings appSettings;
         private readonly ILogger logger;
         private readonly IConversationService conversationService;
         private readonly ITelegramBotService botService;
@@ -47,8 +49,14 @@
         public async Task<ObjectResult> SendMessage([FromBody] ConversationInfo conversationInfo)
         {
             var errorMessage = string.Empty;
-            try
+            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
             {
+                errorMessage = DisableChannelErrorMessage;
+            }
+            else
+            {
+                try
+                {
                 if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
                 {
                     errorMessage = Resources.Resources.DisableChannelErrorMessage;
@@ -59,11 +67,12 @@
                     _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
                     await botService.SendTextMessageAsync(botId, chatId, conversationInfo.Message);
                 }
-            }
-            catch (Exception ex)
-            {
-                errorMessage = ex.Message;
+                }
+                catch (Exception ex)
+                {
+                    errorMessage = ex.Message;
                 await WriteLogAsync(ex);
+                }
             }
 
             return Ok(errorMessage);
@@ -121,10 +130,10 @@
             }
 
             string guiid = Guid.NewGuid().ToString();
-            try
-            {
+                try
+                {
                 _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
-                _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
+                    _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
                 await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, messageContent, guiid);
                 SendMessageResult result = await SendTextMessageAsync(botId, chatId, notificationId, messageContent);
                 if (result.ErrorCode != 0)
@@ -133,22 +142,23 @@
                 }
 
                 var thread = new Thread(async () => await AddMessageLogToDatabaseAsync(conversationInfo, messageContent, result));
-                thread.Start();
+                    thread.Start();
 
-                return result;
-            }
-            catch (Exception exception)
-            {
+                    return result;
+                }
+                catch (Exception exception)
+                {
                 await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
                 await WriteLogAsync(exception);
-                return new SendMessageResult
-                {
-                    NotificationId = notificationId,
-                    ConversationId = conversationInfo.ConversationId,
-                    SentTime = DateTime.Now,
-                    ErrorCode = 1,
-                    ErrorMessage = exception.Message
-                };
+                    return new SendMessageResult
+                    {
+                        NotificationId = notificationId,
+                        ConversationId = conversationInfo.ConversationId,
+                        SentTime = DateTime.Now,
+                        ErrorCode = 1,
+                        ErrorMessage = exception.Message
+                    };
+                }
             }
         }
 

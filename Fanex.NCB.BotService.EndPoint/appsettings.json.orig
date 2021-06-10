@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
     "Logging": {
         "LogLevel": {
             "Default": "Debug",
@@ -19,8 +18,13 @@
         "SkypeServiceUrl": "https://smba.trafficmanager.net/apis/",
         "HealthCheckUrl": "https://login.botframework.vn/",
         "EnableChannelIds": "1,2"
+<<<<<<< HEAD
     },
     "ConnectionStrings": {
+=======
+  },
+  "ConnectionStrings": {
+>>>>>>> 000 - add more configuration: turn on/off send message to skype/telegram
         "ChatBot": "Data Source=10.18.200.228;Port=3319;SslMode=none;Initial Catalog=ChatBot;Persist Security Info=True;User ID=ncb.bot;Password=NQjQXmo90R8b5RixO/Isjxwugd2Du9GR; CharSet=utf8mb4;"
     },
     "LogCategory": "chatbot-for-licensee-service",
@@ -54,47 +58,4 @@
             "Token": "1652295563:AAH8ufuIQWgKo00X5FwncemyIxl7GcUAks8"
         }
     ]
-=======
-  "Logging": {
-    "LogLevel": {
-            "Default": "Debug",
-            "System": "Information",
-            "Microsoft": "Information"
-    }
-  },
-  "AppSettings": {
-    "AppCredentialId": "ChatBotForLicensee",
-    "AppCredentialPassword": "ZSI6IjMiLCJuYmYiOjE1",
-    "Secret": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ",
-    "AllowedHosts": "*",
-    "BotFilePath": "botConfig.bot",
-    "BotFileSecret": ""
-        "TokenUrl": "https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token",
-        "SkypeServiceUrl": "https://smba.trafficmanager.net/apis/",
-        "HealthCheckUrl": "https://login.botframework.vn/"
-  },
-  "ConnectionStrings": {
-        "ChatBot": "Data Source=10.18.200.228;Port=3319;SslMode=none;Initial Catalog=ChatBot;Persist Security Info=True;User ID=ncb.bot;Password=NQjQXmo90R8b5RixO/Isjxwugd2Du9GR; CharSet=utf8mb4;"
-  },
-  "LogCategory": "chatbot-for-licensee-service",
-  "SentryEngineOptions": {
-    "Dsn": "https://f38b31b0602f4ca7b3c8b3c6975c179f@sentry.nexdev.net/55",
-    "FrontEndDsn": "https://f38b31b0602f4ca7b3c8b3c6975c179f@sentry.nexdev.net/55"
-  },
-  "ProxySettings": {
-        "IsUseProxy": false,
-    "ProxyAddress": "10.18.200.41:3128",
-    "BypassOnLocal": true,
-    "TimeOut": 200
-    },
-    "Fanex.Caching.Redis": {
-        "ConnectionString": "ha.nexdev.net:16379,password=foo1@bared,defaultDatabase=5",
-        "ApplicationName": "Fanex.NCB.BotService:EndPoint"
-    },
-    "CheckDuplicateMessageLogSettings": {
-        "IsEnabled": true,
-        "TimeSpanInMinutes": 30,
-        "ExceptionConversatiionIDs": []
-  }
->>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
 }

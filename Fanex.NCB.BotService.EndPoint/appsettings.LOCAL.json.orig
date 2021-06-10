@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ﻿{
     "Logging": {
         "LogLevel": {
@@ -9,6 +8,7 @@
     },
     "AppSettings": {
         "Domain": "https://licbot.nexdev.net",
+<<<<<<< HEAD
         "AppCredentialId": "ChatBotForLicensee",
         "AppCredentialPassword": "ZSI6IjMiLCJuYmYiOjE1",
         "Secret": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ",
@@ -33,21 +33,7 @@
         "ProxyAddress": "10.18.200.41:3128",
         "BypassOnLocal": true,
         "TimeOut": 200
-    },
-    "Fanex.Caching.Redis": {
-        "ConnectionString": "ha.nexdev.net:16379,password=foo1@bared,defaultDatabase=6",
-        "ApplicationName": "Fanex.NCB.BotService:EndPoint",
-        "Db": 6
 =======
-{
-  "Logging": {
-    "LogLevel": {
-      "Default": "Debug",
-      "System": "Information",
-      "Microsoft": "Information"
-    }
-  },
-  "AppSettings": {
     "AppCredentialId": "ChatBotForLicensee",
     "AppCredentialPassword": "ZSI6IjMiLCJuYmYiOjE1",
     "Secret": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ",
@@ -56,10 +42,11 @@
     "BotFileSecret": "",
     "TokenUrl": "https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token",
     "SkypeServiceUrl": "https://smba.trafficmanager.net/apis/",
-    "HealthCheckUrl": "https://login.botframework.vn/"
+        "HealthCheckUrl": "https://login.botframework.vn/",
+        "EnableChannelIds": "1,2"
   },
   "ConnectionStrings": {
-    "ChatBot": "Data Source=10.18.200.228;Port=3320;SslMode=none;Initial Catalog=ChatBot;Persist Security Info=True;User ID=ncb.bot;Password=NQjQXmo90R8b5RixO/Isjxwugd2Du9GR; CharSet=utf8mb4;"
+        "ChatBot": "Data Source=10.18.200.228;Port=3319;SslMode=none;Initial Catalog=ChatBot;Persist Security Info=True;User ID=ncb.bot;Password=NQjQXmo90R8b5RixO/Isjxwugd2Du9GR; CharSet=utf8mb4;"
   },
   "LogCategory": "chatbot-for-licensee-service",
   "SentryEngineOptions": {
@@ -71,17 +58,17 @@
     "ProxyAddress": "10.18.200.41:3128",
     "BypassOnLocal": true,
     "TimeOut": 200
+>>>>>>> 000 - add more configuration: turn on/off send message to skype/telegram
     },
     "Fanex.Caching.Redis": {
         "ConnectionString": "ha.nexdev.net:16379,password=foo1@bared,defaultDatabase=6",
-        "ApplicationName": "Fanex.NCB.BotService:EndPoint"
->>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
+        "ApplicationName": "Fanex.NCB.BotService:EndPoint",
+        "Db": 6
     },
     "CheckDuplicateMessageLogSettings": {
         "IsEnabled": true,
         "TimeSpanInMinutes": 5,
         "ExceptionConversatiionIDs": []
-<<<<<<< HEAD
     },
     "TelegramBotConfigurations": [
         {
@@ -103,7 +90,4 @@
             "FirstName": "沙巴体育 公告 / Saba Sports Announcement_Local"
         }
     ]
-=======
-  }
->>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
 }
