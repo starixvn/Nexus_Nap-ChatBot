@@ -32,6 +32,7 @@
         private readonly IMessageLogService messageLogService;
         private readonly CheckDuplicatedMessageLogSetting settings;
         private readonly ILogger logger;
+        private readonly ICacheRedisService cache;
         private const string DisableChannelErrorMessage = "Chatbot service has been stopped due to turning off the configuration by admin.";
 
         [Obsolete]
@@ -44,6 +45,7 @@
             IMessageLogService messageLogService,
             BotConfiguration botConfig,
             IConversationService conversationService,
+            ICacheRedisService cache,
             ILogger logger)
         {
             this.appSettings = appSettings.Value;
@@ -53,6 +55,7 @@
             this.messageLogService = messageLogService;
             this.settings = settings;
             this.logger = logger;
+            this.cache = cache;
         }
 
         [AllowAnonymous]
