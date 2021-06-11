@@ -5,7 +5,7 @@ DELIMITER //
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_JobInfo_Upd`(
     IN      id              INT
     ,IN     batchSize       INT
-    ,IN     testingGroup    INT
+    ,IN     testingGroup    TEXT
     ,IN     modifiedBy      INT
     ,OUT	errCode			SMALLINT
     ,OUT	errMsg			VARCHAR (100)
