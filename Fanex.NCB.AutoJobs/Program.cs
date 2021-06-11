@@ -1,8 +1,6 @@
-﻿namespace Fanex.NCB.AutoJobs
+namespace Fanex.NCB.AutoJobs
 {
     using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.IO;
     using System.Linq;
     using Fanex.Data;
     using Fanex.Data.MySql;
@@ -39,17 +37,11 @@
     {
         public static void Main(string[] args)
         {
-            var pathToExe = Process.GetCurrentProcess().MainModule.FileName;
-            var pathToContentRoot = Path.GetDirectoryName(pathToExe);
-            Directory.SetCurrentDirectory(pathToContentRoot);
-
             var configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                     .Build();
 
             Host.CreateDefaultBuilder(args)
-                .UseWindowsService()
                 .UseNLog()
                 .ConfigureServices((hostContext, services) =>
                 {
@@ -110,21 +102,21 @@
 
             #endregion ONEbookUM
 
-            services.AddScoped<ILogger, Logger>();
+            services.AddSingleton<ILogger, Logger>();
             services.AddSingleton<ILogService, LogServiceExtend>();
 
             services.AddHttpClient();
-            services.AddScoped<IBaseService, BaseService>();
-            services.AddScoped<IChatbotService, ChatbotService>();
-            services.AddScoped<ISendNotificationService, SendNotificationService>();
-            services.AddScoped<ISyncDataService, SyncDataService>();
-            services.AddScoped<ISpecialDeleteService, SpecialDeleteService>();
-            services.AddScoped<ISiteMessageService, SiteMessageService>();
-            services.AddScoped<IPushSignalService, PushSignalService>();
+            services.AddSingleton<IBaseService, BaseService>();
+            services.AddSingleton<IChatbotService, ChatbotService>();
+            services.AddSingleton<ISendNotificationService, SendNotificationService>();
+            services.AddSingleton<ISyncDataService, SyncDataService>();
+            services.AddSingleton<ISpecialDeleteService, SpecialDeleteService>();
+            services.AddSingleton<ISiteMessageService, SiteMessageService>();
+            services.AddSingleton<IPushSignalService, PushSignalService>();
 
-            services.AddScoped<IDynamicRepository, DynamicRepository>();
-            services.AddScoped<IBaseRepository, BaseRepository>();
-            services.AddScoped<ISyncDataRepository, SyncDataRepository>();
+            services.AddSingleton<IDynamicRepository, DynamicRepository>();
+            services.AddSingleton<IBaseRepository, BaseRepository>();
+            services.AddSingleton<ISyncDataRepository, SyncDataRepository>();
         }
 
         private static void AddWorker(IServiceCollection services)
