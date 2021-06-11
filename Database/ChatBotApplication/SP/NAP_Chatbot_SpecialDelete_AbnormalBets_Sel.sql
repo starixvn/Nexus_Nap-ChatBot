@@ -46,7 +46,7 @@ BEGIN
 		TransId				BIGINT, 
 		MinWinlostdate		DATETIME, 
 		MaxWinlostdate		DATETIME, 
-		UsernamLst			NVARCHAR(MAX),
+		UsernameLst			NVARCHAR(MAX),
 		IssueTypeId			TINYINT
 	)
 
@@ -66,7 +66,7 @@ BEGIN
 		INNER JOIN dbo.TicketVoiding_Request r WITH(NOLOCK) ON r.RequestId = vh.RequestId
 
 	UPDATE vh
-		SET vh.UsernamLst = l.UsernameLst
+		SET vh.UsernameLst = l.UsernameLst
 	FROM #VoidingHistory vh
 	CROSS APPLY
 	(
@@ -196,7 +196,7 @@ BEGIN
 		(
 			SELECT vh.MessageId, f.val AS Username ,CASE WHEN s.custid IS NULL AND c.site NOT IN ('CN88', '789y') THEN 'NV88' ELSE c.site END AS site, CASE WHEN s.custid IS NULL THEN 0 ELSE 1 END AS isDeposit, CASE WHEN c.currency = 20 THEN 1 ELSE 0 END AS IsTest
 			FROM #VoidingHistory vh
-			CROSS APPLY strSplit(vh.UsernamLst, ',') f
+			CROSS APPLY strSplit(vh.UsernameLst, ',') f
 				INNER JOIN dbo.Customer c WITH(NOLOCK) ON c.username = CONVERT(VARCHAR(30), f.val)
 				LEFT JOIN dbo.Dep_CustSuper s WITH(NOLOCK) ON s.custid = c.srecommend
 			WHERE vh.IssueTypeId = 13
@@ -255,7 +255,7 @@ BEGIN
 			LEFT JOIN CTE_MsgSite s ON r.MessageId = s.MessageId		
 		
 		-- Get MessageID and VoidingHistoryId of abnormal accounts
-		SELECT vh.MessageId, vh.VoidingHistoryId, vh.UsernamLst
+		SELECT vh.MessageId, vh.VoidingHistoryId, vh.UsernameLst
 		FROM #VoidingHistory vh
 		WHERE vh.IssueTypeId = 13
 	END

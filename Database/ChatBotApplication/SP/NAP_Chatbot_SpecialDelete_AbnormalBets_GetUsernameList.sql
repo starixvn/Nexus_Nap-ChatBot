@@ -13,9 +13,9 @@ AS
 
 	@MessageIDLst:
 			<root>
-				<r MessageID="1" VoidingHistoryId="1" Usernames="xxx,u1"/>
-				<r MessageID="1" VoidingHistoryId="2" Usernames="zzz,l"/>
-				<r MessageID="3" VoidingHistoryId="2" Usernames="nn,m"/>
+				<r MessageID="1" VoidingHistoryId="1" UsernameLst="xxx,u1"/>
+				<r MessageID="1" VoidingHistoryId="2" UsernameLst="zzz,l"/>
+				<r MessageID="3" VoidingHistoryId="2" UsernameLst="nn,m"/>
 			</root>
 		
 */
@@ -34,7 +34,7 @@ BEGIN
 	CROSS APPLY
 	(
 		SELECT f.val AS Username
-		FROM f_SplitString(t.c.value('@Usernames', 'NVARCHAR(MAX)'),',') f
+		FROM f_SplitString(t.c.value('@UsernameLst', 'NVARCHAR(MAX)'),',') f
 	) AS u(Username)
 	OPTION (OPTIMIZE FOR (@MessageIDLst = NULL))
 
