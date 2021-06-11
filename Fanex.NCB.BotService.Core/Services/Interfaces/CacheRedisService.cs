@@ -24,7 +24,7 @@
         {
             ConnectionMultiplexer con = ConnectionMultiplexer.Connect(configuration.GetSection("Fanex.Caching.Redis:ConnectionString").Value);
             EndPoint endPoint = con.GetEndPoints().First();
-            RedisKey[] keys = con.GetServer(endPoint).Keys(pattern: $"{key}*").ToArray();
+            RedisKey[] keys = con.GetServer(endPoint).Keys().ToArray();
 
             return keys;
         }
