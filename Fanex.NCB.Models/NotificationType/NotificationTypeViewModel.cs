@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Fanex.NCB.Models.NotificationType
+﻿namespace Fanex.NCB.Models.NotificationType
 {
     public class NotificationTypeViewModel
     {
@@ -12,7 +8,7 @@ namespace Fanex.NCB.Models.NotificationType
 
         public string RecipientTypeIds { get; set; }
 
-        public string ChatGroupTypeIds { get; set; }                
+        public string ChatGroupTypeIds { get; set; }
 
         public int SystemId { get; set; }
 

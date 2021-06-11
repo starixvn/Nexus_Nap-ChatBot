@@ -1,15 +1,18 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import Store from '../lib/store';
+import { configureStore } from '@reduxjs/toolkit';
 import AppContainer from './components/AppContainer';
 import { renderLayout } from '../shared/layout/layout/index';
-import reducer from './reducers/index';
 
-// Get the application-wide store instance, prepopulating with state from the server where available.
-const initialState = window.initialReduxState;
-const store = Store.createStore(reducer, initialState);
+import notificationTypeReducer from './notificationTypeSlice';
+const store = configureStore({
+    reducer: notificationTypeReducer
+});
+
+const isHost = document.getElementById('is-host').value === 'True';
 
 renderLayout(
     <Provider store={store}>
-        <AppContainer />
-    </Provider>);
+        <AppContainer isHost={isHost} />
+    </Provider>
+);

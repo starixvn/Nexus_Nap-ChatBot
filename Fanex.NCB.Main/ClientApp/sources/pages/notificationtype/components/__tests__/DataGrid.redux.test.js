@@ -1,27 +1,69 @@
-import React from 'react';
-import {shallow, render, configure} from 'enzyme';
-import {shallowToJson} from 'enzyme-to-json';
-import Adapter from 'enzyme-adapter-react-16';
-import DataGrid from '../DataGrid';
-import configureMockStore from 'redux-mock-store';
+﻿jest.mock('react-redux');
+jest.mock('redux');
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { ActionCreators } from '../../actions';
 
-const mockStore = configureMockStore();
-configure({adapter: new Adapter()});
+describe('connect ', () => {
+    let mapStateToProps, mapDispatchToProps;
+    const connectMock = jest.fn();
 
-describe('DataGrid redux', () => {
-    let wrapper, store;
-    beforeEach(() => {
-        const initialState = {gridParams: {pageIndex: 1}, gridData: {data: []}, activeRowIndex: 2};
-        store = mockStore(initialState);
-
-        wrapper = shallow(
-            <DataGrid store={store} />
-        );
+    beforeAll(() => {
+        connect.mockImplementation((mapStateToPropsFunc, mapDispatchToPropsFunc) => {
+            mapStateToProps = mapStateToPropsFunc;
+            mapDispatchToProps = mapDispatchToPropsFunc;
+            return connectMock;
+        });
+        require('../DataGrid').default;
     });
 
-    it('should map state to props correctly', () => {
-        expect(wrapper.props().gridParams).toEqual({pageIndex: 1});
-        expect(wrapper.props().gridData).toEqual({data: []});
-        expect(wrapper.props().activeRowIndex).toEqual(2);
-    });   
+    afterAll(() => {
+        jest.clearAllMocks();
+    });
+
+    it('props should be mapped correctly', () => {
+        // Arrange
+        const expected = {
+            gridParams: {
+                pageIndex: 1,
+                pageSize: 100
+            },
+            gridData: {
+                count: 1,
+                notificationTypes: []
+            },
+            activeRowIndex: 1
+        };
+        const state = {
+            anotherState: 123,
+            gridParams: {
+                pageIndex: 1,
+                pageSize: 100
+            },
+            gridData: {
+                count: 1,
+                notificationTypes: []
+            },
+            activeRowIndex: 1
+        };
+
+        // Act
+        const actual = mapStateToProps(state);
+
+        // Assert
+        expect(actual).toEqual(expected);
+    });
+
+    it('bindActionCreators should be called with correct parameter', () => {
+        // Arrange
+        const mockBindAction = jest.fn();
+        bindActionCreators.mockImplementationOnce(mockBindAction);
+        const dispatch = {};
+
+        // Act
+        mapDispatchToProps(dispatch);
+
+        // Assert
+        expect(mockBindAction).toHaveBeenCalledWith(ActionCreators, dispatch);
+    });
 });

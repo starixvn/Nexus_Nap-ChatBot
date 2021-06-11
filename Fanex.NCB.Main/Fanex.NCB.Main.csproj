@@ -3,18 +3,9 @@
         <TargetFramework>net5.0</TargetFramework>
         <UserSecretsId>e71ec825-3c75-46af-9929-4a6fb891e103</UserSecretsId>
         <LangVersion>7.1</LangVersion>
-        <CodeAnalysisRuleSet>..\.sonarlint\napchatbotcsharp.ruleset</CodeAnalysisRuleSet>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <CodeAnalysisRuleSet>..\.sonarlint\napchatbotcsharp.ruleset</CodeAnalysisRuleSet>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <CodeAnalysisRuleSet>..\.sonarlint\napchatbotcsharp.ruleset</CodeAnalysisRuleSet>
-        <DebugType>full</DebugType>
-        <DebugSymbols>true</DebugSymbols>
-        <Optimize>false</Optimize>
     </PropertyGroup>
     <ItemGroup>
         <None Remove="App_Data\SpNames.PROD.xml" />

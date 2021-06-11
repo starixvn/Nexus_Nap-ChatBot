@@ -4,17 +4,10 @@
         <LangVersion>latest</LangVersion>
         <UserSecretsId>09022fac-ef2e-4453-8d16-926f18bff5b5</UserSecretsId>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-        <CodeAnalysisRuleSet>Fanex.NCB.BotService.EndPoint.ruleset</CodeAnalysisRuleSet>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <CodeAnalysisRuleSet>Fanex.NCB.BotService.EndPoint.ruleset</CodeAnalysisRuleSet>
+        <CodeAnalysisRuleSet>..\.sonarlint\napchatbotcsharp.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
     <ItemGroup>
         <None Remove="logs\log.txt" />
-    </ItemGroup>
-    <ItemGroup>
         <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
         <Content Include="logs\log.txt">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>

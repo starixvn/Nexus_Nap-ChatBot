@@ -1,33 +1,63 @@
-import React from 'react';
-import {shallow, render, configure} from 'enzyme';
-import {shallowToJson} from 'enzyme-to-json';
-import Adapter from 'enzyme-adapter-react-16';
-import AppContainer from '..//AppContainer';
-import configureMockStore from 'redux-mock-store';
+﻿jest.mock('react-redux');
+jest.mock('redux');
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { ActionCreators } from '../../actions';
 
-const mockStore = configureMockStore();
-configure({adapter: new Adapter()});
+describe('connect ', () => {
+    let mapStateToProps, mapDispatchToProps;
+    const connectMock = jest.fn();
 
-describe('AppContainer redux', () => {
-    let wrapper, store;
-    beforeEach(() => {
-        const initialState = {
-            isHost: true,
-            gridParams: { pageIndex: 1 },
-            updatePopupData: { isShowed: true },
-            deletePopupData: { isShowed: true }
-        };
-        store = mockStore(initialState);
-
-        wrapper = shallow(
-            <AppContainer store={store} />
-        );
+    beforeAll(() => {
+        connect.mockImplementation((mapStateToPropsFunc, mapDispatchToPropsFunc) => {
+            mapStateToProps = mapStateToPropsFunc;
+            mapDispatchToProps = mapDispatchToPropsFunc;
+            return connectMock;
+        });
+        require('../AppContainer').default;
     });
 
-    it('should map state to props correctly', () => {
-        expect(wrapper.props().isHost).toEqual(true);
-        expect(wrapper.props().gridParams).toEqual({pageIndex: 1});
-        expect(wrapper.props().updatePopupData).toEqual({isShowed: true});
-        expect(wrapper.props().deletePopupData).toEqual({isShowed: true});
-    });   
+    afterAll(() => {
+        jest.clearAllMocks();
+    });
+
+    it('props should be mapped correctly', () => {
+        // Arrange
+        const expected = {
+            gridParams: {
+                pageIndex: 1,
+                pageSize: 100
+            },
+            createEditPopupData: { isShowed: false },
+            deletePopupData: { isShowed: false }
+        };
+        const state = {
+            anotherState: 123,
+            gridParams: {
+                pageIndex: 1,
+                pageSize: 100
+            },
+            createEditPopupData: { isShowed: false },
+            deletePopupData: { isShowed: false }
+        };
+
+        // Act
+        const actual = mapStateToProps(state);
+
+        // Assert
+        expect(actual).toEqual(expected);
+    });
+
+    it('bindActionCreators should be called with correct parameter', () => {
+        // Arrange
+        const mockBindAction = jest.fn();
+        bindActionCreators.mockImplementationOnce(mockBindAction);
+        const dispatch = {};
+
+        // Act
+        mapDispatchToProps(dispatch);
+
+        // Assert
+        expect(mockBindAction).toHaveBeenCalledWith(ActionCreators, dispatch);
+    });
 });

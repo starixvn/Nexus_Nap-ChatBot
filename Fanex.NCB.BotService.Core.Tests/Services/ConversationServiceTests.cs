@@ -26,7 +26,7 @@
             baseService.ExecuteNonQueryAsync(Arg.Do<AddBotToGroupCommand>(x => criteria = x)).Returns(commandResult);
 
             //Act
-            var actual = await service.AddBotToGroup(criteria).ConfigureAwait(false);
+            await service.AddBotToGroup(criteria).ConfigureAwait(false);
 
             //Assert
             await baseService.Received().ExecuteNonQueryAsync(Arg.Any<AddBotToGroupCommand>());
@@ -66,7 +66,7 @@
             baseService.ExecuteNonQueryAsync(Arg.Do<RemoveBotOutGroupCommand>(x => criteria = x)).Returns(commandResult);
 
             //Act
-            var actual = await service.RemoveBotOutGroup(criteria).ConfigureAwait(false);
+            await service.RemoveBotOutGroup(criteria).ConfigureAwait(false);
 
             //Assert
             await baseService.Received().ExecuteNonQueryAsync(Arg.Any<RemoveBotOutGroupCommand>());
@@ -106,7 +106,7 @@
             baseService.ExecuteNonQueryAsync(Arg.Do<UpdateGroupTopicCommand>(x => criteria = x)).Returns(commandResult);
 
             //Act
-            var actual = await service.UpdateGroupTopic(criteria).ConfigureAwait(false);
+            await service.UpdateGroupTopic(criteria).ConfigureAwait(false);
 
             //Assert
             await baseService.Received().ExecuteNonQueryAsync(Arg.Any<UpdateGroupTopicCommand>());
@@ -173,7 +173,7 @@
             baseService.ExecuteNonQueryAsync(Arg.Do<AddMessageLogCommand>(x => criteria = x)).Returns(commandResult);
 
             //Act
-            var actual = await service.AddMessageLog(criteria).ConfigureAwait(false);
+            await service.AddMessageLog(criteria).ConfigureAwait(false);
 
             //Assert
             await baseService.Received().ExecuteNonQueryAsync(Arg.Any<AddMessageLogCommand>());

@@ -1,28 +1,55 @@
-import React from 'react';
-import {shallow, render, configure} from 'enzyme';
-import {shallowToJson} from 'enzyme-to-json';
-import Adapter from 'enzyme-adapter-react-16';
-import DeletePopup from '../DeletePopup';
-import configureMockStore from 'redux-mock-store';
+﻿jest.mock('react-redux');
+jest.mock('redux');
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { ActionCreators } from '../../actions';
 
-const mockStore = configureMockStore();
-configure({adapter: new Adapter()});
+describe('connect ', () => {
+    let mapStateToProps, mapDispatchToProps;
+    const connectMock = jest.fn();
 
-describe('DeletePopup redux', () => {
-    let wrapper, store;
-    beforeEach(() => {
-        const initialState = { deletePopupData: { isShowed: true } };
-        let props = {
-            closeDeletePopupHandler: jest.fn()
-        };
-        store = mockStore(initialState);
-
-        wrapper = shallow(
-            <DeletePopup store={store} {...props} />
-        );
+    beforeAll(() => {
+        connect.mockImplementation((mapStateToPropsFunc, mapDispatchToPropsFunc) => {
+            mapStateToProps = mapStateToPropsFunc;
+            mapDispatchToProps = mapDispatchToPropsFunc;
+            return connectMock;
+        });
+        require('../DeletePopup').default;
     });
 
-    it('should map state to props correctly', () => {
-        expect(wrapper.props().deletePopupData).toEqual({isShowed: true});        
-    });   
+    afterAll(() => {
+        jest.clearAllMocks();
+    });
+
+    it('props should be mapped correctly', () => {
+        // Arrange
+        const expected = {
+            deletePopupData: { isShowed: false },
+            deleteResult: { isSuccessful: true, message: '' }
+        };
+        const state = {
+            anotherState: 123,
+            deletePopupData: { isShowed: false },
+            deleteResult: { isSuccessful: true, message: '' }
+        };
+
+        // Act
+        const actual = mapStateToProps(state);
+
+        // Assert
+        expect(actual).toEqual(expected);
+    });
+
+    it('bindActionCreators should be called with correct parameter', () => {
+        // Arrange
+        const mockBindAction = jest.fn();
+        bindActionCreators.mockImplementationOnce(mockBindAction);
+        const dispatch = {};
+
+        // Act
+        mapDispatchToProps(dispatch);
+
+        // Assert
+        expect(mockBindAction).toHaveBeenCalledWith(ActionCreators, dispatch);
+    });
 });
