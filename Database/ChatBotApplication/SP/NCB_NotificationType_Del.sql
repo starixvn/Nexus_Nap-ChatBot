@@ -47,7 +47,7 @@ BEGIN
         FROM SystemSetting s
 			INNER JOIN tmpSetting t ON t.SettingId = s.Id
 		WHERE t.Id = jLoop;
-        
+        SET jLoop := jLoop + 1;
     END WHILE;
     SET iLoop = 0;
     WHILE (JSON_EXTRACT(jsonSetting, CONCAT('$[',iLoop, '].NotificationTypeID'))) DO 
