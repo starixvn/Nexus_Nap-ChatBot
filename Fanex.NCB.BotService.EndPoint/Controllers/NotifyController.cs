@@ -33,6 +33,7 @@
         private readonly IMessageLogService messageLogService;
         private readonly ILogger logger;
         private readonly ICacheService cacheService;
+        private readonly ICacheRedisService cache;
         private const string DisableChannelErrorMessage = "Chatbot service has been stopped due to turning off the configuration by admin.";
         private const string DuplicatedErrorMessage = "The content of the message sent to this group is duplicated for a period of time.";
 
@@ -47,6 +48,7 @@
             BotConfiguration botConfig,
             IConversationService conversationService,
             ICacheService cacheService,
+            ICacheRedisService cache,
             ILogger logger)
         {
             this.appSettings = appSettings.Value;
@@ -56,6 +58,7 @@
             this.messageLogService = messageLogService;
             this.logger = logger;
             this.cacheService = cacheService;
+            this.cache = cache;
         }
 
         [AllowAnonymous]
@@ -70,16 +73,15 @@
         [AllowAnonymous]
         [HttpGet]
         [Route("api/cache")]
-        public async Task<ObjectResult> Cache()
+        public async Task<IActionResult> Cache()
         {
-            await cacheService.SetAsync("Oliver::1", "value1");
-            await cacheService.SetAsync("Oliver::2", "value2");
-            await cacheService.SetAsync("Oliver::3", "value3");
-            await cacheService.SetAsync("Oliver::4", "value4");
-            var result = await cacheService.GetAsync<string>("Oliver");
-            var test = await cacheService.GetAsync<string>("Oliver:1");
-
-            return Ok(result);
+            var options = new CacheItemOptions { SlidingExpiration = TimeSpan.FromMinutes(30) };
+            await cacheService.SetAsync("Oliver:1", "value1", options);
+            await cacheService.SetAsync("Oliver:2", "value2", options);
+            await cacheService.SetAsync("Oliver:3", "value3", options);
+            await cacheService.SetAsync("Oliver:4", "value4", options);
+            var t = cache.GetAllValuesContainKey("Oliver");
+            return Ok(t);
         }
 
         [HttpPost]
