@@ -161,7 +161,7 @@ NCB_NotificationTemplate_Upd:BEGIN
 	SET finishTime = UTC_TIMESTAMP(3);
 	SET duration = TIMESTAMPDIFF(MICROSECOND, startTime, finishTime) / 1000;	
 	
-    SELECT JSON_OBJECT('notificationTypeID', nt.NotificationTypeID, 'notificationTemplateName', nt.NotificationTemplateName, 'title', nt.Title, 'Content', ContentLst, 'lastModifiedBy', nt.LastModifiedBy, 'lastModifiedDate', nt.LastModifiedDate)
+    SELECT JSON_OBJECT('notificationTypeID', nt.NotificationTypeID, 'notificationTemplateName', nt.NotificationTemplateName, 'title', nt.Title, 'ContentLst', ContentLst, 'lastModifiedBy', nt.LastModifiedBy, 'lastModifiedDate', nt.LastModifiedDate)
 	INTO logContent FROM
 		NotificationTemplate nt
 	WHERE

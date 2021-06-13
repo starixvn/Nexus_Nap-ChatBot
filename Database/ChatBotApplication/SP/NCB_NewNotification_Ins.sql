@@ -23,6 +23,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NewNotification_Ins`(
 				- 20190401@Dominic: First Commit
 				- 20190819Q@Elton: Update Error Message
                 - 20191211@Dominic: Filter active chat group - Redmine: #125085
+				- 20210513@Malcolm: Integrate Telegram - RedmineID: #151807
 		Param's Explanation:
 		- ContentLst:
 				[
@@ -43,7 +44,8 @@ NCB_NewNotification_Ins:BEGIN
 	DECLARE iLoop           INT;
 	DECLARE _Content 		MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 	DECLARE _ChannelId 		TINYINT UNSIGNED;
-	DECLARE notificationID 	INT UNSIGNED;
+	DECLARE _recipientIDLst	TEXT;
+	DECLARE _NotificationID INT UNSIGNED;
 	DECLARE _notificationIDLst VARCHAR(2000) DEFAULT '';
     
     #constants
@@ -282,11 +284,18 @@ NCB_NewNotification_Ins:BEGIN
 			LEAVE NCB_NewNotification_Ins;
     END IF;
     
+	-- Get Log 
+	DROP TEMPORARY TABLE IF EXISTS tmpNotificationRecipient;
+	CREATE TEMPORARY TABLE tmpNotificationRecipient (notificationID INT, RecipientID INT);
+	
+	DROP TEMPORARY TABLE IF EXISTS tmpNotificationContent;
+	CREATE TEMPORARY TABLE tmpNotificationContent (notificationID INT, Content mediumtext CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci');
+	
     #Insert a new Notification
 	
 	WHILE (EXISTS(SELECT 1 FROM tmpContent)) DO
 		
-		SELECT tc.ChannelId,  tc.Content INTO _ChannelId, _Content
+		SELECT tc.ChannelId, tc.Content INTO _ChannelId, _Content
 		FROM tmpContent tc 
 		ORDER BY tc.ChannelId ASC
 		LIMIT 1;
@@ -318,13 +327,13 @@ NCB_NewNotification_Ins:BEGIN
 			,CREATING_NOTIFICATION_STATUS
 			,CREATING_NOTIFICATION_STATUSID;
 		
-		SET notificationID = LAST_INSERT_ID();
+		SET _notificationID = LAST_INSERT_ID();
 		
-		SET _notificationIDLst = CONCAT('{"NotificationId" : ', notificationID, "},", _notificationIDLst);
+		SET _notificationIDLst = CONCAT('{"NotificationId" : ', _notificationID, "},", _notificationIDLst);
 		
 		#Insert recipient list
 		INSERT INTO NotificationRecipientList(NotificationID, ConversationGroupID, ChatGroupTypeID, RecipientID, Status, StatusID)
-		SELECT notificationID, IFNULL(gri.ConversationGroupID, -1), IFNULL(gri.ChatGroupTypeID,-1), re.RecipientID, NEW_NOTIFICATION_STATUS, NEW_NOTIFICATION_STATUSID
+		SELECT _notificationID, IFNULL(gri.ConversationGroupID, -1), IFNULL(gri.ChatGroupTypeID,-1), re.RecipientID, NEW_NOTIFICATION_STATUS, NEW_NOTIFICATION_STATUSID
 		FROM tmp_recipientIDLst re
 			INNER JOIN ConversationGroupRecipient gr 
 				ON re.RecipientID = gr.RecipientID
@@ -341,7 +350,15 @@ NCB_NewNotification_Ins:BEGIN
 		UPDATE Notification n
 		SET	StatusID = NEW_NOTIFICATION_STATUSID 
 			, Status = NEW_NOTIFICATION_STATUS
-		WHERE n.NotificationID = notificationID;
+		WHERE n.NotificationID = _notificationID;
+		
+		INSERT INTO tmpNotificationRecipient (NotificationID, RecipientID)
+		SELECT DISTINCT NotificationID, RecipientID
+		FROM NotificationRecipientList
+		WHERE NotificationID = _notificationID;
+		
+		INSERT INTO tmpNotificationContent(NotificationID, Content)
+		VALUES (_notificationID, _Content);
 		
 		DELETE FROM tmpContent WHERE ChannelId = _ChannelId;
 	END WHILE;
@@ -350,30 +367,38 @@ NCB_NewNotification_Ins:BEGIN
     
      #Get Finish Time to calcualte execution duration
     SET finishTime = UTC_TIMESTAMP(3);
-    SET duration =  TIMESTAMPDIFF(MICROSECOND
-																		, startTime
-                                                                        , finishTime)  / 1000; 	#miliseconds
+    SET duration =  TIMESTAMPDIFF(MICROSECOND, startTime, finishTime)  / 1000; 	#miliseconds
     
     #Get Log Content, JSON format
-    SET logContent = json_object('NotificationTypeID', notificationTypeID
+	WHILE (EXISTS (SELECT 1 FROM tmpNotificationContent)) DO
+		 SELECt NotificationID, Content INTO _notificationID, _Content FROM tmpNotificationContent LIMIT 1;
+		 
+		 SELECT GROUP_CONCAT(DISTINCT re.RecipientID ORDER BY re.RecipientID SEPARATOR ', ')  
+         INTO _RecipientIDLst
+         FROM tmpNotificationRecipient re;
+		
+		 SET logContent = json_object('NotificationTypeID', notificationTypeID
 										, 'ProductID', productID
-                                        , 'RecipientIDLst', recipientIDLst
+                                        , 'RecipientIDLst', _RecipientIDLst
 										, 'Title', title
-                                        , 'contentLst', contentLst
+                                        , 'content', _content
                                         , 'ConfigSendTime', configSendTime
                                         , 'SendImmediately', sendImmediately
-                                        , 'NotificationID', notificationID
+                                        , 'notificationID', _notificationID
 					) ;
                     
 		#Write User Log
         CALL NCB_UserLog_RunSP_Ins(
 											ACTION_ID #actionID
-                                            , notificationID #referenceID
+                                            , _notificationID #referenceID
 											, creatorID #UserID
                                             , logContent #LogContent
                                             , startTime #logtime
                                             , duration	#Duration
                                             );
+		DELETE FROM tmpNotificationContent WHERE NotificationID = _notificationID;
+	END WHILE;
+   
 END;
 
 //

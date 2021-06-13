@@ -16,7 +16,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_Common_NotificationTemplate_
 SQL SECURITY DEFINER
 BEGIN
 
-	SELECT nt.NotificationTemplateID AS ID, nt.NotificationTemplateName AS Name, nt.Title, nt.Content
+	SELECT nt.NotificationTemplateID AS ID, nt.NotificationTemplateName AS Name, nt.Title, ntc.Content
     FROM NotificationTemplate nt
 		INNER JOIN NotificationTemplateContent ntc ON ntc.NotificationTemplateID = nt.NotificationTemplateID
         INNER JOIN ConversationChannel c ON c.ChannelID = ntc.ChannelID

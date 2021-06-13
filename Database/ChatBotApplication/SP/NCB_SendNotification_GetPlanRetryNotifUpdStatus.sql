@@ -23,9 +23,9 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_SendNotification_GetPlanRetr
 SQL SECURITY DEFINER
 NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 	#Variables used to write User Logs
-	DECLARE startTime 			DATETIME(3);
+	DECLARE startTime 		DATETIME(3);
     DECLARE finishTime 		DATETIME(3); 
-    DECLARE duration 			INT;							
+    DECLARE duration 		INT;							
     DECLARE logContent 		TEXT;
     DECLARE ACTION_ID 		INT DEFAULT 8;
     DECLARE plannedNotifIDLst TEXT;
@@ -173,7 +173,7 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 	 LEFT JOIN ConversationBot bot ON bot.ConversationBotID = GroupBot.ConversationBotID
 	 LEFT JOIN ConversationGroupExtraInfo gri ON gri.ConversationGroupID = nrl.ConversationGroupID
      LEFT JOIN ConversationGroupRecipient cgr ON cgr.ConversationGroupID = nrl.ConversationGroupID AND cgr.RecipientID = nrl.RecipientID 
-	 WHERE nrl.NotificationID IN (SELECT t1.NotificationID FROM tmp_PlannedNotification t1 WHERE t1.LockSuccess = 1 AND t1.ChannelId = grp.ChannelId)
+	 WHERE nrl.NotificationID IN (SELECT t1.NotificationID FROM tmp_PlannedNotification t1 WHERE t1.LockSuccess = 1)
      #Trying Nofitication List
      UNION ALL
      SELECT nrl.NotificationID AS NotificationID

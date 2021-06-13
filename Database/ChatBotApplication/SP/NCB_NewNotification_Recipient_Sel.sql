@@ -5,7 +5,7 @@ DELIMITER //
 CREATE DEFINER = 'ChatBotSystem'@'%'  PROCEDURE NCB_NewNotification_Recipient_Sel (
 	IN notificationTypeID SMALLINT
 	,IN productID SMALLINT
-	,IN ChannelIdLst VARCHAR(1000)
+	,IN ChannelIdLst VARCHAR(100)
     /*
 		Creator: Dominic@20190401
         Param:

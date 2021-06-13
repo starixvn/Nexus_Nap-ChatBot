@@ -8,7 +8,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_Sel`(
     , IN messageId INT UNSIGNED
 	, IN creatorID	INT
     , IN notificationStatusIDLst VARCHAR(1000)
-    , IN ChannelIDLst VARCHAR(1000)
+    , IN ChannelIDLst VARCHAR(100)
 	, IN configSendTimeFrom DATETIME #UTC
     , IN configSendTimeTo DATETIME #UTC
 	, IN pageIndex INT

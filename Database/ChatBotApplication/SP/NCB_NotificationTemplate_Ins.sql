@@ -70,7 +70,7 @@ NCB_NotificationTemplate_Ins:BEGIN
     SET duration =  TIMESTAMPDIFF(MICROSECOND, startTime, finishTime)  / 1000; 	#miliseconds;
     
     #Get Log Content, JSON format
-    SELECT json_object ('notificationTypeID', nt.NotificationTypeID ,'notificationTemplateName', nt.NotificationTemplateName ,'title', nt.Title, 'Content',ContentLst ,'creatorID', nt.CreatorID ,'createdDate', nt.CreatedDate)
+    SELECT json_object ('notificationTypeID', nt.NotificationTypeID ,'notificationTemplateName', nt.NotificationTemplateName ,'title', nt.Title, 'ContentLst',ContentLst ,'creatorID', nt.CreatorID ,'createdDate', nt.CreatedDate)
 	INTO logContent
 	FROM NotificationTemplate nt
     WHERE nt.NotificationTemplateID = notificationTemplateID;
