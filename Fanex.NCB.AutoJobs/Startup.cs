@@ -45,6 +45,7 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
             AddConfiguration(services, Configuration);
             AddDependencyInjection(services, Configuration);
             AddWorker(services);
