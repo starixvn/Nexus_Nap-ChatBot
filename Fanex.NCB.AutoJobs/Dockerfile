@@ -1,21 +1,30 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+FROM registry.nexdev.net:5050/docker/dotnet/core/sdk:5.0.102-ca-patch-buster-slim AS builder
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
-WORKDIR /app
-
-FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
-COPY ["Fanex.NCB.AutoJobs/Fanex.NCB.AutoJobs.csproj", "Fanex.NCB.AutoJobs/"]
 
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
+COPY ["nuget.config", "."]
+COPY ["Fanex.NCB.AutoJobs/Fanex.NCB.AutoJobs.csproj", "Fanex.NCB.AutoJobs/"]
+COPY ["Fanex.NCB.Services/Fanex.NCB.Services.csproj", "Fanex.NCB.Services/"]
+COPY ["Fanex.NCB.Repository/Fanex.NCB.Repository.csproj", "Fanex.NCB.Repository/"]
+COPY ["Fanex.NCB.Shared/Fanex.NCB.Shared.csproj", "Fanex.NCB.Shared/"]
+COPY ["Fanex.NCB.Models/Fanex.NCB.Models.csproj", "Fanex.NCB.Models/"]
+COPY ["Fanex.NCB.Core/Fanex.NCB.Core.csproj", "Fanex.NCB.Core/"]
+COPY ["Fanex.NCB.Criteria/Fanex.NCB.Criteria.csproj", "Fanex.NCB.Criteria/"]
 RUN dotnet restore "Fanex.NCB.AutoJobs/Fanex.NCB.AutoJobs.csproj"
+
 COPY . .
+
 WORKDIR "/src/Fanex.NCB.AutoJobs"
+
 RUN dotnet build "Fanex.NCB.AutoJobs.csproj" -c Release -o /app/build
 
-FROM build AS publish
-RUN dotnet publish "Fanex.NCB.AutoJobs.csproj" -c Release -o /app/publish
+RUN dotnet publish -r linux-x64 --self-contained false -o /app
 
-FROM base AS final
+FROM registry.nexdev.net:5050/docker/dotnet/core/aspnet:5.0-buster-slim AS base
+
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=builder /app .
+
 ENTRYPOINT ["dotnet", "Fanex.NCB.AutoJobs.dll"]

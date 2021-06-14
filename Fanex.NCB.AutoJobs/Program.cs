@@ -49,7 +49,9 @@ namespace Fanex.NCB.AutoJobs
                     AddConfiguration(services, configuration);
                     AddDependencyInjection(services, configuration);
                     AddWorker(services);
-                }).Build().Run();
+                })
+                .Build()
+                .Run();
         }
 
         private static void AddConfiguration(IServiceCollection services, IConfiguration configuration)
