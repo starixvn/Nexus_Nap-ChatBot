@@ -74,9 +74,19 @@
 
         private static string GenerateErrorMessage(RecipientStatuses recipientStatus, string errMsg)
         {
-            return recipientStatus == RecipientStatuses.BotServiceError ?
-                                        $"[Internal Error] {errMsg}" :
-                                        EnumHelper.GetDescription(recipientStatus);
+            string[] errorMsgs = new[]
+            {
+                "Chatbot service has been stopped due to turning off the configuration by admin.",
+                "The content of the message sent to this group is duplicated for a period of time."
+            };
+
+            if (errorMsgs.Contains(errMsg))
+            {
+                return errMsg;
+            }
+
+            return recipientStatus == RecipientStatuses.BotServiceError
+                ? $"[Internal Error] {errMsg}" : EnumHelper.GetDescription(recipientStatus);
         }
 
         private async Task<(IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>)> GetNotificationPlannedToSend()

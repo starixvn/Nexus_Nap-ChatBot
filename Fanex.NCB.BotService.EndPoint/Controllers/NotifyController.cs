@@ -91,7 +91,6 @@
             return Ok(errorMessage);
         }
 
-        [AllowAnonymous]
         [Obsolete]
         [HttpPost]
         [Route("api/notifymulti")]
@@ -127,7 +126,8 @@
                     ConversationId = conversationInfo.ConversationId,
                     SentTime = DateTime.Now,
                     ErrorCode = 1,
-                    ErrorMessage = DisableChannelErrorMessage
+                    ErrorMessage = DisableChannelErrorMessage,
+                    IsIgnoreRetry = true
                 }));
             }
             else
