@@ -3,13 +3,14 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
+    using System.Threading.Tasks;
     using Fanex.Caching;
     using Fanex.NCB.BotService.Core.Models;
     using StackExchange.Redis;
 
     public interface IRedisCacheExtendService
     {
-        IEnumerable<T> GetValueByKeyContains<T>(string key);
+        Task<IEnumerable<T>> GetValueByKeyContains<T>(string key);
     }
 
     public class RedisCacheExtendService : IRedisCacheExtendService
@@ -23,16 +24,16 @@
             this.redisConfiguration = redisConfiguration;
         }
 
-        public IEnumerable<T> GetValueByKeyContains<T>(string key)
+        public async Task<IEnumerable<T>> GetValueByKeyContains<T>(string key)
         {
-            using (var connection = ConnectionMultiplexer.Connect(redisConfiguration.ConnectionString))
+            using (var connection = await ConnectionMultiplexer.ConnectAsync(redisConfiguration.ConnectionString))
             {
                 EndPoint endPoint = connection.GetEndPoints().FirstOrDefault();
                 IServer server = connection.GetServer(endPoint);
 
                 IEnumerable<RedisKey> keys = server.Keys(redisConfiguration.Db, pattern: $"*{key}*");
                 string[] keysArr = keys.Select(key => GetActualKey(key)).ToArray();
-                var result = GetValueByKey<T>(keysArr);
+                var result = await GetValueByKey<T>(keysArr);
                 return result;
             }
         }
@@ -42,12 +43,12 @@
             return key.Replace($"{{{redisConfiguration.ApplicationName}}}:", string.Empty).Replace("{", string.Empty).Replace("}", string.Empty);
         }
 
-        private IEnumerable<T> GetValueByKey<T>(string[] keysArr)
+        private async Task<IEnumerable<T>> GetValueByKey<T>(string[] keysArr)
         {
             var values = new List<T>();
             for (int i = 0; i < keysArr.Length; i++)
             {
-                T value = cacheService.Get<T>(keysArr[i]);
+                T value = await cacheService.GetAsync<T>(keysArr[i]);
                 if (!Equals(value, default(T)))
                 {
                     values.Add(value);

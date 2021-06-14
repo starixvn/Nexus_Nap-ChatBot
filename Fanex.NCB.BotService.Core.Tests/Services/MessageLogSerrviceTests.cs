@@ -21,7 +21,7 @@
         {
             settings.IsEnabled = false;
             var service = GetService();
-            var actual = service.IsInvalidSendMessageToBotService("ABC", "messsage");
+            var actual = await service.IsInvalidSendMessageToBotService("ABC", "messsage");
             Assert.False(actual);
             await cacheService.DidNotReceive().GetAsync<string>(Arg.Any<string>());
         }
@@ -31,31 +31,31 @@
         {
             settings.ExceptionConversatiionIDs = new[] { "ABC" };
             var service = GetService();
-            var actual = service.IsInvalidSendMessageToBotService("ABC", "messsage");
+            var actual = await service.IsInvalidSendMessageToBotService("ABC", "messsage");
             Assert.False(actual);
             await cacheService.DidNotReceive().GetAsync<string>(Arg.Any<string>());
         }
 
         [Fact]
-        public void IsInvalidSendMessageToBotService_WhenExistedOnCache_ReturnFalse()
+        public async Task IsInvalidSendMessageToBotService_WhenExistedOnCache_ReturnFalse()
         {
             settings.ExceptionConversatiionIDs = new[] { "ABC" };
             var service = GetService();
             var logMsg = new ConversationMessageLog { ConversationId = "ABC", Message = "Msg", Status = SentMessageStatus.Success };
             cacheService.GetAsync<string>(Arg.Is("ABC")).Returns(JsonConvert.SerializeObject(logMsg));
 
-            var actual = service.IsInvalidSendMessageToBotService("ABC", "Msg");
+            var actual = await service.IsInvalidSendMessageToBotService("ABC", "Msg");
             Assert.False(actual);
         }
 
         [Fact]
-        public void IsInvalidSendMessageToBotService_WhenNotExistedOnCache_ReturnTrue()
+        public async Task IsInvalidSendMessageToBotService_WhenNotExistedOnCache_ReturnTrue()
         {
             var service = GetService();
             var logMsg = new ConversationMessageLog { ConversationId = "ABC", Message = "Msg", Status = SentMessageStatus.Success };
             cacheExtendService.GetValueByKeyContains<string>(Arg.Is(logMsg.ConversationId)).Returns(new List<string> { logMsg.Message });
 
-            var actual = service.IsInvalidSendMessageToBotService("ABC", "Msg");
+            var actual = await service.IsInvalidSendMessageToBotService("ABC", "Msg");
             Assert.True(actual);
         }
 

@@ -22,7 +22,7 @@
             this.redisCacheExtend = redisCacheExtend;
         }
 
-        public bool IsInvalidSendMessageToBotService(string conversationId, string message)
+        public async Task<bool> IsInvalidSendMessageToBotService(string conversationId, string message)
         {
             if (!settings.IsEnabled)
             {
@@ -34,7 +34,7 @@
                 return false;
             }
 
-            var messageContentList = redisCacheExtend.GetValueByKeyContains<string>(conversationId.Replace(':', '-'));
+            var messageContentList = await redisCacheExtend.GetValueByKeyContains<string>(conversationId.Replace(':', '-'));
 
             bool isInvalid = false;
             foreach (string logContent in messageContentList)
@@ -52,7 +52,7 @@
 
         public async Task InserMessageLogIntoCache(ConversationMessageLog messageLog)
         {
-            if (settings.IsEnabled && messageLog.IsSuccessful && !IsExistedOnCache(messageLog))
+            if (settings.IsEnabled && messageLog.IsSuccessful && !await IsExistedOnCache(messageLog))
             {
                 await cacheService.SetAsync(
                 ModifyKey(messageLog.ConversationId.Replace(':', '-')),
@@ -64,11 +64,11 @@
             }
         }
 
-        private bool IsExistedOnCache(ConversationMessageLog messageLog)
+        private async Task<bool> IsExistedOnCache(ConversationMessageLog messageLog)
         {
-            var jsonLogList = redisCacheExtend.GetValueByKeyContains<string>(messageLog.ConversationId.Replace(':', '-'));
+            var messageContentList = await redisCacheExtend.GetValueByKeyContains<string>(messageLog.ConversationId.Replace(':', '-'));
 
-            return jsonLogList.Any(content => content.Equals(messageLog.Message));
+            return messageContentList.Any(content => content.Equals(messageLog.Message));
         }
 
         private static string ModifyKey(string key) => $"{key}:{Guid.NewGuid()}";

@@ -106,7 +106,7 @@
                 {
                     foreach (var conversationInfo in notificationMessage.Recipients)
                     {
-                        SendNotification(tasks, conversationInfo, notificationMessage);
+                        await SendNotification(tasks, conversationInfo, notificationMessage);
                     }
                 }
 
@@ -117,7 +117,7 @@
         }
 
         [Obsolete]
-        private void SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
+        private async Task SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
         {
             if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
             {
@@ -132,7 +132,7 @@
             }
             else
             {
-                bool isInvalidSendToBotService = messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
+                bool isInvalidSendToBotService = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
 
                 tasks.Add(isInvalidSendToBotService ? Task.Run(() => new SendMessageResult
                 {
