@@ -34,6 +34,7 @@
             services.AddTransient<IBaseService, BaseService>();
             services.AddTransient<IConversationService, ConversationService>();
             services.AddTransient<IMessageLogService, MessageLogService>();
+            services.AddTransient<IRedisCacheExtendService, RedisCacheExtendService>();
             services.AddTransient<ICacheService, CacheService>();
             services.AddTransient<ICredentialProvider, MultiCredentialProvider>();
             services.AddTransient<IBot, LicBot>();

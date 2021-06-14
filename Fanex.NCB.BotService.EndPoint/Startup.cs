@@ -11,7 +11,6 @@
     using Fanex.Logging.Extensions.Database;
     using Fanex.Logging.Sentry;
     using Fanex.NCB.BotService.Core;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Middlewares;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
@@ -107,9 +106,7 @@
                 .PersistKeysToStackExchangeRedis(Redis, "Fanex.NCB.BotService.Endpoint-Keys");
 
             services.AddRedisCache(Configuration.GetSection("Fanex.Caching.Redis"));
-
             services.AddMvc().AddNewtonsoftJson();
-            services.AddTransient<IRedisCacheExtendService, RedisCacheExtendService>();
         }
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
