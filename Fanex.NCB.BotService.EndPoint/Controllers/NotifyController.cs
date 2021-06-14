@@ -32,7 +32,6 @@
         private readonly IMessageLogService messageLogService;
         private readonly CheckDuplicatedMessageLogSetting settings;
         private readonly ILogger logger;
-        private readonly ICacheRedisService cache;
         private const string DisableChannelErrorMessage = "Chatbot service has been stopped due to turning off the configuration by admin.";
 
         [Obsolete]
@@ -45,7 +44,6 @@
             IMessageLogService messageLogService,
             BotConfiguration botConfig,
             IConversationService conversationService,
-            ICacheRedisService cache,
             ILogger logger)
         {
             this.appSettings = appSettings.Value;
@@ -55,7 +53,6 @@
             this.messageLogService = messageLogService;
             this.settings = settings;
             this.logger = logger;
-            this.cache = cache;
         }
 
         [AllowAnonymous]
@@ -102,8 +99,9 @@
         }
 
         [Obsolete]
-        [Route("api/notifymulti")]
         [Obsolete]
+        [HttpPost]
+        [Route("api/notifymulti")]
         public async Task<ObjectResult> SendMulti([FromBody] IList<NotificationMessage> notificationMessages)
         {
             var results = new List<SendMessageResult>();

@@ -108,7 +108,7 @@
 
             services.AddRedisCache(Configuration.GetSection("Fanex.Caching.Redis"));
             services.AddMvc().AddNewtonsoftJson();
-            services.AddTransient<ICacheRedisService, CacheRedisService>();
+            services.AddTransient<IRedisCacheExtendService, RedisCacheExtendService>();
         }
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)

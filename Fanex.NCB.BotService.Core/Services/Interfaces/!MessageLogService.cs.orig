@@ -1,0 +1,16 @@
+﻿namespace Fanex.NCB.BotService.Core.Services.Interfaces
+{
+    using System.Threading.Tasks;
+    using Fanex.NCB.BotService.Core.Models;
+
+    public interface IMessageLogService
+    {
+<<<<<<< HEAD
+        Task<bool> IsExistedOnCacheOrExceptionList(string conversationId, string message);
+=======
+        bool IsInvalidSendMessageToBotService(string conversationId, string message);
+>>>>>>> 000 - re-write check duplicated message service
+
+        Task InserMessageLogInRedisCache(ConversationMessageLog messageLog);
+    }
+}

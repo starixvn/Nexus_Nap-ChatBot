@@ -6,16 +6,11 @@
     using Fanex.Caching;
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
-<<<<<<< HEAD
-=======
-    using Newtonsoft.Json;
->>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
 
     public class MessageLogService : IMessageLogService
     {
         private readonly CheckDuplicatedMessageLogSetting settings;
         private readonly ICacheService cacheService;
-<<<<<<< HEAD
         private readonly IRedisCacheExtendService redisCacheExtend;
 
         public MessageLogService(CheckDuplicatedMessageLogSetting settings,
@@ -27,7 +22,7 @@
             this.redisCacheExtend = redisCacheExtend;
         }
 
-        public async Task<bool> IsInvalidSendMessageToBotService(string conversationId, string message)
+        public bool IsInvalidSendMessageToBotService(string conversationId, string message)
         {
             if (!settings.IsEnabled)
             {
@@ -39,7 +34,11 @@
                 return false;
             }
 
+<<<<<<< HEAD
             var messageContentList = await redisCacheExtend.GetValueByKeyContains<string>(conversationId.Replace(':', '-'));
+=======
+            var messageContentList = redisCacheExtend.GetValueByKeyContains<string>(conversationId.Replace(':', '-'));
+>>>>>>> 000 - re-write check duplicated message service
 
             bool isInvalid = false;
             foreach (string logContent in messageContentList)
@@ -57,48 +56,27 @@
 
         public async Task InserMessageLogIntoCache(string conversationId, string messageContent, string guiid)
         {
+<<<<<<< HEAD
             if (settings.IsEnabled && !await IsExistedOnCache(conversationId, messageContent))
             {
                 await cacheService.SetAsync(
                 ModifyKey(conversationId.Replace(':', '-'), guiid),
                 messageContent,
 =======
-
-        public MessageLogService(CheckDuplicatedMessageLogSetting settings, ICacheService cacheService)
-        {
-            this.settings = settings;
-            this.cacheService = cacheService;
-        }
-
-        public async Task<bool> IsExistedOnCacheOrExceptionList(string conversationId, string message)
-        {
-            bool isExistedOnExceptionList = settings.ExceptionConversatiionIDs != null && settings.ExceptionConversatiionIDs.Contains(conversationId);
-
-            if (isExistedOnExceptionList)
+            if (settings.IsEnabled && messageLog.IsSuccessful && !IsExistedOnCache(messageLog))
             {
-                return isExistedOnExceptionList;
-            }
-
-            var messageLogJson = await cacheService.GetAsync<string>(conversationId.Replace(':', '-'));
-            var messageLog = string.IsNullOrEmpty(messageLogJson) ? null : JsonConvert.DeserializeObject<ConversationMessageLog>(messageLogJson);
-
-            return messageLog != null && messageLog.Message.Equals(message) && messageLog.IsSuccessful;
-        }
-
-        public async Task InserMessageLogInRedisCache(ConversationMessageLog messageLog)
-        {
-            await cacheService.SetAsync(
-                messageLog.ConversationId.Replace(':', '-'),
-                JsonConvert.SerializeObject(messageLog),
->>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
+                await cacheService.SetAsync(
+                ModifyKey(messageLog.ConversationId.Replace(':', '-')),
+                messageLog.Message,
+>>>>>>> 000 - re-write check duplicated message service
                 new CacheItemOptions
                 {
                     RelativeExpiration = TimeSpan.FromMinutes(settings.TimeSpanInMinutes)
                 });
-<<<<<<< HEAD
             }
         }
 
+<<<<<<< HEAD
         public async Task RemoveMessageLogOnCache(string conversationId, string guid)
         {
             string key = ModifyKey(conversationId, guid);
@@ -112,7 +90,14 @@
 
         private static string ModifyKey(string key, string guiid) => $"{key}:{guiid}";
 =======
+        private bool IsExistedOnCache(ConversationMessageLog messageLog)
+        {
+            var jsonLogList = redisCacheExtend.GetValueByKeyContains<string>(messageLog.ConversationId.Replace(':', '-'));
+
+            return jsonLogList.Any(content => content.Equals(messageLog.Message));
         }
->>>>>>> 000 - Handle avoid send duplicate message to group in few minutes
+
+        private static string ModifyKey(string key) => $"{key}:{Guid.NewGuid()}";
+>>>>>>> 000 - re-write check duplicated message service
     }
 }

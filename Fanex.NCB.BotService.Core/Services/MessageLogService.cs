@@ -22,7 +22,7 @@
             this.redisCacheExtend = redisCacheExtend;
         }
 
-        public async Task<bool> IsInvalidSendMessageToBotService(string conversationId, string message)
+        public bool IsInvalidSendMessageToBotService(string conversationId, string message)
         {
             if (!settings.IsEnabled)
             {
@@ -45,6 +45,9 @@
 
                     return isInvalid;
                 }
+            }
+
+            return isInvalid;
             }
 
             return isInvalid;

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Functions>
+  <Function Name="Chat Group Mapping">
+<<<<<<< HEAD:Fanex.NCB.BotService.EndPoint/App_Data/Development/SpNames.xml
+    <Setting Key="NCB_Conversation_AddBotToGroup" SpName="NCB_Conversation_AddBotToGroup_xtest" DbName="ChatBot" Plain="0"></Setting>
+=======
+    <Setting Key="NCB_Conversation_AddBotToGroup" SpName="NCB_Conversation_AddBotToGroup_xtest" DbName="ChatBot" Plain="0" />
+>>>>>>> 000 - change SP version to xtest:Fanex.NCB.BotService.EndPoint/App_Data/PROD/SpNames.xml
+    <Setting Key="NCB_Conversation_RemoveBotOutGroup" SpName="NCB_Conversation_RemoveBotOutGroup" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Conversation_UpdateGroupTopic" SpName="NCB_Conversation_UpdateGroupTopic" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Conversation_Sel" SpName="NCB_Conversation_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Conversation_AddMessageLog" SpName="NCB_Conversation_AddMessageLog" DbName="ChatBot" Plain="0"></Setting>
+  </Function>
+</Functions>
