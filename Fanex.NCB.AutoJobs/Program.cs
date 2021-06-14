@@ -43,6 +43,7 @@ namespace Fanex.NCB.AutoJobs
 
             Host.CreateDefaultBuilder(args)
                 .UseNLog()
+                .UseWindowsService()
                 .ConfigureServices((hostContext, services) =>
                 {
                     AddConfiguration(services, configuration);
