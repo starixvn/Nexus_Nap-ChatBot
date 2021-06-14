@@ -5,7 +5,7 @@
 
     public interface IMessageLogService
     {
-        Task<bool> IsInvalidSendMessageToBotService(string conversationId, string message);
+        bool IsInvalidSendMessageToBotService(string conversationId, string message);
 
         Task InserMessageLogIntoCache(ConversationMessageLog messageLog);
     }

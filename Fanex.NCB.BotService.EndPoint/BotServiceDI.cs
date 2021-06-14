@@ -44,6 +44,7 @@
             services.AddSingleton(appSettings);
 
             RegisterCheckDuplicateMessageLogSettings(services, configuration);
+            RegisterRedisConfiguration(services, configuration);
 
             var botFrameworkHttpAdapter = GetBotFrameworkHttpAdapter(botConfig, configuration);
             services.AddSingleton(botFrameworkHttpAdapter);
@@ -133,12 +134,20 @@
             services.AddSingleton(checkDuplicatedMessageSettings);
         }
 
+        private static void RegisterRedisConfiguration(IServiceCollection services, IConfiguration configuration)
+        {
+            var settingConfiguration = configuration.GetSection("Fanex.Caching.Redis");
+            services.Configure<RedisConfiguration>(settingConfiguration);
+            var redisConfig = settingConfiguration.Get<RedisConfiguration>();
+            services.AddSingleton(redisConfig);
+        }
+
         private static void RegisterTelegramBots(IServiceCollection services, IConfiguration configuration)
         {
             var configs = configuration.GetSection("TelegramBotConfigurations");
             services.Configure<List<TelegramBotConfigurations>>(configs);
             var bots = configs.Get<List<TelegramBotConfigurations>>();
-            foreach(var bot in bots)
+            foreach (var bot in bots)
             {
                 bot.HttpClient = GetDefaultHttpClient(configuration);
             }

@@ -63,7 +63,7 @@
             var conversationLogMsg = new ConversationMessageLog { ConversationId = "A:1234", Message = "ABC" };
             var service = GetService();
             await service.InserMessageLogIntoCache(conversationLogMsg);
-            await cacheService.Received().SetAsync(Arg.Is("A-1234"),
+            await cacheService.Received().SetAsync(Arg.Do<string>(x => x.Contains("A-1234")),
                 Arg.Is(JsonConvert.SerializeObject(conversationLogMsg)),
                 Arg.Any<CacheItemOptions>());
         }

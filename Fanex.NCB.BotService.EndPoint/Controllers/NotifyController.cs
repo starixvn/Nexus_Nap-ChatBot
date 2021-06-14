@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fanex.Caching;
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
@@ -32,8 +31,6 @@
         private readonly IConversationService conversationService;
         private readonly IMessageLogService messageLogService;
         private readonly ILogger logger;
-        private readonly ICacheService cacheService;
-        private readonly ICacheRedisService cache;
         private const string DisableChannelErrorMessage = "Chatbot service has been stopped due to turning off the configuration by admin.";
         private const string DuplicatedErrorMessage = "The content of the message sent to this group is duplicated for a period of time.";
 
@@ -47,8 +44,6 @@
             IMessageLogService messageLogService,
             BotConfiguration botConfig,
             IConversationService conversationService,
-            ICacheService cacheService,
-            ICacheRedisService cache,
             ILogger logger)
         {
             this.appSettings = appSettings.Value;
@@ -57,8 +52,6 @@
             this.conversationService = conversationService;
             this.messageLogService = messageLogService;
             this.logger = logger;
-            this.cacheService = cacheService;
-            this.cache = cache;
         }
 
         [AllowAnonymous]
@@ -68,20 +61,6 @@
         {
             await logger.ErrorAsync("test sentry");
             return Ok("ok");
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("api/cache")]
-        public async Task<IActionResult> Cache()
-        {
-            var options = new CacheItemOptions { SlidingExpiration = TimeSpan.FromMinutes(30) };
-            await cacheService.SetAsync("Oliver:1", "value1", options);
-            await cacheService.SetAsync("Oliver:2", "value2", options);
-            await cacheService.SetAsync("Oliver:3", "value3", options);
-            await cacheService.SetAsync("Oliver:4", "value4", options);
-            var t = cache.GetAllValuesContainKey("Oliver");
-            return Ok(t);
         }
 
         [HttpPost]
@@ -112,9 +91,10 @@
             return Ok(errorMessage);
         }
 
-        [Route("api/notifymulti")]
-        [HttpPost]
+        [AllowAnonymous]
         [Obsolete]
+        [HttpPost]
+        [Route("api/notifymulti")]
         public async Task<ObjectResult> SendMulti([FromBody] IList<NotificationMessage> notificationMessages)
         {
             var results = new List<SendMessageResult>();
@@ -126,7 +106,7 @@
                 {
                     foreach (var conversationInfo in notificationMessage.Recipients)
                     {
-                        await SendNotification(tasks, conversationInfo, notificationMessage);
+                        SendNotification(tasks, conversationInfo, notificationMessage);
                     }
                 }
 
@@ -137,7 +117,7 @@
         }
 
         [Obsolete]
-        private async Task SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
+        private void SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
         {
             if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
             {
@@ -152,7 +132,7 @@
             }
             else
             {
-                bool isInvalidSendToBotService = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
+                bool isInvalidSendToBotService = messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
 
                 tasks.Add(isInvalidSendToBotService ? Task.Run(() => new SendMessageResult
                 {

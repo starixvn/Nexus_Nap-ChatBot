@@ -6,20 +6,23 @@
     using Fanex.Caching;
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
-    using Newtonsoft.Json;
 
     public class MessageLogService : IMessageLogService
     {
         private readonly CheckDuplicatedMessageLogSetting settings;
         private readonly ICacheService cacheService;
+        private readonly IRedisCacheExtendService redisCacheExtend;
 
-        public MessageLogService(CheckDuplicatedMessageLogSetting settings, ICacheService cacheService)
+        public MessageLogService(CheckDuplicatedMessageLogSetting settings,
+            ICacheService cacheService,
+            IRedisCacheExtendService redisCacheExtend)
         {
             this.settings = settings;
             this.cacheService = cacheService;
+            this.redisCacheExtend = redisCacheExtend;
         }
 
-        public async Task<bool> IsInvalidSendMessageToBotService(string conversationId, string message)
+        public bool IsInvalidSendMessageToBotService(string conversationId, string message)
         {
             if (!settings.IsEnabled)
             {
@@ -31,24 +34,43 @@
                 return false;
             }
 
-            var messageLogJson = await cacheService.GetAsync<string>(conversationId.Replace(':', '-'));
-            var messageLog = string.IsNullOrEmpty(messageLogJson) ? null : JsonConvert.DeserializeObject<ConversationMessageLog>(messageLogJson);
+            var messageContentList = redisCacheExtend.GetValueByKeyContains<string>(conversationId.Replace(':', '-'));
 
-            return messageLog != null && messageLog.Message.Equals(message) && messageLog.IsSuccessful;
+            bool isInvalid = false;
+            foreach (string logContent in messageContentList)
+            {
+                if (logContent != null && logContent.Equals(message))
+                {
+                    isInvalid = true;
+
+                    return isInvalid;
+                }
+            }
+
+            return isInvalid;
         }
 
         public async Task InserMessageLogIntoCache(ConversationMessageLog messageLog)
         {
-            if (settings.IsEnabled)
+            if (settings.IsEnabled && messageLog.IsSuccessful && !IsExistedOnCache(messageLog))
             {
                 await cacheService.SetAsync(
-                messageLog.ConversationId.Replace(':', '-'),
-                JsonConvert.SerializeObject(messageLog),
+                ModifyKey(messageLog.ConversationId.Replace(':', '-')),
+                messageLog.Message,
                 new CacheItemOptions
                 {
                     RelativeExpiration = TimeSpan.FromMinutes(settings.TimeSpanInMinutes)
                 });
             }
         }
+
+        private bool IsExistedOnCache(ConversationMessageLog messageLog)
+        {
+            var jsonLogList = redisCacheExtend.GetValueByKeyContains<string>(messageLog.ConversationId.Replace(':', '-'));
+
+            return jsonLogList.Any(content => content.Equals(messageLog.Message));
+        }
+
+        private static string ModifyKey(string key) => $"{key}:{Guid.NewGuid()}";
     }
 }
