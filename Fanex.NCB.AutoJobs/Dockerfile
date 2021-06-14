@@ -2,8 +2,6 @@ FROM registry.nexdev.net:5050/docker/dotnet/core/sdk:5.0.102-ca-patch-buster-sli
 
 WORKDIR /src
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
-WORKDIR /src
 COPY ["nuget.config", "."]
 COPY ["Fanex.NCB.AutoJobs/Fanex.NCB.AutoJobs.csproj", "Fanex.NCB.AutoJobs/"]
 COPY ["Fanex.NCB.Services/Fanex.NCB.Services.csproj", "Fanex.NCB.Services/"]
@@ -17,8 +15,6 @@ RUN dotnet restore "Fanex.NCB.AutoJobs/Fanex.NCB.AutoJobs.csproj"
 COPY . .
 
 WORKDIR "/src/Fanex.NCB.AutoJobs"
-
-RUN dotnet build "Fanex.NCB.AutoJobs.csproj" -c Release -o /app/build
 
 RUN dotnet publish -r linux-x64 --self-contained false -o /app
 
