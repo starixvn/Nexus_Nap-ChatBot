@@ -1,85 +1,80 @@
-import React from 'react'
-import renderer from 'react-test-renderer'
+import React from 'react';
+import { shallow } from 'enzyme';
 
-import MultipleSelectOptionList from '../MultipleSelectOptionList'
-
-const defaultProps = {
-    dataSource: [],
-    id: 1
-}
+import MultipleSelectOptionList from '../MultipleSelectOptionList';
+import Option from '../Option';
 
 describe('MultipleSelectOptionList ', () => {
     afterAll(() => {
         jest.resetAllMocks();
-    })
+    });
 
     describe('_renderOptionList', () => {
-        it('Option component count should be correct', () => {
-            const expectedResult = 2;
-            const dataSource = [{
-                key: "key1",
-                value: "Value 1",
-                checked: true
-            },
-            {
-                key: "key2",
-                value: "Value 2",
-                checked: false
-            }
+        it('should return no information when dataSource is invalid', () => {
+            // Arrange
+            const props = {
+                dataSource: [],
+                id: 1,
+                onChange: jest.fn()
+            };
+            const expected = <span>No information</span>;
+            const container = shallow(<MultipleSelectOptionList {...props} />).instance();
+
+            // Act
+            const actual = container._renderOptionList();
+
+            // Assert
+            expect(actual).toEqual(expected);
+        });
+
+        it('should return expected Option components', () => {
+            // Arrange
+            const props = {
+                dataSource: [
+                    { key: 'key1', value: 'Value 1', checked: true, visible: true },
+                    { key: 'key2', value: 'Value 2', checked: false, visible: false }
+                ],
+                id: 1,
+                onChange: jest.fn()
+            };
+            const expected = [
+                <Option
+                    id={`1-optionItem-0`}
+                    key={`1optionItem0`}
+                    itemData={props.dataSource[0]}
+                    onChange={props.onChange}
+                />, false
             ];
+            const container = shallow(<MultipleSelectOptionList {...props} />).instance();
 
-            const props = Object.assign({}, defaultProps, { dataSource });
-            const optionList = new MultipleSelectOptionList(props);
+            // Act
+            const actual = container._renderOptionList();
 
-            const result = optionList._renderOptionList();
+            // Assert
+            expect(actual).toEqual(expected);
+        });
+    });
 
-            expect(result.length).toBe(expectedResult);
-        })
-
-        it('props of Option component should be correct', () => {
-            const option = {
-                key: "key1",
-                value: "Value 1",
-                checked: true
+    describe('render', () => {
+        it('should return expected component', () => {
+            // Arrange
+            const props = {
+                dataSource: [],
+                id: 1,
+                onChange: jest.fn()
             };
-            const onChangeFunc = jest.fn();
+            const container = shallow(<MultipleSelectOptionList {...props} />).instance();
+            container._renderOptionList = jest.fn(() => <div />);
 
-            const expectedResult = {
-                id: "1-optionItem-0",
-                itemData: option,
-                onChange: onChangeFunc
-            };
+            // Act
+            const actual = container.render();
 
-            const dataSource = [option];
-
-            const props = Object.assign({}, defaultProps, { dataSource, onChange: onChangeFunc });
-            const optionList = new MultipleSelectOptionList(props);
-
-            const renderedOptionList = optionList._renderOptionList();
-            const result = renderedOptionList[0].props;
-
-            expect(result).toEqual(expectedResult);
-        })
-    })
-
-    it('rendered content should match with snapshot', () => {
-        const dataSource = [{
-            key: "key1",
-            value: "Value 1",
-            checked: true
-        },
-        {
-            key: "key2",
-            value: "Value 2",
-            checked: false
-        }
-        ];
-
-        const props = Object.assign({}, defaultProps, { dataSource });
-        const optionList = renderer.create(<MultipleSelectOptionList {...props} />);
-
-        const result = optionList.toJSON();
-
-        expect(result).toMatchSnapshot();
-    })
-})
+            // Assert
+            expect(actual).toEqual(
+                <ul className="multiple-select-options">
+                    <div />
+                </ul>
+            );
+        });
+    });
+});

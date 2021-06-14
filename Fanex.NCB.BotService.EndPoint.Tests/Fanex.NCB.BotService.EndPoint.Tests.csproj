@@ -18,6 +18,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Fanex.NCB.BotService.EndPoint\Fanex.NCB.BotService.EndPoint.csproj" />
   </ItemGroup>
-  <ItemGroup>
-  </ItemGroup>
 </Project>

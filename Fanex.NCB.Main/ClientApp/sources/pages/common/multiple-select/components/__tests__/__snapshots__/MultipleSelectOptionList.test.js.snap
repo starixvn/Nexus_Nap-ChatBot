@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`MultipleSelectOptionList  rendered content should match with snapshot 1`] = `
-<ul
-  className="multiple-select-options"
-/>
-`;
