@@ -110,7 +110,7 @@
             {
                 try
                 {
-                    bool isDuplicated = messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
+                    bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
                     if (isDuplicated)
                     {
                         return new SendMessageResult

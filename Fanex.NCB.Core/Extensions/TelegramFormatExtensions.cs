@@ -6,21 +6,20 @@
     {
         public static string ToMarkdownV2(this string text)
         {
+            // bold & italic
+            text = Regex.Replace(text, "(\\*\\*\\*)(.*?)(\\*\\*\\*)", "<b>_$2_</b>");
+
             // bold
-            var pattern = new Regex("(\\*\\*)(.*?)(\\*\\*)");
-            text = pattern.Replace(text, $"<b>$2</b>");
+            text = Regex.Replace(text, "(\\*\\*)(.*?)(\\*\\*)", "<b>$2</b>");
 
             // italic
-            pattern = new Regex("(\\*)(.*?)(\\*)");
-            text = pattern.Replace(text, "_$2_");
+            text = Regex.Replace(text, "(\\*)(.*?)(\\*)", "_$2_");
 
             // strikethrough
-            pattern = new Regex("(~~)(.*?)(~~)");
-            text = pattern.Replace(text, "~$2~");
+            text = Regex.Replace(text, "(~~)(.*?)(~~)", "~$2~");
 
             // revert
-            pattern = new Regex("(<b>)(.*?)(</b>)");
-            text = pattern.Replace(text, $"*$2*");
+            text = Regex.Replace(text, "(<b>)(.*?)(</b>)", "*$2*");
 
             return text;
         }
@@ -28,39 +27,40 @@
         public static string EscapedMarkdownV2(this string text)
         {
             // bold
-            var pattern = new Regex("(\\*)(.*?)(\\*)");
-            text = pattern.Replace(text, $"<b>$2</b>");
+            text = Regex.Replace(text, "(\\*)(.*?)(\\*)", "<b>$2</b>");
 
             // italic
-            pattern = new Regex("(_)(.*?)(_)");
-            text = pattern.Replace(text, "<i>$2</i>");
+            text = Regex.Replace(text, "(_)(.*?)(_)", "<i>$2</i>");
 
             // strikethrough
-            pattern = new Regex("(~)(.*?)(~)");
-            text = pattern.Replace(text, "<s>$2</s>");
+            text = Regex.Replace(text, "(~)(.*?)(~)", "<s>$2</s>");
 
             // escape
-            text = text.Replace("_", "\\_").Replace("*", "\\*")
-                .Replace("[", "\\[").Replace("]", "\\]")
-                .Replace("(", "\\(").Replace(")", "\\)")
-                .Replace("~", "\\~").Replace("`", "\\`").Replace("#", "\\#")
-                .Replace("+", "\\+").Replace("-", "\\-")
-                .Replace("=", "\\=").Replace("|", "\\|")
-                .Replace("{", "\\{").Replace("}", "\\}")
-                .Replace(".", "\\.").Replace("!", "\\!");
+            text = Regex.Replace(text, @"(.*?)(_|[\\][_])", "$1\\_");
+            text = Regex.Replace(text, @"(.*?)(\*|[\\][*])", "$1\\*");
+            text = Regex.Replace(text, @"(.*?)(\[|[\\][\[])", "$1\\[");
+            text = Regex.Replace(text, @"(.*?)(]|[\\][\]])", "$1\\]");
+            text = Regex.Replace(text, @"(.*?)(\(|[\\][\(])", "$1\\(");
+            text = Regex.Replace(text, @"(.*?)(\)[\\][\)])", "$1\\)");
+            text = Regex.Replace(text, @"(.*?)(~|[\\][~])", "$1\\~");
+            text = Regex.Replace(text, @"(.*?)(`|[\\][`])", "$1\\`");
+            text = Regex.Replace(text, @"(.*?)(#|[\\][#])", "$1\\#");
+            text = Regex.Replace(text, @"(.*?)(\+|[\\][\+])", "$1\\+");
+            text = Regex.Replace(text, @"(.*?)(-|[\\][-])", "$1\\-");
+            text = Regex.Replace(text, @"(.*?)(=|[\\][=])", "$1\\=");
+            text = Regex.Replace(text, @"(.*?)(\||[\\][\|])", "$1\\|");
+            text = Regex.Replace(text, @"(.*?)(\{|[\\][\{])", "$1\\{");
+            text = Regex.Replace(text, @"(.*?)(}|[\\][}])", "$1\\}");
+            text = Regex.Replace(text, @"(.*?)(\.|[\\][\.])", "$1\\.");
+            text = Regex.Replace(text, @"(.*?)(!|[\\][!])", "$1\\!");
 
             // revert
-            pattern = new Regex("(<b>)(.*?)(</b>)");
-            text = pattern.Replace(text, $"*$2*");
-
-            pattern = new Regex("(<i>)(.*?)(</i>)");
-            text = pattern.Replace(text, "_$2_");
-
-            pattern = new Regex("(<s>)(.*?)(</s>)");
-            text = pattern.Replace(text, "~$2~");
+            text = Regex.Replace(text, "(<b>)(.*?)(</b>)", "*$2*");
+            text = Regex.Replace(text, "(<i>)(.*?)(</i>)", "_$2_");
+            text = Regex.Replace(text, "(<s>)(.*?)(</s>)", "~$2~");
 
             // escape
-            text = text.Replace(">", "\\>");
+            text = Regex.Replace(text, @"(.*?)(>|[\\][>])", "$1\\>");
 
             return text;
         }
