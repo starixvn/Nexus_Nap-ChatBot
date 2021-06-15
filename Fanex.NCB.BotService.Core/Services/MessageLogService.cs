@@ -64,7 +64,7 @@
             }
         }
 
-        public async Task RemoveMessageLogInCache(string conversationId, string guid)
+        public async Task RemoveMessageLogOnCache(string conversationId, string guid)
         {
             string key = ModifyKey(conversationId, guid);
             await cacheService.RemoveAsync(key);

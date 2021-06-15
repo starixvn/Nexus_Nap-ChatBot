@@ -8,6 +8,6 @@
 
         Task InserMessageLogIntoCache(string conversationId, string messageContent, string guiid);
 
-        Task RemoveMessageLogInCache(string conversationId, string guid);
+        Task RemoveMessageLogOnCache(string conversationId, string guid);
     }
 }

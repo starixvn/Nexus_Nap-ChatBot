@@ -176,7 +176,7 @@
             await AddMessageLogToDatabaseAsync(conversationInfo, messageContent, result);
             if (result.ErrorCode != 0)
             {
-                await messageLogService.RemoveMessageLogInCache(conversationInfo.ConversationId, guiid);
+                await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
             }
         }
 
