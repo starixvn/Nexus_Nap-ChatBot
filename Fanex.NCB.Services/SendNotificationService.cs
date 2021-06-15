@@ -74,12 +74,11 @@
 
         private static string GenerateErrorMessage(RecipientStatuses recipientStatus, string errMsg)
         {
-            string[] errorMsgs = new[]
+            var errorMsgs = new[]
             {
-                "Chatbot service has been stopped due to turning off the configuration by admin.",
-                "The content of the message sent to this group is duplicated for a period of time."
+                Resources.Resources.DisableChannelErrorMessage,
+                Resources.Resources.DuplicatedErrorMessage
             };
-
             if (errorMsgs.Contains(errMsg))
             {
                 return errMsg;

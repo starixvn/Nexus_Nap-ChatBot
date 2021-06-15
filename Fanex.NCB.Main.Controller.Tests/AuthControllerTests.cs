@@ -10,7 +10,6 @@
     using Fanex.NAP.Client.Models.ParameterObject;
     using Fanex.NAP.Client.Models.ValueObject;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Core.Resources;
     using Fanex.NCB.Models.Auth;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Authentication;
@@ -169,7 +168,7 @@
             {
                 { "ReturnUrl", userLogin.ReturnUrl },
                 { "invalidLogin", true },
-                { "errorMsg", Labels.UserNotExists }
+                { "errorMsg", Resources.Resources.UserNotExists }
             };
 
             //Actual
@@ -194,7 +193,7 @@
             {
                 { "ReturnUrl", userLogin.ReturnUrl },
                 { "invalidLogin", true },
-                { "errorMsg", Labels.WrongPassword }
+                { "errorMsg", Resources.Resources.WrongPassword }
             };
             var user = new User
             {
@@ -225,7 +224,7 @@
             {
                 { "ReturnUrl", userLogin.ReturnUrl },
                 { "invalidLogin", true },
-                { "errorMsg", Labels.WrongPassword }
+                { "errorMsg", Resources.Resources.WrongPassword }
             };
             var user = new User
             {

@@ -43,7 +43,6 @@
             };
 
             var result = await baseService.ExecuteNonQueryAsync(command);
-
             if (result.IsSuccessful)
             {
                 var notifications = JsonConvert.DeserializeObject<List<NotificationMessage>>(command.NotificationIDLst);

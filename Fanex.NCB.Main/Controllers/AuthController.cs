@@ -11,7 +11,6 @@
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ParameterObject;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Core.Resources;
     using Fanex.NCB.Models.Auth;
     using Fanex.NCB.NAPResolver;
     using Fanex.NCB.Services.Interfaces;
@@ -64,11 +63,11 @@
             {
                 if (!ValidatePassword(user, userLogin))
                 {
-                    errorMsg = Labels.WrongPassword;
+                    errorMsg = Resources.Resources.WrongPassword;
                 }
                 else if (!await IsExistNapSite(user) || !await IsExistNapGroup(user))
                 {
-                    errorMsg = Labels.NoPermision;
+                    errorMsg = Resources.Resources.NoPermision;
                 }
                 else
                 {
@@ -81,7 +80,7 @@
             }
             else
             {
-                errorMsg = Labels.UserNotExists;
+                errorMsg = Resources.Resources.UserNotExists;
             }
 
             return RedirectToAction("Index", new

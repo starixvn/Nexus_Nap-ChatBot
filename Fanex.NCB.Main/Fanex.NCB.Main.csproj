@@ -46,6 +46,7 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Fanex.NCB.NAPResolver\Fanex.NCB.NAPResolver.csproj" />
+        <ProjectReference Include="..\Fanex.NCB.Resources\Fanex.NCB.Resources.csproj" />
         <ProjectReference Include="..\Fanex.NCB.Services\Fanex.NCB.Services.csproj" />
     </ItemGroup>
     <ItemGroup>

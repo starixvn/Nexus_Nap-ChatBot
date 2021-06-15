@@ -17,16 +17,16 @@
             this.botConfigurations = botConfigurations.Value;
         }
 
-        public async Task<User> GetBotInfoAsync(int botId)
+        public async Task<User> GetBotInfoAsync(long botId)
         {
             TelegramBotConfigurations bot = botConfigurations.FirstOrDefault(x => x.BotId == botId);
             return await bot.BotClient.GetMeAsync();
         }
 
-        public async Task<Message> SendTextMessageAsync(int botId, long chatId, string text, ParseMode parseMode = ParseMode.MarkdownV2)
+        public async Task<Message> SendTextMessageAsync(long botId, long chatId, string messageContent, ParseMode parseMode = ParseMode.MarkdownV2)
         {
             TelegramBotConfigurations bot = botConfigurations.FirstOrDefault(x => x.BotId == botId);
-            return await bot.BotClient.SendTextMessageAsync(new ChatId(chatId), text, parseMode);
+            return await bot.BotClient.SendTextMessageAsync(new ChatId(chatId), messageContent, parseMode);
         }
     }
 }

@@ -30,8 +30,6 @@
         private readonly IConversationService conversationService;
         private readonly IMessageLogService messageLogService;
         private readonly ILogger logger;
-        private const string DisableChannelErrorMessage = "Chatbot service has been stopped due to turning off the configuration by admin.";
-        private const string DuplicatedErrorMessage = "The content of the message sent to this group is duplicated for a period of time.";
 
         [Obsolete]
         private readonly BotConfiguration botConfig;
@@ -68,23 +66,23 @@
         public async Task<ObjectResult> Send(string botName, string conversationId, string message)
         {
             var errorMessage = string.Empty;
-            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
+            try
             {
-                errorMessage = DisableChannelErrorMessage;
-            }
-            else
-            {
-                try
+                if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
+                {
+                    errorMessage = Resources.Resources.DisableChannelErrorMessage;
+                }
+                else
                 {
                     var appId = GetAppId(botName);
                     var conversationReference = await GetConversationReference(conversationId, botName);
                     await SendMessage(appId, conversationReference, message);
                 }
-                catch (Exception ex)
-                {
-                    errorMessage = ex.Message;
-                    await WriteLog(ex);
-                }
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+                await WriteLog(ex);
             }
 
             return Ok(errorMessage);
@@ -125,7 +123,7 @@
                     ConversationId = conversationInfo.ConversationId,
                     SentTime = DateTime.Now,
                     ErrorCode = 1,
-                    ErrorMessage = DisableChannelErrorMessage,
+                    ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
                     IsIgnoreRetry = true
                 }));
             }
@@ -138,7 +136,7 @@
                     ConversationId = conversationInfo.ConversationId,
                     SentTime = DateTime.UtcNow,
                     ErrorCode = -1,
-                    ErrorMessage = DuplicatedErrorMessage,
+                    ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
                     NotificationId = notificationMessage.NotificationId,
                     IsIgnoreRetry = true
                 }) : Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message)));

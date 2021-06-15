@@ -56,6 +56,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		nuget.config = nuget.config
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Resources", "Fanex.NCB.Resources\Fanex.NCB.Resources.csproj", "{CFA0C95B-C81F-4F87-B7B5-563618499B70}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -141,6 +143,10 @@ Global
 		{E43FADBC-A5E5-4D94-88E6-8A4E76642B30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E43FADBC-A5E5-4D94-88E6-8A4E76642B30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E43FADBC-A5E5-4D94-88E6-8A4E76642B30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFA0C95B-C81F-4F87-B7B5-563618499B70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFA0C95B-C81F-4F87-B7B5-563618499B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFA0C95B-C81F-4F87-B7B5-563618499B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFA0C95B-C81F-4F87-B7B5-563618499B70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

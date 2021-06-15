@@ -6,8 +6,8 @@
 
     public interface ITelegramBotService
     {
-        Task<User> GetBotInfoAsync(int botId);
+        Task<User> GetBotInfoAsync(long botId);
 
-        Task<Message> SendTextMessageAsync(int botId, long chatId, string text, ParseMode parseMode = ParseMode.MarkdownV2);
+        Task<Message> SendTextMessageAsync(long botId, long chatId, string messageContent, ParseMode parseMode = ParseMode.MarkdownV2);
     }
 }

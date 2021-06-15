@@ -23,5 +23,6 @@
         <ProjectReference Include="..\Fanex.NCB.Core\Fanex.NCB.Core.csproj" />
         <ProjectReference Include="..\Fanex.NCB.Models\Fanex.NCB.Models.csproj" />
         <ProjectReference Include="..\Fanex.NCB.Repository\Fanex.NCB.Repository.csproj" />
+        <ProjectReference Include="..\Fanex.NCB.Resources\Fanex.NCB.Resources.csproj" />
     </ItemGroup>
 </Project>

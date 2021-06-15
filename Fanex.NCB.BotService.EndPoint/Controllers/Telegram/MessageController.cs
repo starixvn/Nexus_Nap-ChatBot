@@ -22,9 +22,6 @@
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class MessageController : Controller
     {
-        private const string DisableChannelErrorMessage = "Chatbot service has been stopped due to turning off the configuration by admin.";
-        private const string DuplicatedErrorMessage = "The content of the message sent to this group is duplicated for a period of time.";
-
         private readonly AppSettings appSettings;
         private readonly ILogger logger;
         private readonly IConversationService conversationService;
@@ -47,24 +44,24 @@
 
         [HttpPost]
         [Route("api/telegram/sendMessage")]
-        public async Task<ObjectResult> SendMessage(int botId, long chatId, string text)
+        public async Task<ObjectResult> SendMessage(long botId, long chatId, string messageContent)
         {
             var errorMessage = string.Empty;
-            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
+            try
             {
-                errorMessage = DisableChannelErrorMessage;
+                if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
+                {
+                    errorMessage = Resources.Resources.DisableChannelErrorMessage;
+                }
+                else
+                {
+                    await botService.SendTextMessageAsync(botId, chatId, messageContent);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                try
-                {
-                    await botService.SendTextMessageAsync(botId, chatId, text);
-                }
-                catch (Exception ex)
-                {
-                    errorMessage = ex.Message;
-                    await WriteLogAsync(ex);
-                }
+                errorMessage = ex.Message;
+                await WriteLogAsync(ex);
             }
 
             return Ok(errorMessage);
@@ -93,21 +90,21 @@
 
         private async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo, NotificationMessage notificationMessage)
         {
-            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
+            try
             {
-                return new SendMessageResult
+                if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
                 {
-                    NotificationId = notificationMessage.NotificationId,
-                    ConversationId = conversationInfo.ConversationId,
-                    SentTime = DateTime.Now,
-                    ErrorCode = 1,
-                    ErrorMessage = DisableChannelErrorMessage,
-                    IsIgnoreRetry = true
-                };
-            }
-            else
-            {
-                try
+                    return new SendMessageResult
+                    {
+                        NotificationId = notificationMessage.NotificationId,
+                        ConversationId = conversationInfo.ConversationId,
+                        SentTime = DateTime.Now,
+                        ErrorCode = 1,
+                        ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
+                        IsIgnoreRetry = true
+                    };
+                }
+                else
                 {
                     bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
                     if (isDuplicated)
@@ -117,14 +114,14 @@
                             ConversationId = conversationInfo.ConversationId,
                             SentTime = DateTime.UtcNow,
                             ErrorCode = -1,
-                            ErrorMessage = DuplicatedErrorMessage,
+                            ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
                             NotificationId = notificationMessage.NotificationId,
                             IsIgnoreRetry = true
                         };
                     }
                     else
                     {
-                        _ = int.TryParse(conversationInfo.BotConversationId, out int botId);
+                        _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
                         _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
                         string guiid = Guid.NewGuid().ToString();
                         await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, notificationMessage.Message, guiid);
@@ -135,22 +132,22 @@
                         return result;
                     }
                 }
-                catch (Exception exception)
+            }
+            catch (Exception exception)
+            {
+                await WriteLogAsync(exception);
+                return new SendMessageResult
                 {
-                    await WriteLogAsync(exception);
-                    return new SendMessageResult
-                    {
-                        NotificationId = notificationMessage.NotificationId,
-                        ConversationId = conversationInfo.ConversationId,
-                        SentTime = DateTime.Now,
-                        ErrorCode = 1,
-                        ErrorMessage = exception.Message
-                    };
-                }
+                    NotificationId = notificationMessage.NotificationId,
+                    ConversationId = conversationInfo.ConversationId,
+                    SentTime = DateTime.Now,
+                    ErrorCode = 1,
+                    ErrorMessage = exception.Message
+                };
             }
         }
 
-        private async Task<SendMessageResult> SendMessageAsync(int botId, long chatId, int notificationId, string text)
+        private async Task<SendMessageResult> SendMessageAsync(long botId, long chatId, int notificationId, string messageContent)
         {
             var result = new SendMessageResult
             {
@@ -160,7 +157,7 @@
 
             try
             {
-                await botService.SendTextMessageAsync(botId, chatId, text);
+                await botService.SendTextMessageAsync(botId, chatId, messageContent);
             }
             catch (Exception exception)
             {
@@ -174,16 +171,16 @@
             return result;
         }
 
-        private async Task AddMessageLogAsync(ConversationInfo conversationInfo, string text, SendMessageResult result, string guiid)
+        private async Task AddMessageLogAsync(ConversationInfo conversationInfo, string messageContent, SendMessageResult result, string guiid)
         {
-            await AddMessageLogToDatabaseAsync(conversationInfo, text, result);
+            await AddMessageLogToDatabaseAsync(conversationInfo, messageContent, result);
             if (result.ErrorCode != 0)
             {
                 await messageLogService.RemoveMessageLogInCache(conversationInfo.ConversationId, guiid);
             }
         }
 
-        private async Task AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, string text, SendMessageResult result)
+        private async Task AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, string messageContent, SendMessageResult result)
         {
             try
             {
@@ -191,7 +188,7 @@
                 {
                     FromConversationId = conversationInfo.BotConversationId,
                     ToConversationId = conversationInfo.ConversationId,
-                    Content = text,
+                    Content = messageContent,
                     ReferenceId = result.NotificationId,
                     IsSuccessfull = result.ErrorCode == 0,
                     ErrorMessage = result.ErrorMessage

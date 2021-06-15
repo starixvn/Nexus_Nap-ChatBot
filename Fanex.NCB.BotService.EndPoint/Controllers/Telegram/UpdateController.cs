@@ -29,8 +29,8 @@
         }
 
         [HttpPost]
-        [Route("api/telegram/webhook/{botId:int}/update")]
-        public async Task<IActionResult> Post(int botId, [FromBody] Update update)
+        [Route("api/telegram/webhook/{botId:long}/update")]
+        public async Task<IActionResult> Post(long botId, [FromBody] Update update)
         {
             if (update == null || update.Type != UpdateType.Message)
             {
