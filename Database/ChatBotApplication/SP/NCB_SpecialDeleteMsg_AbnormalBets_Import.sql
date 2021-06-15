@@ -213,7 +213,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
         , '\r\n', '\r\n'
         , 'Event Date: ', IFNULL(DATE_FORMAT(MinWinlostDate,'%b %d, %Y'),''),' - ',IFNULL(DATE_FORMAT(MaxWinlostDate,'%b %d, %Y'),'')
         , '\r\n'
-        ,'Member: ', IFNULL(UsernameLst,'')
+        ,'Affected accounts: ', IFNULL(UsernameLst,'')
         , '\r\n'
         , 'Requested by: ', RequestByLst
         , '\r\n'
