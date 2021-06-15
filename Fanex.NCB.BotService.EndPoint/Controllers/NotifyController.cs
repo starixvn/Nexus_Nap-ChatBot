@@ -63,7 +63,7 @@
         [HttpPost]
         [Route("api/notify")]
         [Obsolete]
-        public async Task<ObjectResult> Send(string botName, string conversationId, string message)
+        public async Task<ObjectResult> Send([FromBody] ConversationInfo conversationInfo)
         {
             var errorMessage = string.Empty;
             try
@@ -74,9 +74,9 @@
                 }
                 else
                 {
-                    var appId = GetAppId(botName);
-                    var conversationReference = await GetConversationReference(conversationId, botName);
-                    await SendMessage(appId, conversationReference, message);
+                    var appId = GetAppId(conversationInfo.BotName);
+                    var conversationReference = GetConversationReference(conversationInfo);
+                    await SendMessage(appId, conversationReference, conversationInfo.Message);
                 }
             }
             catch (Exception ex)
@@ -146,14 +146,23 @@
         [Obsolete]
         private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo, int notifictaionId, string message)
         {
+            string guiid = Guid.NewGuid().ToString();
+
             try
             {
+                await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, message, guiid);
+
                 var conversationReference = GetConversationReference(conversationInfo);
                 var appId = GetAppId(conversationInfo.BotName);
-                string guiid = Guid.NewGuid().ToString();
-                await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, message, guiid);
+
                 var result = await SendMessageNotification(appId, notifictaionId, conversationReference, message);
-                var thread = new Thread(async () => await AddMessageLog(conversationReference, message, result, guiid));
+
+                if (result.ErrorCode != 0)
+                {
+                    await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
+                }
+
+                var thread = new Thread(async () => await AddMessageLogOnDb(conversationReference, message, result));
                 thread.Start();
 
                 return result;
@@ -161,6 +170,8 @@
             catch (Exception exception)
             {
                 await WriteLog(exception);
+                await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
+
                 return new SendMessageResult
                 {
                     NotificationId = notifictaionId,
@@ -229,29 +240,6 @@
             {
                 await WriteLog(ex);
             }
-        }
-
-        private async Task AddMessageLog(ConversationReference conversationReference, string messageContent, SendMessageResult result, string guiid)
-        {
-            await AddMessageLogOnDb(conversationReference, messageContent, result);
-            if (result.ErrorCode != 0)
-            {
-                await messageLogService.RemoveMessageLogInCache(conversationReference.Conversation.Id, guiid);
-            }
-        }
-
-        private async Task<ConversationReference> GetConversationReference(string conversationId, string botName)
-        {
-            var conversationGroup = await conversationService.GetGroupConversation(conversationId, botName);
-            var coversation = new ConversationReference
-            {
-                Bot = new ChannelAccount { Id = conversationGroup.BotConversationId, Name = conversationGroup.BotName, Role = "bot" },
-                Conversation = new ConversationAccount { Id = conversationId },
-                ServiceUrl = conversationGroup.ServiceUrl,
-                ChannelId = conversationGroup.ChannelId
-            };
-
-            return coversation;
         }
 
         private static ConversationReference GetConversationReference(ConversationInfo conversationInfo)

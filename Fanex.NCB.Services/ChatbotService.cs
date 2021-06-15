@@ -39,7 +39,7 @@
         public async Task<NotificationMessageResponse> SendMultiMessageAsync(byte channelId, IEnumerable<NotificationMessage> messages)
         {
             var messageResponse = new NotificationMessageResponse();
-            if(messages == null || !messages.Any())
+            if (messages == null || !messages.Any())
             {
                 return messageResponse;
             }
@@ -84,26 +84,38 @@
 
         public async Task MonitorChatbot()
         {
-            var notificationModel = new List<NotificationMessage>
+            var conversationInfo = new ConversationInfo
             {
-                new NotificationMessage {
-                    NotificationId = -1,
-                    Message = monitorChatbot.Message,
-                    Recipients = new List<ConversationInfo>
-                    {
-                        new ConversationInfo
-                        {
-                            ConversationId = monitorChatbot.ConversationId,
-                            ChannelId = monitorChatbot.ChannelId,
-                            ServiceUrl = monitorChatbot.ServiceUrl,
-                            BotConversationId = monitorChatbot.BotConversationId,
-                            BotName = monitorChatbot.BotName
-                        }
-                    }
-                }
+                ConversationId = monitorChatbot.ConversationId,
+                ChannelId = monitorChatbot.ChannelId,
+                BotName = monitorChatbot.BotName,
+                ServiceUrl = monitorChatbot.ServiceUrl,
+                BotConversationId = monitorChatbot.BotConversationId,
+                Message = monitorChatbot.Message
             };
+            await SendSingleMessageAsync((byte)ConversationChannel.Skype, conversationInfo);
+        }
 
-            await SendMultiMessageAsync((byte)ConversationChannel.Skype, notificationModel);
+        private async Task<HttpResponseMessage> SendSingleMessageAsync(byte channelId, ConversationInfo conversationInfo)
+        {
+            BotServiceEndPointConfigs apiConfigs = botSettings.ApiConfigs.First(x => x.ChannelId == channelId);
+            var token = await GetTokenAsync();
+
+            var httpClient = httpClientFactory.CreateClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+            var conversationData = new Dictionary<string, string>
+            {
+                { "conversationId", conversationInfo.ConversationId },
+                { "channelId", conversationInfo.ChannelId },
+                { "botName", conversationInfo.BotName },
+                { "serviceUrl", conversationInfo.ServiceUrl},
+                { "botConversationId", conversationInfo.BotConversationId},
+                { "message", conversationInfo.Message },
+            };
+            using var content = new FormUrlEncodedContent(conversationData);
+            var url = new Uri($"{botSettings.BotDomain}{apiConfigs.SendMessageUrl}");
+            using var response = await httpClient.PostAsJsonAsync(url, content);
+            return response;
         }
 
         public async Task NotifyToChatGroup(string message)
