@@ -90,7 +90,6 @@
             return Ok(errorMessage);
         }
 
-        [AllowAnonymous]
         [Obsolete]
         [HttpPost]
         [Route("api/notifymulti")]
