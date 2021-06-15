@@ -192,7 +192,7 @@ BEGIN
 			GROUP BY b1.MessageId
 		)
 		--Info of User (Abnormal Accounts)
-		,CTE_AbnornamlAccounts_Site AS
+		,CTE_AbnormalAccounts_Site AS
 		(
 			SELECT vh.MessageId, f.val AS Username ,CASE WHEN s.custid IS NULL AND c.site NOT IN ('CN88', '789y') THEN 'NV88' ELSE c.site END AS site, CASE WHEN s.custid IS NULL THEN 0 ELSE 1 END AS isDeposit, CASE WHEN c.currency = 20 THEN 1 ELSE 0 END AS IsTest
 			FROM #VoidingHistory vh
@@ -209,7 +209,7 @@ BEGIN
 				LEFT JOIN dbo.Dep_CustSuper s WITH (NOLOCK) ON c.srecommend = s.custid
 		),CTE_site AS
 		(
-			SELECT MessageId, Username, site, isDeposit, IsTest FROM CTE_AbnornamlAccounts_Site
+			SELECT MessageId, Username, site, isDeposit, IsTest FROM CTE_AbnormalAccounts_Site
 			UNION ALL 
 			SELECT MessageId, NULL AS Username, Site, isDeposit, IsTest FROM CTE_AbnormalBets_Site
 		)
@@ -220,7 +220,7 @@ BEGIN
 				,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 0 FOR XML PATH ('')), 1, 1, '') AS CreditSiteLst
 				,STUFF((SELECT DISTINCT ', ' + s2.site FROM CTE_site s2 WHERE s1.MessageId = s2.MessageId AND isDeposit = 1 FOR XML PATH ('')), 1, 1, '') AS DepositSiteLst
 				,STUFF((SELECT DISTINCT ', ' + s2.Username FROM CTE_site s2 WHERE s1.MessageId = s2.MessageId FOR XML PATH('')),1,1,'') AS UsernameLst
-				,MAX(IsTest) AS IsTest	
+				,MIN(IsTest) AS IsTest	
 			FROM CTE_site s1
 			GROUP BY s1.MessageId
 		)
