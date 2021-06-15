@@ -11,7 +11,6 @@
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Enum;
-    using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
@@ -127,8 +126,10 @@
                     {
                         _ = int.TryParse(conversationInfo.BotConversationId, out int botId);
                         _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
+                        string guiid = Guid.NewGuid().ToString();
+                        await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, notificationMessage.Message, guiid);
                         SendMessageResult result = await SendMessageAsync(botId, chatId, notificationMessage.NotificationId, notificationMessage.Message);
-                        var thread = new Thread(async () => await AddMessageLogAsync(conversationInfo, notificationMessage.Message, result));
+                        var thread = new Thread(async () => await AddMessageLogAsync(conversationInfo, notificationMessage.Message, result, guiid));
                         thread.Start();
 
                         return result;
@@ -173,10 +174,13 @@
             return result;
         }
 
-        private async Task AddMessageLogAsync(ConversationInfo conversationInfo, string text, SendMessageResult result)
+        private async Task AddMessageLogAsync(ConversationInfo conversationInfo, string text, SendMessageResult result, string guiid)
         {
             await AddMessageLogToDatabaseAsync(conversationInfo, text, result);
-            await AddMessageLogToCacheAsync(result, text);
+            if (result.ErrorCode != 0)
+            {
+                await messageLogService.RemoveMessageLogInCache(conversationInfo.ConversationId, guiid);
+            }
         }
 
         private async Task AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, string text, SendMessageResult result)
@@ -199,19 +203,6 @@
             {
                 await WriteLogAsync(ex);
             }
-        }
-
-        private async Task AddMessageLogToCacheAsync(SendMessageResult sendMessageResult, string text)
-        {
-            var logMessage = new ConversationMessageLog
-            {
-                ConversationId = sendMessageResult.ConversationId,
-                Message = text,
-                Status = sendMessageResult.ErrorCode == 0 ? SentMessageStatus.Success : SentMessageStatus.Fail,
-                SentDate = DateTime.UtcNow
-            };
-
-            await messageLogService.InserMessageLogIntoCache(logMessage);
         }
 
         private async Task WriteLogAsync(Exception exception)

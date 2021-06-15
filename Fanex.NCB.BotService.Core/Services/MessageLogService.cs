@@ -50,13 +50,13 @@
             return isInvalid;
         }
 
-        public async Task InserMessageLogIntoCache(ConversationMessageLog messageLog)
+        public async Task InserMessageLogIntoCache(string conversationId, string messageContent, string guiid)
         {
-            if (settings.IsEnabled && messageLog.IsSuccessful && !await IsExistedOnCache(messageLog))
+            if (settings.IsEnabled && !await IsExistedOnCache(conversationId, messageContent))
             {
                 await cacheService.SetAsync(
-                ModifyKey(messageLog.ConversationId.Replace(':', '-')),
-                messageLog.Message,
+                ModifyKey(conversationId.Replace(':', '-'), guiid),
+                messageContent,
                 new CacheItemOptions
                 {
                     RelativeExpiration = TimeSpan.FromMinutes(settings.TimeSpanInMinutes)
@@ -64,13 +64,17 @@
             }
         }
 
-        private async Task<bool> IsExistedOnCache(ConversationMessageLog messageLog)
+        public async Task RemoveMessageLogInCache(string conversationId, string guid)
         {
-            var messageContentList = await redisCacheExtend.GetValueByKeyContains<string>(messageLog.ConversationId.Replace(':', '-'));
-
-            return messageContentList.Any(content => content.Equals(messageLog.Message));
+            string key = ModifyKey(conversationId, guid);
+            await cacheService.RemoveAsync(key);
         }
 
-        private static string ModifyKey(string key) => $"{key}:{Guid.NewGuid()}";
+        private async Task<bool> IsExistedOnCache(string conversationId, string guid)
+        {
+            return await cacheService.ContainAsync(ModifyKey(conversationId, guid));
+        }
+
+        private static string ModifyKey(string key, string guiid) => $"{key}:{guiid}";
     }
 }

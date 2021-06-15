@@ -11,7 +11,6 @@
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Enum;
-    using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -91,6 +90,7 @@
             return Ok(errorMessage);
         }
 
+        [AllowAnonymous]
         [Obsolete]
         [HttpPost]
         [Route("api/notifymulti")]
@@ -153,8 +153,10 @@
             {
                 var conversationReference = GetConversationReference(conversationInfo);
                 var appId = GetAppId(conversationInfo.BotName);
+                string guiid = Guid.NewGuid().ToString();
+                await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, message, guiid);
                 var result = await SendMessageNotification(appId, notifictaionId, conversationReference, message);
-                var thread = new Thread(async () => await AddMessageLog(conversationReference, message, result));
+                var thread = new Thread(async () => await AddMessageLog(conversationReference, message, result, guiid));
                 thread.Start();
 
                 return result;
@@ -171,19 +173,6 @@
                     ErrorMessage = exception.Message
                 };
             }
-        }
-
-        private async Task AddMessageLogIntoCache(SendMessageResult sendMessageResult, string messageContent)
-        {
-            var logMessage = new ConversationMessageLog
-            {
-                ConversationId = sendMessageResult.ConversationId,
-                Message = messageContent,
-                Status = sendMessageResult.ErrorCode == 0 ? SentMessageStatus.Success : SentMessageStatus.Fail,
-                SentDate = DateTime.UtcNow
-            };
-
-            await messageLogService.InserMessageLogIntoCache(logMessage);
         }
 
         [Obsolete]
@@ -245,10 +234,13 @@
             }
         }
 
-        private async Task AddMessageLog(ConversationReference conversationReference, string messageContent, SendMessageResult result)
+        private async Task AddMessageLog(ConversationReference conversationReference, string messageContent, SendMessageResult result, string guiid)
         {
             await AddMessageLogOnDb(conversationReference, messageContent, result);
-            await AddMessageLogIntoCache(result, messageContent);
+            if (result.ErrorCode != 0)
+            {
+                await messageLogService.RemoveMessageLogInCache(conversationReference.Conversation.Id, guiid);
+            }
         }
 
         private async Task<ConversationReference> GetConversationReference(string conversationId, string botName)

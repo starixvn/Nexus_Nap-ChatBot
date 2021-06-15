@@ -16,5 +16,6 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
     Target = "~M:Fanex.NCB.BotService.EndPoint.MultiCredentialProvider.#ctor(Microsoft.Bot.Configuration.BotConfiguration)")]
 [assembly: SuppressMessage("Design", "CA1041:Provide ObsoleteAttribute message", Justification = "<Pending>", Scope = "member",
-    Target = "~M:Fanex.NCB.BotService.EndPoint.Controllers.NotifyController.#ctor(Microsoft.Bot.Builder.Integration.IAdapterIntegration,Fanex.NCB.BotService.Core.Services.Interfaces." +
-    "IMessageLogService,Microsoft.Bot.Configuration.BotConfiguration,Fanex.NCB.BotService.Core.Services.Interfaces.IConversationService,Fanex.Logging.ILogger)")]
+    Target = "~M:Fanex.NCB.BotService.EndPoint.Controllers.NotifyController.#ctor(Microsoft.Extensions.Options.IOptions" +
+    "{Fanex.NCB.BotService.Core.AppSettings},Microsoft.Bot.Builder.Integration.IAdapterIntegration,Fanex.NCB.BotService.Core.Services." +
+    "Interfaces.IMessageLogService,Microsoft.Bot.Configuration.BotConfiguration,Fanex.NCB.BotService.Core.Services.Interfaces.IConversationService,Fanex.Logging.ILogger)")]
