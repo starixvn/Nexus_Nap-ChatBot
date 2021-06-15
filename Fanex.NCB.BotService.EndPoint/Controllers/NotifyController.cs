@@ -32,7 +32,6 @@
         private readonly IMessageLogService messageLogService;
         private readonly CheckDuplicatedMessageLogSetting settings;
         private readonly ILogger logger;
-        private const string DisableChannelErrorMessage = "Chatbot service has been stopped due to turning off the configuration by admin.";
 
         [Obsolete]
         private readonly BotConfiguration botConfig;
@@ -70,12 +69,13 @@
         public async Task<ObjectResult> Send([FromBody] ConversationInfo conversationInfo)
         {
             var errorMessage = string.Empty;
+            try
             {
-                errorMessage = DisableChannelErrorMessage;
-            }
-            else
-            {
-                try
+            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
+                {
+                    errorMessage = Resources.Resources.DisableChannelErrorMessage;
+                }
+                else
                 {
                 if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
                 {
@@ -88,11 +88,11 @@
                     await SendMessage(appId, conversationReference, conversationInfo.Message);
                 }
                 }
-                catch (Exception ex)
-                {
-                    errorMessage = ex.Message;
-                //await WriteLog(ex);
-                }
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+                    await WriteLog(ex);
             }
 
             return Ok(errorMessage);
@@ -136,12 +136,13 @@
                     ConversationId = conversationInfo.ConversationId,
                     SentTime = DateTime.Now,
                     ErrorCode = 1,
-                    ErrorMessage = DisableChannelErrorMessage
+                    ErrorMessage = DisableChannelErrorMessage,
                 }));
             }
             else
             {
                 {
+                    ErrorMessage = DuplicatedErrorMessage,
                     NotificationId = notificationMessage.NotificationId,
                 ConversationId = conversationInfo.ConversationId,
                 SentTime = DateTime.Now,

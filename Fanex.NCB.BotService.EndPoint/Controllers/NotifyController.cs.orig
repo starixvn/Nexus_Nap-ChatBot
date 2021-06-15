@@ -30,14 +30,12 @@
         private readonly IAdapterIntegration adapter;
         private readonly IConversationService conversationService;
         private readonly IMessageLogService messageLogService;
+        private readonly CheckDuplicatedMessageLogSetting settings;
         private readonly ILogger logger;
 <<<<<<< HEAD
-        private readonly ICacheService cacheService;
-        private readonly ICacheRedisService cache;
         private const string DisableChannelErrorMessage = "Chatbot service has been stopped due to turning off the configuration by admin.";
 =======
->>>>>>> 000 - re-write check duplicated message service
-        private const string DuplicatedErrorMessage = "The content of the message sent to this group is duplicated for a period of time.";
+>>>>>>> 156890 - refactor code
 
         [Obsolete]
         private readonly BotConfiguration botConfig;
@@ -56,6 +54,7 @@
             this.botConfig = botConfig;
             this.conversationService = conversationService;
             this.messageLogService = messageLogService;
+            this.settings = settings;
             this.logger = logger;
         }
 
@@ -70,33 +69,55 @@
 
         [HttpPost]
         [Route("api/notify")]
-        [Obsolete]
-        public async Task<ObjectResult> Send(string botName, string conversationId, string message)
+        [Obsolete("Pending")]
+        public async Task<ObjectResult> Send([FromBody] ConversationInfo conversationInfo)
         {
             var errorMessage = string.Empty;
-            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
+<<<<<<< HEAD
             {
                 errorMessage = DisableChannelErrorMessage;
             }
             else
+=======
+            try
+>>>>>>> 156890 - refactor code
             {
-                try
+                if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
                 {
-                    var appId = GetAppId(botName);
-                    var conversationReference = await GetConversationReference(conversationId, botName);
-                    await SendMessage(appId, conversationReference, message);
+                    errorMessage = Resources.Resources.DisableChannelErrorMessage;
                 }
+                else
+                {
+                if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
+                {
+                    errorMessage = Resources.Resources.DisableChannelErrorMessage;
+                }
+                else
+                {
+                    var appId = GetAppId(conversationInfo.BotName);
+                    var conversationReference = GetConversationReference(conversationInfo);
+                    await SendMessage(appId, conversationReference, conversationInfo.Message);
+                }
+                }
+<<<<<<< HEAD
                 catch (Exception ex)
                 {
                     errorMessage = ex.Message;
-                    await WriteLog(ex);
+                //await WriteLog(ex);
                 }
+=======
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+                await WriteLog(ex);
+>>>>>>> 156890 - refactor code
             }
 
             return Ok(errorMessage);
         }
 
-        [AllowAnonymous]
+        [Obsolete]
         [Obsolete]
         [HttpPost]
         [Route("api/notifymulti")]
@@ -107,11 +128,13 @@
 
             if (notificationMessages != null && notificationMessages.Any())
             {
-                foreach (var notificationMessage in notificationMessages)
+                var notifications = conversationService.GetDistinctNotificationConversation(notificationMessages);
+
+                foreach (var notification in notifications)
                 {
-                    foreach (var conversationInfo in notificationMessage.Recipients)
+                    foreach (var conversationInfo in notification.Recipients)
                     {
-                        SendNotification(tasks, conversationInfo, notificationMessage);
+                        SendNotification(tasks, conversationInfo, notification);
                     }
                 }
 
@@ -124,55 +147,99 @@
         [Obsolete]
         private void SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
         {
-<<<<<<< HEAD
-            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
-=======
-            bool isInvalidSendToBotService = messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
-
-            tasks.Add(isInvalidSendToBotService ? Task.Run(() => new SendMessageResult
->>>>>>> 000 - re-write check duplicated message service
-            {
+            bool isEnabledSkypeChannel = appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype);
+            tasks.Add(!isEnabledSkypeChannel ? Task.Run(() => new SendMessageResult
                 tasks.Add(Task.Run(() => new SendMessageResult
                 {
                     NotificationId = notificationMessage.NotificationId,
                     ConversationId = conversationInfo.ConversationId,
                     SentTime = DateTime.Now,
                     ErrorCode = 1,
+<<<<<<< HEAD
                     ErrorMessage = DisableChannelErrorMessage
+=======
+                    ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
+                    IsIgnoreRetry = true
+>>>>>>> 156890 - refactor code
                 }));
             }
             else
             {
-                bool isInvalidSendToBotService = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
-
-                tasks.Add(isInvalidSendToBotService ? Task.Run(() => new SendMessageResult
                 {
+<<<<<<< HEAD
+=======
                     ConversationId = conversationInfo.ConversationId,
                     SentTime = DateTime.UtcNow,
                     ErrorCode = -1,
-                    ErrorMessage = DuplicatedErrorMessage,
+                    ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
+>>>>>>> 156890 - refactor code
                     NotificationId = notificationMessage.NotificationId,
+                ConversationId = conversationInfo.ConversationId,
+                SentTime = DateTime.Now,
+                ErrorCode = 1,
+                ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
                     IsIgnoreRetry = true
-                }) : Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message)));
+            }) : Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message)));
+        }
+
+        [Obsolete]
+            else
+            {
+                tasks.Add(
+                    Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
+                    );
             }
         }
 
         [Obsolete]
         private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo, int notifictaionId, string message)
         {
+            bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, message);
+
+            if (isDuplicated)
+            {
+                return new SendMessageResult
+                {
+                    ConversationId = conversationInfo.ConversationId,
+                    SentTime = DateTime.UtcNow,
+                    ErrorCode = -1,
+                    ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
+                    NotificationId = notifictaionId,
+                    IsIgnoreRetry = true
+                };
+            }
+
+            string guiid = Guid.NewGuid().ToString();
+
             try
             {
+                await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, message, guiid);
+
                 var conversationReference = GetConversationReference(conversationInfo);
                 var appId = GetAppId(conversationInfo.BotName);
+
                 var result = await SendMessageNotification(appId, notifictaionId, conversationReference, message);
-                var thread = new Thread(async () => await AddMessageLog(conversationReference, message, result));
+
+                if (result.ErrorCode != 0)
+                {
+                    await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
+                }
+
+                var thread = new Thread(async () => await AddMessageLogOnDb(conversationReference, message, result));
                 thread.Start();
+
+                if (settings.IsEnabled)
+                {
+                    InsertMessageInCache(result, message);
+                }
 
                 return result;
             }
             catch (Exception exception)
             {
                 await WriteLog(exception);
+                await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
+
                 return new SendMessageResult
                 {
                     NotificationId = notifictaionId,
@@ -184,7 +251,7 @@
             }
         }
 
-        private async Task AddMessageLogIntoCache(SendMessageResult sendMessageResult, string messageContent)
+        [Obsolete]
         {
             var logMessage = new ConversationMessageLog
             {
@@ -193,8 +260,8 @@
                 Status = sendMessageResult.ErrorCode == 0 ? SentMessageStatus.Success : SentMessageStatus.Fail,
                 SentDate = DateTime.UtcNow
             };
-
-            await messageLogService.InserMessageLogIntoCache(logMessage);
+            var threadInsertInRedis = new Thread(async () => await messageLogService.InserMessageLogInRedisCache(logMessage));
+            threadInsertInRedis.Start();
         }
 
         [Obsolete]
@@ -254,26 +321,6 @@
             {
                 await WriteLog(ex);
             }
-        }
-
-        private async Task AddMessageLog(ConversationReference conversationReference, string messageContent, SendMessageResult result)
-        {
-            await AddMessageLogOnDb(conversationReference, messageContent, result);
-            await AddMessageLogIntoCache(result, messageContent);
-        }
-
-        private async Task<ConversationReference> GetConversationReference(string conversationId, string botName)
-        {
-            var conversationGroup = await conversationService.GetGroupConversation(conversationId, botName);
-            var coversation = new ConversationReference
-            {
-                Bot = new ChannelAccount { Id = conversationGroup.BotConversationId, Name = conversationGroup.BotName, Role = "bot" },
-                Conversation = new ConversationAccount { Id = conversationId },
-                ServiceUrl = conversationGroup.ServiceUrl,
-                ChannelId = conversationGroup.ChannelId
-            };
-
-            return coversation;
         }
 
         private static ConversationReference GetConversationReference(ConversationInfo conversationInfo)

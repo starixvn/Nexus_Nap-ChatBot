@@ -23,10 +23,10 @@
     public class MessageController : Controller
     {
 <<<<<<< HEAD
-=======
-        private const string DisableChannelErrorMessage = "Chatbot service has been stopped due to turning off the configuration by admin.";
+        private readonly AppSettings appSettings;
 
->>>>>>> 000 - add more configuration: turn on/off send message to skype/telegram
+=======
+>>>>>>> 156890 - refactor code
         private readonly AppSettings appSettings;
         private readonly ILogger logger;
         private readonly IConversationService conversationService;
@@ -49,11 +49,17 @@
 
         [HttpPost]
         [Route("api/telegram/sendMessage")]
+<<<<<<< HEAD
         public async Task<ObjectResult> SendMessage([FromBody] ConversationInfo conversationInfo)
+=======
+        public async Task<ObjectResult> SendMessage(long botId, long chatId, string messageContent)
+>>>>>>> 156890 - refactor code
         {
             var errorMessage = string.Empty;
-            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
+            try
             {
+                if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
+                {
 <<<<<<< HEAD
                 if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
                 {
@@ -66,25 +72,23 @@
                     await botService.SendTextMessageAsync(botId, chatId, conversationInfo.Message);
                 }
 =======
-                errorMessage = DisableChannelErrorMessage;
->>>>>>> 000 - add more configuration: turn on/off send message to skype/telegram
-            }
-            else
-            {
+                    errorMessage = Resources.Resources.DisableChannelErrorMessage;
+>>>>>>> 156890 - refactor code
+                }
+                else
+                {
 <<<<<<< HEAD
-                errorMessage = ex.Message;
+                    errorMessage = ex.Message;
                 await WriteLogAsync(ex);
 =======
-                try
-                {
-                    await botService.SendTextMessageAsync(botId, chatId, text);
+                    await botService.SendTextMessageAsync(botId, chatId, messageContent);
+>>>>>>> 156890 - refactor code
                 }
-                catch (Exception ex)
-                {
-                    errorMessage = ex.Message;
-                    await WriteLog(ex);
-                }
->>>>>>> 000 - add more configuration: turn on/off send message to skype/telegram
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+                await WriteLogAsync(ex);
             }
 
             return Ok(errorMessage);
@@ -102,13 +106,7 @@
                 {
                     foreach (ConversationInfo conversationInfo in notification.Recipients)
                     {
-<<<<<<< HEAD
                         SendMessageAsync(tasks, conversationInfo, notification);
-=======
-                        tasks.Add(
-                            Task.Run(() => SendMessageAsync(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
-                            );
->>>>>>> 000 - add more configuration: turn on/off send message to skype/telegram
                     }
                 }
                 results = (await Task.WhenAll(tasks)).ToList();
@@ -117,9 +115,9 @@
             return Ok(results);
         }
 
-<<<<<<< HEAD
         private void SendMessageAsync(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
         {
+<<<<<<< HEAD
             bool isEnableTelegramChannel = appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram);
             tasks.Add(!isEnableTelegramChannel ? Task.Run(() => new SendMessageResult
             {
@@ -136,9 +134,13 @@
         {
             bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, messageContent);
             if (isDuplicated)
+=======
+            try
+>>>>>>> 156890 - refactor code
             {
-                return new SendMessageResult
+                if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
                 {
+<<<<<<< HEAD
                     ConversationId = conversationInfo.ConversationId,
                     SentTime = DateTime.UtcNow,
                     ErrorCode = -1,
@@ -149,10 +151,10 @@
             }
 
             string guiid = Guid.NewGuid().ToString();
-            try
-            {
+                try
+                {
                 _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
-                _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
+                    _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
                 await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, messageContent, guiid);
                 SendMessageResult result = await SendTextMessageAsync(botId, chatId, notificationId, messageContent);
                 if (result.ErrorCode != 0)
@@ -161,44 +163,58 @@
                 }
 
                 var thread = new Thread(async () => await AddMessageLogToDatabaseAsync(conversationInfo, messageContent, result));
-                thread.Start();
-
-                return result;
-            }
-            catch (Exception exception)
-            {
-                await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
-                await WriteLogAsync(exception);
-=======
-        private async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo, int notificationId, string text)
-        {
-            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
-            {
->>>>>>> 000 - add more configuration: turn on/off send message to skype/telegram
-                return new SendMessageResult
-                {
-                    NotificationId = notificationId,
-                    ConversationId = conversationInfo.ConversationId,
-                    SentTime = DateTime.Now,
-                    ErrorCode = 1,
-                    ErrorMessage = DisableChannelErrorMessage
-                };
-            }
-            else
-            {
-                try
-                {
-                    _ = int.TryParse(conversationInfo.BotConversationId, out int botId);
-                    _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
-                    SendMessageResult result = await SendMessageAsync(botId, chatId, notificationId, text);
-                    var thread = new Thread(async () => await AddMessageLogAsync(conversationInfo, text, result));
                     thread.Start();
 
                     return result;
+=======
+                    return new SendMessageResult
+                    {
+                        NotificationId = notificationMessage.NotificationId,
+                        ConversationId = conversationInfo.ConversationId,
+                        SentTime = DateTime.Now,
+                        ErrorCode = 1,
+                        ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
+                        IsIgnoreRetry = true
+                    };
                 }
-                catch (Exception exception)
+                else
                 {
-                    await WriteLog(exception);
+                    bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
+                    if (isDuplicated)
+                    {
+                        return new SendMessageResult
+                        {
+                            ConversationId = conversationInfo.ConversationId,
+                            SentTime = DateTime.UtcNow,
+                            ErrorCode = -1,
+                            ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
+                            NotificationId = notificationMessage.NotificationId,
+                            IsIgnoreRetry = true
+                        };
+                    }
+                    else
+                    {
+                        _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
+                        _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
+                        string guiid = Guid.NewGuid().ToString();
+                        await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, notificationMessage.Message, guiid);
+                        SendMessageResult result = await SendMessageAsync(botId, chatId, notificationMessage.NotificationId, notificationMessage.Message);
+                        var thread = new Thread(async () => await AddMessageLogAsync(conversationInfo, notificationMessage.Message, result, guiid));
+                        thread.Start();
+
+                        return result;
+                    }
+>>>>>>> 156890 - refactor code
+                }
+            }
+            catch (Exception exception)
+            {
+                await WriteLogAsync(exception);
+                return new SendMessageResult
+                {
+<<<<<<< HEAD
+                await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
+                await WriteLogAsync(exception);
                     return new SendMessageResult
                     {
                         NotificationId = notificationId,
@@ -211,11 +227,19 @@
             }
         }
 
-<<<<<<< HEAD
         protected internal virtual async Task<SendMessageResult> SendTextMessageAsync(long botId, long chatId, int notificationId, string messageContent)
 =======
-        private async Task<SendMessageResult> SendMessageAsync(int botId, long chatId, int notificationId, string text)
->>>>>>> 000 - add more configuration: turn on/off send message to skype/telegram
+                    NotificationId = notificationMessage.NotificationId,
+                    ConversationId = conversationInfo.ConversationId,
+                    SentTime = DateTime.Now,
+                    ErrorCode = 1,
+                    ErrorMessage = exception.Message
+                };
+            }
+        }
+
+        private async Task<SendMessageResult> SendMessageAsync(long botId, long chatId, int notificationId, string messageContent)
+>>>>>>> 156890 - refactor code
         {
             var result = new SendMessageResult
             {
@@ -248,8 +272,17 @@
 <<<<<<< HEAD
         protected internal virtual async Task AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, string messageContent, SendMessageResult result)
 =======
-        private async Task AddMessageLogAsync(ConversationInfo conversationInfo, string text, SendMessageResult result)
->>>>>>> 000 - add more configuration: turn on/off send message to skype/telegram
+        private async Task AddMessageLogAsync(ConversationInfo conversationInfo, string messageContent, SendMessageResult result, string guiid)
+        {
+            await AddMessageLogToDatabaseAsync(conversationInfo, messageContent, result);
+            if (result.ErrorCode != 0)
+            {
+                await messageLogService.RemoveMessageLogInCache(conversationInfo.ConversationId, guiid);
+            }
+        }
+
+        private async Task AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, string messageContent, SendMessageResult result)
+>>>>>>> 156890 - refactor code
         {
             try
             {

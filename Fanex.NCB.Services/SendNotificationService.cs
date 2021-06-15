@@ -96,7 +96,7 @@
             var errorMsgs = new[]
             {
                 Resources.Resources.DisableChannelErrorMessage,
-                Resources.Resources.DuplicatedErrorMessage,
+                Resources.Resources.DuplicatedErrorMessage
                 Resources.Resources.MessageIsTooLong
             };
             if (errorMsgs.Contains(errMsg))

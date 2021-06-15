@@ -46,19 +46,11 @@
 
         public async Task ScanAndSendNotificationAsync()
         {
-<<<<<<< HEAD
             var (notifications, recipients) = await GetNotificationPlannedToSendAsync();
             if (notifications.Any())
             {
                 await UpdateFailedRecipientStatusAsync(recipients.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)).ToList());
                 var readyToSendRecipients = recipients.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)).ToList();
-=======
-            var (notifications, recipients) = await GetNotificationPlannedToSend();
-            if (notifications.Any())
-            {
-                await UpdateFailedRecipientStatus(recipients.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
-                var readyToSendRecipients = recipients.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend));
->>>>>>> 156153 - enhance New Notification
 
                 await SendNotificationToRecipients(notifications, readyToSendRecipients);
             }
@@ -104,8 +96,12 @@
             var errorMsgs = new[]
             {
                 Resources.Resources.DisableChannelErrorMessage,
+<<<<<<< HEAD
                 Resources.Resources.DuplicatedErrorMessage,
                 Resources.Resources.MessageIsTooLong
+=======
+                Resources.Resources.DuplicatedErrorMessage
+>>>>>>> 156890 - refactor code
             };
             if (errorMsgs.Contains(errMsg))
             {
@@ -147,15 +143,6 @@
 
         private async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
-<<<<<<< HEAD
-=======
-            await SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications, recipients);
-            await SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications, recipients);
-        }
-
-        private async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
-        {
->>>>>>> 156153 - enhance New Notification
             var filterNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
             var filterRecipients = recipients.Where(x => filterNotifications.Any(y => y.NotificationId == x.NotificationId)).ToList();
             var distinctRecipients = GetDistinctChatGroupConversationId(filterRecipients);
@@ -167,11 +154,7 @@
             }
         }
 
-<<<<<<< HEAD
         protected internal virtual async Task SendMultiMessageAsync(
-=======
-        private async Task SendMultiMessageAsync(
->>>>>>> 156153 - enhance New Notification
             byte channelId,
             IEnumerable<NotificationMessage> messages,
             IEnumerable<NotificationRecipient> recipients,
@@ -266,15 +249,10 @@
             await UpdateSentNotificationStatusAsync(updateNotiModels);
         }
 
-<<<<<<< HEAD
         protected internal virtual IEnumerable<(List<NotificationMessage>, List<NotificationRecipient>)> DivideNotificationBatch(
             byte channelId,
             IEnumerable<NotificationSendMessage> notifications,
             IEnumerable<NotificationRecipient> recipients)
-=======
-        private IEnumerable<ValueTuple<List<NotificationMessage>, List<NotificationRecipient>>>
-            DivideNotificationBatch(byte channelId, IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
->>>>>>> 156153 - enhance New Notification
         {
             var batches = new List<(List<NotificationMessage>, List<NotificationRecipient>)>();
             var batchRecipients = new List<List<NotificationRecipient>>();
@@ -294,12 +272,8 @@
                                 {
                                     NotificationId = n.NotificationId,
                                     ChannelId = n.ChannelId,
-<<<<<<< HEAD
                                     Message = n.ChannelId == (byte)ConversationChannel.Telegram
                                         ? n.Content.ToMarkdownV2().EscapedMarkdownV2() : n.Content
-=======
-                                    Message = n.Content
->>>>>>> 156153 - enhance New Notification
                                 }));
 
                 foreach (var item in newBatches)
@@ -318,16 +292,10 @@
                 batches.Add((newBatches, batch));
             }
 
-<<<<<<< HEAD
             batches.Last().Item1.Last().Recipients = channelId == (byte)ConversationChannel.Telegram
                 ? AddMonitorRecipientForTelegram(batches.Last().Item1.Last().Recipients)
                 : AddMonitorRecipient(batches.Last().Item1.Last().Recipients);
-=======
-            if (channelId == (byte)ConversationChannel.Skype)
-            {
-                batches.Last().Item1.Last().Recipients = AddMonitorRecipient(batches.Last().Item1.Last().Recipients);
-            }
->>>>>>> 156153 - enhance New Notification
+
 
             return batches;
         }
@@ -389,24 +357,7 @@
             }
         }
 
-<<<<<<< HEAD
         private void PushSignalUpdateNotiStatus(string notificationIds)
-=======
-        public async Task SendNotificationImmediately(int notifiactionId)
-        {
-            var criteria = new GetNotificationByIdCriteria
-            {
-                NotificationId = notifiactionId
-            };
-            var (notifications, recipients) = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria);
-
-            await UpdateFailedRecipientStatus(recipients.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)
-                    && !r.RecipientStatus.Equals(RecipientStatuses.BotServiceError)));
-            await SendNotificationToRecipients(notifications, recipients.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
-        }
-
-        private async Task PushSignalUpdateNotiStatus(string notificationIds)
->>>>>>> 156153 - enhance New Notification
         {
             Task.Run(() => pushSignalService.OnUpdateNotificationStatusAsync(notificationIds));
         }
