@@ -249,6 +249,7 @@ BEGIN
     SELECT tmp.GroupName, 
 		tmp.GroupID, 
 		tmp.ChannelID,
+        tmp.ChannelName,
         tmp.ChatGroupTypeID, 
         tmp.ChatGroupTypeName, 
         tmp.ConversationID, 
