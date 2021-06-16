@@ -100,7 +100,8 @@
             {
                 foreach (var notificationMessage in notificationMessages)
                 {
-                    foreach (var conversationInfo in notificationMessage.Recipients)
+                    var distinctRecipients = GetDistinctConversation(notificationMessage.Recipients);
+                    foreach (var conversationInfo in distinctRecipients)
                     {
                         SendNotification(tasks, conversationInfo, notificationMessage);
                     }
@@ -110,6 +111,13 @@
             }
 
             return Ok(results);
+        }
+
+        private static IEnumerable<ConversationInfo> GetDistinctConversation(IEnumerable<ConversationInfo> conversation)
+        {
+            var clonedConversations = new List<ConversationInfo>(conversation);
+            return clonedConversations.GroupBy(g => new { g.ConversationId })
+                .Select(group => group.FirstOrDefault());
         }
 
         [Obsolete]
