@@ -61,14 +61,14 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpPost]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Host)]
-        public async Task<IActionResult> Create([FromBody]CreateNotificationTemplateViewModel viewModel)
+        public async Task<IActionResult> Create([FromBody] CreateNotificationTemplateViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
                 var contents = new List<NotificationTemplateContent>
                 {
                     new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Skype, Content = viewModel.Content },
-                    new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content.ToMarkdownV2() }
+                    new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content }
                 };
 
                 CommandResult result = await notificationTemplaceService.CreateAsync(new CreateNotificationTemplate
@@ -89,14 +89,14 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpPost]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Host)]
-        public async Task<IActionResult> Edit([FromBody]EditNotificationTemplateViewModel viewModel)
+        public async Task<IActionResult> Edit([FromBody] EditNotificationTemplateViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
                 var contents = new List<NotificationTemplateContent>
                 {
                     new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Skype, Content = viewModel.Content },
-                    new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content.ToMarkdownV2() }
+                    new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content }
                 };
                 CommandResult result = await notificationTemplaceService.EditAsync(new EditNotificationTemplate
                 {

@@ -9,7 +9,6 @@
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Enum;
-    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Main.ViewModel.NotificationTemplate;
     using Fanex.NCB.Models.NotificationTemplate;
     using Fanex.NCB.Services.Interfaces;
@@ -96,7 +95,7 @@
             var contents = new List<NotificationTemplateContent>
             {
                 new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Skype, Content = viewModel.Content },
-                new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content.ToMarkdownV2() }
+                new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content }
             };
             var model = new CreateNotificationTemplate();
 
@@ -144,7 +143,7 @@
             var contents = new List<NotificationTemplateContent>
             {
                 new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Skype, Content = viewModel.Content },
-                new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content.ToMarkdownV2() }
+                new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content }
             };
             var model = new EditNotificationTemplate();
 

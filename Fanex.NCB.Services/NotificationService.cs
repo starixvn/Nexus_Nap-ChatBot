@@ -46,12 +46,13 @@
             if (result.IsSuccessful)
             {
                 var notifications = JsonConvert.DeserializeObject<List<NotificationMessage>>(command.NotificationIDLst);
-                foreach(var notification in notifications)
+                foreach (var notification in notifications)
                 {
                     if (model.SendImmediately)
                     {
                         BackgroundJobAfterCreateNotification(notification.NotificationId, true);
-                    } else
+                    }
+                    else
                     {
                         await PushSignalRInsert(notification.NotificationId);
                     }
@@ -105,8 +106,6 @@
 
             foreach (var notification in result.Item2)
             {
-                notification.Content = notification.ChannelId == (byte)Core.Enum.ConversationChannel.Telegram
-                    ? notification.Content.ToSkypeFormat() : notification.Content;
                 notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();
             }
 
@@ -134,9 +133,9 @@
         {
             var result = await baseService.FetchMultipleAsync<NotificationErrorReport, string, NotificationErrorDetail>(
                 new GetNotificationErrorDetailCriteria
-            {
-                NotificationId = notificationId
-            });
+                {
+                    NotificationId = notificationId
+                });
 
             var report = result.Item1.FirstOrDefault();
 
@@ -179,8 +178,6 @@
             var notification = result.Item1.FirstOrDefault();
             if (notification != null)
             {
-                notification.Content = notification.ChannelId == (byte)Core.Enum.ConversationChannel.Telegram
-                       ? notification.Content.ToSkypeFormat() : notification.Content;
                 notification.Recipients = result.Item2;
                 notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();
             }
@@ -252,8 +249,6 @@
             var notification = result.Item1.FirstOrDefault();
             if (notification != null)
             {
-                notification.Content = notification.ChannelId == (byte)Core.Enum.ConversationChannel.Telegram
-                       ? notification.Content.ToSkypeFormat() : notification.Content;
                 notification.Recipients = result.Item2;
             }
 

@@ -3,8 +3,6 @@
     using System.Threading.Tasks;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.Core.Enum;
-    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Main.ViewModel.Notification;
     using Fanex.NCB.Main.ViewModel.TreeSelect;
     using Fanex.NCB.Models.Notification;
@@ -60,7 +58,7 @@
 
         [HttpPost]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
-        public async Task<IActionResult> Edit([FromBody]EditNotificationViewModel data)
+        public async Task<IActionResult> Edit([FromBody] EditNotificationViewModel data)
         {
             var result = new CommandResult();
 
@@ -75,8 +73,7 @@
                 {
                     NotificationId = data.NotificationId,
                     Title = data.Title,
-                    Content = data.ChannelId == (byte)ConversationChannel.Telegram
-                        ? data.Content.ToMarkdownV2() : data.Content,
+                    Content = data.Content,
                     RecipientIds = data.RecipientIds,
                     SendDate = data.SendDate,
                     SendImmediately = data.SendImmediately,
