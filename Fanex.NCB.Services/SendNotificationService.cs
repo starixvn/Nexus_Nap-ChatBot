@@ -241,7 +241,7 @@
                                 {
                                     NotificationId = n.NotificationId,
                                     ChannelId = n.ChannelId,
-                                    Message = n.Content
+                                    Message = n.ChannelId == (byte)Core.Enum.ConversationChannel.Telegram ? n.Content.EscapedMarkdownV2() : n.Content
                                 }));
 
                 foreach (var item in newBatches)

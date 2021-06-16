@@ -105,6 +105,8 @@
 
             foreach (var notification in result.Item2)
             {
+                notification.Content = notification.ChannelId == (byte)Core.Enum.ConversationChannel.Telegram
+                    ? notification.Content.ToSkypeFormat() : notification.Content;
                 notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();
             }
 
@@ -175,9 +177,10 @@
                 });
 
             var notification = result.Item1.FirstOrDefault();
-
             if (notification != null)
             {
+                notification.Content = notification.ChannelId == (byte)Core.Enum.ConversationChannel.Telegram
+                       ? notification.Content.ToSkypeFormat() : notification.Content;
                 notification.Recipients = result.Item2;
                 notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();
             }
@@ -199,7 +202,6 @@
             };
 
             var result = await baseService.ExecuteNonQueryAsync(command);
-
             if (result.IsSuccessful && model.SendImmediately)
             {
                 BackgroundJobAfterCreateNotification(command.NotificationId, false);
@@ -247,11 +249,11 @@
             };
 
             var result = await baseService.FetchMultipleAsync<ResendNotification, Recipient>(criteria);
-
             var notification = result.Item1.FirstOrDefault();
-
             if (notification != null)
             {
+                notification.Content = notification.ChannelId == (byte)Core.Enum.ConversationChannel.Telegram
+                       ? notification.Content.ToSkypeFormat() : notification.Content;
                 notification.Recipients = result.Item2;
             }
 

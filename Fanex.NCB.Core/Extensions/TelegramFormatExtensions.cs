@@ -64,5 +64,19 @@
 
             return text;
         }
+
+        public static string ToSkypeFormat(this string text)
+        {
+            // bold
+            text = Regex.Replace(text, "(\\*)(.+?)(\\*)", "**$2**");
+
+            // italic
+            text = Regex.Replace(text, "(_)(.+?)(_)", "*$2*");
+
+            // strikethrough
+            text = Regex.Replace(text, "(~)(.+?)(~)", "~~$2~~");
+
+            return text;
+        }
     }
 }

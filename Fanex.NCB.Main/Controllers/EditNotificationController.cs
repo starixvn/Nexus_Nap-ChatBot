@@ -76,7 +76,7 @@
                     NotificationId = data.NotificationId,
                     Title = data.Title,
                     Content = data.ChannelId == (byte)ConversationChannel.Telegram
-                        ? data.Content.ToMarkdownV2().EscapedMarkdownV2() : data.Content,
+                        ? data.Content.ToMarkdownV2() : data.Content,
                     RecipientIds = data.RecipientIds,
                     SendDate = data.SendDate,
                     SendImmediately = data.SendImmediately,
