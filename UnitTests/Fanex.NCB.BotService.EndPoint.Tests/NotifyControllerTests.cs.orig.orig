@@ -8,7 +8,6 @@
     using Fanex.NCB.BotService.Core;
 <<<<<<< HEAD:UnitTests/Fanex.NCB.BotService.EndPoint.Tests/NotifyControllerTests.cs.orig
 =======
-    using Fanex.NCB.BotService.Core.Models;
 >>>>>>> 000 - add more configuration: turn on/off send message to skype/telegram:Fanex.NCB.BotService.EndPoint.Tests/NotifyControllerTests.cs
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.BotService.EndPoint.Controllers;
@@ -105,39 +104,6 @@
         [Obsolete]
 <<<<<<< HEAD:UnitTests/Fanex.NCB.BotService.EndPoint.Tests/NotifyControllerTests.cs
 =======
-        public async Task Send_GetGroupConversationThrowException_ReturnExpectedErrorMessage()
-        {
-            var controller = GetController();
-
-            var botName = string.Empty;
-            var conversationId = string.Empty;
-            var message = string.Empty;
-
-            var conversationGroup = new ConversationGroup
-            {
-                BotConversationId = string.Empty,
-                BotName = string.Empty,
-                ConversationId = string.Empty,
-                GroupName = string.Empty,
-                ChannelId = string.Empty,
-                ServiceUrl = string.Empty
-            };
-
-            conversationService.GetGroupConversation(Arg.Any<string>(), Arg.Any<string>()).Returns(conversationGroup);
-
-            adapter.ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
-                Arg.Any<CancellationToken>()).Throws(new Exception("error msg"));
-
-            //Actual
-            var actual = await controller.Send(botName, conversationId, message);
-
-            //Assert
-            Assert.IsType<OkObjectResult>(actual);
-            Assert.Equal("error msg", actual.Value);
-        }
-
-        [Fact]
-        [Obsolete]
 >>>>>>> 000 - suppress some code smell:Fanex.NCB.BotService.EndPoint.Tests/NotifyControllerTests.cs
         public async Task SendMulti_NotificationListIsNull_ReturnObjectResultWithEmptyList()
         {

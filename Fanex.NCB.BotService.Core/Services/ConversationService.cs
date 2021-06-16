@@ -60,7 +60,6 @@
             {
                 notification.Recipients = distinctConversations.Where(conversation => conversation.NotificationId == notification.NotificationId);
             }
-
             return notificationResult.ToList();
         }
 
