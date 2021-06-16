@@ -2,7 +2,6 @@
 {
     using System.Threading.Tasks;
     using Fanex.NCB.BotService.Core.Criteria;
-    using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
@@ -16,7 +15,8 @@
         [Fact]
         public async Task AddBotToGroup_WhenCalled_ExpectedCallExecuteNonQueryAsync()
         {
-            var criteria = new AddBotToGroupCommand {
+            var criteria = new AddBotToGroupCommand
+            {
                 BotConversationId = "aa",
                 ConversationId = "bb"
             };
@@ -131,37 +131,6 @@
             //Assert
             Assert.Equal(commandResult, actual);
         }
-
-        [Fact]
-        public async Task GetGroupConversation_WhenCalled_ReturnExpectedConversation()
-        {
-            // Arrange
-            var expected = new ConversationGroup
-            {
-                BotConversationId = string.Empty,
-                BotName = string.Empty,
-                ConversationId = string.Empty,
-                GroupName = string.Empty,
-                ChannelId = string.Empty,
-                ServiceUrl = string.Empty
-            };
-            var conversationId = string.Empty;
-            var botName = string.Empty;
-            var criteria = new GetConversationGroupCriteria
-            {
-                ConversationId = conversationId,
-                BotName = botName
-            };
-            var service = GetService();
-            baseService.GetDataEntityAsync<ConversationGroup>(Arg.Do<GetConversationGroupCriteria>(x => criteria = x)).Returns(expected);
-
-            // Act
-            var actual = await service.GetGroupConversation(conversationId, botName);
-
-            // Assert
-            Assert.Equal(expected, actual);
-        }
-
 
         [Fact]
         public async Task AddMessageLog_WhenCalled_ExpectedCallExecuteNonQueryAsync()
