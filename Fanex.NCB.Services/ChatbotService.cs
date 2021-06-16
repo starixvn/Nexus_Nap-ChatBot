@@ -117,18 +117,9 @@
 
             var httpClient = httpClientFactory.CreateClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
-            var conversationData = new Dictionary<string, string>
-            {
-                { "conversationId", conversationInfo.ConversationId },
-                { "channelId", conversationInfo.ChannelId },
-                { "botName", conversationInfo.BotName },
-                { "serviceUrl", conversationInfo.ServiceUrl},
-                { "botConversationId", conversationInfo.BotConversationId},
-                { "message", conversationInfo.Message },
-            };
-            using var content = new FormUrlEncodedContent(conversationData);
+
             var url = new Uri($"{botSettings.BotDomain}{apiConfigs.SendMessageUrl}");
-            using var response = await httpClient.PostAsJsonAsync(url, content);
+            using var response = await httpClient.PostAsJsonAsync(url, conversationInfo);
             return response;
         }
 
