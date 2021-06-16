@@ -102,7 +102,7 @@
                 {
                     foreach (var conversationInfo in notificationMessage.Recipients)
                     {
-                        await SendNotification(tasks, conversationInfo, notificationMessage);
+                        SendNotification(tasks, conversationInfo, notificationMessage);
                     }
                 }
 
@@ -113,39 +113,38 @@
         }
 
         [Obsolete]
-        private async Task SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
+        private void SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
         {
-            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
+            bool isEnabledSkypeChannel = appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype);
+            tasks.Add(!isEnabledSkypeChannel ? Task.Run(() => new SendMessageResult
             {
-                tasks.Add(Task.Run(() => new SendMessageResult
-                {
-                    NotificationId = notificationMessage.NotificationId,
-                    ConversationId = conversationInfo.ConversationId,
-                    SentTime = DateTime.Now,
-                    ErrorCode = 1,
-                    ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
-                    IsIgnoreRetry = true
-                }));
-            }
-            else
-            {
-                bool isInvalidSendToBotService = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
-
-                tasks.Add(isInvalidSendToBotService ? Task.Run(() => new SendMessageResult
-                {
-                    ConversationId = conversationInfo.ConversationId,
-                    SentTime = DateTime.UtcNow,
-                    ErrorCode = -1,
-                    ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
-                    NotificationId = notificationMessage.NotificationId,
-                    IsIgnoreRetry = true
-                }) : Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message)));
-            }
+                NotificationId = notificationMessage.NotificationId,
+                ConversationId = conversationInfo.ConversationId,
+                SentTime = DateTime.Now,
+                ErrorCode = 1,
+                ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
+                IsIgnoreRetry = true
+            }) : Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message)));
         }
 
         [Obsolete]
         private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo, int notifictaionId, string message)
         {
+            bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, message);
+
+            if (isDuplicated)
+            {
+                return new SendMessageResult
+                {
+                    ConversationId = conversationInfo.ConversationId,
+                    SentTime = DateTime.UtcNow,
+                    ErrorCode = -1,
+                    ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
+                    NotificationId = notifictaionId,
+                    IsIgnoreRetry = true
+                };
+            }
+
             string guiid = Guid.NewGuid().ToString();
 
             try
