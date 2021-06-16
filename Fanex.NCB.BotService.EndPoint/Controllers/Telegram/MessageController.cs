@@ -44,7 +44,7 @@
 
         [HttpPost]
         [Route("api/telegram/sendMessage")]
-        public async Task<ObjectResult> SendMessage(long botId, long chatId, string messageContent)
+        public async Task<ObjectResult> SendMessage([FromBody] ConversationInfo conversationInfo)
         {
             var errorMessage = string.Empty;
             try
@@ -55,7 +55,10 @@
                 }
                 else
                 {
-                    await botService.SendTextMessageAsync(botId, chatId, messageContent);
+                    _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
+                    _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
+                    await botService.SendTextMessageAsync(botId, chatId, conversationInfo.Message);
+                    return Ok("ok");
                 }
             }
             catch (Exception ex)
@@ -79,7 +82,7 @@
                 {
                     foreach (ConversationInfo conversationInfo in notificationMessage.Recipients)
                     {
-                        tasks.Add(Task.Run(() => SendMessageAsync(conversationInfo, notificationMessage)));
+                        await SendMessageAsync(tasks, conversationInfo, notificationMessage);
                     }
                 }
                 results = (await Task.WhenAll(tasks)).ToList();
@@ -88,57 +91,61 @@
             return Ok(results);
         }
 
-        private async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo, NotificationMessage notificationMessage)
+        private async Task SendMessageAsync(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
         {
+            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
+            {
+                tasks.Add(Task.Run(() => new SendMessageResult
+                {
+                    NotificationId = notificationMessage.NotificationId,
+                    ConversationId = conversationInfo.ConversationId,
+                    SentTime = DateTime.Now,
+                    ErrorCode = 1,
+                    ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
+                    IsIgnoreRetry = true
+                }));
+            }
+            else
+            {
+                bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
+                tasks.Add(isDuplicated ? Task.Run(() => new SendMessageResult
+                {
+                    ConversationId = conversationInfo.ConversationId,
+                    SentTime = DateTime.UtcNow,
+                    ErrorCode = -1,
+                    ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
+                    NotificationId = notificationMessage.NotificationId,
+                    IsIgnoreRetry = true
+                }) : Task.Run(() => SendMessageAsync(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message)));
+            }
+        }
+
+        private async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo, int notificationId, string messageContent)
+        {
+            string guiid = Guid.NewGuid().ToString();
             try
             {
-                if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
+                _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
+                _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
+                await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, messageContent, guiid);
+                SendMessageResult result = await SendMessageAsync(botId, chatId, notificationId, messageContent);
+                if (result.ErrorCode != 0)
                 {
-                    return new SendMessageResult
-                    {
-                        NotificationId = notificationMessage.NotificationId,
-                        ConversationId = conversationInfo.ConversationId,
-                        SentTime = DateTime.Now,
-                        ErrorCode = 1,
-                        ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
-                        IsIgnoreRetry = true
-                    };
+                    await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
                 }
-                else
-                {
-                    bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
-                    if (isDuplicated)
-                    {
-                        return new SendMessageResult
-                        {
-                            ConversationId = conversationInfo.ConversationId,
-                            SentTime = DateTime.UtcNow,
-                            ErrorCode = -1,
-                            ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
-                            NotificationId = notificationMessage.NotificationId,
-                            IsIgnoreRetry = true
-                        };
-                    }
-                    else
-                    {
-                        _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
-                        _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
-                        string guiid = Guid.NewGuid().ToString();
-                        await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, notificationMessage.Message, guiid);
-                        SendMessageResult result = await SendMessageAsync(botId, chatId, notificationMessage.NotificationId, notificationMessage.Message);
-                        var thread = new Thread(async () => await AddMessageLogAsync(conversationInfo, notificationMessage.Message, result, guiid));
-                        thread.Start();
 
-                        return result;
-                    }
-                }
+                var thread = new Thread(async () => await AddMessageLogToDatabaseAsync(conversationInfo, messageContent, result));
+                thread.Start();
+
+                return result;
             }
             catch (Exception exception)
             {
+                await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
                 await WriteLogAsync(exception);
                 return new SendMessageResult
                 {
-                    NotificationId = notificationMessage.NotificationId,
+                    NotificationId = notificationId,
                     ConversationId = conversationInfo.ConversationId,
                     SentTime = DateTime.Now,
                     ErrorCode = 1,
@@ -169,15 +176,6 @@
 
             result.SentTime = DateTime.Now;
             return result;
-        }
-
-        private async Task AddMessageLogAsync(ConversationInfo conversationInfo, string messageContent, SendMessageResult result, string guiid)
-        {
-            await AddMessageLogToDatabaseAsync(conversationInfo, messageContent, result);
-            if (result.ErrorCode != 0)
-            {
-                await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
-            }
         }
 
         private async Task AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, string messageContent, SendMessageResult result)

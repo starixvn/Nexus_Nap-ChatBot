@@ -23,17 +23,20 @@
         private readonly BotSettings botSettings;
         private readonly MonitorChatbot monitorChatbot;
         private readonly NotifyChatGroupOption notifyChatGroupOptions;
+        private readonly MonitorTelegramBot monitorTelegramBot;
 
         public ChatbotService(
             IHttpClientFactory httpClientFactory,
             IOptions<BotSettings> botSettings,
             IOptions<MonitorChatbot> monitorChatbot,
-            IOptions<NotifyChatGroupOption> notifyChatGroupOptions)
+            IOptions<NotifyChatGroupOption> notifyChatGroupOptions,
+            IOptions<MonitorTelegramBot> monitorTelegramBot)
         {
             this.httpClientFactory = httpClientFactory;
             this.monitorChatbot = monitorChatbot.Value;
             this.botSettings = botSettings.Value;
             this.notifyChatGroupOptions = notifyChatGroupOptions.Value;
+            this.monitorTelegramBot = monitorTelegramBot.Value;
         }
 
         public async Task<NotificationMessageResponse> SendMultiMessageAsync(byte channelId, IEnumerable<NotificationMessage> messages)
@@ -96,6 +99,17 @@
             await SendSingleMessageAsync((byte)ConversationChannel.Skype, conversationInfo);
         }
 
+        public async Task MonitorTelegramBotAsync()
+        {
+            var conversationInfo = new ConversationInfo
+            {
+                ConversationId = monitorTelegramBot.ChatId.ToString(),
+                BotConversationId = monitorTelegramBot.BotId.ToString(),
+                Message = monitorTelegramBot.Message.EscapedMarkdownV2()
+            };
+            await SendSingleMessageAsync((byte)ConversationChannel.Telegram, conversationInfo);
+        }
+
         private async Task<HttpResponseMessage> SendSingleMessageAsync(byte channelId, ConversationInfo conversationInfo)
         {
             BotServiceEndPointConfigs apiConfigs = botSettings.ApiConfigs.First(x => x.ChannelId == channelId);
@@ -142,7 +156,9 @@
             await SendMultiMessageAsync((byte)ConversationChannel.Skype, notificationModel);
         }
 
-        public IEnumerable<NotificationMessage> GenerateNotifificationMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
+        public IEnumerable<NotificationMessage> GenerateNotifificationMessage(
+            IEnumerable<NotificationSendMessage> notifications,
+            IEnumerable<NotificationRecipient> recipients)
         {
             var messages = new List<NotificationMessage>();
             if (notifications != null && notifications.Any())

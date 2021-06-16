@@ -24,13 +24,15 @@
         private readonly IOptions<AppSettings> appSettings;
         private readonly IOptions<MonitorChatbot> monitorOptions;
         private readonly ILogService logService;
+        private readonly MonitorTelegramBot monitorTelegramBot;
 
         public SendNotificationService(IChatbotService chatbotService,
             IBaseService baseService,
             IPushSignalService pushSignalService,
             IOptions<AppSettings> appSettings,
             IOptions<MonitorChatbot> monitorOptions,
-            ILogService logService)
+            ILogService logService,
+            IOptions<MonitorTelegramBot> monitorTelegramBot)
         {
             this.chatbotService = chatbotService;
             this.baseService = baseService;
@@ -38,6 +40,7 @@
             this.appSettings = appSettings;
             this.monitorOptions = monitorOptions;
             this.logService = logService;
+            this.monitorTelegramBot = monitorTelegramBot.Value;
         }
 
         public async Task ScanAndSendNotification()
@@ -256,9 +259,19 @@
                 batches.Add(new ValueTuple<List<NotificationMessage>, List<NotificationRecipient>>(newBatches, batch));
             }
 
-            if (channelId == (byte)ConversationChannel.Skype)
+            switch (channelId)
             {
-                batches.Last().Item1.Last().Recipients = AddMonitorRecipient(batches.Last().Item1.Last().Recipients);
+                case (byte)ConversationChannel.Skype:
+                    batches.Last().Item1.Last().Recipients = AddMonitorRecipient(batches.Last().Item1.Last().Recipients);
+                    break;
+
+                case (byte)ConversationChannel.Telegram:
+                    batches.Last().Item1.Last().Recipients = AddMonitorRecipientForTelegram(batches.Last().Item1.Last().Recipients);
+                    break;
+
+                default:
+                    // do nothing
+                    break;
             }
 
             return batches;
@@ -276,6 +289,22 @@
                     ServiceUrl = settings.ServiceUrl,
                     BotConversationId = settings.BotConversationId,
                     BotName = settings.BotName
+                };
+
+                conversations = conversations.Append(conversation);
+            }
+
+            return conversations;
+        }
+
+        private IEnumerable<ConversationInfo> AddMonitorRecipientForTelegram(IEnumerable<ConversationInfo> conversations)
+        {
+            if (monitorTelegramBot.IsMonitoring)
+            {
+                var conversation = new ConversationInfo
+                {
+                    ConversationId = monitorTelegramBot.ChatId.ToString(),
+                    BotConversationId = monitorTelegramBot.BotId.ToString()
                 };
 
                 conversations = conversations.Append(conversation);

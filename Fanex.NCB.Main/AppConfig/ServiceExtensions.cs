@@ -81,6 +81,7 @@
             services.Configure<BotSettings>(configuration.GetSection("ChatBotConfigs"));
             services.Configure<MonitorChatbot>(configuration.GetSection("MonitorChatbot"));
             services.Configure<SignalRSettings>(configuration.GetSection("SignalRSettings"));
+            services.Configure<MonitorTelegramBot>(configuration.GetSection("MonitorTelegramBot"));
         }
     }
 }

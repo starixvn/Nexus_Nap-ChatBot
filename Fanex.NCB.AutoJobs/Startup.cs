@@ -111,6 +111,7 @@
             services.Configure<List<JobSetting>>(configuration.GetSection("JobSettings"));
             services.Configure<BotSettings>(configuration.GetSection("ChatBotConfigs"));
             services.Configure<NotifyChatGroupOption>(configuration.GetSection("NotifyChatGroupOptions"));
+            services.Configure<MonitorTelegramBot>(configuration.GetSection("MonitorTelegramBot"));
         }
 
         private static void AddDependencyInjection(IServiceCollection services, IConfiguration configuration)
@@ -150,6 +151,7 @@
             services.AddHostedService<PullVoidingMessageInternalDepartmentWorker>();
             services.AddHostedService<PullMessageFromSiteMessage>();
             services.AddHostedService<MonitorChatbotWorker>();
+            services.AddHostedService<MonitorTelegramBotWorker>();
         }
     }
 }

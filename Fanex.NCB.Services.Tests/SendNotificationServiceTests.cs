@@ -196,7 +196,10 @@
             monitor.Value.Returns(monitorChatbot);
             pushSignalService = Substitute.For<IPushSignalService>();
 
-            return new SendNotificationService(chatbotService, baseService, pushSignalService, appSettings, monitor, logger);
+            var monitorTelegramBot = Substitute.For<IOptions<MonitorTelegramBot>>();
+            monitorTelegramBot.Value.Returns(new MonitorTelegramBot());
+
+            return new SendNotificationService(chatbotService, baseService, pushSignalService, appSettings, monitor, logger, monitorTelegramBot);
         }
 
         #endregion Helper

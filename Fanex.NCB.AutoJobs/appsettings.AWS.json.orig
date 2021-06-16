@@ -1,15 +1,9 @@
 {
-<<<<<<< HEAD
     "AppSettings": {
         "SiteId": 34,
         "ItemEachBatchSendNotification": 10,
         "DelayTimeEachBatch": 1000
-=======
-  "AppSettings": {
-    "SiteId": 34,
-    "ItemEachBatchSendNotification": 10,
-    "DelayTimeEachBatch": 1000
-  },
+    },
     "ChatBotConfigs": {
         "AppCredentialId": "ChatBotForLicensee",
         "AppCredentialPassword": "CJuYmYiOjE1eyJhbGciOi",
@@ -27,24 +21,6 @@
                 "SendMultiMessageUrl": "/api/telegram/sendMultiMessage"
             }
         ],
-        "TokenUrl": "https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token"
-    },
-  "Environment": "Production",
-  "JobSettings": [
-    {
-      "JobName": "SendNotification",
-      "IsEnabled": false,
-      "HasCheckUM": false,
-      "TimeInterval": 60
->>>>>>> 156488 - update appsettings
-    },
-    "ChatBotConfigs": {
-        "AppCredentialId": "ChatBotForLicensee",
-        "AppCredentialPassword": "CJuYmYiOjE1eyJhbGciOi",
-        "BotDomain": "http://10.99.99.51:7541",
-        "AuthenticateUrl": "/api/authenticate",
-        "BotServiceUrl": "/api/notifymulti",
-        "SendSingleMessage": "/api/notify",
         "TokenUrl": "https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token"
     },
     "Environment": "Production",
@@ -90,6 +66,15 @@
             "IsEnabled": false,
             "HasCheckUM": false,
             "TimeInterval": 300
+<<<<<<< HEAD
+=======
+        },
+        {
+            "JobName": "MonitorTelegramBot",
+            "IsEnabled": true,
+            "HasCheckUM": false,
+            "TimeInterval": 300
+>>>>>>> 156890 - monitor bot
         }
     ],
     "ConnectionStrings": [
@@ -117,16 +102,20 @@
             "Name": "DBACC.bodb02.bodbAdminNet",
             "ConnectionString": "Data Source=10.40.40.100;Initial Catalog=bodb02;Persist Security Info=True;MultipleActiveResultSets=true;User Id=bodbAdminNet;Password=i9hNnaZltx04XF6oTNOKTnvvtLC/zfxr=",
             "ProviderName": "System.Data.SqlClient"
+<<<<<<< HEAD
         },
         {
             "Name": "DBTRANS.bodb02.bodbAdminNet",
             "ConnectionString": "Data Source=10.40.40.17;Initial Catalog=bodb02;Persist Security Info=True;MultipleActiveResultSets=true;User Id=bodbAdminNet;Password=i9hNnaZltx04XF6oTNOKTnvvtLC/zfxr=",
             "ProviderName": "System.Data.SqlClient"
+=======
+>>>>>>> 156890 - monitor bot
         }
     ],
     "LogCategory": "ncb-windowsservice",
     "SentryEngineOptions": {
         "Dsn": "http://c761212ce3f34046b9f2ab5bb6f3f626@10.2.27.25:9003/78"
+<<<<<<< HEAD
     },
     "Logging": {
         "LogLevel": {
@@ -150,6 +139,31 @@
         "UMLoggingCategory": "ONEbook-UM",
         "ErrorUMPageUrl": ""
     },
+=======
+    },
+    "Logging": {
+        "LogLevel": {
+            "Default": "Debug",
+            "System": "Information",
+            "Microsoft": "Information"
+        },
+        "Console": {
+            "IncludeScopes": true
+        }
+    },
+    "ONEbook.UM": {
+        "ServiceUri": "http://10.99.99.51:8889/api",
+        "EnableCheckUM": true,
+        "SiteId": 2000000,
+        "EnableUnscheduledUM": false,
+        "UMFrom": "3:00",
+        "UMTo": "4:00",
+        "UMPageUrl": "/UserLogin/Common/Offline",
+        "ResultCacheDuration": 60,
+        "UMLoggingCategory": "ONEbook-UM",
+        "ErrorUMPageUrl": ""
+    },
+>>>>>>> 156890 - monitor bot
     "MonitorChatbot": {
         "BotName": "SABA",
         "BotConversationId": "28:6de2b90e-03b5-4bf7-9268-6cec3ed6f87b",
@@ -159,6 +173,15 @@
         "ConversationId": "29:16gpSTp15Mo8rHq1QDUdwxJMlrjrMXpIgcsApr6FYrdk",
         "Message": "Hi, I'm fine"
     },
+<<<<<<< HEAD
+=======
+    "MonitorTelegramBot": {
+        "BotId": 1733948024,
+        "ChatId": -532048370,
+        "IsMonitoring": true,
+        "Message": "Hi, I'm fine"
+    },
+>>>>>>> 156890 - monitor bot
     "NotifyChatGroupOptions": {
         "BotName": "SABA",
         "BotConversationId": "8:6de2b90e-03b5-4bf7-9268-6cec3ed6f87b",

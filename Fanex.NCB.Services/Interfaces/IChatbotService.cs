@@ -13,6 +13,10 @@
 
         Task NotifyToChatGroup(string message);
 
-        IEnumerable<NotificationMessage> GenerateNotifificationMessage(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients);
+        IEnumerable<NotificationMessage> GenerateNotifificationMessage(
+            IEnumerable<NotificationSendMessage> notifications,
+            IEnumerable<NotificationRecipient> recipients);
+
+        Task MonitorTelegramBotAsync();
     }
 }

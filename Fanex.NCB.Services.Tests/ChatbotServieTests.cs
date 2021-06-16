@@ -152,7 +152,10 @@
             botSettings.Value.Returns(settings);
             notifyChatGroupOptions.Value.Returns(sponGroupOptions);
 
-            return new ChatbotService(httpClientFactory, botSettings, monitor, notifyChatGroupOptions);
+            var monitorTelegramBot = Substitute.For<IOptionsSnapshot<MonitorTelegramBot>>();
+            monitorTelegramBot.Value.Returns(new MonitorTelegramBot());
+
+            return new ChatbotService(httpClientFactory, botSettings, monitor, notifyChatGroupOptions, monitorTelegramBot);
         }
     }
 }
