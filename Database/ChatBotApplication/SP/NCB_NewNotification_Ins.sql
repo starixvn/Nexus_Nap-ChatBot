@@ -143,7 +143,11 @@ NCB_NewNotification_Ins:BEGIN
 				ON con.ConversationGroupID = bcr.ConversationGroupID AND con.IsActive = 1
 	INNER JOIN ConversationGroupBot cgb
 			ON cgb.ConversationGroupID = bcr.ConversationGroupID
-	WHERE con.ChannelId IN (SELECT tcl.ChannelId FROM tmpContent tcl);
+	WHERE bcri.ChatGroupTypeID IN (
+							SELECT cgt.ChatGroupTypeID 
+							FROM NotificationChatGroupType  cgt
+							WHERE cgt.NotificationTypeID = notificationTypeID
+		) AND con.ChannelId IN (SELECT tcl.ChannelId FROM tmpContent tcl);
 	
 	DELETE FROM tmpContent tc WHERE NOT EXISTS (SELECT 1 FROM tmp_mappedRecipientIDLst r WHERE r.ChannelId = tc.ChannelId);
                 
