@@ -4,17 +4,13 @@
     using System.Collections.Generic;
     using System.Net;
     using System.Threading.Tasks;
-    using Fanex.Data.Repository;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Criteria.SendNotification;
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using NSubstitute;
-    using NSubstitute.ExceptionExtensions;
-    using Xunit;
 
     public class SendNotificationServiceTests
     {
@@ -159,7 +155,7 @@
             {
                 IsSuccessStatusCode = isSuccess,
                 StatusCode = isSuccess ? HttpStatusCode.OK : HttpStatusCode.BadRequest,
-                NotificationMessageResult = result
+                NotificationMessageResult = new List<SendMessageResult>
                 {
                     new SendMessageResult
                     {
