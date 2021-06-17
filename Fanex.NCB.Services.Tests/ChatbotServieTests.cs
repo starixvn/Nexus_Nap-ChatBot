@@ -2,14 +2,10 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
     using System.Net.Http;
-    using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Models;
     using Fanex.NCB.Models.NotifictaionSendMessage;
-    using Fanex.NCB.Services.Tests.Helper;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
@@ -142,6 +138,15 @@
                 ChannelId = "ACV",
                 ConversationId = "Conversation",
                 ServiceUrl = "test.com"
+            };
+            var settings = new BotSettings
+            {
+                BotDomain = "test.com",
+                ApiConfigs = new List<BotServiceEndPointConfigs>
+                {
+                    new  BotServiceEndPointConfigs {  ChannelId = 1, SendMessageUrl = "/abc", SendMultiMessageUrl = "cde"},
+                    new  BotServiceEndPointConfigs {  ChannelId = 2, SendMessageUrl = "/abc", SendMultiMessageUrl = "cde"}
+                }
             };
             botSettings = Substitute.For<IOptionsSnapshot<BotSettings>>();
             notifyChatGroupOptions = Substitute.For<IOptionsSnapshot<NotifyChatGroupOption>>();
