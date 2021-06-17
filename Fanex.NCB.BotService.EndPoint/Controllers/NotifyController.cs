@@ -21,7 +21,6 @@
     using Microsoft.Bot.Connector.Authentication;
     using Microsoft.Bot.Schema;
     using Microsoft.Extensions.Options;
-    using Newtonsoft.Json;
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class NotifyController : ControllerBase
@@ -102,7 +101,6 @@
                 foreach (var notificationMessage in notificationMessages)
                 {
                     var distinctRecipients = GetDistinctConversation(notificationMessage.Recipients);
-                    await logger.InfoAsync($"Distinct recipients: {JsonConvert.SerializeObject(distinctRecipients)}");
                     foreach (var conversationInfo in distinctRecipients)
                     {
                         SendNotification(tasks, conversationInfo, notificationMessage);
@@ -111,7 +109,6 @@
 
                 results = (await Task.WhenAll(tasks)).ToList();
             }
-            await logger.InfoAsync($"Results: {JsonConvert.SerializeObject(results)}");
 
             return Ok(results);
         }

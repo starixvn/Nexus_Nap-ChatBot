@@ -328,12 +328,12 @@
 
                 if (!string.IsNullOrWhiteSpace(command.UpdatedNotificationIds))
                 {
-                    await PushSignalUpdateNotiStatus(command.UpdatedNotificationIds);
+                    PushSignalUpdateNotiStatus(command.UpdatedNotificationIds);
                 }
 
                 if (command.IsHaveErrNotification)
                 {
-                    await PushSignalNewErrNotification();
+                    PushSignalNewErrNotification();
                 }
             }
         }
@@ -351,14 +351,14 @@
             await SendNotificationToRecipients(notifications, recipients.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
         }
 
-        private async Task PushSignalUpdateNotiStatus(string notificationIds)
+        private void PushSignalUpdateNotiStatus(string notificationIds)
         {
-            await pushSignalService.OnUpdateNotificationStatus(notificationIds);
+            Task.Run(() => pushSignalService.OnUpdateNotificationStatus(notificationIds));
         }
 
-        private async Task PushSignalNewErrNotification()
+        private void PushSignalNewErrNotification()
         {
-            await pushSignalService.OnHasNewErrNotifications();
+            Task.Run(() => pushSignalService.OnHasNewErrNotifications());
         }
     }
 }
