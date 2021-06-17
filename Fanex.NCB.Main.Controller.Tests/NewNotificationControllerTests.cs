@@ -55,7 +55,7 @@
             var contents = new List<NotificationTemplateContent>
             {
                 new NotificationTemplateContent { ChannelId = 1, Content = "**content**" },
-                new NotificationTemplateContent { ChannelId = 2, Content = "*content*" }
+                new NotificationTemplateContent { ChannelId = 2, Content = "**content**" }
             };
             var model = new CreateNotification();
 
