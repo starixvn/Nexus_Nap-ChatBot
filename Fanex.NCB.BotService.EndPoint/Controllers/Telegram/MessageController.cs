@@ -162,7 +162,7 @@
             }
         }
 
-        private async Task<SendMessageResult> SendMessageAsync(long botId, long chatId, int notificationId, string messageContent)
+        protected internal virtual async Task<SendMessageResult> SendMessageAsync(long botId, long chatId, int notificationId, string messageContent)
         {
             var result = new SendMessageResult
             {
@@ -186,7 +186,7 @@
             return result;
         }
 
-        private async Task AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, string messageContent, SendMessageResult result)
+        protected internal virtual async Task AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, string messageContent, SendMessageResult result)
         {
             try
             {
@@ -208,7 +208,7 @@
             }
         }
 
-        private async Task WriteLogAsync(Exception exception)
+        protected internal virtual async Task WriteLogAsync(Exception exception)
         {
             var logMessage = new LogMessage(exception.Message)
                         .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
