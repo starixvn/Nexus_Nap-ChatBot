@@ -97,7 +97,7 @@
             var notifications = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria);
             if (!string.IsNullOrWhiteSpace(criteria.UpdatedNotificationIds))
             {
-                await PushSignalUpdateNotiStatus(criteria.UpdatedNotificationIds);
+                PushSignalUpdateNotiStatus(criteria.UpdatedNotificationIds);
             }
             return notifications;
         }
