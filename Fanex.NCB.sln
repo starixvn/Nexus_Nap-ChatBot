@@ -33,21 +33,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.NAPResolver", "Fa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{75FA3E39-3317-4FFC-8969-2D3EA2442CEB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Shared.Tests", "Fanex.NCB.Shared.Tests\Fanex.NCB.Shared.Tests.csproj", "{A5DDA2E0-87FA-478B-B907-8B8462A6A275}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Shared.Tests", "UnitTests\Fanex.NCB.Shared.Tests\Fanex.NCB.Shared.Tests.csproj", "{A5DDA2E0-87FA-478B-B907-8B8462A6A275}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Services.Tests", "Fanex.NCB.Services.Tests\Fanex.NCB.Services.Tests.csproj", "{AF544D7D-9B6F-462D-B742-B15655924138}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Services.Tests", "UnitTests\Fanex.NCB.Services.Tests\Fanex.NCB.Services.Tests.csproj", "{AF544D7D-9B6F-462D-B742-B15655924138}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Repository.Tests", "Fanex.NCB.Repository.Tests\Fanex.NCB.Repository.Tests.csproj", "{9E93E875-EF5E-4B95-BF63-BEF1EFA0682C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Repository.Tests", "UnitTests\Fanex.NCB.Repository.Tests\Fanex.NCB.Repository.Tests.csproj", "{9E93E875-EF5E-4B95-BF63-BEF1EFA0682C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.BotService.Core.Tests", "Fanex.NCB.BotService.Core.Tests\Fanex.NCB.BotService.Core.Tests.csproj", "{CCFC9770-C207-4C7E-B6F2-C0225D995E95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.BotService.Core.Tests", "UnitTests\Fanex.NCB.BotService.Core.Tests\Fanex.NCB.BotService.Core.Tests.csproj", "{CCFC9770-C207-4C7E-B6F2-C0225D995E95}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Criteria.Tests", "Fanex.NCB.Criteria.Tests\Fanex.NCB.Criteria.Tests.csproj", "{4C9E8111-87C3-45EA-B2AF-CD52785CB65D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Criteria.Tests", "UnitTests\Fanex.NCB.Criteria.Tests\Fanex.NCB.Criteria.Tests.csproj", "{4C9E8111-87C3-45EA-B2AF-CD52785CB65D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Main.Controllers.Tests", "Fanex.NCB.Main.Controller.Tests\Fanex.NCB.Main.Controllers.Tests.csproj", "{9E38AD24-EA1E-4F40-8B71-42F10D070D8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Main.Controllers.Tests", "UnitTests\Fanex.NCB.Main.Controller.Tests\Fanex.NCB.Main.Controllers.Tests.csproj", "{9E38AD24-EA1E-4F40-8B71-42F10D070D8E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.BotService.EndPoint.Tests", "Fanex.NCB.BotService.EndPoint.Tests\Fanex.NCB.BotService.EndPoint.Tests.csproj", "{7BCD4314-5AB6-4B59-89EE-44CAB59453B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.BotService.EndPoint.Tests", "UnitTests\Fanex.NCB.BotService.EndPoint.Tests\Fanex.NCB.BotService.EndPoint.Tests.csproj", "{7BCD4314-5AB6-4B59-89EE-44CAB59453B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.NAPResolver.Tests", "Fanex.NCB.NAPResolver.Tests\Fanex.NCB.NAPResolver.Tests.csproj", "{6EF4655D-3044-47A5-9A1A-F797B6042075}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.NAPResolver.Tests", "UnitTests\Fanex.NCB.NAPResolver.Tests\Fanex.NCB.NAPResolver.Tests.csproj", "{6EF4655D-3044-47A5-9A1A-F797B6042075}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{E43FADBC-A5E5-4D94-88E6-8A4E76642B30}"
 EndProject
