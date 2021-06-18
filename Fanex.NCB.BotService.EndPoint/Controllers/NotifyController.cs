@@ -62,7 +62,7 @@
 
         [HttpPost]
         [Route("api/notify")]
-        [Obsolete]
+        [Obsolete("Pending")]
         public async Task<ObjectResult> Send([FromBody] ConversationInfo conversationInfo)
         {
             var errorMessage = string.Empty;

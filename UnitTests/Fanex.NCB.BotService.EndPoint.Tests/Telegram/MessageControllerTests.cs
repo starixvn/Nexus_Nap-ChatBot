@@ -98,7 +98,81 @@
         #endregion SendMessage
 
         #region SendMessageAsync
-        #endregion
+
+        [Fact]
+        public async Task SendMessageAsync_Duplicate_ReturnAsExpectedResult()
+        {
+            // Arrange
+            var conversationInfo = fixture.Create<ConversationInfo>();
+            var notificationId = fixture.Create<int>();
+            var messageContent = fixture.Create<string>();
+            var controller = GetController();
+            messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, messageContent).Returns(true);
+
+            // Act
+            var result = await controller.Public_SendMessageAsync(conversationInfo, notificationId, messageContent);
+
+            // Assert
+            Assert.Equal(conversationInfo.ConversationId, result.ConversationId);
+            Assert.Equal(-1, result.ErrorCode);
+            Assert.Equal("The content of the message sent to this group is duplicated for a period of time.", result.ErrorMessage);
+            Assert.Equal(notificationId, result.NotificationId);
+            Assert.True(result.IsIgnoreRetry);
+        }
+
+        [Fact]
+        public async Task SendMessageAsync_Exception_ReturnAsExpectedResult()
+        {
+            // Arrange
+            var conversationInfo = fixture.Create<ConversationInfo>();
+            var notificationId = fixture.Create<int>();
+            var messageContent = fixture.Create<string>();
+            var exception = fixture.Create<Exception>();
+            var controller = GetController();
+            messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, messageContent).Returns(false);
+            messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, messageContent, Arg.Any<string>()).Returns(Task.FromException(exception));
+
+            // Act
+            var result = await controller.Public_SendMessageAsync(conversationInfo, notificationId, messageContent);
+
+            // Assert
+            Assert.Equal(conversationInfo.ConversationId, result.ConversationId);
+            Assert.Equal(1, result.ErrorCode);
+            Assert.Equal(exception.Message, result.ErrorMessage);
+            Assert.Equal(notificationId, result.NotificationId);
+            Assert.False(result.IsIgnoreRetry);
+
+            await messageLogService.Received().RemoveMessageLogOnCache(conversationInfo.ConversationId, Arg.Any<string>());
+            controller.Received().Protected("WriteLogAsync", exception);
+        }
+
+        ////[Fact]
+        ////public async Task SendMessageAsync_SendMessageSuccessfull_ReturnAsExpectedResult()
+        ////{
+        ////    // Arrange
+        ////    var conversationInfo = new ConversationInfo
+        ////    {
+        ////        BotConversationId = "1",
+        ////        ConversationId = "1"
+        ////    };
+        ////    var notificationId = fixture.Create<int>();
+        ////    var messageContent = fixture.Create<string>();
+        ////    var sendMessageResult = new SendMessageResult { ErrorCode = 1 };
+        ////    var controller = GetController();
+        ////    messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, messageContent).Returns(false);
+        ////    controller.Protected("SendTextMessageAsync", 1, 1, notificationId, messageContent).Returns(sendMessageResult);
+
+        ////    // Act
+        ////    var result = await controller.Public_SendMessageAsync(conversationInfo, notificationId, messageContent);
+
+        ////    // Assert
+        ////    Assert.Equal(sendMessageResult, result);
+
+        ////    await messageLogService.Received().InserMessageLogIntoCache(conversationInfo.ConversationId, messageContent, Arg.Any<string>());
+        ////    await messageLogService.Received().RemoveMessageLogOnCache(conversationInfo.ConversationId, Arg.Any<string>());
+        ////}
+
+        #endregion SendMessageAsync
 
         #region SendTextMessageAsync
 
@@ -146,6 +220,8 @@
             Assert.Equal(1, result.ErrorCode);
             Assert.Equal(exception.Message, result.ErrorMessage);
             Assert.False(result.IsIgnoreRetry);
+
+            controller.Received().Protected("WriteLogAsync", exception);
         }
 
         #endregion SendTextMessageAsync
