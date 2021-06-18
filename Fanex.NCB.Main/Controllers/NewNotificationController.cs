@@ -9,13 +9,11 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using Fanex.NCB.Main.ViewModel.TreeSelect;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Models.Notification;
-    using Fanex.NCB.Models.NotificationTemplate;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
-    using Newtonsoft.Json;
     using static Fanex.NAP.Core.Business.Constant;
 
     [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
@@ -49,20 +47,13 @@ namespace Fanex.NCB.SkypeBot.Controllers
             }
             else
             {
-                var contents = model.ChannelIds.Split(",").Select(x => byte.Parse(x))
-                    .Select(x => new NotificationTemplateContent
-                    {
-                        ChannelId = x,
-                        Content = model.Content
-                    }).ToList();
-
                 result = await notificationService.CreateAsync(new CreateNotification
                 {
                     NotificationTypeId = model.NotificationTypeId,
                     ProductId = model.ProductId,
                     RecipientIds = model.RecipientIds,
                     Title = model.Title,
-                    Content = JsonConvert.SerializeObject(contents),
+                    Content = model.Content,
                     SendDate = model.SendDate,
                     SendImmediately = model.SendImmediately,
                     CreatorId = napSession.UserId

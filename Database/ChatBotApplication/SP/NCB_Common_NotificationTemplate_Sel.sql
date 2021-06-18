@@ -9,20 +9,15 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_Common_NotificationTemplate_
 
         Revisions:
 				- 20190401@Dominic: First Commit
-				- 20210513@Malcolm: Integrate Telegram - RedmineID: #151807
         
     */
 )
 SQL SECURITY DEFINER
 BEGIN
-
-	SELECT nt.NotificationTemplateID AS ID, nt.NotificationTemplateName AS Name, nt.Title, ntc.Content
+	SELECT nt.NotificationTemplateID AS ID, nt.NotificationTemplateName AS Name, nt.Title, nt.Content
     FROM NotificationTemplate nt
-		INNER JOIN NotificationTemplateContent ntc ON ntc.NotificationTemplateID = nt.NotificationTemplateID
-        INNER JOIN ConversationChannel c ON c.ChannelID = ntc.ChannelID
-    WHERE nt.NotificationTypeID = notificationTypeID AND c.ChannelName = 'Skype'
+    WHERE nt.NotificationTypeID = notificationTypeID
     ORDER BY nt.NotificationTemplateName;
-    
 END;
 
 //

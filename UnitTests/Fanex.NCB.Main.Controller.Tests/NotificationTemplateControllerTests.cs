@@ -8,14 +8,12 @@
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Main.ViewModel.NotificationTemplate;
     using Fanex.NCB.Models.NotificationTemplate;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.SkypeBot.Controllers;
     using Microsoft.AspNetCore.Mvc;
-    using Newtonsoft.Json;
     using NSubstitute;
     using Xunit;
     using static Fanex.NAP.Core.Business.Constant;
@@ -92,11 +90,6 @@
             napSession.UserId = fixture.Create<int>();
 
             var viewModel = fixture.Create<CreateNotificationTemplateViewModel>();
-            var contents = new List<NotificationTemplateContent>
-            {
-                new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Skype, Content = viewModel.Content },
-                new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content }
-            };
             var model = new CreateNotificationTemplate();
 
             notificationTemplaceService.CreateAsync(Arg.Do<CreateNotificationTemplate>(x => model = x)).Returns(new CommandResult { Code = 0 });
@@ -110,7 +103,7 @@
             Assert.Equal(viewModel.NotificationTypeId, model.NotificationTypeId);
             Assert.Equal(viewModel.NotificationTemplateName, model.NotificationTemplateName);
             Assert.Equal(viewModel.Title, model.Title);
-            Assert.Equal(JsonConvert.SerializeObject(contents), model.Content);
+            Assert.Equal(viewModel.Content, model.Content);
             Assert.Equal(napSession.UserId, model.CreatorId);
         }
 
@@ -140,11 +133,6 @@
             napSession.UserId = fixture.Create<int>();
 
             var viewModel = fixture.Create<EditNotificationTemplateViewModel>();
-            var contents = new List<NotificationTemplateContent>
-            {
-                new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Skype, Content = viewModel.Content },
-                new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content }
-            };
             var model = new EditNotificationTemplate();
 
             notificationTemplaceService.EditAsync(Arg.Do<EditNotificationTemplate>(x => model = x)).Returns(new CommandResult { Code = 0 });
@@ -158,7 +146,7 @@
             Assert.Equal(viewModel.NotificationTypeId, model.NotificationTypeId);
             Assert.Equal(viewModel.NotificationTemplateName, model.NotificationTemplateName);
             Assert.Equal(viewModel.Title, model.Title);
-            Assert.Equal(JsonConvert.SerializeObject(contents), model.Content);
+            Assert.Equal(viewModel.Content, model.Content);
             Assert.Equal(napSession.UserId, model.ModifierId);
         }
 

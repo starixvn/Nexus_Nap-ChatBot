@@ -1,14 +1,11 @@
 namespace Fanex.NCB.SkypeBot.Controllers
 {
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NAP.Client;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.Core.Enum;
-    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Main.ViewModel.NotificationTemplate;
     using Fanex.NCB.Models.NotificationTemplate;
     using Fanex.NCB.NAPResolver.Attributes;
@@ -16,7 +13,6 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
-    using Newtonsoft.Json;
     using static Fanex.NAP.Core.Business.Constant;
 
     [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
@@ -65,18 +61,12 @@ namespace Fanex.NCB.SkypeBot.Controllers
         {
             if (ModelState.IsValid)
             {
-                var contents = new List<NotificationTemplateContent>
-                {
-                    new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Skype, Content = viewModel.Content },
-                    new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content }
-                };
-
                 CommandResult result = await notificationTemplaceService.CreateAsync(new CreateNotificationTemplate
                 {
                     NotificationTypeId = viewModel.NotificationTypeId,
                     NotificationTemplateName = viewModel.NotificationTemplateName,
                     Title = viewModel.Title,
-                    Content = JsonConvert.SerializeObject(contents),
+                    Content = viewModel.Content,
                     CreatorId = napSession.UserId
                 });
 
@@ -93,18 +83,13 @@ namespace Fanex.NCB.SkypeBot.Controllers
         {
             if (ModelState.IsValid)
             {
-                var contents = new List<NotificationTemplateContent>
-                {
-                    new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Skype, Content = viewModel.Content },
-                    new NotificationTemplateContent { ChannelId = (byte)ConversationChannel.Telegram, Content = viewModel.Content }
-                };
                 CommandResult result = await notificationTemplaceService.EditAsync(new EditNotificationTemplate
                 {
                     NotificationTemplateId = viewModel.NotificationTemplateId,
                     NotificationTypeId = viewModel.NotificationTypeId,
                     NotificationTemplateName = viewModel.NotificationTemplateName,
                     Title = viewModel.Title,
-                    Content = JsonConvert.SerializeObject(contents),
+                    Content = viewModel.Content,
                     ModifierId = napSession.UserId
                 });
 
