@@ -78,12 +78,14 @@
             var tasks = new List<Task<SendMessageResult>>();
             if (notificationMessages != null && notificationMessages.Any())
             {
-                foreach (NotificationMessage notificationMessage in notificationMessages)
+                var notifications = conversationService.GetDistinctNotificationConversation(notificationMessages);
+
+                foreach (NotificationMessage notification in notifications)
                 {
-                    var distinctRecipients = GetDistinctConversation(notificationMessage.Recipients);
+                    var distinctRecipients = GetDistinctConversation(notification.Recipients);
                     foreach (ConversationInfo conversationInfo in distinctRecipients)
                     {
-                        SendMessageAsync(tasks, conversationInfo, notificationMessage);
+                        SendMessageAsync(tasks, conversationInfo, notification);
                     }
                 }
                 results = (await Task.WhenAll(tasks)).ToList();

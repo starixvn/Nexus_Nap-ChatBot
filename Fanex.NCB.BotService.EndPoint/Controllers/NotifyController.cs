@@ -98,12 +98,13 @@
 
             if (notificationMessages != null && notificationMessages.Any())
             {
-                foreach (var notificationMessage in notificationMessages)
+                var notifications = conversationService.GetDistinctNotificationConversation(notificationMessages);
+
+                foreach (var notification in notifications)
                 {
-                    var distinctRecipients = GetDistinctConversation(notificationMessage.Recipients);
-                    foreach (var conversationInfo in distinctRecipients)
+                    foreach (var conversationInfo in notification.Recipients)
                     {
-                        SendNotification(tasks, conversationInfo, notificationMessage);
+                        SendNotification(tasks, conversationInfo, notification);
                     }
                 }
 
@@ -111,13 +112,6 @@
             }
 
             return Ok(results);
-        }
-
-        private static IEnumerable<ConversationInfo> GetDistinctConversation(IEnumerable<ConversationInfo> conversation)
-        {
-            var clonedConversations = new List<ConversationInfo>(conversation);
-            return clonedConversations.GroupBy(g => new { g.ConversationId })
-                .Select(group => group.FirstOrDefault());
         }
 
         [Obsolete]

@@ -141,7 +141,7 @@
                     }
                 }
             };
-
+            conversationService.GetDistinctNotificationConversation(Arg.Any<List<NotificationMessage>>()).Returns(notificationMessage);
             //Actual
             var actual = await controller.SendMulti(notificationMessage);
 
@@ -177,6 +177,7 @@
                     }
                 }
             };
+            conversationService.GetDistinctNotificationConversation(Arg.Any<List<NotificationMessage>>()).Returns(notificationMessage);
 
             //Actual
             var actual = await controller.SendMulti(notificationMessage);

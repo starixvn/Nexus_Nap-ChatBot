@@ -1,5 +1,7 @@
 ﻿namespace Fanex.NCB.BotService.Core.Tests.Services
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Services;
@@ -162,6 +164,35 @@
 
             //Assert
             Assert.Equal(commandResult, actual);
+        }
+
+        [Fact]
+        public void GetDistinctNotificationConversation_WhenCalledReturnsExpectedResult()
+        {
+            var input = new List<NotificationMessage>
+            {
+                new NotificationMessage { NotificationId = 1, Recipients = new List<ConversationInfo> { new ConversationInfo {ConversationId = "A"},
+                new ConversationInfo {ConversationId = "D"}} },
+                new NotificationMessage { NotificationId = 2, Recipients = new List<ConversationInfo> { new ConversationInfo {ConversationId = "B"} } },
+                new NotificationMessage { NotificationId = 1, Recipients = new List<ConversationInfo> { new ConversationInfo {ConversationId = "A"},
+                    new ConversationInfo { ConversationId = "B" }, new ConversationInfo { ConversationId = "C" } } },
+            };
+            var expectedResult = new List<NotificationMessage>
+            {
+                new NotificationMessage { NotificationId = 1,
+                    Recipients = new List<ConversationInfo> { new ConversationInfo {ConversationId = "A"}, new ConversationInfo { ConversationId = "D" },
+                    new ConversationInfo { ConversationId = "B" }, new ConversationInfo { ConversationId = "C" } } },
+                new NotificationMessage { NotificationId = 2, Recipients = new List<ConversationInfo> { new ConversationInfo {ConversationId = "B"} } },
+            };
+
+            var service = GetService();
+            var actual = service.GetDistinctNotificationConversation(input);
+            Assert.Equal(expectedResult.Count, actual.Count);
+            Assert.Equal(expectedResult.FirstOrDefault(a => a.NotificationId == 1).Recipients.Count(),
+                actual.FirstOrDefault(a => a.NotificationId == 1).Recipients.Count());
+
+            Assert.Equal(expectedResult.FirstOrDefault(a => a.NotificationId == 2).Recipients.Count(),
+               actual.FirstOrDefault(a => a.NotificationId == 2).Recipients.Count());
         }
 
         private ConversationService GetService()
