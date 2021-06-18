@@ -192,6 +192,17 @@ NCB_SiteMessage_Import:BEGIN
     IsTest TINYINT,
     StatusID TINYINT UNSIGNED,
     Status VARCHAR(10)
+<<<<<<< HEAD
+=======
+  );
+  
+  DROP TEMPORARY TABLE IF EXISTS tmpSetting;
+  CREATE TEMPORARY TABLE IF NOT EXISTS tmpSetting(
+    MsgContentsType INT,
+    NotificationTypeID INT,
+    NotificationTemplateID INT,
+    IsTest TINYINT
+>>>>>>> 151807 - update Sp import
   );
 
   SET iLoop = 0;
@@ -208,8 +219,19 @@ NCB_SiteMessage_Import:BEGIN
     SET iLoop := iLoop + 1;
     END WHILE;
 
+<<<<<<< HEAD
   # Update Default status: if IsTest=1 then 'Draft', else 'Planned'
   UPDATE tmp_MsgContentTypeTemplate
+=======
+  # Get content
+   INSERT INTO tmp_MsgContentTypeTemplate (MsgContentsType ,NotificationTypeID, NotificationTemplateID, TemplateTitle, TemplateContent, IsRequiredMatch)
+   SELECT t.MsgContentsType, t.NotificationTypeID, t.NotificationTemplateID, nt.Title, ntc.Content, 0, t.IsTest	
+   FROM tmpSetting t 
+		INNER JOIN NotificationTemplate nt ON nt.NotificationTemplateID = t.NotificationTemplateID;
+	
+   # Update Default status: if IsTest=1 then 'Draft', else 'Planned'
+    UPDATE tmp_MsgContentTypeTemplate
+>>>>>>> 151807 - update Sp import
     SET StatusID = CASE WHEN IsTest = 1 THEN DRAFT_NOTIFICATION_STATUSID ELSE PLANNED_NOTIFICATION_STATUSID END,
         Status = CASE WHEN IsTest = 1 THEN DRAFT_NOTIFICATION_STATUS ELSE PLANNED_NOTIFICATION_STATUS END;
 
@@ -370,7 +392,11 @@ NCB_SiteMessage_Import:BEGIN
         INNER JOIN NotificationChatGroupType ngt ON tpl.NotificationTypeID = ngt.NotificationTypeID
         INNER JOIN ConversationGroupExtraInfo gri ON ngt.ChatGroupTypeID = gri.ChatGroupTypeID
         INNER JOIN ConversationGroupRecipient gr ON d.RecipientID = gr.RecipientID AND gri.ConversationGroupID = gr.ConversationGroupID
+<<<<<<< HEAD
         INNER JOIN ConversationGroup g ON gr.ConversationGroupID = g.ConversationGroupID
+=======
+        INNER JOIN ConversationGroup g ON gr.ConversationGroupID = g.ConversationGroupID 
+>>>>>>> 151807 - update Sp import
       WHERE g.IsActive = 1
         AND h.CheckMsg NOT LIKE '%MsgContentsType%';
 
@@ -540,19 +566,8 @@ NCB_SiteMessage_Import:BEGIN
   FROM ConversationGroup g
     INNER JOIN ConversationGroupBot gb ON g.ConversationGroupID = gb.ConversationGroupID
     INNER JOIN ConversationBot b ON b.ConversationBotID = gb.ConversationBotID
-<<<<<<< HEAD
 	INNER JOIN ConversationChannel cc ON cc.ChannelId = g.ChannelId
     WHERE g.ConversationGroupID IN (SELECT ConversationGroupID FROM tmp_Carbon);
-=======
-    WHERE g.ConversationGroupID = ccConversationGroupID
-  LIMIT 1;
-
-  #Return all imported message content
-  SELECT n.NotificationID, n.Title, n.Content, n.ChannelID, c.ChannelName
-  FROM Notification n
-	INNER JOIN ConversationChannel c ON c.ChannelID = n.ChannelId
-  WHERE n.NotificationID IN (SELECT t.NotificationID FROM tmp_Notification t);
->>>>>>> 156153 -  exclude messages sent
   
   #Return all imported message content
   SELECT n.NotificationID, n.Title, n.Content, n.ChannelID, c.ChannelName
