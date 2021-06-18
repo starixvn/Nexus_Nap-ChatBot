@@ -25,6 +25,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalBets
       - 2020610@Oliver: remove MaxMessageID [RedmineID: #135686]
 	  - 20210405@Malcolm: Import data for voiding abnormal accounts [RedmineId : #152175] 
 	  - 20210513@Malcolm: Integrate Telegram [RedmineID: #151807]
+
 	  - 20210722@Malcolm: Change msg content type for abnormal accounts [RedmineId : #158723] 
 	Param's Explanation:
 		- Type = 1: for message of abnormal bets (issue type = 11, 15)
@@ -64,7 +65,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     
   DECLARE PLANNED_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 0;
   DECLARE PLANNED_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Planned';
-
+  
   SET startTime = UTC_TIMESTAMP();
   SET errCode = 0, errMsg = '';
 
@@ -241,13 +242,15 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     FROM SystemSetting
     WHERE ID = 9;
 
-  DROP TEMPORARY TABLE IF EXISTS tmpSetting;
-  CREATE TEMPORARY TABLE IF NOT EXISTS tmpSetting(
+  DROP TEMPORARY TABLE IF EXISTS tmp_MsgContentTypeTemplate;
+  CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgContentTypeTemplate(
     NotificationTypeID INT,
     NotificationTemplateID INT,
-    IsTest TINYINT
-    Status VARCHAR(10),
-	Type TINYINT UNSIGNED PRIMARY KEY
+    TemplateTitle VARCHAR(300),
+    TemplateContent MEDIUMTEXT,
+    IsTest TINYINT,
+    StatusID TINYINT UNSIGNED,
+    Status VARCHAR(10)
   );
  
   SET jLoop = 1;
@@ -268,32 +271,18 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
 	SET jLoop := jLoop + 1;
   END WHILE;
  
-  DROP TEMPORARY TABLE IF EXISTS tmp_MsgContentTypeTemplate;
-  CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgContentTypeTemplate(
-    MsgContentsType INT,
-    NotificationTypeID INT,
-    NotificationTemplateID INT,
-    TemplateTitle VARCHAR(300),
-    TemplateContent MEDIUMTEXT,
-    IsTest TINYINT,
-    StatusID TINYINT UNSIGNED,
-    Status VARCHAR(10),
-	ChannelId TINYINT UNSIGNED
-  );
-  
-  # Get content
-   INSERT INTO tmp_MsgContentTypeTemplate (MsgContentsType ,NotificationTypeID, NotificationTemplateID, TemplateTitle, TemplateContent, IsTest, ChannelId)
-   SELECT t.MsgContentsType, t.NotificationTypeID, t.NotificationTemplateID, nt.Title, ntc.Content, t.IsTest, ntc.ChannelId	
-   FROM tmpSetting t 
-		INNER JOIN NotificationTemplate nt ON nt.NotificationTemplateID = t.NotificationTemplateID
-		INNER JOIN NotificationTemplateContent ntc ON ntc.NotificationTemplateID = nt.NotificationTemplateID; 
-
   # Update Default status: if IsTest=1 then 'Draft', else 'Planned'
   UPDATE tmp_MsgContentTypeTemplate
     SET StatusID = CASE WHEN IsTest = 1 THEN DRAFT_NOTIFICATION_STATUSID ELSE PLANNED_NOTIFICATION_STATUSID END,
         Status = CASE WHEN IsTest = 1 THEN DRAFT_NOTIFICATION_STATUS ELSE PLANNED_NOTIFICATION_STATUS END;
 
   /*Step 3: Validate templates*/
+  # Get template content
+  UPDATE tmp_MsgContentTypeTemplate tmp
+    INNER JOIN NotificationTemplate nt ON tmp.NotificationTemplateID = nt.NotificationTemplateID
+    SET tmp.TemplateContent = nt.Content,
+        tmp.TemplateTitle = nt.Title;
+
   # Check if there are any templates are not existing
   IF EXISTS (
     SELECT 1
@@ -371,21 +360,21 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     INDEX Index_MessageID(MessageID)
     );
 
-  INSERT INTO tmp_NotificationRecipientList(MessageID, RecipientID, ConversationGroupID, ChatGroupTypeID, StatusID, Status, ChannelID)
-    SELECT h.MessageID, r.RecipientID, gr.ConversationGroupID, ngt.ChatGroupTypeID, tpl.StatusID, tpl.Status, g.ChannelID
+  INSERT INTO tmp_NotificationRecipientList(MessageID, RecipientID, ConversationGroupID, ChatGroupTypeID, StatusID, Status, ChannelId)
+    SELECT h.MessageID, r.RecipientID, gr.ConversationGroupID, ngt.ChatGroupTypeID, tpl.StatusID, tpl.Status, g.ChannelId
       FROM tmp_MsgHeader h
         INNER JOIN tmp_MsgContentTypeTemplate tpl ON h.Type = tpl.Type
         INNER JOIN NotificationChatGroupType ngt ON tpl.NotificationTypeID = ngt.NotificationTypeID
         INNER JOIN ConversationGroupExtraInfo gri ON ngt.ChatGroupTypeID = gri.ChatGroupTypeID
         INNER JOIN ConversationGroupRecipient gr ON gri.ConversationGroupID = gr.ConversationGroupID
-        INNER JOIN ConversationGroup g ON gr.ConversationGroupID = g.ConversationGroupID AND g.ChannelID = tpl.ChannelID
+        INNER JOIN ConversationGroup g ON gr.ConversationGroupID = g.ConversationGroupID
         INNER JOIN tmp_RecipientList r ON gr.RecipientID = r.RecipientID
       WHERE g.IsActive = 1;
 
   UPDATE tmp_MsgHeader h
     SET h.CheckMsg = CONCAT(h.CheckMsg, '- Internal CSD recipients do not have any suitable chat groups')
     WHERE h.MessageID NOT IN (SELECT MessageID FROM tmp_NotificationRecipientList);
-
+	
   /*Step 7: Insert Notification and NotificationSystemMsg*/
   DROP TEMPORARY TABLE IF EXISTS tmpMessageChannel;
   CREATE TEMPORARY TABLE tmpMessageChannel (MessageID INT, ChannelID TINYINT, INDEX Index_PK (MessageID, ChannelID));
@@ -393,6 +382,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   INSERT INTO tmpMessageChannel (MessageID, ChannelId)
   SELECT DISTINCT MessageId, ChannelId
   FROM tmp_NotificationRecipientList r;
+
 
   SET iLoop = 1;
   SET createdDate = UTC_TIMESTAMP();
@@ -406,7 +396,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
       INSERT INTO Notification(NotificationTypeID, Title, Content, ConfigSendTime, SendImmediately, CreatorID, CreatedDate, Status, StatusID, ChannelId)
         SELECT DISTINCT ct.NotificationTypeID, ct.TemplateTitle, REPLACE(REPLACE(ct.TemplateContent, '{General Info}', h.Content_Detail), '@@', '') Content, startTime, 0 SendImmediately, STARIXIT_CUSTID, CreatedDate, CREATING_NOTIFICATION_STATUS, CREATING_NOTIFICATION_STATUSID, ccChannelId
           FROM tmp_MsgHeader h
-          INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType AND ct.ChannelId = ccChannelId
+          INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType 
           WHERE h.MessageID = ccMessageID;
 
       SELECT LAST_INSERT_ID() INTO ccNotificationID;
@@ -446,7 +436,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   				    n.StatusID = t.StatusID
           WHERE n.NotificationID = ccNotificationID;
       END IF;
-	   DELETE FROM tmpMessageChannel m WHERE m.MessageId = ccMessageID AND m.ChannelId = ccChannelId;
+	  DELETE FROM tmpMessageChannel m WHERE m.MessageId = ccMessageID AND m.ChannelId = ccChannelId;
 	 END WHILE;
 
     SET iLoop := iLoop + 1;
@@ -495,25 +485,25 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   FROM Notification n
 	INNER JOIN ConversationChannel c ON c.ChannelID = n.ChannelId
   WHERE n.NotificationID IN (SELECT t.NotificationID FROM tmp_Notification t);
-    
+  
   #Get Finish Time to calculate execution duration
   SET finishTime = UTC_TIMESTAMP(3);
   SET duration = TIMESTAMPDIFF(MICROSECOND, startTime, finishTime) / 1000; 	#miliseconds
-  	
+		
   #Get Log Content, JSON format
   SET logContent = JSON_OBJECT('MessageHeader - AbnormalBets', messageHeader);
-  					
+						
   #Write User Log
   IF EXISTS (SELECT 1 FROM tmp_MsgHeader) THEN
-  	CALL NCB_UserLog_RunSP_Ins(
-  												ACTION_ID #actionID
-  												, -1  #referenceID
-  												, STARIXIT_CUSTID #UserID
-  												, logContent #LogContent
-  												, startTime #logtime
-  												, duration	#Duration
-  												);
-     END IF;
+	  CALL NCB_UserLog_RunSP_Ins(
+													ACTION_ID #actionID
+													, -1  #referenceID
+													, STARIXIT_CUSTID #UserID
+													, logContent #LogContent
+													, startTime #logtime
+													, duration	#Duration
+													);
+    END IF;
 END;
 
 //
