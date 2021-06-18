@@ -190,8 +190,7 @@ NCB_SiteMessage_Import:BEGIN
     IsRequiredMatch TINYINT,
     IsTest TINYINT,
     StatusID TINYINT UNSIGNED,
-    Status VARCHAR(10),
-	ChannelId TINYINT UNSIGNED
+    Status VARCHAR(10)
   );
   
   DROP TEMPORARY TABLE IF EXISTS tmpSetting;
@@ -216,11 +215,10 @@ NCB_SiteMessage_Import:BEGIN
     END WHILE;
 
   # Get content
-   INSERT INTO tmp_MsgContentTypeTemplate (MsgContentsType ,NotificationTypeID, NotificationTemplateID, TemplateTitle, TemplateContent, IsRequiredMatch, IsTest, ChannelId)
-   SELECT t.MsgContentsType, t.NotificationTypeID, t.NotificationTemplateID, nt.Title, ntc.Content, 0, t.IsTest, ntc.ChannelId	
+   INSERT INTO tmp_MsgContentTypeTemplate (MsgContentsType ,NotificationTypeID, NotificationTemplateID, TemplateTitle, TemplateContent, IsRequiredMatch)
+   SELECT t.MsgContentsType, t.NotificationTypeID, t.NotificationTemplateID, nt.Title, ntc.Content, 0, t.IsTest	
    FROM tmpSetting t 
-		INNER JOIN NotificationTemplate nt ON nt.NotificationTemplateID = t.NotificationTemplateID
-		INNER JOIN NotificationTemplateContent ntc ON ntc.NotificationTemplateID = nt.NotificationTemplateID; 
+		INNER JOIN NotificationTemplate nt ON nt.NotificationTemplateID = t.NotificationTemplateID;
 	
    # Update Default status: if IsTest=1 then 'Draft', else 'Planned'
     UPDATE tmp_MsgContentTypeTemplate
@@ -379,7 +377,7 @@ NCB_SiteMessage_Import:BEGIN
         INNER JOIN NotificationChatGroupType ngt ON tpl.NotificationTypeID = ngt.NotificationTypeID
         INNER JOIN ConversationGroupExtraInfo gri ON ngt.ChatGroupTypeID = gri.ChatGroupTypeID
         INNER JOIN ConversationGroupRecipient gr ON d.RecipientID = gr.RecipientID AND gri.ConversationGroupID = gr.ConversationGroupID
-        INNER JOIN ConversationGroup g ON gr.ConversationGroupID = g.ConversationGroupID AND g.ChannelId = tpl.ChannelId
+        INNER JOIN ConversationGroup g ON gr.ConversationGroupID = g.ConversationGroupID 
       WHERE g.IsActive = 1
         AND h.CheckMsg NOT LIKE '%MsgContentsType%';
 
@@ -454,7 +452,7 @@ NCB_SiteMessage_Import:BEGIN
 	  	, '@@', '') Content
 	    ,startTime, 0 SendImmediately, STARIXIT_CUSTID, CreatedDate, CREATING_NOTIFICATION_STATUS, CREATING_NOTIFICATION_STATUSID, ccChannelId
 	    FROM tmp_MsgHeader h
-	  	INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType AND ct.ChannelId = ccChannelId
+	  	INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType
 	    WHERE h.MessageID = ccMessageID;
 	  
 	  SELECT LAST_INSERT_ID() INTO ccNotificationID;
