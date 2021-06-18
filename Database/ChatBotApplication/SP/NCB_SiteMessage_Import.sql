@@ -31,6 +31,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SiteMessage_Import(
       - 20200630@Percy: Remove sent recipients for rescan messages [RedmineID: #136492]
       - 20200715@Percy: Add Invalid status for invalid match [RedmineID: #135686]
 	  - 20210513@Malcolm: Integrate Telegram [RedmineID: #151807]
+
   */
 )
 SQL SECURITY DEFINER
@@ -76,7 +77,7 @@ NCB_SiteMessage_Import:BEGIN
   DECLARE PLANNED_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 0;
   DECLARE PLANNED_NOTIFICATION_STATUS VARCHAR(10) DEFAULT 'Planned';
 
-  SET startTime = UTC_TIMESTAMP();
+	SET startTime = UTC_TIMESTAMP();
   SET errCode = 0, errMsg = '';
 
   DROP TEMPORARY TABLE IF EXISTS tmp_Notification;
@@ -173,13 +174,13 @@ NCB_SiteMessage_Import:BEGIN
 		  );
         
     SET iLoop := iLoop + 1;
-   END WHILE;
+    END WHILE;
 
   /*Step 2: Parse JSON data for message template, notification type*/
   SELECT Value INTO templateNotifcationType
     FROM SystemSetting
     WHERE ID = 14;
-	
+
   DROP TEMPORARY TABLE IF EXISTS tmp_MsgContentTypeTemplate;
   CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgContentTypeTemplate(
     MsgContentsType INT,
@@ -192,40 +193,32 @@ NCB_SiteMessage_Import:BEGIN
     StatusID TINYINT UNSIGNED,
     Status VARCHAR(10)
   );
-  
-  DROP TEMPORARY TABLE IF EXISTS tmpSetting;
-  CREATE TEMPORARY TABLE IF NOT EXISTS tmpSetting(
-    MsgContentsType INT,
-    NotificationTypeID INT,
-    NotificationTemplateID INT,
-    IsTest TINYINT
-  );
 
   SET iLoop = 0;
   WHILE (JSON_EXTRACT(templateNotifcationType, CONCAT('$[',iLoop, '].MsgContentsType')) IS NOT NULL) DO
-    INSERT INTO tmpSetting(MsgContentsType, NotificationTypeID, NotificationTemplateID, IsTest)
+    INSERT INTO tmp_MsgContentTypeTemplate(MsgContentsType, NotificationTypeID, NotificationTemplateID, IsTest, IsRequiredMatch)
       VALUES (
 		JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].MsgContentsType'))),
 		JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTypeID'))),
 		JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTemplateID'))),
-		JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].IsTest')))
+		JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].IsTest'))),
+		0
 		);
 
     SET iLoop := iLoop + 1;
     END WHILE;
 
-  # Get content
-   INSERT INTO tmp_MsgContentTypeTemplate (MsgContentsType ,NotificationTypeID, NotificationTemplateID, TemplateTitle, TemplateContent, IsRequiredMatch)
-   SELECT t.MsgContentsType, t.NotificationTypeID, t.NotificationTemplateID, nt.Title, ntc.Content, 0, t.IsTest	
-   FROM tmpSetting t 
-		INNER JOIN NotificationTemplate nt ON nt.NotificationTemplateID = t.NotificationTemplateID;
-	
-   # Update Default status: if IsTest=1 then 'Draft', else 'Planned'
-    UPDATE tmp_MsgContentTypeTemplate
+  # Update Default status: if IsTest=1 then 'Draft', else 'Planned'
+  UPDATE tmp_MsgContentTypeTemplate
     SET StatusID = CASE WHEN IsTest = 1 THEN DRAFT_NOTIFICATION_STATUSID ELSE PLANNED_NOTIFICATION_STATUSID END,
         Status = CASE WHEN IsTest = 1 THEN DRAFT_NOTIFICATION_STATUS ELSE PLANNED_NOTIFICATION_STATUS END;
 
   /*Step 3: Validate templates*/
+  # Get template content
+  UPDATE tmp_MsgContentTypeTemplate tmp
+    INNER JOIN NotificationTemplate nt ON tmp.NotificationTemplateID = nt.NotificationTemplateID
+    SET tmp.TemplateContent = nt.Content,
+        tmp.TemplateTitle = nt.Title;
 
   # Check if there are any templates are not existing
   IF EXISTS (
@@ -289,7 +282,7 @@ NCB_SiteMessage_Import:BEGIN
     LEAVE NCB_SiteMessage_Import;
     END IF;
     
-  UPDATE tmp_MsgContentTypeTemplate
+UPDATE tmp_MsgContentTypeTemplate
 	SET IsRequiredMatch = 1
     WHERE MsgContentsType IN (1, 3, 7);
 
@@ -377,7 +370,7 @@ NCB_SiteMessage_Import:BEGIN
         INNER JOIN NotificationChatGroupType ngt ON tpl.NotificationTypeID = ngt.NotificationTypeID
         INNER JOIN ConversationGroupExtraInfo gri ON ngt.ChatGroupTypeID = gri.ChatGroupTypeID
         INNER JOIN ConversationGroupRecipient gr ON d.RecipientID = gr.RecipientID AND gri.ConversationGroupID = gr.ConversationGroupID
-        INNER JOIN ConversationGroup g ON gr.ConversationGroupID = g.ConversationGroupID 
+        INNER JOIN ConversationGroup g ON gr.ConversationGroupID = g.ConversationGroupID
       WHERE g.IsActive = 1
         AND h.CheckMsg NOT LIKE '%MsgContentsType%';
 
@@ -399,7 +392,7 @@ NCB_SiteMessage_Import:BEGIN
 	
   DROP TEMPORARY TABLE IF EXISTS tmpMessageChannel;
   CREATE TEMPORARY TABLE tmpMessageChannel (MessageID INT, ChannelID TINYINT, INDEX Index_PK (MessageID, ChannelID));
-  
+
   INSERT INTO tmpMessageChannel (MessageID, ChannelId)
   SELECT DISTINCT MessageId, ChannelId
   FROM tmp_NotificationRecipientList r
@@ -408,7 +401,7 @@ NCB_SiteMessage_Import:BEGIN
   /*Step 8: Insert Notification and NotificationSystemMsg*/
   SET iLoop = 1;
   SET createdDate = UTC_TIMESTAMP();
-  WHILE (EXISTS (SELECT 1 FROM tmp_MsgHeader WHERE Id = iLoop)) DO
+   WHILE (EXISTS (SELECT 1 FROM tmp_MsgHeader WHERE Id = iLoop)) DO
     SELECT MessageID, IsTest, MatchID, MsgContentsType, IsNew, IsInvalid INTO ccMessageID, ccIsTest, ccMatchID, ccMsgContentsType, ccIsNew, ccIsInvalid FROM tmp_MsgHeader WHERE Id = iLoop;
     
     IF ccIsNew = 0 THEN
@@ -498,49 +491,49 @@ NCB_SiteMessage_Import:BEGIN
 	 END WHILE;
 	SET iLoop := iLoop + 1;	
   END WHILE;
-        
+
   /*Step 9: Update Setting*/
   #Update Max MsgID
   SELECT MAX(MessageID) INTO maxMessageID FROM tmp_MsgHeader WHERE IsNew = 1;
   
-  IF maxMessageID IS NOT NULL THEN
-	UPDATE SystemSetting
-		SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
-		WHERE ID = 13;
-   END IF;
+	IF maxMessageID IS NOT NULL THEN
+		UPDATE SystemSetting
+			SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
+			WHERE ID = 13;
+		END IF;
         
-   #Update Last PostTime
-   SELECT MAX(CAST(PostTime AS DATETIME)) INTO lastPostTime FROM tmp_MsgHeader WHERE IsNew = 1;
+	#Update Last PostTime
+    SELECT MAX(CAST(PostTime AS DATETIME)) INTO lastPostTime FROM tmp_MsgHeader WHERE IsNew = 1;
     
-   IF lastPostTime IS NOT NULL THEN
-	UPDATE SystemSetting
-		SET Value = lastPostTime
-		WHERE ID = 16;
-	END IF;
+    IF lastPostTime IS NOT NULL THEN
+		UPDATE SystemSetting
+			SET Value = lastPostTime
+			WHERE ID = 16;
+		END IF;
         
   #Update flag to 'Done'
-   UPDATE SystemSetting
-	SET Value = VALUE_DONE
-	WHERE ID = 11 AND Value = VALUE_RUNNING;
+	UPDATE SystemSetting
+		SET Value = VALUE_DONE
+		WHERE ID = 11 AND Value = VALUE_RUNNING;
 
   /*Step 10: Return imported messages*/
   #Get ChatGroupID which receives carbon coppies of all imported messages
-   SELECT Value INTO ccConversationGroupID
+  SELECT Value INTO ccConversationGroupID
     FROM SystemSetting
     WHERE ID = 15;
 	
-   DROP TEMPORARY TABLE IF EXISTS tmp_Carbon;
-	CREATE TEMPORARY TABLE tmp_Carbon(ConversationGroupID INT UNSIGNED);
+  DROP TEMPORARY TABLE IF EXISTS tmp_Carbon;
+  CREATE TEMPORARY TABLE tmp_Carbon(ConversationGroupID INT UNSIGNED);
     
-    IF IFNULL(ccConversationGroupID, '') <> '' THEN
-		SET @SqlCommand = REPLACE(ccConversationGroupID, ',', '''),(''');
-		SET @SqlCommand = CONCAT('(''', @SqlCommand, ''')');
-		SET @SqlCommand= CONCAT('INSERT INTO tmp_Carbon VALUES', @SqlCommand); 
-		
-		PREPARE Stmt FROM  @SqlCommand;
-		EXECUTE Stmt;
-		DEALLOCATE PREPARE Stmt;
-	END IF;
+  IF IFNULL(ccConversationGroupID, '') <> '' THEN
+	SET @SqlCommand = REPLACE(ccConversationGroupID, ',', '''),(''');
+	SET @SqlCommand = CONCAT('(''', @SqlCommand, ''')');
+	SET @SqlCommand= CONCAT('INSERT INTO tmp_Carbon VALUES', @SqlCommand); 
+
+	PREPARE Stmt FROM  @SqlCommand;
+	EXECUTE Stmt;
+	DEALLOCATE PREPARE Stmt;
+  END IF;
 	
   #Return Bot, Chatgroup
   SELECT g.ConversationID AS ChatGroupConversationID, g.ServiceUrl, g.ChannelID, cc.ChannelName, b.ConversationID AS BotConversationID, b.Name AS BotName
@@ -555,7 +548,7 @@ NCB_SiteMessage_Import:BEGIN
   FROM Notification n
 	INNER JOIN ConversationChannel c ON c.ChannelID = n.ChannelId
   WHERE n.NotificationID IN (SELECT t.NotificationID FROM tmp_Notification t);
-  
+
   #Get Finish Time to calculate execution duration
   SET finishTime = UTC_TIMESTAMP(3);
   SET duration = TIMESTAMPDIFF(MICROSECOND, startTime, finishTime) / 1000; 	#miliseconds

@@ -42,7 +42,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     DECLARE duration 		INT;							
     DECLARE logContent 		MEDIUMTEXT CHARACTER SET utf8mb4;
     DECLARE templateNotifcationType JSON;
-    DECLARE ccConversationGroupID 	TEXT;
+    DECLARE ccConversationGroupID TEXT;
     DECLARE maxMessageID 	INT;
     DECLARE lastPostTime 	DATETIME;
     DECLARE ccIsNew 		TINYINT;
@@ -72,10 +72,10 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 	SET  startTime = UTC_TIMESTAMP();
     SET errCode=0, errMsg='';
 
-    DROP TEMPORARY TABLE IF EXISTS tmp_Notification;
-    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Notification(
-		NotificationID INT,
-		UNIQUE INDEX Index_NotificationID(NotificationID)
+  DROP TEMPORARY TABLE IF EXISTS tmp_Notification;
+  CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Notification(
+      NotificationID INT,
+      UNIQUE INDEX Index_NotificationID(NotificationID)
     );
     
 	/*Step 1: Parse JSON data for message header and detaill*/
@@ -134,28 +134,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     SELECT Value INTO templateNotifcationType 
     FROM SystemSetting ss
     WHERE ss.ID = 4;
-			
-	DROP TEMPORARY TABLE IF EXISTS tmpSetting;
-    CREATE TEMPORARY TABLE IF NOT EXISTS tmpSetting(
-				MsgContentsType INT,
-				NotificationTypeID INT,
-				NotificationTemplateID INT,
-				IsTest TINYINT
-			);
-			
-    SET iLoop = 0;
-	WHILE (JSON_EXTRACT(templateNotifcationType, CONCAT('$[',iLoop, '].MsgContentsType')) IS NOT NULL) DO
-	 INSERT INTO tmpSetting(MsgContentsType, NotificationTypeID, NotificationTemplateID, IsTest)
-       VALUES (
-			JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].MsgContentsType'))),
-			JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTypeID'))),
-			JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTemplateID'))),
-			JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].IsTest')))
-			);
-
-    SET iLoop := iLoop + 1;
-    END WHILE;
-      
+    
     DROP TEMPORARY TABLE IF EXISTS tmp_MsgContentTypeTemplate;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgContentTypeTemplate(
 				MsgContentsType INT
@@ -165,23 +144,33 @@ NCB_SpecialDeleteMsg_Import:BEGIN
                 , TemplateContent MEDIUMTEXT
                 , IsTest TINYINT
                 , StatusID TINYINT UNSIGNED
-                , Status VARCHAR(10)
-				, ChannelID TINYINT UNSIGNED
+                , Status VARCHAR(10) 
             );
-			
-    # Get content
-    INSERT INTO tmp_MsgContentTypeTemplate (MsgContentsType ,NotificationTypeID, NotificationTemplateID, TemplateTitle, TemplateContent, IsTest, ChannelId)
-    SELECT t.MsgContentsType, t.NotificationTypeID, t.NotificationTemplateID, nt.Title, ntc.Content, t.IsTest, ntc.ChannelId	
-    FROM tmpSetting t 
-		INNER JOIN NotificationTemplate nt ON nt.NotificationTemplateID = t.NotificationTemplateID
-		INNER JOIN NotificationTemplateContent ntc ON ntc.NotificationTemplateID = nt.NotificationTemplateID;
-		
+   SET iLoop = 0;
+   WHILE (JSON_EXTRACT(templateNotifcationType, CONCAT('$[',iLoop, '].MsgContentsType'))  IS NOT NULL) DO 
+		INSERT INTO tmp_MsgContentTypeTemplate(MsgContentsType, NotificationTypeID, NotificationTemplateID, IsTest)
+        VALUES (
+			JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].MsgContentsType')))
+            , JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTypeID')))
+            , JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTemplateID')))
+            , JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].IsTest')))
+		);
+        
+        SET iLoop := iLoop + 1;
+    END WHILE;        
+    
     #Update Default status: if IsTest=1 then 'Draft', else 'Planned'
     UPDATE tmp_MsgContentTypeTemplate t
     SET t.StatusID = CASE WHEN t.IsTest = 1 THEN  DRAFT_NOTIFICATION_STATUSID ELSE PLANNED_NOTIFICATION_STATUSID END
     , Status = CASE WHEN t.IsTest = 1 THEN   DRAFT_NOTIFICATION_STATUS ELSE PLANNED_NOTIFICATION_STATUS END;
     
-	/*Step 3: Validate templates*/  
+/*Step 3: Validate templates*/
+    #Get template content
+    UPDATE tmp_MsgContentTypeTemplate tmp
+    INNER JOIN NotificationTemplate nt ON tmp.NotificationTemplateID = nt.NotificationTemplateID
+	SET tmp.TemplateContent = nt.Content
+			, tmp.TemplateTitle = nt.Title;
+    
     #Check if there are any template IDs are not existing
     IF  EXISTS(SELECT 1 
 									FROM tmp_MsgContentTypeTemplate  nt
@@ -214,16 +203,16 @@ NCB_SpecialDeleteMsg_Import:BEGIN
         
 	END IF;
     
-	/*Step 4: Update flag to 'running'*/
+/*Step 4: Update flag to 'running'*/
     UPDATE SystemSetting 
     SET Value = VALUE_4_RUNNING
     WHERE ID = 1 AND Value = VALUE_4_DONE;
     
-    IF ROW_COUNT()  = 0 THEN
+     IF ROW_COUNT()  = 0 THEN
         LEAVE NCB_SpecialDeleteMsg_Import;
     END IF;
      
-	/*Step 5: Check unsupported MsgContentsType*/
+ /*Step 5: Check unsupported MsgContentsType*/
 	#Check unsupported MsgContensType
     UPDATE tmp_MsgHeader h
     SET h.CheckMsgDetail = h.MsgContentsType
@@ -236,7 +225,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
      UPDATE tmp_MsgHeader h
     SET h.CheckMsgDetail = NULL;
  
-	/*Step 6: Check if there are any sites which can not be mapped with any recipients*/
+  /*Step 6: Check if there are any sites which can not be mapped with any recipients*/
 	#Get RecipientID
     UPDATE tmp_MsgDetail tmp
     INNER JOIN Licensee l ON l.RegisteredLicenseeName = tmp.Site
@@ -258,7 +247,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     UPDATE tmp_MsgHeader h
     SET h.CheckMsgDetail = NULL;
 
-	/*Step 7: Check if there are any recipients which do not have any suitable chat groups*/    
+  /*Step 7: Check if there are any recipients which do not have any suitable chat groups*/    
     #Prepare data for Notification List
     DROP TEMPORARY TABLE IF EXISTS tmp_NotificationRecipientList;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmp_NotificationRecipientList(
@@ -288,7 +277,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
         INNER JOIN NotificationChatGroupType ngt ON ngt.NotificationTypeID = tpl.NotificationTypeID
 		INNER JOIN ConversationGroupRecipient gr  ON d.RecipientID = gr.RecipientID
         INNER JOIN ConversationGroup g ON g.ConversationGroupID = gr.ConversationGroupID
-		INNER JOIN ConversationGroupExtraInfo gri  ON gri.ConversationGroupID = gr.ConversationGroupID AND g.ChannelID = tpl.ChannelID
+		INNER JOIN ConversationGroupExtraInfo gri  ON gri.ConversationGroupID = gr.ConversationGroupID
 	WHERE h.CheckMsg NOT LIKE '%MsgContentsType%' 
 			AND gri.ChatGroupTypeID = ngt.ChatGroupTypeID AND g.IsActive = 1;
     
@@ -307,8 +296,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     
     UPDATE tmp_MsgHeader h
     SET h.CheckMsgDetail = NULL;
-    
-	DROP TEMPORARY TABLE IF EXISTS tmpMessageChannel;
+    DROP TEMPORARY TABLE IF EXISTS tmpMessageChannel;
 	CREATE TEMPORARY TABLE tmpMessageChannel (MessageID INT, ChannelID TINYINT, INDEX Index_PK (MessageID, ChannelID));
   
 	INSERT INTO tmpMessageChannel (MessageID, ChannelId)
@@ -316,8 +304,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
 	FROM tmp_NotificationRecipientList r
 	WHERE r.LicenseeStatusID = ACTIVE_LICENSEE_STATUS;
 
-
-	/*Step 8: Insert Notification and NotificationSystemMsg*/
+  	/*Step 8: Insert Notification and NotificationSystemMsg*/
     SET iLoop = 1;
     SET createdDate = UTC_TIMESTAMP();
     WHILE (EXISTS (SELECT 1 FROM tmp_MsgHeader WHERE Id = iLoop)) DO
@@ -353,7 +340,7 @@ NCB_SpecialDeleteMsg_Import:BEGIN
     	    , '@@', '') Content
     	 ,startTime, 0, STARIXIT_CUSTID, CreatedDate, CREATING_NOTIFICATION_STATUS, CREATING_NOTIFICATION_STATUSID, ccChannelId
         FROM tmp_MsgHeader h
-        INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType AND ct.ChannelID = ccChannelId
+        INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType 
         WHERE MessageID = ccMessageID;
     
         SELECT LAST_INSERT_ID() INTO ccNotificationID;
