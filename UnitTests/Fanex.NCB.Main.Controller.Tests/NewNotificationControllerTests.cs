@@ -10,6 +10,7 @@
     using Fanex.NCB.Main.ViewModel.TreeSelect;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Models.Notification;
+    using Fanex.NCB.Models.NotificationTemplate;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.SkypeBot.Controllers;
@@ -51,6 +52,11 @@
                 SendDate = DateTime.Now,
                 SendImmediately = true
             };
+            var contents = new List<NotificationTemplateContent>
+            {
+                new NotificationTemplateContent { ChannelId = 1, Content = "**content**" },
+                new NotificationTemplateContent { ChannelId = 2, Content = "**content**" }
+            };
             var model = new CreateNotification();
 
             notificationService.CreateAsync(Arg.Do<CreateNotification>(x => model = x)).Returns(new CommandResult { Code = 0 });
@@ -64,7 +70,7 @@
             Assert.Equal(viewModel.NotificationTypeId, model.NotificationTypeId);
             Assert.Equal(viewModel.ProductId, model.ProductId);
             Assert.Equal(viewModel.Title, model.Title);
-            Assert.Equal(viewModel.Content, model.Content);
+            Assert.Equal(JsonConvert.SerializeObject(contents), model.Content);
             Assert.Equal(viewModel.SendDate, model.SendDate);
             Assert.Equal(viewModel.SendImmediately, model.SendImmediately);
             Assert.Equal(viewModel.RecipientIds, model.RecipientIds);

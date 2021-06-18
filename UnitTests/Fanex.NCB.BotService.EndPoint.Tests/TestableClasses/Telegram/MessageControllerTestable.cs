@@ -21,6 +21,16 @@
         {
         }
 
+        public async Task<SendMessageResult> Public_SendMessageAsync(ConversationInfo conversationInfo, int notificationId, string messageContent)
+        {
+            return await base.SendMessageAsync(conversationInfo, notificationId, messageContent);
+        }
+
+        public async Task<SendMessageResult> Public_SendTextMessageAsync(long botId, long chatId, int notificationId, string messageContent)
+        {
+            return await base.SendTextMessageAsync(botId, chatId, notificationId, messageContent);
+        }
+
         public async Task Public_AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, string messageContent, SendMessageResult result)
         {
             await base.AddMessageLogToDatabaseAsync(conversationInfo, messageContent, result);

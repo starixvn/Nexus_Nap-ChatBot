@@ -58,7 +58,6 @@
                     _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
                     _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
                     await botService.SendTextMessageAsync(botId, chatId, conversationInfo.Message);
-                    return Ok("ok");
                 }
             }
             catch (Exception ex)
@@ -115,10 +114,9 @@
             }) : Task.Run(() => SendMessageAsync(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message)));
         }
 
-        private async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo, int notificationId, string messageContent)
+        protected internal virtual async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo, int notificationId, string messageContent)
         {
             bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, messageContent);
-
             if (isDuplicated)
             {
                 return new SendMessageResult
@@ -138,7 +136,7 @@
                 _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
                 _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
                 await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, messageContent, guiid);
-                SendMessageResult result = await SendMessageAsync(botId, chatId, notificationId, messageContent);
+                SendMessageResult result = await SendTextMessageAsync(botId, chatId, notificationId, messageContent);
                 if (result.ErrorCode != 0)
                 {
                     await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
@@ -164,7 +162,7 @@
             }
         }
 
-        protected internal virtual async Task<SendMessageResult> SendMessageAsync(long botId, long chatId, int notificationId, string messageContent)
+        protected internal virtual async Task<SendMessageResult> SendTextMessageAsync(long botId, long chatId, int notificationId, string messageContent)
         {
             var result = new SendMessageResult
             {
