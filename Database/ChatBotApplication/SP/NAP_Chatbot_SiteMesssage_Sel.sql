@@ -16,6 +16,7 @@ AS
 		- 20200305@Percy: Initialize SP [RedmineID: #126143]
 		- 20200630@Percy: Add LastPostTime for rescan message [RedmineID: #136492]
 		- 20200715@Percy: Return isTest [RedmineID: #135686]
+		- 20210618@Percy: Migrate DBMSG to new server [RedmineID: #157217]
 */
 
 BEGIN
@@ -35,6 +36,10 @@ BEGIN
 	FROM @xml.nodes('//root/r') AS RECORDS(r)
 	WHERE LEN(ISNULL(r.value('.', 'NVARCHAR(15)'), '')) > 0
 
+	DECLARE @DepositSite TABLE (SiteName VARCHAR(50), PRIMARY KEY (SiteName))
+	INSERT INTO @DepositSite (SiteName)
+	SELECT site FROM DBACC.bodb02.dbo.Site WITH (NOLOCK) WHERE isDeposit = 1
+
 	DECLARE @Msg TABLE (MessageId INT, MsgContentsType TINYINT, MatchId INT, Content_en NVARCHAR(4000), Content_cs NVARCHAR(4000), PostTime DATETIME, IsNew TINYINT, IsTest TINYINT)
 	
 	-- New messages from @MessageID
@@ -48,7 +53,7 @@ BEGIN
 		AND EXISTS (SELECT 1
 					FROM dbo.MsgTarget mt WITH (NOLOCK)
 						INNER JOIN dbo.MsgSite ms WITH (NOLOCK) ON mt.TargetId = ms.SiteId
-						INNER JOIN bodb02.dbo.Site s WITH (NOLOCK) ON ms.SiteName = s.site AND s.isDeposit = 1
+						INNER JOIN @DepositSite ds ON ms.SiteName = ds.SiteName
 					WHERE mt.MessageId = m.MessageId
 						AND NOT EXISTS (SELECT 1 FROM dbo.MsgChatBot mc WITH (NOLOCK)
 										WHERE mc.MessageId = mt.MessageId AND mc.TargetId = mt.TargetId
@@ -92,16 +97,18 @@ BEGIN
 	FROM dbo.MsgTarget mt WITH (NOLOCK)
 		INNER JOIN @Msg m ON mt.MessageId = m.MessageId
 		INNER JOIN dbo.MsgSite ms WITH (NOLOCK) ON mt.TargetId = ms.SiteId
-		INNER JOIN bodb02.dbo.Site s WITH (NOLOCK) ON ms.SiteName = s.site AND s.isDeposit = 1
 	WHERE
-		m.IsNew = 1
-		OR NOT EXISTS (
-			SELECT 1
-			FROM dbo.MsgChatBot mc WITH (NOLOCK)
-			WHERE mc.MessageId = mt.MessageId
-				AND mc.TargetId = mt.TargetId
-				AND mc.JobIdentify = 3
-				AND mc.Environment = @Environment
+		EXISTS (SELECT 1 FROM @DepositSite ds WHERE ms.SiteName = ds.SiteName)
+		AND (
+			m.IsNew = 1
+			OR NOT EXISTS (
+				SELECT 1
+				FROM dbo.MsgChatBot mc WITH (NOLOCK)
+				WHERE mc.MessageId = mt.MessageId
+					AND mc.TargetId = mt.TargetId
+					AND mc.JobIdentify = 3
+					AND mc.Environment = @Environment
+			)
 		)
 	ORDER BY mt.MessageId
 

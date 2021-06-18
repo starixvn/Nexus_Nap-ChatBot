@@ -15,6 +15,7 @@ AS
 	Revisions:
 		- 20191127@Dominic: init
 		- 20201029@Percy: Add LastPostTime for rescan message [RedmineID: #144274]
+		- 20210618@Percy: Migrate DBMSG to new server [RedmineID: #157217]
 */
 
 BEGIN
@@ -34,6 +35,10 @@ BEGIN
 	FROM @xml.nodes('//root/r') AS RECORDS(r)
 	WHERE LEN(ISNULL(r.value('.', 'NVARCHAR(15)'), '')) > 0
 
+	DECLARE @DepositSuper TABLE (CustId INT, site VARCHAR(50))
+	INSERT INTO @DepositSuper (CustId, site)
+	SELECT CustId, site FROM DBACC.bodb02.dbo.Dep_CustSuper WITH (NOLOCK) WHERE site IN ('spondemo' ,'Athena000') OR Currency NOT IN (20, 27, 28)
+
 	DECLARE @Msg TABLE (MessageId INT, MsgContentsType TINYINT, Content_en NVARCHAR(4000), Content_cs NVARCHAR(4000), PostTime DATETIME, IsNew TINYINT)
 	
 	-- New messages from @MessageID
@@ -41,7 +46,7 @@ BEGIN
 	SELECT TOP (@BatchSize) m.MessageId, m.MsgContentsType, m.Content_en, m.Content_cs, m.PostTime, 1
 	FROM dbo.Msg m WITH (NOLOCK)
 		INNER JOIN dbo.MsgTarget mt WITH (NOLOCK) ON m.MessageId = mt.MessageId
-		INNER JOIN bodb02.dbo.Dep_CustSuper ds WITH (NOLOCK) ON mt.TargetId = ds.CustId
+		INNER JOIN @DepositSuper ds ON mt.TargetId = ds.CustId
 	WHERE m.MessageId > @MessageID
 		AND m.msgtype = 1	
 		AND EXISTS (SELECT 1 FROM #MsgContentsTypeLst mct WHERE m.MsgContentsType = mct.MsgContentsType)
@@ -49,9 +54,6 @@ BEGIN
 		AND mt.isDeleted = 0
 		AND m.Content_en LIKE '%@@%'
 		AND mt.BetTransId IS NOT NULL
-		AND (ds.site IN ('spondemo' ,'Athena000')
-					OR ds.currency NOT IN (20, 27, 28)
-				)
 	GROUP BY m.MessageId, m.MsgContentsType, m.Content_en, m.Content_cs, m.PostTime
 	ORDER BY m.MessageId
 	OPTION (RECOMPILE)
@@ -61,7 +63,7 @@ BEGIN
 	SELECT m.MessageId, m.MsgContentsType, m.Content_en, m.Content_cs, m.PostTime, 0
 	FROM dbo.Msg m WITH (NOLOCK)
 		INNER JOIN dbo.MsgTarget mt WITH (NOLOCK) ON m.MessageId = mt.MessageId
-		INNER JOIN bodb02.dbo.Dep_CustSuper ds WITH (NOLOCK) ON mt.TargetId = ds.CustId
+		INNER JOIN @DepositSuper ds ON mt.TargetId = ds.CustId
 	WHERE m.PostTime >= @LastPostTime
 		AND m.msgtype = 1	
 		AND EXISTS (SELECT 1 FROM #MsgContentsTypeLst mct WHERE m.MsgContentsType = mct.MsgContentsType)
@@ -69,9 +71,6 @@ BEGIN
 		AND mt.isDeleted = 0
 		AND m.Content_en LIKE '%@@%'
 		AND mt.BetTransId IS NOT NULL
-		AND (ds.site IN ('spondemo' ,'Athena000')
-					OR ds.currency NOT IN (20, 27, 28)
-				)
 		AND NOT EXISTS (SELECT 1 FROM dbo.MsgChatBot mc WITH (NOLOCK)
 						WHERE mc.MessageId = mt.MessageId AND mc.TargetId = mt.TargetId
 							AND mc.JobIdentify = 1 AND mc.Environment = @Environment
@@ -96,7 +95,7 @@ BEGIN
 	SELECT mt.MessageId, mt.TargetId, ds.site
 	FROM dbo.MsgTarget mt WITH (NOLOCK)
 		INNER JOIN @Msg m ON mt.MessageId = m.MessageId
-		INNER JOIN bodb02.dbo.Dep_CustSuper ds (NOLOCK) ON mt.TargetId = ds.CustId
+		INNER JOIN @DepositSuper ds ON mt.TargetId = ds.CustId
 	WHERE
 		m.IsNew = 1
 		OR NOT EXISTS (
