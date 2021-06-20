@@ -1,5 +1,7 @@
 DROP PROCEDURE IF EXISTS NCB_NotificationTemplateList_Sel;
+
 DELIMITER //
+
 
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationTemplateList_Sel`(
 	IN notificationTypeID INT
@@ -113,8 +115,9 @@ BEGIN
 						AND tmppjt.NotificationTypeID = nt.NotificationTypeID
 	WHERE notificationTypeID IS NULL OR t.NotificationTypeID = notificationTypeID
     ORDER BY t.NotificationTypeName, nt.NotificationTemplateName
-    LIMIT rowStart, pageSize;
+    LIMIT rowStart, pageSize; 
 END;
+
 
 //
 DELIMITER ;

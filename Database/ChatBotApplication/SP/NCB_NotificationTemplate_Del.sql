@@ -133,6 +133,7 @@ NCB_NotificationTemplate_Del:BEGIN
 	);
 END;
 
+
 //
 DELIMITER ;
 

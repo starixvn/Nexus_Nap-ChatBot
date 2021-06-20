@@ -14,6 +14,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_JobInfo_U
 
         Revisions:
             - 20200422@Merlin: Update job info - RedmineID: #132039
+			- 20210513@Malcolm: Integrate Telegram [RedmineID: #151807]
     */
 )
 SQL SECURITY DEFINER

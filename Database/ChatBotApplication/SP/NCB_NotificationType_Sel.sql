@@ -16,58 +16,65 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_NotificationType_Sel(
             	- 20190215@Oliver: unremovable abnormalbes settings - Redmine: #128430
 				- 20200323@Oliver: Integrate Site Message -- Redmine ID: #129979
 				- 20210423@Malcolm: Integrate abnormal account -- Redmine ID: #152175
-                - 20210513@Malcolm: Integrate Telegram - RedmineID: #151807
     */
 	)
 SQL SECURITY DEFINER
 BEGIN
 	DECLARE rowStart	INT;
-    DECLARE iLoop   	INT;
-    DECLARE jLoop		INT;
-	DECLARE jsonSetting JSON;
-    
+	DECLARE Jsetting   JSON;
+
+    DECLARE indexLoop   INT;
 	DECLARE _ID 			INT;
     SET rowStart =	pageSize * (pageIndex - 1);  
     
     SET totalItems = (SELECT COUNT(1) FROM NotificationType nt);
 	
-    DROP TEMPORARY TABLE IF EXISTS tmpSetting;
-    CREATE TEMPORARY TABLE tmpSetting (Id INT AUTO_INCREMENT NOT NULL, SettingId INT UNSIGNED NOT NULL, PRIMARY KEY (Id));
-    INSERT INTO tmpSetting (SettingId)
-    VALUES (4), (9), (14);
+	DROP TEMPORARY TABLE IF EXISTS tmpNotificationTypeTable;
+	CREATE TEMPORARY TABLE IF NOT EXISTS tmpNotificationTypeTable (ID INT NOT NULL AUTO_INCREMENT, JsonSetting JSON, PRIMARY KEY(ID));
+	
+	INSERT INTO tmpNotificationTypeTable (JsonSetting)
 	SELECT Value
 	FROM SystemSetting WHERE ID IN (4, 9, 14);
 
     DROP TEMPORARY TABLE IF EXISTS tmpParseJsonTable;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmpParseJsonTable(NotificationTypeID INT);
 
-	SET jLoop = 1;
-    WHILE (SELECT 1 FROM tmpSetting WHERE Id = jLoop) DO
-		 SELECT s.Value INTO jsonSetting
-         FROM SystemSetting s 
-			INNER JOIN tmpSetting t ON t.SettingId = s.Id
-		WHERE t.Id = JLoop;
-        
-		SET iLoop = 0;
-		WHILE (JSON_EXTRACT(jsonSetting, CONCAT('$[',iLoop, '].NotificationTypeID'))) DO 
+	#Get Settings
+	SET _ID = 1;
+	
+	WHILE (EXISTS(SELECT 1 FROM tmpNotificationTypeTable WHERE ID =  _ID)) DO
+		SELECT JsonSetting INTO Jsetting FROM  tmpNotificationTypeTable WHERE ID = _ID;	
+		SET indexLoop = 0;	
+		WHILE (JSON_EXTRACT(Jsetting, CONCAT('$[',indexLoop, '].NotificationTypeID'))) DO 
 			INSERT INTO tmpParseJsonTable(NotificationTypeID)
-			VALUES (NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonSetting, CONCAT('$[', iLoop, '].NotificationTypeID'))), 'null'));
+			VALUES (
+				CASE
+					WHEN JSON_UNQUOTE(JSON_EXTRACT(Jsetting, CONCAT('$[', indexLoop, '].NotificationTypeID'))) = 'null'
+					THEN NULL
+					ELSE JSON_UNQUOTE(JSON_EXTRACT(Jsetting, CONCAT('$[', indexLoop, '].NotificationTypeID')))
+				END
+			);
 			
-			SET iLoop := iLoop + 1;
+			SET indexLoop := indexLoop + 1;
 		END WHILE;
-        
-        SET jLoop := jLoop + 1;
+		
+		SET _ID := _ID + 1;
 	END WHILE;
-
+    
     SELECT
 		nt.NotificationTypeID AS Id, 
 		nt.NotificationTypeName AS Name, 
 		s.SystemID AS SystemId,
 		s.SystemName AS SystemName,
-        CASE WHEN (tmppjt.NotificationTypeID IS NOT NULL) THEN 1 ELSE 0 END AS UnRemovable
+        CASE
+			WHEN (
+				tmppjt.NotificationTypeID IS NOT NULL
+            ) THEN 1
+			ELSE 0
+		END AS UnRemovable
 	FROM NotificationType nt
-		INNER JOIN `System` s ON nt.SystemID = s.SystemId
-		LEFT JOIN (SELECT DISTINCT NotificationTypeID FROM tmpParseJsonTable) tmppjt ON nt.NotificationTypeID = tmppjt.NotificationTypeID
+	INNER JOIN `System` s ON nt.SystemID = s.SystemId
+	LEFT JOIN (SELECT DISTINCT NotificationTypeID FROM tmpParseJsonTable) tmppjt ON nt.NotificationTypeID = tmppjt.NotificationTypeID
     ORDER BY nt.NotificationTypeID
 	LIMIT rowStart, pageSize;
     
@@ -76,14 +83,14 @@ BEGIN
 		rt.RecipientTypeName AS Name,
 		nrt.NotificationTypeID AS NotificationTypeId
     FROM NotificationRecipientType nrt 
-		INNER JOIN RecipientType rt ON nrt.RecipientTypeID = rt.RecipientTypeId;
+    INNER JOIN RecipientType rt ON nrt.RecipientTypeID = rt.RecipientTypeId;
 	
 	SELECT 
 		cgt.ChatGroupTypeID AS Id,
 		cgt.ChatGroupTypeName AS Name,
 		nct.NotificationTypeID AS NotificationTypeId
 	FROM NotificationChatGroupType nct
-		INNER JOIN ChatGroupType cgt ON cgt.ChatGroupTypeID = nct.ChatGroupTypeID;
+	INNER JOIN ChatGroupType cgt ON cgt.ChatGroupTypeID = nct.ChatGroupTypeID;
 END;
 
 //

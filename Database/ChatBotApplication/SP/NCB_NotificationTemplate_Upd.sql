@@ -191,7 +191,8 @@ NCB_NotificationTemplate_Upd:BEGIN
 		,logContent 
 		,startTime 
 		,duration
-	);
+	);	
+END;
 
 //
 DELIMITER ;
