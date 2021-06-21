@@ -68,7 +68,7 @@
             if (commandResult.IsSuccessful)
             {
                 var msgHistories = msgDetails.Select(x => new MessageHistory { MessageID = x.MessageID, TargetID = x.TargetID }).ToList();
-                await InsertToMessageChatbot(msgHistories, VoidTicketForLicenseeJobIdentity);
+                await InsertToMessageChatbotAsync(msgHistories, VoidTicketForLicenseeJobIdentity);
             }
         }
 
@@ -158,28 +158,27 @@
 
         public async Task PullVoidingMessageInternalDepartment()
         {
-            var systemSettings = await GetAbnormalBetSystemSettings();
+            var systemSettings = await GetAbnormalBetSystemSettingAsync();
 
             if (systemSettings != null)
             {
-                var listMsgYesterdayToCurrent = await GetMessageListFromYesterdayToCurrent();
-
-                if (listMsgYesterdayToCurrent.Any())
+                var messageHistories = await GetMessageHistoryAsync();
+                if (messageHistories.Any())
                 {
-                    await GetMessageAndImportToChatbot(listMsgYesterdayToCurrent, systemSettings);
+                    await GetMessageAndImportToChatbot(messageHistories, systemSettings);
                 }
             }
         }
 
         private async Task GetMessageAndImportToChatbot(List<MessageHistory> listMsgYesterdayToCurrent, SystemSetting settings)
         {
-            var messages = await GetAbnormalBetsMessages(settings, listMsgYesterdayToCurrent);
+            var messages = await GetAbnormalBetsMessageAsync(settings, listMsgYesterdayToCurrent);
 
             if (messages.Any())
             {
                 var listMsg = messages.Select(m => new MessageHistory { MessageID = m.MessageID, RequestID = m.RequestID }).ToList();
 
-                var voidingHistories = await GetVoidingHistory(listMsg);
+                var voidingHistories = await GetVoidingHistoryAsync(listMsg);
 
                 if (voidingHistories.Item1.Any(m => m.Type == AbnormalAccountType))
                 {
@@ -195,15 +194,13 @@
             }
         }
 
-        private async Task<IEnumerable<VoidingHistoryUsername>> GetAbnormalAccountUpdatedUsernames(IEnumerable<AbnormalMessageHistory> messages)
+        protected internal virtual async Task<IEnumerable<VoidingHistoryUsername>> GetAbnormalAccountUpdatedUsernameAsync(IEnumerable<AbnormalMessageHistory> messages)
         {
             var criteria = new GetAbnormalAccountUsernameLstCriteria
             {
                 MessageIDLst = XmlHelper<AbnormalMessageHistory>.Serialize(messages.ToList())
             };
-
-            var result = await baseService.GetDataAsync<VoidingHistoryUsername>(criteria);
-            return result;
+            return await baseService.GetDataAsync<VoidingHistoryUsername>(criteria);
         }
 
         private static void UpdateAbnormalAccountUpdatedUsernames(IEnumerable<AbnormalMessage> origMessages, IEnumerable<VoidingHistoryUsername> updatedUsernames)
@@ -223,33 +220,34 @@
             }
         }
 
-        private async Task<List<MessageHistory>> GetMessageListFromYesterdayToCurrent()
+        protected internal virtual async Task<List<MessageHistory>> GetMessageHistoryAsync()
         {
-            var result = await baseService.GetDataAsync<MessageHistory>(new GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria());
+            var criteria = new GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria();
+            var result = await baseService.GetDataAsync<MessageHistory>(criteria);
             return result.ToList();
         }
 
         private static void MappingAbnormalBetsData(IEnumerable<Message> messages, IEnumerable<AbnormalMessage> voidingHistories)
         {
-            if (voidingHistories.Any())
+            foreach (var msg in voidingHistories)
             {
-                foreach (var msg in voidingHistories)
-                {
-                    msg.Content_en = messages.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_en.Trim().Replace("@@", string.Empty);
-                    msg.Content_cs = messages.FirstOrDefault(m => m.MessageID == msg.MessageID)?.Content_cs.Trim().Replace("@@", string.Empty);
-                    msg.MsgContentsType = messages.FirstOrDefault(m => m.MessageID == msg.MessageID) != null ? messages.FirstOrDefault(m => m.MessageID == msg.MessageID).MsgContentsType : 0;
-                }
+                var message = messages.FirstOrDefault(m => m.MessageID == msg.MessageID);
+
+                msg.Content_en = message?.Content_en.Trim().Replace("@@", string.Empty);
+                msg.Content_cs = message?.Content_cs.Trim().Replace("@@", string.Empty);
+                msg.MsgContentsType = message != null ? message.MsgContentsType : 0;
             }
         }
 
-        private async Task<SystemSetting> GetAbnormalBetSystemSettings()
+        protected internal virtual async Task<SystemSetting> GetAbnormalBetSystemSettingAsync()
         {
             var criteria = new GetAbnormalBetSystemSettingCriteria();
-
             return await baseService.GetDataEntityAsync<SystemSetting>(criteria);
         }
 
-        private async Task<IEnumerable<Message>> GetAbnormalBetsMessages(SystemSetting setting, List<MessageHistory> listMsgs)
+        protected internal virtual async Task<IEnumerable<Message>> GetAbnormalBetsMessageAsync(
+            SystemSetting setting,
+            List<MessageHistory> listMsgs)
         {
             var criteria = new GetAbnormalBetsMessageCriteria
             {
@@ -262,7 +260,7 @@
             return await baseService.GetDataAsync<Message>(criteria);
         }
 
-        private async Task<(IEnumerable<AbnormalMessage>, IEnumerable<AbnormalMessageHistory>)> GetVoidingHistory(List<MessageHistory> messages)
+        protected internal virtual async Task<(IEnumerable<AbnormalMessage>, IEnumerable<AbnormalMessageHistory>)> GetVoidingHistoryAsync(List<MessageHistory> messages)
         {
             string messageIdLst = XmlHelper<MessageHistory>.Serialize(messages);
 
@@ -279,8 +277,10 @@
             return (new List<AbnormalMessage>(), new List<AbnormalMessageHistory>());
         }
 
-        private async Task ImportAbnormalBetNotificationToChatbotDB(IEnumerable<AbnormalMessage> messages,
-            IEnumerable<MessageHistory> msgHistories, int maxMessageId)
+        private async Task ImportAbnormalBetNotificationToChatbotDB(
+            IEnumerable<AbnormalMessage> messages,
+            IEnumerable<MessageHistory> msgHistories,
+            int maxMessageId)
         {
             if (messages.Any())
             {
@@ -301,14 +301,14 @@
 
                 if (command.IsSuccessful)
                 {
-                    await InsertToMessageChatbot(msgHistories, VoidAbnormalbetsJobIdentity);
+                    await InsertToMessageChatbotAsync(msgHistories, VoidAbnormalbetsJobIdentity);
                 }
 
                 await OnAfterImportData(command, notification);
             }
         }
 
-        private async Task InsertToMessageChatbot(IEnumerable<MessageHistory> messages, int jobIdentity)
+        protected internal virtual async Task InsertToMessageChatbotAsync(IEnumerable<MessageHistory> messages, int jobIdentity)
         {
             var command = new InsertMessageHistoryCommand
             {
