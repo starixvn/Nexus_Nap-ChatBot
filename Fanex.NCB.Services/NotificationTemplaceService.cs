@@ -37,7 +37,7 @@
                 NotificationTypeId = model.NotificationTypeId,
                 NotificationTemplateName = model.NotificationTemplateName,
                 Title = model.Title,
-                ContentLst = model.Content,
+                Content = model.Content,
                 CreatorId = model.CreatorId
             };
             return await baseService.ExecuteNonQueryAsync(command);
@@ -51,7 +51,7 @@
                 NotificationTypeId = model.NotificationTypeId,
                 NotificationTemplateName = model.NotificationTemplateName,
                 Title = model.Title,
-                ContentLst = model.Content,
+                Content = model.Content,
                 ModifierId = model.ModifierId
             };
             return await baseService.ExecuteNonQueryAsync(command);

@@ -60,7 +60,7 @@
             Assert.Equal(model.NotificationTypeId, command.NotificationTypeId);
             Assert.Equal(model.NotificationTemplateName, command.NotificationTemplateName);
             Assert.Equal(model.Title, command.Title);
-            Assert.Equal(model.Content, command.ContentLst);
+            Assert.Equal(model.Content, command.Content);
             Assert.Equal(model.CreatorId, command.CreatorId);
         }
 
@@ -82,7 +82,7 @@
             Assert.Equal(model.NotificationTypeId, command.NotificationTypeId);
             Assert.Equal(model.NotificationTemplateName, command.NotificationTemplateName);
             Assert.Equal(model.Title, command.Title);
-            Assert.Equal(model.Content, command.ContentLst);
+            Assert.Equal(model.Content, command.Content);
             Assert.Equal(model.ModifierId, command.ModifierId);
         }
 
