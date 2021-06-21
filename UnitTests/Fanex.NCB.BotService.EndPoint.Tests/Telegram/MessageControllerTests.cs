@@ -1,11 +1,10 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Tests.Telegram
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.Logging;
-    using Fanex.Logging.Extensions;
-    using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Services;
@@ -96,6 +95,89 @@
         }
 
         #endregion SendMessage
+
+        #region SendMultiMessage
+
+        [Fact]
+        public async Task SendMultiMessage_DisableTelgram_ReturnAsExpectedResult()
+        {
+            // Arrange
+            var notificationMessages = new List<NotificationMessage>
+            {
+                new NotificationMessage
+                {
+                    NotificationId = 1,
+                    Message = "message",
+                    Recipients = new List<ConversationInfo>
+                    {
+                        new ConversationInfo { BotConversationId = "1", ConversationId = "1" },
+                        new ConversationInfo { BotConversationId = "2", ConversationId = "2" }
+                    }
+                }
+            };
+            var controller = GetController("1");
+            conversationService.GetDistinctNotificationConversation(notificationMessages).Returns(notificationMessages);
+
+            // Act
+            var result = await controller.SendMultiMessage(notificationMessages);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var sendMessageResults = Assert.IsType<List<SendMessageResult>>(okResult.Value);
+
+            Assert.Equal(2, sendMessageResults.Count);
+            Assert.Collection(sendMessageResults,
+                item => {
+                    Assert.Equal(1, item.NotificationId);
+                    Assert.Equal("1", item.ConversationId);
+                    Assert.Equal(1, item.ErrorCode);
+                    Assert.Equal("Chatbot service has been stopped due to turning off the configuration by admin.", item.ErrorMessage);
+                    Assert.True(item.IsIgnoreRetry);
+                },
+                item => {
+                    Assert.Equal(1, item.NotificationId);
+                    Assert.Equal("2", item.ConversationId);
+                    Assert.Equal(1, item.ErrorCode);
+                    Assert.Equal("Chatbot service has been stopped due to turning off the configuration by admin.", item.ErrorMessage);
+                    Assert.True(item.IsIgnoreRetry);
+                });
+        }
+
+        [Fact]
+        public async Task SendMultiMessage_EnableTelgram_ReturnAsExpectedResult()
+        {
+            // Arrange
+            var notificationMessages = new List<NotificationMessage>
+            {
+                new NotificationMessage
+                {
+                    NotificationId = 1,
+                    Message = "message",
+                    Recipients = new List<ConversationInfo>
+                    {
+                        new ConversationInfo { BotConversationId = "1", ConversationId = "1" },
+                        new ConversationInfo { BotConversationId = "2", ConversationId = "2" }
+                    }
+                }
+            };
+            var sendMessageResult = fixture.Create<SendMessageResult>();
+            var controller = GetController();
+            conversationService.GetDistinctNotificationConversation(notificationMessages).Returns(notificationMessages);
+            controller.Protected("SendMessageAsync", Arg.Any<ConversationInfo>(), Arg.Any<int>(), Arg.Any<string>())
+                .Returns(Task.FromResult(sendMessageResult));
+
+            // Act
+            var result = await controller.SendMultiMessage(notificationMessages);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var sendMessageResults = Assert.IsType<List<SendMessageResult>>(okResult.Value);
+
+            Assert.Equal(2, sendMessageResults.Count);
+            Assert.All(sendMessageResults, item => Assert.Equal(sendMessageResult, item));
+        }
+
+        #endregion SendMultiMessage
 
         #region SendMessageAsync
 
@@ -272,24 +354,24 @@
 
         #endregion AddMessageLogToDatabaseAsync
 
-        [Fact]
-        public async Task WriteLogAsync_WhenCalled_CallCorrectlyMethod()
-        {
-            // Arrange
-            var exception = fixture.Create<Exception>();
-            var logMessage = new LogMessage(exception.Message)
-                        .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
-                        .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
-                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
-                        .ToString();
-            var controller = GetController();
+        ////[Fact]
+        ////public async Task WriteLogAsync_WhenCalled_CallCorrectlyMethod()
+        ////{
+        ////    // Arrange
+        ////    var exception = fixture.Create<Exception>();
+        ////    var logMessage = new LogMessage(exception.Message)
+        ////                .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
+        ////                .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
+        ////                .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
+        ////                .ToString();
+        ////    var controller = GetController();
 
-            // Act
-            await controller.Public_WriteLogAsync(exception);
+        ////    // Act
+        ////    await controller.Public_WriteLogAsync(exception);
 
-            // Assert
-            await logger.Received().ErrorAsync(logMessage);
-        }
+        ////    // Assert
+        ////    await logger.Received().ErrorAsync(logMessage);
+        ////}
 
         #region Helpers
 
