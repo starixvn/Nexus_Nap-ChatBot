@@ -48,6 +48,8 @@ bower_components
 /Fanex.NCB.Main/ClientApp/coverage/*
 
 /results.xml
-/UnitTestCoverage*
 
 /Fanex.NCB.BotService.EndPoint/healthchecksdb
+
+CoverageReports/
+*.opencover.xml
