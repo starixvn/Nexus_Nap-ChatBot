@@ -1,0 +1,32 @@
+﻿namespace Fanex.NCB.Services.Tests.TestableClasses
+{
+    using System.Net.Http;
+    using System.Threading.Tasks;
+    using Fanex.NCB.Core.Models;
+    using Fanex.NCB.Models;
+    using Fanex.NCB.Shared.Models;
+    using Microsoft.Extensions.Options;
+
+    public class ChatbotServiceTestable : ChatbotService
+    {
+        public ChatbotServiceTestable(
+               IHttpClientFactory httpClientFactory,
+               IOptions<BotSettings> botSettings,
+               IOptions<MonitorChatbot> monitorChatbot,
+               IOptions<NotifyChatGroupOption> notifyChatGroupOptions,
+               IOptions<MonitorTelegramBot> monitorTelegramBot)
+            : base(httpClientFactory, botSettings, monitorChatbot, notifyChatGroupOptions, monitorTelegramBot)
+        {
+        }
+
+        public async Task<HttpResponseMessage> Public_SendSingleMessageAsync(byte channelId, ConversationInfo conversationInfo)
+        {
+            return await base.SendSingleMessageAsync(channelId, conversationInfo);
+        }
+
+        public async Task<ChatbotToken> Public_GetTokenAsync()
+        {
+            return await base.GetTokenAsync();
+        }
+    }
+}

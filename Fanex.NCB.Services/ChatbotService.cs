@@ -68,23 +68,6 @@
             return messageResponse;
         }
 
-        private async Task<ChatbotToken> GetTokenAsync()
-        {
-            var url = new Uri($"{botSettings.BotDomain}{botSettings.AuthenticateUrl}");
-            var authData = new Dictionary<string, string>
-            {
-                { "username", botSettings.AppCredentialId },
-                { "password", botSettings.AppCredentialPassword }
-            };
-
-            var httpClient = httpClientFactory.CreateClient();
-            using var authDataContent = new FormUrlEncodedContent(authData);
-            using var response = await httpClient.PostAsync(url, authDataContent);
-            var responseData = await response.Content.ReadAsStringAsync();
-            var token = JsonConvert.DeserializeObject<ChatbotToken>(responseData);
-            return token;
-        }
-
         public async Task MonitorChatbotAsync()
         {
             var conversationInfo = new ConversationInfo
@@ -110,22 +93,9 @@
             await SendSingleMessageAsync((byte)ConversationChannel.Telegram, conversationInfo);
         }
 
-        private async Task<HttpResponseMessage> SendSingleMessageAsync(byte channelId, ConversationInfo conversationInfo)
-        {
-            BotServiceEndPointConfigs apiConfigs = botSettings.ApiConfigs.First(x => x.ChannelId == channelId);
-            var token = await GetTokenAsync();
-
-            var httpClient = httpClientFactory.CreateClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
-
-            var url = new Uri($"{botSettings.BotDomain}{apiConfigs.SendMessageUrl}");
-            using var response = await httpClient.PostAsJsonAsync(url, conversationInfo);
-            return response;
-        }
-
         public async Task NotifyToChatGroupAsync(string message)
         {
-            var notificationModel = new List<NotificationMessage>
+            var notifications = new List<NotificationMessage>
                 {
                     new NotificationMessage {
                         NotificationId = -1,
@@ -144,7 +114,7 @@
                     }
                 };
 
-            await SendMultiMessageAsync((byte)ConversationChannel.Skype, notificationModel);
+            await SendMultiMessageAsync((byte)ConversationChannel.Skype, notifications);
         }
 
         public IEnumerable<NotificationMessage> GenerateNotifificationMessageAsync(
@@ -178,6 +148,36 @@
             }
 
             return messages;
+        }
+
+        protected internal virtual async Task<HttpResponseMessage> SendSingleMessageAsync(byte channelId, ConversationInfo conversationInfo)
+        {
+            BotServiceEndPointConfigs apiConfigs = botSettings.ApiConfigs.First(x => x.ChannelId == channelId);
+            var token = await GetTokenAsync();
+
+            var httpClient = httpClientFactory.CreateClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+
+            var url = new Uri($"{botSettings.BotDomain}{apiConfigs.SendMessageUrl}");
+            using var response = await httpClient.PostAsJsonAsync(url, conversationInfo);
+            return response;
+        }
+
+        protected internal virtual async Task<ChatbotToken> GetTokenAsync()
+        {
+            var url = new Uri($"{botSettings.BotDomain}{botSettings.AuthenticateUrl}");
+            var authData = new Dictionary<string, string>
+            {
+                { "username", botSettings.AppCredentialId },
+                { "password", botSettings.AppCredentialPassword }
+            };
+
+            var httpClient = httpClientFactory.CreateClient();
+            using var authDataContent = new FormUrlEncodedContent(authData);
+            using var response = await httpClient.PostAsync(url, authDataContent);
+            var responseData = await response.Content.ReadAsStringAsync();
+            var token = JsonConvert.DeserializeObject<ChatbotToken>(responseData);
+            return token;
         }
     }
 }

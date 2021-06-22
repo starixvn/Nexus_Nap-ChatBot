@@ -9,6 +9,6 @@
 
         public HttpStatusCode StatusCode { get; set; }
 
-        public IEnumerable<SendMessageResult> NotificationMessageResult { get; set; }
+        public IEnumerable<SendMessageResult> NotificationMessageResult { get; set; } = new List<SendMessageResult>();
     }
 }

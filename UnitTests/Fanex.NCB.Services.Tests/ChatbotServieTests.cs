@@ -2,10 +2,15 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Net.Http;
+    using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.Core.Models;
+    using Fanex.NCB.Models;
     using Fanex.NCB.Models.NotifictaionSendMessage;
+    using Fanex.NCB.Services.Tests.Helper;
+    using Fanex.NCB.Services.Tests.TestableClasses;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
@@ -14,59 +19,95 @@
 
     public class ChatbotServieTests
     {
+        private readonly IFixture fixture = new Fixture();
         private IHttpClientFactory httpClientFactory;
-        private IOptionsSnapshot<BotSettings> botSettings;
-        private IOptionsSnapshot<MonitorChatbot> monitor;
-        private IOptionsSnapshot<NotifyChatGroupOption> notifyChatGroupOptions;
+        private BotSettings botSettings;
+        private MonitorChatbot monitorChatBot;
+        private NotifyChatGroupOption notifyChatGroupOptions;
+        private MonitorTelegramBot monitorTelegramBot;
+
+        #region SendMultiMessageAsync
+
+        [Fact]
+        public async Task SendMultiMessageAsync_MessageIsNullOrEmpty_ReturnAsExpectedResult()
+        {
+            // Arrange
+            byte channelId = 1;
+            var messages = new List<NotificationMessage>();
+            var service = GetService();
+
+            // Act
+            var result = await service.SendMultiMessageAsync(channelId, messages);
+
+            // Assert
+            Assert.False(result.IsSuccessStatusCode);
+            Assert.Equal((HttpStatusCode)0, result.StatusCode);
+            Assert.Empty(result.NotificationMessageResult);
+        }
 
         ////[Fact]
-        ////public async Task SendMessageToMultitpleAsync_WhenCalled_ExecutePostTaskAsync()
+        ////public async Task SendMultiMessageAsync_RequestIsUnsuccessful_ReturnAsExpectedResult()
         ////{
-        ////    var fixture = new Fixture();
-        ////    var messages = new List<NotificationMessage>();
-
-        ////    var service = GetService();
-
+        ////    // Arrange
+        ////    byte channelId = 1;
+        ////    var messages = fixture.Create<IEnumerable<NotificationMessage>>();
         ////    var token = fixture.Create<ChatbotToken>();
-        ////    var msgs = new Dictionary<string, HttpResponseMessage>
+        ////    var httpMessageHandler = new MockHttpMessageHandler(new HttpResponseMessage()
         ////    {
-        ////        { botSettings.Value.AuthenticateUrl, new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(JsonConvert.SerializeObject(token))} },
-        ////        { botSettings.Value.BotServiceUrl, new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(JsonConvert.SerializeObject(messages))} }
-        ////    };
-        ////    var httpClient = new HttpClient(new MockHttpMessageHandler(msgs));
+        ////        StatusCode = HttpStatusCode.NotFound
+        ////    });
+        ////    var httpClient = new HttpClient(httpMessageHandler);
+        ////    var service = GetService();
         ////    httpClientFactory.CreateClient().Returns(httpClient);
-        ////    var result = await service.SendMessageToMultitpleAsync(messages);
+        ////    service.Protected("GetTokenAsync").Returns(Task.FromResult(token));
 
-        ////    Assert.Equal(JsonConvert.SerializeObject(result.NotificationMessageResult), JsonConvert.SerializeObject(messages));
+        ////    // Act
+        ////    var result = await service.SendMultiMessageAsync(channelId, messages);
+
+        ////    // Assert
+        ////    Assert.False(result.IsSuccessStatusCode);
+        ////    Assert.Equal((HttpStatusCode)0, result.StatusCode);
+        ////    Assert.Empty(result.NotificationMessageResult);
         ////}
 
-        ////[Fact]
-        ////public async Task NotifySponDemoChatGroup_WhenCalled_WebClientExecuted()
-        ////{
-        ////    var service = SetupHttpClientFactory();
-        ////    await service.NotifyToChatGroup("Test");
-        ////    httpClientFactory.Received(2).CreateClient();
-        ////}
+        [Fact]
+        public async Task SendMultiMessageAsync_RequestIsSuccessful_ReturnAsExpectedResult()
+        {
+            // Arrange
+            byte channelId = 1;
+            var messages = fixture.Create<IEnumerable<NotificationMessage>>();
+            var sendMessageResults = fixture.Create<List<SendMessageResult>>();
+            var token = fixture.Create<ChatbotToken>();
+            var httpMessageHandler = new MockHttpMessageHandler(new HttpResponseMessage()
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(sendMessageResults))
+            });
+            var httpClient = new HttpClient(httpMessageHandler);
+            var service = GetService();
+            httpClientFactory.CreateClient().Returns(httpClient);
+            service.Protected("GetTokenAsync").Returns(Task.FromResult(token));
 
-        ////[Fact]
-        ////public async Task MonitorChatbot_WhenCalled_DoExpectedActions()
-        ////{
-        ////    var service = SetupHttpClientFactory();
-        ////    await service.MonitorChatbot();
+            // Act
+            var result = await service.SendMultiMessageAsync(channelId, messages);
 
-        ////    httpClientFactory.Received(2);
-        ////}
+            // Assert
+            Assert.True(result.IsSuccessStatusCode);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(sendMessageResults.Count, result.NotificationMessageResult.Count());
+        }
+
+        #endregion SendMultiMessageAsync
 
         [Fact]
         public void GenerateNotifificationMessage_WhenCalled_ReturnMappedObject()
         {
-            var fixture = new Fixture();
-            IEnumerable<NotificationSendMessage> notifications = new List<NotificationSendMessage>
+            // Arrange
+            var notifications = new List<NotificationSendMessage>
             {
                 new NotificationSendMessage {  NotificationId = 10,  Content = fixture.Create<string>()}
             };
-
-            IEnumerable<NotificationRecipient> recipients = new List<NotificationRecipient>
+            var recipients = new List<NotificationRecipient>
             {
                 new NotificationRecipient
                 {
@@ -77,7 +118,6 @@
                     ChatGroupConversationId = fixture.Create<string>(),
                 }
             };
-
             var expected = new List<NotificationMessage>
             {
                 new NotificationMessage
@@ -97,33 +137,134 @@
                 }
             };
             var service = GetService();
+
+            // Act
             var actual = service.GenerateNotifificationMessageAsync(notifications, recipients);
 
+            // Assert
             Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(actual));
         }
 
-        ////private ChatbotService SetupHttpClientFactory()
+        [Fact]
+        public async Task MonitorChatbotAsync_WhenCalled_ExpectedCallCorrectMethod()
+        {
+            // Arrange
+            var service = GetService();
+
+            // Act
+            await service.MonitorChatbotAsync();
+
+            // Assert
+            service.Received().Protected("SendSingleMessageAsync", (byte)1,
+                Arg.Is<ConversationInfo>(x => x.BotName == "1on1"
+                    && x.BotConversationId == "ABC"
+                    && x.ChannelId == "ACV"
+                    && x.ConversationId == "Conversation"
+                    && x.ServiceUrl == "test.com"
+                    && x.Message == "message"));
+        }
+
+        ////[Fact]
+        ////public async Task MonitorTelegramBotAsync_WhenCalled_ExpectedCallCorrectMethod()
         ////{
-        ////    var fixture = new Fixture();
-        ////    var messages = new List<NotificationMessage>();
-
-        ////    var service = GetService();
-
+        ////    // Arrange
         ////    var token = fixture.Create<ChatbotToken>();
-        ////    var msgs = new Dictionary<string, HttpResponseMessage>
-        ////    {
-        ////        { botSettings.Value.AuthenticateUrl, new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(JsonConvert.SerializeObject(token))} },
-        ////        { botSettings.Value.BotServiceUrl, new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(JsonConvert.SerializeObject(messages))} }
-        ////    };
-        ////    var httpClient = new HttpClient(new MockHttpMessageHandler(msgs));
-        ////    httpClientFactory.CreateClient().Returns(httpClient);
+        ////    var service = GetService();
+        ////    service.Protected("GetTokenAsync").Returns(Task.FromResult(token));
 
-        ////    return service;
+        ////    // Act
+        ////    await service.MonitorTelegramBotAsync();
+
+        ////    // Assert
+        ////    service.Received().Protected("SendSingleMessageAsync", (byte)2,
+        ////        Arg.Is<ConversationInfo>(x => x.ConversationId == "1" && x.BotConversationId == "1" && x.Message == "message"));
         ////}
 
-        private ChatbotService GetService()
+        [Fact]
+        public async Task NotifyToChatGroupAsync_WhenCalled_ExpectedCallCorrectMethod()
         {
-            var sponGroupOptions = new NotifyChatGroupOption
+            // Arrange
+            var token = fixture.Create<ChatbotToken>();
+            var message = fixture.Create<string>();
+            var httpMessageHandler = new MockHttpMessageHandler(new HttpResponseMessage()
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(fixture.Create<IEnumerable<SendMessageResult>>()))
+            });
+            var httpClient = new HttpClient(httpMessageHandler);
+            var service = GetService();
+            httpClientFactory.CreateClient().Returns(httpClient);
+            service.Protected("GetTokenAsync").Returns(Task.FromResult(token));
+
+            // Act
+            await service.NotifyToChatGroupAsync(message);
+
+            // Assert
+            await service.Received().SendMultiMessageAsync((byte)1,
+                Arg.Is<IEnumerable<NotificationMessage>>(x =>
+                    x.Count() == 1
+                    && x.First().NotificationId == -1
+                    && x.First().Message == message
+                    && x.First().Recipients.Count() == 1
+                    && x.First().Recipients.First().ConversationId == notifyChatGroupOptions.ConversationId
+                    && x.First().Recipients.First().ChannelId == notifyChatGroupOptions.ChannelId
+                    && x.First().Recipients.First().ServiceUrl == notifyChatGroupOptions.ServiceUrl
+                    && x.First().Recipients.First().BotConversationId == notifyChatGroupOptions.BotConversationId
+                    && x.First().Recipients.First().BotName == notifyChatGroupOptions.BotName));
+        }
+
+        [Fact]
+        public async Task SendSingleMessageAsync_WhenCalled_ReturnAsExpectedResult()
+        {
+            // Arrange
+            byte channelId = 1;
+            var conversationInfo = fixture.Create<ConversationInfo>();
+            var httpResponse = new HttpResponseMessage()
+            {
+                StatusCode = HttpStatusCode.OK
+            };
+            var token = fixture.Create<ChatbotToken>();
+            var httpMessageHandler = new MockHttpMessageHandler(httpResponse);
+            var httpClient = new HttpClient(httpMessageHandler);
+            var service = GetService();
+            httpClientFactory.CreateClient().Returns(httpClient);
+            service.Protected("GetTokenAsync").Returns(Task.FromResult(token));
+
+            // Act
+            var result = await service.Public_SendSingleMessageAsync(channelId, conversationInfo);
+
+            // Assert
+            Assert.Equal(httpResponse, result);
+        }
+
+        [Fact]
+        public async Task GetTokenAsync_WhenCalled_ReturnAsExpectedResult()
+        {
+            // Arrange
+            var token = fixture.Create<ChatbotToken>();
+            var httpMessageHandler = new MockHttpMessageHandler(new HttpResponseMessage()
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(token))
+            });
+            var httpClient = new HttpClient(httpMessageHandler);
+            var service = GetService();
+            httpClientFactory.CreateClient().Returns(httpClient);
+
+            // Act
+            var result = await service.Public_GetTokenAsync();
+
+            // Assert
+            Assert.Equal(token.TokenType, result.TokenType);
+            Assert.Equal(token.ExpiresIn, result.ExpiresIn);
+            Assert.Equal(token.AccessToken, result.AccessToken);
+        }
+
+        #region Helpers
+
+        private ChatbotServiceTestable GetService()
+        {
+            notifyChatGroupOptions = new NotifyChatGroupOption
             {
                 BotName = "1on1",
                 BotConversationId = "ABC",
@@ -131,36 +272,53 @@
                 ConversationId = "Conversation",
                 ServiceUrl = "test.com"
             };
-            var monitorOptions = new MonitorChatbot
+            var sponGroupOptions = Substitute.For<IOptionsSnapshot<NotifyChatGroupOption>>();
+            sponGroupOptions.Value.Returns(notifyChatGroupOptions);
+
+            botSettings = new BotSettings
             {
-                BotName = "1on1",
-                BotConversationId = "ABC",
-                ChannelId = "ACV",
-                ConversationId = "Conversation",
-                ServiceUrl = "test.com"
-            };
-            var settings = new BotSettings
-            {
-                BotDomain = "test.com",
+                BotDomain = "https://test.com",
+                AuthenticateUrl = "/AuthenticateUrl",
                 ApiConfigs = new List<BotServiceEndPointConfigs>
                 {
-                    new  BotServiceEndPointConfigs {  ChannelId = 1, SendMessageUrl = "/abc", SendMultiMessageUrl = "cde"},
-                    new  BotServiceEndPointConfigs {  ChannelId = 2, SendMessageUrl = "/abc", SendMultiMessageUrl = "cde"}
+                    new  BotServiceEndPointConfigs {  ChannelId = 1, SendMessageUrl = "/abc", SendMultiMessageUrl = "/cde"},
+                    new  BotServiceEndPointConfigs {  ChannelId = 2, SendMessageUrl = "/abc", SendMultiMessageUrl = "/cde"}
                 }
             };
-            botSettings = Substitute.For<IOptionsSnapshot<BotSettings>>();
-            notifyChatGroupOptions = Substitute.For<IOptionsSnapshot<NotifyChatGroupOption>>();
-            monitor = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
-            monitor.Value.Returns(monitorOptions);
+            var botSettingOptions = Substitute.For<IOptionsSnapshot<BotSettings>>();
+            botSettingOptions.Value.Returns(botSettings);
+
+            monitorChatBot = new MonitorChatbot
+            {
+                BotName = "1on1",
+                BotConversationId = "ABC",
+                ChannelId = "ACV",
+                ConversationId = "Conversation",
+                ServiceUrl = "test.com",
+                Message = "message"
+            };
+            var monitorChatBotOptions = Substitute.For<IOptionsSnapshot<MonitorChatbot>>();
+            monitorChatBotOptions.Value.Returns(monitorChatBot);
+
+            monitorTelegramBot = new MonitorTelegramBot
+            {
+                BotId = 1,
+                ChatId = 1,
+                Message = "message"
+            };
+            var monitorTelegramBotOptions = Substitute.For<IOptionsSnapshot<MonitorTelegramBot>>();
+            monitorTelegramBotOptions.Value.Returns(monitorTelegramBot);
+
             httpClientFactory = Substitute.For<IHttpClientFactory>();
 
-            botSettings.Value.Returns(settings);
-            notifyChatGroupOptions.Value.Returns(sponGroupOptions);
-
-            var monitorTelegramBot = Substitute.For<IOptionsSnapshot<MonitorTelegramBot>>();
-            monitorTelegramBot.Value.Returns(new MonitorTelegramBot());
-
-            return new ChatbotService(httpClientFactory, botSettings, monitor, notifyChatGroupOptions, monitorTelegramBot);
+            return Substitute.For<ChatbotServiceTestable>(
+                httpClientFactory,
+                botSettingOptions,
+                monitorChatBotOptions,
+                sponGroupOptions,
+                monitorTelegramBotOptions);
         }
+
+        #endregion Helpers
     }
 }
