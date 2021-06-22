@@ -97,7 +97,7 @@
                 }
             };
             var service = GetService();
-            var actual = service.GenerateNotifificationMessage(notifications, recipients);
+            var actual = service.GenerateNotifificationMessageAsync(notifications, recipients);
 
             Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(actual));
         }

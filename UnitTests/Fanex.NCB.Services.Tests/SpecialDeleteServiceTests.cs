@@ -16,6 +16,7 @@
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Configuration;
+    using Newtonsoft.Json;
     using NSubstitute;
     using Xunit;
 
@@ -28,59 +29,66 @@
         private ILogService logService;
         private IConfiguration configuration;
 
-        ////[Fact]
-        ////public async Task PullVoidingMessageLicensee_WhenGetSettingIsNull_DoNothing()
-        ////{
-        ////    var service = GetService();
-
-        ////    baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns((SystemSetting)null);
-
-        ////    //Actual
-        ////    await service.PullVoidingMessageLicensee();
-
-        ////    //Expected
-        ////    await baseService.DidNotReceiveWithAnyArgs().FetchMultipleAsync<Message, MessageDetail>(Arg.Any<GetMessageFromSpecialDeleteCriteria>());
-        ////    await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
-
-        ////    //Assert
-        ////    await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
-        ////    await chatbotService.DidNotReceive().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
-        ////}
+        #region PullVoidingMessageLicenseeAsync
 
         [Fact]
-        public async Task PullVoidingMessageLicensee_NoTicketToImport_DoNothing()
+        public async Task PullVoidingMessageLicenseeAsync_SettingIsNull_DoNothing()
         {
+            // Arrange
+            SystemSetting setting = null;
             var service = GetService();
-            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns(
-                new SystemSetting { BatchSize = 100, MaxMessageID = 1989, MsgContentsTypeLst = "ABC" });
+            service.Protected("GetVoidingForLicenseeSystemSettingAsync").Returns(Task.FromResult(setting));
 
-            baseService.FetchMultipleAsync<Message, MessageDetail>(Arg.Any<GetMessageFromSpecialDeleteCriteria>()).Returns(
-              (new List<Message>(), new List<MessageDetail>()));
-            //Actual
-            await service.PullVoidingMessageLicensee();
+            // Act
+            await service.PullVoidingMessageLicenseeAsync();
 
-            //Expected
-            await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
+            // Assert
+            service.DidNotReceive().Protected("GetMessageFromVoidingForLicenseeAsync", Arg.Any<SystemSetting>());
         }
 
         [Fact]
-        public async Task PullVoidingMessageLicensee_HaveTicketToImport_ExecuteSpImportAndSendCarbonNotification()
+        public async Task PullVoidingMessageLicenseeAsync_NoTicketToImport_DoNothing()
         {
+            // Arrange
+            var setting = fixture.Create<SystemSetting>();
+            var messages = new List<Message>();
+            var messageDetails = new List<MessageDetail>();
+            var tuple = (messages, messageDetails);
             var service = GetService();
-            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns(
-                new SystemSetting { BatchSize = 100, MaxMessageID = 1989, MsgContentsTypeLst = "ABC" });
+            service.Protected("GetVoidingForLicenseeSystemSettingAsync").Returns(Task.FromResult(setting));
+            service.Protected("GetMessageFromVoidingForLicenseeAsync", setting).Returns(Task.FromResult<(IEnumerable<Message>, IEnumerable<MessageDetail>)>(tuple));
 
-            baseService.FetchMultipleAsync<Message, MessageDetail>(Arg.Any<GetMessageFromSpecialDeleteCriteria>()).Returns(
-              (fixture.Create<List<Message>>(), fixture.Create<List<MessageDetail>>()));
+            // Act
+            await service.PullVoidingMessageLicenseeAsync();
 
-            baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>()).Returns(FakeData());
-
-            //Actual
-            await service.PullVoidingMessageLicensee();
-
-            //Expected
-            await baseService.Received().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
+            // Assert
+            service.DidNotReceive().Protected("ImportMessageToChatbotDBAsync", messages, messageDetails);
         }
+
+        [Fact]
+        public async Task PullVoidingMessageLicensee_HaveTicketToImport_ExpectedCallCorrectMethod()
+        {
+            // Arrange
+            var setting = fixture.Create<SystemSetting>();
+            var messages = fixture.Create<IEnumerable<Message>>();
+            var messageDetails = fixture.Create<IEnumerable<MessageDetail>>();
+            var command = fixture.Create<CommandResult>();
+            var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
+            var service = GetService();
+            service.Protected("GetVoidingForLicenseeSystemSettingAsync").Returns(Task.FromResult(setting));
+            service.Protected("GetMessageFromVoidingForLicenseeAsync", setting).Returns(Task.FromResult<(IEnumerable<Message>, IEnumerable<MessageDetail>)>((messages, messageDetails)));
+            service.Protected("ImportMessageToChatbotDBAsync", messages, messageDetails).Returns(Task.FromResult<(CommandResult, IEnumerable<NotificationMessage>)>((command, notifications)));
+
+            // Act
+            await service.PullVoidingMessageLicenseeAsync();
+
+            // Assert
+            service.Received().Protected("ImportMessageToChatbotDBAsync", messages, messageDetails);
+            service.Received().Protected("UpdateMessageHistoryVoidingForLicenseeAsync", command, messageDetails);
+            service.Received().Protected("OnAfterImportDataAsync", command, notifications);
+        }
+
+        #endregion PullVoidingMessageLicenseeAsync
 
         ////[Fact]
         ////public async Task PullVoidingMessageInternalDepartment_WhenGetSettingIsNull_DoNothing()
@@ -134,6 +142,178 @@
             };
 
             return new ValueTuple<IEnumerable<NotificationRecipient>, IEnumerable<NotificationSendMessage>>(recipients, notifications);
+        }
+
+        #region UpdateMessageHistoryVoidingForLicenseeAsync
+
+        [Fact]
+        public async Task UpdateMessageHistoryVoidingForLicenseeAsync_IsSuccessful_ExpectedCallCorrectMethod()
+        {
+            // Arrange
+            var commandResult = new CommandResult { Code = 0 };
+            var messageDetails = fixture.Create<IEnumerable<MessageDetail>>();
+            var service = GetService();
+
+            // Act
+            await service.Public_UpdateMessageHistoryVoidingForLicenseeAsync(commandResult, messageDetails);
+
+            // Assert
+            service.Received().Protected("InsertToMessageChatbotAsync", Arg.Any<IEnumerable<MessageHistory>>(), 1);
+        }
+
+        [Fact]
+        public async Task UpdateMessageHistoryVoidingForLicenseeAsync_IsUnsuccessful_DoNothing()
+        {
+            // Arrange
+            var commandResult = new CommandResult { Code = 1, Message = "error" };
+            var messageDetails = fixture.Create<IEnumerable<MessageDetail>>();
+            var service = GetService();
+
+            // Act
+            await service.Public_UpdateMessageHistoryVoidingForLicenseeAsync(commandResult, messageDetails);
+
+            // Assert
+            service.DidNotReceive().Protected("InsertToMessageChatbotAsync", Arg.Any<IEnumerable<MessageHistory>>(), 1);
+        }
+
+        #endregion UpdateMessageHistoryVoidingForLicenseeAsync
+
+        #region OnAfterImportDataAsync
+
+        [Fact]
+        public async Task OnAfterImportDataAsync_IsSuccessful_ExpectedCallCorrectMethod()
+        {
+            // Arrange
+            var commandResult = new CommandResult { Code = 0 };
+            var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
+            var notificationIds = string.Join(",", notifications.Select(x => x.NotificationId));
+            var service = GetService();
+
+            // Act
+            await service.Public_OnAfterImportDataAsync(commandResult, notifications);
+
+            // Assert
+            await chatbotService.DidNotReceive().NotifyToChatGroupAsync(Arg.Any<string>());
+
+            await pushSignalService.Received().OnInsertNotification(notificationIds);
+            service.Received().Protected("SendMessageByChannelAsync", (byte)1, notifications);
+            service.Received().Protected("SendMessageByChannelAsync", (byte)2, notifications);
+        }
+
+        [Fact]
+        public async Task OnAfterImportDataAsync_IsUnsuccessful_ExpectedCallCorrectMethod()
+        {
+            // Arrange
+            var commandResult = new CommandResult { Code = 1, Message = "error" };
+            var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
+            var notificationIds = string.Join(",", notifications.Select(x => x.NotificationId));
+            var service = GetService();
+
+            // Act
+            await service.Public_OnAfterImportDataAsync(commandResult, notifications);
+
+            // Assert
+            await chatbotService.Received().NotifyToChatGroupAsync("error");
+
+            await pushSignalService.DidNotReceive().OnInsertNotification(notificationIds);
+            service.DidNotReceive().Protected("SendMessageByChannelAsync", (byte)1, notifications);
+            service.DidNotReceive().Protected("SendMessageByChannelAsync", (byte)2, notifications);
+        }
+
+        #endregion OnAfterImportDataAsync
+
+        [Fact]
+        public async Task ImportMessageToChatbotDBAsync_WhenCalled_ReturnAsExpectedResult()
+        {
+            // Arrange
+            var messages = fixture.Create<IEnumerable<Message>>();
+            var messageDetails = fixture.Create<IEnumerable<MessageDetail>>();
+            var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var notificationMessages = fixture.Create<IEnumerable<NotificationSendMessage>>();
+            var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
+            var tuple = (recipients, notificationMessages);
+            var criteria = new ImportMessageFromSpecialDeleteCriteria();
+            var service = GetService();
+            baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Do<ImportMessageFromSpecialDeleteCriteria>(x => criteria = x)).Returns(tuple);
+            chatbotService.GenerateNotifificationMessageAsync(notificationMessages, recipients).Returns(notifications);
+
+            // Act
+            var result = await service.Public_ImportMessageToChatbotDBAsync(messages, messageDetails);
+
+            // Assert
+            Assert.Equal(JsonConvert.SerializeObject(messages), criteria.MessageHeader);
+            Assert.Equal(JsonConvert.SerializeObject(messageDetails), criteria.MessageDetail);
+            Assert.Equal(criteria.ErrCode, result.Item1.Code);
+            Assert.Equal(criteria.ErrMsg, result.Item1.Message);
+
+            Assert.Equal(notifications, result.Item2);
+        }
+
+        [Fact]
+        public async Task GetMessageFromVoidingForLicenseeAsync_WhenCalled_ReturnAsExpectedResult()
+        {
+            // Arrange
+            var messages = new List<Message>
+            {
+                new Message { Content_en = "  content en  ", Content_cs = "  content cs  " }
+            };
+            var details = fixture.Create<IEnumerable<MessageDetail>>();
+            var tuple = (messages, details);
+            var setting = fixture.Create<SystemSetting>();
+            var service = GetService();
+            service.Protected("GetMessageFromSpecialDeleteAsync", setting).Returns(Task.FromResult<(IEnumerable<Message>, IEnumerable<MessageDetail>)>(tuple));
+
+            // Act
+            var result = await service.Public_GetMessageFromVoidingForLicenseeAsync(setting);
+
+            // Assert
+            Assert.Equal(tuple, result);
+
+            Assert.Collection(result.Item1,
+                item =>
+                {
+                    Assert.Equal("content en", item.Content_en);
+                    Assert.Equal("content cs", item.Content_cs);
+                });
+        }
+
+        [Fact]
+        public async Task GetMessageFromSpecialDeleteAsync_WhenCalled_ReturnAsExpectedResult()
+        {
+            // Arrange
+            var messages = fixture.Create<IEnumerable<Message>>();
+            var details = fixture.Create<IEnumerable<MessageDetail>>();
+            var tuple = (messages, details);
+            var setting = fixture.Create<SystemSetting>();
+            var criteria = new GetMessageFromSpecialDeleteCriteria();
+            var service = GetService();
+            baseService.FetchMultipleAsync<Message, MessageDetail>(Arg.Do<GetMessageFromSpecialDeleteCriteria>(x => criteria = x)).Returns(tuple);
+
+            // Act
+            var result = await service.Public_GetMessageFromSpecialDeleteAsync(setting);
+
+            // Assert
+            Assert.Equal(tuple, result);
+
+            Assert.Equal(setting.MaxMessageID, criteria.MessageID);
+            Assert.Equal(setting.BatchSize, criteria.BatchSize);
+            Assert.Equal(setting.MsgContentsTypeLst, criteria.MsgContentsTypeLst);
+            Assert.Equal(setting.LastPostTime, criteria.LastPostTime);
+        }
+
+        [Fact]
+        public async Task GetVoidingForLicenseeSystemSettingAsync_WhenCalled_ReturnAsExpectedResult()
+        {
+            // Arrange
+            var setting = fixture.Create<SystemSetting>();
+            var service = GetService();
+            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns(setting);
+
+            // Act
+            var result = await service.Public_GetVoidingForLicenseeSystemSettingAsync();
+
+            // Assert
+            Assert.Equal(setting, result);
         }
 
         [Fact]

@@ -44,26 +44,22 @@
 
         #region Pull voiding ticket send to Licensee
 
-        public async Task PullVoidingMessageLicensee()
+        public async Task PullVoidingMessageLicenseeAsync()
         {
-            var systemSettings = await GetVoidingForLicenseeSystemSettings();
-
+            var systemSettings = await GetVoidingForLicenseeSystemSettingAsync();
             if (systemSettings != null)
             {
-                var messages = await GetMessageFromVoidingForLicensee(systemSettings);
-
-                if (messages.Item1.Any() && messages.Item2.Any())
+                var (messages, details) = await GetMessageFromVoidingForLicenseeAsync(systemSettings);
+                if (messages.Any() && details.Any())
                 {
-                    var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
-
-                    await UpdateMessageHistoryVoidingForLicensee(result.Item1, messages.Item2);
-
-                    await OnAfterImportData(result.Item1, result.Item2);
+                    var (command, notifications) = await ImportMessageToChatbotDBAsync(messages, details);
+                    await UpdateMessageHistoryVoidingForLicenseeAsync(command, details);
+                    await OnAfterImportDataAsync(command, notifications);
                 }
             }
         }
 
-        private async Task UpdateMessageHistoryVoidingForLicensee(CommandResult commandResult, IEnumerable<MessageDetail> msgDetails)
+        protected internal virtual async Task UpdateMessageHistoryVoidingForLicenseeAsync(CommandResult commandResult, IEnumerable<MessageDetail> msgDetails)
         {
             if (commandResult.IsSuccessful)
             {
@@ -72,11 +68,11 @@
             }
         }
 
-        private async Task OnAfterImportData(CommandResult commandResult, IEnumerable<NotificationMessage> notifications)
+        protected internal virtual async Task OnAfterImportDataAsync(CommandResult commandResult, IEnumerable<NotificationMessage> notifications)
         {
             if (!commandResult.IsSuccessful)
             {
-                await chatbotService.NotifyToChatGroup(commandResult.Message);
+                await chatbotService.NotifyToChatGroupAsync(commandResult.Message);
             }
             else
             {
@@ -86,12 +82,12 @@
                         SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications),
                         SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications)
                     );
-                    await PushInsertedNotifications(string.Join(",", notifications.Select(item => item.NotificationId)));
+                    await pushSignalService.OnInsertNotification(string.Join(",", notifications.Select(item => item.NotificationId)));
                 }
             }
         }
 
-        private async Task<ValueTuple<CommandResult, IEnumerable<NotificationMessage>>> ImportMessageToChatbotDB(
+        protected internal virtual async Task<(CommandResult, IEnumerable<NotificationMessage>)> ImportMessageToChatbotDBAsync(
             IEnumerable<Message> messages,
             IEnumerable<MessageDetail> messageDetails)
         {
@@ -101,37 +97,30 @@
                 MessageDetail = JsonConvert.SerializeObject(messageDetails)
             };
 
-            var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
-
-            var notification = chatbotService.GenerateNotifificationMessage(data.Item2, data.Item1);
+            var (recipients, notificationMessages) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
+            var notifications = chatbotService.GenerateNotifificationMessageAsync(notificationMessages, recipients);
             var command = new CommandResult
             {
                 Code = criteria.ErrCode,
                 Message = criteria.ErrMsg
             };
 
-            return new ValueTuple<CommandResult, IEnumerable<NotificationMessage>>(command, notification);
+            return (command, notifications);
         }
 
-        private async Task<ValueTuple<IEnumerable<Message>, IEnumerable<MessageDetail>>> GetMessageFromVoidingForLicensee(SystemSetting systemSettings)
+        protected internal virtual async Task<(IEnumerable<Message>, IEnumerable<MessageDetail>)> GetMessageFromVoidingForLicenseeAsync(SystemSetting systemSettings)
         {
-            var result = await GetMessageFromSpecialDelete(systemSettings);
-
-            if (result.Item1.Any())
+            var (messages, details) = await GetMessageFromSpecialDeleteAsync(systemSettings);
+            foreach (Message msg in messages)
             {
-                foreach (var msg in result.Item1)
-                {
-                    var contentEn = !string.IsNullOrWhiteSpace(msg.Content_en) ? msg.Content_en.Trim() : string.Empty;
-                    var contentCs = !string.IsNullOrWhiteSpace(msg.Content_cs) ? msg.Content_cs.Trim() : string.Empty;
-                    msg.Content_en = contentEn;
-                    msg.Content_cs = contentCs;
-                }
+                msg.Content_en = !string.IsNullOrWhiteSpace(msg.Content_en) ? msg.Content_en.Trim() : string.Empty;
+                msg.Content_cs = !string.IsNullOrWhiteSpace(msg.Content_cs) ? msg.Content_cs.Trim() : string.Empty;
             }
 
-            return result;
+            return (messages, details);
         }
 
-        private async Task<ValueTuple<IEnumerable<Message>, IEnumerable<MessageDetail>>> GetMessageFromSpecialDelete(SystemSetting systemSettings)
+        protected internal virtual async Task<ValueTuple<IEnumerable<Message>, IEnumerable<MessageDetail>>> GetMessageFromSpecialDeleteAsync(SystemSetting systemSettings)
         {
             var criteria = new GetMessageFromSpecialDeleteCriteria
             {
@@ -145,10 +134,9 @@
             return await baseService.FetchMultipleAsync<Message, MessageDetail>(criteria);
         }
 
-        private async Task<SystemSetting> GetVoidingForLicenseeSystemSettings()
+        protected internal virtual async Task<SystemSetting> GetVoidingForLicenseeSystemSettingAsync()
         {
             var criteria = new GetSystemSettingCriteria();
-
             return await baseService.GetDataEntityAsync<SystemSetting>(criteria);
         }
 
@@ -290,9 +278,9 @@
                     MaxMessageId = maxMessageId
                 };
 
-                var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
+                var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
 
-                var notification = chatbotService.GenerateNotifificationMessage(data.Item2, data.Item1);
+                var notification = chatbotService.GenerateNotifificationMessageAsync(notifications, recipients);
                 var command = new CommandResult
                 {
                     Code = criteria.ErrCode,
@@ -304,7 +292,7 @@
                     await InsertToMessageChatbotAsync(msgHistories, VoidAbnormalbetsJobIdentity);
                 }
 
-                await OnAfterImportData(command, notification);
+                await OnAfterImportDataAsync(command, notification);
             }
         }
 
@@ -318,11 +306,6 @@
             };
 
             await baseService.ExecuteNonQueryAsync(command);
-        }
-
-        private async Task PushInsertedNotifications(string notificationIds)
-        {
-            await pushSignalService.OnInsertNotification(notificationIds);
         }
 
         protected internal virtual async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications)

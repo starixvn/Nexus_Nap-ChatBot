@@ -9,11 +9,11 @@
     {
         Task<NotificationMessageResponse> SendMultiMessageAsync(byte channelId, IEnumerable<NotificationMessage> messages);
 
-        Task MonitorChatbot();
+        Task MonitorChatbotAsync();
 
-        Task NotifyToChatGroup(string message);
+        Task NotifyToChatGroupAsync(string message);
 
-        IEnumerable<NotificationMessage> GenerateNotifificationMessage(
+        IEnumerable<NotificationMessage> GenerateNotifificationMessageAsync(
             IEnumerable<NotificationSendMessage> notifications,
             IEnumerable<NotificationRecipient> recipients);
 

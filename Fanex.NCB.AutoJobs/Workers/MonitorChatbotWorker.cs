@@ -26,7 +26,7 @@
 
         public override async Task ExecuteJobAsync()
         {
-            await chatbotService.MonitorChatbot();
+            await chatbotService.MonitorChatbotAsync();
         }
     }
 }

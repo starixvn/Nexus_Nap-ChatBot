@@ -4,7 +4,7 @@
 
     public interface ISpecialDeleteService
     {
-        Task PullVoidingMessageLicensee();
+        Task PullVoidingMessageLicenseeAsync();
 
         Task PullVoidingMessageInternalDepartment();
     }

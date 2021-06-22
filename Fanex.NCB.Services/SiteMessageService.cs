@@ -66,7 +66,7 @@
 
             var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
 
-            var notification = chatbotService.GenerateNotifificationMessage(data.Item2, data.Item1);
+            var notification = chatbotService.GenerateNotifificationMessageAsync(data.Item2, data.Item1);
             var command = new CommandResult
             {
                 Code = criteria.ErrCode,
@@ -83,7 +83,7 @@
         {
             if (!commandResult.IsSuccessful)
             {
-                await chatbotService.NotifyToChatGroup(commandResult.Message);
+                await chatbotService.NotifyToChatGroupAsync(commandResult.Message);
             }
             else
             {

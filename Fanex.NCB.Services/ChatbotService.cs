@@ -85,7 +85,7 @@
             return token;
         }
 
-        public async Task MonitorChatbot()
+        public async Task MonitorChatbotAsync()
         {
             var conversationInfo = new ConversationInfo
             {
@@ -123,7 +123,7 @@
             return response;
         }
 
-        public async Task NotifyToChatGroup(string message)
+        public async Task NotifyToChatGroupAsync(string message)
         {
             var notificationModel = new List<NotificationMessage>
                 {
@@ -147,7 +147,7 @@
             await SendMultiMessageAsync((byte)ConversationChannel.Skype, notificationModel);
         }
 
-        public IEnumerable<NotificationMessage> GenerateNotifificationMessage(
+        public IEnumerable<NotificationMessage> GenerateNotifificationMessageAsync(
             IEnumerable<NotificationSendMessage> notifications,
             IEnumerable<NotificationRecipient> recipients)
         {

@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Services.Tests.TestableClasses
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.NCB.Services.Interfaces;
@@ -18,6 +19,38 @@
             ILogService logService,
             IConfiguration configuration) : base(baseService, chatbotService, pushSignalService, logService, configuration)
         {
+        }
+
+        public async Task Public_UpdateMessageHistoryVoidingForLicenseeAsync(CommandResult commandResult, IEnumerable<MessageDetail> msgDetails)
+        {
+            await base.UpdateMessageHistoryVoidingForLicenseeAsync(commandResult, msgDetails);
+        }
+
+        public async Task Public_OnAfterImportDataAsync(CommandResult commandResult, IEnumerable<NotificationMessage> notifications)
+        {
+            await base.OnAfterImportDataAsync(commandResult, notifications);
+        }
+
+        public async Task<(CommandResult, IEnumerable<NotificationMessage>)> Public_ImportMessageToChatbotDBAsync(
+            IEnumerable<Message> messages,
+            IEnumerable<MessageDetail> messageDetails)
+        {
+            return await base.ImportMessageToChatbotDBAsync(messages, messageDetails);
+        }
+
+        public async Task<(IEnumerable<Message>, IEnumerable<MessageDetail>)> Public_GetMessageFromVoidingForLicenseeAsync(SystemSetting systemSettings)
+        {
+            return await base.GetMessageFromVoidingForLicenseeAsync(systemSettings);
+        }
+
+        public async Task<ValueTuple<IEnumerable<Message>, IEnumerable<MessageDetail>>> Public_GetMessageFromSpecialDeleteAsync(SystemSetting systemSettings)
+        {
+            return await base.GetMessageFromSpecialDeleteAsync(systemSettings);
+        }
+
+        public async Task<SystemSetting> Public_GetVoidingForLicenseeSystemSettingAsync()
+        {
+            return await base.GetVoidingForLicenseeSystemSettingAsync();
         }
 
         public async Task<IEnumerable<VoidingHistoryUsername>> Public_GetAbnormalAccountUpdatedUsernameAsync(IEnumerable<AbnormalMessageHistory> messages)
