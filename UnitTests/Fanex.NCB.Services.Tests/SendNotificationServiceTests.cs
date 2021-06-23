@@ -118,12 +118,12 @@
 
         private void PushSignalNewNotification(string notificationIds)
         {
-            Task.Run(() => pushSignalService.Received().OnInsertNotification(notificationIds));
+            Task.Run(() => pushSignalService.Received().OnInsertNotificationAsync(notificationIds));
         }
 
         private void PushSignalUpdateNotiStatus(string notificationIds)
         {
-            Task.Run(() => pushSignalService.Received().OnUpdateNotificationStatus(notificationIds));
+            Task.Run(() => pushSignalService.Received().OnUpdateNotificationStatusAsync(notificationIds));
         }
 
         #region Helper

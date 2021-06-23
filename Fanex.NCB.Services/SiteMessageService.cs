@@ -182,7 +182,7 @@
 
         private async Task PushInsertedNotifications(string notificationIds)
         {
-            await pushSignalService.OnInsertNotification(notificationIds);
+            await pushSignalService.OnInsertNotificationAsync(notificationIds);
         }
 
         protected internal virtual async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications)

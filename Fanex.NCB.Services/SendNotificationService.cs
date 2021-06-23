@@ -353,12 +353,12 @@
 
         private void PushSignalUpdateNotiStatus(string notificationIds)
         {
-            Task.Run(() => pushSignalService.OnUpdateNotificationStatus(notificationIds));
+            Task.Run(() => pushSignalService.OnUpdateNotificationStatusAsync(notificationIds));
         }
 
         private void PushSignalNewErrNotification()
         {
-            Task.Run(() => pushSignalService.OnHasNewErrNotifications());
+            Task.Run(() => pushSignalService.OnHasNewErrNotificationAsync());
         }
     }
 }

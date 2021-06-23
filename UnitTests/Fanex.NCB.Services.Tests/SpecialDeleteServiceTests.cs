@@ -195,7 +195,7 @@
             // Assert
             await chatbotService.DidNotReceive().NotifyToChatGroupAsync(Arg.Any<string>());
 
-            await pushSignalService.Received().OnInsertNotification(notificationIds);
+            await pushSignalService.Received().OnInsertNotificationAsync(notificationIds);
             service.Received().Protected("SendMessageByChannelAsync", (byte)1, notifications);
             service.Received().Protected("SendMessageByChannelAsync", (byte)2, notifications);
         }
@@ -215,7 +215,7 @@
             // Assert
             await chatbotService.Received().NotifyToChatGroupAsync("error");
 
-            await pushSignalService.DidNotReceive().OnInsertNotification(notificationIds);
+            await pushSignalService.DidNotReceive().OnInsertNotificationAsync(notificationIds);
             service.DidNotReceive().Protected("SendMessageByChannelAsync", (byte)1, notifications);
             service.DidNotReceive().Protected("SendMessageByChannelAsync", (byte)2, notifications);
         }

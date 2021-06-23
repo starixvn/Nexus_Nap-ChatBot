@@ -82,7 +82,7 @@
                         SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications),
                         SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications)
                     );
-                    await pushSignalService.OnInsertNotification(string.Join(",", notifications.Select(item => item.NotificationId)));
+                    await pushSignalService.OnInsertNotificationAsync(string.Join(",", notifications.Select(item => item.NotificationId)));
                 }
             }
         }

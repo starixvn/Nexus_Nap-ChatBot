@@ -143,7 +143,7 @@
 
         private async Task PushSignalRReceiveCall()
         {
-            await pushSignalService.Received().OnInsertNotification(Arg.Any<string>());
+            await pushSignalService.Received().OnInsertNotificationAsync(Arg.Any<string>());
         }
 
         private SiteMessageService GetService()

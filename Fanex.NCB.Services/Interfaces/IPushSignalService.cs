@@ -4,10 +4,10 @@
 
     public interface IPushSignalService
     {
-        Task OnUpdateNotificationStatus(string notificationIds);
+        Task OnUpdateNotificationStatusAsync(string notificationIds);
 
-        Task OnInsertNotification(string notificationIds);
+        Task OnInsertNotificationAsync(string notificationIds);
 
-        Task OnHasNewErrNotifications();
+        Task OnHasNewErrNotificationAsync();
     }
 }
