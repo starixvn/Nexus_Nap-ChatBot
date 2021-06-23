@@ -6,6 +6,6 @@
     {
         Task PullVoidingMessageLicenseeAsync();
 
-        Task PullVoidingMessageInternalDepartment();
+        Task PullVoidingMessageInternalDepartmentAsync();
     }
 }

@@ -80,6 +80,14 @@
             return await base.GetVoidingHistoryAsync(messages);
         }
 
+        public async Task Public_ImportAbnormalBetNotificationToChatbotDBAsync(
+            IEnumerable<AbnormalMessage> messages,
+            IEnumerable<MessageHistory> msgHistories,
+            int maxMessageId)
+        {
+            await base.ImportAbnormalBetNotificationToChatbotDBAsync(messages, msgHistories, maxMessageId);
+        }
+
         public async Task Public_InsertToMessageChatbotAsync(IEnumerable<MessageHistory> messages, int jobIdentity)
         {
             await base.InsertToMessageChatbotAsync(messages, jobIdentity);

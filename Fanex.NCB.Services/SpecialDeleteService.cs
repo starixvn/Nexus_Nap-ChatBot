@@ -144,41 +144,40 @@
 
         #region Pull voiding ticket and send to internal department
 
-        public async Task PullVoidingMessageInternalDepartment()
+        public async Task PullVoidingMessageInternalDepartmentAsync()
         {
             var systemSettings = await GetAbnormalBetSystemSettingAsync();
-
             if (systemSettings != null)
             {
                 var messageHistories = await GetMessageHistoryAsync();
                 if (messageHistories.Any())
                 {
-                    await GetMessageAndImportToChatbot(messageHistories, systemSettings);
+                    await GetMessageAndImportToChatbotAsync(messageHistories, systemSettings);
                 }
             }
         }
 
-        private async Task GetMessageAndImportToChatbot(List<MessageHistory> listMsgYesterdayToCurrent, SystemSetting settings)
+        protected internal virtual async Task GetMessageAndImportToChatbotAsync(List<MessageHistory> messageHistories, SystemSetting settings)
         {
-            var messages = await GetAbnormalBetsMessageAsync(settings, listMsgYesterdayToCurrent);
-
+            var messages = await GetAbnormalBetsMessageAsync(settings, messageHistories);
             if (messages.Any())
             {
                 var listMsg = messages.Select(m => new MessageHistory { MessageID = m.MessageID, RequestID = m.RequestID }).ToList();
 
-                var voidingHistories = await GetVoidingHistoryAsync(listMsg);
-
-                if (voidingHistories.Item1.Any(m => m.Type == AbnormalAccountType))
+                var (abnormalMessages, abnormalMessageHistories) = await GetVoidingHistoryAsync(listMsg);
+                if (abnormalMessages.Any(m => m.Type == AbnormalAccountType))
                 {
-                    var updatedUsernames = await GetAbnormalAccountUpdatedUsernames(voidingHistories.Item2);
-
-                    UpdateAbnormalAccountUpdatedUsernames(voidingHistories.Item1, updatedUsernames);
+                    var histories = abnormalMessageHistories
+                        .Where(history => abnormalMessages.Where(message => message.Type == AbnormalAccountType)
+                                                           .Any(m => m.MessageID == history.MessageId));
+                    var updatedUsernames = await GetAbnormalAccountUpdatedUsernameAsync(histories);
+                    UpdateAbnormalAccountUpdatedUsernames(abnormalMessages, updatedUsernames);
                 }
 
-                MappingAbnormalBetsData(messages, voidingHistories.Item1);
+                MappingAbnormalBetsData(messages, abnormalMessages);
 
                 int maxMsgId = messages.Max(m => m.MessageID);
-                await ImportAbnormalBetNotificationToChatbotDB(voidingHistories.Item1, listMsg, maxMsgId);
+                await ImportAbnormalBetNotificationToChatbotDBAsync(abnormalMessages, listMsg, maxMsgId);
             }
         }
 
@@ -265,7 +264,7 @@
             return (new List<AbnormalMessage>(), new List<AbnormalMessageHistory>());
         }
 
-        private async Task ImportAbnormalBetNotificationToChatbotDB(
+        protected internal virtual async Task ImportAbnormalBetNotificationToChatbotDBAsync(
             IEnumerable<AbnormalMessage> messages,
             IEnumerable<MessageHistory> msgHistories,
             int maxMessageId)
@@ -280,7 +279,7 @@
 
                 var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
 
-                var notification = chatbotService.GenerateNotifificationMessageAsync(notifications, recipients);
+                var notificationMessages = chatbotService.GenerateNotifificationMessageAsync(notifications, recipients);
                 var command = new CommandResult
                 {
                     Code = criteria.ErrCode,
@@ -292,7 +291,7 @@
                     await InsertToMessageChatbotAsync(msgHistories, VoidAbnormalbetsJobIdentity);
                 }
 
-                await OnAfterImportDataAsync(command, notification);
+                await OnAfterImportDataAsync(command, notificationMessages);
             }
         }
 

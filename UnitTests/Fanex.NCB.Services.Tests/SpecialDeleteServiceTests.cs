@@ -47,7 +47,7 @@
         }
 
         [Fact]
-        public async Task PullVoidingMessageLicenseeAsync_NoTicketToImport_DoNothing()
+        public async Task PullVoidingMessageLicenseeAsync_NoDataToImport_DoNothing()
         {
             // Arrange
             var setting = fixture.Create<SystemSetting>();
@@ -66,7 +66,7 @@
         }
 
         [Fact]
-        public async Task PullVoidingMessageLicensee_HaveTicketToImport_ExpectedCallCorrectMethod()
+        public async Task PullVoidingMessageLicensee_HasDataToImport_ExpectedCallCorrectMethod()
         {
             // Arrange
             var setting = fixture.Create<SystemSetting>();
@@ -90,59 +90,58 @@
 
         #endregion PullVoidingMessageLicenseeAsync
 
-        ////[Fact]
-        ////public async Task PullVoidingMessageInternalDepartment_WhenGetSettingIsNull_DoNothing()
-        ////{
-        ////    var service = GetService();
+        #region PullVoidingMessageInternalDepartmentAsync
 
-        ////    baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>()).Returns((SystemSetting)null);
-
-        ////    //Actual
-        ////    await service.PullVoidingMessageInternalDepartment();
-
-        ////    //Assert
-        ////    await baseService.DidNotReceiveWithAnyArgs().GetDataAsync<Message>(Arg.Any<GetAbnormalBetsMessageCriteria>());
-        ////    await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
-        ////    await chatbotService.DidNotReceive().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
-        ////}
-
-        ////[Fact]
-        ////public async Task PullVoidingMessageInternalDepartment_HaveTicketToImport_CallSPImport()
-        ////{
-        ////    var service = GetService();
-        ////    baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>())
-        ////        .Returns(new SystemSetting { BatchSize = 100, MaxMessageID = 1989, MsgContentsTypeLst = "103" });
-
-        ////    baseService.GetDataAsync<Message>(Arg.Any<GetAbnormalBetsMessageCriteria>()).Returns(fixture.Create<List<Message>>());
-        ////    baseService.GetDataAsync<MessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>()).Returns(fixture.Create<List<MessageHistory>>());
-        ////    baseService.GetDataAsync<AbnormalMessage>(Arg.Any<GetAbnormalBetInfoCriteria>()).Returns(fixture.Create<IEnumerable<AbnormalMessage>>());
-
-        ////    //Actual
-        ////    await service.PullVoidingMessageInternalDepartment();
-
-        ////    //Expected
-        ////    await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportMessageFromSpecialDeleteCriteria>());
-        ////}
-
-        private static ValueTuple<IEnumerable<NotificationRecipient>, IEnumerable<NotificationSendMessage>> FakeData()
+        [Fact]
+        public async Task PullVoidingMessageInternalDepartmentAsync_SettingIsNull_DoNothing()
         {
-            var recipients = new List<NotificationRecipient>
-            {
-                new NotificationRecipient {
-                    BotConversationId = "",
-                    BotName = "",
-                    ChatGroupConversationId = "ConversationId",
-                    NotificationId = 1,
-                    ServiceUrl = "test.com"
-                }
-            };
-            var notifications = new List<NotificationSendMessage>
-            {
-                new NotificationSendMessage { NotificationId = 1, Content = "", Title = "" }
-            };
+            // Arrange
+            SystemSetting setting = null;
+            var service = GetService();
+            service.Protected("GetAbnormalBetSystemSettingAsync").Returns(Task.FromResult(setting));
 
-            return new ValueTuple<IEnumerable<NotificationRecipient>, IEnumerable<NotificationSendMessage>>(recipients, notifications);
+            // Act
+            await service.PullVoidingMessageInternalDepartmentAsync();
+
+            // Assert
+            service.DidNotReceive().Protected("GetMessageHistoryAsync");
         }
+
+        [Fact]
+        public async Task PullVoidingMessageInternalDepartmentAsync_NoDataToImport_DoNothing()
+        {
+            // Arrange
+            var setting = fixture.Create<SystemSetting>();
+            var histories = new List<MessageHistory>();
+            var service = GetService();
+            service.Protected("GetAbnormalBetSystemSettingAsync").Returns(Task.FromResult(setting));
+            service.Protected("GetMessageHistoryAsync").Returns(Task.FromResult(histories));
+
+            // Act
+            await service.PullVoidingMessageInternalDepartmentAsync();
+
+            // Assert
+            service.DidNotReceive().Protected("GetMessageAndImportToChatbotAsync", histories, setting);
+        }
+
+        [Fact]
+        public async Task PullVoidingMessageInternalDepartmentAsync_HasDataToImport_ExpectedCallCorrectMethod()
+        {
+            // Arrange
+            var setting = fixture.Create<SystemSetting>();
+            var histories = fixture.Create<List<MessageHistory>>();
+            var service = GetService();
+            service.Protected("GetAbnormalBetSystemSettingAsync").Returns(Task.FromResult(setting));
+            service.Protected("GetMessageHistoryAsync").Returns(Task.FromResult(histories));
+
+            // Act
+            await service.PullVoidingMessageInternalDepartmentAsync();
+
+            // Assert
+            service.Received().Protected("GetMessageAndImportToChatbotAsync", histories, setting);
+        }
+
+        #endregion PullVoidingMessageInternalDepartmentAsync
 
         #region UpdateMessageHistoryVoidingForLicenseeAsync
 
@@ -410,6 +409,80 @@
 
             Assert.Equal(xml, criteria.MessageIdLst);
         }
+
+        #region ImportAbnormalBetNotificationToChatbotDBAsync
+
+        [Fact]
+        public async Task ImportAbnormalBetNotificationToChatbotDBAsync_MessagesAreEmpty_DoNothing()
+        {
+            // Arrange
+            var messages = new List<AbnormalMessage>();
+            var histories = fixture.Create<IEnumerable<MessageHistory>>();
+            var maxMessageId = fixture.Create<int>();
+            var service = GetService();
+
+            // Act
+            await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories, maxMessageId);
+
+            // Assert
+            await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportAbnormalBetsMessageCriteria>());
+        }
+
+        [Fact]
+        public async Task ImportAbnormalBetNotificationToChatbotDBAsync_ImportSuccessful_ExpectedCallCorrectMethod()
+        {
+            // Arrange
+            var messages = fixture.Create<IEnumerable<AbnormalMessage>>();
+            var histories = fixture.Create<IEnumerable<MessageHistory>>();
+            var maxMessageId = fixture.Create<int>();
+            var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var notifications = fixture.Create<IEnumerable<NotificationSendMessage>>();
+            var notificationMessages = fixture.Create<IEnumerable<NotificationMessage>>();
+            var criteria = new ImportAbnormalBetsMessageCriteria();
+            var service = GetService();
+            baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Do<ImportAbnormalBetsMessageCriteria>(x => criteria = x))
+                .Returns((recipients, notifications)).AndDoes(x => { criteria.ErrCode = 0; criteria.ErrMsg = ""; });
+            chatbotService.GenerateNotifificationMessageAsync(notifications, recipients).Returns(notificationMessages);
+
+            // Act
+            await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories, maxMessageId);
+
+            // Assert
+            Assert.Equal(maxMessageId, criteria.MaxMessageId);
+            Assert.Equal(JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = "yyyy-MM-dd HH:mm:ss.fff" }), criteria.MessageHeader);
+
+            service.Received().Protected("InsertToMessageChatbotAsync", histories, 2);
+            service.Received().Protected("OnAfterImportDataAsync", Arg.Is<CommandResult>(x => x.Code == 0 && x.Message == ""), notificationMessages);
+        }
+
+        [Fact]
+        public async Task ImportAbnormalBetNotificationToChatbotDBAsync_ImportUnsuccessful_ExpectedCallCorrectMethod()
+        {
+            // Arrange
+            var messages = fixture.Create<IEnumerable<AbnormalMessage>>();
+            var histories = fixture.Create<IEnumerable<MessageHistory>>();
+            var maxMessageId = fixture.Create<int>();
+            var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var notifications = fixture.Create<IEnumerable<NotificationSendMessage>>();
+            var notificationMessages = fixture.Create<IEnumerable<NotificationMessage>>();
+            var criteria = new ImportAbnormalBetsMessageCriteria();
+            var service = GetService();
+            baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Do<ImportAbnormalBetsMessageCriteria>(x => criteria = x))
+                .Returns((recipients, notifications)).AndDoes(x => { criteria.ErrCode = 1; criteria.ErrMsg = "error message"; });
+            chatbotService.GenerateNotifificationMessageAsync(notifications, recipients).Returns(notificationMessages);
+
+            // Act
+            await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories, maxMessageId);
+
+            // Assert
+            Assert.Equal(maxMessageId, criteria.MaxMessageId);
+            Assert.Equal(JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = "yyyy-MM-dd HH:mm:ss.fff" }), criteria.MessageHeader);
+
+            service.DidNotReceive().Protected("InsertToMessageChatbotAsync", histories, 2);
+            service.Received().Protected("OnAfterImportDataAsync", Arg.Is<CommandResult>(x => x.Code == 1 && x.Message == "error message"), notificationMessages);
+        }
+
+        #endregion ImportAbnormalBetNotificationToChatbotDBAsync
 
         [Fact]
         public async Task InsertToMessageChatbotAsync_WhenCalled_ExpectedCallCorrectMethod()

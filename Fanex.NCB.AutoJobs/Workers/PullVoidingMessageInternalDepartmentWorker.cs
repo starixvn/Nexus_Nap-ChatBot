@@ -26,7 +26,7 @@
 
         public override async Task ExecuteJobAsync()
         {
-            await specialDeleteTicketService.PullVoidingMessageInternalDepartment();
+            await specialDeleteTicketService.PullVoidingMessageInternalDepartmentAsync();
         }
     }
 }

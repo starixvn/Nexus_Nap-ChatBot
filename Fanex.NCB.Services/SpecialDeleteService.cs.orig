@@ -49,14 +49,8 @@
             var systemSettings = await GetVoidingForLicenseeSystemSettingAsync();
             if (systemSettings != null)
             {
-<<<<<<< HEAD
-                var messages = await GetMessageFromVoidingForLicensee(systemSettings);
-
-                if (messages.Item1.Any() && messages.Item2.Any())
-=======
                 var (messages, details) = await GetMessageFromVoidingForLicenseeAsync(systemSettings);
                 if (messages.Any() && details.Any())
->>>>>>> 156890 - unit test service
                 {
                     var (command, notifications) = await ImportMessageToChatbotDBAsync(messages, details);
                     await UpdateMessageHistoryVoidingForLicenseeAsync(command, details);
@@ -88,7 +82,7 @@
                         SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications),
                         SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications)
                     );
-                    await pushSignalService.OnInsertNotification(string.Join(",", notifications.Select(item => item.NotificationId)));
+                    await pushSignalService.OnInsertNotificationAsync(string.Join(",", notifications.Select(item => item.NotificationId)));
                 }
             }
         }
@@ -150,28 +144,27 @@
 
         #region Pull voiding ticket and send to internal department
 
-        public async Task PullVoidingMessageInternalDepartment()
+        public async Task PullVoidingMessageInternalDepartmentAsync()
         {
             var systemSettings = await GetAbnormalBetSystemSettingAsync();
-
             if (systemSettings != null)
             {
                 var messageHistories = await GetMessageHistoryAsync();
                 if (messageHistories.Any())
                 {
-                    await GetMessageAndImportToChatbot(messageHistories, systemSettings);
+                    await GetMessageAndImportToChatbotAsync(messageHistories, systemSettings);
                 }
             }
         }
 
-        private async Task GetMessageAndImportToChatbot(List<MessageHistory> listMsgYesterdayToCurrent, SystemSetting settings)
+        protected internal virtual async Task GetMessageAndImportToChatbotAsync(List<MessageHistory> messageHistories, SystemSetting settings)
         {
-            var messages = await GetAbnormalBetsMessageAsync(settings, listMsgYesterdayToCurrent);
-
+            var messages = await GetAbnormalBetsMessageAsync(settings, messageHistories);
             if (messages.Any())
             {
                 var listMsg = messages.Select(m => new MessageHistory { MessageID = m.MessageID, RequestID = m.RequestID }).ToList();
 
+<<<<<<< HEAD
                 var voidingHistories = await GetVoidingHistoryAsync(listMsg);
 
                 if (voidingHistories.Item1.Any(m => m.Type == AbnormalAccountType))
@@ -179,12 +172,22 @@
                     var updatedUsernames = await GetAbnormalAccountUpdatedUsernames(voidingHistories.Item2);
 
                     UpdateAbnormalAccountUpdatedUsernames(voidingHistories.Item1, updatedUsernames);
+=======
+                var (abnormalMessages, abnormalMessageHistories) = await GetVoidingHistoryAsync(listMsg);
+                if (abnormalMessages.Any(m => m.Type == AbnormalAccountType))
+                {
+                    var histories = abnormalMessageHistories
+                        .Where(history => abnormalMessages.Where(message => message.Type == AbnormalAccountType)
+                                                           .Any(m => m.MessageID == history.MessageId));
+                    var updatedUsernames = await GetAbnormalAccountUpdatedUsernameAsync(histories);
+                    UpdateAbnormalAccountUpdatedUsernames(abnormalMessages, updatedUsernames);
+>>>>>>> 156890 - unit test service
                 }
 
-                MappingAbnormalBetsData(messages, voidingHistories.Item1);
+                MappingAbnormalBetsData(messages, abnormalMessages);
 
                 int maxMsgId = messages.Max(m => m.MessageID);
-                await ImportAbnormalBetNotificationToChatbotDB(voidingHistories.Item1, listMsg, maxMsgId);
+                await ImportAbnormalBetNotificationToChatbotDBAsync(abnormalMessages, listMsg, maxMsgId);
             }
         }
 
@@ -203,7 +206,6 @@
             {
                 foreach (var message in origMessages)
                 {
-<<<<<<< HEAD
                     var updatedMsg = updatedUsernames.Where(m => m.MessageID == message.MessageID);
                     if (updatedMsg != null && updatedMsg.Any())
                     {
@@ -211,12 +213,6 @@
                         message.CreditSiteLst = string.Join(",", updatedMsg.Select(x => x.CreditSiteLst));
                         message.DepositSiteLst = string.Join(",", updatedMsg.Select(x => x.DepositSiteLst));
                     }
-=======
-                    var histories = updatedUsernames.Where(m => m.MessageID == message.MessageID).ToList();
-                    message.UsernameLst = string.Join(",", histories?.Select(x => x.UsernameLst));
-                    message.CreditSiteLst = string.Join(",", histories?.Select(x => x.CreditSiteLst));
-                    message.DepositSiteLst = string.Join(",", histories?.Select(x => x.DepositSiteLst));
->>>>>>> 156890 - unit test service
                 }
             }
         }
@@ -278,7 +274,7 @@
             return (new List<AbnormalMessage>(), new List<AbnormalMessageHistory>());
         }
 
-        private async Task ImportAbnormalBetNotificationToChatbotDB(
+        protected internal virtual async Task ImportAbnormalBetNotificationToChatbotDBAsync(
             IEnumerable<AbnormalMessage> messages,
             IEnumerable<MessageHistory> msgHistories,
             int maxMessageId)
@@ -293,7 +289,7 @@
 
                 var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
 
-                var notification = chatbotService.GenerateNotifificationMessageAsync(notifications, recipients);
+                var notificationMessages = chatbotService.GenerateNotifificationMessageAsync(notifications, recipients);
                 var command = new CommandResult
                 {
                     Code = criteria.ErrCode,
@@ -305,7 +301,7 @@
                     await InsertToMessageChatbotAsync(msgHistories, VoidAbnormalbetsJobIdentity);
                 }
 
-                await OnAfterImportDataAsync(command, notification);
+                await OnAfterImportDataAsync(command, notificationMessages);
             }
         }
 

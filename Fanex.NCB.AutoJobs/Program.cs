@@ -20,6 +20,7 @@ namespace Fanex.NCB.AutoJobs
             catch (Exception exception)
             {
                 logger.Error(exception, "Application terminated unexpectedly.");
+                throw;
             }
             finally
             {
