@@ -5,6 +5,8 @@
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Services;
@@ -354,24 +356,24 @@
 
         #endregion AddMessageLogToDatabaseAsync
 
-        ////[Fact]
-        ////public async Task WriteLogAsync_WhenCalled_CallCorrectlyMethod()
-        ////{
-        ////    // Arrange
-        ////    var exception = fixture.Create<Exception>();
-        ////    var logMessage = new LogMessage(exception.Message)
-        ////                .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
-        ////                .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
-        ////                .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
-        ////                .ToString();
-        ////    var controller = GetController();
+        [Fact]
+        public async Task WriteLogAsync_WhenCalled_CallCorrectlyMethod()
+        {
+            // Arrange
+            var exception = fixture.Create<Exception>();
+            var logMessage = new LogMessage(exception.Message)
+                        .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
+                        .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
+                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
+                        .ToString();
+            var controller = GetController();
 
-        ////    // Act
-        ////    await controller.Public_WriteLogAsync(exception);
+            // Act
+            await controller.Public_WriteLogAsync(exception);
 
-        ////    // Assert
-        ////    await logger.Received().ErrorAsync(logMessage);
-        ////}
+            // Assert
+            await logger.Received().ErrorAsync(logMessage);
+        }
 
         #region Helpers
 

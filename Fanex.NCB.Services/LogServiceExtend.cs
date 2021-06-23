@@ -5,18 +5,19 @@
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.Services.Interfaces;
-    using NLog;
-    using NLog.Web;
+    using Microsoft.Extensions.Logging;
 
     public class LogServiceExtend : ILogService
     {
         private readonly Logging.ILogger logger;
-        private readonly Logger infoLogger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+        private readonly ILogger<LogServiceExtend> filelogger;
 
         public LogServiceExtend(
-            Logging.ILogger logger)
+            Logging.ILogger logger,
+            ILogger<LogServiceExtend> filelogger)
         {
             this.logger = logger;
+            this.filelogger = filelogger;
         }
 
         public async Task WriteExceptionSentryErrorAsync(Exception exception)
@@ -32,9 +33,8 @@
             }
             catch (Exception ex)
             {
-                infoLogger.Error(ex.ToString());
+                filelogger.LogError(ex.ToString());
             }
-            
         }
 
         public async Task WriteMessageSentryErrorAsync(string logMessage)
@@ -44,17 +44,17 @@
 
         public void WriteLogFileError(string logMessage)
         {
-            infoLogger.Error(logMessage);
+            filelogger.LogError(logMessage);
         }
 
         public void WriteLogFileWarning(string logMessage)
         {
-            infoLogger.Warn(logMessage);
+            filelogger.LogWarning(logMessage);
         }
 
         public void WriteLogFileInfo(string logMessage)
         {
-            infoLogger.Info(logMessage);
+            filelogger.LogInformation(logMessage);
         }
     }
 }
