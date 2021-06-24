@@ -66,7 +66,7 @@
         }
 
         [Fact]
-        public async Task PullVoidingMessageLicensee_HasDataToImport_ExpectedCallCorrectMethod()
+        public async Task PullVoidingMessageLicensee_HasDataToImport_DoAsExpected()
         {
             // Arrange
             var setting = fixture.Create<SystemSetting>();
@@ -125,7 +125,7 @@
         }
 
         [Fact]
-        public async Task PullVoidingMessageInternalDepartmentAsync_HasDataToImport_ExpectedCallCorrectMethod()
+        public async Task PullVoidingMessageInternalDepartmentAsync_HasDataToImport_DoAsExpected()
         {
             // Arrange
             var setting = fixture.Create<SystemSetting>();
@@ -146,7 +146,7 @@
         #region UpdateMessageHistoryVoidingForLicenseeAsync
 
         [Fact]
-        public async Task UpdateMessageHistoryVoidingForLicenseeAsync_IsSuccessful_ExpectedCallCorrectMethod()
+        public async Task UpdateMessageHistoryVoidingForLicenseeAsync_IsSuccessful_DoAsExpected()
         {
             // Arrange
             var commandResult = new CommandResult { Code = 0 };
@@ -180,7 +180,7 @@
         #region OnAfterImportDataAsync
 
         [Fact]
-        public async Task OnAfterImportDataAsync_IsSuccessful_ExpectedCallCorrectMethod()
+        public async Task OnAfterImportDataAsync_IsSuccessful_DoAsExpected()
         {
             // Arrange
             var commandResult = new CommandResult { Code = 0 };
@@ -200,7 +200,7 @@
         }
 
         [Fact]
-        public async Task OnAfterImportDataAsync_IsUnsuccessful_ExpectedCallCorrectMethod()
+        public async Task OnAfterImportDataAsync_IsUnsuccessful_DoAsExpected()
         {
             // Arrange
             var commandResult = new CommandResult { Code = 1, Message = "error" };
@@ -429,7 +429,7 @@
         }
 
         [Fact]
-        public async Task ImportAbnormalBetNotificationToChatbotDBAsync_ImportSuccessful_ExpectedCallCorrectMethod()
+        public async Task ImportAbnormalBetNotificationToChatbotDBAsync_ImportSuccessful_DoAsExpected()
         {
             // Arrange
             var messages = fixture.Create<IEnumerable<AbnormalMessage>>();
@@ -456,7 +456,7 @@
         }
 
         [Fact]
-        public async Task ImportAbnormalBetNotificationToChatbotDBAsync_ImportUnsuccessful_ExpectedCallCorrectMethod()
+        public async Task ImportAbnormalBetNotificationToChatbotDBAsync_ImportUnsuccessful_DoAsExpected()
         {
             // Arrange
             var messages = fixture.Create<IEnumerable<AbnormalMessage>>();
@@ -485,7 +485,7 @@
         #endregion ImportAbnormalBetNotificationToChatbotDBAsync
 
         [Fact]
-        public async Task InsertToMessageChatbotAsync_WhenCalled_ExpectedCallCorrectMethod()
+        public async Task InsertToMessageChatbotAsync_WhenCalled_DoAsExpected()
         {
             // Arrange
             var messages = fixture.Create<IEnumerable<MessageHistory>>();
@@ -508,7 +508,7 @@
         #region SendMessageByChannelAsync
 
         [Fact]
-        public async Task SendMessageByChannelAsync_WhenCalled_ExpectedCallCorrectMethod()
+        public async Task SendMessageByChannelAsync_WhenCalled_DoAsExpected()
         {
             // Arrange
             var channelId = fixture.Create<byte>();

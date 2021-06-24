@@ -27,6 +27,15 @@
             await base.UpdateFailedRecipientStatusAsync(recipients, isRetry);
         }
 
+        public async Task Public_SendMultiMessageAsync(
+            byte channelId,
+            IEnumerable<NotificationMessage> messages,
+            IEnumerable<NotificationRecipient> recipients,
+            IEnumerable<NotificationRecipient> originRecipients)
+        {
+            await base.SendMultiMessageAsync(channelId, messages, recipients, originRecipients);
+        }
+
         public async Task Public_UpdateFailedStatusForBatchAsync(
             IEnumerable<NotificationRecipient> recipients,
             IEnumerable<NotificationRecipient> originRecipients,

@@ -144,7 +144,7 @@
             }
         }
 
-        private async Task SendMultiMessageAsync(
+        protected internal virtual async Task SendMultiMessageAsync(
             byte channelId,
             IEnumerable<NotificationMessage> messages,
             IEnumerable<NotificationRecipient> recipients,
@@ -166,7 +166,7 @@
                 }
                 else
                 {
-                    await UpdateFailedStatusForBatchAsync(recipients, originRecipients, $"Status Code: { response.StatusCode}");
+                    await UpdateFailedStatusForBatchAsync(recipients, originRecipients, $"Status Code: {response.StatusCode}");
                     await logService.WriteMessageSentryErrorAsync($"Send Message fail - Status Code: {response.StatusCode}");
                 }
             }

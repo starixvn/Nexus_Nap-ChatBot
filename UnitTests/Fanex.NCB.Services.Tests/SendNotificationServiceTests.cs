@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.Core.Models;
@@ -68,6 +69,97 @@
         }
 
         #endregion UpdateFailedRecipientStatusAsync
+
+        #region SendMultiMessageAsync
+
+        [Fact]
+        public async Task SendMultiMessageAsync_Exception_DoAsExpected()
+        {
+            // Arrange
+            byte channelId = 1;
+            var messages = fixture.Create<IEnumerable<NotificationMessage>>();
+            var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var originRecipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var exception = fixture.Create<Exception>();
+            var service = GetService();
+            chatbotService.SendMultiMessageAsync(channelId, messages).Returns(Task.FromException<NotificationMessageResponse>(exception));
+
+            // Act
+            await service.Public_SendMultiMessageAsync(channelId, messages, recipients, originRecipients);
+
+            // Assert
+            service.Received().Protected("UpdateFailedStatusForBatchAsync", recipients, originRecipients, exception.Message);
+            await logService.Received().WriteExceptionSentryErrorAsync(exception);
+        }
+
+        [Fact]
+        public async Task SendMultiMessageAsync_SendUnsuccessfull_DoAsExpected()
+        {
+            // Arrange
+            byte channelId = 1;
+            var messages = fixture.Create<IEnumerable<NotificationMessage>>();
+            var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var originRecipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var response = new NotificationMessageResponse { IsSuccessStatusCode = false, StatusCode = HttpStatusCode.BadRequest };
+            var service = GetService();
+            chatbotService.SendMultiMessageAsync(channelId, messages).Returns(response);
+
+            // Act
+            await service.Public_SendMultiMessageAsync(channelId, messages, recipients, originRecipients);
+
+            // Assert
+            service.Received().Protected("UpdateFailedStatusForBatchAsync", recipients, originRecipients, $"Status Code: {response.StatusCode}");
+            await logService.Received().WriteMessageSentryErrorAsync($"Send Message fail - Status Code: {response.StatusCode}");
+        }
+
+        [Fact]
+        public async Task SendMultiMessageAsync_HaveMessageResult_DoAsExpected()
+        {
+            // Arrange
+            byte channelId = 1;
+            var messages = fixture.Create<IEnumerable<NotificationMessage>>();
+            var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var originRecipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var response = new NotificationMessageResponse
+            {
+                IsSuccessStatusCode = true,
+                StatusCode = HttpStatusCode.OK,
+                NotificationMessageResult = fixture.Create<IEnumerable<SendMessageResult>>()
+            };
+            var service = GetService();
+            chatbotService.SendMultiMessageAsync(channelId, messages).Returns(response);
+
+            // Act
+            await service.Public_SendMultiMessageAsync(channelId, messages, recipients, originRecipients);
+
+            // Assert
+            service.Received().Protected("UpdateStatusAfterSendNotificationAsync", originRecipients, response.NotificationMessageResult);
+        }
+
+        [Fact]
+        public async Task SendMultiMessageAsync_DoNotHaveMessageResult_DoAsExpected()
+        {
+            // Arrange
+            byte channelId = 1;
+            var messages = fixture.Create<IEnumerable<NotificationMessage>>();
+            var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var originRecipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var response = new NotificationMessageResponse
+            {
+                IsSuccessStatusCode = true,
+                StatusCode = HttpStatusCode.OK
+            };
+            var service = GetService();
+            chatbotService.SendMultiMessageAsync(channelId, messages).Returns(response);
+
+            // Act
+            await service.Public_SendMultiMessageAsync(channelId, messages, recipients, originRecipients);
+
+            // Assert
+            service.Received().Protected("UpdateFailedStatusForBatchAsync", recipients, originRecipients, "Bot Service Error");
+        }
+
+        #endregion SendMultiMessageAsync
 
         [Fact]
         public async Task UpdateFailedStatusForBatchAsync_WhenCalled_DoAsExpected()

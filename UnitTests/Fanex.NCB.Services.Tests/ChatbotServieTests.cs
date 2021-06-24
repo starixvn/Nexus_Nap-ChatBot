@@ -146,7 +146,7 @@
         }
 
         [Fact]
-        public async Task MonitorChatbotAsync_WhenCalled_ExpectedCallCorrectMethod()
+        public async Task MonitorChatbotAsync_WhenCalled_DoAsExpected()
         {
             // Arrange
             var service = GetService();
@@ -165,7 +165,7 @@
         }
 
         ////[Fact]
-        ////public async Task MonitorTelegramBotAsync_WhenCalled_ExpectedCallCorrectMethod()
+        ////public async Task MonitorTelegramBotAsync_WhenCalled_DoAsExpected()
         ////{
         ////    // Arrange
         ////    var token = fixture.Create<ChatbotToken>();
@@ -181,7 +181,7 @@
         ////}
 
         [Fact]
-        public async Task NotifyToChatGroupAsync_WhenCalled_ExpectedCallCorrectMethod()
+        public async Task NotifyToChatGroupAsync_WhenCalled_DoAsExpected()
         {
             // Arrange
             var token = fixture.Create<ChatbotToken>();
