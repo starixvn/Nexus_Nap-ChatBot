@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.Core.Models;
@@ -29,158 +28,125 @@
         private ILogService logService;
         private MonitorTelegramBot monitorTelegramBot;
 
-        ////[Fact]
-        ////public async Task ScanAndSendNotification_ScanEmptyNoti_NotUpdateStatusAndSendNoti()
-        ////{
-        ////    var notifications = new List<NotificationSendMessage>();
-        ////    var recipients = new List<NotificationRecipient>();
-        ////    var emptyListNoti = new ValueTuple<IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>>(notifications, recipients);
-        ////    var service = GetService();
-        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(emptyListNoti);
+        #region UpdateFailedRecipientStatusAsync
 
-        ////    //Actual
-        ////    await service.ScanAndSendNotification();
-
-        ////    //Assert
-        ////    await chatbotService.DidNotReceive().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
-        ////    await baseService.DidNotReceive().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
-        ////}
-
-        ////[Fact]
-        ////public async Task ScanAndSendNotification_ScanHasNoti_UpdateStatusAndSendNoti_UpdateWhenSendFailed()
-        ////{
-        ////    var notifications = FakeData();
-        ////    var service = GetService();
-        ////    var response = FakeResponse(false);
-        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
-        ////    chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
-
-        ////    //Actual
-        ////    await service.ScanAndSendNotification();
-
-        ////    //Assert
-        ////    await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
-        ////    await baseService.Received().ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
-        ////}
-
-        ////[Fact]
-        ////public async Task ScanAndSendNotification_ScanHasNoti_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
-        ////{
-        ////    var notifications = FakeData();
-        ////    var response = FakeResponse(true);
-        ////    var service = GetService();
-        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
-        ////    chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
-        ////    //Actual
-        ////    await service.ScanAndSendNotification();
-
-        ////    //Assert
-        ////    await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
-        ////}
-
-        ////[Fact]
-        ////public async Task ScanAndSendNotification_ScanHasNoti_ChatbotServiceThrowExceptions()
-        ////{
-        ////    var notifications = FakeData();
-        ////    var service = GetService();
-        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>()).Returns(notifications);
-
-        ////    chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Throws(new Exception());
-        ////    await service.ScanAndSendNotification();
-        ////    //Assert
-        ////    await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
-        ////}
-
-        ////[Fact]
-        ////public async Task SendNotificationImmediately_IsCreating_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
-        ////{
-        ////    var notifications = FakeData();
-        ////    var response = FakeResponse(true);
-        ////    var service = GetService();
-        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationByIdCriteria>()).Returns(notifications);
-        ////    chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
-        ////    //Actual
-        ////    await service.SendNotificationImmediately(1);
-        ////    PushSignalNewNotification("1");
-        ////    //Assert
-        ////    await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
-        ////    await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
-        ////}
-
-        ////[Fact]
-        ////public async Task SendNotificationImmediately_NotIsCreating_UpdateStatusAndSendNoti_UpdateWhenSendSuccessed()
-        ////{
-        ////    var notifications = FakeData();
-        ////    var response = FakeResponse(true);
-        ////    var service = GetService();
-        ////    baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationByIdCriteria>()).Returns(notifications);
-        ////    chatbotService.SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>()).Returns(response);
-        ////    //Actual
-        ////    await service.SendNotificationImmediately(1);
-
-        ////    PushSignalUpdateNotiStatus("1");
-        ////    //Assert
-        ////    await chatbotService.Received().SendMessageToMultitpleAsync(Arg.Any<List<NotificationMessage>>());
-        ////    await baseService.Received(2).ExecuteNonQueryAsync(Arg.Any<INonQueryCommand>());
-        ////}
-
-        private void PushSignalNewNotification(string notificationIds)
+        [Fact]
+        public async Task UpdateFailedRecipientStatusAsync_RecipientsAreEmpty_DoNothing()
         {
-            Task.Run(() => pushSignalService.Received().OnInsertNotificationAsync(notificationIds));
+            // Arrange
+            var recipients = new List<NotificationRecipient>();
+            var service = GetService();
+
+            // Act
+            await service.Public_UpdateFailedRecipientStatusAsync(recipients);
+
+            // Assert
+            service.DidNotReceive().Protected("UpdateSentNotificationStatusAsync", Arg.Any<IEnumerable<UpdateNotificationModel>>());
         }
 
-        private void PushSignalUpdateNotiStatus(string notificationIds)
+        [Fact]
+        public async Task UpdateFailedRecipientStatusAsync_RecipientsHaveData_DoAsExpected()
         {
-            Task.Run(() => pushSignalService.Received().OnUpdateNotificationStatusAsync(notificationIds));
-        }
-
-        #region Helper
-
-        private static ValueTuple<IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>> FakeData()
-        {
-            var notifications = new List<NotificationSendMessage>
-            {
-                new NotificationSendMessage { NotificationId = 1, Content = "Text"} ,
-                new NotificationSendMessage { NotificationId = 2, Content = "Text 2" }
-            };
-
+            // Arrange
             var recipients = new List<NotificationRecipient>
             {
-                new NotificationRecipient {NotificationId = 1, ErrCode = 0, ChatGroupConversationId = "ABC"},
-                new NotificationRecipient {NotificationId = 2, ErrCode = 0, ChatGroupConversationId = "CDE"},
-                new NotificationRecipient {NotificationId = 2, ErrCode = 1, ChatGroupConversationId = "FGH"}
-            };
-            return new ValueTuple<IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>>(notifications, recipients);
-        }
-
-        private static NotificationMessageResponse FakeResponse(bool isSuccess)
-        {
-            var result = new List<SendMessageResult>
-            {
-                new SendMessageResult { NotificationId = 1, ConversationId = "1", ErrorCode = 0, ErrorMessage = "", SentTime = DateTime.Now }
-            };
-            return new NotificationMessageResponse
-            {
-                IsSuccessStatusCode = isSuccess,
-                StatusCode = isSuccess ? HttpStatusCode.OK : HttpStatusCode.BadRequest,
-                NotificationMessageResult = new List<SendMessageResult>
+                new NotificationRecipient
                 {
-                    new SendMessageResult
-                    {
-                        NotificationId = 1, ConversationId = "ABC", ErrorCode = 0, ErrorMessage = "", SentTime = new DateTime(2020, 10, 1)
-                    },
-                    new SendMessageResult
-                    {
-                        NotificationId = 2, ConversationId = "DEF", ErrorCode = 1, ErrorMessage = "Error", SentTime = new DateTime(2020, 10, 1)
-                    }
+                    NotificationId = 1, RecipientId = 1, ChatGroupId = 1, BotId = 1, ErrCode = 1, ErrorMessage = "error"
                 }
             };
+            var service = GetService();
+
+            // Act
+            await service.Public_UpdateFailedRecipientStatusAsync(recipients);
+
+            // Assert
+            service.Received().Protected("UpdateSentNotificationStatusAsync", Arg.Is<IEnumerable<UpdateNotificationModel>>(x =>
+                x.Count() == 1 && x.First().NotificationID == 1 && x.First().RecipientID == 1
+                && x.First().ConversationGroupID == 1 && x.First().ConversationBotID == 1 && !x.First().Retry
+                && !x.First().IsSuccess && x.First().ErrMsg == "Recipient is not mapped"));
+        }
+
+        #endregion UpdateFailedRecipientStatusAsync
+
+        [Fact]
+        public async Task UpdateFailedStatusForBatchAsync_WhenCalled_DoAsExpected()
+        {
+            // Arrange
+            var recipients = new List<NotificationRecipient>
+            {
+                new NotificationRecipient
+                {
+                    NotificationId = 1, ChatGroupConversationId = "1", RecipientId = 1, ChatGroupId = 1, BotId = 1
+                }
+            };
+            var originRecipients = new List<NotificationRecipient>
+            {
+                new NotificationRecipient
+                {
+                    NotificationId = 1, ChatGroupConversationId = "1", RecipientId = 1, ChatGroupId = 1, BotId = 1
+                }
+            };
+            var errorMessage = fixture.Create<string>();
+            var service = GetService();
+
+            // Act
+            await service.Public_UpdateFailedStatusForBatchAsync(recipients, originRecipients, errorMessage);
+
+            // Assert
+            service.Received().Protected("UpdateSentNotificationStatusAsync", Arg.Is<IEnumerable<UpdateNotificationModel>>(x =>
+                x.Count() == 1 && x.First().NotificationID == 1 && x.First().RecipientID == 1
+                && x.First().ConversationGroupID == 1 && x.First().ConversationBotID == 1 && x.First().Retry
+                && !x.First().IsSuccess && x.First().ErrMsg == $"[Internal Error] {errorMessage}"));
+        }
+
+        [Fact]
+        public async Task UpdateStatusAfterSendNotificationAsync_WhenCalled_DoAsExpected()
+        {
+            // Arrange
+            var recipients = new List<NotificationRecipient>
+            {
+                new NotificationRecipient
+                {
+                    NotificationId = 1, ChatGroupConversationId = "1", RecipientId = 1, ChatGroupId = 1, BotId = 1
+                },
+                new NotificationRecipient
+                {
+                    NotificationId = 1, ChatGroupConversationId = "2", RecipientId = 2, ChatGroupId = 2, BotId = 2
+                }
+            };
+            var responseMessages = new List<SendMessageResult>
+            {
+                new SendMessageResult
+                {
+                    NotificationId = 1, ConversationId = "1", SentTime = new DateTime(2021, 1, 1), ErrorCode = 0, IsIgnoreRetry = false
+                },
+                new SendMessageResult
+                {
+                    NotificationId = 1, ConversationId = "2", SentTime = new DateTime(2021, 1, 1), ErrorCode = 1, ErrorMessage = "error", IsIgnoreRetry = false
+                }
+            };
+            var service = GetService();
+
+            // Act
+            await service.Public_UpdateStatusAfterSendNotificationAsync(recipients, responseMessages);
+
+            // Assert
+            service.Received().Protected("UpdateSentNotificationStatusAsync", Arg.Is<IEnumerable<UpdateNotificationModel>>(x =>
+                x.Count() == 2 && x.First().NotificationID == 1 && x.First().RecipientID == 1 && x.First().SentTime == "2021-01-01 00:00:00"
+                && x.First().ConversationGroupID == 1 && x.First().ConversationBotID == 1 && !x.First().Retry
+                && x.First().IsSuccess && string.IsNullOrWhiteSpace(x.First().ErrMsg)
+
+                && x.Last().NotificationID == 1 && x.Last().RecipientID == 2 && x.Last().SentTime == "2021-01-01 00:00:00"
+                && x.Last().ConversationGroupID == 2 && x.Last().ConversationBotID == 2 && x.Last().Retry
+                && !x.Last().IsSuccess && x.Last().ErrMsg == "[Internal Error] error"));
         }
 
         #region DivideNotificationBatch
 
         [Fact]
         public void DivideNotificationBatch_ChannelIsSkype_ReturnAsExpectedResult()
+
         {
             // Arrange
             var notifications = new List<NotificationSendMessage>
@@ -396,47 +362,49 @@
             await baseService.DidNotReceive().ExecuteNonQueryAsync(Arg.Any<UpdateRecipientSendNotifiactionStatusCommand>());
         }
 
-        ////[Fact]
-        ////public async Task UpdateSentNotificationStatusAsync_UpdatedNotificationIds_ExpectedCallCorrectMethod()
-        ////{
-        ////    // Arrange
-        ////    var messages = fixture.Create<IEnumerable<UpdateNotificationModel>>();
-        ////    var commandResult = fixture.Create<CommandResult>();
-        ////    var command = new UpdateRecipientSendNotifiactionStatusCommand();
-        ////    var service = GetService();
-        ////    baseService.ExecuteNonQueryAsync(Arg.Do<UpdateRecipientSendNotifiactionStatusCommand>(x => command = x))
-        ////        .Returns(commandResult).AndDoes(x => command.UpdatedNotificationIds = "1");
+        [Fact]
+        public async Task UpdateSentNotificationStatusAsync_UpdatedNotificationIds_DoAsExpected()
+        {
+            // Arrange
+            var messages = fixture.Create<IEnumerable<UpdateNotificationModel>>();
+            var commandResult = fixture.Create<CommandResult>();
+            var command = new UpdateRecipientSendNotifiactionStatusCommand();
+            var service = GetService();
+            baseService.ExecuteNonQueryAsync(Arg.Do<UpdateRecipientSendNotifiactionStatusCommand>(x => command = x))
+                .Returns(commandResult).AndDoes(x => command.UpdatedNotificationIds = "1");
 
-        ////    // Act
-        ////    await service.Public_UpdateSentNotificationStatusAsync(messages);
+            // Act
+            await service.Public_UpdateSentNotificationStatusAsync(messages);
 
-        ////    // Assert
-        ////    Assert.Equal(JsonConvert.SerializeObject(messages), command.SentStatus);
-        ////    await pushSignalService.Received().OnUpdateNotificationStatusAsync("1");
-        ////    await pushSignalService.DidNotReceive().OnHasNewErrNotificationAsync();
-        ////}
+            // Assert
+            Assert.Equal(JsonConvert.SerializeObject(messages), command.SentStatus);
+            Task.Run(() => pushSignalService.Received().OnUpdateNotificationStatusAsync("1")).Wait();
+            Task.Run(() => pushSignalService.DidNotReceive().OnHasNewErrNotificationAsync()).Wait();
+        }
 
-        ////[Fact]
-        ////public async Task UpdateSentNotificationStatusAsync_HaveErrNotification_ExpectedCallCorrectMethod()
-        ////{
-        ////    // Arrange
-        ////    var messages = fixture.Create<IEnumerable<UpdateNotificationModel>>();
-        ////    var commandResult = fixture.Create<CommandResult>();
-        ////    var command = new UpdateRecipientSendNotifiactionStatusCommand();
-        ////    var service = GetService();
-        ////    baseService.ExecuteNonQueryAsync(Arg.Do<UpdateRecipientSendNotifiactionStatusCommand>(x => command = x))
-        ////        .Returns(commandResult).AndDoes(x => command.IsHaveErrNotification = true);
+        [Fact]
+        public async Task UpdateSentNotificationStatusAsync_HaveErrNotification_DoAsExpected()
+        {
+            // Arrange
+            var messages = fixture.Create<IEnumerable<UpdateNotificationModel>>();
+            var commandResult = fixture.Create<CommandResult>();
+            var command = new UpdateRecipientSendNotifiactionStatusCommand();
+            var service = GetService();
+            baseService.ExecuteNonQueryAsync(Arg.Do<UpdateRecipientSendNotifiactionStatusCommand>(x => command = x))
+                .Returns(commandResult).AndDoes(x => command.IsHaveErrNotification = true);
 
-        ////    // Act
-        ////    await service.Public_UpdateSentNotificationStatusAsync(messages);
+            // Act
+            await service.Public_UpdateSentNotificationStatusAsync(messages);
 
-        ////    // Assert
-        ////    Assert.Equal(JsonConvert.SerializeObject(messages), command.SentStatus);
-        ////    await pushSignalService.DidNotReceive().OnUpdateNotificationStatusAsync(Arg.Any<string>());
-        ////    await pushSignalService.Received().OnHasNewErrNotificationAsync();
-        ////}
+            // Assert
+            Assert.Equal(JsonConvert.SerializeObject(messages), command.SentStatus);
+            Task.Run(() => pushSignalService.DidNotReceive().OnUpdateNotificationStatusAsync(Arg.Any<string>())).Wait();
+            Task.Run(() => pushSignalService.Received().OnHasNewErrNotificationAsync()).Wait();
+        }
 
         #endregion UpdateSentNotificationStatusAsync
+
+        #region Helpers
 
         private SendNotificationServiceTestable GetService(
             bool enableMonitorSkypeBot = true,
@@ -472,6 +440,6 @@
                 monitorTelegramBotOptions);
         }
 
-        #endregion Helper
+        #endregion Helpers
     }
 }

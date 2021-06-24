@@ -49,7 +49,7 @@
             var (notifications, recipients) = await GetNotificationPlannedToSendAsync();
             if (notifications.Any())
             {
-                await UpdateFailedRecipientStatus(recipients.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
+                await UpdateFailedRecipientStatusAsync(recipients.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
                 var readyToSendRecipients = recipients.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend));
 
                 await SendNotificationToRecipients(notifications, readyToSendRecipients);
@@ -64,12 +64,12 @@
             };
             var (notifications, recipients) = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria);
 
-            await UpdateFailedRecipientStatus(recipients.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)
+            await UpdateFailedRecipientStatusAsync(recipients.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)
                     && !r.RecipientStatus.Equals(RecipientStatuses.BotServiceError)));
             await SendNotificationToRecipients(notifications, recipients.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
         }
 
-        private async Task UpdateFailedRecipientStatus(IEnumerable<NotificationRecipient> recipients, bool isRetry = false)
+        protected internal virtual async Task UpdateFailedRecipientStatusAsync(IEnumerable<NotificationRecipient> recipients, bool isRetry = false)
         {
             if (recipients.Any())
             {
@@ -157,33 +157,36 @@
                 {
                     if (response.NotificationMessageResult.Any())
                     {
-                        await UpdateStatusAfterSendNotification(originRecipients, response.NotificationMessageResult);
+                        await UpdateStatusAfterSendNotificationAsync(originRecipients, response.NotificationMessageResult);
                     }
                     else
                     {
-                        await UpdateFailedStatusForBatch(recipients, originRecipients, "Bot Service Error");
+                        await UpdateFailedStatusForBatchAsync(recipients, originRecipients, "Bot Service Error");
                     }
                 }
                 else
                 {
-                    await UpdateFailedStatusForBatch(recipients, originRecipients, $"Status Code: { response.StatusCode}");
+                    await UpdateFailedStatusForBatchAsync(recipients, originRecipients, $"Status Code: { response.StatusCode}");
                     await logService.WriteMessageSentryErrorAsync($"Send Message fail - Status Code: {response.StatusCode}");
                 }
             }
             catch (Exception exception)
             {
-                await UpdateFailedStatusForBatch(recipients, originRecipients, exception.Message);
+                await UpdateFailedStatusForBatchAsync(recipients, originRecipients, exception.Message);
                 await logService.WriteExceptionSentryErrorAsync(exception);
             }
         }
 
-        private async Task UpdateFailedStatusForBatch(IEnumerable<NotificationRecipient> recipients, IEnumerable<NotificationRecipient> originRecipients, string errorMessage)
+        protected internal virtual async Task UpdateFailedStatusForBatchAsync(
+            IEnumerable<NotificationRecipient> recipients,
+            IEnumerable<NotificationRecipient> originRecipients,
+            string errorMessage)
         {
             var updateNotiModels = new List<UpdateNotificationModel>();
             foreach (var recipient in originRecipients)
             {
                 var results = recipients.Where(r => r.NotificationId == recipient.NotificationId
-                && r.ChatGroupConversationId == recipient.ChatGroupConversationId);
+                    && r.ChatGroupConversationId == recipient.ChatGroupConversationId);
 
                 foreach (var result in results)
                 {
@@ -205,7 +208,9 @@
             await UpdateSentNotificationStatusAsync(updateNotiModels);
         }
 
-        private async Task UpdateStatusAfterSendNotification(IEnumerable<NotificationRecipient> recipients, IEnumerable<SendMessageResult> responseMessages)
+        protected internal virtual async Task UpdateStatusAfterSendNotificationAsync(
+            IEnumerable<NotificationRecipient> recipients,
+            IEnumerable<SendMessageResult> responseMessages)
         {
             var updateNotiModels = new List<UpdateNotificationModel>();
             foreach (var recipient in recipients)
@@ -224,8 +229,8 @@
                         ConversationBotID = recipient.BotId,
                         Retry = result.ErrorCode != 0 && !result.IsIgnoreRetry,
                         IsSuccess = result.ErrorCode == 0,
-                        ErrMsg = result.ErrorCode == 0 ? string.Empty :
-                        GenerateErrorMessage(RecipientStatuses.BotServiceError, result.ErrorMessage)
+                        ErrMsg = result.ErrorCode == 0
+                            ? string.Empty : GenerateErrorMessage(RecipientStatuses.BotServiceError, result.ErrorMessage)
                     };
                     updateNotiModels.Add(model);
                 }

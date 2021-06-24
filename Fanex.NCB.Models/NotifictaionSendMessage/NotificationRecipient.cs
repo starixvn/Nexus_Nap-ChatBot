@@ -29,12 +29,6 @@
 
         public string ErrorMessage { get; set; }
 
-        public RecipientStatuses RecipientStatus
-        {
-            get
-            {
-                return (RecipientStatuses)ErrCode;
-            }
-        }
+        public RecipientStatuses RecipientStatus => (RecipientStatuses)ErrCode;
     }
 }

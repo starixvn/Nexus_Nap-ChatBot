@@ -22,6 +22,26 @@
             : base(chatbotService, baseService, pushSignalService, logService, appSettingOptions, monitorChatBotOptions, monitorTelegramBotOptions)
         { }
 
+        public async Task Public_UpdateFailedRecipientStatusAsync(IEnumerable<NotificationRecipient> recipients, bool isRetry = false)
+        {
+            await base.UpdateFailedRecipientStatusAsync(recipients, isRetry);
+        }
+
+        public async Task Public_UpdateFailedStatusForBatchAsync(
+            IEnumerable<NotificationRecipient> recipients,
+            IEnumerable<NotificationRecipient> originRecipients,
+            string errorMessage)
+        {
+            await base.UpdateFailedStatusForBatchAsync(recipients, originRecipients, errorMessage);
+        }
+
+        public async Task Public_UpdateStatusAfterSendNotificationAsync(
+            IEnumerable<NotificationRecipient> recipients,
+            IEnumerable<SendMessageResult> responseMessages)
+        {
+            await base.UpdateStatusAfterSendNotificationAsync(recipients, responseMessages);
+        }
+
         public IEnumerable<(List<NotificationMessage>, List<NotificationRecipient>)> Public_DivideNotificationBatch(
             byte channelId,
             IEnumerable<NotificationSendMessage> notifications,
