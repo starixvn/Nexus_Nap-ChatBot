@@ -222,7 +222,7 @@
             Assert.True(result.IsSuccessful);
             if (model.SendImmediately)
             {
-                Task.Run(() => sendNotificationService.Received().SendNotificationImmediately(model.NotificationId)).Wait();
+                Task.Run(() => sendNotificationService.Received().SendNotificationImmediatelyAsync(model.NotificationId)).Wait();
             }
 
             Assert.Equal(model.NotificationId, command.NotificationId);
