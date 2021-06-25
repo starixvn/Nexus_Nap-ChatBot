@@ -25,7 +25,8 @@
         private readonly string Environment;
         private const int SiteMessageJobIdentify = 3;
 
-        public SiteMessageService(IBaseService baseService,
+        public SiteMessageService(
+            IBaseService baseService,
             IChatbotService chatbotService,
             IPushSignalService pushSignalService,
             ILogService logService,
@@ -38,48 +39,47 @@
             Environment = configuration.GetSection("Environment")?.Value;
         }
 
-        public async Task PullMessageFromSiteMessage()
+        public async Task PullMessageFromSiteMessageAsync()
         {
-            SystemSetting systemSettings = await GetSiteMessageSettings();
-            if (systemSettings != null)
+            var systemSetting = await baseService.GetDataEntityAsync<SystemSetting>(new GetSiteMessageSettingCriteria());
+            if (systemSetting != null)
             {
-                var messages = await GetDataFromSiteMessage(systemSettings);
-                var matchInfo = await GetMatchInfo(string.Join(",", messages.Item1.Select(m => m.MatchID).Distinct()));
+                var (messages, messageDetails) = await GetDataFromSiteMessageAsync(systemSetting);
+                var matchInfos = await GetMatchInfoAsync(string.Join(",", messages.Select(m => m.MatchID).Distinct()));
 
-                MappingData(messages.Item1, matchInfo);
-                if (messages.Item1.Any() && messages.Item2.Any())
+                MappingData(messages, matchInfos);
+                if (messages.Any() && messageDetails.Any())
                 {
-                    var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
-
-                    await OnAfterImportData(result.Item1, result.Item2, messages);
+                    var (command, notifications) = await ImportMessageToChatbotDBAsync(messages, messageDetails);
+                    await OnAfterImportDataAsync(command, notifications, messageDetails);
                 }
             }
         }
 
-        private async Task<ValueTuple<CommandResult, IEnumerable<NotificationMessage>>> ImportMessageToChatbotDB(IEnumerable<SiteMessageModel> messages, IEnumerable<SiteMessageDetail> messageDetails)
+        protected internal virtual async Task<(CommandResult, IEnumerable<NotificationMessage>)> ImportMessageToChatbotDBAsync(
+            IEnumerable<SiteMessageModel> messages,
+            IEnumerable<SiteMessageDetail> messageDetails)
         {
             var criteria = new ImportDataSiteMessageAndGetGroupTestCriteria
             {
                 MessageHeader = JsonConvert.SerializeObject(messages),
                 MessageDetail = JsonConvert.SerializeObject(messageDetails)
             };
-
-            var data = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
-
-            var notification = chatbotService.GenerateNotifificationMessageAsync(data.Item2, data.Item1);
+            var (recipients, notificationMessages) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
+            var notifications = chatbotService.GenerateNotifificationMessageAsync(notificationMessages, recipients);
             var command = new CommandResult
             {
                 Code = criteria.ErrCode,
                 Message = criteria.ErrMsg
             };
 
-            return new ValueTuple<CommandResult, IEnumerable<NotificationMessage>>(command, notification);
+            return (command, notifications);
         }
 
-        private async Task OnAfterImportData(
+        protected internal virtual async Task OnAfterImportDataAsync(
             CommandResult commandResult,
             IEnumerable<NotificationMessage> notifications,
-            (IEnumerable<SiteMessageModel>, IEnumerable<SiteMessageDetail>) messages)
+            IEnumerable<SiteMessageDetail> messageDetails)
         {
             if (!commandResult.IsSuccessful)
             {
@@ -89,19 +89,20 @@
             {
                 if (notifications.Any())
                 {
-                    await InsertMessageHistory(messages.Item2);
+                    await InsertMessageHistoryAsync(messageDetails);
 
                     await Task.WhenAll(
                         SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications),
                         SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications)
                     );
 
-                    await PushInsertedNotifications(string.Join(",", notifications.Select(item => item.NotificationId)));
+                    var notificationIds = string.Join(",", notifications.Select(item => item.NotificationId));
+                    await pushSignalService.OnInsertNotificationAsync(notificationIds);
                 }
             }
         }
 
-        private async Task InsertMessageHistory(IEnumerable<SiteMessageDetail> messageDetails)
+        protected internal virtual async Task InsertMessageHistoryAsync(IEnumerable<SiteMessageDetail> messageDetails)
         {
             var msgHistory = messageDetails.Select(x => new MessageHistory { MessageID = x.MessageID, TargetID = x.TargetID }).ToList();
             var command = new InsertMessageHistoryCommand
@@ -137,52 +138,33 @@
             }
         }
 
-        private async Task<IEnumerable<SiteMessageMatchInfoModel>> GetMatchInfo(string matchIds)
+        protected internal virtual async Task<IEnumerable<SiteMessageMatchInfoModel>> GetMatchInfoAsync(string matchIds)
         {
             var criteria = new GetEventInfoCriteria
             {
                 MatchIDLst = matchIds
             };
-
-            var matchInfo = await baseService.GetDataAsync<SiteMessageMatchInfoModel>(criteria);
-
-            return matchInfo;
+            return await baseService.GetDataAsync<SiteMessageMatchInfoModel>(criteria);
         }
 
-        private async Task<ValueTuple<IEnumerable<SiteMessageModel>, IEnumerable<SiteMessageDetail>>> GetDataFromSiteMessage(SystemSetting systemSettings)
+        protected internal virtual async Task<(IEnumerable<SiteMessageModel>, IEnumerable<SiteMessageDetail>)> GetDataFromSiteMessageAsync(SystemSetting systemSetting)
         {
-            var criteria = new GetMessageInfoFromAdminSite
+            var criteria = new GetMessageInfoFromAdminSiteCriteria
             {
-                MessageID = systemSettings.MaxMessageID,
-                BatchSize = systemSettings.BatchSize,
-                LastPostTime = systemSettings.LastPostTime,
-                MsgContentsTypeLst = systemSettings.MsgContentsTypeLst,
+                MessageID = systemSetting.MaxMessageID,
+                BatchSize = systemSetting.BatchSize,
+                LastPostTime = systemSetting.LastPostTime,
+                MsgContentsTypeLst = systemSetting.MsgContentsTypeLst,
                 Environment = Environment
             };
-            var result = await baseService.FetchMultipleAsync<SiteMessageModel, SiteMessageDetail>(criteria);
-
-            if (result.Item1.Any())
+            var (messages, messageDetails) = await baseService.FetchMultipleAsync<SiteMessageModel, SiteMessageDetail>(criteria);
+            foreach (var msg in messages)
             {
-                foreach (var msg in result.Item1)
-                {
-                    var contentEn = !string.IsNullOrWhiteSpace(msg.Content_en) ? msg.Content_en.Trim() : string.Empty;
-                    var contentCs = !string.IsNullOrWhiteSpace(msg.Content_cs) ? msg.Content_cs.Trim() : string.Empty;
-                    msg.Content_en = contentEn;
-                    msg.Content_cs = contentCs;
-                }
+                msg.Content_en = !string.IsNullOrWhiteSpace(msg.Content_en) ? msg.Content_en.Trim() : string.Empty;
+                msg.Content_cs = !string.IsNullOrWhiteSpace(msg.Content_cs) ? msg.Content_cs.Trim() : string.Empty;
             }
 
-            return result;
-        }
-
-        private async Task<SystemSetting> GetSiteMessageSettings()
-        {
-            return await baseService.GetDataEntityAsync<SystemSetting>(new GetSiteMessageSettingCriteria());
-        }
-
-        private async Task PushInsertedNotifications(string notificationIds)
-        {
-            await pushSignalService.OnInsertNotificationAsync(notificationIds);
+            return (messages, messageDetails);
         }
 
         protected internal virtual async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications)

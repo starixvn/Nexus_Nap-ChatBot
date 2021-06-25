@@ -37,7 +37,7 @@
             // Arrange
             SystemSetting setting = null;
             var service = GetService();
-            service.Protected("GetVoidingForLicenseeSystemSettingAsync").Returns(Task.FromResult(setting));
+            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns(setting);
 
             // Act
             await service.PullVoidingMessageLicenseeAsync();
@@ -55,7 +55,7 @@
             var messageDetails = new List<MessageDetail>();
             var tuple = (messages, messageDetails);
             var service = GetService();
-            service.Protected("GetVoidingForLicenseeSystemSettingAsync").Returns(Task.FromResult(setting));
+            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns(setting);
             service.Protected("GetMessageFromVoidingForLicenseeAsync", setting).Returns(Task.FromResult<(IEnumerable<Message>, IEnumerable<MessageDetail>)>(tuple));
 
             // Act
@@ -66,7 +66,7 @@
         }
 
         [Fact]
-        public async Task PullVoidingMessageLicensee_HasDataToImport_DoAsExpected()
+        public async Task PullVoidingMessageLicenseeAsync_HasDataToImport_DoAsExpected()
         {
             // Arrange
             var setting = fixture.Create<SystemSetting>();
@@ -75,7 +75,7 @@
             var command = fixture.Create<CommandResult>();
             var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
             var service = GetService();
-            service.Protected("GetVoidingForLicenseeSystemSettingAsync").Returns(Task.FromResult(setting));
+            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns(setting);
             service.Protected("GetMessageFromVoidingForLicenseeAsync", setting).Returns(Task.FromResult<(IEnumerable<Message>, IEnumerable<MessageDetail>)>((messages, messageDetails)));
             service.Protected("ImportMessageToChatbotDBAsync", messages, messageDetails).Returns(Task.FromResult<(CommandResult, IEnumerable<NotificationMessage>)>((command, notifications)));
 
@@ -83,7 +83,6 @@
             await service.PullVoidingMessageLicenseeAsync();
 
             // Assert
-            service.Received().Protected("ImportMessageToChatbotDBAsync", messages, messageDetails);
             service.Received().Protected("UpdateMessageHistoryVoidingForLicenseeAsync", command, messageDetails);
             service.Received().Protected("OnAfterImportDataAsync", command, notifications);
         }
@@ -98,13 +97,13 @@
             // Arrange
             SystemSetting setting = null;
             var service = GetService();
-            service.Protected("GetAbnormalBetSystemSettingAsync").Returns(Task.FromResult(setting));
+            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>()).Returns(setting);
 
             // Act
             await service.PullVoidingMessageInternalDepartmentAsync();
 
             // Assert
-            service.DidNotReceive().Protected("GetMessageHistoryAsync");
+            await baseService.DidNotReceive().GetDataAsync<MessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>());
         }
 
         [Fact]
@@ -114,8 +113,8 @@
             var setting = fixture.Create<SystemSetting>();
             var histories = new List<MessageHistory>();
             var service = GetService();
-            service.Protected("GetAbnormalBetSystemSettingAsync").Returns(Task.FromResult(setting));
-            service.Protected("GetMessageHistoryAsync").Returns(Task.FromResult(histories));
+            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>()).Returns(setting);
+            baseService.GetDataAsync<MessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>()).Returns(histories);
 
             // Act
             await service.PullVoidingMessageInternalDepartmentAsync();
@@ -131,8 +130,8 @@
             var setting = fixture.Create<SystemSetting>();
             var histories = fixture.Create<List<MessageHistory>>();
             var service = GetService();
-            service.Protected("GetAbnormalBetSystemSettingAsync").Returns(Task.FromResult(setting));
-            service.Protected("GetMessageHistoryAsync").Returns(Task.FromResult(histories));
+            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>()).Returns(setting);
+            baseService.GetDataAsync<MessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>()).Returns(histories);
 
             // Act
             await service.PullVoidingMessageInternalDepartmentAsync();
@@ -259,13 +258,19 @@
             var details = fixture.Create<IEnumerable<MessageDetail>>();
             var tuple = (messages, details);
             var setting = fixture.Create<SystemSetting>();
+            var criteria = new GetMessageFromSpecialDeleteCriteria();
             var service = GetService();
-            service.Protected("GetMessageFromSpecialDeleteAsync", setting).Returns(Task.FromResult<(IEnumerable<Message>, IEnumerable<MessageDetail>)>(tuple));
+            baseService.FetchMultipleAsync<Message, MessageDetail>(Arg.Do<GetMessageFromSpecialDeleteCriteria>(x => criteria = x)).Returns(tuple);
 
             // Act
             var result = await service.Public_GetMessageFromVoidingForLicenseeAsync(setting);
 
             // Assert
+            Assert.Equal(setting.MaxMessageID, criteria.MessageID);
+            Assert.Equal(setting.BatchSize, criteria.BatchSize);
+            Assert.Equal(setting.MsgContentsTypeLst, criteria.MsgContentsTypeLst);
+            Assert.Equal(setting.LastPostTime, criteria.LastPostTime);
+
             Assert.Equal(tuple, result);
 
             Assert.Collection(result.Item1,
@@ -274,45 +279,6 @@
                     Assert.Equal("content en", item.Content_en);
                     Assert.Equal("content cs", item.Content_cs);
                 });
-        }
-
-        [Fact]
-        public async Task GetMessageFromSpecialDeleteAsync_WhenCalled_ReturnAsExpectedResult()
-        {
-            // Arrange
-            var messages = fixture.Create<IEnumerable<Message>>();
-            var details = fixture.Create<IEnumerable<MessageDetail>>();
-            var tuple = (messages, details);
-            var setting = fixture.Create<SystemSetting>();
-            var criteria = new GetMessageFromSpecialDeleteCriteria();
-            var service = GetService();
-            baseService.FetchMultipleAsync<Message, MessageDetail>(Arg.Do<GetMessageFromSpecialDeleteCriteria>(x => criteria = x)).Returns(tuple);
-
-            // Act
-            var result = await service.Public_GetMessageFromSpecialDeleteAsync(setting);
-
-            // Assert
-            Assert.Equal(tuple, result);
-
-            Assert.Equal(setting.MaxMessageID, criteria.MessageID);
-            Assert.Equal(setting.BatchSize, criteria.BatchSize);
-            Assert.Equal(setting.MsgContentsTypeLst, criteria.MsgContentsTypeLst);
-            Assert.Equal(setting.LastPostTime, criteria.LastPostTime);
-        }
-
-        [Fact]
-        public async Task GetVoidingForLicenseeSystemSettingAsync_WhenCalled_ReturnAsExpectedResult()
-        {
-            // Arrange
-            var setting = fixture.Create<SystemSetting>();
-            var service = GetService();
-            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns(setting);
-
-            // Act
-            var result = await service.Public_GetVoidingForLicenseeSystemSettingAsync();
-
-            // Assert
-            Assert.Equal(setting, result);
         }
 
         [Fact]
@@ -336,41 +302,11 @@
         }
 
         [Fact]
-        public async Task GetMessageHistoryAsync_WhenCalled_ReturnAsExpectedResult()
-        {
-            // Arrange
-            var messageHistories = fixture.Create<List<MessageHistory>>();
-            var service = GetService();
-            baseService.GetDataAsync<MessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>()).Returns(messageHistories);
-
-            // Act
-            var result = await service.Public_GetMessageHistoryAsync();
-
-            // Assert
-            Assert.Equal(messageHistories, result);
-        }
-
-        [Fact]
-        public async Task GetAbnormalBetSystemSettingAsync_WhenCalled_ReturnAsExpectedResult()
-        {
-            // Arrange
-            var setting = fixture.Create<SystemSetting>();
-            var service = GetService();
-            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>()).Returns(setting);
-
-            // Act
-            var result = await service.Public_GetAbnormalBetSystemSettingAsync();
-
-            // Assert
-            Assert.Equal(setting, result);
-        }
-
-        [Fact]
         public async Task GetAbnormalBetsMessageAsync_WhenCalled_ReturnAsExpectedResult()
         {
             // Arrange
             var setting = fixture.Create<SystemSetting>();
-            var messageHistories = fixture.Create<List<MessageHistory>>();
+            var messageHistories = fixture.Create<IEnumerable<MessageHistory>>();
             var messages = fixture.Create<IEnumerable<Message>>();
             var criteria = new GetAbnormalBetsMessageCriteria();
             var service = GetService();
@@ -382,7 +318,7 @@
             // Assert
             Assert.Equal(messages, result);
 
-            Assert.Equal(XmlHelper<MessageHistory>.Serialize(messageHistories), criteria.MessageIDLst);
+            Assert.Equal(XmlHelper<MessageHistory>.Serialize(messageHistories.ToList()), criteria.MessageIDLst);
             Assert.Equal(setting.BatchSize, criteria.BatchSize);
             Assert.Equal(setting.MsgContentsTypeLst, criteria.MsgContentsTypeLst);
         }
@@ -523,7 +459,7 @@
         }
 
         [Fact]
-        public async Task SendMessageByChannelAsync_Exception_ExpectedWriteLog()
+        public async Task SendMessageByChannelAsync_Exception_DoAsExpected()
         {
             // Arrange
             var channelId = fixture.Create<byte>();

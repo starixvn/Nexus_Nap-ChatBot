@@ -49,8 +49,8 @@
             var (notifications, recipients) = await GetNotificationPlannedToSendAsync();
             if (notifications.Any())
             {
-                await UpdateFailedRecipientStatusAsync(recipients.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
-                var readyToSendRecipients = recipients.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend));
+                await UpdateFailedRecipientStatusAsync(recipients.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)).ToList());
+                var readyToSendRecipients = recipients.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)).ToList();
 
                 await SendNotificationToRecipients(notifications, readyToSendRecipients);
             }
@@ -65,8 +65,10 @@
             var (notifications, recipients) = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria);
 
             await UpdateFailedRecipientStatusAsync(recipients.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)
-                    && !r.RecipientStatus.Equals(RecipientStatuses.BotServiceError)));
-            await SendNotificationToRecipients(notifications, recipients.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)));
+                    && !r.RecipientStatus.Equals(RecipientStatuses.BotServiceError)).ToList());
+
+            var readyToSendRecipients = recipients.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)).ToList();
+            await SendNotificationToRecipients(notifications, readyToSendRecipients);
         }
 
         protected internal virtual async Task UpdateFailedRecipientStatusAsync(IEnumerable<NotificationRecipient> recipients, bool isRetry = false)
@@ -113,6 +115,7 @@
             {
                 PushSignalUpdateNotiStatus(criteria.UpdatedNotificationIds);
             }
+
             return notifications;
         }
 
@@ -123,7 +126,9 @@
                 .Select(group => group.FirstOrDefault()).OrderBy(r => r.NotificationId);
         }
 
-        private async Task SendNotificationToRecipients(IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
+        protected internal virtual async Task SendNotificationToRecipients(
+            IEnumerable<NotificationSendMessage> notifications,
+            IEnumerable<NotificationRecipient> recipients)
         {
             await Task.WhenAll(
                 SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications, recipients),

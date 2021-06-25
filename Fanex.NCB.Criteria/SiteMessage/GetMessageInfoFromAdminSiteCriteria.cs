@@ -3,7 +3,7 @@
     using System;
     using Fanex.Data.Repository;
 
-    public class GetMessageInfoFromAdminSite : CriteriaBase
+    public class GetMessageInfoFromAdminSiteCriteria : CriteriaBase
     {
         public int MessageID { get; set; }
 

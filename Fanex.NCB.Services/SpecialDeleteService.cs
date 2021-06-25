@@ -46,10 +46,10 @@
 
         public async Task PullVoidingMessageLicenseeAsync()
         {
-            var systemSettings = await GetVoidingForLicenseeSystemSettingAsync();
-            if (systemSettings != null)
+            var systemSetting = await baseService.GetDataEntityAsync<SystemSetting>(new GetSystemSettingCriteria());
+            if (systemSetting != null)
             {
-                var (messages, details) = await GetMessageFromVoidingForLicenseeAsync(systemSettings);
+                var (messages, details) = await GetMessageFromVoidingForLicenseeAsync(systemSetting);
                 if (messages.Any() && details.Any())
                 {
                     var (command, notifications) = await ImportMessageToChatbotDBAsync(messages, details);
@@ -68,7 +68,9 @@
             }
         }
 
-        protected internal virtual async Task OnAfterImportDataAsync(CommandResult commandResult, IEnumerable<NotificationMessage> notifications)
+        protected internal virtual async Task OnAfterImportDataAsync(
+            CommandResult commandResult,
+            IEnumerable<NotificationMessage> notifications)
         {
             if (!commandResult.IsSuccessful)
             {
@@ -82,7 +84,9 @@
                         SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications),
                         SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications)
                     );
-                    await pushSignalService.OnInsertNotificationAsync(string.Join(",", notifications.Select(item => item.NotificationId)));
+
+                    var notificationIds = string.Join(",", notifications.Select(item => item.NotificationId));
+                    await pushSignalService.OnInsertNotificationAsync(notificationIds);
                 }
             }
         }
@@ -96,7 +100,6 @@
                 MessageHeader = JsonConvert.SerializeObject(messages),
                 MessageDetail = JsonConvert.SerializeObject(messageDetails)
             };
-
             var (recipients, notificationMessages) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
             var notifications = chatbotService.GenerateNotifificationMessageAsync(notificationMessages, recipients);
             var command = new CommandResult
@@ -108,9 +111,17 @@
             return (command, notifications);
         }
 
-        protected internal virtual async Task<(IEnumerable<Message>, IEnumerable<MessageDetail>)> GetMessageFromVoidingForLicenseeAsync(SystemSetting systemSettings)
+        protected internal virtual async Task<(IEnumerable<Message>, IEnumerable<MessageDetail>)> GetMessageFromVoidingForLicenseeAsync(SystemSetting systemSetting)
         {
-            var (messages, details) = await GetMessageFromSpecialDeleteAsync(systemSettings);
+            var criteria = new GetMessageFromSpecialDeleteCriteria
+            {
+                MessageID = systemSetting.MaxMessageID,
+                BatchSize = systemSetting.BatchSize,
+                MsgContentsTypeLst = systemSetting.MsgContentsTypeLst,
+                LastPostTime = systemSetting.LastPostTime,
+                Environment = Environment
+            };
+            var (messages, details) = await baseService.FetchMultipleAsync<Message, MessageDetail>(criteria);
             foreach (Message msg in messages)
             {
                 msg.Content_en = !string.IsNullOrWhiteSpace(msg.Content_en) ? msg.Content_en.Trim() : string.Empty;
@@ -120,46 +131,29 @@
             return (messages, details);
         }
 
-        protected internal virtual async Task<ValueTuple<IEnumerable<Message>, IEnumerable<MessageDetail>>> GetMessageFromSpecialDeleteAsync(SystemSetting systemSettings)
-        {
-            var criteria = new GetMessageFromSpecialDeleteCriteria
-            {
-                MessageID = systemSettings.MaxMessageID,
-                BatchSize = systemSettings.BatchSize,
-                MsgContentsTypeLst = systemSettings.MsgContentsTypeLst,
-                LastPostTime = systemSettings.LastPostTime,
-                Environment = Environment
-            };
-
-            return await baseService.FetchMultipleAsync<Message, MessageDetail>(criteria);
-        }
-
-        protected internal virtual async Task<SystemSetting> GetVoidingForLicenseeSystemSettingAsync()
-        {
-            var criteria = new GetSystemSettingCriteria();
-            return await baseService.GetDataEntityAsync<SystemSetting>(criteria);
-        }
-
         #endregion Pull voiding ticket send to Licensee
 
         #region Pull voiding ticket and send to internal department
 
         public async Task PullVoidingMessageInternalDepartmentAsync()
         {
-            var systemSettings = await GetAbnormalBetSystemSettingAsync();
-            if (systemSettings != null)
+            var systemSetting = await baseService.GetDataEntityAsync<SystemSetting>(new GetAbnormalBetSystemSettingCriteria());
+            if (systemSetting != null)
             {
-                var messageHistories = await GetMessageHistoryAsync();
+                var criteria = new GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria();
+                var messageHistories = await baseService.GetDataAsync<MessageHistory>(criteria);
                 if (messageHistories.Any())
                 {
-                    await GetMessageAndImportToChatbotAsync(messageHistories, systemSettings);
+                    await GetMessageAndImportToChatbotAsync(messageHistories, systemSetting);
                 }
             }
         }
 
-        protected internal virtual async Task GetMessageAndImportToChatbotAsync(List<MessageHistory> messageHistories, SystemSetting settings)
+        protected internal virtual async Task GetMessageAndImportToChatbotAsync(
+            IEnumerable<MessageHistory> messageHistories,
+            SystemSetting setting)
         {
-            var messages = await GetAbnormalBetsMessageAsync(settings, messageHistories);
+            var messages = await GetAbnormalBetsMessageAsync(setting, messageHistories);
             if (messages.Any())
             {
                 var listMsg = messages.Select(m => new MessageHistory { MessageID = m.MessageID, RequestID = m.RequestID }).ToList();
@@ -169,7 +163,7 @@
                 {
                     var histories = abnormalMessageHistories
                         .Where(history => abnormalMessages.Where(message => message.Type == AbnormalAccountType)
-                                                           .Any(m => m.MessageID == history.MessageId));
+                                    .Any(m => m.MessageID == history.MessageId));
                     var updatedUsernames = await GetAbnormalAccountUpdatedUsernameAsync(histories);
                     UpdateAbnormalAccountUpdatedUsernames(abnormalMessages, updatedUsernames);
                 }
@@ -207,13 +201,6 @@
             }
         }
 
-        protected internal virtual async Task<List<MessageHistory>> GetMessageHistoryAsync()
-        {
-            var criteria = new GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria();
-            var result = await baseService.GetDataAsync<MessageHistory>(criteria);
-            return result.ToList();
-        }
-
         private static void MappingAbnormalBetsData(IEnumerable<Message> messages, IEnumerable<AbnormalMessage> voidingHistories)
         {
             foreach (var msg in voidingHistories)
@@ -226,19 +213,13 @@
             }
         }
 
-        protected internal virtual async Task<SystemSetting> GetAbnormalBetSystemSettingAsync()
-        {
-            var criteria = new GetAbnormalBetSystemSettingCriteria();
-            return await baseService.GetDataEntityAsync<SystemSetting>(criteria);
-        }
-
         protected internal virtual async Task<IEnumerable<Message>> GetAbnormalBetsMessageAsync(
             SystemSetting setting,
-            List<MessageHistory> listMsgs)
+            IEnumerable<MessageHistory> listMsgs)
         {
             var criteria = new GetAbnormalBetsMessageCriteria
             {
-                MessageIDLst = XmlHelper<MessageHistory>.Serialize(listMsgs),
+                MessageIDLst = XmlHelper<MessageHistory>.Serialize(listMsgs.ToList()),
                 BatchSize = setting.BatchSize,
                 MsgContentsTypeLst = setting.MsgContentsTypeLst,
                 Environment = Environment
@@ -250,7 +231,6 @@
         protected internal virtual async Task<(IEnumerable<AbnormalMessage>, IEnumerable<AbnormalMessageHistory>)> GetVoidingHistoryAsync(List<MessageHistory> messages)
         {
             string messageIdLst = XmlHelper<MessageHistory>.Serialize(messages);
-
             if (!string.IsNullOrWhiteSpace(messageIdLst))
             {
                 var criteria = new GetAbnormalBetInfoCriteria

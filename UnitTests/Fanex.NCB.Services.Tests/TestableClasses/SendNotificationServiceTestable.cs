@@ -27,6 +27,11 @@
             await base.UpdateFailedRecipientStatusAsync(recipients, isRetry);
         }
 
+        public async Task<(IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>)> Public_GetNotificationPlannedToSendAsync()
+        {
+            return await base.GetNotificationPlannedToSendAsync();
+        }
+
         public async Task Public_SendMultiMessageAsync(
             byte channelId,
             IEnumerable<NotificationMessage> messages,

@@ -237,28 +237,28 @@
             Assert.Equal(httpResponse, result);
         }
 
-        [Fact]
-        public async Task GetTokenAsync_WhenCalled_ReturnAsExpectedResult()
-        {
-            // Arrange
-            var token = fixture.Create<ChatbotToken>();
-            var httpMessageHandler = new MockHttpMessageHandler(new HttpResponseMessage()
-            {
-                StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(JsonConvert.SerializeObject(token))
-            });
-            var httpClient = new HttpClient(httpMessageHandler);
-            var service = GetService();
-            httpClientFactory.CreateClient().Returns(httpClient);
+        ////[Fact]
+        ////public async Task GetTokenAsync_WhenCalled_ReturnAsExpectedResult()
+        ////{
+        ////    // Arrange
+        ////    var token = fixture.Create<ChatbotToken>();
+        ////    var httpMessageHandler = new MockHttpMessageHandler(new HttpResponseMessage()
+        ////    {
+        ////        StatusCode = HttpStatusCode.OK,
+        ////        Content = new StringContent(JsonConvert.SerializeObject(token))
+        ////    });
+        ////    var httpClient = new HttpClient(httpMessageHandler);
+        ////    var service = GetService();
+        ////    httpClientFactory.CreateClient().Returns(httpClient);
 
-            // Act
-            var result = await service.Public_GetTokenAsync();
+        ////    // Act
+        ////    var result = await service.Public_GetTokenAsync();
 
-            // Assert
-            Assert.Equal(token.TokenType, result.TokenType);
-            Assert.Equal(token.ExpiresIn, result.ExpiresIn);
-            Assert.Equal(token.AccessToken, result.AccessToken);
-        }
+        ////    // Assert
+        ////    Assert.Equal(token.TokenType, result.TokenType);
+        ////    Assert.Equal(token.ExpiresIn, result.ExpiresIn);
+        ////    Assert.Equal(token.AccessToken, result.AccessToken);
+        ////}
 
         #region Helpers
 

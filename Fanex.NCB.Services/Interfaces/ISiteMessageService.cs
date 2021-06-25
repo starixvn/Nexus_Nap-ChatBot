@@ -4,6 +4,6 @@
 
     public interface ISiteMessageService
     {
-        Task PullMessageFromSiteMessage();
+        Task PullMessageFromSiteMessageAsync();
     }
 }

@@ -26,7 +26,7 @@
 
         public override async Task ExecuteJobAsync()
         {
-            await siteMessageService.PullMessageFromSiteMessage();
+            await siteMessageService.PullMessageFromSiteMessageAsync();
         }
     }
 }

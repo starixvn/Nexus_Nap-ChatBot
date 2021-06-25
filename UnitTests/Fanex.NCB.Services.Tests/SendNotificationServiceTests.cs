@@ -29,6 +29,68 @@
         private ILogService logService;
         private MonitorTelegramBot monitorTelegramBot;
 
+        #region ScanAndSendNotificationAsync
+
+        [Fact]
+        public async Task ScanAndSendNotificationAsync_NotificationsAreEmpty_DoNothing()
+        {
+            // Arrage
+            var notifications = new List<NotificationSendMessage>();
+            var recipients = new List<NotificationRecipient>();
+            var service = GetService();
+            service.Protected("GetNotificationPlannedToSendAsync").
+                Returns(Task.FromResult<(IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>)>((notifications, recipients)));
+
+            // Act
+            await service.ScanAndSendNotificationAsync();
+
+            // Assert
+            service.DidNotReceive().Protected("UpdateFailedRecipientStatusAsync", Arg.Any<IEnumerable<NotificationRecipient>>(), false);
+            service.DidNotReceive().Protected("SendNotificationToRecipients", notifications, Arg.Any<IEnumerable<NotificationRecipient>>());
+        }
+
+        [Fact]
+        public async Task ScanAndSendNotificationAsync_HaveNotifications_DoAsExpected()
+        {
+            // Arrage
+            var notifications = fixture.Create<IEnumerable<NotificationSendMessage>>();
+            var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var service = GetService();
+            service.Protected("GetNotificationPlannedToSendAsync").
+                Returns(Task.FromResult<(IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>)>((notifications, recipients)));
+
+            // Act
+            await service.ScanAndSendNotificationAsync();
+
+            // Assert
+            service.Received().Protected("UpdateFailedRecipientStatusAsync", Arg.Any<IEnumerable<NotificationRecipient>>(), false);
+            service.Received().Protected("SendNotificationToRecipients", notifications, Arg.Any<IEnumerable<NotificationRecipient>>());
+        }
+
+        #endregion ScanAndSendNotificationAsync
+
+        [Fact]
+        public async Task SendNotificationImmediatelyAsync_WhenCalled_DoAsExpected()
+        {
+            // Arrage
+            var notifiactionId = fixture.Create<int>();
+            var notifications = fixture.Create<IEnumerable<NotificationSendMessage>>();
+            var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var criteria = new GetNotificationByIdCriteria();
+            var service = GetService();
+            baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Do<GetNotificationByIdCriteria>(x => criteria = x))
+                .Returns((notifications, recipients));
+
+            // Act
+            await service.SendNotificationImmediatelyAsync(notifiactionId);
+
+            // Assert
+            Assert.Equal(notifiactionId, criteria.NotificationId);
+
+            service.Received().Protected("UpdateFailedRecipientStatusAsync", Arg.Any<IEnumerable<NotificationRecipient>>(), false);
+            service.Received().Protected("SendNotificationToRecipients", notifications, Arg.Any<IEnumerable<NotificationRecipient>>());
+        }
+
         #region UpdateFailedRecipientStatusAsync
 
         [Fact]
@@ -46,7 +108,7 @@
         }
 
         [Fact]
-        public async Task UpdateFailedRecipientStatusAsync_RecipientsHaveData_DoAsExpected()
+        public async Task UpdateFailedRecipientStatusAsync_HaveRecipients_DoAsExpected()
         {
             // Arrange
             var recipients = new List<NotificationRecipient>
@@ -69,6 +131,51 @@
         }
 
         #endregion UpdateFailedRecipientStatusAsync
+
+        #region GetNotificationPlannedToSendAsync
+
+        [Fact]
+        public async Task GetNotificationPlannedToSendAsync_DoNotHaveUpdatedNotificationIds_ReturnAsExpectedResult()
+        {
+            // Arrange
+            var notifications = fixture.Create<IEnumerable<NotificationSendMessage>>();
+            var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var service = GetService();
+            baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Any<GetNotificationsToSendCriteria>())
+                .Returns((notifications, recipients));
+
+            // Act
+            var result = await service.Public_GetNotificationPlannedToSendAsync();
+
+            // Assert
+            Assert.Equal(notifications, result.Item1);
+            Assert.Equal(recipients, result.Item2);
+
+            Task.Run(() => pushSignalService.DidNotReceive().OnUpdateNotificationStatusAsync(Arg.Any<string>())).Wait();
+        }
+
+        [Fact]
+        public async Task GetNotificationPlannedToSendAsync_HaveUpdatedNotificationIds_ReturnAsExpectedResult()
+        {
+            // Arrange
+            var notifications = fixture.Create<IEnumerable<NotificationSendMessage>>();
+            var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var criteria = new GetNotificationsToSendCriteria();
+            var service = GetService();
+            baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Do<GetNotificationsToSendCriteria>(x => criteria = x))
+                .Returns((notifications, recipients)).AndDoes(x => criteria.UpdatedNotificationIds = "1");
+
+            // Act
+            var result = await service.Public_GetNotificationPlannedToSendAsync();
+
+            // Assert
+            Assert.Equal(notifications, result.Item1);
+            Assert.Equal(recipients, result.Item2);
+
+            Task.Run(() => pushSignalService.Received().OnUpdateNotificationStatusAsync("1")).Wait();
+        }
+
+        #endregion GetNotificationPlannedToSendAsync
 
         #region SendMultiMessageAsync
 

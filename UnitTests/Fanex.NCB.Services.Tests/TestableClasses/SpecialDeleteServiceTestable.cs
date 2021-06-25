@@ -38,19 +38,9 @@
             return await base.ImportMessageToChatbotDBAsync(messages, messageDetails);
         }
 
-        public async Task<(IEnumerable<Message>, IEnumerable<MessageDetail>)> Public_GetMessageFromVoidingForLicenseeAsync(SystemSetting systemSettings)
+        public async Task<(IEnumerable<Message>, IEnumerable<MessageDetail>)> Public_GetMessageFromVoidingForLicenseeAsync(SystemSetting systemSetting)
         {
-            return await base.GetMessageFromVoidingForLicenseeAsync(systemSettings);
-        }
-
-        public async Task<ValueTuple<IEnumerable<Message>, IEnumerable<MessageDetail>>> Public_GetMessageFromSpecialDeleteAsync(SystemSetting systemSettings)
-        {
-            return await base.GetMessageFromSpecialDeleteAsync(systemSettings);
-        }
-
-        public async Task<SystemSetting> Public_GetVoidingForLicenseeSystemSettingAsync()
-        {
-            return await base.GetVoidingForLicenseeSystemSettingAsync();
+            return await base.GetMessageFromVoidingForLicenseeAsync(systemSetting);
         }
 
         public async Task<IEnumerable<VoidingHistoryUsername>> Public_GetAbnormalAccountUpdatedUsernameAsync(IEnumerable<AbnormalMessageHistory> messages)
@@ -58,19 +48,9 @@
             return await base.GetAbnormalAccountUpdatedUsernameAsync(messages);
         }
 
-        public async Task<List<MessageHistory>> Public_GetMessageHistoryAsync()
-        {
-            return await base.GetMessageHistoryAsync();
-        }
-
-        public async Task<SystemSetting> Public_GetAbnormalBetSystemSettingAsync()
-        {
-            return await base.GetAbnormalBetSystemSettingAsync();
-        }
-
         public async Task<IEnumerable<Message>> Public_GetAbnormalBetsMessageAsync(
             SystemSetting setting,
-            List<MessageHistory> listMsgs)
+            IEnumerable<MessageHistory> listMsgs)
         {
             return await base.GetAbnormalBetsMessageAsync(setting, listMsgs);
         }
