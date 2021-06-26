@@ -21,6 +21,7 @@
         private readonly IBaseService baseService;
         private readonly IPushSignalService pushSignalService;
         private readonly IChatbotService chatbotService;
+        private readonly ILogService logService;
         private readonly string Environment;
         private const int AbnormalAccountType = 2;
         private const int VoidTicketForLicenseeJobIdentity = 1;
@@ -30,12 +31,14 @@
         public SpecialDeleteService(IBaseService baseService,
             IChatbotService chatbotService,
             IPushSignalService pushSignalService,
-            IConfiguration configuration
+            IConfiguration configuration,
+            ILogService logService
             )
         {
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;
             this.chatbotService = chatbotService;
+            this.logService = logService;
             Environment = configuration.GetSection("Environment")?.Value;
         }
 
@@ -48,6 +51,7 @@
             if (systemSettings != null)
             {
                 var messages = await GetMessageFromVoidingForLicensee(systemSettings);
+
                 if (messages.Item1.Any() && messages.Item2.Any())
                 {
                     var result = await ImportMessageToChatbotDB(messages.Item1, messages.Item2);
@@ -156,6 +160,7 @@
             if (systemSettings != null)
             {
                 var listMsgYesterdayToCurrent = await GetMessageListFromYesterdayToCurrent();
+                logService.WriteLogFileInfo($"NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage: {JsonConvert.SerializeObject(listMsgYesterdayToCurrent)}");
 
                 if (listMsgYesterdayToCurrent.Any())
                 {
@@ -167,18 +172,31 @@
         private async Task GetMessageAndImportToChatbot(List<MessageHistory> listMsgYesterdayToCurrent, SystemSetting settings)
         {
             var messages = await GetAbnormalBetsMessages(settings, listMsgYesterdayToCurrent);
+            logService.WriteLogFileInfo($"NAP_Chatbot_SpecialDeleteMsg_AbnormalBets_Sel: {JsonConvert.SerializeObject(messages)}");
 
             if (messages.Any())
             {
                 var listMsg = messages.Select(m => new MessageHistory { MessageID = m.MessageID, RequestID = m.RequestID }).ToList();
 
                 var voidingHistories = await GetVoidingHistory(listMsg);
+                logService.WriteLogFileInfo($"RequestID: {string.Join(",", voidingHistories.Item1.Select(x => x.RequestIDLst))}");
+                logService.WriteLogFileInfo("db_ACC, NAP_Chatbot_SpecialDelete_AbnormalBets_Sel : ");
+                logService.WriteLogFileInfo($"dataset1: {JsonConvert.SerializeObject(voidingHistories.Item1)}");
+                logService.WriteLogFileInfo($"dataset2: {JsonConvert.SerializeObject(voidingHistories.Item2)}");
+
                 if (voidingHistories.Item1.Any(m => m.Type == AbnormalAccountType))
                 {
                     var abnormalMessges = voidingHistories.Item2
                         .Where(i2 => voidingHistories.Item1.Where(i1 => i1.Type == AbnormalAccountType)
                                                            .Any(m => m.MessageID == i2.MessageId));
+                    logService.WriteLogFileInfo("Input NAP_Chatbot_SpecialDelete_AbnormalBets_GetUsernameList");
+                    logService.WriteLogFileInfo(JsonConvert.SerializeObject(abnormalMessges));
+
                     var updatedUsernames = await GetAbnormalAccountUpdatedUsernames(abnormalMessges);
+
+                    logService.WriteLogFileInfo("Result NAP_Chatbot_SpecialDelete_AbnormalBets_GetUsernameList:");
+                    logService.WriteLogFileInfo(JsonConvert.SerializeObject(updatedUsernames));
+
                     UpdateAbnormalAccountUpdatedUsernames(voidingHistories.Item1, updatedUsernames);
                 }
 
@@ -200,16 +218,21 @@
             return result;
         }
 
-        private static void UpdateAbnormalAccountUpdatedUsernames(IEnumerable<AbnormalMessage> origMessages, IEnumerable<VoidingHistoryUsername> updatedUsernames)
+        private void UpdateAbnormalAccountUpdatedUsernames(IEnumerable<AbnormalMessage> origMessages, IEnumerable<VoidingHistoryUsername> updatedUsernames)
         {
             if (updatedUsernames.Any())
             {
+                logService.WriteLogFileInfo("Before mapping new usernameLst:");
+                logService.WriteLogFileInfo(JsonConvert.SerializeObject(origMessages));
                 foreach (var message in origMessages)
                 {
                     message.UsernameLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.UsernameLst));
                     message.CreditSiteLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.CreditSiteLst));
                     message.DepositSiteLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.DepositSiteLst));
                 }
+
+                logService.WriteLogFileInfo("After mapping new usernameLst:");
+                logService.WriteLogFileInfo(JsonConvert.SerializeObject(origMessages));
             }
         }
 
