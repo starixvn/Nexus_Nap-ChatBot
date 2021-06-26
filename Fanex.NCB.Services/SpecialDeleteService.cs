@@ -161,6 +161,7 @@
             {
                 var listMsgYesterdayToCurrent = await GetMessageListFromYesterdayToCurrent();
                 logService.WriteLogFileError("Test");
+                logService.WriteLogFileInfo("Test nè");
                 logService.WriteLogFileInfo($"NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage: {JsonConvert.SerializeObject(listMsgYesterdayToCurrent)}");
 
                 if (listMsgYesterdayToCurrent.Any())
