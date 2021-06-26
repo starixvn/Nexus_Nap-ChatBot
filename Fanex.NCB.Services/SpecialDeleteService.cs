@@ -176,11 +176,7 @@
 
                 if (voidingHistories.Item1.Any(m => m.Type == AbnormalAccountType))
                 {
-                    var abnormalMessges = voidingHistories.Item2
-                        .Where(i2 => voidingHistories.Item1.Where(i1 => i1.Type == AbnormalAccountType)
-                                                           .Any(m => m.MessageID == i2.MessageId));
-
-                    var updatedUsernames = await GetAbnormalAccountUpdatedUsernames(abnormalMessges);
+                    var updatedUsernames = await GetAbnormalAccountUpdatedUsernames(voidingHistories.Item2);
 
                     UpdateAbnormalAccountUpdatedUsernames(voidingHistories.Item1, updatedUsernames);
                 }
@@ -212,9 +208,9 @@
                     var updatedMsg = updatedUsernames.Where(m => m.MessageID == message.MessageID);
                     if (updatedMsg.Any())
                     {
-                        message.UsernameLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.UsernameLst));
-                        message.CreditSiteLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.CreditSiteLst));
-                        message.DepositSiteLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.DepositSiteLst));
+                        message.UsernameLst = string.Join(",", updatedMsg.Select(x => x.UsernameLst));
+                        message.CreditSiteLst = string.Join(",", updatedMsg.Select(x => x.CreditSiteLst));
+                        message.DepositSiteLst = string.Join(",", updatedMsg.Select(x => x.DepositSiteLst));
                     }
                 }
             }
