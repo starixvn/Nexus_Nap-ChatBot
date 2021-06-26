@@ -160,9 +160,7 @@
             if (systemSettings != null)
             {
                 var listMsgYesterdayToCurrent = await GetMessageListFromYesterdayToCurrent();
-                logService.WriteLogFileError("Test");
-                logService.WriteLogFileInfo("Test nè");
-                logService.WriteLogFileInfo($"NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage: {JsonConvert.SerializeObject(listMsgYesterdayToCurrent)}");
+                logService.WriteLogFileError($"NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage: {JsonConvert.SerializeObject(listMsgYesterdayToCurrent)}");
 
                 if (listMsgYesterdayToCurrent.Any())
                 {
@@ -174,30 +172,30 @@
         private async Task GetMessageAndImportToChatbot(List<MessageHistory> listMsgYesterdayToCurrent, SystemSetting settings)
         {
             var messages = await GetAbnormalBetsMessages(settings, listMsgYesterdayToCurrent);
-            logService.WriteLogFileInfo($"NAP_Chatbot_SpecialDeleteMsg_AbnormalBets_Sel: {JsonConvert.SerializeObject(messages)}");
+            logService.WriteLogFileError($"NAP_Chatbot_SpecialDeleteMsg_AbnormalBets_Sel: {JsonConvert.SerializeObject(messages)}");
 
             if (messages.Any())
             {
                 var listMsg = messages.Select(m => new MessageHistory { MessageID = m.MessageID, RequestID = m.RequestID }).ToList();
 
                 var voidingHistories = await GetVoidingHistory(listMsg);
-                logService.WriteLogFileInfo($"RequestID: {string.Join(",", voidingHistories.Item1.Select(x => x.RequestIDLst))}");
-                logService.WriteLogFileInfo("db_ACC, NAP_Chatbot_SpecialDelete_AbnormalBets_Sel : ");
-                logService.WriteLogFileInfo($"dataset1: {JsonConvert.SerializeObject(voidingHistories.Item1)}");
-                logService.WriteLogFileInfo($"dataset2: {JsonConvert.SerializeObject(voidingHistories.Item2)}");
+                logService.WriteLogFileError($"RequestID: {string.Join(",", voidingHistories.Item1.Select(x => x.RequestIDLst))}");
+                logService.WriteLogFileError("db_ACC, NAP_Chatbot_SpecialDelete_AbnormalBets_Sel : ");
+                logService.WriteLogFileError($"dataset1: {JsonConvert.SerializeObject(voidingHistories.Item1)}");
+                logService.WriteLogFileError($"dataset2: {JsonConvert.SerializeObject(voidingHistories.Item2)}");
 
                 if (voidingHistories.Item1.Any(m => m.Type == AbnormalAccountType))
                 {
                     var abnormalMessges = voidingHistories.Item2
                         .Where(i2 => voidingHistories.Item1.Where(i1 => i1.Type == AbnormalAccountType)
                                                            .Any(m => m.MessageID == i2.MessageId));
-                    logService.WriteLogFileInfo("Input NAP_Chatbot_SpecialDelete_AbnormalBets_GetUsernameList");
-                    logService.WriteLogFileInfo(JsonConvert.SerializeObject(abnormalMessges));
+                    logService.WriteLogFileError("Input NAP_Chatbot_SpecialDelete_AbnormalBets_GetUsernameList");
+                    logService.WriteLogFileError(JsonConvert.SerializeObject(abnormalMessges));
 
                     var updatedUsernames = await GetAbnormalAccountUpdatedUsernames(abnormalMessges);
 
-                    logService.WriteLogFileInfo("Result NAP_Chatbot_SpecialDelete_AbnormalBets_GetUsernameList:");
-                    logService.WriteLogFileInfo(JsonConvert.SerializeObject(updatedUsernames));
+                    logService.WriteLogFileError("Result NAP_Chatbot_SpecialDelete_AbnormalBets_GetUsernameList:");
+                    logService.WriteLogFileError(JsonConvert.SerializeObject(updatedUsernames));
 
                     UpdateAbnormalAccountUpdatedUsernames(voidingHistories.Item1, updatedUsernames);
                 }
@@ -224,8 +222,8 @@
         {
             if (updatedUsernames.Any())
             {
-                logService.WriteLogFileInfo("Before mapping new usernameLst:");
-                logService.WriteLogFileInfo(JsonConvert.SerializeObject(origMessages));
+                logService.WriteLogFileError("Before mapping new usernameLst:");
+                logService.WriteLogFileError(JsonConvert.SerializeObject(origMessages));
                 foreach (var message in origMessages)
                 {
                     message.UsernameLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.UsernameLst));
@@ -233,8 +231,8 @@
                     message.DepositSiteLst = string.Join(",", updatedUsernames.Where(m => m.MessageID == message.MessageID)?.Select(x => x.DepositSiteLst));
                 }
 
-                logService.WriteLogFileInfo("After mapping new usernameLst:");
-                logService.WriteLogFileInfo(JsonConvert.SerializeObject(origMessages));
+                logService.WriteLogFileError("After mapping new usernameLst:");
+                logService.WriteLogFileError(JsonConvert.SerializeObject(origMessages));
             }
         }
 
