@@ -4,6 +4,12 @@ DELIMITER //
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_Channel_Sel (
 	IN Id TINYINT UNSIGNED
     ,IN Name VARCHAR(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+	  /*
+		Creator: 20210627@Malcolm  
+        Revisions:
+				- 20210627@Malcolm: First Commit [RedmineID : #151807]      
+    */
+
 )
 SQL SECURITY DEFINER
 BEGIN

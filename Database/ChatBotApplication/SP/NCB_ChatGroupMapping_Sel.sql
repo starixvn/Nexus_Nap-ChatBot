@@ -27,7 +27,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_ChatGroupMapping_Sel (
                     - 20190418@Dominic: Improve performance
 					- 20191212@Merlin.Le: Get additional field IsActive -- Redmine ID: #125345
 					- 20200214@Percy: Special Delete - Integrate Abnormal Bets [RedmineID: #127944]
-                    - 20210513@Malcolm: Filter following Bot service [RedmineID: #151807]
+                    - 20210513@Malcolm: Integrate Telegram [RedmineID: #151807]
 		*/
     )
 SQL SECURITY DEFINER

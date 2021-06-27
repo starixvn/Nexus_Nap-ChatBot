@@ -32,7 +32,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_NotificationList_Sel`(
                 - 20191015@Dominic: extend NotificationTypeName length
 				- 20200109@Merlin: order by ConfigSendTime and NotificationID
 				- 20200302@Oliver: get additional notificationTypeId - RedmineID: #129339
-                - 20210513@Malcolm: filter following Bot Service - RedmineID: #151807
+                - 20210513@Malcolm: Integrate Telegram [RedmineID: #151807]
     */
 )
 BEGIN
