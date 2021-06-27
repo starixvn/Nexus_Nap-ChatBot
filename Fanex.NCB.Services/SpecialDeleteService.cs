@@ -206,7 +206,7 @@
                 foreach (var message in origMessages)
                 {
                     var updatedMsg = updatedUsernames.Where(m => m.MessageID == message.MessageID);
-                    if (updatedMsg.Any())
+                    if (updatedMsg != null && updatedMsg.Any())
                     {
                         message.UsernameLst = string.Join(",", updatedMsg.Select(x => x.UsernameLst));
                         message.CreditSiteLst = string.Join(",", updatedMsg.Select(x => x.CreditSiteLst));
