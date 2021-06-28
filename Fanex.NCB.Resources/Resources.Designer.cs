@@ -88,6 +88,15 @@ namespace Fanex.NCB.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Message content length exceeds limitation (4096 characters)..
+        /// </summary>
+        public static string MessageIsTooLong {
+            get {
+                return ResourceManager.GetString("MessageIsTooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Notification.
         /// </summary>
         public static string NewNotification {

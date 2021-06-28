@@ -159,8 +159,7 @@
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
             var url = new Uri($"{botSettings.BotDomain}{apiConfigs.SendMessageUrl}");
-            using var response = await httpClient.PostAsJsonAsync(url, conversationInfo);
-            return response;
+            return await httpClient.PostAsJsonAsync(url, conversationInfo);
         }
 
         protected internal virtual async Task<ChatbotToken> GetTokenAsync()

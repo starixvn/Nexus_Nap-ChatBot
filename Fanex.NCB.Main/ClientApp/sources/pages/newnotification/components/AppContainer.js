@@ -196,6 +196,8 @@ export class AppContainer extends React.Component {
     handleSubmit = values => {
         const isValidContentLength = values.content.trim().length <= this.messageContentLength;
         if (!isValidContentLength) {
+            const formik = this.refs.form;
+            formik.setSubmitting(false);
             return;
         }
 

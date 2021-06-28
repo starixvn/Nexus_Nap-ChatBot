@@ -126,6 +126,9 @@
   <data name="DuplicatedErrorMessage" xml:space="preserve">
     <value>The content of the message sent to this group is duplicated for a period of time.</value>
   </data>
+  <data name="MessageIsTooLong" xml:space="preserve">
+    <value>Message content length exceeds limitation (4096 characters).</value>
+  </data>
   <data name="NewNotification" xml:space="preserve">
     <value>New Notification</value>
   </data>

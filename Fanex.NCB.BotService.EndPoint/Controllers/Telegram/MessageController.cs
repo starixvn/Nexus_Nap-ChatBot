@@ -171,6 +171,12 @@
 
                 result.ErrorCode = 1;
                 result.ErrorMessage = exception.Message;
+
+                if(exception.Message.Contains("Message is too long", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    result.ErrorMessage = Resources.Resources.MessageIsTooLong;
+                    result.IsIgnoreRetry = true;
+                }
             }
 
             result.SentTime = DateTime.Now;
