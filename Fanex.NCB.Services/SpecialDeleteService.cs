@@ -24,7 +24,6 @@
         private readonly IChatbotService chatbotService;
         private readonly ILogService logService;
         private readonly string Environment;
-        private const int AbnormalAccountType = 2;
         private const int VoidTicketForLicenseeJobIdentity = 1;
         private const int VoidAbnormalbetsJobIdentity = 2;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
@@ -159,12 +158,9 @@
                 var listMsg = messages.Select(m => new MessageHistory { MessageID = m.MessageID, RequestID = m.RequestID }).ToList();
 
                 var (abnormalMessages, abnormalMessageHistories) = await GetVoidingHistoryAsync(listMsg);
-                if (abnormalMessages.Any(m => m.Type == AbnormalAccountType))
+                if (abnormalMessageHistories.Any())
                 {
-                    var histories = abnormalMessageHistories
-                        .Where(history => abnormalMessages.Where(message => message.Type == AbnormalAccountType)
-                                    .Any(m => m.MessageID == history.MessageId));
-                    var updatedUsernames = await GetAbnormalAccountUpdatedUsernameAsync(histories);
+                    var updatedUsernames = await GetAbnormalAccountUpdatedUsernameAsync(abnormalMessageHistories);
                     UpdateAbnormalAccountUpdatedUsernames(abnormalMessages, updatedUsernames);
                 }
 
