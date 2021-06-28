@@ -54,7 +54,7 @@
             baseService.ExecuteNonQueryAsync(Arg.Do<CreateSettingTypeCommand>(x => command = x)).Returns(new CommandResult { Code = 0 });
 
             // Action
-            var result = await service.CreateAsync(model).ConfigureAwait(false);
+            var result = await service.CreateAsync(model);
 
             // Assert
             Assert.True(result.IsSuccessful);
@@ -74,7 +74,7 @@
             baseService.GetDataEntityAsync<SettingType>(Arg.Do<GetByTypeCriteria>(x => criteria = x)).Returns(setting);
 
             // Action
-            var result = await service.GetByTypeAsync(type).ConfigureAwait(false);
+            var result = await service.GetByTypeAsync(type);
 
             // Assert
             Assert.Equal(type, criteria.Type);
@@ -89,7 +89,7 @@
             var type = 0;
 
             // Action
-            var result = await service.GetByTypeAsync(type).ConfigureAwait(false);
+            var result = await service.GetByTypeAsync(type);
 
             // Assert
             Assert.Null(result);

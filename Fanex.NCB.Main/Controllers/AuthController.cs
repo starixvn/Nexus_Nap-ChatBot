@@ -57,7 +57,7 @@
         public async Task<IActionResult> SignIn(UserLogin userLogin)
         {
             string errorMsg = string.Empty;
-            User user = await userService.GetAsync(userLogin.Username).ConfigureAwait(false);
+            User user = await userService.GetAsync(userLogin.Username);
 
             if (user != null)
             {
@@ -95,7 +95,7 @@
         {
             await securityService.LogoutAsync(napSession.OnUserId);
             napSession.ClearAll();
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             return RedirectToAction("Index");
         }
@@ -109,13 +109,13 @@
                 var userId = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.UserId.Replace(" ", "+")));
                 var onUserid = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.OnUserId.Replace(" ", "+")));
 
-                await syncDataService.SyncNapDataForSSOLogin(userId).ConfigureAwait(false);
+                await syncDataService.SyncNapDataForSSOLogin(userId);
 
-                var newOnUserId = await SSOLogin(userId, onUserid).ConfigureAwait(false);
+                var newOnUserId = await SSOLogin(userId, onUserid);
 
                 if (newOnUserId > 0)
                 {
-                    var user = await userService.GetAsync(userId).ConfigureAwait(false);
+                    var user = await userService.GetAsync(userId);
                     if (user != null)
                     {
                         await DoCheckIn(user, newOnUserId);
@@ -144,7 +144,7 @@
                 Platform = Environment.OSVersion.Platform.ToString(),
                 LoginDate = DateTime.Now
             };
-            return await securityService.SSOLoginAsync(ssoLoginParam).ConfigureAwait(false);
+            return await securityService.SSOLoginAsync(ssoLoginParam);
         }
 
         private async Task DoCheckIn(User user, int onUserId)

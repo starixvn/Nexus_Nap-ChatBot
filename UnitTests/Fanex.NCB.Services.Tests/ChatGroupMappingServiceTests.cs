@@ -27,7 +27,7 @@ namespace Fanex.NCB.Services.Tests
             baseService.FetchMultipleAsync<BotConversation, BotConversationMember, ConversationRecipient>(Arg.Do<GetChatGroupMappingCriteria>(x => criteria = x)).Returns(data);
 
             //Act
-            var actual = await service.GetChatGroupMappingListAsync(model).ConfigureAwait(false);
+            var actual = await service.GetChatGroupMappingListAsync(model);
 
             //Assert
             Assert.Equal(criteria.TotalItems, actual.Item2);
@@ -48,7 +48,7 @@ namespace Fanex.NCB.Services.Tests
             baseService.ExecuteNonQueryAsync(Arg.Do<EditChatGroupMappingCommand>(x => command = x)).Returns(commandResult);
 
             //Act
-            var actual = await service.EditAsync(model).ConfigureAwait(false);
+            var actual = await service.EditAsync(model);
 
             //Assert
             Assert.Equal(commandResult, actual);
@@ -66,7 +66,7 @@ namespace Fanex.NCB.Services.Tests
             baseService.ExecuteNonQueryAsync(Arg.Do<UpdateActiveConverstionGroupCommand>(x => command = x)).Returns(commandResult);
 
             //Act
-            var actual = await service.UpdateActiveAsync(model).ConfigureAwait(false);
+            var actual = await service.UpdateActiveAsync(model);
 
             //Assert
             Assert.Equal(commandResult, actual);

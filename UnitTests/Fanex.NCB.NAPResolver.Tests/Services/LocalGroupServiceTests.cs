@@ -43,7 +43,7 @@
                     "CreatorId, ModifierId",
                 Arg.Do<GetGroupByIdCriteria>(x => criteria = x)).Returns(expectedGroup);
 
-            var result = await service.GetAsync(groupId).ConfigureAwait(false);
+            var result = await service.GetAsync(groupId);
 
             Assert.Equal(expectedGroup.Id, result.Id);
             Assert.Equal(expectedGroup.Name, result.Name);

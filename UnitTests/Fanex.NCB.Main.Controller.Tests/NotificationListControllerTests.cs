@@ -177,7 +177,7 @@
 
             notificationService.GetNotificationsAsync(Arg.Do<GetNotifications>(x => model = x)).Returns((total, notifications));
 
-            var result = await controller.Get(filter).ConfigureAwait(false);
+            var result = await controller.Get(filter);
 
             var jsonResult = Assert.IsType<JsonResult>(result);
             Assert.Equal(total, (long)jsonResult.Value.GetType().GetProperty("total").GetValue(jsonResult.Value));
@@ -196,7 +196,7 @@
 
             notificationService.GetNotificationErrorAsync(notificationId).Returns(report);
 
-            var result = await controller.GetNotificationError(notificationId).ConfigureAwait(false);
+            var result = await controller.GetNotificationError(notificationId);
 
             var jsonResult = Assert.IsType<JsonResult>(result);
             var returnedReport = Assert.IsType<NotificationErrorReport>(jsonResult.Value);
@@ -213,7 +213,7 @@
 
             notificationService.CancelAsync(notificationId, napSession.UserId).Returns(new CommandResult { Code = 0 });
 
-            var result = await controller.Cancel(notificationId).ConfigureAwait(false);
+            var result = await controller.Cancel(notificationId);
 
             var jsonResult = Assert.IsType<JsonResult>(result);
 
@@ -231,7 +231,7 @@
 
             notificationService.ResolveAsync(data.NotificationId, data.ResolvedRemark, napSession.UserId).Returns(new CommandResult { Code = 0 });
 
-            var result = await controller.Resolve(data).ConfigureAwait(false);
+            var result = await controller.Resolve(data);
 
             var jsonResult = Assert.IsType<JsonResult>(result);
             SignalRServiceHasBeenCall(data.NotificationId.ToString());

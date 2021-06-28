@@ -51,7 +51,7 @@
                         return user;
                     },
                     "GroupId,CreatorId,ModifierId",
-                    criteria).ConfigureAwait(false);
+                    criteria);
 
                 return result;
             }
@@ -76,7 +76,7 @@
                         return user;
                     },
                     "GroupId,CreatorId,ModifierId",
-                    criteria).ConfigureAwait(false);
+                    criteria);
 
                 return result;
             }
@@ -110,7 +110,7 @@
                       return menu;
                   },
                   "ParentId, FunctionId, SiteId, CreatorId, ModifierId",
-                  criteria).ConfigureAwait(false);
+                  criteria);
 
                 return result;
             }
@@ -142,7 +142,7 @@
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
-                return await objectDb.QueryEntityAsync<int>(criteria).ConfigureAwait(false);
+                return await objectDb.QueryEntityAsync<int>(criteria);
             }
         }
 
@@ -175,7 +175,7 @@
                       return siteLevel;
                   },
                   "SiteId, CreatorId, ModifierId",
-                  criteria).ConfigureAwait(false);
+                  criteria);
 
                 return result;
             }

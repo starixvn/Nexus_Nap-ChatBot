@@ -27,7 +27,7 @@
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
-                await objectDb.ExecuteNonQueryAsync(criteria).ConfigureAwait(false);
+                await objectDb.ExecuteNonQueryAsync(criteria);
 
                 return criteria.Time.ToString(CultureInfo.InvariantCulture);
             }
@@ -65,7 +65,7 @@
 
             using (var objectDb = ObjectDbFactory.CreateInstance(logCriteria.GetSettingKey()))
             {
-                await objectDb.ExecuteNonQueryAsync(logCriteria).ConfigureAwait(false);
+                await objectDb.ExecuteNonQueryAsync(logCriteria);
             }
         }
 
@@ -82,7 +82,7 @@
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
-                await objectDb.ExecuteNonQueryAsync(criteria).ConfigureAwait(false);
+                await objectDb.ExecuteNonQueryAsync(criteria);
                 return criteria.OnUserId;
             }
         }
@@ -101,7 +101,7 @@
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
-                await objectDb.ExecuteNonQueryAsync(criteria).ConfigureAwait(false);
+                await objectDb.ExecuteNonQueryAsync(criteria);
             }
         }
 
@@ -127,7 +127,7 @@
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
-                await objectDb.ExecuteNonQueryAsync(criteria).ConfigureAwait(false);
+                await objectDb.ExecuteNonQueryAsync(criteria);
             }
 
             if (criteria.IsKickedOut)
@@ -170,7 +170,7 @@
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
-                await objectDb.ExecuteNonQueryAsync(criteria).ConfigureAwait(false);
+                await objectDb.ExecuteNonQueryAsync(criteria);
                 return criteria.OnUserId;
             }
         }
@@ -191,7 +191,7 @@
 
             using (var objectDb = ObjectDbFactory.CreateInstance(logCriteria.GetSettingKey()))
             {
-                await objectDb.ExecuteNonQueryAsync(logCriteria).ConfigureAwait(false);
+                await objectDb.ExecuteNonQueryAsync(logCriteria);
             }
         }
 

@@ -26,7 +26,7 @@
                 PageIndex = pageIndex,
                 PageSize = pageSize
             };
-            var data = await baseService.FetchMultipleAsync<NotificationType, NotificationRecipientType, NotificationChatGroupType>(criteria).ConfigureAwait(false);
+            var data = await baseService.FetchMultipleAsync<NotificationType, NotificationRecipientType, NotificationChatGroupType>(criteria);
 
             foreach (var notificationType in data.Item1)
             {

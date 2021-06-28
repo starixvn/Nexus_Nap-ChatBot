@@ -33,7 +33,7 @@
             baseService.FetchMultipleAsync<long, NotificationTemplate>(Arg.Do<GetTemplatesCriteria>(x => criteria = x))
                 .Returns((new List<long> { total }, templates));
 
-            var result = await service.GetAsync(notificationTypeId, pageIndex, pageSize).ConfigureAwait(false);
+            var result = await service.GetAsync(notificationTypeId, pageIndex, pageSize);
 
             Assert.Equal(notificationTypeId, criteria.NotificationTypeId);
             Assert.Equal(pageIndex, criteria.PageIndex);
@@ -54,7 +54,7 @@
 
             baseService.ExecuteNonQueryAsync(Arg.Do<CreateNotificationTemplateCommand>(x => command = x)).Returns(new CommandResult { Code = 0 });
 
-            var result = await service.CreateAsync(model).ConfigureAwait(false);
+            var result = await service.CreateAsync(model);
 
             Assert.True(result.IsSuccessful);
             Assert.Equal(model.NotificationTypeId, command.NotificationTypeId);
@@ -76,7 +76,7 @@
 
             baseService.ExecuteNonQueryAsync(Arg.Do<EditNotificationTemplateCommand>(x => command = x)).Returns(new CommandResult { Code = 0 });
 
-            var result = await service.EditAsync(model).ConfigureAwait(false);
+            var result = await service.EditAsync(model);
 
             Assert.True(result.IsSuccessful);
             Assert.Equal(model.NotificationTypeId, command.NotificationTypeId);
@@ -98,7 +98,7 @@
 
             baseService.ExecuteNonQueryAsync(Arg.Do<DeleteNotificationTemplateCommand>(x => command = x)).Returns(new CommandResult { Code = 0 });
 
-            var result = await service.DeleteAsync(notificationTemplateId, userId).ConfigureAwait(false);
+            var result = await service.DeleteAsync(notificationTemplateId, userId);
 
             Assert.True(result.IsSuccessful);
             Assert.Equal(notificationTemplateId, command.NotificationTemplateId);
@@ -119,7 +119,7 @@
             baseService.GetDataEntityAsync<NotificationTemplate>(Arg.Do<GetTemplateByIdCriteria>(x => criteria = x))
                 .Returns(template);
 
-            var result = await service.GetByIdAsync(notificationTemplateId).ConfigureAwait(false);
+            var result = await service.GetByIdAsync(notificationTemplateId);
 
             Assert.Equal(notificationTemplateId, criteria.NotificationTemplateId);
             Assert.Equal(template.NotificationTemplateName, result.NotificationTemplateName);

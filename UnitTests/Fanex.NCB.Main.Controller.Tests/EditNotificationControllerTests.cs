@@ -46,7 +46,7 @@
 
             notificationService.EditAsync(Arg.Do<EditNotification>(x => model = x)).Returns(new CommandResult { Code = 0 });
 
-            var result = await controller.Edit(viewModel).ConfigureAwait(false);
+            var result = await controller.Edit(viewModel);
 
             var json = Assert.IsType<JsonResult>(result);
             var commandResult = Assert.IsType<CommandResult>(json.Value);
@@ -69,7 +69,7 @@
 
             var viewModel = fixture.Create<EditNotificationViewModel>();
             viewModel.RecipientIds = string.Empty;
-            var result = await controller.Edit(viewModel).ConfigureAwait(false);
+            var result = await controller.Edit(viewModel);
             var json = Assert.IsType<JsonResult>(result);
             var commandResult = Assert.IsType<CommandResult>(json.Value);
             Assert.False(commandResult.IsSuccessful);
@@ -90,7 +90,7 @@
 
             notificationService.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId).Returns(recipients);
 
-            var result = await controller.GetRecipients(notificationId, notificationTypeId, productId).ConfigureAwait(false);
+            var result = await controller.GetRecipients(notificationId, notificationTypeId, productId);
 
             var json = Assert.IsType<JsonResult>(result);
             Assert.IsAssignableFrom<IEnumerable<TreeNodeItem>>(json.Value);
@@ -108,7 +108,7 @@
 
             notificationService.GetEditNotificationInfoAsync(notificationId).Returns(notification);
 
-            var result = await controller.Get(notificationId).ConfigureAwait(false);
+            var result = await controller.Get(notificationId);
 
             var json = Assert.IsType<JsonResult>(result);
             var returnedNotification = Assert.IsType<EditNotificationInfo>(json.Value);
@@ -126,7 +126,7 @@
 
             notificationService.GetEditNotificationInfoAsync(notificationId).Returns(notification);
 
-            var result = await controller.Get(notificationId).ConfigureAwait(false);
+            var result = await controller.Get(notificationId);
 
             Assert.IsType<NotFoundResult>(result);
         }

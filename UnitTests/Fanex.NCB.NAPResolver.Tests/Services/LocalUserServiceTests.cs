@@ -45,7 +45,7 @@
                   "GroupId,CreatorId,ModifierId",
                   Arg.Do<GetByUserIdCriteria>(x => criteria = x)).Returns(user);
 
-            var result = await service.GetAsync(userId).ConfigureAwait(false);
+            var result = await service.GetAsync(userId);
 
             Assert.Equal(userId, criteria.UserId);
             Assert.Equal(user.Id, result.Id);
@@ -70,7 +70,7 @@
                   "GroupId,CreatorId,ModifierId",
                   Arg.Do<GetUserByUsernameCriteria>(x => criteria = x)).Returns(user);
 
-            var result = await service.GetAsync(username).ConfigureAwait(false);
+            var result = await service.GetAsync(username);
 
             Assert.Equal(username, criteria.Username);
             Assert.Equal(user.Id, result.Id);
@@ -99,7 +99,7 @@
                   "ParentId, FunctionId, SiteId, CreatorId, ModifierId",
                   Arg.Do<GetMenuItemCriteria>(x => criteria = x)).Returns(menuItems);
 
-            var result = await service.GetMenuItemAsync(userId, siteId, environment, isActive).ConfigureAwait(false);
+            var result = await service.GetMenuItemAsync(userId, siteId, environment, isActive);
 
             Assert.Equal(userId, criteria.UserId);
             Assert.Equal(siteId, criteria.SiteId);
@@ -147,7 +147,7 @@
 
             objectDb.QueryEntityAsync<int>(Arg.Do<GetUserFunctionPolicyCriteria>(x => criteria = x)).Returns(permission);
 
-            var result = await service.GetPermissionAsync(userId, siteId, functionKey).ConfigureAwait(false);
+            var result = await service.GetPermissionAsync(userId, siteId, functionKey);
 
             Assert.Equal(userId, criteria.UserId);
             Assert.Equal(siteId, criteria.SiteId);
@@ -174,7 +174,7 @@
                 "SiteId, CreatorId, ModifierId",
                 Arg.Do<GetSiteLevelCriteria>(x => criteria = x)).Returns(siteLevels);
 
-            var result = await service.GetSiteLevelAsync(userId, environment).ConfigureAwait(false);
+            var result = await service.GetSiteLevelAsync(userId, environment);
 
             Assert.Equal(userId, criteria.UserId);
             Assert.Equal(environment, criteria.Environment);

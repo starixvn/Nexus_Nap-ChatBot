@@ -13,7 +13,7 @@
         {
             using (var db = ObjectDbFactory.CreateInstance(command.GetSettingKey()))
             {
-                await db.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+                await db.ExecuteNonQueryAsync(command);
                 CommandResult commandResult = GetCommandResult(db.GetOutputParams());
 
                 return commandResult;

@@ -33,7 +33,7 @@
 
             objectDb.QueryEntityAsync<Site>(Arg.Do<GetByIdSiteCriteria>(x => criteria = x)).Returns(site);
 
-            var result = await service.IsActivatedAsync(siteId).ConfigureAwait(false);
+            var result = await service.IsActivatedAsync(siteId);
 
             Assert.Equal(siteId, criteria.SiteId);
             Assert.Equal(site.IsActive, result);

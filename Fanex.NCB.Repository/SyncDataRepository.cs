@@ -13,7 +13,7 @@
         {
             using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
-                using (IMultiResultReader multi = await db.QueryMultipleAsync(criteria).ConfigureAwait(false))
+                using (IMultiResultReader multi = await db.QueryMultipleAsync(criteria))
                 {
                     var data = new NapData
                     {
@@ -40,7 +40,7 @@
         {
             using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
-                using (IMultiResultReader multi = await db.QueryMultipleAsync(criteria).ConfigureAwait(false))
+                using (IMultiResultReader multi = await db.QueryMultipleAsync(criteria))
                 {
                     var data = new OicData
                     {

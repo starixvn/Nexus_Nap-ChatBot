@@ -25,7 +25,7 @@
 
             commonService.GetNotificationTypesAsync().Returns(expectedTypes);
 
-            var result = await controller.GetNotificationTypes().ConfigureAwait(false);
+            var result = await controller.GetNotificationTypes();
 
             var json = Assert.IsType<JsonResult>(result);
             var returnedTypes = Assert.IsAssignableFrom<IEnumerable<NotificationType>>(json.Value);
@@ -41,7 +41,7 @@
 
             commonService.GetProductsAsync().Returns(expectedProducts);
 
-            var result = await controller.GetProducts().ConfigureAwait(false);
+            var result = await controller.GetProducts();
 
             var json = Assert.IsType<JsonResult>(result);
             var returnedProducts = Assert.IsAssignableFrom<IEnumerable<Product>>(json.Value);
@@ -57,7 +57,7 @@
 
             commonService.GetNotificationStatusesAsync().Returns(expectedStatuses);
 
-            var result = await controller.GetNotificationStatuses().ConfigureAwait(false);
+            var result = await controller.GetNotificationStatuses();
 
             var json = Assert.IsType<JsonResult>(result);
             var returnedStatuses = Assert.IsAssignableFrom<IEnumerable<NotificationStatus>>(json.Value);
@@ -73,7 +73,7 @@
 
             commonService.GetRecipientsAsync().Returns(expectedRecipients);
 
-            var result = await controller.GetRecipients().ConfigureAwait(false);
+            var result = await controller.GetRecipients();
 
             var json = Assert.IsType<JsonResult>(result);
             Assert.IsAssignableFrom<IEnumerable<TreeNodeItem>>(json.Value);
@@ -88,7 +88,7 @@
 
             commonService.GetUsersAsync().Returns(expectedUsers);
 
-            var result = await controller.GetUsers().ConfigureAwait(false);
+            var result = await controller.GetUsers();
 
             var json = Assert.IsType<JsonResult>(result);
             var returnedUsers = Assert.IsAssignableFrom<IEnumerable<User>>(json.Value);

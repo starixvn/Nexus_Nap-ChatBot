@@ -25,7 +25,7 @@
         {
             if (criteria != null && criteria.IsValid())
             {
-                return await dynamicRepository.FetchAsync<T>(criteria).ConfigureAwait(false);
+                return await dynamicRepository.FetchAsync<T>(criteria);
             }
 
             return new List<T>();
@@ -35,7 +35,7 @@
         {
             if (criteria != null && criteria.IsValid())
             {
-                return await dynamicRepository.FetchMultipleAsync<TFirst, TSecond>(criteria).ConfigureAwait(false);                
+                return await dynamicRepository.FetchMultipleAsync<TFirst, TSecond>(criteria);
             }
 
             return new ValueTuple<IEnumerable<TFirst>, IEnumerable<TSecond>>(new List<TFirst>(), new List<TSecond>());
@@ -45,7 +45,7 @@
         {
             if (criteria != null && criteria.IsValid())
             {
-                return await dynamicRepository.FetchMultipleAsync<TFirst, TSecond, TThird>(criteria).ConfigureAwait(false);
+                return await dynamicRepository.FetchMultipleAsync<TFirst, TSecond, TThird>(criteria);
             }
 
             return new ValueTuple<IEnumerable<TFirst>, IEnumerable<TSecond>, IEnumerable<TThird>>(new List<TFirst>(), new List<TSecond>(), new List<TThird>());
@@ -55,7 +55,7 @@
         {
             if (criteria != null && criteria.IsValid())
             {
-                return await dynamicRepository.GetAsync<T>(criteria).ConfigureAwait(false);
+                return await dynamicRepository.GetAsync<T>(criteria);
             }
 
             return default(T);
@@ -67,7 +67,7 @@
 
             if (command != null && command.IsValid())
             {
-                commandResult = await baseRepository.ExecuteNonQueryAsync(command).ConfigureAwait(false);
+                commandResult = await baseRepository.ExecuteNonQueryAsync(command);
             }
 
             return commandResult;

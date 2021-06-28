@@ -31,7 +31,7 @@
                         return group;
                     },
                     "CreatorId, ModifierId",
-                    criteria).ConfigureAwait(false);
+                    criteria);
 
                 return result;
             }
