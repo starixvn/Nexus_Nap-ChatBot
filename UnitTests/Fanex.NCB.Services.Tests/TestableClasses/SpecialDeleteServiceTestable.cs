@@ -43,6 +43,11 @@
             return await base.GetMessageFromVoidingForLicenseeAsync(systemSetting);
         }
 
+        public async Task Public_GetMessageAndImportToChatbotAsync(IEnumerable<MessageHistory> messageHistories, SystemSetting setting)
+        {
+            await base.GetMessageAndImportToChatbotAsync(messageHistories, setting);
+        }
+
         public async Task<IEnumerable<VoidingHistoryUsername>> Public_GetAbnormalAccountUpdatedUsernameAsync(IEnumerable<AbnormalMessageHistory> messages)
         {
             return await base.GetAbnormalAccountUpdatedUsernameAsync(messages);

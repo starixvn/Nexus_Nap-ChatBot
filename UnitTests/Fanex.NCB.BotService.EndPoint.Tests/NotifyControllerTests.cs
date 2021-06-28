@@ -33,6 +33,43 @@
 
         [Fact]
         [Obsolete]
+        public async Task Test_WhenCalled_ReturnAsExpectedResult()
+        {
+            // Arrange
+            var controller = GetController();
+
+            // Act
+            var result = await controller.Test();
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(200, okResult.StatusCode);
+            Assert.Equal("ok", okResult.Value);
+
+            await logger.Received().ErrorAsync("test sentry");
+        }
+
+        #region Send
+
+        [Fact]
+        [Obsolete]
+        public async Task Send_DisableTelgram_ReturnAsExpectedResult()
+        {
+            // Arrange
+            var conversationInfo = new ConversationInfo();
+            var controller = GetController("2");
+
+            // Act
+            var result = await controller.Send(conversationInfo);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(200, okResult.StatusCode);
+            Assert.Equal("Chatbot service has been stopped due to turning off the configuration by admin.", okResult.Value);
+        }
+
+        [Fact]
+        [Obsolete]
         public async Task Send_InValidBotName_SendContinueWithDefaultAppId()
         {
             var controller = GetController();
@@ -92,6 +129,8 @@
             await adapter.Received().ContinueConversationAsync(Arg.Is(endpointService.AppId), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
                 Arg.Any<CancellationToken>());
         }
+
+        #endregion Send
 
         [Fact]
         [Obsolete]
@@ -196,9 +235,9 @@
         }
 
         [Obsolete]
-        private NotifyController GetController()
+        private NotifyController GetController(string enableChannelIds = "1,2")
         {
-            appSettings = new AppSettings { EnableChannelIds = "1" };
+            appSettings = new AppSettings { EnableChannelIds = enableChannelIds };
             var appSettingOptions = Substitute.For<IOptions<AppSettings>>();
             appSettingOptions.Value.Returns(appSettings);
 

@@ -164,21 +164,21 @@
                     && x.Message == "message"));
         }
 
-        ////[Fact]
-        ////public async Task MonitorTelegramBotAsync_WhenCalled_DoAsExpected()
-        ////{
-        ////    // Arrange
-        ////    var token = fixture.Create<ChatbotToken>();
-        ////    var service = GetService();
-        ////    service.Protected("GetTokenAsync").Returns(Task.FromResult(token));
+        [Fact]
+        public async Task MonitorTelegramBotAsync_WhenCalled_DoAsExpected()
+        {
+            // Arrange
+            var token = fixture.Create<ChatbotToken>();
+            var service = GetService();
+            service.Protected("GetTokenAsync").Returns(Task.FromResult(token));
 
-        ////    // Act
-        ////    await service.MonitorTelegramBotAsync();
+            // Act
+            await service.MonitorTelegramBotAsync();
 
-        ////    // Assert
-        ////    service.Received().Protected("SendSingleMessageAsync", (byte)2,
-        ////        Arg.Is<ConversationInfo>(x => x.ConversationId == "1" && x.BotConversationId == "1" && x.Message == "message"));
-        ////}
+            // Assert
+            service.Received().Protected("SendSingleMessageAsync", (byte)2,
+                Arg.Is<ConversationInfo>(x => x.ConversationId == "1" && x.BotConversationId == "1" && x.Message == "message"));
+        }
 
         [Fact]
         public async Task NotifyToChatGroupAsync_WhenCalled_DoAsExpected()

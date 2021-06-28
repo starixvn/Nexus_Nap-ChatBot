@@ -203,8 +203,8 @@
             {
                 var message = messages.FirstOrDefault(m => m.MessageID == msg.MessageID);
 
-                msg.Content_en = message?.Content_en.Trim().Replace("@@", string.Empty);
-                msg.Content_cs = message?.Content_cs.Trim().Replace("@@", string.Empty);
+                msg.Content_en = message?.Content_en?.Trim().Replace("@@", string.Empty);
+                msg.Content_cs = message?.Content_cs?.Trim().Replace("@@", string.Empty);
                 msg.MsgContentsType = message != null ? message.MsgContentsType : 0;
             }
         }

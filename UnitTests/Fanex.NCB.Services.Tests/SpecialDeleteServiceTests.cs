@@ -281,6 +281,69 @@
                 });
         }
 
+        #region GetMessageAndImportToChatbotAsync
+
+        [Fact]
+        public async Task GetMessageAndImportToChatbotAsync_DoNotHaveAbnormalBetsMessage_DoNothing()
+        {
+            // Arrange
+            var messageHistories = fixture.Create<IEnumerable<MessageHistory>>();
+            var setting = fixture.Create<SystemSetting>();
+            var messages = new List<Message>();
+            var service = GetService();
+            service.Protected("GetAbnormalBetsMessageAsync", setting, messageHistories).Returns(Task.FromResult<IEnumerable<Message>>(messages));
+
+            // Act
+            await service.Public_GetMessageAndImportToChatbotAsync(messageHistories, setting);
+
+            // Asset
+            service.DidNotReceive().Protected("ImportAbnormalBetNotificationToChatbotDBAsync",
+                Arg.Any<IEnumerable<AbnormalMessage>>(),
+                Arg.Any<IEnumerable<MessageHistory>>(),
+                Arg.Any<int>());
+        }
+
+        [Fact]
+        public async Task GetMessageAndImportToChatbotAsync_HaveAbnormalBetsMessage_DoAsExpected()
+        {
+            // Arrange
+            var messageHistories = fixture.Create<IEnumerable<MessageHistory>>();
+            var setting = fixture.Create<SystemSetting>();
+            var messages = new List<Message>
+            {
+                new Message { RequestID = 1, MessageID = 1, Content_en = "content en", Content_cs = "content cs" },
+                new Message { RequestID = 2, MessageID = 2, Content_en = "content en", Content_cs = "content cs" }
+            };
+            var abnormalMessages = new List<AbnormalMessage>
+            {
+                new AbnormalMessage { RequestID = 1, MessageID = 1 },
+                new AbnormalMessage { RequestID = 2, MessageID = 2 }
+            };
+            var abnormalMessageHistories = fixture.Create<IEnumerable<AbnormalMessageHistory>>();
+            var updatedUsernames = new List<VoidingHistoryUsername>
+            {
+                new VoidingHistoryUsername { MessageID = 1, UsernameLst = "username", CreditSiteLst = "creditsite", DepositSiteLst = "depositsite" },
+                new VoidingHistoryUsername { MessageID = 2, UsernameLst = "username", CreditSiteLst = "creditsite", DepositSiteLst = "depositsite" }
+            };
+            var service = GetService();
+            service.Protected("GetAbnormalBetsMessageAsync", setting, messageHistories).Returns(Task.FromResult<IEnumerable<Message>>(messages));
+            service.Protected("GetVoidingHistoryAsync", Arg.Any<List<MessageHistory>>())
+                .Returns(Task.FromResult<(IEnumerable<AbnormalMessage>, IEnumerable<AbnormalMessageHistory>)>((abnormalMessages, abnormalMessageHistories)));
+            service.Protected("GetAbnormalAccountUpdatedUsernameAsync", abnormalMessageHistories)
+                .Returns(Task.FromResult<IEnumerable<VoidingHistoryUsername>>(updatedUsernames));
+
+            // Act
+            await service.Public_GetMessageAndImportToChatbotAsync(messageHistories, setting);
+
+            // Asset
+            service.Received().Protected("ImportAbnormalBetNotificationToChatbotDBAsync",
+                abnormalMessages,
+                Arg.Any<IEnumerable<MessageHistory>>(),
+                2);
+        }
+
+        #endregion GetMessageAndImportToChatbotAsync
+
         [Fact]
         public async Task GetAbnormalAccountUpdatedUsernameAsync_WhenCalled_ReturnAsExpectedResult()
         {
