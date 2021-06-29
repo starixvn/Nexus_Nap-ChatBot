@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`InputField when isSummitted and not valid - render correctly 1`] = `
+exports[`InputField render when isSummitted and value is invalid - should match snapshot 1`] = `
 initialize {
   "0": Node {
     "attribs": Object {
@@ -131,7 +131,7 @@ initialize {
 }
 `;
 
-exports[`InputField when isSummitted and valid - render correctly 1`] = `
+exports[`InputField render when isSummitted and value is valid - should match snapshot 1`] = `
 initialize {
   "0": Node {
     "attribs": Object {
@@ -191,7 +191,7 @@ initialize {
 }
 `;
 
-exports[`InputField when not isSummitted - render correctly 1`] = `
+exports[`InputField render when not isSummitted - should match snapshot 1`] = `
 initialize {
   "0": Node {
     "attribs": Object {

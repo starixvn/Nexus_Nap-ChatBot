@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TextField when invalid - render correctly 1`] = `
+exports[`TextField render when invalid - should match snapshot 1`] = `
 initialize {
   "0": Node {
     "attribs": Object {
@@ -9,82 +9,14 @@ initialize {
     "children": Array [
       Node {
         "attribs": Object {
-          "class": "is-invalid form-control",
+          "class": "form-control",
         },
         "children": Array [],
         "name": "textarea",
         "namespace": "http://www.w3.org/1999/xhtml",
-        "next": Node {
-          "attribs": Object {
-            "class": "invalid-feedback",
-          },
-          "children": Array [
-            Node {
-              "data": "This field is required.",
-              "next": null,
-              "parent": [Circular],
-              "prev": null,
-              "type": "text",
-            },
-          ],
-          "name": "div",
-          "namespace": "http://www.w3.org/1999/xhtml",
-          "next": null,
-          "parent": [Circular],
-          "prev": [Circular],
-          "type": "tag",
-          "x-attribsNamespace": Object {
-            "class": undefined,
-          },
-          "x-attribsPrefix": Object {
-            "class": undefined,
-          },
-        },
-        "parent": [Circular],
-        "prev": null,
-        "type": "tag",
-        "x-attribsNamespace": Object {
-          "class": undefined,
-        },
-        "x-attribsPrefix": Object {
-          "class": undefined,
-        },
-      },
-      Node {
-        "attribs": Object {
-          "class": "invalid-feedback",
-        },
-        "children": Array [
-          Node {
-            "data": "This field is required.",
-            "next": null,
-            "parent": [Circular],
-            "prev": null,
-            "type": "text",
-          },
-        ],
-        "name": "div",
-        "namespace": "http://www.w3.org/1999/xhtml",
         "next": null,
         "parent": [Circular],
-        "prev": Node {
-          "attribs": Object {
-            "class": "is-invalid form-control",
-          },
-          "children": Array [],
-          "name": "textarea",
-          "namespace": "http://www.w3.org/1999/xhtml",
-          "next": [Circular],
-          "parent": [Circular],
-          "prev": null,
-          "type": "tag",
-          "x-attribsNamespace": Object {
-            "class": undefined,
-          },
-          "x-attribsPrefix": Object {
-            "class": undefined,
-          },
-        },
+        "prev": null,
         "type": "tag",
         "x-attribsNamespace": Object {
           "class": undefined,
@@ -125,7 +57,7 @@ initialize {
 }
 `;
 
-exports[`TextField when invalid - render correctly 2`] = `
+exports[`TextField render when valid - should match snapshot 1`] = `
 initialize {
   "0": Node {
     "attribs": Object {

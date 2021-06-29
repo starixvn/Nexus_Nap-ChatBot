@@ -30,22 +30,21 @@ export class TextField extends Component {
 
     isValid = () => this.state.value !== '';
 
-    isShowInvalid = () => {
-        this.props.required && this.props.isSummited && !this.isValid();
-    }
-
     render() {
         return (
             <div className="text-field">
                 <Input type="textarea"
                     value={this.state.value}
                     onChange={this.onChange}
-                    invalid={this.isShowInvalid()}
+                    invalid={this.props.required && this.props.isSummited && !this.isValid()}
                     maxLength={this.props.maxLength}
                     placeholder={this.props.placeholder}
                     disabled={this.props.disabled}
                 />
-                {this.isShowInvalid() && <FormFeedback>This field is required.</FormFeedback>}
+                {
+                    this.props.required && this.props.isSummited && !this.isValid() &&
+                    <FormFeedback>This field is required.</FormFeedback>
+                }
             </div>
         );
     }

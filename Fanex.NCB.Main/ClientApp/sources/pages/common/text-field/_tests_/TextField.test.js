@@ -1,163 +1,102 @@
 ﻿import React from 'react';
 import { TextField } from '../TextField';
-import { shallow, render, configure } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import { shallow } from 'enzyme';
 
 describe('TextField', () => {
-    configure({ adapter: new Adapter() });
-
-    it('when invalid - render correctly', () => {
-        // Arrange
-        let props = {            
-        };
-
-        // Act
-        let wrapper = shallow(
-            <TextField {...props} />
-        );
-        wrapper.instance().isShowInvalid  = jest.fn(() => { return true; });
-        wrapper.instance().forceUpdate();
-
-        // Assert
-        expect(wrapper.render()).toMatchSnapshot();
+    afterAll(() => {
+        jest.resetAllMocks();
     });
 
-    it('when invalid - render correctly', () => {
-        // Arrange
-        let props = {            
-        };
+    describe('render', () => {
+        it('when valid - should match snapshot', () => {
+            // Arrange
+            const props = {};
 
-        // Act
-        let wrapper = shallow(
-            <TextField {...props} />
-        );
-        wrapper.instance().isShowInvalid = jest.fn(() => { return false; });
-        wrapper.instance().forceUpdate();
+            // Act
+            const container = shallow(<TextField {...props} />);
+            container.instance().isValid = jest.fn(() => true);
+            container.instance().forceUpdate();
 
-        // Assert
-        expect(wrapper.render()).toMatchSnapshot();
+            // Assert
+            expect(container.render()).toMatchSnapshot();
+        });
+
+        it('when invalid - should match snapshot', () => {
+            // Arrange
+            const props = {};
+
+            // Act
+            const container = shallow(<TextField {...props} />);
+            container.instance().isValid = jest.fn(() => false);
+            container.instance().forceUpdate();
+
+            // Assert
+            expect(container.render()).toMatchSnapshot();
+        });
     });
 
-    it('onChange - call setState', () => {
-        // Arrange
-        let props = { onChange: jest.fn() };
-        let inputField = new TextField(props);
-        inputField.setState = jest.fn();
-        inputField.callOnChange = jest.fn();
-        let event = {
-            target: { value: "xx" }
-        };
+    describe('onChange', () => {
+        it('should update state', () => {
+            // Arrange
+            const props = { onChange: jest.fn() };
+            const event = {
+                target: { value: 'abc' }
+            };
+            const container = shallow(<TextField {...props} />);
+            container.setState = jest.fn();
+            container.instance().callOnChange = jest.fn();
 
-        // Act
-        inputField.onChange(event);
+            // Act
+            container.instance().onChange(event);
 
-        // Assert
-        expect(inputField.setState).toBeCalledWith(
-            { value: event.target.value },
-            inputField.callOnChange);
+            // Assert
+            expect(container.setState).toBeCalledWith(
+                { value: event.target.value },
+                container.instance().callOnChange);
+        });
     });
 
-    it('callOnChange - call props.onChange', () => {
-        // Arrange
-        let props = { onChange: jest.fn() };
-        let inputField = new TextField(props);
-        inputField.state = { value: "ab" };
-        inputField.isValid = jest.fn(() => { return true; });
+    describe('callOnChange', () => {
+        it('should do as expected', () => {
+            // Arrange
+            const props = { onChange: jest.fn() };
+            const container = shallow(<TextField {...props} />);
+            container.setState({ value: 'abc' });
+            container.instance().isValid = jest.fn(() => true);
 
-        // Act
-        inputField.callOnChange();
+            // Act
+            container.instance().callOnChange();
 
-        // Assert
-        expect(props.onChange).toBeCalledWith({ value: "ab", isValid: true });
+            // Assert
+            expect(props.onChange).toBeCalledWith({ value: 'abc', isValid: true });
+        });
     });
 
-    it('isValid - when value Not Empty - return true', () => {
-        // Arrange
-        let props = { onChange: jest.fn() };
-        let inputField = new TextField(props);
-        inputField.state = { value: '123' };
+    describe('isValid', () => {
+        it('should return true when value is valid', () => {
+            // Arrange
+            const props = { onChange: jest.fn() };
+            const container = shallow(<TextField {...props} />);
+            container.setState({ value: 'abc' });
 
-        // Act
-        var result = inputField.isValid();
+            // Act
+            const result = container.instance().isValid();
 
-        // Assert
-        expect(result).toBe(true);
-    });
+            // Assert
+            expect(result).toBeTruthy();
+        });
 
-    it('isValid - when value Empty - return false', () => {
-        // Arrange
-        let props = { onChange: jest.fn() };
-        let inputField = new TextField(props);
-        inputField.state = { value: '' };
+        it('should return false when value is invalid', () => {
+            // Arrange
+            const props = { onChange: jest.fn() };
+            const container = shallow(<TextField {...props} />);
+            container.setState({ value: '' });
 
-        // Act
-        var result = inputField.isValid();
+            // Act
+            const result = container.instance().isValid();
 
-        // Assert
-        expect(result).toBe(false);
-    });
-
-    it('isShowInvalid  - when true', () => {
-        // Arrange
-        let props = {
-            required: true,
-            isSummited: true
-        };
-        let inputField = new TextField(props);
-        inputField.isValid = jest.fn(() => { return false; });
-
-        // Act
-        var result = inputField.isShowInvalid();
-
-        // Assert
-        expect(result).toBe(true);
-    });
-
-    it('isShowInvalid - when required false - return false', () => {
-        // Arrange
-        let props = {
-            required: false,
-            isSummited: true
-        };
-        let inputField = new TextField(props);
-        inputField.isValid = jest.fn(() => { return false; });
-
-        // Act
-        var result = inputField.isShowInvalid();
-
-        // Assert
-        expect(result).toBe(false);
-    });
-
-    it('isShowInvalid - when isSubmmited false - return false', () => {
-        // Arrange
-        let props = {
-            required: true,
-            isSummited: false
-        };
-        let inputField = new TextField(props);
-        inputField.isValid = jest.fn(() => { return false; });
-
-        // Act
-        var result = inputField.isShowInvalid();
-
-        // Assert
-        expect(result).toBe(false);
-    });
-
-    it('isShowInvalid - when isValid true - return false', () => {
-        // Arrange
-        let props = {
-            required: false,
-            isSummited: true
-        };
-        let inputField = new TextField(props);
-        inputField.isValid = jest.fn(() => { return false; });
-
-        // Act
-        var result = inputField.isShowInvalid();
-
-        // Assert
-        expect(result).toBe(false);
+            // Assert
+            expect(result).toBeFalsy();
+        });
     });
 });

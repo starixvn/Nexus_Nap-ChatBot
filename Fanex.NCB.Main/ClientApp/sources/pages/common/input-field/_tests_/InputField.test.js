@@ -1,117 +1,113 @@
 ﻿import React from 'react';
-import ShallowRenderer from 'react-test-renderer/shallow';
+import { shallow } from 'enzyme';
 import { InputField } from '../InputField';
-import { shallow, render, configure } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
 
 describe('InputField', () => {
-    configure({ adapter: new Adapter() });
-
-    it('when isSummitted and not valid - render correctly', () => {
-        // Arrange
-        let props = {
-            isSummited: true
-        };
-
-        // Act
-        let wrapper = shallow(
-            <InputField {...props} />
-        );
-        wrapper.instance().isValid = jest.fn(() => { return false; });
-        wrapper.instance().forceUpdate();
-
-        // Assert
-        expect(wrapper.render()).toMatchSnapshot();
+    afterAll(() => {
+        jest.resetAllMocks();
     });
 
-    it('when isSummitted and valid - render correctly', () => {
-        // Arrange
-        let props = {
-            isSummited: true
-        };
+    describe('render', () => {
+        it('when isSummitted and value is invalid - should match snapshot', () => {
+            // Arrange
+            const props = { isSummited: true };
 
-        // Act
-        let wrapper = shallow(
-            <InputField {...props} />
-        );
-        wrapper.instance().isValid = jest.fn(() => { return true; });
-        wrapper.instance().forceUpdate();
+            // Act
+            const container = shallow(<InputField {...props} />);
+            container.instance().isValid = jest.fn(() => false);
+            container.instance().forceUpdate();
 
-        // Assert
-        expect(wrapper.render()).toMatchSnapshot();
+            // Assert
+            expect(container.render()).toMatchSnapshot();
+        });
+
+        it('when isSummitted and value is valid - should match snapshot', () => {
+            // Arrange
+            const props = { isSummited: true };
+
+            // Act
+            const container = shallow(<InputField {...props} />);
+            container.instance().isValid = jest.fn(() => true);
+            container.instance().forceUpdate();
+
+            // Assert
+            expect(container.render()).toMatchSnapshot();
+        });
+
+        it('when not isSummitted - should match snapshot', () => {
+            // Arrange
+            const props = { isSummited: false };
+
+            // Act
+            const container = shallow(<InputField {...props} />);
+
+            // Assert
+            expect(container.render()).toMatchSnapshot();
+        });
     });
 
-    it('when not isSummitted - render correctly', () => {
-        // Arrange
-        let props = {
-            isSummited: false
-        };
+    describe('onChange', () => {
+        it('should update state', () => {
+            // Arrange
+            const props = { onChange: jest.fn() };
+            const event = {
+                target: { value: 'abc' }
+            };
+            const container = shallow(<InputField {...props} />);
+            container.setState = jest.fn();
+            container.instance().callOnChange = jest.fn();
 
-        // Act
-        let wrapper = shallow(
-            <InputField {...props} />
-        );       
+            // Act
+            container.instance().onChange(event);
 
-        // Assert
-        expect(wrapper.render()).toMatchSnapshot();
+            // Assert
+            expect(container.setState).toBeCalledWith(
+                { value: event.target.value },
+                container.instance().callOnChange);
+        });
     });
 
-    it('onChange - call setState', () => {
-        // Arrange
-        let props = {onChange: jest.fn()};
-        let inputField = new InputField(props);
-        inputField.setState = jest.fn();
-        inputField.callOnChange = jest.fn();
-        let event = {
-            target: { value: "xx" }
-        };
+    describe('callOnChange', () => {
+        it('should do as expected', () => {
+            // Arrange
+            const props = { onChange: jest.fn() };
+            const container = shallow(<InputField {...props} />);
+            container.setState({ value: 'abc' });
+            container.instance().isValid = jest.fn(() => true);
 
-        // Act
-        inputField.onChange(event);
+            // Act
+            container.instance().callOnChange();
 
-        // Assert
-        expect(inputField.setState).toBeCalledWith(
-            { value: event.target.value },
-            inputField.callOnChange);
+            // Assert
+            expect(props.onChange).toBeCalledWith({ value: 'abc', isValid: true });
+        });
     });
 
-    it('callOnChange - call props.onChange', () => {
-        // Arrange
-        let props = { onChange: jest.fn() };
-        let inputField = new InputField(props);
-        inputField.state = { value: "ab" };
-        inputField.isValid = jest.fn(() => { return true; });
+    describe('isValid', () => {
+        it('should return true when value is valid', () => {
+            // Arrange
+            const props = { onChange: jest.fn() };
+            const container = shallow(<InputField {...props} />);
+            container.setState({ value: 'abc' });
 
-        // Act
-        inputField.callOnChange();
+            // Act
+            const result = container.instance().isValid();
 
-        // Assert
-        expect(props.onChange).toBeCalledWith({ value: "ab", isValid: true });
-    });
+            // Assert
+            expect(result).toBeTruthy();
+        });
 
-    it('isValid - when value Not Empty - return true', () => {
-        // Arrange
-        let props = { onChange: jest.fn() };
-        let inputField = new InputField(props);
-        inputField.state = { value: 'abc' };
+        it('should return false when value is invalid', () => {
+            // Arrange
+            const props = { onChange: jest.fn() };
+            const container = shallow(<InputField {...props} />);
+            container.setState({ value: '' });
 
-        // Act
-        var result = inputField.isValid();
+            // Act
+            const result = container.instance().isValid();
 
-        // Assert
-        expect(result).toBe(true);
-    });
-
-    it('isValid - when value Empty - return false', () => {
-        // Arrange
-        let props = { onChange: jest.fn() };
-        let inputField = new InputField(props);
-        inputField.state = { value: '' };
-
-        // Act
-        var result = inputField.isValid();
-
-        // Assert
-        expect(result).toBe(false);
+            // Assert
+            expect(result).toBeFalsy();
+        });
     });
 });

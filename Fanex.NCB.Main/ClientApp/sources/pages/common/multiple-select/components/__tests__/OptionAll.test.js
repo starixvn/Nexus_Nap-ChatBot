@@ -1,54 +1,52 @@
-import React from 'react'
-import renderer from 'react-test-renderer'
+import React from 'react';
+import { shallow } from 'enzyme';
 
-import OptionAll from '../OptionAll'
-
-const LABEL = "All";
-const DEFAULT_CHECKED = false;
-
-const defaultProps = {
-    onChange: undefined,
-    id: "optionAll",
-    label: LABEL,
-    checked: DEFAULT_CHECKED
-}
+import OptionAll from '../OptionAll';
 
 describe('OptionAll ', () => {
     afterAll(() => {
         jest.resetAllMocks();
-    })
+    });
 
-    it('changeHandler - props.onChange function should be called with correct parameter', () => {
-        const onChange = jest.fn();
-        const props = Object.assign({}, defaultProps, { onChange });
+    describe('changeHandler', () => {
+        it('should do as expected', () => {
+            // Arrange
+            const props = {
+                language: 'en-US',
+                id: 'optionAll',
+                checked: false,
+                onChange: jest.fn()
+            };
+            const checkedItem = {
+                key: 'key',
+                value: 'value',
+                checked: false
+            };
+            const container = shallow(<OptionAll {...props} />).instance();
 
-        const optionAll = new OptionAll(props);
-        const checkedItem = {
-            key: "key",
-            value: "value",
-            checked: false
-        };
+            // Act
+            container.changeHandler(checkedItem);
 
-        optionAll.changeHandler(checkedItem);
+            // Assert
+            expect(props.onChange).toHaveBeenCalledWith(checkedItem.checked);
+        });
+    });
 
-        expect(props.onChange).toHaveBeenCalledWith(checkedItem.checked);
-    })
+    describe('render', () => {
+        it('should match snapshot', () => {
+            // Arrange
+            const props = {
+                language: 'en-US',
+                id: 'optionAll',
+                checked: false,
+                onChange: jest.fn()
+            };
 
-    it('render - Option component should has correct props', () => {
-        const optionAll = new OptionAll(defaultProps);
-        const renderedOptionAll = optionAll.render();
-        const optionComponent = renderedOptionAll.props.children;
+            // Act
+            const container = shallow(<OptionAll {...props} />);
 
-        const expectedId = "optionAll-optionItemAll";
-        const expectedItemData = {
-            key: 'All',
-            value: 'All',
-            checked: false
-        }
-
-        const result = optionComponent.props;
-
-        expect(result.id).toBe(expectedId);
-        expect(result.itemData).toEqual(expectedItemData);
-    })
+            // Assert
+            expect(container.render()).toMatchSnapshot();
+        });
+    });
 })
