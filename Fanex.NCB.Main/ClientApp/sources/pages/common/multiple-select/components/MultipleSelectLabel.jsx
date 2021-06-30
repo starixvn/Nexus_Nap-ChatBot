@@ -12,12 +12,13 @@ export default class MultipleSelectLabel extends Component {
 
     static defaultProps = {
         language: 'en-US',
-        maxDisplayItemCount: MAX_SELECTED_ITEM_FOR_DISPLAY
+        maxDisplayItemCount: MAX_SELECTED_ITEM_FOR_DISPLAY,
+        texts: {
+            All: 'All',
+            SelectedItemCount: '# selected',
+            SelectOptions: 'Select options'
+        }
     };
-
-    constructor(props) {
-        super(props);
-    }
 
     get selectedItemsString() {
         const { selectedItems, maxDisplayItemCount } = this.props;

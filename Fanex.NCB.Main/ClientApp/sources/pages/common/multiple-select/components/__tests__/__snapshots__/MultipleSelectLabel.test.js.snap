@@ -1,17 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MultipleSelectLabel  render rendered content should match to snap shot 1`] = `
-<button
-  className="multiple-select-default multiple-select-label"
-  type="button"
->
-  <span
-    className="text-display"
-  >
-    Select options
-  </span>
-  <b
-    className="caret"
-  />
-</button>
-`;
+exports[`MultipleSelectLabel render should match snapshot 1`] = `"<button type=\\"button\\" class=\\"multiple-select-default multiple-select-label\\"><span class=\\"text-display\\">Select options</span><b class=\\"caret\\"></b></button>"`;

@@ -1,79 +1,98 @@
-import React from 'react'
-import renderer from 'react-test-renderer'
+import React from 'react';
+import { shallow } from 'enzyme';
 
-import MultipleSelectLabel from '../MultipleSelectLabel'
+import MultipleSelectLabel from '../MultipleSelectLabel';
 
-const NO_SELECTED_LABEL = "Select options";
-const MAX_SELECTED_ITEM_FOR_DISPLAY = 3;
+describe('MultipleSelectLabel', () => {
+    const defaultSelectedItem = {
+        key: 'keyDefault',
+        value: 'valueDefault'
+    };
+    const defaultProps = {
+        selectedItems: [],
+        maxDisplayItemCount: 2,
+        texts: {
+            All: 'All',
+            SelectedItemCount: '# selected',
+            SelectOptions: 'Select options'
+        }
+    };
 
-const defaultSelectedItem = {
-    key: "keyDefault",
-    value: "valueDefault"
-};
-const defaultProps = {
-    selectedItems: [],
-    noneSelectedLabel: NO_SELECTED_LABEL,
-    maxDisplayItemCount: MAX_SELECTED_ITEM_FOR_DISPLAY
-}
-
-describe('MultipleSelectLabel ', () => {
     afterAll(() => {
         jest.resetAllMocks();
-    })
+    });
 
     describe('selectedItemsString', () => {
-        it('No item is selected - return "Select options" text', () => {
-            const expectedResult = "Select options";
-            const label = new MultipleSelectLabel(defaultProps);
+        it('No item is selected - return as expected', () => {
+            // Arrange
+            const expected = 'Select options';
+            const container = shallow(<MultipleSelectLabel {...defaultProps} />).instance();
 
-            const result = label.selectedItemsString;
+            // Act
+            const actual = container.selectedItemsString;
 
-            expect(result).toBe(expectedResult);
-        })
+            // Assert
+            expect(actual).toBe(expected);
+        });
 
-        it('selectedItemCount >= maxDisplayItemCount - return selected item count text', () => {
-            const expectedResult = "3 selected";
-            const selectedItems = [defaultSelectedItem, defaultSelectedItem, defaultSelectedItem]
+        it('selectedItemCount > maxDisplayItemCount - return as expected', () => {
+            // Arrange
+            const expected = '3 selected';
+            const selectedItems = [defaultSelectedItem, defaultSelectedItem, defaultSelectedItem];
+            const props = { ...defaultProps, selectedItems };
+            const container = shallow(<MultipleSelectLabel {...props} />).instance();
 
-            const props = Object.assign({}, defaultProps, { selectedItems });
-            const label = new MultipleSelectLabel(props);
+            // Act
+            const actual = container.selectedItemsString;
 
-            const result = label.selectedItemsString;
+            // Assert
+            expect(actual).toBe(expected);
+        });
 
-            expect(result).toBe(expectedResult);
-        })
+        it('selectedItemCount <= maxDisplayItemCount - return as expected', () => {
+            // Arrange
+            const expected = 'valueDefault, value1';
+            const selectedItems = [defaultSelectedItem, { key: 'key1', value: 'value1' }];
+            const props = { ...defaultProps, selectedItems };
+            const container = shallow(<MultipleSelectLabel {...props} />).instance();
 
-        it('has selected item and item count is less than maxDisplayItemCount - return value of selected items with comma separator', () => {
-            const expectedResult = "valueDefault, value1";
-            const selectedItems = [defaultSelectedItem, { key: "key1", value: "value1" }];
+            // Act
+            const actual = container.selectedItemsString;
 
-            const props = Object.assign({}, defaultProps, { selectedItems });
-            const label = new MultipleSelectLabel(props);
+            // Assert
+            expect(actual).toBe(expected);
+        });
 
-            const result = label.selectedItemsString;
+        it('all items selected - return as expected', () => {
+            // Arrange
+            const expected = 'All';
+            const props = {
+                ...defaultProps,
+                selectedItems: [defaultSelectedItem],
+                dataSourceSize: 1,
+                maxDisplayItemCount: 1,
+                isAllTextShown: true
+            };
+            const container = shallow(<MultipleSelectLabel {...props} />).instance();
 
-            expect(result).toBe(expectedResult);
-        })
-    })
+            // Act
+            const actual = container.selectedItemsString;
+
+            // Assert
+            expect(actual).toBe(expected);
+        });
+    });
 
     describe('render', () => {
-        it('rendered content should match to snap shot', () => {
-            const label = renderer.create(<MultipleSelectLabel {...defaultProps} />);
+        it('should match snapshot', () => {
+            // Arrange
+            const container = shallow(<MultipleSelectLabel {...defaultProps} />);
 
-            const result = label.toJSON();
+            // Act
+            const actual = container.html();
 
-            expect(result).toMatchSnapshot();
-        })
-
-        it('click on label - props.onToggle should be called', () => {
-            const toggleFunc = jest.fn();
-            const props = Object.assign({}, defaultProps, { onToggle: toggleFunc });
-            const label = renderer.create(<MultipleSelectLabel {...props} />);
-
-            const renderedContent = label.toJSON();
-            renderedContent.props.onClick();
-
-            expect(toggleFunc).toHaveBeenCalled();
-        })
-    })
-})
+            // Assert
+            expect(actual).toMatchSnapshot();
+        });
+    });
+});

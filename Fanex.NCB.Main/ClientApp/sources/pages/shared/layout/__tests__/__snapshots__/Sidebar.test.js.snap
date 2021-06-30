@@ -1,55 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Sidebar render menu is empty 1`] = `
-<div
-  className="sidebar"
->
-  <div
-    className="nav-top"
-  >
-    <img
-      className="logo"
-      src="/images/Logo.svg"
-    />
-    <h1
-      className="site-name"
-    >
-      Chatbot
-    </h1>
-  </div>
-  <div
-    className="nav"
-  >
-    <ul
-      className="menu"
-    />
-  </div>
-</div>
-`;
+exports[`Sidebar render menu is empty 1`] = `"<div class=\\"sidebar\\"><div class=\\"nav-top\\"><img src=\\"/images/Logo.svg\\" class=\\"logo\\"/><h1 class=\\"site-name\\">Chatbot</h1></div><div class=\\"nav\\"><ul class=\\"menu\\"></ul></div></div>"`;
 
-exports[`Sidebar render menu is not empty 1`] = `
-<div
-  className="sidebar"
->
-  <div
-    className="nav-top"
-  >
-    <img
-      className="logo"
-      src="/images/Logo.svg"
-    />
-    <h1
-      className="site-name"
-    >
-      Chatbot
-    </h1>
-  </div>
-  <div
-    className="nav"
-  >
-    <ul
-      className="menu"
-    />
-  </div>
-</div>
-`;
+exports[`Sidebar render menu is not empty 1`] = `"<div class=\\"sidebar\\"><div class=\\"nav-top\\"><img src=\\"/images/Logo.svg\\" class=\\"logo\\"/><h1 class=\\"site-name\\">Chatbot</h1></div><div class=\\"nav\\"><ul class=\\"menu\\"></ul></div></div>"`;

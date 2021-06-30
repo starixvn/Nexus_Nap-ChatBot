@@ -1,16 +1,6 @@
 import React from 'react';
 import Header from './../header/index';
-import { shallow, mount, configure } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-import renderer from 'react-test-renderer';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-
-configure({ adapter: new Adapter() });
-
-function setup(props, isShallow = true) {
-    const wrap = isShallow ? (component) => shallow(component) : (component) => mount(component);
-    return wrap(<Header {...props} />);
-}
+import { shallow } from 'enzyme';
 
 describe('Header', () => {
     describe('render', () => {
@@ -21,7 +11,7 @@ describe('Header', () => {
             };
 
             // Act
-            const renderOutput = renderer.create(<Header {...props} />).toJSON();
+            const renderOutput = shallow(<Header {...props} />).html();
 
             // Assert
             expect(renderOutput).toMatchSnapshot();
@@ -34,7 +24,7 @@ describe('Header', () => {
             };
 
             // Act
-            const renderOutput = renderer.create(<Header {...props} />).toJSON();
+            const renderOutput = shallow(<Header {...props} />).html();
 
             // Assert
             expect(renderOutput).toMatchSnapshot();
@@ -52,24 +42,10 @@ describe('Header', () => {
             };
 
             // Act
-            const renderOutput = renderer.create(<Header {...props} />).toJSON();
+            const renderOutput = shallow(<Header {...props} />).html();
 
             // Assert
             expect(renderOutput).toMatchSnapshot();
-        });
-
-        it('render correct chil components', () => {
-            const props = {
-                isSidebarExpanded: true,
-                collapseExpandHandler: jest.fn()
-            };
-
-            const wrapper = shallow(<Header {...props} />);
-
-            expect(wrapper.find(Dropdown)).toHaveLength(1);
-            expect(wrapper.find(DropdownToggle)).toHaveLength(1);
-            expect(wrapper.find(DropdownMenu)).toHaveLength(1);
-            expect(wrapper.find(DropdownItem)).toHaveLength(1);
         });
     });
 
@@ -79,7 +55,7 @@ describe('Header', () => {
             const props = {
                 collapseExpandHandler: jest.fn()
             };
-            const sidebar = new setup(props);
+            const sidebar = shallow(<Header {...props} />);
 
             // Act
             sidebar.find('div.line-wrapp').simulate('click');

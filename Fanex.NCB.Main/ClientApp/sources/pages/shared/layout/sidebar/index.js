@@ -30,38 +30,43 @@ export default class Sidebar extends React.Component {
             case 'Notification Template': return 'icon-template';
             case 'Chat Group Mapping': return 'icon-group-mapping';
             case 'Notification Type': return 'icon-notification-type';
-			case 'Setting Configuration': return 'icon-setting';
+            case 'Setting Configuration': return 'icon-setting';
             case 'View Log': return 'icon-view-log';
         }
-    }
+    };
 
-    isCurrent = url => url.toLowerCase() === `/${this.currentController}${this.currentAction !== 'index' ? `/${this.currentAction}` : ''}`
+    isCurrent = url => url.toLowerCase() === `/${this.currentController}${this.currentAction !== 'index' ? `/${this.currentAction}` : ''}`;
 
     renderMenu = () => {
-        return this.state.menuItems.map(menuItem => menuItem.subMenus.length > 0 ? this.renderSubMenu(menuItem) : this.renderMenuItem(menuItem));
-    }
+        return this.state.menuItems.map(menuItem => menuItem.subMenus.length > 0
+            ? this.renderSubMenu(menuItem) : this.renderMenuItem(menuItem));
+    };
 
-    isCurrentParent = url => url.toLowerCase().includes(`/${this.currentController}`)
+    isCurrentParent = url => url.toLowerCase().includes(`/${this.currentController}`);
 
     renderSubMenu = menuItem => (<li className={`menu-item ${this.isCurrentParent(menuItem.url) ? "" : " dropdown"}`} key={menuItem.id}>
-        <div className="not-link-item dropdown-div">
-            <span className={`span-icon ${this.getMenuClassName(menuItem.name)}`} />
-            <span className="text">{menuItem.name}</span>
-            <span className="icon-arrow-down"></span>
-        </div>
-        <ul className={`sub-menu menu${this.isCurrentParent(menuItem.url) ? "" : " dropdown-content"}`}>
-            {menuItem.subMenus.map(this.renderMenuItem)}
-        </ul>
-    </li>);
+        <li className="menu-item dropdown" key={menuItem.id}>
+            <div className="not-link-item dropdown-div">
+                <span className={`span-icon ${this.getMenuClassName(menuItem.name)}`} />
+                <span className="text">{menuItem.name}</span>
+                <span className="icon-arrow-down"></span>
+            </div>
+            <ul className={`sub-menu menu${this.isCurrentParent(menuItem.url) ? '' : ' dropdown-content'}`}>
+                {menuItem.subMenus.map(this.renderMenuItem)}
+            </ul>
+        </li>
+    );
 
-    renderMenuItem = (submenu) => (
+    renderMenuItem = submenu => (
         <li className="menu-item" key={submenu.id}>
-            <a href={Site.resolveClientUrl(submenu.url).replace('//', '/')} className={`link ${this.isCurrent(submenu.url) && 'current'} `}>
+            <a href={Site.resolveClientUrl(submenu.url).replace('//', '/')}
+                className={`link ${this.isCurrent(submenu.url) && 'current'}`}
+            >
                 <span className={this.getMenuClassName(submenu.name)} />
                 <span className="text">{submenu.name}</span>
             </a>
         </li>
-    )
+    );
 
     render() {
         return (

@@ -1,13 +1,9 @@
 ﻿import React from 'react';
-import ShallowRenderer from 'react-test-renderer/shallow';
 import { MultipleSelectField } from '../MultipleSelectField';
-import { shallow, render, configure } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import { shallow } from 'enzyme';
 
 describe('MultipleSelectField', () => {
-    configure({ adapter: new Adapter() });
-
-    it('when isSummitted and not valid - render correctly', () => {
+    it('when isSummitted and not valid - should match snapshot', () => {
         // Arrange
         let props = {
             isSummited: true
@@ -21,10 +17,10 @@ describe('MultipleSelectField', () => {
         wrapper.instance().forceUpdate();
 
         // Assert
-        expect(wrapper.render()).toMatchSnapshot();
+        expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('when isSummitted and valid - render correctly', () => {
+    it('when isSummitted and valid - should match snapshot', () => {
         // Arrange
         let props = {
             isSummited: true
@@ -38,10 +34,10 @@ describe('MultipleSelectField', () => {
         wrapper.instance().forceUpdate();
 
         // Assert
-        expect(wrapper.render()).toMatchSnapshot();
+        expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('when not isSummitted - render correctly', () => {
+    it('when not isSummitted - should match snapshot', () => {
         // Arrange
         let props = {
             isSummited: false
@@ -53,15 +49,14 @@ describe('MultipleSelectField', () => {
         );
 
         // Assert
-        expect(wrapper.render()).toMatchSnapshot();
+        expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('when not isSummitted and has data - render correctly', () => {
+    it('when not isSummitted and has data - should match snapshot', () => {
         // Arrange
         let props = {
             isSummited: false,
-            data: [
-            ],
+            data: [],
             width: 10
         };
 
@@ -71,7 +66,7 @@ describe('MultipleSelectField', () => {
         );
 
         // Assert
-        expect(wrapper.render()).toMatchSnapshot();
+        expect(wrapper.html()).toMatchSnapshot();
     });
 
     it('onChange - call onChange', () => {

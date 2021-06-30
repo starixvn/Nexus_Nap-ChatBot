@@ -1,8 +1,6 @@
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
-import { shallow, configure, mount, render } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-import renderer from 'react-test-renderer';
+import { shallow, mount } from 'enzyme';
 import Layout from './../layout/Layout';
 import { renderLayout } from './../layout/index';
 
@@ -10,15 +8,14 @@ import Sidebar from './../sidebar/index';
 import Content from './../content/index';
 import AuthRecheck from './../recheckin/index';
 
-configure({ adapter: new Adapter() });
-
 describe('Layout', () => {
     describe('render', () => {
-        it('match snapshots', () => {
+        it('should match snapshot', () => {
             // Act
-            const component = renderer.create(<Layout>{"Test"}</Layout>);
+            const component = shallow(<Layout>{"Test"}</Layout>);
+
             // Assert
-            expect(component.toJSON()).toMatchSnapshot();
+            expect(component.html()).toMatchSnapshot();
         });
 
         it('match snapshots with child component', () => {
