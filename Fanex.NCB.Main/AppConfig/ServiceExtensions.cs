@@ -35,6 +35,7 @@
             services.AddScoped<ISendNotificationService, SendNotificationService>();
             services.AddScoped<ISyncDataService, SyncDataService>();
             services.AddScoped<INotificationTemplaceService, NotificationTemplaceService>();
+            services.AddScoped<IViewLogService,ViewLogService>();
             services.AddScoped<ISettingConfigurationService, SettingConfigurationService>();
             services.AddScoped<ISignalRService, SignalRService>();
             services.AddScoped<IPushSignalService, PushSignalService>();

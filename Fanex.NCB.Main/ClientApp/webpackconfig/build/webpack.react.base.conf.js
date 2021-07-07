@@ -18,6 +18,7 @@ function generateConfig(environment) {
             [`${buildPath}/notificationtype/notificationtype`]: pathConfig.paths.notificationtype,
             [`${buildPath}/settingconfiguration/settingconfiguration`]: pathConfig.paths.settingconfiguration,
             [`${buildPath}/mappingsettingconfiguration/mappingsettingconfiguration`]: pathConfig.paths.mappingsettingconfiguration,
+            [`${buildPath}/viewlog/viewlog`]: pathConfig.paths.viewlog,
             [`${buildPath}/login/login`]: pathConfig.paths.login,
             [`${buildPath}/editnotification/editnotification`]: pathConfig.paths.editnotification,
         },

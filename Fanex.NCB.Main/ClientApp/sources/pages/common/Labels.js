@@ -65,5 +65,15 @@
     RequiredParams: 'Required Params',
     IsTest: 'Is Test',
     DeleteMappingSettingSuccessfully: 'Delete Mapping Setting successfully',
-    UnexpectedErrorsRequestMessage: 'Sorry, an error occurred while processing your request, please notify the administrators.'
+    UnexpectedErrorsRequestMessage: 'Sorry, an error occurred while processing your request, please notify the administrators.',
+    CreatedDate: 'Created Date',
+    ErrorMessage: 'Error Message',
+    GroupName: 'Group Name',
+    Status: 'Status',
+    RetryTime: 'Retry Time',
+    ConversationGroupID: 'Conversation Group ID',
+    ConversationGroupName: 'Conversation Group Name',
+    SentTime: 'Sent Time',
+    IsSuccessful: 'IsSuccessful',
+    Content: 'Content',    
 };

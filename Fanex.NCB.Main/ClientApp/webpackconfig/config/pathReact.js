@@ -12,6 +12,7 @@ const paths = {
     notificationtype: './sources/pages/notificationtype/index.js',
     settingconfiguration: './sources/pages/settingconfiguration/index.js',
     mappingsettingconfiguration: './sources/pages/mappingsettingconfiguration/index.js',
+    viewlog: './sources/pages/viewlog/index.js',
     login: './sources/pages/login/index.js',
     editnotification: './sources/pages/editnotification/index.jsx'
 };

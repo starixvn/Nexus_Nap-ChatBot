@@ -15,5 +15,7 @@
         public const string SettingManagement = "SettingManagement";
 
         public const string MappingSettingManagement = "MappingSettingManagement";
+
+        public const string ViewLog = "ViewLog";
     }
 }

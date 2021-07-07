@@ -151,4 +151,10 @@
     <Setting Key="NCB_SettingConfiguration_Mapping_Del" SpName="NCB_SettingConfiguration_Mapping_Del" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SettingConfiguration_MappingSettingTypeList_Sel" SpName="NCB_SettingConfiguration_MappingSettingTypeList_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
+
+  <Function Name="ViewLog">
+    <Setting Key="NCB_ViewLog_NotificationSystemMessage_Sel" SpName="NCB_ViewLog_NotificationSystemMessage_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_ViewLog_NotificationRecipientList_Sel" SpName="NCB_ViewLog_NotificationRecipientList_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_ViewLog_ConversationMessageLog_Sel" SpName="NCB_ViewLog_ConversationMessageLog_Sel" DbName="ChatBot" Plain="0"></Setting>
+  </Function>
 </Functions>

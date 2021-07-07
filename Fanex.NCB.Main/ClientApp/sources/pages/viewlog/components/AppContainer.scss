@@ -1,0 +1,51 @@
+@import "../../shared/variables";
+@import "../../shared/common.scss";
+@import "../../shared/components/forms.scss";
+@import "../../shared/components/_form-filter.scss";
+@import "../../shared/components/buttons.scss";
+@import "../../shared/components/modals.scss";
+@import "../../shared/components/messages.scss";
+@import "../../shared/components/tables.scss";
+@import "../../shared/components/modals";
+
+.filter .notification-type {
+    width: 160px;
+}
+
+.table-container {
+    margin-top: 10px;
+}
+
+.group-form{
+    align-items: baseline;
+
+    .label{
+        padding-right: 25px;
+    }
+}
+
+.group-choose{
+    display: flex;
+    box-sizing: border-box;
+    padding-top: 20px;
+    padding-bottom: 10px;
+
+    .choose-option{
+        cursor: pointer;
+        border: none;
+        vertical-align: middle;
+        text-align: center;
+        box-sizing: border-box;
+        color: #333;
+        font-weight: bold;
+        padding: 6px 30px;
+        background: #eceff1;
+        border-radius: 0;
+        opacity: 0.5;
+    }
+
+    .active{
+        border-bottom: 2px #066896 solid !important;
+        opacity: 1;
+    }
+}
