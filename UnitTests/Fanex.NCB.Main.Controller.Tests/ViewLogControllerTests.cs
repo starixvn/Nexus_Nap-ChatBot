@@ -32,7 +32,7 @@
             var fixture = new Fixture();
             napSession.UserId = fixture.Create<int>();
 
-            userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotificationTemplate, Policy.Host).Returns(true);
+            userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.ViewLog, Policy.Host).Returns(true);
             var actual = controller.Index();
 
             var viewResult = Assert.IsType<ViewResult>(actual);

@@ -26,15 +26,15 @@
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Read)]
         public IActionResult Index()
         {
-            ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotificationTemplate, Policy.Host);
+            ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.ViewLog, Policy.Host);
             return View("~/Views/SkypeBot/ViewLog/Index.cshtml");
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Read)]
         public async Task<IActionResult> GetSystemMessage(int? notificationId, int pageIndex, int pageSize)
         {
             var result = await viewLogService.GetNotificationSystemMessage(notificationId, pageIndex, pageSize);
@@ -43,7 +43,7 @@
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Read)]
         public async Task<IActionResult> GetRecipientList(int? notificationId, int pageIndex, int pageSize)
         {
             var result = await viewLogService.GetNotificationRecipientList(notificationId, pageIndex, pageSize);
@@ -52,7 +52,7 @@
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.NotificationTemplate, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Read)]
         public async Task<IActionResult> GetConversationMessage(int? notificationId, int pageIndex, int pageSize)
         {
             var result = await viewLogService.GetConversationMessageLog(notificationId, pageIndex, pageSize);
