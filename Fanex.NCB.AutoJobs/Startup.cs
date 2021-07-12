@@ -140,6 +140,7 @@
             services.AddSingleton<IDynamicRepository, DynamicRepository>();
             services.AddSingleton<IBaseRepository, BaseRepository>();
             services.AddSingleton<ISyncDataRepository, SyncDataRepository>();
+            services.AddSingleton<IViewLogService, ViewLogService>();
         }
 
         private static void AddWorker(IServiceCollection services)
@@ -152,6 +153,7 @@
             services.AddHostedService<PullMessageFromSiteMessage>();
             services.AddHostedService<MonitorChatbotWorker>();
             services.AddHostedService<MonitorTelegramBotWorker>();
+            services.AddHostedService<DeleteOldConversationMessageLogWorker>();
         }
     }
 }

@@ -15,6 +15,9 @@
         public const string PullMessageFromSiteMessage = "PullMessageFromSiteMessage";
 
         public const string MonitorSkypebot = "MonitorSkypebot";
+
         public const string MonitorTelegramBot = "MonitorTelegramBot";
+
+        public const string DeleteOldConversationMessageLog = "DeleteOldConversationMessageLog";
     }
 }

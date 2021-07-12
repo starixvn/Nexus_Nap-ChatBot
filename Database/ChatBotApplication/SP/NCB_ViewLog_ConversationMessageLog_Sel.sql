@@ -12,44 +12,55 @@ BEGIN
     SET rowStart =	pageSize * (pageIndex - 1);   
     
 	SET COUNT =( SELECT COUNT(1)
-        FROM (	SELECT DISTINCT NRL.NotificationID
-						,CB.Name as BotName
-						,CG.ConversationGroupID
-						,R.RecipientName
-						,CML.SentTime
-						,CML.IsSuccessfull
-						,CML.ErrorMessage
-						,CML.Content
-				FROM ( ConversationGroup CG 
-					INNER JOIN NotificationRecipientList NRL on CG.ConversationGroupID = NRL.ConversationGroupID					
-					INNER JOIN ConversationGroupBot CGB on CG.ConversationGroupID = CGB.ConversationGroupID
-					INNER JOIN ConversationBot CB on CGB.ConversationBotID = CB.ConversationBotID					
-					INNER JOIN ConversationGroupRecipient CGR on CG.ConversationGroupID = CGR.ConversationGroupID
-					INNER JOIN Recipient R on CGR.RecipientID = R.RecipientID					
-					INNER JOIN ConversationMessageLog CML on CG.ConversationID = CML.ToConversationID
-					)
-				WHERE NRL.NotificationID = notificationID) as A
-        );
+				 FROM (	SELECT DISTINCT A.NotificationID
+							,CB.Name as BotName
+							,A.ConversationGroupID
+							,A.ConversationGroupName
+							,A.RecipientName
+							,CML.SentTime
+							,CML.IsSuccessfull as IsSuccessful
+							,CML.ErrorMessage
+							,CML.Content
+						FROM ( ConversationMessageLog CML
+							INNER JOIN ConversationBot CB on CB.ConversationID = CML.FromConversationID
+							INNER JOIN ( SELECT NRL.NotificationID
+												,CG.ConversationGroupID
+												,CG.ConversationID
+												,CG.Name as ConversationGroupName
+												,R.RecipientName
+										 FROM ConversationGroup CG
+										 INNER JOIN NotificationRecipientList NRL on CG.ConversationGroupID = NRL.ConversationGroupID
+										 INNER JOIN ConversationGroupRecipient CGR on CG.ConversationGroupID = CGR.ConversationGroupID
+										 INNER JOIN Recipient R on CGR.RecipientID = R.RecipientID
+										) as A  on A.ConversationID = CML.ToConversationID
+								)
+				  WHERE A.NotificationID = notificationID) as B
+			   );
     SELECT COUNT;
     
-	SELECT DISTINCT NRL.NotificationID
+	SELECT DISTINCT A.NotificationID
         ,CB.Name as BotName
-        ,CG.ConversationGroupID
-        ,CG.Name as ConversationGroupName
-        ,R.RecipientName
+        ,A.ConversationGroupID
+        ,A.ConversationGroupName
+        ,A.RecipientName
         ,CML.SentTime
         ,CML.IsSuccessfull as IsSuccessful
         ,CML.ErrorMessage
         ,CML.Content
-    FROM ( ConversationGroup CG 
-		INNER JOIN NotificationRecipientList NRL on CG.ConversationGroupID = NRL.ConversationGroupID        
-		INNER JOIN ConversationGroupBot CGB on CG.ConversationGroupID = CGB.ConversationGroupID
-        INNER JOIN ConversationBot CB on CGB.ConversationBotID = CB.ConversationBotID
-        INNER JOIN ConversationGroupRecipient CGR on CG.ConversationGroupID = CGR.ConversationGroupID
-        INNER JOIN Recipient R on CGR.RecipientID = R.RecipientID
-        INNER JOIN ConversationMessageLog CML on CG.ConversationID = CML.ToConversationID
+    FROM ( ConversationMessageLog CML
+		INNER JOIN ConversationBot CB on CB.ConversationID = CML.FromConversationID
+        INNER JOIN ( SELECT NRL.NotificationID
+						,CG.ConversationGroupID
+						,CG.ConversationID
+						,CG.Name as ConversationGroupName
+						,R.RecipientName
+					 FROM ConversationGroup CG
+					 INNER JOIN NotificationRecipientList NRL on CG.ConversationGroupID = NRL.ConversationGroupID
+				     INNER JOIN ConversationGroupRecipient CGR on CG.ConversationGroupID = CGR.ConversationGroupID
+					 INNER JOIN Recipient R on CGR.RecipientID = R.RecipientID
+					) as A  on A.ConversationID = CML.ToConversationID
     )
-	WHERE NRL.NotificationID = notificationID
-    ORDER BY NRL.NotificationID, CML.SentTime
+	WHERE A.NotificationID = notificationID
+    ORDER BY A.NotificationID, CML.SentTime
     LIMIT rowStart, pageSize; 
 END

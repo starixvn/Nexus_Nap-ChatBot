@@ -3,6 +3,7 @@
     using Fanex.NCB.Criteria.ViewLog;
     using Fanex.NCB.Models.ViewLog;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using System.Collections.Generic;
     using System.Linq;
@@ -51,6 +52,16 @@
             });
 
             return (result.Item1.FirstOrDefault(), result.Item2);
+        }
+
+        public async Task<CommandResult> DeleteOldConversationMessageLogAsync(string currentDate)
+        {
+            var command = new DeleteOldConversationMessageLogCommand
+            {
+                CurrentDate = currentDate,
+            };
+
+            return await baseService.ExecuteNonQueryAsync(command);                      
         }
     }
 }

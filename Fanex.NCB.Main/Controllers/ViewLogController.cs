@@ -59,6 +59,5 @@
 
             return Json(new { total = result.Item1, data = result.Item2 });
         }
-
     }
 }
