@@ -5,14 +5,14 @@
   Task: Update Setting [RedmineId : #151807]
 */
 ALTER TABLE Notification
-ADD COLUMN ChannelID TINYINT UNSIGNED NOT NULL;
+ADD COLUMN ChannelID TINYINT UNSIGNED NULL;
 
 ALTER TABLE ConversationBot
-ADD COLUMN ChannelID TINYINT UNSIGNED NOT NULL;
+ADD COLUMN ChannelID TINYINT UNSIGNED NULL;
 
 CREATE TABLE ChatBot.ConversationChannel
 (
-	ChannelID TINYINT  UNSIGNED  NOT NULL,
+	ChannelID TINYINT  UNSIGNED NULL,
     ChannelName VARCHAR(45)	CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NULL,
     CONSTRAINT PK_ChannelID PRIMARY KEY (ChannelID)
 );
@@ -24,7 +24,7 @@ UPDATE ConversationGroup
 SET ChannelID = 1;
 
 ALTER TABLE ConversationGroup
-MODIFY  ChannelID TINYINT UNSIGNED NOT NULL;
+MODIFY  ChannelID TINYINT UNSIGNED  NULL;
 
 UPDATE Notification
 SET ChannelID = 1;
