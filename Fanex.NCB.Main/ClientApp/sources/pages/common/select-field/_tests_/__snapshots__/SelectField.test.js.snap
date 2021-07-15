@@ -2,24 +2,24 @@
 
 exports[`SelectField when isSummitted and not valid - render correctly 1`] = `
 initialize {
-  "0": Object {
+  "0": Node {
     "attribs": Object {
       "class": "select-field",
     },
     "children": Array [
-      Object {
+      Node {
         "attribs": Object {
           "class": "is-invalid form-control",
         },
         "children": Array [
-          Object {
+          Node {
             "attribs": Object {
               "disabled": "",
               "hidden": "",
               "value": "0",
             },
             "children": Array [
-              Object {
+              Node {
                 "data": "Please select ...",
                 "next": null,
                 "parent": [Circular],
@@ -47,12 +47,12 @@ initialize {
         ],
         "name": "select",
         "namespace": "http://www.w3.org/1999/xhtml",
-        "next": Object {
+        "next": Node {
           "attribs": Object {
             "class": "invalid-feedback",
           },
           "children": Array [
-            Object {
+            Node {
               "data": "This field is required.",
               "next": null,
               "parent": [Circular],
@@ -83,12 +83,12 @@ initialize {
           "class": undefined,
         },
       },
-      Object {
+      Node {
         "attribs": Object {
           "class": "invalid-feedback",
         },
         "children": Array [
-          Object {
+          Node {
             "data": "This field is required.",
             "next": null,
             "parent": [Circular],
@@ -100,19 +100,19 @@ initialize {
         "namespace": "http://www.w3.org/1999/xhtml",
         "next": null,
         "parent": [Circular],
-        "prev": Object {
+        "prev": Node {
           "attribs": Object {
             "class": "is-invalid form-control",
           },
           "children": Array [
-            Object {
+            Node {
               "attribs": Object {
                 "disabled": "",
                 "hidden": "",
                 "value": "0",
               },
               "children": Array [
-                Object {
+                Node {
                   "data": "Please select ...",
                   "next": null,
                   "parent": [Circular],
@@ -163,22 +163,17 @@ initialize {
     "name": "div",
     "namespace": "http://www.w3.org/1999/xhtml",
     "next": null,
-    "parent": null,
-    "prev": null,
-    "root": Object {
-      "attribs": Object {},
+    "parent": Node {
       "children": Array [
         [Circular],
       ],
       "name": "root",
-      "namespace": "http://www.w3.org/1999/xhtml",
       "next": null,
       "parent": null,
       "prev": null,
       "type": "root",
-      "x-attribsNamespace": Object {},
-      "x-attribsPrefix": Object {},
     },
+    "prev": null,
     "type": "tag",
     "x-attribsNamespace": Object {
       "class": undefined,
@@ -191,8 +186,6 @@ initialize {
   "length": 1,
   "options": Object {
     "decodeEntities": true,
-    "normalizeWhitespace": false,
-    "withDomLvl1": true,
     "xml": false,
   },
 }
@@ -200,24 +193,24 @@ initialize {
 
 exports[`SelectField when isSummitted and valid - render correctly 1`] = `
 initialize {
-  "0": Object {
+  "0": Node {
     "attribs": Object {
       "class": "select-field",
     },
     "children": Array [
-      Object {
+      Node {
         "attribs": Object {
           "class": "form-control",
         },
         "children": Array [
-          Object {
+          Node {
             "attribs": Object {
               "disabled": "",
               "hidden": "",
               "value": "0",
             },
             "children": Array [
-              Object {
+              Node {
                 "data": "Please select ...",
                 "next": null,
                 "parent": [Circular],
@@ -260,22 +253,17 @@ initialize {
     "name": "div",
     "namespace": "http://www.w3.org/1999/xhtml",
     "next": null,
-    "parent": null,
-    "prev": null,
-    "root": Object {
-      "attribs": Object {},
+    "parent": Node {
       "children": Array [
         [Circular],
       ],
       "name": "root",
-      "namespace": "http://www.w3.org/1999/xhtml",
       "next": null,
       "parent": null,
       "prev": null,
       "type": "root",
-      "x-attribsNamespace": Object {},
-      "x-attribsPrefix": Object {},
     },
+    "prev": null,
     "type": "tag",
     "x-attribsNamespace": Object {
       "class": undefined,
@@ -288,8 +276,6 @@ initialize {
   "length": 1,
   "options": Object {
     "decodeEntities": true,
-    "normalizeWhitespace": false,
-    "withDomLvl1": true,
     "xml": false,
   },
 }
@@ -297,24 +283,24 @@ initialize {
 
 exports[`SelectField when not isSummitted - render correctly 1`] = `
 initialize {
-  "0": Object {
+  "0": Node {
     "attribs": Object {
       "class": "select-field",
     },
     "children": Array [
-      Object {
+      Node {
         "attribs": Object {
           "class": "form-control",
         },
         "children": Array [
-          Object {
+          Node {
             "attribs": Object {
               "disabled": "",
               "hidden": "",
               "value": "0",
             },
             "children": Array [
-              Object {
+              Node {
                 "data": "Please select ...",
                 "next": null,
                 "parent": [Circular],
@@ -357,22 +343,17 @@ initialize {
     "name": "div",
     "namespace": "http://www.w3.org/1999/xhtml",
     "next": null,
-    "parent": null,
-    "prev": null,
-    "root": Object {
-      "attribs": Object {},
+    "parent": Node {
       "children": Array [
         [Circular],
       ],
       "name": "root",
-      "namespace": "http://www.w3.org/1999/xhtml",
       "next": null,
       "parent": null,
       "prev": null,
       "type": "root",
-      "x-attribsNamespace": Object {},
-      "x-attribsPrefix": Object {},
     },
+    "prev": null,
     "type": "tag",
     "x-attribsNamespace": Object {
       "class": undefined,
@@ -385,8 +366,6 @@ initialize {
   "length": 1,
   "options": Object {
     "decodeEntities": true,
-    "normalizeWhitespace": false,
-    "withDomLvl1": true,
     "xml": false,
   },
 }
@@ -394,24 +373,24 @@ initialize {
 
 exports[`SelectField when not isSummitted and has data - render correctly 1`] = `
 initialize {
-  "0": Object {
+  "0": Node {
     "attribs": Object {
       "class": "select-field",
     },
     "children": Array [
-      Object {
+      Node {
         "attribs": Object {
           "class": "form-control",
         },
         "children": Array [
-          Object {
+          Node {
             "attribs": Object {
               "disabled": "",
               "hidden": "",
               "value": "0",
             },
             "children": Array [
-              Object {
+              Node {
                 "data": "Please select ...",
                 "next": null,
                 "parent": [Circular],
@@ -421,12 +400,12 @@ initialize {
             ],
             "name": "option",
             "namespace": "http://www.w3.org/1999/xhtml",
-            "next": Object {
+            "next": Node {
               "attribs": Object {
                 "value": "1",
               },
               "children": Array [
-                Object {
+                Node {
                   "data": "a",
                   "next": null,
                   "parent": [Circular],
@@ -436,12 +415,12 @@ initialize {
               ],
               "name": "option",
               "namespace": "http://www.w3.org/1999/xhtml",
-              "next": Object {
+              "next": Node {
                 "attribs": Object {
                   "value": "2",
                 },
                 "children": Array [
-                  Object {
+                  Node {
                     "data": "b",
                     "next": null,
                     "parent": [Circular],
@@ -486,12 +465,12 @@ initialize {
               "value": undefined,
             },
           },
-          Object {
+          Node {
             "attribs": Object {
               "value": "1",
             },
             "children": Array [
-              Object {
+              Node {
                 "data": "a",
                 "next": null,
                 "parent": [Circular],
@@ -501,12 +480,12 @@ initialize {
             ],
             "name": "option",
             "namespace": "http://www.w3.org/1999/xhtml",
-            "next": Object {
+            "next": Node {
               "attribs": Object {
                 "value": "2",
               },
               "children": Array [
-                Object {
+                Node {
                   "data": "b",
                   "next": null,
                   "parent": [Circular],
@@ -528,14 +507,14 @@ initialize {
               },
             },
             "parent": [Circular],
-            "prev": Object {
+            "prev": Node {
               "attribs": Object {
                 "disabled": "",
                 "hidden": "",
                 "value": "0",
               },
               "children": Array [
-                Object {
+                Node {
                   "data": "Please select ...",
                   "next": null,
                   "parent": [Circular],
@@ -568,12 +547,12 @@ initialize {
               "value": undefined,
             },
           },
-          Object {
+          Node {
             "attribs": Object {
               "value": "2",
             },
             "children": Array [
-              Object {
+              Node {
                 "data": "b",
                 "next": null,
                 "parent": [Circular],
@@ -585,12 +564,12 @@ initialize {
             "namespace": "http://www.w3.org/1999/xhtml",
             "next": null,
             "parent": [Circular],
-            "prev": Object {
+            "prev": Node {
               "attribs": Object {
                 "value": "1",
               },
               "children": Array [
-                Object {
+                Node {
                   "data": "a",
                   "next": null,
                   "parent": [Circular],
@@ -602,14 +581,14 @@ initialize {
               "namespace": "http://www.w3.org/1999/xhtml",
               "next": [Circular],
               "parent": [Circular],
-              "prev": Object {
+              "prev": Node {
                 "attribs": Object {
                   "disabled": "",
                   "hidden": "",
                   "value": "0",
                 },
                 "children": Array [
-                  Object {
+                  Node {
                     "data": "Please select ...",
                     "next": null,
                     "parent": [Circular],
@@ -668,22 +647,17 @@ initialize {
     "name": "div",
     "namespace": "http://www.w3.org/1999/xhtml",
     "next": null,
-    "parent": null,
-    "prev": null,
-    "root": Object {
-      "attribs": Object {},
+    "parent": Node {
       "children": Array [
         [Circular],
       ],
       "name": "root",
-      "namespace": "http://www.w3.org/1999/xhtml",
       "next": null,
       "parent": null,
       "prev": null,
       "type": "root",
-      "x-attribsNamespace": Object {},
-      "x-attribsPrefix": Object {},
     },
+    "prev": null,
     "type": "tag",
     "x-attribsNamespace": Object {
       "class": undefined,
@@ -696,8 +670,6 @@ initialize {
   "length": 1,
   "options": Object {
     "decodeEntities": true,
-    "normalizeWhitespace": false,
-    "withDomLvl1": true,
     "xml": false,
   },
 }

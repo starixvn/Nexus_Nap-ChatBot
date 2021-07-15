@@ -14,7 +14,7 @@ export class AppContainer extends Component {
     constructor(props) {
         super(props);
 
-        this.haveHostPermission = document.getElementById('have-host-permission').checked;
+        this.haveHostPermission = document.getElementById('have-host-permission') ? document.getElementById('have-host-permission').checked : null;
         this.state = {
             notificationId: '',
             show:{

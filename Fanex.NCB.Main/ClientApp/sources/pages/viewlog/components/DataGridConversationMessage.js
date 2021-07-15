@@ -29,7 +29,7 @@ export class DataGridConversationMessage extends Component {
         if (this.props.conversationMessage.data) {
             return this.props.conversationMessage.data.map((item, index) => this.renderRow(item, index, isHost));
         }
-        return [<Row key={`body${1}`} ><Cell colSpan="5"><NoDataTitle /></Cell></Row>];
+        return [<Row key={`body${1}`} ><Cell colSpan="10"><NoDataTitle /></Cell></Row>];
     };
 
     renderRow = (item, index, isHost) => (

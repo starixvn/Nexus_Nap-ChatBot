@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AppContainer render should render correctly ConversationMessage components 1`] = `ShallowWrapper {}`;
+
+exports[`AppContainer render should render correctly RecipientList components 1`] = `ShallowWrapper {}`;
+
+exports[`AppContainer render should render correctly default components 1`] = `ShallowWrapper {}`;

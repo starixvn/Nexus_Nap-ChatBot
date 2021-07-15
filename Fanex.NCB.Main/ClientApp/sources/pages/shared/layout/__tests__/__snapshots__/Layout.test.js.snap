@@ -48,9 +48,52 @@ exports[`Layout render match snapshots 1`] = `
           className="line bottom"
         />
       </div>
+      <div
+        className="header-text-info"
+        id="header-text"
+      />
       <ul
         className="list-unstyled userinfo"
       >
+        <li
+          className="user-info"
+        >
+          <div
+            className="no-caret dropdown"
+            onKeyDown={[Function]}
+          >
+            <a
+              aria-expanded={false}
+              aria-haspopup={true}
+              className="notification-toggle"
+              onClick={[Function]}
+            >
+              <div
+                className="profile-picture"
+              >
+                <span
+                  className="icon icon-bell"
+                />
+              </div>
+            </a>
+            <div
+              aria-hidden={true}
+              className="dropdown-menu dropdown-menu-right"
+              role="menu"
+              tabIndex="-1"
+            >
+              <button
+                className="text-center disabled dropdown-item"
+                disabled={true}
+                onClick={[Function]}
+                tabIndex="-1"
+                type="button"
+              >
+                No error notification
+              </button>
+            </div>
+          </div>
+        </li>
         <li
           className="user-info"
         >
@@ -68,7 +111,7 @@ exports[`Layout render match snapshots 1`] = `
                 className="profile-picture"
               >
                 <span
-                  className="icon-username"
+                  className="icon icon-username"
                 />
               </div>
               Welcome 

@@ -29,7 +29,7 @@ export class DataGridRecipientList extends Component {
             return this.props.recipientList.data.map((item, index) => this.renderRow(item, index, isHost));
         }
 
-        return [<Row key={`body${1}`} ><Cell colSpan="5"><NoDataTitle /></Cell></Row>];
+        return [<Row key={`body${1}`} ><Cell colSpan="9"><NoDataTitle /></Cell></Row>];
     };
 
     renderRow = (item, index, isHost) => (

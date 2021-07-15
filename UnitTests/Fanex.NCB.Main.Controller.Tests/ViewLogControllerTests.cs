@@ -24,6 +24,7 @@
         [Fact]
         public void Index_WhenCalled_ReturnExpectedView()
         {
+            // Arrange
             var controller = GetController();
 
             var napSettings = Substitute.For<INapSettings>();
@@ -32,9 +33,11 @@
             var fixture = new Fixture();
             napSession.UserId = fixture.Create<int>();
 
+            // Act
             userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.ViewLog, Policy.Host).Returns(true);
             var actual = controller.Index();
 
+            // Assert
             var viewResult = Assert.IsType<ViewResult>(actual);
             var haveHostPermission = Assert.IsType<bool>(viewResult.ViewData["HaveHostPermission"]);
             Assert.True(haveHostPermission);
@@ -43,6 +46,7 @@
         [Fact]
         public async Task GetSystemMessage_WhenCalled_ReturnJsonResult()
         {
+            // Arrange
             var controller = GetController();
 
             var fixture = new Fixture();
@@ -52,16 +56,19 @@
             var total = fixture.Create<int>();
             var templates = fixture.Create<IEnumerable<ViewLogNotificationSystemMessage>>();
 
+            // Act
             viewLogService.GetNotificationSystemMessage(notificationTypeId, pageIndex, pageSize).Returns((total, templates));
 
             var result = await controller.GetSystemMessage(notificationTypeId, pageIndex, pageSize);
 
+            // Assert
             Assert.IsType<JsonResult>(result);
         }
 
         [Fact]
         public async Task GetRecipientList_WhenCalled_ReturnJsonResult()
         {
+            // Arrange
             var controller = GetController();
 
             var fixture = new Fixture();
@@ -71,16 +78,19 @@
             var total = fixture.Create<int>();
             var templates = fixture.Create<IEnumerable<ViewLogNotificationRecipientList>>();
 
+            // Act
             viewLogService.GetNotificationRecipientList(notificationTypeId, pageIndex, pageSize).Returns((total, templates));
 
             var result = await controller.GetRecipientList(notificationTypeId, pageIndex, pageSize);
 
+            // Assert
             Assert.IsType<JsonResult>(result);
         }
 
         [Fact]
         public async Task GetConversationMessage_WhenCalled_ReturnJsonResult()
         {
+            // Arrange
             var controller = GetController();
 
             var fixture = new Fixture();
@@ -90,10 +100,12 @@
             var total = fixture.Create<int>();
             var templates = fixture.Create<IEnumerable<ViewLogConversationMessageLog>>();
 
+            // Act
             viewLogService.GetConversationMessageLog(notificationTypeId, pageIndex, pageSize).Returns((total, templates));
 
             var result = await controller.GetConversationMessage(notificationTypeId, pageIndex, pageSize);
 
+            // Assert
             Assert.IsType<JsonResult>(result);
         }
 

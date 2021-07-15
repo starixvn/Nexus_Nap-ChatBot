@@ -19,23 +19,23 @@
         [Fact]
         public async Task GetNotificationSystemMessage_ValidData_ReturnExpectedResult()
         {
+            // Arrange
             var service = GetService();
 
-            var fixture = new Fixture();
-
-            var total = fixture.Create<int>();
-            var templates = fixture.Create<IEnumerable<ViewLogNotificationSystemMessage>>();
-            var notificationId = fixture.Create<int?>();
-            var pageIndex = fixture.Create<int>();
-            var pageSize = fixture.Create<int>();
-
+            var total = _fixture.Create<int>();
+            var templates = _fixture.Create<IEnumerable<ViewLogNotificationSystemMessage>>();
+            var notificationId = _fixture.Create<int?>();
+            var pageIndex = _fixture.Create<int>();
+            var pageSize = _fixture.Create<int>();
             var criteria = new GetNotificationSystemMessageCriteria();
 
+            // Act
             baseService.FetchMultipleAsync<int, ViewLogNotificationSystemMessage>(Arg.Do<GetNotificationSystemMessageCriteria>(x => criteria = x))
                 .Returns((new List<int> { total }, templates));
 
             var result = await service.GetNotificationSystemMessage(notificationId, pageIndex, pageSize).ConfigureAwait(false);
 
+            // Assert
             Assert.Equal(notificationId, criteria.NotificationId);
             Assert.Equal(pageIndex, criteria.PageIndex);
             Assert.Equal(pageSize, criteria.PageSize);
@@ -46,23 +46,23 @@
         [Fact]
         public async Task GetNotificationRecipientList_ValidData_ReturnExpectedResult()
         {
+            // Arrange
             var service = GetService();
 
-            var fixture = new Fixture();
-
-            var total = fixture.Create<int>();
-            var templates = fixture.Create<IEnumerable<ViewLogNotificationRecipientList>>();
-            var notificationId = fixture.Create<int?>();
-            var pageIndex = fixture.Create<int>();
-            var pageSize = fixture.Create<int>();
-
+            var total = _fixture.Create<int>();
+            var templates = _fixture.Create<IEnumerable<ViewLogNotificationRecipientList>>();
+            var notificationId = _fixture.Create<int?>();
+            var pageIndex = _fixture.Create<int>();
+            var pageSize = _fixture.Create<int>();
             var criteria = new GetNotificationRecipientListCriteria();
 
+            // Act
             baseService.FetchMultipleAsync<int, ViewLogNotificationRecipientList>(Arg.Do<GetNotificationRecipientListCriteria>(x => criteria = x))
                 .Returns((new List<int> { total }, templates));
 
             var result = await service.GetNotificationRecipientList(notificationId, pageIndex, pageSize).ConfigureAwait(false);
-
+            
+            // Assert
             Assert.Equal(notificationId, criteria.NotificationId);
             Assert.Equal(pageIndex, criteria.PageIndex);
             Assert.Equal(pageSize, criteria.PageSize);
@@ -73,23 +73,23 @@
         [Fact]
         public async Task GetConversationMessageLog_ValidData_ReturnExpectedResult()
         {
+            // Arrange
             var service = GetService();
 
-            var fixture = new Fixture();
-
-            var total = fixture.Create<int>();
-            var templates = fixture.Create<IEnumerable<ViewLogConversationMessageLog>>();
-            var notificationId = fixture.Create<int?>();
-            var pageIndex = fixture.Create<int>();
-            var pageSize = fixture.Create<int>();
-
+            var total = _fixture.Create<int>();
+            var templates = _fixture.Create<IEnumerable<ViewLogConversationMessageLog>>();
+            var notificationId = _fixture.Create<int?>();
+            var pageIndex = _fixture.Create<int>();
+            var pageSize = _fixture.Create<int>();
             var criteria = new GetConversationMessageLogCriteria();
 
+            // Act
             baseService.FetchMultipleAsync<int, ViewLogConversationMessageLog>(Arg.Do<GetConversationMessageLogCriteria>(x => criteria = x))
                 .Returns((new List<int> { total }, templates));
 
             var result = await service.GetConversationMessageLog(notificationId, pageIndex, pageSize).ConfigureAwait(false);
 
+            // Assert
             Assert.Equal(notificationId, criteria.NotificationId);
             Assert.Equal(pageIndex, criteria.PageIndex);
             Assert.Equal(pageSize, criteria.PageSize);

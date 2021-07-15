@@ -71,7 +71,6 @@ exports[`Pager render component is rendered correctly 1`] = `
   </select>
   <a
     className="icon page-prev disable"
-    href="javascript:;"
     onClick={[Function]}
   />
   <div
@@ -92,7 +91,6 @@ exports[`Pager render component is rendered correctly 1`] = `
   </div>
   <a
     className="icon page-next "
-    href="javascript:;"
     onClick={[Function]}
   />
   <span
