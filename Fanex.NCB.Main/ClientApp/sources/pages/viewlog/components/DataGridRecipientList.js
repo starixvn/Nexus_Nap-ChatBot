@@ -25,7 +25,7 @@ export class DataGridRecipientList extends Component {
     };
 
     buildBody = isHost => {
-        if (this.props.recipientList.data) {
+        if (this.props.recipientList.total > 0) {
             return this.props.recipientList.data.map((item, index) => this.renderRow(item, index, isHost));
         }
 
@@ -59,7 +59,7 @@ export class DataGridRecipientList extends Component {
         const pagingOption = {
             PageIndex: this.props.paramsPage.pageIndex,
             PageSize: this.props.paramsPage.pageSize,
-            TotalItem: this.props.recipientList.total ? this.props.recipientList.total : 1,
+            TotalItem: this.props.recipientList.total ? this.props.recipientList.total : 0,
             PageList: [100, 200, 300, 500, 1000]
         };
 

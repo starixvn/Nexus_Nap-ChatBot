@@ -6,13 +6,13 @@
     {
         public int NotificationID { get; set; }
 
+        public string ToConversationID { get; set; }
+
         public string BotName { get; set; }
 
         public int ConversationGroupID { get; set; }
 
         public string ConversationGroupName { get; set; }
-
-        public string RecipientName { get; set; }
 
         public DateTime SentTime { get; set; }
 

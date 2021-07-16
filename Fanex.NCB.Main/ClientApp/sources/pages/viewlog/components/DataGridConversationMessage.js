@@ -26,9 +26,21 @@ export class DataGridConversationMessage extends Component {
     };
 
     buildBody = isHost => {
-        if (this.props.conversationMessage.data) {
-            return this.props.conversationMessage.data.map((item, index) => this.renderRow(item, index, isHost));
+        var conversationData = this.props.conversationMessage.data;
+        var conversationDataRecipient = this.props.conversationMessage.dataMapRecipient;
+
+        if (this.props.conversationMessage.total > 0) {
+            const newData = conversationData.map((element,index) => {
+                var item = conversationDataRecipient.filter((item) => item.conversationID === element.toConversationID);
+                if(item.length){
+                    return {...element,"recipientName": item[0].recipientName};
+                }
+                return element;
+            });
+            
+            return newData.map((item, index) => this.renderRow(item, index, isHost));
         }
+
         return [<Row key={`body${1}`} ><Cell colSpan="10"><NoDataTitle /></Cell></Row>];
     };
 
@@ -60,7 +72,7 @@ export class DataGridConversationMessage extends Component {
         const pagingOption = {
             PageIndex: this.props.paramsPage.pageIndex,
             PageSize: this.props.paramsPage.pageSize,
-            TotalItem: this.props.conversationMessage.total ? this.props.conversationMessage.total : 1,
+            TotalItem: this.props.conversationMessage.total ? this.props.conversationMessage.total : 0,
             PageList: [100, 200, 300, 500, 1000]
         };
 

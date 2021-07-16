@@ -57,7 +57,7 @@
         {
             var result = await viewLogService.GetConversationMessageLog(notificationId, pageIndex, pageSize);
 
-            return Json(new { total = result.Item1, data = result.Item2 });
+            return Json(new { total = result.Item1, data = result.Item2 , dataMapRecipient = result.Item3});
         }
     }
 }

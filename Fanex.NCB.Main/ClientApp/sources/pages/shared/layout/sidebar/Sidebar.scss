@@ -115,6 +115,10 @@
     }
 }
 
+.dropdown:hover{
+    margin-bottom: 72px;
+}
+
 .dropdown:hover .dropdown-content {
     display: block;
 }

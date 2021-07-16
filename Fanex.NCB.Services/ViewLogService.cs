@@ -42,16 +42,17 @@
             return (result.Item1.FirstOrDefault(), result.Item2);
         }
 
-        public async Task<(int, IEnumerable<ViewLogConversationMessageLog>)> GetConversationMessageLog(int? notificationId, int pageIndex, int pageSize)
+        public async Task<(int, IEnumerable<ViewLogConversationMessageLog>, IEnumerable<ViewLogConversationMessageLogRecipient>)> 
+        GetConversationMessageLog(int? notificationId, int pageIndex, int pageSize)
         {
-            var result = await baseService.FetchMultipleAsync<int, ViewLogConversationMessageLog>(new GetConversationMessageLogCriteria
+            var result = await baseService.FetchMultipleAsync<int, ViewLogConversationMessageLog, ViewLogConversationMessageLogRecipient>(new GetConversationMessageLogCriteria
             {
                 NotificationId = notificationId,
                 PageIndex = pageIndex,
                 PageSize = pageSize
             });
 
-            return (result.Item1.FirstOrDefault(), result.Item2);
+            return (result.Item1.FirstOrDefault(), result.Item2, result.Item3);
         }
 
         public async Task<CommandResult> DeleteOldConversationMessageLogAsync(string currentDate)

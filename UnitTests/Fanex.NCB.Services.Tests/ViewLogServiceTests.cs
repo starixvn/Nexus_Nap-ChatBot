@@ -78,14 +78,15 @@
 
             var total = _fixture.Create<int>();
             var templates = _fixture.Create<IEnumerable<ViewLogConversationMessageLog>>();
+            var templateMap = _fixture.Create<IEnumerable<ViewLogConversationMessageLogRecipient>>();
             var notificationId = _fixture.Create<int?>();
             var pageIndex = _fixture.Create<int>();
             var pageSize = _fixture.Create<int>();
             var criteria = new GetConversationMessageLogCriteria();
 
             // Act
-            baseService.FetchMultipleAsync<int, ViewLogConversationMessageLog>(Arg.Do<GetConversationMessageLogCriteria>(x => criteria = x))
-                .Returns((new List<int> { total }, templates));
+            baseService.FetchMultipleAsync<int, ViewLogConversationMessageLog, ViewLogConversationMessageLogRecipient>(Arg.Do<GetConversationMessageLogCriteria>(x => criteria = x))
+                .Returns((new List<int> { total }, templates, templateMap));
 
             var result = await service.GetConversationMessageLog(notificationId, pageIndex, pageSize).ConfigureAwait(false);
 
@@ -95,6 +96,7 @@
             Assert.Equal(pageSize, criteria.PageSize);
             Assert.Equal(total, result.Item1);
             Assert.Equal(templates.Count(), result.Item2.Count());
+            Assert.Equal(templateMap.Count(), result.Item3.Count());
         }
 
         [Fact]

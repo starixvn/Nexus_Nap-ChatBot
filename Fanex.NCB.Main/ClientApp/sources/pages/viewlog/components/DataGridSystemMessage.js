@@ -21,7 +21,7 @@ export class DataGridSystemMessage extends Component {
     };
 
     buildBody = isHost => {
-        if (this.props.systemMessage.data) {
+        if (this.props.systemMessage.total > 0) {
             return this.props.systemMessage.data.map((item, index) => this.renderRow(item, index, isHost));
         }
 
@@ -51,7 +51,7 @@ export class DataGridSystemMessage extends Component {
         const pagingOption = {
             PageIndex: this.props.paramsPage.pageIndex,
             PageSize: this.props.paramsPage.pageSize,
-            TotalItem: this.props.systemMessage.total ? this.props.systemMessage.total : 1,
+            TotalItem: this.props.systemMessage.total ? this.props.systemMessage.total : 0,
             PageList: [100, 200, 300, 500, 1000]
         };
 

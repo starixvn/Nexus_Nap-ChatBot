@@ -123,6 +123,10 @@
 	content: "\e907";
 }
 
+.icon-view-log:before {
+	content: "\e907";
+}
+
 .icon-password:before {
 	content: "\e90f";
 	color: #798388;

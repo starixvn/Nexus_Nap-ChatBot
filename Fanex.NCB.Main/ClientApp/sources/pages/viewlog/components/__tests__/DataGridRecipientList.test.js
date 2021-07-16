@@ -16,7 +16,7 @@ describe('DataGridRecipientList', () => {
             pageSize: 100
         },
         recipientList: {
-            total: 100,
+            total: 0,
         }
     };
     afterAll(() => {
@@ -35,7 +35,7 @@ describe('DataGridRecipientList', () => {
                     pageSize: 100
                 },
                 recipientList: {
-                    total: 100
+                    total: 0
                 }
             };
             const expectedParams = {notificationId: 188, pageIndex: 1, pageSize: 100 };
@@ -148,7 +148,7 @@ describe('DataGridRecipientList', () => {
                     pageSize: 100
                 },
                 recipientList: {
-                    total: 100,
+                    total: 0,
                 }
             };    
             const initialState = {
@@ -157,7 +157,7 @@ describe('DataGridRecipientList', () => {
                     pageSize: 100
                 },
                 recipientList: {
-                    total: 100,
+                    total: 0,
                 }
             };
             const store = mockStore(initialState);

@@ -16,7 +16,7 @@ describe('DataGridSystemMessage', () => {
             pageSize: 100
         },
         systemMessage: {
-            total: 100
+            total: 0
         }
     };
     afterAll(() => {
@@ -35,7 +35,7 @@ describe('DataGridSystemMessage', () => {
                     pageSize: 100
                 },
                 systemMessage: {
-                    total: 100
+                    total: 0
                 }
             };
             const expectedParams = {notificationId: 188, pageIndex: 1, pageSize: 100 };
@@ -144,7 +144,7 @@ describe('DataGridSystemMessage', () => {
                     pageSize: 100
                 },
                 systemMessage: {
-                    total: 100,
+                    total: 0,
                 }
             };   
             const initialState = {
@@ -153,7 +153,7 @@ describe('DataGridSystemMessage', () => {
                     pageSize: 100
                 },
                 systemMessage: {
-                    total: 100,
+                    total: 0,
                 }
             };
             const store = mockStore(initialState);

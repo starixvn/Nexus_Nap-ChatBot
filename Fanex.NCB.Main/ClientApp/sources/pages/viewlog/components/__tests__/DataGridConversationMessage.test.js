@@ -16,7 +16,7 @@ describe('DataGridConversationMessage', () => {
             pageSize: 100
         },
         conversationMessage: {
-            total: 100,
+            total: 0
         }
     };
     afterAll(() => {
@@ -35,7 +35,7 @@ describe('DataGridConversationMessage', () => {
                     pageSize: 100
                 },
                 conversationMessage: {
-                    total: 100
+                    total: 0
                 }
             };
             const expectedParams = {notificationId: 188, pageIndex: 1, pageSize: 100 };
@@ -70,7 +70,8 @@ describe('DataGridConversationMessage', () => {
                 },
                 conversationMessage: {
                     total: 100,
-                    data:[{id:1234}]
+                    data:[{id:1234}],
+                    dataMapRecipient:[{id:1234}]
                 }
             };
 
@@ -149,7 +150,7 @@ describe('DataGridConversationMessage', () => {
                     pageSize: 100
                 },
                 conversationMessage: {
-                    total: 100,
+                    total: 0,
                 }
             };   
             const initialState = {
@@ -158,7 +159,7 @@ describe('DataGridConversationMessage', () => {
                     pageSize: 100
                 },
                 conversationMessage: {
-                    total: 100,
+                    total: 0,
                 }
             };
             const store = mockStore(initialState);

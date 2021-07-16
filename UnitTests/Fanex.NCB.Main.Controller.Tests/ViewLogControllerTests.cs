@@ -99,9 +99,10 @@
             var pageSize = fixture.Create<int>();
             var total = fixture.Create<int>();
             var templates = fixture.Create<IEnumerable<ViewLogConversationMessageLog>>();
+            var templateMap = fixture.Create<IEnumerable<ViewLogConversationMessageLogRecipient>>();
 
             // Act
-            viewLogService.GetConversationMessageLog(notificationTypeId, pageIndex, pageSize).Returns((total, templates));
+            viewLogService.GetConversationMessageLog(notificationTypeId, pageIndex, pageSize).Returns((total, templates, templateMap));
 
             var result = await controller.GetConversationMessage(notificationTypeId, pageIndex, pageSize);
 
