@@ -171,6 +171,10 @@ describe('AppContainer', () => {
         it('data is called - should call exactly functions when submit', () => {
             // Arrange
             let props = {
+                paramsPage: {
+                    pageIndex: 1,
+                    pageSize: 100
+                },
                 getParamsPage: jest.fn(),
                 getSystemMessage: jest.fn(),
                 getRecipientList: jest.fn(),

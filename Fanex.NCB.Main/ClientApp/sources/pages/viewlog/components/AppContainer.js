@@ -38,8 +38,8 @@ export class AppContainer extends Component {
         event.preventDefault();
         const params = { 
             notificationId: this.state.notificationId,
-            pageIndex: 1,
-            pageSize: 100
+            pageIndex: this.props.paramsPage.pageIndex,
+            pageSize: this.props.paramsPage.pageSize
         }
         this.props.getParamsPage(params);
         this.props.getSystemMessage(params);
