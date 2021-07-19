@@ -132,7 +132,16 @@
             {
                 if (!string.IsNullOrWhiteSpace(msg.Message))
                 {
-                    string msgContent = msg.Message.Replace("\n1)", "\n1\\)").Replace("\n1.", "\n1\\.");
+                    string msgContent = msg.Message;
+                    if (msg.Message.StartsWith("1)") || msg.Message.StartsWith("1."))
+                    {
+                        string startString = msgContent.Substring(0, 2);
+                        string newStartString = startString.Replace("1)", "1\\)").Replace("1.", "1\\.");
+                        string content = msgContent.Substring(2);
+                        msgContent = $"{newStartString}{content}";
+                    }
+
+                    msgContent = msgContent.Replace("\n1)", "\n1\\)").Replace("\n1.", "\n1\\.");
                     msg.Message = msgContent;
                 }
             }
