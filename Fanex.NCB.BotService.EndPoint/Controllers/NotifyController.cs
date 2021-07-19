@@ -110,6 +110,7 @@
             if (notificationMessages != null && notificationMessages.Any())
             {
                 var notifications = conversationService.GetDistinctNotificationConversation(notificationMessages);
+                TransformMessageContentAvoidSpecialSyntax(notifications);
 
                 foreach (var notification in notifications)
                 {
@@ -123,6 +124,18 @@
             }
 
             return Ok(results);
+        }
+
+        private static void TransformMessageContentAvoidSpecialSyntax(IList<NotificationMessage> notificationMessages)
+        {
+            foreach (var msg in notificationMessages)
+            {
+                if (!string.IsNullOrWhiteSpace(msg.Message))
+                {
+                    string msgContent = msg.Message.Replace("\n1)", "\n1\\)").Replace("\n1.", "\n1\\.");
+                    msg.Message = msgContent;
+                }
+            }
         }
 
         [Obsolete]
