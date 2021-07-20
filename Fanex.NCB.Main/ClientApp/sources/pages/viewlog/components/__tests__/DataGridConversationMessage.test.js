@@ -11,7 +11,7 @@ const mockStore = configureMockStore();
 
 describe('DataGridConversationMessage', () => {
     const props = {
-        paramsPage: {
+        paramsPageConversationMessage: {
             pageIndex: 1,
             pageSize: 100
         },
@@ -29,8 +29,8 @@ describe('DataGridConversationMessage', () => {
             const propsFunc = {
                 notificationId: 188,
                 getConversationMessage: jest.fn(),
-                getParamsPage: jest.fn(),
-                paramsPage: {
+                getParamsPageConversationMessage: jest.fn(),
+                paramsPageConversationMessage: {
                     pageIndex: 1,
                     pageSize: 100
                 },
@@ -47,7 +47,7 @@ describe('DataGridConversationMessage', () => {
 
             // Assert
             expect(propsFunc.getConversationMessage).toHaveBeenCalledWith(expectedParams);
-            expect(propsFunc.getParamsPage).toHaveBeenCalledWith(expectedParams);
+            expect(propsFunc.getParamsPageConversationMessage).toHaveBeenCalledWith(expectedParams);
         });
     });
 
@@ -64,7 +64,7 @@ describe('DataGridConversationMessage', () => {
         it('should render expected rows when data is not empty', () => {
             // Arrange
             const propsData = {
-                paramsPage: {
+                paramsPageConversationMessage: {
                     pageIndex: 1,
                     pageSize: 100
                 },
@@ -129,8 +129,8 @@ describe('DataGridConversationMessage', () => {
         it('should received props pageOption when props is not empty', () => {
             // Arrange
             const pagingOption = {
-                PageIndex: props.paramsPage.pageIndex,
-                PageSize: props.paramsPage.pageSize,
+                PageIndex: props.paramsPageConversationMessage.pageIndex,
+                PageSize: props.paramsPageConversationMessage.pageSize,
                 TotalItem: props.conversationMessage.total,
                 PageList: [100, 200, 300, 500, 1000]
             };
@@ -145,7 +145,7 @@ describe('DataGridConversationMessage', () => {
         it('props should be mapped correctly', () => {
             // Arrange
             const expected = {
-                paramsPage: {
+                paramsPageConversationMessage: {
                     pageIndex: 1,
                     pageSize: 100
                 },
@@ -154,7 +154,7 @@ describe('DataGridConversationMessage', () => {
                 }
             };   
             const initialState = {
-                paramsPage: {
+                paramsPageConversationMessage: {
                     pageIndex: 1,
                     pageSize: 100
                 },
@@ -168,7 +168,7 @@ describe('DataGridConversationMessage', () => {
             const container = shallow(<DataGridConversationMessageContainer {...props} store={store}/>);
             
             // Assert
-            expect(container.props().paramsPage).toEqual(expected.paramsPage);
+            expect(container.props().paramsPageConversationMessage).toEqual(expected.paramsPageConversationMessage);
             expect(container.props().conversationMessage).toEqual(expected.conversationMessage);
         });
     });

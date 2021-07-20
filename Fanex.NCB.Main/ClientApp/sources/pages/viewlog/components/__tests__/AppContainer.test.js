@@ -123,22 +123,32 @@ describe('AppContainer', () => {
         it('props should be mapped correctly', () => {
             // Arrange
             const expected = {
-                paramsPage: {
+                paramsPageSystemMessage: {
                     pageIndex: 1,
                     pageSize: 100
                 },
-                systemMessage: {
-                    total: 100,
-                }
+                paramsPageRecipientList: {
+                    pageIndex: 1,
+                    pageSize: 200
+                },
+                paramsPageConversationMessage: {
+                    pageIndex: 1,
+                    pageSize: 300
+                },
             };   
             const initialState = {
-                paramsPage: {
+                paramsPageSystemMessage: {
                     pageIndex: 1,
                     pageSize: 100
                 },
-                systemMessage: {
-                    total: 100,
-                }
+                paramsPageRecipientList: {
+                    pageIndex: 1,
+                    pageSize: 200
+                },
+                paramsPageConversationMessage: {
+                    pageIndex: 1,
+                    pageSize: 300
+                },
             };
             const store = mockStore(initialState);
 
@@ -146,8 +156,9 @@ describe('AppContainer', () => {
             const container = shallow(<AppContainerStore store={store}/>);
             
             // Assert
-            expect(container.props().paramsPage).toEqual(expected.paramsPage);
-            expect(container.props().systemMessage).toEqual(expected.systemMessage);
+            expect(container.props().paramsPageSystemMessage).toEqual(expected.paramsPageSystemMessage);
+            expect(container.props().paramsPageRecipientList).toEqual(expected.paramsPageRecipientList);
+            expect(container.props().paramsPageConversationMessage).toEqual(expected.paramsPageConversationMessage);         
         });
     });
     
@@ -175,7 +186,9 @@ describe('AppContainer', () => {
                     pageIndex: 1,
                     pageSize: 100
                 },
-                getParamsPage: jest.fn(),
+                getParamsPageSystemMessage: jest.fn(),
+                getParamsPageRecipientList: jest.fn(),
+                getParamsPageConversationMessage: jest.fn(),
                 getSystemMessage: jest.fn(),
                 getRecipientList: jest.fn(),
                 getConversationMessage: jest.fn(),
@@ -191,7 +204,7 @@ describe('AppContainer', () => {
             // Assert
             expect(container.find("Form")).toHaveLength(1);
             expect(formEventMocked.preventDefault).toBeCalledTimes(1);
-            expect(props.getParamsPage).toHaveBeenCalledWith(expectedParams);
+            expect(props.getParamsPageSystemMessage).toHaveBeenCalledWith(expectedParams);
             expect(props.getSystemMessage).toHaveBeenCalledWith(expectedParams);
             expect(props.getRecipientList).toHaveBeenCalledWith(expectedParams);
             expect(props.getConversationMessage).toHaveBeenCalledWith(expectedParams);

@@ -4,7 +4,9 @@ import Site from '../../lib/site';
 import DataService from '../../lib/dataService';
 import { ActionCreators } from '../actions';
 import {
-    setParamsPage,
+    setParamsPageSystemMessage,
+    setParamsPageRecipientList,
+    setParamsPageConversationMessage,
     setSystemMessage,
     setRecipientList,
     setConversationMessage
@@ -22,8 +24,8 @@ describe('actionCreators', () => {
         jest.clearAllMocks();
     });
 
-    describe('getParamsPage', () => {
-        it('should handle getParamsPage when fetching data have been done', () => {
+    describe('getParamsPageSystemMessage', () => {
+        it('should handle getParamsPageSystemMessage when fetching data have been done', () => {
             // Arrange
             const expectedParams = {
                 notificationId: 188,
@@ -37,11 +39,63 @@ describe('actionCreators', () => {
                     pageSize: 200
                 }
             };
-            const expectedActions = [{ type: setParamsPage.type, payload: response.data }];
-            const store = mockStore({ paramsPage: {} });
+            const expectedActions = [{ type: setParamsPageSystemMessage.type, payload: response.data }];
+            const store = mockStore({ paramsPageSystemMessage: {} });
 
             // Act
-            store.dispatch(ActionCreators.getParamsPage(expectedParams));
+            store.dispatch(ActionCreators.getParamsPageSystemMessage(expectedParams));
+
+            // Assert
+            expect(store.getActions()).toEqual(expectedActions);
+        });
+    });
+
+    describe('getParamsPageRecipientList', () => {
+        it('should handle getParamsPageRecipientList when fetching data have been done', () => {
+            // Arrange
+            const expectedParams = {
+                notificationId: 188,
+                pageIndex: 2,
+                pageSize: 200
+            };
+            const response = {
+                data: {
+                    notificationId: 188,
+                    pageIndex: 2,
+                    pageSize: 200
+                }
+            };
+            const expectedActions = [{ type: setParamsPageRecipientList.type, payload: response.data }];
+            const store = mockStore({ paramsPageRecipientList: {} });
+
+            // Act
+            store.dispatch(ActionCreators.getParamsPageRecipientList(expectedParams));
+
+            // Assert
+            expect(store.getActions()).toEqual(expectedActions);
+        });
+    });
+
+    describe('getParamsPageConversationMessage', () => {
+        it('should handle getParamsPageConversationMessage when fetching data have been done', () => {
+            // Arrange
+            const expectedParams = {
+                notificationId: 188,
+                pageIndex: 2,
+                pageSize: 200
+            };
+            const response = {
+                data: {
+                    notificationId: 188,
+                    pageIndex: 2,
+                    pageSize: 200
+                }
+            };
+            const expectedActions = [{ type: setParamsPageConversationMessage.type, payload: response.data }];
+            const store = mockStore({ paramsPageConversationMessage: {} });
+
+            // Act
+            store.dispatch(ActionCreators.getParamsPageConversationMessage(expectedParams));
 
             // Assert
             expect(store.getActions()).toEqual(expectedActions);

@@ -17,7 +17,7 @@ BEGIN
 			   
     SELECT COUNT;
     
-	SELECT DISTINCT CML.ReferenceID as NotificationID
+	SELECT CML.ReferenceID as NotificationID
         ,CML.ToConversationID
         ,CB.Name as BotName
         ,CG.ConversationGroupID
@@ -38,6 +38,5 @@ BEGIN
 	FROM NotificationRecipientList NRL 
 	INNER JOIN Recipient R on R.RecipientID = NRL.RecipientID
 	INNER JOIN ConversationGroup CG on CG.ConversationGroupID = NRL.ConversationGroupID
-	WHERE NRL.NotificationID = notificationID
-    LIMIT rowStart, pageSize;
+	WHERE NRL.NotificationID = notificationID;
 END

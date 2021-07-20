@@ -2,14 +2,24 @@ import Site from '../lib/site';
 import DataService from '../lib/dataService';
 
 import {
-    setParamsPage,
+    setParamsPageSystemMessage,
+    setParamsPageRecipientList,
+    setParamsPageConversationMessage,
     setSystemMessage,
     setRecipientList,
     setConversationMessage
 } from './viewLogSlice';
 
-const getParamsPage = (params) => dispatch => {
-    dispatch(setParamsPage(params));
+const getParamsPageSystemMessage = (params) => dispatch => {
+    dispatch(setParamsPageSystemMessage(params));
+}
+
+const getParamsPageRecipientList = (params) => dispatch => {
+    dispatch(setParamsPageRecipientList(params));
+}
+
+const getParamsPageConversationMessage = (params) => dispatch => {
+    dispatch(setParamsPageConversationMessage(params));
 }
 
 const getSystemMessage = (params) => async dispatch => {
@@ -34,7 +44,9 @@ const getConversationMessage = (params) => async dispatch => {
 };
 
 export const ActionCreators = {
-    getParamsPage,
+    getParamsPageSystemMessage,
+    getParamsPageRecipientList,
+    getParamsPageConversationMessage,
     getSystemMessage,
     getRecipientList,
     getConversationMessage

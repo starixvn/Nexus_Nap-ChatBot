@@ -64,14 +64,14 @@ export class DataGridConversationMessage extends Component {
         params['pageSize'] = pageSize;
 
         this.props.getConversationMessage(params);
-        this.props.getParamsPage(params);
+        this.props.getParamsPageConversationMessage(params);
     }
     
     render() {
         const { haveHostPermission } = this.props;
         const pagingOption = {
-            PageIndex: this.props.paramsPage.pageIndex,
-            PageSize: this.props.paramsPage.pageSize,
+            PageIndex: this.props.paramsPageConversationMessage.pageIndex,
+            PageSize: this.props.paramsPageConversationMessage.pageSize,
             TotalItem: this.props.conversationMessage.total ? this.props.conversationMessage.total : 0,
             PageList: [100, 200, 300, 500, 1000]
         };
@@ -96,7 +96,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispat
 
 const mapStateToProps = state => {
     return {
-        paramsPage: state.paramsPage,
+        paramsPageConversationMessage: state.paramsPageConversationMessage,
         conversationMessage: state.conversationMessage
     };
 };

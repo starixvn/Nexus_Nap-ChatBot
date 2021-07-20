@@ -38,10 +38,13 @@ export class AppContainer extends Component {
         event.preventDefault();
         const params = { 
             notificationId: this.state.notificationId,
-            pageIndex: this.props.paramsPage.pageIndex,
-            pageSize: this.props.paramsPage.pageSize
+            pageIndex: 1,
+            pageSize: 100
         }
-        this.props.getParamsPage(params);
+        this.props.getParamsPageSystemMessage(params);
+        this.props.getParamsPageRecipientList(params);
+        this.props.getParamsPageConversationMessage(params);
+
         this.props.getSystemMessage(params);
         this.props.getRecipientList(params);
         this.props.getConversationMessage(params);
@@ -91,8 +94,9 @@ const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispat
 
 const mapStateToProps = state => {
     return {
-        paramsPage: state.paramsPage,
-        systemMessage: state.systemMessage,
+        paramsPageSystemMessage: state.paramsPageSystemMessage,
+        paramsPageRecipientList: state.paramsPageRecipientList,
+        paramsPageConversationMessage: state.paramsPageConversationMessage,
     };
 };
 

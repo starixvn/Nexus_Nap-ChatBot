@@ -1,5 +1,7 @@
 import viewLog, {
-    setParamsPage,
+    setParamsPageSystemMessage,
+    setParamsPageRecipientList,
+    setParamsPageConversationMessage,
     setSystemMessage,
     setRecipientList,
     setConversationMessage
@@ -8,7 +10,15 @@ import viewLog, {
 describe('viewLogSlice reducer', () => {
     it('should handle initial state', () => {
         expect(viewLog(undefined, {})).toEqual({
-            paramsPage: {
+            paramsPageSystemMessage: {
+                pageIndex: 1,
+                pageSize: 100
+            },
+            paramsPageRecipientList: {
+                pageIndex: 1,
+                pageSize: 100
+            },
+            paramsPageConversationMessage: {
                 pageIndex: 1,
                 pageSize: 100
             },
@@ -18,14 +28,36 @@ describe('viewLogSlice reducer', () => {
         });
     });
 
-    it('should handle setParamsPage', () => {
+    it('should handle setParamsPageSystemMessage', () => {
         expect(
             viewLog({}, {
-                type: setParamsPage.type,
+                type: setParamsPageSystemMessage.type,
                 payload: { notificationId: 188, pageIndex: 1, pageSize: 100 }
             })
         ).toEqual({
-            paramsPage: { notificationId: 188, pageIndex: 1, pageSize: 100  }
+            paramsPageSystemMessage: { notificationId: 188, pageIndex: 1, pageSize: 100  }
+        });
+    });
+
+    it('should handle setParamsPageRecipientList', () => {
+        expect(
+            viewLog({}, {
+                type: setParamsPageRecipientList.type,
+                payload: { notificationId: 188, pageIndex: 1, pageSize: 100 }
+            })
+        ).toEqual({
+            paramsPageRecipientList: { notificationId: 188, pageIndex: 1, pageSize: 100  }
+        });
+    });
+
+    it('should handle setParamsPageConversationMessage', () => {
+        expect(
+            viewLog({}, {
+                type: setParamsPageConversationMessage.type,
+                payload: { notificationId: 188, pageIndex: 1, pageSize: 100 }
+            })
+        ).toEqual({
+            paramsPageConversationMessage: { notificationId: 188, pageIndex: 1, pageSize: 100  }
         });
     });
 

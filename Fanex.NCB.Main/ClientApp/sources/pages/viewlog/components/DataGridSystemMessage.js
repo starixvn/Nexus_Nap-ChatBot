@@ -43,18 +43,18 @@ export class DataGridSystemMessage extends Component {
         params['pageSize'] = pageSize;
 
         this.props.getSystemMessage(params);
-        this.props.getParamsPage(params);
+        this.props.getParamsPageSystemMessage(params);
     }
     
     render() {
         const { haveHostPermission } = this.props;
         const pagingOption = {
-            PageIndex: this.props.paramsPage.pageIndex,
-            PageSize: this.props.paramsPage.pageSize,
+            PageIndex: this.props.paramsPageSystemMessage.pageIndex,
+            PageSize: this.props.paramsPageSystemMessage.pageSize,
             TotalItem: this.props.systemMessage.total ? this.props.systemMessage.total : 0,
             PageList: [100, 200, 300, 500, 1000]
         };
-
+        console.log(pagingOption);
         return (
             <Table
                 width={1100}
@@ -75,7 +75,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispat
 
 const mapStateToProps = state => {
     return {
-        paramsPage: state.paramsPage,
+        paramsPageSystemMessage: state.paramsPageSystemMessage,
         systemMessage: state.systemMessage,
     };
 };

@@ -3,7 +3,15 @@ import { createSlice } from '@reduxjs/toolkit';
 const viewLogSlice = createSlice({
     name: 'ViewLog',
     initialState: {
-        paramsPage: {
+        paramsPageSystemMessage: {
+            pageIndex: 1,
+            pageSize: 100
+        },
+        paramsPageRecipientList: {
+            pageIndex: 1,
+            pageSize: 100
+        },
+        paramsPageConversationMessage: {
             pageIndex: 1,
             pageSize: 100
         },
@@ -12,8 +20,14 @@ const viewLogSlice = createSlice({
         conversationMessage: {}
     },
     reducers: {
-        setParamsPage: (state,action) =>{
-            state.paramsPage = action.payload;
+        setParamsPageSystemMessage: (state,action) =>{
+            state.paramsPageSystemMessage = action.payload;
+        },
+        setParamsPageRecipientList: (state,action) =>{
+            state.paramsPageRecipientList = action.payload;
+        },
+        setParamsPageConversationMessage: (state,action) =>{
+            state.paramsPageConversationMessage = action.payload;
         },
         setSystemMessage: (state,action) => {
             state.systemMessage = action.payload;
@@ -30,7 +44,9 @@ const viewLogSlice = createSlice({
 const { actions, reducer } = viewLogSlice;
 
 export const{
-    setParamsPage,
+    setParamsPageSystemMessage,
+    setParamsPageRecipientList,
+    setParamsPageConversationMessage,
     setSystemMessage,
     setRecipientList,
     setConversationMessage

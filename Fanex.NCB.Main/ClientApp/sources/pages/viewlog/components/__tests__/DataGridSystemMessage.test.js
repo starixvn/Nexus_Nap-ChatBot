@@ -11,7 +11,7 @@ const mockStore = configureMockStore();
 
 describe('DataGridSystemMessage', () => {
     const props = {
-        paramsPage: {
+        paramsPageSystemMessage: {
             pageIndex: 1,
             pageSize: 100
         },
@@ -29,8 +29,8 @@ describe('DataGridSystemMessage', () => {
             const propsFunc = {
                 notificationId: 188,
                 getSystemMessage: jest.fn(),
-                getParamsPage: jest.fn(),
-                paramsPage: {
+                getParamsPageSystemMessage: jest.fn(),
+                paramsPageSystemMessage: {
                     pageIndex: 1,
                     pageSize: 100
                 },
@@ -47,7 +47,7 @@ describe('DataGridSystemMessage', () => {
 
             // Assert
             expect(propsFunc.getSystemMessage).toHaveBeenCalledWith(expectedParams);
-            expect(propsFunc.getParamsPage).toHaveBeenCalledWith(expectedParams);
+            expect(propsFunc.getParamsPageSystemMessage).toHaveBeenCalledWith(expectedParams);
         });
     });
 
@@ -64,7 +64,7 @@ describe('DataGridSystemMessage', () => {
         it('should render expected rows when data is not empty', () => {
             // Arrange
             const propsData = {
-                paramsPage: {
+                paramsPageSystemMessage: {
                     pageIndex: 1,
                     pageSize: 100
                 },
@@ -123,8 +123,8 @@ describe('DataGridSystemMessage', () => {
         it('should received props pageOption when props is not empty', () => {
             // Arrange
             const pagingOption = {
-                PageIndex: props.paramsPage.pageIndex,
-                PageSize: props.paramsPage.pageSize,
+                PageIndex: props.paramsPageSystemMessage.pageIndex,
+                PageSize: props.paramsPageSystemMessage.pageSize,
                 TotalItem: props.systemMessage.total,
                 PageList: [100, 200, 300, 500, 1000]
             };
@@ -139,7 +139,7 @@ describe('DataGridSystemMessage', () => {
         it('props should be mapped correctly', () => {
             // Arrange
             const expected = {
-                paramsPage: {
+                paramsPageSystemMessage: {
                     pageIndex: 1,
                     pageSize: 100
                 },
@@ -148,7 +148,7 @@ describe('DataGridSystemMessage', () => {
                 }
             };   
             const initialState = {
-                paramsPage: {
+                paramsPageSystemMessage: {
                     pageIndex: 1,
                     pageSize: 100
                 },
@@ -162,7 +162,7 @@ describe('DataGridSystemMessage', () => {
             const container = shallow(<DataGridSystemMessageContainer {...props} store={store}/>);
             
             // Assert
-            expect(container.props().paramsPage).toEqual(expected.paramsPage);
+            expect(container.props().paramsPageSystemMessage).toEqual(expected.paramsPageSystemMessage);
             expect(container.props().systemMessage).toEqual(expected.systemMessage);
         });
     });

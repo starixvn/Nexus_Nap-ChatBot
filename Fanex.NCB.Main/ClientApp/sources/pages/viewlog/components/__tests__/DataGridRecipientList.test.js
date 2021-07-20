@@ -11,7 +11,7 @@ const mockStore = configureMockStore();
 
 describe('DataGridRecipientList', () => {
     const props = {
-        paramsPage: {
+        paramsPageRecipientList: {
             pageIndex: 1,
             pageSize: 100
         },
@@ -29,8 +29,8 @@ describe('DataGridRecipientList', () => {
             const propsFunc = {
                 notificationId: 188,
                 getRecipientList: jest.fn(),
-                getParamsPage: jest.fn(),
-                paramsPage: {
+                getParamsPageRecipientList: jest.fn(),
+                paramsPageRecipientList: {
                     pageIndex: 1,
                     pageSize: 100
                 },
@@ -47,7 +47,7 @@ describe('DataGridRecipientList', () => {
 
             // Assert
             expect(propsFunc.getRecipientList).toHaveBeenCalledWith(expectedParams);
-            expect(propsFunc.getParamsPage).toHaveBeenCalledWith(expectedParams);
+            expect(propsFunc.getParamsPageRecipientList).toHaveBeenCalledWith(expectedParams);
         });
     });
 
@@ -64,7 +64,7 @@ describe('DataGridRecipientList', () => {
         it('should render expected rows when data is not empty', () => {
             // Arrange
             const propsData = {
-                paramsPage: {
+                paramsPageRecipientList: {
                     pageIndex: 1,
                     pageSize: 100
                 },
@@ -127,8 +127,8 @@ describe('DataGridRecipientList', () => {
         it('should received props pageOption when props is not empty', () => {
             // Arrange
             const pagingOption = {
-                PageIndex: props.paramsPage.pageIndex,
-                PageSize: props.paramsPage.pageSize,
+                PageIndex: props.paramsPageRecipientList.pageIndex,
+                PageSize: props.paramsPageRecipientList.pageSize,
                 TotalItem: props.recipientList.total,
                 PageList: [100, 200, 300, 500, 1000]
             };
@@ -143,7 +143,7 @@ describe('DataGridRecipientList', () => {
         it('props should be mapped correctly', () => {
             // Arrange
             const expected = {
-                paramsPage: {
+                paramsPageRecipientList: {
                     pageIndex: 1,
                     pageSize: 100
                 },
@@ -152,7 +152,7 @@ describe('DataGridRecipientList', () => {
                 }
             };    
             const initialState = {
-                paramsPage: {
+                paramsPageRecipientList: {
                     pageIndex: 1,
                     pageSize: 100
                 },
@@ -166,7 +166,7 @@ describe('DataGridRecipientList', () => {
             const container = shallow(<DataGridRecipientListContainer {...props} store={store}/>);
             
             // Assert
-            expect(container.props().paramsPage).toEqual(expected.paramsPage);
+            expect(container.props().paramsPageRecipientList).toEqual(expected.paramsPageRecipientList);
             expect(container.props().recipientList).toEqual(expected.recipientList);
         });
     });

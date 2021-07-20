@@ -17,7 +17,7 @@ BEGIN
     
     SELECT COUNT;
     
-	SELECT DISTINCT NRL.NotificationID
+	SELECT NRL.NotificationID
         ,CG.Name
         ,CGT.ChatGroupTypeName
         ,R.RecipientName

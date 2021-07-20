@@ -51,14 +51,14 @@ export class DataGridRecipientList extends Component {
         params['pageSize'] = pageSize;
 
         this.props.getRecipientList(params);
-        this.props.getParamsPage(params);
+        this.props.getParamsPageRecipientList(params);
     }
 
     render() {
         const { haveHostPermission } = this.props;
         const pagingOption = {
-            PageIndex: this.props.paramsPage.pageIndex,
-            PageSize: this.props.paramsPage.pageSize,
+            PageIndex: this.props.paramsPageRecipientList.pageIndex,
+            PageSize: this.props.paramsPageRecipientList.pageSize,
             TotalItem: this.props.recipientList.total ? this.props.recipientList.total : 0,
             PageList: [100, 200, 300, 500, 1000]
         };
@@ -83,7 +83,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispat
 
 const mapStateToProps = state => {
     return {
-        paramsPage: state.paramsPage,
+        paramsPageRecipientList: state.paramsPageRecipientList,
         recipientList: state.recipientList
     };
 };

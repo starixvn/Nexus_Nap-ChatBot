@@ -24,14 +24,14 @@ describe('connect', () => {
     it('props should be mapped correctly', () => {
         // Arrange
         const expected = {
-            paramsPage: {
+            paramsPageRecipientList: {
                 pageIndex: 1,
                 pageSize: 100
             },
             recipientList: {}
         };
         const state = {
-            paramsPage: {
+            paramsPageRecipientList: {
                 pageIndex: 1,
                 pageSize: 100
             },
