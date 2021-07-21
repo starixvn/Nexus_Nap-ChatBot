@@ -24,8 +24,6 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalBets
       - 2020603@Oliver: Add MaxMessageID param [RedmineID: #135312]
       - 2020610@Oliver: remove MaxMessageID [RedmineID: #135686]
 	  - 20210405@Malcolm: Import data for voiding abnormal accounts [RedmineId : #152175] 
-	  - 20210513@Malcolm: Integrate Telegram [RedmineID: #151807]
-
 	  - 20210722@Malcolm: Change msg content type for abnormal accounts [RedmineId : #158723] 
 	Param's Explanation:
 		- Type = 1: for message of abnormal bets (issue type = 11, 15)
@@ -250,7 +248,8 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     TemplateContent MEDIUMTEXT,
     IsTest TINYINT,
     StatusID TINYINT UNSIGNED,
-    Status VARCHAR(10)
+    Status VARCHAR(10),
+	Type TINYINT UNSIGNED PRIMARY KEY
   );
  
   SET jLoop = 1;
@@ -396,7 +395,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
       INSERT INTO Notification(NotificationTypeID, Title, Content, ConfigSendTime, SendImmediately, CreatorID, CreatedDate, Status, StatusID, ChannelId)
         SELECT DISTINCT ct.NotificationTypeID, ct.TemplateTitle, REPLACE(REPLACE(ct.TemplateContent, '{General Info}', h.Content_Detail), '@@', '') Content, startTime, 0 SendImmediately, STARIXIT_CUSTID, CreatedDate, CREATING_NOTIFICATION_STATUS, CREATING_NOTIFICATION_STATUSID, ccChannelId
           FROM tmp_MsgHeader h
-          INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType 
+          INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.Type = h.Type
           WHERE h.MessageID = ccMessageID;
 
       SELECT LAST_INSERT_ID() INTO ccNotificationID;
@@ -445,7 +444,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
 	/*Step 9: Update Setting*/
   #Update Max MsgID
   UPDATE SystemSetting
-  	SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
+	SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
   WHERE ID = 8;
          
   #Update flag to 'Done'
