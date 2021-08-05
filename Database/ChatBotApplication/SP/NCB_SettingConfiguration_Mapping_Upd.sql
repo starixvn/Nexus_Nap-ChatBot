@@ -10,6 +10,8 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_Mapping_U
     ,IN     requiredParam              VARCHAR (300)
     ,IN     isTest                     BIT
     ,IN     oldMsgContentsType         INT
+    ,IN     oldNotificationTypeId      INT
+    ,IN     oldNotificationTemplateId  INT
     ,IN     modifiedBy                 INT
     ,OUT    errCode                    SMALLINT
     ,OUT    errMsg                      VARCHAR (100)
@@ -18,6 +20,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_Mapping_U
 
         Revisions:
             - 20200423@Merlin: Update mapping - RedmineID: #132039
+			- 20210722@Malcolm: Change msg content type for abnormal accounts [RedmineId : #158723] 
     */
 )
 SQL SECURITY DEFINER
@@ -34,7 +37,6 @@ BEGIN
     DECLARE actionId	            INT DEFAULT 25;
     DECLARE isTest2Int	            INT;
     DECLARE rowIndex                INT;
-    DECLARE NoOfMsg 				INT;
 
     SET errCode = 0, errMsg = '';
     
@@ -75,15 +77,13 @@ BEGIN
 		SET iLoop = iLoop + 1;
     END WHILE;
 
-	SELECT COUNT(1) INTO NoOfMsg FROM MappingSettingTable mst WHERE mst.MsgContentsType = oldMsgContentsType;
-    
     IF NOT EXISTS (
         SELECT 1 FROM MappingSettingTable mst
-        WHERE mst.MsgContentsType = oldMsgContentsType 
+        WHERE mst.MsgContentsType = oldMsgContentsType AND mst.NotificationTypeID = oldNotificationTypeID AND mst.NotificationTemplateID = oldNotificationTemplateID
     ) THEN
         SELECT 1 INTO errCode;
         SELECT CONCAT('The mapping setting not exists') INTO errMsg;
-    ELSEIF NoOfMsg = 1 THEN
+    ELSE
         SELECT mst.RowIndex INTO rowIndex
         FROM MappingSettingTable mst
         WHERE mst.MsgContentsType = oldMsgContentsType AND mst.NotificationTypeID = oldNotificationTypeID AND mst.NotificationTemplateID = oldNotificationTemplateID;
@@ -96,7 +96,6 @@ BEGIN
         SELECT 1 FROM MappingSettingTable mst
         WHERE mst.MsgContentsType = msgContentsType
     ) THEN
-		select 98;
         SET iLoop = 0;
         SELECT ss.Value INTO jsonSettingTypeValue
         FROM SystemSetting ss
