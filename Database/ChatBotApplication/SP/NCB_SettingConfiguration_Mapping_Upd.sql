@@ -3,16 +3,16 @@ DROP PROCEDURE IF EXISTS NCB_SettingConfiguration_Mapping_Upd;
 DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_Mapping_Upd`(
-    IN      notificationTypeId      INT
-    ,IN     jobId                   INT
-    ,IN     notificationTemplateId  INT
-    ,IN     msgContentsType         INT
-    ,IN     requiredParam           VARCHAR (300)
-    ,IN     isTest                  BIT
-    ,IN     oldMsgContentsType      INT
-    ,IN     modifiedBy              INT
-    ,OUT    errCode                 SMALLINT
-    ,OUT    errMsg                  VARCHAR (100)
+    IN      notificationTypeId         INT
+    ,IN     jobId                      INT
+    ,IN     notificationTemplateId     INT
+    ,IN     msgContentsType            INT
+    ,IN     requiredParam              VARCHAR (300)
+    ,IN     isTest                     BIT
+    ,IN     oldMsgContentsType         INT
+    ,IN     modifiedBy                 INT
+    ,OUT    errCode                    SMALLINT
+    ,OUT    errMsg                      VARCHAR (100)
     /*
 		Creator: 20200423@Merlin
 
@@ -34,6 +34,7 @@ BEGIN
     DECLARE actionId	            INT DEFAULT 25;
     DECLARE isTest2Int	            INT;
     DECLARE rowIndex                INT;
+    DECLARE NoOfMsg 				INT;
 
     SET errCode = 0, errMsg = '';
     
@@ -74,16 +75,18 @@ BEGIN
 		SET iLoop = iLoop + 1;
     END WHILE;
 
+	SELECT COUNT(1) INTO NoOfMsg FROM MappingSettingTable mst WHERE mst.MsgContentsType = oldMsgContentsType;
+    
     IF NOT EXISTS (
         SELECT 1 FROM MappingSettingTable mst
-        WHERE mst.MsgContentsType = oldMsgContentsType
+        WHERE mst.MsgContentsType = oldMsgContentsType 
     ) THEN
         SELECT 1 INTO errCode;
         SELECT CONCAT('The mapping setting not exists') INTO errMsg;
-    ELSE
+    ELSEIF NoOfMsg = 1 THEN
         SELECT mst.RowIndex INTO rowIndex
         FROM MappingSettingTable mst
-        WHERE mst.MsgContentsType = oldMsgContentsType;
+        WHERE mst.MsgContentsType = oldMsgContentsType AND mst.NotificationTypeID = oldNotificationTypeID AND mst.NotificationTemplateID = oldNotificationTemplateID;
 
         DELETE FROM MappingSettingTable mst
         WHERE mst.RowIndex = rowIndex;
@@ -93,6 +96,7 @@ BEGIN
         SELECT 1 FROM MappingSettingTable mst
         WHERE mst.MsgContentsType = msgContentsType
     ) THEN
+		select 98;
         SET iLoop = 0;
         SELECT ss.Value INTO jsonSettingTypeValue
         FROM SystemSetting ss
