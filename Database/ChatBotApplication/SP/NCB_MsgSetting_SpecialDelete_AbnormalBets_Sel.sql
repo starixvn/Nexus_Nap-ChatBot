@@ -1,4 +1,6 @@
-﻿DROP PROCEDURE IF EXISTS NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel;
+﻿USE ChatBot;
+
+DROP PROCEDURE IF EXISTS NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel;
 DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel(

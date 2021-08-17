@@ -1,3 +1,5 @@
+USE ChatBot;
+
 DROP PROCEDURE IF EXISTS NCB_SettingConfiguration_Mapping_Upd;
 
 DELIMITER //

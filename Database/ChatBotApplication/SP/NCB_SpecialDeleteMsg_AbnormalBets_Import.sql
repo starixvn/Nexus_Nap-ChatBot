@@ -1,3 +1,5 @@
+USE ChatBot;
+
 DROP PROCEDURE IF EXISTS NCB_SpecialDeleteMsg_AbnormalBets_Import;
 DELIMITER //
 
