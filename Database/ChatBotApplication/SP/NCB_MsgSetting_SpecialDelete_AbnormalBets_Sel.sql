@@ -1,4 +1,6 @@
-﻿DROP PROCEDURE IF EXISTS NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel;
+﻿USE ChatBot;
+
+DROP PROCEDURE IF EXISTS NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel;
 DELIMITER //
 
 CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel(
@@ -9,6 +11,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_MsgSetting_SpecialDelete_Abno
 
     Revisions :
       - 20200214@Percy: Initiliaze SP [RedmineID: #127944]
+	  - 20210722@Malcolm: Change msg content type for abnormal accounts [RedmineId : #158723] 
   */
 )
 SQL SECURITY DEFINER
@@ -48,7 +51,7 @@ BEGIN
     SET iLoop := iLoop + 1;
   END WHILE;
 
-  SELECT GROUP_CONCAT(MsgContentType ORDER BY MsgContentType SEPARATOR ',') INTO msgContentTypeLst
+  SELECT GROUP_CONCAT(DISTINCT MsgContentType ORDER BY MsgContentType SEPARATOR ',') INTO msgContentTypeLst
     FROM tmp_MsgContentType;
 
   SELECT previousMaxMsgID AS MaxMessageID, batchSize AS BatchSize, msgContentTypeLst AS MsgContentsTypeLst;

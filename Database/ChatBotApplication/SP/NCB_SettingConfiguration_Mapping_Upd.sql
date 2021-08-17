@@ -1,23 +1,28 @@
+USE ChatBot;
+
 DROP PROCEDURE IF EXISTS NCB_SettingConfiguration_Mapping_Upd;
 
 DELIMITER //
 
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_SettingConfiguration_Mapping_Upd`(
-    IN      notificationTypeId      INT
-    ,IN     jobId                   INT
-    ,IN     notificationTemplateId  INT
-    ,IN     msgContentsType         INT
-    ,IN     requiredParam           VARCHAR (300)
-    ,IN     isTest                  BIT
-    ,IN     oldMsgContentsType      INT
-    ,IN     modifiedBy              INT
-    ,OUT    errCode                 SMALLINT
-    ,OUT    errMsg                  VARCHAR (100)
+    IN      notificationTypeId         INT
+    ,IN     jobId                      INT
+    ,IN     notificationTemplateId     INT
+    ,IN     msgContentsType            INT
+    ,IN     requiredParam              VARCHAR (300)
+    ,IN     isTest                     BIT
+    ,IN     oldMsgContentsType         INT
+    ,IN     oldNotificationTypeId      INT
+    ,IN     oldNotificationTemplateId  INT
+    ,IN     modifiedBy                 INT
+    ,OUT    errCode                    SMALLINT
+    ,OUT    errMsg                      VARCHAR (100)
     /*
 		Creator: 20200423@Merlin
 
         Revisions:
             - 20200423@Merlin: Update mapping - RedmineID: #132039
+			- 20210722@Malcolm: Change msg content type for abnormal accounts [RedmineId : #158723] 
     */
 )
 SQL SECURITY DEFINER
@@ -76,14 +81,14 @@ BEGIN
 
     IF NOT EXISTS (
         SELECT 1 FROM MappingSettingTable mst
-        WHERE mst.MsgContentsType = oldMsgContentsType
+        WHERE mst.MsgContentsType = oldMsgContentsType AND mst.NotificationTypeID = oldNotificationTypeID AND mst.NotificationTemplateID = oldNotificationTemplateID
     ) THEN
         SELECT 1 INTO errCode;
         SELECT CONCAT('The mapping setting not exists') INTO errMsg;
     ELSE
         SELECT mst.RowIndex INTO rowIndex
         FROM MappingSettingTable mst
-        WHERE mst.MsgContentsType = oldMsgContentsType;
+        WHERE mst.MsgContentsType = oldMsgContentsType AND mst.NotificationTypeID = oldNotificationTypeID AND mst.NotificationTemplateID = oldNotificationTemplateID;
 
         DELETE FROM MappingSettingTable mst
         WHERE mst.RowIndex = rowIndex;

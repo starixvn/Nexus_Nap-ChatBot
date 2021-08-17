@@ -1,3 +1,5 @@
+USE ChatBot;
+
 DROP PROCEDURE IF EXISTS NCB_SpecialDeleteMsg_AbnormalBets_Import;
 DELIMITER //
 
@@ -13,8 +15,8 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalBets
     Params    :
       - @MessageHeader
 							[  
-								{ "MessageID":885128, "MsgContentsType":103, "RequestIDLst":"101,102", "DecidedByLst":"Patrick,Starix", "RequestByLst":"Patrick,Starix", "VoidByLst":"Starix", "ReasonLst":"Group Betting,Others", "KickOffTime":"2020-02-12 03:00:00", "LeagueName":"ENG", "HomeName":"MC", "AwayName":"MU", "HalfTimeHomeScore":1, "HalfTimeAwayScore":0, "FullTimeHomeScore":1, "FullTimeAwayScore":1, "TypeNameLst":"Handicap,Over/Under", "TotalTickets": 1, "CreditSiteLst":"CN88,NV88", "DepositSiteLst":"12BET,Haifa", "MinWinlostDate" : "2021-01-01", "MaxWinlostDate" : "2021-04-02", "UsernameLst" : "Malcoln1", "Type" : "1", "Content_en":"", "Content_cs":"", "IsTest":"0"}
-								, { "MessageID":885131, "MsgContentsType":103, "RequestIDLst":"103,104", "DecidedByLst":"Patrick,Starix", "RequestByLst":"Patrick,Starix", "VoidByLst":"Starix", "ReasonLst":"Group Betting,Others", "KickOffTime":"2020-02-12 03:00:00", "LeagueName":"ENG", "HomeName":"MC", "AwayName":"MU", "HalfTimeHomeScore":1, "HalfTimeAwayScore":0, "FullTimeHomeScore":1, "FullTimeAwayScore":1, "TypeNameLst":"Moneyline", "TotalTickets": 10, "CreditSiteLst":"CN88,NV88", "DepositSiteLst":"12BET,Haifa", "MinWinlostDate" : "2021-01-01", "MaxWinlostDate" : "2021-04-02", "UsernameLst" : "Malcoln1", "Type" : "2", "Content_en":"", "Content_cs":"", "IsTest":"0"}
+								{ "MessageID":885128, "MsgContentsType":103, "RequestIDLst":"101,102", "DecidedByLst":"Patrick,Starix", "RequestByLst":"Patrick,Starix", "VoidByLst":"Starix", "ReasonLst":"Group Betting,Others", "KickOffTime":"2020-02-12 03:00:00", "LeagueName":"ENG", "HomeName":"MC", "AwayName":"MU", "HalfTimeHomeScore":1, "HalfTimeAwayScore":0, "FullTimeHomeScore":1, "FullTimeAwayScore":1, "TypeNameLst":"Handicap,Over/Under", "TotalTickets": 1, "CreditSiteLst":"CN88,NV88", "DepositSiteLst":"12BET,Haifa", "MinWinlostDate" : "2021-01-01", "MaxWinlostDate" : "2021-04-02", "UsernameLst" : "Malcoln1", "Type" : "1", "Content_en":"", "Content_cs":"", "IsTest":0}
+								, { "MessageID":885131, "MsgContentsType":103, "RequestIDLst":"103,104", "DecidedByLst":"Patrick,Starix", "RequestByLst":"Patrick,Starix", "VoidByLst":"Starix", "ReasonLst":"Group Betting,Others", "KickOffTime":"2020-02-12 03:00:00", "LeagueName":"ENG", "HomeName":"MC", "AwayName":"MU", "HalfTimeHomeScore":1, "HalfTimeAwayScore":0, "FullTimeHomeScore":1, "FullTimeAwayScore":1, "TypeNameLst":"Moneyline", "TotalTickets": 10, "CreditSiteLst":"CN88,NV88", "DepositSiteLst":"12BET,Haifa", "MinWinlostDate" : "2021-01-01", "MaxWinlostDate" : "2021-04-02", "UsernameLst" : "Malcoln1", "Type" : "2", "Content_en":"", "Content_cs":"", "IsTest":0}
 							]
 
     Revisions :
@@ -22,6 +24,10 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalBets
       - 2020603@Oliver: Add MaxMessageID param [RedmineID: #135312]
       - 2020610@Oliver: remove MaxMessageID [RedmineID: #135686]
 	  - 20210405@Malcolm: Import data for voiding abnormal accounts [RedmineId : #152175] 
+	  - 20210722@Malcolm: Change msg content type for abnormal accounts [RedmineId : #158723] 
+	Param's Explanation:
+		- Type = 1: for message of abnormal bets (issue type = 11, 15)
+		- Type = 2: for message of abnormal accounts (issue type = 13)
   */
 )
 SQL SECURITY DEFINER
@@ -57,7 +63,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   DECLARE PLANNED_NOTIFICATION_STATUSID	TINYINT UNSIGNED DEFAULT 0;
   DECLARE PLANNED_NOTIFICATION_STATUS	VARCHAR(10) DEFAULT 'Planned';
 
-	SET startTime = UTC_TIMESTAMP();
+  SET startTime = UTC_TIMESTAMP();
   SET errCode = 0, errMsg = '';
 
   DROP TEMPORARY TABLE IF EXISTS tmp_Notification;
@@ -235,14 +241,14 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
 
   DROP TEMPORARY TABLE IF EXISTS tmp_MsgContentTypeTemplate;
   CREATE TEMPORARY TABLE IF NOT EXISTS tmp_MsgContentTypeTemplate(
-    MsgContentsType INT,
     NotificationTypeID INT,
     NotificationTemplateID INT,
     TemplateTitle VARCHAR(300),
     TemplateContent MEDIUMTEXT,
     IsTest TINYINT,
     StatusID TINYINT UNSIGNED,
-    Status VARCHAR(10)
+    Status VARCHAR(10),
+	Type TINYINT UNSIGNED PRIMARY KEY
   );
  
   SET jLoop = 1;
@@ -250,13 +256,14 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
 	 SET iLoop = 0;
      SELECT templateNotifcationTypeValue INTO templateNotifcationType FROM Tmp_templateNotifcationType WHERE ID = jLoop;
 	 WHILE (JSON_EXTRACT(templateNotifcationType, CONCAT('$[',iLoop, '].MsgContentsType')) IS NOT NULL) DO
-		 INSERT INTO tmp_MsgContentTypeTemplate(MsgContentsType, NotificationTypeID, NotificationTemplateID, IsTest)
+		 INSERT INTO tmp_MsgContentTypeTemplate(Type, NotificationTypeID, NotificationTemplateID, IsTest)
 		   VALUES (
-				 JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].MsgContentsType'))),
+				 JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].Type'))),
 				 JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTypeID'))),
 				 JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].NotificationTemplateID'))),
 				 JSON_UNQUOTE(JSON_EXTRACT(templateNotifcationType, CONCAT('$[', iLoop, '].IsTest')))
-			);
+			)
+		 ON DUPLICATE KEY UPDATE Type = Type;
 		 SET iLoop := iLoop + 1;
       END WHILE;
 	SET jLoop := jLoop + 1;
@@ -321,20 +328,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     LEAVE NCB_SpecialDeleteMsg_AbnormalBets_Import;
     END IF;
 
-  /*Step 5: Check unsupported MsgContentsType*/
-  UPDATE tmp_MsgHeader h
-    LEFT JOIN tmp_MsgContentTypeTemplate tpl ON h.MsgContentsType = tpl.MsgContentsType
-    SET h.CheckMsgDetail = h.MsgContentsType
-    WHERE tpl.MsgContentsType IS NULL;
-
-  UPDATE tmp_MsgHeader
-    SET CheckMsg = CONCAT(CheckMsg, CONCAT('- Unsupported MsgContentsType value: ', CheckMsgDetail), 'rn')
-    WHERE CheckMsgDetail IS NOT NULL;
-
-  UPDATE tmp_MsgHeader
-    SET CheckMsgDetail = NULL;
-
-  /*Step 6: Check if not exists Internal CSD recipients*/
+  /*Step 5: Check if not exists Internal CSD recipients*/
   DROP TEMPORARY TABLE IF EXISTS tmp_RecipientList;
   CREATE TEMPORARY TABLE IF NOT EXISTS tmp_RecipientList(
     RecipientID INT
@@ -350,7 +344,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
       SET CheckMsg = CONCAT(CheckMsg, '- Can not map to Internal CSD Recipient(s)');
     END IF;
 
-  /*Step 7: Check if Internal CSD recipients do not have any suitable chat groups*/
+  /*Step 6: Check if Internal CSD recipients do not have any suitable chat groups*/
   # Prepare data for Notification List
   DROP TEMPORARY TABLE IF EXISTS tmp_NotificationRecipientList;
   CREATE TEMPORARY TABLE IF NOT EXISTS tmp_NotificationRecipientList(
@@ -366,20 +360,19 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   INSERT INTO tmp_NotificationRecipientList(MessageID, RecipientID, ConversationGroupID, ChatGroupTypeID, StatusID, Status)
     SELECT h.MessageID, r.RecipientID, gr.ConversationGroupID, ngt.ChatGroupTypeID, tpl.StatusID, tpl.Status
       FROM tmp_MsgHeader h
-        INNER JOIN tmp_MsgContentTypeTemplate tpl ON h.MsgContentsType = tpl.MsgContentsType
+        INNER JOIN tmp_MsgContentTypeTemplate tpl ON h.Type = tpl.Type
         INNER JOIN NotificationChatGroupType ngt ON tpl.NotificationTypeID = ngt.NotificationTypeID
         INNER JOIN ConversationGroupExtraInfo gri ON ngt.ChatGroupTypeID = gri.ChatGroupTypeID
         INNER JOIN ConversationGroupRecipient gr ON gri.ConversationGroupID = gr.ConversationGroupID
         INNER JOIN ConversationGroup g ON gr.ConversationGroupID = g.ConversationGroupID
         INNER JOIN tmp_RecipientList r ON gr.RecipientID = r.RecipientID
-      WHERE g.IsActive = 1
-        AND h.CheckMsg NOT LIKE '%MsgContentsType%';
+      WHERE g.IsActive = 1;
 
   UPDATE tmp_MsgHeader h
     SET h.CheckMsg = CONCAT(h.CheckMsg, '- Internal CSD recipients do not have any suitable chat groups')
     WHERE h.MessageID NOT IN (SELECT MessageID FROM tmp_NotificationRecipientList);
 
-  /*Step 8: Insert Notification and NotificationSystemMsg*/
+  /*Step 7: Insert Notification and NotificationSystemMsg*/
   SET iLoop = 1;
   SET createdDate = UTC_TIMESTAMP();
   WHILE (EXISTS (SELECT 1 FROM tmp_MsgHeader WHERE Id = iLoop)) DO
@@ -390,7 +383,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
       INSERT INTO Notification(NotificationTypeID, Title, Content, ConfigSendTime, SendImmediately, CreatorID, CreatedDate, Status, StatusID)
         SELECT DISTINCT ct.NotificationTypeID, ct.TemplateTitle, REPLACE(REPLACE(ct.TemplateContent, '{General Info}', h.Content_Detail), '@@', '') Content, startTime, 0 SendImmediately, STARIXIT_CUSTID, CreatedDate, CREATING_NOTIFICATION_STATUS, CREATING_NOTIFICATION_STATUSID
           FROM tmp_MsgHeader h
-          INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType
+          INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.Type = h.Type
           WHERE h.MessageID = ccMessageID;
 
       SELECT LAST_INSERT_ID() INTO ccNotificationID;
@@ -437,7 +430,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   /*Step 9: Update Setting*/
   #Update Max MsgID
   UPDATE SystemSetting
-		SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
+	SET Value = (SELECT MAX(MessageID) FROM tmp_MsgHeader)
 		WHERE ID = 8;
         
   #Update flag to 'Done'
