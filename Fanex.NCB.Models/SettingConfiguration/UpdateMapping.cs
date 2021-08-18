@@ -17,5 +17,9 @@
         public int ModifiedBy { get; set; }
 
         public int OldMsgContentsType { get; set; }
+
+        public int OldNotificationTypeId { get; set; }
+
+        public int OldNotificationTemplateId { get; set; }
     }
 }

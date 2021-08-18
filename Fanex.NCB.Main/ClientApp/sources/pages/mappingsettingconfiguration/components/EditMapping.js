@@ -19,7 +19,7 @@ class EditMapping extends Component {
         this.props.setEditMappingResult(null);
         this.props.getMsgContentsTypes();
         const { editMappingPopup } = this.props;
-        
+
         if (editMappingPopup.mapping) {
             this.props.getNotificationTypeRef(editMappingPopup.mapping.notificationTypeID);
             const formik = this.refs.form;
@@ -31,7 +31,9 @@ class EditMapping extends Component {
                 notificationTemplateId: editMappingPopup.mapping.notificationTemplateID,
                 requiredParam: editMappingPopup.mapping.requiredParams,
                 msgContentsType: editMappingPopup.mapping.msgContentsType,
-                oldMsgContentsType: editMappingPopup.mapping.msgContentsType
+                oldMsgContentsType: editMappingPopup.mapping.msgContentsType,
+                oldNotificationTypeId: editMappingPopup.mapping.notificationTypeID,
+                oldNotificationTemplateId: editMappingPopup.mapping.notificationTemplateID
             });
         }
     }
@@ -43,7 +45,9 @@ class EditMapping extends Component {
         msgContentsType: string().required(Labels.FieldRequired),
         requiredParam: string().required(Labels.FieldRequired),
         isTest: boolean(),
-        oldMsgContentsType: string()
+        oldMsgContentsType: string(),
+        oldNotificationTypeId: string(),
+        oldNotificationTemplateId: string()
     })
 
     handleNotificationTypeChange = event => {

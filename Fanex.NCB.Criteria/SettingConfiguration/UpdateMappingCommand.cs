@@ -6,9 +6,13 @@
     {
         public int JobId { get; set; }
 
+        public int OldNotificationTypeId { get; set; }
+
         public int NotificationTypeId { get; set; }
 
         public int NotificationTemplateId { get; set; }
+
+        public int OldNotificationTemplateId { get; set; }
 
         public int MsgContentsType { get; set; }
 

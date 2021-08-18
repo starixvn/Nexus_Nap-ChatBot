@@ -49,7 +49,7 @@
 
         [HttpPost]
         [NapChatBotAuth(FunctionKey = FunctionKey.SettingManagement, Policy = Policy.Host)]
-        public async Task<IActionResult> Create([FromBody]CreateSettingTypeViewModel viewModel)
+        public async Task<IActionResult> Create([FromBody] CreateSettingTypeViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +78,7 @@
 
         [HttpPost]
         [NapChatBotAuth(FunctionKey = FunctionKey.SettingManagement, Policy = Policy.Host)]
-        public async Task<IActionResult> Update([FromBody]CreateSettingTypeViewModel viewModel)
+        public async Task<IActionResult> Update([FromBody] CreateSettingTypeViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -239,6 +239,8 @@
                     RequiredParams = viewModel.RequiredParam,
                     IsTest = viewModel.IsTest,
                     OldMsgContentsType = viewModel.OldMsgContentsType,
+                    OldNotificationTemplateId = viewModel.OldNotificationTemplateId,
+                    OldNotificationTypeId = viewModel.OldNotificationTypeId,
                     ModifiedBy = napSession.UserId
                 });
 

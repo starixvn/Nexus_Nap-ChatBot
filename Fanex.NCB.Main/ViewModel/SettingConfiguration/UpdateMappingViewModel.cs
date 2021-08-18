@@ -14,6 +14,12 @@
         public int NotificationTemplateId { get; set; }
 
         [Required]
+        public int OldNotificationTypeId { get; set; }
+
+        [Required]
+        public int OldNotificationTemplateId { get; set; }
+
+        [Required]
         public int MsgContentsType { get; set; }
 
         [Required]

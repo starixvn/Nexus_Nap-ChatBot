@@ -198,6 +198,8 @@
                 RequiredParam = model.RequiredParams,
                 IsTest = model.IsTest,
                 OldMsgContentsType = model.OldMsgContentsType,
+                OldNotificationTemplateId = model.OldNotificationTemplateId,
+                OldNotificationTypeId = model.OldNotificationTypeId,
                 ModifiedBy = model.ModifiedBy
             };
 
