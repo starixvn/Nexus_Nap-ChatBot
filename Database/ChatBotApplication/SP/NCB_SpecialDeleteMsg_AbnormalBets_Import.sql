@@ -246,6 +246,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     NotificationTypeID INT,
     NotificationTemplateID INT,
     TemplateTitle VARCHAR(300),
+	TemplateContent MEDIUMTEXT,
     IsTest TINYINT,
     StatusID TINYINT UNSIGNED,
     Status VARCHAR(10),

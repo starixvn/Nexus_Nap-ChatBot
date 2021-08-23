@@ -42,11 +42,11 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
     SET  startTime = UTC_TIMESTAMP(3);
     
 	DROP TEMPORARY TABLE IF EXISTS tmp_PlannedNotification;
-	CREATE TEMPORARY TABLE tmp_PlannedNotification(NotificationID INT, ChannelId TINYINT UNSIGNED,LockSuccess BIT);
+	CREATE TEMPORARY TABLE tmp_PlannedNotification(NotificationID INT, LockSuccess BIT);
     
     #Get planned notifications
-    INSERT INTO tmp_PlannedNotification(NotificationID, ChannelId, LockSuccess)
-	SELECT n.NotificationID, n.ChannelId, 0
+    INSERT INTO tmp_PlannedNotification(NotificationID, LockSuccess)
+	SELECT n.NotificationID, 0
 	FROM Notification n
 	WHERE n.StatusID = NOTIFICATION_STATUSID_PLANNED
 		AND n.ConfigSendTime <= UTC_TIMESTAMP()
@@ -71,7 +71,6 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 		SET updatedNotificationIds = '';
 	END IF;									  
 
-     
 	 UPDATE NotificationRecipientList AS n
      INNER JOIN  tmp_PlannedNotification AS t 
 			ON n.NotificationID = t.NotificationID
@@ -80,7 +79,7 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 	 WHERE t.LockSuccess = 1;
 		
 	DROP TEMPORARY TABLE IF EXISTS tmp_TryingNotification;
-	CREATE TEMPORARY TABLE tmp_TryingNotification(NotificationID INT, RecipientID INT, ConversationGroupID INT, LockSuccess BIT, ChannelId TINYINT UNSIGNED);
+	CREATE TEMPORARY TABLE tmp_TryingNotification(NotificationID INT, RecipientID INT, ConversationGroupID INT, LockSuccess BIT);
     
     #Get Trying notifications
     INSERT INTO tmp_TryingNotification(NotificationID, RecipientID, ConversationGroupID, LockSuccess)
@@ -89,11 +88,6 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 	WHERE n.StatusID = NOTIFICATION_STATUSID_RETRYING
     ORDER BY n.NotificationID
     LIMIT 100;
-    
-	#Get ChannelId
-	UPDATE tmp_TryingNotification t
-		INNER JOIN Notification n ON t.NotificationId = n.NotificationId
-	SET t.ChannelId = n.ChannelId;
     
     #Lock Trying notifications to send
 	 UPDATE NotificationRecipientList AS n
@@ -199,7 +193,7 @@ NCB_SendNotification_GetPlanRetryNotifUpdStatus:BEGIN
 					AND nrl.RecipientID = tnlst.RecipientID  
                     AND nrl.ConversationGroupID = tnlst.ConversationGroupID
                     AND tnlst.LockSuccess = 1
-	 INNER JOIN ConversationGroup grp ON grp.ConversationGroupID = nrl.ConversationGroupID AND tnlst.ChannelId = grp.ChannelId
+	 INNER JOIN ConversationGroup grp ON grp.ConversationGroupID = nrl.ConversationGroupID 
 	 INNER JOIN ConversationChannel c ON c.ChannelId = grp.ChannelId
      INNER JOIN Recipient r ON r.RecipientID = nrl.RecipientID
      LEFT JOIN ConversationGroupBot GroupBot ON GroupBot.ConversationGroupID = nrl.ConversationGroupID

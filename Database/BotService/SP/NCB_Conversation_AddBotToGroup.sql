@@ -5,7 +5,7 @@ CREATE DEFINER=`ChatBotSystem` PROCEDURE `NCB_Conversation_AddBotToGroup`(
 	IN botConversationId VARCHAR(200)  
 	, IN botName VARCHAR(70)
     , IN conversationId VARCHAR(200)  
-    , IN groupName VARCHAR(500) CHARACTER SET 'utf8mb4'
+    , IN groupName VARCHAR(500) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'
 	, IN channelId TINYINT UNSIGNED
     , IN serviceUrl VARCHAR(500)
 	, IN updatedBy VARCHAR(200)

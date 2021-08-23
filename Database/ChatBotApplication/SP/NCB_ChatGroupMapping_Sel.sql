@@ -59,7 +59,7 @@ BEGIN
     
 	-- Split recipientTypeIds into temporary table tmp_RecipientTypeIds
     DROP TEMPORARY TABLE IF EXISTS tmp_BotIDs;
-	CREATE TEMPORARY TABLE tmp_BotIDs(BotID INT UNSIGNED);
+	CREATE TEMPORARY TABLE tmp_BotIDs(BotID INT);
     
     IF IFNULL(botIDs, '') <> '' THEN
 		SET @SqlCommand = REPLACE(botIDs, ',', '''),(''');

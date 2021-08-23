@@ -47,19 +47,20 @@ BEGIN
         FROM SystemSetting s
 			INNER JOIN tmpSetting t ON t.SettingId = s.Id
 		WHERE t.Id = jLoop;
+		
+		SET iLoop = 0;
+		WHILE (JSON_EXTRACT(jsonSetting, CONCAT('$[',iLoop, '].NotificationTypeID'))) DO 
+			INSERT INTO tmpParseJsonTable(NotificationTypeID)
+			VALUES 
+			(
+				NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonSetting, CONCAT('$[', iLoop, '].NotificationTypeID'))), 'null')
+			);
+			
+			SET iLoop := iLoop + 1;
+		END WHILE;
+		
         SET jLoop := jLoop + 1;
     END WHILE;
-    SET iLoop = 0;
-    WHILE (JSON_EXTRACT(jsonSetting, CONCAT('$[',iLoop, '].NotificationTypeID'))) DO 
-		INSERT INTO tmpParseJsonTable(NotificationTypeID)
-        VALUES 
-        (
-            NULLIF(JSON_UNQUOTE(JSON_EXTRACT(jsonSetting, CONCAT('$[', iLoop, '].NotificationTypeID'))), 'null')
-		);
-        
-        SET iLoop := iLoop + 1;
-    END WHILE;
-	
     IF 
     (
 		EXISTS
