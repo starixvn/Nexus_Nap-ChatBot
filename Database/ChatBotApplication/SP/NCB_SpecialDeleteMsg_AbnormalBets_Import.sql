@@ -23,9 +23,9 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE NCB_SpecialDeleteMsg_AbnormalBets
       - 20200214@Percy: Initiliaze SP [RedmineID: #127944]
       - 2020603@Oliver: Add MaxMessageID param [RedmineID: #135312]
       - 2020610@Oliver: remove MaxMessageID [RedmineID: #135686]
-	  - 20210405@Malcolm: Import data for voiding abnormal accounts [RedmineId : #152175] 
+	  - 20210405@Malcolm: Import data for voiding abnormal accounts [RedmineId : #152175]
+      - 20210722@Malcolm: Change msg content type for abnormal accounts [RedmineId : #158723] 
 	  - 20210513@Malcolm: Integrate Telegram [RedmineID: #151807]
-	  - 20210722@Malcolm: Change msg content type for abnormal accounts [RedmineId : #158723] 
 	Param's Explanation:
 		- Type = 1: for message of abnormal bets (issue type = 11, 15)
 		- Type = 2: for message of abnormal accounts (issue type = 13)
@@ -50,7 +50,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   DECLARE ccChannelId TINYINT UNSIGNED;
 
   # Constants
-	DECLARE ACTION_ID INT DEFAULT 18;
+  DECLARE ACTION_ID INT DEFAULT 18;
   DECLARE VALUE_RUNNING TEXT DEFAULT 'Running';
   DECLARE VALUE_DONE TEXT DEFAULT 'Done';
   DECLARE RECIPIENT_TYPE_INTERNAL_CSD INT DEFAULT 3;
@@ -246,10 +246,10 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
     NotificationTypeID INT,
     NotificationTemplateID INT,
     TemplateTitle VARCHAR(300),
-	Type TINYINT UNSIGNED PRIMARY KEY
     IsTest TINYINT,
     StatusID TINYINT UNSIGNED,
-    Status VARCHAR(10)
+    Status VARCHAR(10),
+	Type TINYINT UNSIGNED PRIMARY KEY
   );
  
   SET jLoop = 1;
@@ -382,7 +382,6 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
   SELECT DISTINCT MessageId, ChannelId
   FROM tmp_NotificationRecipientList r;
 
-
   SET iLoop = 1;
   SET createdDate = UTC_TIMESTAMP();
   WHILE (EXISTS (SELECT 1 FROM tmp_MsgHeader WHERE Id = iLoop)) DO
@@ -395,7 +394,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
       INSERT INTO Notification(NotificationTypeID, Title, Content, ConfigSendTime, SendImmediately, CreatorID, CreatedDate, Status, StatusID, ChannelId)
         SELECT DISTINCT ct.NotificationTypeID, ct.TemplateTitle, REPLACE(REPLACE(ct.TemplateContent, '{General Info}', h.Content_Detail), '@@', '') Content, startTime, 0 SendImmediately, STARIXIT_CUSTID, CreatedDate, CREATING_NOTIFICATION_STATUS, CREATING_NOTIFICATION_STATUSID, ccChannelId
           FROM tmp_MsgHeader h
-          INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.MsgContentsType = h.MsgContentsType 
+          INNER JOIN tmp_MsgContentTypeTemplate ct ON ct.Type = h.Type 
           WHERE h.MessageID = ccMessageID;
 
       SELECT LAST_INSERT_ID() INTO ccNotificationID;
@@ -413,8 +412,7 @@ NCB_SpecialDeleteMsg_AbnormalBets_Import:BEGIN
       INSERT INTO NotificationRecipientList(NotificationID, ConversationGroupID, ChatGroupTypeID, RecipientID, Status, StatusID)
         SELECT ccNotificationID, d.ConversationGroupID, d.ChatGroupTypeID, d.RecipientID, d.Status, d.StatusID
         FROM tmp_NotificationRecipientList d
-        WHERE d.MessageID = ccMessageID
-			AND d.ChannelId = ccChannelId;
+        WHERE d.MessageID = ccMessageID AND d.ChannelId = ccChannelId;
 
       #Update Status for Notification
       IF ccIsTest = 1 THEN
