@@ -4,6 +4,9 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.Caching;
+    using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
 
@@ -12,14 +15,17 @@
         private readonly CheckDuplicatedMessageLogSetting settings;
         private readonly ICacheService cacheService;
         private readonly IRedisCacheExtendService redisCacheExtend;
+        private readonly ILogger logger;
 
         public MessageLogService(CheckDuplicatedMessageLogSetting settings,
             ICacheService cacheService,
-            IRedisCacheExtendService redisCacheExtend)
+            IRedisCacheExtendService redisCacheExtend,
+            ILogger logger)
         {
             this.settings = settings;
             this.cacheService = cacheService;
             this.redisCacheExtend = redisCacheExtend;
+            this.logger = logger;
         }
 
         public bool IsInvalidSendMessageToBotService(string conversationId, string message)
@@ -57,13 +63,25 @@
         {
             if (settings.IsEnabled && !await IsExistedOnCache(conversationId, messageContent))
             {
-                await cacheService.SetAsync(
+                try
+                {
+                    await cacheService.SetAsync(
                 ModifyKey(conversationId.Replace(':', '-'), guiid),
                 messageContent,
                 new CacheItemOptions
                 {
                     RelativeExpiration = TimeSpan.FromMinutes(settings.TimeSpanInMinutes)
                 });
+                }
+                catch (Exception ex)
+                {
+                    var logMessage = new LogMessage(ex.Message)
+                        .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                        .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
+                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex))
+                        .ToString();
+                    await logger.ErrorAsync(logMessage);
+                }
             }
         }
 

@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Caching;
+    using Fanex.Logging;
     using Fanex.NCB.BotService.Core.Enum;
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services;
@@ -15,6 +16,7 @@
         private readonly CheckDuplicatedMessageLogSetting settings = new() { IsEnabled = true, TimeSpanInMinutes = 5 };
         private ICacheService cacheService;
         private IRedisCacheExtendService cacheExtendService;
+        private ILogger logger;
 
         [Fact]
         public async Task IsInvalidSendMessageToBotService_IsDisbaledSetting_ReturnFalse()
@@ -74,7 +76,8 @@
         {
             cacheService = Substitute.For<ICacheService>();
             cacheExtendService = Substitute.For<IRedisCacheExtendService>();
-            return new MessageLogService(settings, cacheService, cacheExtendService);
+            logger = Substitute.For<ILogger>();
+            return new MessageLogService(settings, cacheService, cacheExtendService, logger);
         }
     }
 }
