@@ -135,6 +135,22 @@
         }
 
         [Fact]
+        public async Task MigratedToSupergroupAsync_WhenCalled_ReturnExpectedCommandResult()
+        {
+            // Arrange
+            var command = new MigratedToSupergroupCommand();
+            var commandResult = new CommandResult { Code = 0 };
+            var service = GetService();
+            baseService.ExecuteNonQueryAsync(command).Returns(commandResult);
+
+            // Act
+            var actual = await service.MigratedToSupergroupAsync(command);
+
+            // Assert
+            Assert.Equal(commandResult, actual);
+        }
+
+        [Fact]
         public async Task AddMessageLog_WhenCalled_ExpectedCallExecuteNonQueryAsync()
         {
             var criteria = new AddMessageLogCommand();

@@ -13,6 +13,8 @@
 
         Task<CommandResult> UpdateGroupTopic(UpdateGroupTopicCommand command);
 
+        Task<CommandResult> MigratedToSupergroupAsync(MigratedToSupergroupCommand command);
+
         Task<CommandResult> AddMessageLog(AddMessageLogCommand command);
 
         IList<NotificationMessage> GetDistinctNotificationConversation(IList<NotificationMessage> notifications);

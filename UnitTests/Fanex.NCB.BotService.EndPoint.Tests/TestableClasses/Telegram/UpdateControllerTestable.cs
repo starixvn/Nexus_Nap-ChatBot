@@ -31,5 +31,10 @@
         {
             return await base.RemoveBotToGroupAsync(message);
         }
+
+        public async Task<CommandResult> Public_MigratedToSupergroupAsync(Message message)
+        {
+            return await base.MigratedToSupergroupAsync(message);
+        }
     }
 }

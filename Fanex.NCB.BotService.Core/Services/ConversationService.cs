@@ -32,6 +32,11 @@
             return await baseService.ExecuteNonQueryAsync(command);
         }
 
+        public async Task<CommandResult> MigratedToSupergroupAsync(MigratedToSupergroupCommand command)
+        {
+            return await baseService.ExecuteNonQueryAsync(command);
+        }
+
         public async Task<CommandResult> AddMessageLog(AddMessageLogCommand command)
         {
             return await baseService.ExecuteNonQueryAsync(command);

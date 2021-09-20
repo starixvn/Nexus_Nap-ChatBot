@@ -160,7 +160,7 @@
         }
 
         [Fact]
-        public async Task Post_ChatMemberLeft_IsNormalUser_DoNothing()
+        public async Task Post_ChatMemberLeft_CallCorrectlyMethod()
         {
             // Arrange
             var bot = fixture.Create<User>();
@@ -168,32 +168,7 @@
             {
                 Message = new Message
                 {
-                    LeftChatMember = new User { Username = "tim.trinh", IsBot = false }
-                }
-            };
-            var controller = GetController();
-            botService.GetBotInfoAsync(1).Returns(bot);
-
-            // Act
-            var result = await controller.Post(1, update);
-
-            // Assert
-            var okResult = Assert.IsType<OkResult>(result);
-            Assert.Equal(200, okResult.StatusCode);
-
-            controller.DidNotReceive().Protected("RemoveBotToGroupAsync", update.Message);
-        }
-
-        [Fact]
-        public async Task Post_ChatMemberLeft_IsBot_CallCorrectlyMethod()
-        {
-            // Arrange
-            var bot = fixture.Create<User>();
-            var update = new Update
-            {
-                Message = new Message
-                {
-                    LeftChatMember = new User { Username = "bot", IsBot = true }
+                    LeftChatMember = new User { Username = "bot" }
                 }
             };
             var controller = GetController();
@@ -269,14 +244,36 @@
         }
 
         [Fact]
-        public async Task RemoveBotToGroupAsync_WhenCalled_ReturnExpectedCommandResult()
+        public async Task RemoveBotToGroupAsync_IsNormalUser_ReturnExpectedCommandResult()
+        {
+            // Arrange
+            var message = new Message
+            {
+                Chat = new Chat { Id = 1 },
+                LeftChatMember = new User { Id = 2 },
+                From = new User { Id = 1 }
+            };
+            var controller = GetController();
+
+            // Act
+            var actual = await controller.Public_RemoveBotToGroupAsync(message);
+
+            // Assert
+            Assert.True(actual.IsSuccessful);
+            Assert.Empty(actual.Message);
+
+            await conversationService.DidNotReceive().RemoveBotOutGroup(Arg.Any<RemoveBotOutGroupCommand>());
+        }
+
+        [Fact]
+        public async Task RemoveBotToGroupAsync_IsBot_ReturnExpectedCommandResult()
         {
             // Arrange
             var commandResult = fixture.Create<CommandResult>();
             var message = new Message
             {
                 Chat = new Chat { Id = 1 },
-                LeftChatMember = new User { Id = 2 },
+                LeftChatMember = new User { Id = 2, IsBot = true },
                 From = new User { Id = 1 }
             };
             var command = new RemoveBotOutGroupCommand();
@@ -291,6 +288,32 @@
 
             Assert.Equal(message.Chat.Id.ToString(), command.ConversationId);
             Assert.Equal(message.LeftChatMember.Id.ToString(), command.BotConversationId);
+            Assert.Equal(message.From.Id.ToString(), command.UpdatedBy);
+        }
+
+        [Fact]
+        public async Task MigratedToSupergroupAsync_WhenCalled_ReturnExpectedCommandResult()
+        {
+            // Arrange
+            var commandResult = fixture.Create<CommandResult>();
+            var message = new Message
+            {
+                Chat = new Chat { Id = 1 },
+                From = new User { Id = 1 },
+                MigrateToChatId = 2
+            };
+            var command = new MigratedToSupergroupCommand();
+            var controller = GetController();
+            conversationService.MigratedToSupergroupAsync(Arg.Do<MigratedToSupergroupCommand>(x => command = x)).Returns(commandResult);
+
+            // Act
+            var actual = await controller.Public_MigratedToSupergroupAsync(message);
+
+            // Assert
+            Assert.Equal(commandResult, actual);
+
+            Assert.Equal(message.Chat.Id.ToString(), command.FromConversationId);
+            Assert.Equal(message.MigrateToChatId.ToString(), command.ToConversationId);
             Assert.Equal(message.From.Id.ToString(), command.UpdatedBy);
         }
 

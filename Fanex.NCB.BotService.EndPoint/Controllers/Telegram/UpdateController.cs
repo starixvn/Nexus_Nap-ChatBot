@@ -38,7 +38,7 @@
             }
 
             User bot = await botService.GetBotInfoAsync(botId);
-            if(bot == null)
+            if (bot == null)
             {
                 await logger.ErrorAsync($"Telegram Bot {botId} is invalid.");
                 return Ok($"Telegram Bot {botId} is invalid.");
@@ -64,10 +64,11 @@
                     break;
 
                 case MessageType.ChatMemberLeft:
-                    if (message.LeftChatMember.IsBot)
-                    {
-                        await RemoveBotToGroupAsync(message);
-                    }
+                    await RemoveBotToGroupAsync(message);
+                    break;
+
+                case MessageType.MigratedToSupergroup:
+                    await MigratedToSupergroupAsync(message);
                     break;
 
                 default:
@@ -106,13 +107,29 @@
 
         protected internal virtual async Task<CommandResult> RemoveBotToGroupAsync(Message message)
         {
-            var command = new RemoveBotOutGroupCommand
+            if (message.LeftChatMember.IsBot)
             {
-                BotConversationId = message.LeftChatMember.Id.ToString(),
-                ConversationId = message.Chat.Id.ToString(),
+                var command = new RemoveBotOutGroupCommand
+                {
+                    BotConversationId = message.LeftChatMember.Id.ToString(),
+                    ConversationId = message.Chat.Id.ToString(),
+                    UpdatedBy = message.From.Id.ToString()
+                };
+                return await conversationService.RemoveBotOutGroup(command);
+            }
+
+            return new CommandResult { Code = 0, Message = string.Empty };
+        }
+
+        protected internal virtual async Task<CommandResult> MigratedToSupergroupAsync(Message message)
+        {
+            var command = new MigratedToSupergroupCommand
+            {
+                FromConversationId = message.Chat.Id.ToString(),
+                ToConversationId = message.MigrateToChatId.ToString(),
                 UpdatedBy = message.From.Id.ToString()
             };
-            return await conversationService.RemoveBotOutGroup(command);
+            return await conversationService.MigratedToSupergroupAsync(command);
         }
     }
 }
