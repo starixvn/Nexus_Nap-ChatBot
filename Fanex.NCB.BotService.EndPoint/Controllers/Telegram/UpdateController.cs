@@ -1,6 +1,8 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Controllers.Telegram
 {
+    using System;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Fanex.Logging;
     using Fanex.NCB.BotService.Core.Criteria;
@@ -30,7 +32,9 @@
 
         [HttpPost]
         [Route("api/telegram/webhook/{botId:long}/update")]
+#pragma warning disable S1541 // Methods and properties should not be too complex
         public async Task<IActionResult> Post(long botId, [FromBody] Update update)
+#pragma warning restore S1541 // Methods and properties should not be too complex
         {
             if (update == null || update.Type != UpdateType.Message)
             {
@@ -47,6 +51,10 @@
             Message message = update.Message;
             switch (message.Type)
             {
+                case MessageType.Text:
+                    await HandleBotCommandAsync(bot, message);
+                    break;
+
                 case MessageType.ChatTitleChanged:
                     await EditChatTitledAsync(message);
                     break;
@@ -130,6 +138,28 @@
                 UpdatedBy = message.From.Id.ToString()
             };
             return await conversationService.MigratedToSupergroupAsync(command);
+        }
+
+        protected internal virtual async Task HandleBotCommandAsync(User bot, Message message)
+        {
+            var commands = message.Entities.Where(entity => entity.Type == MessageEntityType.BotCommand)
+                .Select(entity => message.Text.Substring(entity.Offset, entity.Length)).ToList();
+            foreach(var command in commands)
+            {
+                if (command.Equals("/getgroupid", StringComparison.CurrentCultureIgnoreCase)
+                    || command.Equals($"/getgroupid@{bot.Username}", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    try
+                    {
+                        await botService.SendTextMessageAsync(bot.Id, message.Chat.Id, Regex.Replace(message.Chat.Id.ToString(), @"(.*?)(-|[\\][-])", "$1\\-"));
+                    }
+                    catch(Exception ex)
+                    {
+                        //
+                        var msg = ex.Message;
+                    }
+                }
+            }
         }
     }
 }
