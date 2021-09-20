@@ -7,6 +7,26 @@
 @import "../../shared/components/messages.scss";
 @import "../../shared/components/tables.scss";
 
+.form-filter-new {
+    .form-row {
+        .form-group {
+            &.datepicker-group {
+                width: 100px;
+            }
+
+            &.sender-group, &.recipient-group, &.status-group, &.botservice-group, &.messageid-group {
+                width: 150px;
+            }
+
+            &.status-group, &.botservice-group {
+                .multiselect-treeview-dropdown-list {
+                    min-width: 150px;
+                }
+            }
+        }
+    }
+}
+
 .margin-bot0 {
     margin-bottom: 0;
 }
