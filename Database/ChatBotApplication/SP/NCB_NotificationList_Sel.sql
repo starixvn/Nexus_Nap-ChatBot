@@ -229,7 +229,8 @@ BEGIN
 		,n.RecipientSentStatusJSON
         ,c.ChannelName
     FROM tmp_Notification n
-		INNER JOIN ConversationChannel c ON c.ChannelId = n.ChannelId;
+		INNER JOIN ConversationChannel c ON c.ChannelId = n.ChannelId
+	ORDER BY n.ConfigSendTime DESC ,n.NotificationID DESC;
 END;
 
 //
