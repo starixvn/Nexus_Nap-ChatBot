@@ -49,6 +49,10 @@
                 .Replace("{", "\\{").Replace("}", "\\}")
                 .Replace(".", "\\.").Replace("!", "\\!");
 
+            text = Regex.Replace(text, @"(\\<b>)(.+?)(</b>)", "\\<b>$2\\</b>");
+            text = Regex.Replace(text, @"(\\<i>)(.+?)(</i>)", "\\<i>$2\\</i>");
+            text = Regex.Replace(text, @"(\\<s>)(.+?)(</s>)", "\\<s>$2\\</s>");
+
             // revert
             pattern = new Regex("(<b>)(.*?)(</b>)");
             text = pattern.Replace(text, $"*$2*");

@@ -342,7 +342,7 @@ export default class NotificationList extends Component {
                 />
                 <Form className="form-filter-new" onSubmit={this.handleSearch}>
                     <div className="form-row">
-                        <FormGroup>
+                        <FormGroup className="notificationtype-group">
                             <Label className="form-label">Notification Type</Label>
                             <MultiselectTreeView
                                 data={this.state.notificationTypeOptions}
@@ -350,15 +350,15 @@ export default class NotificationList extends Component {
                                 onChange={selectedItems => this.handleFilterChange('notificationTypeIds', selectedItems.map(item => item.id).join(','))}
                             />
                         </FormGroup>
-                        <FormGroup className="datepicker-group">
+                        <FormGroup>
                             <Label className="form-label">From</Label>
                             <DatePicker selected={this.state.filter.fromDate} onChange={this.handleFromDateChange} />
                         </FormGroup>
-                        <FormGroup className="datepicker-group">
+                        <FormGroup>
                             <Label className="form-label">To</Label>
                             <DatePicker selected={this.state.filter.toDate} onChange={this.handleToDateChange} />
                         </FormGroup>
-                        <FormGroup className="sender-group">
+                        <FormGroup>
                             <Label className="form-label">Sender</Label>
                             <Input type="select" name="creatorId"
                                 value={this.state.filter.creatorId ? this.state.filter.creatorId : ''}
@@ -367,7 +367,7 @@ export default class NotificationList extends Component {
                                 {this.state.userOptions.map(this.renderUserOption)}
                             </Input>
                         </FormGroup>
-                        <FormGroup className="recipient-group">
+                        <FormGroup>
                             <Label className="form-label">Recipient</Label>
                             <MultiselectTreeView
                                 data={this.state.recipientOptions}
@@ -391,7 +391,7 @@ export default class NotificationList extends Component {
                                 onChange={selectedItems => this.handleFilterChange('channelIds', selectedItems.map(item => item.id).join(','))}
                             />
                         </FormGroup>
-                        <FormGroup className="messageid-group">
+                        <FormGroup>
                             <Label className="form-label">MessageID</Label>
                             <Input type="text" value={this.state.filter.messageId} onChange={this.handleMessageIdChange} />
                         </FormGroup>

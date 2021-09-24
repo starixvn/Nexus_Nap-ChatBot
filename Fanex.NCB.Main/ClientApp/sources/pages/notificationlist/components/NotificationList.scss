@@ -10,12 +10,10 @@
 .form-filter-new {
     .form-row {
         .form-group {
-            &.datepicker-group {
-                width: 100px;
-            }
+            width: 150px;
 
-            &.sender-group, &.recipient-group, &.status-group, &.botservice-group, &.messageid-group {
-                width: 150px;
+            &.notificationtype-group {
+                width: 200px;
             }
 
             &.status-group, &.botservice-group {

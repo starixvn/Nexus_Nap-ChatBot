@@ -7,6 +7,20 @@
 @import "../../shared/components/messages.scss";
 @import "../../shared/components/tables.scss";
 
+.form-filter-new {
+    .form-row {
+        .form-group {
+            width: 150px;
+
+            &.licensee-status-group, &.mapping-status-group, &.bot-service-group {
+                .multiselect-treeview-dropdown-list {
+                    min-width: 150px;
+                }
+            }
+        }
+    }
+}
+
 .modal-title {
     font-weight: bold;
 }

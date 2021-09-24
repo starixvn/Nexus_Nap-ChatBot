@@ -113,6 +113,12 @@ export default class EditNotification extends React.Component {
         this.setState({ confimrationPopup: { isOpen: false } });
 
         const formik = this.refs.form;
+        const isValidContentLength = values.content.trim().length <= this.messageContentLength;
+        if (!isValidContentLength) {
+            formik.setSubmitting(false);
+            return;
+        }
+
         const values = formik.state.values;
         const recipientIds = [];
         getRealValueFromTreeSelection(recipientIds, values.recipients, this.state.recipientOptions);

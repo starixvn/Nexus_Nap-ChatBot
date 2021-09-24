@@ -160,21 +160,21 @@ export class Filter extends Component {
                             htmlAttributes={{ maxLength: 50 }}
                         />
                     </FormGroup>
-                    <FormGroup>
+                    <FormGroup className="licensee-status-group">
                         <Label className="form-label">{Labels.LicenseeStatus}</Label>
                         <MultiselectTreeView
                             data={this.state.settings.licenseeStatuses} isSelectedAll
                             onChange={selectedItems => this.onChange('licenseeStatusIds', selectedItems.map(item => item.id).join(','))}
                         />
                     </FormGroup>
-                    <FormGroup>
+                    <FormGroup className="mapping-status-group">
                         <Label className="form-label">{Labels.MappingStatus}</Label>
                         <MultiselectTreeView
                             data={this.state.settings.mappingStatuses} isSelectedAll
                             onChange={selectedItems => this.onChange('mappingStatusIds', selectedItems.map(item => item.id).join(','))}
                         />
                     </FormGroup>
-                    <FormGroup>
+                    <FormGroup className="bot-service-group">
                         <Label className="form-label">{Labels.BotService}</Label>
                         <MultiselectTreeView
                             data={this.state.settings.channels} isSelectedAll
