@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Core.Extensions
 {
+    using System.Linq;
     using System.Text.RegularExpressions;
 
     public static class TelegramFormatExtensions
@@ -40,14 +41,24 @@
             text = pattern.Replace(text, "<s>$2</s>");
 
             // escape
-            text = text.Replace("_", "\\_").Replace("*", "\\*")
-                .Replace("[", "\\[").Replace("]", "\\]")
-                .Replace("(", "\\(").Replace(")", "\\)")
-                .Replace("~", "\\~").Replace("`", "\\`").Replace("#", "\\#")
-                .Replace("+", "\\+").Replace("-", "\\-")
-                .Replace("=", "\\=").Replace("|", "\\|")
-                .Replace("{", "\\{").Replace("}", "\\}")
-                .Replace(".", "\\.").Replace("!", "\\!");
+            text = EscapeExceptHyperlink(text, @"\[|\\\[", "\\[");
+            text = EscapeExceptHyperlink(text, @"]|\\\]", "\\]");
+            text = EscapeExceptHyperlink(text, @"\(|\\\(", "\\(");
+            text = EscapeExceptHyperlink(text, @"\)|\\\)", "\\)");
+
+            text = Regex.Replace(text, @"_|\\_", "\\_");
+            text = Regex.Replace(text, @"\*|\\\*", "\\*");
+            text = Regex.Replace(text, @"~|\\~", "\\~");
+            text = Regex.Replace(text, @"`|\\`", "\\`");
+            text = Regex.Replace(text, @"#|\\#", "\\#");
+            text = Regex.Replace(text, @"\+|\\\+", "\\+");
+            text = Regex.Replace(text, @"-|\\\-", "\\-");
+            text = Regex.Replace(text, @"=|\\=", "\\=");
+            text = Regex.Replace(text, @"\||\\\|", "\\|");
+            text = Regex.Replace(text, @"\{|\\\{", "\\{");
+            text = Regex.Replace(text, @"}|\\}", "\\}");
+            text = Regex.Replace(text, @"\.|\\\.", "\\.");
+            text = Regex.Replace(text, @"!|\\!", "\\!");
 
             text = Regex.Replace(text, @"(\\<b>)(.+?)(</b>)", "\\<b>$2\\</b>");
             text = Regex.Replace(text, @"(\\<i>)(.+?)(</i>)", "\\<i>$2\\</i>");
@@ -67,6 +78,17 @@
             text = text.Replace(">", "\\>");
 
             return text;
+        }
+
+        private static string EscapeExceptHyperlink(string text, string pattern, string replacement)
+        {
+            var regex = new Regex(@"\[\S+]\(https?://\S+\)");
+            var hyperlinks = regex.Matches(text).Cast<Match>().ToList();
+            return Regex.Replace(text, pattern, delegate (Match match)
+            {
+                return hyperlinks.Any(x => x.Index <= match.Index && match.Index <= (x.Index + x.Length - 1))
+                    ? match.Value : replacement;
+            });
         }
     }
 }
