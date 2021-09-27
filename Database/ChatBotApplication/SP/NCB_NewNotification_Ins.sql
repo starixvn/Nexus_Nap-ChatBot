@@ -290,7 +290,7 @@ NCB_NewNotification_Ins:BEGIN
 	CREATE TEMPORARY TABLE tmpNotificationRecipient (notificationID INT, RecipientID INT);
 	
 	DROP TEMPORARY TABLE IF EXISTS tmpNotificationContent;
-	CREATE TEMPORARY TABLE tmpNotificationContent (notificationID INT, Content mediumtext CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci');
+	CREATE TEMPORARY TABLE tmpNotificationContent (notificationID INT, ChannelId TINYINT UNSIGNED,Content mediumtext CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci');
 	
     #Insert a new Notification
 	
@@ -358,8 +358,8 @@ NCB_NewNotification_Ins:BEGIN
 		FROM NotificationRecipientList
 		WHERE NotificationID = _notificationID;
 		
-		INSERT INTO tmpNotificationContent(NotificationID, Content)
-		VALUES (_notificationID, _Content);
+		INSERT INTO tmpNotificationContent(NotificationID, Content, ChannelId)
+		VALUES (_notificationID, _Content, _ChannelId);
 		
 		DELETE FROM tmpContent WHERE ChannelId = _ChannelId;
 	END WHILE;
@@ -372,7 +372,7 @@ NCB_NewNotification_Ins:BEGIN
     
     #Get Log Content, JSON format
 	WHILE (EXISTS (SELECT 1 FROM tmpNotificationContent)) DO
-		 SELECt NotificationID, Content INTO _notificationID, _Content FROM tmpNotificationContent LIMIT 1;
+		 SELECt NotificationID, Content, ChannelId INTO _notificationID, _Content, _ChannelId FROM tmpNotificationContent LIMIT 1;
 		 
 		 SELECT GROUP_CONCAT(DISTINCT re.RecipientID ORDER BY re.RecipientID SEPARATOR ', ')  
          INTO _RecipientIDLst
@@ -382,6 +382,7 @@ NCB_NewNotification_Ins:BEGIN
 										, 'ProductID', productID
                                         , 'RecipientIDLst', _RecipientIDLst
 										, 'Title', title
+										, 'ChannelId', _ChannelId
                                         , 'content', _content
                                         , 'ConfigSendTime', configSendTime
                                         , 'SendImmediately', sendImmediately
