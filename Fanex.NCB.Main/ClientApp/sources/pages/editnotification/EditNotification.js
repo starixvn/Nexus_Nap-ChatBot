@@ -2,16 +2,18 @@
 import 'react-mde/lib/styles/css/react-mde-all.css';
 
 import React from 'react';
+import { DateTime } from 'luxon';
 import { Form, FormGroup, Label, Button, Col, Input, FormFeedback } from 'reactstrap';
 import axios from 'axios';
 import ReactMde from 'react-mde';
 import { Formik } from 'formik';
+import { stringify } from 'qs';
 import { object, string, array, date } from 'yup';
 import { NCBBreadcrum } from '../common/breadcrumbs/breadcrumbs';
 import TreeSelect, { getRealValueFromTreeSelection } from '../common/TreeSelect/index';
 import DatePicker from '../common/DatePicker/index';
 import Labels from '../common/Labels';
-import { editorCommandList, invalidFieldClass } from '../constants/constants';
+import { DateTimeFormat, editorCommandList, invalidFieldClass } from '../constants/constants';
 import ResponseMessage from '../common/response-message/ResponseMessage';
 import Site from '../lib/site';
 import ConfirmPopup from '../common/confirm-popup/ConfirmPopup';
@@ -19,6 +21,7 @@ import errorResponseHandler from '../lib/errorResponseHandler';
 import ContentPreview from '../common/ContentPreview';
 import MarkdownRules from '../common/markdown-rules';
 import CommonFunction from '../common/common-functions/CommonFunctions';
+import DataService from '../lib/dataService';
 
 const SendModeOptions = [
     { value: '1', label: 'Send Immediately' },
@@ -109,33 +112,27 @@ export default class EditNotification extends React.Component {
         this.setState({ confimrationPopup: { isOpen: false } });
     }
 
-    handleConfirm = () => {
+    handleConfirm = async () => {
         this.setState({ confimrationPopup: { isOpen: false } });
 
         const formik = this.refs.form;
         const values = formik.state.values;
         const recipientIds = [];
         getRealValueFromTreeSelection(recipientIds, values.recipients, this.state.recipientOptions);
-        const data = {
+        const data = stringify({
             notificationId: this.state.notificationId,
             channelId: values.channelId,
             recipientIds: recipientIds.toString(),
             title: values.title.trim(),
             content: values.content.trim(),
-            sendDate: values.sendDate.toLocaleString('en-US'),
+            sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
             sendImmediately: values.sendMode === '1'
-        };
+        });
 
         this.handleCloseConfirmationPopup();
 
-        axios({
-            url: Site.resolveClientUrl('EditNotification/Edit'),
-            method: 'post',
-            data: data,
-            headers: {
-                'RequestVerificationToken': Site.getXsrfToken()
-            }
-        }).then(response => {
+        const url = Site.resolveClientUrl('EditNotification/Edit');
+        await DataService.postDataAsync(url, data).then(response => {
             const result = response.data;
             formik.setSubmitting(false);
 
@@ -147,7 +144,7 @@ export default class EditNotification extends React.Component {
             } else {
                 this.setState({ editNotificationResult: result });
             }
-        }).catch(errorResponseHandler);
+        });
     }
 
     schema = object().shape({

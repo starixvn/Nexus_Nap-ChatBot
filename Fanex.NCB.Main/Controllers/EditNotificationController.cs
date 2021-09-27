@@ -58,7 +58,7 @@
 
         [HttpPost]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
-        public async Task<IActionResult> Edit([FromBody] EditNotificationViewModel data)
+        public async Task<IActionResult> Edit(EditNotificationViewModel data)
         {
             var result = new CommandResult();
 
