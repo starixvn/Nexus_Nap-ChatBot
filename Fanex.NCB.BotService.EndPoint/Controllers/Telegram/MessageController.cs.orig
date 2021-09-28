@@ -13,20 +13,18 @@
     using Fanex.NCB.BotService.Core.Enum;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
+    using Fanex.NCB.Shared.Extensions;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
+    using Newtonsoft.Json;
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class MessageController : Controller
     {
-<<<<<<< HEAD
-        private readonly AppSettings appSettings;
-
-=======
->>>>>>> 156890 - refactor code
+        private const string DisableChannelErrorMessage = "Chatbot service has been stopped due to turning off the configuration by admin.";
         private readonly AppSettings appSettings;
         private readonly ILogger logger;
         private readonly IConversationService conversationService;
@@ -49,19 +47,20 @@
 
         [HttpPost]
         [Route("api/telegram/sendMessage")]
-<<<<<<< HEAD
-        public async Task<ObjectResult> SendMessage([FromBody] ConversationInfo conversationInfo)
-=======
-        public async Task<ObjectResult> SendMessage(long botId, long chatId, string messageContent)
->>>>>>> 156890 - refactor code
+        public async Task<ObjectResult> SendMessage(int botId, long chatId, string text)
         {
             var errorMessage = string.Empty;
             try
             {
                 if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
                 {
-<<<<<<< HEAD
-                if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
+                    errorMessage = Resources.Resources.DisableChannelErrorMessage;
+                }
+                else
+                {
+                    await botService.SendTextMessageAsync(botId, chatId, messageContent);
+                }
+                    await botService.SendTextMessageAsync(botId, chatId, text);
                 {
                     errorMessage = Resources.Resources.DisableChannelErrorMessage;
                 }
@@ -69,20 +68,7 @@
                 {
                     _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
                     _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
-                    await botService.SendTextMessageAsync(botId, chatId, conversationInfo.Message);
-                }
-=======
-                    errorMessage = Resources.Resources.DisableChannelErrorMessage;
->>>>>>> 156890 - refactor code
-                }
-                else
-                {
-<<<<<<< HEAD
-                    errorMessage = ex.Message;
-                await WriteLogAsync(ex);
-=======
-                    await botService.SendTextMessageAsync(botId, chatId, messageContent);
->>>>>>> 156890 - refactor code
+                    await botService.SendTextMessageAsync(botId, chatId, conversationInfo.Message.ToMarkdownV2());
                 }
             }
             catch (Exception ex)
@@ -101,11 +87,15 @@
             var tasks = new List<Task<SendMessageResult>>();
             if (notificationMessages != null && notificationMessages.Any())
             {
+                await logger.InfoAsync(string.Format("Before Distinct: {0}", JsonConvert.SerializeObject(notificationMessages)));
                 var notifications = conversationService.GetDistinctNotificationConversation(notificationMessages);
+                await logger.InfoAsync(string.Format("After Distinct: {0}", JsonConvert.SerializeObject(notifications)));
+
                 foreach (NotificationMessage notification in notifications)
                 {
                     foreach (ConversationInfo conversationInfo in notification.Recipients)
                     {
+                        await logger.InfoAsync(string.Format("Telegram - add to task: {0}", JsonConvert.SerializeObject(conversationInfo)));
                         SendMessageAsync(tasks, conversationInfo, notification);
                     }
                 }
@@ -117,44 +107,48 @@
 
         private void SendMessageAsync(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
         {
-<<<<<<< HEAD
-            bool isEnableTelegramChannel = appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram);
-            tasks.Add(!isEnableTelegramChannel ? Task.Run(() => new SendMessageResult
+            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
             {
-                NotificationId = notificationMessage.NotificationId,
-                ConversationId = conversationInfo.ConversationId,
-                SentTime = DateTime.Now,
-                ErrorCode = 1,
-                ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
-                IsIgnoreRetry = true
-            }) : Task.Run(() => SendMessageAsync(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message)));
-        }
-
-        protected internal virtual async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo, int notificationId, string messageContent)
-        {
+                return new SendMessageResult
+                {
+                    NotificationId = notificationMessage.NotificationId,
+                    ConversationId = conversationInfo.ConversationId,
+                    SentTime = DateTime.Now,
+                    ErrorCode = 1,
+                    ErrorMessage = DisableChannelErrorMessage,
+                    IsIgnoreRetry = true
+                };
+            }
+            else
+            {
+                {
             bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, messageContent);
             if (isDuplicated)
-=======
-            try
->>>>>>> 156890 - refactor code
             {
-                if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
+                return new SendMessageResult
                 {
-<<<<<<< HEAD
                     ConversationId = conversationInfo.ConversationId,
                     SentTime = DateTime.UtcNow,
                     ErrorCode = -1,
-                    ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
+                            ErrorMessage = DuplicatedErrorMessage,
                     NotificationId = notificationId,
                     IsIgnoreRetry = true
                 };
             }
 
             string guiid = Guid.NewGuid().ToString();
+<<<<<<< HEAD
                 try
                 {
-                _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
+                        _ = int.TryParse(conversationInfo.BotConversationId, out int botId);
                     _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
+=======
+            try
+            {
+                await logger.InfoAsync(string.Format("Telegram - begin send message: {0}", JsonConvert.SerializeObject(conversationInfo)));
+                _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
+                _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
+>>>>>>> 162206 - add log
                 await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, messageContent, guiid);
                 SendMessageResult result = await SendTextMessageAsync(botId, chatId, notificationId, messageContent);
                 if (result.ErrorCode != 0)
@@ -166,70 +160,15 @@
                     thread.Start();
 
                     return result;
-=======
-                    return new SendMessageResult
-                    {
-                        NotificationId = notificationMessage.NotificationId,
-                        ConversationId = conversationInfo.ConversationId,
-                        SentTime = DateTime.Now,
-                        ErrorCode = 1,
-                        ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
-                        IsIgnoreRetry = true
-                    };
-                }
-                else
-                {
-                    bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, notificationMessage.Message);
-                    if (isDuplicated)
-                    {
-                        return new SendMessageResult
-                        {
-                            ConversationId = conversationInfo.ConversationId,
-                            SentTime = DateTime.UtcNow,
-                            ErrorCode = -1,
-                            ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
-                            NotificationId = notificationMessage.NotificationId,
-                            IsIgnoreRetry = true
-                        };
-                    }
-                    else
-                    {
-                        _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
-                        _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
-                        string guiid = Guid.NewGuid().ToString();
-                        await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, notificationMessage.Message, guiid);
-                        SendMessageResult result = await SendMessageAsync(botId, chatId, notificationMessage.NotificationId, notificationMessage.Message);
-                        var thread = new Thread(async () => await AddMessageLogAsync(conversationInfo, notificationMessage.Message, result, guiid));
-                        thread.Start();
-
-                        return result;
-                    }
->>>>>>> 156890 - refactor code
                 }
             }
             catch (Exception exception)
             {
+                await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
                 await WriteLogAsync(exception);
                 return new SendMessageResult
                 {
-<<<<<<< HEAD
-                await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
-                await WriteLogAsync(exception);
-                    return new SendMessageResult
-                    {
-                        NotificationId = notificationId,
-                        ConversationId = conversationInfo.ConversationId,
-                        SentTime = DateTime.Now,
-                        ErrorCode = 1,
-                        ErrorMessage = exception.Message
-                    };
-                }
-            }
-        }
-
-        protected internal virtual async Task<SendMessageResult> SendTextMessageAsync(long botId, long chatId, int notificationId, string messageContent)
-=======
-                    NotificationId = notificationMessage.NotificationId,
+                        NotificationId = notificationMessage.NotificationId,
                     ConversationId = conversationInfo.ConversationId,
                     SentTime = DateTime.Now,
                     ErrorCode = 1,
@@ -238,8 +177,7 @@
             }
         }
 
-        private async Task<SendMessageResult> SendMessageAsync(long botId, long chatId, int notificationId, string messageContent)
->>>>>>> 156890 - refactor code
+        private async Task<SendMessageResult> SendMessageAsync(int botId, long chatId, int notificationId, string text)
         {
             var result = new SendMessageResult
             {
@@ -249,16 +187,24 @@
 
             try
             {
-                await botService.SendTextMessageAsync(botId, chatId, messageContent);
+                await botService.SendTextMessageAsync(botId, chatId, messageContent.ToMarkdownV2());
             }
             catch (Exception exception)
             {
-                await WriteLogAsync(exception);
+                var param = new Dictionary<string, object>
+                {
+                    { "notificationId", notificationId },
+                    { "botId", botId },
+                    { "chatId", chatId },
+                    { "messageContent", messageContent }
+                };
+
+                await WriteLogAsync(exception, param);
 
                 result.ErrorCode = 1;
                 result.ErrorMessage = exception.Message;
 
-                if(exception.Message.Contains("Message is too long", StringComparison.InvariantCultureIgnoreCase))
+                if (exception.Message.Contains("Message is too long", StringComparison.InvariantCultureIgnoreCase))
                 {
                     result.ErrorMessage = Resources.Resources.MessageIsTooLong;
                     result.IsIgnoreRetry = true;
@@ -269,21 +215,10 @@
             return result;
         }
 
-<<<<<<< HEAD
-        protected internal virtual async Task AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, string messageContent, SendMessageResult result)
-=======
-        private async Task AddMessageLogAsync(ConversationInfo conversationInfo, string messageContent, SendMessageResult result, string guiid)
+        private async Task AddMessageLogAsync(ConversationInfo conversationInfo, string text, SendMessageResult result, string guiid)
         {
-            await AddMessageLogToDatabaseAsync(conversationInfo, messageContent, result);
-            if (result.ErrorCode != 0)
-            {
-                await messageLogService.RemoveMessageLogInCache(conversationInfo.ConversationId, guiid);
-            }
-        }
-
-        private async Task AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, string messageContent, SendMessageResult result)
->>>>>>> 156890 - refactor code
-        {
+            await AddMessageLogToDatabaseAsync(conversationInfo, text, result);
+        private async Task AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, string text, SendMessageResult result)
             try
             {
                 var command = new AddMessageLogCommand
@@ -304,14 +239,18 @@
             }
         }
 
-        protected internal virtual async Task WriteLogAsync(Exception exception)
+        protected internal virtual async Task WriteLogAsync(Exception exception, IDictionary<string, object> param = null)
         {
             var logMessage = new LogMessage(exception.Message)
                         .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
                         .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
-                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
-                        .ToString();
-            await logger.ErrorAsync(logMessage);
+                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
+            if(param != null)
+            {
+                logMessage.AddSection("Params", param);
+            }
+
+            await logger.ErrorAsync(logMessage.ToString());
         }
     }
 }

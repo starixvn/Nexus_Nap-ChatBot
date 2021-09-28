@@ -19,6 +19,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
+    using Newtonsoft.Json;
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class MessageController : Controller
@@ -86,12 +87,15 @@
             var tasks = new List<Task<SendMessageResult>>();
             if (notificationMessages != null && notificationMessages.Any())
             {
+                await logger.InfoAsync(string.Format("Before Distinct: {0}", JsonConvert.SerializeObject(notificationMessages)));
                 var notifications = conversationService.GetDistinctNotificationConversation(notificationMessages);
+                await logger.InfoAsync(string.Format("After Distinct: {0}", JsonConvert.SerializeObject(notifications)));
 
                 foreach (NotificationMessage notification in notifications)
                 {
                     foreach (ConversationInfo conversationInfo in notification.Recipients)
                     {
+                        await logger.InfoAsync(string.Format("Telegram - add to task: {0}", JsonConvert.SerializeObject(conversationInfo)));
                         SendMessageAsync(tasks, conversationInfo, notification);
                     }
                 }
