@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Main.Controllers
 {
+    using System;
     using System.Threading.Tasks;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NCB.Core.Constants;
@@ -69,16 +70,23 @@
             }
             else
             {
-                result = await notificationService.EditAsync(new EditNotification
+                try
                 {
-                    NotificationId = data.NotificationId,
-                    Title = data.Title,
-                    Content = data.Content,
-                    RecipientIds = data.RecipientIds,
-                    SendDate = data.SendDate,
-                    SendImmediately = data.SendImmediately,
-                    UserId = napSession.UserId
-                });
+                    result = await notificationService.EditAsync(new EditNotification
+                    {
+                        NotificationId = data.NotificationId,
+                        Title = data.Title,
+                        Content = data.Content,
+                        RecipientIds = data.RecipientIds,
+                        SendDate = data.SendDate,
+                        SendImmediately = data.SendImmediately,
+                        UserId = napSession.UserId
+                    });
+                } catch(Exception ex)
+                {
+                    result.Code = 1;
+                    result.Message = ex.Message;
+                }
             }
 
             return Json(result);

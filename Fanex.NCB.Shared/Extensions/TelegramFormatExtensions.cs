@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Core.Extensions
+﻿namespace Fanex.NCB.Shared.Extensions
 {
     using System.Linq;
     using System.Text.RegularExpressions;
@@ -7,36 +7,19 @@
     {
         public static string ToMarkdownV2(this string text)
         {
-            // bold
+            text = Regex.Replace(text, "(\\*)(.+?)(\\*)", "<i>$2</i>"); // italic
             var pattern = new Regex("(\\*\\*)(.*?)(\\*\\*)");
             text = pattern.Replace(text, $"<b>$2</b>");
-
-            // italic
             pattern = new Regex("(\\*)(.*?)(\\*)");
             text = pattern.Replace(text, "_$2_");
-
-            // strikethrough
             pattern = new Regex("(~~)(.*?)(~~)");
             text = pattern.Replace(text, "~$2~");
-
-            // revert
             pattern = new Regex("(<b>)(.*?)(</b>)");
             text = pattern.Replace(text, $"*$2*");
-
-            return text;
-        }
-
-        public static string EscapedMarkdownV2(this string text)
-        {
-            // bold
             var pattern = new Regex("(\\*)(.*?)(\\*)");
             text = pattern.Replace(text, $"<b>$2</b>");
-
-            // italic
             pattern = new Regex("(_)(.*?)(_)");
             text = pattern.Replace(text, "<i>$2</i>");
-
-            // strikethrough
             pattern = new Regex("(~)(.*?)(~)");
             text = pattern.Replace(text, "<s>$2</s>");
 

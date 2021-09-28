@@ -91,7 +91,7 @@
             Assert.Equal(200, okResult.StatusCode);
             Assert.Equal(exception.Message, okResult.Value);
 
-            controller.Received().Protected("WriteLogAsync", exception);
+            controller.Received().Protected("WriteLogAsync", exception, Arg.Any<IDictionary<string, object>>());
         }
 
         #endregion SendMessage
@@ -227,7 +227,7 @@
             Assert.False(result.IsIgnoreRetry);
 
             await messageLogService.Received().RemoveMessageLogOnCache(conversationInfo.ConversationId, Arg.Any<string>());
-            controller.Received().Protected("WriteLogAsync", exception);
+            controller.Received().Protected("WriteLogAsync", exception, Arg.Any<IDictionary<string, object>>());
         }
 
         ////[Fact]
@@ -267,7 +267,7 @@
             var botId = fixture.Create<long>();
             var chatId = fixture.Create<long>();
             var notificationId = fixture.Create<int>();
-            var messageContent = fixture.Create<string>();
+            var messageContent = "message content";
             var controller = GetController();
 
             // Act
@@ -290,7 +290,7 @@
             var botId = fixture.Create<long>();
             var chatId = fixture.Create<long>();
             var notificationId = fixture.Create<int>();
-            var messageContent = fixture.Create<string>();
+            var messageContent = "message content";
             var exception = fixture.Create<Exception>();
             var controller = GetController();
             botService.SendTextMessageAsync(botId, chatId, messageContent).Returns(Task.FromException<Message>(exception));
@@ -305,7 +305,7 @@
             Assert.Equal(exception.Message, result.ErrorMessage);
             Assert.False(result.IsIgnoreRetry);
 
-            controller.Received().Protected("WriteLogAsync", exception);
+            controller.Received().Protected("WriteLogAsync", exception, Arg.Any<IDictionary<string, object>>());
         }
 
         #endregion SendTextMessageAsync
@@ -351,7 +351,7 @@
             await controller.Public_AddMessageLogToDatabaseAsync(conversationInfo, messageContent, result);
 
             // Assert
-            controller.Received().Protected("WriteLogAsync", exception);
+            controller.Received().Protected("WriteLogAsync", exception, Arg.Any<IDictionary<string, object>>());
         }
 
         #endregion AddMessageLogToDatabaseAsync

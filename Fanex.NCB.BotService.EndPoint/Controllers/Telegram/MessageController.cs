@@ -13,6 +13,7 @@
     using Fanex.NCB.BotService.Core.Enum;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
+    using Fanex.NCB.Shared.Extensions;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
@@ -66,7 +67,7 @@
                 {
                     _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
                     _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
-                    await botService.SendTextMessageAsync(botId, chatId, conversationInfo.Message);
+                    await botService.SendTextMessageAsync(botId, chatId, conversationInfo.Message.ToMarkdownV2());
                 }
             }
             catch (Exception ex)
@@ -174,11 +175,19 @@
 
             try
             {
-                await botService.SendTextMessageAsync(botId, chatId, messageContent);
+                await botService.SendTextMessageAsync(botId, chatId, messageContent.ToMarkdownV2());
             }
             catch (Exception exception)
             {
-                await WriteLogAsync(exception);
+                var param = new Dictionary<string, object>
+                {
+                    { "notificationId", notificationId },
+                    { "botId", botId },
+                    { "chatId", chatId },
+                    { "messageContent", messageContent }
+                };
+
+                await WriteLogAsync(exception, param);
 
                 result.ErrorCode = 1;
                 result.ErrorMessage = exception.Message;
@@ -218,14 +227,18 @@
             }
         }
 
-        protected internal virtual async Task WriteLogAsync(Exception exception)
+        protected internal virtual async Task WriteLogAsync(Exception exception, IDictionary<string, object> param = null)
         {
             var logMessage = new LogMessage(exception.Message)
                         .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
                         .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
-                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
-                        .ToString();
-            await logger.ErrorAsync(logMessage);
+                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
+            if(param != null)
+            {
+                logMessage.AddSection("Params", param);
+            }
+
+            await logger.ErrorAsync(logMessage.ToString());
         }
     }
 }

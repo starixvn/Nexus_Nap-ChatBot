@@ -344,8 +344,7 @@
         #region DivideNotificationBatch
 
         [Fact]
-        public void DivideNotificationBatch_ChannelIsSkype_ReturnAsExpectedResult()
-
+        public void DivideNotificationBatch_WhenCalled_ReturnAsExpectedResult()
         {
             // Arrange
             var notifications = new List<NotificationSendMessage>
@@ -393,67 +392,6 @@
                 Assert.Equal(1, item.NotificationId);
                 Assert.Equal(1, item.ChannelId);
                 Assert.Equal("**content**", item.Message);
-
-                Assert.Equal(lastrecipients, item.Recipients);
-            });
-
-            Assert.Collection(result.Last().Item2, item =>
-            {
-                Assert.Equal(1, item.NotificationId);
-                Assert.Equal("2", item.BotConversationId);
-                Assert.Equal("2", item.ChatGroupConversationId);
-            });
-        }
-
-        [Fact]
-        public void DivideNotificationBatch_ChannelIsTelegram_ReturnAsExpectedResult()
-        {
-            // Arrange
-            var notifications = new List<NotificationSendMessage>
-            {
-                new NotificationSendMessage { NotificationId = 1, ChannelId = 2, Content = "**content**" }
-            };
-            var recipients = new List<NotificationRecipient>
-            {
-                new NotificationRecipient { NotificationId = 1, ChatGroupConversationId = "1", BotConversationId = "1" },
-                new NotificationRecipient { NotificationId = 1, ChatGroupConversationId = "2", BotConversationId = "2" }
-            };
-            var lastrecipients = fixture.Create<IEnumerable<ConversationInfo>>();
-            var service = GetService();
-            service.Protected("AddMonitorRecipientForTelegram", Arg.Any<IEnumerable<ConversationInfo>>()).Returns(lastrecipients);
-
-            // Arrange
-            var result = service.Public_DivideNotificationBatch(2, notifications, recipients);
-
-            // Assert
-            Assert.Equal(2, result.Count());
-
-            Assert.Collection(result.First().Item1, item =>
-            {
-                Assert.Equal(1, item.NotificationId);
-                Assert.Equal(2, item.ChannelId);
-                Assert.Equal("*content*", item.Message);
-
-                Assert.Single(item.Recipients);
-                Assert.Collection(item.Recipients, recipient =>
-                {
-                    Assert.Equal("1", recipient.BotConversationId);
-                    Assert.Equal("1", recipient.ConversationId);
-                });
-            });
-
-            Assert.Collection(result.First().Item2, item =>
-            {
-                Assert.Equal(1, item.NotificationId);
-                Assert.Equal("1", item.BotConversationId);
-                Assert.Equal("1", item.ChatGroupConversationId);
-            });
-
-            Assert.Collection(result.Last().Item1, item =>
-            {
-                Assert.Equal(1, item.NotificationId);
-                Assert.Equal(2, item.ChannelId);
-                Assert.Equal("*content*", item.Message);
 
                 Assert.Equal(lastrecipients, item.Recipients);
             });

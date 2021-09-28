@@ -268,8 +268,7 @@
                                 {
                                     NotificationId = n.NotificationId,
                                     ChannelId = n.ChannelId,
-                                    Message = n.ChannelId == (byte)ConversationChannel.Telegram
-                                        ? n.Content.ToMarkdownV2().EscapedMarkdownV2() : n.Content
+                                    Message = n.Content
                                 }));
 
                 foreach (var item in newBatches)

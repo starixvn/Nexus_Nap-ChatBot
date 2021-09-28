@@ -8,7 +8,6 @@
     using System.Net.Http.Json;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Enum;
-    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models;
     using Fanex.NCB.Models.NotifictaionSendMessage;
@@ -88,7 +87,7 @@
             {
                 ConversationId = monitorTelegramBot.ChatId.ToString(),
                 BotConversationId = monitorTelegramBot.BotId.ToString(),
-                Message = monitorTelegramBot.Message.EscapedMarkdownV2()
+                Message = monitorTelegramBot.Message
             };
             await SendSingleMessageAsync((byte)ConversationChannel.Telegram, conversationInfo);
         }
@@ -129,8 +128,7 @@
                     var notification = new NotificationMessage
                     {
                         NotificationId = noti.NotificationId,
-                        Message = noti.ChannelId == (byte)ConversationChannel.Telegram
-                            ? noti.Content.ToMarkdownV2().EscapedMarkdownV2() : noti.Content,
+                        Message = noti.Content,
                         ChannelId = noti.ChannelId,
                         Recipients = recipients.Select(r =>
                             new ConversationInfo
