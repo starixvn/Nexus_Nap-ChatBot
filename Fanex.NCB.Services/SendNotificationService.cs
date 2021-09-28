@@ -124,7 +124,7 @@
         {
             var cloneRecipients = new List<NotificationRecipient>(recipients);
             return cloneRecipients.GroupBy(g => new { g.NotificationId, g.ChatGroupConversationId })
-                .Select(group => group.FirstOrDefault()).OrderBy(r => r.NotificationId);
+                .Select(group => group.FirstOrDefault()).OrderBy(r => r.NotificationId).ToList();
         }
 
         protected internal virtual async Task SendNotificationToRecipients(
@@ -142,10 +142,13 @@
             var filterNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
             var filterRecipients = recipients.Where(x => x.ChannelId == channelId && filterNotifications.Any(y => y.NotificationId == x.NotificationId)).ToList();
             var distinctRecipients = GetDistinctChatGroupConversationId(filterRecipients);
+            await logService.WriteMessageSentryErrorAsync(string.Format("After distinct: {0}", JsonConvert.SerializeObject(distinctRecipients)));
 
             var batches = DivideNotificationBatch(channelId, filterNotifications, distinctRecipients);
             foreach (var batch in batches)
             {
+                await logService.WriteMessageSentryErrorAsync(string.Format("Send by batch - messages: {0}", JsonConvert.SerializeObject(batch.Item1)));
+                await logService.WriteMessageSentryErrorAsync(string.Format("Send by batch - recipients: {0}", JsonConvert.SerializeObject(batch.Item2)));
                 await SendMultiMessageAsync(channelId, batch.Item1, batch.Item2, recipients);
             }
         }

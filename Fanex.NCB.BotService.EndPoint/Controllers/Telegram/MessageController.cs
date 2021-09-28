@@ -92,7 +92,7 @@
                 {
                     foreach (ConversationInfo conversationInfo in notification.Recipients)
                     {
-                        await logger.InfoAsync(string.Format("Telegram - add to task: {0}", JsonConvert.SerializeObject(conversationInfo)));
+                        await logger.InfoAsync(string.Format("Telegram: {0}", JsonConvert.SerializeObject(conversationInfo)));
                         SendMessageAsync(tasks, conversationInfo, notification);
                     }
                 }
@@ -136,7 +136,6 @@
             string guiid = Guid.NewGuid().ToString();
                 try
                 {
-                        _ = int.TryParse(conversationInfo.BotConversationId, out int botId);
                     _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
                 await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, messageContent, guiid);
                 SendMessageResult result = await SendTextMessageAsync(botId, chatId, notificationId, messageContent);
