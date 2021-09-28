@@ -140,7 +140,7 @@
         private async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationSendMessage> notifications, IEnumerable<NotificationRecipient> recipients)
         {
             var filterNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
-            var filterRecipients = recipients.Where(x => filterNotifications.Any(y => y.NotificationId == x.NotificationId)).ToList();
+            var filterRecipients = recipients.Where(x => x.ChannelId == channelId && filterNotifications.Any(y => y.NotificationId == x.NotificationId)).ToList();
             var distinctRecipients = GetDistinctChatGroupConversationId(filterRecipients);
 
             var batches = DivideNotificationBatch(channelId, filterNotifications, distinctRecipients);

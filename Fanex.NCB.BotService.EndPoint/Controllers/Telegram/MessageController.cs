@@ -87,10 +87,7 @@
             var tasks = new List<Task<SendMessageResult>>();
             if (notificationMessages != null && notificationMessages.Any())
             {
-                await logger.InfoAsync(string.Format("Before Distinct: {0}", JsonConvert.SerializeObject(notificationMessages)));
                 var notifications = conversationService.GetDistinctNotificationConversation(notificationMessages);
-                await logger.InfoAsync(string.Format("After Distinct: {0}", JsonConvert.SerializeObject(notifications)));
-
                 foreach (NotificationMessage notification in notifications)
                 {
                     foreach (ConversationInfo conversationInfo in notification.Recipients)
