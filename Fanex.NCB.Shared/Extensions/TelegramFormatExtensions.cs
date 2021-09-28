@@ -43,10 +43,6 @@
             text = Regex.Replace(text, @"\.|\\\.", "\\.");
             text = Regex.Replace(text, @"!|\\!", "\\!");
 
-            text = Regex.Replace(text, @"(\\<b>)(.+?)(</b>)", "\\<b>$2\\</b>");
-            text = Regex.Replace(text, @"(\\<i>)(.+?)(</i>)", "\\<i>$2\\</i>");
-            text = Regex.Replace(text, @"(\\<s>)(.+?)(</s>)", "\\<s>$2\\</s>");
-
             // revert
             pattern = new Regex("(<b>)(.*?)(</b>)");
             text = pattern.Replace(text, $"*$2*");
@@ -59,6 +55,25 @@
 
             // escape
             text = text.Replace(">", "\\>");
+
+            text = Regex.Replace(text, "\\*.+?\\*", delegate (Match match)
+            {
+                return match.Index > 0 && text[match.Index - 1] == '\\'
+                    ? Regex.Replace(match.Value, "(\\*)(.+?)(\\*)", "*\\*$2\\*\\*")
+                    : match.Value;
+            }); // bold
+            text = Regex.Replace(text, "_.+?_", delegate (Match match)
+            {
+                return match.Index > 0 && text[match.Index - 1] == '\\'
+                    ? Regex.Replace(match.Value, "(_)(.+?)(_)", "*$2\\*")
+                    : match.Value;
+            }); // italic
+            text = Regex.Replace(text, "~.+?~", delegate (Match match)
+            {
+                return match.Index > 0 && text[match.Index - 1] == '\\'
+                    ? Regex.Replace(match.Value, "(~)(.+?)(~)", "~\\~$2\\~\\~")
+                    : match.Value;
+            }); // strikethrough
 
             return text;
         }
