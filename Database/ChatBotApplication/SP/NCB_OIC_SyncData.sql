@@ -18,6 +18,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_OIC_SyncData(
 				- 20190909@Oliver: Merge 5 SP into 1
                 - 20190913@Oliver: update table Recipient after sync
                 - 20190215@Oliver: Skip update internal recipients - Redmine: #128430
+                - 20210928@Malcolm: Fix deadlock - Redmine: #162379
     */
 )
 SQL SECURITY DEFINER
@@ -32,158 +33,338 @@ BEGIN
     DECLARE LICENSEE_SOURCE_DESCRIPTION VARCHAR(50) DEFAULT 'bodb_OIC.dbo.Licensee';
     DECLARE PRODUCT_SOURCE_DESCRIPTION VARCHAR(50) DEFAULT 'bodb_OIC.dbo.Product';
 
-
-
 ############################ Licensee ###########################################
 
     DROP TEMPORARY TABLE IF EXISTS tmp_Licensee;
-    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Licensee(
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Licensee
+    (
             LicenseeId INT, 
-            LicenseeName VARCHAR(500), 
-            RegisteredLicenseeName VARCHAR(500), 
-            LicenseeStatusId INT, 
-            LicenseeTypeId INT
-            );
+            LicenseeName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci', 
+            RegisteredLicenseeName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci', 
+            LicenseeStatusId TINYINT UNSIGNED, 
+            LicenseeTypeId TINYINT UNSIGNED,
+            PRIMARY KEY (LicenseeId)
+	);
     
-    SET iLoop = 0;
-    WHILE (JSON_EXTRACT(Licensees, CONCAT('$[',iLoop, '].LicenseeId'))  IS NOT NULL) DO 
-		INSERT INTO tmp_Licensee(LicenseeId, LicenseeName, RegisteredLicenseeName, LicenseeStatusId, LicenseeTypeId)
-        VALUES (
-			JSON_UNQUOTE(JSON_EXTRACT(Licensees, CONCAT('$[', iLoop, '].LicenseeId'))), 
-            JSON_UNQUOTE(JSON_EXTRACT(Licensees, CONCAT('$[', iLoop, '].LicenseeName'))),
-            JSON_UNQUOTE(JSON_EXTRACT(Licensees, CONCAT('$[', iLoop, '].RegisteredLicenseeName'))),
-            JSON_UNQUOTE(JSON_EXTRACT(Licensees, CONCAT('$[', iLoop, '].LicenseeStatusId'))),
-            JSON_UNQUOTE(JSON_EXTRACT(Licensees, CONCAT('$[', iLoop, '].LicenseeTypeId')))
-		);
+    INSERT INTO tmp_Licensee(LicenseeId, LicenseeName, RegisteredLicenseeName, LicenseeStatusId, LicenseeTypeId)
+    SELECT t.LicenseeId, NULLIF(t.LicenseeName, 'NULL'), NULLIF(t.RegisteredLicenseeName, 'NULL'), t.LicenseeStatusId, t.LicenseeTypeId
+    FROM 
+		JSON_TABLE
+        (
+			Licensees,
+            "$[*]"
+            COLUMNS
+            (
+				LicenseeId INT PATH "$.LicenseeId", 
+				LicenseeName VARCHAR(50) CHARACTER SET 'utf8mb4'  COLLATE 'utf8mb4_unicode_ci' PATH "$.LicenseeName", 
+				RegisteredLicenseeName VARCHAR(50) CHARACTER SET 'utf8mb4'  COLLATE 'utf8mb4_unicode_ci' PATH "$.RegisteredLicenseeName", 
+				LicenseeStatusId TINYINT UNSIGNED PATH "$.LicenseeStatusId", 
+				LicenseeTypeId TINYINT UNSIGNED PATH "$.LicenseeTypeId"
+            )
+        ) AS t;
+    
+	DROP TEMPORARY TABLE IF EXISTS tmp_Data;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Data
+    (
+            LicenseeId INT, 
+            LicenseeName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci', 
+            RegisteredLicenseeName VARCHAR(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci', 
+            LicenseeStatusId TINYINT UNSIGNED, 
+            LicenseeTypeId TINYINT UNSIGNED,
+            IsDeleted INT,
+            PRIMARY KEY (LicenseeId)
+	);
+    
+    INSERT INTO tmp_Data (LicenseeId, LicenseeName, RegisteredLicenseeName, LicenseeStatusId, LicenseeTypeId, IsDeleted)
+    SELECT l.LicenseeId, l.LicenseeName, l.RegisteredLicenseeName, l.LicenseeStatusId, l.LicenseeTypeId, -1
+    FROM Licensee l
+    WHERE NOT EXISTS (SELECT 1 FROM tmp_Licensee tl WHERE tl.LicenseeId = l.LicenseeId);
+    
+	INSERT INTO tmp_Data (LicenseeId, LicenseeName, RegisteredLicenseeName, LicenseeStatusId, LicenseeTypeId, IsDeleted)
+    SELECT tl.LicenseeId, tl.LicenseeName, tl.RegisteredLicenseeName, tl.LicenseeStatusId, tl.LicenseeTypeId, CASE WHEN l.LicenseeId IS NULL THEN 1 ELSE 0 END
+    FROM tmp_Licensee tl
+		LEFT JOIN Licensee l ON l.LicenseeId = tl.LicenseeId 
+	WHERE l.LicenseeId IS NULL 
+		OR IFNULL(tl.LicenseeName, '') <> IFNULL(l.LicenseeName, '')
+        OR IFNULL(tl.RegisteredLicenseeName, '') <> IFNULL(l.RegisteredLicenseeName, '')
+        OR IFNULL(tl.LicenseeStatusId, 0) <> IFNULL(l.LicenseeStatusId, 0)
+        OR IFNULL(tl.LicenseeTypeId, 0) <> IFNULL(l.LicenseeTypeId, 0);
         
-        SET iLoop := iLoop + 1;
-    END WHILE;    
+	IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = -1) 
+	THEN	
+		DELETE l
+        FROM Licensee l
+			INNER JOIN tmp_Data td ON l.LicenseeId = td.LicenseeId 
+		WHERE td.IsDeleted = -1;
+    END IF;
     
-    DELETE l FROM Licensee l LEFT JOIN tmp_Licensee tmp ON l.LicenseeId = tmp.LicenseeId WHERE tmp.LicenseeId IS NULL;
-
-    INSERT INTO  Licensee(LicenseeId, LicenseeName, RegisteredLicenseeName, LicenseeStatusId, LicenseeTypeId)    
-    SELECT LicenseeId, LicenseeName, RegisteredLicenseeName, LicenseeStatusId, LicenseeTypeId
-    FROM tmp_Licensee
-    ON DUPLICATE KEY UPDATE 
-		LicenseeId = values(LicenseeId), 
-        LicenseeName = values(LicenseeName), 
-        RegisteredLicenseeName = values(RegisteredLicenseeName), 
-        LicenseeStatusId = values(LicenseeStatusId), 
-        LicenseeTypeId = values(LicenseeTypeId);
+    IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = 0) 
+	THEN	
+		UPDATE Licensee l
+		INNER JOIN tmp_Data td ON l.LicenseeId = td.LicenseeId 
+			SET l.LicenseeName = td.LicenseeName, 
+				l.RegisteredLicenseeName = td.RegisteredLicenseeName, 
+                l.LicenseeStatusId = td.LicenseeStatusId,
+                l.LicenseeTypeId = td.LicenseeTypeId
+		WHERE td.IsDeleted = 0;
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = 1) 
+	THEN	
+		INSERT INTO Licensee (LicenseeId, LicenseeName, RegisteredLicenseeName, LicenseeStatusId, LicenseeTypeId)
+        SELECT td.LicenseeId, td.LicenseeName, td.RegisteredLicenseeName, td.LicenseeStatusId, td.LicenseeTypeId
+        FROM tmp_Data td
+        WHERE td.IsDeleted = 1;
+    END IF;
+    
 
 ############################ Licensee Product ###########################################
 
     DROP TEMPORARY TABLE IF EXISTS tmp_LicenseeProduct;
-    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_LicenseeProduct(LicenseeId INT, ProductId INT, LaunchDate DATETIME, TerminationDate DATETIME);
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_LicenseeProduct
+    (
+		LicenseeId INT, 
+        ProductId TINYINT UNSIGNED, 
+        LaunchDate DATETIME, 
+        TerminationDate DATETIME,
+        PRIMARY KEY (LicenseeId, ProductId)
+	);
     
-    SET iLoop = 0;
-    WHILE (JSON_EXTRACT(LicenseeProducts, CONCAT('$[',iLoop, '].LicenseeId'))) DO 
-		INSERT INTO tmp_LicenseeProduct(LicenseeId, ProductId, LaunchDate, TerminationDate)
-        VALUES (
-			JSON_UNQUOTE(JSON_EXTRACT(LicenseeProducts, CONCAT('$[', iLoop, '].LicenseeId'))), 
-            JSON_UNQUOTE(JSON_EXTRACT(LicenseeProducts, CONCAT('$[', iLoop, '].ProductId'))),
-            CASE
-                WHEN JSON_UNQUOTE(JSON_EXTRACT(LicenseeProducts, CONCAT('$[', iLoop, '].LaunchDate'))) = 'null'
-                THEN NULL
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(LicenseeProducts, CONCAT('$[', iLoop, '].LaunchDate')))
-            END,
-            CASE
-                WHEN JSON_UNQUOTE(JSON_EXTRACT(LicenseeProducts, CONCAT('$[', iLoop, '].TerminationDate'))) = 'null'
-                THEN NULL
-                ELSE JSON_UNQUOTE(JSON_EXTRACT(LicenseeProducts, CONCAT('$[', iLoop, '].TerminationDate')))
-            END
-		);
-        
-        SET iLoop := iLoop + 1;
-    END WHILE;
-
-    DELETE lp FROM LicenseeProduct lp 
-    LEFT JOIN tmp_LicenseeProduct tmp ON lp.LicenseeId = tmp.LicenseeId AND lp.ProductId = tmp.ProductId 
-    WHERE tmp.LicenseeId IS NULL;
+    INSERT INTO tmp_LicenseeProduct(LicenseeId, ProductId, LaunchDate, TerminationDate)
+    SELECT t.LicenseeId, t.ProductId, t.LaunchDate, t.TerminationDate
+    FROM 
+		JSON_TABLE
+        (
+			LicenseeProducts,
+            "$[*]"
+            COLUMNS
+            (
+				LicenseeId INT PATH "$.LicenseeId", 
+                ProductId TINYINT UNSIGNED PATH "$.ProductId", 
+                LaunchDate DATETIME PATH "$.LaunchDate", 
+                TerminationDate DATETIME PATH "$.TerminationDate"
+            )
+        ) AS t;
+	
+    DROP TEMPORARY TABLE IF EXISTS tmp_Data;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Data
+    (
+		LicenseeId INT, 
+        ProductId TINYINT UNSIGNED, 
+        LaunchDate DATETIME, 
+        TerminationDate DATETIME, 
+        IsDeleted INT,
+        PRIMARY KEY (LicenseeId, ProductId)
+	);
     
-    INSERT INTO  LicenseeProduct(LicenseeId, ProductId, LaunchDate, TerminationDate)    
-    SELECT LicenseeId, ProductId, LaunchDate, TerminationDate
-    FROM tmp_LicenseeProduct
-    ON DUPLICATE KEY UPDATE 
-		LicenseeId = values(LicenseeId), 
-        ProductId = values(ProductId), 
-        LaunchDate = values(LaunchDate), 
-        TerminationDate = values(TerminationDate);
+    INSERT INTO tmp_Data (LicenseeId, ProductId, LaunchDate, TerminationDate, IsDeleted)
+    SELECT tp.LicenseeId, tp.ProductId, tp.LaunchDate, tp.TerminationDate, -1
+    FROM LicenseeProduct tp
+    WHERE NOT EXISTS (SELECT 1 FROM tmp_LicenseeProduct tlp WHERE tlp.LicenseeId = tp.LicenseeId AND tlp.ProductId = tp.ProductId);
+    
+	INSERT INTO tmp_Data (LicenseeId, ProductId, LaunchDate, TerminationDate, IsDeleted)
+    SELECT tlp.LicenseeId, tlp.ProductId, tlp.LaunchDate, tlp.TerminationDate, CASE WHEN lp.LicenseeId IS NULL THEN 1 ELSE 0 END
+    FROM tmp_LicenseeProduct tlp
+		LEFT JOIN LicenseeProduct lp ON lp.LicenseeId = tlp.LicenseeId AND lp.ProductId = tlp.ProductId
+	WHERE lp.LicenseeId IS NULL OR IFNULL(lp.LaunchDate, '') <> IFNULL(tlp.LaunchDate, '') OR IFNULL(lp.TerminationDate, '') <> IFNULL(tlp.TerminationDate, '');
+	
+	IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = -1) 
+	THEN	
+		DELETE lp
+        FROM LicenseeProduct lp
+			INNER JOIN tmp_Data td ON lp.LicenseeId = td.LicenseeId AND lp.ProductId = td.ProductId
+		WHERE td.IsDeleted = -1;
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = 0) 
+	THEN	
+		UPDATE LicenseeProduct lp
+		INNER JOIN tmp_Data td ON lp.LicenseeId = td.LicenseeId AND lp.ProductId = td.ProductId
+			SET lp.LaunchDate = td.LaunchDate, lp.TerminationDate = td.TerminationDate
+		WHERE td.IsDeleted = 0;
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = 1) 
+	THEN	
+		INSERT INTO LicenseeProduct (LicenseeId, ProductId, LaunchDate, TerminationDate)
+        SELECT td.LicenseeId, td.ProductId, td.LaunchDate, td.TerminationDate
+        FROM tmp_Data td
+        WHERE td.IsDeleted = 1;
+    END IF;
 
 ############################ Licensee Status ###########################################
 
     DROP TEMPORARY TABLE IF EXISTS tmp_LicenseeStatus;
-    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_LicenseeStatus(LicenseeStatusId INT, LicenseeStatusName VARCHAR(500));
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_LicenseeStatus(LicenseeStatusId TINYINT UNSIGNED PRIMARY KEY, LicenseeStatusName VARCHAR(30) CHARACTER SET 'utf8mb4'  COLLATE 'utf8mb4_unicode_ci');
     
-    SET iLoop = 0;
-    WHILE (JSON_EXTRACT(LicenseeStatuses, CONCAT('$[',iLoop, '].LicenseeStatusId'))) DO 
-        INSERT INTO tmp_LicenseeStatus(LicenseeStatusId, LicenseeStatusName)
-        VALUES (
-            JSON_UNQUOTE(JSON_EXTRACT(LicenseeStatuses, CONCAT('$[', iLoop, '].LicenseeStatusId'))), 
-            JSON_UNQUOTE(JSON_EXTRACT(LicenseeStatuses, CONCAT('$[', iLoop, '].LicenseeStatusName')))
-        );
-        
-        SET iLoop := iLoop + 1;
-    END WHILE;
-    
-    DELETE ls FROM LicenseeStatus ls LEFT JOIN tmp_LicenseeStatus tmp ON ls.LicenseeStatusId = tmp.LicenseeStatusId WHERE tmp.LicenseeStatusId IS NULL;
+	INSERT INTO tmp_LicenseeStatus(LicenseeStatusId, LicenseeStatusName)
+    SELECT t.LicenseeStatusId, NULLIF(t.LicenseeStatusName, 'NULL')
+    FROM 
+		JSON_TABLE
+        (
+			LicenseeStatuses,
+            "$[*]"
+            COLUMNS
+            (
+				LicenseeStatusId TINYINT UNSIGNED PATH "$.LicenseeStatusId", 
+                LicenseeStatusName VARCHAR(30) CHARACTER SET 'utf8mb4'  COLLATE 'utf8mb4_unicode_ci' PATH "$.LicenseeStatusName" 
+            )
+        ) AS t;
 
-    INSERT INTO  LicenseeStatus(LicenseeStatusId, LicenseeStatusName)    
-    SELECT LicenseeStatusId, LicenseeStatusName
-    FROM tmp_LicenseeStatus
-    ON DUPLICATE KEY UPDATE 
-        LicenseeStatusId = values(LicenseeStatusId), 
-        LicenseeStatusName = values(LicenseeStatusName);
+	DROP TEMPORARY TABLE IF EXISTS tmp_Data;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Data(LicenseeStatusId TINYINT UNSIGNED PRIMARY KEY, LicenseeStatusName VARCHAR(30) CHARACTER SET 'utf8mb4'  COLLATE 'utf8mb4_unicode_ci', IsDeleted INT);
+    
+    INSERT INTO tmp_Data (LicenseeStatusId, LicenseeStatusName, IsDeleted)
+    SELECT ls.LicenseeStatusId, ls.LicenseeStatusName, -1
+    FROM LicenseeStatus ls
+    WHERE NOT EXISTS (SELECT 1 FROM tmp_LicenseeStatus tls WHERE tls.LicenseeStatusId = ls.LicenseeStatusId);
+    
+	INSERT INTO tmp_Data (LicenseeStatusId, LicenseeStatusName, IsDeleted)
+    SELECT tls.LicenseeStatusId, tls.LicenseeStatusName, CASE WHEN ls.LicenseeStatusId IS NULL THEN 1 ELSE 0 END
+    FROM tmp_LicenseeStatus tls
+		LEFT JOIN LicenseeStatus ls ON ls.LicenseeStatusId = tls.LicenseeStatusId 
+	WHERE ls.LicenseeStatusId IS NULL 
+		OR IFNULL(ls.LicenseeStatusName, '') <> IFNULL(tls.LicenseeStatusName, '');
+        
+	IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = -1) 
+	THEN	
+		DELETE ls
+        FROM LicenseeStatus ls
+			INNER JOIN tmp_Data td ON ls.LicenseeStatusId = td.LicenseeStatusId 
+		WHERE td.IsDeleted = -1;
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = 0) 
+	THEN	
+		UPDATE LicenseeStatus ls
+		INNER JOIN tmp_Data td ON ls.LicenseeStatusId = td.LicenseeStatusId 
+			SET ls.LicenseeStatusName = td.LicenseeStatusName
+		WHERE td.IsDeleted = 0;
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = 1) 
+	THEN	
+		INSERT INTO LicenseeStatus (LicenseeStatusId, LicenseeStatusName)
+        SELECT td.LicenseeStatusId, td.LicenseeStatusName
+        FROM tmp_Data td
+        WHERE td.IsDeleted = 1;
+    END IF;
 
 ############################ Licensee Types ###########################################
 
     DROP TEMPORARY TABLE IF EXISTS tmp_LicenseeType;
-    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_LicenseeType(LicenseeTypeId INT, LicenseeTypeName VARCHAR(500));
-    
-    SET iLoop = 0;
-    WHILE (JSON_EXTRACT(LicenseeTypes, CONCAT('$[',iLoop, '].LicenseeTypeId'))) DO 
-		INSERT INTO tmp_LicenseeType(LicenseeTypeId, LicenseeTypeName)
-        VALUES (
-			JSON_UNQUOTE(JSON_EXTRACT(LicenseeTypes, CONCAT('$[', iLoop, '].LicenseeTypeId'))), 
-            JSON_UNQUOTE(JSON_EXTRACT(LicenseeTypes, CONCAT('$[', iLoop, '].LicenseeTypeName')))
-		);
-        
-        SET iLoop := iLoop + 1;
-    END WHILE;    
-    
-    DELETE lt FROM LicenseeType lt LEFT JOIN tmp_LicenseeType tmp ON lt.LicenseeTypeId = tmp.LicenseeTypeId WHERE tmp.LicenseeTypeId IS NULL;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_LicenseeType(LicenseeTypeId TINYINT UNSIGNED PRIMARY KEY, LicenseeTypeName VARCHAR(40) CHARACTER SET 'utf8mb4'  COLLATE 'utf8mb4_unicode_ci');
 
-    INSERT INTO  LicenseeType(LicenseeTypeId, LicenseeTypeName)    
-    SELECT LicenseeTypeId, LicenseeTypeName
-    FROM tmp_LicenseeType
-    ON DUPLICATE KEY UPDATE 
-		LicenseeTypeId = values(LicenseeTypeId), 
-        LicenseeTypeName = values(LicenseeTypeName);
+	INSERT INTO tmp_LicenseeType(LicenseeTypeId, LicenseeTypeName)
+    SELECT t.LicenseeTypeId, NULLIF(t.LicenseeTypeName, NULL)
+    FROM 
+		JSON_TABLE
+        (
+			LicenseeTypes,
+            "$[*]"
+            COLUMNS
+            (
+				LicenseeTypeId TINYINT UNSIGNED PATH "$.LicenseeTypeId", 
+                LicenseeTypeName VARCHAR(40) CHARACTER SET 'utf8mb4'  COLLATE 'utf8mb4_unicode_ci' PATH "$.LicenseeTypeName" 
+            )
+        ) AS t;
+    
+    DROP TEMPORARY TABLE IF EXISTS tmp_Data;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Data(LicenseeTypeId TINYINT UNSIGNED PRIMARY KEY, LicenseeTypeName VARCHAR(40) CHARACTER SET 'utf8mb4'  COLLATE 'utf8mb4_unicode_ci', IsDeleted INT);
+    
+    INSERT INTO tmp_Data (LicenseeTypeId, LicenseeTypeName, IsDeleted)
+    SELECT lt.LicenseeTypeId, lt.LicenseeTypeName, -1
+    FROM LicenseeType lt
+    WHERE NOT EXISTS (SELECT 1 FROM tmp_LicenseeType tlt WHERE tlt.LicenseeTypeId = lt.LicenseeTypeId);
+    
+	INSERT INTO tmp_Data (LicenseeTypeId, LicenseeTypeName, IsDeleted)
+    SELECT tlt.LicenseeTypeId, tlt.LicenseeTypeName, CASE WHEN lt.LicenseeTypeId IS NULL THEN 1 ELSE 0 END
+    FROM tmp_LicenseeType tlt
+		LEFT JOIN LicenseeType lt ON lt.LicenseeTypeId = tlt.LicenseeTypeId 
+	WHERE lt.LicenseeTypeId IS NULL 
+		OR IFNULL(lt.LicenseeTypeName, '') <> IFNULL(tlt.LicenseeTypeName, '');
+        
+	IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = -1) 
+	THEN	
+		DELETE lt
+        FROM LicenseeType lt
+			INNER JOIN tmp_Data td ON lt.LicenseeTypeId = td.LicenseeTypeId
+		WHERE td.IsDeleted = -1;
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = 0) 
+	THEN	
+		UPDATE LicenseeType lt
+		INNER JOIN tmp_Data td ON lt.LicenseeTypeId = td.LicenseeTypeId 
+			SET lt.LicenseeTypeName = td.LicenseeTypeName
+		WHERE td.IsDeleted = 0;
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = 1) 
+	THEN	
+		INSERT INTO LicenseeType (LicenseeTypeId, LicenseeTypeName)
+        SELECT td.LicenseeTypeId, td.LicenseeTypeName
+        FROM tmp_Data td
+        WHERE td.IsDeleted = 1;
+    END IF;
 
 ############################ Products ###########################################
 
     DROP TEMPORARY TABLE IF EXISTS tmp_Product;
-    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Product(ProductId INT, ProductName VARCHAR(500));
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Product(ProductId TINYINT UNSIGNED PRIMARY KEY, ProductName VARCHAR(50) CHARACTER SET 'utf8mb4'  COLLATE 'utf8mb4_unicode_ci');
     
-    SET iLoop = 0;
-    WHILE (JSON_EXTRACT(Products, CONCAT('$[',iLoop, '].ProductId'))) DO 
-		INSERT INTO tmp_Product(ProductId, ProductName)
-        VALUES (
-			JSON_UNQUOTE(JSON_EXTRACT(Products, CONCAT('$[', iLoop, '].ProductId'))), 
-            JSON_UNQUOTE(JSON_EXTRACT(Products, CONCAT('$[', iLoop, '].ProductName')))            
-		);
+    INSERT INTO tmp_Product(ProductId, ProductName)
+    SELECT t.ProductId, NULLIF(t.ProductName, NULL)
+    FROM 
+		JSON_TABLE
+        (
+			Products,
+            "$[*]"
+            COLUMNS
+            (
+				ProductId TINYINT UNSIGNED PATH "$.ProductId", 
+                ProductName VARCHAR(50) CHARACTER SET 'utf8mb4'  COLLATE 'utf8mb4_unicode_ci' PATH "$.ProductName"
+            )
+        ) AS t;
+    
+	DROP TEMPORARY TABLE IF EXISTS tmp_Data;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Data(ProductId TINYINT UNSIGNED PRIMARY KEY, ProductName VARCHAR(50) CHARACTER SET 'utf8mb4'  COLLATE 'utf8mb4_unicode_ci', IsDeleted INT);
+    
+    INSERT INTO tmp_Data (ProductId, ProductName, IsDeleted)
+    SELECT p.ProductId, p.ProductName, -1
+    FROM Product p
+    WHERE NOT EXISTS (SELECT 1 FROM tmp_Product tp WHERE tp.ProductId = p.ProductId);
+    
+	INSERT INTO tmp_Data (ProductId, ProductName, IsDeleted)
+    SELECT tp.ProductId, tp.ProductName, CASE WHEN p.ProductId IS NULL THEN 1 ELSE 0 END
+    FROM tmp_Product tp
+		LEFT JOIN Product p ON p.ProductId = tp.ProductId 
+	WHERE p.ProductId IS NULL 
+		OR IFNULL(p.ProductName, '') <> IFNULL(tp.ProductName, '');
         
-        SET iLoop := iLoop + 1;
-    END WHILE;    
+	IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = -1) 
+	THEN	
+		DELETE p
+        FROM Product p
+			INNER JOIN tmp_Data td ON p.ProductId = td.ProductId
+		WHERE td.IsDeleted = -1;
+    END IF;
     
-    DELETE p FROM Product p LEFT JOIN tmp_Product tmp ON p.ProductId = tmp.ProductId WHERE tmp.ProductId IS NULL;
-
-    INSERT INTO Product(ProductId, ProductName)    
-    SELECT ProductId, ProductName
-    FROM tmp_Product
-    ON DUPLICATE KEY UPDATE 
-		ProductId = values(ProductId), 
-        ProductName = values(ProductName);
+    IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = 0) 
+	THEN	
+		UPDATE Product p
+		INNER JOIN tmp_Data td ON p.ProductId = td.ProductId 
+			SET p.ProductName = td.ProductName
+		WHERE td.IsDeleted = 0;
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = 1) 
+	THEN	
+		INSERT INTO Product (ProductId, ProductName)
+        SELECT td.ProductId, td.ProductName
+        FROM tmp_Data td
+        WHERE td.IsDeleted = 1;
+    END IF;
 
 ########################################### UPDATE TABLE RECIPIENT ######################################################
 
