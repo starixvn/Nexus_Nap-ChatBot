@@ -130,7 +130,7 @@
                         NotificationId = noti.NotificationId,
                         Message = noti.Content,
                         ChannelId = noti.ChannelId,
-                        Recipients = recipients.Select(r =>
+                        Recipients = recipients.Where(r => r.ChannelId == noti.ChannelId).Select(r =>
                             new ConversationInfo
                             {
                                 BotConversationId = r.BotConversationId,

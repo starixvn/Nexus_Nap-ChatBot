@@ -19,7 +19,6 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
-    using Newtonsoft.Json;
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class MessageController : Controller
@@ -92,7 +91,6 @@
                 {
                     foreach (ConversationInfo conversationInfo in notification.Recipients)
                     {
-                        await logger.InfoAsync(string.Format("Telegram: {0}", JsonConvert.SerializeObject(conversationInfo)));
                         SendMessageAsync(tasks, conversationInfo, notification);
                     }
                 }
@@ -233,7 +231,7 @@
                         .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
                         .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
                         .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
-            if(param != null)
+            if (param != null)
             {
                 logMessage.AddSection("Params", param);
             }

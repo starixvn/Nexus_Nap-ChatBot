@@ -252,9 +252,7 @@
                     MessageHeader = JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
                     MaxMessageId = maxMessageId
                 };
-
                 var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
-
                 var notificationMessages = chatbotService.GenerateNotifificationMessageAsync(notifications, recipients);
                 var command = new CommandResult
                 {
