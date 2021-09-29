@@ -206,6 +206,9 @@
                 msg.Content_en = message?.Content_en?.Trim().Replace("@@", string.Empty);
                 msg.Content_cs = message?.Content_cs?.Trim().Replace("@@", string.Empty);
                 msg.MsgContentsType = message != null ? message.MsgContentsType : 0;
+                msg.LeagueName = TelegramFormatExtensions.EscapeSpecialSyntax(msg.LeagueName);
+                msg.HomeName = TelegramFormatExtensions.EscapeSpecialSyntax(msg.HomeName);
+                msg.AwayName = TelegramFormatExtensions.EscapeSpecialSyntax(msg.AwayName);
             }
         }
 

@@ -127,12 +127,12 @@
                     message.SportNameCS = matchInfo.SportNameCS;
                     message.KickOffTime = matchInfo.KickOffTime;
                     message.IsTestMatch = matchInfo.IsTestMatch;
-                    message.LeagueNameEN = matchInfo.LeagueNameEN;
-                    message.LeagueNameCS = matchInfo.LeagueNameCS;
-                    message.HomeNameEN = matchInfo.HomeNameEN;
-                    message.HomeNameCS = matchInfo.HomeNameCS;
-                    message.AwayNameEN = matchInfo.AwayNameEN;
-                    message.AwayNameCS = matchInfo.AwayNameCS;
+                    message.LeagueNameEN = TelegramFormatExtensions.EscapeSpecialSyntax(matchInfo.LeagueNameEN);
+                    message.LeagueNameCS = TelegramFormatExtensions.EscapeSpecialSyntax(matchInfo.LeagueNameCS);
+                    message.HomeNameEN = TelegramFormatExtensions.EscapeSpecialSyntax(matchInfo.HomeNameEN);
+                    message.HomeNameCS = TelegramFormatExtensions.EscapeSpecialSyntax(matchInfo.HomeNameCS);
+                    message.AwayNameEN = TelegramFormatExtensions.EscapeSpecialSyntax(matchInfo.AwayNameEN);
+                    message.AwayNameCS = TelegramFormatExtensions.EscapeSpecialSyntax(matchInfo.AwayNameCS);
                     message.IsTest = matchInfo.IsTestMatch || message.IsTestMsg;
                 }
             }

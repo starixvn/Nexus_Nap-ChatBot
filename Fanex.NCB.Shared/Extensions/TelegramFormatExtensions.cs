@@ -24,25 +24,7 @@
             text = pattern.Replace(text, "<s>$2</s>");
 
             // escape
-            text = EscapeExceptHyperlink(text, @"\[|\\\[", "\\[");
-            text = EscapeExceptHyperlink(text, @"]|\\\]", "\\]");
-            text = EscapeExceptHyperlink(text, @"\(|\\\(", "\\(");
-            text = EscapeExceptHyperlink(text, @"\)|\\\)", "\\)");
-
-            text = Regex.Replace(text, @"_|\\_", "\\_");
-            text = Regex.Replace(text, @"\*|\\\*", "\\*");
-            text = Regex.Replace(text, @"~|\\~", "\\~");
-            text = Regex.Replace(text, @"`|\\`", "\\`");
-            text = Regex.Replace(text, @"#|\\#", "\\#");
-            text = Regex.Replace(text, @"\+|\\\+", "\\+");
-            text = Regex.Replace(text, @"-|\\\-", "\\-");
-            text = Regex.Replace(text, @"=|\\=", "\\=");
-            text = Regex.Replace(text, @"\||\\\|", "\\|");
-            text = Regex.Replace(text, @"\{|\\\{", "\\{");
-            text = Regex.Replace(text, @"}|\\}", "\\}");
-            text = Regex.Replace(text, @"\.|\\\.", "\\.");
-            text = Regex.Replace(text, @"!|\\!", "\\!");
-
+            text = EscapeSpecialSyntax(text);
             // revert
             pattern = new Regex("(<b>)(.*?)(</b>)");
             text = pattern.Replace(text, $"*$2*");
@@ -87,6 +69,35 @@
                 return hyperlinks.Any(x => x.Index <= match.Index && match.Index <= (x.Index + x.Length - 1))
                     ? match.Value : replacement;
             });
+        }
+
+        public static string EscapeSpecialSyntax(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return string.Empty;
+            }
+
+            text = EscapeExceptHyperlink(text, @"\[|\\\[", "\\[");
+            text = EscapeExceptHyperlink(text, @"]|\\\]", "\\]");
+            text = EscapeExceptHyperlink(text, @"\(|\\\(", "\\(");
+            text = EscapeExceptHyperlink(text, @"\)|\\\)", "\\)");
+
+            text = Regex.Replace(text, @"_|\\_", "\\_");
+            text = Regex.Replace(text, @"\*|\\\*", "\\*");
+            text = Regex.Replace(text, @"~|\\~", "\\~");
+            text = Regex.Replace(text, @"`|\\`", "\\`");
+            text = Regex.Replace(text, @"#|\\#", "\\#");
+            text = Regex.Replace(text, @"\+|\\\+", "\\+");
+            text = Regex.Replace(text, @"-|\\\-", "\\-");
+            text = Regex.Replace(text, @"=|\\=", "\\=");
+            text = Regex.Replace(text, @"\||\\\|", "\\|");
+            text = Regex.Replace(text, @"\{|\\\{", "\\{");
+            text = Regex.Replace(text, @"}|\\}", "\\}");
+            text = Regex.Replace(text, @"\.|\\\.", "\\.");
+            text = Regex.Replace(text, @"!|\\!", "\\!");
+
+            return text;
         }
     }
 }
