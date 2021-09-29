@@ -83,6 +83,8 @@
         public async Task<ObjectResult> SendMultiMessage([FromBody] IList<NotificationMessage> notificationMessages)
         {
             var results = new List<SendMessageResult>();
+            var tasks = new List<Task<SendMessageResult>>();
+            var conversations = new List<ConversationInfo>();
             if (notificationMessages != null && notificationMessages.Any())
             {
                 var notifications = conversationService.GetDistinctNotificationConversation(notificationMessages);
@@ -90,29 +92,52 @@
                 {
                     foreach (ConversationInfo conversationInfo in notification.Recipients)
                     {
-                        var result = await SendMessageAsync(conversationInfo, notification);
-                        results.Add(result);
+                        await SendMessageAsync(tasks, conversations, conversationInfo, notification);
                     }
                 }
+
+                results = (await Task.WhenAll(tasks)).ToList();
             }
 
             return Ok(results);
         }
 
-        private async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo, NotificationMessage notificationMessage)
+        private async Task SendMessageAsync(
+            List<Task<SendMessageResult>> tasks,
+            List<ConversationInfo> conversations,
+            ConversationInfo conversationInfo,
+            NotificationMessage notificationMessage)
+        {
+            const short Milliseconds = 1000;
+            if (conversations.Any(x => x.ConversationId == conversationInfo.ConversationId
+                && x.BotConversationId == conversationInfo.BotConversationId))
+            {
+                await Task.Delay(Milliseconds);
+            }
+            else
+            {
+                conversations.Add(new ConversationInfo
+                {
+                    ConversationId = conversationInfo.ConversationId,
+                    BotConversationId = conversationInfo.BotConversationId
+                });
+            }
+
+            SendMessageAsync(tasks, conversationInfo, notificationMessage);
+        }
+
+        private void SendMessageAsync(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
         {
             if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
-            return !isEnableTelegramChannel
-                ? new SendMessageResult
-                {
-                    NotificationId = notificationMessage.NotificationId,
-                    ConversationId = conversationInfo.ConversationId,
-                    SentTime = DateTime.Now,
-                    ErrorCode = 1,
-                    ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
-                    IsIgnoreRetry = true
-                }
-                : await SendMessageAsync(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message);
+            tasks.Add(!isEnableTelegramChannel ? Task.Run(() => new SendMessageResult
+            {
+                NotificationId = notificationMessage.NotificationId,
+                ConversationId = conversationInfo.ConversationId,
+                SentTime = DateTime.Now,
+                ErrorCode = 1,
+                ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
+                IsIgnoreRetry = true
+            }) : Task.Run(() => SendMessageAsync(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message)));
             }
             else
             {
