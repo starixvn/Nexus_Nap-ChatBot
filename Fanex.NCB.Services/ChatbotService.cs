@@ -116,7 +116,7 @@
             await SendMultiMessageAsync((byte)ConversationChannel.Skype, notifications);
         }
 
-        public IEnumerable<NotificationMessage> GenerateNotifificationMessageAsync(
+        public IEnumerable<NotificationMessage> GenerateNotifificationMessageForCarbonGroupAsync(
             IEnumerable<NotificationSendMessage> notifications,
             IEnumerable<NotificationRecipient> recipients)
         {

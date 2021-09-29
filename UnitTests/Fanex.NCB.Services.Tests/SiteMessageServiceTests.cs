@@ -114,7 +114,7 @@
             var criteria = new ImportDataSiteMessageAndGetGroupTestCriteria();
             var service = GetService();
             baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Do<ImportDataSiteMessageAndGetGroupTestCriteria>(x => criteria = x)).Returns(tuple);
-            chatbotService.GenerateNotifificationMessageAsync(notificationMessages, recipients).Returns(notifications);
+            chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notificationMessages, recipients).Returns(notifications);
 
             // Act
             var result = await service.Public_ImportMessageToChatbotDBAsync(messages, messageDetails);

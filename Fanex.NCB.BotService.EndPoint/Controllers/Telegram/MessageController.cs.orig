@@ -19,7 +19,6 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
-    using Newtonsoft.Json;
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class MessageController : Controller
@@ -84,7 +83,6 @@
         public async Task<ObjectResult> SendMultiMessage([FromBody] IList<NotificationMessage> notificationMessages)
         {
             var results = new List<SendMessageResult>();
-            var tasks = new List<Task<SendMessageResult>>();
             if (notificationMessages != null && notificationMessages.Any())
             {
                 var notifications = conversationService.GetDistinctNotificationConversation(notificationMessages);
@@ -92,26 +90,32 @@
                 {
                     foreach (ConversationInfo conversationInfo in notification.Recipients)
                     {
-                        await logger.InfoAsync(string.Format("Telegram: {0}", JsonConvert.SerializeObject(conversationInfo)));
-                        SendMessageAsync(tasks, conversationInfo, notification);
+                        var result = await SendMessageAsync(conversationInfo, notification);
+                        results.Add(result);
                     }
                 }
-                results = (await Task.WhenAll(tasks)).ToList();
             }
 
             return Ok(results);
         }
 
-        private void SendMessageAsync(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
+        private async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo, NotificationMessage notificationMessage)
         {
+<<<<<<< HEAD
             if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
             {
                 return new SendMessageResult
+=======
+            bool isEnableTelegramChannel = appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram);
+            return !isEnableTelegramChannel
+                ? new SendMessageResult
+>>>>>>> 162206 - fix bug send multi messages to telegram
                 {
                     NotificationId = notificationMessage.NotificationId,
                     ConversationId = conversationInfo.ConversationId,
                     SentTime = DateTime.Now,
                     ErrorCode = 1,
+<<<<<<< HEAD
                     ErrorMessage = DisableChannelErrorMessage,
                     IsIgnoreRetry = true
                 };
@@ -119,6 +123,16 @@
             else
             {
                 {
+=======
+                    ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
+                    IsIgnoreRetry = true
+                }
+                : await SendMessageAsync(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message);
+        }
+
+        protected internal virtual async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo, int notificationId, string messageContent)
+        {
+>>>>>>> 162206 - fix bug send multi messages to telegram
             bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, messageContent);
             if (isDuplicated)
             {
@@ -136,7 +150,6 @@
             string guiid = Guid.NewGuid().ToString();
                 try
                 {
-                        _ = int.TryParse(conversationInfo.BotConversationId, out int botId);
                     _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
                 await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, messageContent, guiid);
                 SendMessageResult result = await SendTextMessageAsync(botId, chatId, notificationId, messageContent);
@@ -234,7 +247,7 @@
                         .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
                         .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
                         .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
-            if(param != null)
+            if (param != null)
             {
                 logMessage.AddSection("Params", param);
             }

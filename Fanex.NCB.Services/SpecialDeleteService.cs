@@ -100,7 +100,7 @@
                 MessageDetail = JsonConvert.SerializeObject(messageDetails)
             };
             var (recipients, notificationMessages) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
-            var notifications = chatbotService.GenerateNotifificationMessageAsync(notificationMessages, recipients);
+            var notifications = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notificationMessages, recipients);
             var command = new CommandResult
             {
                 Code = criteria.ErrCode,
@@ -253,7 +253,7 @@
                     MaxMessageId = maxMessageId
                 };
                 var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
-                var notificationMessages = chatbotService.GenerateNotifificationMessageAsync(notifications, recipients);
+                var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);
                 var command = new CommandResult
                 {
                     Code = criteria.ErrCode,

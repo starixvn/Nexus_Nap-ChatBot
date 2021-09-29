@@ -233,7 +233,7 @@
             var criteria = new ImportMessageFromSpecialDeleteCriteria();
             var service = GetService();
             baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Do<ImportMessageFromSpecialDeleteCriteria>(x => criteria = x)).Returns(tuple);
-            chatbotService.GenerateNotifificationMessageAsync(notificationMessages, recipients).Returns(notifications);
+            chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notificationMessages, recipients).Returns(notifications);
 
             // Act
             var result = await service.Public_ImportMessageToChatbotDBAsync(messages, messageDetails);
@@ -441,7 +441,7 @@
             var service = GetService();
             baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Do<ImportAbnormalBetsMessageCriteria>(x => criteria = x))
                 .Returns((recipients, notifications)).AndDoes(x => { criteria.ErrCode = 0; criteria.ErrMsg = ""; });
-            chatbotService.GenerateNotifificationMessageAsync(notifications, recipients).Returns(notificationMessages);
+            chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients).Returns(notificationMessages);
 
             // Act
             await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories, maxMessageId);
@@ -468,7 +468,7 @@
             var service = GetService();
             baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Do<ImportAbnormalBetsMessageCriteria>(x => criteria = x))
                 .Returns((recipients, notifications)).AndDoes(x => { criteria.ErrCode = 1; criteria.ErrMsg = "error message"; });
-            chatbotService.GenerateNotifificationMessageAsync(notifications, recipients).Returns(notificationMessages);
+            chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients).Returns(notificationMessages);
 
             // Act
             await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories, maxMessageId);

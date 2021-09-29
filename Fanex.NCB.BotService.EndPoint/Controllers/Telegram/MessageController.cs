@@ -83,7 +83,6 @@
         public async Task<ObjectResult> SendMultiMessage([FromBody] IList<NotificationMessage> notificationMessages)
         {
             var results = new List<SendMessageResult>();
-            var tasks = new List<Task<SendMessageResult>>();
             if (notificationMessages != null && notificationMessages.Any())
             {
                 var notifications = conversationService.GetDistinctNotificationConversation(notificationMessages);
@@ -91,28 +90,29 @@
                 {
                     foreach (ConversationInfo conversationInfo in notification.Recipients)
                     {
-                        SendMessageAsync(tasks, conversationInfo, notification);
+                        var result = await SendMessageAsync(conversationInfo, notification);
+                        results.Add(result);
                     }
                 }
-                results = (await Task.WhenAll(tasks)).ToList();
             }
 
             return Ok(results);
         }
 
-        private void SendMessageAsync(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
+        private async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo, NotificationMessage notificationMessage)
         {
             if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
-            {
-                return new SendMessageResult
+            return !isEnableTelegramChannel
+                ? new SendMessageResult
                 {
                     NotificationId = notificationMessage.NotificationId,
                     ConversationId = conversationInfo.ConversationId,
                     SentTime = DateTime.Now,
                     ErrorCode = 1,
-                    ErrorMessage = DisableChannelErrorMessage,
+                    ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
                     IsIgnoreRetry = true
-                };
+                }
+                : await SendMessageAsync(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message);
             }
             else
             {

@@ -13,7 +13,7 @@
 
         Task NotifyToChatGroupAsync(string message);
 
-        IEnumerable<NotificationMessage> GenerateNotifificationMessageAsync(
+        IEnumerable<NotificationMessage> GenerateNotifificationMessageForCarbonGroupAsync(
             IEnumerable<NotificationSendMessage> notifications,
             IEnumerable<NotificationRecipient> recipients);
 

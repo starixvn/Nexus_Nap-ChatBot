@@ -139,7 +139,7 @@
             var service = GetService();
 
             // Act
-            var actual = service.GenerateNotifificationMessageAsync(notifications, recipients);
+            var actual = service.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);
 
             // Assert
             Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(actual));

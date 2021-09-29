@@ -66,7 +66,7 @@
                 MessageDetail = JsonConvert.SerializeObject(messageDetails)
             };
             var (recipients, notificationMessages) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
-            var notifications = chatbotService.GenerateNotifificationMessageAsync(notificationMessages, recipients);
+            var notifications = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notificationMessages, recipients);
             var command = new CommandResult
             {
                 Code = criteria.ErrCode,
