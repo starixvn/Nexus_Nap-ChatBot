@@ -52,19 +52,21 @@
                 if (messages.Any() && details.Any())
                 {
                     var (command, notifications) = await ImportMessageToChatbotDBAsync(messages, details);
-                    await UpdateMessageHistoryVoidingForLicenseeAsync(command, details);
+
+                    if (command.IsSuccessful && notifications.Any())
+                    {
+                        await UpdateMessageHistoryVoidingForLicenseeAsync(details);
+                    }
+
                     await OnAfterImportDataAsync(command, notifications);
                 }
             }
         }
 
-        protected internal virtual async Task UpdateMessageHistoryVoidingForLicenseeAsync(CommandResult commandResult, IEnumerable<MessageDetail> msgDetails)
+        protected internal virtual async Task UpdateMessageHistoryVoidingForLicenseeAsync(IEnumerable<MessageDetail> msgDetails)
         {
-            if (commandResult.IsSuccessful)
-            {
-                var msgHistories = msgDetails.Select(x => new MessageHistory { MessageID = x.MessageID, TargetID = x.TargetID }).ToList();
-                await InsertToMessageChatbotAsync(msgHistories, VoidTicketForLicenseeJobIdentity);
-            }
+            var msgHistories = msgDetails.Select(x => new MessageHistory { MessageID = x.MessageID, TargetID = x.TargetID }).ToList();
+            await InsertToMessageChatbotAsync(msgHistories, VoidTicketForLicenseeJobIdentity);
         }
 
         protected internal virtual async Task OnAfterImportDataAsync(
@@ -263,7 +265,7 @@
                     Message = criteria.ErrMsg
                 };
 
-                if (command.IsSuccessful)
+                if (command.IsSuccessful && notifications.Any())
                 {
                     await InsertToMessageChatbotAsync(msgHistories, VoidAbnormalbetsJobIdentity);
                 }
