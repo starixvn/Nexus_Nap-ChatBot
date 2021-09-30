@@ -375,7 +375,7 @@ export default class EditNotification extends React.Component {
 
         return (
             <>
-                <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Edit Notification" />
+                <NCBBreadcrum chatbotName={Labels.ChatbotSystem} pageTitle="Edit Notification" />
                 <div className="edit-notification">
                     {this.state.editNotificationResult &&
                         <ResponseMessage isSuccessful={this.state.editNotificationResult.isSuccessful}

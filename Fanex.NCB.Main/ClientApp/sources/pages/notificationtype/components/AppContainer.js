@@ -6,6 +6,7 @@ import { NCBBreadcrum } from '../../common/breadcrumbs/breadcrumbs';
 import DataGrid from './DataGrid';
 import CreateEditPopup from './CreateEditPopup';
 import DeletePopup from './DeletePopup';
+import Labels from '../../common/Labels';
 
 import '../../shared/components/font.css';
 import './AppContainer.scss';
@@ -62,7 +63,7 @@ export class AppContainer extends Component {
     render() {
         return (
             <div>
-                <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification Type" />
+                <NCBBreadcrum chatbotName={Labels.ChatbotSystem} pageTitle="Notification Type" />
                 {
                     this.props.isHost
                     && <button className="btn-new" onClick={this.handleOpenCreatePopup}>New Notification Type</button>

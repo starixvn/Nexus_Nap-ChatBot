@@ -64,7 +64,7 @@ export class AppContainer extends Component {
     render() {
         return (
             <>
-                <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Setting Management" />
+                <NCBBreadcrum chatbotName={Labels.ChatbotSystem} pageTitle="Setting Management" />
                 <Filter />
                 {this.haveHostPermission &&
                     <button className="btn-new" onClick={this.handleOpenCreateSettingPopup}>{Labels.CreateNewSetting}</button>

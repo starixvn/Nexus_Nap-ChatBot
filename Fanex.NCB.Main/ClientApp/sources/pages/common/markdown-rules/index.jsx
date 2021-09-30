@@ -30,7 +30,7 @@ export default class MarkdownRules extends Component {
                          <br />
                         Ex:
                         <ul>
-                            <li>\**Text** treat as **Text**</li>
+                            <li>\*\*Text\*\* treat as **Text**</li>
                             <li>&lt;\!Good Day!\&gt; treat as &lt;!Good Day!&gt; </li>
                         </ul>
                     </p>

@@ -77,7 +77,7 @@ export class AppContainer extends Component {
     render() {
         return (
             <>
-                <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Mapping Setting Management" />
+                <NCBBreadcrum chatbotName={Labels.ChatbotSystem} pageTitle="Mapping Setting Management" />
                 <Filter />
                 
                 {

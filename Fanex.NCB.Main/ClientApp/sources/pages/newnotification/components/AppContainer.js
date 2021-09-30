@@ -567,7 +567,7 @@ export class AppContainer extends React.Component {
         const pageTitle = this.renderPageTitle();
         return (
             <>
-                <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle={pageTitle} />
+                <NCBBreadcrum chatbotName={Labels.ChatbotSystem} pageTitle={pageTitle} />
                 <div className="new-notification">
                     {
                         this.props.createNotificationResult &&

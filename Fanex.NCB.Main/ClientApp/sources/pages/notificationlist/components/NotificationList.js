@@ -335,7 +335,7 @@ export default class NotificationList extends Component {
     render() {
         return (
             <div>
-                <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Notification List" />
+                <NCBBreadcrum chatbotName={Labels.ChatbotSystem} pageTitle="Notification List" />
                 <SignalR
                     onInsertNewNotification={this.onInsertedNewNotification}
                     onUpdateNotificationStatus={this.onUpdateNotificationStatus}
