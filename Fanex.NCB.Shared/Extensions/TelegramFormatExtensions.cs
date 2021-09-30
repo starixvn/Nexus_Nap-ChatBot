@@ -7,27 +7,35 @@
     {
         public static string ToMarkdownV2(this string text)
         {
-            text = Regex.Replace(text, "(\\*)(.+?)(\\*)", "<i>$2</i>"); // italic
-            var pattern = new Regex("(\\*\\*)(.*?)(\\*\\*)");
-            text = pattern.Replace(text, $"<b>$2</b>");
-            pattern = new Regex("(\\*)(.*?)(\\*)");
-            text = pattern.Replace(text, "_$2_");
-            pattern = new Regex("(~~)(.*?)(~~)");
-            text = pattern.Replace(text, "~$2~");
-            pattern = new Regex("(<b>)(.*?)(</b>)");
-            text = pattern.Replace(text, $"*$2*");
-            var pattern = new Regex("(\\*)(.*?)(\\*)");
-            text = pattern.Replace(text, $"<b>$2</b>");
-            pattern = new Regex("(_)(.*?)(_)");
-            text = pattern.Replace(text, "<i>$2</i>");
-            pattern = new Regex("(~)(.*?)(~)");
-            text = pattern.Replace(text, "<s>$2</s>");
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return text;
+            }
+
+
+            text = Regex.Replace(text, @"(\\\*\*)(.+?[^\\])(\*\*)", "\\<b>$2</b>"); // bold
+            text = Regex.Replace(text, @"(\\\*\*)(.+?)(\\\*\*)", "\\<b>$2</b>");
+            text = Regex.Replace(text, @"(\\\*\\\*)(.+?[^\\])(\*\*)", "\\<b>$2</b>");
+            text = Regex.Replace(text, @"(\\\*\\\*)(.+?)(\\\*\*)", "\\<b>$2</b>");
+            text = Regex.Replace(text, @"(\\\*\\\*)(.+?)(\\\*\\\*)", "\\<b>$2</b>");
+            text = Regex.Replace(text, @"(\*\*)(.+?)(\*\*)", "<b>$2</b>");
+
+            text = Regex.Replace(text, @"(\\\*)(.+?[^\\])(\*)", "\\<i>$2</i>"); // italic
+            text = Regex.Replace(text, @"(\\\*)(.+?)(\\\*)", "\\<i>$2</i>");
+            text = Regex.Replace(text, @"(\*)(.+?)(\*)", "<i>$2</i>");
+
+            text = Regex.Replace(text, @"(\\~~)(.+?[^\\])(~~)", "~\\~$2\\~\\~"); // strikethrough
+            text = Regex.Replace(text, @"(\\~~)(.+?[\\])(~~)", "~\\~$2~\\~");
+            text = Regex.Replace(text, @"(\\~\\~)(.+?[^\\])(~~)", "\\~\\~$2\\~\\~");
+            text = Regex.Replace(text, @"(\\~\\~)(.+?[\\])(~~)", "~\\~$2~\\~");
+            text = Regex.Replace(text, @"(~~)(.+?)(~~)", "<s>$2</s>");
 
             // escape
             text = EscapeSpecialSyntax(text);
+
             // revert
-            pattern = new Regex("(<b>)(.*?)(</b>)");
-            text = pattern.Replace(text, $"*$2*");
+            text = Regex.Replace(text, @"(\\<b>)(.+?)(</b>)", "\\*\\*$2\\*\\*");
+            text = Regex.Replace(text, @"(\\<i>)(.+?)(</i>)", "\\*$2\\*");
 
             pattern = new Regex("(<i>)(.*?)(</i>)");
             text = pattern.Replace(text, "_$2_");
@@ -37,25 +45,6 @@
 
             // escape
             text = text.Replace(">", "\\>");
-
-            text = Regex.Replace(text, "\\*.+?\\*", delegate (Match match)
-            {
-                return match.Index > 0 && text[match.Index - 1] == '\\'
-                    ? Regex.Replace(match.Value, "(\\*)(.+?)(\\*)", "*\\*$2\\*\\*")
-                    : match.Value;
-            }); // bold
-            text = Regex.Replace(text, "_.+?_", delegate (Match match)
-            {
-                return match.Index > 0 && text[match.Index - 1] == '\\'
-                    ? Regex.Replace(match.Value, "(_)(.+?)(_)", "*$2\\*")
-                    : match.Value;
-            }); // italic
-            text = Regex.Replace(text, "~.+?~", delegate (Match match)
-            {
-                return match.Index > 0 && text[match.Index - 1] == '\\'
-                    ? Regex.Replace(match.Value, "(~)(.+?)(~)", "~\\~$2\\~\\~")
-                    : match.Value;
-            }); // strikethrough
 
             return text;
         }
