@@ -124,7 +124,7 @@ NCB_EditNotification_Upd:BEGIN
 	INNER JOIN ConversationGroupBot cgb
 			ON cgb.ConversationGroupID = bcr.ConversationGroupID
 	INNER JOIN ConversationGroup g ON g.ConversationGroupID = bcr.ConversationGroupID
-    WHERE g.ChannelID = _ChannelId;
+    WHERE g.ChannelID = _ChannelId AND g.IsActive = 1;
             
     #Check Not-Mapping/Removed-Bot Recipients
     IF EXISTS(
@@ -318,7 +318,7 @@ NCB_EditNotification_Upd:BEGIN
 						SELECT cgt.ChatGroupTypeID 
 						FROM NotificationChatGroupType  cgt
                         WHERE cgt.NotificationTypeID = notificationTypeID
-	) AND g.ChannelID = _ChannelId;
+	) AND g.ChannelID = _ChannelId AND g.IsActive = 1;
     
     #Deleted notification recipients
 	DROP TEMPORARY TABLE IF EXISTS tmp_deletedNotificationRecipientList;
