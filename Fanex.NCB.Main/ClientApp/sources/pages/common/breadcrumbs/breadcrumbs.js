@@ -7,11 +7,10 @@ export class NCBBreadcrum extends Component {
   }
 
   render() {
-    const { chatbotName, pageTitle } = this.props;
+    const { pageTitle } = this.props;
 
     return (
       <Breadcrumb className="nav-customized">
-        <BreadcrumbItem>{chatbotName}</BreadcrumbItem>
         <BreadcrumbItem active>{pageTitle}</BreadcrumbItem>
       </Breadcrumb>
     );
