@@ -24,6 +24,8 @@ namespace Fanex.NCB.BotService.Core
 
         public string HealthCheckUrl { get; set; }
         public string EnableChannelIds { get; set; }
-        public IEnumerable<byte> EnableChannels => EnableChannelIds.Split(',').Select(x => byte.Parse(x));
+
+        public IEnumerable<byte> EnableChannels => !string.IsNullOrWhiteSpace(EnableChannelIds)
+            ? EnableChannelIds.Split(',').Select(x => byte.Parse(x)) : new List<byte>();
     }
 }
