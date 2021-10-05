@@ -24,6 +24,7 @@ CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_EditNotification_Upd`(
 				- 20190819@Elton: Update Error Message
                 - 20191021@Dominic: Not check recipients who have at least 1 mapped chat group
 				- 20200211@Oliver: Add check notification chat group type has been changed [RedmineID: #128273]
+                - 20211001@Malcolm: Only get group which have IsActive = 1 [RedmineID: #162583]
     */
 )
 NCB_EditNotification_Upd:BEGIN
@@ -119,7 +120,9 @@ NCB_EditNotification_Upd:BEGIN
 	INNER JOIN ConversationGroupExtraInfo bcri
 			ON bcri.ConversationGroupID = bcr.ConversationGroupID
 	INNER JOIN ConversationGroupBot cgb
-			ON cgb.ConversationGroupID = bcr.ConversationGroupID;
+			ON cgb.ConversationGroupID = bcr.ConversationGroupID
+	INNER JOIN ConversationGroup con ON con.ConversationGroupID = bcr.ConversationGroupID
+    WHERE con.IsActive = 1;
             
     #Check Not-Mapping/Removed-Bot Recipients
     IF EXISTS(
@@ -304,15 +307,16 @@ NCB_EditNotification_Upd:BEGIN
     SELECT notificationID, IFNULL(gri.ConversationGroupID, -1)
 					, IFNULL(gri.ChatGroupTypeID,-1), re.RecipientID
     FROM tmp_recipientIDLst re
-		LEFT JOIN ConversationGroupRecipient gr 
+		INNER JOIN ConversationGroupRecipient gr 
 			ON re.RecipientID = gr.RecipientID
+		INNER JOIN ConversationGroup con ON con.ConversationGroupID = gr.ConversationGroupID
 		LEFT JOIN ConversationGroupExtraInfo gri 
 			ON gri.ConversationGroupID = gr.ConversationGroupID
     WHERE gri.ChatGroupTypeID IN (
 						SELECT cgt.ChatGroupTypeID 
 						FROM NotificationChatGroupType  cgt
                         WHERE cgt.NotificationTypeID = notificationTypeID
-	);
+	) AND con.IsActive = 1;
     
     #Deleted notification recipients
 	DROP TEMPORARY TABLE IF EXISTS tmp_deletedNotificationRecipientList;
