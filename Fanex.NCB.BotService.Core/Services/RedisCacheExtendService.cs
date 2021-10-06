@@ -14,27 +14,28 @@
 
     public class RedisCacheExtendService : IRedisCacheExtendService
     {
-        private readonly RedisConfiguration redisConfiguration;
+        private readonly IConnectionMultiplexer redisConnection;
         private readonly ICacheService cacheService;
+        private readonly RedisConfiguration redisConfiguration;
 
-        public RedisCacheExtendService(ICacheService cacheService, RedisConfiguration redisConfiguration)
+        public RedisCacheExtendService(IConnectionMultiplexer redisConnection,
+            ICacheService cacheService,
+            RedisConfiguration redisConfiguration)
         {
+            this.redisConnection = redisConnection;
             this.cacheService = cacheService;
             this.redisConfiguration = redisConfiguration;
         }
 
         public IEnumerable<T> GetValueByKeyContains<T>(string key)
         {
-            using (var connection = ConnectionMultiplexer.Connect(redisConfiguration.ConnectionString))
-            {
-                EndPoint endPoint = connection.GetEndPoints().FirstOrDefault();
-                IServer server = connection.GetServer(endPoint);
+            EndPoint endPoint = redisConnection.GetEndPoints().FirstOrDefault();
+            IServer server = redisConnection.GetServer(endPoint);
 
-                IEnumerable<RedisKey> keys = server.Keys(redisConfiguration.Db, pattern: $"*{key}*");
-                string[] keysArr = keys.Select(key => GetActualKey(key)).ToArray();
-                var result = GetValueByKey<T>(keysArr);
-                return result;
-            }
+            IEnumerable<RedisKey> keys = server.Keys(redisConfiguration.Db, pattern: $"*{key}*");
+            string[] keysArr = keys.Select(key => GetActualKey(key)).ToArray();
+            var result = await GetValueByKey<T>(keysArr);
+            return result;
         }
 
         private string GetActualKey(string key)

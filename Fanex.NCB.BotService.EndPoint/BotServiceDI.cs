@@ -23,6 +23,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using StackExchange.Redis;
 
     public static class BotServiceDI
     {
@@ -45,8 +46,7 @@
             services.AddSingleton(appSettings);
 
             RegisterCheckDuplicateMessageLogSettings(services, configuration);
-            RegisterRedisConfiguration(services, configuration);
-
+            RegisterRedisConnection(services, configuration);
             var botFrameworkHttpAdapter = GetBotFrameworkHttpAdapter(botConfig, configuration);
             services.AddSingleton(botFrameworkHttpAdapter);
 
@@ -135,14 +135,6 @@
             services.AddSingleton(checkDuplicatedMessageSettings);
         }
 
-        private static void RegisterRedisConfiguration(IServiceCollection services, IConfiguration configuration)
-        {
-            var settingConfiguration = configuration.GetSection("Fanex.Caching.Redis");
-            services.Configure<RedisConfiguration>(settingConfiguration);
-            var redisConfig = settingConfiguration.Get<RedisConfiguration>();
-            services.AddSingleton(redisConfig);
-        }
-
         private static void RegisterTelegramBots(IServiceCollection services, IConfiguration configuration)
         {
             var configs = configuration.GetSection("TelegramBotConfigurations");
@@ -154,6 +146,20 @@
             }
 
             services.AddSingleton(bots);
+        }
+
+        private static void RegisterRedisConnection(IServiceCollection services, IConfiguration configuration)
+        {
+            var settingConfiguration = configuration.GetSection("Fanex.Caching.Redis");
+            services.Configure<RedisConfiguration>(settingConfiguration);
+            var redisConfig = settingConfiguration.Get<RedisConfiguration>();
+
+            int dbNumber = int.Parse(redisConfig.ConnectionString.Substring(redisConfig.ConnectionString.LastIndexOf("=") + 1));
+            redisConfig.Db = dbNumber;
+            services.AddSingleton(redisConfig);
+
+            var multiplexer = ConnectionMultiplexer.Connect(redisConfig.ConnectionString);
+            services.AddSingleton<IConnectionMultiplexer>(multiplexer);
         }
     }
 }
