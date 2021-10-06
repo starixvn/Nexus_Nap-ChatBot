@@ -1,6 +1,5 @@
 ﻿namespace Fanex.NCB.Services.Tests.TestableClasses
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.NCB.Services.Interfaces;
@@ -21,9 +20,9 @@
         {
         }
 
-        public async Task Public_UpdateMessageHistoryVoidingForLicenseeAsync(CommandResult commandResult, IEnumerable<MessageDetail> msgDetails)
+        public async Task Public_UpdateMessageHistoryVoidingForLicenseeAsync(IEnumerable<MessageDetail> msgDetails)
         {
-            await base.UpdateMessageHistoryVoidingForLicenseeAsync(commandResult, msgDetails);
+            await base.UpdateMessageHistoryVoidingForLicenseeAsync(msgDetails);
         }
 
         public async Task Public_OnAfterImportDataAsync(CommandResult commandResult, IEnumerable<NotificationMessage> notifications)

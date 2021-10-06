@@ -72,7 +72,7 @@
             var setting = fixture.Create<SystemSetting>();
             var messages = fixture.Create<IEnumerable<Message>>();
             var messageDetails = fixture.Create<IEnumerable<MessageDetail>>();
-            var command = fixture.Create<CommandResult>();
+            var command = new CommandResult { Code = 0 };
             var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
             var service = GetService();
             baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns(setting);
@@ -83,7 +83,7 @@
             await service.PullVoidingMessageLicenseeAsync();
 
             // Assert
-            service.Received().Protected("UpdateMessageHistoryVoidingForLicenseeAsync", command, messageDetails);
+            service.Received().Protected("UpdateMessageHistoryVoidingForLicenseeAsync", messageDetails);
             service.Received().Protected("OnAfterImportDataAsync", command, notifications);
         }
 
@@ -148,30 +148,14 @@
         public async Task UpdateMessageHistoryVoidingForLicenseeAsync_IsSuccessful_DoAsExpected()
         {
             // Arrange
-            var commandResult = new CommandResult { Code = 0 };
             var messageDetails = fixture.Create<IEnumerable<MessageDetail>>();
             var service = GetService();
 
             // Act
-            await service.Public_UpdateMessageHistoryVoidingForLicenseeAsync(commandResult, messageDetails);
+            await service.Public_UpdateMessageHistoryVoidingForLicenseeAsync(messageDetails);
 
             // Assert
             service.Received().Protected("InsertToMessageChatbotAsync", Arg.Any<IEnumerable<MessageHistory>>(), 1);
-        }
-
-        [Fact]
-        public async Task UpdateMessageHistoryVoidingForLicenseeAsync_IsUnsuccessful_DoNothing()
-        {
-            // Arrange
-            var commandResult = new CommandResult { Code = 1, Message = "error" };
-            var messageDetails = fixture.Create<IEnumerable<MessageDetail>>();
-            var service = GetService();
-
-            // Act
-            await service.Public_UpdateMessageHistoryVoidingForLicenseeAsync(commandResult, messageDetails);
-
-            // Assert
-            service.DidNotReceive().Protected("InsertToMessageChatbotAsync", Arg.Any<IEnumerable<MessageHistory>>(), 1);
         }
 
         #endregion UpdateMessageHistoryVoidingForLicenseeAsync
