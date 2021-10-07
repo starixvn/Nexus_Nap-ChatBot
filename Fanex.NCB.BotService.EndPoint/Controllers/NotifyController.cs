@@ -11,7 +11,6 @@
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Enum;
-    using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -30,7 +29,6 @@
         private readonly IAdapterIntegration adapter;
         private readonly IConversationService conversationService;
         private readonly IMessageLogService messageLogService;
-        private readonly CheckDuplicatedMessageLogSetting settings;
         private readonly ILogger logger;
 
         [Obsolete]
@@ -50,7 +48,6 @@
             this.botConfig = botConfig;
             this.conversationService = conversationService;
             this.messageLogService = messageLogService;
-            this.settings = settings;
             this.logger = logger;
         }
 
@@ -71,12 +68,6 @@
             var errorMessage = string.Empty;
             try
             {
-            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
-                {
-                    errorMessage = Resources.Resources.DisableChannelErrorMessage;
-                }
-                else
-                {
                 if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
                 {
                     errorMessage = Resources.Resources.DisableChannelErrorMessage;
@@ -87,18 +78,16 @@
                     var conversationReference = GetConversationReference(conversationInfo);
                     await SendMessage(appId, conversationReference, conversationInfo.Message);
                 }
-                }
             }
             catch (Exception ex)
             {
                 errorMessage = ex.Message;
-                    await WriteLog(ex);
+                await WriteLog(ex);
             }
 
             return Ok(errorMessage);
         }
 
-        [Obsolete]
         [Obsolete]
         [HttpPost]
         [Route("api/notifymulti")]
@@ -152,41 +141,20 @@
         {
             bool isEnabledSkypeChannel = appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype);
             tasks.Add(!isEnabledSkypeChannel ? Task.Run(() => new SendMessageResult
-                tasks.Add(Task.Run(() => new SendMessageResult
-                {
-                    NotificationId = notificationMessage.NotificationId,
-                    ConversationId = conversationInfo.ConversationId,
-                    SentTime = DateTime.Now,
-                    ErrorCode = 1,
-                    ErrorMessage = DisableChannelErrorMessage,
-                }));
-            }
-            else
             {
-                {
-                    ErrorMessage = DuplicatedErrorMessage,
-                    NotificationId = notificationMessage.NotificationId,
+                NotificationId = notificationMessage.NotificationId,
                 ConversationId = conversationInfo.ConversationId,
                 SentTime = DateTime.Now,
                 ErrorCode = 1,
                 ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
-                    IsIgnoreRetry = true
+                IsIgnoreRetry = true
             }) : Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message)));
-        }
-
-        [Obsolete]
-            else
-            {
-                tasks.Add(
-                    Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message))
-                    );
-            }
         }
 
         [Obsolete]
         private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo, int notifictaionId, string message)
         {
-            bool isDuplicated = await messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, message);
+            bool isDuplicated = messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, message);
 
             if (isDuplicated)
             {
@@ -220,11 +188,6 @@
                 var thread = new Thread(async () => await AddMessageLogOnDb(conversationReference, message, result));
                 thread.Start();
 
-                if (settings.IsEnabled)
-                {
-                    InsertMessageInCache(result, message);
-                }
-
                 return result;
             }
             catch (Exception exception)
@@ -241,19 +204,6 @@
                     ErrorMessage = exception.Message
                 };
             }
-        }
-
-        [Obsolete]
-        {
-            var logMessage = new ConversationMessageLog
-            {
-                ConversationId = sendMessageResult.ConversationId,
-                Message = messageContent,
-                Status = sendMessageResult.ErrorCode == 0 ? SentMessageStatus.Success : SentMessageStatus.Fail,
-                SentDate = DateTime.UtcNow
-            };
-            var threadInsertInRedis = new Thread(async () => await messageLogService.InserMessageLogInRedisCache(logMessage));
-            threadInsertInRedis.Start();
         }
 
         [Obsolete]

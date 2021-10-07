@@ -9,7 +9,7 @@
         public void GetSettingKey_ReturnCorrectSettingKey()
         {
             // Arrange
-            var command = new RemoveBotOutGroupCommand
+            var command = new RemoveBotOutGroupCommand();
 
             var expected = "NCB_Conversation_RemoveBotOutGroup";
 
@@ -24,7 +24,6 @@
         [InlineData("", "", 0)]
         [InlineData("", "", 1)]
         [InlineData("", "1", 0)]
-            var command = new RemoveBotOutGroupCommand
         public void IsValid_ParamsAreInvalid_ReturnFalse(string botConversationId, string conversationId, byte channelId)
         {
             // Arrange

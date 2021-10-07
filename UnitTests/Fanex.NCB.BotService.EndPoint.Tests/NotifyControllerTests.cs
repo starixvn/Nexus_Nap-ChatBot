@@ -30,7 +30,6 @@
         [Obsolete]
         private BotConfiguration botConfig;
 
-
         [Fact]
         [Obsolete]
         public async Task Test_WhenCalled_ReturnAsExpectedResult()
@@ -133,7 +132,6 @@
         #endregion Send
 
         [Fact]
-        [Obsolete]
         [Obsolete]
         public async Task SendMulti_NotificationListIsNull_ReturnObjectResultWithEmptyList()
         {

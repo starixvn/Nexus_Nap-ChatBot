@@ -97,7 +97,6 @@
             {
                 Resources.Resources.DisableChannelErrorMessage,
                 Resources.Resources.DuplicatedErrorMessage
-                Resources.Resources.MessageIsTooLong
             };
             if (errorMsgs.Contains(errMsg))
             {
@@ -290,7 +289,6 @@
             batches.Last().Item1.Last().Recipients = channelId == (byte)ConversationChannel.Telegram
                 ? AddMonitorRecipientForTelegram(batches.Last().Item1.Last().Recipients)
                 : AddMonitorRecipient(batches.Last().Item1.Last().Recipients);
-
 
             return batches;
         }

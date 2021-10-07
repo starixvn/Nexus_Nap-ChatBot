@@ -12,6 +12,8 @@
                 return text;
             }
 
+            // convert skype format to telegram format
+            text = Regex.Replace(text, "(\\*\\*\\*)(.+?)(\\*\\*\\*)", "<b><i>$2</i></b>"); // bold & italic
 
             text = Regex.Replace(text, @"(\\\*\\\*)(.+?)(\\\*\\\*)", "\\<b>$2</b>"); // bold
             text = Regex.Replace(text, @"(\\\*\\\*)(.+?)(\\\*\*)", "\\<b>$2</b>");
@@ -36,15 +38,12 @@
             // revert
             text = Regex.Replace(text, @"(\\<b>)(.+?)(</b>)", "\\*\\*$2\\*\\*");
             text = Regex.Replace(text, @"(\\<i>)(.+?)(</i>)", "\\*$2\\*");
-
-            pattern = new Regex("(<i>)(.*?)(</i>)");
-            text = pattern.Replace(text, "_$2_");
-
-            pattern = new Regex("(<s>)(.*?)(</s>)");
-            text = pattern.Replace(text, "~$2~");
+            text = Regex.Replace(text, "(<b>)(.+?)(</b>)", "*$2*");
+            text = Regex.Replace(text, "(<i>)(.+?)(</i>)", "_$2_");
+            text = Regex.Replace(text, "(<s>)(.+?)(</s>)", "~$2~");
 
             // escape
-            text = text.Replace(">", "\\>");
+            text = Regex.Replace(text, @"(.*?)(>|[\\][>])", "$1\\>");
 
             return text;
         }

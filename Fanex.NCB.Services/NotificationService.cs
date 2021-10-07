@@ -57,11 +57,6 @@
                         await PushSignalRInsert(notification.NotificationId);
                     }
                 }
-                    } else
-                    {
-                        await PushSignalRInsert(notification.NotificationId);
-                    }
-                }
             }
 
             return result;

@@ -34,7 +34,7 @@
 
             IEnumerable<RedisKey> keys = server.Keys(redisConfiguration.Db, pattern: $"*{key}*");
             string[] keysArr = keys.Select(key => GetActualKey(key)).ToArray();
-            var result = await GetValueByKey<T>(keysArr);
+            var result = GetValueByKey<T>(keysArr);
             return result;
         }
 

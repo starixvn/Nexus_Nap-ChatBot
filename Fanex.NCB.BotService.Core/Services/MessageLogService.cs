@@ -40,7 +40,7 @@
                 return false;
             }
 
-            var messageContentList = await redisCacheExtend.GetValueByKeyContains<string>(conversationId.Replace(':', '-'));
+            var messageContentList = redisCacheExtend.GetValueByKeyContains<string>(conversationId.Replace(':', '-'));
 
             bool isInvalid = false;
             foreach (string logContent in messageContentList)
@@ -51,9 +51,6 @@
 
                     return isInvalid;
                 }
-            }
-
-            return isInvalid;
             }
 
             return isInvalid;
