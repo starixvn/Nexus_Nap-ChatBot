@@ -12,7 +12,6 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using Fanex.NCB.Models.NotificationTemplate;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
-    using Fanex.NCB.Shared.Extensions;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
@@ -54,8 +53,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
                        .Select(x => new NotificationTemplateContent
                        {
                            ChannelId = x,
-                           Content = x == (byte)Core.Enum.ConversationChannel.Telegram
-                            ? model.Content.ToMarkdownV2() : model.Content
+                           Content = model.Content
                        });
 
                 result = await notificationService.CreateAsync(new CreateNotification
