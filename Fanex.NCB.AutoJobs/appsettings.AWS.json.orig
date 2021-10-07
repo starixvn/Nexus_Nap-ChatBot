@@ -90,6 +90,18 @@
             "IsEnabled": false,
             "HasCheckUM": false,
             "TimeInterval": 300
+        },
+        {
+            "JobName": "MonitorTelegramBot",
+            "IsEnabled": true,
+            "HasCheckUM": false,
+            "TimeInterval": 300
+        },
+        {
+            "JobName": "DeleteOldConversationMessageLog",
+            "IsEnabled": true,
+            "HasCheckUM": false,
+            "TimeInterval": 60
         }
     ],
     "ConnectionStrings": [
