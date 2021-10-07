@@ -79,7 +79,7 @@ namespace Fanex.NCB.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The content of the message sent to this group is duplicated for a period of time..
+        ///   Looks up a localized string similar to Error occurred due to duplicate content in a pre-defined period of time..
         /// </summary>
         public static string DuplicatedErrorMessage {
             get {
