@@ -1,3 +1,6 @@
+DROP PROCEDURE IF EXISTS NCB_ViewLog_NotificationRecipientList_Sel;
+DELIMITER //
+
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_ViewLog_NotificationRecipientList_Sel`(
 	IN notificationID INT
     ,IN pageIndex INT
@@ -34,3 +37,6 @@ BEGIN
     ORDER BY NRL.NotificationID, NRL.SentTime
     LIMIT rowStart, pageSize; 
 END
+//
+DELIMITER ;
+GRANT EXECUTE ON PROCEDURE NCB_ViewLog_NotificationRecipientList_Sel TO 'ncb.admin'@'%';

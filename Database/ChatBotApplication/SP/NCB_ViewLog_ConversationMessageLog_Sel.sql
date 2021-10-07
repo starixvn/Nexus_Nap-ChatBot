@@ -1,3 +1,6 @@
+DROP PROCEDURE IF EXISTS NCB_ViewLog_ConversationMessageLog_Sel;
+DELIMITER //
+
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_ViewLog_ConversationMessageLog_Sel`(
 	IN notificationID INT
     ,IN pageIndex INT
@@ -40,3 +43,6 @@ BEGIN
 	INNER JOIN ConversationGroup CG on CG.ConversationGroupID = NRL.ConversationGroupID
 	WHERE NRL.NotificationID = notificationID;
 END
+//
+DELIMITER ;
+GRANT EXECUTE ON PROCEDURE NCB_ViewLog_ConversationMessageLog_Sel TO 'ncb.admin'@'%';

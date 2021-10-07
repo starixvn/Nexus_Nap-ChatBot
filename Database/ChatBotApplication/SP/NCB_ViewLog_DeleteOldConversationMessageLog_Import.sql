@@ -1,3 +1,6 @@
+DROP PROCEDURE IF EXISTS NCB_ViewLog_DeleteOldConversationMessageLog_Import;
+DELIMITER //
+
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_ViewLog_DeleteOldConversationMessageLog_Import`(
 	IN currentDate DATETIME
 	,OUT errCode SMALLINT
@@ -19,3 +22,6 @@ NCB_ViewLog_DeleteOldConversationMessageLog_Import:BEGIN
     FROM ConversationMessageLog
     WHERE ConversationMessageLog.SentTime <= DATE_ADD(currentDate, INTERVAL -1 MONTH);
 END
+//
+DELIMITER ;
+GRANT EXECUTE ON PROCEDURE NCB_ViewLog_DeleteOldConversationMessageLog_Import TO 'ncb.admin'@'%';
