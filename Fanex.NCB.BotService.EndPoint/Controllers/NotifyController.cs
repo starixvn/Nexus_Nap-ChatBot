@@ -203,7 +203,7 @@
             }
         }
 
-        private SendMessageResult DuplicatedResult(int notificationId, string conversationId)
+        private static SendMessageResult DuplicatedResult(int notificationId, string conversationId)
             => new()
             {
                 ConversationId = conversationId,
