@@ -134,18 +134,16 @@
 
         protected internal virtual async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo, int notificationId, string messageContent)
         {
+            if (conversationInfo.IsDuplicated)
+            {
+                return DuplicatedResult(notificationId, conversationInfo.ConversationId);
+            }
+
             bool isDuplicated = messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, messageContent);
+
             if (isDuplicated)
             {
-                return new SendMessageResult
-                {
-                    ConversationId = conversationInfo.ConversationId,
-                    SentTime = DateTime.UtcNow,
-                    ErrorCode = -1,
-                    ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
-                    NotificationId = notificationId,
-                    IsIgnoreRetry = true
-                };
+                return DuplicatedResult(notificationId, conversationInfo.ConversationId);
             }
 
             string guiid = Guid.NewGuid().ToString();
@@ -179,6 +177,17 @@
                 };
             }
         }
+
+        private SendMessageResult DuplicatedResult(int notificationId, string conversationId)
+            => new()
+            {
+                ConversationId = conversationId,
+                SentTime = DateTime.UtcNow,
+                ErrorCode = -1,
+                ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
+                NotificationId = notificationId,
+                IsIgnoreRetry = true
+            };
 
         protected internal virtual async Task<SendMessageResult> SendTextMessageAsync(long botId, long chatId, int notificationId, string messageContent)
         {

@@ -188,6 +188,7 @@
         {
             // Arrange
             var conversationInfo = fixture.Create<ConversationInfo>();
+            conversationInfo.IsDuplicated = true;
             var notificationId = fixture.Create<int>();
             var messageContent = fixture.Create<string>();
             var controller = GetController();
@@ -209,6 +210,7 @@
         {
             // Arrange
             var conversationInfo = fixture.Create<ConversationInfo>();
+            conversationInfo.IsDuplicated = false;
             var notificationId = fixture.Create<int>();
             var messageContent = fixture.Create<string>();
             var exception = fixture.Create<Exception>();

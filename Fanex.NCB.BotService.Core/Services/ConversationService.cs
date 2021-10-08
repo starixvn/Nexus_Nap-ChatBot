@@ -51,6 +51,7 @@
                 new NotificationConversation
                 {
                     NotificationId = notification.NotificationId,
+                    Message = notification.Message,
                     BotName = r.BotName,
                     BotConversationId = r.BotConversationId,
                     ChannelId = r.ChannelId,
@@ -59,9 +60,12 @@
                 }));
             }
 
-            var distinctConversations = DistinctConversation(conversations);
+            var distinctContents = DistinctConversationIdAndContent(conversations);
+
+            var distinctConversations = DistinctConversationIdAndNotificationId(distinctContents);
             var notificationResult = DistinctNotification(notifications);
-            foreach (var notification in notificationResult)
+
+            foreach (var notification in notifications)
             {
                 notification.Recipients = distinctConversations.Where(conversation => conversation.NotificationId == notification.NotificationId);
             }
@@ -75,7 +79,23 @@
             return notifications;
         }
 
-        private static IEnumerable<NotificationConversation> DistinctConversation(IEnumerable<NotificationConversation> conversations)
+        private static IEnumerable<NotificationConversation> DistinctConversationIdAndContent(IEnumerable<NotificationConversation> conversations)
+        {
+            var results = new List<NotificationConversation>();
+
+            foreach (var conversation in conversations)
+            {
+                if (results.Any(r => r.Message == conversation.Message && r.ConversationId == conversation.ConversationId))
+                {
+                    conversation.IsDuplicated = true;
+                }
+                results.Add(conversation);
+            }
+
+            return results;
+        }
+
+        private static IEnumerable<NotificationConversation> DistinctConversationIdAndNotificationId(IEnumerable<NotificationConversation> conversations)
         {
             var disticntConversations = conversations.GroupBy(group => new
             {

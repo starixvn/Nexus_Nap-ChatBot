@@ -154,19 +154,16 @@
         [Obsolete]
         private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo, int notifictaionId, string message)
         {
+            if (conversationInfo.IsDuplicated)
+            {
+                return DuplicatedResult(notifictaionId, conversationInfo.ConversationId);
+            }
+
             bool isDuplicated = messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, message);
 
             if (isDuplicated)
             {
-                return new SendMessageResult
-                {
-                    ConversationId = conversationInfo.ConversationId,
-                    SentTime = DateTime.UtcNow,
-                    ErrorCode = -1,
-                    ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
-                    NotificationId = notifictaionId,
-                    IsIgnoreRetry = true
-                };
+                return DuplicatedResult(notifictaionId, conversationInfo.ConversationId);
             }
 
             string guiid = Guid.NewGuid().ToString();
@@ -205,6 +202,17 @@
                 };
             }
         }
+
+        private SendMessageResult DuplicatedResult(int notificationId, string conversationId)
+            => new()
+            {
+                ConversationId = conversationId,
+                SentTime = DateTime.UtcNow,
+                ErrorCode = -1,
+                ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
+                NotificationId = notificationId,
+                IsIgnoreRetry = true
+            };
 
         [Obsolete]
         private async Task<SendMessageResult> SendMessageNotification(string appId, int notificationId, ConversationReference conversationReference, string message)

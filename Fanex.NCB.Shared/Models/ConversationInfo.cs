@@ -13,5 +13,7 @@
         public string BotName { get; set; }
 
         public string Message { get; set; }
+
+        public bool IsDuplicated { get; set; }
     }
 }
