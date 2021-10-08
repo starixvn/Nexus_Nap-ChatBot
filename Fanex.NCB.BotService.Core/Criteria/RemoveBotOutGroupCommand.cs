@@ -10,8 +10,6 @@
 
         public string UpdatedBy { get; set; }
 
-        public byte ChannelId { get; set; }
-
         public override string GetSettingKey() => "NCB_Conversation_RemoveBotOutGroup";
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(BotConversationId)

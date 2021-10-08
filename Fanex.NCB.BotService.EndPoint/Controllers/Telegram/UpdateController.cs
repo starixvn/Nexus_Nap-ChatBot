@@ -149,15 +149,7 @@
                 if (command.Equals("/getgroupid", StringComparison.CurrentCultureIgnoreCase)
                     || command.Equals($"/getgroupid@{bot.Username}", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    try
-                    {
-                        await botService.SendTextMessageAsync(bot.Id, message.Chat.Id, Regex.Replace(message.Chat.Id.ToString(), @"(.*?)(-|[\\][-])", "$1\\-"));
-                    }
-                    catch(Exception ex)
-                    {
-                        //
-                        var msg = ex.Message;
-                    }
+                    await botService.SendTextMessageAsync(bot.Id, message.Chat.Id, Regex.Replace(message.Chat.Id.ToString(), @"(.*?)(-|[\\][-])", "$1\\-"));
                 }
             }
         }

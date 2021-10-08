@@ -199,7 +199,7 @@
             // Assert
             Assert.Equal(conversationInfo.ConversationId, result.ConversationId);
             Assert.Equal(-1, result.ErrorCode);
-            Assert.Equal("The content of the message sent to this group is duplicated for a period of time.", result.ErrorMessage);
+            Assert.Equal("Error occurred due to duplicate content in a pre-defined period of time.", result.ErrorMessage);
             Assert.Equal(notificationId, result.NotificationId);
             Assert.True(result.IsIgnoreRetry);
         }

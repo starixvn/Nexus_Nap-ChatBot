@@ -54,8 +54,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
                        {
                            ChannelId = x,
                            Content = model.Content
-                       });
-
+                       }).ToList();
                 result = await notificationService.CreateAsync(new CreateNotification
                 {
                     NotificationTypeId = model.NotificationTypeId,

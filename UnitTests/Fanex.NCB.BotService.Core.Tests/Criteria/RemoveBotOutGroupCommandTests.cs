@@ -21,17 +21,16 @@
         }
 
         [Theory]
-        [InlineData("", "", 0)]
-        [InlineData("", "", 1)]
-        [InlineData("", "1", 0)]
-        public void IsValid_ParamsAreInvalid_ReturnFalse(string botConversationId, string conversationId, byte channelId)
+        [InlineData("", "")]
+        [InlineData("", "1")]
+        [InlineData("1", "")]
+        public void IsValid_ParamsAreInvalid_ReturnFalse(string botConversationId, string conversationId)
         {
             // Arrange
             var command = new RemoveBotOutGroupCommand
             {
                 ConversationId = conversationId,
-                BotConversationId = botConversationId,
-                ChannelId = channelId
+                BotConversationId = botConversationId
             };
 
             // Act
@@ -48,8 +47,7 @@
             var command = new RemoveBotOutGroupCommand
             {
                 ConversationId = "aa",
-                BotConversationId = "bb",
-                ChannelId = 1
+                BotConversationId = "bb"
             };
 
             // Act

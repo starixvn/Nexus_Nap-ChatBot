@@ -209,7 +209,7 @@
 
                 if (exception.Message.Contains("Message is too long", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    result.ErrorMessage = "Message is too long";
+                    result.ErrorMessage = Resources.Resources.MessageIsTooLong;
                     result.IsIgnoreRetry = true;
                 }
             }
