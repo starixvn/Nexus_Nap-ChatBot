@@ -6,7 +6,7 @@ import axios from 'axios';
 import { DateTime } from 'luxon';
 import { toast } from 'react-toastify';
 import { NCBBreadcrum } from '../../common/breadcrumbs/breadcrumbs';
-import { Form, FormGroup, Label, Input } from 'reactstrap';
+import { Form, FormGroup, Label, Input, Tooltip } from 'reactstrap';
 import ErrorReport from './ErrorReport';
 import DatePicker from '../../common/DatePicker/index';
 import Labels from '../../common/Labels';
@@ -56,7 +56,8 @@ export default class NotificationList extends Component {
                 report: null,
                 show: false,
                 isSubmitting: false
-            }
+            },
+            isOpenTooltipMessageId: false
         };
 
         const windowUrl = window.location.search;
@@ -184,7 +185,9 @@ export default class NotificationList extends Component {
     handleMessageIdChange = event => {
         const regex = /^[0-9\b]+$/;
         if (event.target.value === '' || regex.test(event.target.value)) {
-            this.handleFilterChange('messageId', event.target.value);
+            let messageId = event.target.value === '' ? 0 : parseInt(event.target.value, 10);
+            messageId = messageId <= 0 || messageId > 4294967295 ? '' : messageId;
+            this.handleFilterChange('messageId', messageId);
         }
     }
 
@@ -332,7 +335,16 @@ export default class NotificationList extends Component {
         });
     }
 
+    toggleTooltipMessageId = () => {
+        this.setState(prevState => {
+            return {
+                isOpenTooltipMessageId: !prevState.isOpenTooltipMessageId
+            };
+        });
+    }
+
     render() {
+        const { filter } = this.state;
         return (
             <div>
                 <NCBBreadcrum chatbotName={Labels.ChatbotSystem} pageTitle="Notification List" />
@@ -352,16 +364,16 @@ export default class NotificationList extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label">From</Label>
-                            <DatePicker selected={this.state.filter.fromDate} onChange={this.handleFromDateChange} />
+                            <DatePicker selected={filter.fromDate} onChange={this.handleFromDateChange} />
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label">To</Label>
-                            <DatePicker selected={this.state.filter.toDate} onChange={this.handleToDateChange} />
+                            <DatePicker selected={filter.toDate} onChange={this.handleToDateChange} />
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label">Sender</Label>
                             <Input type="select" name="creatorId"
-                                value={this.state.filter.creatorId ? this.state.filter.creatorId : ''}
+                                value={filter.creatorId ? filter.creatorId : ''}
                                 onChange={this.handleCreatorChange}>
                                 <option value="" >{Labels.All}</option>
                                 {this.state.userOptions.map(this.renderUserOption)}
@@ -393,7 +405,15 @@ export default class NotificationList extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label">MessageID</Label>
-                            <Input type="text" value={this.state.filter.messageId} onChange={this.handleMessageIdChange} />
+                            <Input type="text" id="messageId" name="messageId" value={filter.messageId}
+                                onChange={this.handleMessageIdChange}
+                            />
+                            <Tooltip placement="auto" isOpen={this.state.isOpenTooltipMessageId} target="messageId"
+                                className="tooltip-messageid"
+                                toggle={this.toggleTooltipMessageId}
+                            >
+                                MessageID must be between from 1 to 4294967295
+                            </Tooltip>
                         </FormGroup>
                         <FormGroup>
                             <button id="submit-button" className="btn-submit" type="submit">Submit</button>

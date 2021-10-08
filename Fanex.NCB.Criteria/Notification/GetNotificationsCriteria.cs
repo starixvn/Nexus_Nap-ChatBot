@@ -20,7 +20,7 @@
         [SpParam(SqlParamName = "ChannelIDLst")]
         public string ChannelIds { get; set; }
 
-        public int? MessageId { get; set; }
+        public uint? MessageId { get; set; }
 
         public DateTime ConfigSendTimeFrom { get; set; }
 
