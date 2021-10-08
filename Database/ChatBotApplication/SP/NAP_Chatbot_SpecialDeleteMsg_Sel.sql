@@ -16,6 +16,7 @@ AS
 		- 20191127@Dominic: init
 		- 20201029@Percy: Add LastPostTime for rescan message [RedmineID: #144274]
 		- 20210618@Percy: Migrate DBMSG to new server [RedmineID: #157217]
+		- 20211012@Malcolm: Rescan messageid <= @MessageId [RedmineID: #162825]
 */
 
 BEGIN
@@ -65,6 +66,7 @@ BEGIN
 		INNER JOIN dbo.MsgTarget mt WITH (NOLOCK) ON m.MessageId = mt.MessageId
 		INNER JOIN @DepositSuper ds ON mt.TargetId = ds.CustId
 	WHERE m.PostTime >= @LastPostTime
+		AND m.MessageId <= @MessageID
 		AND m.msgtype = 1	
 		AND EXISTS (SELECT 1 FROM #MsgContentsTypeLst mct WHERE m.MsgContentsType = mct.MsgContentsType)
 		AND m.isbatch = 1	

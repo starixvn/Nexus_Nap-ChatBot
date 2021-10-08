@@ -17,6 +17,7 @@ AS
 		- 20200630@Percy: Add LastPostTime for rescan message [RedmineID: #136492]
 		- 20200715@Percy: Return isTest [RedmineID: #135686]
 		- 20210618@Percy: Migrate DBMSG to new server [RedmineID: #157217]
+		- 20211012@Malcolm: Rescan messageid <= @MessageId [RedmineID: #162825]
 */
 
 BEGIN
@@ -68,6 +69,7 @@ BEGIN
 	SELECT m.MessageId, m.MsgContentsType, m.MatchId, m.Content_en, m.Content_cs, m.PostTime, 0, ISNULL(m.IsTest, 0)
 	FROM dbo.Msg m WITH (NOLOCK)
 	WHERE m.PostTime >= @LastPostTime
+		AND m.MessageId <= @MessageID
 		AND m.msgtype = 3
 		AND EXISTS (SELECT 1 FROM #MsgContentsTypeLst mct WHERE m.MsgContentsType = mct.MsgContentsType)
 		AND m.isbatch = 0
