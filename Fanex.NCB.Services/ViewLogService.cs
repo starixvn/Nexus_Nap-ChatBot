@@ -18,41 +18,44 @@
            this.baseService = baseService;
         }
 
-        public async Task<(int, IEnumerable<ViewLogNotificationSystemMessage>)> GetNotificationSystemMessage(int? notificationId, int pageIndex, int pageSize)
+        public async Task<(int, IEnumerable<ViewLogNotificationSystemMessage>)> GetNotificationSystemMessageAsync(int? notificationId, int pageIndex, int pageSize)
         {
-            var result = await baseService.FetchMultipleAsync<int, ViewLogNotificationSystemMessage>(new GetNotificationSystemMessageCriteria
+            var (totalItems, systemMessages) = await baseService.FetchMultipleAsync<int, ViewLogNotificationSystemMessage>(new GetNotificationSystemMessageCriteria
             {
                 NotificationId = notificationId,
                 PageIndex = pageIndex,
                 PageSize = pageSize
             });
 
-            return (result.Item1.FirstOrDefault(), result.Item2);
+            return (totalItems.FirstOrDefault(), systemMessages);
         }
 
-        public async Task<(int, IEnumerable<ViewLogNotificationRecipientList>)> GetNotificationRecipientList(int? notificationId, int pageIndex, int pageSize)
+        public async Task<(int, IEnumerable<ViewLogNotificationRecipientList>)> GetNotificationRecipientListAsync(int? notificationId, int pageIndex, int pageSize)
         {
-            var result = await baseService.FetchMultipleAsync<int, ViewLogNotificationRecipientList>(new GetNotificationRecipientListCriteria
+            var (totalItems, recipients) = await baseService.FetchMultipleAsync<int, ViewLogNotificationRecipientList>(new GetNotificationRecipientListCriteria
             {
                 NotificationId = notificationId,
                 PageIndex = pageIndex,
                 PageSize = pageSize
             });
 
-            return (result.Item1.FirstOrDefault(), result.Item2);
+            return (totalItems.FirstOrDefault(), recipients);
         }
 
-        public async Task<(int, IEnumerable<ViewLogConversationMessageLog>, IEnumerable<ViewLogConversationMessageLogRecipient>)> 
-        GetConversationMessageLog(int? notificationId, int pageIndex, int pageSize)
+        public async Task<(int, IEnumerable<ViewLogConversationMessageLog>, IEnumerable<ViewLogConversationMessageLogRecipient>)>
+        GetConversationMessageLogAsync(int? notificationId, int pageIndex, int pageSize)
         {
-            var result = await baseService.FetchMultipleAsync<int, ViewLogConversationMessageLog, ViewLogConversationMessageLogRecipient>(new GetConversationMessageLogCriteria
-            {
-                NotificationId = notificationId,
-                PageIndex = pageIndex,
-                PageSize = pageSize
-            });
+            var (totalItems, conversationMessages, mapRecipient) = await baseService.FetchMultipleAsync<int, ViewLogConversationMessageLog, ViewLogConversationMessageLogRecipient>
+            (
+                new GetConversationMessageLogCriteria
+                {
+                    NotificationId = notificationId,
+                    PageIndex = pageIndex,
+                    PageSize = pageSize
+                }
+            );
 
-            return (result.Item1.FirstOrDefault(), result.Item2, result.Item3);
+            return (totalItems.FirstOrDefault(), conversationMessages, mapRecipient);
         }
 
         public async Task<CommandResult> DeleteOldConversationMessageLogAsync(string currentDate)

@@ -189,9 +189,9 @@ describe('AppContainer', () => {
                 getParamsPageSystemMessage: jest.fn(),
                 getParamsPageRecipientList: jest.fn(),
                 getParamsPageConversationMessage: jest.fn(),
-                getSystemMessage: jest.fn(),
-                getRecipientList: jest.fn(),
-                getConversationMessage: jest.fn(),
+                getNotificationSystemMessage: jest.fn(),
+                getNotificationRecipientList: jest.fn(),
+                getConversationMessageLog: jest.fn(),
             };
             const expectedParams = {notificationId: 188, pageIndex: 1, pageSize: 100 };
             const formEventMocked = { preventDefault: jest.fn() };
@@ -205,9 +205,9 @@ describe('AppContainer', () => {
             expect(container.find("Form")).toHaveLength(1);
             expect(formEventMocked.preventDefault).toBeCalledTimes(1);
             expect(props.getParamsPageSystemMessage).toHaveBeenCalledWith(expectedParams);
-            expect(props.getSystemMessage).toHaveBeenCalledWith(expectedParams);
-            expect(props.getRecipientList).toHaveBeenCalledWith(expectedParams);
-            expect(props.getConversationMessage).toHaveBeenCalledWith(expectedParams);
+            expect(props.getNotificationSystemMessage).toHaveBeenCalledWith(expectedParams);
+            expect(props.getNotificationRecipientList).toHaveBeenCalledWith(expectedParams);
+            expect(props.getConversationMessageLog).toHaveBeenCalledWith(expectedParams);
         });
     });
 

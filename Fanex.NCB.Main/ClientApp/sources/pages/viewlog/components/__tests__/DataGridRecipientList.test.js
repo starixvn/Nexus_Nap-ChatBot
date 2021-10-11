@@ -15,7 +15,7 @@ describe('DataGridRecipientList', () => {
             pageIndex: 1,
             pageSize: 100
         },
-        recipientList: {
+        recipients: {
             total: 0,
         }
     };
@@ -28,13 +28,13 @@ describe('DataGridRecipientList', () => {
             // Arrange
             const propsFunc = {
                 notificationId: 188,
-                getRecipientList: jest.fn(),
+                getNotificationRecipientList: jest.fn(),
                 getParamsPageRecipientList: jest.fn(),
                 paramsPageRecipientList: {
                     pageIndex: 1,
                     pageSize: 100
                 },
-                recipientList: {
+                recipients: {
                     total: 0
                 }
             };
@@ -46,7 +46,7 @@ describe('DataGridRecipientList', () => {
             container.instance().onPaging(1, 100);
 
             // Assert
-            expect(propsFunc.getRecipientList).toHaveBeenCalledWith(expectedParams);
+            expect(propsFunc.getNotificationRecipientList).toHaveBeenCalledWith(expectedParams);
             expect(propsFunc.getParamsPageRecipientList).toHaveBeenCalledWith(expectedParams);
         });
     });
@@ -68,7 +68,7 @@ describe('DataGridRecipientList', () => {
                     pageIndex: 1,
                     pageSize: 100
                 },
-                recipientList: {
+                recipients: {
                     total: 100,
                     data:[{id:1234}]
                 }
@@ -85,38 +85,26 @@ describe('DataGridRecipientList', () => {
     });
 
     describe('buildHeader', () => {
-        const getHeader = function (isHost) {
+        const getHeader = function () {
             return (<Row >
                 <Cell colWidth={10} header>{Labels.NotificationID}</Cell>
-                <Cell colWidth={30} header>{Labels.GroupName}</Cell>
+                <Cell colWidth={20} header>{Labels.GroupName}</Cell>
                 <Cell colWidth={10} header>{Labels.ChatGroupType}</Cell>
                 <Cell colWidth={10} header>{Labels.Recipient}</Cell>
-                <Cell colWidth={10} header>{Labels.SentTime}</Cell>
+                <Cell colWidth={15} header>{Labels.SentTime}</Cell>
                 <Cell colWidth={10} header>{Labels.Status}</Cell>
                 <Cell colWidth={10} header>{Labels.RetryTime}</Cell>
                 <Cell colWidth={30} header>{Labels.ErrorMessage}</Cell>
             </Row>);
         };
 
-        it('should render expected header when isHost = false', () => {
+        it('should render expected header', () => {
             // Arrange
-            const expected = getHeader(false);
+            const expected = getHeader();
 
             // Act
             const container = shallow(<DataGridRecipientList {...props}/>);
-            const header = container.instance().buildHeader(false);
-
-            // Assert
-            expect(header).toEqual(expected);
-        });
-
-        it('should render expected header when isHost = true', () => {
-            // Arrange
-            const expected = getHeader(true);
-
-            // Act
-            const container = shallow(<DataGridRecipientList {...props}/>);
-            const header = container.instance().buildHeader(true);
+            const header = container.instance().buildHeader();
 
             // Assert
             expect(header).toEqual(expected);
@@ -129,7 +117,7 @@ describe('DataGridRecipientList', () => {
             const pagingOption = {
                 PageIndex: props.paramsPageRecipientList.pageIndex,
                 PageSize: props.paramsPageRecipientList.pageSize,
-                TotalItem: props.recipientList.total,
+                TotalItem: props.recipients.total,
                 PageList: [100, 200, 300, 500, 1000]
             };
 
@@ -147,7 +135,7 @@ describe('DataGridRecipientList', () => {
                     pageIndex: 1,
                     pageSize: 100
                 },
-                recipientList: {
+                recipients: {
                     total: 0,
                 }
             };    
@@ -156,7 +144,7 @@ describe('DataGridRecipientList', () => {
                     pageIndex: 1,
                     pageSize: 100
                 },
-                recipientList: {
+                recipients: {
                     total: 0,
                 }
             };
@@ -167,7 +155,7 @@ describe('DataGridRecipientList', () => {
             
             // Assert
             expect(container.props().paramsPageRecipientList).toEqual(expected.paramsPageRecipientList);
-            expect(container.props().recipientList).toEqual(expected.recipientList);
+            expect(container.props().recipients).toEqual(expected.recipients);
         });
     });
 });

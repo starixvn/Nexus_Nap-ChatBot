@@ -28,14 +28,14 @@ describe('connect', () => {
                 pageIndex: 1,
                 pageSize: 100
             },
-            recipientList: {}
+            recipients: {}
         };
         const state = {
             paramsPageRecipientList: {
                 pageIndex: 1,
                 pageSize: 100
             },
-            recipientList: {}
+            recipients: {}
         };
 
         // Act

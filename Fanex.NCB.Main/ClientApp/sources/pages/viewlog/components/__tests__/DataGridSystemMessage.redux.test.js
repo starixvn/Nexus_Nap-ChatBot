@@ -28,14 +28,14 @@ describe('connect', () => {
                 pageIndex: 1,
                 pageSize: 100
             },
-            systemMessage: {}
+            systemMessages: {}
         };
         const state = {
             paramsPageSystemMessage: {
                 pageIndex: 1,
                 pageSize: 100
             },
-            systemMessage: {}
+            systemMessages: {}
         };
 
         // Act

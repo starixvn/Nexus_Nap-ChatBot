@@ -17,7 +17,7 @@
         private readonly Fixture _fixture = new Fixture();
 
         [Fact]
-        public async Task GetNotificationSystemMessage_ValidData_ReturnExpectedResult()
+        public async Task GetNotificationSystemMessageAsync_ValidData_ReturnExpectedResult()
         {
             // Arrange
             var service = GetService();
@@ -33,7 +33,7 @@
             baseService.FetchMultipleAsync<int, ViewLogNotificationSystemMessage>(Arg.Do<GetNotificationSystemMessageCriteria>(x => criteria = x))
                 .Returns((new List<int> { total }, templates));
 
-            var result = await service.GetNotificationSystemMessage(notificationId, pageIndex, pageSize).ConfigureAwait(false);
+            var result = await service.GetNotificationSystemMessageAsync(notificationId, pageIndex, pageSize).ConfigureAwait(false);
 
             // Assert
             Assert.Equal(notificationId, criteria.NotificationId);
@@ -44,7 +44,7 @@
         }
 
         [Fact]
-        public async Task GetNotificationRecipientList_ValidData_ReturnExpectedResult()
+        public async Task GetNotificationRecipientListAsync_ValidData_ReturnExpectedResult()
         {
             // Arrange
             var service = GetService();
@@ -60,7 +60,7 @@
             baseService.FetchMultipleAsync<int, ViewLogNotificationRecipientList>(Arg.Do<GetNotificationRecipientListCriteria>(x => criteria = x))
                 .Returns((new List<int> { total }, templates));
 
-            var result = await service.GetNotificationRecipientList(notificationId, pageIndex, pageSize).ConfigureAwait(false);
+            var result = await service.GetNotificationRecipientListAsync(notificationId, pageIndex, pageSize).ConfigureAwait(false);
             
             // Assert
             Assert.Equal(notificationId, criteria.NotificationId);
@@ -71,7 +71,7 @@
         }
 
         [Fact]
-        public async Task GetConversationMessageLog_ValidData_ReturnExpectedResult()
+        public async Task GetConversationMessageLogAsync_ValidData_ReturnExpectedResult()
         {
             // Arrange
             var service = GetService();
@@ -88,7 +88,7 @@
             baseService.FetchMultipleAsync<int, ViewLogConversationMessageLog, ViewLogConversationMessageLogRecipient>(Arg.Do<GetConversationMessageLogCriteria>(x => criteria = x))
                 .Returns((new List<int> { total }, templates, templateMap));
 
-            var result = await service.GetConversationMessageLog(notificationId, pageIndex, pageSize).ConfigureAwait(false);
+            var result = await service.GetConversationMessageLogAsync(notificationId, pageIndex, pageSize).ConfigureAwait(false);
 
             // Assert
             Assert.Equal(notificationId, criteria.NotificationId);

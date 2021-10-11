@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions';
@@ -10,29 +10,30 @@ var dateFormat = require("dateformat");
 
 export class DataGridRecipientList extends Component {
 
-    buildHeader = isHost => {
+    buildHeader = () => {
         return (
             <Row >
                 <Cell colWidth={10} header>{Labels.NotificationID}</Cell>
-                <Cell colWidth={30} header>{Labels.GroupName}</Cell>
+                <Cell colWidth={20} header>{Labels.GroupName}</Cell>
                 <Cell colWidth={10} header>{Labels.ChatGroupType}</Cell>
                 <Cell colWidth={10} header>{Labels.Recipient}</Cell>
-                <Cell colWidth={10} header>{Labels.SentTime}</Cell>
+                <Cell colWidth={15} header>{Labels.SentTime}</Cell>
                 <Cell colWidth={10} header>{Labels.Status}</Cell>
                 <Cell colWidth={10} header>{Labels.RetryTime}</Cell>
                 <Cell colWidth={30} header>{Labels.ErrorMessage}</Cell>
-            </Row>);
+            </Row>
+        );
     };
 
-    buildBody = isHost => {
-        if (this.props.recipientList.total > 0) {
-            return this.props.recipientList.data.map((item, index) => this.renderRow(item, index, isHost));
+    buildBody = () => {
+        if (this.props.recipients.total > 0) {
+            return this.props.recipients.data.map((item, index) => this.renderRow(item, index));
         }
 
         return [<Row key={`body${1}`} ><Cell colSpan="9"><NoDataTitle /></Cell></Row>];
     };
 
-    renderRow = (item, index, isHost) => (
+    renderRow = (item, index) => (
         <Row key={index} >
             <Cell className="text-center">{item.notificationID}</Cell>
             <Cell>{item.name}</Cell>
@@ -43,39 +44,38 @@ export class DataGridRecipientList extends Component {
             <Cell className="text-center">{item.retryTime}</Cell>
             <Cell>{item.errMsg}</Cell>
         </Row>
-    )
+    );
 
     onPaging = (pageIndex, pageSize) => {
         const params = { notificationId : this.props.notificationId };
         params['pageIndex'] = pageIndex;
         params['pageSize'] = pageSize;
 
-        this.props.getRecipientList(params);
+        this.props.getNotificationRecipientList(params);
         this.props.getParamsPageRecipientList(params);
-    }
+    };
 
     render() {
-        const { haveHostPermission } = this.props;
         const pagingOption = {
             PageIndex: this.props.paramsPageRecipientList.pageIndex,
             PageSize: this.props.paramsPageRecipientList.pageSize,
-            TotalItem: this.props.recipientList.total ? this.props.recipientList.total : 0,
+            TotalItem: this.props.recipients.total ? this.props.recipients.total : 0,
             PageList: [100, 200, 300, 500, 1000]
         };
 
         return (
             <Table
-                width={1920}
+                width={1620}
                 autoWidth={false}
-                header={this.buildHeader(haveHostPermission)}
-                body={this.buildBody(haveHostPermission)}
+                header={this.buildHeader()}
+                body={this.buildBody()}
                 isPaging
                 pageOption={pagingOption}
                 onPaging={this.onPaging}
                 containerPadding={0}
                 adjustedHeight={50}
             />
-        )
+        );
     }
 }
 
@@ -84,7 +84,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispat
 const mapStateToProps = state => {
     return {
         paramsPageRecipientList: state.paramsPageRecipientList,
-        recipientList: state.recipientList
+        recipients: state.recipients
     };
 };
 

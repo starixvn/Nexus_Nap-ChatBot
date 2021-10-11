@@ -5,9 +5,9 @@ import {
     setParamsPageSystemMessage,
     setParamsPageRecipientList,
     setParamsPageConversationMessage,
-    setSystemMessage,
-    setRecipientList,
-    setConversationMessage
+    setNotificationSystemMessage,
+    setNotificationRecipientList,
+    setConversationMessageLog
 } from './viewLogSlice';
 
 const getParamsPageSystemMessage = (params) => dispatch => {
@@ -22,32 +22,32 @@ const getParamsPageConversationMessage = (params) => dispatch => {
     dispatch(setParamsPageConversationMessage(params));
 }
 
-const getSystemMessage = (params) => async dispatch => {
-    const url = Site.resolveClientUrl('ViewLog/GetSystemMessage');
+const getNotificationSystemMessage = (params) => async dispatch => {
+    const url = Site.resolveClientUrl('ViewLog/GetNotificationSystemMessage');
     await DataService.getDataAsync(url,params).then(response => {
-        dispatch(setSystemMessage(response.data));
-    })
+        dispatch(setNotificationSystemMessage(response.data));
+    });
 };
 
-const getRecipientList = (params) => async dispatch => {
-    const url = Site.resolveClientUrl('ViewLog/GetRecipientList');
+const getNotificationRecipientList = (params) => async dispatch => {
+    const url = Site.resolveClientUrl('ViewLog/GetNotificationRecipientList');
     await DataService.getDataAsync(url,params).then(response => {
-        dispatch(setRecipientList(response.data));
-    })
+        dispatch(setNotificationRecipientList(response.data));
+    });
 };
 
-const getConversationMessage = (params) => async dispatch => {
-    const url = Site.resolveClientUrl('ViewLog/GetConversationMessage');
+const getConversationMessageLog = (params) => async dispatch => {
+    const url = Site.resolveClientUrl('ViewLog/GetConversationMessageLog');
     await DataService.getDataAsync(url,params).then(response => {
-        dispatch(setConversationMessage(response.data));
-    })
+        dispatch(setConversationMessageLog(response.data));
+    });
 };
 
 export const ActionCreators = {
     getParamsPageSystemMessage,
     getParamsPageRecipientList,
     getParamsPageConversationMessage,
-    getSystemMessage,
-    getRecipientList,
-    getConversationMessage
+    getNotificationSystemMessage,
+    getNotificationRecipientList,
+    getConversationMessageLog
 };

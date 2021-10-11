@@ -15,9 +15,9 @@ const viewLogSlice = createSlice({
             pageIndex: 1,
             pageSize: 100
         },
-        systemMessage: {},
-        recipientList: {},
-        conversationMessage: {}
+        systemMessages: {},
+        recipients: {},
+        conversationMessages: {}
     },
     reducers: {
         setParamsPageSystemMessage: (state,action) =>{
@@ -29,14 +29,14 @@ const viewLogSlice = createSlice({
         setParamsPageConversationMessage: (state,action) =>{
             state.paramsPageConversationMessage = action.payload;
         },
-        setSystemMessage: (state,action) => {
-            state.systemMessage = action.payload;
+        setNotificationSystemMessage: (state,action) => {
+            state.systemMessages = action.payload;
         },
-        setRecipientList: (state,action) => {
-            state.recipientList = action.payload;
+        setNotificationRecipientList: (state,action) => {
+            state.recipients = action.payload;
         },
-        setConversationMessage: (state,action) => {
-            state.conversationMessage = action.payload;
+        setConversationMessageLog: (state,action) => {
+            state.conversationMessages = action.payload;
         },
     }
 });
@@ -47,9 +47,9 @@ export const{
     setParamsPageSystemMessage,
     setParamsPageRecipientList,
     setParamsPageConversationMessage,
-    setSystemMessage,
-    setRecipientList,
-    setConversationMessage
+    setNotificationSystemMessage,
+    setNotificationRecipientList,
+    setConversationMessageLog
 } = actions;
 
 export default reducer;

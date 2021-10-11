@@ -15,7 +15,7 @@ describe('DataGridSystemMessage', () => {
             pageIndex: 1,
             pageSize: 100
         },
-        systemMessage: {
+        systemMessages: {
             total: 0
         }
     };
@@ -28,13 +28,13 @@ describe('DataGridSystemMessage', () => {
             // Arrange
             const propsFunc = {
                 notificationId: 188,
-                getSystemMessage: jest.fn(),
+                getNotificationSystemMessage: jest.fn(),
                 getParamsPageSystemMessage: jest.fn(),
                 paramsPageSystemMessage: {
                     pageIndex: 1,
                     pageSize: 100
                 },
-                systemMessage: {
+                systemMessages: {
                     total: 0
                 }
             };
@@ -46,7 +46,7 @@ describe('DataGridSystemMessage', () => {
             container.instance().onPaging(1, 100);
 
             // Assert
-            expect(propsFunc.getSystemMessage).toHaveBeenCalledWith(expectedParams);
+            expect(propsFunc.getNotificationSystemMessage).toHaveBeenCalledWith(expectedParams);
             expect(propsFunc.getParamsPageSystemMessage).toHaveBeenCalledWith(expectedParams);
         });
     });
@@ -68,7 +68,7 @@ describe('DataGridSystemMessage', () => {
                     pageIndex: 1,
                     pageSize: 100
                 },
-                systemMessage: {
+                systemMessages: {
                     total: 100,
                     data:[{id:1234}]
                 }
@@ -85,7 +85,7 @@ describe('DataGridSystemMessage', () => {
     });
 
     describe('buildHeader', () => {
-        const getHeader = function (isHost) {
+        const getHeader = function () {
             return (<Row >
                 <Cell colWidth={10} header>{Labels.MessageID}</Cell>
                 <Cell colWidth={10} header>{Labels.NotificationID}</Cell>
@@ -94,25 +94,13 @@ describe('DataGridSystemMessage', () => {
             </Row>);
         };
 
-        it('should render expected header when isHost = false', () => {
+        it('should render expected header', () => {
             // Arrange
-            const expected = getHeader(false);
+            const expected = getHeader();
             
             // Act
             const container = shallow(<DataGridSystemMessage {...props}/>);
-            const header = container.instance().buildHeader(false);
-
-            // Assert
-            expect(header).toEqual(expected);
-        });
-
-        it('should render expected header when isHost = true', () => {
-            // Arrange
-            const expected = getHeader(true);
-
-            // Act
-            const container = shallow(<DataGridSystemMessage {...props}/>);
-            const header = container.instance().buildHeader(true);
+            const header = container.instance().buildHeader();
 
             // Assert
             expect(header).toEqual(expected);
@@ -125,7 +113,7 @@ describe('DataGridSystemMessage', () => {
             const pagingOption = {
                 PageIndex: props.paramsPageSystemMessage.pageIndex,
                 PageSize: props.paramsPageSystemMessage.pageSize,
-                TotalItem: props.systemMessage.total,
+                TotalItem: props.systemMessages.total,
                 PageList: [100, 200, 300, 500, 1000]
             };
 
@@ -143,7 +131,7 @@ describe('DataGridSystemMessage', () => {
                     pageIndex: 1,
                     pageSize: 100
                 },
-                systemMessage: {
+                systemMessages: {
                     total: 0,
                 }
             };   
@@ -152,7 +140,7 @@ describe('DataGridSystemMessage', () => {
                     pageIndex: 1,
                     pageSize: 100
                 },
-                systemMessage: {
+                systemMessages: {
                     total: 0,
                 }
             };
@@ -163,7 +151,7 @@ describe('DataGridSystemMessage', () => {
             
             // Assert
             expect(container.props().paramsPageSystemMessage).toEqual(expected.paramsPageSystemMessage);
-            expect(container.props().systemMessage).toEqual(expected.systemMessage);
+            expect(container.props().systemMessages).toEqual(expected.systemMessages);
         });
     });
 })

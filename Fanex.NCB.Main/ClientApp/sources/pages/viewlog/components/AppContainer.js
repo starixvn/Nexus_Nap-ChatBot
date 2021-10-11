@@ -14,7 +14,6 @@ export class AppContainer extends Component {
     constructor(props) {
         super(props);
 
-        this.haveHostPermission = document.getElementById('have-host-permission') ? document.getElementById('have-host-permission').checked : null;
         this.state = {
             notificationId: '',
             show:{
@@ -45,9 +44,9 @@ export class AppContainer extends Component {
         this.props.getParamsPageRecipientList(params);
         this.props.getParamsPageConversationMessage(params);
 
-        this.props.getSystemMessage(params);
-        this.props.getRecipientList(params);
-        this.props.getConversationMessage(params);
+        this.props.getNotificationSystemMessage(params);
+        this.props.getNotificationRecipientList(params);
+        this.props.getConversationMessageLog(params);
     }
     
     ShowOption = (currentState) =>{
@@ -82,11 +81,11 @@ export class AppContainer extends Component {
                     <div className={this.state.show.showConversation ? 'choose-option active' : 'choose-option'} onClick={() => this.ShowOption('showConversation')}>Conversation Message Log</div>
                 </div>
 
-                {this.state.show.showSystemMessage && <DataGridSystemMessage notificationId={this.state.notificationId} haveHostPermission={this.haveHostPermission}/>}
-                {this.state.show.showRecipientList && <DataGridRecipientList notificationId={this.state.notificationId} haveHostPermission={this.haveHostPermission}/>}
-                {this.state.show.showConversation && <DataGridConversationMessage notificationId={this.state.notificationId} haveHostPermission={this.haveHostPermission}/>}
+                {this.state.show.showSystemMessage && <DataGridSystemMessage notificationId={this.state.notificationId} />}
+                {this.state.show.showRecipientList && <DataGridRecipientList notificationId={this.state.notificationId} />}
+                {this.state.show.showConversation && <DataGridConversationMessage notificationId={this.state.notificationId} />}
             </>
-        )
+        );
     }
 }
 

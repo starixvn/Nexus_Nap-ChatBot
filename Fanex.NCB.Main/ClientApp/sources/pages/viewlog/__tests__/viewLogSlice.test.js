@@ -2,9 +2,9 @@ import viewLog, {
     setParamsPageSystemMessage,
     setParamsPageRecipientList,
     setParamsPageConversationMessage,
-    setSystemMessage,
+    setNotificationSystemMessage,
     setRecipientList,
-    setConversationMessage
+    setConversationMessageLog
 } from '../viewLogSlice';
 
 describe('viewLogSlice reducer', () => {
@@ -22,9 +22,9 @@ describe('viewLogSlice reducer', () => {
                 pageIndex: 1,
                 pageSize: 100
             },
-            systemMessage: {},
-            recipientList: {},
-            conversationMessage: {}
+            systemMessages: {},
+            recipients: {},
+            conversationMessages: {}
         });
     });
 
@@ -61,14 +61,14 @@ describe('viewLogSlice reducer', () => {
         });
     });
 
-    it('should handle setSystemMessage', () => {
+    it('should handle setNotificationSystemMessage', () => {
         expect(
             viewLog({}, {
-                type: setSystemMessage.type,
+                type: setNotificationSystemMessage.type,
                 payload: { notificationId: 188, pageIndex: 1, pageSize: 100 }
             })
         ).toEqual({
-            systemMessage: { notificationId: 188, pageIndex: 1, pageSize: 100  }
+            systemMessages: { notificationId: 188, pageIndex: 1, pageSize: 100  }
         });
     });
 
@@ -83,10 +83,10 @@ describe('viewLogSlice reducer', () => {
         });
     });
 
-    it('should handle setConversationMessage', () => {
+    it('should handle setConversationMessageLog', () => {
         expect(
             viewLog({}, {
-                type: setConversationMessage.type,
+                type: setConversationMessageLog.type,
                 payload: { notificationId: 188, pageIndex: 1, pageSize: 100 }
             })
         ).toEqual({

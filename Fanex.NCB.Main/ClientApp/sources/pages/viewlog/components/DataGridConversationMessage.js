@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions';
@@ -10,7 +10,7 @@ var dateFormat = require("dateformat");
 
 export class DataGridConversationMessage extends Component {
 
-    buildHeader = isHost => {
+    buildHeader = () => {
         return (
             <Row >
                 <Cell colWidth={20} header>{Labels.NotificationID}</Cell>
@@ -18,18 +18,19 @@ export class DataGridConversationMessage extends Component {
                 <Cell colWidth={22} header>{Labels.ConversationGroupID}</Cell>
                 <Cell colWidth={40} header>{Labels.ConversationGroupName}</Cell>
                 <Cell colWidth={20} header>{Labels.Recipient}</Cell>
-                <Cell colWidth={25} header>{Labels.SentTime}</Cell>
+                <Cell colWidth={30} header>{Labels.SentTime}</Cell>
                 <Cell colWidth={20} header>{Labels.IsSuccessful}</Cell>
                 <Cell colWidth={40} header>{Labels.ErrorMessage}</Cell>
                 <Cell colWidth={40} header>{Labels.Content}</Cell>
-            </Row>);
+            </Row>
+        );
     };
 
-    buildBody = isHost => {
-        var conversationData = this.props.conversationMessage.data;
-        var conversationDataRecipient = this.props.conversationMessage.dataMapRecipient;
+    buildBody = () => {
+        var conversationData = this.props.conversationMessages.data;
+        var conversationDataRecipient = this.props.conversationMessages.dataMapRecipient;
 
-        if (this.props.conversationMessage.total > 0) {
+        if (this.props.conversationMessages.total > 0) {
             const newData = conversationData.map((element,index) => {
                 var item = conversationDataRecipient.filter((item) => item.conversationID === element.toConversationID);
                 if(item.length){
@@ -38,13 +39,13 @@ export class DataGridConversationMessage extends Component {
                 return element;
             });
             
-            return newData.map((item, index) => this.renderRow(item, index, isHost));
+            return newData.map((item, index) => this.renderRow(item, index));
         }
 
         return [<Row key={`body${1}`} ><Cell colSpan="10"><NoDataTitle /></Cell></Row>];
     };
 
-    renderRow = (item, index, isHost) => (
+    renderRow = (item, index) => (
         <Row key={index} >
             <Cell className="text-center">{item.notificationID}</Cell>
             <Cell className="text-center">{item.botName}</Cell>
@@ -56,39 +57,38 @@ export class DataGridConversationMessage extends Component {
             <Cell>{item.errorMessage}</Cell>
             <Cell>{item.content}</Cell>
         </Row>
-    )
+    );
 
     onPaging = (pageIndex, pageSize) => {
         const params = { notificationId : this.props.notificationId };
         params['pageIndex'] = pageIndex;
         params['pageSize'] = pageSize;
 
-        this.props.getConversationMessage(params);
+        this.props.getConversationMessageLog(params);
         this.props.getParamsPageConversationMessage(params);
-    }
+    };
     
     render() {
-        const { haveHostPermission } = this.props;
         const pagingOption = {
             PageIndex: this.props.paramsPageConversationMessage.pageIndex,
             PageSize: this.props.paramsPageConversationMessage.pageSize,
-            TotalItem: this.props.conversationMessage.total ? this.props.conversationMessage.total : 0,
+            TotalItem: this.props.conversationMessages.total ? this.props.conversationMessages.total : 0,
             PageList: [100, 200, 300, 500, 1000]
         };
 
         return (
             <Table
-                width={1920}
+                width={1620}
                 autoWidth={false}
-                header={this.buildHeader(haveHostPermission)}
-                body={this.buildBody(haveHostPermission)}
+                header={this.buildHeader()}
+                body={this.buildBody()}
                 isPaging
                 pageOption={pagingOption}
                 onPaging={this.onPaging}
                 containerPadding={0}
                 adjustedHeight={50}
             />
-        )
+        );
     }
 }
 
@@ -97,8 +97,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispat
 const mapStateToProps = state => {
     return {
         paramsPageConversationMessage: state.paramsPageConversationMessage,
-        conversationMessage: state.conversationMessage
+        conversationMessages: state.conversationMessages
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DataGridConversationMessage)
+export default connect(mapStateToProps, mapDispatchToProps)(DataGridConversationMessage);

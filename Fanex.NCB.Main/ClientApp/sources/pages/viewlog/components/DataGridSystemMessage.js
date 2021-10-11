@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions';
@@ -10,65 +10,65 @@ var dateFormat = require("dateformat");
 
 export class DataGridSystemMessage extends Component {
 
-    buildHeader = isHost => {
+    buildHeader = () => {
         return (
             <Row >
                 <Cell colWidth={10} header>{Labels.MessageID}</Cell>
                 <Cell colWidth={10} header>{Labels.NotificationID}</Cell>
                 <Cell colWidth={15} header>{Labels.CreatedDate}</Cell>
                 <Cell colWidth={30} header>{Labels.ErrorMessage}</Cell>
-            </Row>);
+            </Row>
+        );
     };
 
-    buildBody = isHost => {
-        if (this.props.systemMessage.total > 0) {
-            return this.props.systemMessage.data.map((item, index) => this.renderRow(item, index, isHost));
+    buildBody = () => {
+        if (this.props.systemMessages.total > 0) {
+            return this.props.systemMessages.data.map((item, index) => this.renderRow(item, index));
         }
 
         return [<Row key={`body${1}`} ><Cell colSpan="5"><NoDataTitle /></Cell></Row>];
     };
 
-    renderRow = (item, index, isHost) => (
+    renderRow = (item, index) => (
         <Row key={index} >
             <Cell className="text-center">{item.messageID}</Cell>
             <Cell className="text-center">{item.notificationID}</Cell>
             <Cell className="text-center">{dateFormat(item.createdDate, DateTimeFormatV2)}</Cell>
             <Cell>{item.checkMsg}</Cell>
         </Row>
-    )
+    );
 
     onPaging = (pageIndex, pageSize) => {
         const params = { notificationId : this.props.notificationId };
         params['pageIndex'] = pageIndex;
         params['pageSize'] = pageSize;
 
-        this.props.getSystemMessage(params);
+        this.props.getNotificationSystemMessage(params);
         this.props.getParamsPageSystemMessage(params);
-    }
-    
+    };
+
     render() {
-        const { haveHostPermission } = this.props;
         const pagingOption = {
             PageIndex: this.props.paramsPageSystemMessage.pageIndex,
             PageSize: this.props.paramsPageSystemMessage.pageSize,
-            TotalItem: this.props.systemMessage.total ? this.props.systemMessage.total : 0,
+            TotalItem: this.props.systemMessages.total ? this.props.systemMessages.total : 0,
             PageList: [100, 200, 300, 500, 1000]
         };
-        console.log(pagingOption);
+
         return (
             <Table
                 width={1100}
                 autoWidth={false}
-                header={this.buildHeader(haveHostPermission)}
-                body={this.buildBody(haveHostPermission)}
+                header={this.buildHeader()}
+                body={this.buildBody()}
                 isPaging
                 pageOption={pagingOption}
                 onPaging={this.onPaging}
                 containerPadding={0}
                 adjustedHeight={50}
             />
-        )
-    }
+        );
+    };
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
@@ -76,8 +76,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispat
 const mapStateToProps = state => {
     return {
         paramsPageSystemMessage: state.paramsPageSystemMessage,
-        systemMessage: state.systemMessage,
+        systemMessages: state.systemMessages,
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DataGridSystemMessage)
+export default connect(mapStateToProps, mapDispatchToProps)(DataGridSystemMessage);

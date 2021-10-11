@@ -7,9 +7,9 @@ import {
     setParamsPageSystemMessage,
     setParamsPageRecipientList,
     setParamsPageConversationMessage,
-    setSystemMessage,
+    setNotificationSystemMessage,
     setRecipientList,
-    setConversationMessage
+    setConversationMessageLog
 } from '../viewLogSlice';
 
 const middlewares = [thunk];
@@ -102,8 +102,8 @@ describe('actionCreators', () => {
         });
     });
 
-    describe('getSystemMessage', () => {
-        it('should handle getSystemMessage when fetching data have been done', async () => {
+    describe('getNotificationSystemMessage', () => {
+        it('should handle getNotificationSystemMessage when fetching data have been done', async () => {
             // Arrange
             const expectedParams = {
                 notificationId: 188,
@@ -116,16 +116,16 @@ describe('actionCreators', () => {
                     data: [{ messageID: 1074491061, notificationID: 188, createdDate: '2020-01-08T05:10:22', checkMsg: '- Can not map to any Recipient(s): mansion88, MARS'}]
                 }
             };
-            const expectedActions = [{ type: setSystemMessage.type, payload: response.data }];
-            const store = mockStore({ systemMessage: {} });
+            const expectedActions = [{ type: setNotificationSystemMessage.type, payload: response.data }];
+            const store = mockStore({ systemMessages: [] });
             const promise = Promise.resolve(response);
             DataService.getDataAsync = jest.fn(() => promise);
 
             // Act
-            await store.dispatch(ActionCreators.getSystemMessage(expectedParams));
+            await store.dispatch(ActionCreators.getNotificationSystemMessage(expectedParams));
 
             // Assert
-            expect(DataService.getDataAsync).toHaveBeenCalledWith('ViewLog/GetSystemMessage', expectedParams);
+            expect(DataService.getDataAsync).toHaveBeenCalledWith('ViewLog/GetNotificationSystemMessage', expectedParams);
             expect(store.getActions()).toEqual(expectedActions);
         });
     });
@@ -158,8 +158,8 @@ describe('actionCreators', () => {
         });
     });
 
-    describe('getConversationMessage', () => {
-        it('should handle getConversationMessage when fetching data have been done', async () => {
+    describe('getConversationMessageLog', () => {
+        it('should handle getConversationMessageLog when fetching data have been done', async () => {
             // Arrange
             const expectedParams = {
                 notificationId: 188,
@@ -172,13 +172,13 @@ describe('actionCreators', () => {
                     data: [{ notificationID: 188, botName: 'tim - new group', conversationGroupID: 358, conversationGroupName: 'tim - new group', recipientName: '67BET', sentTime: '0001-01-01T00:00:00', isSuccessful: 1, errorMessage: null, content: 'Anything ok'}]
                 }
             };
-            const expectedActions = [{ type: setConversationMessage.type, payload: response.data }];
+            const expectedActions = [{ type: setConversationMessageLog.type, payload: response.data }];
             const store = mockStore({ conversationMessage: {} });
             const promise = Promise.resolve(response);
             DataService.getDataAsync = jest.fn(() => promise);
 
             // Act
-            await store.dispatch(ActionCreators.getConversationMessage(expectedParams));
+            await store.dispatch(ActionCreators.getConversationMessageLog(expectedParams));
 
             // Assert
             expect(DataService.getDataAsync).toHaveBeenCalledWith('ViewLog/GetConversationMessage', expectedParams);

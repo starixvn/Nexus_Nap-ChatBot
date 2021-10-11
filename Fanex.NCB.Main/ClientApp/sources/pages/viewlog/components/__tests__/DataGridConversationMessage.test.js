@@ -15,7 +15,7 @@ describe('DataGridConversationMessage', () => {
             pageIndex: 1,
             pageSize: 100
         },
-        conversationMessage: {
+        conversationMessages: {
             total: 0
         }
     };
@@ -28,13 +28,13 @@ describe('DataGridConversationMessage', () => {
             // Arrange
             const propsFunc = {
                 notificationId: 188,
-                getConversationMessage: jest.fn(),
+                getConversationMessageLog: jest.fn(),
                 getParamsPageConversationMessage: jest.fn(),
                 paramsPageConversationMessage: {
                     pageIndex: 1,
                     pageSize: 100
                 },
-                conversationMessage: {
+                conversationMessages: {
                     total: 0
                 }
             };
@@ -46,7 +46,7 @@ describe('DataGridConversationMessage', () => {
             container.instance().onPaging(1, 100);
 
             // Assert
-            expect(propsFunc.getConversationMessage).toHaveBeenCalledWith(expectedParams);
+            expect(propsFunc.getConversationMessageLog).toHaveBeenCalledWith(expectedParams);
             expect(propsFunc.getParamsPageConversationMessage).toHaveBeenCalledWith(expectedParams);
         });
     });
@@ -68,7 +68,7 @@ describe('DataGridConversationMessage', () => {
                     pageIndex: 1,
                     pageSize: 100
                 },
-                conversationMessage: {
+                conversationMessages: {
                     total: 100,
                     data:[{id:1234}],
                     dataMapRecipient:[{id:1234}]
@@ -86,39 +86,27 @@ describe('DataGridConversationMessage', () => {
     });
 
     describe('buildHeader', () => {
-        const getHeader = function (isHost) {
+        const getHeader = function () {
             return (<Row >
                 <Cell colWidth={20} header>{Labels.NotificationID}</Cell>
                 <Cell colWidth={20} header>{Labels.BotName}</Cell>
                 <Cell colWidth={22} header>{Labels.ConversationGroupID}</Cell>
                 <Cell colWidth={40} header>{Labels.ConversationGroupName}</Cell>
                 <Cell colWidth={20} header>{Labels.Recipient}</Cell>
-                <Cell colWidth={25} header>{Labels.SentTime}</Cell>
+                <Cell colWidth={30} header>{Labels.SentTime}</Cell>
                 <Cell colWidth={20} header>{Labels.IsSuccessful}</Cell>
                 <Cell colWidth={40} header>{Labels.ErrorMessage}</Cell>
                 <Cell colWidth={40} header>{Labels.Content}</Cell>
             </Row>);
         };
 
-        it('should render expected header when isHost = false', () => {
+        it('should render expected header', () => {
             // Arrange
-            const expected = getHeader(false);
+            const expected = getHeader();
             
             // Act
             const container = shallow(<DataGridConversationMessage {...props}/>);
-            const header = container.instance().buildHeader(false);
-
-            // Assert
-            expect(header).toEqual(expected);
-        });
-
-        it('should render expected header when isHost = true', () => {
-            // Arrange
-            const expected = getHeader(true);
-
-            // Act
-            const container = shallow(<DataGridConversationMessage {...props}/>);
-            const header = container.instance().buildHeader(true);
+            const header = container.instance().buildHeader();
 
             // Assert
             expect(header).toEqual(expected);
@@ -131,7 +119,7 @@ describe('DataGridConversationMessage', () => {
             const pagingOption = {
                 PageIndex: props.paramsPageConversationMessage.pageIndex,
                 PageSize: props.paramsPageConversationMessage.pageSize,
-                TotalItem: props.conversationMessage.total,
+                TotalItem: props.conversationMessages.total,
                 PageList: [100, 200, 300, 500, 1000]
             };
 
@@ -149,7 +137,7 @@ describe('DataGridConversationMessage', () => {
                     pageIndex: 1,
                     pageSize: 100
                 },
-                conversationMessage: {
+                conversationMessages: {
                     total: 0,
                 }
             };   
@@ -158,7 +146,7 @@ describe('DataGridConversationMessage', () => {
                     pageIndex: 1,
                     pageSize: 100
                 },
-                conversationMessage: {
+                conversationMessages: {
                     total: 0,
                 }
             };
@@ -169,7 +157,7 @@ describe('DataGridConversationMessage', () => {
             
             // Assert
             expect(container.props().paramsPageConversationMessage).toEqual(expected.paramsPageConversationMessage);
-            expect(container.props().conversationMessage).toEqual(expected.conversationMessage);
+            expect(container.props().conversationMessages).toEqual(expected.conversationMessages);
         });
     });
 });
