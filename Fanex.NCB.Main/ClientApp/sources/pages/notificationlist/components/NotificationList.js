@@ -56,8 +56,7 @@ export default class NotificationList extends Component {
                 report: null,
                 show: false,
                 isSubmitting: false
-            },
-            isOpenTooltipMessageId: false
+            }
         };
 
         const windowUrl = window.location.search;
@@ -140,7 +139,14 @@ export default class NotificationList extends Component {
     }
 
     getNotifications = (pageIndex = 1, pageSize = defaultPageSize) => {
+        const MaxMessageId = 4294967295;
         const filter = this.state.filter;
+        let messageId = filter.messageId;
+        if (filter.messageId !== ''
+            && (parseInt(filter.messageId, 10) <= 0 || parseInt(filter.messageId, 10) > MaxMessageId)) {
+            messageId = MaxMessageId;
+        }
+
         axios.get(Site.resolveClientUrl('NotificationList/Get'), {
             params: {
                 notificationTypeIds: filter.notificationTypeIds,
@@ -150,7 +156,7 @@ export default class NotificationList extends Component {
                 recipientIds: filter.recipientIds,
                 notificationStatusIds: filter.statusIds,
                 channelIds: filter.channelIds,
-                messageId: filter.messageId,
+                messageId: messageId,
                 pageIndex: pageIndex,
                 pageSize: pageSize
             }
@@ -185,9 +191,7 @@ export default class NotificationList extends Component {
     handleMessageIdChange = event => {
         const regex = /^[0-9\b]+$/;
         if (event.target.value === '' || regex.test(event.target.value)) {
-            let messageId = event.target.value === '' ? 0 : parseInt(event.target.value, 10);
-            messageId = messageId <= 0 || messageId > 4294967295 ? '' : messageId;
-            this.handleFilterChange('messageId', messageId);
+            this.handleFilterChange('messageId', event.target.value);
         }
     }
 
@@ -335,14 +339,6 @@ export default class NotificationList extends Component {
         });
     }
 
-    toggleTooltipMessageId = () => {
-        this.setState(prevState => {
-            return {
-                isOpenTooltipMessageId: !prevState.isOpenTooltipMessageId
-            };
-        });
-    }
-
     render() {
         const { filter } = this.state;
         return (
@@ -408,12 +404,6 @@ export default class NotificationList extends Component {
                             <Input type="text" id="messageId" name="messageId" value={filter.messageId}
                                 onChange={this.handleMessageIdChange}
                             />
-                            <Tooltip placement="auto" isOpen={this.state.isOpenTooltipMessageId} target="messageId"
-                                className="tooltip-messageid"
-                                toggle={this.toggleTooltipMessageId}
-                            >
-                                MessageID must be between from 1 to 4294967295
-                            </Tooltip>
                         </FormGroup>
                         <FormGroup>
                             <button id="submit-button" className="btn-submit" type="submit">Submit</button>
