@@ -144,7 +144,7 @@
             {
                 NotificationId = notificationMessage.NotificationId,
                 ConversationId = conversationInfo.ConversationId,
-                SentTime = DateTime.Now,
+                SentTime = DateTime.UtcNow,
                 ErrorCode = 1,
                 ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
                 IsIgnoreRetry = true

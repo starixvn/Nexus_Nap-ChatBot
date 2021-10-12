@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using System.Threading;
     using Fanex.Caching.Redis;
     using Fanex.Data;
     using Fanex.Data.MySql;
@@ -107,6 +108,8 @@
 
             services.AddRedisCache(Configuration.GetSection("Fanex.Caching.Redis"));
             services.AddMvc().AddNewtonsoftJson();
+
+            ThreadPool.SetMinThreads(300, 300);
         }
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)

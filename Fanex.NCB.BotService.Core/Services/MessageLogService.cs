@@ -5,8 +5,6 @@
     using System.Threading.Tasks;
     using Fanex.Caching;
     using Fanex.Logging;
-    using Fanex.Logging.Extensions;
-    using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
 
@@ -39,18 +37,25 @@
             {
                 return false;
             }
-
-            var messageContentList = redisCacheExtend.GetValueByKeyContains<string>(conversationId.Replace(':', '-'));
-
             bool isInvalid = false;
-            foreach (string logContent in messageContentList)
-            {
-                if (logContent != null && logContent.Equals(message))
-                {
-                    isInvalid = true;
 
-                    return isInvalid;
+            try
+            {
+                var messageContentList = redisCacheExtend.GetValueByKeyContains<string>(conversationId.Replace(':', '-'));
+
+                foreach (string logContent in messageContentList)
+                {
+                    if (logContent != null && logContent.Equals(message))
+                    {
+                        isInvalid = true;
+
+                        return isInvalid;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.Message);
             }
 
             return isInvalid;
@@ -72,20 +77,22 @@
                 }
                 catch (Exception ex)
                 {
-                    var logMessage = new LogMessage(ex.Message)
-                        .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                        .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
-                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex))
-                        .ToString();
-                    await logger.ErrorAsync(logMessage);
+                    await logger.ErrorAsync(ex.Message);
                 }
             }
         }
 
         public async Task RemoveMessageLogOnCache(string conversationId, string guid)
         {
-            string key = ModifyKey(conversationId, guid);
-            await cacheService.RemoveAsync(key);
+            try
+            {
+                string key = ModifyKey(conversationId, guid);
+                await cacheService.RemoveAsync(key);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.Message);
+            }
         }
 
         private async Task<bool> IsExistedOnCache(string conversationId, string guid)
