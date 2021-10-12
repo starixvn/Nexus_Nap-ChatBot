@@ -17,7 +17,7 @@
     <Setting Key="NCB_Setting_System_Sel" SpName="NCB_Setting_System_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
   <Function Name="Notification Type">
-      <Setting Key="NCB_NotificationType_Sel" SpName="NCB_NotificationType_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
+      <Setting Key="NCB_NotificationType_Sel" SpName="NCB_NotificationType_Sel" DbName="ChatBot" Plain="0"></Setting>
       <Setting Key="NCB_NotificationType_Ins" SpName="NCB_NotificationType_Ins_xtest" DbName="ChatBot" Plain="0"></Setting>
       <Setting Key="NCB_NotificationType_Upd" SpName="NCB_NotificationType_Upd_xtest" DbName="ChatBot" Plain="0"></Setting>
       <Setting Key="NCB_NotificationType_Del" SpName="NCB_NotificationType_Del_xtest" DbName="ChatBot" Plain="0"></Setting>
@@ -144,7 +144,7 @@
     <Setting Key="NCB_SettingConfiguration_MappingList_Sel" SpName="NCB_SettingConfiguration_MappingList_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SettingConfiguration_JobInfo_Upd" SpName="NCB_SettingConfiguration_JobInfo_Upd_xtest" DbName="ChatBot" Plain="0" />
     <Setting Key="NCB_SettingConfiguration_MsgContentsTypeList_Sel" SpName="NCB_SettingConfiguration_MsgContentsTypeList_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SettingConfiguration_NotificationTypeData_Sel" SpName="NCB_SettingConfiguration_NotificationTypeData_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_SettingConfiguration_NotificationTypeData_Sel" SpName="NCB_SettingConfiguration_NotificationTypeData_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SettingConfiguration_Mapping_Ins" SpName="NCB_SettingConfiguration_Mapping_Ins" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SettingConfiguration_Mapping_Sel" SpName="NCB_SettingConfiguration_Mapping_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_SettingConfiguration_Mapping_Upd" SpName="NCB_SettingConfiguration_Mapping_Upd" DbName="ChatBot" Plain="0"></Setting>
