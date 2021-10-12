@@ -19,6 +19,7 @@ CREATE DEFINER = 'ChatBotSystem'@'%' PROCEDURE  NCB_OIC_SyncData(
                 - 20190913@Oliver: update table Recipient after sync
                 - 20190215@Oliver: Skip update internal recipients - Redmine: #128430
                 - 20210928@Malcolm: Fix deadlock - Redmine: #162379
+                - 20211011@Malcolm: Fix deadlock - Redmine: #163037
     */
 )
 SQL SECURITY DEFINER
@@ -428,21 +429,48 @@ BEGIN
 
     END IF;
     # End delete removed recipients
-
-    INSERT INTO Recipient(RecipientName, RecipientTypeID, SourceID, SourceDescription)    
+	
+    DROP TEMPORARY TABLE IF EXISTS tmp_Data;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_Data
+    (
+		RecipientName VARCHAR(500), 
+        RecipientTypeID INT, 
+        SourceID INT, 
+        SourceDescription VARCHAR(50), 
+        IsDeleted BIT,
+        PRIMARY KEY (RecipientTypeID, SourceID)
+	);
+    
+    INSERT INTO tmp_Data (RecipientName, RecipientTypeID, SourceID, SourceDescription, IsDeleted)
     SELECT tmp.RecipientName 
          , tmp.RecipientTypeID
          , tmp.SourceID
          , tmp.SourceDescription
+         ,CASE WHEN r.RecipientID IS NULL THEN 1 ELSE 0 END AS IsDeleted
     FROM tmp_Recipient tmp
     LEFT JOIN Recipient r ON tmp.RecipientTypeID = r.RecipientTypeID
                     AND tmp.SourceID = r.SourceID
-    WHERE r.RecipientID IS NULL;
+    WHERE r.RecipientID IS NULL 
+		OR IFNULL(r.RecipientName, '') <> IFNULL(tmp.RecipientName, '')
+        OR IFNULL(r.SourceDescription, '') <> IFNULL(tmp.SourceDescription, '');
 
-    UPDATE Recipient r
-    INNER JOIN tmp_Recipient tmp ON r.RecipientTypeID = tmp.RecipientTypeID AND r.SourceID = tmp.SourceID
-    SET r.RecipientName = tmp.RecipientName
-       ,r.SourceDescription = tmp.SourceDescription;
+	IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = 1) THEN
+		INSERT INTO Recipient (RecipientName, RecipientTypeID, SourceID, SourceDescription)
+        SELECT td.RecipientName
+				,td.RecipientTypeID
+                ,td.SourceID
+                ,td.SourceDescription
+        FROM tmp_Data td
+        WHERE td.IsDeleted = 1;
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM tmp_Data WHERE IsDeleted = 0) THEN
+		UPDATE Recipient r
+		INNER JOIN tmp_Data td ON r.RecipientTypeID = td.RecipientTypeID AND r.SourceID = td.SourceID
+			SET r.RecipientName = td.RecipientName
+			   ,r.SourceDescription = td.SourceDescription
+		WHERE td.IsDeleted = 0;
+	END IF;
 END;
 
 //
