@@ -125,7 +125,7 @@
             {
                 NotificationId = notificationMessage.NotificationId,
                 ConversationId = conversationInfo.ConversationId,
-                SentTime = DateTime.Now,
+                SentTime = DateTime.UtcNow,
                 ErrorCode = 1,
                 ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
                 IsIgnoreRetry = true
@@ -171,7 +171,7 @@
                 {
                     NotificationId = notificationId,
                     ConversationId = conversationInfo.ConversationId,
-                    SentTime = DateTime.Now,
+                    SentTime = DateTime.UtcNow,
                     ErrorCode = 1,
                     ErrorMessage = exception.Message
                 };
@@ -223,7 +223,7 @@
                 }
             }
 
-            result.SentTime = DateTime.Now;
+            result.SentTime = DateTime.UtcNow;
             return result;
         }
 
