@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Services
 {
+    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Criteria.ViewLog;
     using Fanex.NCB.Models.ViewLog;
     using Fanex.NCB.Services.Interfaces;
@@ -26,6 +27,10 @@
                 PageIndex = pageIndex,
                 PageSize = pageSize
             });
+            foreach (var systemMessage in systemMessages)
+            {
+                systemMessage.CreatedDate = systemMessage.CreatedDate.ConvertFromUTC();
+            }
 
             return (totalItems.FirstOrDefault(), systemMessages);
         }
@@ -38,6 +43,10 @@
                 PageIndex = pageIndex,
                 PageSize = pageSize
             });
+            foreach (var recipient in recipients)
+            {
+                recipient.SentTime = recipient.SentTime.ConvertFromUTC();
+            }
 
             return (totalItems.FirstOrDefault(), recipients);
         }
@@ -54,6 +63,10 @@
                     PageSize = pageSize
                 }
             );
+            foreach (var conversationMessage in conversationMessages)
+            {
+                conversationMessage.SentTime = conversationMessage.SentTime.ConvertFromUTC();
+            }
 
             return (totalItems.FirstOrDefault(), conversationMessages, mapRecipient);
         }

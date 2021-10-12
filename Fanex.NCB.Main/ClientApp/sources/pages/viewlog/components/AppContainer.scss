@@ -28,15 +28,14 @@
     display: flex;
     box-sizing: border-box;
     padding-top: 20px;
-    padding-bottom: 10px;
+    margin-bottom: 20px;
 
     .choose-option{
         cursor: pointer;
-        border: none;
         vertical-align: middle;
         text-align: center;
         box-sizing: border-box;
-        color: #333;
+        color: #333 !important;
         font-weight: bold;
         padding: 5px 30px;
         background: #eceff1;
@@ -46,6 +45,7 @@
 
     .active{
         border-bottom: 2px #066896 solid !important;
+        background: #eceff1 !important;
         opacity: 1;
     }
 }

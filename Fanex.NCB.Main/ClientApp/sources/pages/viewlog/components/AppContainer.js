@@ -1,8 +1,10 @@
 import './AppContainer.scss';
 
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Form, FormGroup, Label, Input } from 'reactstrap';
+import { Form, FormGroup, Label, Input, TabContent, TabPane,
+    Nav, NavItem, NavLink
+} from 'reactstrap';
 import { NCBBreadcrum } from '../../common/breadcrumbs/breadcrumbs';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions';
@@ -16,11 +18,7 @@ export class AppContainer extends Component {
 
         this.state = {
             notificationId: '',
-            show:{
-                showSystemMessage: true,
-                showRecipientList: false,
-                showConversation: false,
-            }
+            activeTab: '1'
         }
     }
 
@@ -31,7 +29,7 @@ export class AppContainer extends Component {
                 notificationId: event.target.value
             });
         }      
-    }
+    };
 
     handleSubmit = (event) => {
         event.preventDefault();
@@ -47,17 +45,15 @@ export class AppContainer extends Component {
         this.props.getNotificationSystemMessage(params);
         this.props.getNotificationRecipientList(params);
         this.props.getConversationMessageLog(params);
-    }
-    
-    ShowOption = (currentState) =>{
-        var keyShow = Object.keys(this.state.show);
-        this.setState({
-            show: {
-                [keyShow[0]]: false, [keyShow[1]]: false, [keyShow[2]]: false,
-                [currentState]: true
-            }
-        });
-    }
+    };
+
+    handleToggle = tab => {
+        if (this.state.activeTab !== tab) {
+            this.setState({
+                activeTab: tab
+            });
+        }
+    };
 
     render() {
         return (
@@ -75,15 +71,43 @@ export class AppContainer extends Component {
                     </div>
                 </Form>
 
-                <div className="group-choose">
-                    <div className={this.state.show.showSystemMessage ? 'choose-option active' : 'choose-option'} onClick={() => this.ShowOption('showSystemMessage')}>Notification System Message</div>
-                    <div className={this.state.show.showRecipientList ? 'choose-option active' : 'choose-option'} onClick={() => this.ShowOption('showRecipientList')}>Notification Recipient List</div>
-                    <div className={this.state.show.showConversation ? 'choose-option active' : 'choose-option'} onClick={() => this.ShowOption('showConversation')}>Conversation Message Log</div>
-                </div>
-
-                {this.state.show.showSystemMessage && <DataGridSystemMessage notificationId={this.state.notificationId} />}
-                {this.state.show.showRecipientList && <DataGridRecipientList notificationId={this.state.notificationId} />}
-                {this.state.show.showConversation && <DataGridConversationMessage notificationId={this.state.notificationId} />}
+                <Nav tabs className="group-choose">
+                    <NavItem>
+                        <NavLink
+                            className={this.state.activeTab === '1' ? 'choose-option active' : 'choose-option'}
+                            onClick={() => this.handleToggle('1')}
+                        >
+                            Notification System Message
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink
+                            className={this.state.activeTab === '2' ? 'choose-option active' : 'choose-option'}
+                            onClick={() => this.handleToggle('2')}
+                        >
+                            Notification Recipient List
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink
+                            className={this.state.activeTab === '3' ? 'choose-option active' : 'choose-option'}
+                            onClick={() => this.handleToggle('3')}
+                        >
+                            Conversation Message Log
+                        </NavLink>
+                    </NavItem>
+                </Nav>
+                <TabContent activeTab={this.state.activeTab}>
+                    <TabPane tabId="1">
+                        <DataGridSystemMessage notificationId={this.state.notificationId} />
+                    </TabPane>
+                    <TabPane tabId="2">
+                        <DataGridRecipientList notificationId={this.state.notificationId} />
+                    </TabPane>
+                    <TabPane tabId="3">
+                        <DataGridConversationMessage notificationId={this.state.notificationId} />
+                    </TabPane>
+                </TabContent>
             </>
         );
     }

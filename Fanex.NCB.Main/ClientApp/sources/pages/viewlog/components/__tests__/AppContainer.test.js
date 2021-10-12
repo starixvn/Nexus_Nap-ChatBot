@@ -16,108 +16,29 @@ describe('AppContainer', () => {
     });
 
     describe('render', () => {
-        it('should render setState showSystemMessage when Click', () => {
-            // Arrange
-            const expectStateShow = {
-                showSystemMessage: true,
-                showRecipientList: false,
-                showConversation: false,
-            };
-
+        it('should setState when call handleToggle', () => {
             // Act
             const container = shallow(<AppContainer/>);
-            container.instance().ShowOption('showSystemMessage');
+            container.instance().handleToggle('1');
 
             // Assert            
-            expect(container.state('show')).toEqual(expectStateShow);
-        });
-
-        it('should render setState showRecipientList when Click', () => {
-            // Arrange
-            const expectStateShow = {
-                showSystemMessage: false,
-                showRecipientList: true,
-                showConversation: false,
-            };
-
-            // Act
-            const container = shallow(<AppContainer/>);
-            container.instance().ShowOption('showRecipientList');
-
-            // Assert            
-            expect(container.state('show')).toEqual(expectStateShow);
-        });
-
-        it('should render setState showConversation when Click', () => {
-            // Arrange
-            const expectStateShow = {
-                showSystemMessage: false,
-                showRecipientList: false,
-                showConversation: true,
-            };
-
-            // Act
-            const container = shallow(<AppContainer/>);
-            container.instance().ShowOption('showConversation');
-
-            // Assert            
-            expect(container.state('show')).toEqual(expectStateShow);
+            expect(container.state('activeTab')).toEqual('1');
         });
 
         it('should render correctly default components', () => {
-            // Act
-            const container = shallow(<AppContainer/>);
-
-            // Assert
-            expect(container).toMatchSnapshot();
-            expect(container.find(NCBBreadcrum)).toHaveLength(1);
-            expect(container.find(DataGridConversationMessage)).toHaveLength(0);
-            expect(container.find(DataGridRecipientList)).toHaveLength(0);
-            expect(container.find(DataGridSystemMessage)).toHaveLength(1);
-        });
-
-        it('should render correctly RecipientList components', () => {
             // Arrange
-            const state = {
-                show:{
-                    showSystemMessage: false,
-                    showRecipientList: true,
-                    showConversation: false,
-                }
-            }
+            const state = { activeTab: '1' };
 
             // Act
             const container = shallow(<AppContainer/>);
-            container.setState(state);
-
-            // Assert
-            expect(container).toMatchSnapshot();
-            expect(container.find(NCBBreadcrum)).toHaveLength(1);
-            expect(container.find(DataGridConversationMessage)).toHaveLength(0);
-            expect(container.find(DataGridRecipientList)).toHaveLength(1);
-            expect(container.find(DataGridSystemMessage)).toHaveLength(0);
-        });
-
-        it('should render correctly ConversationMessage components', () => {
-            // Arrange
-            const state = {
-                show:{
-                    showSystemMessage: false,
-                    showRecipientList: false,
-                    showConversation: true,
-                }
-            }
-
-            // Act
-            const container = shallow(<AppContainer/>);
-            container.setState(state);
+            container.instance().setState(state);
 
             // Assert
             expect(container).toMatchSnapshot();
             expect(container.find(NCBBreadcrum)).toHaveLength(1);
             expect(container.find(DataGridConversationMessage)).toHaveLength(1);
-            expect(container.find(DataGridRecipientList)).toHaveLength(0);
-            expect(container.find(DataGridSystemMessage)).toHaveLength(0);
+            expect(container.find(DataGridRecipientList)).toHaveLength(1);
+            expect(container.find(DataGridSystemMessage)).toHaveLength(1);
         });
 
         it('props should be mapped correctly', () => {
@@ -163,10 +84,10 @@ describe('AppContainer', () => {
     });
     
     describe('onClick', () => {
-        it("should call ShowOption on click div choose-option", () => {
+        it("should call handleToggle on click div choose-option", () => {
             // Act
             const container = shallow(<AppContainer />);
-            const spy = jest.spyOn(container.instance(), "ShowOption");
+            const spy = jest.spyOn(container.instance(), "handleToggle");
             container.instance().forceUpdate();
 
             container.find(".choose-option").at(0).simulate("click");

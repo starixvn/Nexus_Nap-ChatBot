@@ -13,14 +13,14 @@ export class DataGridRecipientList extends Component {
     buildHeader = () => {
         return (
             <Row >
-                <Cell colWidth={10} header>{Labels.NotificationID}</Cell>
-                <Cell colWidth={20} header>{Labels.GroupName}</Cell>
-                <Cell colWidth={10} header>{Labels.ChatGroupType}</Cell>
-                <Cell colWidth={10} header>{Labels.Recipient}</Cell>
-                <Cell colWidth={15} header>{Labels.SentTime}</Cell>
-                <Cell colWidth={10} header>{Labels.Status}</Cell>
-                <Cell colWidth={10} header>{Labels.RetryTime}</Cell>
-                <Cell colWidth={30} header>{Labels.ErrorMessage}</Cell>
+                <Cell colWidth={20} header>{Labels.NotificationID}</Cell>
+                <Cell colWidth={35} header>{Labels.GroupName}</Cell>
+                <Cell colWidth={15} header>{Labels.ChatGroupType}</Cell>
+                <Cell colWidth={20} header>{Labels.Recipient}</Cell>
+                <Cell colWidth={30} header>{Labels.SentTime}</Cell>
+                <Cell colWidth={15} header>{Labels.Status}</Cell>
+                <Cell colWidth={15} header>{Labels.RetryTime}</Cell>
+                <Cell colWidth={50} header>{Labels.ErrorMessage}</Cell>
             </Row>
         );
     };

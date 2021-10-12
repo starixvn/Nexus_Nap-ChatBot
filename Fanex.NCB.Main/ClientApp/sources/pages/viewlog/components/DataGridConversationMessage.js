@@ -13,13 +13,13 @@ export class DataGridConversationMessage extends Component {
     buildHeader = () => {
         return (
             <Row >
-                <Cell colWidth={20} header>{Labels.NotificationID}</Cell>
+                <Cell colWidth={15} header>{Labels.NotificationID}</Cell>
                 <Cell colWidth={20} header>{Labels.BotName}</Cell>
-                <Cell colWidth={22} header>{Labels.ConversationGroupID}</Cell>
+                <Cell colWidth={20} header>{Labels.ConversationGroupID}</Cell>
                 <Cell colWidth={40} header>{Labels.ConversationGroupName}</Cell>
                 <Cell colWidth={20} header>{Labels.Recipient}</Cell>
-                <Cell colWidth={30} header>{Labels.SentTime}</Cell>
-                <Cell colWidth={20} header>{Labels.IsSuccessful}</Cell>
+                <Cell colWidth={20} header>{Labels.SentTime}</Cell>
+                <Cell colWidth={15} header>{Labels.IsSuccessful}</Cell>
                 <Cell colWidth={40} header>{Labels.ErrorMessage}</Cell>
                 <Cell colWidth={40} header>{Labels.Content}</Cell>
             </Row>
