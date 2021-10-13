@@ -1,3 +1,4 @@
+/*<info serverAlias="DBCB-DBCB_DEV" databaseType="2" executers="ncb.admin" isFunction="0" isNested="0"></info>*/
 DROP PROCEDURE IF EXISTS NCB_JobInfo_Udp;
 DELIMITER //
 CREATE DEFINER=`ChatBotSystem`@`%` PROCEDURE `NCB_JobInfo_Udp`(
