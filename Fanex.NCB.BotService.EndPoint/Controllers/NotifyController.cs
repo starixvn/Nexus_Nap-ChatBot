@@ -225,6 +225,7 @@
 
             try
             {
+                throw new Exception("This is a cheat of exception in code");
                 await SendMessage(appId, conversationReference, message);
             }
             catch (Exception exception)
