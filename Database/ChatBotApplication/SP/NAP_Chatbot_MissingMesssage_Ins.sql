@@ -26,7 +26,7 @@ AS
 BEGIN
 	SET NOCOUNT ON
 	
-	WAITFOR DELAY '00:00:04:00'
+	WAITFOR DELAY '00:00:03:00'
 
 	DECLARE @Message TABLE (JobIdentify TINYINT, MessageId INT)
 	INSERT INTO @Message (JobIdentify, MessageId)

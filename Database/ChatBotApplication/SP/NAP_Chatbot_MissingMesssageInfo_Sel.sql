@@ -7,7 +7,7 @@ ALTER PROCEDURE [dbo].[NAP_Chatbot_MissingMesssageInfo_Sel]
 AS
 /*
 	Created: 20211007@Malcolm
-	Task: ChatBot - Get Max MessageId
+	Task: ChatBot - Get Missing message
 	DB: DBMSG.bodb_Message  
 
 	Revisions:

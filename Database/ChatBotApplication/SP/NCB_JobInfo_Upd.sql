@@ -43,7 +43,7 @@ BEGIN
 
     UPDATE SystemSetting AS s
 	INNER JOIN tmp_JobInfo AS j ON j.JobIdentify = s.JobIdentify
-		SET Value = DATE_ADD(UTC_TIME(), INTERVAL -4 HOUR)
+		SET Value = DATE_ADD(UTC_TIMESTAMP(), INTERVAL -4 HOUR)
 	WHERE s.ID IN (16, 17);
 END;
 //

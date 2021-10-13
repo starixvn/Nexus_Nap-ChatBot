@@ -20,7 +20,7 @@ BEGIN
 	INSERT INTO @RequestInfo (MessageId, RequestId)
 	SELECT DISTINCT vh.MessageId, vh.RequestId
 	FROM dbo.TicketVoiding_VoidingHistory vh WITH (NOLOCK)
-		INNER JOIN TicketVoiding_Request r WITH (NOLOCK) ON vh.RequestId = r.RequestId AND (r.IssueTypeId IN (11,15) OR r.IssueTypeId = 13 AND vh.MinWinlostdate IS NOT NULL)-- abnormal bet(11), Abnormal Accounts(13), AB (real member)(15)
+		INNER JOIN TicketVoiding_Request r WITH (NOLOCK) ON vh.RequestId = r.RequestId AND (r.IssueTypeId IN (11,15) OR (r.IssueTypeId = 13 AND vh.MinWinlostdate IS NOT NULL))-- abnormal bet(11), Abnormal Accounts(13), AB (real member)(15)
 	WHERE vh.CreatedDate >= DATEADD(HOUR, -3, @PostTime)
 		AND vh.StatusId = 2 -- tickets void successfully
 	ORDER BY MessageId
