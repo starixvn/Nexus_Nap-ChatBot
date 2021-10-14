@@ -54,3 +54,5 @@ export const Channels = {
     Skype: 1,
     Telegram: 2
 };
+
+export const internalCSDJobId = 2;

@@ -15,6 +15,7 @@ import EditMapping from './EditMapping';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import JobInfo from './JobInfo';
 import EditJobInfo from './EditJobInfo';
+import { internalCSDJobId } from '../../constants/constants';
 
 export class AppContainer extends Component {
     constructor(props) {
@@ -75,6 +76,7 @@ export class AppContainer extends Component {
     }
 
     render() {
+        const isIntelnalCSDJob = this.props.jobInfo && this.props.jobInfo.id === internalCSDJobId;
         return (
             <>
                 <NCBBreadcrum chatbotName={Labels.ChatbotSystem} pageTitle="Mapping Setting Management" />
@@ -84,11 +86,16 @@ export class AppContainer extends Component {
                     this.props.jobInfoFlag.isEdit? <EditJobInfo jobInfo={this.props.jobInfo} /> : <JobInfo />
                 }
 
-                {this.haveHostPermission &&
-                    <button className="btn-new" onClick={this.handleOpenCreateMappingPopup}>{Labels.CreateNewMappingSetting}</button>
+                {
+                    this.haveHostPermission &&
+                    <button
+                        className={`${isIntelnalCSDJob ? 'btn-disabled' : 'btn-new'}`}
+                        disabled={isIntelnalCSDJob ? true : false}
+                        onClick={this.handleOpenCreateMappingPopup}>{Labels.CreateNewMappingSetting}
+                    </button>
                 }
 
-                <DataGrid haveHostPermission={this.haveHostPermission} />
+                <DataGrid haveHostPermission={this.haveHostPermission} isIntelnalCSDJob={isIntelnalCSDJob} />
                 {this.props.createMappingPopup.show &&
                     <NewMapping onClose={this.handleCloseCreateMappingPopup} onCreateSuccess={this.handleCreateSuccess} />
                 }

@@ -69,3 +69,9 @@
         color: $btn-mark-color-hover;
     }
 }
+
+.btn-disabled {
+    @extend %button;
+    background-color: $btn-cancel-bg;
+    color: $btn-cancel-color;
+}

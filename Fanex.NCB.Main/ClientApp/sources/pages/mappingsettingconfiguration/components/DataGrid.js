@@ -37,13 +37,13 @@ export class DataGrid extends Component {
             </Row>);
     };
 
-    buildBody = isHost => {
+    buildBody = (isHost, isIntelnalCSDJob) => {
         const { pageIndex, pageSize } = this.props.gridParams;
 
         this.startIndex = (pageIndex - 1) * pageSize + 1;
 
         if (this.props.gridData.data.length > 0) {
-            return this.props.gridData.data.map((item, index) => this.renderRow(item, index, isHost));
+            return this.props.gridData.data.map((item, index) => this.renderRow(item, index, isHost, isIntelnalCSDJob));
         }
 
         return [<Row key={`body${1}`} ><Cell colSpan="9"><NoDataTitle /></Cell></Row>];
@@ -66,7 +66,7 @@ export class DataGrid extends Component {
 
     handleRequiredParams = value => value.split(',').join(', ')
 
-    renderRow = (item, index, isHost) => (
+    renderRow = (item, index, isHost, isIntelnalCSDJob) => (
         <Row key={index + this.startIndex} >
             <Cell className="text-center">{index + this.startIndex}</Cell>
             <Cell>{item.notificationTypeName}</Cell>
@@ -84,19 +84,23 @@ export class DataGrid extends Component {
                 isHost &&
                 <Cell className="text-center">
                     <>
-                        <span className="icon-edit"
-                            data-templateid={item.notificationTemplateID}
-                            data-msgcontentstype={item.msgContentsType}
-                            onClick={this.handleEditMapping} />
                         {
-                            item.unRemovable ?
-                            <span className="icon-delete icon-disabled" /> :
-                            <span className="icon-delete"
-                                data-templateid={item.notificationTemplateID}
-                                data-msgcontentstype={item.msgContentsType}
-                                data-typename={item.notificationTypeName}
-                                data-templatename={item.notificationTypeName}
-                                onClick={this.handleDeleteMapping} />
+                            isIntelnalCSDJob ?
+                                <span className="icon-edit icon-disabled" /> :
+                                <span className={"icon-edit"}
+                                    data-templateid={item.notificationTemplateID}
+                                    data-msgcontentstype={item.msgContentsType}
+                                    onClick={this.handleEditMapping} />
+                        }
+                        {
+                            (item.unRemovable || isIntelnalCSDJob) ?
+                                <span className="icon-delete icon-disabled" /> :
+                                <span className="icon-delete"
+                                    data-templateid={item.notificationTemplateID}
+                                    data-msgcontentstype={item.msgContentsType}
+                                    data-typename={item.notificationTypeName}
+                                    data-templatename={item.notificationTypeName}
+                                    onClick={this.handleDeleteMapping} />
                         }
                     </>
                 </Cell>
@@ -111,7 +115,7 @@ export class DataGrid extends Component {
 
         const { total } = this.props.gridData;
         const { pageIndex, pageSize } = this.props.gridParams;
-        const { haveHostPermission } = this.props;
+        const { haveHostPermission, isIntelnalCSDJob } = this.props;
 
         const pagingOption = {
             PageIndex: pageIndex,
@@ -125,7 +129,7 @@ export class DataGrid extends Component {
                 autoWidth={false}
                 width={1620}
                 header={this.buildHeader(haveHostPermission)}
-                body={this.buildBody(haveHostPermission)}
+                body={this.buildBody(haveHostPermission, isIntelnalCSDJob)}
                 isPaging
                 pageOption={pagingOption}
                 onPaging={this.onPaging}
