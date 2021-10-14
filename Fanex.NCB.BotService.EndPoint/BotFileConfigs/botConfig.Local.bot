@@ -7,7 +7,7 @@
             "name": "SABASports_Local",
             "endpoint": "https://licbot.nexdev.net/api/messages",
             "appId": "826950ba-ae02-4978-960d-f8edcaf8c050",
-            "appPassword": "cY@/VrBJmUGT/1oy:oRbOo5zxlhpCK171",
+            "appPassword": "cY@/VrBJmUGT/1oy:oRbOo5zxlhpCK17",
             "id": "1"
         },
         {
@@ -15,7 +15,7 @@
             "name": "SABA_Local",
             "endpoint": "https://licbot.nexdev.net/api/messages",
             "appId": "bfe9dd48-8d08-4714-9fe2-e028ea80ca5f",
-            "appPassword": "aEUcvdsU4g]rKcnG40F4nabO-blPXQ?@1",
+            "appPassword": "aEUcvdsU4g]rKcnG40F4nabO-blPXQ?@",
             "id": "2"
         },
         {
@@ -23,7 +23,7 @@
             "name": "NCB_Local3",
             "endpoint": "https://licbot.nexdev.net/api/messages",
             "appId": "c6931ab8-e994-4192-b403-3744cdb02fb5",
-            "appPassword": "JVFMw@1hiE6oP]rmWk4]yXGsyNPizT_61",
+            "appPassword": "JVFMw@1hiE6oP]rmWk4]yXGsyNPizT_6",
             "id": "3"
         },
         {
@@ -31,7 +31,7 @@
             "name": "沙巴体育 公告 / Saba Sports Announcement_Local",
             "endpoint": "https://licbot.nexdev.net/api/messages",
             "appId": "35f66b23-ed5a-4f06-930e-694322ae3f39",
-            "appPassword": "40tlnQFDBMW6RpJbD9lycYtrT-Tod[-]1",
+            "appPassword": "40tlnQFDBMW6RpJbD9lycYtrT-Tod[-]",
             "id": "4"
         }
     ],
