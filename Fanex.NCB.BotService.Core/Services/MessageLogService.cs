@@ -41,7 +41,7 @@
 
             try
             {
-                var messageContentList = redisCacheExtend.GetValueByKeyContains<string>(conversationId.Replace(':', '-'));
+                var messageContentList = redisCacheExtend.GetValueByKeyContains<string>(ModifyConversationId(conversationId));
 
                 foreach (string logContent in messageContentList)
                 {
@@ -68,7 +68,7 @@
                 try
                 {
                     await cacheService.SetAsync(
-                ModifyKey(conversationId.Replace(':', '-'), guiid),
+                ModifyKey(ModifyConversationId(conversationId), guiid),
                 messageContent,
                 new CacheItemOptions
                 {
@@ -86,7 +86,7 @@
         {
             try
             {
-                string key = ModifyKey(conversationId, guid);
+                string key = ModifyKey(ModifyConversationId(conversationId), guid);
                 await cacheService.RemoveAsync(key);
             }
             catch (Exception ex)
@@ -101,5 +101,7 @@
         }
 
         private static string ModifyKey(string key, string guiid) => $"{key}:{guiid}";
+
+        private static string ModifyConversationId(string conversationId) => conversationId.Replace(':', '-');
     }
 }
