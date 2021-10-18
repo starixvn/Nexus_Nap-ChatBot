@@ -12,7 +12,7 @@ ADD COLUMN ChannelID TINYINT UNSIGNED NULL;
 
 CREATE TABLE ChatBot.ConversationChannel
 (
-	ChannelID TINYINT  UNSIGNED NULL,
+	ChannelID TINYINT  UNSIGNED ,
     ChannelName VARCHAR(45)	CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci' NULL,
     CONSTRAINT PK_ChannelID PRIMARY KEY (ChannelID)
 );
