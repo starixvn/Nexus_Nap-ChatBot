@@ -6,22 +6,48 @@ import Labels from '../../common/Labels';
 import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';
 import { DateTimeFormatV2 } from '../../constants/constants';
+import PanelContent from '../../common/panel-content/PanelContent';
+import ContentPreview from '../../common/ContentPreview';
 var dateFormat = require("dateformat");
 
 export class DataGridConversationMessage extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            expandPanels: false
+        };
+
+        this.panels = [];
+    }
+
+    toggleExpandPanels = () => {
+        this.setState(prevState => ({ expandPanels: !prevState.expandPanels }), () => {
+            if (this.props.conversationMessages.total > 0) {
+                this.panels.filter(x => x && (x.state.isOpen !== this.state.expandPanels)).forEach(panel => {
+                    panel.handleSet(this.state.expandPanels);
+                });
+            }
+        });
+    };
 
     buildHeader = () => {
         return (
             <Row >
                 <Cell colWidth={15} header>{Labels.NotificationID}</Cell>
                 <Cell colWidth={20} header>{Labels.BotName}</Cell>
-                <Cell colWidth={20} header>{Labels.ConversationGroupID}</Cell>
+                <Cell colWidth={16} header>{Labels.ConversationGroupID}</Cell>
                 <Cell colWidth={40} header>{Labels.ConversationGroupName}</Cell>
                 <Cell colWidth={20} header>{Labels.Recipient}</Cell>
-                <Cell colWidth={20} header>{Labels.SentTime}</Cell>
-                <Cell colWidth={15} header>{Labels.IsSuccessful}</Cell>
-                <Cell colWidth={40} header>{Labels.ErrorMessage}</Cell>
-                <Cell colWidth={40} header>{Labels.Content}</Cell>
+                <Cell colWidth={16} header>{`${Labels.SentTime} (GMT+8)`}</Cell>
+                <Cell colWidth={16} header>{Labels.IsSuccessful}</Cell>
+                <Cell colWidth={45} header>{Labels.ErrorMessage}</Cell>
+                <Cell colWidth={55} header>
+                    <div className="has-icons">
+                        {Labels.Content}
+                        <span className={this.state.expandPanels ? 'icon-collapse' : 'icon-expand'} onClick={this.toggleExpandPanels} />
+                    </div>
+                </Cell>
             </Row>
         );
     };
@@ -55,7 +81,12 @@ export class DataGridConversationMessage extends Component {
             <Cell className="text-center">{dateFormat(item.sentTime, DateTimeFormatV2)}</Cell>
             <Cell className="text-center">{item.isSuccessful}</Cell>
             <Cell>{item.errorMessage}</Cell>
-            <Cell>{item.content}</Cell>
+            <Cell>
+                {
+                    item.content.length > 132 ? <PanelContent ref={panel => this.panels[index] = panel} content={item.content}/>
+                    : <ContentPreview text={item.content} />
+                }
+            </Cell>
         </Row>
     );
 
@@ -67,7 +98,7 @@ export class DataGridConversationMessage extends Component {
         this.props.getConversationMessageLog(params);
         this.props.getParamsPageConversationMessage(params);
     };
-    
+
     render() {
         const pagingOption = {
             PageIndex: this.props.paramsPageConversationMessage.pageIndex,

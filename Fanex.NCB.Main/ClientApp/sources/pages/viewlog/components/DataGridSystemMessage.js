@@ -15,7 +15,7 @@ export class DataGridSystemMessage extends Component {
             <Row >
                 <Cell colWidth={10} header>{Labels.MessageID}</Cell>
                 <Cell colWidth={10} header>{Labels.NotificationID}</Cell>
-                <Cell colWidth={15} header>{Labels.CreatedDate}</Cell>
+                <Cell colWidth={15} header>{`${Labels.CreatedDate} (GMT+8)`}</Cell>
                 <Cell colWidth={30} header>{Labels.ErrorMessage}</Cell>
             </Row>
         );

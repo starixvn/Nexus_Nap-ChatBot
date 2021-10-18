@@ -6,6 +6,8 @@ import { Table, Row, Cell } from '../../../common/fixed-table-header/index';
 import NoDataTitle from '../../../common/no-data-title/NoDataTitle';
 import configureMockStore from 'redux-mock-store';
 import DataGridConversationMessageContainer from '../DataGridConversationMessage';
+import PanelContent from '../../../common/panel-content/PanelContent';
+import ContentPreview from '../../../common/ContentPreview';
 
 const mockStore = configureMockStore();
 
@@ -21,6 +23,27 @@ describe('DataGridConversationMessage', () => {
     };
     afterAll(() => {
         jest.clearAllMocks();
+    });
+
+    describe('toggleExpandPanels', () => {
+        it('should set state when total conversationMessages < 0', () => {
+            // Arrange
+            const propsFunc = {
+                paramsPageConversationMessage: {
+                    pageIndex: 1,
+                    pageSize: 100
+                },
+                conversationMessages: {
+                    total: 0
+                }
+            };
+            // Act
+            const container = shallow(<DataGridConversationMessage {...propsFunc} />);
+            container.instance().toggleExpandPanels();
+
+            // Assert
+            expect(container.state().expandPanels).toBe(true);
+        });
     });
     
     describe('onPaging', () => {
@@ -70,7 +93,7 @@ describe('DataGridConversationMessage', () => {
                 },
                 conversationMessages: {
                     total: 100,
-                    data:[{id:1234}],
+                    data:[{id:1234, content: 'test'}],
                     dataMapRecipient:[{id:1234}]
                 }
             };
@@ -86,30 +109,75 @@ describe('DataGridConversationMessage', () => {
     });
 
     describe('buildHeader', () => {
-        const getHeader = function () {
-            return (<Row >
-                <Cell colWidth={15} header>{Labels.NotificationID}</Cell>
-                <Cell colWidth={20} header>{Labels.BotName}</Cell>
-                <Cell colWidth={20} header>{Labels.ConversationGroupID}</Cell>
-                <Cell colWidth={40} header>{Labels.ConversationGroupName}</Cell>
-                <Cell colWidth={20} header>{Labels.Recipient}</Cell>
-                <Cell colWidth={20} header>{Labels.SentTime}</Cell>
-                <Cell colWidth={15} header>{Labels.IsSuccessful}</Cell>
-                <Cell colWidth={40} header>{Labels.ErrorMessage}</Cell>
-                <Cell colWidth={40} header>{Labels.Content}</Cell>
-            </Row>);
-        };
 
+        
         it('should render expected header', () => {
             // Arrange
-            const expected = getHeader();
+            const state = { expandPanels: true };
             
             // Act
-            const container = shallow(<DataGridConversationMessage {...props}/>);
-            const header = container.instance().buildHeader();
+            const container = shallow(<DataGridConversationMessage {...props}/>).instance();
+            container.setState(state);
+            container.toggleExpandPanels = jest.fn();
+            const header = shallow(container.buildHeader());
+            header.find('span').at(0).simulate('click');
 
             // Assert
-            expect(header).toEqual(expected);
+            expect(header.find(Cell).length).toBe(9);
+            expect(container.toggleExpandPanels).toHaveBeenCalled();
+        });
+    });
+
+    describe('renderRow', () => {
+        it('PanelContent should be call', () => {
+            // Arrange
+            const propsFunc = {
+                paramsPageConversationMessage: {
+                    pageIndex: 1,
+                    pageSize: 100
+                },
+                conversationMessages: {
+                    total: 0
+                }
+            };
+            const item = {
+                content: `
+                    test123456789123456789123456789123456789123456789123456798123
+                    456789123456487976789123456789123456789123456789123456798123
+                `
+            };
+
+            // Act
+            const container = shallow(<DataGridConversationMessage {...propsFunc} />);
+            const renderRow = shallow(container.instance().renderRow(item,1));
+
+            // Assert
+            expect(renderRow.find(PanelContent).length).toBe(1);
+            expect(renderRow.find(PanelContent).props().content).toBe(item.content);
+        });
+
+        it('ContentPreview should be call', () => {
+            // Arrange
+            const propsFunc = {
+                paramsPageConversationMessage: {
+                    pageIndex: 1,
+                    pageSize: 100
+                },
+                conversationMessages: {
+                    total: 0
+                }
+            };
+            const item = {
+                content: 'test'
+            };
+
+            // Act
+            const container = shallow(<DataGridConversationMessage {...propsFunc} />);
+            const renderRow = shallow(container.instance().renderRow(item,1));
+
+            // Assert
+            expect(renderRow.find(ContentPreview).length).toBe(1);
+            expect(renderRow.find(ContentPreview).props().text).toBe(item.content);
         });
     });
 
