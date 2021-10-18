@@ -26,7 +26,7 @@ BEGIN
         ,CheckMsg
     FROM NotificationSystemMsg 
 	WHERE NotificationSystemMsg.NotificationID = notificationID
-    ORDER BY NotificationID, CreatedDate
+    ORDER BY CreatedDate DESC
     LIMIT rowStart, pageSize; 
 END
 //
