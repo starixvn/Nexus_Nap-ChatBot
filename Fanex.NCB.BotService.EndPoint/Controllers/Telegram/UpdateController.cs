@@ -13,6 +13,7 @@
     using global::Telegram.Bot.Types;
     using global::Telegram.Bot.Types.Enums;
     using Microsoft.AspNetCore.Mvc;
+    using Newtonsoft.Json;
 
     public class UpdateController : Controller
     {
@@ -47,6 +48,8 @@
                 await logger.ErrorAsync($"Telegram Bot {botId} is invalid.");
                 return Ok($"Telegram Bot {botId} is invalid.");
             }
+
+            await logger.InfoAsync(JsonConvert.SerializeObject(update));
 
             Message message = update.Message;
             switch (message.Type)
