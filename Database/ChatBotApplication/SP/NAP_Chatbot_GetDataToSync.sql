@@ -1,6 +1,4 @@
-USE [bodb_OIC]
-GO
-
+/*<info serverAlias="DBOIC-bodb_OIC" executers="bodbAdminNet" isFunction="0" isNested="0"></info>*/
 CREATE PROCEDURE [dbo].[NAP_Chatbot_GetDataToSync]
 AS
 /*
@@ -11,6 +9,7 @@ AS
 
 	Revisions:
 		- 20190910@Oliver: init
+		- 20211021@Malcolm: Add Product Status [RedmineId: 161727]
 */
 BEGIN
 
@@ -43,10 +42,10 @@ BEGIN
 
 	SELECT p.ProductId
 		  ,p.ProductName
+		  ,~p.Active AS [IsDisabled]
 	FROM dbo.Product p WITH (NOLOCK)
 	ORDER BY p.ProductId
 	
 END
 
 GO
-GRANT EXECUTE ON [dbo].[NAP_Chatbot_GetDataToSync] TO [bodbAdminNet] AS [dbo]
