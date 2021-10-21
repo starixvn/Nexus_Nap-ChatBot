@@ -13,7 +13,6 @@
     using global::Telegram.Bot.Types;
     using global::Telegram.Bot.Types.Enums;
     using Microsoft.AspNetCore.Mvc;
-    using Newtonsoft.Json;
 
     public class UpdateController : Controller
     {
@@ -48,8 +47,6 @@
                 await logger.ErrorAsync($"Telegram Bot {botId} is invalid.");
                 return Ok($"Telegram Bot {botId} is invalid.");
             }
-
-            await logger.InfoAsync(JsonConvert.SerializeObject(update));
 
             Message message = update.Message;
             switch (message.Type)
@@ -145,22 +142,15 @@
 
         protected internal virtual async Task HandleBotCommandAsync(User bot, Message message)
         {
-            try
+            var commands = message.Entities.Where(entity => entity.Type == MessageEntityType.BotCommand)
+                .Select(entity => message.Text.Substring(entity.Offset, entity.Length)).ToList();
+            foreach (var command in commands)
             {
-                var commands = message.Entities.Where(entity => entity.Type == MessageEntityType.BotCommand)
-                    .Select(entity => message.Text.Substring(entity.Offset, entity.Length)).ToList();
-                foreach (var command in commands)
+                if (command.Equals("/getgroupid", StringComparison.CurrentCultureIgnoreCase)
+                    || command.Equals($"/getgroupid@{bot.Username}", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    if (command.Equals("/getgroupid", StringComparison.CurrentCultureIgnoreCase)
-                        || command.Equals($"/getgroupid@{bot.Username}", StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        await botService.SendTextMessageAsync(bot.Id, message.Chat.Id, Regex.Replace(message.Chat.Id.ToString(), @"(.*?)(-|[\\][-])", "$1\\-"));
-                    }
+                    await botService.SendTextMessageAsync(bot.Id, message.Chat.Id, Regex.Replace(message.Chat.Id.ToString(), @"(.*?)(-|[\\][-])", "$1\\-"));
                 }
-            }
-            catch(Exception ex)
-            {
-                await logger.ErrorAsync(ex.Message);
             }
         }
     }
