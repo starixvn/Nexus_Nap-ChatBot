@@ -142,15 +142,22 @@
 
         protected internal virtual async Task HandleBotCommandAsync(User bot, Message message)
         {
-            var commands = message.Entities.Where(entity => entity.Type == MessageEntityType.BotCommand)
-                .Select(entity => message.Text.Substring(entity.Offset, entity.Length)).ToList();
-            foreach(var command in commands)
+            try
             {
-                if (command.Equals("/getgroupid", StringComparison.CurrentCultureIgnoreCase)
-                    || command.Equals($"/getgroupid@{bot.Username}", StringComparison.CurrentCultureIgnoreCase))
+                var commands = message.Entities.Where(entity => entity.Type == MessageEntityType.BotCommand)
+                    .Select(entity => message.Text.Substring(entity.Offset, entity.Length)).ToList();
+                foreach (var command in commands)
                 {
-                    await botService.SendTextMessageAsync(bot.Id, message.Chat.Id, Regex.Replace(message.Chat.Id.ToString(), @"(.*?)(-|[\\][-])", "$1\\-"));
+                    if (command.Equals("/getgroupid", StringComparison.CurrentCultureIgnoreCase)
+                        || command.Equals($"/getgroupid@{bot.Username}", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        await botService.SendTextMessageAsync(bot.Id, message.Chat.Id, Regex.Replace(message.Chat.Id.ToString(), @"(.*?)(-|[\\][-])", "$1\\-"));
+                    }
                 }
+            }
+            catch(Exception ex)
+            {
+                await logger.ErrorAsync(ex.Message);
             }
         }
     }

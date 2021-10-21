@@ -88,7 +88,7 @@
                 var socketsHttpHandler = new SocketsHttpHandler
                 {
                     UseProxy = isUseProxy,
-                    Proxy = proxy,
+                    Proxy = proxy
                 };
 
                 httpClient = new HttpClient(handler: socketsHttpHandler)
