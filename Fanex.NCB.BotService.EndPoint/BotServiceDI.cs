@@ -40,7 +40,6 @@
             services.AddTransient<ICredentialProvider, MultiCredentialProvider>();
             services.AddTransient<IBot, LicBot>();
             services.AddTransient<Logging.ILogger, Logging.Logger>();
-            services.AddScoped<ITelegramBotService, TelegramBotService>();
             var botConfig = GetBotConfig(environment, appSettings, logger);
             services.AddSingleton(botConfig);
             services.AddSingleton(appSettings);
@@ -60,7 +59,9 @@
                 };
             });
 
-            RegisterTelegramBots(services, configuration);
+            services.Configure<ProxySettings>(options => configuration.GetSection("ProxySettings").Bind(options));
+            services.Configure<List<TelegramBotConfigurations>>(options => configuration.GetSection("TelegramBotConfigurations").Bind(options));
+            services.AddScoped<ITelegramBotService, TelegramBotService>();
         }
 
         [Obsolete]
@@ -133,19 +134,6 @@
             services.Configure<CheckDuplicatedMessageLogSetting>(settingConfiguration);
             var checkDuplicatedMessageSettings = settingConfiguration.Get<CheckDuplicatedMessageLogSetting>();
             services.AddSingleton(checkDuplicatedMessageSettings);
-        }
-
-        private static void RegisterTelegramBots(IServiceCollection services, IConfiguration configuration)
-        {
-            var configs = configuration.GetSection("TelegramBotConfigurations");
-            services.Configure<List<TelegramBotConfigurations>>(configs);
-            var bots = configs.Get<List<TelegramBotConfigurations>>();
-            foreach (var bot in bots)
-            {
-                bot.HttpClient = GetDefaultHttpClient(configuration);
-            }
-
-            services.AddSingleton(bots);
         }
 
         private static void RegisterRedisConnection(IServiceCollection services, IConfiguration configuration)

@@ -3,23 +3,23 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Models;
+    using Fanex.NCB.BotService.Core.Services;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
 
     public class TelegramBotController : Controller
     {
-        private readonly AppSettings appSettings;
         private readonly IEnumerable<TelegramBotConfigurations> botConfigurations;
+        private readonly ITelegramBotService telegramBotService;
 
         public TelegramBotController(
-            IOptions<AppSettings> appSettings,
-            IOptions<List<TelegramBotConfigurations>> botConfigurations)
+            IOptions<List<TelegramBotConfigurations>> botConfigurations,
+            ITelegramBotService telegramBotService)
         {
-            this.appSettings = appSettings.Value;
             this.botConfigurations = botConfigurations.Value;
+            this.telegramBotService = telegramBotService;
         }
 
         [AllowAnonymous]
@@ -28,12 +28,7 @@
         {
             try
             {
-                foreach (var bot in botConfigurations)
-                {
-                    var webhook = $"{appSettings.Domain}/api/telegram/webhook/{bot.BotId}/update";
-                    await bot.BotClient.DeleteWebhookAsync();
-                    await bot.BotClient.SetWebhookAsync(webhook);
-                }
+                await telegramBotService.SetWebhookAsync();
             }
             catch (Exception ex)
             {
@@ -51,7 +46,7 @@
             {
                 foreach (var bot in botConfigurations)
                 {
-                    await bot.BotClient.GetMeAsync();
+                    await telegramBotService.GetBotInfoAsync(bot.BotId);
                 }
             }
             catch (Exception ex)

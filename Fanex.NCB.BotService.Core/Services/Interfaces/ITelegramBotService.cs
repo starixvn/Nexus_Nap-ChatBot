@@ -6,6 +6,8 @@
 
     public interface ITelegramBotService
     {
+        Task SetWebhookAsync();
+
         Task<User> GetBotInfoAsync(long botId);
 
         Task<Message> SendTextMessageAsync(long botId, long chatId, string messageContent, ParseMode parseMode = ParseMode.MarkdownV2);
