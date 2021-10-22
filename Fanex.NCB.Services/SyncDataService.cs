@@ -142,7 +142,7 @@
             await baseService.ExecuteNonQueryAsync(command);
         }
 
-        private string ConvertToJsonWithDateTimeFormatString(object data)
+        private static string ConvertToJsonWithDateTimeFormatString(object data)
         {
             return JsonConvert.SerializeObject(data, new JsonSerializerSettings { DateFormatString = DateTimeFormat });
         }
