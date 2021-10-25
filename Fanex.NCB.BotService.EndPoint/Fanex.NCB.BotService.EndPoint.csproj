@@ -54,9 +54,6 @@
         <None Update="App_Data\SpNames.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <None Update="BotFileConfigs\botConfig.UAT1.bot">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
         <None Update="BotFileConfigs\botConfig.PROD.bot">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
