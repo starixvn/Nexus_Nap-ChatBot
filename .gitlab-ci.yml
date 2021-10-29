@@ -2,4 +2,12 @@ include:
   - project: 'ci/repos-ci/nexus_chatbot_ncb_main'
     ref: master
     file: 'gitlab-ci.yml'
+
+  - project: 'ci/repos-ci/nexus_chatbot_ncb_service_endpoint'
+    ref: master
+    file: 'gitlab-ci-mixing.yml'
+
+  - project: 'ci/repos-ci/nexus_chatbot_ncb_auto_job'
+    ref: master
+    file: 'gitlab-ci-mixing.yml'
     
