@@ -40,14 +40,14 @@ export class DataGridConversationMessage extends Component {
                 <Cell colWidth={40} header>{Labels.ConversationGroupName}</Cell>
                 <Cell colWidth={20} header>{Labels.Recipient}</Cell>
                 <Cell colWidth={16} header>{`${Labels.SentTime} (GMT+8)`}</Cell>
-                <Cell colWidth={16} header>{Labels.IsSuccessful}</Cell>
-                <Cell colWidth={45} header>{Labels.ErrorMessage}</Cell>
                 <Cell colWidth={55} header>
                     <div className="has-icons">
                         {Labels.Content}
                         <span className={this.state.expandPanels ? 'icon-collapse' : 'icon-expand'} onClick={this.toggleExpandPanels} />
                     </div>
                 </Cell>
+                <Cell colWidth={16} header>{Labels.IsSuccessful}</Cell>
+                <Cell colWidth={45} header>{Labels.ErrorMessage}</Cell>
             </Row>
         );
     };
@@ -79,14 +79,14 @@ export class DataGridConversationMessage extends Component {
             <Cell>{item.conversationGroupName}</Cell>
             <Cell className="text-center">{item.recipientName}</Cell>
             <Cell className="text-center">{dateFormat(item.sentTime, DateTimeFormatV2)}</Cell>
-            <Cell className="text-center">{item.isSuccessful}</Cell>
-            <Cell>{item.errorMessage}</Cell>
             <Cell>
                 {
-                    item.content.length > 132 ? <PanelContent ref={panel => this.panels[index] = panel} content={item.content}/>
-                    : <ContentPreview text={item.content} />
+                    item.content.length > 132 ? <PanelContent ref={panel => this.panels[index] = panel} content={item.content} />
+                        : <ContentPreview text={item.content} />
                 }
             </Cell>
+            <Cell className="text-center">{item.isSuccessful}</Cell>
+            <Cell>{item.errorMessage}</Cell>
         </Row>
     );
 
