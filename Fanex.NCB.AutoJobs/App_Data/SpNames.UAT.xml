@@ -20,7 +20,7 @@
         <Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_GetUsernameList" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_GetUsernameList" DbName="DBTRANS.bodb02.bodbAdminNet" Plain="0"></Setting>
-      <Setting Key="NCB_ViewLog_DeleteOldConversationMessageLog_Import" SpName="NCB_ViewLog_DeleteOldConversationMessageLog_Import" DbName="ChatBot" Plain="0"></Setting>
+      <Setting Key="NCB_ViewLog_DeleteOldConversationMessageLog_Import" SpName="NCB_ViewLog_DeleteOldConversationMessageLog_Import_xtest" DbName="ChatBot" Plain="0" />
     </Function>
     <Function Name="Site Message">
         <Setting Key="NCB_MsgSetting_SiteMessage_Sel" SpName="NCB_MsgSetting_SiteMessage_Sel" DbName="ChatBot" Plain="0"></Setting>
