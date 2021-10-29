@@ -153,8 +153,8 @@
   </Function>
 
   <Function Name="ViewLog">
-    <Setting Key="NCB_ViewLog_NotificationSystemMessage_Sel" SpName="NCB_ViewLog_NotificationSystemMessage_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_ViewLog_NotificationRecipientList_Sel" SpName="NCB_ViewLog_NotificationRecipientList_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_ViewLog_ConversationMessageLog_Sel" SpName="NCB_ViewLog_ConversationMessageLog_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_ViewLog_NotificationSystemMessage_Sel" SpName="NCB_ViewLog_NotificationSystemMessage_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_ViewLog_NotificationRecipientList_Sel" SpName="NCB_ViewLog_NotificationRecipientList_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_ViewLog_ConversationMessageLog_Sel" SpName="NCB_ViewLog_ConversationMessageLog_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
   </Function>
 </Functions>
