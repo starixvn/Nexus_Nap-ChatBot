@@ -2,6 +2,8 @@
 {
     public class ConversationInfo
     {
+        public int NotificationId { get; set; }
+
         public string ConversationId { get; set; }
 
         public string ChannelId { get; set; }

@@ -189,19 +189,17 @@
             // Arrange
             var conversationInfo = fixture.Create<ConversationInfo>();
             conversationInfo.IsDuplicated = true;
-            var notificationId = fixture.Create<int>();
-            var messageContent = fixture.Create<string>();
             var controller = GetController();
-            messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, messageContent).Returns(true);
+            messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, conversationInfo.Message).Returns(true);
 
             // Act
-            var result = await controller.Public_SendMessageAsync(conversationInfo, notificationId, messageContent);
+            var result = await controller.Public_SendMessageAsync(conversationInfo);
 
             // Assert
             Assert.Equal(conversationInfo.ConversationId, result.ConversationId);
             Assert.Equal(-1, result.ErrorCode);
             Assert.Equal("Error occurred due to duplicate content in a pre-defined period of time.", result.ErrorMessage);
-            Assert.Equal(notificationId, result.NotificationId);
+            Assert.Equal(conversationInfo.NotificationId, result.NotificationId);
             Assert.True(result.IsIgnoreRetry);
         }
 
@@ -211,21 +209,19 @@
             // Arrange
             var conversationInfo = fixture.Create<ConversationInfo>();
             conversationInfo.IsDuplicated = false;
-            var notificationId = fixture.Create<int>();
-            var messageContent = fixture.Create<string>();
             var exception = fixture.Create<Exception>();
             var controller = GetController();
-            messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, messageContent).Returns(false);
-            messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, messageContent, Arg.Any<string>()).Returns(Task.FromException(exception));
+            messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, conversationInfo.Message).Returns(false);
+            messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, conversationInfo.Message, Arg.Any<string>()).Returns(Task.FromException(exception));
 
             // Act
-            var result = await controller.Public_SendMessageAsync(conversationInfo, notificationId, messageContent);
+            var result = await controller.Public_SendMessageAsync(conversationInfo);
 
             // Assert
             Assert.Equal(conversationInfo.ConversationId, result.ConversationId);
             Assert.Equal(1, result.ErrorCode);
             Assert.Equal(exception.Message, result.ErrorMessage);
-            Assert.Equal(notificationId, result.NotificationId);
+            Assert.Equal(conversationInfo.NotificationId, result.NotificationId);
             Assert.False(result.IsIgnoreRetry);
 
             await messageLogService.Received().RemoveMessageLogOnCache(conversationInfo.ConversationId, Arg.Any<string>());

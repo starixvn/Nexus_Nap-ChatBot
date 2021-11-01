@@ -21,9 +21,9 @@
         {
         }
 
-        public async Task<SendMessageResult> Public_SendMessageAsync(ConversationInfo conversationInfo, int notificationId, string messageContent)
+        public async Task<SendMessageResult> Public_SendMessageAsync(ConversationInfo conversationInfo)
         {
-            return await base.SendMessageAsync(conversationInfo, notificationId, messageContent);
+            return await base.SendMessageAsync(conversationInfo);
         }
 
         public async Task<SendMessageResult> Public_SendTextMessageAsync(long botId, long chatId, int notificationId, string messageContent)

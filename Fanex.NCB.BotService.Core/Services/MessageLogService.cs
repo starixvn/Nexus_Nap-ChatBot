@@ -68,12 +68,12 @@
                 try
                 {
                     await cacheService.SetAsync(
-                ModifyKey(ModifyConversationId(conversationId), guiid),
-                messageContent,
-                new CacheItemOptions
-                {
-                    RelativeExpiration = TimeSpan.FromMinutes(settings.TimeSpanInMinutes)
-                });
+                        ModifyKey(ModifyConversationId(conversationId), guiid),
+                        messageContent,
+                        new CacheItemOptions
+                        {
+                            RelativeExpiration = TimeSpan.FromMinutes(settings.TimeSpanInMinutes)
+                        });
                 }
                 catch (Exception ex)
                 {

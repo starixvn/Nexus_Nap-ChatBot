@@ -74,76 +74,88 @@
         [Route("api/telegram/sendMultiMessage")]
         public async Task<ObjectResult> SendMultiMessage([FromBody] IList<NotificationMessage> notificationMessages)
         {
+            const short Milliseconds = 1000;
             var results = new List<SendMessageResult>();
-            var tasks = new List<Task<SendMessageResult>>();
-            var conversations = new List<ConversationInfo>();
             if (notificationMessages != null && notificationMessages.Any())
             {
                 var notifications = conversationService.GetDistinctNotificationConversation(notificationMessages);
-                foreach (NotificationMessage notification in notifications)
+                IList<List<ConversationInfo>> batches = DivideConversionByBatch(notifications);
+                foreach (var batch in batches)
                 {
-                    foreach (ConversationInfo conversationInfo in notification.Recipients)
+                    var tasks = new List<Task<SendMessageResult>>();
+                    foreach (ConversationInfo conversationInfo in batch)
                     {
-                        await SendMessageAsync(tasks, conversations, conversationInfo, notification);
+                        SendMessage(tasks, conversationInfo);
                     }
-                }
 
-                results = (await Task.WhenAll(tasks)).ToList();
+                    results.AddRange((await Task.WhenAll(tasks)).ToList());
+                    await Task.Delay(Milliseconds);
+                }
             }
 
             return Ok(results);
         }
 
-        private async Task SendMessageAsync(
-            List<Task<SendMessageResult>> tasks,
-            List<ConversationInfo> conversations,
-            ConversationInfo conversationInfo,
-            NotificationMessage notificationMessage)
+        private static IList<List<ConversationInfo>> DivideConversionByBatch(IEnumerable<NotificationMessage> notifications)
         {
-            const short Milliseconds = 1000;
-            if (conversations.Any(x => x.ConversationId == conversationInfo.ConversationId
-                && x.BotConversationId == conversationInfo.BotConversationId))
+            var floatConversations = new List<ConversationInfo>();
+            var batches = new List<List<ConversationInfo>>();
+            foreach (NotificationMessage notification in notifications)
             {
-                await Task.Delay(Milliseconds);
-            }
-            else
-            {
-                conversations.Add(new ConversationInfo
+                foreach (ConversationInfo conversationInfo in notification.Recipients)
                 {
-                    ConversationId = conversationInfo.ConversationId,
-                    BotConversationId = conversationInfo.BotConversationId
-                });
+                    conversationInfo.NotificationId = notification.NotificationId;
+                    conversationInfo.Message = notification.Message;
+                    floatConversations.Add(conversationInfo);
+
+                    if (!batches.Any()
+                        || floatConversations.Count(x => x.ConversationId == conversationInfo.ConversationId
+                            && x.BotConversationId == conversationInfo.BotConversationId) > batches.Count)
+                    {
+                        var batch = new List<ConversationInfo>
+                        {
+                            conversationInfo
+                        };
+                        batches.Add(batch);
+                    }
+                    else
+                    {
+                        var index = floatConversations.Count(x => x.ConversationId == conversationInfo.ConversationId
+                            && x.BotConversationId == conversationInfo.BotConversationId);
+                        batches[index - 1].Add(conversationInfo);
+                    }
+                }
             }
 
-            SendMessageAsync(tasks, conversationInfo, notificationMessage);
+            return batches;
         }
 
-        private void SendMessageAsync(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
+        private void SendMessage(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo)
         {
             bool isEnableTelegramChannel = appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram);
             tasks.Add(!isEnableTelegramChannel ? Task.Run(() => new SendMessageResult
             {
-                NotificationId = notificationMessage.NotificationId,
+                NotificationId = conversationInfo.NotificationId,
                 ConversationId = conversationInfo.ConversationId,
                 SentTime = DateTime.UtcNow,
                 ErrorCode = 1,
                 ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
                 IsIgnoreRetry = true
-            }) : Task.Run(() => SendMessageAsync(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message)));
+            }) : Task.Run(() => SendMessageAsync(conversationInfo)));
         }
 
-        protected internal virtual async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo, int notificationId, string messageContent)
+        protected internal virtual async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo)
         {
             if (conversationInfo.IsDuplicated)
             {
-                return DuplicatedResult(notificationId, conversationInfo.ConversationId);
+                return DuplicatedResult(conversationInfo.NotificationId, conversationInfo.ConversationId);
             }
 
-            bool isDuplicated = messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, messageContent);
+            bool isDuplicated = messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, conversationInfo.Message);
 
             if (isDuplicated)
             {
-                return DuplicatedResult(notificationId, conversationInfo.ConversationId);
+                return DuplicatedResult(conversationInfo.NotificationId, conversationInfo.ConversationId);
             }
 
             string guiid = Guid.NewGuid().ToString();
@@ -151,14 +163,14 @@
             {
                 _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
                 _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
-                await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, messageContent, guiid);
-                SendMessageResult result = await SendTextMessageAsync(botId, chatId, notificationId, messageContent);
+                await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, conversationInfo.Message, guiid);
+                SendMessageResult result = await SendTextMessageAsync(botId, chatId, conversationInfo.NotificationId, conversationInfo.Message);
                 if (result.ErrorCode != 0)
                 {
                     await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
                 }
 
-                var thread = new Thread(async () => await AddMessageLogToDatabaseAsync(conversationInfo, messageContent, result));
+                var thread = new Thread(async () => await AddMessageLogToDatabaseAsync(conversationInfo, conversationInfo.Message, result));
                 thread.Start();
 
                 return result;
@@ -169,7 +181,7 @@
                 await WriteLogAsync(exception);
                 return new SendMessageResult
                 {
-                    NotificationId = notificationId,
+                    NotificationId = conversationInfo.NotificationId,
                     ConversationId = conversationInfo.ConversationId,
                     SentTime = DateTime.UtcNow,
                     ErrorCode = 1,
@@ -178,7 +190,7 @@
             }
         }
 
-        private SendMessageResult DuplicatedResult(int notificationId, string conversationId)
+        private static SendMessageResult DuplicatedResult(int notificationId, string conversationId)
             => new()
             {
                 ConversationId = conversationId,
