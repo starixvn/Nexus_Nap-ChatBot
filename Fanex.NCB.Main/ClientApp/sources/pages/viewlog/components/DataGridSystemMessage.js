@@ -16,7 +16,7 @@ export class DataGridSystemMessage extends Component {
                 <Cell colWidth={10} header>{Labels.MessageID}</Cell>
                 <Cell colWidth={10} header>{Labels.NotificationID}</Cell>
                 <Cell colWidth={15} header>{`${Labels.CreatedDate} (GMT+8)`}</Cell>
-                <Cell colWidth={30} header>{Labels.ErrorMessage}</Cell>
+                <Cell colWidth={60} header>{Labels.ErrorMessage}</Cell>
             </Row>
         );
     };
@@ -57,17 +57,15 @@ export class DataGridSystemMessage extends Component {
 
         return (
             <Table
-                width={1100}
-                bodyHeight={300}
+                width={1620}
                 autoWidth={false}
-                autoHeight={false}
                 header={this.buildHeader()}
                 body={this.buildBody()}
                 isPaging
                 pageOption={pagingOption}
                 onPaging={this.onPaging}
                 containerPadding={0}
-                adjustedHeight={50}
+                adjustedHeight={55}
             />
         );
     };

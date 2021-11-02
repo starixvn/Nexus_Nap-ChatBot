@@ -110,16 +110,14 @@ export class DataGridConversationMessage extends Component {
         return (
             <Table
                 width={1620}
-                bodyHeight={300}
                 autoWidth={false}
-                autoHeight={false}
                 header={this.buildHeader()}
                 body={this.buildBody()}
                 isPaging
                 pageOption={pagingOption}
                 onPaging={this.onPaging}
                 containerPadding={0}
-                adjustedHeight={50}
+                adjustedHeight={285}
             />
         );
     }

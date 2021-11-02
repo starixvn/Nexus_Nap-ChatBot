@@ -90,7 +90,7 @@ describe('DataGridSystemMessage', () => {
                 <Cell colWidth={10} header>{Labels.MessageID}</Cell>
                 <Cell colWidth={10} header>{Labels.NotificationID}</Cell>
                 <Cell colWidth={15} header>{`${Labels.CreatedDate} (GMT+8)`}</Cell>
-                <Cell colWidth={30} header>{Labels.ErrorMessage}</Cell>
+                <Cell colWidth={60} header>{Labels.ErrorMessage}</Cell>
             </Row>);
         };
 
