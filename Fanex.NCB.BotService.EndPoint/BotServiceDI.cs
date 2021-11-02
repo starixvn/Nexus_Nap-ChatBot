@@ -30,6 +30,7 @@
         [Obsolete]
         public static void Init(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment, AppSettings appSettings, ILogger logger)
         {
+            ConfigHttpClient(services, configuration);
             services.AddTransient<IBaseRepository, BaseRepository>();
             services.AddTransient<IDynamicRepository, DynamicRepository>();
             services.AddTransient<IBaseService, BaseService>();
@@ -61,7 +62,7 @@
 
             services.Configure<ProxySettings>(options => configuration.GetSection("ProxySettings").Bind(options));
             services.Configure<List<TelegramBotConfigurations>>(options => configuration.GetSection("TelegramBotConfigurations").Bind(options));
-            services.AddScoped<ITelegramBotService, TelegramBotService>();
+            services.AddSingleton<ITelegramBotService, TelegramBotService>();
         }
 
         [Obsolete]
@@ -148,6 +149,30 @@
 
             var multiplexer = ConnectionMultiplexer.Connect(redisConfig.ConnectionString);
             services.AddSingleton<IConnectionMultiplexer>(multiplexer);
+        }
+
+        private static void ConfigHttpClient(IServiceCollection services, IConfiguration configuration)
+        {
+            var isUseProxy = bool.Parse(configuration.GetSection("ProxySettings:IsUseProxy").Value);
+            if (isUseProxy)
+            {
+                var proxyAddress = configuration.GetSection("ProxySettings:ProxyAddress").Value;
+                var bypassOnLocal = bool.Parse(configuration.GetSection("ProxySettings:BypassOnLocal").Value);
+                services.AddHttpClient(NamedHttpClients.ProxiedClient)
+                    .ConfigurePrimaryHttpMessageHandler(() =>
+                    {
+                        var proxy = new WebProxy(proxyAddress, bypassOnLocal);
+                        return new SocketsHttpHandler
+                        {
+                            UseProxy = isUseProxy,
+                            Proxy = proxy
+                        };
+                    });
+            }
+            else
+            {
+                services.AddHttpClient();
+            }
         }
     }
 }
