@@ -81,7 +81,7 @@ export class DataGridConversationMessage extends Component {
             <Cell className="text-center">{dateFormat(item.sentTime, DateTimeFormatV2)}</Cell>
             <Cell>
                 {
-                    item.content.length > 132 ? <PanelContent ref={panel => this.panels[index] = panel} content={item.content} />
+                    (item.content && item.content.length > 132) ? <PanelContent ref={panel => this.panels[index] = panel} content={item.content} />
                         : <ContentPreview text={item.content} />
                 }
             </Cell>
@@ -110,7 +110,9 @@ export class DataGridConversationMessage extends Component {
         return (
             <Table
                 width={1620}
+                bodyHeight={300}
                 autoWidth={false}
+                autoHeight={false}
                 header={this.buildHeader()}
                 body={this.buildBody()}
                 isPaging

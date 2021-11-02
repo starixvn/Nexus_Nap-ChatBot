@@ -58,7 +58,9 @@ export class DataGridSystemMessage extends Component {
         return (
             <Table
                 width={1100}
+                bodyHeight={300}
                 autoWidth={false}
+                autoHeight={false}
                 header={this.buildHeader()}
                 body={this.buildBody()}
                 isPaging

@@ -49,10 +49,6 @@
                 }
             }
         }
-
-        .dropdown:hover {
-            margin-bottom: 72px;
-        }
     }
 
     .menu-text {
@@ -165,6 +161,7 @@
 
 .dropdown:hover .dropdown-content {
     display: block;
+    position: static;
 }
 
 .icon-arrow-down {

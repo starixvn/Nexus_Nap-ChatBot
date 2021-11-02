@@ -66,7 +66,9 @@ export class DataGridRecipientList extends Component {
         return (
             <Table
                 width={1620}
+                bodyHeight={300}
                 autoWidth={false}
+                autoHeight={false}
                 header={this.buildHeader()}
                 body={this.buildBody()}
                 isPaging
