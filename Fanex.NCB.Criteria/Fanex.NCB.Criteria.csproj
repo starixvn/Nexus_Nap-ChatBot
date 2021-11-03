@@ -13,6 +13,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Fanex.NCB.Models\Fanex.NCB.Models.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Shared\Fanex.NCB.Shared.csproj" />
   </ItemGroup>
 </Project>

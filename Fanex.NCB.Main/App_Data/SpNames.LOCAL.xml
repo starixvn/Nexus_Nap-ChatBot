@@ -157,4 +157,15 @@
     <Setting Key="NCB_ViewLog_NotificationRecipientList_Sel" SpName="NCB_ViewLog_NotificationRecipientList_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_ViewLog_ConversationMessageLog_Sel" SpName="NCB_ViewLog_ConversationMessageLog_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
+
+  <Function Name="ResetLastMessageId">
+    <Setting Key="NCB_JobInfo_Sel" SpName="NCB_JobInfo_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_MaxMessageIdAndPostTime_Sel" SpName="NAP_Chatbot_MaxMessageIdAndPostTime_Sel_xtest" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_AbnormalBets_MissingMesssageInfo_Sel" SpName="NAP_Chatbot_AbnormalBets_MissingMesssageInfo_Sel_xtest" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_MissingMesssageInfo_Sel" SpName="NAP_Chatbot_MissingMesssageInfo_Sel_xtest" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0">
+      <Mapping DataField="Content_en" ObjectProperty="Content" />
+    </Setting>
+    <Setting Key="NAP_Chatbot_MissingMesssage_Ins" SpName="NAP_Chatbot_MissingMesssage_Ins_xtest" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+    <Setting Key="NCB_JobInfo_Upd" SpName="NCB_JobInfo_Upd_xtest" DbName="ChatBot" Plain="0"></Setting>
+  </Function>
 </Functions>

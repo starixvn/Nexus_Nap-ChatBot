@@ -75,5 +75,13 @@
     ConversationGroupName: 'Conversation Group Name',
     SentTime: 'Sent Time',
     IsSuccessful: 'IsSuccessful',
-    Content: 'Content',    
+    Content: 'Content',
+    CurrentPreviousMaxMessageID: 'Current Previous Max MessageID',
+    NewPreviousMaxMessageID: 'New Previous Max MessageID',
+    NewPreviousMaxMessageIDFor: 'New Previous Max MessageID for',
+    Select: 'Select',
+    Content_en: 'Content_en',
+    PostTime: 'Post Time',
+    Ok: 'Ok',
+    Proceed: 'Proceed'  
 };

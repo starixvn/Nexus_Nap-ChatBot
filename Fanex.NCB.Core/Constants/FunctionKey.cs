@@ -17,5 +17,7 @@
         public const string MappingSettingManagement = "MappingSettingManagement";
 
         public const string ViewLog = "ViewLog";
+
+        public const string ResetLastMessageId = "ResetLastMessageId";
     }
 }

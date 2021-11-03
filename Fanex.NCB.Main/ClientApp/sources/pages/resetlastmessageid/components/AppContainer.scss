@@ -1,0 +1,104 @@
+@import "../../shared/variables";
+@import "../../shared/common.scss";
+@import "../../shared/components/forms.scss";
+@import "../../shared/components/buttons.scss";
+@import "../../shared/components/modals.scss";
+@import "../../shared/components/messages.scss";
+@import "../../shared/components/tables.scss";
+
+.form-filter {
+
+    .form-label {
+        margin: auto;
+        margin-right: 25px;
+    }
+
+    .form-row {
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 35px;
+    }
+
+    .multiple-select-field {
+        width: 300px !important;
+        margin-right: 20px;
+    }
+}
+
+input.form-check-input {
+    position: unset;
+    margin: auto;
+    margin-top: 5px;
+}
+
+.new-message {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    .messageId {
+        width: 100%;
+    }
+
+    .messageIcon {
+        position: absolute;
+        right: 0;
+    }
+}
+
+.edit-new-message {
+    max-width: 960px;
+}
+
+.nap-line{
+    overflow: hidden;
+    -webkit-line-clamp: 1;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}
+
+.nap-panel {
+    .panel-header {
+        padding-right: 24px;
+        position: relative;
+
+        p {
+            width: 95%;
+        }
+    }
+
+    .icon-right {
+        position: absolute;
+        top: 9px;
+        right: -5px;
+        margin-top: -9px;
+        color: $text-color;
+        font-size: 10px;
+        text-align: center;
+        transform: rotate(0);
+        transition: transform .2s ease-in;
+
+        &:hover {
+            color: $text-color;
+        }
+
+        &.content-expand {
+            transform: rotate(90deg);
+            transition: transform .2s ease-in;
+        }
+    }
+}
+
+.table-container {
+    width: 960px;
+}
+
+button[disabled] {
+    background-color: grey;
+}
+
+button[disabled]:hover {
+    background-color: grey;
+}

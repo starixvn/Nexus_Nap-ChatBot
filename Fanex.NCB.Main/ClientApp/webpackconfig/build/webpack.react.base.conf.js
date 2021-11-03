@@ -21,6 +21,7 @@ function generateConfig(environment) {
             [`${buildPath}/viewlog/viewlog`]: pathConfig.paths.viewlog,
             [`${buildPath}/login/login`]: pathConfig.paths.login,
             [`${buildPath}/editnotification/editnotification`]: pathConfig.paths.editnotification,
+            [`${buildPath}/resetlastmessageid/resetlastmessageid`]: pathConfig.paths.resetlastmessageid,
         },
         output: {
             path: pathConfig.projectRoot,

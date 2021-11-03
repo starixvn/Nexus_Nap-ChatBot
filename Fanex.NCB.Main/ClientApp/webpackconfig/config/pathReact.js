@@ -14,7 +14,8 @@ const paths = {
     mappingsettingconfiguration: './sources/pages/mappingsettingconfiguration/index.js',
     viewlog: './sources/pages/viewlog/index.js',
     login: './sources/pages/login/index.js',
-    editnotification: './sources/pages/editnotification/index.jsx'
+    editnotification: './sources/pages/editnotification/index.jsx',
+    resetlastmessageid: './sources/pages/resetlastmessageid/index.js'
 };
 module.exports = {
     projectRoot: projectRoot,
