@@ -62,7 +62,7 @@
 
             services.Configure<ProxySettings>(options => configuration.GetSection("ProxySettings").Bind(options));
             services.Configure<List<TelegramBotConfigurations>>(options => configuration.GetSection("TelegramBotConfigurations").Bind(options));
-            services.AddSingleton<ITelegramBotService, TelegramBotService>();
+            services.AddScoped<ITelegramBotService, TelegramBotService>();
         }
 
         [Obsolete]
