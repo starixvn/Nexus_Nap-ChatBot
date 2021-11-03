@@ -212,7 +212,7 @@
             var exception = fixture.Create<Exception>();
             var controller = GetController();
             messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, conversationInfo.Message).Returns(false);
-            messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, conversationInfo.Message, Arg.Any<string>()).Returns(Task.FromException(exception));
+            messageLogService.InsertMessageLogIntoCache(conversationInfo.ConversationId, conversationInfo.Message, Arg.Any<string>()).Returns(Task.FromException(exception));
 
             // Act
             var result = await controller.Public_SendMessageAsync(conversationInfo);
@@ -250,7 +250,7 @@
         ////    // Assert
         ////    Assert.Equal(sendMessageResult, result);
 
-        ////    await messageLogService.Received().InserMessageLogIntoCache(conversationInfo.ConversationId, messageContent, Arg.Any<string>());
+        ////    await messageLogService.Received().InsertMessageLogIntoCache(conversationInfo.ConversationId, messageContent, Arg.Any<string>());
         ////    await messageLogService.Received().RemoveMessageLogOnCache(conversationInfo.ConversationId, Arg.Any<string>());
         ////}
 

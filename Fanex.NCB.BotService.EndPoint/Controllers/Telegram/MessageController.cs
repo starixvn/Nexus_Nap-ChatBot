@@ -163,7 +163,7 @@
             {
                 _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
                 _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
-                await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, conversationInfo.Message, guiid);
+                await messageLogService.InsertMessageLogIntoCache(conversationInfo.ConversationId, conversationInfo.Message, guiid);
                 SendMessageResult result = await SendTextMessageAsync(botId, chatId, conversationInfo.NotificationId, conversationInfo.Message);
                 if (result.ErrorCode != 0)
                 {

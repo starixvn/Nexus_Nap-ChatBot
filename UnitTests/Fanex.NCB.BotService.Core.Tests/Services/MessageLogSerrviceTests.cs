@@ -62,11 +62,11 @@
         }
 
         [Fact]
-        public async Task InserMessageLogInRedisCache_WhenCalled_InsertOnCache()
+        public async Task InsertMessageLogIntoCache_WhenCalled_InsertOnCache()
         {
             var conversationLogMsg = new ConversationMessageLog { ConversationId = "A:1234", Message = "ABC", Status = SentMessageStatus.Success };
             var service = GetService();
-            await service.InserMessageLogIntoCache(conversationLogMsg.ConversationId, conversationLogMsg.Message, "Guid");
+            await service.InsertMessageLogIntoCache(conversationLogMsg.ConversationId, conversationLogMsg.Message, "Guid");
             await cacheService.Received().SetAsync(Arg.Do<string>(x => x.Contains("A-1234")),
                 Arg.Is(conversationLogMsg.Message),
                 Arg.Any<CacheItemOptions>());

@@ -61,7 +61,7 @@
             return isInvalid;
         }
 
-        public async Task InserMessageLogIntoCache(string conversationId, string messageContent, string guiid)
+        public async Task InsertMessageLogIntoCache(string conversationId, string messageContent, string guiid)
         {
             if (settings.IsEnabled && !await IsExistedOnCache(conversationId, messageContent))
             {

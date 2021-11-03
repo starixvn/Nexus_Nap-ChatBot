@@ -6,7 +6,7 @@
     {
         bool IsInvalidSendMessageToBotService(string conversationId, string message);
 
-        Task InserMessageLogIntoCache(string conversationId, string messageContent, string guiid);
+        Task InsertMessageLogIntoCache(string conversationId, string messageContent, string guiid);
 
         Task RemoveMessageLogOnCache(string conversationId, string guid);
     }

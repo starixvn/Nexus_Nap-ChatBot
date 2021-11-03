@@ -170,7 +170,7 @@
 
             try
             {
-                await messageLogService.InserMessageLogIntoCache(conversationInfo.ConversationId, message, guiid);
+                await messageLogService.InsertMessageLogIntoCache(conversationInfo.ConversationId, message, guiid);
 
                 var conversationReference = GetConversationReference(conversationInfo);
                 var appId = GetAppId(conversationInfo.BotName);

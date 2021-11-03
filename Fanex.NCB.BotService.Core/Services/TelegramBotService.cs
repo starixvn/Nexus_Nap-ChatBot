@@ -9,7 +9,6 @@
     using Microsoft.Extensions.Options;
     using Telegram.Bot;
     using Telegram.Bot.Types;
-    using Telegram.Bot.Types.Enums;
 
     public class TelegramBotService : ITelegramBotService
     {
@@ -54,11 +53,12 @@
             return await botClient.GetMeAsync();
         }
 
-        public async Task<Message> SendTextMessageAsync(long botId, long chatId, string messageContent, ParseMode parseMode = ParseMode.MarkdownV2)
+        public async Task SendTextMessageAsync(long botId, long chatId, string messageContent)
         {
             TelegramBotConfigurations bot = botConfigurations.First(x => x.BotId == botId);
-            var botClient = new TelegramBotClient(bot.Token, httpClient);
-            return await botClient.SendTextMessageAsync(new ChatId(chatId), messageContent, parseMode);
+            var requestUrl = $"https://api.telegram.org/bot{bot.Token}/sendMessage?chat_id={chatId}&text={messageContent}&parse_mode=MarkdownV2";
+            var request = new HttpRequestMessage(HttpMethod.Get, new Uri(requestUrl));
+            await httpClient.SendAsync(request);
         }
     }
 }
