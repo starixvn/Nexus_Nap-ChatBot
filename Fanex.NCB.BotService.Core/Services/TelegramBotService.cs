@@ -6,6 +6,7 @@
     using System.Net.Http;
     using System.Threading.Tasks;
     using Fanex.NCB.BotService.Core.Models;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Telegram.Bot;
     using Telegram.Bot.Types;
@@ -16,12 +17,14 @@
         private readonly HttpClient httpClient;
         private readonly AppSettings appSettings;
         private readonly IEnumerable<TelegramBotConfigurations> botConfigurations;
+        private readonly ILogger<TelegramBotService> filelogger;
 
         public TelegramBotService(
             IHttpClientFactory httpClientFactory,
             IOptions<AppSettings> appSettings,
             IOptions<ProxySettings> proxySettings,
-            IOptions<List<TelegramBotConfigurations>> botConfigurations)
+            IOptions<List<TelegramBotConfigurations>> botConfigurations,
+            ILogger<TelegramBotService> filelogger)
         {
             this.appSettings = appSettings.Value;
             this.botConfigurations = botConfigurations.Value;
@@ -34,6 +37,8 @@
             {
                 httpClient = httpClientFactory.CreateClient();
             }
+
+            this.filelogger = filelogger;
         }
 
         public async Task SetWebhookAsync()
@@ -56,9 +61,14 @@
 
         public async Task<Message> SendTextMessageAsync(long botId, long chatId, string messageContent, ParseMode parseMode = ParseMode.MarkdownV2)
         {
+            string guiid = Guid.NewGuid().ToString();
+            filelogger.LogWarning($"{guiid}-Begin send message: botId={botId} chatId={chatId}");
             TelegramBotConfigurations bot = botConfigurations.First(x => x.BotId == botId);
             var botClient = new TelegramBotClient(bot.Token, httpClient);
-            return await botClient.SendTextMessageAsync(new ChatId(chatId), messageContent, parseMode);
+            var message = await botClient.SendTextMessageAsync(new ChatId(chatId), messageContent, parseMode);
+            filelogger.LogWarning($"{guiid}-End send message: botId={botId} chatId={chatId}");
+
+            return message;
         }
     }
 }
