@@ -9,11 +9,13 @@
     using Microsoft.Extensions.Options;
     using Telegram.Bot;
     using Telegram.Bot.Types;
+    using Telegram.Bot.Types.Enums;
 
     public class TelegramBotService : ITelegramBotService
     {
         private readonly HttpClient httpClient;
         private readonly AppSettings appSettings;
+        private readonly ProxySettings proxySettings;
         private readonly IEnumerable<TelegramBotConfigurations> botConfigurations;
 
         public TelegramBotService(
@@ -23,11 +25,11 @@
             IOptions<List<TelegramBotConfigurations>> botConfigurations)
         {
             this.appSettings = appSettings.Value;
+            this.proxySettings = proxySettings.Value;
             this.botConfigurations = botConfigurations.Value;
-            if (proxySettings.Value.IsUseProxy)
+            if (this.proxySettings.IsUseProxy)
             {
                 httpClient = httpClientFactory.CreateClient(NamedHttpClients.ProxiedClient);
-                httpClient.Timeout = TimeSpan.FromSeconds(proxySettings.Value.TimeOut);
             }
             else
             {
@@ -40,6 +42,7 @@
             foreach (var bot in botConfigurations)
             {
                 var webhook = $"{appSettings.Domain}/api/telegram/webhook/{bot.BotId}/update";
+                httpClient.Timeout = TimeSpan.FromSeconds(proxySettings.TimeOut);
                 var botClient = new TelegramBotClient(bot.Token, httpClient);
                 await botClient.DeleteWebhookAsync();
                 await botClient.SetWebhookAsync(webhook);
@@ -49,16 +52,17 @@
         public async Task<User> GetBotInfoAsync(long botId)
         {
             TelegramBotConfigurations bot = botConfigurations.First(x => x.BotId == botId);
+            httpClient.Timeout = TimeSpan.FromSeconds(proxySettings.TimeOut);
             var botClient = new TelegramBotClient(bot.Token, httpClient);
             return await botClient.GetMeAsync();
         }
 
-        public async Task SendTextMessageAsync(long botId, long chatId, string messageContent)
+        public async Task<Message> SendTextMessageAsync(long botId, long chatId, string messageContent, ParseMode parseMode = ParseMode.MarkdownV2)
         {
             TelegramBotConfigurations bot = botConfigurations.First(x => x.BotId == botId);
-            var requestUrl = $"https://api.telegram.org/bot{bot.Token}/sendMessage?chat_id={chatId}&text={messageContent}&parse_mode=MarkdownV2";
-            var request = new HttpRequestMessage(HttpMethod.Get, new Uri(requestUrl));
-            await httpClient.SendAsync(request);
+            httpClient.Timeout = TimeSpan.FromSeconds(proxySettings.TimeOut);
+            var botClient = new TelegramBotClient(bot.Token, httpClient);
+            return await botClient.SendTextMessageAsync(new ChatId(chatId), messageContent, parseMode);
         }
     }
 }
