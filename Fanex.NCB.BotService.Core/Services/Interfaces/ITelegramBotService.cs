@@ -10,6 +10,6 @@
 
         Task<User> GetBotInfoAsync(long botId);
 
-        Task<Message> SendTextMessageAsync(long botId, long chatId, string messageContent, ParseMode parseMode = ParseMode.MarkdownV2);
+        Task<Message> SendTextMessageAsync(string transid, long botId, long chatId, string messageContent, ParseMode parseMode = ParseMode.MarkdownV2);
     }
 }

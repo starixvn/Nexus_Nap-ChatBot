@@ -59,14 +59,13 @@
             return await botClient.GetMeAsync();
         }
 
-        public async Task<Message> SendTextMessageAsync(long botId, long chatId, string messageContent, ParseMode parseMode = ParseMode.MarkdownV2)
+        public async Task<Message> SendTextMessageAsync(string transid, long botId, long chatId, string messageContent, ParseMode parseMode = ParseMode.MarkdownV2)
         {
-            string guiid = Guid.NewGuid().ToString();
-            filelogger.LogWarning($"{guiid}-Begin send message: botId={botId} chatId={chatId}");
+            filelogger.LogWarning($"{transid}-Begin send message: botId={botId} chatId={chatId}");
             TelegramBotConfigurations bot = botConfigurations.First(x => x.BotId == botId);
             var botClient = new TelegramBotClient(bot.Token, httpClient);
             var message = await botClient.SendTextMessageAsync(new ChatId(chatId), messageContent, parseMode);
-            filelogger.LogWarning($"{guiid}-End send message: botId={botId} chatId={chatId}");
+            filelogger.LogWarning($"{transid}-End send message: botId={botId} chatId={chatId}");
 
             return message;
         }
