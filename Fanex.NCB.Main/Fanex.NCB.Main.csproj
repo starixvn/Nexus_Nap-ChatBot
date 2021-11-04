@@ -8,6 +8,9 @@
         <CodeAnalysisRuleSet>..\.sonarlint\napchatbotcsharp.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
     <ItemGroup>
+        <None Remove="App_Data\SpNames.LOCAL_1.xml" />
+        <None Remove="App_Data\SpNames.LOCAL_2.xml" />
+        <None Remove="App_Data\SpNames.LOCAL_3.xml" />
         <None Remove="App_Data\SpNames.PROD.xml" />
         <None Remove="App_Data\SpNames.UAT_1.xml" />
         <None Remove="App_Data\SpNames.UAT_2.xml" />
@@ -16,6 +19,15 @@
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+        <Content Include="App_Data\SpNames.LOCAL_3.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="App_Data\SpNames.LOCAL_2.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="App_Data\SpNames.LOCAL_1.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
         <Content Include="App_Data\SpNames.UAT_3.xml">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
