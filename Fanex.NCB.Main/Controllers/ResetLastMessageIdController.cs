@@ -35,16 +35,16 @@
 
         [HttpGet]
         [Route("SettingConfiguration/ResetLastMessageId")]
-        [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Read)]
         public IActionResult Index()
         {
-            ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId, napSettings.SiteId, FunctionKey.ViewLog, Policy.Host);
+            ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId, napSettings.SiteId, FunctionKey.ResetLastMessageId, Policy.Host);
             
             return View("~/Views/SkypeBot/ResetLastMessageId/Index.cshtml");
         }
 
         [HttpGet]
-        [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Read)]
         public async Task<IActionResult> GetCurrentPreviousMaxMessage()
         {
             var (currentMaxMessageInfos, messageTypeInfos) = await resetLastMessageIdService.GetCurrentPreviousMaxMessageAsync();
@@ -53,7 +53,7 @@
         }
 
         [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Read)]
         public async Task<IActionResult> GetNewPreviousMaxMessage([FromBody]GetNewPreviousMaxMessageCriteria criteria)
         {
             var (messagePostTimeInfos, newMaxMessageId) = await resetLastMessageIdService.GetNewPreviousMaxMessageAsync(criteria);
@@ -62,7 +62,7 @@
         }
 
         [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Read)]
         public async Task<IActionResult> GetMissingMessageCsd([FromBody]GetMissingMesssageCsdCriteria criteria)
         {
             var missingMessageCsd = await resetLastMessageIdService.GetMissingMessageCsdAsync(criteria);
@@ -71,7 +71,7 @@
         }
 
         [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Read)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Read)]
         public async Task<IActionResult> GetMissingMessageInfo([FromBody]GetMissingMessageInfoCriteria criteria)
         {
             var missingMessageInfos = await resetLastMessageIdService.GetMissingMessageInfoAsync(criteria);
@@ -80,7 +80,7 @@
         }
 
         [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Host)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Host)]
         public async Task<IActionResult> CreateMissingMessage([FromBody]CreateMissingMessageCommand command)
         {
             var commandResult = await resetLastMessageIdService.CreateMissingMessageAsync(command);
@@ -89,7 +89,7 @@
         }
 
         [HttpPost]
-        [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Host)]
+        [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Host)]
         public async Task<IActionResult> EditMessageInfo([FromBody] EditMessageInfoCommand command)
         {
             var commandResult = await resetLastMessageIdService.EditMessageInfoAsync(command);
