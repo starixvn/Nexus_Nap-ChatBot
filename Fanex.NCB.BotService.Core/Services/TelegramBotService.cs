@@ -31,15 +31,15 @@
             foreach (var bot in botConfigurations)
             {
                 var webhook = $"{appSettings.Domain}/api/telegram/webhook/{bot.BotId}/update";
-                await bot.TelegramBotClient.DeleteWebhookAsync();
-                await bot.TelegramBotClient.SetWebhookAsync(webhook);
+                await bot.BotClient.DeleteWebhookAsync();
+                await bot.BotClient.SetWebhookAsync(webhook);
             }
         }
 
         public async Task<User> GetBotInfoAsync(long botId)
         {
             TelegramBotConfigurations bot = botConfigurations.First(x => x.BotId == botId);
-            return await bot.TelegramBotClient.GetMeAsync();
+            return await bot.BotClient.GetMeAsync();
         }
 
         public async Task<Message> SendTextMessageAsync(string transid, long botId, long chatId, string messageContent, ParseMode parseMode = ParseMode.MarkdownV2)
