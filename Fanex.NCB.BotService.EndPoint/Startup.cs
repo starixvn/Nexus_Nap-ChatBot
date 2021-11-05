@@ -109,7 +109,9 @@
             services.AddRedisCache(Configuration.GetSection("Fanex.Caching.Redis"));
             services.AddMvc().AddNewtonsoftJson();
 
-            ////ThreadPool.SetMinThreads(300, 300);
+            const short WorkerThreads = 300;
+            const short CompletionPortThreads = 300;
+            _ = ThreadPool.SetMinThreads(WorkerThreads, CompletionPortThreads);
         }
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
