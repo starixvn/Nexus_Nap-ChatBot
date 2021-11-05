@@ -5,6 +5,8 @@
     using System.IO;
     using System.Net;
     using System.Net.Http;
+    using System.Net.Security;
+    using System.Security.Authentication;
     using Fanex.Caching;
     using Fanex.Data.Repository;
     using Fanex.NCB.BotService.Core;
@@ -89,7 +91,11 @@
                 var socketsHttpHandler = new SocketsHttpHandler
                 {
                     UseProxy = isUseProxy,
-                    Proxy = proxy
+                    Proxy = proxy,
+                    SslOptions = new SslClientAuthenticationOptions
+                    {
+                        EnabledSslProtocols = SslProtocols.Tls12
+                    }
                 };
 
                 httpClient = new HttpClient(handler: socketsHttpHandler)
