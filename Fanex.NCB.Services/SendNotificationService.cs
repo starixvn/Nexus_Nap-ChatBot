@@ -97,7 +97,8 @@
             {
                 Resources.Resources.DisableChannelErrorMessage,
                 Resources.Resources.DuplicatedErrorMessage,
-                Resources.Resources.MessageIsTooLong
+                Resources.Resources.MessageIsTooLong,
+                Resources.Resources.GroupChatDeleted
             };
             if (errorMsgs.Contains(errMsg))
             {

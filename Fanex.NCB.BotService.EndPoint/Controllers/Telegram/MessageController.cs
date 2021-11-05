@@ -241,6 +241,12 @@
                     result.ErrorMessage = Resources.Resources.MessageIsTooLong;
                     result.IsIgnoreRetry = true;
                 }
+
+                if (exception.Message.Contains("Forbidden: bot was kicked from the supergroup chat", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    result.ErrorMessage = Resources.Resources.GroupChatDeleted;
+                    result.IsIgnoreRetry = true;
+                }
             }
 
             result.SentTime = DateTime.UtcNow;

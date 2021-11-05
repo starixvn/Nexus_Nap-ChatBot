@@ -88,6 +88,15 @@ namespace Fanex.NCB.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Group chat has been deleted by Admin user..
+        /// </summary>
+        public static string GroupChatDeleted {
+            get {
+                return ResourceManager.GetString("GroupChatDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Message content length exceeds limitation (4096 characters)..
         /// </summary>
         public static string MessageIsTooLong {

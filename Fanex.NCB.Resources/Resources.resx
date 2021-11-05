@@ -126,6 +126,9 @@
   <data name="DuplicatedErrorMessage" xml:space="preserve">
     <value>Error occurred due to duplicate content in a pre-defined period of time.</value>
   </data>
+  <data name="GroupChatDeleted" xml:space="preserve">
+    <value>The Group chat has been deleted by Admin user.</value>
+  </data>
   <data name="MessageIsTooLong" xml:space="preserve">
     <value>Message content length exceeds limitation (4096 characters).</value>
   </data>
