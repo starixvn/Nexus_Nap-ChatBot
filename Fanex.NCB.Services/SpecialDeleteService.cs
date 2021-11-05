@@ -158,8 +158,9 @@
             if (messages.Any())
             {
                 var listMsg = messages.Select(m => new MessageHistory { MessageID = m.MessageID, RequestID = m.RequestID }).ToList();
-
                 var (abnormalMessages, abnormalMessageHistories) = await GetVoidingHistoryAsync(listMsg);
+                logService.WriteLogFileWarning(string.Format("Before mapping - Messages: {0}, AbnormalMessages: {1}",
+                    JsonConvert.SerializeObject(messages), JsonConvert.SerializeObject(abnormalMessages)));
                 if (abnormalMessageHistories.Any())
                 {
                     var updatedUsernames = await GetAbnormalAccountUpdatedUsernameAsync(abnormalMessageHistories);
@@ -167,6 +168,8 @@
                 }
 
                 MappingAbnormalBetsData(messages, abnormalMessages);
+                logService.WriteLogFileWarning(string.Format("Before mapping - Messages: {0}, AbnormalMessages: {1}",
+                    JsonConvert.SerializeObject(messages), JsonConvert.SerializeObject(abnormalMessages)));
 
                 int maxMsgId = messages.Max(m => m.MessageID);
                 await ImportAbnormalBetNotificationToChatbotDBAsync(abnormalMessages, listMsg, maxMsgId);
@@ -257,6 +260,8 @@
                     MessageHeader = JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
                     MaxMessageId = maxMessageId
                 };
+                logService.WriteLogFileWarning(string.Format("Data import - MessageHeader: {0}, MaxMessageId: {1}",
+                    criteria.MessageHeader, criteria.MaxMessageId));
                 var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
                 var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);
                 var command = new CommandResult
