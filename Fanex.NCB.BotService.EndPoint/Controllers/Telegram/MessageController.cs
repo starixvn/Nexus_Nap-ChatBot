@@ -242,7 +242,8 @@
                     result.IsIgnoreRetry = true;
                 }
 
-                if (exception.Message.Contains("Forbidden: bot was kicked from the supergroup chat", StringComparison.InvariantCultureIgnoreCase))
+                if (exception.Message.Contains("Forbidden: bot was kicked from the supergroup chat", StringComparison.InvariantCultureIgnoreCase)
+                    || exception.Message.Contains("Bad Request: chat not found", StringComparison.InvariantCultureIgnoreCase))
                 {
                     result.ErrorMessage = Resources.Resources.GroupChatDeleted;
                     result.IsIgnoreRetry = true;
