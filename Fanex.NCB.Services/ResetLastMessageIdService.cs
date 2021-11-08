@@ -9,18 +9,15 @@
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
-    using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
 
     public class ResetLastMessageIdService : IResetLastMessageIdService
     {
         private readonly IBaseService baseService;
-        private readonly string Environment;
 
-        public ResetLastMessageIdService(IBaseService baseService, IConfiguration configuration)
+        public ResetLastMessageIdService(IBaseService baseService)
         {
             this.baseService = baseService;
-            Environment = configuration.GetSection("Environment")?.Value;
         }
 
         public async Task<(IEnumerable<CurrentMaxMessageInfo>, IEnumerable<MessageTypeInfo>)> GetCurrentPreviousMaxMessageAsync()
@@ -42,7 +39,6 @@
 
         public async Task<IEnumerable<MissingMesssageInfo>> GetMissingMessageInfoAsync(GetMissingMessageInfoCriteria criteria)
         {
-            criteria.Environment = Environment;
             var missingMessageInfos = await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
             foreach (var missingMesssageInfo in missingMessageInfos)
             {
@@ -53,7 +49,6 @@
 
         public async Task<CommandResult> CreateMissingMessageAsync(CreateMissingMessageCommand command)
         {
-            command.Environment = Environment;
             return await baseService.ExecuteNonQueryAsync(command);
         }
 
