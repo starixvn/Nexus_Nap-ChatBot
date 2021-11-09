@@ -13,6 +13,7 @@
     using Fanex.NCB.Resources;
     using Fanex.NCB.Shared.Extensions;
     using Fanex.NCB.Shared.Models;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
     using Telegram.Bot.Types;
@@ -25,6 +26,7 @@
         private readonly SendIndirectMessageSettings sendIndirectMessageSettings;
         private readonly IEnumerable<TelegramBotConfigurations> botConfigurations;
         private readonly Logging.ILogger logger;
+        private readonly ILogger<TelegramBotService> filelogger;
 
         public TelegramBotService(
             IHttpClientFactory httpClientFactory,
@@ -32,12 +34,15 @@
             IOptions<SendIndirectMessageSettings> sendIndirectMessageSettings,
             IOptions<ProxySettings> proxySettings,
             List<TelegramBotConfigurations> botConfigurations,
-            Logging.ILogger logger)
+            Logging.ILogger logger,
+            ILogger<TelegramBotService> filelogger)
         {
             this.appSettings = appSettings;
             this.sendIndirectMessageSettings = sendIndirectMessageSettings.Value;
             this.botConfigurations = botConfigurations;
             this.logger = logger;
+            this.filelogger = filelogger;
+
             if (proxySettings.Value.IsUseProxy)
             {
                 httpClient = httpClientFactory.CreateClient(NamedHttpClients.ProxiedClient);
@@ -74,13 +79,6 @@
 
         public async Task<SendMessageResult> SendTextMessageAsync(ConversationInfo conversationInfo)
         {
-            return sendIndirectMessageSettings.IsEnabled
-                ? await SendIndirectTextMessageAsync(conversationInfo)
-                : await SendDirectTextMessageAsync(conversationInfo);
-        }
-
-        protected internal virtual async Task<SendMessageResult> SendDirectTextMessageAsync(ConversationInfo conversationInfo)
-        {
             try
             {
                 _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
@@ -89,6 +87,11 @@
             }
             catch (Exception exception)
             {
+                if (sendIndirectMessageSettings.IsEnabled)
+                {
+                    return await SendIndirectTextMessageAsync(conversationInfo, exception);
+                }
+
                 return await HandleExceptionAsync(conversationInfo, exception);
             }
 
@@ -100,7 +103,7 @@
             };
         }
 
-        public async Task<SendMessageResult> SendIndirectTextMessageAsync(ConversationInfo conversationInfo)
+        protected internal virtual async Task<SendMessageResult> SendIndirectTextMessageAsync(ConversationInfo conversationInfo, Exception exception)
         {
             try
             {
@@ -134,8 +137,12 @@
 
                 return result;
             }
-            catch(Exception exception)
+            catch(Exception ex)
             {
+                var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex));
+                filelogger.LogWarning(logMessage.ToString());
+
                 return await HandleExceptionAsync(conversationInfo, exception);
             }
         }

@@ -35,7 +35,7 @@
         {
             ConfigHttpClient(services, configuration);
             services.Configure<ProxySettings>(options => configuration.GetSection("ProxySettings").Bind(options));
-            services.Configure<SendIndirectMessageSettings>(options => configuration.GetSection("SendMessageIndirectSettings").Bind(options));
+            services.Configure<SendIndirectMessageSettings>(options => configuration.GetSection("SendIndirectMessageSettings").Bind(options));
 
             services.AddTransient<IBaseRepository, BaseRepository>();
             services.AddTransient<IDynamicRepository, DynamicRepository>();
