@@ -89,15 +89,7 @@ BEGIN
 				FROM dbo.MsgTarget mt WITH(NOLOCK)
 				WHERE mt.MessageId = m.MessageId 
 					AND EXISTS (SELECT 1 FROM @DepositSuper ds WHERE ds.CustId = mt.TargetId)
-					AND NOT EXISTS (
-						SELECT 1 
-						FROM dbo.MsgChatBot mc WITH (NOLOCK)
-						WHERE mc.MessageId = mt.MessageId 
-							AND mc.TargetId = mt.TargetId 
-							AND mc.JobIdentify = 1 
-							AND mc.Environment = @Environment 
-							AND mc.RequestId = 0
-				    ) AND mt.BetTransId IS NOT NULL		
+				    AND mt.BetTransId IS NOT NULL		
 					AND mt.isDeleted = 0
 			)				
 		ORDER BY m.MessageId
@@ -109,18 +101,7 @@ BEGIN
 		INSERT INTO @Msg (MessageId, Content_en, JobIdentify, Posttime)
 		SELECT m.MessageId, m.Content_en, 2 AS JobIdentify, PostTime
 		FROM dbo.Msg m WITH(NOLOCK)
-		WHERE EXISTS (
-			SELECT 1 
-			FROM @Request r
-				LEFT JOIN dbo.MsgChatBot mc WITH(NOLOCK) 
-					ON mc.MessageId = r.MessageId 
-		             AND mc.RequestId = r.RequestId 
-					 AND mc.TargetId = 0
-					 AND mc.Environment = @Environment
-					 AND mc.IsFinished = 1
-					 AND mc.JobIdentify = 2
-			WHERE mc.MessageId IS NULL AND r.MessageId = m.MessageId
-		)
+		WHERE EXISTS (SELECT 1 FROM @Request r WHERE r.MessageId = m.MessageId)
 	END
 
 	IF EXISTS (SELECT 1 FROM @Message WHERE JobIdentify = 3)
@@ -145,15 +126,6 @@ BEGIN
 						INNER JOIN dbo.MsgSite ms WITH(NOLOCK) ON mt.TargetId = ms.SiteId
 						INNER JOIN @DepositSite ds ON ms.SiteName = ds.SiteName
 					WHERE mt.MessageId = m.MessageId 
-						AND NOT EXISTS (
-							SELECT 1 
-							FROM dbo.MsgChatBot mc WITH(NOLOCK) 
-							WHERE mc.MessageId = mt.MessageId 
-								AND mc.TargetId = mt.TargetId 
-								AND mc.JobIdentify = 3 
-								AND mc.Environment = @Environment
-								AND mc.RequestId = 0
-						)
 			)
 		    AND m.PostTime >= DATEADD(HOUR, - 1, @PostTime)
 		ORDER BY MessageId
