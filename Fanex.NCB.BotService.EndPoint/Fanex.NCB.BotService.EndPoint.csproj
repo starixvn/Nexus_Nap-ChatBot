@@ -39,6 +39,9 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
+        <None Update="App_Data\SpNames.LOCAL_1.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="App_Data\SpNames.PROD_1.xml">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

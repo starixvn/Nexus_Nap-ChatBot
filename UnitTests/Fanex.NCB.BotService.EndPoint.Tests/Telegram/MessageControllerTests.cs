@@ -256,58 +256,6 @@
 
         #endregion SendMessageAsync
 
-        #region SendTextMessageAsync
-
-        [Fact]
-        public async Task SendTextMessageAsync_WhenCalled_ReturnAsExpectedResult()
-        {
-            // Arrange
-            var botId = fixture.Create<long>();
-            var chatId = fixture.Create<long>();
-            var notificationId = fixture.Create<int>();
-            var messageContent = "message content";
-            var controller = GetController();
-
-            // Act
-            var result = await controller.Public_SendTextMessageAsync(botId, chatId, notificationId, messageContent);
-
-            // Assert
-            Assert.Equal(chatId.ToString(), result.ConversationId);
-            Assert.Equal(notificationId, result.NotificationId);
-            Assert.Equal(0, result.ErrorCode);
-            Assert.Null(result.ErrorMessage);
-            Assert.False(result.IsIgnoreRetry);
-
-            await botService.Received().SendTextMessageAsync(botId, chatId, messageContent);
-        }
-
-        [Fact]
-        public async Task SendTextMessageAsync_Exception_ReturnAsExpectedResult()
-        {
-            // Arrange
-            var botId = fixture.Create<long>();
-            var chatId = fixture.Create<long>();
-            var notificationId = fixture.Create<int>();
-            var messageContent = "message content";
-            var exception = fixture.Create<Exception>();
-            var controller = GetController();
-            botService.SendTextMessageAsync(botId, chatId, messageContent).Returns(Task.FromException<Message>(exception));
-
-            // Act
-            var result = await controller.Public_SendTextMessageAsync(botId, chatId, notificationId, messageContent);
-
-            // Assert
-            Assert.Equal(chatId.ToString(), result.ConversationId);
-            Assert.Equal(notificationId, result.NotificationId);
-            Assert.Equal(1, result.ErrorCode);
-            Assert.Equal(exception.Message, result.ErrorMessage);
-            Assert.False(result.IsIgnoreRetry);
-
-            controller.Received().Protected("WriteLogAsync", exception, Arg.Any<IDictionary<string, object>>());
-        }
-
-        #endregion SendTextMessageAsync
-
         #region AddMessageLogToDatabaseAsync
 
         [Fact]

@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.BotService.Core;
@@ -62,7 +61,7 @@
                 {
                     _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
                     _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
-                    await botService.SendTextMessageAsync(Guid.NewGuid().ToString(), botId, chatId, conversationInfo.Message.ToMarkdownV2());
+                    await botService.SendTextMessageAsync(botId, chatId, conversationInfo.Message.ToMarkdownV2());
                 }
             }
             catch (Exception ex)
@@ -82,8 +81,6 @@
             var results = new List<SendMessageResult>();
             if (notificationMessages != null && notificationMessages.Any())
             {
-                string transid = Guid.NewGuid().ToString();
-                filelogger.LogWarning($"{transid}-Begin send messages");
                 var notifications = conversationService.GetDistinctNotificationConversation(notificationMessages);
                 IList<List<ConversationInfo>> batches = DivideConversionByBatch(notifications);
                 foreach (var batch in batches)
@@ -91,17 +88,47 @@
                     var tasks = new List<Task<SendMessageResult>>();
                     foreach (ConversationInfo conversationInfo in batch)
                     {
-                        SendMessage(transid, tasks, conversationInfo);
+                        SendMessage(tasks, conversationInfo);
                     }
 
                     results.AddRange((await Task.WhenAll(tasks)).ToList());
                     await Task.Delay(Milliseconds);
                 }
-
-                filelogger.LogWarning($"{transid}-End send messages");
             }
 
             return Ok(results);
+        }
+
+        [HttpPost]
+        [Route("api/telegram/sendIndirectMessage")]
+        public async Task<ObjectResult> SendIndirectMessageAsync([FromBody] ConversationInfo conversationInfo)
+        {
+            var result = new SendMessageResult();
+            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
+            {
+                result.ErrorCode = 1;
+                result.ErrorMessage = Resources.Resources.DisableChannelErrorMessage;
+            }
+            else
+            {
+                try
+                {
+                    _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
+                    _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
+                    await botService.SendTextMessageAsync(botId, chatId, conversationInfo.Message.ToMarkdownV2());
+                }
+                catch (Exception exception)
+                {
+                    result.ErrorCode = 1;
+                    result.ErrorMessage = exception.Message;
+
+                    var logMessage = new LogMessage(exception.Message)
+                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
+                    filelogger.LogWarning(logMessage.ToString());
+                }
+            }
+
+            return Ok(result);
         }
 
         private static IList<List<ConversationInfo>> DivideConversionByBatch(IEnumerable<NotificationMessage> notifications)
@@ -138,7 +165,7 @@
             return batches;
         }
 
-        private void SendMessage(string transid, List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo)
+        private void SendMessage(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo)
         {
             bool isEnableTelegramChannel = appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram);
             tasks.Add(!isEnableTelegramChannel ? Task.Run(() => new SendMessageResult
@@ -149,10 +176,10 @@
                 ErrorCode = 1,
                 ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
                 IsIgnoreRetry = true
-            }) : Task.Run(() => SendMessageAsync(transid, conversationInfo)));
+            }) : Task.Run(() => SendMessageAsync(conversationInfo)));
         }
 
-        protected internal virtual async Task<SendMessageResult> SendMessageAsync(string transid, ConversationInfo conversationInfo)
+        protected internal virtual async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo)
         {
             if (conversationInfo.IsDuplicated)
             {
@@ -172,7 +199,7 @@
                 _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
                 _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
                 await messageLogService.InsertMessageLogIntoCache(conversationInfo.ConversationId, conversationInfo.Message, guiid);
-                SendMessageResult result = await SendTextMessageAsync(transid, botId, chatId, conversationInfo.NotificationId, conversationInfo.Message);
+                SendMessageResult result = await botService.SendTextMessageAsync(conversationInfo);
                 if (result.ErrorCode != 0)
                 {
                     await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
@@ -208,51 +235,6 @@
                 NotificationId = notificationId,
                 IsIgnoreRetry = true
             };
-
-        protected internal virtual async Task<SendMessageResult> SendTextMessageAsync(string transid, long botId, long chatId, int notificationId, string messageContent)
-        {
-            var result = new SendMessageResult
-            {
-                ConversationId = chatId.ToString(),
-                NotificationId = notificationId
-            };
-
-            try
-            {
-                await botService.SendTextMessageAsync(transid, botId, chatId, messageContent.ToMarkdownV2());
-            }
-            catch (Exception exception)
-            {
-                var param = new Dictionary<string, object>
-                {
-                    { "notificationId", notificationId },
-                    { "botId", botId },
-                    { "chatId", chatId },
-                    { "messageContent", messageContent }
-                };
-
-                await WriteLogAsync(exception, param);
-
-                result.ErrorCode = 1;
-                result.ErrorMessage = exception.Message;
-
-                if (exception.Message.Contains("Message is too long", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    result.ErrorMessage = Resources.Resources.MessageIsTooLong;
-                    result.IsIgnoreRetry = true;
-                }
-
-                if (exception.Message.Contains("bot was kicked from the supergroup chat", StringComparison.InvariantCultureIgnoreCase)
-                    || exception.Message.Contains("chat not found", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    result.ErrorMessage = Resources.Resources.GroupChatDeleted;
-                    result.IsIgnoreRetry = true;
-                }
-            }
-
-            result.SentTime = DateTime.UtcNow;
-            return result;
-        }
 
         protected internal virtual async Task AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, string messageContent, SendMessageResult result)
         {

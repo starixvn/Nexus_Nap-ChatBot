@@ -1,11 +1,9 @@
-﻿namespace Fanex.NCB.Models
+﻿namespace Fanex.NCB.Shared.Models
 {
     public class ChatbotToken
     {
         public string TokenType { get; set; }
-
         public int ExpiresIn { get; set; }
-
         public string AccessToken { get; set; }
     }
 }

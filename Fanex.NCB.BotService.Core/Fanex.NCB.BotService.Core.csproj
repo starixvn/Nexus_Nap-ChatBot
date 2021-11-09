@@ -23,6 +23,7 @@
     <PackageReference Include="Telegram.Bot" Version="16.0.2" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Fanex.NCB.Resources\Fanex.NCB.Resources.csproj" />
     <ProjectReference Include="..\Fanex.NCB.Shared\Fanex.NCB.Shared.csproj" />
   </ItemGroup>
 </Project>

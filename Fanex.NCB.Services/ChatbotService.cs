@@ -9,7 +9,6 @@
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Models;
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
