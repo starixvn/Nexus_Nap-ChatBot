@@ -103,6 +103,17 @@
         [Route("api/telegram/sendIndirectMessage")]
         public async Task<ObjectResult> SendIndirectMessageAsync([FromBody] ConversationInfo conversationInfo)
         {
+            var param = new Dictionary<string, object>
+            {
+                { "notificationId", conversationInfo.NotificationId },
+                { "botId", conversationInfo.BotConversationId },
+                { "chatId", conversationInfo.ConversationId },
+                { "messageContent", conversationInfo.Message }
+            };
+            var logMessage = new LogMessage("Send indirect message")
+                .AddSection("Params", param);
+            filelogger.LogWarning(logMessage.ToString());
+
             var result = new SendMessageResult();
             if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
             {
@@ -122,7 +133,8 @@
                     result.ErrorCode = 1;
                     result.ErrorMessage = exception.Message;
 
-                    var logMessage = new LogMessage(exception.Message)
+                    logMessage = new LogMessage(exception.Message)
+                        .AddSection("Params", param)
                         .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
                     filelogger.LogWarning(logMessage.ToString());
                 }
