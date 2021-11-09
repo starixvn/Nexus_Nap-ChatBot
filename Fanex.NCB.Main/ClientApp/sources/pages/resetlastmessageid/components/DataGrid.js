@@ -13,9 +13,9 @@ export class DataGrid extends Component {
         super(props);
 
         this.state = {
-            checked: [true, true, true],
-            allChecked: true,
-            isSubmitting: false
+            checked: [false, false, false],
+            allChecked: false,
+            isSubmitting: true
         };
     }
 
@@ -104,6 +104,9 @@ export class DataGrid extends Component {
 
     handleAllChange = () => {
         const allChecked = this.state.allChecked;
+        if (!this.isNotEqualCurrentNew(0) && !this.isNotEqualCurrentNew(1) && !this.isNotEqualCurrentNew(2)) {
+            return;
+        };
         this.setState({ 
             allChecked: !allChecked,
             checked: [!allChecked,!allChecked,!allChecked],
