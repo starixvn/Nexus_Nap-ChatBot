@@ -87,12 +87,13 @@
             }
             catch (Exception exception)
             {
+                var result = new SendMessageResult { ErrorCode = 1 };
                 if (sendIndirectMessageSettings.IsEnabled)
                 {
-                    return await SendIndirectTextMessageAsync(conversationInfo, exception);
+                    result = await SendIndirectTextMessageAsync(conversationInfo);
                 }
 
-                return await HandleExceptionAsync(conversationInfo, exception);
+                return result.ErrorCode == 0 ? result : await HandleExceptionAsync(conversationInfo, exception);
             }
 
             return new SendMessageResult
@@ -103,7 +104,7 @@
             };
         }
 
-        protected internal virtual async Task<SendMessageResult> SendIndirectTextMessageAsync(ConversationInfo conversationInfo, Exception exception)
+        protected internal virtual async Task<SendMessageResult> SendIndirectTextMessageAsync(ConversationInfo conversationInfo)
         {
             try
             {
@@ -119,46 +120,22 @@
                 result.NotificationId = conversationInfo.NotificationId;
                 result.SentTime = DateTime.UtcNow;
 
-                if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
-                {
-                    if (result.ErrorMessage.Contains("Message is too long", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        result.ErrorMessage = Resources.MessageIsTooLong;
-                        result.IsIgnoreRetry = true;
-                    }
-
-                    if (result.ErrorMessage.Contains("bot was kicked from the supergroup chat", StringComparison.InvariantCultureIgnoreCase)
-                        || result.ErrorMessage.Contains("bot was kicked from the group chat", StringComparison.InvariantCultureIgnoreCase)
-                        || result.ErrorMessage.Contains("chat not found", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        result.ErrorMessage = Resources.GroupChatDeleted;
-                        result.IsIgnoreRetry = true;
-                    }
-
-                    if(!result.ErrorMessage.Contains(Resources.DisableChannelErrorMessage, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        var param = new Dictionary<string, object>
-                        {
-                            { "notificationId", conversationInfo.NotificationId },
-                            { "botId", conversationInfo.BotConversationId },
-                            { "chatId", conversationInfo.ConversationId },
-                            { "messageContent", conversationInfo.Message }
-                        };
-                        var logMessage = new LogMessage(result.ErrorMessage)
-                            .AddSection("Params", param);
-                        await logger.ErrorAsync(logMessage.ToString());
-                    }
-                }
-
                 return result;
             }
-            catch(Exception ex)
+            catch(Exception exception)
             {
-                var logMessage = new LogMessage(ex.Message)
-                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex));
+                var logMessage = new LogMessage(exception.Message)
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
                 filelogger.LogWarning(logMessage.ToString());
 
-                return await HandleExceptionAsync(conversationInfo, exception);
+                return new SendMessageResult
+                {
+                    ConversationId = conversationInfo.ConversationId,
+                    NotificationId = conversationInfo.NotificationId,
+                    ErrorCode = 1,
+                    ErrorMessage = exception.Message,
+                    SentTime = DateTime.UtcNow
+                };
             }
         }
 
