@@ -87,13 +87,15 @@
             }
             catch (Exception exception)
             {
+                await WriteLogAsync(conversationInfo, exception);
+
                 var result = new SendMessageResult { ErrorCode = 1 };
                 if (sendIndirectMessageSettings.IsEnabled)
                 {
                     result = await SendIndirectTextMessageAsync(conversationInfo);
                 }
 
-                return result.ErrorCode == 0 ? result : await HandleExceptionAsync(conversationInfo, exception);
+                return result.ErrorCode == 0 ? result : GetSendMessageResult(conversationInfo, exception);
             }
 
             return new SendMessageResult
@@ -155,17 +157,8 @@
             return token;
         }
 
-        protected internal virtual async Task<SendMessageResult> HandleExceptionAsync(ConversationInfo conversationInfo, Exception exception)
+        protected internal virtual SendMessageResult GetSendMessageResult(ConversationInfo conversationInfo, Exception exception)
         {
-            var param = new Dictionary<string, object>
-            {
-                { "notificationId", conversationInfo.NotificationId },
-                { "botId", conversationInfo.BotConversationId },
-                { "chatId", conversationInfo.ConversationId },
-                { "messageContent", conversationInfo.Message }
-            };
-            await WriteLogAsync(exception, param);
-
             var result = new SendMessageResult
             {
                 ConversationId = conversationInfo.ConversationId,
@@ -191,16 +184,20 @@
             return result;
         }
 
-        protected internal virtual async Task WriteLogAsync(Exception exception, IDictionary<string, object> param = null)
+        protected internal virtual async Task WriteLogAsync(ConversationInfo conversationInfo, Exception exception)
         {
-            var logMessage = new LogMessage(exception.Message)
-                        .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
-                        .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
-                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
-            if (param != null)
+            var param = new Dictionary<string, object>
             {
-                logMessage.AddSection("Params", param);
-            }
+                { "notificationId", conversationInfo.NotificationId },
+                { "botId", conversationInfo.BotConversationId },
+                { "chatId", conversationInfo.ConversationId },
+                { "messageContent", conversationInfo.Message }
+            };
+            var logMessage = new LogMessage(exception.Message)
+                .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
+                .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
+                .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
+                .AddSection("Params", param);
 
             await logger.ErrorAsync(logMessage.ToString());
         }
