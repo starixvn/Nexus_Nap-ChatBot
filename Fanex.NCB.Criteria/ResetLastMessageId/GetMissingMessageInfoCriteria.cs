@@ -17,7 +17,7 @@
         [SpParam(Ignored = true)]
         public List<MessageRequestId> Requests { get; set; } = new List<MessageRequestId>();
 
-        public string Environment { get; set; } = "UAT";
+        public string Environment { get; set; }
 
         [SpParam(SqlParamName = "MessageList")]
         public string MessageListXml

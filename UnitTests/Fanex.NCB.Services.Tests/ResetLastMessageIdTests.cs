@@ -8,6 +8,7 @@
     using Fanex.NCB.Models.ResetLastMessageId;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Microsoft.Extensions.Configuration;
     using NSubstitute;
     using Xunit;
 
@@ -15,6 +16,7 @@
     {
         private readonly IFixture fixture = new Fixture();
         private IBaseService baseService;
+        private IConfiguration configuration;
 
         [Fact]
         public async Task GetCurrentPreviousMaxMessageAsync_WhenCalled_ReturnExpectResult()
@@ -126,8 +128,9 @@
         private ResetLastMessageIdService GetService()
         {
             baseService = Substitute.For<IBaseService>();
+            configuration = Substitute.For<IConfiguration>();
 
-            return new ResetLastMessageIdService(baseService);
+            return new ResetLastMessageIdService(baseService, configuration);
         }
     }
 }

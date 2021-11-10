@@ -83,5 +83,7 @@
     Content_en: 'Content_en',
     PostTime: 'Post Time',
     Ok: 'Ok',
-    Proceed: 'Proceed'  
+    Proceed: 'Proceed',
+    ConfirmResetLastMessageId: 'Do you want to reset Last MessageID?',
+    ResetLastMessageIdSuccessfully: 'Last MessageID has been reset successfully'
 };

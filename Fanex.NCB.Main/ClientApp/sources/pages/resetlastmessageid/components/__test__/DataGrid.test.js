@@ -6,6 +6,10 @@ import { shallow } from 'enzyme';
 import NoDataTitle from '../../../common/no-data-title/NoDataTitle';
 
 describe('DataGrid', () => {
+    beforeAll(() => {
+        jest.useFakeTimers();
+    });
+
     afterAll(() => {
         jest.clearAllMocks();
     });
@@ -146,7 +150,7 @@ describe('DataGrid', () => {
             container.instance().handleChange(mockEvent);
 
             // Assert
-            expect(container.state().checked).toEqual([false, true, true]);
+            expect(container.state().checked).toEqual([true, false, false]);
             expect(container.state().isSubmitting).toEqual(false);
         });
 
@@ -182,9 +186,22 @@ describe('DataGrid', () => {
             container.instance().handleAllChange();
 
             // Assert
-            expect(container.state().allChecked).toEqual(false);
-            expect(container.state().checked).toEqual([false,false,false]);
-            expect(container.state().isSubmitting).toEqual(true);
+            expect(container.state().allChecked).toEqual(true);
+            expect(container.state().checked).toEqual([true,true,true]);
+            expect(container.state().isSubmitting).toEqual(false);
+        });
+
+        it('should return', () => {
+            // Arrange
+            const props = { ...initProps };
+
+            // Act
+            const container = shallow(<DataGrid {...props}/>);
+            container.instance().isNotEqualCurrentNew = jest.fn(() => false);
+            const actual = container.instance().handleAllChange();
+
+            // Assert
+            expect(actual).toBe(undefined);
         });
     });
 
@@ -197,7 +214,7 @@ describe('DataGrid', () => {
                 { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 }
             ]
         };
-        it('should return true', () => {
+        it('should return false', () => {
             // Arrange
             const item = { messageId: 1074533325 }
 
@@ -206,7 +223,7 @@ describe('DataGrid', () => {
             const actual = container.instance().checkCondition(item, 0);
 
             // Assert
-            expect(actual).toBe(true);
+            expect(actual).toBe(false);
         });
 
         it('should return false', () => {
@@ -222,9 +239,38 @@ describe('DataGrid', () => {
         })
     });
 
+    describe('handleShowConfirm', () => {
+        it('should setState correctly', () => {
+            // Arrange
+            const props = {...initProps};
+
+            // Act
+            const container = shallow(<DataGrid {...props}/>);
+            container.instance().handleShowConfirm();
+
+            // Assert
+            expect(container.state().isShowConfirmPopup).toBe(true);
+        });
+    });
+
+    describe('handleCloseConfirm', () => {
+        it('should setState correctly', () => {
+            // Arrange
+            const props = {...initProps};
+
+            // Act
+            const container = shallow(<DataGrid {...props}/>);
+            container.instance().handleCloseConfirm();
+
+            // Assert
+            expect(container.state().isShowConfirmPopup).toBe(false);
+        });
+    });
+
     describe('handleSubmit', () => {
         it('should call exactly props functions', async () => {
             // Arrange
+            const promise = Promise.resolve({ data: { code: 0, isSuccessful: true }});
             const props = {
                 ...initProps,
                 selected: [
@@ -233,13 +279,16 @@ describe('DataGrid', () => {
                     { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 1074533330 }
                 ],
                 createMissingMessage: jest.fn(),
-                editMessageInfo: jest.fn()
+                editMessageInfo: jest.fn(() => promise)
             };
 
             // Act
             const container = shallow(<DataGrid {...props}/>);
+            container.instance().setState({ checked: [true, true, true] });
             container.instance().getAllData = jest.fn();
-            await container.instance().handleSubmit();
+            container.instance().handleSubmit();
+            await promise;
+            jest.runAllTimers();
 
             // Assert
             expect(props.createMissingMessage).toHaveBeenCalledWith({
@@ -258,6 +307,7 @@ describe('DataGrid', () => {
                 ]
             });
             expect(container.instance().getAllData).toHaveBeenCalled();
+            expect(setTimeout).toHaveBeenCalledTimes(1);
             expect(container.state().isSubmitting).toBe(false);
         });
     });
@@ -363,7 +413,7 @@ describe('DataGrid', () => {
 
             // Assert
             expect(renderRow.find(Input).props().type).toBe('checkbox');
-            expect(renderRow.find(Input).props().checked).toBe(true);
+            expect(renderRow.find(Input).props().checked).toBe(false);
             expect(container.instance().handleChange).toHaveBeenCalledWith(mockEvent);
         });
 
@@ -410,11 +460,11 @@ describe('DataGrid', () => {
 
             // Act
             const container = shallow(<DataGrid {...props} />);
-            container.instance().handleSubmit = jest.fn();
+            container.instance().handleShowConfirm = jest.fn();
             container.find('.btn-submit').simulate('click');
 
             // Assert
-            expect(container.instance().handleSubmit).toHaveBeenCalled();
+            expect(container.instance().handleShowConfirm).toHaveBeenCalled();
         });
     });
 });

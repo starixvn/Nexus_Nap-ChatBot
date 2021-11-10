@@ -3,10 +3,10 @@
     using System.Collections.Generic;
     using System.Text;
     using Fanex.Data;
-    using Fanex.Data.Repository;
     using Fanex.NCB.Models.ResetLastMessageId;
+    using Fanex.NCB.Shared.Models;
 
-    public class CreateMissingMessageCommand : NonQueryCommand
+    public class CreateMissingMessageCommand : BaseCommand
     {
         [SpParam(Ignored = true)]
         public List<CurrentMaxMessageInfo> Messages { get; set; } = new List<CurrentMaxMessageInfo>();
@@ -14,7 +14,7 @@
         [SpParam(Ignored = true)]
         public List<MessageRequestId> Requests { get; set; } = new List<MessageRequestId>();
 
-        public string Environment { get; set; } = "UAT";
+        public string Environment { get; set; }
 
         [SpParam(SqlParamName = "MessageList")]
         public string MessageListXml

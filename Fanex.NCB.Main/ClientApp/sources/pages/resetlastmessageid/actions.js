@@ -45,7 +45,7 @@ const createMissingMessage = params => async () => {
 
 const editMessageInfo = params => async () => {
     const url = Site.resolveClientUrl('ResetLastMessageId/EditMessageInfo');
-    await DataService.postDataAsync(url,params).then(response => response);
+    return await DataService.postDataAsync(url,params).then(response => response);
 };
 
 export const ActionCreators = {

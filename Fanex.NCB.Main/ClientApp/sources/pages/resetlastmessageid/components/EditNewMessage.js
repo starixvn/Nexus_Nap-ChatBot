@@ -21,7 +21,7 @@ export class EditNewMessage extends Component {
         };
 
         this.panels = [];
-        this.selectedMessageId = 0;
+        this.selectedMessageId = this.props.newMaxId;
     }
 
     handleClose = () => {

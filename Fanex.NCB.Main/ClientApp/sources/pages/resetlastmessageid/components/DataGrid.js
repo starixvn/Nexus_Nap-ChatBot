@@ -6,6 +6,8 @@ import { Input } from 'reactstrap';
 import Labels from '../../common/Labels';
 import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';
+import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
+import ResponseMessage from '../../common/response-message/ResponseMessage';
 
 export class DataGrid extends Component {
 
@@ -15,7 +17,9 @@ export class DataGrid extends Component {
         this.state = {
             checked: [false, false, false],
             allChecked: false,
-            isSubmitting: true
+            isSubmitting: true,
+            isShowConfirmPopup: false,
+            editResult: null
         };
     }
 
@@ -123,7 +127,15 @@ export class DataGrid extends Component {
         return false;
     };
 
-    handleSubmit = async () => {
+    handleShowConfirm = () => {
+        this.setState({ isShowConfirmPopup: true });
+    };
+
+    handleCloseConfirm = () => {
+        this.setState({ isShowConfirmPopup: false });
+    };
+
+    handleSubmit = () => {
         this.setState({ isSubmitting: true });
         const { missingMessages, missingMessageCsd, selected } = this.props;
         const { checked } = this.state;
@@ -148,10 +160,17 @@ export class DataGrid extends Component {
             }
         });
 
-        await this.props.createMissingMessage({ messages: messages, requests: requests });
-        await this.props.editMessageInfo({ jobInfoList: jobInfoList });
-        await this.getAllData();
-        this.setState({ isSubmitting: false });
+        this.props.createMissingMessage({ messages: messages, requests: requests });
+        this.props.editMessageInfo({ jobInfoList: jobInfoList }).then(response => {
+            this.setState({ editResult: response.data, isShowConfirmPopup: false });
+            if (response.data.isSuccessful) {
+                this.getAllData();
+            }
+            setTimeout(() => {
+                this.setState({ editResult: null });
+            }, 3000);
+            this.setState({ isSubmitting: false })
+        });
     };
 
     buildHeader = isHost => {
@@ -213,12 +232,16 @@ export class DataGrid extends Component {
 
     render() {
         const { currentMessages, newMessages, missingMessages, haveHostPermission } = this.props;
-        const { isSubmitting } = this.state;
+        const { isSubmitting, isShowConfirmPopup, editResult } = this.state;
         if (currentMessages === null || newMessages === null || missingMessages === null)
             return null;
 
         return (
             <div className="table-container">
+                {editResult &&
+                    <ResponseMessage isSuccessful={editResult.isSuccessful}
+                        message={editResult.message || Labels.ResetLastMessageIdSuccessfully} />
+                }
                 <Table
                     width={960}
                     autoWidth={false}
@@ -227,9 +250,19 @@ export class DataGrid extends Component {
                     containerPadding={0}
                     adjustedHeight={50}
                 />
-                <button className="btn-submit float-right mt-3" disabled={isSubmitting} onClick={() => this.handleSubmit()}>
+                <button className="btn-submit float-right mt-3" disabled={isSubmitting} onClick={() => this.handleShowConfirm()}>
                     {Labels.Proceed}
                 </button>
+                {
+                    isShowConfirmPopup &&
+                    <ConfirmPopup
+                        onConfirm={this.handleSubmit}
+                        onToggle={this.handleCloseConfirm}
+                        isOpen={isShowConfirmPopup}
+                        content={Labels.ConfirmResetLastMessageId}
+                        warningIcon={false}
+                    />
+                }
             </div>
         );
     }

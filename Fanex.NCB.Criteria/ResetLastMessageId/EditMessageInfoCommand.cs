@@ -2,10 +2,10 @@
 {
     using System.Collections.Generic;
     using Fanex.Data;
-    using Fanex.Data.Repository;
     using Fanex.NCB.Models.ResetLastMessageId;
+    using Fanex.NCB.Shared.Models;
 
-    public class EditMessageInfoCommand : NonQueryCommand
+    public class EditMessageInfoCommand : BaseCommand
     {
         [SpParam(Ignored = true)]
         public List<CurrentMaxMessageInfo> JobInfoList { get; set; } = new List<CurrentMaxMessageInfo>();
