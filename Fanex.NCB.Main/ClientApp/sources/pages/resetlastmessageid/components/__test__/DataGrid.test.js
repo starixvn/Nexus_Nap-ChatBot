@@ -278,14 +278,14 @@ describe('DataGrid', () => {
                     { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 1074533330 },
                     { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 1074533330 }
                 ],
-                createMissingMessage: jest.fn(),
+                createMissingMessage: jest.fn(() => promise),
                 editMessageInfo: jest.fn(() => promise)
             };
 
             // Act
             const container = shallow(<DataGrid {...props}/>);
             container.instance().setState({ checked: [true, true, true] });
-            container.instance().getAllData = jest.fn();
+            container.instance().setSubmit = jest.fn();
             container.instance().handleSubmit();
             await promise;
             jest.runAllTimers();
@@ -306,9 +306,9 @@ describe('DataGrid', () => {
                     {jobIdentify: 3, messageId: 1074533330}
                 ]
             });
-            expect(container.instance().getAllData).toHaveBeenCalled();
+            expect(await container.instance().setSubmit).toHaveBeenCalled();
             expect(setTimeout).toHaveBeenCalledTimes(1);
-            expect(container.state().isSubmitting).toBe(false);
+            expect(container.state().isSubmitting).toBe(true);
         });
     });
 

@@ -40,7 +40,7 @@ const getMissingMessageInfo = params => async dispatch => {
 
 const createMissingMessage = params => async () => {
     const url = Site.resolveClientUrl('ResetLastMessageId/CreateMissingMessage');
-    await DataService.postDataAsync(url,params).then(response => response);
+    return await DataService.postDataAsync(url,params).then(response => response);
 };
 
 const editMessageInfo = params => async () => {

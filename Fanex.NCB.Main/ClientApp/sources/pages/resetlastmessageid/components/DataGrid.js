@@ -106,11 +106,16 @@ export class DataGrid extends Component {
         }
     };
 
+    isEqualThreeId = () => {
+        if (!this.isNotEqualCurrentNew(0) && !this.isNotEqualCurrentNew(1) && !this.isNotEqualCurrentNew(2)) {
+            return true;
+        }
+        return false;
+    };
+
     handleAllChange = () => {
         const allChecked = this.state.allChecked;
-        if (!this.isNotEqualCurrentNew(0) && !this.isNotEqualCurrentNew(1) && !this.isNotEqualCurrentNew(2)) {
-            return;
-        };
+        if (this.isEqualThreeId()) return;
         this.setState({ 
             allChecked: !allChecked,
             checked: [!allChecked,!allChecked,!allChecked],
@@ -135,7 +140,12 @@ export class DataGrid extends Component {
         this.setState({ isShowConfirmPopup: false });
     };
 
-    handleSubmit = () => {
+    setSubmit = async () => {
+        await this.getAllData();
+        !this.isEqualThreeId() && this.setState({ isSubmitting: false });
+    };
+
+    handleSubmit = async () => {
         this.setState({ isSubmitting: true });
         const { missingMessages, missingMessageCsd, selected } = this.props;
         const { checked } = this.state;
@@ -160,16 +170,21 @@ export class DataGrid extends Component {
             }
         });
 
-        this.props.createMissingMessage({ messages: messages, requests: requests });
-        this.props.editMessageInfo({ jobInfoList: jobInfoList }).then(response => {
-            this.setState({ editResult: response.data, isShowConfirmPopup: false });
-            if (response.data.isSuccessful) {
-                this.getAllData();
+        this.setState({ isShowConfirmPopup: false  });
+        await this.props.createMissingMessage({ messages: messages, requests: requests }).then(res => {
+            if (res.data.isSuccessful) {
+                this.props.editMessageInfo({ jobInfoList: jobInfoList }).then(response => {
+                    this.setState({ editResult: response.data });
+                    if (response.data.isSuccessful) {
+                        this.setSubmit();
+                    }
+                });
+            } else {
+                this.setState({ editResult: res.data, isSubmitting: false });
             }
             setTimeout(() => {
                 this.setState({ editResult: null });
             }, 3000);
-            this.setState({ isSubmitting: false })
         });
     };
 
