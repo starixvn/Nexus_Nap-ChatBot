@@ -128,10 +128,25 @@
                     }
 
                     if (result.ErrorMessage.Contains("bot was kicked from the supergroup chat", StringComparison.InvariantCultureIgnoreCase)
+                        || result.ErrorMessage.Contains("bot was kicked from the group chat", StringComparison.InvariantCultureIgnoreCase)
                         || result.ErrorMessage.Contains("chat not found", StringComparison.InvariantCultureIgnoreCase))
                     {
                         result.ErrorMessage = Resources.GroupChatDeleted;
                         result.IsIgnoreRetry = true;
+                    }
+
+                    if(!result.ErrorMessage.Contains(Resources.DisableChannelErrorMessage, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        var param = new Dictionary<string, object>
+                        {
+                            { "notificationId", conversationInfo.NotificationId },
+                            { "botId", conversationInfo.BotConversationId },
+                            { "chatId", conversationInfo.ConversationId },
+                            { "messageContent", conversationInfo.Message }
+                        };
+                        var logMessage = new LogMessage(result.ErrorMessage)
+                            .AddSection("Params", param);
+                        await logger.ErrorAsync(logMessage.ToString());
                     }
                 }
 
@@ -189,6 +204,7 @@
             }
 
             if (exception.Message.Contains("bot was kicked from the supergroup chat", StringComparison.InvariantCultureIgnoreCase)
+                || exception.Message.Contains("bot was kicked from the group chat", StringComparison.InvariantCultureIgnoreCase)
                 || exception.Message.Contains("chat not found", StringComparison.InvariantCultureIgnoreCase))
             {
                 result.ErrorMessage = Resources.GroupChatDeleted;
