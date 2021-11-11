@@ -7,7 +7,6 @@
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Models;
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Tests.Helper;
     using Fanex.NCB.Services.Tests.TestableClasses;
@@ -21,6 +20,7 @@
     {
         private readonly IFixture fixture = new Fixture();
         private IHttpClientFactory httpClientFactory;
+        private AppSettings appSettings;
         private BotSettings botSettings;
         private MonitorChatbot monitorChatBot;
         private NotifyChatGroupOption notifyChatGroupOptions;
@@ -275,6 +275,10 @@
             var sponGroupOptions = Substitute.For<IOptionsSnapshot<NotifyChatGroupOption>>();
             sponGroupOptions.Value.Returns(notifyChatGroupOptions);
 
+            appSettings = new AppSettings { HttpClientTimeout = 200 };
+            var appSettingOptions = Substitute.For<IOptionsSnapshot<AppSettings>>();
+            appSettingOptions.Value.Returns(appSettings);
+
             botSettings = new BotSettings
             {
                 BotDomain = "https://test.com",
@@ -313,6 +317,7 @@
 
             return Substitute.For<ChatbotServiceTestable>(
                 httpClientFactory,
+                appSettingOptions,
                 botSettingOptions,
                 monitorChatBotOptions,
                 sponGroupOptions,

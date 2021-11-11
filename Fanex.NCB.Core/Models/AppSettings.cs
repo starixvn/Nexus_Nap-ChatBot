@@ -6,7 +6,7 @@
 
         public int ItemEachBatchSendNotification { get; set; }
 
-        public int DelayTimeEachBatch { get; set; }
+        public int HttpClientTimeout { get; set; }
 
         public string AppCredentialId { get; set; }
 

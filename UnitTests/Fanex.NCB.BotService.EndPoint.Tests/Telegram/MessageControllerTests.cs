@@ -9,10 +9,12 @@
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
+    using Fanex.NCB.BotService.EndPoint.Controllers.Telegram;
     using Fanex.NCB.BotService.EndPoint.Tests.TestableClasses.Telegram;
     using Fanex.NCB.Shared.Models;
     using global::Telegram.Bot.Types;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using NSubstitute;
     using Xunit;
@@ -21,7 +23,8 @@
     {
         private readonly IFixture fixture = new Fixture();
         private AppSettings appSettings;
-        private ILogger logger;
+        private ILogger<MessageController> filelogger;
+        private Logging.ILogger logger;
         private IConversationService conversationService;
         private ITelegramBotService botService;
         private IMessageLogService messageLogService;
@@ -165,7 +168,7 @@
             var sendMessageResult = fixture.Create<SendMessageResult>();
             var controller = GetController();
             conversationService.GetDistinctNotificationConversation(notificationMessages).Returns(notificationMessages);
-            controller.Protected("SendMessageAsync", Arg.Any<ConversationInfo>(), Arg.Any<int>(), Arg.Any<string>())
+            controller.Protected("SendMessageAsync", Arg.Any<ConversationInfo>())
                 .Returns(Task.FromResult(sendMessageResult));
 
             // Act
@@ -324,11 +327,12 @@
             var settings = Substitute.For<IOptions<AppSettings>>();
             settings.Value.Returns(appSettings);
 
-            logger = Substitute.For<ILogger>();
+            filelogger = Substitute.For<ILogger<MessageController>>();
+            logger = Substitute.For<Logging.ILogger>();
             botService = Substitute.For<ITelegramBotService>();
             conversationService = Substitute.For<IConversationService>();
             messageLogService = Substitute.For<IMessageLogService>();
-            return Substitute.ForPartsOf<MessageControllerTestable>(settings, logger, conversationService, botService, messageLogService);
+            return Substitute.ForPartsOf<MessageControllerTestable>(settings, filelogger, logger, conversationService, botService, messageLogService);
         }
 
         #endregion Helpers

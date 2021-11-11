@@ -18,6 +18,7 @@
     public class ChatbotService : IChatbotService
     {
         private readonly IHttpClientFactory httpClientFactory;
+        private readonly AppSettings appSettings;
         private readonly BotSettings botSettings;
         private readonly MonitorChatbot monitorChatbot;
         private readonly NotifyChatGroupOption notifyChatGroupOptions;
@@ -25,14 +26,16 @@
 
         public ChatbotService(
             IHttpClientFactory httpClientFactory,
+            IOptions<AppSettings> appSettings,
             IOptions<BotSettings> botSettings,
             IOptions<MonitorChatbot> monitorChatbot,
             IOptions<NotifyChatGroupOption> notifyChatGroupOptions,
             IOptions<MonitorTelegramBot> monitorTelegramBot)
         {
             this.httpClientFactory = httpClientFactory;
-            this.monitorChatbot = monitorChatbot.Value;
+            this.appSettings = appSettings.Value;
             this.botSettings = botSettings.Value;
+            this.monitorChatbot = monitorChatbot.Value;
             this.notifyChatGroupOptions = notifyChatGroupOptions.Value;
             this.monitorTelegramBot = monitorTelegramBot.Value;
         }
@@ -49,6 +52,7 @@
             var token = await GetTokenAsync();
 
             var httpClient = httpClientFactory.CreateClient();
+            httpClient.Timeout = TimeSpan.FromSeconds(appSettings.HttpClientTimeout);
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
             var url = new Uri($"{botSettings.BotDomain}{apiConfigs.SendMultiMessageUrl}");
@@ -153,6 +157,7 @@
             var token = await GetTokenAsync();
 
             var httpClient = httpClientFactory.CreateClient();
+            httpClient.Timeout = TimeSpan.FromSeconds(appSettings.HttpClientTimeout);
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
             var url = new Uri($"{botSettings.BotDomain}{apiConfigs.SendMessageUrl}");

@@ -3,7 +3,6 @@
     using System.Net.Http;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Models;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;
 
@@ -11,11 +10,12 @@
     {
         public ChatbotServiceTestable(
                IHttpClientFactory httpClientFactory,
+               IOptions<AppSettings> appSettings,
                IOptions<BotSettings> botSettings,
                IOptions<MonitorChatbot> monitorChatbot,
                IOptions<NotifyChatGroupOption> notifyChatGroupOptions,
                IOptions<MonitorTelegramBot> monitorTelegramBot)
-            : base(httpClientFactory, botSettings, monitorChatbot, notifyChatGroupOptions, monitorTelegramBot)
+            : base(httpClientFactory, appSettings, botSettings, monitorChatbot, notifyChatGroupOptions, monitorTelegramBot)
         {
         }
 
