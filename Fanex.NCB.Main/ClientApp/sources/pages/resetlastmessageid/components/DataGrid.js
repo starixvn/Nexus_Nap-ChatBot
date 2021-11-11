@@ -106,16 +106,11 @@ export class DataGrid extends Component {
         }
     };
 
-    isEqualThreeId = () => {
-        if (!this.isNotEqualCurrentNew(0) && !this.isNotEqualCurrentNew(1) && !this.isNotEqualCurrentNew(2)) {
-            return true;
-        }
-        return false;
-    };
-
     handleAllChange = () => {
         const allChecked = this.state.allChecked;
-        if (this.isEqualThreeId()) return;
+        if (!this.isNotEqualCurrentNew(0) && !this.isNotEqualCurrentNew(1) && !this.isNotEqualCurrentNew(2)) {
+            return;
+        }
         this.setState({ 
             allChecked: !allChecked,
             checked: [!allChecked,!allChecked,!allChecked],
@@ -140,9 +135,19 @@ export class DataGrid extends Component {
         this.setState({ isShowConfirmPopup: false });
     };
 
+    isCheckedSubmit = () => {
+        const { selected } = this.props;
+        for (let index = 0; index < 3; index++) {
+            if (this.isNotEqualCurrentNew(index) && this.state.checked[index] && selected[index].checked) {
+                return true;
+            }
+        }
+        return false;
+    };
+
     setSubmit = async () => {
         await this.getAllData();
-        !this.isEqualThreeId() && this.setState({ isSubmitting: false });
+        this.isCheckedSubmit() && this.setState({ isSubmitting: false });
     };
 
     handleSubmit = async () => {
