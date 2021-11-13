@@ -217,7 +217,7 @@
                     await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
                 }
 
-                var thread = new Thread(async () => await AddMessageLogToDatabaseAsync(conversationInfo, conversationInfo.Message, result));
+                var thread = new Thread(async () => await AddMessageLogToDatabaseAsync(conversationInfo, result));
                 thread.Start();
 
                 return result;
@@ -248,7 +248,7 @@
                 IsIgnoreRetry = true
             };
 
-        protected internal virtual async Task AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, string messageContent, SendMessageResult result)
+        protected internal virtual async Task AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, SendMessageResult result)
         {
             try
             {
@@ -256,7 +256,7 @@
                 {
                     FromConversationId = conversationInfo.BotConversationId,
                     ToConversationId = conversationInfo.ConversationId,
-                    Content = messageContent,
+                    Content = conversationInfo.Message,
                     ReferenceId = result.NotificationId,
                     IsSuccessfull = result.ErrorCode == 0,
                     ErrorMessage = result.ErrorMessage

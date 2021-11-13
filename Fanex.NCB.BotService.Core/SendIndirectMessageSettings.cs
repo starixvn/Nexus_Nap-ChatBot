@@ -7,5 +7,6 @@
         public string AppCredentialPassword { get; set; }
         public string AuthenticateUrl { get; set; }
         public string TelegramUrl { get; set; }
+        public string SkypeUrl { get; set; }
     }
 }

@@ -2,36 +2,31 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading;
     using System.Threading.Tasks;
-    using Fanex.Logging;
+    using AutoFixture;
     using Fanex.NCB.BotService.Core;
+    using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.BotService.EndPoint.Controllers;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Bot.Builder;
-    using Microsoft.Bot.Builder.Integration;
-    using Microsoft.Bot.Configuration;
     using Microsoft.Bot.Schema;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using NSubstitute;
-    using NSubstitute.ExceptionExtensions;
     using Xunit;
 
     public class NotifyControllerTests
     {
+        private readonly IFixture fixture = new Fixture();
         private AppSettings appSettings;
-        private IAdapterIntegration adapter;
         private IMessageLogService messageLogService;
         private IConversationService conversationService;
-        private ILogger logger;
-
-        [Obsolete]
-        private BotConfiguration botConfig;
+        private ILogger<NotifyController> filelogger;
+        private Logging.ILogger logger;
+        private ISkypeBotService skypeBotService;
 
         [Fact]
-        [Obsolete]
         public async Task Test_WhenCalled_ReturnAsExpectedResult()
         {
             // Arrange
@@ -51,8 +46,7 @@
         #region Send
 
         [Fact]
-        [Obsolete]
-        public async Task Send_DisableTelgram_ReturnAsExpectedResult()
+        public async Task Send_DisableSkype_ReturnAsExpectedResult()
         {
             // Arrange
             var conversationInfo = new ConversationInfo();
@@ -68,71 +62,56 @@
         }
 
         [Fact]
-        [Obsolete]
-        public async Task Send_InValidBotName_SendContinueWithDefaultAppId()
+        public async Task Send_EnableSkype_ReturnAsExpectedResult()
         {
-            var controller = GetController();
+            // Arrange
             var conversationInfo = new ConversationInfo
             {
-                BotName = "bot"
+                BotConversationId = "1",
+                ConversationId = "1",
+                Message = "message"
             };
-            var endpointService = new EndpointService
-            {
-                AppId = "1",
-                AppPassword = "1",
-                Name = "123"
-            };
+            var controller = GetController();
 
-            botConfig.Services = new List<ConnectedService>
-            {
-                endpointService
-            };
+            // Act
+            var result = await controller.Send(conversationInfo);
 
-            //Actual
-            var actual = await controller.Send(conversationInfo);
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(200, okResult.StatusCode);
+            Assert.Empty((string)okResult.Value);
 
-            //Assert
-            Assert.IsType<OkObjectResult>(actual);
-
-            await adapter.Received().ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
-                Arg.Any<CancellationToken>());
+            await skypeBotService.Received().SendMessageAsync(conversationInfo);
         }
 
         [Fact]
-        [Obsolete]
-        public async Task Send_ValidBotName_ReturOkObjectResult()
+        public async Task Send_Exception_ReturnAsExpectedResult()
         {
-            var controller = GetController();
+            // Arrange
             var conversationInfo = new ConversationInfo
             {
-                BotName = "bot"
+                BotConversationId = "1",
+                ConversationId = "1",
+                Message = "message"
             };
-            var endpointService = new EndpointService
-            {
-                AppId = "1",
-                AppPassword = "1",
-                Name = conversationInfo.BotName
-            };
+            var exception = fixture.Create<Exception>();
+            var controller = GetController();
+            skypeBotService.SendMessageAsync(conversationInfo).Returns(Task.FromException(exception));
 
-            botConfig.Services = new List<ConnectedService>
-            {
-                endpointService
-            };
+            // Act
+            var result = await controller.Send(conversationInfo);
 
-            //Actual
-            var actual = await controller.Send(conversationInfo);
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(200, okResult.StatusCode);
+            Assert.Equal(exception.Message, okResult.Value);
 
-            //Assert
-            Assert.IsType<OkObjectResult>(actual);
-
-            await adapter.Received().ContinueConversationAsync(Arg.Is(endpointService.AppId), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
-                Arg.Any<CancellationToken>());
+            controller.Received().Protected("WriteLogAsync", exception, Arg.Any<IDictionary<string, object>>());
         }
 
         #endregion Send
 
         [Fact]
-        [Obsolete]
         public async Task SendMulti_NotificationListIsNull_ReturnObjectResultWithEmptyList()
         {
             var controller = GetController();
@@ -145,106 +124,102 @@
             Assert.Empty((List<SendMessageResult>)actual.Value);
         }
 
-        [Fact]
-        [Obsolete]
-        public async Task SendMulti_NotificationListIsEmpty_ReturnObjectResultWithEmptyList()
-        {
-            var controller = GetController();
-            var notificationMessage = new List<NotificationMessage> { new NotificationMessage { NotificationId = 1, Recipients = new List<ConversationInfo>() } };
+        ////[Fact]
+        ////public async Task SendMulti_NotificationListIsEmpty_ReturnObjectResultWithEmptyList()
+        ////{
+        ////    var controller = GetController();
+        ////    var notificationMessage = new List<NotificationMessage> { new NotificationMessage { NotificationId = 1, Recipients = new List<ConversationInfo>() } };
 
-            //Actual
-            var actual = await controller.SendMulti(notificationMessage);
+        ////    //Actual
+        ////    var actual = await controller.SendMulti(notificationMessage);
 
-            //Assert
-            Assert.IsType<OkObjectResult>(actual);
-            Assert.Empty((List<SendMessageResult>)actual.Value);
-        }
+        ////    //Assert
+        ////    Assert.IsType<OkObjectResult>(actual);
+        ////    Assert.Empty((List<SendMessageResult>)actual.Value);
+        ////}
 
-        [Fact]
-        [Obsolete]
-        public async Task SendMulti_NotificationListIsNotEmpty_ReturnObjectResultWithSuccessList()
-        {
-            var controller = GetController();
+        ////[Fact]
+        ////public async Task SendMulti_NotificationListIsNotEmpty_ReturnObjectResultWithSuccessList()
+        ////{
+        ////    var controller = GetController();
 
-            var notificationMessage = new List<NotificationMessage>
-            {
-                new NotificationMessage {
-                NotificationId = 1,
-                Message = "test",
-                Recipients = new List<ConversationInfo>
-                    {
-                        new ConversationInfo
-                        {
-                            ConversationId = "ConversationId"
-                        }
-                    }
-                }
-            };
-            conversationService.GetDistinctNotificationConversation(Arg.Any<List<NotificationMessage>>()).Returns(notificationMessage);
-            //Actual
-            var actual = await controller.SendMulti(notificationMessage);
+        ////    var notificationMessage = new List<NotificationMessage>
+        ////    {
+        ////        new NotificationMessage {
+        ////        NotificationId = 1,
+        ////        Message = "test",
+        ////        Recipients = new List<ConversationInfo>
+        ////            {
+        ////                new ConversationInfo
+        ////                {
+        ////                    ConversationId = "ConversationId"
+        ////                }
+        ////            }
+        ////        }
+        ////    };
+        ////    conversationService.GetDistinctNotificationConversation(Arg.Any<List<NotificationMessage>>()).Returns(notificationMessage);
+        ////    //Actual
+        ////    var actual = await controller.SendMulti(notificationMessage);
 
-            //Assert
-            Assert.IsType<OkObjectResult>(actual);
-            Assert.Single((List<SendMessageResult>)actual.Value);
-            Assert.Equal(1, ((List<SendMessageResult>)actual.Value)[0].NotificationId);
-            Assert.Equal("ConversationId", ((List<SendMessageResult>)actual.Value)[0].ConversationId);
-            Assert.Equal(0, ((List<SendMessageResult>)actual.Value)[0].ErrorCode);
-            Assert.Null(((List<SendMessageResult>)actual.Value)[0].ErrorMessage);
+        ////    //Assert
+        ////    Assert.IsType<OkObjectResult>(actual);
+        ////    Assert.Single((List<SendMessageResult>)actual.Value);
+        ////    Assert.Equal(1, ((List<SendMessageResult>)actual.Value)[0].NotificationId);
+        ////    Assert.Equal("ConversationId", ((List<SendMessageResult>)actual.Value)[0].ConversationId);
+        ////    Assert.Equal(0, ((List<SendMessageResult>)actual.Value)[0].ErrorCode);
+        ////    Assert.Null(((List<SendMessageResult>)actual.Value)[0].ErrorMessage);
 
-            await adapter.Received().ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
-                Arg.Any<CancellationToken>());
-        }
+        ////    await adapter.Received().ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
+        ////        Arg.Any<CancellationToken>());
+        ////}
 
-        [Fact]
-        [Obsolete]
-        public async Task SendMulti_NotificationListIsNotEmpty_ReturnObjectResultWithErrorList()
-        {
-            var controller = GetController();
+        ////[Fact]
+        ////public async Task SendMulti_NotificationListIsNotEmpty_ReturnObjectResultWithErrorList()
+        ////{
+        ////    var controller = GetController();
 
-            adapter.ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
-                Arg.Any<CancellationToken>()).Throws(new Exception("error msg"));
+        ////    adapter.ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
+        ////        Arg.Any<CancellationToken>()).Throws(new Exception("error msg"));
 
-            var notificationMessage = new List<NotificationMessage>
-            {
-                new NotificationMessage {
-                NotificationId = 1,
-                Message = "test",
-                Recipients = new List<ConversationInfo>
-                    {
-                        new ConversationInfo()
-                    }
-                }
-            };
-            conversationService.GetDistinctNotificationConversation(Arg.Any<List<NotificationMessage>>()).Returns(notificationMessage);
+        ////    var notificationMessage = new List<NotificationMessage>
+        ////    {
+        ////        new NotificationMessage {
+        ////        NotificationId = 1,
+        ////        Message = "test",
+        ////        Recipients = new List<ConversationInfo>
+        ////            {
+        ////                new ConversationInfo()
+        ////            }
+        ////        }
+        ////    };
+        ////    conversationService.GetDistinctNotificationConversation(Arg.Any<List<NotificationMessage>>()).Returns(notificationMessage);
 
-            //Actual
-            var actual = await controller.SendMulti(notificationMessage);
+        ////    //Actual
+        ////    var actual = await controller.SendMulti(notificationMessage);
 
-            //Assert
-            Assert.IsType<OkObjectResult>(actual);
-            Assert.Single((List<SendMessageResult>)actual.Value);
-            Assert.Equal(1, ((List<SendMessageResult>)actual.Value)[0].NotificationId);
-            Assert.Equal(1, ((List<SendMessageResult>)actual.Value)[0].ErrorCode);
-            Assert.Equal("error msg", ((List<SendMessageResult>)actual.Value)[0].ErrorMessage);
+        ////    //Assert
+        ////    Assert.IsType<OkObjectResult>(actual);
+        ////    Assert.Single((List<SendMessageResult>)actual.Value);
+        ////    Assert.Equal(1, ((List<SendMessageResult>)actual.Value)[0].NotificationId);
+        ////    Assert.Equal(1, ((List<SendMessageResult>)actual.Value)[0].ErrorCode);
+        ////    Assert.Equal("error msg", ((List<SendMessageResult>)actual.Value)[0].ErrorMessage);
 
-            await adapter.Received().ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
-                Arg.Any<CancellationToken>());
-        }
+        ////    await adapter.Received().ContinueConversationAsync(Arg.Any<string>(), Arg.Any<ConversationReference>(), Arg.Any<BotCallbackHandler>(),
+        ////        Arg.Any<CancellationToken>());
+        ////}
 
-        [Obsolete]
         private NotifyController GetController(string enableChannelIds = "1,2")
         {
             appSettings = new AppSettings { EnableChannelIds = enableChannelIds };
             var appSettingOptions = Substitute.For<IOptions<AppSettings>>();
             appSettingOptions.Value.Returns(appSettings);
 
-            adapter = Substitute.For<IAdapterIntegration>();
+            filelogger = Substitute.For<ILogger<NotifyController>>();
+            logger = Substitute.For<Logging.ILogger>();
             messageLogService = Substitute.For<IMessageLogService>();
-            botConfig = Substitute.For<BotConfiguration>();
             conversationService = Substitute.For<IConversationService>();
-            logger = Substitute.For<ILogger>();
-            return new NotifyController(appSettingOptions, adapter, messageLogService, botConfig, conversationService, logger);
+            skypeBotService = Substitute.For<ISkypeBotService>();
+            return new NotifyController(appSettingOptions, filelogger, logger, messageLogService, conversationService, skypeBotService);
         }
     }
 }

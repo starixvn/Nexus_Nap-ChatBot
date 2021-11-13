@@ -27,9 +27,9 @@
             return await base.SendMessageAsync(conversationInfo);
         }
 
-        public async Task Public_AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, string messageContent, SendMessageResult result)
+        public async Task Public_AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, SendMessageResult result)
         {
-            await base.AddMessageLogToDatabaseAsync(conversationInfo, messageContent, result);
+            await base.AddMessageLogToDatabaseAsync(conversationInfo, result);
         }
 
         public async Task Public_WriteLogAsync(Exception exception)

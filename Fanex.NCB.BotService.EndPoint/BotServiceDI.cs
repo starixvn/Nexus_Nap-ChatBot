@@ -37,16 +37,17 @@
             services.Configure<ProxySettings>(options => configuration.GetSection("ProxySettings").Bind(options));
             services.Configure<SendIndirectMessageSettings>(options => configuration.GetSection("SendIndirectMessageSettings").Bind(options));
 
-            services.AddTransient<IBaseRepository, BaseRepository>();
-            services.AddTransient<IDynamicRepository, DynamicRepository>();
-            services.AddTransient<IBaseService, BaseService>();
-            services.AddTransient<IConversationService, ConversationService>();
-            services.AddTransient<IMessageLogService, MessageLogService>();
-            services.AddTransient<IRedisCacheExtendService, RedisCacheExtendService>();
-            services.AddTransient<ICacheService, CacheService>();
-            services.AddTransient<ICredentialProvider, MultiCredentialProvider>();
-            services.AddTransient<IBot, LicBot>();
-            services.AddTransient<Logging.ILogger, Logging.Logger>();
+            services.AddSingleton<IBaseRepository, BaseRepository>();
+            services.AddSingleton<IDynamicRepository, DynamicRepository>();
+            services.AddSingleton<IBaseService, BaseService>();
+            services.AddSingleton<IConversationService, ConversationService>();
+            services.AddSingleton<ISkypeBotService, SkypeBotService>();
+            services.AddSingleton<IMessageLogService, MessageLogService>();
+            services.AddSingleton<IRedisCacheExtendService, RedisCacheExtendService>();
+            services.AddSingleton<ICacheService, CacheService>();
+            services.AddSingleton<ICredentialProvider, MultiCredentialProvider>();
+            services.AddSingleton<IBot, LicBot>();
+            services.AddSingleton<Logging.ILogger, Logging.Logger>();
             var botConfig = GetBotConfig(environment, appSettings, logger);
             services.AddSingleton(botConfig);
             services.AddSingleton(appSettings);
@@ -67,7 +68,7 @@
             });
 
             RegisterTelegramBots(services, configuration);
-            services.AddSingleton<ITelegramBotService, TelegramBotService>();
+            services.AddScoped<ITelegramBotService, TelegramBotService>();
         }
 
         [Obsolete]

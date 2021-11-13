@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.Logging;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Services;
@@ -266,7 +265,6 @@
         {
             // Arrange
             var conversationInfo = fixture.Create<ConversationInfo>();
-            var messageContent = fixture.Create<string>();
             var result = fixture.Create<SendMessageResult>();
             var command = new AddMessageLogCommand();
             var commandResult = fixture.Create<CommandResult>();
@@ -274,12 +272,12 @@
             conversationService.AddMessageLog(Arg.Do<AddMessageLogCommand>(x => command = x)).Returns(commandResult);
 
             // Act
-            await controller.Public_AddMessageLogToDatabaseAsync(conversationInfo, messageContent, result);
+            await controller.Public_AddMessageLogToDatabaseAsync(conversationInfo, result);
 
             // Assert
             Assert.Equal(conversationInfo.BotConversationId, command.FromConversationId);
             Assert.Equal(conversationInfo.ConversationId, command.ToConversationId);
-            Assert.Equal(messageContent, command.Content);
+            Assert.Equal(conversationInfo.Message, command.Content);
             Assert.Equal(result.NotificationId, command.ReferenceId);
             Assert.Equal(result.ErrorCode == 0, command.IsSuccessfull);
             Assert.Equal(result.ErrorMessage, command.ErrorMessage);
@@ -290,14 +288,13 @@
         {
             // Arrange
             var conversationInfo = fixture.Create<ConversationInfo>();
-            var messageContent = fixture.Create<string>();
             var result = fixture.Create<SendMessageResult>();
             var exception = fixture.Create<Exception>();
             var controller = GetController();
             conversationService.AddMessageLog(Arg.Any<AddMessageLogCommand>()).Returns(Task.FromException<CommandResult>(exception));
 
             // Act
-            await controller.Public_AddMessageLogToDatabaseAsync(conversationInfo, messageContent, result);
+            await controller.Public_AddMessageLogToDatabaseAsync(conversationInfo, result);
 
             // Assert
             controller.Received().Protected("WriteLogAsync", exception, Arg.Any<IDictionary<string, object>>());

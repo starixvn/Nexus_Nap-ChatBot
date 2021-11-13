@@ -5,50 +5,44 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Enum;
+    using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Bot.Builder.Integration;
-    using Microsoft.Bot.Configuration;
-    using Microsoft.Bot.Connector.Authentication;
-    using Microsoft.Bot.Schema;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class NotifyController : ControllerBase
     {
         private readonly AppSettings appSettings;
-        private readonly IAdapterIntegration adapter;
         private readonly IConversationService conversationService;
         private readonly IMessageLogService messageLogService;
-        private readonly ILogger logger;
+        private readonly ILogger<NotifyController> filelogger;
+        private readonly Logging.ILogger logger;
+        private readonly ISkypeBotService skypeBotService;
 
-        [Obsolete]
-        private readonly BotConfiguration botConfig;
-
-        [Obsolete]
         public NotifyController(
             IOptions<AppSettings> appSettings,
-            IAdapterIntegration adapter,
+            ILogger<NotifyController> filelogger,
+            Logging.ILogger logger,
             IMessageLogService messageLogService,
-            BotConfiguration botConfig,
             IConversationService conversationService,
-            ILogger logger)
+            ISkypeBotService skypeBotService)
         {
             this.appSettings = appSettings.Value;
-            this.adapter = adapter;
-            this.botConfig = botConfig;
+            this.filelogger = filelogger;
+            this.logger = logger;
             this.conversationService = conversationService;
             this.messageLogService = messageLogService;
-            this.logger = logger;
+            this.skypeBotService = skypeBotService;
         }
 
         [AllowAnonymous]
@@ -62,7 +56,6 @@
 
         [HttpPost]
         [Route("api/notify")]
-        [Obsolete("Pending")]
         public async Task<ObjectResult> Send([FromBody] ConversationInfo conversationInfo)
         {
             var errorMessage = string.Empty;
@@ -74,21 +67,18 @@
                 }
                 else
                 {
-                    var appId = GetAppId(conversationInfo.BotName);
-                    var conversationReference = GetConversationReference(conversationInfo);
-                    await SendMessage(appId, conversationReference, conversationInfo.Message);
+                    await skypeBotService.SendMessageAsync(conversationInfo);
                 }
             }
             catch (Exception ex)
             {
                 errorMessage = ex.Message;
-                await WriteLog(ex);
+                await WriteLogAsync(ex);
             }
 
             return Ok(errorMessage);
         }
 
-        [Obsolete]
         [HttpPost]
         [Route("api/notifymulti")]
         public async Task<ObjectResult> SendMulti([FromBody] IList<NotificationMessage> notificationMessages)
@@ -105,7 +95,9 @@
                 {
                     foreach (var conversationInfo in notification.Recipients)
                     {
-                        SendNotification(tasks, conversationInfo, notification);
+                        conversationInfo.NotificationId = notification.NotificationId;
+                        conversationInfo.Message = notification.Message;
+                        SendNotification(tasks, conversationInfo);
                     }
                 }
 
@@ -113,6 +105,48 @@
             }
 
             return Ok(results);
+        }
+
+        [HttpPost]
+        [Route("api/sendIndirectMessage")]
+        public async Task<ObjectResult> SendIndirectMessageAsync([FromBody] ConversationInfo conversationInfo)
+        {
+            var param = new Dictionary<string, object>
+            {
+                { "notificationId", conversationInfo.NotificationId },
+                { "botId", conversationInfo.BotConversationId },
+                { "chatId", conversationInfo.ConversationId },
+                { "messageContent", conversationInfo.Message }
+            };
+            var logMessage = new LogMessage("Send indirect message")
+                .AddSection("Params", param);
+            filelogger.LogWarning(logMessage.ToString());
+
+            var result = new SendMessageResult();
+            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
+            {
+                result.ErrorCode = 1;
+                result.ErrorMessage = Resources.Resources.DisableChannelErrorMessage;
+            }
+            else
+            {
+                try
+                {
+                    await skypeBotService.SendMessageAsync(conversationInfo);
+                }
+                catch (Exception exception)
+                {
+                    result.ErrorCode = 1;
+                    result.ErrorMessage = exception.Message;
+
+                    logMessage = new LogMessage(exception.Message)
+                        .AddSection("Params", param)
+                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
+                    filelogger.LogWarning(logMessage.ToString());
+                }
+            }
+
+            return Ok(result);
         }
 
         private static void TransformMessageContentAvoidSpecialSyntax(IList<NotificationMessage> notificationMessages)
@@ -136,65 +170,56 @@
             }
         }
 
-        [Obsolete]
-        private void SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo, NotificationMessage notificationMessage)
+        private void SendNotification(List<Task<SendMessageResult>> tasks, ConversationInfo conversationInfo)
         {
             bool isEnabledSkypeChannel = appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype);
             tasks.Add(!isEnabledSkypeChannel ? Task.Run(() => new SendMessageResult
             {
-                NotificationId = notificationMessage.NotificationId,
+                NotificationId = conversationInfo.NotificationId,
                 ConversationId = conversationInfo.ConversationId,
                 SentTime = DateTime.UtcNow,
                 ErrorCode = 1,
                 ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
                 IsIgnoreRetry = true
-            }) : Task.Run(() => SendNotification(conversationInfo, notificationMessage.NotificationId, notificationMessage.Message)));
+            }) : Task.Run(() => SendNotification(conversationInfo)));
         }
 
-        [Obsolete]
-        private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo, int notifictaionId, string message)
+        private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo)
         {
             if (conversationInfo.IsDuplicated)
             {
-                return DuplicatedResult(notifictaionId, conversationInfo.ConversationId);
+                return DuplicatedResult(conversationInfo.NotificationId, conversationInfo.ConversationId);
             }
 
-            bool isDuplicated = messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, message);
-
+            bool isDuplicated = messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, conversationInfo.Message);
             if (isDuplicated)
             {
-                return DuplicatedResult(notifictaionId, conversationInfo.ConversationId);
+                return DuplicatedResult(conversationInfo.NotificationId, conversationInfo.ConversationId);
             }
 
             string guiid = Guid.NewGuid().ToString();
-
             try
             {
-                await messageLogService.InsertMessageLogIntoCache(conversationInfo.ConversationId, message, guiid);
-
-                var conversationReference = GetConversationReference(conversationInfo);
-                var appId = GetAppId(conversationInfo.BotName);
-
-                var result = await SendMessageNotification(appId, notifictaionId, conversationReference, message);
-
+                await messageLogService.InsertMessageLogIntoCache(conversationInfo.ConversationId, conversationInfo.Message, guiid);
+                SendMessageResult result = await skypeBotService.SendMessageWithRetryAsync(conversationInfo);
                 if (result.ErrorCode != 0)
                 {
                     await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
                 }
 
-                var thread = new Thread(async () => await AddMessageLogOnDb(conversationReference, message, result));
+                var thread = new Thread(async () => await AddMessageLogOnDb(conversationInfo, result));
                 thread.Start();
 
                 return result;
             }
             catch (Exception exception)
             {
-                await WriteLog(exception);
+                await WriteLogAsync(exception);
                 await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
 
                 return new SendMessageResult
                 {
-                    NotificationId = notifictaionId,
+                    NotificationId = conversationInfo.NotificationId,
                     ConversationId = conversationInfo.ConversationId,
                     SentTime = DateTime.UtcNow,
                     ErrorCode = 1,
@@ -214,52 +239,15 @@
                 IsIgnoreRetry = true
             };
 
-        [Obsolete]
-        private async Task<SendMessageResult> SendMessageNotification(string appId, int notificationId, ConversationReference conversationReference, string message)
-        {
-            var result = new SendMessageResult
-            {
-                ConversationId = conversationReference.Conversation.Id,
-                NotificationId = notificationId
-            };
-
-            try
-            {
-                await SendMessage(appId, conversationReference, message);
-            }
-            catch (Exception exception)
-            {
-                result.ErrorCode = 1;
-                result.ErrorMessage = exception.Message;
-
-                await WriteLog(exception);
-            }
-
-            result.SentTime = DateTime.UtcNow;
-            return result;
-        }
-
-        [Obsolete]
-        private async Task SendMessage(string appId, ConversationReference conversationReference, string message)
-        {
-            await adapter.ContinueConversationAsync(appId, conversationReference,
-                    async (context, token) =>
-                    {
-                        AppCredentials.TrustServiceUrl(conversationReference.ServiceUrl);
-                        await context.SendActivityAsync(message, cancellationToken: token);
-                    },
-                    new CancellationToken());
-        }
-
-        private async Task AddMessageLogOnDb(ConversationReference conversationReference, string messageContent, SendMessageResult result)
+        private async Task AddMessageLogOnDb(ConversationInfo conversationInfo, SendMessageResult result)
         {
             try
             {
                 var command = new AddMessageLogCommand
                 {
-                    FromConversationId = conversationReference.Bot.Id,
-                    ToConversationId = conversationReference.Conversation.Id,
-                    Content = messageContent,
+                    FromConversationId = conversationInfo.BotConversationId,
+                    ToConversationId = conversationInfo.ConversationId,
+                    Content = conversationInfo.Message,
                     ReferenceId = result.NotificationId,
                     IsSuccessfull = result.ErrorCode == 0,
                     ErrorMessage = result.ErrorMessage
@@ -269,49 +257,17 @@
             }
             catch (Exception ex)
             {
-                await WriteLog(ex);
+                await WriteLogAsync(ex);
             }
         }
 
-        private static ConversationReference GetConversationReference(ConversationInfo conversationInfo)
-        {
-            var coversation = new ConversationReference
-            {
-                Bot = new ChannelAccount { Id = conversationInfo.BotConversationId, Name = conversationInfo.BotName, Role = "bot" },
-                Conversation = new ConversationAccount { Id = conversationInfo.ConversationId },
-                ServiceUrl = conversationInfo.ServiceUrl,
-                ChannelId = conversationInfo.ChannelId
-            };
-
-            return coversation;
-        }
-
-        [Obsolete]
-        private string GetAppId(string botName)
-        {
-            var endpoint = (EndpointService)botConfig.Services.FirstOrDefault(t => t.Name.Equals(botName, StringComparison.InvariantCultureIgnoreCase));
-            string appId;
-
-            if (endpoint != null && !string.IsNullOrEmpty(endpoint.AppId))
-            {
-                appId = endpoint.AppId;
-            }
-            else
-            {
-                appId = Guid.NewGuid().ToString();
-                logger.Error($"BotName : { botName } is not supported by system.");
-            }
-
-            return appId;
-        }
-
-        private async Task WriteLog(Exception exception)
+        protected internal virtual async Task WriteLogAsync(Exception exception)
         {
             var logMessage = new LogMessage(exception.Message)
-                        .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
-                        .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
-                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
-                        .ToString();
+                .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
+                .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
+                .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
+                .ToString();
             await logger.ErrorAsync(logMessage);
         }
     }
