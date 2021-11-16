@@ -143,6 +143,10 @@
             {
                 var criteria = new GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria();
                 var messageHistories = await baseService.GetDataAsync<MessageHistory>(criteria);
+                logService.WriteLogFileWarning(
+                    string.Format("PullVoidingMessageInternalDepartment - systemSetting: {0}, messageHistories: {1}",
+                    JsonConvert.SerializeObject(systemSetting),
+                    JsonConvert.SerializeObject(messageHistories)));
                 if (messageHistories.Any())
                 {
                     await GetMessageAndImportToChatbotAsync(messageHistories, systemSetting);
@@ -159,8 +163,10 @@
             {
                 var listMsg = messages.Select(m => new MessageHistory { MessageID = m.MessageID, RequestID = m.RequestID }).ToList();
                 var (abnormalMessages, abnormalMessageHistories) = await GetVoidingHistoryAsync(listMsg);
-                logService.WriteLogFileWarning(string.Format("Before mapping - Messages: {0}, AbnormalMessages: {1}",
-                    JsonConvert.SerializeObject(messages), JsonConvert.SerializeObject(abnormalMessages)));
+                logService.WriteLogFileWarning(
+                    string.Format("PullVoidingMessageInternalDepartment - Before mapping - Messages: {0}, AbnormalMessages: {1}",
+                    JsonConvert.SerializeObject(messages),
+                    JsonConvert.SerializeObject(abnormalMessages)));
                 if (abnormalMessageHistories.Any())
                 {
                     var updatedUsernames = await GetAbnormalAccountUpdatedUsernameAsync(abnormalMessageHistories);
@@ -168,8 +174,10 @@
                 }
 
                 MappingAbnormalBetsData(messages, abnormalMessages);
-                logService.WriteLogFileWarning(string.Format("Before mapping - Messages: {0}, AbnormalMessages: {1}",
-                    JsonConvert.SerializeObject(messages), JsonConvert.SerializeObject(abnormalMessages)));
+                logService.WriteLogFileWarning(
+                    string.Format("PullVoidingMessageInternalDepartment - After mapping - Messages: {0}, AbnormalMessages: {1}",
+                    JsonConvert.SerializeObject(messages),
+                    JsonConvert.SerializeObject(abnormalMessages)));
 
                 int maxMsgId = messages.Max(m => m.MessageID);
                 await ImportAbnormalBetNotificationToChatbotDBAsync(abnormalMessages, listMsg, maxMsgId);
