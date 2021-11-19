@@ -3,7 +3,6 @@ ALTER PROCEDURE [dbo].[NAP_Chatbot_MissingMesssageInfo_Sel]
 	@MessageList			XML
 	,@MsgContentsTypeList	XML
 	,@RequestList		    XML
-	,@Environment			VARCHAR(20)
 AS
 /*
 	Created: 20211007@Malcolm
