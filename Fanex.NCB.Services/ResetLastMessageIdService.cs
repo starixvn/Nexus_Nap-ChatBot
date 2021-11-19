@@ -41,7 +41,6 @@
 
         public async Task<IEnumerable<MissingMesssageInfo>> GetMissingMessageInfoAsync(GetMissingMessageInfoCriteria criteria)
         {
-            criteria.Environment = Environment;
             return await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
         }
 
