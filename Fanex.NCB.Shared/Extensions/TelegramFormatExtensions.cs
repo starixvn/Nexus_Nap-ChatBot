@@ -5,6 +5,8 @@
 
     public static class TelegramFormatExtensions
     {
+        private const string BoldRegex = "\\<b>$2</b>";
+
         public static string ToMarkdownV2(this string text)
         {
             if (string.IsNullOrWhiteSpace(text))
@@ -15,11 +17,11 @@
             // convert skype format to telegram format
             text = Regex.Replace(text, "(\\*\\*\\*)(.+?)(\\*\\*\\*)", "<b><i>$2</i></b>"); // bold & italic
 
-            text = Regex.Replace(text, @"(\\\*\\\*)(.+?)(\\\*\\\*)", "\\<b>$2</b>"); // bold
-            text = Regex.Replace(text, @"(\\\*\\\*)(.+?)(\\\*\*)", "\\<b>$2</b>");
-            text = Regex.Replace(text, @"(\\\*\\\*)(.+?[^\\])(\*\*)", "\\<b>$2</b>");
-            text = Regex.Replace(text, @"(\\\*\*)(.+?)(\\\*\*)", "\\<b>$2</b>");
-            text = Regex.Replace(text, @"(\\\*\*)(.+?[^\\])(\*\*)", "\\<b>$2</b>");
+            text = Regex.Replace(text, @"(\\\*\\\*)(.+?)(\\\*\\\*)", BoldRegex); // bold
+            text = Regex.Replace(text, @"(\\\*\\\*)(.+?)(\\\*\*)", BoldRegex);
+            text = Regex.Replace(text, @"(\\\*\\\*)(.+?[^\\])(\*\*)", BoldRegex);
+            text = Regex.Replace(text, @"(\\\*\*)(.+?)(\\\*\*)", BoldRegex);
+            text = Regex.Replace(text, @"(\\\*\*)(.+?[^\\])(\*\*)", BoldRegex);
             text = Regex.Replace(text, @"(\*\*)(.+?)(\*\*)", "<b>$2</b>");
 
             text = Regex.Replace(text, @"(\\\*)(.+?)(\\\*)", "\\<i>$2</i>"); // italic
