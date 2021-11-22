@@ -1,6 +1,5 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Tests
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoFixture;
@@ -82,31 +81,6 @@
             Assert.Empty((string)okResult.Value);
 
             await skypeBotService.Received().SendMessageAsync(conversationInfo);
-        }
-
-        [Fact]
-        public async Task Send_Exception_ReturnAsExpectedResult()
-        {
-            // Arrange
-            var conversationInfo = new ConversationInfo
-            {
-                BotConversationId = "1",
-                ConversationId = "1",
-                Message = "message"
-            };
-            var exception = fixture.Create<Exception>();
-            var controller = GetController();
-            skypeBotService.SendMessageAsync(conversationInfo).Returns(Task.FromException(exception));
-
-            // Act
-            var result = await controller.Send(conversationInfo);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal(200, okResult.StatusCode);
-            Assert.Equal(exception.Message, okResult.Value);
-
-            controller.Received().Protected("WriteLogAsync", exception, Arg.Any<IDictionary<string, object>>());
         }
 
         #endregion Send
