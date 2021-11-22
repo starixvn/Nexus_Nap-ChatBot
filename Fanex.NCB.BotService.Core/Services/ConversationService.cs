@@ -44,11 +44,11 @@
 
         public IList<NotificationMessage> GetDistinctNotificationConversation(IList<NotificationMessage> notifications)
         {
-            var conversations = new List<NotificationConversation>();
+            var conversations = new List<ConversationInfo>();
             foreach (var notification in notifications)
             {
                 conversations.AddRange(notification.Recipients.Select(r =>
-                new NotificationConversation
+                new ConversationInfo
                 {
                     NotificationId = notification.NotificationId,
                     Message = notification.Message,
@@ -79,9 +79,9 @@
             return notifications;
         }
 
-        private static IEnumerable<NotificationConversation> DistinctConversationIdAndContent(IEnumerable<NotificationConversation> conversations)
+        private static IEnumerable<ConversationInfo> DistinctConversationIdAndContent(IEnumerable<ConversationInfo> conversations)
         {
-            var results = new List<NotificationConversation>();
+            var results = new List<ConversationInfo>();
 
             foreach (var conversation in conversations)
             {
@@ -95,7 +95,7 @@
             return results;
         }
 
-        private static IEnumerable<NotificationConversation> DistinctConversationIdAndNotificationId(IEnumerable<NotificationConversation> conversations)
+        private static IEnumerable<ConversationInfo> DistinctConversationIdAndNotificationId(IEnumerable<ConversationInfo> conversations)
         {
             var disticntConversations = conversations.GroupBy(group => new
             {

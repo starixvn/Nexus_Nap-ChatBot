@@ -1,14 +1,14 @@
 ﻿namespace Fanex.NCB.Services.Tests
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.Criteria.ViewLog;
     using Fanex.NCB.Models.ViewLog;
     using Fanex.NCB.Shared.Services.Interfaces;
     using FluentAssertions;
     using NSubstitute;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Xunit;
 
     public class ViewLogServiceTests
@@ -61,7 +61,7 @@
                 .Returns((new List<int> { total }, templates));
 
             var result = await service.GetNotificationRecipientListAsync(notificationId, pageIndex, pageSize).ConfigureAwait(false);
-            
+
             // Assert
             Assert.Equal(notificationId, criteria.NotificationId);
             Assert.Equal(pageIndex, criteria.PageIndex);
@@ -103,13 +103,12 @@
         public async Task DeleteOldConversationMessageLogAsync_WhenCalled_ExecuteNonQueryAsync()
         {
             // Arrange
-            var baseService = Substitute.For<IBaseService>();
-            var service = new ViewLogService(baseService);
+            var service = GetService();
             var currentDate = _fixture.Create<string>();
 
             DeleteOldConversationMessageLogCommand command = null;
             await baseService.ExecuteNonQueryAsync(Arg.Do<DeleteOldConversationMessageLogCommand>(x => command = x));
-                        
+
             // Act
             await service.DeleteOldConversationMessageLogAsync(currentDate);
 

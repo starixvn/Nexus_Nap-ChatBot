@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
@@ -45,6 +46,7 @@
 
         public IWebHostEnvironment Environment { get; }
 
+        [Obsolete]
         public void ConfigureServices(IServiceCollection services)
         {
             Dictionary<string, ConnectionConfiguration> connections = Configuration
