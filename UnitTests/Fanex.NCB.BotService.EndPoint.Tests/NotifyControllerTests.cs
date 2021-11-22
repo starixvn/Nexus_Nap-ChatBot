@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using AutoFixture;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
@@ -17,7 +16,6 @@
 
     public class NotifyControllerTests
     {
-        private readonly IFixture fixture = new Fixture();
         private AppSettings appSettings;
         private IMessageLogService messageLogService;
         private IConversationService conversationService;
@@ -96,6 +94,84 @@
             //Assert
             Assert.IsType<OkObjectResult>(actual);
             Assert.Empty((List<SendMessageResult>)actual.Value);
+        }
+
+        [Fact]
+        public async Task SendMulti_NotificationListIsEmpty_ReturnObjectResultWithEmptyList()
+        {
+            var controller = GetController();
+            var notificationMessage = new List<NotificationMessage> { new NotificationMessage { NotificationId = 1, Recipients = new List<ConversationInfo>() } };
+
+            //Actual
+            var actual = await controller.SendMulti(notificationMessage);
+
+            //Assert
+            Assert.IsType<OkObjectResult>(actual);
+            Assert.Empty((List<SendMessageResult>)actual.Value);
+        }
+
+        [Fact]
+        public async Task SendMulti_NotificationListIsNotEmpty_ReturnObjectResultWithSuccessList()
+        {
+            var controller = GetController();
+
+            var notificationMessage = new List<NotificationMessage>
+            {
+                new NotificationMessage {
+                NotificationId = 1,
+                Message = "test",
+                Recipients = new List<ConversationInfo>
+                    {
+                        new ConversationInfo
+                        {
+                            ConversationId = "ConversationId"
+                        }
+                    }
+                }
+            };
+            conversationService.GetDistinctNotificationConversation(Arg.Any<List<NotificationMessage>>()).Returns(notificationMessage);
+            skypeBotService.SendMessageWithRetryAsync(Arg.Any<ConversationInfo>()).Returns(new SendMessageResult { NotificationId = 1, ConversationId = "ConversationId" });
+            //Actual
+            var actual = await controller.SendMulti(notificationMessage);
+
+            //Assert
+            Assert.IsType<OkObjectResult>(actual);
+            Assert.Single((List<SendMessageResult>)actual.Value);
+            Assert.Equal(1, ((List<SendMessageResult>)actual.Value)[0].NotificationId);
+            Assert.Equal("ConversationId", ((List<SendMessageResult>)actual.Value)[0].ConversationId);
+            Assert.Equal(0, ((List<SendMessageResult>)actual.Value)[0].ErrorCode);
+            Assert.Null(((List<SendMessageResult>)actual.Value)[0].ErrorMessage);
+        }
+
+        [Fact]
+        public async Task SendMulti_NotificationListIsNotEmpty_ReturnObjectResultWithErrorList()
+        {
+            var controller = GetController();
+
+            var notificationMessage = new List<NotificationMessage>
+            {
+                new NotificationMessage {
+                NotificationId = 1,
+                Message = "test",
+                Recipients = new List<ConversationInfo>
+                    {
+                        new ConversationInfo()
+                    }
+                }
+            };
+            conversationService.GetDistinctNotificationConversation(Arg.Any<List<NotificationMessage>>()).Returns(notificationMessage);
+            skypeBotService.SendMessageWithRetryAsync(Arg.Any<ConversationInfo>())
+                .Returns(new SendMessageResult { NotificationId = 1, ConversationId = "ConversationId", ErrorCode = 1, ErrorMessage = "error msg" });
+
+            //Actual
+            var actual = await controller.SendMulti(notificationMessage);
+
+            //Assert
+            Assert.IsType<OkObjectResult>(actual);
+            Assert.Single((List<SendMessageResult>)actual.Value);
+            Assert.Equal(1, ((List<SendMessageResult>)actual.Value)[0].NotificationId);
+            Assert.Equal(1, ((List<SendMessageResult>)actual.Value)[0].ErrorCode);
+            Assert.Equal("error msg", ((List<SendMessageResult>)actual.Value)[0].ErrorMessage);
         }
 
         private NotifyController GetController(string enableChannelIds = "1,2")
