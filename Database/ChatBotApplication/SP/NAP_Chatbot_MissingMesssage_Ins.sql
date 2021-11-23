@@ -66,7 +66,7 @@ BEGIN
 			SELECT CustId, site FROM DBACC.bodb02.dbo.Dep_CustSuper WITH (NOLOCK) WHERE site IN ('spondemo' ,'Athena000') OR Currency NOT IN (20, 27, 28)
 
 			INSERT INTO dbo.MsgChatBot (MessageId, TargetId, JobIdentify, CheckInTime, Environment, IsFinished, RequestId)
-			SELECT mt.MessageId, mt.TargetId, 1, GETDATE(), @Environment, 1, 0
+			SELECT DISTINCT mt.MessageId, mt.TargetId, 1, GETDATE(), @Environment, 1, 0
 			FROM dbo.MsgTarget mt WITH (NOLOCK)
 				INNER JOIN @Message m ON m.MessageId = mt.MessageId 
 			WHERE EXISTS (SELECT 1 FROM @DepositSuper ds WHERE ds.CustId = mt.TargetId)
@@ -88,7 +88,7 @@ BEGIN
 			SELECT site FROM DBACC.bodb02.dbo.Site WITH (NOLOCK) WHERE isDeposit = 1
 
 			INSERT INTO dbo.MsgChatBot (MessageId, TargetId, JobIdentify, CheckInTime, Environment, IsFinished, RequestId)
-			SELECT mt.MessageId, mt.TargetId, 3, GETDATE(), @Environment, 1, 0
+			SELECT DISTINCT mt.MessageId, mt.TargetId, 3, GETDATE(), @Environment, 1, 0
 			FROM dbo.MsgTarget mt WITH (NOLOCK)
 				INNER JOIN @Message m ON mt.MessageId = m.MessageId
 				INNER JOIN dbo.MsgSite ms WITH (NOLOCK) ON mt.TargetId = ms.SiteId
