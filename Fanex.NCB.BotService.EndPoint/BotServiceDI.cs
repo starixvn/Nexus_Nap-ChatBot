@@ -26,7 +26,6 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using StackExchange.Redis;
-    using Telegram.Bot;
 
     public static class BotServiceDI
     {
@@ -166,10 +165,6 @@
             var configs = configuration.GetSection("TelegramBotConfigurations");
             services.Configure<List<TelegramBotConfigurations>>(configs);
             var bots = configs.Get<List<TelegramBotConfigurations>>();
-            foreach (var bot in bots)
-            {
-                bot.BotClient = new TelegramBotClient(bot.Token, GetDefaultHttpClient(configuration));
-            }
 
             services.AddSingleton(bots);
         }

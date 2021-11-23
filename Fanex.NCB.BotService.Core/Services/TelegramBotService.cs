@@ -53,6 +53,11 @@
             {
                 httpClient = httpClientFactory.CreateClient();
             }
+
+            foreach (var bot in botConfigurations)
+            {
+                bot.BotClient = new TelegramBotClient(bot.Token, httpClient);
+            }
         }
 
         public async Task SetWebhookAsync()
