@@ -15,6 +15,7 @@ AS
 		- 20210413@Malcolm: Integrate AB (Real member) voiding tickets [RedmineID: #153112]
 		- 20210610@Percy: Change source to get Reason (SubIssueTypeName) [RedmineID: #156724]
 		- 20210405@Malcolm: Add RequestId for Ticket Voiding Abnormal Accounts [RedmineID: #152175]
+		- 20211122@Malcolm: Voiding Abnormal bet for Mix Parlay [RedmineID: #163777]
 
 	Param's Explanation:
 		@MessageIDLst:
