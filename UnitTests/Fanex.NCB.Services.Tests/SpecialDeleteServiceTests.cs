@@ -534,7 +534,7 @@
             pushSignalService = Substitute.For<IPushSignalService>();
             logService = Substitute.For<ILogService>();
             configuration = Substitute.For<IConfiguration>();
-
+            configuration.GetSection("Environment").Value.Returns("UAT");
             return Substitute.For<SpecialDeleteServiceTestable>(baseService, chatbotService, pushSignalService, logService, configuration);
         }
 
