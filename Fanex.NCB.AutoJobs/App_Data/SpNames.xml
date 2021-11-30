@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Functions>
     <Function Name="Send Notification">
-    <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus_xtest" DbName="ChatBot" Plain="0" />
+    <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus" DbName="ChatBot" Plain="0" />
         <Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd" DbName="ChatBot" Plain="0"></Setting>
     </Function>
     <Function Name="Sync Data">
@@ -24,9 +24,9 @@
     </Function>
     <Function Name="Site Message">
         <Setting Key="NCB_MsgSetting_SiteMessage_Sel" SpName="NCB_MsgSetting_SiteMessage_Sel" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_SiteMesssage_Sel" SpName="NAP_Chatbot_SiteMesssage_Sel_xtest" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_SiteMesssage_Sel" SpName="NAP_Chatbot_SiteMesssage_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_Chatbot_MsgChatBot_Ins" SpName="NAP_Chatbot_MsgChatBot_Ins" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_Chatbot_SiteMesssage_EventInfo_Sel" SpName="NAP_Chatbot_SiteMesssage_EventInfo_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
-    <Setting Key="NCB_SiteMessage_Import" SpName="NCB_SiteMessage_Import_xtest" DbName="ChatBot" Plain="0" />
+    <Setting Key="NCB_SiteMessage_Import" SpName="NCB_SiteMessage_Import" DbName="ChatBot" Plain="0" />
     </Function>
 </Functions>
