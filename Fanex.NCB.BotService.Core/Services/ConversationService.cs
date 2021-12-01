@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NCB.BotService.Core.Criteria;
+    using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
@@ -11,10 +12,13 @@
     public class ConversationService : IConversationService
     {
         private readonly IBaseService baseService;
+        private readonly CheckDuplicatedMessageLogSetting settings;
 
-        public ConversationService(IBaseService baseService)
+        public ConversationService(IBaseService baseService,
+            CheckDuplicatedMessageLogSetting settings)
         {
             this.baseService = baseService;
+            this.settings = settings;
         }
 
         public async Task<CommandResult> AddBotToGroup(AddBotToGroupCommand command)
@@ -79,13 +83,13 @@
             return notifications;
         }
 
-        private static IEnumerable<ConversationInfo> DistinctConversationIdAndContent(IEnumerable<ConversationInfo> conversations)
+        private IEnumerable<ConversationInfo> DistinctConversationIdAndContent(IEnumerable<ConversationInfo> conversations)
         {
             var results = new List<ConversationInfo>();
 
             foreach (var conversation in conversations)
             {
-                if (results.Any(r => r.Message == conversation.Message && r.ConversationId == conversation.ConversationId))
+                if (results.Any(r => r.Message == conversation.Message && r.ConversationId == conversation.ConversationId && IsNotExceptionGroup(r.ConversationId)))
                 {
                     conversation.IsDuplicated = true;
                 }
@@ -93,6 +97,11 @@
             }
 
             return results;
+        }
+
+        private bool IsNotExceptionGroup(string conversationId)
+        {
+            return !settings.ExceptionConversatiionIDs.Any(x => x == conversationId);
         }
 
         private static IEnumerable<ConversationInfo> DistinctConversationIdAndNotificationId(IEnumerable<ConversationInfo> conversations)

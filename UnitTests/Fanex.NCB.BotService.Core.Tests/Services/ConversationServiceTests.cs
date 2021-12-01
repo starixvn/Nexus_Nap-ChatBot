@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NCB.BotService.Core.Criteria;
+    using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
@@ -13,6 +14,7 @@
     public class ConversationServiceTests
     {
         private IBaseService baseService;
+        private CheckDuplicatedMessageLogSetting settings;
 
         [Fact]
         public async Task AddBotToGroup_WhenCalled_ExpectedCallExecuteNonQueryAsync()
@@ -214,7 +216,14 @@
         private ConversationService GetService()
         {
             baseService = Substitute.For<IBaseService>();
-            return new ConversationService(baseService);
+            settings = new CheckDuplicatedMessageLogSetting
+            {
+                IsEnabled = true,
+                TimeSpanInMinutes = 20,
+                ExceptionConversatiionIDs = new[] { "A" }
+            };
+
+            return new ConversationService(baseService, settings);
         }
     }
 }
