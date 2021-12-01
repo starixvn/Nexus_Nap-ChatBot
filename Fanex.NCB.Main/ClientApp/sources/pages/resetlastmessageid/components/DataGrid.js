@@ -200,7 +200,9 @@ export class DataGrid extends Component {
                     isHost && <Cell colWidth={6} header>
                         <Input type="checkbox"
                             defaultChecked={this.state.allChecked}
-                            onChange={() => this.handleAllChange()} />
+                            onChange={() => this.handleAllChange()}
+                            disabled={!this.isNotEqualCurrentNew(0) && !this.isNotEqualCurrentNew(1) && !this.isNotEqualCurrentNew(2)}
+                        />
                     </Cell>
                 }
                 <Cell colWidth={30} header>{Labels.System}</Cell>
@@ -228,11 +230,11 @@ export class DataGrid extends Component {
         <Row key={`${item.jobIdentify}-${index}`} >
             <Cell className="text-center">
                 {
-                    this.isNotEqualCurrentNew(item.jobIdentify-1) &&
                     <Input type="checkbox"
-                        checked={this.state.checked[item.jobIdentify-1]}
+                        checked={this.state.checked[item.jobIdentify-1] && this.isNotEqualCurrentNew(item.jobIdentify-1)}
                         onChange={event => this.handleChange(event)}
                         value={item.jobIdentify-1}
+                        disabled={!this.isNotEqualCurrentNew(item.jobIdentify-1)}
                     />
                 }
             </Cell>

@@ -119,7 +119,7 @@ export class DataGrid extends Component {
                 <Cell colWidth={130} header>{Labels.Recipient}</Cell>
                 <Cell colWidth={100} header>{Labels.LicenseeStatus}</Cell>
                 <Cell colWidth={100} header>{Labels.MappingStatus}</Cell>
-                <Cell colWidth={50} header>{Labels.Active}</Cell>
+                <Cell colWidth={60} header>{Labels.Active}</Cell>
                 <Cell colWidth={200} header>{Labels.Remark}</Cell>
                 {
                     isHost &&
