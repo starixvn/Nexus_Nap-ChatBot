@@ -94,15 +94,19 @@ export class DataGrid extends Component {
         checked[index] = !checked[index];
         this.setState({ checked: checked });
 
-        this.props.selected.map((item, key) => {
-            if (!this.isNotEqualCurrentNew(key) || !item.checked) {
-                checked[key] = false;
+        const flagCheckTrue = checked;
+        checked.filter((item, key) => {
+            if (!this.isNotEqualCurrentNew(key)) {
+                flagCheckTrue[key] = true;
             }
         });
-        if (!checked.includes(true)) {
-            this.setState({ isSubmitting: true });
+
+        if (flagCheckTrue.every(item => item === true)) {
+            this.setState({ allChecked: true, isSubmitting: false });
+        } else if (checked.every(item => item === false)) {
+            this.setState({ allChecked: false, isSubmitting: true });
         } else {
-            this.setState({ isSubmitting: false });
+            this.setState({ allChecked: false, isSubmitting: false });
         }
     };
 

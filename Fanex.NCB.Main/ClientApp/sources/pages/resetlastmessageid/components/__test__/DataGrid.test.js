@@ -204,8 +204,8 @@ describe('DataGrid', () => {
             container.instance().handleChange(mockEvent);
 
             // Assert
-            expect(container.state().checked).toEqual([false, false, false]);
-            expect(container.state().isSubmitting).toEqual(true);
+            expect(container.state().checked).toEqual([true, false, false]);
+            expect(container.state().isSubmitting).toEqual(false);
         });
     });
 
