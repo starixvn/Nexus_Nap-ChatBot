@@ -106,9 +106,16 @@ export class DataGrid extends Component {
         }
     };
 
+    isAllEqualCurrentNew = () => {
+        if (!this.isNotEqualCurrentNew(0) && !this.isNotEqualCurrentNew(1) && !this.isNotEqualCurrentNew(2)) {
+            return true;
+        }
+        return false;
+    };
+
     handleAllChange = () => {
         const allChecked = this.state.allChecked;
-        if (!this.isNotEqualCurrentNew(0) && !this.isNotEqualCurrentNew(1) && !this.isNotEqualCurrentNew(2)) {
+        if (this.isAllEqualCurrentNew()) {
             return;
         }
         this.setState({ 
@@ -148,6 +155,9 @@ export class DataGrid extends Component {
     setSubmit = async () => {
         await this.getAllData();
         this.isCheckedSubmit() && this.setState({ isSubmitting: false });
+        if (this.isAllEqualCurrentNew()) {
+            this.setState({ allChecked: false });
+        }
     };
 
     handleSubmit = async () => {
@@ -199,9 +209,9 @@ export class DataGrid extends Component {
                 {
                     isHost && <Cell colWidth={6} header>
                         <Input type="checkbox"
-                            defaultChecked={this.state.allChecked}
+                            checked={this.state.allChecked}
                             onChange={() => this.handleAllChange()}
-                            disabled={!this.isNotEqualCurrentNew(0) && !this.isNotEqualCurrentNew(1) && !this.isNotEqualCurrentNew(2)}
+                            disabled={this.isAllEqualCurrentNew()}
                         />
                     </Cell>
                 }

@@ -117,6 +117,39 @@ describe('DataGrid', () => {
         });
     });
 
+    describe('isAllEqualCurrentNew', () => {
+        it('should return false', () => {
+            // Arrange
+            const props = { ...initProps };
+
+            // Act
+            const container = shallow(<DataGrid {...props}/>);
+            const actual = container.instance().isAllEqualCurrentNew();
+
+            // Assert
+            expect(actual).toBe(false);
+        });
+
+        it('should return true', () => {
+            // Arrange
+            const props = {
+                ...initProps,
+                selected: [
+                    { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 1074533320 },
+                    { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 1074533325 },
+                    { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 1074533327 }
+                ]
+            };
+
+            // Act
+            const container = shallow(<DataGrid {...props}/>);
+            const actual = container.instance().isAllEqualCurrentNew();
+
+            // Assert
+            expect(actual).toBe(true);
+        });
+    })
+
     describe('handleShowEditNewMessage', () => {
         it('should call exactly props function', () => {
             // Arrange
