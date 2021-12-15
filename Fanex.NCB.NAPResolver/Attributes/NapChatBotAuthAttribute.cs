@@ -58,7 +58,7 @@
             {
                 var unauthorizeUrl = napSettings.UnauthorizeUrl;
                 context.Result = new RedirectResult(string.IsNullOrEmpty(unauthorizeUrl)
-                    ? "~/Admin/Common/Unauthorize"
+                    ? "~/Error/UnauthorizedUser"
                     : unauthorizeUrl);
             }
         }
