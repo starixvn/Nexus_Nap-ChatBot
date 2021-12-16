@@ -10,6 +10,7 @@ AS
 	Revisions:
 		- 20190910@Oliver: init
 		- 20211021@Malcolm: Add Product Status [RedmineId: 161727]
+		- 20211118@Malcolm: Integrate the change of Licensee type [RedmineId: 163779]
 */
 BEGIN
 
@@ -19,7 +20,7 @@ BEGIN
 		  ,l.LicenseeName
 		  ,l.RegisteredLicenseeName
 		  ,l.LicenseeStatusId
-		  ,l.LicenseeTypeId
+		  ,l.TypeId AS LicenseeTypeId
 	FROM dbo.Licensee l WITH (NOLOCK)
 	ORDER BY l.LicenseeId
 
@@ -35,10 +36,10 @@ BEGIN
 	FROM dbo.LicenseeProduct lp WITH (NOLOCK)
 	ORDER BY lp.LicenseeId, lp.ProductId
 
-	SELECT lt.LicenseeTypeId
-		   ,lt.LicenseeTypeName
-	FROM dbo.LicenseeType lt WITH (NOLOCK)
-	ORDER BY lt.LicenseeTypeId
+	SELECT lt.TypeId AS LicenseeTypeId
+		   ,lt.TypeName AS LicenseeTypeName
+	FROM dbo.LicenseeTypes lt WITH (NOLOCK)
+	ORDER BY lt.TypeId
 
 	SELECT p.ProductId
 		  ,p.ProductName
