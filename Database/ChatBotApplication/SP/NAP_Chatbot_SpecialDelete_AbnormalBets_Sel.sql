@@ -15,6 +15,7 @@ AS
 		- 20210413@Malcolm: Integrate AB (Real member) voiding tickets [RedmineID: #153112]
 		- 20210610@Percy: Change source to get Reason (SubIssueTypeName) [RedmineID: #156724]
 		- 20210405@Malcolm: Add RequestId for Ticket Voiding Abnormal Accounts [RedmineID: #152175]
+		- 20211122@Malcolm: Voiding Abnormal bet for Mix Parlay [RedmineID: #163777]
 
 	Param's Explanation:
 		@MessageIDLst:
@@ -47,7 +48,8 @@ BEGIN
 		MinWinlostdate		DATETIME, 
 		MaxWinlostdate		DATETIME, 
 		UsernameLst			NVARCHAR(MAX),
-		IssueTypeId			TINYINT
+		IssueTypeId			TINYINT,
+		FilterBy			TINYINT
 	)
 
 	--Get data for Abnormal Bets
@@ -61,20 +63,14 @@ BEGIN
 		AND vh.StatusId = 2
 
 	UPDATE vh
-		SET vh.IssueTypeId = r.IssueTypeId
+		SET vh.IssueTypeId = r.IssueTypeId, vh.FilterBy = n.FilterBy, vh.UsernameLst = CASE WHEN r.IssueTypeId = 13 THEN n.UsernameLst ELSE NULL END
 	FROM #VoidingHistory vh
 		INNER JOIN dbo.TicketVoiding_Request r WITH(NOLOCK) ON r.RequestId = vh.RequestId
-
-	UPDATE vh
-		SET vh.UsernameLst = l.UsernameLst
-	FROM #VoidingHistory vh
-	CROSS APPLY
-	(
-		SELECT TOP 1 d.Usernames
-		FROM dbo.TicketVoiding_RequestDetail d WITH(NOLOCK)
-		WHERE d.RequestId = vh.RequestId
-	) l(UsernameLst)
-	WHERE vh.IssueTypeId = 13
+		OUTER APPLY (
+			SELECT TOP(1) FilterBy, Usernames AS UsernameLst
+			FROM dbo.TicketVoiding_RequestDetail rd WITH(NOLOCK) 
+			WHERE rd.RequestId = vh.RequestId
+		) AS n(FilterBy, UsernameLst)
 
 	-- Request Info
 	BEGIN
@@ -93,7 +89,7 @@ BEGIN
 		
 		;WITH CTE_Request AS
 		(
-			SELECT MessageId, RequestId, ReasonId, VoidById
+			SELECT MessageId, RequestId, ReasonId, VoidById, MAX(FilterBy) AS FilterBy
 			FROM #VoidingHistory
 			GROUP BY MessageId, RequestId, ReasonId, VoidById
 		)
@@ -105,7 +101,10 @@ BEGIN
 						INNER JOIN dbo.TicketVoiding_SubIssueType rs WITH (NOLOCK) ON rqd.SubIssueTypeId = rs.SubIssueTypeId
 					WHERE rq.RequestId = rqd.RequestId
 					FOR XML PATH('')), 1, 2, '') AS ReasonLst
-			,CASE WHEN rq.IssueTypeId IN (11, 15) THEN 1 WHEN rq.IssueTypeId = 13 THEN 2 ELSE NULL END AS [Type]
+			,CASE WHEN rq.IssueTypeId = 11 AND ISNULL(vh.FilterBy, 0)= 1 THEN 3
+				  WHEN rq.IssueTypeId IN (11, 15) THEN 1 	
+			      WHEN rq.IssueTypeId = 13 THEN 2 
+		     ELSE NULL END AS [Type]
 		FROM CTE_Request vh
 			INNER JOIN dbo.TicketVoiding_Request rq WITH (NOLOCK) ON rq.RequestId = vh.RequestId
 			LEFT JOIN dbo.Customer rb WITH (NOLOCK) ON rq.UserId = rb.custid
@@ -138,17 +137,23 @@ BEGIN
 
 	-- Ticket Info
 	BEGIN
-		DECLARE @tblRecommendBettype TABLE (MessageId INT, recommend INT, bettype SMALLINT, liveindicator BIT)
-		INSERT INTO @tblRecommendBettype (MessageId, recommend, bettype, liveindicator)
-		SELECT vh.MessageId, b.recommend, b.bettype, ISNULL(b.liveindicator, 0)
+		DECLARE @tblRecommendBettype TABLE (MessageId INT, recommend INT, bettype SMALLINT, liveindicator BIT, IsParlay BIT)
+		INSERT INTO @tblRecommendBettype (MessageId, recommend, bettype, liveindicator, IsParlay)
+		SELECT vh.MessageId, ISNULL(b.recommend, bt.recommend), ISNULL(b.bettype, bt.bettype), ISNULL(ISNULL(b.liveindicator, bt.liveindicator), 0)
+			   ,MAX(CASE WHEN ISNULL(vh.FilterBy, 0) = 1 AND vh.IssueTypeId = 11 THEN 1 ELSE 0 END) AS IsParlay
 		FROM #VoidingHistory vh
-			CROSS APPLY (
+			OUTER APPLY (
 				SELECT TOP 1 b.bettype, b.liveindicator, b.recommend
 				FROM dbo.bettrans b WITH (NOLOCK)
 				WHERE b.transid = vh.TransId
 			) b
+			OUTER APPLY (
+				SELECT TOP 1 b.bettype, b.liveindicator, b.recommend
+				FROM dbo.bettrans14 b WITH (NOLOCK)
+				WHERE b.transid = vh.TransId
+			) bt
 		WHERE vh.IssueTypeId IN (11, 15)-- Abnormal Bets, AB (real member)
-		GROUP BY vh.MessageId, b.recommend, b.bettype, ISNULL(b.liveindicator, 0)
+		GROUP BY vh.MessageId, ISNULL(b.recommend, bt.recommend), ISNULL(b.bettype, bt.bettype), ISNULL(ISNULL(b.liveindicator, bt.liveindicator), 0)
 	END
 
 	-- Return Data
@@ -177,11 +182,16 @@ BEGIN
 		-- Bettype
 		,CTE_Bettype AS
 		(
-			SELECT t.MessageId, CASE WHEN t.liveindicator = 0 THEN 'Non-Live ' ELSE 'Live ' END + ISNULL(d.typenamee, b.typenamee) AS TypeName
+			SELECT t.MessageId, CASE WHEN t.IsParlay = 1 THEN 'Mix Parlay'
+									 WHEN t.liveindicator = 0 THEN 'Non-Live ' + ISNULL(d.typenamee, b.typenamee)
+								ELSE 'Live ' + ISNULL(d.typenamee, b.typenamee) END  AS TypeName
 			FROM @tblRecommendBettype t
 				INNER JOIN dbo.bettype b WITH (NOLOCK) ON t.bettype = b.typeid
 				LEFT JOIN dbo.bettype d WITH (NOLOCK) ON b.DisplayedTypeID = d.typeid
-			GROUP BY t.MessageId, CASE WHEN t.liveindicator = 0 THEN 'Non-Live ' ELSE 'Live ' END + ISNULL(d.typenamee, b.typenamee)
+			GROUP BY t.MessageId
+					,CASE WHEN t.IsParlay = 1 THEN 'Mix Parlay' 
+						  WHEN t.liveindicator = 0 THEN 'Non-Live ' + ISNULL(d.typenamee, b.typenamee)
+					 ELSE 'Live ' + ISNULL(d.typenamee, b.typenamee) END 
 		)
 		,CTE_MsgBettype AS
 		(
