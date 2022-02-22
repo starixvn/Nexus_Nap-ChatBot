@@ -137,6 +137,7 @@
                 LicenseeProducts = ConvertToJsonWithDateTimeFormatString(data.LicenseeProducts),
                 LicenseeTypes = ConvertToJsonWithDateTimeFormatString(data.LicenseeTypes),
                 Products = ConvertToJsonWithDateTimeFormatString(data.Products),
+                Platforms = ConvertToJsonWithDateTimeFormatString(data.Platforms)
             };
 
             await baseService.ExecuteNonQueryAsync(command);

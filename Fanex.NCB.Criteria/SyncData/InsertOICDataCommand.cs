@@ -14,6 +14,8 @@
 
         public string Products { get; set; }
 
+        public string Platforms { get; set; }
+
         public override string GetSettingKey() => "NCB_OIC_SyncData";
 
         public override bool IsValid() => true;

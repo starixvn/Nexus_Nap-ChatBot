@@ -13,5 +13,7 @@
         public IEnumerable<LicenseeType> LicenseeTypes { get; set; }
 
         public IEnumerable<Product> Products { get; set; }
+
+        public IEnumerable<Platform> Platforms { get; set; }
     }
 }

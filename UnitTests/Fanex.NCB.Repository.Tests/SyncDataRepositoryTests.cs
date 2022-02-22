@@ -63,6 +63,7 @@
             multiReader.Read<LicenseeProduct>().Returns(new List<LicenseeProduct>());
             multiReader.Read<LicenseeType>().Returns(new List<LicenseeType>());
             multiReader.Read<Product>().Returns(new List<Product>());
+            multiReader.Read<Platform>().Returns(new List<Platform>());
 
             objectDb.QueryMultipleAsync(criteria).Returns(multiReader);
 

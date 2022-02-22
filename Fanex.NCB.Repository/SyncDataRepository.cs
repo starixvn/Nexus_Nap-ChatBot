@@ -49,6 +49,7 @@
                         LicenseeProducts = multi.Read<LicenseeProduct>(),
                         LicenseeTypes = multi.Read<LicenseeType>(),
                         Products = multi.Read<Product>(),
+                        Platforms = multi.Read<Platform>()
                     };
 
                     return data;

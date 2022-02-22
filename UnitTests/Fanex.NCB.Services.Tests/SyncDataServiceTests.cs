@@ -89,7 +89,8 @@
                 LicenseeProducts = fixture.Create<List<LicenseeProduct>>(),
                 LicenseeStatuses = fixture.Create<List<LicenseeStatus>>(),
                 LicenseeTypes = fixture.Create<List<LicenseeType>>(),
-                Products = fixture.Create<List<Product>>()
+                Products = fixture.Create<List<Product>>(),
+                Platforms = fixture.Create<List<Platform>>()
             };
         }
 
