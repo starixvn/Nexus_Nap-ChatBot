@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models.Setting;
+    using Fanex.NCB.Shared.Models.OIC;
 
     public interface ISettingService
     {
@@ -26,5 +27,7 @@
         IEnumerable<BaseModel> GetAllMappingStatus();
 
         Task<IEnumerable<BaseModel>> GetSystemAsync();
+
+        Task<IEnumerable<Platform>> GetPlatformAsync(int notificationTypeId);
     }
 }

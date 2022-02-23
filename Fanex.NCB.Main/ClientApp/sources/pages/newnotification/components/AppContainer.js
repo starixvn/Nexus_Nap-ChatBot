@@ -213,6 +213,7 @@ export class AppContainer extends React.Component {
         const formik = this.refs.form;
         this.props.getRecipients(event.target.value, formik.state.values.productId, formik.state.values.channelIds);
         this.props.getNotificationTemplates(event.target.value);
+        this.props.getPlatforms(event.target.value);
 
         formik.setValues({
             ...formik.state.values,

@@ -11,6 +11,7 @@
     using Fanex.NCB.Criteria.Setting;
     using Fanex.NCB.Models.Setting;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services.Interfaces;
 
     public class SettingService : ISettingService
@@ -91,6 +92,15 @@
             var criteria = new GetNotificationTypeSystemCriteria();
 
             return baseService.GetDataAsync<BaseModel>(criteria);
+        }
+
+        public Task<IEnumerable<Platform>> GetPlatformAsync(int notificationTypeId)
+        {
+            var criteria = new GetPlatformCriteria
+            {
+                NotificationTypeId = notificationTypeId
+            };
+            return baseService.GetDataAsync<Platform>(criteria);
         }
     }
 }

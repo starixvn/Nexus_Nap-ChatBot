@@ -15,6 +15,7 @@
     <Setting Key="NCB_Setting_SearchRecipient_Sel" SpName="NCB_Setting_SearchRecipient_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_Setting_SearchChatGroup_Sel" SpName="NCB_Setting_SearchChatGroup_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_Setting_System_Sel" SpName="NCB_Setting_System_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_Setting_Platform_Sel" SpName="NCB_Setting_Platform_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
   </Function>
   <Function Name="Notification Type">
       <Setting Key="NCB_NotificationType_Sel" SpName="NCB_NotificationType_Sel" DbName="ChatBot" Plain="0"></Setting>
@@ -49,9 +50,9 @@
     <Setting Key="NCB_NotificationList_Cancel_Upd" SpName="NCB_NotificationList_Cancel_Upd" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_NotificationList_ErrDetail_Sel" SpName="NCB_NotificationList_ErrDetail_Sel" DbName="ChatBot" Plain="0" />
     <Setting Key="NCB_NotificationList_Resolve_Upd" SpName="NCB_NotificationList_Resolve_Upd" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_EditNotification_Sel" SpName="NCB_EditNotification_Sel" DbName="ChatBot" Plain="0" />
+    <Setting Key="NCB_EditNotification_Sel" SpName="NCB_EditNotification_Sel_xtest" DbName="ChatBot" Plain="0" />
     <Setting Key="NCB_EditNotification_Upd" SpName="NCB_EditNotification_Upd" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_EditNotification_Recipient_Sel" SpName="NCB_EditNotification_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_EditNotification_Recipient_Sel" SpName="NCB_EditNotification_Recipient_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_NotificationList_UpdatedNotification_Sel" SpName="NCB_NotificationList_UpdatedNotification_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_NotificationList_ErrorNotifications_Sel" SpName="NCB_NotificationList_ErrorNotifications_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>

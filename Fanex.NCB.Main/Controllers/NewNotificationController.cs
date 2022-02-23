@@ -22,11 +22,13 @@ namespace Fanex.NCB.SkypeBot.Controllers
     public class NewNotificationController : Controller
     {
         private readonly INotificationService notificationService;
+        private readonly ISettingService settingService;
         private readonly INapSession napSession;
 
-        public NewNotificationController(INotificationService notificationService, INapSession napSession)
+        public NewNotificationController(INotificationService notificationService, ISettingService settingService, INapSession napSession)
         {
             this.notificationService = notificationService;
+            this.settingService = settingService;
             this.napSession = napSession;
         }
 
@@ -104,6 +106,15 @@ namespace Fanex.NCB.SkypeBot.Controllers
             var tree = GenerateTreeHelper.FromRecipient(recipients);
 
             return Json(new { resendNotification, recipients = tree, unSelectableRecipients });
+        }
+
+        [HttpGet]
+        [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
+        public async Task<IActionResult> GetPlatforms(int notificationTypeId)
+        {
+            var platforms = await settingService.GetPlatformAsync(notificationTypeId);
+
+            return Json(platforms);
         }
     }
 }

@@ -7,6 +7,7 @@ const newNotificationSlice = createSlice({
         notificationTemplates: [],
         products: [],
         recipients: [],
+        platforms: [],
         confirmationPopup: {
             isOpen: false,
             content: ''
@@ -35,6 +36,9 @@ const newNotificationSlice = createSlice({
         setRecipients: (state, action) => {
             state.recipients = action.payload;
         },
+        setPlatforms: (state, action) => {
+            state.platforms = action.payload;
+        },
         setConfirmationPopup: (state, action) => {
             state.confirmationPopup = action.payload;
         },
@@ -60,6 +64,7 @@ export const {
     setNotificationTemplates,
     setProducts,
     setRecipients,
+    setPlatforms,
     setConfirmationPopup,
     setResetConfirmationPopup,
     setEditConfirmationPopup,

@@ -5,12 +5,14 @@ import {
     setNotificationTemplates,
     setProducts,
     setRecipients,
+    setPlatforms,
     setConfirmationPopup,
     setResetConfirmationPopup,
     setEditConfirmationPopup,
     setMarkdownRulesPopup,
     setCreateNotificationResult
 } from './newNotificationSlice';
+import { async } from 'regenerator-runtime';
 
 const getNotificationTypes = () => async dispatch => {
     const url = Site.resolveClientUrl('Common/GetNotificationTypes');
@@ -40,6 +42,13 @@ const getRecipients = (notificationTypeId, productId, channelIds) => async dispa
     });
 };
 
+const getPlatforms = notificationTypeId => async dispatch => {
+    const url = Site.resolveClientUrl('NewNotification/GetPlatforms');
+    await DataService.getDataAsync(url, { notificationTypeId }).then(response => {
+        dispatch(setPlatforms(response.data));
+    });
+};
+
 const getResendNotification = (notificationId, isResendAll) => async () => {
     const url = Site.resolveClientUrl('NewNotification/GetResendNotification');
     return await DataService.getDataAsync(url, { notificationId, isResendAll }).then(response => response);
@@ -57,6 +66,7 @@ export const ActionCreators = {
     getNotificationTemplates,
     getProducts,
     getRecipients,
+    getPlatforms,
     getResendNotification,
     createNewNotification,
     setNotificationTypes,
