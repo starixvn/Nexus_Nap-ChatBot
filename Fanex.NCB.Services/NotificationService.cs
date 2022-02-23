@@ -10,6 +10,7 @@
     using Fanex.NCB.Models.Notification;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Newtonsoft.Json;
 
@@ -169,7 +170,7 @@
 
         public async Task<EditNotificationInfo> GetEditNotificationInfoAsync(int notificationId)
         {
-            var result = await baseService.FetchMultipleAsync<EditNotificationInfo, Recipient>(
+            var result = await baseService.FetchMultipleAsync<EditNotificationInfo, Recipient, Platform>(
                 new GetEditNotificationInfoCriteria
                 {
                     NotificationId = notificationId
@@ -179,6 +180,7 @@
             if (notification != null)
             {
                 notification.Recipients = result.Item2;
+                notification.Platforms = result.Item3;
                 notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();
             }
 
