@@ -39,10 +39,10 @@
   </Function>
 
   <Function Name="New Notification">
-    <Setting Key="NCB_NewNotification_Ins" SpName="NCB_NewNotification_Ins_xpre" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_NewNotification_Recipient_Sel" SpName="NCB_NewNotification_Recipient_Sel" DbName="ChatBot" Plain="0" />
+    <Setting Key="NCB_NewNotification_Ins" SpName="NCB_NewNotification_Ins_xtest" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_NewNotification_Recipient_Sel" SpName="NCB_NewNotification_Recipient_Sel_xtest" DbName="ChatBot" Plain="0" />
     <Setting Key="NCB_NewNotification_GetTemplates" SpName="NCB_NewNotification_GetTemplates" DbName="ChatBot" Plain="0" />
-    <Setting Key="NCB_ResendNotification_Sel" SpName="NCB_ResendNotification_Sel" DbName="ChatBot" Plain="0" />
+    <Setting Key="NCB_ResendNotification_Sel" SpName="NCB_ResendNotification_Sel_xtest" DbName="ChatBot" Plain="0" />
   </Function>
   <Function Name="Notification List">
     <Setting Key="NCB_NotificationList_Sel" SpName="NCB_NotificationList_Sel" DbName="ChatBot" Plain="0" />
@@ -50,7 +50,7 @@
     <Setting Key="NCB_NotificationList_ErrDetail_Sel" SpName="NCB_NotificationList_ErrDetail_Sel" DbName="ChatBot" Plain="0" />
     <Setting Key="NCB_NotificationList_Resolve_Upd" SpName="NCB_NotificationList_Resolve_Upd" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_EditNotification_Sel" SpName="NCB_EditNotification_Sel_xtest" DbName="ChatBot" Plain="0" />
-    <Setting Key="NCB_EditNotification_Upd" SpName="NCB_EditNotification_Upd" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_EditNotification_Upd" SpName="NCB_EditNotification_Upd_xtest" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_EditNotification_Recipient_Sel" SpName="NCB_EditNotification_Recipient_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_NotificationList_UpdatedNotification_Sel" SpName="NCB_NotificationList_UpdatedNotification_Sel" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_NotificationList_ErrorNotifications_Sel" SpName="NCB_NotificationList_ErrorNotifications_Sel" DbName="ChatBot" Plain="0"></Setting>
