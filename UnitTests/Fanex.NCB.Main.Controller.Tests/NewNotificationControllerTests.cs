@@ -23,6 +23,7 @@
     {
         private readonly IFixture fixture = new Fixture();
         private INotificationService notificationService;
+        private ISettingService settingService;
         private INapSession napSession;
 
         [Fact]
@@ -100,12 +101,13 @@
             var controller = GetController();
             var notificationTypeId = fixture.Create<int>();
             var productId = fixture.Create<int?>();
+            var platforms = fixture.Create<string>();
 
             var recipients = fixture.Create<IEnumerable<Recipient>>();
 
-            notificationService.GetRecipientsAsync(notificationTypeId, productId).Returns(recipients);
+            notificationService.GetRecipientsAsync(notificationTypeId, platforms, productId).Returns(recipients);
 
-            var result = await controller.GetRecipients(notificationTypeId, productId);
+            var result = await controller.GetRecipients(notificationTypeId, platforms, productId);
 
             var json = Assert.IsType<JsonResult>(result);
             Assert.IsAssignableFrom<IEnumerable<TreeNodeItem>>(json.Value);
@@ -144,8 +146,9 @@
                 recipients = GenerateTreeHelper.FromRecipient(allRecipients),
                 unSelectableRecipients = unSelectable
             };
+            var platforms = resendNotifictaion.Platforms.Select(item => item.PlatformId).ToList();
             notificationService.GetResendNotificationInfoAsync(notificationId, isResendAll).Returns(resendNotifictaion);
-            notificationService.GetRecipientsAsync(resendNotifictaion.NotificationTypeId, null, resendNotifictaion.ChannelId.ToString()).Returns(allRecipients);
+            notificationService.GetRecipientsAsync(resendNotifictaion.NotificationTypeId, string.Join(",",platforms) , null, resendNotifictaion.ChannelId.ToString()).Returns(allRecipients);
 
             var result = await controller.GetResendNotification(notificationId, isResendAll);
 
@@ -157,9 +160,10 @@
         private NewNotificationController GetController()
         {
             notificationService = Substitute.For<INotificationService>();
+            settingService = Substitute.For<ISettingService>();
             napSession = Substitute.For<INapSession>();
 
-            return new NewNotificationController(notificationService, napSession);
+            return new NewNotificationController(notificationService, settingService, napSession);
         }
     }
 }

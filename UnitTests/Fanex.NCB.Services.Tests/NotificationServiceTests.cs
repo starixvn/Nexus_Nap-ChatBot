@@ -10,6 +10,7 @@
     using Fanex.NCB.Models.Notification;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services.Interfaces;
     using NSubstitute;
     using Xunit;
@@ -193,9 +194,9 @@
 
             var criteria = new GetEditNotificationInfoCriteria();
 
-            baseService.FetchMultipleAsync<EditNotificationInfo, Recipient>
+            baseService.FetchMultipleAsync<EditNotificationInfo, Recipient, Platform>
                 (Arg.Do<GetEditNotificationInfoCriteria>(x => criteria = x))
-                .Returns((new List<EditNotificationInfo> { expectedNotification }, expectedNotification.Recipients));
+                .Returns((new List<EditNotificationInfo> { expectedNotification }, expectedNotification.Recipients, expectedNotification.Platforms));
 
             var result = await service.GetEditNotificationInfoAsync(notificationId);
 
@@ -290,13 +291,15 @@
             var isSendAll = fixture.Create<bool>();
             var notification = fixture.Create<IEnumerable<ResendNotification>>();
             var recipients = fixture.Create<IEnumerable<Recipient>>();
-            var valueTuple = new ValueTuple<IEnumerable<ResendNotification>, IEnumerable<Recipient>>(notification, recipients);
+            var platforms = fixture.Create<IEnumerable<Platform>>();
+            var valueTuple = new ValueTuple<IEnumerable<ResendNotification>, IEnumerable<Recipient>, IEnumerable<Platform>>(notification, recipients, platforms);
             var expected = notification.FirstOrDefault();
             expected.Recipients = recipients;
+            expected.Platforms = platforms;
 
             var criteria = new GetResendNotificationInfoCriteria { NotificationId = notificationId, IsSendAll = isSendAll };
 
-            baseService.FetchMultipleAsync<ResendNotification, Recipient>(Arg.Do<GetResendNotificationInfoCriteria>(x => criteria = x)).Returns(valueTuple);
+            baseService.FetchMultipleAsync<ResendNotification, Recipient, Platform>(Arg.Do<GetResendNotificationInfoCriteria>(x => criteria = x)).Returns(valueTuple);
 
             var result = await service.GetResendNotificationInfoAsync(notificationId, isSendAll);
 
