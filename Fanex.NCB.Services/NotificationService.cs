@@ -40,7 +40,8 @@
                 ContentLst = model.Content,
                 ConfigSendTime = model.SendImmediately ? DateTime.UtcNow : model.SendDate.ConvertToUTC(),
                 SendImmediately = model.SendImmediately,
-                CreatorId = model.CreatorId
+                CreatorId = model.CreatorId,
+                Platforms = model.Platforms
             };
 
             var result = await baseService.ExecuteNonQueryAsync(command);
@@ -79,13 +80,14 @@
             }
         }
 
-        public async Task<IEnumerable<Recipient>> GetRecipientsAsync(int notificationTypeId, int? productId = null, string channelIds = null)
+        public async Task<IEnumerable<Recipient>> GetRecipientsAsync(int notificationTypeId, string platforms, int? productId = null, string channelIds = null)
         {
             return await baseService.GetDataAsync<Recipient>(new GetRecipientsCriteria
             {
                 NotificationTypeId = notificationTypeId,
                 ProductId = productId,
-                ChannelIdLst = channelIds
+                ChannelIdLst = channelIds,
+                Platforms = platforms
             });
         }
 
@@ -197,7 +199,8 @@
                 Content = model.Content,
                 ConfigSendTime = model.SendImmediately ? DateTime.UtcNow : model.SendDate.ConvertToUTC(),
                 SendImmediately = model.SendImmediately,
-                UserId = model.UserId
+                UserId = model.UserId,
+                Platforms = model.Platforms
             };
 
             var result = await baseService.ExecuteNonQueryAsync(command);
@@ -214,13 +217,14 @@
             return result;
         }
 
-        public async Task<IEnumerable<Recipient>> GetEditNotificationRecipientsAsync(int notificationId, int notificationTypeId, int? productId)
+        public async Task<IEnumerable<Recipient>> GetEditNotificationRecipientsAsync(int notificationId, int notificationTypeId, int? productId, string platforms)
         {
             return await baseService.GetDataAsync<Recipient>(new GetEditNotificationRecipientsCriteria
             {
                 NotificationId = notificationId,
                 NotificationTypeId = notificationTypeId,
                 ProductId = productId,
+                Platforms = platforms
             });
         }
 
@@ -247,11 +251,12 @@
                 IsSendAll = isResendAll
             };
 
-            var result = await baseService.FetchMultipleAsync<ResendNotification, Recipient>(criteria);
+            var result = await baseService.FetchMultipleAsync<ResendNotification, Recipient, Platform>(criteria);
             var notification = result.Item1.FirstOrDefault();
             if (notification != null)
             {
                 notification.Recipients = result.Item2;
+                notification.Platforms = result.Item3;
             }
 
             return notification;

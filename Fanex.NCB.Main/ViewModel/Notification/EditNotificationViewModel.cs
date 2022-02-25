@@ -15,5 +15,7 @@
         public DateTime SendDate { get; set; }
 
         public bool SendImmediately { get; set; }
+
+        public string Platforms { get; set; }
     }
 }

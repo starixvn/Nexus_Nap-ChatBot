@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using Fanex.NCB.Models.Common;
+    using Fanex.NCB.Shared.Models.OIC;
 
     public class ResendNotification : ConversationChannel
     {
@@ -16,5 +17,7 @@
         public string Content { get; set; }
 
         public IEnumerable<Recipient> Recipients { get; set; }
+
+        public IEnumerable<Platform> Platforms { get; set; }
     }
 }

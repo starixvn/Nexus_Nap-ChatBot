@@ -98,7 +98,8 @@ export default class EditNotification extends React.Component {
             params: {
                 notificationId: this.state.notificationId,
                 notificationTypeId: notification.notificationTypeId,
-                productId: notification.productId
+                productId: notification.productId,
+                platforms: notification.platforms.length > 0 ?  notification.platforms.map(item => item.platformId).join(',') : ''
             }
         }).then(response => {
             const initialObj = this.initializeObj();

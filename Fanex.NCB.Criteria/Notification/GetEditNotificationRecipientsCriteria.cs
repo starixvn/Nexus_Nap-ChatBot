@@ -10,6 +10,8 @@
 
         public int? ProductId { get; set; }
 
+        public string Platforms { get; set; }
+
         public override string GetSettingKey() => "NCB_EditNotification_Recipient_Sel";
 
         public override bool IsValid() => NotificationTypeId > 0 && NotificationId > 0;

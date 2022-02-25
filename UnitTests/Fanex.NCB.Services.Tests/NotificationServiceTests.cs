@@ -65,6 +65,7 @@
             var fixture = new Fixture();
             int notificationTypeId = fixture.Create<int>();
             int? productId = fixture.Create<int?>();
+            string platforms = fixture.Create<string>();
             var recipients = fixture.Create<IEnumerable<Recipient>>();
 
             var criteria = new GetRecipientsCriteria();
@@ -72,10 +73,11 @@
             baseService.GetDataAsync<Recipient>(Arg.Do<GetRecipientsCriteria>(x => criteria = x))
                 .Returns(recipients);
 
-            var result = await service.GetRecipientsAsync(notificationTypeId, productId);
+            var result = await service.GetRecipientsAsync(notificationTypeId, platforms, productId);
 
             Assert.Equal(notificationTypeId, criteria.NotificationTypeId);
             Assert.Equal(productId, criteria.ProductId);
+            Assert.Equal(platforms, criteria.Platforms);
             Assert.Equal(recipients.Count(), result.Count());
         }
 
@@ -242,6 +244,7 @@
             var notificationId = fixture.Create<int>();
             var notificationTypeId = fixture.Create<int>();
             var productId = fixture.Create<int?>();
+            var platforms = fixture.Create<string>();
 
             var recipients = fixture.Create<IEnumerable<Recipient>>();
 
@@ -249,11 +252,12 @@
 
             baseService.GetDataAsync<Recipient>(Arg.Do<GetEditNotificationRecipientsCriteria>(x => criteria = x)).Returns(recipients);
 
-            var result = await service.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId);
+            var result = await service.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId, platforms);
 
             Assert.Equal(notificationId, criteria.NotificationId);
             Assert.Equal(notificationTypeId, criteria.NotificationTypeId);
             Assert.Equal(productId, criteria.ProductId);
+            Assert.Equal(platforms, criteria.Platforms);
             Assert.Equal(recipients.Count(), result.Count());
         }
 

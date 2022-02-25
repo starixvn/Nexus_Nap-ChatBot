@@ -50,7 +50,8 @@
                 Title = "title",
                 Content = "**content**",
                 SendDate = DateTime.Now,
-                SendImmediately = true
+                SendImmediately = true,
+                Platforms = "1,2"
             };
             var contents = new List<NotificationTemplateContent>
             {
@@ -74,6 +75,7 @@
             Assert.Equal(viewModel.SendDate, model.SendDate);
             Assert.Equal(viewModel.SendImmediately, model.SendImmediately);
             Assert.Equal(viewModel.RecipientIds, model.RecipientIds);
+            Assert.Equal(viewModel.Platforms, model.Platforms);
             Assert.Equal(napSession.UserId, model.CreatorId);
         }
 

@@ -66,7 +66,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
                     Content = JsonConvert.SerializeObject(contents),
                     SendDate = model.SendDate,
                     SendImmediately = model.SendImmediately,
-                    CreatorId = napSession.UserId
+                    CreatorId = napSession.UserId,
+                    Platforms = model.Platforms
                 });
             }
 
@@ -75,9 +76,9 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
-        public async Task<IActionResult> GetRecipients(int notificationTypeId, int? productId = null, string channelIds = null)
+        public async Task<IActionResult> GetRecipients(int notificationTypeId, string platforms, int? productId = null, string channelIds = null)
         {
-            IEnumerable<Recipient> recipients = await notificationService.GetRecipientsAsync(notificationTypeId, productId, channelIds);
+            IEnumerable<Recipient> recipients = await notificationService.GetRecipientsAsync(notificationTypeId, platforms, productId, channelIds);
             var tree = GenerateTreeHelper.FromRecipient(recipients);
 
             return Json(tree);
@@ -98,7 +99,9 @@ namespace Fanex.NCB.SkypeBot.Controllers
         {
             ResendNotification resendNotification = await notificationService.GetResendNotificationInfoAsync(notificationId, isResendAll);
             var channelIds = resendNotification.ChannelId.ToString();
-            IEnumerable<Recipient> recipients = await notificationService.GetRecipientsAsync(resendNotification.NotificationTypeId, channelIds: channelIds);
+            var platformsLst = resendNotification.Platforms.Select(item => item.PlatformId).ToList();
+            var platforms = string.Join(",", platformsLst);
+            IEnumerable<Recipient> recipients = await notificationService.GetRecipientsAsync(resendNotification.NotificationTypeId, platforms, channelIds: channelIds);
             IEnumerable<Recipient> unSelectableRecipients = resendNotification.Recipients.Where(r => !recipients.Any(x => x.RecipientId == r.RecipientId)).ToList();
 
             resendNotification.Recipients = resendNotification.Recipients.Where(x => !unSelectableRecipients.Any(u => u.RecipientId == x.RecipientId)).ToList();

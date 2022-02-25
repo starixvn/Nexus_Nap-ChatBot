@@ -19,6 +19,8 @@
 
         public int UserId { get; set; }
 
+        public string Platforms { get; set; }
+
         public override string GetSettingKey() => "NCB_EditNotification_Upd";
 
 #pragma warning disable S1067 // Expressions should not be too complex

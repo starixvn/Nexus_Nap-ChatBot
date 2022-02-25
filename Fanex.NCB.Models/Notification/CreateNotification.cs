@@ -19,5 +19,7 @@
         public bool SendImmediately { get; set; }
 
         public int CreatorId { get; set; }
+
+        public string Platforms { get; set; }
     }
 }

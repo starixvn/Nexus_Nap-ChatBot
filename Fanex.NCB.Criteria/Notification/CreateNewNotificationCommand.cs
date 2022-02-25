@@ -23,6 +23,8 @@
 
         public string NotificationIDLst { get; set; }
 
+        public string Platforms { get; set; }
+
         public override string GetSettingKey() => "NCB_NewNotification_Ins";
 
         public override bool IsValid()
