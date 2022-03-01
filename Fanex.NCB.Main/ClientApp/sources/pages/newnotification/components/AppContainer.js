@@ -110,6 +110,7 @@ export class AppContainer extends React.Component {
                         r.recipientTypeId + '-' + r.recipientId
                 };
             });
+            const selectedPlatforms = resendNotification.platforms.map(item => ({ title: item.platformName, value: item.platformId }));
 
             this.setState({
                 initValue: {
@@ -121,8 +122,10 @@ export class AppContainer extends React.Component {
                     title: resendNotification.title,
                     content: resendNotification.content,
                     sendDate: Today,
-                    sendMode: '1'
-                }
+                    sendMode: '1',
+                    platforms: selectedPlatforms
+                },
+                platformOptions: selectedPlatforms
             });
             this.displayUnselectableRecipients(unSelectableRecipients);
         });
@@ -279,16 +282,13 @@ export class AppContainer extends React.Component {
     handleProductChange = async event => {
         const formik = this.refs.form;
         const value = event.target.value;
-        var platforms = '';
-        var platformOptions = [];
-        if (this.props.platforms.length > 0) {
-            platforms = this.props.platforms.map(item => item.platformId).join(',');
-            platformOptions = this.props.platforms.map(item => ({ value: item.platformId, title: item.platformName }));
-        }
-        this.setState({ platformOptions: platformOptions });
-
         formik.setFieldValue('productId', value);
-        formik.setFieldValue('platforms', platformOptions);
+
+        var platforms = '';
+        if (formik.state.values.platforms.length > 0) {
+            platforms = formik.state.values.platforms.map(item => item.value).join(',');
+        }
+
         await this.props.getRecipients(formik.state.values.notificationTypeId, platforms, value, formik.state.values.channelIds);
 
         if (formik.state.values.recipients.length > 0) {
@@ -297,7 +297,6 @@ export class AppContainer extends React.Component {
 
         if (!this.props.recipientOptions.find(item => parseInt(item.value, 10) === 1)) {
             formik.setFieldValue('platforms', []);
-            this.setState({ platformOptions: [] });
         }
     }
 
