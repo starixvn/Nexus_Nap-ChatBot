@@ -35,9 +35,9 @@ const getProducts = () => async dispatch => {
     });
 };
 
-const getRecipients = (notificationTypeId, productId, channelIds) => async dispatch => {
+const getRecipients = (notificationTypeId, platforms, productId, channelIds) => async dispatch => {
     const url = Site.resolveClientUrl('NewNotification/GetRecipients');
-    await DataService.getDataAsync(url, { notificationTypeId, productId, channelIds }).then(response => {
+    await DataService.getDataAsync(url, { notificationTypeId, platforms, productId, channelIds }).then(response => {
         dispatch(setRecipients(response.data));
     });
 };

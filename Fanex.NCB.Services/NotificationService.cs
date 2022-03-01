@@ -85,9 +85,9 @@
             return await baseService.GetDataAsync<Recipient>(new GetRecipientsCriteria
             {
                 NotificationTypeId = notificationTypeId,
+                Platforms = platforms,
                 ProductId = productId,
-                ChannelIdLst = channelIds,
-                Platforms = platforms
+                ChannelIdLst = channelIds
             });
         }
 

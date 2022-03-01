@@ -127,7 +127,13 @@
     }
 }
 
-.new-notification-select-tree {
+.new-notification-select-tree, .new-platform-notification-select-tree {
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.new-platform-notification-select-tree {
+    .rc-tree-select-search__field__placeholder {
+        color: #495057;
+    }
 }

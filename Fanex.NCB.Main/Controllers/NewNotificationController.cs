@@ -67,8 +67,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
                     SendDate = model.SendDate,
                     SendImmediately = model.SendImmediately,
                     CreatorId = napSession.UserId,
-                    Platforms = model.Platforms
-                });
+                    Platforms = model.Platforms ?? string.Empty
+            });
             }
 
             return Json(result);
@@ -78,6 +78,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
         public async Task<IActionResult> GetRecipients(int notificationTypeId, string platforms, int? productId = null, string channelIds = null)
         {
+            platforms = platforms ?? string.Empty;
             IEnumerable<Recipient> recipients = await notificationService.GetRecipientsAsync(notificationTypeId, platforms, productId, channelIds);
             var tree = GenerateTreeHelper.FromRecipient(recipients);
 

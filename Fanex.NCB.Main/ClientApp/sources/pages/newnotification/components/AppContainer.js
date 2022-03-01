@@ -53,12 +53,15 @@ export class AppContainer extends React.Component {
                 params: []
             },
             searchValue: '',
+            searchPlatformValue: '',
+            platformOptions: [],
             initValue: {
                 channelIds: `${Channels.Skype},${Channels.Telegram}`,
                 channelName: '',
                 notificationTypeId: '',
                 templateId: '',
                 productId: '',
+                platforms: [],
                 recipients: [],
                 title: '',
                 content: '',
@@ -72,7 +75,9 @@ export class AppContainer extends React.Component {
 
         this.messageContentLength = parseInt(document.getElementById('MessageContentLength').value, 10);
         this.debounceHandleSearchRecipents = CommonFunction.debounce(this.handleSearchRecipents);
+        this.debounceHandleSearchPlatform = CommonFunction.debounce(this.handleSearchPlatform);
         this.searchRecipients = [];
+        this.searchPlatforms = [];
 
         const windowUrl = window.location.search;
         const params = new URLSearchParams(windowUrl);
@@ -160,7 +165,8 @@ export class AppContainer extends React.Component {
             title: values.title.trim(),
             content: values.content.trim(),
             sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
-            sendImmediately: values.sendMode === '1'
+            sendImmediately: values.sendMode === '1',
+            platforms: values.platforms.length > 0 ?  values.platforms.map(item => item.value).join(',') : ''
         });
 
         this.props.createNewNotification(data).then(() => {
@@ -178,6 +184,7 @@ export class AppContainer extends React.Component {
         title: string().required(Labels.FieldRequired),
         content: string().required(Labels.FieldRequired),
         recipients: array().required(Labels.FieldRequired),
+        platforms: array().required(Labels.FieldRequired),
         sendMode: string(),
         sendDate: date()
             .when('sendMode', (sendMode, schema) => sendMode === '2' ?
@@ -209,22 +216,33 @@ export class AppContainer extends React.Component {
         this.props.setConfirmationPopup({ isOpen: true, content: message });
     }
 
-    handleNotificationTypeChange = event => {
+    handleNotificationTypeChange = async event => {
+        const value = event.target.value;
         const formik = this.refs.form;
-        this.props.getRecipients(event.target.value, formik.state.values.productId, formik.state.values.channelIds);
-        this.props.getNotificationTemplates(event.target.value);
-        this.props.getPlatforms(event.target.value);
+        var platforms = '';
+        await this.props.getPlatforms(event.target.value);
+        if (this.props.platforms.length > 0) {
+            platforms = this.props.platforms.map(item => item.platformId).join(',');
+            this.setState({
+                platformOptions: this.props.platforms.map(item => ({ value: item.platformId, title: item.platformName }))
+            });
+        } else {
+            this.setState({ platformOptions: [] });
+        }
+        this.props.getRecipients(value, platforms, formik.state.values.productId, formik.state.values.channelIds);
+        this.props.getNotificationTemplates(value);
+        formik.setFieldValue('platforms', this.state.platformOptions);
 
         formik.setValues({
             ...formik.state.values,
-            notificationTypeId: event.target.value,
+            notificationTypeId: value,
             recipients: [],
             templateId: '',
             params: [],
             title: '',
             content: ''
         });
-        this.setState({ searchValue: '' });
+        this.setState({ searchValue: '', searchPlatformValue: '' });
     }
 
     handleTemplateChange = event => {
@@ -258,14 +276,45 @@ export class AppContainer extends React.Component {
         }
     }
 
-    handleProductChange = event => {
+    handleProductChange = async event => {
         const formik = this.refs.form;
-        this.props.getRecipients(formik.state.values.notificationTypeId, event.target.value, formik.state.values.channelIds);
-        formik.handleChange(event);
+        const value = event.target.value;
+        var platforms = '';
+        var platformOptions = [];
+        if (this.props.platforms.length > 0) {
+            platforms = this.props.platforms.map(item => item.platformId).join(',');
+            platformOptions = this.props.platforms.map(item => ({ value: item.platformId, title: item.platformName }));
+        }
+        this.setState({ platformOptions: platformOptions });
+
+        formik.setFieldValue('productId', value);
+        formik.setFieldValue('platforms', platformOptions);
+        await this.props.getRecipients(formik.state.values.notificationTypeId, platforms, value, formik.state.values.channelIds);
+
         if (formik.state.values.recipients.length > 0) {
             formik.setFieldValue('recipients', []);
         }
+
+        if (!this.props.recipientOptions.find(item => parseInt(item.value, 10) === 1)) {
+            formik.setFieldValue('platforms', []);
+            this.setState({ platformOptions: [] });
+        }
     }
+
+    handlePlatformChange = async value => {
+        const formik = this.refs.form;
+        formik.setFieldValue('platforms', value);
+
+        var platforms = '';
+        if (value.length > 0) {
+            platforms = value.map(item => item.value).join(',');
+        }
+        await this.props.getRecipients(formik.state.values.notificationTypeId, platforms, formik.state.values.productId, formik.state.values.channelIds);
+
+        if (formik.state.values.recipients.length > 0) {
+            formik.setFieldValue('recipients', []);
+        }
+    };
 
     handleRecipientChange = (value, label, extra) => {
         const formik = this.refs.form;
@@ -331,6 +380,49 @@ export class AppContainer extends React.Component {
             <ContentPreview text={markdown} />
         );
     }
+
+    onChangePlatformSearch = value => {
+        this.setState({ searchPlatformValue: value }, () => {
+            if (this.props.platforms.length > 0) {
+                this.debounceHandleSearchPlatform(value);
+            }
+        });
+    };
+
+    handleSearchPlatform = value => {
+        let platforms = value.replace(/[,;\t]+/g, ',');
+        platforms = platforms.split(',').map(item => item.trim());
+
+        this.searchPlatforms = [];
+        const validPlatforms = [];
+        const lengthPlatformOption = this.state.platformOptions.length;
+
+        for (let index = 0; index < lengthPlatformOption; index++) {
+            platforms.forEach(item => {
+                if (this.state.platformOptions[index].title.toLowerCase() === item.toLowerCase()) {
+                    validPlatforms.push(item);
+                    this.searchPlatforms.push({
+                        label: item,
+                        value: this.state.platformOptions[index].value
+                    });
+                }
+            })
+        }
+
+        while (validPlatforms.length > 0) {
+            const platform = validPlatforms.shift();
+            const index = platforms.indexOf(platform);
+            platforms.splice(index, 1);
+        }
+
+        const formik = this.refs.form;
+        const updateValues = [...formik.state.values.platforms, ...this.searchPlatforms];
+        formik.setFieldValue('platforms', updateValues);
+        this.setState({ searchPlatformValue: platforms.join(',') });
+
+        var valuePlatforms = updateValues.length > 0 ? updateValues.map(item => item.value).join(',') : ''
+        this.props.getRecipients(formik.state.values.notificationTypeId, valuePlatforms, formik.state.values.productId, formik.state.values.channelIds);
+    };
 
     onChangeSearch = value => {
         this.setState({ searchValue: value }, () => {
@@ -435,6 +527,17 @@ export class AppContainer extends React.Component {
                             <option value="">{Labels.None}</option>
                             {this.props.products.map(this.renderProductOption)}
                         </Input>
+                    </div>
+                </FormGroup>
+                <FormGroup>
+                    <Label for="platforms" className="required form-label">Platform</Label>
+                    <div className="new-platform-notification-select-tree">
+                        <TreeSelect value={values.platforms} onChange={this.handlePlatformChange}
+                            className={touched.platforms && errors.platforms && invalidFieldClass} treeData={this.state.platformOptions}
+                            onSearch={this.onChangePlatformSearch} searchValue={this.state.searchPlatformValue} placeholder={Labels.None}
+                            defaultValue={this.state.initValue.platforms}
+                        />
+                        {touched.platforms && errors.platforms && <FormFeedback>{errors.platforms}</FormFeedback>}
                     </div>
                 </FormGroup>
                 <FormGroup>
@@ -626,7 +729,8 @@ const mapStateToProps = state => {
         notificationTemplates: state.notificationTemplates,
         resetConfirmationPopup: state.resetConfirmationPopup,
         editConfirmationPopup: state.editConfirmationPopup,
-        markdownRulesPopup: state.markdownRulesPopup
+        markdownRulesPopup: state.markdownRulesPopup,
+        platforms: state.platforms
     };
 };
 
