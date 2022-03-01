@@ -234,6 +234,7 @@
             Assert.Equal(model.Content, command.Content);
             Assert.Equal(model.UserId, command.UserId);
             Assert.Equal(model.SendImmediately, command.SendImmediately);
+            Assert.Equal(model.Platforms, command.Platforms);
         }
 
         [Fact]
