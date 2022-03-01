@@ -81,7 +81,7 @@
                         SendDate = data.SendDate,
                         SendImmediately = data.SendImmediately,
                         UserId = napSession.UserId,
-                        Platforms = data.Platforms
+                        Platforms = data.Platforms ?? string.Empty
                     });
                 } catch(Exception ex)
                 {

@@ -38,6 +38,7 @@ export default class EditNotification extends React.Component {
             notificationId: parseInt(document.getElementById('notification-id').value, 10),
             notification: null,
             recipientOptions: null,
+            platformOptions: [],
             confimrationPopup: {
                 isOpen: false,
                 message: ''
@@ -45,12 +46,15 @@ export default class EditNotification extends React.Component {
             markdownRulesPopup: {
                 isOpen: false
             },
-            searchValue: ''
+            searchValue: '',
+            searchPlatformValue: ''
         };
 
         this.messageContentLength = parseInt(document.getElementById('MessageContentLength').value, 10);
         this.debounceHandleSearchRecipents = CommonFunction.debounce(this.handleSearchRecipents);
+        this.debounceHandleSearchPlatform = CommonFunction.debounce(this.handleSearchPlatform);
         this.searchRecipients = [];
+        this.searchPlatforms = [];
     }
 
     componentDidMount() {
@@ -62,10 +66,13 @@ export default class EditNotification extends React.Component {
             .then(([notificationResponse]) => {
                 const notification = notificationResponse.data;
                 notification.configSendTime = new Date(notification.configSendTime);
+                const notificationTypeId = notification.notificationTypeId;
+                const productId = notification.productId;
+                const platforms = notification.platforms.length > 0 ?  notification.platforms.map(item => item.platformId).join(',') : '';
 
                 this.setState({
                     notification
-                }, this.getRecipients);
+                }, this.getRecipients(this.state.notificationId, notificationTypeId, productId, platforms));
             }).catch(errorResponseHandler);
     }
 
@@ -79,6 +86,8 @@ export default class EditNotification extends React.Component {
                     r.recipientTypeId + '-' + r.recipientId
             };
         });
+        const selectedPlatforms = notification.platforms.map(item => ({ title: item.platformName, value: item.platformId }));
+        this.setState({ platformOptions: selectedPlatforms });
 
         return {
             channelId: notification.channelId,
@@ -88,18 +97,18 @@ export default class EditNotification extends React.Component {
             recipients: selectedRecipients,
             sendMode: notification.sendImmediately ? '1' : '2',
             sendDate: notification.configSendTime,
-            productId: this.state.notification.productId || ''
+            productId: this.state.notification.productId || '',
+            platforms: selectedPlatforms
         };
     }
 
-    getRecipients = () => {
-        const notification = this.state.notification;
+    getRecipients = (notificationId, notificationTypeId, productId, platforms) => {
         axios.get(Site.resolveClientUrl('EditNotification/GetRecipients'), {
             params: {
-                notificationId: this.state.notificationId,
-                notificationTypeId: notification.notificationTypeId,
-                productId: notification.productId,
-                platforms: notification.platforms.length > 0 ?  notification.platforms.map(item => item.platformId).join(',') : ''
+                notificationId: notificationId,
+                notificationTypeId: notificationTypeId,
+                productId: productId,
+                platforms: platforms
             }
         }).then(response => {
             const initialObj = this.initializeObj();
@@ -127,7 +136,8 @@ export default class EditNotification extends React.Component {
             title: values.title.trim(),
             content: values.content.trim(),
             sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
-            sendImmediately: values.sendMode === '1'
+            sendImmediately: values.sendMode === '1',
+            platforms: values.platforms.length > 0 ?  values.platforms.map(item => item.value).join(',') : ''
         });
 
         this.handleCloseConfirmationPopup();
@@ -152,6 +162,7 @@ export default class EditNotification extends React.Component {
         title: string().required(Labels.FieldRequired),
         content: string().required(Labels.FieldRequired),
         recipients: array().required(Labels.FieldRequired),
+        platforms: array().required(Labels.FieldRequired),
         sendMode: string(),
         sendDate: date()
             .when('sendMode', (sendMode, schema) => sendMode === '2' ?
@@ -246,6 +257,71 @@ export default class EditNotification extends React.Component {
         }
     }
 
+    handlePlatformChange = value => {
+        const formik = this.refs.form;
+        const { notificationId, notification } = this.state;
+        formik.setFieldValue('platforms', value);
+
+        var platforms = '';
+        if (value.length > 0) {
+            platforms = value.map(item => item.value).join(',');
+        }
+
+        this.getRecipients(notificationId, notification.notificationTypeId, formik.state.values.productId, platforms);
+
+        if (formik.state.values.recipients.length > 0) {
+            formik.setFieldValue('recipients', []);
+        }
+    };
+
+    onChangePlatformSearch = value => {
+        this.setState({ searchPlatformValue: value }, () => {
+            if (this.state.platformOptions.length > 0) {
+                this.debounceHandleSearchPlatform(value);
+            }
+        });
+    };
+
+    handleSearchPlatform = value => {
+        let platforms = value.replace(/[,;\t]+/g, ',');
+        platforms = platforms.split(',').map(item => item.trim());
+
+        this.searchPlatforms = [];
+        const validPlatforms = [];
+        const lengthPlatformOption = this.state.platformOptions.length;
+
+        for (let index = 0; index < lengthPlatformOption; index++) {
+            platforms.forEach(item => {
+                if (this.state.platformOptions[index].title.toLowerCase() === item.toLowerCase()) {
+                    validPlatforms.push(item);
+                    this.searchPlatforms.push({
+                        label: item,
+                        value: this.state.platformOptions[index].value
+                    });
+                }
+            })
+        }
+
+        while (validPlatforms.length > 0) {
+            const platform = validPlatforms.shift();
+            const index = platforms.indexOf(platform);
+            platforms.splice(index, 1);
+        }
+
+        const formik = this.refs.form;
+        const updateValues = [...formik.state.values.platforms, ...this.searchPlatforms];
+        formik.setFieldValue('platforms', updateValues);
+        this.setState({ searchPlatformValue: platforms.join(',') });
+
+        const { notificationId, notification } = this.state;
+        var platformValues = updateValues.length > 0 ? updateValues.map(item => item.value).join(',') : '';
+        this.getRecipients(notificationId, notification.notificationTypeId, formik.state.values.productId, platformValues);
+
+        if (formik.state.values.recipients.length > 0) {
+            formik.setFieldValue('recipients', []);
+        }
+    };
+
     renderForm = ({
         values,
         errors,
@@ -256,6 +332,7 @@ export default class EditNotification extends React.Component {
         isSubmitting
     }) => {
         const isRecipientInvalid = this.touchedAndErrors(touched, errors, 'recipients');
+        const isPlatformInvalid = this.touchedAndErrors(touched, errors, 'platforms');
         const isTitleInvalid = this.touchedAndErrors(touched, errors, 'title');
         const isContentInvalid = this.touchedAndErrors(touched, errors, 'content');
         const isSendDateInvalid = this.touchedAndErrors(touched, errors, 'sendDate');
@@ -293,6 +370,19 @@ export default class EditNotification extends React.Component {
                                 : <option value="">{Labels.None}</option>
                             }
                         </Input>
+                    </Col>
+                </FormGroup>
+                <FormGroup row>
+                    <Label for="platforms" className="form-label required" sm={2}>Platform</Label>
+                    <Col sm={10}>
+                        <div className="edit-platform-notification-select-tree">
+                            <TreeSelect value={values.platforms} onChange={this.handlePlatformChange}
+                                treeData={this.state.platformOptions} className={isPlatformInvalid && invalidFieldClass}
+                                onSearch={this.onChangePlatformSearch} searchValue={this.state.searchPlatformValue} placeholder={Labels.None}
+                                defaultValue={this.state.initialObj.platforms}
+                            />
+                            {isPlatformInvalid && <FormFeedback>{errors.platforms}</FormFeedback>}
+                        </div>
                     </Col>
                 </FormGroup>
                 <FormGroup row>

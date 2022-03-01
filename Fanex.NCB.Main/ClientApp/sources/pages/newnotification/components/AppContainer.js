@@ -301,7 +301,7 @@ export class AppContainer extends React.Component {
         }
     }
 
-    handlePlatformChange = async value => {
+    handlePlatformChange = value => {
         const formik = this.refs.form;
         formik.setFieldValue('platforms', value);
 
@@ -309,7 +309,7 @@ export class AppContainer extends React.Component {
         if (value.length > 0) {
             platforms = value.map(item => item.value).join(',');
         }
-        await this.props.getRecipients(formik.state.values.notificationTypeId, platforms, formik.state.values.productId, formik.state.values.channelIds);
+        this.props.getRecipients(formik.state.values.notificationTypeId, platforms, formik.state.values.productId, formik.state.values.channelIds);
 
         if (formik.state.values.recipients.length > 0) {
             formik.setFieldValue('recipients', []);
@@ -420,8 +420,8 @@ export class AppContainer extends React.Component {
         formik.setFieldValue('platforms', updateValues);
         this.setState({ searchPlatformValue: platforms.join(',') });
 
-        var valuePlatforms = updateValues.length > 0 ? updateValues.map(item => item.value).join(',') : ''
-        this.props.getRecipients(formik.state.values.notificationTypeId, valuePlatforms, formik.state.values.productId, formik.state.values.channelIds);
+        var platformValues = updateValues.length > 0 ? updateValues.map(item => item.value).join(',') : ''
+        this.props.getRecipients(formik.state.values.notificationTypeId, platformValues, formik.state.values.productId, formik.state.values.channelIds);
     };
 
     onChangeSearch = value => {
