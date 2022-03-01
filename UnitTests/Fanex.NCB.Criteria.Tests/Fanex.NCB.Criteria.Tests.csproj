@@ -21,7 +21,6 @@
   <ItemGroup>
     <Folder Include="ChatGroupMapping\" />
     <Folder Include="SendNotification\" />
-    <Folder Include="Setting\" />
     <Folder Include="SyncData\" />
   </ItemGroup>
   <ItemGroup>

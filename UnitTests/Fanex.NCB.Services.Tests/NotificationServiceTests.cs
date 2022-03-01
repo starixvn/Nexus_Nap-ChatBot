@@ -206,6 +206,7 @@
             Assert.Equal(expectedNotification.Content, result.Content);
             Assert.Equal(expectedNotification.Title, result.Title);
             Assert.Equal(expectedNotification.ConfigSendTime, result.ConfigSendTime);
+            Assert.Equal(expectedNotification.Platforms, result.Platforms);
         }
 
         [Fact]
