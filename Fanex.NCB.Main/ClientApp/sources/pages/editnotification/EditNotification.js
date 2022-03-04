@@ -72,7 +72,7 @@ export default class EditNotification extends React.Component {
 
                 this.setState({
                     notification
-                }, this.getRecipients(this.state.notificationId, notificationTypeId, productId, platforms));
+                }, () => this.getRecipients(this.state.notificationId, notificationTypeId, productId, platforms));
             }).catch(errorResponseHandler);
     }
 
@@ -97,7 +97,7 @@ export default class EditNotification extends React.Component {
             recipients: selectedRecipients,
             sendMode: notification.sendImmediately ? '1' : '2',
             sendDate: notification.configSendTime,
-            productId: this.state.notification.productId || '',
+            productId: notification.productId || '',
             platforms: selectedPlatforms
         };
     }
