@@ -7,5 +7,9 @@
         public string Site { get; set; }
 
         public int TargetID { get; set; }
+
+        public int LeagueGroupID { get; set; }
+
+        public int IsChinaView { get; set; }
     }
 }

@@ -14,8 +14,8 @@
         <Setting Key="NCB_MsgSetting_SpecialDelete_Sel" SpName="NCB_MsgSetting_SpecialDelete_Sel" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel" SpName="NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="NCB_SpecialDeleteMsg_AbnormalBets_Import" SpName="NCB_SpecialDeleteMsg_AbnormalBets_Import_xpre" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NCB_SpecialDeleteMsg_Import" SpName="NCB_SpecialDeleteMsg_Import" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_SpecialDeleteMsg_Sel" SpName="NAP_Chatbot_SpecialDeleteMsg_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NCB_SpecialDeleteMsg_Import" SpName="NCB_SpecialDeleteMsg_Import_xpre" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_SpecialDeleteMsg_Sel" SpName="NAP_Chatbot_SpecialDeleteMsg_Sel_xpre" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_Chatbot_SpecialDeleteMsg_AbnormalBets_Sel" SpName="NAP_Chatbot_SpecialDeleteMsg_AbnormalBets_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel_xpre" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
@@ -24,9 +24,9 @@
     </Function>
     <Function Name="Site Message">
         <Setting Key="NCB_MsgSetting_SiteMessage_Sel" SpName="NCB_MsgSetting_SiteMessage_Sel" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_SiteMesssage_Sel" SpName="NAP_Chatbot_SiteMesssage_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_SiteMesssage_Sel" SpName="NAP_Chatbot_SiteMesssage_Sel_xpre" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_Chatbot_MsgChatBot_Ins" SpName="NAP_Chatbot_MsgChatBot_Ins" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_Chatbot_SiteMesssage_EventInfo_Sel" SpName="NAP_Chatbot_SiteMesssage_EventInfo_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
-    <Setting Key="NCB_SiteMessage_Import" SpName="NCB_SiteMessage_Import" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_SiteMessage_Import" SpName="NCB_SiteMessage_Import_xpre" DbName="ChatBot" Plain="0" />
     </Function>
 </Functions>
