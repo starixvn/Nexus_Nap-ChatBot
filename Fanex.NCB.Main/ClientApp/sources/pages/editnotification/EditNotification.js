@@ -162,7 +162,6 @@ export default class EditNotification extends React.Component {
         title: string().required(Labels.FieldRequired),
         content: string().required(Labels.FieldRequired),
         recipients: array().required(Labels.FieldRequired),
-        platforms: array().required(Labels.FieldRequired),
         sendMode: string(),
         sendDate: date()
             .when('sendMode', (sendMode, schema) => sendMode === '2' ?
@@ -373,7 +372,7 @@ export default class EditNotification extends React.Component {
                     </Col>
                 </FormGroup>
                 <FormGroup row>
-                    <Label for="platforms" className="form-label required" sm={2}>Platform</Label>
+                    <Label for="platforms" className="form-label" sm={2}>Platform</Label>
                     <Col sm={10}>
                         <div className="edit-platform-notification-select-tree">
                             <TreeSelect value={values.platforms} onChange={this.handlePlatformChange}

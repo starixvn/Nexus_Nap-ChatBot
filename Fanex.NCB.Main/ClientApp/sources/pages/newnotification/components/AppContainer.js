@@ -187,7 +187,6 @@ export class AppContainer extends React.Component {
         title: string().required(Labels.FieldRequired),
         content: string().required(Labels.FieldRequired),
         recipients: array().required(Labels.FieldRequired),
-        platforms: array().required(Labels.FieldRequired),
         sendMode: string(),
         sendDate: date()
             .when('sendMode', (sendMode, schema) => sendMode === '2' ?
@@ -529,7 +528,7 @@ export class AppContainer extends React.Component {
                     </div>
                 </FormGroup>
                 <FormGroup>
-                    <Label for="platforms" className="required form-label">Platform</Label>
+                    <Label for="platforms" className="form-label">Platform</Label>
                     <div className="new-platform-notification-select-tree">
                         <TreeSelect value={values.platforms} onChange={this.handlePlatformChange}
                             className={touched.platforms && errors.platforms && invalidFieldClass} treeData={this.state.platformOptions}
