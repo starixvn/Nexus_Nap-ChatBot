@@ -10,6 +10,8 @@
 
         public int RealValue { get; set; }
 
+        public int? PlatformId { get; set; } 
+
         public IEnumerable<TreeNodeItem> Children { get; set; }
     }
 }

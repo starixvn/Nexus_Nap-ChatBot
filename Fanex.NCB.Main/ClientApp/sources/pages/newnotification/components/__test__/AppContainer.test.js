@@ -395,7 +395,7 @@ describe('AppContainer', () => {
 
             // Assert
             expect(props.getPlatforms).toHaveBeenCalledWith('test');
-            expect(container.state.platformOptions).toEqual([{title: 'test', value: 1}]);
+            expect(container.state.platformOptions).toEqual([{children: [{title: 'test', value: 1}], title: 'All Platform', value: '1'}]);
             expect(props.getRecipients).toHaveBeenCalledWith('test', '1', 1, '1,2');
             expect(props.getNotificationTemplates).toHaveBeenCalledWith('test');
             expect(container.refs.form.setFieldValue).toHaveBeenCalledWith('platforms', [{title: 'test', value: 1}]);
@@ -773,7 +773,7 @@ describe('AppContainer', () => {
                     setFieldValue: jest.fn()
                 }
             };
-            container.setState({platformOptions: [{ title: 'test', value: 1 }]});
+            container.setState({platformOptions: [{children: [{title: 'test', value: 1}], title: 'All Platform', value: '1'}]});
 
             // Act
             container.handleSearchPlatform(value);

@@ -13,5 +13,7 @@
         public int RecipientId { get; set; }
 
         public string RecipientName { get; set; }
+
+        public int? PlatformId { get; set; }
     }
 }

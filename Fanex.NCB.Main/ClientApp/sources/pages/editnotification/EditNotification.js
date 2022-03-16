@@ -87,7 +87,17 @@ export default class EditNotification extends React.Component {
             };
         });
         const selectedPlatforms = notification.platforms.map(item => ({ title: item.platformName, value: item.platformId }));
-        this.setState({ platformOptions: selectedPlatforms });
+        const allPlatformValue = [];
+        notification.platforms.forEach(item => {
+            allPlatformValue.push(item.platformId);
+        });
+
+        const allPlatform = [{
+            value: allPlatformValue.join(','),
+            title: 'All Platform',
+            children: selectedPlatforms
+        }];
+        this.setState({ platformOptions: selectedPlatforms.length > 0 ? allPlatform : selectedPlatforms });
 
         return {
             channelId: notification.channelId,
@@ -112,6 +122,39 @@ export default class EditNotification extends React.Component {
             }
         }).then(response => {
             const initialObj = this.initializeObj();
+            const platformIds = platforms.split(',');
+            const data = [...response.data];
+            const lstChild = [];
+
+            if (platformIds[0] !== '') {
+                response.data.forEach(item => {
+                    if (item.realValue === 1) {
+                        item.children.forEach(element => {
+                            element.children.forEach(child => {
+                                if (child.platformId !== null && platformIds.includes(child.platformId.toString())) {
+                                    lstChild.push({ value: element.value, list: child })
+                                }
+                            });
+                        });
+                    }
+                });
+
+                data.forEach(item => {
+                    if (item.realValue === 1) {
+                        item.children = item.children.filter(element => lstChild.some(child => child.value === element.value));
+
+                        item.children.forEach(element => {
+                            const lstChildSameValue = lstChild.filter(child => child.value === element.value);
+                            const dataChild = [];
+    
+                            lstChildSameValue.forEach(child => dataChild.push(child.list));
+                            if (dataChild.length > 0) {
+                                element.children = dataChild;
+                            }
+                        });
+                    }
+                })
+            }
 
             this.setState({ recipientOptions: response.data, initialObj: initialObj });
         }).catch(errorResponseHandler);
@@ -275,7 +318,7 @@ export default class EditNotification extends React.Component {
 
     onChangePlatformSearch = value => {
         this.setState({ searchPlatformValue: value }, () => {
-            if (this.state.platformOptions.length > 0) {
+            if (this.state.platformOptions[0].children.length > 0) {
                 this.debounceHandleSearchPlatform(value);
             }
         });
@@ -287,15 +330,15 @@ export default class EditNotification extends React.Component {
 
         this.searchPlatforms = [];
         const validPlatforms = [];
-        const lengthPlatformOption = this.state.platformOptions.length;
+        const lengthPlatformOption = this.state.platformOptions[0].children.length;
 
         for (let index = 0; index < lengthPlatformOption; index++) {
             platforms.forEach(item => {
-                if (this.state.platformOptions[index].title.toLowerCase() === item.toLowerCase()) {
+                if (this.state.platformOptions[0].children[index].title.toLowerCase() === item.toLowerCase()) {
                     validPlatforms.push(item);
                     this.searchPlatforms.push({
                         label: item,
-                        value: this.state.platformOptions[index].value
+                        value: this.state.platformOptions[0].children[index].value
                     });
                 }
             })
@@ -331,7 +374,6 @@ export default class EditNotification extends React.Component {
         isSubmitting
     }) => {
         const isRecipientInvalid = this.touchedAndErrors(touched, errors, 'recipients');
-        const isPlatformInvalid = this.touchedAndErrors(touched, errors, 'platforms');
         const isTitleInvalid = this.touchedAndErrors(touched, errors, 'title');
         const isContentInvalid = this.touchedAndErrors(touched, errors, 'content');
         const isSendDateInvalid = this.touchedAndErrors(touched, errors, 'sendDate');
@@ -376,11 +418,10 @@ export default class EditNotification extends React.Component {
                     <Col sm={10}>
                         <div className="edit-platform-notification-select-tree">
                             <TreeSelect value={values.platforms} onChange={this.handlePlatformChange}
-                                treeData={this.state.platformOptions} className={isPlatformInvalid && invalidFieldClass}
+                                treeData={this.state.platformOptions}
                                 onSearch={this.onChangePlatformSearch} searchValue={this.state.searchPlatformValue} placeholder={Labels.None}
                                 defaultValue={this.state.initialObj.platforms}
                             />
-                            {isPlatformInvalid && <FormFeedback>{errors.platforms}</FormFeedback>}
                         </div>
                     </Col>
                 </FormGroup>

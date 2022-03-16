@@ -440,7 +440,7 @@ describe('EditNotification', () => {
             // Arrange 
             const value = 'test';
             const container = shallow(<EditNotification />).instance();
-            container.setState({ platformOptions: [{ platformId: 1, platformName: 'test' }] });
+            container.setState({ platformOptions: [{children: [{title: 'test', value: 1}], title: 'All Platform', value: '1'}] });
 
             // Act
             container.onChangePlatformSearch(value);
@@ -470,7 +470,7 @@ describe('EditNotification', () => {
                 }
             };
             container.setState({
-                platformOptions: [{ title: 'test', value: 1 }],
+                platformOptions: [{children: [{title: 'test', value: 1}], title: 'All Platform', value: '1'}],
                 notificationId: 1, notification: { notificationTypeId: 1 }
             });
             container.getRecipients = jest.fn();

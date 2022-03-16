@@ -15,7 +15,7 @@
                 {
                     Title = x.RecipientName,
                     Value = $"{x.RecipientTypeId}-{x.RecipientId}",
-                    RealValue = x.RecipientId,
+                    RealValue = x.RecipientId
                 }).ToList();
 
                 children.AddRange(list.Where(x => x.LicenseeTypeId.HasValue).GroupBy(x => new { x.LicenseeTypeId, x.LicenseeTypeName },
@@ -31,7 +31,8 @@
                             {
                                 Title = x.RecipientName,
                                 Value = $"{key.RecipientTypeId}-{licensee.LicenseeTypeId}-{x.RecipientId}",
-                                RealValue = x.RecipientId
+                                RealValue = x.RecipientId,
+                                PlatformId = x.PlatformId ?? null
                             })
                         };
                     }));

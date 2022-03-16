@@ -111,6 +111,16 @@ export class AppContainer extends React.Component {
                 };
             });
             const selectedPlatforms = resendNotification.platforms.map(item => ({ title: item.platformName, value: item.platformId }));
+            const allPlatformValue = [];
+            resendNotification.platforms.forEach(item => {
+                allPlatformValue.push(item.platformId);
+            });
+
+            const allPlatform = [{
+                value: allPlatformValue.join(','),
+                title: 'All Platform',
+                children: selectedPlatforms
+            }];
 
             this.setState({
                 initValue: {
@@ -123,9 +133,9 @@ export class AppContainer extends React.Component {
                     content: resendNotification.content,
                     sendDate: Today,
                     sendMode: '1',
-                    platforms: selectedPlatforms
+                    platforms: selectedPlatforms.length > 0 ? allPlatform : selectedPlatforms
                 },
-                platformOptions: selectedPlatforms
+                platformOptions: selectedPlatforms.length > 0 ? allPlatform : selectedPlatforms
             });
             this.displayUnselectableRecipients(unSelectableRecipients);
         });
@@ -226,15 +236,19 @@ export class AppContainer extends React.Component {
         if (this.props.platforms.length > 0) {
             platforms = this.props.platforms.map(item => item.platformId).join(',');
             this.setState({
-                platformOptions: this.props.platforms.map(item => ({ value: item.platformId, title: item.platformName }))
+                platformOptions: [{
+                    value: platforms,
+                    title: 'All Platform',
+                    children: this.props.platforms.map(item => ({ value: item.platformId, title: item.platformName }))
+                }]
             });
+            formik.setFieldValue('platforms', this.state.platformOptions[0].children);
         } else {
             this.setState({ platformOptions: [] });
+            formik.setFieldValue('platforms', this.state.platformOptions);
         }
         this.props.getRecipients(value, platforms, formik.state.values.productId, formik.state.values.channelIds);
         this.props.getNotificationTemplates(value);
-        formik.setFieldValue('platforms', this.state.platformOptions);
-
         formik.setValues({
             ...formik.state.values,
             notificationTypeId: value,
@@ -393,15 +407,15 @@ export class AppContainer extends React.Component {
 
         this.searchPlatforms = [];
         const validPlatforms = [];
-        const lengthPlatformOption = this.state.platformOptions.length;
+        const lengthPlatformOption = this.state.platformOptions[0].children.length;
 
         for (let index = 0; index < lengthPlatformOption; index++) {
             platforms.forEach(item => {
-                if (this.state.platformOptions[index].title.toLowerCase() === item.toLowerCase()) {
+                if (this.state.platformOptions[0].children[index].title.toLowerCase() === item.toLowerCase()) {
                     validPlatforms.push(item);
                     this.searchPlatforms.push({
                         label: item,
-                        value: this.state.platformOptions[index].value
+                        value: this.state.platformOptions[0].children[index].value
                     });
                 }
             })
@@ -531,11 +545,10 @@ export class AppContainer extends React.Component {
                     <Label for="platforms" className="form-label">Platform</Label>
                     <div className="new-platform-notification-select-tree">
                         <TreeSelect value={values.platforms} onChange={this.handlePlatformChange}
-                            className={touched.platforms && errors.platforms && invalidFieldClass} treeData={this.state.platformOptions}
+                            treeData={this.state.platformOptions}
                             onSearch={this.onChangePlatformSearch} searchValue={this.state.searchPlatformValue} placeholder={Labels.None}
                             defaultValue={this.state.initValue.platforms}
                         />
-                        {touched.platforms && errors.platforms && <FormFeedback>{errors.platforms}</FormFeedback>}
                     </div>
                 </FormGroup>
                 <FormGroup>
