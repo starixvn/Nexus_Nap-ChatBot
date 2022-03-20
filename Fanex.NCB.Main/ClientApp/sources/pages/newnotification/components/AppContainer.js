@@ -1,4 +1,4 @@
-﻿import './AppContainer.scss';
+import './AppContainer.scss';
 import "react-mde/lib/styles/css/react-mde-all.css";
 
 import React from 'react';
@@ -74,7 +74,6 @@ export class AppContainer extends React.Component {
         };
 
         this.messageContentLength = parseInt(document.getElementById('MessageContentLength').value, 10);
-        this.debounceHandleSearchRecipents = CommonFunction.debounce(this.handleSearchRecipents);
         this.debounceHandleSearchPlatform = CommonFunction.debounce(this.handleSearchPlatform);
         this.searchRecipients = [];
         this.searchPlatforms = [];
@@ -245,7 +244,6 @@ export class AppContainer extends React.Component {
             formik.setFieldValue('platforms', this.state.platformOptions[0].children);
         } else {
             this.setState({ platformOptions: [] });
-            formik.setFieldValue('platforms', this.state.platformOptions);
         }
         this.props.getRecipients(value, platforms, formik.state.values.productId, formik.state.values.channelIds);
         this.props.getNotificationTemplates(value);
@@ -392,49 +390,6 @@ export class AppContainer extends React.Component {
             <ContentPreview text={markdown} />
         );
     }
-
-    onChangePlatformSearch = value => {
-        this.setState({ searchPlatformValue: value }, () => {
-            if (this.props.platforms.length > 0) {
-                this.debounceHandleSearchPlatform(value);
-            }
-        });
-    };
-
-    handleSearchPlatform = value => {
-        let platforms = value.replace(/[,;\t]+/g, ',');
-        platforms = platforms.split(',').map(item => item.trim());
-
-        this.searchPlatforms = [];
-        const validPlatforms = [];
-        const lengthPlatformOption = this.state.platformOptions[0].children.length;
-
-        for (let index = 0; index < lengthPlatformOption; index++) {
-            platforms.forEach(item => {
-                if (this.state.platformOptions[0].children[index].title.toLowerCase() === item.toLowerCase()) {
-                    validPlatforms.push(item);
-                    this.searchPlatforms.push({
-                        label: item,
-                        value: this.state.platformOptions[0].children[index].value
-                    });
-                }
-            })
-        }
-
-        while (validPlatforms.length > 0) {
-            const platform = validPlatforms.shift();
-            const index = platforms.indexOf(platform);
-            platforms.splice(index, 1);
-        }
-
-        const formik = this.refs.form;
-        const updateValues = [...formik.state.values.platforms, ...this.searchPlatforms];
-        formik.setFieldValue('platforms', updateValues);
-        this.setState({ searchPlatformValue: platforms.join(',') });
-
-        var platformValues = updateValues.length > 0 ? updateValues.map(item => item.value).join(',') : ''
-        this.props.getRecipients(formik.state.values.notificationTypeId, platformValues, formik.state.values.productId, formik.state.values.channelIds);
-    };
 
     onChangeSearch = value => {
         this.setState({ searchValue: value }, () => {

@@ -1,4 +1,4 @@
-﻿import Site from '../lib/site';
+import Site from '../lib/site';
 import DataService from '../lib/dataService';
 import {
     setNotificationTypes,
@@ -12,7 +12,6 @@ import {
     setMarkdownRulesPopup,
     setCreateNotificationResult
 } from './newNotificationSlice';
-import { async } from 'regenerator-runtime';
 
 const getNotificationTypes = () => async dispatch => {
     const url = Site.resolveClientUrl('Common/GetNotificationTypes');

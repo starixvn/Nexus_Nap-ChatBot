@@ -1,4 +1,4 @@
-﻿import './EditNotification.scss';
+import './EditNotification.scss';
 import 'react-mde/lib/styles/css/react-mde-all.css';
 
 import React from 'react';
@@ -52,7 +52,6 @@ export default class EditNotification extends React.Component {
 
         this.messageContentLength = parseInt(document.getElementById('MessageContentLength').value, 10);
         this.debounceHandleSearchRecipents = CommonFunction.debounce(this.handleSearchRecipents);
-        this.debounceHandleSearchPlatform = CommonFunction.debounce(this.handleSearchPlatform);
         this.searchRecipients = [];
         this.searchPlatforms = [];
     }
