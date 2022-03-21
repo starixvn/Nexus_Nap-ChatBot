@@ -36,7 +36,7 @@ export default class MultipleSelectLabel extends Component {
         } else if (selectedItemCount >= 1) {
             displayText = selectedValues.join(', ');
         } else if (selectedItemCount === 0 && this.props.hasNoneOption) {
-            displayText = texts.None
+            displayText = texts.None;
         }
 
         return displayText;
