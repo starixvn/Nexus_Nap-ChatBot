@@ -7,11 +7,13 @@ import ReactMde from 'react-mde';
 import DatePicker from '../../common/DatePicker/index';
 import Site from '../../lib/site';
 import DataService from '../../lib/dataService';
+import MultipleSelect from '../../common/multiple-select/index';
 
 describe('EditNotification', () => {
 
     beforeAll(() => {
         Site.resolveClientUrl = jest.fn(url => url);
+        jest.useFakeTimers();
     });
 
     afterAll(() => {
@@ -68,7 +70,7 @@ describe('EditNotification', () => {
                 configSendTime: '3/3/2022',
                 productId: 2
             };
-            const expected = { channelId: '1,2', channelName: 'channel', content: 'content', platforms: [{ title: 'test123', value: 1 }],
+            const expected = { channelId: '1,2', channelName: 'channel', content: 'content', platforms: '1',
                 productId: 2,recipients: [{ label: 'test', value: '1-1-1'}],sendDate: '3/3/2022', sendMode: '1', title: 'good' };
 
             const container = shallow(<EditNotification />).instance();
@@ -311,6 +313,9 @@ describe('EditNotification', () => {
             // Arrange 
             const value = 'test';
             const container = shallow(<EditNotification />).instance();
+            container.setState({
+                recipientOptions: [{ id: 1, name: 'test' }]
+            });
 
             // Act
             container.onChangeSearch(value);
@@ -405,7 +410,7 @@ describe('EditNotification', () => {
     });
 
     describe('handlePlatformChange', () => {
-        it('should call exactly props function', () => {
+        it('should call exactly props function', async () => {
             // Arrange
             const value = [{ value: 1, title: 'test' }];
 
@@ -415,8 +420,9 @@ describe('EditNotification', () => {
                     state: {
                         values: {
                             channelIds: '1,2',
-                            recipients: [{ id: 1 }],
-                            productId: 5
+                            recipients: [{ id: 1, value: '1-1-123' }],
+                            productId: 5,
+                            selectedRecipients: [123,456]
                         }
                     },
                     setValues: jest.fn(),
@@ -427,62 +433,26 @@ describe('EditNotification', () => {
             container.getRecipients = jest.fn();
 
             // Act
-            container.handlePlatformChange(value);
+            await container.handlePlatformChange(value);
+            //jest.runAllTimers();
 
             // Assert
-            expect(container.getRecipients).toHaveBeenCalledWith(1, 1, 5, '1');
-            expect(container.refs.form.setFieldValue).toHaveBeenCalledWith('recipients', []);
+            expect(container.getRecipients).toHaveBeenCalledWith(1, 1, 5,[{"title": "test", "value": 1}], '123');
+            expect(container.refs.form.setFieldValue).toHaveBeenCalledWith('platforms', [{ title: 'test', value: 1 }]);
+            //expect(container.refs.form.setFieldValue).toHaveBeenCalledWith('recipients', [{ id: 1, value: '1-1-123' }]);
         });
     });
 
-    describe('onChangePlatformSearch', () => {
-        it('should set state exactly', () => {
-            // Arrange 
-            const value = 'test';
+    describe('getRealValue', () => {
+        it('should return exactly', () => {
+            // Arrange
+            const value = '1-1-2022';
             const container = shallow(<EditNotification />).instance();
-            container.setState({ platformOptions: [{children: [{title: 'test', value: 1}], title: 'All Platform', value: '1'}] });
-
-            // Act
-            container.onChangePlatformSearch(value);
+            //Act
+            const actual = container.getRealValue(value);
 
             // Assert
-            expect(container.state.searchPlatformValue).toEqual('test');
-        });
-    });
-
-    describe('handleSearchPlatform', () => {
-        it('should set values exactly', () => {
-            // Arrange 
-            const value = 'test';
-            const container = shallow(<EditNotification />).instance();
-            container.refs = {
-                form: {
-                    state: {
-                        values: {
-                            platforms: [{ title: 'test', value: 1 }],
-                            notificationTypeId: 1,
-                            productId: 1,
-                            channelIds: '1,2',
-                            recipients: [{ id: 1, value: 'test' }]
-                        }
-                    },
-                    setFieldValue: jest.fn()
-                }
-            };
-            container.setState({
-                platformOptions: [{children: [{title: 'test', value: 1}], title: 'All Platform', value: '1'}],
-                notificationId: 1, notification: { notificationTypeId: 1 }
-            });
-            container.getRecipients = jest.fn();
-
-            // Act
-            container.handleSearchPlatform(value);
-
-            // Assert
-            expect(container.refs.form.setFieldValue).toHaveBeenCalledWith('platforms',[{title: 'test', value: 1}, {label: 'test', value: 1}]);
-            expect(container.state.searchPlatformValue).toEqual('');
-            expect(container.getRecipients).toHaveBeenCalledWith(1, 1, 1, '1,1');
-            expect(container.refs.form.setFieldValue).toHaveBeenCalledWith('recipients', []);
+            expect(actual).toEqual(2022);
         });
     });
 
@@ -492,7 +462,8 @@ describe('EditNotification', () => {
                 content: '123',
                 params: [{ name: 'test123', value: 1 }],
                 canEditTitleContent: false,
-                sendMode: '2'
+                sendMode: '2',
+                platforms: '1,2'
             },
             errors: {
                 notificationTypeId: true,
@@ -508,7 +479,7 @@ describe('EditNotification', () => {
         };
 
         const state = {
-            platformOptions: [{ title: 'test', value: 1 }],
+            platformOptions: [{ id: 1, name: 'test' }],
             notificationId: 1, notification: { notificationTypeId: 1 },
             initialObj: {
                 platforms: [{ title: 'test', value: 1 }],
@@ -556,15 +527,29 @@ describe('EditNotification', () => {
             //Assert
             expect(params.setFieldValue).toHaveBeenCalledWith('sendDate', '03/03/2022');
         });
+
+        it('renderForm Multiple exactly', () => {
+            //Arrange
+            const container = shallow(<EditNotification />).instance();
+            container.handlePlatformChange = jest.fn();
+            container.setState(state);
+
+            //Act
+            const renderForm = shallow(container.renderForm({...params}));
+            renderForm.find(MultipleSelect).at(0).simulate('change', 'currentItem', '')
+
+            //Assert
+            expect(container.handlePlatformChange).toHaveBeenCalled();
+        });
     });
 
     describe('render', () => {
-        it('should render null when notificationTypes or products is null', () => {
+        it('should render null when notification or recipientOptions is null', () => {
             // Arrange
             const container = shallow(<EditNotification />);
             container.instance().setState({
-                notificationTypes: null,
-                products: null
+                notification: null,
+                recipientOptions: null
             });
 
             // Assert

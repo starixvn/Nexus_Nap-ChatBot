@@ -1,4 +1,4 @@
-import './EditNotification.scss';
+﻿import './EditNotification.scss';
 import 'react-mde/lib/styles/css/react-mde-all.css';
 
 import React from 'react';
@@ -22,6 +22,7 @@ import ContentPreview from '../common/ContentPreview';
 import MarkdownRules from '../common/markdown-rules';
 import CommonFunction from '../common/common-functions/CommonFunctions';
 import DataService from '../lib/dataService';
+import MultipleSelect from '../common/multiple-select/index';
 
 const SendModeOptions = [
     { value: '1', label: 'Send Immediately' },
@@ -47,7 +48,9 @@ export default class EditNotification extends React.Component {
                 isOpen: false
             },
             searchValue: '',
-            searchPlatformValue: ''
+            searchPlatformValue: '',
+            allPlatform: [],
+            selectedRecipients: []
         };
 
         this.messageContentLength = parseInt(document.getElementById('MessageContentLength').value, 10);
@@ -69,9 +72,9 @@ export default class EditNotification extends React.Component {
                 const productId = notification.productId;
                 const platforms = notification.platforms.length > 0 ?  notification.platforms.map(item => item.platformId).join(',') : '';
 
-                this.setState({
-                    notification
-                }, () => this.getRecipients(this.state.notificationId, notificationTypeId, productId, platforms));
+                this.getAllPlatforms(notificationTypeId);
+                this.getRecipients(this.state.notificationId, notificationTypeId, productId, platforms, '')
+                this.setState({ notification });
             }).catch(errorResponseHandler);
     }
 
@@ -85,18 +88,13 @@ export default class EditNotification extends React.Component {
                     r.recipientTypeId + '-' + r.recipientId
             };
         });
-        const selectedPlatforms = notification.platforms.map(item => ({ title: item.platformName, value: item.platformId }));
-        const allPlatformValue = [];
-        notification.platforms.forEach(item => {
-            allPlatformValue.push(item.platformId);
-        });
+        const selectedPlatforms = this.state.allPlatform.map(item => ({ id: item.platformId, name: item.platformName }));
+        let platforms = '';
+        if (notification.platforms.length > 0) {
+            platforms = notification.platforms.map(item => item.platformId).join(',');
+        }
 
-        const allPlatform = [{
-            value: allPlatformValue.join(','),
-            title: 'All Platform',
-            children: selectedPlatforms
-        }];
-        this.setState({ platformOptions: selectedPlatforms.length > 0 ? allPlatform : selectedPlatforms });
+        this.setState({ platformOptions: selectedPlatforms });
 
         return {
             channelId: notification.channelId,
@@ -107,62 +105,37 @@ export default class EditNotification extends React.Component {
             sendMode: notification.sendImmediately ? '1' : '2',
             sendDate: notification.configSendTime,
             productId: notification.productId || '',
-            platforms: selectedPlatforms
+            platforms: platforms
         };
-    }
+    };
 
-    getRecipients = (notificationId, notificationTypeId, productId, platforms) => {
-        axios.get(Site.resolveClientUrl('EditNotification/GetRecipients'), {
+    getAllPlatforms = notificationTypeId => {
+        axios.get(Site.resolveClientUrl('Common/GetPlatforms'), {
+            params: { notificationTypeId: notificationTypeId }
+        }).then(response => {
+            this.setState({ allPlatform: response.data });
+        }).catch(errorResponseHandler);
+    };
+
+    getRecipients = async (notificationId, notificationTypeId, productId, platforms, recipientIds) => {
+        await axios.get(Site.resolveClientUrl('EditNotification/GetRecipients'), {
             params: {
                 notificationId: notificationId,
                 notificationTypeId: notificationTypeId,
                 productId: productId,
-                platforms: platforms
+                platforms: platforms,
+                recipientIds: recipientIds
             }
         }).then(response => {
             const initialObj = this.initializeObj();
-            const platformIds = platforms.split(',');
-            const data = [...response.data];
-            const lstChild = [];
-
-            if (platformIds[0] !== '') {
-                response.data.forEach(item => {
-                    if (item.realValue === 1) {
-                        item.children.forEach(element => {
-                            element.children.forEach(child => {
-                                if (child.platformId !== null && platformIds.includes(child.platformId.toString())) {
-                                    lstChild.push({ value: element.value, list: child })
-                                }
-                            });
-                        });
-                    }
-                });
-
-                data.forEach(item => {
-                    if (item.realValue === 1) {
-                        item.children = item.children.filter(element => lstChild.some(child => child.value === element.value));
-
-                        item.children.forEach(element => {
-                            const lstChildSameValue = lstChild.filter(child => child.value === element.value);
-                            const dataChild = [];
-    
-                            lstChildSameValue.forEach(child => dataChild.push(child.list));
-                            if (dataChild.length > 0) {
-                                element.children = dataChild;
-                            }
-                        });
-                    }
-                })
-            }
-
-            this.setState({ recipientOptions: response.data, initialObj: initialObj });
+            this.setState({ recipientOptions: response.data.recipients, selectedRecipients: response.data.selectedRecipients, initialObj: initialObj });
         }).catch(errorResponseHandler);
-    }
+    };
 
     handleCloseConfirmationPopup = () => {
         this.refs.form.setSubmitting(false);
         this.setState({ confimrationPopup: { isOpen: false } });
-    }
+    };
 
     handleConfirm = async () => {
         this.setState({ confimrationPopup: { isOpen: false } });
@@ -179,7 +152,7 @@ export default class EditNotification extends React.Component {
             content: values.content.trim(),
             sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
             sendImmediately: values.sendMode === '1',
-            platforms: values.platforms.length > 0 ?  values.platforms.map(item => item.value).join(',') : ''
+            platforms: values.platforms
         });
 
         this.handleCloseConfirmationPopup();
@@ -198,7 +171,7 @@ export default class EditNotification extends React.Component {
                 this.setState({ editNotificationResult: result });
             }
         });
-    }
+    };
 
     schema = object().shape({
         title: string().required(Labels.FieldRequired),
@@ -209,7 +182,7 @@ export default class EditNotification extends React.Component {
             .when('sendMode', (sendMode, schema) => sendMode === '2' ?
                 schema.required(Labels.FieldRequired).min(Today, field => `Send date must be later than ${field.min.toLocaleString()}`) :
                 schema)
-    })
+    });
 
     renderSendModeOption = item => <option key={item.value} value={item.value} >{item.label}</option>;
 
@@ -227,24 +200,24 @@ export default class EditNotification extends React.Component {
         const message = values.sendMode === '1' ? 'Do you want to send the notification to the selected recipient(s) immediately?'
             : `Do you want to send the notification to the selected recipient(s)  at ${formatDate}?`;
         this.setState({ confimrationPopup: { isOpen: true, message: message } });
-    }
+    };
 
     handleRecipientChange = (value, _label, extra) => {
         const formik = this.refs.form;
         formik.setFieldValue('recipients', value);
-    }
+    };
 
     handleGerneratePreview = markdown => {
         return Promise.resolve(
             <ContentPreview text={markdown} />
         );
-    }
+    };
 
-    touchedAndErrors = (touched, errors, fieldName) => touched[fieldName] && errors[fieldName]
+    touchedAndErrors = (touched, errors, fieldName) => touched[fieldName] && errors[fieldName];
 
-    handleOpenMarkdownRulesPopup = () => this.setState({ markdownRulesPopup: { isOpen: true } })
+    handleOpenMarkdownRulesPopup = () => this.setState({ markdownRulesPopup: { isOpen: true } });
 
-    handleCloseMarkdownRulesPopup = () => this.setState({ markdownRulesPopup: { isOpen: false } })
+    handleCloseMarkdownRulesPopup = () => this.setState({ markdownRulesPopup: { isOpen: false } });
 
     onChangeSearch = value => {
         this.setState({ searchValue: value }, () => {
@@ -252,7 +225,7 @@ export default class EditNotification extends React.Component {
                 this.debounceHandleSearchRecipents(value);
             }
         });
-    }
+    };
 
     handleSearchRecipents = value => {
         let recipients = value.replace(/[,;\t]+/g, ',');
@@ -277,7 +250,7 @@ export default class EditNotification extends React.Component {
         const updateValues = [...formik.state.values.recipients, ...this.searchRecipients];
         formik.setFieldValue('recipients', updateValues);
         this.setState({ searchValue: recipients.join(',') });
-    }
+    };
 
     isValidSearchRecipients = (result, label, recipient) => {
         if (recipient.title.toUpperCase() === label.toUpperCase()) {
@@ -296,70 +269,28 @@ export default class EditNotification extends React.Component {
                 }
             }
         }
-    }
+    };
 
-    handlePlatformChange = value => {
+    getRealValue = value => {
+        const arrValue = value.split('-');
+        const arrLength = arrValue.length - 1;
+        return parseInt(arrValue[arrLength], 10);
+    };
+
+    handlePlatformChange = async value => {
         const formik = this.refs.form;
         const { notificationId, notification } = this.state;
         formik.setFieldValue('platforms', value);
 
-        var platforms = '';
-        if (value.length > 0) {
-            platforms = value.map(item => item.value).join(',');
+        var recipients = '';
+        if (formik.state.values.recipients.length > 0) {
+            recipients = formik.state.values.recipients.map(item => this.getRealValue(item.value)).join(',');
         }
-
-        this.getRecipients(notificationId, notification.notificationTypeId, formik.state.values.productId, platforms);
+        await this.getRecipients(notificationId, notification.notificationTypeId, formik.state.values.productId, value, recipients);
 
         if (formik.state.values.recipients.length > 0) {
-            formik.setFieldValue('recipients', []);
-        }
-    };
-
-    onChangePlatformSearch = value => {
-        this.setState({ searchPlatformValue: value }, () => {
-            if (this.state.platformOptions[0].children.length > 0) {
-                this.debounceHandleSearchPlatform(value);
-            }
-        });
-    };
-
-    handleSearchPlatform = value => {
-        let platforms = value.replace(/[,;\t]+/g, ',');
-        platforms = platforms.split(',').map(item => item.trim());
-
-        this.searchPlatforms = [];
-        const validPlatforms = [];
-        const lengthPlatformOption = this.state.platformOptions[0].children.length;
-
-        for (let index = 0; index < lengthPlatformOption; index++) {
-            platforms.forEach(item => {
-                if (this.state.platformOptions[0].children[index].title.toLowerCase() === item.toLowerCase()) {
-                    validPlatforms.push(item);
-                    this.searchPlatforms.push({
-                        label: item,
-                        value: this.state.platformOptions[0].children[index].value
-                    });
-                }
-            })
-        }
-
-        while (validPlatforms.length > 0) {
-            const platform = validPlatforms.shift();
-            const index = platforms.indexOf(platform);
-            platforms.splice(index, 1);
-        }
-
-        const formik = this.refs.form;
-        const updateValues = [...formik.state.values.platforms, ...this.searchPlatforms];
-        formik.setFieldValue('platforms', updateValues);
-        this.setState({ searchPlatformValue: platforms.join(',') });
-
-        const { notificationId, notification } = this.state;
-        var platformValues = updateValues.length > 0 ? updateValues.map(item => item.value).join(',') : '';
-        this.getRecipients(notificationId, notification.notificationTypeId, formik.state.values.productId, platformValues);
-
-        if (formik.state.values.recipients.length > 0) {
-            formik.setFieldValue('recipients', []);
+            const valueRecipients = formik.state.values.recipients.filter(item => this.state.selectedRecipients.includes(this.getRealValue(item.value)));
+            formik.setFieldValue('recipients', valueRecipients);
         }
     };
 
@@ -377,6 +308,14 @@ export default class EditNotification extends React.Component {
         const isContentInvalid = this.touchedAndErrors(touched, errors, 'content');
         const isSendDateInvalid = this.touchedAndErrors(touched, errors, 'sendDate');
         const isValidContentLength = values.content.trim().length <= this.messageContentLength;
+
+        const platformOptions = this.state.platformOptions.map(item => {
+            return {
+                id: item.id,
+                name: item.name,
+                checked: values.platforms.split(',').includes(item.id.toString())
+            }
+        });
 
         return (
             <Form onSubmit={handleSubmit} className="edit-notification-form">
@@ -412,16 +351,19 @@ export default class EditNotification extends React.Component {
                         </Input>
                     </Col>
                 </FormGroup>
-                <FormGroup row>
+                <FormGroup style={{display: 'flex'}}>
                     <Label for="platforms" className="form-label" sm={2}>Platform</Label>
                     <Col sm={10}>
-                        <div className="edit-platform-notification-select-tree">
-                            <TreeSelect value={values.platforms} onChange={this.handlePlatformChange}
-                                treeData={this.state.platformOptions}
-                                onSearch={this.onChangePlatformSearch} searchValue={this.state.searchPlatformValue} placeholder={Labels.None}
-                                defaultValue={this.state.initialObj.platforms}
-                            />
-                        </div>
+                        <MultipleSelect
+                            dataSource={platformOptions}
+                            hasNoneOption
+                            keyField='id' valueField='name'
+                            maxDisplayItemCount={2}
+                            hasAllOption={platformOptions.length > 0}
+                            onChange={(currentItem, selectedItemsKey) => {
+                                this.handlePlatformChange(selectedItemsKey);
+                            }}
+                        />
                     </Col>
                 </FormGroup>
                 <FormGroup row>
