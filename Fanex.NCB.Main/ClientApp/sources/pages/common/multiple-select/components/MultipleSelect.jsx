@@ -20,7 +20,8 @@ export default class MultipleSelect extends Component {
         hasAllOption: PropTypes.bool,
         hasSearchBox: PropTypes.bool,
         isAllTextShown: PropTypes.bool,
-        texts: PropTypes.object
+        texts: PropTypes.object,
+        hasNoneOption: PropTypes.bool
     };
 
     static defaultProps = {
@@ -29,7 +30,8 @@ export default class MultipleSelect extends Component {
         valueField: VALUE_NAME,
         statusField: STATUS_NAME,
         hasAllOption: true,
-        hasSearchBox: false
+        hasSearchBox: false,
+        hasNoneOption: false
     };
 
     constructor(props) {
@@ -204,6 +206,7 @@ export default class MultipleSelect extends Component {
             <div className="multiple-select-container" id={this.id} ref={element => this.wrapper = element}>
                 {
                     <MultipleSelectLabel
+                        hasNoneOption={this.props.hasNoneOption}
                         language={this.props.language}
                         selectedItems={this.selectedItems}
                         dataSourceSize={this.state.dataSource.length}

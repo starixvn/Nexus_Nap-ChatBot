@@ -16,7 +16,8 @@ export default class MultipleSelectLabel extends Component {
         texts: {
             All: 'All',
             SelectedItemCount: '# selected',
-            SelectOptions: 'Select options'
+            SelectOptions: 'Select options',
+            None: 'None'
         }
     };
 
@@ -34,6 +35,8 @@ export default class MultipleSelectLabel extends Component {
             displayText = texts.SelectedItemCount.replace('#', selectedItemCount);
         } else if (selectedItemCount >= 1) {
             displayText = selectedValues.join(', ');
+        } else if (selectedItemCount === 0 && this.props.hasNoneOption) {
+            displayText = texts.None
         }
 
         return displayText;
