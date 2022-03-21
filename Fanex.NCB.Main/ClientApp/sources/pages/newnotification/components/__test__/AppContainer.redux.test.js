@@ -27,25 +27,27 @@ describe('connect', () => {
             notificationTypes: [],
             products: [],
             recipientOptions: [],
+            selectedRecipients: [],
             createNotificationResult: null,
             confirmationPopup: null,
             notificationTemplates: [],
             resetConfirmationPopup: null,
             editConfirmationPopup: null,
-            markdownRulesPopup: null,
-            platforms: []
+            markdownRulesPopup: null
         };
         const state = {
             notificationTypes: [],
             products: [],
-            recipients: [],
+            recipients: {
+                recipientOptions: [],
+                selectedRecipients: []
+            },
             createNotificationResult: null,
             confirmationPopup: null,
             notificationTemplates: [],
             resetConfirmationPopup: null,
             editConfirmationPopup: null,
-            markdownRulesPopup: null,
-            platforms: []
+            markdownRulesPopup: null
         };
 
         // Act

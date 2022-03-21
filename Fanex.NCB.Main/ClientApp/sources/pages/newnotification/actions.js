@@ -1,4 +1,4 @@
-import Site from '../lib/site';
+﻿import Site from '../lib/site';
 import DataService from '../lib/dataService';
 import {
     setNotificationTypes,
@@ -33,23 +33,21 @@ const getProducts = () => async dispatch => {
     });
 };
 
-const getRecipients = (notificationTypeId, platforms, productId, channelIds) => async dispatch => {
+const getRecipients = (notificationTypeId, platforms, recipientIds, productId, channelIds) => async dispatch => {
     const url = Site.resolveClientUrl('NewNotification/GetRecipients');
-    await DataService.getDataAsync(url, { notificationTypeId, platforms, productId, channelIds }).then(response => {
+    await DataService.getDataAsync(url, { notificationTypeId, platforms, recipientIds, productId, channelIds }).then(response => {
         dispatch(setRecipients(response.data));
     });
 };
 
-const getPlatforms = notificationTypeId => async dispatch => {
-    const url = Site.resolveClientUrl('NewNotification/GetPlatforms');
-    await DataService.getDataAsync(url, { notificationTypeId }).then(response => {
-        dispatch(setPlatforms(response.data));
-    });
+const getPlatforms = notificationTypeId => async () => {
+    const url = Site.resolveClientUrl('Common/GetPlatforms');
+    return await DataService.getDataAsync(url, { notificationTypeId }).then(response => response);
 };
 
-const getResendNotification = (notificationId, isResendAll) => async () => {
+const getResendNotification = (notificationId, recipientIds, isResendAll) => async () => {
     const url = Site.resolveClientUrl('NewNotification/GetResendNotification');
-    return await DataService.getDataAsync(url, { notificationId, isResendAll }).then(response => response);
+    return await DataService.getDataAsync(url, { notificationId, recipientIds, isResendAll }).then(response => response);
 };
 
 const createNewNotification = params => async dispatch => {

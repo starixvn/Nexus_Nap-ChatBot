@@ -8,7 +8,6 @@ import {
     setNotificationTemplates,
     setProducts,
     setRecipients,
-    setPlatforms,
     setCreateNotificationResult
 } from '../newNotificationSlice';
 
@@ -94,6 +93,7 @@ describe('actionCreators', () => {
             const params = {
                 notificationTypeId: 1, 
                 platforms : '1,2',
+                recipientIds: '1,2',
                 productId: 2,
                 channelIds: '1,2'
             };
@@ -103,7 +103,7 @@ describe('actionCreators', () => {
             DataService.getDataAsync = jest.fn(() => promise);
 
             // Act
-            await store.dispatch(ActionCreators.getRecipients(1,'1,2',2,'1,2'));
+            await store.dispatch(ActionCreators.getRecipients(1,'1,2','1,2',2,'1,2'));
 
             // Assert
             expect(DataService.getDataAsync).toHaveBeenCalledWith('NewNotification/GetRecipients', params);
@@ -118,7 +118,7 @@ describe('actionCreators', () => {
                 data: [{ platformId: 1, platformName: 'test' }]
             };
             const params = { notificationTypeId: 1 };
-            const expectedActions = [{ type: setPlatforms.type, payload: response.data }];
+
             const store = mockStore({ platforms: [] });
             const promise = Promise.resolve(response);
             DataService.getDataAsync = jest.fn(() => promise);
@@ -127,8 +127,7 @@ describe('actionCreators', () => {
             await store.dispatch(ActionCreators.getPlatforms(1));
 
             // Assert
-            expect(DataService.getDataAsync).toHaveBeenCalledWith('NewNotification/GetPlatforms', params);
-            expect(store.getActions()).toEqual(expectedActions);
+            expect(DataService.getDataAsync).toHaveBeenCalledWith('Common/GetPlatforms', params);
         });
     });
 
@@ -140,6 +139,7 @@ describe('actionCreators', () => {
             };
             const params = {
                 notificationId : 1,
+                recipientIds: '1,2',
                 isResendAll: true
             };
             const store = mockStore();
@@ -147,7 +147,7 @@ describe('actionCreators', () => {
             DataService.getDataAsync = jest.fn(() => promise);
 
             // Act
-            await store.dispatch(ActionCreators.getResendNotification(1, true));
+            await store.dispatch(ActionCreators.getResendNotification(1,'1,2',true));
 
             // Assert
             expect(DataService.getDataAsync).toHaveBeenCalledWith('NewNotification/GetResendNotification', params);

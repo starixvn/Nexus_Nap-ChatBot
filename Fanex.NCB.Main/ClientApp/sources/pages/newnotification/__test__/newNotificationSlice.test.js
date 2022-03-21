@@ -16,7 +16,10 @@ describe('newNotificationSlice reducer', () => {
             notificationTypes: [],
             notificationTemplates: [],
             products: [],
-            recipients: [],
+            recipients: {
+                recipientOptions: [],
+                selectedRecipients: []
+            },
             confirmationPopup: {
                 isOpen: false,
                 content: ''
@@ -69,12 +72,23 @@ describe('newNotificationSlice reducer', () => {
 
     it('should handle setRecipients', () => {
         expect(
-            newNotification({}, {
+            newNotification({
+                recipients: {
+                    recipientOptions: [],
+                    selectedRecipients: []
+                }
+            }, {
                 type: setRecipients.type,
-                payload: [{ id: 1, name: 'test' }]
+                payload: {
+                    recipients: [{ id: 1, name: 'test' }],
+                    selectedRecipients: [{ id: 2, name: 'testing' }]
+                }
             })
         ).toEqual({
-            recipients: [{ id: 1, name: 'test' }]
+            recipients: {
+                recipientOptions: [{ id: 1, name: 'test' }],
+                selectedRecipients: [{ id: 2, name: 'testing' }]
+            }
         });
     });
 

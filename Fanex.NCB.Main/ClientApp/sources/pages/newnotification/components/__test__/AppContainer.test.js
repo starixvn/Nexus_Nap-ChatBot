@@ -5,8 +5,13 @@ import ContentPreview from '../../../common/ContentPreview';
 import { Label, Input, FormFeedback } from 'reactstrap';
 import ReactMde from 'react-mde';
 import DatePicker from '../../../common/DatePicker/index';
+import MultipleSelect from '../../../common/multiple-select/index';
 
 describe('AppContainer', () => {
+
+    beforeAll(() => {
+        jest.useFakeTimers();
+    });
 
     afterAll(() => {
         jest.clearAllMocks();
@@ -94,7 +99,7 @@ describe('AppContainer', () => {
             await promise;
 
             // Assert
-            expect(props.getResendNotification).toHaveBeenCalledWith(1,true);
+            expect(props.getResendNotification).toHaveBeenCalledWith(1,'',true);
         });
     });
 
@@ -184,7 +189,7 @@ describe('AppContainer', () => {
                 createNewNotification: jest.fn(() => promise),
                 recipientOptions: [{ id: 1, name: 'test' }]
             };
-            const paramsExpected = 'channelIds=1%2C2&recipientIds=&title=test123&content=good%20evening&sendDate=Invalid%20DateTime&sendImmediately=false&platforms=1';
+            const paramsExpected = 'channelIds=1%2C2&recipientIds=&title=test123&content=good%20evening&sendDate=Invalid%20DateTime&sendImmediately=false&platforms%5B0%5D%5Bvalue%5D=1';
 
             const container = shallow(<AppContainer {...props}/>).instance();
             container.refs = {
@@ -367,9 +372,10 @@ describe('AppContainer', () => {
     describe('handleNotificationTypeChange', () => {
         it('should call exactly props function when platforms > 0', async () => {
             // Arrange
+            const promise = Promise.resolve({ data: [{ platformId: 1, platformName: 'test' }] });
             const props = {
                 ...initProps,
-                getPlatforms: jest.fn(),
+                getPlatforms: jest.fn(() => promise),
                 platforms: [{ platformId: 1, platformName: 'test'}],
                 getRecipients: jest.fn(),
                 getNotificationTemplates: jest.fn()
@@ -391,14 +397,15 @@ describe('AppContainer', () => {
             };
 
             // Act
-            await container.handleNotificationTypeChange(mockEvent);
+            container.handleNotificationTypeChange(mockEvent);
+            await promise;
+            jest.runAllTimers();
 
             // Assert
             expect(props.getPlatforms).toHaveBeenCalledWith('test');
-            expect(container.state.platformOptions).toEqual([{children: [{title: 'test', value: 1}], title: 'All Platform', value: '1'}]);
-            expect(props.getRecipients).toHaveBeenCalledWith('test', '1', 1, '1,2');
+            expect(props.getRecipients).toHaveBeenCalledWith('test','1', '', 1, '1,2');
             expect(props.getNotificationTemplates).toHaveBeenCalledWith('test');
-            expect(container.refs.form.setFieldValue).toHaveBeenCalledWith('platforms', [{title: 'test', value: 1}]);
+            expect(container.refs.form.setFieldValue).toHaveBeenCalledWith('platforms', '1');
             expect(container.refs.form.setValues).toHaveBeenCalled();
             expect(container.state.searchValue).toEqual('');
             expect(container.state.searchPlatformValue).toEqual('');
@@ -406,9 +413,10 @@ describe('AppContainer', () => {
 
         it('should call exactly props function when platforms <= 0', async () => {
             // Arrange
+            const promise = Promise.resolve({ data: [] });
             const props = {
                 ...initProps,
-                getPlatforms: jest.fn(),
+                getPlatforms: jest.fn(() => promise),
                 platforms: [],
                 getRecipients: jest.fn(),
                 getNotificationTemplates: jest.fn()
@@ -430,11 +438,28 @@ describe('AppContainer', () => {
             };
 
             // Act
-            await container.handleNotificationTypeChange(mockEvent);
+            container.handleNotificationTypeChange(mockEvent);
+            await promise;
+            jest.runAllTimers();
 
             // Assert
             expect(props.getPlatforms).toHaveBeenCalledWith('test');
             expect(container.state.platformOptions).toEqual([]);
+        });
+    });
+
+    describe('getRealValue', () => {
+        it('should return exactly', () => {
+            // Arrange
+            const props = {...initProps};
+            const value = '1-1-2022';
+            const container = shallow(<AppContainer {...props}/>).instance();
+
+            // Act
+            const actual = container.getRealValue(value);
+
+            // Assert
+            expect(actual).toEqual(2022);
         });
     });
 
@@ -531,12 +556,13 @@ describe('AppContainer', () => {
     });
 
     describe('handlePlatformChange', () => {
-        it('should call exactly props function', () => {
+        it('should call exactly props function', async () => {
             // Arrange
             const props = {
                 ...initProps,
                 getRecipients: jest.fn(),
-                recipientOptions: []
+                recipientOptions: [],
+                selectedRecipients: [123, 456]
             };
             const value = [{ value: 1, title: 'test' }];
 
@@ -547,7 +573,7 @@ describe('AppContainer', () => {
                         values: {
                             notificationTypeId: 1,
                             channelIds: '1,2',
-                            recipients: [{ id: 1 }],
+                            recipients: [{ id: 1, value: '1-1-123' }],
                             productId: 5
                         }
                     },
@@ -557,11 +583,12 @@ describe('AppContainer', () => {
             };
 
             // Act
-            container.handlePlatformChange(value);
+            await container.handlePlatformChange(value);
+            jest.runAllTimers();
 
             // Assert
-            expect(props.getRecipients).toHaveBeenCalledWith(1, '1', 5, '1,2');
-            expect(container.refs.form.setFieldValue).toHaveBeenCalledWith('recipients', []);
+            expect(container.refs.form.setFieldValue).toHaveBeenCalledWith('platforms', [{ title: 'test', value: 1 }]);
+            expect(container.refs.form.setFieldValue).toHaveBeenCalledWith('recipients', [{ id: 1, value: '1-1-123' }]);
         });
     });
 
@@ -735,7 +762,7 @@ describe('AppContainer', () => {
 
     describe('onChangeSearch', () => {
         it('should set state exactly', () => {
-            // Arrange 
+            // Arrange
             const props = {
                 ...initProps,
                 recipientOptions: [{ id: 1, name: 'test' }]
@@ -919,7 +946,8 @@ describe('AppContainer', () => {
                 content: '123',
                 params: [{ name: 'test123', value: 1 }],
                 canEditTitleContent: false,
-                sendMode: '2'
+                sendMode: '2',
+                platforms: '1,2'
             },
             errors: {
                 notificationTypeId: true
@@ -987,6 +1015,25 @@ describe('AppContainer', () => {
 
             //Assert
             expect(params.setFieldValue).toHaveBeenCalledWith('sendDate', '03/03/2022');
+        });
+
+        it('renderForm Multiple exactly', () => {
+            //Arrange
+            const container = shallow(<AppContainer {...props}/>).instance();
+            container.handlePlatformChange = jest.fn();
+            container.setState({
+                platformOptions: [{
+                    id: 1,
+                    name: 'test'
+                }]
+            });
+
+            //Act
+            const renderForm = shallow(container.renderForm({...params}));
+            renderForm.find(MultipleSelect).at(0).simulate('change', 'currentItem', '')
+
+            //Assert
+            expect(container.handlePlatformChange).toHaveBeenCalled();
         });
     });
 
