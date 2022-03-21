@@ -27,10 +27,13 @@
 }
 
 .new-notification-type {
-    width: 450px;
+    width: 550px;
 
     .invalid .invalid-feedback {
         display: block;
+    }
+    .modal-content {
+        width: 550px;
     }
 }
 
