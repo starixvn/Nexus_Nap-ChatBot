@@ -6,6 +6,7 @@
     using Fanex.NCB.Main.ViewModel.TreeSelect;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.SkypeBot.Controllers;
     using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;
@@ -37,14 +38,14 @@
         {
             var controller = GetController();
             var fixture = new Fixture();
-            var expectedProducts = fixture.Create<IEnumerable<Product>>();
+            var expectedProducts = fixture.Create<IEnumerable<Models.Common.Product>>();
 
             commonService.GetProductsAsync().Returns(expectedProducts);
 
             var result = await controller.GetProducts();
 
             var json = Assert.IsType<JsonResult>(result);
-            var returnedProducts = Assert.IsAssignableFrom<IEnumerable<Product>>(json.Value);
+            var returnedProducts = Assert.IsAssignableFrom<IEnumerable<Models.Common.Product>>(json.Value);
             Assert.Equal(expectedProducts, returnedProducts);
         }
 
@@ -114,6 +115,22 @@
 
             // Assert
             actual.Value.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task GetPlatforms_WhenCalled_ReturnJsonResult()
+        {
+            var controller = GetController();
+            var fixture = new Fixture();
+            var expectedPlatform = fixture.Create<IEnumerable<Platform>>();
+
+            commonService.GetPlatformAsync(12).Returns(expectedPlatform);
+
+            var result = await controller.GetPlatforms(12);
+
+            var json = Assert.IsType<JsonResult>(result);
+            var platforms = Assert.IsAssignableFrom<IEnumerable<Platform>>(json.Value);
+            Assert.Equal(expectedPlatform, platforms);
         }
 
         private CommonController GetController()

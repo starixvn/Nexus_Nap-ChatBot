@@ -86,15 +86,18 @@
             var notificationTypeId = fixture.Create<int>();
             var productId = fixture.Create<int?>();
             var platforms = fixture.Create<string>();
+            var recipientIds = fixture.Create<string>();
+            var allRecipients = fixture.Create<(IEnumerable<Recipient>, IEnumerable<uint>)>();
 
-            var recipients = fixture.Create<IEnumerable<Recipient>>();
+            notificationService.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId, platforms, recipientIds).Returns(allRecipients);
 
-            notificationService.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId, platforms).Returns(recipients);
+            var result = await controller.GetRecipients(notificationId, notificationTypeId, productId, platforms, recipientIds);
 
-            var result = await controller.GetRecipients(notificationId, notificationTypeId, productId, platforms);
-
-            var json = Assert.IsType<JsonResult>(result);
-            Assert.IsAssignableFrom<IEnumerable<TreeNodeItem>>(json.Value);
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            var recipients = jsonResult.Value.GetType().GetProperty("recipients").GetValue(jsonResult.Value);
+            var selectedRecipients = jsonResult.Value.GetType().GetProperty("selectedRecipients").GetValue(jsonResult.Value);
+            Assert.IsAssignableFrom<IEnumerable<TreeNodeItem>>(recipients);
+            Assert.Equal(allRecipients.Item2, selectedRecipients);
         }
 
         [Fact]

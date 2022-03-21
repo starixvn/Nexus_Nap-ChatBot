@@ -23,7 +23,6 @@
     {
         private readonly IFixture fixture = new Fixture();
         private INotificationService notificationService;
-        private ISettingService settingService;
         private INapSession napSession;
 
         [Fact]
@@ -100,17 +99,22 @@
         {
             var controller = GetController();
             var notificationTypeId = fixture.Create<int>();
+            var recipientIds = fixture.Create<string>();
+            var channelIds = fixture.Create<string>();
             var productId = fixture.Create<int?>();
             var platforms = fixture.Create<string>();
 
-            var recipients = fixture.Create<IEnumerable<Recipient>>();
+            var allRecipients = fixture.Create<(IEnumerable<Recipient>, IEnumerable<uint>)>();
 
-            notificationService.GetRecipientsAsync(notificationTypeId, platforms, productId).Returns(recipients);
+            notificationService.GetRecipientsAsync(notificationTypeId, platforms, recipientIds, productId, channelIds).Returns(allRecipients);
 
-            var result = await controller.GetRecipients(notificationTypeId, platforms, productId);
+            var result = await controller.GetRecipients(notificationTypeId, platforms, recipientIds, productId, channelIds);
 
-            var json = Assert.IsType<JsonResult>(result);
-            Assert.IsAssignableFrom<IEnumerable<TreeNodeItem>>(json.Value);
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            var recipients = jsonResult.Value.GetType().GetProperty("recipients").GetValue(jsonResult.Value);
+            var selectedRecipients = jsonResult.Value.GetType().GetProperty("selectedRecipients").GetValue(jsonResult.Value);
+            Assert.IsAssignableFrom<IEnumerable<TreeNodeItem>>(recipients);
+            Assert.Equal(allRecipients.Item2, selectedRecipients);
         }
 
         [Fact]
@@ -136,21 +140,23 @@
             var controller = GetController();
             var notificationId = fixture.Create<int>();
             var isResendAll = fixture.Create<bool>();
+            var recipientIds = fixture.Create<string>();
             var resendNotifictaion = fixture.Create<ResendNotification>();
-            var allRecipients = fixture.Create<IEnumerable<Recipient>>();
-            var unSelectable = resendNotifictaion.Recipients.Where(r => !allRecipients.Any(x => x.RecipientId == r.RecipientId));
+            var allRecipients = fixture.Create<(IEnumerable<Recipient>, IEnumerable<uint>)>();
+            var unSelectable = resendNotifictaion.Recipients.Where(r => !allRecipients.Item1.Any(x => x.RecipientId == r.RecipientId));
 
             var expected = new
             {
                 resendNotification = resendNotifictaion,
-                recipients = GenerateTreeHelper.FromRecipient(allRecipients),
-                unSelectableRecipients = unSelectable
+                recipients = GenerateTreeHelper.FromRecipient(allRecipients.Item1),
+                unSelectableRecipients = unSelectable,
+                selectedRecipients = allRecipients.Item2
             };
             var platforms = resendNotifictaion.Platforms.Select(item => item.PlatformId).ToList();
             notificationService.GetResendNotificationInfoAsync(notificationId, isResendAll).Returns(resendNotifictaion);
-            notificationService.GetRecipientsAsync(resendNotifictaion.NotificationTypeId, string.Join(",",platforms) , null, resendNotifictaion.ChannelId.ToString()).Returns(allRecipients);
+            notificationService.GetRecipientsAsync(resendNotifictaion.NotificationTypeId, string.Join(",",platforms) , recipientIds, null, resendNotifictaion.ChannelId.ToString()).Returns(allRecipients);
 
-            var result = await controller.GetResendNotification(notificationId, isResendAll);
+            var result = await controller.GetResendNotification(notificationId, recipientIds, isResendAll);
 
             var json = Assert.IsType<JsonResult>(result);
             var obj = Assert.IsAssignableFrom<object>(json.Value);
@@ -160,10 +166,9 @@
         private NewNotificationController GetController()
         {
             notificationService = Substitute.For<INotificationService>();
-            settingService = Substitute.For<ISettingService>();
             napSession = Substitute.For<INapSession>();
 
-            return new NewNotificationController(notificationService, settingService, napSession);
+            return new NewNotificationController(notificationService, napSession);
         }
     }
 }

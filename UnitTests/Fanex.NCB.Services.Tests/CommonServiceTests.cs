@@ -5,6 +5,7 @@
     using AutoFixture;
     using Fanex.NCB.Criteria.Common;
     using Fanex.NCB.Models.Common;
+    using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services.Interfaces;
     using NSubstitute;
     using Xunit;
@@ -34,8 +35,8 @@
         {
             // Arrange
             var service = GetService();
-            var products = fixture.Create<IEnumerable<Product>>();
-            baseService.GetDataAsync<Product>(Arg.Any<GetProductsCriteria>()).Returns(products);
+            var products = fixture.Create<IEnumerable<Models.Common.Product>>();
+            baseService.GetDataAsync<Models.Common.Product>(Arg.Any<GetProductsCriteria>()).Returns(products);
 
             // Act
             var result = await service.GetProductsAsync();
@@ -102,6 +103,21 @@
 
             // Assert
             Assert.Equal(channels, result);
+        }
+
+        [Fact]
+        public async Task GetPlatformAsync_WhenCalled_ReturnExpectedResult()
+        {
+            // Arrange
+            var service = GetService();
+            var plaforms = fixture.Create<IEnumerable<Platform>>();
+            baseService.GetDataAsync<Platform>(Arg.Any<GetPlatformCriteria>()).Returns(plaforms);
+
+            // Act
+            var result = await service.GetPlatformAsync(12);
+
+            // Assert
+            Assert.Equal(plaforms, result);
         }
 
         private CommonService GetService()

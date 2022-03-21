@@ -66,20 +66,29 @@
             var fixture = new Fixture();
             int notificationTypeId = fixture.Create<int>();
             int? productId = fixture.Create<int?>();
+            string channellIds = fixture.Create<string>();
             string platforms = fixture.Create<string>();
+            string recipientIds = fixture.Create<string>();
+
             var recipients = fixture.Create<IEnumerable<Recipient>>();
+            var selectedRecipient = fixture.Create<IEnumerable<uint>>();
+            var tuple = (recipients, selectedRecipient);
 
             var criteria = new GetRecipientsCriteria();
 
-            baseService.GetDataAsync<Recipient>(Arg.Do<GetRecipientsCriteria>(x => criteria = x))
-                .Returns(recipients);
+            baseService.FetchMultipleAsync<Recipient, uint>(Arg.Do<GetRecipientsCriteria>(x => criteria = x))
+                .Returns(tuple);
 
-            var result = await service.GetRecipientsAsync(notificationTypeId, platforms, productId);
+            var result = await service.GetRecipientsAsync(notificationTypeId, platforms, recipientIds, productId, channellIds);
 
             Assert.Equal(notificationTypeId, criteria.NotificationTypeId);
             Assert.Equal(productId, criteria.ProductId);
             Assert.Equal(platforms, criteria.Platforms);
-            Assert.Equal(recipients.Count(), result.Count());
+            Assert.Equal(channellIds, criteria.ChannelIdLst);
+            Assert.Equal(recipientIds, criteria.RecipientIds);
+            Assert.Equal(recipients.Count(), result.Item1.Count());
+            Assert.Equal(recipients, result.Item1);
+            Assert.Equal(selectedRecipient, result.Item2);
         }
 
         [Fact]
@@ -248,20 +257,27 @@
             var notificationTypeId = fixture.Create<int>();
             var productId = fixture.Create<int?>();
             var platforms = fixture.Create<string>();
+            var recipientIds = fixture.Create<string>();
 
             var recipients = fixture.Create<IEnumerable<Recipient>>();
+            var selectedRecipient = fixture.Create<IEnumerable<uint>>();
+
+            var tuple = (recipients, selectedRecipient);
 
             var criteria = new GetEditNotificationRecipientsCriteria();
 
-            baseService.GetDataAsync<Recipient>(Arg.Do<GetEditNotificationRecipientsCriteria>(x => criteria = x)).Returns(recipients);
+            baseService.FetchMultipleAsync<Recipient, uint>(Arg.Do<GetEditNotificationRecipientsCriteria>(x => criteria = x)).Returns(tuple);
 
-            var result = await service.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId, platforms);
+            var result = await service.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId, platforms, recipientIds);
 
             Assert.Equal(notificationId, criteria.NotificationId);
             Assert.Equal(notificationTypeId, criteria.NotificationTypeId);
             Assert.Equal(productId, criteria.ProductId);
             Assert.Equal(platforms, criteria.Platforms);
-            Assert.Equal(recipients.Count(), result.Count());
+            Assert.Equal(recipients.Count(), result.Item1.Count());
+            Assert.Equal(recipientIds, criteria.RecipientIds);
+            Assert.Equal(recipients, result.Item1);
+            Assert.Equal(selectedRecipient, result.Item2);
         }
 
         [Fact]
