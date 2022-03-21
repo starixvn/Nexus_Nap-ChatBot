@@ -158,8 +158,8 @@ export default class DataGrid extends PureComponent {
                             data-notificationid={notification.notificationId}
                             onClick={this.handleShowErrorReport}>{Labels.ViewDetail}
                         </a>
-                        {this.renderResendBtn(notification.notificationId, Labels.ResendAll, true)}
-                        {this.renderResendBtn(notification.notificationId, Labels.ResendError, false)}
+                        {this.renderResendBtn(notification.notificationId, Labels.ResendAll, '', true)}
+                        {this.renderResendBtn(notification.notificationId, Labels.ResendError, '', false)}
                     </Fragment>
                 );
                 return btns;
@@ -168,15 +168,15 @@ export default class DataGrid extends PureComponent {
             case NotificationStatus.Cancelled:
                 return <a className="action-button" href={`EditNotification/Index/${notification.notificationId}`} >{Labels.Edit}</a>;
             case NotificationStatus.Sent:
-                return this.renderResendBtn(notification.notificationId, Labels.Resend, true);
+                return this.renderResendBtn(notification.notificationId, Labels.Resend, '', true);
             default: return null;
         }
     }
 
-    renderResendBtn = (notificationId, label, isSendAll) => {
+    renderResendBtn = (notificationId, label, recipientIds, isSendAll) => {
         return (
             <a className="action-button" type="button"
-                href={`NewNotification?notificationId=${notificationId}&isResendAll=${isSendAll}`}
+                href={`NewNotification?notificationId=${notificationId}&recipientIds=${recipientIds}&isResendAll=${isSendAll}`}
             >
                 {label}
             </a>);

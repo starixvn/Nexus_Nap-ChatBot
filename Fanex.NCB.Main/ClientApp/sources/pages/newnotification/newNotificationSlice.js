@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+﻿import { createSlice } from '@reduxjs/toolkit';
 
 const newNotificationSlice = createSlice({
     name: 'NewNotification',
@@ -6,8 +6,10 @@ const newNotificationSlice = createSlice({
         notificationTypes: [],
         notificationTemplates: [],
         products: [],
-        recipients: [],
-        platforms: [],
+        recipients: {
+            recipientOptions: [],
+            selectedRecipients: []
+        },
         confirmationPopup: {
             isOpen: false,
             content: ''
@@ -34,10 +36,8 @@ const newNotificationSlice = createSlice({
             state.products = action.payload;
         },
         setRecipients: (state, action) => {
-            state.recipients = action.payload;
-        },
-        setPlatforms: (state, action) => {
-            state.platforms = action.payload;
+            state.recipients.recipientOptions = action.payload.recipients;
+            state.recipients.selectedRecipients = action.payload.selectedRecipients;
         },
         setConfirmationPopup: (state, action) => {
             state.confirmationPopup = action.payload;

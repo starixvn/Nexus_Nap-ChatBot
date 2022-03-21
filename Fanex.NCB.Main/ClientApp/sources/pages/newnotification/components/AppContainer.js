@@ -1,4 +1,4 @@
-import './AppContainer.scss';
+﻿import './AppContainer.scss';
 import "react-mde/lib/styles/css/react-mde-all.css";
 
 import React from 'react';
@@ -22,6 +22,7 @@ import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import ContentPreview from '../../common/ContentPreview';
 import MarkdownRules from '../../common/markdown-rules';
 import CommonFunction from '../../common/common-functions/CommonFunctions';
+import MultipleSelect from '../../common/multiple-select/index';
 
 const SendModeOptions = [
     { value: '1', label: 'Send Immediately' },
@@ -61,7 +62,7 @@ export class AppContainer extends React.Component {
                 notificationTypeId: '',
                 templateId: '',
                 productId: '',
-                platforms: [],
+                platforms: '',
                 recipients: [],
                 title: '',
                 content: '',
@@ -74,7 +75,7 @@ export class AppContainer extends React.Component {
         };
 
         this.messageContentLength = parseInt(document.getElementById('MessageContentLength').value, 10);
-        this.debounceHandleSearchPlatform = CommonFunction.debounce(this.handleSearchPlatform);
+        this.debounceHandleSearchRecipents = CommonFunction.debounce(this.handleSearchRecipents);
         this.searchRecipients = [];
         this.searchPlatforms = [];
 
@@ -97,9 +98,9 @@ export class AppContainer extends React.Component {
 
     handleInitResendNotification = () => {
         const { notificationId, isResendAll } = this.resendNotifcation;
-        this.props.getResendNotification(notificationId, isResendAll).then(response => {
+        this.props.getResendNotification(notificationId, '', isResendAll).then(response => {
             const { resendNotification, recipients, unSelectableRecipients } = response.data;
-            this.props.setRecipients(recipients);
+            this.props.setRecipients({ recipients: recipients});
             this.selectedRecipientIds = resendNotification.recipients.map(r => r.recipientId);
             const selectedRecipients = resendNotification.recipients.map(r => {
                 return {
@@ -109,36 +110,37 @@ export class AppContainer extends React.Component {
                         r.recipientTypeId + '-' + r.recipientId
                 };
             });
-            const selectedPlatforms = resendNotification.platforms.map(item => ({ title: item.platformName, value: item.platformId }));
-            const allPlatformValue = [];
-            resendNotification.platforms.forEach(item => {
-                allPlatformValue.push(item.platformId);
-            });
+            this.props.getPlatforms(resendNotification.notificationTypeId).then(res => {
+                let selectedPlatforms = [];
+                let platforms = '';
 
-            const allPlatform = [{
-                value: allPlatformValue.join(','),
-                title: 'All Platform',
-                children: selectedPlatforms
-            }];
+                if (res.data.length> 0) {
+                    selectedPlatforms = res.data.map(item => ({ id: item.platformId, name: item.platformName }));
+                }
 
-            this.setState({
-                initValue: {
-                    ...this.state.initValue,
-                    channelIds: resendNotification.channelId.toString(),
-                    channelName: resendNotification.channelName,
-                    notificationTypeId: resendNotification.notificationTypeId,
-                    recipients: selectedRecipients,
-                    title: resendNotification.title,
-                    content: resendNotification.content,
-                    sendDate: Today,
-                    sendMode: '1',
-                    platforms: selectedPlatforms.length > 0 ? allPlatform : selectedPlatforms
-                },
-                platformOptions: selectedPlatforms.length > 0 ? allPlatform : selectedPlatforms
+                if (resendNotification.platforms.length > 0) {
+                    platforms = resendNotification.platforms.map(item => item.platformId).join(',');
+                }
+
+                this.setState({
+                    initValue: {
+                        ...this.state.initValue,
+                        channelIds: resendNotification.channelId.toString(),
+                        channelName: resendNotification.channelName,
+                        notificationTypeId: resendNotification.notificationTypeId,
+                        recipients: selectedRecipients,
+                        title: resendNotification.title,
+                        content: resendNotification.content,
+                        sendDate: Today,
+                        sendMode: '1',
+                        platforms: platforms
+                    },
+                    platformOptions: selectedPlatforms
+                });
+                this.displayUnselectableRecipients(unSelectableRecipients);
             });
-            this.displayUnselectableRecipients(unSelectableRecipients);
         });
-    }
+    };
 
     displayUnselectableRecipients = recipients => {
         if (recipients && recipients.length > 0) {
@@ -146,20 +148,20 @@ export class AppContainer extends React.Component {
                             <span class='icon-warning'></span> Unselectable recipient(s): `+ recipients.map(r => r.recipientName).join(', ') + `.</div>`;
             document.getElementById('header-text').innerHTML = html;
         }
-    }
+    };
 
     handleToggleConfirmationPopup = () => {
         this.props.setConfirmationPopup({ isOpen: !this.props.confirmationPopup.isOpen });
         this.refs.form.setSubmitting(false);
-    }
+    };
 
     handleToggleResetConfirmationPopup = () => {
         this.props.setResetConfirmationPopup({ isOpen: false });
-    }
+    };
 
     handleToggleEditConfirmationPopup = () => {
         this.props.setEditConfirmationPopup({ isOpen: false });
-    }
+    };
 
     handleConfirm = () => {
         this.props.setConfirmationPopup({ isOpen: false });
@@ -178,7 +180,7 @@ export class AppContainer extends React.Component {
             content: values.content.trim(),
             sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
             sendImmediately: values.sendMode === '1',
-            platforms: values.platforms.length > 0 ?  values.platforms.map(item => item.value).join(',') : ''
+            platforms: values.platforms
         });
 
         this.props.createNewNotification(data).then(() => {
@@ -189,7 +191,7 @@ export class AppContainer extends React.Component {
                 }, 3000);
             }
         });
-    }
+    };
 
     schema = object().shape({
         notificationTypeId: string().required(Labels.FieldRequired),
@@ -201,7 +203,7 @@ export class AppContainer extends React.Component {
             .when('sendMode', (sendMode, schema) => sendMode === '2' ?
                 schema.required(Labels.FieldRequired).min(Today, field => `Send date must be later than ${field.min.toLocaleString()}`)
                 : schema)
-    })
+    });
 
     renderNotificationTypeOption = item => <option key={item.notificationTypeID} value={item.notificationTypeID} >{item.notificationTypeName}</option>
 
@@ -225,39 +227,36 @@ export class AppContainer extends React.Component {
         const message = values.sendMode === '1' ? 'Do you want to send the notification to the selected recipient(s) immediately?'
             : `Do you want to send the notification to the selected recipient(s)  at ${formatDate}?`;
         this.props.setConfirmationPopup({ isOpen: true, content: message });
-    }
+    };
 
-    handleNotificationTypeChange = async event => {
+    handleNotificationTypeChange = event => {
         const value = event.target.value;
         const formik = this.refs.form;
         var platforms = '';
-        await this.props.getPlatforms(event.target.value);
-        if (this.props.platforms.length > 0) {
-            platforms = this.props.platforms.map(item => item.platformId).join(',');
-            this.setState({
-                platformOptions: [{
-                    value: platforms,
-                    title: 'All Platform',
-                    children: this.props.platforms.map(item => ({ value: item.platformId, title: item.platformName }))
-                }]
+        this.props.getPlatforms(event.target.value).then(response => {
+            if (response.data.length > 0) {
+                platforms = response.data.map(item => item.platformId).join(',');
+                const platformOptions = response.data.map(item => { return { id: item.platformId, name: item.platformName, checked: true }});
+                this.setState({ platformOptions: platformOptions });
+            } else {
+                this.setState({ platformOptions: [] });
+            }
+
+            formik.setFieldValue('platforms', platforms);
+            this.props.getRecipients(value, platforms, '',formik.state.values.productId, formik.state.values.channelIds);
+            this.props.getNotificationTemplates(value);
+            formik.setValues({
+                ...formik.state.values,
+                notificationTypeId: value,
+                recipients: [],
+                templateId: '',
+                params: [],
+                title: '',
+                content: ''
             });
-            formik.setFieldValue('platforms', this.state.platformOptions[0].children);
-        } else {
-            this.setState({ platformOptions: [] });
-        }
-        this.props.getRecipients(value, platforms, formik.state.values.productId, formik.state.values.channelIds);
-        this.props.getNotificationTemplates(value);
-        formik.setValues({
-            ...formik.state.values,
-            notificationTypeId: value,
-            recipients: [],
-            templateId: '',
-            params: [],
-            title: '',
-            content: ''
+            this.setState({ searchValue: '', searchPlatformValue: '' });
         });
-        this.setState({ searchValue: '', searchPlatformValue: '' });
-    }
+    };
 
     handleTemplateChange = event => {
         const formik = this.refs.form;
@@ -288,7 +287,7 @@ export class AppContainer extends React.Component {
                 canEditTitleContent: true
             });
         }
-    }
+    };
 
     handleProductChange = async event => {
         const formik = this.refs.form;
@@ -309,32 +308,40 @@ export class AppContainer extends React.Component {
         if (!this.props.recipientOptions.find(item => parseInt(item.value, 10) === 1)) {
             formik.setFieldValue('platforms', []);
         }
-    }
+    };
 
-    handlePlatformChange = value => {
+    getRealValue = value => {
+        const arrValue = value.split('-');
+        const arrLength = arrValue.length - 1;
+        return parseInt(arrValue[arrLength], 10);
+    };
+
+    handlePlatformChange = async value => {
         const formik = this.refs.form;
         formik.setFieldValue('platforms', value);
 
-        var platforms = '';
-        if (value.length > 0) {
-            platforms = value.map(item => item.value).join(',');
+        var recipients = '';
+        if (formik.state.values.recipients.length > 0) {
+            recipients = formik.state.values.recipients.map(item => this.getRealValue(item.value)).join(',');
         }
-        this.props.getRecipients(formik.state.values.notificationTypeId, platforms, formik.state.values.productId, formik.state.values.channelIds);
+
+        await this.props.getRecipients(formik.state.values.notificationTypeId, value, recipients,formik.state.values.productId, formik.state.values.channelIds);
 
         if (formik.state.values.recipients.length > 0) {
-            formik.setFieldValue('recipients', []);
+            const valuesRecipients = formik.state.values.recipients.filter(item => this.props.selectedRecipients.includes(this.getRealValue(item.value)));
+            formik.setFieldValue('recipients', valuesRecipients);
         }
     };
 
     handleRecipientChange = (value, label, extra) => {
         const formik = this.refs.form;
         formik.setFieldValue('recipients', value);
-    }
+    };
 
     handleResetTitleContent = () => {
         const message = 'Reset Title and Content will recover the original template and discard your changes.';
         this.props.setResetConfirmationPopup({ isOpen: true, content: message });
-    }
+    };
 
     handleConfirmResetTitleContent = () => {
         this.props.setResetConfirmationPopup({ isOpen: false });
@@ -350,18 +357,18 @@ export class AppContainer extends React.Component {
             canEditTitleContent: false,
             params: formik.state.values.params.map(x => ({ name: x.name, value: '' }))
         });
-    }
+    };
 
     handleEditTitleContent = () => {
         const message = 'You can edit the Title and Content but the system doesn\'t support manually change the text in {}';
         this.props.setEditConfirmationPopup({ isOpen: true, content: message });
-    }
+    };
 
     handleConfirmEditTitleContent = () => {
         this.props.setEditConfirmationPopup({ isOpen: false });
         const formik = this.refs.form;
         formik.setFieldValue('canEditTitleContent', true);
-    }
+    };
 
     handleReplaceParamsWithValue = () => {
         const formik = this.refs.form;
@@ -383,13 +390,13 @@ export class AppContainer extends React.Component {
             title,
             content
         });
-    }
+    };
 
     handleGerneratePreview = markdown => {
         return Promise.resolve(
             <ContentPreview text={markdown} />
         );
-    }
+    };
 
     onChangeSearch = value => {
         this.setState({ searchValue: value }, () => {
@@ -397,7 +404,7 @@ export class AppContainer extends React.Component {
                 this.debounceHandleSearchRecipents(value);
             }
         });
-    }
+    };
 
     handleSearchRecipents = value => {
         let recipients = value.replace(/[,;\t]+/g, ',');
@@ -423,7 +430,7 @@ export class AppContainer extends React.Component {
         const updateValues = [...formik.state.values.recipients, ...this.searchRecipients];
         formik.setFieldValue('recipients', updateValues);
         this.setState({ searchValue: recipients.join(',') });
-    }
+    };
 
     isValidSearchRecipients = (result, label, recipient) => {
         if (recipient.title.toUpperCase() === label.toUpperCase()) {
@@ -443,7 +450,7 @@ export class AppContainer extends React.Component {
                 }
             }
         }
-    }
+    };
 
     handleOpenMarkdownRulesPopup = () => this.props.setMarkdownRulesPopup({ isOpen: true });
 
@@ -459,6 +466,14 @@ export class AppContainer extends React.Component {
         isSubmitting
     }) => {
         const isValidContentLength = values.content.trim().length <= this.messageContentLength;
+        const platformOptions = this.state.platformOptions.map(item => {
+            return {
+                id: item.id,
+                name: item.name,
+                checked: values.platforms.split(',').includes(item.id.toString())
+            }
+        });
+
         return (
             <Form onSubmit={handleSubmit} className="new-notification-form">
                 {
@@ -692,14 +707,14 @@ const mapStateToProps = state => {
     return {
         notificationTypes: state.notificationTypes,
         products: state.products,
-        recipientOptions: state.recipients,
+        recipientOptions: state.recipients.recipientOptions,
+        selectedRecipients: state.recipients.selectedRecipients,
         createNotificationResult: state.createNotificationResult,
         confirmationPopup: state.confirmationPopup,
         notificationTemplates: state.notificationTemplates,
         resetConfirmationPopup: state.resetConfirmationPopup,
         editConfirmationPopup: state.editConfirmationPopup,
-        markdownRulesPopup: state.markdownRulesPopup,
-        platforms: state.platforms
+        markdownRulesPopup: state.markdownRulesPopup
     };
 };
 
