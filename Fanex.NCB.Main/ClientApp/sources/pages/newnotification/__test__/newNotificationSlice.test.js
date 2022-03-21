@@ -3,7 +3,6 @@ import newNotification, {
     setNotificationTemplates,
     setProducts,
     setRecipients,
-    setPlatforms,
     setConfirmationPopup,
     setResetConfirmationPopup,
     setEditConfirmationPopup,
@@ -18,7 +17,6 @@ describe('newNotificationSlice reducer', () => {
             notificationTemplates: [],
             products: [],
             recipients: [],
-            platforms: [],
             confirmationPopup: {
                 isOpen: false,
                 content: ''
@@ -77,17 +75,6 @@ describe('newNotificationSlice reducer', () => {
             })
         ).toEqual({
             recipients: [{ id: 1, name: 'test' }]
-        });
-    });
-
-    it('should handle setPlatforms', () => {
-        expect(
-            newNotification({}, {
-                type: setPlatforms.type,
-                payload: [{ platformId: 1, platformName: 'test' }]
-            })
-        ).toEqual({
-            platforms: [{ platformId: 1, platformName: 'test' }]
         });
     });
 

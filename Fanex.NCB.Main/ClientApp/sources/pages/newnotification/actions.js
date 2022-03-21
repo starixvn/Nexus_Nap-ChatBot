@@ -5,7 +5,6 @@ import {
     setNotificationTemplates,
     setProducts,
     setRecipients,
-    setPlatforms,
     setConfirmationPopup,
     setResetConfirmationPopup,
     setEditConfirmationPopup,

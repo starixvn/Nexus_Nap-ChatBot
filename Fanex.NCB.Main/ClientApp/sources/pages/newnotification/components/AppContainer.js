@@ -498,13 +498,16 @@ export class AppContainer extends React.Component {
                 </FormGroup>
                 <FormGroup>
                     <Label for="platforms" className="form-label">Platform</Label>
-                    <div className="new-platform-notification-select-tree">
-                        <TreeSelect value={values.platforms} onChange={this.handlePlatformChange}
-                            treeData={this.state.platformOptions}
-                            onSearch={this.onChangePlatformSearch} searchValue={this.state.searchPlatformValue} placeholder={Labels.None}
-                            defaultValue={this.state.initValue.platforms}
-                        />
-                    </div>
+                    <MultipleSelect
+                        dataSource={platformOptions}
+                        hasNoneOption
+                        keyField='id' valueField='name'
+                        maxDisplayItemCount={2}
+                        hasAllOption={platformOptions.length > 0}
+                        onChange={(currentItem, selectedItemsKey) => {
+                            this.handlePlatformChange(selectedItemsKey);
+                        }}
+                    />
                 </FormGroup>
                 <FormGroup>
                     <Label for="productId" className="form-label required">Recipients</Label>

@@ -733,58 +733,6 @@ describe('AppContainer', () => {
         });
     });
 
-    describe('onChangePlatformSearch', () => {
-        it('should set state exactly', () => {
-            // Arrange 
-            const props = {
-                ...initProps,
-                platforms: [{ platformId: 1, platformName: 'test' }]
-            };
-            const value = 'test';
-            const container = shallow(<AppContainer {...props}/>).instance();
-
-            // Act
-            container.onChangePlatformSearch(value);
-
-            // Assert
-            expect(container.state.searchPlatformValue).toEqual('test');
-        });
-    });
-
-    describe('handleSearchPlatform', () => {
-        it('should set values exactly', () => {
-            // Arrange 
-            const props = {
-                ...initProps,
-                getRecipients: jest.fn()
-            };
-            const value = 'test';
-            const container = shallow(<AppContainer {...props}/>).instance();
-            container.refs = {
-                form: {
-                    state: {
-                        values: {
-                            platforms: [{ title: 'test', value: 1 }],
-                            notificationTypeId: 1,
-                            productId: 1,
-                            channelIds: '1,2'
-                        }
-                    },
-                    setFieldValue: jest.fn()
-                }
-            };
-            container.setState({platformOptions: [{children: [{title: 'test', value: 1}], title: 'All Platform', value: '1'}]});
-
-            // Act
-            container.handleSearchPlatform(value);
-
-            // Assert
-            expect(container.refs.form.setFieldValue).toHaveBeenCalledWith('platforms',[{title: 'test', value: 1}, {label: 'test', value: 1}]);
-            expect(container.state.searchPlatformValue).toEqual('');
-            expect(props.getRecipients).toHaveBeenCalledWith(1, '1,1', 1, '1,2');
-        });
-    });
-
     describe('onChangeSearch', () => {
         it('should set state exactly', () => {
             // Arrange 

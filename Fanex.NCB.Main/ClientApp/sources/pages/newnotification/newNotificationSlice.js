@@ -1,4 +1,4 @@
-﻿import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 const newNotificationSlice = createSlice({
     name: 'NewNotification',
@@ -64,7 +64,6 @@ export const {
     setNotificationTemplates,
     setProducts,
     setRecipients,
-    setPlatforms,
     setConfirmationPopup,
     setResetConfirmationPopup,
     setEditConfirmationPopup,
