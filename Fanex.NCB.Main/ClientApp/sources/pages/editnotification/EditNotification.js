@@ -372,7 +372,7 @@ export default class EditNotification extends React.Component {
                         <TreeSelect value={values.recipients} onChange={this.handleRecipientChange} placeholder={Labels.PleaseSelect}
                             treeData={this.state.recipientOptions} className={isRecipientInvalid && invalidFieldClass}
                             onSearch={this.onChangeSearch} searchValue={this.state.searchValue}
-                            defaultValue={this.state.initialObj.recipients}
+                            defaultValue={this.state.initialObj.recipients} treeDefaultExpandAll
                         />
                         {isRecipientInvalid && <FormFeedback>{errors.recipients.value}</FormFeedback>}
                     </Col>
