@@ -12,6 +12,8 @@
 
         public string Platforms { get; set; }
 
+        public string RecipientIds { get; set; }
+
         public override string GetSettingKey() => "NCB_NewNotification_Recipient_Sel";
 
         public override bool IsValid() => NotificationTypeId > 0;

@@ -80,14 +80,16 @@
             }
         }
 
-        public async Task<IEnumerable<Recipient>> GetRecipientsAsync(int notificationTypeId, string platforms, int? productId = null, string channelIds = null)
+        public async Task<(IEnumerable<Recipient>, IEnumerable<uint>)> GetRecipientsAsync
+        (int notificationTypeId, string platforms, string recipientIds, int? productId = null, string channelIds = null)
         {
-            return await baseService.GetDataAsync<Recipient>(new GetRecipientsCriteria
+            return await baseService.FetchMultipleAsync<Recipient, uint>(new GetRecipientsCriteria
             {
                 NotificationTypeId = notificationTypeId,
                 Platforms = platforms,
                 ProductId = productId,
-                ChannelIdLst = channelIds
+                ChannelIdLst = channelIds,
+                RecipientIds = recipientIds
             });
         }
 
@@ -217,14 +219,16 @@
             return result;
         }
 
-        public async Task<IEnumerable<Recipient>> GetEditNotificationRecipientsAsync(int notificationId, int notificationTypeId, int? productId, string platforms)
+        public async Task<(IEnumerable<Recipient>, IEnumerable<uint>)>GetEditNotificationRecipientsAsync
+        (int notificationId, int notificationTypeId, int? productId, string platforms, string recipientIds)
         {
-            return await baseService.GetDataAsync<Recipient>(new GetEditNotificationRecipientsCriteria
+            return await baseService.FetchMultipleAsync<Recipient, uint>(new GetEditNotificationRecipientsCriteria
             {
                 NotificationId = notificationId,
                 NotificationTypeId = notificationTypeId,
                 ProductId = productId,
-                Platforms = platforms
+                Platforms = platforms,
+                RecipientIds = recipientIds
             });
         }
 

@@ -5,6 +5,7 @@
     using Fanex.NCB.Criteria.Common;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services.Interfaces;
 
     public class CommonService : ICommonService
@@ -21,9 +22,9 @@
             return await baseService.GetDataAsync<NotificationType>(new GetNotificationTypesCriteria());
         }
 
-        public async Task<IEnumerable<Product>> GetProductsAsync()
+        public async Task<IEnumerable<Models.Common.Product>> GetProductsAsync()
         {
-            return await baseService.GetDataAsync<Product>(new GetProductsCriteria());
+            return await baseService.GetDataAsync<Models.Common.Product>(new GetProductsCriteria());
         }
 
         public async Task<IEnumerable<NotificationStatus>> GetNotificationStatusesAsync()
@@ -44,6 +45,15 @@
         public async Task<IEnumerable<ConversationChannel>> GetConversationChannelAsync()
         {
             return await baseService.GetDataAsync<ConversationChannel>(new GetConversationChannelCriteria());
+        }
+
+        public Task<IEnumerable<Platform>> GetPlatformAsync(int notificationTypeId)
+        {
+            var criteria = new GetPlatformCriteria
+            {
+                NotificationTypeId = notificationTypeId
+            };
+            return baseService.GetDataAsync<Platform>(criteria);
         }
     }
 }

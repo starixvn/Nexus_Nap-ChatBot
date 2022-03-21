@@ -27,7 +27,5 @@
         IEnumerable<BaseModel> GetAllMappingStatus();
 
         Task<IEnumerable<BaseModel>> GetSystemAsync();
-
-        Task<IEnumerable<Platform>> GetPlatformAsync(int notificationTypeId);
     }
 }

@@ -48,13 +48,13 @@
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
-        public async Task<IActionResult> GetRecipients(int notificationId, int notificationTypeId, int? productId, string platforms)
+        public async Task<IActionResult> GetRecipients(int notificationId, int notificationTypeId, int? productId, string platforms, string recipientIds)
         {
-            var result = await notificationService.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId, platforms);
+            var result = await notificationService.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId, platforms, recipientIds);
+            var (recipients, selectedRecipients) = result;
+            var tree = GenerateTreeHelper.FromRecipient(recipients);
 
-            var tree = GenerateTreeHelper.FromRecipient(result);
-
-            return Json(tree);
+            return Json(new { recipients = tree, selectedRecipients });
         }
 
         [HttpPost]

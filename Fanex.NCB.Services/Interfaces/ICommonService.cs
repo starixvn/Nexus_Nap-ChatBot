@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.Services.Interfaces
 {
     using Fanex.NCB.Models.Common;
+    using Fanex.NCB.Shared.Models.OIC;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -8,7 +9,7 @@
     {
         Task<IEnumerable<NotificationType>> GetNotificationTypesAsync();
 
-        Task<IEnumerable<Product>> GetProductsAsync();
+        Task<IEnumerable<Models.Common.Product>> GetProductsAsync();
 
         Task<IEnumerable<Recipient>> GetRecipientsAsync();
 
@@ -17,5 +18,7 @@
         Task<IEnumerable<User>> GetUsersAsync();
 
         Task<IEnumerable<ConversationChannel>> GetConversationChannelAsync();
+
+        Task<IEnumerable<Platform>> GetPlatformAsync(int notificationTypeId);
     }
 }

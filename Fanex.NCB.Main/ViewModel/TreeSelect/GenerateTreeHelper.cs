@@ -31,8 +31,7 @@
                             {
                                 Title = x.RecipientName,
                                 Value = $"{key.RecipientTypeId}-{licensee.LicenseeTypeId}-{x.RecipientId}",
-                                RealValue = x.RecipientId,
-                                PlatformId = x.PlatformId ?? null
+                                RealValue = x.RecipientId
                             })
                         };
                     }));

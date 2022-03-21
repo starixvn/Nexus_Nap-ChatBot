@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Criteria.Setting
+﻿namespace Fanex.NCB.Criteria.Common
 {
     using Fanex.Data.Repository;
 
@@ -6,7 +6,7 @@
     {
         public int NotificationTypeId { get; set; }
 
-        public override string GetSettingKey() => "NCB_Setting_Platform_Sel";
+        public override string GetSettingKey() => "NCB_Common_Platform_Sel";
 
         public override bool IsValid() => NotificationTypeId > 0;
     }

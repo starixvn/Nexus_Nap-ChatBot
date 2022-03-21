@@ -74,5 +74,13 @@
 
             return Json(result);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPlatforms(int notificationTypeId)
+        {
+            var platforms = await commonService.GetPlatformAsync(notificationTypeId);
+
+            return Json(platforms);
+        }
     }
 }

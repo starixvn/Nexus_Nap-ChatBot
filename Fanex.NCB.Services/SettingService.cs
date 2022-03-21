@@ -93,14 +93,5 @@
 
             return baseService.GetDataAsync<BaseModel>(criteria);
         }
-
-        public Task<IEnumerable<Platform>> GetPlatformAsync(int notificationTypeId)
-        {
-            var criteria = new GetPlatformCriteria
-            {
-                NotificationTypeId = notificationTypeId
-            };
-            return baseService.GetDataAsync<Platform>(criteria);
-        }
     }
 }
