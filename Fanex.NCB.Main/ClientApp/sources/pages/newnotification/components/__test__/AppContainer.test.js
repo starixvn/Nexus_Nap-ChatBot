@@ -524,7 +524,8 @@ describe('AppContainer', () => {
             const props = {
                 ...initProps,
                 getRecipients: jest.fn(),
-                recipientOptions: []
+                recipientOptions: [],
+                selectedRecipients: [123, 456]
             };
             const mockEvent = { target: { value: 5 }};
 
@@ -534,9 +535,9 @@ describe('AppContainer', () => {
                     state: {
                         values: {
                             notificationTypeId: 1,
-                            platforms: [{ value: 1, title: 'test' }],
+                            platforms: '1,2',
                             channelIds: '1,2',
-                            recipients: [{ id: 1 }]
+                            recipients: [{ id: 1, value: '1-1-123' }]
                         }
                     },
                     setValues: jest.fn(),
@@ -548,10 +549,9 @@ describe('AppContainer', () => {
             await container.handleProductChange(mockEvent);
 
             // Assert
-            expect(props.getRecipients).toHaveBeenCalledWith(1, '1', 5, '1,2');
+            expect(props.getRecipients).toHaveBeenCalledWith(1, '1,2', '123', 5, '1,2');
             expect(container.refs.form.setFieldValue).toHaveBeenCalledWith('productId', 5);
-            expect(container.refs.form.setFieldValue).toHaveBeenCalledWith('recipients', []);
-            expect(container.refs.form.setFieldValue).toHaveBeenCalledWith('platforms', []);
+            expect(container.refs.form.setFieldValue).toHaveBeenCalledWith('recipients', [{ id: 1, value: '1-1-123' }]);
         });
     });
 

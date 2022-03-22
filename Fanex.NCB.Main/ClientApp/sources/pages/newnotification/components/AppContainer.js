@@ -294,19 +294,17 @@ export class AppContainer extends React.Component {
         const value = event.target.value;
         formik.setFieldValue('productId', value);
 
-        var platforms = '';
-        if (formik.state.values.platforms.length > 0) {
-            platforms = formik.state.values.platforms.map(item => item.value).join(',');
+        var platforms = formik.state.values.platforms;
+        var recipients = '';
+        if (formik.state.values.recipients.length > 0) {
+            recipients = formik.state.values.recipients.map(item => this.getRealValue(item.value)).join(',');
         }
 
-        await this.props.getRecipients(formik.state.values.notificationTypeId, platforms, value, formik.state.values.channelIds);
+        await this.props.getRecipients(formik.state.values.notificationTypeId, platforms, recipients, value, formik.state.values.channelIds);
 
         if (formik.state.values.recipients.length > 0) {
-            formik.setFieldValue('recipients', []);
-        }
-
-        if (!this.props.recipientOptions.find(item => parseInt(item.value, 10) === 1)) {
-            formik.setFieldValue('platforms', []);
+            const valuesRecipients = formik.state.values.recipients.filter(item => this.props.selectedRecipients.includes(this.getRealValue(item.value)));
+            formik.setFieldValue('recipients', valuesRecipients);
         }
     };
 
