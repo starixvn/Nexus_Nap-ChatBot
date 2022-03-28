@@ -22,17 +22,17 @@
             text = Regex.Replace(text, @"(\\\*\\\*)(.+?[^\\])(\*\*)", BoldRegex);
             text = Regex.Replace(text, @"(\\\*\*)(.+?)(\\\*\*)", BoldRegex);
             text = Regex.Replace(text, @"(\\\*\*)(.+?[^\\])(\*\*)", BoldRegex);
-            text = Regex.Replace(text, @"([^\\]\*\*)(.+?[^\\])(\*\*)", "<b>$2</b>");
+            text = Regex.Replace(text, @"(\*\*)(.+?[^\\])(\*\*)", "<b>$2</b>");
 
             text = Regex.Replace(text, @"(\\\*)(.+?)(\\\*)", "\\*$2\\*"); // italic
             text = Regex.Replace(text, @"(\\\*)(.+?[^\\])(\*)", "\\*$2\\*");
-            text = Regex.Replace(text, @"([^\\]\*)(.+?[^\\])(\*)", "<i>$2</i>");
+            text = Regex.Replace(text, @"(\*)(.+?[^\\])(\*)", "<i>$2</i>");
 
             text = Regex.Replace(text, @"(\\~\\~)(.+?)(\\~~)", "~\\~$2~\\~"); // strikethrough
             text = Regex.Replace(text, @"(\\~\\~)(.+?[^\\])(~~)", "\\~\\~$2\\~\\~");
             text = Regex.Replace(text, @"(\\~~)(.+?)(\\~~)", "~\\~$2~\\~");
             text = Regex.Replace(text, @"(\\~~)(.+?[^\\])(~~)", "~\\~$2\\~\\~");
-            text = Regex.Replace(text, @"([^\\]~~)(.+?[^\\])(~~)", "<s>$2</s>");
+            text = Regex.Replace(text, @"(~~)(.+?[^\\])(~~)", "<s>$2</s>");
 
             // escape
             text = EscapeSpecialSyntax(text);
