@@ -40,7 +40,7 @@
             // revert
             text = Regex.Replace(text, @"(\\<b>)(.+?)(</b>)", "\\*\\*$2\\*\\*");
             text = Regex.Replace(text, @"(\\<i>)(.+?)(</i>)", "\\*$2\\*");
-            text = Regex.Replace(text, "(<b>)(.+?)(</b>)", "\n*$2*");
+            text = Regex.Replace(text, "(<b>)(.+?)(</b>)", "*$2*");
             text = Regex.Replace(text, "(<i>)(.+?)(</i>)", "_$2_");
             text = Regex.Replace(text, "(<s>)(.+?)(</s>)", "~$2~");
 
