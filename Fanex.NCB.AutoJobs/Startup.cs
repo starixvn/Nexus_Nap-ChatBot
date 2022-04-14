@@ -141,6 +141,7 @@
             services.AddSingleton<IBaseRepository, BaseRepository>();
             services.AddSingleton<ISyncDataRepository, SyncDataRepository>();
             services.AddSingleton<IViewLogService, ViewLogService>();
+            services.AddSingleton<IProblemAccountService, ProblemAccountService>();
         }
 
         private static void AddWorker(IServiceCollection services)
@@ -154,6 +155,7 @@
             services.AddHostedService<MonitorChatbotWorker>();
             services.AddHostedService<MonitorTelegramBotWorker>();
             services.AddHostedService<DeleteOldConversationMessageLogWorker>();
+            services.AddHostedService<SendMessageProblemAccountWorker>();
         }
     }
 }

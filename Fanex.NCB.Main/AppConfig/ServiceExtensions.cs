@@ -40,6 +40,7 @@
             services.AddScoped<ISignalRService, SignalRService>();
             services.AddScoped<IPushSignalService, PushSignalService>();
             services.AddScoped<IResetLastMessageIdService, ResetLastMessageIdService>();
+            services.AddScoped<IProblemAccountService, ProblemAccountService>();
 
             services.AddSingleton<IUMCacheService, UMCacheService>();
             services.AddSingleton<IUMRestClient, UMRestClient>();

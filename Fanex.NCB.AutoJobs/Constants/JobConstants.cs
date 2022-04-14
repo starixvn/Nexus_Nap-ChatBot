@@ -19,5 +19,7 @@
         public const string MonitorTelegramBot = "MonitorTelegramBot";
 
         public const string DeleteOldConversationMessageLog = "DeleteOldConversationMessageLog";
+
+        public const string SendMesageProblemAccount = "SendMessageProblemAccount";
     }
 }

@@ -28,6 +28,8 @@
         <Setting Key="NAP_Chatbot_MsgChatBot_Ins" SpName="NAP_Chatbot_MsgChatBot_Ins" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_Chatbot_SiteMesssage_EventInfo_Sel" SpName="NAP_Chatbot_SiteMesssage_EventInfo_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NCB_SiteMessage_Import" SpName="NCB_SiteMessage_Import_xpre" DbName="ChatBot" Plain="0" />
+    </Function>
+    <Function Name="Problem Account">
         <Setting Key="NCB_MsgSetting_ProblemAccounts" SpName="NCB_MsgSetting_ProblemAccounts_xtest" DbName="ChatBot" Plain="0" />
         <Setting Key="NAP_Chatbot_ProblemAccounts_Sel" SpName="NAP_Chatbot_ProblemAccounts_Sel_xtest" DbName="DBCUST.CustDB.bodbAdminNet" Plain="0" />
         <Setting Key="NCB_ProblemAccount_Import" SpName="NCB_ProblemAccount_Import_xtest" DbName="ChatBot" Plain="0" />
