@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.AutoJobs
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Fanex.Data;
@@ -22,6 +23,7 @@
     using Fanex.NCB.Shared.Repositories;
     using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Fanex.RemotingRef;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
@@ -100,6 +102,13 @@
                 })
             });
 
+            RefDataTypeContainer
+            .ConnectTo(new Uri(configuration.GetSection("RemotingRefService:Fanex.RemotingRef.Service.Url").Value))
+            .FromApplication("Fanex.NCB.AutoJobs");
+
+            services.Configure<IConfiguration>(configuration);
+            services.AddSingleton<IRemotingRefService, RemotingRefService>();
+
             ExceptionHandler
                 .UseConfig(new LoggingConfiguration())
                 .UseGetDbExceptionInfo(DatabaseInfoGetters.GetDbExceptionInfo);
@@ -141,6 +150,7 @@
             services.AddSingleton<IBaseRepository, BaseRepository>();
             services.AddSingleton<ISyncDataRepository, SyncDataRepository>();
             services.AddSingleton<IViewLogService, ViewLogService>();
+            services.AddSingleton<ICommonService, CommonService>();
             services.AddSingleton<IProblemAccountService, ProblemAccountService>();
         }
 

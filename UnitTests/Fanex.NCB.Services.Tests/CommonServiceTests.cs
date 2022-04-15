@@ -7,6 +7,7 @@
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Fanex.RemotingRef;
     using NSubstitute;
     using Xunit;
 
@@ -14,6 +15,7 @@
     {
         private readonly IFixture fixture = new Fixture();
         private IBaseService baseService;
+        private IRemotingRefService remotingRefService;
 
         [Fact]
         public async Task GetNotificationTypesAsync_WhenCalled_ReturnExpectedResult()
@@ -123,8 +125,9 @@
         private CommonService GetService()
         {
             baseService = Substitute.For<IBaseService>();
+            remotingRefService = Substitute.For<IRemotingRefService>();
 
-            return new CommonService(baseService);
+            return new CommonService(baseService, remotingRefService);
         }
     }
 }

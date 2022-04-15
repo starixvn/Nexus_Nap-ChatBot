@@ -7,14 +7,17 @@
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Fanex.RemotingRef;
 
     public class CommonService : ICommonService
     {
         private readonly IBaseService baseService;
+        private readonly IRemotingRefService remotingRefService;
 
-        public CommonService(IBaseService baseService)
+        public CommonService(IBaseService baseService, IRemotingRefService remotingRefService)
         {
             this.baseService = baseService;
+            this.remotingRefService = remotingRefService;
         }
 
         public async Task<IEnumerable<NotificationType>> GetNotificationTypesAsync()
@@ -54,6 +57,12 @@
                 NotificationTypeId = notificationTypeId
             };
             return baseService.GetDataAsync<Platform>(criteria);
+        }
+
+        public string GetCategogyName(string categoryId, string languageCode)
+        {
+            var categoryName = remotingRefService.GetResourceDataByRefIdAndResourceId("Category", categoryId, languageCode, string.Empty);
+            return categoryName;
         }
     }
 }

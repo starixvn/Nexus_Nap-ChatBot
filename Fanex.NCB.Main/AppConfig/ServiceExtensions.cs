@@ -11,6 +11,7 @@
     using Fanex.NCB.Shared.Repositories;
     using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Fanex.RemotingRef;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
@@ -40,6 +41,7 @@
             services.AddScoped<ISignalRService, SignalRService>();
             services.AddScoped<IPushSignalService, PushSignalService>();
             services.AddScoped<IResetLastMessageIdService, ResetLastMessageIdService>();
+            services.AddScoped<IRemotingRefService, RemotingRefService>();
             services.AddScoped<IProblemAccountService, ProblemAccountService>();
 
             services.AddSingleton<IUMCacheService, UMCacheService>();

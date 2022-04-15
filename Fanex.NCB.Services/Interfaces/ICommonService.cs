@@ -20,5 +20,7 @@
         Task<IEnumerable<ConversationChannel>> GetConversationChannelAsync();
 
         Task<IEnumerable<Platform>> GetPlatformAsync(int notificationTypeId);
+
+        string GetCategogyName(string categoryId, string languageCode);
     }
 }

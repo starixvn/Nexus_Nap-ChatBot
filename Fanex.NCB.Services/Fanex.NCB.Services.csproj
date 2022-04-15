@@ -8,6 +8,7 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Fanex.Logging" Version="2.0.1" />
+        <PackageReference Include="Fanex.RemotingRef" Version="1.5.0" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
