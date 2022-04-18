@@ -26,7 +26,7 @@
 
         public override async Task ExecuteJobAsync()
         {
-            await problemAccountService.CreateFromProblemAccountAsync();
+            await problemAccountService.SendMessageProblemAccountAsync();
         }
     }
 }

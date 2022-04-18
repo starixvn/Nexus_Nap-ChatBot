@@ -1,14 +1,16 @@
 ﻿namespace Fanex.NCB.Criteria.ProblemAccount
 {
-    using System.Collections.Generic;
-    using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Models.ProblemAccounts;
+    using Fanex.Data.Repository;
 
-    public class CreateFromProblemAccountCriteria : BaseCommand
+    public class ImportFromProblemAccountCriteria : CriteriaBase
     {
         public string Message { get; set; }
 
         public string CategoryInfo { get; set; }
+
+        public int ErrCode { get; set; }
+
+        public string ErrMsg { get; set; }
 
         public override string GetSettingKey() => "NCB_ProblemAccount_Import";
 
