@@ -6,12 +6,14 @@ const resetLastMessageIdSlice = createSlice({
         selected: [
             { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 0 },
             { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 0 },
-            { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 }
+            { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 },
+            { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 0 }
         ],
         currentMessages: null,
         newMessages: null,
         missingMessageCsd: null,
         missingMessages: null,
+        missingProblemAccount: null,
         editNewMessagePopup: { show: false }
     },
     reducers: {
@@ -30,6 +32,9 @@ const resetLastMessageIdSlice = createSlice({
         setMissingMessageInfo: (state,action) =>{
             state.missingMessages = action.payload;
         },
+        setMissingProblemAccount: (state,action) =>{
+            state.missingProblemAccount = action.payload;
+        },
         setEditNewMessagePopup: (state,action) =>{
             state.editNewMessagePopup = action.payload;
         }
@@ -44,6 +49,7 @@ export const{
     setNewPreviousMaxMessage,
     setMissingMessageCsd,
     setMissingMessageInfo,
+    setMissingProblemAccount,
     setEditNewMessagePopup
 } = actions;
 

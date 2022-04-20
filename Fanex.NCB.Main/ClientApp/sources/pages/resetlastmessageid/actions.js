@@ -7,6 +7,7 @@ import {
     setNewPreviousMaxMessage,
     setMissingMessageCsd,
     setMissingMessageInfo,
+    setMissingProblemAccount,
     setEditNewMessagePopup
 } from './resetLastMessageIdSlice';
 
@@ -38,6 +39,13 @@ const getMissingMessageInfo = params => async dispatch => {
     });
 };
 
+const getMissingProblemAccount = params => async dispatch => {
+    const url = Site.resolveClientUrl('ResetLastMessageId/GetMissingProblemAccount');
+    await DataService.postDataAsync(url,params).then(response => {
+        dispatch(setMissingProblemAccount(response.data));
+    });
+};
+
 const createMissingMessage = params => async () => {
     const url = Site.resolveClientUrl('ResetLastMessageId/CreateMissingMessage');
     return await DataService.postDataAsync(url,params).then(response => response);
@@ -54,6 +62,7 @@ export const ActionCreators = {
     getNewPreviousMaxMessage,
     getMissingMessageCsd,
     getMissingMessageInfo,
+    getMissingProblemAccount,
     setEditNewMessagePopup,
     createMissingMessage,
     editMessageInfo

@@ -27,7 +27,7 @@
                 {
                     xml.AppendFormat("<r JobIdentify='{0}' MessageId='{1}'/>",
                         message.JobIdentify,
-                        message.MessageId);
+                        message.ReferenceId);
                 }
                 xml.Append("</root>");
                 return xml.ToString();

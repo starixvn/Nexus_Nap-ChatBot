@@ -28,10 +28,21 @@ export class EditNewMessage extends Component {
         this.props.setEditNewMessagePopup({ show: false });
     };
 
+    getData = () => {
+        const { data, id } = this.props;
+        let missingData;
+        if (id !== 4) {
+            missingData = this.props.data.filter(item => item.jobIdentify === id);
+        } else {
+            missingData = data;
+        }
+        return missingData;
+    };
+
     toggleExpandPanels = () => {
-        const data = this.props.missingMessages.filter(item => item.jobIdentify === this.props.id);
+        const missingData = this.getData();
         this.setState(prevState => ({ expandPanels: !prevState.expandPanels }), () => {
-            if (data.length > 0) {
+            if (missingData.length > 0) {
                 this.panels.filter(x => x && (x.state.isOpen !== this.state.expandPanels)).forEach(panel => {
                     panel.handleSet(this.state.expandPanels);
                 });
@@ -40,26 +51,27 @@ export class EditNewMessage extends Component {
     };
 
     buildHeader = () => {
+        const { id } = this.props;
         return (
             <Row>
                 <Cell colWidth={5} header>{Labels.Select}</Cell>
-                <Cell colWidth={8} header>{Labels.MessageID}</Cell>
+                <Cell colWidth={8} header>{id === 4 ? Labels.ID : Labels.MessageID}</Cell>
                 <Cell colWidth={45} header>
                     <div className="has-icons">
                         {Labels.Content_en}
                         <span className={this.state.expandPanels ? 'icon-collapse' : 'icon-expand'} onClick={this.toggleExpandPanels} />
                     </div>
                 </Cell>
-                <Cell colWidth={14} header>{`${Labels.PostTime} (GMT +8)`}</Cell>
+                <Cell colWidth={14} header>{`${id === 4 ? Labels.Date : Labels.PostTime} (GMT +8)`}</Cell>
             </Row>
         );
     };
 
     buildBody = () => {
-        const data = this.props.missingMessages.filter(item => item.jobIdentify === this.props.id);
+        const missingData = this.getData();
 
-        if (data.length > 0) {
-            return data.map((item, index) => this.renderRow(item, index));
+        if (missingData.length > 0) {
+            return missingData.map((item, index) => this.renderRow(item, index));
         }
 
         return [<Row key={`body${1}`} ><Cell colSpan="4"><NoDataTitle /></Cell></Row>];
@@ -101,14 +113,14 @@ export class EditNewMessage extends Component {
     );
 
     render() {
-        const { missingMessages } = this.props;
-        if (missingMessages === null)
+        const { data, id } = this.props;
+        if (data === null)
             return null;
 
         return (
             <Modal isOpen toggle={this.handleClose} className="edit-new-message" backdrop="static" size="lg">
                 <ModalHeader toggle={this.handleClose}>
-                    {`${Labels.NewPreviousMaxMessageIDFor} ${this.props.title}`}
+                    {`${ id === 4 ? Labels.NewPreviousMaxIDFor : Labels.NewPreviousMaxMessageIDFor} ${this.props.title}`}
                 </ModalHeader>
                 <ModalBody>
                     <Label className="form-label">List of missing messages:</Label>
@@ -135,8 +147,8 @@ export class EditNewMessage extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { missingMessages, selected } = state;
-    return { missingMessages, selected };
+    const { selected } = state;
+    return { selected };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditNewMessage);

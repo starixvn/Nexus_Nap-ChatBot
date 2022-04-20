@@ -80,6 +80,15 @@
         }
 
         [HttpPost]
+        [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Read)]
+        public async Task<IActionResult> GetMissingProblemAccount([FromBody] GetMissingProblemAccountCriteria criteria)
+        {
+            var (logId, missingProblemAccount) = await resetLastMessageIdService.GetMissingProblemAccountAsync(criteria);
+
+            return Json(new { logId, data = missingProblemAccount });
+        }
+
+        [HttpPost]
         [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Host)]
         public async Task<IActionResult> CreateMissingMessage([FromBody]CreateMissingMessageCommand command)
         {

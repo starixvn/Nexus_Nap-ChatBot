@@ -20,7 +20,7 @@ export class AppContainer extends Component {
         const { editNewMessagePopup } = this.props;
         return (
             <div>
-                <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Reset Last MessageID" />
+                <NCBBreadcrum chatbotName="Skype Chatbot" pageTitle="Reset Last ID" />
                 <Filter/>
                 <DataGrid haveHostPermission={this.haveHostPermission}/>
                 {
@@ -29,6 +29,7 @@ export class AppContainer extends Component {
                         id={editNewMessagePopup.jobIdentify}
                         title={editNewMessagePopup.title}
                         newMaxId={editNewMessagePopup.newMaxMessageId}
+                        data={editNewMessagePopup.data}
                     />
                 }
             </div>

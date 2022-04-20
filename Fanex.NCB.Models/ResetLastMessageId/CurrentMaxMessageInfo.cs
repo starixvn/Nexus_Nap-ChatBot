@@ -4,6 +4,6 @@
     {
         public int JobIdentify { get; set; }
 
-        public int MessageId { get; set; }
+        public int ReferenceId { get; set; }
     }
 }

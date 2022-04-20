@@ -168,5 +168,10 @@
     </Setting>
     <Setting Key="NAP_Chatbot_MissingMesssage_Ins" SpName="NAP_Chatbot_MissingMesssage_Ins" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
     <Setting Key="NCB_JobInfo_Upd" SpName="NCB_JobInfo_Upd" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_MissingProblemAccounts_Sel" SpName="NAP_Chatbot_MissingProblemAccounts_Sel" DbName="DBCUST.CustDB.bodbAdminNet" Plain="0">
+      <Mapping DataField="Content_en" ObjectProperty="Content" />
+      <Mapping DataField="LogId" ObjectProperty="MessageId" />
+      <Mapping DataField="CreatedDate" ObjectProperty="PostTime" />
+    </Setting>
   </Function>
 </Functions>

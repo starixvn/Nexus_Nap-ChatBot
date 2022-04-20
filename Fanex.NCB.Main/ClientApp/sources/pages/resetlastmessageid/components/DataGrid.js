@@ -15,7 +15,7 @@ export class DataGrid extends Component {
         super(props);
 
         this.state = {
-            checked: [false, false, false],
+            checked: [false, false, false, false],
             allChecked: false,
             isSubmitting: true,
             isShowConfirmPopup: false,
@@ -32,11 +32,12 @@ export class DataGrid extends Component {
         await this.props.getCurrentPreviousMaxMessage();
 
         const { currentMessages } = this.props;
-        currentMessages.data.map(item => messageIds.push(item.messageId));
+        const crmNotIncludeJobProPlayer = currentMessages.data.filter(item => item.jobIdentify !== 4);
+        crmNotIncludeJobProPlayer.map(item => messageIds.push(item.referenceId));
         await this.props.getNewPreviousMaxMessage({ messages: messageIds });
 
         const { newMessages } = this.props;
-        const messageIdJobTwo = currentMessages.data.find(item => item.jobIdentify === 2).messageId;
+        const messageIdJobTwo = currentMessages.data.find(item => item.jobIdentify === 2).referenceId;
         const paramMissingMessageCsd = {
             fromMessageId: messageIdJobTwo,
             toMessageId: newMessages.newMaxMessageId,
@@ -45,20 +46,25 @@ export class DataGrid extends Component {
         await this.props.getMissingMessageCsd(paramMissingMessageCsd);
 
         const { missingMessageCsd } = this.props;
-        const messages = currentMessages.data.map(item => {
+        const messages = crmNotIncludeJobProPlayer.map(item => {
             return {
                 jobIdentify: item.jobIdentify,
-                fromMessageId: item.messageId,
+                fromMessageId: item.referenceId,
                 toMessageId: newMessages.newMaxMessageId,
-                postTime: newMessages.messagePostTimeInfos.find(element => element.messageId === item.messageId).postTime
+                postTime: newMessages.messagePostTimeInfos.find(element => element.messageId === item.referenceId).postTime
             }
         });
         const paramMissingMessage = {
             messages: messages,
-            msgContentTypes: currentMessages.messageTypeInfos,
+            msgContentTypes: currentMessages.messageTypeInfos.filter(item => item.jobIdentify !== 4),
             requests: missingMessageCsd
         };
         await this.props.getMissingMessageInfo(paramMissingMessage);
+
+        const paramMissingProblemAccount = {
+            fromLogId : currentMessages.data.find(item => item.jobIdentify === 4).referenceId
+        };
+        await this.props.getMissingProblemAccount(paramMissingProblemAccount);
 
         const { missingMessages, selected } = this.props;
         const newMaxMessageIds = selected.map((item,index) => {
@@ -67,16 +73,17 @@ export class DataGrid extends Component {
             if (newMaxMessageId) {
                 element.newMaxMessageId = newMaxMessageId.messageId;
             } else {
-                element.newMaxMessageId = currentMessages.data[index].messageId
+                element.newMaxMessageId = currentMessages.data[index].referenceId
             }
             return element;
         });
+        newMaxMessageIds[3].newMaxMessageId = this.props.missingProblemAccount.logId[0].toLogId;
         this.props.setSelected(newMaxMessageIds);
     };
 
     isNotEqualCurrentNew = index => {
         const { selected, currentMessages } = this.props;
-        if (selected[index].newMaxMessageId !== currentMessages.data[index].messageId) {
+        if (selected[index].newMaxMessageId !== currentMessages.data[index].referenceId) {
             return true;
         }
         return false;
@@ -85,7 +92,13 @@ export class DataGrid extends Component {
     handleShowEditNewMessage = jobIdentify => {
         const title = this.props.selected.find(item => item.id === jobIdentify).name;
         const newMaxMessageId = this.props.selected.find(item => item.id === jobIdentify).newMaxMessageId;
-        this.props.setEditNewMessagePopup({ show: true, jobIdentify, title, newMaxMessageId });
+        let data;
+        if (jobIdentify === 4) {
+            data = this.props.missingProblemAccount.data
+        } else {
+            data = this.props.missingMessages
+        }
+        this.props.setEditNewMessagePopup({ show: true, jobIdentify, title, newMaxMessageId, data });
     };
 
     handleChange = event => {
@@ -111,7 +124,9 @@ export class DataGrid extends Component {
     };
 
     isAllEqualCurrentNew = () => {
-        if (!this.isNotEqualCurrentNew(0) && !this.isNotEqualCurrentNew(1) && !this.isNotEqualCurrentNew(2)) {
+        const isEqualOneTwo = !this.isNotEqualCurrentNew(0) && !this.isNotEqualCurrentNew(1);
+        const isEqualThreeFour = !this.isNotEqualCurrentNew(2) && !this.isNotEqualCurrentNew(3);
+        if (isEqualOneTwo && isEqualThreeFour) {
             return true;
         }
         return false;
@@ -124,7 +139,7 @@ export class DataGrid extends Component {
         }
         this.setState({ 
             allChecked: !allChecked,
-            checked: [!allChecked,!allChecked,!allChecked],
+            checked: [!allChecked,!allChecked,!allChecked,!allChecked],
             isSubmitting: allChecked
         });
     };
@@ -132,7 +147,7 @@ export class DataGrid extends Component {
     checkCondition = (item, index) => {
         const { selected, currentMessages } = this.props;
         const { checked } = this.state;
-        if (item.messageId > currentMessages.data[index].messageId && item.messageId <= selected[index].newMaxMessageId && checked[index]) {
+        if (item > currentMessages.data[index].referenceId && item <= selected[index].newMaxMessageId && checked[index]) {
             return true;
         }
         return false;
@@ -148,7 +163,7 @@ export class DataGrid extends Component {
 
     isCheckedSubmit = () => {
         const { selected } = this.props;
-        for (let index = 0; index < 3; index++) {
+        for (let index = 0; index <= 3; index++) {
             if (this.isNotEqualCurrentNew(index) && this.state.checked[index] && selected[index].checked) {
                 return true;
             }
@@ -166,26 +181,31 @@ export class DataGrid extends Component {
 
     handleSubmit = async () => {
         this.setState({ isSubmitting: true });
-        const { missingMessages, missingMessageCsd, selected } = this.props;
+        const { missingMessages, missingMessageCsd, selected, missingProblemAccount } = this.props;
         const { checked } = this.state;
         const messages = [], requests = [], jobInfoList = [];
         missingMessages.filter(item => {
-            if (item.jobIdentify === 1 && this.checkCondition(item, 0) && selected[0].checked) {
-                messages.push({jobIdentify: 1, messageId: item.messageId});
-            } else if (item.jobIdentify === 2 && this.checkCondition(item, 1) && selected[1].checked) {
-                messages.push({jobIdentify: 2, messageId: item.messageId});
-            } else if (item.jobIdentify === 3 && this.checkCondition(item, 2) && selected[2].checked){
-                messages.push({jobIdentify: 3, messageId: item.messageId});
+            if (item.jobIdentify === 1 && this.checkCondition(item.messageId, 0) && selected[0].checked) {
+                messages.push({jobIdentify: 1, referenceId: item.messageId});
+            } else if (item.jobIdentify === 2 && this.checkCondition(item.messageId, 1) && selected[1].checked) {
+                messages.push({jobIdentify: 2, referenceId: item.messageId});
+            } else if (item.jobIdentify === 3 && this.checkCondition(item.messageId, 2) && selected[2].checked){
+                messages.push({jobIdentify: 3, referenceId: item.messageId});
+            }
+        });
+        missingProblemAccount.data.filter(item => {
+            if (this.checkCondition(item.messageId, 3) && selected[3].checked) {
+                messages.push({jobIdentify: 4, referenceId: item.messageId});
             }
         });
         missingMessageCsd.filter(item => {
-            if (this.checkCondition(item, 1) && selected[1].checked) {
+            if (this.checkCondition(item.messageId, 1) && selected[1].checked) {
                 requests.push(item);
             }
         });
         selected.map((item, index) => {
             if (item.checked && item.newMaxMessageId !== 0 && checked[index] && this.isNotEqualCurrentNew(index)) {
-                jobInfoList.push({ jobIdentify: item.id, messageId: item.newMaxMessageId });
+                jobInfoList.push({ jobIdentify: item.id, referenceId: item.newMaxMessageId });
             }
         });
 
@@ -253,7 +273,7 @@ export class DataGrid extends Component {
                 }
             </Cell>
             <Cell>{this.props.selected[item.jobIdentify-1].name}</Cell>
-            <Cell className="text-center">{item.messageId}</Cell>
+            <Cell className="text-center">{item.referenceId}</Cell>
             <Cell className="text-center">
                 <div className="new-message">
                     <span className="messageId">{this.props.selected[item.jobIdentify-1].newMaxMessageId}</span>
@@ -295,7 +315,7 @@ export class DataGrid extends Component {
                         onConfirm={this.handleSubmit}
                         onToggle={this.handleCloseConfirm}
                         isOpen={isShowConfirmPopup}
-                        content={Labels.ConfirmResetLastMessageId}
+                        content={Labels.ConfirmResetLastId}
                         warningIcon={false}
                     />
                 }
@@ -307,8 +327,8 @@ export class DataGrid extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { selected, currentMessages, newMessages, missingMessageCsd, missingMessages } = state;
-    return { selected, currentMessages, newMessages, missingMessageCsd, missingMessages };
+    const { selected, currentMessages, newMessages, missingMessageCsd, missingMessages, missingProblemAccount } = state;
+    return { selected, currentMessages, newMessages, missingMessageCsd, missingMessages, missingProblemAccount };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataGrid);
