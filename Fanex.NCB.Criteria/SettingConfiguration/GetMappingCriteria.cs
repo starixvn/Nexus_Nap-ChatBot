@@ -10,6 +10,6 @@
 
         public override string GetSettingKey() => "NCB_SettingConfiguration_Mapping_Sel";
 
-        public override bool IsValid() => MsgContentsType > 0 && JobId > 0;
+        public override bool IsValid() => true;
     }
 }
