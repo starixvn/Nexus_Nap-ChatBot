@@ -34,7 +34,7 @@
         }
 
         [HttpGet]
-        [Route("SettingConfiguration/ResetLastMessageId")]
+        [Route("SettingConfiguration/ResetLastId")]
         [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Read)]
         public IActionResult Index()
         {
