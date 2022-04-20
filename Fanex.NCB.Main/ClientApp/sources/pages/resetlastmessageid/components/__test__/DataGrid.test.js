@@ -18,10 +18,14 @@ describe('DataGrid', () => {
         selected: [
             { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 0 },
             { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 0 },
-            { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 }
+            { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 },
+            { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 0 }
         ],
         currentMessages: {
-            data: [{ jobIdentify: 1, messageId: 1074533320 }, { jobIdentify: 2, messageId: 1074533325 }, { jobIdentify: 3, messageId: 1074533327 }],
+            data: [
+                { jobIdentify: 1, referenceId: 1074533320 }, { jobIdentify: 2, referenceId: 1074533325 },
+                { jobIdentify: 3, referenceId: 1074533327 }, { jobIdentify: 4, referenceId: 3375 }
+            ],
             messageTypeInfos: [{ jobIdentify: 1, msgContentsType: 101 }]
         },
         newMessages: {
@@ -37,7 +41,11 @@ describe('DataGrid', () => {
             { messageId: 1074533321, jobIdentify: 1, content: 'Attn:[Soccer]', postTime: '2021-10-30T01:22:52.03' },
             { messageId: 1074533326, jobIdentify: 2, content: 'Attn:[Soccer]', postTime: '2021-10-30T01:22:52.03' },
             { messageId: 1074533328, jobIdentify: 3, content: 'Attn:[Soccer]', postTime: '2021-10-30T01:22:52.03' },
-        ]
+        ],
+        missingProblemAccount: {
+            logId: [{ fromLogId: 3375, toLogId: 3385 }],
+            data: [{ messageId: 3380, content: 'Attn:[Soccer]', postTime: '2021-10-30T01:22:52.03' }]
+        }
     };
 
     describe('componentDidMount', () => {
@@ -68,6 +76,7 @@ describe('DataGrid', () => {
                 getNewPreviousMaxMessage: jest.fn(),
                 getMissingMessageCsd: jest.fn(),
                 getMissingMessageInfo: jest.fn(),
+                getMissingProblemAccount: jest.fn(),
                 setSelected: jest.fn()
             };
 
@@ -104,7 +113,8 @@ describe('DataGrid', () => {
                 selected: [
                     { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 1074533320 },
                     { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 0 },
-                    { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 }
+                    { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 },
+                    { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 0 }
                 ]
             };
 
@@ -137,7 +147,8 @@ describe('DataGrid', () => {
                 selected: [
                     { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 1074533320 },
                     { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 1074533325 },
-                    { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 1074533327 }
+                    { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 1074533327 },
+                    { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 3375 }
                 ]
             };
 
@@ -163,12 +174,26 @@ describe('DataGrid', () => {
             container.instance().handleShowEditNewMessage(1);
 
             // Assert
-            expect(props.setEditNewMessagePopup).toHaveBeenCalledWith({
-                show: true,
-                jobIdentify: 1,
-                title: 'Special Delete',
-                newMaxMessageId: 0
-            })
+            expect(props.setEditNewMessagePopup).toHaveBeenCalled();
+        });
+
+        it('should call exactly props function when jobIdentify equal 4', () => {
+            // Arrange
+            const props = {
+                ...initProps,
+                setEditNewMessagePopup: jest.fn()
+            };
+            const expected = {
+                data: [{ content: 'Attn:[Soccer]', messageId: 3380, postTime: '2021-10-30T01:22:52.03' }],
+                jobIdentify: 4, newMaxMessageId: 0, show: true, title: 'Problem Player'
+            };
+
+            // Act
+            const container = shallow(<DataGrid {...props}/>);
+            container.instance().handleShowEditNewMessage(4);
+
+            // Assert
+            expect(props.setEditNewMessagePopup).toHaveBeenCalledWith(expected);
         });
     });
 
@@ -183,7 +208,7 @@ describe('DataGrid', () => {
             container.instance().handleChange(mockEvent);
 
             // Assert
-            expect(container.state().checked).toEqual([true, false, false]);
+            expect(container.state().checked).toEqual([true, false, false, false]);
             expect(container.state().isSubmitting).toEqual(false);
         });
 
@@ -194,7 +219,8 @@ describe('DataGrid', () => {
                 selected: [
                     { id: 1, name: 'Special Delete', checked: false, newMaxMessageId: 1074533320 },
                     { id: 2, name: 'Special Delete - Internal CSD', checked: false, newMaxMessageId: 0 },
-                    { id: 3, name: 'Site Message', checked: false, newMaxMessageId: 0 }
+                    { id: 3, name: 'Site Message', checked: false, newMaxMessageId: 0 },
+                    { id: 4, name: 'Problem Player', checked: false, newMaxMessageId: 0 }
                 ]
             };
             const mockEvent = { target: { value: '0' } }
@@ -204,7 +230,7 @@ describe('DataGrid', () => {
             container.instance().handleChange(mockEvent);
 
             // Assert
-            expect(container.state().checked).toEqual([true, false, false]);
+            expect(container.state().checked).toEqual([true, false, false, false]);
             expect(container.state().isSubmitting).toEqual(false);
         });
     });
@@ -220,7 +246,7 @@ describe('DataGrid', () => {
 
             // Assert
             expect(container.state().allChecked).toEqual(true);
-            expect(container.state().checked).toEqual([true,true,true]);
+            expect(container.state().checked).toEqual([true,true,true,true]);
             expect(container.state().isSubmitting).toEqual(false);
         });
 
@@ -244,7 +270,8 @@ describe('DataGrid', () => {
             selected: [
                 { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 1074533330 },
                 { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 0 },
-                { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 }
+                { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 },
+                { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 0 }
             ]
         };
         it('should return false', () => {
@@ -309,7 +336,8 @@ describe('DataGrid', () => {
                 selected: [
                     { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 1074533330 },
                     { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 1074533330 },
-                    { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 1074533330 }
+                    { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 1074533330 },
+                    { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 3380 }
                 ],
                 createMissingMessage: jest.fn(() => promise),
                 editMessageInfo: jest.fn(() => promise)
@@ -326,9 +354,9 @@ describe('DataGrid', () => {
             // Assert
             expect(props.createMissingMessage).toHaveBeenCalledWith({
                 messages: [
-                    {jobIdentify: 1, messageId: 1074533321},
-                    {jobIdentify: 2, messageId: 1074533326},
-                    {jobIdentify: 3, messageId: 1074533328}
+                    {jobIdentify: 1, referenceId: 1074533321},
+                    {jobIdentify: 2, referenceId: 1074533326},
+                    {jobIdentify: 3, referenceId: 1074533328}
                 ],
                 requests: [{ messageId: 1074533326, requestId: 59630 }]
             });
@@ -382,7 +410,8 @@ describe('DataGrid', () => {
                 selected: [
                     { id: 1, name: 'Special Delete', checked: false, newMaxMessageId: 1074533330 },
                     { id: 2, name: 'Special Delete - Internal CSD', checked: false, newMaxMessageId: 1074533330 },
-                    { id: 3, name: 'Site Message', checked: false, newMaxMessageId: 1074533330 }
+                    { id: 3, name: 'Site Message', checked: false, newMaxMessageId: 1074533330 },
+                    { id: 4, name: 'Problem Player', checked: false, newMaxMessageId: 3380 }
                 ]
             };
 
@@ -401,7 +430,8 @@ describe('DataGrid', () => {
                 selected: [
                     { id: 1, name: 'Special Delete', checked: false, newMaxMessageId: 1074533330 },
                     { id: 2, name: 'Special Delete - Internal CSD', checked: false, newMaxMessageId: 1074533330 },
-                    { id: 3, name: 'Site Message', checked: false, newMaxMessageId: 1074533330 }
+                    { id: 3, name: 'Site Message', checked: false, newMaxMessageId: 1074533330 },
+                    { id: 4, name: 'Problem Player', checked: false, newMaxMessageId: 3380 }
                 ]
             };
 
@@ -423,7 +453,7 @@ describe('DataGrid', () => {
             const actual = container.buildBody(true);
 
             // Assert
-            expect(actual).toEqual([<div />,<div />,<div />]);
+            expect(actual).toEqual([<div />,<div />,<div />,<div />]);
         });
     });
 

@@ -43,7 +43,7 @@
             // Arrange
             var messages = new List<CurrentMaxMessageInfo>
             {
-                new CurrentMaxMessageInfo { JobIdentify = 1, MessageId = 123 }
+                new CurrentMaxMessageInfo { JobIdentify = 1, ReferenceId = 123 }
             };
             var messageListXml = "<root><r JobIdentify='1' MessageId='123'/></root>";
 

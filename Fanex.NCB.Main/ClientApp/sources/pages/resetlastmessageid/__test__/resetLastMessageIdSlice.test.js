@@ -4,6 +4,7 @@ import resetLastMessageId, {
     setNewPreviousMaxMessage,
     setMissingMessageCsd,
     setMissingMessageInfo,
+    setMissingProblemAccount,
     setEditNewMessagePopup
 } from '../resetLastMessageIdSlice';
 
@@ -13,12 +14,14 @@ describe('ResetLastMessageIdSlice reducer', () => {
             selected: [
                 { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 0 },
                 { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 0 },
-                { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 }
+                { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 },
+                { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 0 }
             ],
             currentMessages: null,
             newMessages: null,
             missingMessageCsd: null,
             missingMessages: null,
+            missingProblemAccount: null,
             editNewMessagePopup: { show: false }
         });
     });
@@ -82,6 +85,23 @@ describe('ResetLastMessageIdSlice reducer', () => {
                 messages: [{ jobIdentify: 1, fromMessageId: 1074533320, toMessageId: 1074533470 }],
                 msgContentTypes: [{ jobIdentify: 1, msgContentsType: 101 }],
                 requests: [{ messageId: 1074533470, requestId: 59625 }]
+            }
+        });
+    });
+
+    it('should handle missingProblemAccount', () => {
+        expect(
+            resetLastMessageId({}, {
+                type: setMissingProblemAccount.type,
+                payload: { 
+                    logId: [{ fromLogId: 37666, toLogId: 37676 }],
+                    data: [{ messageId: 1074533470, requestId: 59625 }]
+                }
+            })
+        ).toEqual({
+            missingProblemAccount: { 
+                logId: [{ fromLogId: 37666, toLogId: 37676 }],
+                data: [{ messageId: 1074533470, requestId: 59625 }]
             }
         });
     });

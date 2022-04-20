@@ -92,6 +92,25 @@
         }
 
         [Fact]
+        public async Task GetMissingProblemAccountAsync_WhenCalled_ReturnExpectResult()
+        {
+            //Arrange
+            var service = GetService();
+            var criteria = fixture.Create<GetMissingProblemAccountCriteria>();
+            var fromToLogId = fixture.Create<IEnumerable<FromToLogId>>();
+            var missingMesssageInfo = fixture.Create<IEnumerable<MissingMesssageInfo>>();
+            var tuple = (fromToLogId, missingMesssageInfo);
+
+            baseService.FetchMultipleAsync<FromToLogId, MissingMesssageInfo>(Arg.Do<GetMissingProblemAccountCriteria>(x => criteria = x)).Returns(tuple);
+
+            //Act
+            var actual = await service.GetMissingProblemAccountAsync(criteria);
+
+            //Assert
+            Assert.Equal(tuple, actual);
+        }
+
+        [Fact]
         public async Task CreateMissingMessageAsync_WhenCalled_ReturnExpectResult()
         {
             //Arrange

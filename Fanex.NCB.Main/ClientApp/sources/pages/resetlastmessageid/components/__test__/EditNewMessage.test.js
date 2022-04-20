@@ -22,8 +22,40 @@ describe('EditNewMessage', () => {
             { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 0 },
             { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 }
         ],
-        missingMessages: [ { messageId: 1, jobIdentify: 1, content: 'Attn:[Soccer]', postTime: '2021-10-30T01:22:52.03' } ]
+        data: [ { messageId: 1, jobIdentify: 1, content: 'Attn:[Soccer]', postTime: '2021-10-30T01:22:52.03' } ]
     };
+
+    describe('getData', () => {
+        it('should return data when id !== 4', () => {
+            // Arrange
+            const props = {
+                ...initProps,
+                id: 1
+            };
+
+            // Act
+            const container = shallow(<EditNewMessage {...props}/>);
+            const actual = container.instance().getData();
+
+            // Assert
+            expect(actual).toEqual([{content: 'Attn:[Soccer]', jobIdentify: 1, messageId: 1, postTime: '2021-10-30T01:22:52.03'}]);
+        });
+
+        it('should return data when id === 4', () => {
+            // Arrange
+            const props = {
+                ...initProps,
+                id: 4
+            };
+
+            // Act
+            const container = shallow(<EditNewMessage {...props}/>);
+            const actual = container.instance().getData();
+
+            // Assert
+            expect(actual).toEqual([{content: 'Attn:[Soccer]', jobIdentify: 1, messageId: 1, postTime: '2021-10-30T01:22:52.03'}]);
+        });
+    });
 
     describe('handleClose', () => {
         it('should call exactly prop function', () => {
@@ -237,11 +269,11 @@ describe('EditNewMessage', () => {
     });
 
     describe('render', () => {
-        it('should render null when missingMessages is null', () => {
+        it('should render null when data is null', () => {
             // Arrange
             const props = {
                 ...initProps,
-                missingMessages: null
+                data: null
             };
 
             // Act
@@ -285,7 +317,7 @@ describe('EditNewMessage', () => {
                     { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 0 },
                     { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 }
                 ],
-                missingMessages: [ { messageId: 1, jobIdentify: 1, content: 'Attn:[Soccer]', postTime: '2021-10-30T01:22:52.03' } ]
+                data: [ { messageId: 1, jobIdentify: 1, content: 'Attn:[Soccer]', postTime: '2021-10-30T01:22:52.03' } ]
             };   
             const initialState = {
                 selected: [
@@ -293,7 +325,7 @@ describe('EditNewMessage', () => {
                     { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 0 },
                     { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 }
                 ],
-                missingMessages: [ { messageId: 1, jobIdentify: 1, content: 'Attn:[Soccer]', postTime: '2021-10-30T01:22:52.03' } ]
+                data: [ { messageId: 1, jobIdentify: 1, content: 'Attn:[Soccer]', postTime: '2021-10-30T01:22:52.03' } ]
             };
 
             const store = mockStore(initialState);

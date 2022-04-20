@@ -119,6 +119,27 @@
         }
 
         [Fact]
+        public async Task GetMissingProblemAccount_WhenCalled_ReturnExpectedResult()
+        {
+            // Arrange
+            var criteria = fixture.Create<GetMissingProblemAccountCriteria>();
+            var fromToLogId = fixture.Create<IEnumerable<FromToLogId>>();
+            var missingMesssageInfo = fixture.Create<IEnumerable<MissingMesssageInfo>>();
+            var controller = GetController();
+            resetLastMessageIdService.GetMissingProblemAccountAsync(criteria).Returns((fromToLogId, missingMesssageInfo));
+
+            // Act
+            var result = await controller.GetMissingProblemAccount(criteria);
+
+            // Assert
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            var fromToLogIdResult = (IEnumerable<FromToLogId>)jsonResult.Value.GetType().GetProperty("logId").GetValue(jsonResult.Value);
+            var missingMesssageInfoResult = (IEnumerable<MissingMesssageInfo>)jsonResult.Value.GetType().GetProperty("data").GetValue(jsonResult.Value);
+            Assert.Equal(fromToLogIdResult, fromToLogId);
+            Assert.Equal(missingMesssageInfoResult, missingMesssageInfo);
+        }
+
+        [Fact]
         public async Task CreateMissingMessage_WhenCalled_ReturnExpectedResult()
         {
             // Arrange

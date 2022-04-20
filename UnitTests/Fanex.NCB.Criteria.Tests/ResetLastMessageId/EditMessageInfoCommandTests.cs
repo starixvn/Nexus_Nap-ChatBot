@@ -29,7 +29,7 @@
             {
                 JobInfoList = new List<CurrentMaxMessageInfo>
                 { 
-                    new CurrentMaxMessageInfo { JobIdentify = 1, MessageId = 2 } 
+                    new CurrentMaxMessageInfo { JobIdentify = 1, ReferenceId = 2 } 
                 },
                 JobInfo = "[{JobIdentify: 1, MessageId: 2}]"
             };
