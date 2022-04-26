@@ -14,6 +14,6 @@
 
         public override string GetSettingKey() => "NCB_SettingConfiguration_Mapping_Del";
 
-        public override bool IsValid() => JobId > 0 && NotificationTemplateId > 0 && MsgContentsType > 0 && ModifiedBy > 0;
+        public override bool IsValid() => JobId > 0 && NotificationTemplateId > 0 && ModifiedBy > 0;
     }
 }

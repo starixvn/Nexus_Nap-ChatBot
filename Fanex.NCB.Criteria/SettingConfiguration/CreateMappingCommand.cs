@@ -20,6 +20,6 @@
 
         public override string GetSettingKey() => "NCB_SettingConfiguration_Mapping_Ins";
 
-        public override bool IsValid() => JobId > 0 && NotificationTypeId > 0 && NotificationTemplateId > 0 && MsgContentsType > 0;
+        public override bool IsValid() => JobId > 0 && NotificationTypeId > 0 && NotificationTemplateId > 0;
     }
 }
