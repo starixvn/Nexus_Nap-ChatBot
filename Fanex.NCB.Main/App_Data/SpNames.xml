@@ -20,7 +20,7 @@
     <Setting Key="NCB_NotificationType_Sel" SpName="NCB_NotificationType_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_NotificationType_Ins" SpName="NCB_NotificationType_Ins" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_NotificationType_Upd" SpName="NCB_NotificationType_Upd" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_NotificationType_Del" SpName="NCB_NotificationType_Del" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_NotificationType_Del" SpName="NCB_NotificationType_Del_xtest" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_System_Sel" SpName="NCB_System_Sel" DbName="ChatBot" Plain="0"></Setting>
   </Function>
   <Function Name="Common">
@@ -131,8 +131,8 @@
     <Setting Key="NCB_NotificationTemplateList_Sel" SpName="NCB_NotificationTemplateList_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_NotificationTemplate_Ins" SpName="NCB_NotificationTemplate_Ins" DbName="ChatBot" Plain="0"></Setting>
     <Setting Key="NCB_NotificationTemplate_Upd" SpName="NCB_NotificationTemplate_Upd_xtest" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_NotificationTemplate_Sel" SpName="NCB_NotificationTemplate_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_NotificationTemplate_Del" SpName="NCB_NotificationTemplate_Del" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_NotificationTemplate_Sel" SpName="NCB_NotificationTemplate_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
+    <Setting Key="NCB_NotificationTemplate_Del" SpName="NCB_NotificationTemplate_Del_xtest" DbName="ChatBot" Plain="0"></Setting>
   </Function>
 
   <Function Name="Setting Configuration">
