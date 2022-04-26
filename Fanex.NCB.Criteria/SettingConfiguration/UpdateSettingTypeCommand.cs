@@ -12,6 +12,6 @@
 
         public override string GetSettingKey() => "NCB_SettingConfiguration_SettingType_Upd";
 
-        public override bool IsValid() => Type > 0 && ModifiedBy > 0 && !string.IsNullOrWhiteSpace(Name);
+        public override bool IsValid() => ModifiedBy > 0 && !string.IsNullOrWhiteSpace(Name);
     }
 }
