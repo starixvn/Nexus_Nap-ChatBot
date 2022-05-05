@@ -41,7 +41,7 @@ export class Filter extends Component {
             <Form className="form-filter" onSubmit={this.handleSubmit}>
                 <div className="form-row group-form">
                     <div className="label">
-                        <Label className="form-label">{Labels.System}</Label>
+                        <Label className="form-label">{Labels.Service}</Label>
                     </div>
                     <MultipleSelectField
                         data={this.props.selected}

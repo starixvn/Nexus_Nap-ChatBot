@@ -362,9 +362,9 @@ describe('DataGrid', () => {
             });
             expect(props.editMessageInfo).toHaveBeenCalledWith({
                 jobInfoList: [
-                    {jobIdentify: 1, messageId: 1074533330},
-                    {jobIdentify: 2, messageId: 1074533330},
-                    {jobIdentify: 3, messageId: 1074533330}
+                    {jobIdentify: 1, referenceId: 1074533330},
+                    {jobIdentify: 2, referenceId: 1074533330},
+                    {jobIdentify: 3, referenceId: 1074533330}
                 ]
             });
             expect(await container.instance().setSubmit).toHaveBeenCalled();

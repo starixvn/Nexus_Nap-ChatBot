@@ -239,9 +239,9 @@ export class DataGrid extends Component {
                         />
                     </Cell>
                 }
-                <Cell colWidth={30} header>{Labels.System}</Cell>
-                <Cell colWidth={30} header>{Labels.CurrentPreviousMaxMessageID}</Cell>
-                <Cell colWidth={30} header>{Labels.NewPreviousMaxMessageID}</Cell>
+                <Cell colWidth={30} header>{Labels.Service}</Cell>
+                <Cell colWidth={30} header>{Labels.CurrentPreviousMaxID}</Cell>
+                <Cell colWidth={30} header>{Labels.NewPreviousMaxID}</Cell>
             </Row>
         );
     };
