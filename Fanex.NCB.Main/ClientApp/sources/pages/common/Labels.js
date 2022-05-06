@@ -83,6 +83,8 @@
     NewPreviousMaxID: 'New Previous Max ID',
     NewPreviousMaxMessageIDFor: 'New Previous Max MessageID for',
     NewPreviousMaxIDFor: 'New Previous Max ID for',
+    ListOfMissingMessages: 'List of missing messages:',
+    ListOfMissingID: 'List of missing ID:',
     Select: 'Select',
     Content_en: 'Content_en',
     PostTime: 'Post Time',

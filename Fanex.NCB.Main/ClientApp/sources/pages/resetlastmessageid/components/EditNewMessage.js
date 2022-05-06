@@ -123,7 +123,7 @@ export class EditNewMessage extends Component {
                     {`${ id === 4 ? Labels.NewPreviousMaxIDFor : Labels.NewPreviousMaxMessageIDFor} ${this.props.title}`}
                 </ModalHeader>
                 <ModalBody>
-                    <Label className="form-label">List of missing messages:</Label>
+                    <Label className="form-label">{ id === 4 ? Labels.ListOfMissingID : Labels.ListOfMissingMessages }</Label>
                     <Table
                         width={925}
                         bodyHeight={215}
