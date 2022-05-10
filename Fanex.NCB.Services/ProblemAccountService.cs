@@ -42,11 +42,11 @@
             var messageSetting = await GetMessageSettingAsync();
             if (messageSetting != null)
             {
-                var (message, categoriesId) = await GetProblemAccountAsync(messageSetting);
+                var (message, categoriesId, customerClass) = await GetProblemAccountAsync(messageSetting);
 
-                if (message.Any() && categoriesId.Any())
+                if (message.Any() && categoriesId.Any() && customerClass.Any())
                 {
-                    var (command, notifications) = await ImportMessageFromProblemAccountAsync(message, categoriesId);
+                    var (command, notifications) = await ImportMessageFromProblemAccountAsync(message, categoriesId, customerClass);
                     await OnAfterImportDataAsync(command, notifications);
                 }
             }
@@ -58,14 +58,14 @@
             return await baseService.GetDataEntityAsync<MessageSetting>(criteria);
         }
 
-        public async Task<(IEnumerable<ProblemAccountInfo>, IEnumerable<short>)> GetProblemAccountAsync(MessageSetting messageSetting)
+        public async Task<(IEnumerable<ProblemAccountInfo>, IEnumerable<short>, IEnumerable<short>)> GetProblemAccountAsync(MessageSetting messageSetting)
         {
             var criteria = new GetProblemAccountInfoCriteria
             {
                 BatchSize = messageSetting.BatchSize,
                 LastLogId = messageSetting.LastLogId
             };
-            return await baseService.FetchMultipleAsync<ProblemAccountInfo, short>(criteria);
+            return await baseService.FetchMultipleAsync<ProblemAccountInfo, short, short>(criteria);
         }
 
         public IEnumerable<Category> GetAllCategory(IEnumerable<short> categoriesId)
@@ -84,15 +84,34 @@
             return categories;
         }
 
+        public IEnumerable<CustomerClassInfo> GetAllCustomerClass(IEnumerable<short> customerClass)
+        {
+            var customerClassInfo = new List<CustomerClassInfo>();
+            foreach (int customer in customerClass)
+            {
+                var customerClassNameEN = commonService.GetCustomerClassName(customer.ToString(), Language.en_US);
+                var customerClassNameCS = commonService.GetCustomerClassName(customer.ToString(), Language.zh_CN);
+                customerClassInfo.Add(new CustomerClassInfo
+                {
+                    CustomerClass = customer.ToString(),
+                    CustomerClassNameEN = customerClassNameEN,
+                    CustomerClassNameCS = customerClassNameCS
+                });
+            }
+            return customerClassInfo;
+        }
+
         public async Task<(CommandResult, IEnumerable<NotificationMessage>)> ImportMessageFromProblemAccountAsync(
             IEnumerable<ProblemAccountInfo> message,
-            IEnumerable<short> categoriesId
+            IEnumerable<short> categoriesId,
+            IEnumerable<short> customerClass
         )
         {
             var criteria = new ImportFromProblemAccountCriteria
             {
                 Message = JsonConvert.SerializeObject(message),
-                CategoryInfo = JsonConvert.SerializeObject(GetAllCategory(categoriesId))
+                CategoryInfo = JsonConvert.SerializeObject(GetAllCategory(categoriesId)),
+                CustomerClassInfo = JsonConvert.SerializeObject(GetAllCustomerClass(customerClass))
             };
 
             var (recipients, notificationMessages) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);

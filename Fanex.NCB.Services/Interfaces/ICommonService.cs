@@ -22,5 +22,7 @@
         Task<IEnumerable<Platform>> GetPlatformAsync(int notificationTypeId);
 
         string GetCategogyName(string categoryId, string languageCode);
+
+        string GetCustomerClassName(string customerClass, string languageCode);
     }
 }

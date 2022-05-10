@@ -8,6 +8,8 @@
 
         public string CategoryInfo { get; set; }
 
+        public string CustomerClassInfo { get; set; }
+
         public int ErrCode { get; set; }
 
         public string ErrMsg { get; set; }

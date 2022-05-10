@@ -49,11 +49,12 @@
             var setting = fixture.Create<MessageSetting>();
             IEnumerable<ProblemAccountInfo> problemAccountInfo = new List<ProblemAccountInfo>();
             IEnumerable<short> categoryIds = new List<short>();
-            var tuple = (problemAccountInfo, categoryIds);
+            IEnumerable<short> customerClass = new List<short>();
+            var tuple = (problemAccountInfo, categoryIds, customerClass);
 
             var service = GetService();
             baseService.GetDataEntityAsync<MessageSetting>(Arg.Any<GetMessageSettingCriteria>()).Returns(setting);
-            baseService.FetchMultipleAsync<ProblemAccountInfo, short>(Arg.Any<GetProblemAccountInfoCriteria>()).Returns(tuple);
+            baseService.FetchMultipleAsync<ProblemAccountInfo, short, short>(Arg.Any<GetProblemAccountInfoCriteria>()).Returns(tuple);
 
             // Act
             await service.SendMessageProblemAccountAsync();
@@ -69,11 +70,12 @@
             var setting = fixture.Create<MessageSetting>();
             var problemAccountInfo = fixture.Create<IEnumerable<ProblemAccountInfo>>();
             var categoryIds = fixture.Create<IEnumerable<short>>();
-            var tuple = (problemAccountInfo, categoryIds);
+            var customerClass = fixture.Create<IEnumerable<short>>();
+            var tuple = (problemAccountInfo, categoryIds, customerClass);
 
             var service = GetService();
             baseService.GetDataEntityAsync<MessageSetting>(Arg.Any<GetMessageSettingCriteria>()).Returns(setting);
-            baseService.FetchMultipleAsync<ProblemAccountInfo, short>(Arg.Any<GetProblemAccountInfoCriteria>()).Returns(tuple);
+            baseService.FetchMultipleAsync<ProblemAccountInfo, short, short>(Arg.Any<GetProblemAccountInfoCriteria>()).Returns(tuple);
 
             // Act
             await service.SendMessageProblemAccountAsync();
@@ -108,15 +110,44 @@
             var criteria = fixture.Create<GetProblemAccountInfoCriteria>();
             var problemAccountInfo = fixture.Create<IEnumerable<ProblemAccountInfo>>();
             var categoryIds = fixture.Create<IEnumerable<short>>();
-            var tuple = (problemAccountInfo, categoryIds);
+            var customerClass = fixture.Create<IEnumerable<short>>();
+            var tuple = (problemAccountInfo, categoryIds, customerClass);
 
-            baseService.FetchMultipleAsync<ProblemAccountInfo, short>(Arg.Do<GetProblemAccountInfoCriteria>(x => criteria = x)).Returns(tuple);
+            baseService.FetchMultipleAsync<ProblemAccountInfo, short, short>(Arg.Do<GetProblemAccountInfoCriteria>(x => criteria = x)).Returns(tuple);
 
             //Act
             var actual = await service.GetProblemAccountAsync(setting);
 
             //Assert
             Assert.Equal(tuple, actual);
+        }
+
+        [Fact]
+        public IEnumerable<CustomerClassInfo> GetAllCustomerClass_WhenCalled_ReturnExpectResult()
+        {
+            //Arrange
+            var service = GetService();
+            IEnumerable<short> customerClass = new List<short>() { 1 };
+            IEnumerable<CustomerClassInfo> customerClassInfo = new List<CustomerClassInfo>
+            {
+                new CustomerClassInfo
+                {
+                    CustomerClass = "1",
+                    CustomerClassNameEN = "test",
+                    CustomerClassNameCS = "请"
+                }
+            };
+
+            commonService.GetCustomerClassName("1", Language.en_US).Returns("test");
+            commonService.GetCustomerClassName("1", Language.zh_CN).Returns("请");
+
+            //Act
+            var actual = service.GetAllCustomerClass(customerClass);
+
+            //Assert
+            //Assert.Equal(customerClassInfo, actual);
+
+            return actual;
         }
 
         [Fact]
@@ -153,6 +184,7 @@
             // Arrange
             var messages = fixture.Create<IEnumerable<ProblemAccountInfo>>();
             var categoryids = fixture.Create<IEnumerable<short>>();
+            var customerClass = fixture.Create<IEnumerable<short>>();
 
             var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
             var notificationMessages = fixture.Create<IEnumerable<NotificationSendMessage>>();
@@ -165,11 +197,12 @@
             chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notificationMessages, recipients).Returns(notifications);
 
             // Act
-            var result = await service.ImportMessageFromProblemAccountAsync(messages, categoryids);
+            var result = await service.ImportMessageFromProblemAccountAsync(messages, categoryids, customerClass);
 
             // Assert
             Assert.Equal(JsonConvert.SerializeObject(messages), criteria.Message);
             Assert.Equal(JsonConvert.SerializeObject(service.GetAllCategory(categoryids)), criteria.CategoryInfo);
+            Assert.Equal(JsonConvert.SerializeObject(service.GetAllCustomerClass(customerClass)), criteria.CustomerClassInfo);
             Assert.Equal(criteria.ErrCode, result.Item1.Code);
             Assert.Equal(criteria.ErrMsg, result.Item1.Message);
 

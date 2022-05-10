@@ -64,5 +64,11 @@
             var categoryName = remotingRefService.GetResourceDataByRefIdAndResourceId("Category", categoryId, languageCode, string.Empty);
             return categoryName;
         }
+
+        public string GetCustomerClassName(string customerClass, string languageCode)
+        {
+            var customerClassName = remotingRefService.GetResourceDataByRefIdAndResourceId("CustomerClass", customerClass, languageCode, string.Empty);
+            return customerClassName;
+        }
     }
 }
