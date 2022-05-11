@@ -7,7 +7,7 @@
     <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Fanex.NAP.Client.AspNetCore" Version="1.0.0-beta5" />
+    <PackageReference Include="Fanex.NAP.Client.AspNetCore" Version="1.0.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
