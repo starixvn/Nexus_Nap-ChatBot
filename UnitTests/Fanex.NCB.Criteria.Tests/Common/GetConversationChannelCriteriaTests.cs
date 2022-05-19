@@ -23,7 +23,11 @@
         public void IsValid_WhenCalled_ReturnTrue()
         {
             // Arrange
-            var criteria = new GetConversationChannelCriteria();
+            var criteria = new GetConversationChannelCriteria
+            {
+                Id = 1,
+                Name = "test"
+            };
 
             // Act
             var actual = criteria.IsValid();

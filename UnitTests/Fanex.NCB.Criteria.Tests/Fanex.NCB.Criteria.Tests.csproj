@@ -19,7 +19,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ChatGroupMapping\" />
     <Folder Include="SendNotification\" />
     <Folder Include="SyncData\" />
   </ItemGroup>
