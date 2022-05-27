@@ -1,8 +1,6 @@
 import React from 'react';
 import SignalR from '../SignalR';
 import { shallow } from 'enzyme';
-import * as signalR from '@microsoft/signalr';
-import { async } from 'regenerator-runtime';
 
 describe('SignalR', () => {
     afterAll(() => {
@@ -19,9 +17,6 @@ describe('SignalR', () => {
             container.instance().connection = {
                 on: jest.fn()
             };
-            // est.spyOn(container.instance().connection, 'on').mockImplementation(() => {
-            //     return onUpdateNotificationStatus;
-            // });
 
             container.instance().onUpdateNotificationStatus = onUpdateNotificationStatus;
             container.instance().componentDidMount();

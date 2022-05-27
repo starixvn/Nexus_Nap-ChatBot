@@ -11,7 +11,7 @@ import { editorCommandList, invalidFieldClass } from '../../constants/constants'
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 import TemplatePreview from '../../common/TemplatePreview/index';
 
-class NewNotificationTemplate extends Component {
+export class NewNotificationTemplate extends Component {
     constructor(props) {
         super(props);
     }

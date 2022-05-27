@@ -41,6 +41,10 @@ describe('NotificationList', () => {
             // Arrange
             const getNotifications = jest.fn();
 
+            const response = { data: [{ configSendTime: '2020/05/24', recipientSentStatusJson: {test: true}}], notificationTypes: [{id: 1, checked: true}] };
+            const promise = Promise.resolve(response);
+            axios.defaults = jest.fn(() => promise);
+
             // Act
             const container = shallow(<NotificationList />);
             container.highlightNotification = { notificationId: 1 };
@@ -118,15 +122,10 @@ describe('NotificationList', () => {
                     channelIds: 1
                 }
             };
-            const getSpyAxios = jest.spyOn(axios, 'get').mockImplementation(() => {
-                return new Promise((resolve, reject) => {
-                    return resolve({
-                        data: {
-                            data: [{ configSendTime: '2020/05/24', recipientSentStatusJson: {test: true}}]
-                        }
-                    });
-                });
-            });
+            const response = { data: { data: [{ configSendTime: '2020/05/24', recipientSentStatusJson: {test: true}}] } };
+            const promise = Promise.resolve(response);
+            axios.get = jest.fn(() => promise);
+            
             jest.runAllTimers();
 
             // Act
@@ -135,7 +134,7 @@ describe('NotificationList', () => {
             await container.instance().getNotifications(1, 100);
 
             // Assert
-            expect(getSpyAxios).toHaveBeenCalled();
+            expect(axios.get).toHaveBeenCalled();
             expect(container.state().filter).toEqual(state.filter);
             expect(container.state().tableData).toEqual({data: [{configSendTime: '2020/05/24', recipientSentStatusJson: {test: true}}], pageIndex: 1, pageSize: 100});
         });
@@ -304,13 +303,10 @@ describe('NotificationList', () => {
     describe('handleShowErrorReport', () => {
         it('should call exactly function', async () => {
             // Arrange
-            const getSpyAxios = jest.spyOn(axios, 'get').mockImplementation(() => {
-                return new Promise((resolve, reject) => {
-                    return resolve({
-                        data: { configSendTime: '2020/05/24', recipientSentStatusJson: {test: true} }
-                    });
-                });
-            });
+            const response = { data: { configSendTime: '2020/05/24', recipientSentStatusJson: {test: true} } };
+            const promise = Promise.resolve(response);
+            axios.get = jest.fn(() => promise);
+
             jest.runAllTimers();
 
             // Act
@@ -318,7 +314,7 @@ describe('NotificationList', () => {
             await container.instance().handleShowErrorReport(1);
 
             // Assert
-            expect(getSpyAxios).toHaveBeenCalledWith('NotificationList/GetNotificationError', {params: { notificationId: 1}});
+            expect(axios.get).toHaveBeenCalledWith('NotificationList/GetNotificationError', {params: { notificationId: 1}});
             expect(container.state().errorReport).toEqual({notificationId: 1, report: {configSendTime: '2020/05/24', recipientSentStatusJson: {test: true}}, show: true});
         });
     });
@@ -482,13 +478,9 @@ describe('NotificationList', () => {
     describe('getUpdatedNotification', () => {
         it('should call exactly function', async () => {
             // Arrange
-            const getSpyAxios = jest.spyOn(axios, 'get').mockImplementation(() => {
-                return new Promise((resolve, reject) => {
-                    return resolve({
-                        data: [{ configSendTime: '2020/05/24', recipientSentStatusJson: {test: true}}]
-                    });
-                });
-            });
+            const response = { data: [{ configSendTime: '2020/05/24', recipientSentStatusJson: {test: true}}] };
+            const promise = Promise.resolve(response);
+            axios.get = jest.fn(() => promise);
 
             const notificationIds = '1,2,3,4,5';
             const callBack = jest.fn();
@@ -499,7 +491,7 @@ describe('NotificationList', () => {
             await container.instance().getUpdatedNotification(notificationIds, callBack);
 
             // Assert
-            expect(getSpyAxios).toHaveBeenCalledWith('NotificationList/GetUpdatedNotification', {params: { notificationIds: '1,2,3,4,5'}});
+            expect(axios.get).toHaveBeenCalledWith('NotificationList/GetUpdatedNotification', {params: { notificationIds: '1,2,3,4,5'}});
             expect(callBack).toHaveBeenCalledWith([{configSendTime: '2020/05/24', recipientSentStatusJson: {test: true}}]);
         });
     });
