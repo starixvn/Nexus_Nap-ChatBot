@@ -60,8 +60,8 @@ describe('Sidebar', () => {
         it('should call functions when render', () => {
             const wrapper = shallow(<Sidebar />);
 
-            expect(wrapper.instance().getMenuClassName("test")).toEqual('');
-            expect(wrapper.instance().getMenuClassName()).toEqual("");
+            expect(wrapper.instance().getMenuClassName('View Log')).toEqual('icon-view-log');
+            expect(wrapper.instance().getMenuClassName('New Notification')).toEqual('icon-new-notification');
             expect(wrapper.instance().isCurrent("url")).not.toBeTruthy();
         });
 
@@ -69,7 +69,7 @@ describe('Sidebar', () => {
             const expected = (
                 <li className="menu-item" key="1">
                     <a href="/url" className="link false">
-                        <span className="" />
+                        <span />
                         <span className="text">test</span>
                     </a>
                 </li>
@@ -87,7 +87,7 @@ describe('Sidebar', () => {
             let expected = [
                 <li className="menu-item" key="1">
                     <a href="/url" className="link false">
-                        <span className="" />
+                        <span />
                         <span className="text">test</span>
                     </a>
                 </li >

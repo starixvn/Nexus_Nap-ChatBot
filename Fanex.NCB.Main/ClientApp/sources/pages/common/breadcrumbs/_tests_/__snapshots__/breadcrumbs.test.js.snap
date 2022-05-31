@@ -8,11 +8,6 @@ exports[`NCBBreadcrum NCBBreadcrum - render correctly 1`] = `
   tag="nav"
 >
   <BreadcrumbItem
-    tag="li"
-  >
-    a
-  </BreadcrumbItem>
-  <BreadcrumbItem
     active={true}
     tag="li"
   >

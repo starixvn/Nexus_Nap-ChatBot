@@ -8,7 +8,7 @@ import { object, string, boolean } from 'yup';
 import Labels from '../../common/Labels';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 
-class EditMapping extends Component {
+export class EditMapping extends Component {
     constructor(props) {
         super(props);
 

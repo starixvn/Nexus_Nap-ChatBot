@@ -3,7 +3,7 @@ import viewLog, {
     setParamsPageRecipientList,
     setParamsPageConversationMessage,
     setNotificationSystemMessage,
-    setRecipientList,
+    setNotificationRecipientList,
     setConversationMessageLog
 } from '../viewLogSlice';
 
@@ -72,14 +72,14 @@ describe('viewLogSlice reducer', () => {
         });
     });
 
-    it('should handle setRecipientList', () => {
+    it('should handle setNotificationRecipientList', () => {
         expect(
             viewLog({}, {
-                type: setRecipientList.type,
+                type: setNotificationRecipientList.type,
                 payload: { notificationId: 188, pageIndex: 1, pageSize: 100 }
             })
         ).toEqual({
-            recipientList: { notificationId: 188, pageIndex: 1, pageSize: 100  }
+            recipients: { notificationId: 188, pageIndex: 1, pageSize: 100  }
         });
     });
 
@@ -90,7 +90,7 @@ describe('viewLogSlice reducer', () => {
                 payload: { notificationId: 188, pageIndex: 1, pageSize: 100 }
             })
         ).toEqual({
-            conversationMessage: { notificationId: 188, pageIndex: 1, pageSize: 100  }
+            conversationMessages: { notificationId: 188, pageIndex: 1, pageSize: 100  }
         });
     });
 })

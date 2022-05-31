@@ -260,7 +260,7 @@ describe('DataGrid', () => {
                 <Cell colWidth={130} header>Recipient</Cell>
                 <Cell colWidth={100} header>Licensee Status</Cell>
                 <Cell colWidth={100} header>Mapping Status</Cell>
-                <Cell colWidth={50} header>Active</Cell>
+                <Cell colWidth={60} header>Active</Cell>
                 <Cell colWidth={200} header>Remark</Cell>
                 {
                     isHost &&

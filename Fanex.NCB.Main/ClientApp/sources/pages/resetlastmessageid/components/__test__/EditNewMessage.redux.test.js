@@ -28,16 +28,14 @@ describe('connect', () => {
                 { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 0 },
                 { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 0 },
                 { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 }
-            ],
-            missingMessages: null
+            ]
         };
         const state = {
             selected: [
                 { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 0 },
                 { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 0 },
                 { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 }
-            ],
-            missingMessages: null
+            ]
         };
 
         // Act

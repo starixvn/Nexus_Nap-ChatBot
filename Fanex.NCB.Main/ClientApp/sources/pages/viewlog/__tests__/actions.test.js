@@ -8,7 +8,7 @@ import {
     setParamsPageRecipientList,
     setParamsPageConversationMessage,
     setNotificationSystemMessage,
-    setRecipientList,
+    setNotificationRecipientList,
     setConversationMessageLog
 } from '../viewLogSlice';
 
@@ -130,8 +130,8 @@ describe('actionCreators', () => {
         });
     });
 
-    describe('getRecipientList', () => {
-        it('should handle getRecipientList when fetching data have been done', async () => {
+    describe('getNotificationRecipientList', () => {
+        it('should handle getNotificationRecipientList when fetching data have been done', async () => {
             // Arrange
             const expectedParams = {
                 notificationId: 188,
@@ -144,16 +144,16 @@ describe('actionCreators', () => {
                     data: [{ notificationID: 188, name: 'tim - new group', chatGroupTypeName: 'Normal Group', recipientName: '67BET', sentTime: '0001-01-01T00:00:00', status: 'Sending', retryTime: 0, errMsg: null}]
                 }
             };
-            const expectedActions = [{ type: setRecipientList.type, payload: response.data }];
-            const store = mockStore({ recipientList: {} });
+            const expectedActions = [{ type: setNotificationRecipientList.type, payload: response.data }];
+            const store = mockStore({ recipients: {} });
             const promise = Promise.resolve(response);
             DataService.getDataAsync = jest.fn(() => promise);
 
             // Act
-            await store.dispatch(ActionCreators.getRecipientList(expectedParams));
+            await store.dispatch(ActionCreators.getNotificationRecipientList(expectedParams));
 
             // Assert
-            expect(DataService.getDataAsync).toHaveBeenCalledWith('ViewLog/GetRecipientList', expectedParams);
+            expect(DataService.getDataAsync).toHaveBeenCalledWith('ViewLog/GetNotificationRecipientList', expectedParams);
             expect(store.getActions()).toEqual(expectedActions);
         });
     });
@@ -181,7 +181,7 @@ describe('actionCreators', () => {
             await store.dispatch(ActionCreators.getConversationMessageLog(expectedParams));
 
             // Assert
-            expect(DataService.getDataAsync).toHaveBeenCalledWith('ViewLog/GetConversationMessage', expectedParams);
+            expect(DataService.getDataAsync).toHaveBeenCalledWith('ViewLog/GetConversationMessageLog', expectedParams);
             expect(store.getActions()).toEqual(expectedActions);
         });
     });

@@ -3,7 +3,7 @@ import axios from 'axios';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import Site from '../../../lib/site';
-import errorResponseHandler from '../../../lib/errorResponseHandler';
+
 import {
     setNotificationTypes,
     getNotificationTypes,
@@ -13,8 +13,6 @@ import {
     setCreateTemplatePopup,
     setCreateTemplateResult,
     createTemplate,
-    setUpdateData,
-    refreshUpdateData,
     setEditTemplatePopup,
     setEditTemplateResult,
     getTemplate,

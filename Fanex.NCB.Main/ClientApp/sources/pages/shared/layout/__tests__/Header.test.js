@@ -11,10 +11,10 @@ describe('Header', () => {
             };
 
             // Act
-            const renderOutput = shallow(<Header {...props} />).html();
+            const renderOutput = shallow(<Header {...props} />);
 
             // Assert
-            expect(renderOutput).toMatchSnapshot();
+            expect(renderOutput.find('div').at(1).props().className).toBe('line-wrapp collaped');
         });
 
         it('sidebar is not expanded', () => {
@@ -24,10 +24,10 @@ describe('Header', () => {
             };
 
             // Act
-            const renderOutput = shallow(<Header {...props} />).html();
+            const renderOutput = shallow(<Header {...props} />);
 
             // Assert
-            expect(renderOutput).toMatchSnapshot();
+            expect(renderOutput.find('div').at(1).props().className).toBe('line-wrapp');
         });
 
         it('render without username', () => {
@@ -42,10 +42,10 @@ describe('Header', () => {
             };
 
             // Act
-            const renderOutput = shallow(<Header {...props} />).html();
+            const renderOutput = shallow(<Header {...props} />);
 
             // Assert
-            expect(renderOutput).toMatchSnapshot();
+            expect(renderOutput.find('div').at(1).props().className).toBe('line-wrapp');
         });
     });
 

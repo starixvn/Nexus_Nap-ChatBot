@@ -68,6 +68,8 @@ initialize {
 }
 `;
 
+exports[`MultipleSelectField when isSummitted and not valid - should match snapshot 1`] = `"<div style=\\"width:auto\\" class=\\"invalid multiple-select-field\\"><div class=\\"invalid-feedback\\">This field is required.</div></div>"`;
+
 exports[`MultipleSelectField when isSummitted and valid - render correctly 1`] = `
 initialize {
   "0": Node {
@@ -109,6 +111,8 @@ initialize {
 }
 `;
 
+exports[`MultipleSelectField when isSummitted and valid - should match snapshot 1`] = `"<div style=\\"width:auto\\" class=\\"multiple-select-field\\"></div>"`;
+
 exports[`MultipleSelectField when not isSummitted - render correctly 1`] = `
 initialize {
   "0": Node {
@@ -149,6 +153,8 @@ initialize {
   },
 }
 `;
+
+exports[`MultipleSelectField when not isSummitted - should match snapshot 1`] = `"<div style=\\"width:auto\\" class=\\"multiple-select-field\\"></div>"`;
 
 exports[`MultipleSelectField when not isSummitted and has data - render correctly 1`] = `
 initialize {
@@ -549,3 +555,5 @@ initialize {
   },
 }
 `;
+
+exports[`MultipleSelectField when not isSummitted and has data - should match snapshot 1`] = `"<div style=\\"width:10px\\" class=\\"multiple-select-field\\"><div class=\\"multiple-select-container\\" id=\\"multiple-select-2\\"><button type=\\"button\\" class=\\"multiple-select-default multiple-select-label\\"><span class=\\"text-display\\">Please select ...</span><b class=\\"caret\\"></b></button><div class=\\"multiple-select-default multiple-select-options-container\\" style=\\"display:none\\"><ul class=\\"multiple-select-options\\"><span>No information</span></ul></div></div></div>"`;

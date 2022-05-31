@@ -8,7 +8,7 @@ import { object, string, boolean } from 'yup';
 import Labels from '../../common/Labels';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 
-class NewMapping extends Component {
+export class NewMapping extends Component {
     constructor(props) {
         super(props);
     }
