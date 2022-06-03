@@ -7,7 +7,8 @@ import { Formik } from 'formik';
 import { object, string } from 'yup';
 import Labels from '../../common/Labels';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
-class NewSettingType extends Component {
+
+export class NewSettingType extends Component {
     constructor(props) {
         super(props);
     }

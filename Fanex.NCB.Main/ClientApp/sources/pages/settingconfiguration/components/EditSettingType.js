@@ -8,7 +8,7 @@ import { object, string } from 'yup';
 import Labels from '../../common/Labels';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 
-class EditNotificationType extends Component {
+export class EditNotificationType extends Component {
     constructor(props) {
         super(props);
 

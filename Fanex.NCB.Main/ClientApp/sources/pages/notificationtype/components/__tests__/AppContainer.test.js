@@ -2,8 +2,6 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { AppContainer } from '../AppContainer';
 import { NCBBreadcrum } from '../../../common/breadcrumbs/breadcrumbs';
-import { toast } from 'react-toastify';
-import Labels from '../../../common/Labels';
 import DataGrid from '../DataGrid';
 import CreateEditPopup from '../CreateEditPopup';
 import DeletePopup from '../DeletePopup';
