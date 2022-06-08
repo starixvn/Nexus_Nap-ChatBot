@@ -10,6 +10,8 @@
 
         public string Username { get; set; }
 
+        public string Username2 { get; set; }
+
         public string SiteName { get; set; }
 
         public string CategoryId { get; set; }
