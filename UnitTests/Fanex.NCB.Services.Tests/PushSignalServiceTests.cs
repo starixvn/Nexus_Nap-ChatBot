@@ -85,8 +85,6 @@
 
         [Theory]
         [InlineData(null)]
-        [InlineData("")]
-        [InlineData(" ")]
         public async Task OnUpdateNotificationStatusAsync_NotificationIdsAreInvalid_DoNothing(string notificationIds)
         {
             // Arrange
