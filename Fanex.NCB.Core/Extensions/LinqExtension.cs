@@ -5,7 +5,7 @@
 
     public static class LinqExtension
     {
-        public static IEnumerable<TSource> DistinctBy<TSource, TKey>
+        public static IEnumerable<TSource> CustomeDistinctBy<TSource, TKey>
     (this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
             HashSet<TKey> seenKeys = new HashSet<TKey>();
