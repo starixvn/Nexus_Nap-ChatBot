@@ -7,6 +7,7 @@ import newNotification, {
     setResetConfirmationPopup,
     setEditConfirmationPopup,
     setMarkdownRulesPopup,
+    setUserGuidePopup,
     setCreateNotificationResult
 } from '../newNotificationSlice';
 
@@ -31,6 +32,9 @@ describe('newNotificationSlice reducer', () => {
                 isOpen: false
             },
             markdownRulesPopup: {
+                isOpen: false
+            },
+            userGuidePopup: {
                 isOpen: false
             },
             createNotificationResult: null
@@ -133,6 +137,17 @@ describe('newNotificationSlice reducer', () => {
             })
         ).toEqual({
             markdownRulesPopup: [{ isOpen: true, content: 'test' }]
+        });
+    });
+
+    it('should handle setUserGuidePopup', () => {
+        expect(
+            newNotification({}, {
+                type: setUserGuidePopup.type,
+                payload: [{ isOpen: true, content: 'test' }]
+            })
+        ).toEqual({
+            userGuidePopup: [{ isOpen: true, content: 'test' }]
         });
     });
 

@@ -18,6 +18,19 @@
     }
 }
 
+.new-guide {
+    display: flex;
+    justify-content: space-between;
+
+    .icon-guide {
+        cursor: pointer;
+        margin-right: 15px;
+        height: 24px;
+        width: 24px;
+        background: url("../../../images/Guide.png") no-repeat;
+    }
+}
+
 .new-notification {
     width: 1000px;
 

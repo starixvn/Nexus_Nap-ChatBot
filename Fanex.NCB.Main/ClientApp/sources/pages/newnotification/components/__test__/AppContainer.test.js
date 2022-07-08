@@ -908,6 +908,42 @@ describe('AppContainer', () => {
         });
     });
 
+    describe('handleOpenUserGuidePopup', () => {
+        it('should call exactly props function', () => {
+            // Arrange
+            const props = {
+                ...initProps,
+                setUserGuidePopup: jest.fn()
+            };
+
+            const container = shallow(<AppContainer {...props}/>).instance();
+
+            // Act
+            container.handleOpenUserGuidePopup();
+
+            // Assert
+            expect(props.setUserGuidePopup).toHaveBeenCalledWith({ isOpen: true });
+        });
+    });
+
+    describe('handleCloseUserGuidePopup', () => {
+        it('should call exactly props function', () => {
+            // Arrange
+            const props = {
+                ...initProps,
+                setUserGuidePopup: jest.fn()
+            };
+
+            const container = shallow(<AppContainer {...props}/>).instance();
+
+            // Act
+            container.handleCloseUserGuidePopup();
+
+            // Assert
+            expect(props.setUserGuidePopup).toHaveBeenCalledWith({ isOpen: false });
+        });
+    });
+
     describe('renderPageTitle', () => {
         it('should render resend title', () => {
             // Arrange
@@ -969,6 +1005,7 @@ describe('AppContainer', () => {
             resetConfirmationPopup: { isOpen: true },
             editConfirmationPopup: { isOpen: true },
             markdownRulesPopup: { isOpen: true },
+            userGuidePopup: { isOpen: true },
             notificationTemplates: [{ id: 1, name: 'test' }]
         };
 

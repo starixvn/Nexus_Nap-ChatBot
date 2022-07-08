@@ -33,7 +33,8 @@ describe('connect', () => {
             notificationTemplates: [],
             resetConfirmationPopup: null,
             editConfirmationPopup: null,
-            markdownRulesPopup: null
+            markdownRulesPopup: null,
+            userGuidePopup: null
         };
         const state = {
             notificationTypes: [],
@@ -47,7 +48,8 @@ describe('connect', () => {
             notificationTemplates: [],
             resetConfirmationPopup: null,
             editConfirmationPopup: null,
-            markdownRulesPopup: null
+            markdownRulesPopup: null,
+            userGuidePopup: null
         };
 
         // Act
