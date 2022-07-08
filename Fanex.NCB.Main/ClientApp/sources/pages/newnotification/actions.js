@@ -9,6 +9,7 @@ import {
     setResetConfirmationPopup,
     setEditConfirmationPopup,
     setMarkdownRulesPopup,
+    setUserGuidePopup,
     setCreateNotificationResult
 } from './newNotificationSlice';
 
@@ -73,5 +74,6 @@ export const ActionCreators = {
     setResetConfirmationPopup,
     setEditConfirmationPopup,
     setMarkdownRulesPopup,
+    setUserGuidePopup,
     setCreateNotificationResult
 };

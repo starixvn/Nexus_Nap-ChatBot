@@ -23,6 +23,9 @@ const newNotificationSlice = createSlice({
         markdownRulesPopup: {
             isOpen: false
         },
+        userGuidePopup: {
+            isOpen: false
+        },
         createNotificationResult: null
     },
     reducers: {
@@ -51,6 +54,9 @@ const newNotificationSlice = createSlice({
         setMarkdownRulesPopup: (state, action) => {
             state.markdownRulesPopup = action.payload;
         },
+        setUserGuidePopup: (state, action) => {
+            state.userGuidePopup = action.payload;
+        },
         setCreateNotificationResult: (state, action) => {
             state.createNotificationResult = action.payload;
         }
@@ -68,6 +74,7 @@ export const {
     setResetConfirmationPopup,
     setEditConfirmationPopup,
     setMarkdownRulesPopup,
+    setUserGuidePopup,
     setCreateNotificationResult
 } = actions;
 

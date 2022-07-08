@@ -23,6 +23,7 @@ import ContentPreview from '../../common/ContentPreview';
 import MarkdownRules from '../../common/markdown-rules';
 import CommonFunction from '../../common/common-functions/CommonFunctions';
 import MultipleSelect from '../../common/multiple-select/index';
+import UserGuide from '../../common/user-guide';
 
 const SendModeOptions = [
     { value: '1', label: 'Send Immediately' },
@@ -454,6 +455,10 @@ export class AppContainer extends React.Component {
 
     handleCloseMarkdownRulesPopup = () => this.props.setMarkdownRulesPopup({ isOpen: false });
 
+    handleOpenUserGuidePopup = () => this.props.setUserGuidePopup({ isOpen: true });
+
+    handleCloseUserGuidePopup = () => this.props.setUserGuidePopup({ isOpen: false });
+
     renderForm = ({
         values,
         errors,
@@ -653,7 +658,11 @@ export class AppContainer extends React.Component {
         const pageTitle = this.renderPageTitle();
         return (
             <>
-                <NCBBreadcrum chatbotName={Labels.ChatbotSystem} pageTitle={pageTitle} />
+                <div className="new-guide">
+                    <NCBBreadcrum chatbotName={Labels.ChatbotSystem} pageTitle={pageTitle} />
+                    <span className="icon-guide" onClick={this.handleOpenUserGuidePopup}/>
+                </div>
+                <span><i class="fa fa-address-book" aria-hidden="true"></i></span>
                 <div className="new-notification">
                     {
                         this.props.createNotificationResult &&
@@ -694,6 +703,10 @@ export class AppContainer extends React.Component {
                     this.props.markdownRulesPopup.isOpen &&
                     <MarkdownRules show onToggle={this.handleCloseMarkdownRulesPopup} />
                 }
+                {
+                    this.props.userGuidePopup.isOpen &&
+                    <UserGuide show onToggle={this.handleCloseUserGuidePopup} />
+                }
             </>
         );
     }
@@ -712,7 +725,8 @@ const mapStateToProps = state => {
         notificationTemplates: state.notificationTemplates,
         resetConfirmationPopup: state.resetConfirmationPopup,
         editConfirmationPopup: state.editConfirmationPopup,
-        markdownRulesPopup: state.markdownRulesPopup
+        markdownRulesPopup: state.markdownRulesPopup,
+        userGuidePopup: state.userGuidePopup,
     };
 };
 
