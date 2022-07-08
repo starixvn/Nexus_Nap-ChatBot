@@ -12,6 +12,6 @@
 
         public int LicenseeTypeId { get; set; }
 
-        public int PlatformId { get; set; }
+        public int? PlatformId { get; set; }
     }
 }
