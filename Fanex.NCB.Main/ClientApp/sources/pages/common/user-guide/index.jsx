@@ -23,7 +23,7 @@ export default class UserGuide extends Component {
                                 <li>Notifications are allowed sending message to integrating/upcoming licensees.</li>
                                 <li>Recipient list will include both active and integrating/upcoming licensees.</li>
                                 <li>
-                                    Integrating/upcoming licensees who cannot detect Licensee Type will be grouped under "Unidentified" group in Recipients list. 
+                                    Integrating/upcoming licensees who cannot detect Licensee Type will be grouped under "Unidentified" group in Recipients list.
                                     "Unidentified" group will always show, it isn't affected by selecting Product and Platform.
                                 </li>
                             </ul>
