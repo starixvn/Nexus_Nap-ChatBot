@@ -121,7 +121,7 @@
                         await DoCheckIn(user, newOnUserId);
 
                         return Redirect(!string.IsNullOrWhiteSpace(ssoLogin.RedirectUrl) && Url.IsLocalUrl(ssoLogin.RedirectUrl) ? ssoLogin.RedirectUrl :
-                        Url.Content($"~{napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url}"));
+                        Url.Content($"~{napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url ?? "/Error/UnauthorizedUser"}"));
                     }
                 }
             }
