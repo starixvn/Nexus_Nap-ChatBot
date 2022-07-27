@@ -74,8 +74,10 @@
                     var onUserId = await LoginCheckIn(user);
                     await DoCheckIn(user, onUserId);
 
-                    return Redirect(!string.IsNullOrWhiteSpace(userLogin.ReturnUrl) && Url.IsLocalUrl(userLogin.ReturnUrl) ? $"~{userLogin.ReturnUrl}" :
-                        Url.Content($"~{napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url}"));
+                    var url = napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url;
+                    var urlContent = Url.Content($"~{(!string.IsNullOrEmpty(url) ? url : "/Error/UnauthorizedUser")}");
+
+                    return Redirect(!string.IsNullOrWhiteSpace(userLogin.ReturnUrl) && Url.IsLocalUrl(userLogin.ReturnUrl) ? $"~{userLogin.ReturnUrl}" : urlContent);
                 }
             }
             else
@@ -123,8 +125,7 @@
                         var url = napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url;
                         var urlContent = Url.Content($"~{(!string.IsNullOrEmpty(url) ? url : "/Error/UnauthorizedUser")}");
 
-                        return Redirect(!string.IsNullOrWhiteSpace(ssoLogin.RedirectUrl) && Url.IsLocalUrl(ssoLogin.RedirectUrl) ? ssoLogin.RedirectUrl :
-                        Url.Content(urlContent));
+                        return Redirect(!string.IsNullOrWhiteSpace(ssoLogin.RedirectUrl) && Url.IsLocalUrl(ssoLogin.RedirectUrl) ? ssoLogin.RedirectUrl : urlContent);
                     }
                 }
             }
