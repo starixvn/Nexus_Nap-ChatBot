@@ -11,12 +11,16 @@
     <None Remove="App_Data\SpNames.AWS.xml" />
     <None Remove="App_Data\SpNames.LOCAL.xml" />
     <None Remove="App_Data\SpNames.PROD.xml" />
+    <None Remove="App_Data\SpNames.SIT.xml" />
     <None Remove="App_Data\SpNames.UAT.xml" />
     <None Remove="App_Data\SpNames.xml" />
   </ItemGroup>
 
   <ItemGroup>
     <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+    <Content Include="App_Data\SpNames.SIT.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="App_Data\SpNames.AWS.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -52,6 +56,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="appsettings.SIT.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="appsettings.AWS.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

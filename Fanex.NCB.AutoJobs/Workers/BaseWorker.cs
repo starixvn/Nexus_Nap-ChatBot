@@ -59,7 +59,6 @@
             catch (Exception ex)
             {
                 _ = logService.WriteExceptionSentryErrorAsync(ex);
-                _ = logService.WriteMessageSentryErrorAsync(ex.ToString());
                 logService.WriteLogFileError($"{jobSetting.JobName}: Error - {ex}");
             }
             finally

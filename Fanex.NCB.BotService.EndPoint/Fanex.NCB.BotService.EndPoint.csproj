@@ -39,22 +39,16 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
+        <None Update="App_Data\SpNames.SIT.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="App_Data\SpNames.LOCAL_1.xml">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="App_Data\SpNames.PROD_1.xml">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <None Update="App_Data\SpNames.UAT_1.xml">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
         <None Update="App_Data\SpNames.PROD.xml">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="App_Data\SpNames.Development.xml">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="App_Data\SpNames.UAT.xml">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="App_Data\SpNames.LOCAL.xml">
@@ -62,6 +56,9 @@
         </None>
         <None Update="App_Data\SpNames.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="BotFileConfigs\botConfig.SIT.bot">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="BotFileConfigs\botConfig.Local_1.bot">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
