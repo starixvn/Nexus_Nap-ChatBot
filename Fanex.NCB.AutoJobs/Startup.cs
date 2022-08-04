@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Fanex.Caching;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Data.Repository;
@@ -38,9 +39,12 @@
 
     public class Startup
     {
+        // private readonly ConnectionMultiplexer Redis;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            // Redis = ConnectionMultiplexer.Connect(Configuration.GetSection("Fanex.Caching.Redis:ConnectionString").Value);
         }
 
         public IConfiguration Configuration { get; }
@@ -52,6 +56,20 @@
             AddDependencyInjection(services, Configuration);
             //AddWorker(services);
             TestDynamicConnection("NAP_ChatBot_GetDataBySiteId");
+        }
+
+        private void ConfigRedisCaching(IServiceCollection services)
+        {
+            //services.AddDataProtection()
+            //    .SetApplicationName(Configuration.GetSection("Fanex.Caching.Redis:ApplicationName").Value)
+            //    .PersistKeysToStackExchangeRedis(Redis, "Fanex.NCB.BotService.Endpoint-Keys");
+
+            //services.AddRedisCache(Configuration.GetSection("Fanex.Caching.Redis"));
+            //services.AddMvc().AddNewtonsoftJson();
+
+            //const short WorkerThreads = 300;
+            //const short CompletionPortThreads = 300;
+            //_ = ThreadPool.SetMinThreads(WorkerThreads, CompletionPortThreads);
         }
 
         private void TestDynamicConnection(string v)
@@ -161,6 +179,8 @@
             services.AddSingleton<IViewLogService, ViewLogService>();
             services.AddSingleton<ICommonService, CommonService>();
             services.AddSingleton<IProblemAccountService, ProblemAccountService>();
+            services.AddSingleton<ISiteDbService, SiteDbService>();
+            services.AddSingleton<ICacheService, CacheService>();
         }
 
         private static void AddWorker(IServiceCollection services)

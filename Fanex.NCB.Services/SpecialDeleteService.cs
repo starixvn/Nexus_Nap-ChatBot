@@ -13,6 +13,7 @@
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.SiteMessage;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
+    using Fanex.NCB.Shared.Models.SpecialDeleteTicket.AbnormalBets;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
@@ -23,6 +24,7 @@
         private readonly IPushSignalService pushSignalService;
         private readonly IChatbotService chatbotService;
         private readonly ILogService logService;
+        private readonly ISiteDbService siteDbService;
         private readonly string Environment;
         private const int VoidTicketForLicenseeJobIdentity = 1;
         private const int VoidAbnormalbetsJobIdentity = 2;
@@ -32,13 +34,15 @@
             IChatbotService chatbotService,
             IPushSignalService pushSignalService,
             ILogService logService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ISiteDbService siteDbService)
         {
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;
             this.chatbotService = chatbotService;
             this.logService = logService;
             Environment = configuration.GetSection("Environment")?.Value;
+            this.siteDbService = siteDbService;
         }
 
         #region Pull voiding ticket send to Licensee
@@ -155,21 +159,40 @@
             SystemSetting setting)
         {
             var messages = await GetAbnormalBetsMessageAsync(setting, messageHistories);
+
             if (messages.Any())
             {
                 var listMsg = messages.Select(m => new MessageHistory { MessageID = m.MessageID, RequestID = m.RequestID }).ToList();
-                var (abnormalMessages, abnormalMessageHistories) = await GetVoidingHistoryAsync(listMsg);
-                if (abnormalMessageHistories.Any())
-                {
-                    var updatedUsernames = await GetAbnormalAccountUpdatedUsernameAsync(abnormalMessageHistories);
-                    UpdateAbnormalAccountUpdatedUsernames(abnormalMessages, updatedUsernames);
-                }
+                var (tranIds, usernames) = await GetUsernameAndTransId(listMsg);
+                var siteDbs = await siteDbService.GetListSiteDbAsync();
 
-                MappingAbnormalBetsData(messages, abnormalMessages);
+                var results = await siteDbService.GetTicketUsernamesAynnc(tranIds, usernames, siteDbs);
 
-                int maxMsgId = messages.Max(m => m.MessageID);
-                await ImportAbnormalBetNotificationToChatbotDBAsync(abnormalMessages, listMsg, maxMsgId);
+                //var (abnormalMessages, abnormalMessageHistories) = await GetVoidingHistoryAsync(listMsg);
+
+                //if (abnormalMessageHistories.Any())
+                //{
+                //    var updatedUsernames = await GetAbnormalAccountUpdatedUsernameAsync(abnormalMessageHistories);
+                //    UpdateAbnormalAccountUpdatedUsernames(abnormalMessages, updatedUsernames);
+                //}
+
+                //MappingAbnormalBetsData(messages, abnormalMessages);
+
+                //int maxMsgId = messages.Max(m => m.MessageID);
+                //await ImportAbnormalBetNotificationToChatbotDBAsync(abnormalMessages, listMsg, maxMsgId);
             }
+        }
+
+        private async Task<(IEnumerable<AbnormalTransId>, IEnumerable<AbnormalUsernames>)> GetUsernameAndTransId(List<MessageHistory> messages)
+        {
+            string messageIdLst = XmlHelper<MessageHistory>.Serialize(messages);
+
+            var criteria = new AbnormalBetGetUsernameAndTransIdCriteria
+            {
+                MessageIdLst = messageIdLst
+            };
+
+            return await baseService.FetchMultipleAsync<AbnormalTransId, AbnormalUsernames>(criteria);
         }
 
         protected internal virtual async Task<IEnumerable<VoidingHistoryUsername>> GetAbnormalAccountUpdatedUsernameAsync(IEnumerable<AbnormalMessageHistory> messages)

@@ -5,14 +5,14 @@
     public interface ICriteriaExtend : ICriteria
     {
         string ServerIp { get; }
-        string Alias { get; }
+        string DbName { get; }
     }
 
     public abstract class CriteriaBaseExtend : ICriteriaExtend
     {
         public abstract string ServerIp { get; set; }
 
-        public abstract string Alias { get; set; }
+        public abstract string DbName { get; set; }
 
         public abstract string GetSettingKey();
 

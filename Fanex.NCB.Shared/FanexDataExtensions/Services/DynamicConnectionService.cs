@@ -17,7 +17,7 @@
                 return Enumerable.Empty<T>();
             }
 
-            using (var objectDb = new SqlObjectDbExtend(criteria.ServerIp, criteria.GetSettingKey()))
+            using (var objectDb = new SqlObjectDbExtend(criteria.ServerIp, criteria.DbName, criteria.GetSettingKey()))
             {
                 return await objectDb.QueryAsync<T>(criteria, cancellationToken: default);
             }
@@ -62,7 +62,7 @@
                 return result;
             }
 
-            using (var objectDb = new SqlObjectDbExtend(criteria.ServerIp, criteria.GetSettingKey()))
+            using (var objectDb = new SqlObjectDbExtend(criteria.ServerIp, criteria.DbName, criteria.GetSettingKey()))
             {
                 using (var multiResultReader = await objectDb.QueryMultipleAsync(criteria, cancellationToken: cancellationToken))
                 {

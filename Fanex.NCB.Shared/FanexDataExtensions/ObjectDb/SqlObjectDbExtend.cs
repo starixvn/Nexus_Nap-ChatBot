@@ -6,14 +6,15 @@
 
     public class SqlObjectDbExtend : ObjectDb
     {
-        public SqlObjectDbExtend(string newServerIp, string key, int? commandTimeout = null)
+        public SqlObjectDbExtend(string newServerIp, string dbName, string key, int? commandTimeout = null)
             : base(key, commandTimeout)
         {
             var currentConnectionString = DbSetting.ConnectionString;
             var sqlConnection = new SqlConnectionStringBuilder(currentConnectionString);
             sqlConnection.DataSource = newServerIp;
+
             var newSettings = new DbSetting(key,
-                DbSetting.DbName,
+                dbName,
                 sqlConnection.ConnectionString,
                 DbSetting.SpName,
                 commandTimeout,
