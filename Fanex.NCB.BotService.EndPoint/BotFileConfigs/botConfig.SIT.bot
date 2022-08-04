@@ -6,9 +6,25 @@
             "type": "endpoint",
             "name": "SABASports_SIT",
             "endpoint": "https://licbot.playthefun.com:8443/api/messages",
-            "appId": "05c203a6-6f5c-4c16-b8a9-3ff54978c682",
-            "appPassword": "jUc8Q~4IgW1ydoINyNRR7GOlseJ~JbEJLADAgclG",
+            "appId": "cfc5a5ad-1467-4590-b63b-d284498082fe",
+            "appPassword": "4s.8Q~se.EkEr7ek7_Faz~njB.ndnVEdsG~Qfa7U",
             "id": "1"
+        },
+        {
+            "type": "endpoint",
+            "name": "SABA_SIT",
+            "endpoint": "https://licbot.playthefun.com:8443/api/messages",
+            "appId": "5dd6d41b-b361-4f91-9ac0-7b1f4ebe1ca1",
+            "appPassword": "i138Q~AM5RSHTh.GVBE42G5KF9bRAITaahfAla-d",
+            "id": "2"
+        },
+        {
+            "type": "endpoint",
+            "name": "沙巴体育公告 / Saba Sports Announcement_SIT",
+            "endpoint": "https://licbot.playthefun.com:8443/api/messages",
+            "appId": "bd392363-9d0c-4460-b3d2-30aba5631d3c",
+            "appPassword": "e8e8Q~IkHdOIUp8nyMn8s_eDv4xRl19~PQpZLbRP",
+            "id": "3"
         }
     ],
     "padlock": "",
