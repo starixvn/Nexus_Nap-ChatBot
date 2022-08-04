@@ -50,7 +50,16 @@
             services.AddControllers();
             AddConfiguration(services, Configuration);
             AddDependencyInjection(services, Configuration);
-            AddWorker(services);
+            //AddWorker(services);
+            TestDynamicConnection("NAP_ChatBot_GetDataBySiteId");
+        }
+
+        private void TestDynamicConnection(string v)
+        {
+            var p = Fanex.Data.Cryptography.DecryptPassword("j+UGweaEw4d2X3mfHMROgA==");
+            //using (var objDb = new SqlObjectDbExtend(v))
+            //{
+            //}
         }
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)

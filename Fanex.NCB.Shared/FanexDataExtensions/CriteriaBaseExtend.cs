@@ -5,7 +5,7 @@
     public interface ICriteriaExtend : ICriteria
     {
         string ServerIp { get; }
-        public string Alias { get; }
+        string Alias { get; }
     }
 
     public abstract class CriteriaBaseExtend : ICriteriaExtend
