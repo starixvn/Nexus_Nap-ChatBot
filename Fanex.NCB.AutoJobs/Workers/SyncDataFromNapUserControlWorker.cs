@@ -12,7 +12,6 @@
     public class SyncDataFromNapUserControlWorker : BaseWorker
     {
         private readonly ISyncDataService syncDataService;
-        private readonly ILogService logService;
 
         public SyncDataFromNapUserControlWorker(
             ISyncDataService syncDataService,
@@ -22,21 +21,12 @@
                 : base(maintenanceService, logService)
         {
             this.syncDataService = syncDataService;
-            this.logService = logService;
             jobSetting = JobHelper.GetJobConfig(jobSettings.Value, JobConstants.SyncNapUserControlData);
         }
 
         public override async Task ExecuteJobAsync()
         {
-            try
-            {
-                await syncDataService.NapUserControlSyncDataAsync();
-            }
-            catch (System.Exception ex)
-            {
-                await logService.WriteExceptionSentryErrorAsync(ex);
-                throw;
-            }
+            await syncDataService.NapUserControlSyncDataAsync();
         }
     }
 }

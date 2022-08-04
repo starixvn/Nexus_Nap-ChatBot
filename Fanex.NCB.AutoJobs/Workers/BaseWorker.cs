@@ -8,13 +8,10 @@
     using Microsoft.Extensions.Hosting;
     using ONEbook.UM.Services;
 
-    public class BaseWorker : BackgroundService
+    public abstract class BaseWorker : BackgroundService
     {
         private readonly IMaintenanceService maintenanceService;
         private readonly ILogService logService;
-
-        private Timer timer;
-        private bool isRunning;
 
         protected JobSetting jobSetting;
 
@@ -28,12 +25,25 @@
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            timer = new Timer(Execute,
-               null,
-               TimeSpan.Zero,
-               TimeSpan.FromSeconds(jobSetting.TimeInterval));
+            const byte MillisecondsDelay = 10;
+            await Task.Delay(MillisecondsDelay).ConfigureAwait(false);
 
-            await Task.CompletedTask;
+            try
+            {
+                while (!stoppingToken.IsCancellationRequested)
+                {
+                    await RunJobAsync();
+
+                    await Task.Delay(TimeSpan.FromSeconds(jobSetting.TimeInterval), stoppingToken);
+                }
+
+                logService.WriteLogFileInfo($"Execution ended. Cancelation token cancelled = {stoppingToken.IsCancellationRequested}");
+            }
+            catch (Exception ex)
+            {
+                logService.WriteLogFileInfo("Unhandeled exception. Execution Stopping");
+                logService.WriteLogFileInfo(ex.Message);
+            }
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
@@ -42,17 +52,15 @@
             return base.StartAsync(cancellationToken);
         }
 
-        private void Execute(object state)
+        private async Task RunJobAsync()
         {
             try
             {
-                if (!isRunning
-                    && jobSetting.IsEnabled
+                if (jobSetting.IsEnabled
                     && (!jobSetting.HasCheckUM || !IsUM()))
                 {
-                    isRunning = true;
                     logService.WriteLogFileWarning($"{jobSetting.JobName}: Doing...");
-                    _ = ExecuteJobAsync();
+                    await ExecuteJobAsync();
                     logService.WriteLogFileWarning($"{jobSetting.JobName}: Done.");
                 }
             }
@@ -61,21 +69,13 @@
                 _ = logService.WriteExceptionSentryErrorAsync(ex);
                 logService.WriteLogFileError($"{jobSetting.JobName}: Error - {ex}");
             }
-            finally
-            {
-                isRunning = false;
-            }
         }
 
-        public virtual async Task ExecuteJobAsync()
-        {
-            await Task.CompletedTask;
-        }
+        public abstract Task ExecuteJobAsync();
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
             logService.WriteLogFileWarning($"{jobSetting.JobName}: Stopping Service");
-            timer?.Change(Timeout.Infinite, 0);
 
             await base.StopAsync(cancellationToken);
         }
@@ -83,7 +83,6 @@
         public override void Dispose()
         {
             logService.WriteLogFileWarning($"{jobSetting.JobName}: Disposing Service");
-            timer.Dispose();
             GC.SuppressFinalize(this);
             base.Dispose();
         }
