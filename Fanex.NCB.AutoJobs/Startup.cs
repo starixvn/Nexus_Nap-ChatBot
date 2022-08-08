@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using Fanex.Caching;
+    using Fanex.Caching.Redis;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Data.Repository;
@@ -20,12 +22,14 @@
     using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.FanexDataExtensions.Services;
     using Fanex.NCB.Shared.Middlewares;
     using Fanex.NCB.Shared.Repositories;
     using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Fanex.RemotingRef;
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -36,15 +40,13 @@
     using ONEbook.UM.Services;
     using ONEbook.UM.Transport;
     using Sentry;
+    using StackExchange.Redis;
 
     public class Startup
     {
-        // private readonly ConnectionMultiplexer Redis;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            // Redis = ConnectionMultiplexer.Connect(Configuration.GetSection("Fanex.Caching.Redis:ConnectionString").Value);
         }
 
         public IConfiguration Configuration { get; }
@@ -53,31 +55,23 @@
         {
             services.AddControllers();
             AddConfiguration(services, Configuration);
+            AddRedisCacheConfig(services);
             AddDependencyInjection(services, Configuration);
-            //AddWorker(services);
-            TestDynamicConnection("NAP_ChatBot_GetDataBySiteId");
+            AddWorker(services);
         }
 
-        private void ConfigRedisCaching(IServiceCollection services)
+        private void AddRedisCacheConfig(IServiceCollection services)
         {
-            //services.AddDataProtection()
-            //    .SetApplicationName(Configuration.GetSection("Fanex.Caching.Redis:ApplicationName").Value)
-            //    .PersistKeysToStackExchangeRedis(Redis, "Fanex.NCB.BotService.Endpoint-Keys");
+            var redis = ConnectionMultiplexer.Connect(Configuration.GetSection("Fanex.Caching.Redis:ConnectionString").Value);
+            services.AddDataProtection()
+                .SetApplicationName(Configuration.GetSection("Fanex.Caching.Redis:ApplicationName").Value)
+                .PersistKeysToStackExchangeRedis(redis, "Fanex.NCB.AutoJobs.AutoJobs-Keys");
 
-            //services.AddRedisCache(Configuration.GetSection("Fanex.Caching.Redis"));
-            //services.AddMvc().AddNewtonsoftJson();
+            services.AddRedisCache(Configuration.GetSection("Fanex.Caching.Redis"));
 
-            //const short WorkerThreads = 300;
-            //const short CompletionPortThreads = 300;
-            //_ = ThreadPool.SetMinThreads(WorkerThreads, CompletionPortThreads);
-        }
-
-        private void TestDynamicConnection(string v)
-        {
-            var p = Fanex.Data.Cryptography.DecryptPassword("j+UGweaEw4d2X3mfHMROgA==");
-            //using (var objDb = new SqlObjectDbExtend(v))
-            //{
-            //}
+            const short WorkerThreads = 300;
+            const short CompletionPortThreads = 300;
+            _ = ThreadPool.SetMinThreads(WorkerThreads, CompletionPortThreads);
         }
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -180,6 +174,7 @@
             services.AddSingleton<ICommonService, CommonService>();
             services.AddSingleton<IProblemAccountService, ProblemAccountService>();
             services.AddSingleton<ISiteDbService, SiteDbService>();
+            services.AddSingleton<IDynamicConnectionService, DynamicConnectionService>();
             services.AddSingleton<ICacheService, CacheService>();
         }
 

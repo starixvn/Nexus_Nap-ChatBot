@@ -103,7 +103,7 @@
             await service.PullVoidingMessageInternalDepartmentAsync();
 
             // Assert
-            await baseService.DidNotReceive().GetDataAsync<MessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>());
+            await baseService.DidNotReceive().GetDataAsync<SiteMessageMessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>());
         }
 
         [Fact]
@@ -111,10 +111,10 @@
         {
             // Arrange
             var setting = fixture.Create<SystemSetting>();
-            var histories = new List<MessageHistory>();
+            var histories = new List<SiteMessageMessageHistory>();
             var service = GetService();
             baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>()).Returns(setting);
-            baseService.GetDataAsync<MessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>()).Returns(histories);
+            baseService.GetDataAsync<SiteMessageMessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>()).Returns(histories);
 
             // Act
             await service.PullVoidingMessageInternalDepartmentAsync();
@@ -128,10 +128,10 @@
         {
             // Arrange
             var setting = fixture.Create<SystemSetting>();
-            var histories = fixture.Create<List<MessageHistory>>();
+            var histories = fixture.Create<List<SiteMessageMessageHistory>>();
             var service = GetService();
             baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>()).Returns(setting);
-            baseService.GetDataAsync<MessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>()).Returns(histories);
+            baseService.GetDataAsync<SiteMessageMessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>()).Returns(histories);
 
             // Act
             await service.PullVoidingMessageInternalDepartmentAsync();
@@ -155,7 +155,7 @@
             await service.Public_UpdateMessageHistoryVoidingForLicenseeAsync(messageDetails);
 
             // Assert
-            service.Received().Protected("InsertToMessageChatbotAsync", Arg.Any<IEnumerable<MessageHistory>>(), 1);
+            service.Received().Protected("InsertToMessageChatbotAsync", Arg.Any<IEnumerable<SiteMessageMessageHistory>>(), 1);
         }
 
         #endregion UpdateMessageHistoryVoidingForLicenseeAsync
@@ -271,7 +271,7 @@
         public async Task GetMessageAndImportToChatbotAsync_DoNotHaveAbnormalBetsMessage_DoNothing()
         {
             // Arrange
-            var messageHistories = fixture.Create<IEnumerable<MessageHistory>>();
+            var messageHistories = fixture.Create<IEnumerable<SiteMessageMessageHistory>>();
             var setting = fixture.Create<SystemSetting>();
             var messages = new List<Message>();
             var service = GetService();
@@ -283,7 +283,7 @@
             // Asset
             service.DidNotReceive().Protected("ImportAbnormalBetNotificationToChatbotDBAsync",
                 Arg.Any<IEnumerable<AbnormalMessage>>(),
-                Arg.Any<IEnumerable<MessageHistory>>(),
+                Arg.Any<IEnumerable<SiteMessageMessageHistory>>(),
                 Arg.Any<int>());
         }
 
@@ -291,7 +291,7 @@
         public async Task GetMessageAndImportToChatbotAsync_HaveAbnormalBetsMessage_DoAsExpected()
         {
             // Arrange
-            var messageHistories = fixture.Create<IEnumerable<MessageHistory>>();
+            var messageHistories = fixture.Create<IEnumerable<SiteMessageMessageHistory>>();
             var setting = fixture.Create<SystemSetting>();
             var messages = new List<Message>
             {
@@ -311,7 +311,7 @@
             };
             var service = GetService();
             service.Protected("GetAbnormalBetsMessageAsync", setting, messageHistories).Returns(Task.FromResult<IEnumerable<Message>>(messages));
-            service.Protected("GetVoidingHistoryAsync", Arg.Any<List<MessageHistory>>())
+            service.Protected("GetVoidingHistoryAsync", Arg.Any<List<SiteMessageMessageHistory>>())
                 .Returns(Task.FromResult<(IEnumerable<AbnormalMessage>, IEnumerable<AbnormalMessageHistory>)>((abnormalMessages, abnormalMessageHistories)));
             service.Protected("GetAbnormalAccountUpdatedUsernameAsync", abnormalMessageHistories)
                 .Returns(Task.FromResult<IEnumerable<VoidingHistoryUsername>>(updatedUsernames));
@@ -322,7 +322,7 @@
             // Asset
             service.Received().Protected("ImportAbnormalBetNotificationToChatbotDBAsync",
                 abnormalMessages,
-                Arg.Any<IEnumerable<MessageHistory>>(),
+                Arg.Any<IEnumerable<SiteMessageMessageHistory>>(),
                 2);
         }
 
@@ -353,7 +353,7 @@
         {
             // Arrange
             var setting = fixture.Create<SystemSetting>();
-            var messageHistories = fixture.Create<IEnumerable<MessageHistory>>();
+            var messageHistories = fixture.Create<IEnumerable<SiteMessageMessageHistory>>();
             var messages = fixture.Create<IEnumerable<Message>>();
             var criteria = new GetAbnormalBetsMessageCriteria();
             var service = GetService();
@@ -365,7 +365,7 @@
             // Assert
             Assert.Equal(messages, result);
 
-            Assert.Equal(XmlHelper<MessageHistory>.Serialize(messageHistories.ToList()), criteria.MessageIDLst);
+            Assert.Equal(XmlHelper<SiteMessageMessageHistory>.Serialize(messageHistories.ToList()), criteria.MessageIDLst);
             Assert.Equal(setting.BatchSize, criteria.BatchSize);
             Assert.Equal(setting.MsgContentsTypeLst, criteria.MsgContentsTypeLst);
         }
@@ -374,8 +374,8 @@
         public async Task GetVoidingHistoryAsync_WhenCalled_ReturnAsExpectedResult()
         {
             // Arrange
-            var messageHistories = fixture.Create<List<MessageHistory>>();
-            var xml = XmlHelper<MessageHistory>.Serialize(messageHistories);
+            var messageHistories = fixture.Create<List<SiteMessageMessageHistory>>();
+            var xml = XmlHelper<SiteMessageMessageHistory>.Serialize(messageHistories);
             var messages = fixture.Create<List<AbnormalMessage>>();
             var histories = fixture.Create<List<AbnormalMessageHistory>>();
             var tuple = (messages, histories);
@@ -400,7 +400,7 @@
         {
             // Arrange
             var messages = new List<AbnormalMessage>();
-            var histories = fixture.Create<IEnumerable<MessageHistory>>();
+            var histories = fixture.Create<IEnumerable<SiteMessageMessageHistory>>();
             var maxMessageId = fixture.Create<int>();
             var service = GetService();
 
@@ -416,7 +416,7 @@
         {
             // Arrange
             var messages = fixture.Create<IEnumerable<AbnormalMessage>>();
-            var histories = fixture.Create<IEnumerable<MessageHistory>>();
+            var histories = fixture.Create<IEnumerable<SiteMessageMessageHistory>>();
             var maxMessageId = fixture.Create<int>();
             var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
             var notifications = fixture.Create<IEnumerable<NotificationSendMessage>>();
@@ -443,7 +443,7 @@
         {
             // Arrange
             var messages = fixture.Create<IEnumerable<AbnormalMessage>>();
-            var histories = fixture.Create<IEnumerable<MessageHistory>>();
+            var histories = fixture.Create<IEnumerable<SiteMessageMessageHistory>>();
             var maxMessageId = fixture.Create<int>();
             var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
             var notifications = fixture.Create<IEnumerable<NotificationSendMessage>>();
@@ -471,8 +471,8 @@
         public async Task InsertToMessageChatbotAsync_WhenCalled_DoAsExpected()
         {
             // Arrange
-            var messages = fixture.Create<IEnumerable<MessageHistory>>();
-            var xml = XmlHelper<MessageHistory>.Serialize(messages.ToList());
+            var messages = fixture.Create<IEnumerable<SiteMessageMessageHistory>>();
+            var xml = XmlHelper<SiteMessageMessageHistory>.Serialize(messages.ToList());
             var jobIdentity = fixture.Create<int>();
             var command = new InsertMessageHistoryCommand();
             var service = GetService();

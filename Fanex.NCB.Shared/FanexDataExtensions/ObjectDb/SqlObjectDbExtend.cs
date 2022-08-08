@@ -14,7 +14,7 @@
             sqlConnection.DataSource = newServerIp;
 
             var newSettings = new DbSetting(key,
-                dbName,
+                string.IsNullOrWhiteSpace(dbName) ? dbName : DbSetting.DbName,
                 sqlConnection.ConnectionString,
                 DbSetting.SpName,
                 commandTimeout,

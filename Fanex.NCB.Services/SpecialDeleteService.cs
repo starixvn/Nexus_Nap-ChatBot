@@ -41,8 +41,8 @@
             this.pushSignalService = pushSignalService;
             this.chatbotService = chatbotService;
             this.logService = logService;
-            Environment = configuration.GetSection("Environment")?.Value;
             this.siteDbService = siteDbService;
+            Environment = configuration.GetSection("Environment")?.Value;
         }
 
         #region Pull voiding ticket send to Licensee
@@ -69,8 +69,9 @@
 
         protected internal virtual async Task UpdateMessageHistoryVoidingForLicenseeAsync(IEnumerable<MessageDetail> msgDetails)
         {
-            var msgHistories = msgDetails.Select(x => new MessageHistory { MessageID = x.MessageID, TargetID = x.TargetID }).ToList();
-            await InsertToMessageChatbotAsync(msgHistories, VoidTicketForLicenseeJobIdentity);
+            var msgHistories = msgDetails.Select(x => new SiteMessageMessageHistory { MessageID = x.MessageID, TargetID = x.TargetID }).ToList();
+            var xmlMsg = XmlHelper<SiteMessageMessageHistory>.Serialize(msgHistories);
+            await InsertToMessageChatbotAsync(xmlMsg, VoidTicketForLicenseeJobIdentity);
         }
 
         protected internal virtual async Task OnAfterImportDataAsync(
@@ -146,79 +147,46 @@
             if (systemSetting != null)
             {
                 var criteria = new GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria();
-                var messageHistories = await baseService.GetDataAsync<MessageHistory>(criteria);
-                if (messageHistories.Any())
-                {
-                    await GetMessageAndImportToChatbotAsync(messageHistories, systemSetting);
-                }
+                var messageHistories = await baseService.GetDataAsync<AbnormalBetsMessageHistory>(criteria);
+
+                await GetMessageAndImportToChatbotAsync(messageHistories, systemSetting);
             }
         }
 
         protected internal virtual async Task GetMessageAndImportToChatbotAsync(
-            IEnumerable<MessageHistory> messageHistories,
+            IEnumerable<AbnormalBetsMessageHistory> messageHistories,
             SystemSetting setting)
         {
-            var messages = await GetAbnormalBetsMessageAsync(setting, messageHistories);
+            var messages = await GetAbnormalBetsMessageContentAsync(setting, messageHistories);
 
             if (messages.Any())
             {
-                var listMsg = messages.Select(m => new MessageHistory { MessageID = m.MessageID, RequestID = m.RequestID }).ToList();
-                var (tranIds, usernames) = await GetUsernameAndTransId(listMsg);
+                var (tranIds, usernameList) = await GetUsernameAndTransIdAsync(messageHistories.ToList());
+
                 var siteDbs = await siteDbService.GetListSiteDbAsync();
 
-                var results = await siteDbService.GetTicketUsernamesAynnc(tranIds, usernames, siteDbs);
+                var (tickets, usernames) = await siteDbService.GetTicketUsernamesParalellAynnc(tranIds, usernameList, siteDbs);
 
-                //var (abnormalMessages, abnormalMessageHistories) = await GetVoidingHistoryAsync(listMsg);
+                var messageDetails = await GetVoidingHistoryAsync(tickets, usernames, messageHistories);
 
-                //if (abnormalMessageHistories.Any())
-                //{
-                //    var updatedUsernames = await GetAbnormalAccountUpdatedUsernameAsync(abnormalMessageHistories);
-                //    UpdateAbnormalAccountUpdatedUsernames(abnormalMessages, updatedUsernames);
-                //}
+                if (messageDetails.Any())
+                {
+                    MappingAbnormalBetsData(messages, messageDetails);
+                }
 
-                //MappingAbnormalBetsData(messages, abnormalMessages);
-
-                //int maxMsgId = messages.Max(m => m.MessageID);
-                //await ImportAbnormalBetNotificationToChatbotDBAsync(abnormalMessages, listMsg, maxMsgId);
+                int maxMsgId = messages.Max(m => m.MessageID);
+                await ImportAbnormalBetNotificationToChatbotDBAsync(messageDetails, messageHistories, maxMsgId);
             }
         }
 
-        private async Task<(IEnumerable<AbnormalTransId>, IEnumerable<AbnormalUsernames>)> GetUsernameAndTransId(List<MessageHistory> messages)
+        private async Task<(IEnumerable<AbnormalTransId>, IEnumerable<AbnormalUsernames>)> GetUsernameAndTransIdAsync(List<AbnormalBetsMessageHistory> messages)
         {
-            string messageIdLst = XmlHelper<MessageHistory>.Serialize(messages);
-
             var criteria = new AbnormalBetGetUsernameAndTransIdCriteria
             {
-                MessageIdLst = messageIdLst
+                MessageIdLst = XmlHelper<AbnormalBetsMessageHistory>.Serialize(messages)
             };
 
             return await baseService.FetchMultipleAsync<AbnormalTransId, AbnormalUsernames>(criteria);
-        }
-
-        protected internal virtual async Task<IEnumerable<VoidingHistoryUsername>> GetAbnormalAccountUpdatedUsernameAsync(IEnumerable<AbnormalMessageHistory> messages)
-        {
-            var criteria = new GetAbnormalAccountUsernameLstCriteria
-            {
-                MessageIDLst = XmlHelper<AbnormalMessageHistory>.Serialize(messages.ToList())
-            };
-            return await baseService.GetDataAsync<VoidingHistoryUsername>(criteria);
-        }
-
-        private static void UpdateAbnormalAccountUpdatedUsernames(IEnumerable<AbnormalMessage> origMessages, IEnumerable<VoidingHistoryUsername> updatedUsernames)
-        {
-            if (updatedUsernames.Any())
-            {
-                foreach (var message in origMessages)
-                {
-                    var updatedMsg = updatedUsernames.Where(m => m.MessageID == message.MessageID);
-                    if (updatedMsg.Any())
-                    {
-                        message.UsernameLst = string.Join(",", updatedMsg.Select(x => x.UsernameLst));
-                        message.CreditSiteLst = string.Join(",", updatedMsg.Select(x => x.CreditSiteLst));
-                        message.DepositSiteLst = string.Join(",", updatedMsg.Select(x => x.DepositSiteLst));
-                    }
-                }
-            }
         }
 
         private static void MappingAbnormalBetsData(IEnumerable<Message> messages, IEnumerable<AbnormalMessage> voidingHistories)
@@ -236,13 +204,13 @@
             }
         }
 
-        protected internal virtual async Task<IEnumerable<Message>> GetAbnormalBetsMessageAsync(
+        protected internal virtual async Task<IEnumerable<Message>> GetAbnormalBetsMessageContentAsync(
             SystemSetting setting,
-            IEnumerable<MessageHistory> listMsgs)
+            IEnumerable<AbnormalBetsMessageHistory> listMsgs)
         {
             var criteria = new GetAbnormalBetsMessageCriteria
             {
-                MessageIDLst = XmlHelper<MessageHistory>.Serialize(listMsgs.ToList()),
+                MessageIDLst = XmlHelper<AbnormalBetsMessageHistory>.Serialize(listMsgs.ToList()),
                 BatchSize = setting.BatchSize,
                 MsgContentsTypeLst = setting.MsgContentsTypeLst,
                 Environment = Environment
@@ -251,25 +219,24 @@
             return await baseService.GetDataAsync<Message>(criteria);
         }
 
-        protected internal virtual async Task<(IEnumerable<AbnormalMessage>, IEnumerable<AbnormalMessageHistory>)> GetVoidingHistoryAsync(List<MessageHistory> messages)
+        protected internal virtual async Task<IEnumerable<AbnormalMessage>> GetVoidingHistoryAsync(
+            IEnumerable<AbnormalTicketInfo> tickets,
+            IEnumerable<AbnormalUsernames> usernames,
+            IEnumerable<AbnormalBetsMessageHistory> messages)
         {
-            string messageIdLst = XmlHelper<MessageHistory>.Serialize(messages);
-            if (!string.IsNullOrWhiteSpace(messageIdLst))
+            var criteria = new GetAbnormalBetInfoCriteria
             {
-                var criteria = new GetAbnormalBetInfoCriteria
-                {
-                    MessageIdLst = messageIdLst
-                };
+                MessageIdLst = XmlHelper<AbnormalBetsMessageHistory>.Serialize(messages.ToList()),
+                TicketInfo = XmlHelper<AbnormalTicketInfo>.Serialize(tickets.ToList()),
+                UsernameLst = XmlHelper<AbnormalUsernames>.Serialize(usernames.ToList())
+            };
 
-                return await baseService.FetchMultipleAsync<AbnormalMessage, AbnormalMessageHistory>(criteria);
-            }
-
-            return (new List<AbnormalMessage>(), new List<AbnormalMessageHistory>());
+            return await baseService.GetDataAsync<AbnormalMessage>(criteria);
         }
 
         protected internal virtual async Task ImportAbnormalBetNotificationToChatbotDBAsync(
             IEnumerable<AbnormalMessage> messages,
-            IEnumerable<MessageHistory> msgHistories,
+            IEnumerable<AbnormalBetsMessageHistory> msgHistories,
             int maxMessageId)
         {
             if (messages.Any())
@@ -289,19 +256,20 @@
 
                 if (command.IsSuccessful && notifications.Any())
                 {
-                    await InsertToMessageChatbotAsync(msgHistories, VoidAbnormalbetsJobIdentity);
+                    var xmlString = XmlHelper<AbnormalBetsMessageHistory>.Serialize(msgHistories.ToList());
+                    await InsertToMessageChatbotAsync(xmlString, VoidAbnormalbetsJobIdentity);
                 }
 
                 await OnAfterImportDataAsync(command, notificationMessages);
             }
         }
 
-        protected internal virtual async Task InsertToMessageChatbotAsync(IEnumerable<MessageHistory> messages, int jobIdentity)
+        protected internal virtual async Task InsertToMessageChatbotAsync(string messageHistory, int jobIdentity)
         {
             var command = new InsertMessageHistoryCommand
             {
                 JobIdentify = jobIdentity,
-                MessageIDLst = XmlHelper<MessageHistory>.Serialize(messages.ToList()),
+                MessageIDLst = messageHistory,
                 Environment = Environment
             };
 

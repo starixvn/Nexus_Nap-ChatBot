@@ -6,6 +6,10 @@
     {
         public string MessageIdLst { get; set; }
 
+        public string TicketInfo { get; set; }
+
+        public string UsernameLst { get; set; }
+
         public override string GetSettingKey() => "NAP_Chatbot_SpecialDelete_AbnormalBets_Sel";
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(MessageIdLst);

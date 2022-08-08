@@ -15,6 +15,6 @@
         public override bool IsValid() => !string.IsNullOrWhiteSpace(ServerIp)
                                         && !string.IsNullOrWhiteSpace(AbnormalBetsInfo)
                                         && !string.IsNullOrWhiteSpace(AbnormalAccountsInfo)
-                                        && SiteDBGroupId > 0;
+                                        && SiteDBGroupId >= 0;
     }
 }

@@ -282,7 +282,7 @@
                             ChannelId = r.ChannelName,
                             ConversationId = r.ChatGroupConversationId,
                             BotName = r.BotName
-                        }).DistinctBy(r => r.ConversationId));
+                        }).CustomeDistinctBy(r => r.ConversationId));
                 }
 
                 batches.Add((newBatches, batch));

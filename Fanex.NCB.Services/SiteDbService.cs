@@ -12,6 +12,7 @@
     using Fanex.NCB.Shared.FanexDataExtensions.Services;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket.AbnormalBets;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Microsoft.Extensions.Configuration;
 
     public class SiteDbService : ISiteDbService
     {
@@ -19,12 +20,17 @@
         private readonly ICacheService cacheService;
         private readonly IDynamicConnectionService dynamicConnectionService;
         private const string ListSiteDbCacheKey = "ListSiteDbCachingKey";
+        private readonly int CacheExpiration;
 
-        public SiteDbService(IBaseService baseService, ICacheService cacheService, IDynamicConnectionService dynamicConnectionService)
+        public SiteDbService(IBaseService baseService,
+            ICacheService cacheService,
+            IDynamicConnectionService dynamicConnectionService,
+            IConfiguration configuration)
         {
             this.baseService = baseService;
             this.cacheService = cacheService;
             this.dynamicConnectionService = dynamicConnectionService;
+            CacheExpiration = configuration.GetValue<int>("SiteDbCachingExpiration");
         }
 
         public async Task<IEnumerable<SiteDBConfig>> GetListSiteDbAsync()
@@ -35,7 +41,11 @@
             {
                 siteDbList = await baseService.GetDataAsync<SiteDBConfig>(new GetSiteDbListCriteria());
 
-                await cacheService.SetAsync(ListSiteDbCacheKey, siteDbList);
+                await cacheService.SetAsync(ListSiteDbCacheKey, siteDbList,
+                    new CacheItemOptions
+                    {
+                        RelativeExpiration = TimeSpan.FromMinutes(CacheExpiration)
+                    });
             }
 
             return siteDbList;
@@ -52,12 +62,12 @@
 
             foreach (var siteDb in siteDbList)
             {
-                var (tickets, accounts) = await GetTicketUsernameInfoInSingleDb(abnormalBetsInfo, abnormalAccounts, siteDb);
+                var (tickets, accounts) = await GetTicketUsernameInfoFromSiteDbAsync(abnormalBetsInfo, abnormalAccounts, siteDb);
                 ticketLists = ticketLists.Concat(tickets);
                 accountLists = accountLists.Concat(accounts);
             }
 
-            return (ticketLists, accountLists);
+            return DistinctTicketAndCombineUsernames(ticketLists, accountLists);
         }
 
         public async Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)> GetTicketUsernamesParalellAynnc(
@@ -71,7 +81,7 @@
             foreach (var siteDb in siteDbList)
             {
                 tasks.Add(
-                    GetTicketUsernameInfoInSingleDb(abnormalBetsInfo, abnormalAccounts, siteDb)
+                    GetTicketUsernameInfoFromSiteDbAsync(abnormalBetsInfo, abnormalAccounts, siteDb)
                     );
             }
 
@@ -86,10 +96,10 @@
                 accountLists = accountLists.Concat(result.Item2);
             }
 
-            return (ticketLists, accountLists);
+            return DistinctTicketAndCombineUsernames(ticketLists, accountLists);
         }
 
-        private async Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)> GetTicketUsernameInfoInSingleDb(
+        private async Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)> GetTicketUsernameInfoFromSiteDbAsync(
             string abnormalBetsInfo, string abnormalAccounts, SiteDBConfig siteDb)
         {
             var criteria = new AbnormalBetGetUsernameTicketInfoCriteria
@@ -103,6 +113,32 @@
             var result = await dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames>(criteria);
 
             return result;
+        }
+
+        private static (IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>) DistinctTicketAndCombineUsernames(
+            IEnumerable<AbnormalTicketInfo> ticketLists, IEnumerable<AbnormalUsernames> accountLists)
+        {
+            var outputTickets = ticketLists.GroupBy(x => new
+            {
+                x.MessageId,
+                x.Recommend,
+                x.IsParlay,
+                x.Bettype,
+                x.LiveIndicator
+            }).Select(g => g.FirstOrDefault());
+
+            var outputUsernames = accountLists.GroupBy(x => new
+            {
+                x.MessageId,
+                x.VoidingHistoryId
+            }).Select(g => new AbnormalUsernames
+            {
+                MessageId = g.Key.MessageId,
+                VoidingHistoryId = g.Key.VoidingHistoryId,
+                Usernames = string.Join(",", g.Select(i => i.Usernames).ToArray())
+            });
+
+            return (outputTickets, outputUsernames);
         }
     }
 }

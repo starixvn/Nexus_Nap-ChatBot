@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Shared.FanexDataExtensions
 {
+    using Fanex.Data;
     using Fanex.Data.Repository;
 
     public interface ICriteriaExtend : ICriteria
@@ -10,8 +11,10 @@
 
     public abstract class CriteriaBaseExtend : ICriteriaExtend
     {
+        [SpParam(Ignored = true)]
         public abstract string ServerIp { get; set; }
 
+        [SpParam(Ignored = true)]
         public abstract string DbName { get; set; }
 
         public abstract string GetSettingKey();

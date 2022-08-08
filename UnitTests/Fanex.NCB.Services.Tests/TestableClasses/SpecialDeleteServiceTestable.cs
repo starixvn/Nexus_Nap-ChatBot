@@ -6,6 +6,7 @@
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.SiteMessage;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
+    using Fanex.NCB.Shared.Models.SpecialDeleteTicket.AbnormalBets;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Configuration;
 
@@ -16,7 +17,8 @@
             IChatbotService chatbotService,
             IPushSignalService pushSignalService,
             ILogService logService,
-            IConfiguration configuration) : base(baseService, chatbotService, pushSignalService, logService, configuration)
+            ISiteDbService siteDbService,
+            IConfiguration configuration) : base(baseService, chatbotService, pushSignalService, logService, configuration, siteDbService)
         {
         }
 
@@ -42,37 +44,25 @@
             return await base.GetMessageFromVoidingForLicenseeAsync(systemSetting);
         }
 
-        public async Task Public_GetMessageAndImportToChatbotAsync(IEnumerable<MessageHistory> messageHistories, SystemSetting setting)
+        public async Task Public_GetMessageAndImportToChatbotAsync(IEnumerable<SiteMessageMessageHistory> messageHistories, SystemSetting setting)
         {
             await base.GetMessageAndImportToChatbotAsync(messageHistories, setting);
         }
 
-        public async Task<IEnumerable<VoidingHistoryUsername>> Public_GetAbnormalAccountUpdatedUsernameAsync(IEnumerable<AbnormalMessageHistory> messages)
-        {
-            return await base.GetAbnormalAccountUpdatedUsernameAsync(messages);
-        }
-
-        public async Task<IEnumerable<Message>> Public_GetAbnormalBetsMessageAsync(
-            SystemSetting setting,
-            IEnumerable<MessageHistory> listMsgs)
-        {
-            return await base.GetAbnormalBetsMessageAsync(setting, listMsgs);
-        }
-
-        public async Task<(IEnumerable<AbnormalMessage>, IEnumerable<AbnormalMessageHistory>)> Public_GetVoidingHistoryAsync(List<MessageHistory> messages)
+        public async Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)> Public_GetVoidingHistoryAsync(List<AbnormalBetsMessageHistory> messages)
         {
             return await base.GetVoidingHistoryAsync(messages);
         }
 
         public async Task Public_ImportAbnormalBetNotificationToChatbotDBAsync(
             IEnumerable<AbnormalMessage> messages,
-            IEnumerable<MessageHistory> msgHistories,
+            IEnumerable<AbnormalBetsMessageHistory> msgHistories,
             int maxMessageId)
         {
             await base.ImportAbnormalBetNotificationToChatbotDBAsync(messages, msgHistories, maxMessageId);
         }
 
-        public async Task Public_InsertToMessageChatbotAsync(IEnumerable<MessageHistory> messages, int jobIdentity)
+        public async Task Public_InsertToMessageChatbotAsync(string messages, int jobIdentity)
         {
             await base.InsertToMessageChatbotAsync(messages, jobIdentity);
         }

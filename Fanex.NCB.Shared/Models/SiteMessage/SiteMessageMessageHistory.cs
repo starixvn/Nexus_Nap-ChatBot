@@ -3,7 +3,7 @@
     using System.Xml.Serialization;
 
     [XmlType("r")]
-    public class MessageHistory
+    public class SiteMessageMessageHistory
     {
         [XmlAttribute("MessageID")]
         public long MessageID { get; set; }

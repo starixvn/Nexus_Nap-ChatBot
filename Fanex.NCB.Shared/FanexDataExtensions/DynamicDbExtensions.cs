@@ -20,7 +20,7 @@
             var sqlConnection = new SqlConnectionStringBuilder(currentConnectionString);
             sqlConnection.DataSource = criteria.ServerIp;
 
-            IStoredProcedureRunner runner = new SqlStoredProcedureRunner(criteria.Alias, sqlConnection.ConnectionString);
+            IStoredProcedureRunner runner = new SqlStoredProcedureRunner(dbSetting.DbName, sqlConnection.ConnectionString);
             DbCommandDefinition command = runner.CreateDbCommandDefinition(dbSetting.SpName, 120, false);
             return (runner, command);
         }
