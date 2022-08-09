@@ -6,7 +6,6 @@
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.Criteria.SiteMessage;
-    using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Services.Tests.TestableClasses;

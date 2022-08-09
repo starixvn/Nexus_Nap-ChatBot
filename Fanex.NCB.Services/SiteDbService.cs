@@ -37,7 +37,7 @@
         {
             var siteDbList = await cacheService.GetAsync<IEnumerable<SiteDBConfig>>(ListSiteDbCacheKey);
 
-            if (siteDbList is null)
+            if (siteDbList is null || !siteDbList.Any())
             {
                 siteDbList = await baseService.GetDataAsync<SiteDBConfig>(new GetSiteDbListCriteria());
 

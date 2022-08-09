@@ -15,7 +15,7 @@
 
         protected JobSetting jobSetting;
 
-        public BaseWorker(
+        protected BaseWorker(
             IMaintenanceService maintenanceService,
             ILogService logService)
         {

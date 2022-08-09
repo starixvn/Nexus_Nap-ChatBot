@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Models.SiteMessage;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket.AbnormalBets;
     using Fanex.NCB.Shared.Services.Interfaces;
@@ -44,14 +43,17 @@
             return await base.GetMessageFromVoidingForLicenseeAsync(systemSetting);
         }
 
-        public async Task Public_GetMessageAndImportToChatbotAsync(IEnumerable<SiteMessageMessageHistory> messageHistories, SystemSetting setting)
+        public async Task Public_GetMessageAndImportToChatbotAsync(IEnumerable<AbnormalBetsMessageHistory> messageHistories, SystemSetting setting)
         {
             await base.GetMessageAndImportToChatbotAsync(messageHistories, setting);
         }
 
-        public async Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)> Public_GetVoidingHistoryAsync(List<AbnormalBetsMessageHistory> messages)
+        public async Task<IEnumerable<AbnormalMessage>> Public_GetVoidingHistoryAsync(
+            IEnumerable<AbnormalTicketInfo> tickets,
+            IEnumerable<AbnormalUsernames> usernames,
+            IEnumerable<AbnormalBetsMessageHistory> messages)
         {
-            return await base.GetVoidingHistoryAsync(messages);
+            return await base.GetVoidingHistoryAsync(tickets, usernames, messages);
         }
 
         public async Task Public_ImportAbnormalBetNotificationToChatbotDBAsync(

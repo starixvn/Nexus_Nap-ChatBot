@@ -45,7 +45,7 @@
             };
 
             var result = await baseService.ExecuteNonQueryAsync(command);
-            if (result.IsSuccessful)
+            if (result.IsSuccessful && !string.IsNullOrEmpty(command.NotificationIDLst))
             {
                 var notifications = JsonConvert.DeserializeObject<List<NotificationMessage>>(command.NotificationIDLst);
                 foreach (var notification in notifications)
@@ -54,10 +54,7 @@
                     {
                         BackgroundJobAfterCreateNotification(notification.NotificationId, true);
                     }
-                    else
-                    {
-                        await PushSignalRInsert(notification.NotificationId);
-                    }
+                    await PushSignalRInsert(notification.NotificationId);
                 }
             }
 
@@ -219,7 +216,7 @@
             return result;
         }
 
-        public async Task<(IEnumerable<Recipient>, IEnumerable<uint>)>GetEditNotificationRecipientsAsync
+        public async Task<(IEnumerable<Recipient>, IEnumerable<uint>)> GetEditNotificationRecipientsAsync
         (int notificationId, int notificationTypeId, int? productId, string platforms, string recipientIds)
         {
             return await baseService.FetchMultipleAsync<Recipient, uint>(new GetEditNotificationRecipientsCriteria

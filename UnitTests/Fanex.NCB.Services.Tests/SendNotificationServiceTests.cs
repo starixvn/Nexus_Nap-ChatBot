@@ -552,8 +552,10 @@
             pushSignalService = Substitute.For<IPushSignalService>();
             logService = Substitute.For<ILogService>();
 
-            appSettings = fixture.Create<AppSettings>();
-            appSettings.ItemEachBatchSendNotification = 1;
+            appSettings = new AppSettings
+            {
+                ItemEachBatchSendNotification = 1,
+            };
             var appSettingOptions = Substitute.For<IOptionsSnapshot<AppSettings>>();
             appSettingOptions.Value.Returns(appSettings);
 

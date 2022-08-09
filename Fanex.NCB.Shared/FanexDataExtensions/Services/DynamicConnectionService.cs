@@ -2,11 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Fanex.NCB.Shared.FanexDataExtensions.ObjectDb;
 
+    [ExcludeFromCodeCoverage]
     public class DynamicConnectionService : IDynamicConnectionService
     {
         public async Task<IEnumerable<T>> QueryAsync<T>(ICriteriaExtend criteria)

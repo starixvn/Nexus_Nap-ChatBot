@@ -24,7 +24,7 @@ namespace Fanex.NCB.Services.Tests
             var service = new NotificationTypeService(baseService);
             var model = _fixture.Create<NotificationTypeViewModel>();
 
-            InsertNotificationTypeCommand command = null;
+            InsertNotificationTypeCommand command = _fixture.Create<InsertNotificationTypeCommand>();
             await baseService.ExecuteNonQueryAsync(Arg.Do<InsertNotificationTypeCommand>(x => command = x));
 
             // Act
@@ -46,7 +46,7 @@ namespace Fanex.NCB.Services.Tests
             var service = new NotificationTypeService(baseService);
             var model = _fixture.Create<NotificationTypeViewModel>();
 
-            UpdateNotificationTypeCommand command = null;
+            UpdateNotificationTypeCommand command = _fixture.Create<UpdateNotificationTypeCommand>();
             await baseService.ExecuteNonQueryAsync(Arg.Do<UpdateNotificationTypeCommand>(x => command = x));
 
             // Act
