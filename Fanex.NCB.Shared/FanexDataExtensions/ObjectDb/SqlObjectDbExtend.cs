@@ -11,6 +11,7 @@
         {
             var currentConnectionString = DbSetting.ConnectionString;
             var sqlConnection = new SqlConnectionStringBuilder(currentConnectionString);
+
             sqlConnection.DataSource = newServerIp;
 
             var newSettings = new DbSetting(key,

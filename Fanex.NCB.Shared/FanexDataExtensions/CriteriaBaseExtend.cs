@@ -5,8 +5,9 @@
 
     public interface ICriteriaExtend : ICriteria
     {
-        string ServerIp { get; }
-        string DbName { get; }
+        string ServerIp { get; set; }
+
+        string DbName { get; set; }
     }
 
     public abstract class CriteriaBaseExtend : ICriteriaExtend
@@ -20,5 +21,7 @@
         public abstract string GetSettingKey();
 
         public abstract bool IsValid();
+
+        public bool IsInValid() => !IsValid();
     }
 }

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using Fanex.NCB.Criteria.ResetLastMessageId;
     using Fanex.NCB.Models.ResetLastMessageId;
+    using Fanex.NCB.Shared.Extensions;
     using Xunit;
 
     public class GetMissingMessageInfoCriteriaTests
@@ -43,7 +44,7 @@
             {
                 new MessageInfo { JobIdentify = 1, FromMessageId = 123, ToMessageId = 456, PostTime = new DateTime(2021, 10, 28) }
             };
-            var messageListXml = "<root><r JobIdentify='1' FromMessageId='123' ToMessageId='456' PostTime='10/28/2021 12:00:00 AM'/></root>";
+            var messageListXml = XmlHelper<MessageInfo>.Serialize(messages);
 
             // Act
             var criteria = new GetMissingMessageInfoCriteria
@@ -63,7 +64,7 @@
             {
                 new MessageTypeInfo { JobIdentify = 1, MsgContentsType = 123 }
             };
-            var msgContentsTypeListXml = "<root><r JobIdentify='1' MsgContentsType='123'/></root>";
+            var msgContentsTypeListXml = XmlHelper<MessageTypeInfo>.Serialize(msgContentTypes); ;
 
             // Act
             var criteria = new GetMissingMessageInfoCriteria
@@ -83,7 +84,7 @@
             {
                 new MessageRequestId { MessageId = 1, RequestId = 123 }
             };
-            var requestListXml = "<root><r MessageId='1' RequestId='123'/></root>";
+            var requestListXml = XmlHelper<MessageRequestId>.Serialize(requests); ;
 
             // Act
             var criteria = new GetMissingMessageInfoCriteria

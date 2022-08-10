@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30804.86
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Main", "Fanex.NCB.Main\Fanex.NCB.Main.csproj", "{04915B62-99BD-4D5B-AE6E-93B5C7FB9272}"
 EndProject
@@ -49,14 +49,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.BotService.EndPoi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.NAPResolver.Tests", "UnitTests\Fanex.NCB.NAPResolver.Tests\Fanex.NCB.NAPResolver.Tests.csproj", "{6EF4655D-3044-47A5-9A1A-F797B6042075}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{E43FADBC-A5E5-4D94-88E6-8A4E76642B30}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DAD7E856-CC4E-480A-AB88-2B12052A773A}"
 	ProjectSection(SolutionItems) = preProject
 		nuget.config = nuget.config
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NCB.Resources", "Fanex.NCB.Resources\Fanex.NCB.Resources.csproj", "{CFA0C95B-C81F-4F87-B7B5-563618499B70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanex.NCB.Resources", "Fanex.NCB.Resources\Fanex.NCB.Resources.csproj", "{CFA0C95B-C81F-4F87-B7B5-563618499B70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -140,9 +138,6 @@ Global
 		{6EF4655D-3044-47A5-9A1A-F797B6042075}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EF4655D-3044-47A5-9A1A-F797B6042075}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EF4655D-3044-47A5-9A1A-F797B6042075}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E43FADBC-A5E5-4D94-88E6-8A4E76642B30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E43FADBC-A5E5-4D94-88E6-8A4E76642B30}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E43FADBC-A5E5-4D94-88E6-8A4E76642B30}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CFA0C95B-C81F-4F87-B7B5-563618499B70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CFA0C95B-C81F-4F87-B7B5-563618499B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFA0C95B-C81F-4F87-B7B5-563618499B70}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -47,7 +47,7 @@
             return (firstResultSet, secondResultSet);
         }
 
-        public async Task<IEnumerable<object>[]> FetchMultipleAsync(
+        public static async Task<IEnumerable<object>[]> FetchMultipleAsync(
             ICriteriaExtend criteria,
             Type[] mappingTypes,
             CancellationToken cancellationToken)
@@ -103,7 +103,7 @@
             return result;
         }
 
-        private void ValidateCriteria(ICriteriaExtend criteria)
+        private static void ValidateCriteria(ICriteriaExtend criteria)
         {
             if (criteria == null)
             {

@@ -69,7 +69,7 @@
             // Arrange
             var service = GetService();
             var type = _fixture.Create<int>();
-            var criteria = new GetByTypeCriteria();
+            var criteria = new GetByTypeCriteria { Type = type };
             var setting = _fixture.Create<SettingType>();
             baseService.GetDataEntityAsync<SettingType>(Arg.Do<GetByTypeCriteria>(x => criteria = x)).Returns(setting);
 

@@ -4,8 +4,6 @@
 // a specific target and scoped to a namespace, type, member, etc.
 
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3996:URI properties should not be strings",
-    Justification = "<Pending>", Scope = "member", Target = "~P:Fanex.NCB.Core.Models.BotSettings.BotServiceUrl")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3996:URI properties should not be strings",
     Justification = "<Pending>", Scope = "member", Target = "~P:Fanex.NCB.Core.Models.BotSettings.TokenUrl")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3996:URI properties should not be strings",
     Justification = "<Pending>", Scope = "member", Target = "~P:Fanex.NCB.Core.Models.BotSettings.AuthenticateUrl")]

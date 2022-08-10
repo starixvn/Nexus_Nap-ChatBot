@@ -58,7 +58,7 @@
                 return await dynamicRepository.GetAsync<T>(criteria);
             }
 
-            return default(T);
+            return default;
         }
 
         public async Task<CommandResult> ExecuteNonQueryAsync(INonQueryCommand command)

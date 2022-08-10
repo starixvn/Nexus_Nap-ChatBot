@@ -8,9 +8,7 @@
 
         public string Name { get; set; }
 
-#pragma warning disable S3996
         public string Url { get; set; }
-#pragma warning restore S3996
 
         public int Policy { get; set; }
 
