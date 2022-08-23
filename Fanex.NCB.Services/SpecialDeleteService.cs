@@ -161,13 +161,18 @@
 
             if (messages.Any())
             {
-                var (tranIds, usernameList) = await GetUsernameAndTransIdAsync(messageHistories.ToList());
+                var msgRequests = messages.Select(m => new AbnormalBetsMessageHistory
+                {
+                    MessageId = m.MessageID,
+                    RequestId = m.RequestID
+                });
+                var (tranIds, usernameList) = await GetUsernameAndTransIdAsync(msgRequests);
 
                 var siteDbs = await siteDbService.GetListSiteDbAsync();
 
-                var (tickets, usernames) = await siteDbService.GetTicketUsernamesParalellAynnc(tranIds, usernameList, siteDbs);
+                var (tickets, usernames) = await siteDbService.GetTicketUsernamesAynnc(tranIds, usernameList, siteDbs);
 
-                var messageDetails = await GetVoidingHistoryAsync(tickets, usernames, messageHistories);
+                var messageDetails = await GetVoidingHistoryAsync(tickets, usernames, msgRequests);
 
                 if (messageDetails.Any())
                 {
@@ -175,15 +180,15 @@
                 }
 
                 int maxMsgId = messages.Max(m => m.MessageID);
-                await ImportAbnormalBetNotificationToChatbotDBAsync(messageDetails, messageHistories, maxMsgId);
+                await ImportAbnormalBetNotificationToChatbotDBAsync(messageDetails, msgRequests, maxMsgId);
             }
         }
 
-        private async Task<(IEnumerable<AbnormalTransId>, IEnumerable<AbnormalUsernames>)> GetUsernameAndTransIdAsync(List<AbnormalBetsMessageHistory> messages)
+        private async Task<(IEnumerable<AbnormalTransId>, IEnumerable<AbnormalUsernames>)> GetUsernameAndTransIdAsync(IEnumerable<AbnormalBetsMessageHistory> messages)
         {
             var criteria = new AbnormalBetGetUsernameAndTransIdCriteria
             {
-                MessageIdLst = XmlHelper<AbnormalBetsMessageHistory>.Serialize(messages)
+                MessageIdLst = XmlHelper<AbnormalBetsMessageHistory>.Serialize(messages.ToList())
             };
 
             return await baseService.FetchMultipleAsync<AbnormalTransId, AbnormalUsernames>(criteria);

@@ -11,8 +11,8 @@
         [XmlAttribute("VoidingHistoryId")]
         public long VoidingHistoryId { get; set; }
 
-        [XmlAttribute("TransId")]
-        public string TransId { get; set; }
+        [XmlAttribute("TransIds")]
+        public string TransIds { get; set; }
 
         [XmlAttribute("FilterBy")]
         public int FilterBy { get; set; }
