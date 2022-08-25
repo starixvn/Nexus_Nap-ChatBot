@@ -12,7 +12,6 @@
     using Fanex.NCB.Services.Tests.TestableClasses;
     using Fanex.NCB.Shared.Extensions;
     using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Models.SiteMessage;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket.AbnormalBets;
     using Fanex.NCB.Shared.Services.Interfaces;
@@ -105,7 +104,7 @@
             await service.PullVoidingMessageInternalDepartmentAsync();
 
             // Assert
-            await baseService.DidNotReceive().GetDataAsync<SiteMessageMessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>());
+            await baseService.DidNotReceive().GetDataAsync<MessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>());
         }
 
         [Fact]
@@ -113,10 +112,10 @@
         {
             // Arrange
             var setting = fixture.Create<SystemSetting>();
-            var histories = new List<AbnormalBetsMessageHistory>();
+            var histories = new List<MessageHistory>();
             var service = GetService();
             baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>()).Returns(setting);
-            baseService.GetDataAsync<AbnormalBetsMessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>()).Returns(histories);
+            baseService.GetDataAsync<MessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>()).Returns(histories);
 
             // Act
             await service.PullVoidingMessageInternalDepartmentAsync();
@@ -130,10 +129,10 @@
         {
             // Arrange
             var setting = fixture.Create<SystemSetting>();
-            var histories = fixture.Create<List<AbnormalBetsMessageHistory>>();
+            var histories = fixture.Create<List<MessageHistory>>();
             var service = GetService();
             baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>()).Returns(setting);
-            baseService.GetDataAsync<AbnormalBetsMessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>()).Returns(histories);
+            baseService.GetDataAsync<MessageHistory>(Arg.Any<GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria>()).Returns(histories);
 
             // Act
             await service.PullVoidingMessageInternalDepartmentAsync();
@@ -273,7 +272,7 @@
         public async Task GetMessageAndImportToChatbotAsync_DoNotHaveAbnormalBetsMessage_DoNothing()
         {
             // Arrange
-            var messageHistories = fixture.Create<IEnumerable<AbnormalBetsMessageHistory>>();
+            var messageHistories = fixture.Create<IEnumerable<MessageHistory>>();
             var setting = fixture.Create<SystemSetting>();
             var messages = new List<Message>();
             var service = GetService();
@@ -285,7 +284,7 @@
             // Asset
             service.DidNotReceive().Protected("ImportAbnormalBetNotificationToChatbotDBAsync",
                 Arg.Any<IEnumerable<AbnormalMessage>>(),
-                Arg.Any<IEnumerable<AbnormalBetsMessageHistory>>(),
+                Arg.Any<IEnumerable<MessageHistory>>(),
                 Arg.Any<int>());
         }
 
@@ -293,7 +292,7 @@
         public async Task GetMessageAndImportToChatbotAsync_HaveAbnormalBetsMessage_DoAsExpected()
         {
             // Arrange
-            var messageHistories = fixture.Create<IEnumerable<AbnormalBetsMessageHistory>>();
+            var messageHistories = fixture.Create<IEnumerable<MessageHistory>>();
             var setting = fixture.Create<SystemSetting>();
             var messages = new List<Message>
             {
@@ -313,7 +312,7 @@
             };
             var service = GetService();
             service.Protected("GetAbnormalBetsMessageContentAsync", setting, messageHistories).Returns(Task.FromResult<IEnumerable<Message>>(messages));
-            service.Protected("GetVoidingHistoryAsync", Arg.Any<List<AbnormalTicketInfo>>(), Arg.Any<List<AbnormalUsernames>>(), Arg.Any<List<AbnormalBetsMessageHistory>>())
+            service.Protected("GetVoidingHistoryAsync", Arg.Any<List<AbnormalTicketInfo>>(), Arg.Any<List<AbnormalUsernames>>(), Arg.Any<List<MessageHistory>>())
                 .Returns(Task.FromResult<IEnumerable<AbnormalMessage>>(abnormalMessages));
 
             // Act
@@ -322,7 +321,7 @@
             // Asset
             service.DidNotReceive().Protected("ImportAbnormalBetNotificationToChatbotDBAsync",
                 abnormalMessages,
-                Arg.Any<IEnumerable<AbnormalBetsMessageHistory>>(),
+                Arg.Any<IEnumerable<MessageHistory>>(),
                 2);
         }
 
@@ -332,8 +331,8 @@
         public async Task GetVoidingHistoryAsync_WhenCalled_ReturnAsExpectedResult()
         {
             // Arrange
-            var messages = fixture.Create<List<AbnormalBetsMessageHistory>>();
-            var xml = XmlHelper<AbnormalBetsMessageHistory>.Serialize(messages);
+            var messages = fixture.Create<List<MessageHistory>>();
+            var xml = XmlHelper<MessageHistory>.Serialize(messages);
             var abnormalMsgs = fixture.Create<List<AbnormalMessage>>();
             var tickets = fixture.Create<List<AbnormalTicketInfo>>();
             var usernames = fixture.Create<List<AbnormalUsernames>>();
@@ -356,7 +355,7 @@
         {
             // Arrange
             var messages = new List<AbnormalMessage>();
-            var histories = fixture.Create<IEnumerable<AbnormalBetsMessageHistory>>();
+            var histories = fixture.Create<IEnumerable<MessageHistory>>();
             var maxMessageId = fixture.Create<int>();
             var service = GetService();
 
@@ -372,8 +371,8 @@
         {
             // Arrange
             var messages = fixture.Create<IEnumerable<AbnormalMessage>>();
-            var histories = fixture.Create<IEnumerable<AbnormalBetsMessageHistory>>();
-            var xml = XmlHelper<AbnormalBetsMessageHistory>.Serialize(histories.ToList());
+            var histories = fixture.Create<IEnumerable<MessageHistory>>();
+            var xml = XmlHelper<MessageHistory>.Serialize(histories.ToList());
             var maxMessageId = fixture.Create<int>();
             var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
             var notifications = fixture.Create<IEnumerable<NotificationSendMessage>>();
@@ -400,8 +399,8 @@
         {
             // Arrange
             var messages = fixture.Create<IEnumerable<AbnormalMessage>>();
-            var histories = fixture.Create<IEnumerable<AbnormalBetsMessageHistory>>();
-            var xml = XmlHelper<AbnormalBetsMessageHistory>.Serialize(histories.ToList());
+            var histories = fixture.Create<IEnumerable<MessageHistory>>();
+            var xml = XmlHelper<MessageHistory>.Serialize(histories.ToList());
             var maxMessageId = fixture.Create<int>();
             var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
             var notifications = fixture.Create<IEnumerable<NotificationSendMessage>>();

@@ -11,7 +11,6 @@
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Extensions;
     using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Models.SiteMessage;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket.AbnormalBets;
     using Fanex.NCB.Shared.Services.Interfaces;
@@ -69,8 +68,8 @@
 
         protected internal virtual async Task UpdateMessageHistoryVoidingForLicenseeAsync(IEnumerable<MessageDetail> msgDetails)
         {
-            var msgHistories = msgDetails.Select(x => new SiteMessageMessageHistory { MessageID = x.MessageID, TargetID = x.TargetID }).ToList();
-            var xmlMsg = XmlHelper<SiteMessageMessageHistory>.Serialize(msgHistories);
+            var msgHistories = msgDetails.Select(x => new MessageHistory { MessageId = x.MessageID, TargetId = x.TargetID }).ToList();
+            var xmlMsg = XmlHelper<MessageHistory>.Serialize(msgHistories);
             await InsertToMessageChatbotAsync(xmlMsg, VoidTicketForLicenseeJobIdentity);
         }
 
@@ -147,21 +146,21 @@
             if (systemSetting != null)
             {
                 var criteria = new GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria();
-                var messageHistories = await baseService.GetDataAsync<AbnormalBetsMessageHistory>(criteria);
+                var messageHistories = await baseService.GetDataAsync<MessageHistory>(criteria);
 
                 await GetMessageAndImportToChatbotAsync(messageHistories, systemSetting);
             }
         }
 
         protected internal virtual async Task GetMessageAndImportToChatbotAsync(
-            IEnumerable<AbnormalBetsMessageHistory> messageHistories,
+            IEnumerable<MessageHistory> messageHistories,
             SystemSetting setting)
         {
             var messages = await GetAbnormalBetsMessageContentAsync(setting, messageHistories);
 
             if (messages.Any())
             {
-                var msgRequests = messages.Select(m => new AbnormalBetsMessageHistory
+                var msgRequests = messages.Select(m => new MessageHistory
                 {
                     MessageId = m.MessageID,
                     RequestId = m.RequestID
@@ -184,11 +183,11 @@
             }
         }
 
-        private async Task<(IEnumerable<AbnormalTransId>, IEnumerable<AbnormalUsernames>)> GetUsernameAndTransIdAsync(IEnumerable<AbnormalBetsMessageHistory> messages)
+        private async Task<(IEnumerable<AbnormalTransId>, IEnumerable<AbnormalUsernames>)> GetUsernameAndTransIdAsync(IEnumerable<MessageHistory> messages)
         {
             var criteria = new AbnormalBetGetUsernameAndTransIdCriteria
             {
-                MessageIdLst = XmlHelper<AbnormalBetsMessageHistory>.Serialize(messages.ToList())
+                MessageIdLst = XmlHelper<MessageHistory>.Serialize(messages.ToList())
             };
 
             return await baseService.FetchMultipleAsync<AbnormalTransId, AbnormalUsernames>(criteria);
@@ -211,11 +210,11 @@
 
         protected internal virtual async Task<IEnumerable<Message>> GetAbnormalBetsMessageContentAsync(
             SystemSetting setting,
-            IEnumerable<AbnormalBetsMessageHistory> listMsgs)
+            IEnumerable<MessageHistory> listMsgs)
         {
             var criteria = new GetAbnormalBetsMessageCriteria
             {
-                MessageIDLst = XmlHelper<AbnormalBetsMessageHistory>.Serialize(listMsgs.ToList()),
+                MessageIDLst = XmlHelper<MessageHistory>.Serialize(listMsgs.ToList()),
                 BatchSize = setting.BatchSize,
                 MsgContentsTypeLst = setting.MsgContentsTypeLst,
                 Environment = Environment
@@ -227,11 +226,11 @@
         protected internal virtual async Task<IEnumerable<AbnormalMessage>> GetVoidingHistoryAsync(
             IEnumerable<AbnormalTicketInfo> tickets,
             IEnumerable<AbnormalUsernames> usernames,
-            IEnumerable<AbnormalBetsMessageHistory> messages)
+            IEnumerable<MessageHistory> messages)
         {
             var criteria = new GetAbnormalBetInfoCriteria
             {
-                MessageIdLst = XmlHelper<AbnormalBetsMessageHistory>.Serialize(messages.ToList()),
+                MessageIdLst = XmlHelper<MessageHistory>.Serialize(messages.ToList()),
                 TicketInfo = XmlHelper<AbnormalTicketInfo>.Serialize(tickets.ToList()),
                 UsernameLst = XmlHelper<AbnormalUsernames>.Serialize(usernames.ToList())
             };
@@ -241,7 +240,7 @@
 
         protected internal virtual async Task ImportAbnormalBetNotificationToChatbotDBAsync(
             IEnumerable<AbnormalMessage> messages,
-            IEnumerable<AbnormalBetsMessageHistory> msgHistories,
+            IEnumerable<MessageHistory> msgHistories,
             int maxMessageId)
         {
             if (messages.Any())
@@ -261,7 +260,7 @@
 
                 if (command.IsSuccessful && notifications.Any())
                 {
-                    var xmlString = XmlHelper<AbnormalBetsMessageHistory>.Serialize(msgHistories.ToList());
+                    var xmlString = XmlHelper<MessageHistory>.Serialize(msgHistories.ToList());
                     await InsertToMessageChatbotAsync(xmlString, VoidAbnormalbetsJobIdentity);
                 }
 

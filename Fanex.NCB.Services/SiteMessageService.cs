@@ -104,11 +104,11 @@
 
         protected internal virtual async Task InsertMessageHistoryAsync(IEnumerable<SiteMessageDetail> messageDetails)
         {
-            var msgHistory = messageDetails.Select(x => new SiteMessageMessageHistory { MessageID = x.MessageID, TargetID = x.TargetID }).ToList();
+            var msgHistory = messageDetails.Select(x => new MessageHistory { MessageId = x.MessageID, TargetId = x.TargetID }).ToList();
             var command = new InsertMessageHistoryCommand
             {
                 JobIdentify = SiteMessageJobIdentify,
-                MessageIDLst = XmlHelper<SiteMessageMessageHistory>.Serialize(msgHistory),
+                MessageIDLst = XmlHelper<MessageHistory>.Serialize(msgHistory),
                 Environment = Environment
             };
 

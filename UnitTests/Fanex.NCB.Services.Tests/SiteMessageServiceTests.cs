@@ -178,8 +178,8 @@
         {
             // Arrange
             var messageDetails = fixture.Create<IEnumerable<SiteMessageDetail>>();
-            var histories = messageDetails.Select(x => new SiteMessageMessageHistory { MessageID = x.MessageID, TargetID = x.TargetID }).ToList();
-            var xml = XmlHelper<SiteMessageMessageHistory>.Serialize(histories);
+            var histories = messageDetails.Select(x => new MessageHistory { MessageId = x.MessageID, TargetId = x.TargetID }).ToList();
+            var xml = XmlHelper<MessageHistory>.Serialize(histories);
             var command = new InsertMessageHistoryCommand();
             var service = GetService();
             baseService.ExecuteNonQueryAsync(Arg.Do<InsertMessageHistoryCommand>(x => command = x)).Returns(new CommandResult());
