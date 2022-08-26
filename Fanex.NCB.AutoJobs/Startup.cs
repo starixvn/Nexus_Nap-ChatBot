@@ -176,6 +176,7 @@
             services.AddSingleton<IViewLogService, ViewLogService>();
             services.AddSingleton<ICommonService, CommonService>();
             services.AddSingleton<IProblemAccountService, ProblemAccountService>();
+            services.AddSingleton<IMonitoredPlayerService, MonitoredPlayerService>();
             services.AddSingleton<ISiteDbService, SiteDbService>();
             services.AddSingleton<IDynamicConnectionService, DynamicConnectionService>();
             services.AddSingleton<ICacheService, CacheService>();
@@ -193,6 +194,7 @@
             services.AddHostedService<MonitorTelegramBotWorker>();
             services.AddHostedService<DeleteOldConversationMessageLogWorker>();
             services.AddHostedService<SendMessageProblemAccountWorker>();
+            services.AddHostedService<SendMessageMonitoredPlayerWorker>();
         }
     }
 }

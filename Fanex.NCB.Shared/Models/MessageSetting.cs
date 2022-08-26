@@ -11,5 +11,9 @@
         public string CarbonGroups { get; set; }
 
         public string MsgContentsTypeLst { get; set; }
+
+        public string LastDataRow { get; set; }
+
+        public string ServiceName { get; set; }
     }
 }

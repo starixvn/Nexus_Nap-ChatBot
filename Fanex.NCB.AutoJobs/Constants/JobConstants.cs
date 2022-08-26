@@ -21,5 +21,7 @@
         public const string DeleteOldConversationMessageLog = "DeleteOldConversationMessageLog";
 
         public const string SendMesageProblemAccount = "SendMessageProblemAccount";
+
+        public const string SendMesageMonitoredPlayer = "SendMessageMonitoredPlayer";
     }
 }
