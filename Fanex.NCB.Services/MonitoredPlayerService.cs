@@ -33,7 +33,7 @@
             this.logService = logService;
         }
 
-        public async Task SendMessageMontitoredPlayerAsync()
+        public async Task SendMessageMonitoredPlayerAsync()
         {
             var messageSetting = await GetMessageSettingAsync();
             if (messageSetting != null)

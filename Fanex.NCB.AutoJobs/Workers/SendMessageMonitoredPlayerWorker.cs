@@ -26,7 +26,7 @@
 
         public override async Task ExecuteJobAsync()
         {
-            await monitoredPlayerService.SendMessageMontitoredPlayerAsync();
+            await monitoredPlayerService.SendMessageMonitoredPlayerAsync();
         }
     }
 }
