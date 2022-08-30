@@ -1,12 +1,12 @@
-﻿namespace Fanex.NCB.Shared.Models.ProblemAccounts
+﻿namespace Fanex.NCB.Shared.Models
 {
     public class MessageSetting
     {
         public string JobStatus { get; set; }
 
-        public int BatchSize { get; set; }
-
         public int LastLogId { get; set; }
+
+        public int BatchSize { get; set; }
 
         public string CarbonGroups { get; set; }
 
