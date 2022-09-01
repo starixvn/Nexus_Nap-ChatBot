@@ -110,6 +110,25 @@
         }
 
         [Fact]
+        public async Task GetMissingMonitoredPlayerAsync_WhenCalled_ReturnExpectResult()
+        {
+            //Arrange
+            var service = GetService();
+            var criteria = fixture.Create<GetMissingMonitoredPlayerCriteria>();
+            var fromToLogId = fixture.Create<IEnumerable<FromToLogId>>();
+            var missingMesssageInfo = fixture.Create<IEnumerable<MissingMesssageInfo>>();
+            var tuple = (fromToLogId, missingMesssageInfo);
+
+            baseService.FetchMultipleAsync<FromToLogId, MissingMesssageInfo>(Arg.Do<GetMissingMonitoredPlayerCriteria>(x => criteria = x)).Returns(tuple);
+
+            //Act
+            var actual = await service.GetMissingMonitoredPlayerAsync(criteria);
+
+            //Assert
+            Assert.Equal(tuple, actual);
+        }
+
+        [Fact]
         public async Task CreateMissingMessageAsync_WhenCalled_ReturnExpectResult()
         {
             //Arrange
