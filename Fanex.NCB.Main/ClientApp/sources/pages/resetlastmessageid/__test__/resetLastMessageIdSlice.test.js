@@ -5,6 +5,7 @@ import resetLastMessageId, {
     setMissingMessageCsd,
     setMissingMessageInfo,
     setMissingProblemAccount,
+    setMissingMonitoredPlayer,
     setEditNewMessagePopup
 } from '../resetLastMessageIdSlice';
 
@@ -15,13 +16,15 @@ describe('ResetLastMessageIdSlice reducer', () => {
                 { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 0 },
                 { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 0 },
                 { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 },
-                { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 0 }
+                { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 0 },
+                { id: 5, name: 'Monitored Player', checked: true, newMaxMessageId: 0 }
             ],
             currentMessages: null,
             newMessages: null,
             missingMessageCsd: null,
             missingMessages: null,
             missingProblemAccount: null,
+            missingMonitoredPlayer: null,
             editNewMessagePopup: { show: false }
         });
     });
@@ -100,6 +103,23 @@ describe('ResetLastMessageIdSlice reducer', () => {
             })
         ).toEqual({
             missingProblemAccount: { 
+                logId: [{ fromLogId: 37666, toLogId: 37676 }],
+                data: [{ messageId: 1074533470, requestId: 59625 }]
+            }
+        });
+    });
+
+    it('should handle missingMonitoredPlayer', () => {
+        expect(
+            resetLastMessageId({}, {
+                type: setMissingMonitoredPlayer.type,
+                payload: { 
+                    logId: [{ fromLogId: 37666, toLogId: 37676 }],
+                    data: [{ messageId: 1074533470, requestId: 59625 }]
+                }
+            })
+        ).toEqual({
+            missingMonitoredPlayer: { 
                 logId: [{ fromLogId: 37666, toLogId: 37676 }],
                 data: [{ messageId: 1074533470, requestId: 59625 }]
             }

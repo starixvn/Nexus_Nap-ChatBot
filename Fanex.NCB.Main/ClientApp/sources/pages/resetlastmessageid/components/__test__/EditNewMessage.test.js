@@ -132,7 +132,7 @@ describe('EditNewMessage', () => {
     describe('buildBody', () => {
         it('should render no data when data is empty', () => {
             // Arrange
-            const props = { ...initProps };
+            const props = { ...initProps, data: [] };
 
             // Act
             const container = shallow(<EditNewMessage {...props}/>);

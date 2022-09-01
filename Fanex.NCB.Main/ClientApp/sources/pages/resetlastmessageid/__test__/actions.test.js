@@ -8,7 +8,8 @@ import {
     setNewPreviousMaxMessage,
     setMissingMessageCsd,
     setMissingMessageInfo,
-    setMissingProblemAccount
+    setMissingProblemAccount,
+    setMissingMonitoredPlayer
 } from '../resetLastMessageIdSlice';
 
 const middlewares = [thunk];
@@ -136,6 +137,28 @@ describe('actionCreators', () => {
 
             // Assert
             expect(DataService.postDataAsync).toHaveBeenCalledWith('ResetLastMessageId/GetMissingProblemAccount', expectedParams);
+            expect(store.getActions()).toEqual(expectedActions);
+        });
+    });
+
+    describe('getMissingMonitoredPlayer', () => {
+        it('should handle getMissingMonitoredPlayer when fetching data have been done', async () => {
+            // Arrange
+            const response = { 
+                logId: [{ fromLogId: 37666, toLogId: 37676 }],
+                data: [{ messageId: 1074533470, requestId: 59625 }]
+            };
+            const expectedParams = { fromLogId: 34464 };
+            const expectedActions = [{ type: setMissingMonitoredPlayer.type, payload: response.data }];
+            const store = mockStore({ missingMonitoredPlayer: null });
+            const promise = Promise.resolve(response);
+            DataService.postDataAsync = jest.fn(() => promise);
+
+            // Act
+            await store.dispatch(ActionCreators.getMissingMonitoredPlayer(expectedParams));
+
+            // Assert
+            expect(DataService.postDataAsync).toHaveBeenCalledWith('ResetLastMessageId/GetMissingMonitoredPlayer', expectedParams);
             expect(store.getActions()).toEqual(expectedActions);
         });
     });
