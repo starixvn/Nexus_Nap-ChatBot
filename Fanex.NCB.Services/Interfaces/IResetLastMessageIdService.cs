@@ -18,6 +18,8 @@
 
         Task<(IEnumerable<FromToLogId>, IEnumerable<MissingMesssageInfo>)> GetMissingProblemAccountAsync(GetMissingProblemAccountCriteria criteria);
 
+        Task<(IEnumerable<FromToLogId> ,IEnumerable<MissingMesssageInfo>)> GetMissingMonitoredPlayerAsync(GetMissingMonitoredPlayerCriteria criteria);
+
         Task<CommandResult> CreateMissingMessageAsync(CreateMissingMessageCommand command);
 
         Task<CommandResult> EditMessageInfoAsync(EditMessageInfoCommand command);

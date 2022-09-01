@@ -30,8 +30,9 @@ export class EditNewMessage extends Component {
 
     getData = () => {
         const { data, id } = this.props;
+        const idMissingMessages = [1,2,3];
         let missingData;
-        if (id !== 4) {
+        if (idMissingMessages.indexOf(id) !== -1) {
             missingData = this.props.data.filter(item => item.jobIdentify === id);
         } else {
             missingData = data;
@@ -55,14 +56,14 @@ export class EditNewMessage extends Component {
         return (
             <Row>
                 <Cell colWidth={5} header>{Labels.Select}</Cell>
-                <Cell colWidth={8} header>{id === 4 ? Labels.ID : Labels.MessageID}</Cell>
+                <Cell colWidth={8} header>{(id === 4 || id === 5) ? Labels.ID : Labels.MessageID}</Cell>
                 <Cell colWidth={45} header>
                     <div className="has-icons">
                         {Labels.Content_en}
                         <span className={this.state.expandPanels ? 'icon-collapse' : 'icon-expand'} onClick={this.toggleExpandPanels} />
                     </div>
                 </Cell>
-                <Cell colWidth={14} header>{`${id === 4 ? Labels.Date : Labels.PostTime} (GMT +8)`}</Cell>
+                <Cell colWidth={14} header>{`${(id === 4 || id === 5) ? Labels.Date : Labels.PostTime} (GMT +8)`}</Cell>
             </Row>
         );
     };
@@ -120,10 +121,10 @@ export class EditNewMessage extends Component {
         return (
             <Modal isOpen toggle={this.handleClose} className="edit-new-message" backdrop="static" size="lg">
                 <ModalHeader toggle={this.handleClose}>
-                    {`${ id === 4 ? Labels.NewPreviousMaxIDFor : Labels.NewPreviousMaxMessageIDFor} ${this.props.title}`}
+                    {`${ (id === 4 || id === 5) ? Labels.NewPreviousMaxIDFor : Labels.NewPreviousMaxMessageIDFor} ${this.props.title}`}
                 </ModalHeader>
                 <ModalBody>
-                    <Label className="form-label">{ id === 4 ? Labels.ListOfMissingID : Labels.ListOfMissingMessages }</Label>
+                    <Label className="form-label">{ (id === 4 || id === 5) ? Labels.ListOfMissingID : Labels.ListOfMissingMessages }</Label>
                     <Table
                         width={925}
                         bodyHeight={215}

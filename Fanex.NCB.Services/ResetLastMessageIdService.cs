@@ -49,6 +49,11 @@
             return await baseService.FetchMultipleAsync<FromToLogId, MissingMesssageInfo>(criteria);
         }
 
+        public async Task<(IEnumerable<FromToLogId>, IEnumerable<MissingMesssageInfo>)> GetMissingMonitoredPlayerAsync(GetMissingMonitoredPlayerCriteria criteria)
+        {
+            return await baseService.FetchMultipleAsync<FromToLogId, MissingMesssageInfo>(criteria);
+        }
+
         public async Task<CommandResult> CreateMissingMessageAsync(CreateMissingMessageCommand command)
         {
             command.Environment = Environment;

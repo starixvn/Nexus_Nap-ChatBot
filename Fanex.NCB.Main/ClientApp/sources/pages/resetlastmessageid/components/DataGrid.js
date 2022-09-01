@@ -15,7 +15,7 @@ export class DataGrid extends Component {
         super(props);
 
         this.state = {
-            checked: [false, false, false, false],
+            checked: [false, false, false, false, false],
             allChecked: false,
             isSubmitting: true,
             isShowConfirmPopup: false,
@@ -32,7 +32,7 @@ export class DataGrid extends Component {
         await this.props.getCurrentPreviousMaxMessage();
 
         const { currentMessages } = this.props;
-        const crmNotIncludeJobProPlayer = currentMessages.data.filter(item => item.jobIdentify !== 4);
+        const crmNotIncludeJobProPlayer = currentMessages.data.filter(item => item.jobIdentify !== 4 && item.jobIdentify !== 5);
         crmNotIncludeJobProPlayer.map(item => messageIds.push(item.referenceId));
         await this.props.getNewPreviousMaxMessage({ messages: messageIds });
 
@@ -54,9 +54,10 @@ export class DataGrid extends Component {
                 postTime: newMessages.messagePostTimeInfos.find(element => element.messageId === item.referenceId).postTime
             }
         });
+
         const paramMissingMessage = {
             messages: messages,
-            msgContentTypes: currentMessages.messageTypeInfos.filter(item => item.jobIdentify !== 4),
+            msgContentTypes: currentMessages.messageTypeInfos.filter(item => item.jobIdentify !== 4 && item.jobIdentify !== 5),
             requests: missingMessageCsd
         };
         await this.props.getMissingMessageInfo(paramMissingMessage);
@@ -65,6 +66,11 @@ export class DataGrid extends Component {
             fromLogId : currentMessages.data.find(item => item.jobIdentify === 4).referenceId
         };
         await this.props.getMissingProblemAccount(paramMissingProblemAccount);
+
+        const paramMissingMonitoredPlayer = {
+            fromLogId : currentMessages.data.find(item => item.jobIdentify === 5).referenceId
+        };
+        await this.props.getMissingMonitoredPlayer(paramMissingMonitoredPlayer);
 
         const { missingMessages, selected } = this.props;
         const newMaxMessageIds = selected.map((item,index) => {
@@ -78,6 +84,7 @@ export class DataGrid extends Component {
             return element;
         });
         newMaxMessageIds[3].newMaxMessageId = this.props.missingProblemAccount.logId[0].toLogId;
+        newMaxMessageIds[4].newMaxMessageId = this.props.missingMonitoredPlayer.logId[0].toLogId;
         this.props.setSelected(newMaxMessageIds);
     };
 
@@ -95,7 +102,10 @@ export class DataGrid extends Component {
         let data;
         if (jobIdentify === 4) {
             data = this.props.missingProblemAccount.data
-        } else {
+        } else if (jobIdentify === 5) {
+            data = this.props.missingMonitoredPlayer.data
+        }
+        else {
             data = this.props.missingMessages
         }
         this.props.setEditNewMessagePopup({ show: true, jobIdentify, title, newMaxMessageId, data });
@@ -124,12 +134,14 @@ export class DataGrid extends Component {
     };
 
     isAllEqualCurrentNew = () => {
-        const isEqualOneTwo = !this.isNotEqualCurrentNew(0) && !this.isNotEqualCurrentNew(1);
-        const isEqualThreeFour = !this.isNotEqualCurrentNew(2) && !this.isNotEqualCurrentNew(3);
-        if (isEqualOneTwo && isEqualThreeFour) {
-            return true;
-        }
-        return false;
+        let isDisable = true;
+        this.props.selected.map((item, key) => {
+            if(this.isNotEqualCurrentNew(key)) {
+                isDisable = false;
+            }
+        });
+
+        return isDisable;
     };
 
     handleAllChange = () => {
@@ -139,7 +151,7 @@ export class DataGrid extends Component {
         }
         this.setState({ 
             allChecked: !allChecked,
-            checked: [!allChecked,!allChecked,!allChecked,!allChecked],
+            checked: [!allChecked, !allChecked, !allChecked, !allChecked, !allChecked],
             isSubmitting: allChecked
         });
     };
@@ -163,7 +175,7 @@ export class DataGrid extends Component {
 
     isCheckedSubmit = () => {
         const { selected } = this.props;
-        for (let index = 0; index <= 3; index++) {
+        for (let index = 0; index < selected.length; index++) {
             if (this.isNotEqualCurrentNew(index) && this.state.checked[index] && selected[index].checked) {
                 return true;
             }
@@ -179,9 +191,17 @@ export class DataGrid extends Component {
         }
     };
 
+    handleFilterPushData = (data, jobId, value) => {
+        data.filter(item => {
+            if (this.checkCondition(item.messageId, jobId - 1) && this.props.selected[jobId - 1].checked) {
+                value.push({jobIdentify: jobId, referenceId: item.messageId});
+            }
+        });
+    };
+
     handleSubmit = async () => {
         this.setState({ isSubmitting: true });
-        const { missingMessages, missingMessageCsd, selected, missingProblemAccount } = this.props;
+        const { missingMessages, missingMessageCsd, selected, missingProblemAccount, missingMonitoredPlayer } = this.props;
         const { checked } = this.state;
         const messages = [], requests = [], jobInfoList = [];
         missingMessages.filter(item => {
@@ -193,11 +213,9 @@ export class DataGrid extends Component {
                 messages.push({jobIdentify: 3, referenceId: item.messageId});
             }
         });
-        missingProblemAccount.data.filter(item => {
-            if (this.checkCondition(item.messageId, 3) && selected[3].checked) {
-                messages.push({jobIdentify: 4, referenceId: item.messageId});
-            }
-        });
+        this.handleFilterPushData(missingProblemAccount.data, 4, messages);
+        this.handleFilterPushData(missingMonitoredPlayer.data, 5, messages);
+
         missingMessageCsd.filter(item => {
             if (this.checkCondition(item.messageId, 1) && selected[1].checked) {
                 requests.push(item);
@@ -327,8 +345,8 @@ export class DataGrid extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { selected, currentMessages, newMessages, missingMessageCsd, missingMessages, missingProblemAccount } = state;
-    return { selected, currentMessages, newMessages, missingMessageCsd, missingMessages, missingProblemAccount };
+    const { selected, currentMessages, newMessages, missingMessageCsd, missingMessages, missingProblemAccount, missingMonitoredPlayer } = state;
+    return { selected, currentMessages, newMessages, missingMessageCsd, missingMessages, missingProblemAccount, missingMonitoredPlayer };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataGrid);

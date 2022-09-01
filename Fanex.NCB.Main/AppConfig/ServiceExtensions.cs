@@ -42,6 +42,7 @@
             services.AddScoped<IResetLastMessageIdService, ResetLastMessageIdService>();
             services.AddScoped<IRemotingRefService, RemotingRefService>();
             services.AddScoped<IProblemAccountService, ProblemAccountService>();
+            services.AddScoped<IMonitoredPlayerService, MonitoredPlayerService>();
 
             services.AddSingleton<IUMCacheService, UMCacheService>();
             services.AddSingleton<IUMRestClient, UMRestClient>();

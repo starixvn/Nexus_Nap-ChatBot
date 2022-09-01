@@ -8,6 +8,7 @@ import {
     setMissingMessageCsd,
     setMissingMessageInfo,
     setMissingProblemAccount,
+    setMissingMonitoredPlayer,
     setEditNewMessagePopup
 } from './resetLastMessageIdSlice';
 
@@ -46,6 +47,13 @@ const getMissingProblemAccount = params => async dispatch => {
     });
 };
 
+const getMissingMonitoredPlayer = params => async dispatch => {
+    const url = Site.resolveClientUrl('ResetLastMessageId/GetMissingMonitoredPlayer');
+    await DataService.postDataAsync(url,params).then(response => {
+        dispatch(setMissingMonitoredPlayer(response.data));
+    });
+};
+
 const createMissingMessage = params => async () => {
     const url = Site.resolveClientUrl('ResetLastMessageId/CreateMissingMessage');
     return await DataService.postDataAsync(url,params).then(response => response);
@@ -63,6 +71,7 @@ export const ActionCreators = {
     getMissingMessageCsd,
     getMissingMessageInfo,
     getMissingProblemAccount,
+    getMissingMonitoredPlayer,
     setEditNewMessagePopup,
     createMissingMessage,
     editMessageInfo
