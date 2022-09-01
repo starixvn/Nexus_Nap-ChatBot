@@ -42,7 +42,7 @@
 
                 if (messages.Any())
                 {
-                    var (command, notifications) = await ImportMessageFromMonitoredPlayerAsync(messages, messageSel.ServiceName, messageSel.LastDataRow, messageSel.MaxLogId);
+                    var (command, notifications) = await ImportMessageFromMonitoredPlayerAsync(messages, messageSel.ServerName, messageSel.LastDataRow, messageSel.MaxLogId);
                     await OnAfterImportDataAsync(command, notifications);
                 }
             }
@@ -61,13 +61,13 @@
                 BatchSize = messageSetting.BatchSize,
                 LastLogId = messageSetting.LastLogId,
                 LastDataRow = messageSetting.LastDataRow,
-                ServerName = messageSetting.ServiceName
+                ServerName = messageSetting.ServerName
             };
             var messageInfo = await baseService.GetDataAsync<MonitoredPlayerInfo>(criteria);
             var messageSel = new MessageSetting
             {
                 LastDataRow = criteria.LastDataRow,
-                ServiceName = criteria.ServerName,
+                ServerName = criteria.ServerName,
                 MaxLogId = criteria.MaxLogId
             };
             return (messageInfo, messageSel);
