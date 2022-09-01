@@ -109,7 +109,7 @@
             var actual = await service.GetMonitoredPlayerAsync(setting);
 
             //Assert
-            Assert.Equal(monitoredPlayerInfo, actual);
+            Assert.Equal(monitoredPlayerInfo, actual.Item1);
         }
 
         [Fact]

@@ -12,6 +12,8 @@
 
         public string ServerName { get; set; }
 
+        public int MaxLogId { get; set; }
+
         public override string GetSettingKey() => "NAP_Chatbot_MonitoredPlayer_Sel";
 
         public override bool IsValid() => true;

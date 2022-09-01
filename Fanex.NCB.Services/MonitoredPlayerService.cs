@@ -38,11 +38,11 @@
             var messageSetting = await GetMessageSettingAsync();
             if (messageSetting != null)
             {
-                var messages = await GetMonitoredPlayerAsync(messageSetting);
+                var (messages, messageSel) = await GetMonitoredPlayerAsync(messageSetting);
 
                 if (messages.Any())
                 {
-                    var (command, notifications) = await ImportMessageFromMonitoredPlayerAsync(messages, messageSetting.ServiceName, messageSetting.LastDataRow, messageSetting.LastLogId);
+                    var (command, notifications) = await ImportMessageFromMonitoredPlayerAsync(messages, messageSel.ServiceName, messageSel.LastDataRow, messageSel.MaxLogId);
                     await OnAfterImportDataAsync(command, notifications);
                 }
             }
@@ -54,7 +54,7 @@
             return await baseService.GetDataEntityAsync<MessageSetting>(criteria);
         }
 
-        public async Task<IEnumerable<MonitoredPlayerInfo>> GetMonitoredPlayerAsync(MessageSetting messageSetting)
+        public async Task<(IEnumerable<MonitoredPlayerInfo>, MessageSetting)> GetMonitoredPlayerAsync(MessageSetting messageSetting)
         {
             var criteria = new GetMonitoredPlayerInfoCriteria
             {
@@ -63,7 +63,14 @@
                 LastDataRow = messageSetting.LastDataRow,
                 ServerName = messageSetting.ServiceName
             };
-            return await baseService.GetDataAsync<MonitoredPlayerInfo>(criteria);
+            var messageInfo = await baseService.GetDataAsync<MonitoredPlayerInfo>(criteria);
+            var messageSel = new MessageSetting
+            {
+                LastDataRow = criteria.LastDataRow,
+                ServiceName = criteria.ServerName,
+                MaxLogId = criteria.MaxLogId
+            };
+            return (messageInfo, messageSel);
         }
 
         public async Task<(CommandResult, IEnumerable<NotificationMessage>)> ImportMessageFromMonitoredPlayerAsync(

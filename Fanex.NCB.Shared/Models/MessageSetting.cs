@@ -15,5 +15,7 @@
         public string LastDataRow { get; set; }
 
         public string ServiceName { get; set; }
+
+        public int MaxLogId { get; set; }
     }
 }
