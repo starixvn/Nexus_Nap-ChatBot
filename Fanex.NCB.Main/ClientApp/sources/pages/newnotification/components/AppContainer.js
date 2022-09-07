@@ -476,7 +476,7 @@ export class AppContainer extends React.Component {
                 checked: values.platforms.split(',').includes(item.id.toString())
             }
         });
-
+console.log('this.props.notificationTemplates', this.props.notificationTemplates);
         return (
             <Form onSubmit={handleSubmit} className="new-notification-form">
                 {
@@ -605,7 +605,7 @@ export class AppContainer extends React.Component {
                                     <div className="parameter-col">
                                         <Label for={`params.${i}.value`} className="form-label">{x.name}</Label>
                                         <div>
-                                            <Input value={x.values} name={`params.${i}.value`} disabled={values.mode === 'preview'}
+                                            <textarea value={x.values} name={`params.${i}.value`} disabled={values.mode === 'preview'} className="form-control"
                                                 onChange={handleChange} onBlur={this.handleReplaceParamsWithValue}
                                             />
                                         </div>
