@@ -38,7 +38,6 @@
             services.AddScoped<INotificationTemplaceService, NotificationTemplaceService>();
             services.AddScoped<IViewLogService, ViewLogService>();
             services.AddScoped<ISettingConfigurationService, SettingConfigurationService>();
-            services.AddScoped<ISignalRService, SignalRService>();
             services.AddScoped<IPushSignalRService, PushSignalRService>();
             services.AddScoped<IResetLastMessageIdService, ResetLastMessageIdService>();
             services.AddScoped<IRemotingRefService, RemotingRefService>();

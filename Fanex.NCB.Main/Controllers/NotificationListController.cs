@@ -7,6 +7,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
+    using Fanex.NCB.Main.Hubs;
     using Fanex.NCB.Main.ViewModel;
     using Fanex.NCB.Main.ViewModel.Notification;
     using Fanex.NCB.Main.ViewModel.NotificationList;
@@ -16,6 +17,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.SignalR;
     using static Fanex.NAP.Core.Business.Constant;
 
     [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
@@ -23,22 +25,22 @@ namespace Fanex.NCB.SkypeBot.Controllers
     {
         private readonly ICommonService commonService;
         private readonly INotificationService notificationService;
-        private readonly ISignalRService signalRService;
         private readonly INapSession napSession;
         private readonly IUserService userService;
+        private readonly IHubContext<ChatbotHub, IChatbotClient> chatHubContext;
 
         public NotificationListController(
             ICommonService commonService,
             INotificationService notificationService,
-            ISignalRService signalRService,
             INapSession napSession,
-            IUserService userService)
+            IUserService userService,
+            IHubContext<ChatbotHub, IChatbotClient> chatHubContext)
         {
             this.commonService = commonService;
             this.notificationService = notificationService;
-            this.signalRService = signalRService;
             this.napSession = napSession;
             this.userService = userService;
+            this.chatHubContext = chatHubContext;
         }
 
         [HttpGet]
@@ -153,12 +155,12 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         private void PushSignalRToClient(string notificationIds)
         {
-            Task.Run(() => signalRService.UpdateNotificationStatus(notificationIds));
+            Task.Run(() => chatHubContext.Clients.All.UpdateNotificationStatus(notificationIds));
         }
 
         private void PushSignalUpdateErrNotification(IEnumerable<Notification> errNotifications)
         {
-            Task.Run(() => signalRService.HasNewErrNotifications(errNotifications));
+            Task.Run(() => chatHubContext.Clients.All.UpdateErrNotification(errNotifications));
         }
 
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]

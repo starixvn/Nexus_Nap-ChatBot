@@ -17,11 +17,11 @@
     public class NotificationService : INotificationService
     {
         private readonly IBaseService baseService;
-        private readonly ISignalRService signalRService;
+        private readonly IPushSignalRService signalRService;
         private readonly ISendNotificationService sendNotificationService;
 
         public NotificationService(IBaseService baseService,
-            ISignalRService signalRService,
+            IPushSignalRService signalRService,
             ISendNotificationService sendNotificationService)
         {
             this.baseService = baseService;
@@ -54,27 +54,29 @@
                     {
                         BackgroundJobAfterCreateNotification(notification.NotificationId, true);
                     }
-                    await PushSignalRInsert(notification.NotificationId);
                 }
+
+                var notificationIds = string.Join(",", notifications.Select(x => x.NotificationId).ToArray());
+                PushSignalRNewNotification(notificationIds);
             }
 
             return result;
         }
 
-        private async Task PushSignalRInsert(int notifiactionId)
+        private void PushSignalRUpdateNotificationStatus(int notifiactionId)
         {
             if (notifiactionId > 0)
             {
-                await signalRService.InsertNewNotification(notifiactionId.ToString());
+                Task.Run(() => signalRService.PushNotificationUpdateStatus(notifiactionId.ToString()));
             }
         }
 
-        private async Task PushSignalRUpdate(int notifiactionId)
+        private void PushSignalRNewNotification(string notificationIds)
         {
-            if (notifiactionId > 0)
+            Task.Run(() =>
             {
-                await signalRService.UpdateNotificationStatus(notifiactionId.ToString());
-            }
+                signalRService.PushNewNotification(notificationIds);
+            });
         }
 
         public async Task<(IEnumerable<Recipient>, IEnumerable<uint>)> GetRecipientsAsync
@@ -126,7 +128,7 @@
 
             if (result.IsSuccessful)
             {
-                await PushSignalRUpdate(notificationId);
+                PushSignalRUpdateNotificationStatus(notificationId);
             }
             return result;
         }
@@ -164,7 +166,7 @@
 
             if (result.IsSuccessful)
             {
-                await PushSignalRUpdate(notificationId);
+                PushSignalRUpdateNotificationStatus(notificationId);
             }
             return result;
         }
@@ -210,7 +212,7 @@
 
             if (result.IsSuccessful)
             {
-                await PushSignalRUpdate(command.NotificationId);
+                PushSignalRUpdateNotificationStatus(command.NotificationId);
             }
 
             return result;
@@ -239,9 +241,10 @@
 
         private void BackgroundJobAfterCreateNotification(int notificationId, bool isCreateNotification)
         {
-            Task.Run(() => sendNotificationService.SendNotificationImmediatelyAsync(notificationId)
-                .ContinueWith(result => isCreateNotification ? signalRService.InsertNewNotification(notificationId.ToString()) :
-                        signalRService.UpdateNotificationStatus(notificationId.ToString())));
+            Task.Run(() =>
+            {
+                sendNotificationService.SendNotificationImmediatelyAsync(notificationId);
+            });
         }
 
         public async Task<ResendNotification> GetResendNotificationInfoAsync(int notificationId, bool isResendAll)

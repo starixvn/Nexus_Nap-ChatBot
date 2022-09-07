@@ -5,6 +5,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using System.Threading.Tasks;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NCB.Core.Constants;
+    using Fanex.NCB.Main.Hubs;
     using Fanex.NCB.Main.ViewModel.Notification;
     using Fanex.NCB.Main.ViewModel.TreeSelect;
     using Fanex.NCB.Models.Common;
@@ -15,6 +16,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.SignalR;
     using Newtonsoft.Json;
     using static Fanex.NAP.Core.Business.Constant;
 
@@ -23,11 +25,13 @@ namespace Fanex.NCB.SkypeBot.Controllers
     {
         private readonly INotificationService notificationService;
         private readonly INapSession napSession;
+        private readonly IHubContext<ChatbotHub, IChatbotClient> chatHubContext;
 
-        public NewNotificationController(INotificationService notificationService, INapSession napSession)
+        public NewNotificationController(INotificationService notificationService, INapSession napSession, IHubContext<ChatbotHub, IChatbotClient> chatHubContext)
         {
             this.notificationService = notificationService;
             this.napSession = napSession;
+            this.chatHubContext = chatHubContext;
         }
 
         [HttpGet]
@@ -66,7 +70,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
                     SendImmediately = model.SendImmediately,
                     CreatorId = napSession.UserId,
                     Platforms = model.Platforms ?? string.Empty
-            });
+                });
             }
 
             return Json(result);
@@ -80,7 +84,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
             var (recipients, selectedRecipients) = await notificationService.GetRecipientsAsync(notificationTypeId, platforms, recipientIds, productId, channelIds);
             var tree = GenerateTreeHelper.FromRecipient(recipients);
 
-            return Json(new { recipients = tree, selectedRecipients});
+            return Json(new { recipients = tree, selectedRecipients });
         }
 
         [HttpGet]
@@ -100,7 +104,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
             var channelIds = resendNotification.ChannelId.ToString();
             var platformsLst = resendNotification.Platforms.Select(item => item.PlatformId).ToList();
             var platforms = string.Join(",", platformsLst);
-            var (recipients, selectedRecipients)  = await notificationService.GetRecipientsAsync(resendNotification.NotificationTypeId, platforms, recipientIds, channelIds: channelIds);
+            var (recipients, selectedRecipients) = await notificationService.GetRecipientsAsync(resendNotification.NotificationTypeId, platforms, recipientIds, channelIds: channelIds);
             IEnumerable<Recipient> unSelectableRecipients = resendNotification.Recipients.Where(r => !recipients.Any(x => x.RecipientId == r.RecipientId)).ToList();
 
             resendNotification.Recipients = resendNotification.Recipients.Where(x => !unSelectableRecipients.Any(u => u.RecipientId == x.RecipientId)).ToList();
