@@ -19,14 +19,14 @@
         private readonly IBaseService baseService;
         private readonly ICommonService commonService;
         private readonly IChatbotService chatbotService;
-        private readonly IPushSignalService pushSignalService;
+        private readonly IPushSignalRService pushSignalService;
         private readonly ILogService logService;
 
         public ProblemAccountService(
             IBaseService baseService,
             ICommonService commonService,
             IChatbotService chatbotService,
-            IPushSignalService pushSignalService,
+            IPushSignalRService pushSignalService,
             ILogService logService
         )
         {
@@ -75,7 +75,8 @@
             {
                 var categoryNameEN = commonService.GetCategogyName(categoryId.ToString(), Language.en_US);
                 var categoryNameCS = commonService.GetCategogyName(categoryId.ToString(), Language.zh_CN);
-                categories.Add(new Category { 
+                categories.Add(new Category
+                {
                     CategoryId = categoryId.ToString(),
                     CategoryNameEN = categoryNameEN,
                     CategoryNameCS = categoryNameCS
@@ -141,7 +142,7 @@
                     );
 
                     var notificationIds = string.Join(",", notificationMessages.Select(item => item.NotificationId));
-                    await pushSignalService.OnInsertNotificationAsync(notificationIds);
+                    await pushSignalService.PushNewNotification(notificationIds);
                 }
             }
         }

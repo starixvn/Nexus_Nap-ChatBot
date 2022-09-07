@@ -23,7 +23,7 @@
         private readonly IFixture fixture = new Fixture();
         private IChatbotService chatbotService;
         private IBaseService baseService;
-        private IPushSignalService pushSignalService;
+        private IPushSignalRService pushSignalService;
         private AppSettings appSettings;
         private MonitorChatbot monitorChatBot;
         private ILogService logService;
@@ -151,7 +151,7 @@
             Assert.Equal(notifications, result.Item1);
             Assert.Equal(recipients, result.Item2);
 
-            Task.Run(() => pushSignalService.DidNotReceive().OnUpdateNotificationStatusAsync(Arg.Any<string>())).Wait();
+            Task.Run(() => pushSignalService.DidNotReceive().PushNotificationUpdateStatus(Arg.Any<string>())).Wait();
         }
 
         [Fact]
@@ -172,7 +172,7 @@
             Assert.Equal(notifications, result.Item1);
             Assert.Equal(recipients, result.Item2);
 
-            Task.Run(() => pushSignalService.Received().OnUpdateNotificationStatusAsync("1")).Wait();
+            Task.Run(() => pushSignalService.Received().PushNotificationUpdateStatus("1")).Wait();
         }
 
         #endregion GetNotificationPlannedToSendAsync
@@ -515,8 +515,8 @@
 
             // Assert
             Assert.Equal(JsonConvert.SerializeObject(messages), command.SentStatus);
-            Task.Run(() => pushSignalService.Received().OnUpdateNotificationStatusAsync("1")).Wait();
-            Task.Run(() => pushSignalService.DidNotReceive().OnHasNewErrNotificationAsync()).Wait();
+            Task.Run(() => pushSignalService.Received().PushNotificationUpdateStatus("1")).Wait();
+            Task.Run(() => pushSignalService.DidNotReceive().PushErrorNotification()).Wait();
         }
 
         [Fact]
@@ -535,8 +535,8 @@
 
             // Assert
             Assert.Equal(JsonConvert.SerializeObject(messages), command.SentStatus);
-            Task.Run(() => pushSignalService.DidNotReceive().OnUpdateNotificationStatusAsync(Arg.Any<string>())).Wait();
-            Task.Run(() => pushSignalService.Received().OnHasNewErrNotificationAsync()).Wait();
+            Task.Run(() => pushSignalService.DidNotReceive().PushNotificationUpdateStatus(Arg.Any<string>())).Wait();
+            Task.Run(() => pushSignalService.Received().PushErrorNotification()).Wait();
         }
 
         #endregion UpdateSentNotificationStatusAsync
@@ -549,7 +549,7 @@
         {
             chatbotService = Substitute.For<IChatbotService>();
             baseService = Substitute.For<IBaseService>();
-            pushSignalService = Substitute.For<IPushSignalService>();
+            pushSignalService = Substitute.For<IPushSignalRService>();
             logService = Substitute.For<ILogService>();
 
             appSettings = new AppSettings

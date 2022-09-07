@@ -167,7 +167,7 @@
             services.AddSingleton<ISyncDataService, SyncDataService>();
             services.AddSingleton<ISpecialDeleteService, SpecialDeleteService>();
             services.AddSingleton<ISiteMessageService, SiteMessageService>();
-            services.AddSingleton<IPushSignalService, PushSignalService>();
+            services.AddSingleton<IPushSignalRService, PushSignalRService>();
 
             services.AddSingleton<IDynamicRepository, DynamicRepository>();
             services.AddSingleton<IBaseRepository, BaseRepository>();

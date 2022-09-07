@@ -20,7 +20,7 @@
     public class SpecialDeleteService : ISpecialDeleteService
     {
         private readonly IBaseService baseService;
-        private readonly IPushSignalService pushSignalService;
+        private readonly IPushSignalRService pushSignalService;
         private readonly IChatbotService chatbotService;
         private readonly ILogService logService;
         private readonly ISiteDbService siteDbService;
@@ -31,7 +31,7 @@
 
         public SpecialDeleteService(IBaseService baseService,
             IChatbotService chatbotService,
-            IPushSignalService pushSignalService,
+            IPushSignalRService pushSignalService,
             ILogService logService,
             IConfiguration configuration,
             ISiteDbService siteDbService)
@@ -91,7 +91,7 @@
                     );
 
                     var notificationIds = string.Join(",", notifications.Select(item => item.NotificationId));
-                    await pushSignalService.OnInsertNotificationAsync(notificationIds);
+                    await pushSignalService.PushNewNotification(notificationIds);
                 }
             }
         }

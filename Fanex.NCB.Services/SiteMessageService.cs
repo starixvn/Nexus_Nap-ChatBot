@@ -19,7 +19,7 @@
     public class SiteMessageService : ISiteMessageService
     {
         private readonly IBaseService baseService;
-        private readonly IPushSignalService pushSignalService;
+        private readonly IPushSignalRService pushSignalService;
         private readonly IChatbotService chatbotService;
         private readonly ILogService logService;
         private readonly string Environment;
@@ -28,7 +28,7 @@
         public SiteMessageService(
             IBaseService baseService,
             IChatbotService chatbotService,
-            IPushSignalService pushSignalService,
+            IPushSignalRService pushSignalService,
             ILogService logService,
             IConfiguration configuration)
         {
@@ -97,7 +97,7 @@
                     );
 
                     var notificationIds = string.Join(",", notifications.Select(item => item.NotificationId));
-                    await pushSignalService.OnInsertNotificationAsync(notificationIds);
+                    await pushSignalService.PushNewNotification(notificationIds);
                 }
             }
         }

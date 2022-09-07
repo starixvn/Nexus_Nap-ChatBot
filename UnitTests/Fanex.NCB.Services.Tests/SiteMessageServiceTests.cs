@@ -24,7 +24,7 @@
         private readonly IFixture fixture = new Fixture();
         private IBaseService baseService;
         private IChatbotService chatbotService;
-        private IPushSignalService pushSignalService;
+        private IPushSignalRService pushSignalService;
         private ILogService logService;
         private IConfiguration configuration;
 
@@ -145,7 +145,7 @@
             // Assert
             await chatbotService.DidNotReceive().NotifyToChatGroupAsync(Arg.Any<string>());
 
-            await pushSignalService.Received().OnInsertNotificationAsync(notificationIds);
+            await pushSignalService.Received().PushNewNotification(notificationIds);
             service.Received().Protected("SendMessageByChannelAsync", (byte)1, notifications);
             service.Received().Protected("SendMessageByChannelAsync", (byte)2, notifications);
         }
@@ -166,7 +166,7 @@
             // Assert
             await chatbotService.Received().NotifyToChatGroupAsync("error");
 
-            await pushSignalService.DidNotReceive().OnInsertNotificationAsync(notificationIds);
+            await pushSignalService.DidNotReceive().PushNewNotification(notificationIds);
             service.DidNotReceive().Protected("SendMessageByChannelAsync", (byte)1, notifications);
             service.DidNotReceive().Protected("SendMessageByChannelAsync", (byte)2, notifications);
         }
@@ -289,7 +289,7 @@
             baseService = Substitute.For<IBaseService>();
             chatbotService = Substitute.For<IChatbotService>();
             configuration = Substitute.For<IConfiguration>();
-            pushSignalService = Substitute.For<IPushSignalService>();
+            pushSignalService = Substitute.For<IPushSignalRService>();
             logService = Substitute.For<ILogService>();
 
             return Substitute.For<SiteMessageServiceTestable>(

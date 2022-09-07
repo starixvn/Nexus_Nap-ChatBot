@@ -6,7 +6,7 @@ import NotificationItem from './NotificationItem';
 import { defaultPageSize, noErrorNotification } from '../../../constants/constants';
 import errorResponseHandler from '../../../lib/errorResponseHandler';
 import { getRealValuesFromExtra } from '../../../common/TreeSelect/index';
-import * as signalR from '@microsoft/signalr';
+import { JsonHubProtocol, HubConnectionBuilder, HttpTransportType, LogLevel } from '@microsoft/signalr';
 
 import './Header.scss';
 
@@ -32,32 +32,52 @@ export default class Header extends React.PureComponent {
     }
 
     initSignalR = () => {
-        const protocol = new signalR.JsonHubProtocol();
-        const transport = signalR.HttpTransportType.LongPolling;
         const options = {
-            transport,
-            logMessageContent: false,
-            logger: signalR.LogLevel.None
+            transport: HttpTransportType.WebSockets,
+            skipNegotiation: true,
+            logger: LogLevel.None,
+            logMessageContent: false
         };
 
-        this.connection = new signalR.HubConnectionBuilder()
-            .withUrl("signalR", options)
-			.withAutomaticReconnect()
-            .withHubProtocol(protocol)
+        this.connection = new HubConnectionBuilder()
+            .withUrl("chatbot/hubs", options)
+            .withHubProtocol(new JsonHubProtocol())
+            .withAutomaticReconnect()
             .build();
 
         this.connection.on('UpdateErrNotification', (notifications) => {
+            console.log(notifications);
+
             this.setState({
                 notifications: notifications
             });
         });
 
-        this.connection.start().then().catch(err => console.error('SignalR Connection Error: ', err));
+        this.connection.onclose(async () => {
+            await this.start();
+        });
+
+        this.start();
     }
 
     componentWillUnmount() {
         this.connection.stop();
     }
+
+    start = async () => {
+        try {
+            await this.connection.start().then(() => {
+                console.log('SignalR connected!!!');
+            });
+        } catch (err) {
+            console.log(err);
+
+            setTimeout(() => {
+                this.props.getMatches();
+                this.start();
+            }, 60 * 1000);
+        }
+    };
 
     onHasNewErrNotification = (notifications) => {
         this.setState({

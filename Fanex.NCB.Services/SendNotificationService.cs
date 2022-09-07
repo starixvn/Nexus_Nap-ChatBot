@@ -20,7 +20,7 @@
     {
         private readonly IChatbotService chatbotService;
         private readonly IBaseService baseService;
-        private readonly IPushSignalService pushSignalService;
+        private readonly IPushSignalRService pushSignalService;
         private readonly AppSettings appSettings;
         private readonly MonitorChatbot monitorChatBot;
         private readonly ILogService logService;
@@ -29,7 +29,7 @@
         public SendNotificationService(
             IChatbotService chatbotService,
             IBaseService baseService,
-            IPushSignalService pushSignalService,
+            IPushSignalRService pushSignalService,
             ILogService logService,
             IOptionsSnapshot<AppSettings> appSettingOptions,
             IOptionsSnapshot<MonitorChatbot> monitorChatBotOptions,
@@ -354,12 +354,12 @@
 
         private void PushSignalUpdateNotiStatus(string notificationIds)
         {
-            Task.Run(() => pushSignalService.OnUpdateNotificationStatusAsync(notificationIds));
+            Task.Run(() => pushSignalService.PushNotificationUpdateStatus(notificationIds));
         }
 
         private void PushSignalNewErrNotification()
         {
-            Task.Run(() => pushSignalService.OnHasNewErrNotificationAsync());
+            Task.Run(() => pushSignalService.PushErrorNotification());
         }
     }
 }

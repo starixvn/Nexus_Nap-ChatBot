@@ -17,8 +17,8 @@
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NCB.Main.AppConfig;
+    using Fanex.NCB.Main.Hubs;
     using Fanex.NCB.NAPResolver;
-    using Fanex.NCB.Services;
     using Fanex.NCB.Shared.Middlewares;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
@@ -179,9 +179,9 @@
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<SignalRService>("/signalR", options =>
+                endpoints.MapHub<ChatbotHub>("/chatbot/hubs", options =>
                 {
-                    options.Transports = HttpTransportType.LongPolling;
+                    options.Transports = HttpTransportType.WebSockets;
                 });
 
                 endpoints.MapControllerRoute(

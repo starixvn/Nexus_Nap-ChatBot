@@ -36,10 +36,10 @@
             services.AddScoped<ISendNotificationService, SendNotificationService>();
             services.AddScoped<ISyncDataService, SyncDataService>();
             services.AddScoped<INotificationTemplaceService, NotificationTemplaceService>();
-            services.AddScoped<IViewLogService,ViewLogService>();
+            services.AddScoped<IViewLogService, ViewLogService>();
             services.AddScoped<ISettingConfigurationService, SettingConfigurationService>();
             services.AddScoped<ISignalRService, SignalRService>();
-            services.AddScoped<IPushSignalService, PushSignalService>();
+            services.AddScoped<IPushSignalRService, PushSignalRService>();
             services.AddScoped<IResetLastMessageIdService, ResetLastMessageIdService>();
             services.AddScoped<IRemotingRefService, RemotingRefService>();
             services.AddScoped<IProblemAccountService, ProblemAccountService>();
@@ -49,7 +49,7 @@
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IHttpContextHelper, HttpContextHelper>();
             services.AddSingleton<IMaintenanceService, MaintenanceService>();
-            
+
             services.AddHttpClient();
         }
 
