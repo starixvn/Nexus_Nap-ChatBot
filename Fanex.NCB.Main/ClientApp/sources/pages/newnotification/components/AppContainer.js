@@ -476,7 +476,7 @@ export class AppContainer extends React.Component {
                 checked: values.platforms.split(',').includes(item.id.toString())
             }
         });
-console.log('this.props.notificationTemplates', this.props.notificationTemplates);
+
         return (
             <Form onSubmit={handleSubmit} className="new-notification-form">
                 {
