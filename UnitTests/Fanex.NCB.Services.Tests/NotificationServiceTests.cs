@@ -18,7 +18,6 @@
     public class NotificationServiceTests
     {
         private IBaseService baseService;
-        private ISignalRService signalService;
         private ISendNotificationService sendNotificationService;
 
         [Fact]
@@ -30,9 +29,10 @@
             baseService.ExecuteNonQueryAsync(Arg.Any<CreateNewNotificationCommand>())
                 .Returns(new CommandResult { Code = 0 });
 
-            var result = await service.CreateAsync(model);
+            var (result, notiIds) = await service.CreateAsync(model);
 
             Assert.True(result.IsSuccessful);
+            Assert.Equal(string.Empty, notiIds);
         }
 
         [Fact]
@@ -50,7 +50,7 @@
                 .Returns(new CommandResult { Code = 0 })
                 .AndDoes(x => command.NotificationIDLst = "[{\"NotificationId\":1},{\"NotificationId\":2}]");
 
-            var result = await service.CreateAsync(model);
+            var (result, notiIds) = await service.CreateAsync(model);
 
             Assert.True(result.IsSuccessful);
         }
@@ -353,9 +353,8 @@
         {
             baseService = Substitute.For<IBaseService>();
             sendNotificationService = Substitute.For<ISendNotificationService>();
-            signalService = Substitute.For<ISignalRService>();
 
-            return new NotificationService(baseService, signalService, sendNotificationService);
+            return new NotificationService(baseService, sendNotificationService);
         }
     }
 }

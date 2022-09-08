@@ -132,7 +132,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
             var result = await notificationService.CancelAsync(notificationId, napSession.UserId);
             if (result.IsSuccessful)
             {
-                PushSignalRToClient(notificationId.ToString());
+                PushSignalRUpdateNotificationStatus(notificationId.ToString());
             }
 
             return Json(result);
@@ -146,14 +146,14 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
             if (result.IsSuccessful)
             {
-                PushSignalRToClient(data.NotificationId.ToString());
+                PushSignalRUpdateNotificationStatus(data.NotificationId.ToString());
                 var errNotifications = await notificationService.GetErrNotificationsAsync();
                 PushSignalUpdateErrNotification(errNotifications);
             }
             return Json(result);
         }
 
-        private void PushSignalRToClient(string notificationIds)
+        private void PushSignalRUpdateNotificationStatus(string notificationIds)
         {
             Task.Run(() => chatHubContext.Clients.All.UpdateNotificationStatus(notificationIds));
         }

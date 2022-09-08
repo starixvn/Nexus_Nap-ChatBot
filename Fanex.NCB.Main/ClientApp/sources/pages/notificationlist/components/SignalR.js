@@ -23,11 +23,11 @@ export default class SignalR extends PureComponent {
             .build();
 
         this.connection.on('UpdateNotificationStatus', (notificationIds) => {
-            this.props.onUpdateNotificationStatus(notificationIds);
+            this.onUpdateNotificationStatus(notificationIds);
         });
 
         this.connection.on('InsertNewNotifications', (notificationIds) => {
-            this.props.onInsertNewNotification(notificationIds);
+            this.onInsertNotifications(notificationIds);
         });
 
         this.connection.onclose(async () => {
@@ -39,6 +39,14 @@ export default class SignalR extends PureComponent {
 
     componentWillUnmount() {
         this.connection.stop();
+    }
+
+    onInsertNotifications(notificationIds) {
+        this.props.onInsertNewNotification(notificationIds);
+    }
+
+    onUpdateNotificationStatus(notificationIds) {
+        this.props.onUpdateNotificationStatus(notificationIds);
     }
 
     start = async () => {

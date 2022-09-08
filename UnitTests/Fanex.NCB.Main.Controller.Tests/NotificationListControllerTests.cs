@@ -8,6 +8,7 @@
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
+    using Fanex.NCB.Main.Hubs;
     using Fanex.NCB.Main.ViewModel.Notification;
     using Fanex.NCB.Main.ViewModel.NotificationList;
     using Fanex.NCB.Models.Common;
@@ -16,6 +17,7 @@
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.SkypeBot.Controllers;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.SignalR;
     using Newtonsoft.Json;
     using NSubstitute;
     using Xunit;
@@ -26,9 +28,10 @@
         private readonly IFixture fixture = new Fixture();
         private ICommonService commonService;
         private INotificationService notificationService;
-        private ISignalRService signalRService;
+        private IPushSignalRService signalRService;
         private INapSession napSession;
         private IUserService userService;
+        private IHubContext<ChatbotHub, IChatbotClient> chatHubContext;
 
         [Fact]
         public async Task GetSettings_WhenCalled_ReturnAsExpectedResult()
@@ -269,7 +272,7 @@
 
         private void SignalRServiceHasBeenCall(string notificationIds)
         {
-            Task.Run(() => signalRService.Received().UpdateNotificationStatus(notificationIds));
+            Task.Run(() => chatHubContext.Clients.All.Received().UpdateNotificationStatus(notificationIds));
         }
 
         private NotificationListController GetController()
@@ -278,9 +281,9 @@
             notificationService = Substitute.For<INotificationService>();
             napSession = Substitute.For<INapSession>();
             userService = Substitute.For<IUserService>();
-            signalRService = Substitute.For<ISignalRService>();
-
-            return new NotificationListController(commonService, notificationService, signalRService, napSession, userService);
+            signalRService = Substitute.For<IPushSignalRService>();
+            chatHubContext = Substitute.For<IHubContext<ChatbotHub, IChatbotClient>>();
+            return new NotificationListController(commonService, notificationService, napSession, userService, chatHubContext);
         }
     }
 }

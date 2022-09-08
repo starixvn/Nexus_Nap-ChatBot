@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NAP.Client.Helpers.Web;
+    using Fanex.NCB.Main.Hubs;
     using Fanex.NCB.Main.ViewModel.Notification;
     using Fanex.NCB.Main.ViewModel.TreeSelect;
     using Fanex.NCB.Models.Common;
@@ -15,6 +16,7 @@
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.SkypeBot.Controllers;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.SignalR;
     using Newtonsoft.Json;
     using NSubstitute;
     using Xunit;
@@ -24,6 +26,7 @@
         private readonly IFixture fixture = new Fixture();
         private INotificationService notificationService;
         private INapSession napSession;
+        private IHubContext<ChatbotHub, IChatbotClient> chatHubContext;
 
         [Fact]
         public void Index_WhenCalled_ReturnExpectedView()
@@ -60,7 +63,7 @@
             };
             var model = new CreateNotification();
 
-            notificationService.CreateAsync(Arg.Do<CreateNotification>(x => model = x)).Returns(new CommandResult { Code = 0 });
+            notificationService.CreateAsync(Arg.Do<CreateNotification>(x => model = x)).Returns((new CommandResult { Code = 0 }, string.Empty));
 
             var result = await controller.Create(viewModel);
 
@@ -154,7 +157,7 @@
             };
             var platforms = resendNotifictaion.Platforms.Select(item => item.PlatformId).ToList();
             notificationService.GetResendNotificationInfoAsync(notificationId, isResendAll).Returns(resendNotifictaion);
-            notificationService.GetRecipientsAsync(resendNotifictaion.NotificationTypeId, string.Join(",",platforms) , recipientIds, null, resendNotifictaion.ChannelId.ToString()).Returns(allRecipients);
+            notificationService.GetRecipientsAsync(resendNotifictaion.NotificationTypeId, string.Join(",", platforms), recipientIds, null, resendNotifictaion.ChannelId.ToString()).Returns(allRecipients);
 
             var result = await controller.GetResendNotification(notificationId, recipientIds, isResendAll);
 
@@ -167,8 +170,9 @@
         {
             notificationService = Substitute.For<INotificationService>();
             napSession = Substitute.For<INapSession>();
+            chatHubContext = Substitute.For<IHubContext<ChatbotHub, IChatbotClient>>();
 
-            return new NewNotificationController(notificationService, napSession);
+            return new NewNotificationController(notificationService, napSession, chatHubContext);
         }
     }
 }

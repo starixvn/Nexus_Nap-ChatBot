@@ -268,6 +268,7 @@ export default class NotificationList extends Component {
                     }
                     return noti;
                 });
+
                 tableData.data = this.compareWithCurrentFilter(tableData.data);
 
                 this.setState({ tableData: tableData });

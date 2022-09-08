@@ -14,7 +14,7 @@
         public SpecialDeleteServiceTestable(
             IBaseService baseService,
             IChatbotService chatbotService,
-            IPushSignalService pushSignalService,
+            IPushSignalRService pushSignalService,
             ILogService logService,
             ISiteDbService siteDbService,
             IConfiguration configuration) : base(baseService, chatbotService, pushSignalService, logService, configuration, siteDbService)

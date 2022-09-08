@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NCB.Core.Constants;
+    using Fanex.NCB.Main.Hubs;
     using Fanex.NCB.Main.ViewModel.Notification;
     using Fanex.NCB.Main.ViewModel.TreeSelect;
     using Fanex.NCB.Models.Notification;
@@ -12,6 +13,7 @@
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.SignalR;
     using static Fanex.NAP.Core.Business.Constant;
 
     [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
@@ -19,11 +21,15 @@
     {
         private readonly INotificationService notificationService;
         private readonly INapSession napSession;
+        private readonly IHubContext<ChatbotHub, IChatbotClient> chatHubContext;
 
-        public EditNotificationController(INotificationService notificationService, INapSession napSession)
+        public EditNotificationController(INotificationService notificationService,
+            INapSession napSession,
+            IHubContext<ChatbotHub, IChatbotClient> chatHubContext)
         {
             this.notificationService = notificationService;
             this.napSession = napSession;
+            this.chatHubContext = chatHubContext;
         }
 
         [HttpGet]
@@ -83,14 +89,25 @@
                         UserId = napSession.UserId,
                         Platforms = data.Platforms ?? string.Empty
                     });
-                } catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     result.Code = 1;
                     result.Message = ex.Message;
                 }
+
+                if (result.IsSuccessful)
+                {
+                    PushSignalRUpdateNotificationStatus(data.NotificationId);
+                }
             }
 
             return Json(result);
+        }
+
+        private void PushSignalRUpdateNotificationStatus(int notificationId)
+        {
+            Task.Run(() => chatHubContext.Clients.All.UpdateNotificationStatus(notificationId.ToString()));
         }
     }
 }

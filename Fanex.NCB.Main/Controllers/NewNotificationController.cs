@@ -46,6 +46,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> Create(CreateNewNotificationViewModel model)
         {
             var result = new CommandResult();
+            var notificationIds = string.Empty;
             if (string.IsNullOrEmpty(model.RecipientIds))
             {
                 result.Code = -1;
@@ -59,7 +60,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
                            ChannelId = x,
                            Content = model.Content
                        }).ToList();
-                result = await notificationService.CreateAsync(new CreateNotification
+                (result, notificationIds) = await notificationService.CreateAsync(new CreateNotification
                 {
                     NotificationTypeId = model.NotificationTypeId,
                     ProductId = model.ProductId,
@@ -71,6 +72,11 @@ namespace Fanex.NCB.SkypeBot.Controllers
                     CreatorId = napSession.UserId,
                     Platforms = model.Platforms ?? string.Empty
                 });
+
+                if (result.IsSuccessful & !string.IsNullOrWhiteSpace(notificationIds))
+                {
+                    PushSignalRNewNotification(notificationIds);
+                }
             }
 
             return Json(result);
@@ -112,6 +118,11 @@ namespace Fanex.NCB.SkypeBot.Controllers
             var tree = GenerateTreeHelper.FromRecipient(recipients);
 
             return Json(new { resendNotification, recipients = tree, unSelectableRecipients, selectedRecipients });
+        }
+
+        private void PushSignalRNewNotification(string notificationIds)
+        {
+            Task.Run(() => chatHubContext.Clients.All.InsertNewNotifications(notificationIds));
         }
     }
 }

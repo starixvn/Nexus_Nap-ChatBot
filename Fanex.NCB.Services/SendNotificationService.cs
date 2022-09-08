@@ -39,9 +39,9 @@
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;
             this.logService = logService;
-            this.appSettings = appSettingOptions.Value;
-            this.monitorChatBot = monitorChatBotOptions.Value;
-            this.monitorTelegramBot = monitorTelegramBotOptions.Value;
+            appSettings = appSettingOptions.Value;
+            monitorChatBot = monitorChatBotOptions.Value;
+            monitorTelegramBot = monitorTelegramBotOptions.Value;
         }
 
         public async Task ScanAndSendNotificationAsync()

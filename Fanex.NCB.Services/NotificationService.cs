@@ -17,19 +17,16 @@
     public class NotificationService : INotificationService
     {
         private readonly IBaseService baseService;
-        private readonly IPushSignalRService signalRService;
         private readonly ISendNotificationService sendNotificationService;
 
         public NotificationService(IBaseService baseService,
-            IPushSignalRService signalRService,
             ISendNotificationService sendNotificationService)
         {
             this.baseService = baseService;
-            this.signalRService = signalRService;
             this.sendNotificationService = sendNotificationService;
         }
 
-        public async Task<CommandResult> CreateAsync(CreateNotification model)
+        public async Task<(CommandResult, string)> CreateAsync(CreateNotification model)
         {
             var command = new CreateNewNotificationCommand
             {
@@ -43,7 +40,7 @@
                 CreatorId = model.CreatorId,
                 Platforms = model.Platforms
             };
-
+            var notificationIds = string.Empty;
             var result = await baseService.ExecuteNonQueryAsync(command);
             if (result.IsSuccessful && !string.IsNullOrEmpty(command.NotificationIDLst))
             {
@@ -52,31 +49,14 @@
                 {
                     if (model.SendImmediately)
                     {
-                        BackgroundJobAfterCreateNotification(notification.NotificationId, true);
+                        BackgroundJobAfterCreateNotification(notification.NotificationId);
                     }
                 }
 
-                var notificationIds = string.Join(",", notifications.Select(x => x.NotificationId).ToArray());
-                PushSignalRNewNotification(notificationIds);
+                notificationIds = string.Join(",", notifications.Select(x => x.NotificationId).ToArray());
             }
 
-            return result;
-        }
-
-        private void PushSignalRUpdateNotificationStatus(int notifiactionId)
-        {
-            if (notifiactionId > 0)
-            {
-                Task.Run(() => signalRService.PushNotificationUpdateStatus(notifiactionId.ToString()));
-            }
-        }
-
-        private void PushSignalRNewNotification(string notificationIds)
-        {
-            Task.Run(() =>
-            {
-                signalRService.PushNewNotification(notificationIds);
-            });
+            return (result, notificationIds);
         }
 
         public async Task<(IEnumerable<Recipient>, IEnumerable<uint>)> GetRecipientsAsync
@@ -125,11 +105,6 @@
             };
 
             var result = await baseService.ExecuteNonQueryAsync(command);
-
-            if (result.IsSuccessful)
-            {
-                PushSignalRUpdateNotificationStatus(notificationId);
-            }
             return result;
         }
 
@@ -164,10 +139,6 @@
 
             var result = await baseService.ExecuteNonQueryAsync(command);
 
-            if (result.IsSuccessful)
-            {
-                PushSignalRUpdateNotificationStatus(notificationId);
-            }
             return result;
         }
 
@@ -207,12 +178,7 @@
             var result = await baseService.ExecuteNonQueryAsync(command);
             if (result.IsSuccessful && model.SendImmediately)
             {
-                BackgroundJobAfterCreateNotification(command.NotificationId, false);
-            }
-
-            if (result.IsSuccessful)
-            {
-                PushSignalRUpdateNotificationStatus(command.NotificationId);
+                BackgroundJobAfterCreateNotification(command.NotificationId);
             }
 
             return result;
@@ -239,7 +205,7 @@
             });
         }
 
-        private void BackgroundJobAfterCreateNotification(int notificationId, bool isCreateNotification)
+        private void BackgroundJobAfterCreateNotification(int notificationId)
         {
             Task.Run(() =>
             {

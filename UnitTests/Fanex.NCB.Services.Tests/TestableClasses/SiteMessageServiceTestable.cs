@@ -14,7 +14,7 @@
         public SiteMessageServiceTestable(
                IBaseService baseService,
                IChatbotService chatbotService,
-               IPushSignalService pushSignalService,
+               IPushSignalRService pushSignalService,
                ILogService logService,
                IConfiguration configuration)
             : base(baseService, chatbotService, pushSignalService, logService, configuration)

@@ -12,7 +12,7 @@
             IBaseService baseService,
             ICommonService commonService,
             IChatbotService chatbotService,
-            IPushSignalService pushSignalService,
+            IPushSignalRService pushSignalService,
             ILogService logService
         ) : base(baseService, commonService, chatbotService, pushSignalService, logService)
         {

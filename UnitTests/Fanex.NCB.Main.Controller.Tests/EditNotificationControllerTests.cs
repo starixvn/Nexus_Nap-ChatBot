@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NAP.Client.Helpers.Web;
+    using Fanex.NCB.Main.Hubs;
     using Fanex.NCB.Main.ViewModel.Notification;
     using Fanex.NCB.Main.ViewModel.TreeSelect;
     using Fanex.NCB.Models.Common;
@@ -11,6 +12,7 @@
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.SignalR;
     using NSubstitute;
     using Xunit;
 
@@ -18,6 +20,7 @@
     {
         private INotificationService notificationService;
         private INapSession napSession;
+        private IHubContext<ChatbotHub, IChatbotClient> hubContext;
 
         [Fact]
         public void Index_WhenCalled_ReturnExpectedView()
@@ -139,8 +142,9 @@
         {
             notificationService = Substitute.For<INotificationService>();
             napSession = Substitute.For<INapSession>();
+            hubContext = Substitute.For<IHubContext<ChatbotHub, IChatbotClient>>();
 
-            return new EditNotificationController(notificationService, napSession);
+            return new EditNotificationController(notificationService, napSession, hubContext);
         }
     }
 }

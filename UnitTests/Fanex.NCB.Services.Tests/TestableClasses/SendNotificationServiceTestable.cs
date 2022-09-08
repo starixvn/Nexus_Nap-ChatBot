@@ -14,7 +14,7 @@
         public SendNotificationServiceTestable(
                IChatbotService chatbotService,
                IBaseService baseService,
-               IPushSignalService pushSignalService,
+               IPushSignalRService pushSignalService,
                ILogService logService,
                IOptionsSnapshot<AppSettings> appSettingOptions,
                IOptionsSnapshot<MonitorChatbot> monitorChatBotOptions,

@@ -8,7 +8,7 @@
 
     public interface INotificationService
     {
-        Task<CommandResult> CreateAsync(CreateNotification model);
+        Task<(CommandResult, string)> CreateAsync(CreateNotification model);
 
         Task<(IEnumerable<Recipient>, IEnumerable<uint>)> GetRecipientsAsync(int notificationTypeId, string platforms, string recipientIds, int? productId = null, string channelIds = null);
 
