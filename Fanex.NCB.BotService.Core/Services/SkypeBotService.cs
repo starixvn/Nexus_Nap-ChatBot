@@ -78,7 +78,6 @@
                 new CancellationToken());
         }
 
-
         [Obsolete]
         public async Task<SendMessageResult> SendMessageWithRetryAsync(ConversationInfo conversationInfo)
         {
@@ -86,6 +85,7 @@
             {
                 var conversationReference = GetConversationReference(conversationInfo);
                 var appId = GetAppId(conversationInfo.BotName);
+
                 await adapter.ContinueConversationAsync(appId, conversationReference,
                     async (context, token) =>
                     {
@@ -97,7 +97,7 @@
             catch (Exception exception)
             {
                 await WriteLogAsync(conversationInfo, exception);
-                
+
                 var result = new SendMessageResult { ErrorCode = 1 };
                 if (sendIndirectMessageSettings.IsEnabled)
                 {
@@ -105,13 +105,13 @@
                 }
 
                 return result.ErrorCode == 0 ? result : new SendMessageResult
-                    {
-                        ConversationId = conversationInfo.ConversationId,
-                        NotificationId = conversationInfo.NotificationId,
-                        ErrorCode = 1,
-                        ErrorMessage = exception.Message,
-                        SentTime = DateTime.UtcNow
-                    };
+                {
+                    ConversationId = conversationInfo.ConversationId,
+                    NotificationId = conversationInfo.NotificationId,
+                    ErrorCode = 1,
+                    ErrorMessage = exception.Message,
+                    SentTime = DateTime.UtcNow
+                };
             }
 
             return new SendMessageResult
@@ -135,7 +135,7 @@
             else
             {
                 appId = Guid.NewGuid().ToString();
-                logger.Error($"BotName : { botName } is not supported by system.");
+                logger.Error($"BotName : {botName} is not supported by system.");
             }
 
             return appId;
