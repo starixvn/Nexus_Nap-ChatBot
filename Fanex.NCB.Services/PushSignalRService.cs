@@ -12,12 +12,14 @@
     {
         private readonly HubConnection hubConnection;
         private readonly ILogService logger;
+        private readonly INotificationService notificationService;
         private readonly SignalRSettings signalRSettings;
 
-        public PushSignalRService(ILogService logger, IOptions<SignalRSettings> signalRSettings)
+        public PushSignalRService(ILogService logger, IOptions<SignalRSettings> signalRSettings, INotificationService notificationService)
         {
             this.logger = logger;
             this.signalRSettings = signalRSettings.Value;
+            this.notificationService = notificationService;
             hubConnection = new HubConnectionBuilder()
                           .WithUrl(new Uri(signalRSettings.Value.HubEndpoint),
                                options =>
@@ -32,8 +34,8 @@
         public async Task PushErrorNotification()
         {
             await ReInitConnect();
-
-            await hubConnection.InvokeAsync(signalRSettings.UpdateErrorNotification).ContinueWith(task =>
+            var notifications = await notificationService.GetErrNotificationsAsync();
+            await hubConnection.InvokeAsync(signalRSettings.UpdateErrorNotification, notifications).ContinueWith(task =>
             {
                 if (task.IsFaulted)
                 {
