@@ -19,18 +19,21 @@
         private readonly IBaseService baseService;
         private readonly ICacheService cacheService;
         private readonly IDynamicConnectionService dynamicConnectionService;
+        private readonly ILogService logService;
         private const string ListSiteDbCacheKey = "ListSiteDbCachingKey";
         private readonly int CacheExpiration;
 
         public SiteDbService(IBaseService baseService,
             ICacheService cacheService,
             IDynamicConnectionService dynamicConnectionService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ILogService logService)
         {
             this.baseService = baseService;
             this.cacheService = cacheService;
             this.dynamicConnectionService = dynamicConnectionService;
             CacheExpiration = configuration.GetValue<int>("SiteDbCachingExpiration");
+            this.logService = logService;
         }
 
         public async Task<IEnumerable<SiteDBConfig>> GetListSiteDbAsync()
@@ -102,17 +105,25 @@
         private async Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)> GetTicketUsernameInfoFromSiteDbAsync(
             string abnormalBetsInfo, string abnormalAccounts, SiteDBConfig siteDb)
         {
-            var criteria = new AbnormalBetGetUsernameTicketInfoCriteria
+            (IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>) results = (new List<AbnormalTicketInfo>(), new List<AbnormalUsernames>());
+            try
             {
-                ServerIp = siteDb.AGIP,
-                AbnormalBetsInfo = abnormalBetsInfo,
-                AbnormalAccountsInfo = abnormalAccounts,
-                SiteDBGroupId = siteDb.SiteDBGroupID
-            };
+                var criteria = new AbnormalBetGetUsernameTicketInfoCriteria
+                {
+                    ServerIp = siteDb.AGIP,
+                    AbnormalBetsInfo = abnormalBetsInfo,
+                    AbnormalAccountsInfo = abnormalAccounts,
+                    SiteDBGroupId = siteDb.SiteDBGroupID
+                };
 
-            var result = await dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames>(criteria);
+                results = await dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames>(criteria);
+            }
+            catch (Exception exception)
+            {
+                await logService.WriteExceptionSentryErrorAsync(exception);
+            }
 
-            return result;
+            return results;
         }
 
         private static (IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>) DistinctTicketAndCombineUsernames(

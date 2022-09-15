@@ -7,6 +7,7 @@
     using Fanex.Caching;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
+    using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Extensions;
     using Fanex.NCB.Shared.FanexDataExtensions.Services;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket.AbnormalBets;
@@ -21,6 +22,7 @@
         private IBaseService baseService;
         private ICacheService cacheService;
         private IDynamicConnectionService dynamicConnectionService;
+        private ILogService logService;
 
         private const string ListSiteDbCacheKey = "ListSiteDbCachingKey";
 
@@ -162,12 +164,13 @@
             baseService = Substitute.For<IBaseService>();
             cacheService = Substitute.For<ICacheService>();
             dynamicConnectionService = Substitute.For<IDynamicConnectionService>();
+            logService = Substitute.For<ILogService>();
 
             var inMemorySettings = new Dictionary<string, string> { { "TopLevelKey", "15" } };
             IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(inMemorySettings)
             .Build();
-            return new SiteDbService(baseService, cacheService, dynamicConnectionService, configuration);
+            return new SiteDbService(baseService, cacheService, dynamicConnectionService, configuration, logService);
         }
     }
 }
