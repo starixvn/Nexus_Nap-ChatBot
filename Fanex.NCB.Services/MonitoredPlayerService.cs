@@ -17,13 +17,13 @@
     {
         private readonly IBaseService baseService;
         private readonly IChatbotService chatbotService;
-        private readonly IPushSignalService pushSignalService;
+        private readonly IPushSignalRService pushSignalService;
         private readonly ILogService logService;
 
         public MonitoredPlayerService(
             IBaseService baseService,
             IChatbotService chatbotService,
-            IPushSignalService pushSignalService,
+            IPushSignalRService pushSignalService,
             ILogService logService
         )
         {
@@ -115,7 +115,7 @@
                     );
 
                     var notificationIds = string.Join(",", notificationMessages.Select(item => item.NotificationId));
-                    await pushSignalService.OnInsertNotificationAsync(notificationIds);
+                    await pushSignalService.PushNewNotification(notificationIds);
                 }
             }
         }

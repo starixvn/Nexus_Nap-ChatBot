@@ -11,7 +11,7 @@
         public MonitoredPlayerServiceTestable(
             IBaseService baseService,
             IChatbotService chatbotService,
-            IPushSignalService pushSignalService,
+            IPushSignalRService pushSignalService,
             ILogService logService
         ) : base(baseService, chatbotService, pushSignalService, logService)
         {
