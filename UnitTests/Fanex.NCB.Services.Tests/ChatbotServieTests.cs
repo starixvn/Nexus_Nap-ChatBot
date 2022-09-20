@@ -203,14 +203,14 @@
             await service.Received().SendMultiMessageAsync((byte)1,
                 Arg.Is<IEnumerable<NotificationMessage>>(x =>
                     x.Count() == 1
-                    && x.First().NotificationId == -1
-                    && x.First().Message == message
-                    && x.First().Recipients.Count() == 1
-                    && x.First().Recipients.First().ConversationId == notifyChatGroupOptions.ConversationId
-                    && x.First().Recipients.First().ChannelId == notifyChatGroupOptions.ChannelId
-                    && x.First().Recipients.First().ServiceUrl == notifyChatGroupOptions.ServiceUrl
-                    && x.First().Recipients.First().BotConversationId == notifyChatGroupOptions.BotConversationId
-                    && x.First().Recipients.First().BotName == notifyChatGroupOptions.BotName));
+                    && x.FirstOrDefault().NotificationId == -1
+                    && x.FirstOrDefault().Message == message
+                    && x.FirstOrDefault().Recipients.Count() == 1
+                    && x.FirstOrDefault().Recipients.FirstOrDefault().ConversationId == notifyChatGroupOptions.ConversationId
+                    && x.FirstOrDefault().Recipients.FirstOrDefault().ChannelId == notifyChatGroupOptions.ChannelId
+                    && x.FirstOrDefault().Recipients.FirstOrDefault().ServiceUrl == notifyChatGroupOptions.ServiceUrl
+                    && x.FirstOrDefault().Recipients.FirstOrDefault().BotConversationId == notifyChatGroupOptions.BotConversationId
+                    && x.FirstOrDefault().Recipients.FirstOrDefault().BotName == notifyChatGroupOptions.BotName));
         }
 
         [Fact]

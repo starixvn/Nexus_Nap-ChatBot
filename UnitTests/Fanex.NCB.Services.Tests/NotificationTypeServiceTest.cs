@@ -101,8 +101,8 @@ namespace Fanex.NCB.Services.Tests
             criteria.PageIndex.Should().Be(pageIndex);
             criteria.PageSize.Should().Be(pageSize);
             result.Item1.Select(i => i.Id).Should().BeEquivalentTo(data.Item1.Select(i => i.Id));
-            result.Item1.First().RecipientTypes.Should().BeEquivalentTo(data.Item2);
-            result.Item1.Last().ChatGroupTypes.Should().BeEquivalentTo(data.Item3);
+            result.Item1.FirstOrDefault().RecipientTypes.Should().BeEquivalentTo(data.Item2);
+            result.Item1.LastOrDefault().ChatGroupTypes.Should().BeEquivalentTo(data.Item3);
         }
 
         private ValueTuple<IEnumerable<NotificationType>,
@@ -111,9 +111,9 @@ namespace Fanex.NCB.Services.Tests
         {
             var notificationTypes = _fixture.CreateMany<NotificationType>().ToList();
             var notificationRecipientTypes = _fixture.CreateMany<NotificationRecipientType>()
-                .Select(x => { x.NotificationTypeId = notificationTypes.First().Id; return x; });
+                .Select(x => { x.NotificationTypeId = notificationTypes.FirstOrDefault().Id; return x; });
             var notificationChatGroupTypes = _fixture.CreateMany<NotificationChatGroupType>()
-                .Select(x => { x.NotificationTypeId = notificationTypes.Last().Id; return x; });
+                .Select(x => { x.NotificationTypeId = notificationTypes.LastOrDefault().Id; return x; });
 
             return new ValueTuple<IEnumerable<NotificationType>,
                 IEnumerable<NotificationRecipientType>,

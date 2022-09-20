@@ -125,9 +125,9 @@
 
             // Assert
             service.Received().Protected("UpdateSentNotificationStatusAsync", Arg.Is<IEnumerable<UpdateNotificationModel>>(x =>
-                x.Count() == 1 && x.First().NotificationID == 1 && x.First().RecipientID == 1
-                && x.First().ConversationGroupID == 1 && x.First().ConversationBotID == 1 && !x.First().Retry
-                && !x.First().IsSuccess && x.First().ErrMsg == "Recipient is not mapped"));
+                x.Count() == 1 && x.FirstOrDefault().NotificationID == 1 && x.FirstOrDefault().RecipientID == 1
+                && x.FirstOrDefault().ConversationGroupID == 1 && x.FirstOrDefault().ConversationBotID == 1 && !x.FirstOrDefault().Retry
+                && !x.FirstOrDefault().IsSuccess && x.FirstOrDefault().ErrMsg == "Recipient is not mapped"));
         }
 
         #endregion UpdateFailedRecipientStatusAsync
@@ -294,9 +294,9 @@
 
             // Assert
             service.Received().Protected("UpdateSentNotificationStatusAsync", Arg.Is<IEnumerable<UpdateNotificationModel>>(x =>
-                x.Count() == 1 && x.First().NotificationID == 1 && x.First().RecipientID == 1
-                && x.First().ConversationGroupID == 1 && x.First().ConversationBotID == 1 && x.First().Retry
-                && !x.First().IsSuccess && x.First().ErrMsg == $"[Internal Error] {errorMessage}"));
+                x.Count() == 1 && x.FirstOrDefault().NotificationID == 1 && x.FirstOrDefault().RecipientID == 1
+                && x.FirstOrDefault().ConversationGroupID == 1 && x.FirstOrDefault().ConversationBotID == 1 && x.FirstOrDefault().Retry
+                && !x.FirstOrDefault().IsSuccess && x.FirstOrDefault().ErrMsg == $"[Internal Error] {errorMessage}"));
         }
 
         [Fact]
@@ -332,13 +332,13 @@
 
             // Assert
             service.Received().Protected("UpdateSentNotificationStatusAsync", Arg.Is<IEnumerable<UpdateNotificationModel>>(x =>
-                x.Count() == 2 && x.First().NotificationID == 1 && x.First().RecipientID == 1 && x.First().SentTime == "2021-01-01 00:00:00"
-                && x.First().ConversationGroupID == 1 && x.First().ConversationBotID == 1 && !x.First().Retry
-                && x.First().IsSuccess && string.IsNullOrWhiteSpace(x.First().ErrMsg)
+                x.Count() == 2 && x.FirstOrDefault().NotificationID == 1 && x.FirstOrDefault().RecipientID == 1 && x.FirstOrDefault().SentTime == "2021-01-01 00:00:00"
+                && x.FirstOrDefault().ConversationGroupID == 1 && x.FirstOrDefault().ConversationBotID == 1 && !x.FirstOrDefault().Retry
+                && x.FirstOrDefault().IsSuccess && string.IsNullOrWhiteSpace(x.FirstOrDefault().ErrMsg)
 
-                && x.Last().NotificationID == 1 && x.Last().RecipientID == 2 && x.Last().SentTime == "2021-01-01 00:00:00"
-                && x.Last().ConversationGroupID == 2 && x.Last().ConversationBotID == 2 && x.Last().Retry
-                && !x.Last().IsSuccess && x.Last().ErrMsg == "[Internal Error] error"));
+                && x.LastOrDefault().NotificationID == 1 && x.LastOrDefault().RecipientID == 2 && x.LastOrDefault().SentTime == "2021-01-01 00:00:00"
+                && x.LastOrDefault().ConversationGroupID == 2 && x.LastOrDefault().ConversationBotID == 2 && x.LastOrDefault().Retry
+                && !x.LastOrDefault().IsSuccess && x.LastOrDefault().ErrMsg == "[Internal Error] error"));
         }
 
         #region DivideNotificationBatch
@@ -366,7 +366,7 @@
             // Assert
             Assert.Equal(2, result.Count());
 
-            Assert.Collection(result.First().Item1, item =>
+            Assert.Collection(result.FirstOrDefault().Item1, item =>
             {
                 Assert.Equal(1, item.NotificationId);
                 Assert.Equal(1, item.ChannelId);
@@ -380,14 +380,14 @@
                 });
             });
 
-            Assert.Collection(result.First().Item2, item =>
+            Assert.Collection(result.FirstOrDefault().Item2, item =>
             {
                 Assert.Equal(1, item.NotificationId);
                 Assert.Equal("1", item.BotConversationId);
                 Assert.Equal("1", item.ChatGroupConversationId);
             });
 
-            Assert.Collection(result.Last().Item1, item =>
+            Assert.Collection(result.LastOrDefault().Item1, item =>
             {
                 Assert.Equal(1, item.NotificationId);
                 Assert.Equal(1, item.ChannelId);
@@ -396,7 +396,7 @@
                 Assert.Equal(lastrecipients, item.Recipients);
             });
 
-            Assert.Collection(result.Last().Item2, item =>
+            Assert.Collection(result.LastOrDefault().Item2, item =>
             {
                 Assert.Equal(1, item.NotificationId);
                 Assert.Equal("2", item.BotConversationId);

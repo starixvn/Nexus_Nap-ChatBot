@@ -10,6 +10,7 @@
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
+    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Main.ViewModel.SettingConfiguration;
     using Fanex.NCB.Models.SettingConfiguration;
     using Fanex.NCB.Services.Interfaces;
@@ -19,7 +20,6 @@
     using NSubstitute;
     using Xunit;
     using static Fanex.NAP.Core.Business.Constant;
-    using Fanex.NCB.Core.Models;
 
     public class SettingConfigurationControllerTests
     {
@@ -103,7 +103,7 @@
             // Arrange
             var viewModel = new CreateSettingTypeViewModel();
             controller.ModelState.AddModelError("Name", "required");
-            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.First().ErrorMessage;
+            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage;
             var expected = new { isSuccessful = false, message };
 
             // Action
@@ -152,7 +152,7 @@
             // Arrange
             var viewModel = new CreateSettingTypeViewModel();
             controller.ModelState.AddModelError("Name", "required");
-            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.First().ErrorMessage;
+            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage;
             var expected = new { isSuccessful = false, message };
 
             // Action
@@ -183,7 +183,7 @@
             // Arrange
             var type = fixture.Create<int>();
             controller.ModelState.AddModelError("Test", "required");
-            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.First().ErrorMessage;
+            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage;
             var expected = new { isSuccessful = false, message };
 
             // Action
@@ -287,7 +287,7 @@
             // Arrange
             var viewModel = fixture.Create<UpdateJobInfoViewModel>();
             controller.ModelState.AddModelError("Test", "Test");
-            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.First().ErrorMessage;
+            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage;
             var expected = new { isSuccessful = false, message };
 
             // Action
@@ -355,7 +355,7 @@
             // Arrange
             var viewModel = new CreateMappingViewModel();
             controller.ModelState.AddModelError("Test", "Test");
-            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.First().ErrorMessage;
+            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage;
             var expected = new { isSuccessful = false, message };
 
             // Action
@@ -414,7 +414,7 @@
             // Arrange
             var viewModel = new UpdateMappingViewModel();
             controller.ModelState.AddModelError("Test", "Test");
-            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.First().ErrorMessage;
+            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage;
             var expected = new { isSuccessful = false, message };
 
             // Action
@@ -454,7 +454,7 @@
             var msgContentsType = fixture.Create<int>();
             var jobId = fixture.Create<int>();
             controller.ModelState.AddModelError("Test", "Test");
-            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.First().ErrorMessage;
+            var message = controller.ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage;
             var expected = new { isSuccessful = false, message };
 
             // Action

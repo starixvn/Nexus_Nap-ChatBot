@@ -288,11 +288,26 @@
                 batches.Add((newBatches, batch));
             }
 
-            batches.Last().Item1.Last().Recipients = channelId == (byte)ConversationChannel.Telegram
-                ? AddMonitorRecipientForTelegram(batches.Last().Item1.Last().Recipients)
-                : AddMonitorRecipient(batches.Last().Item1.Last().Recipients);
+            AddMonitoring(batches, channelId);
 
             return batches;
+        }
+
+        private void AddMonitoring(List<(List<NotificationMessage>, List<NotificationRecipient>)> batches, byte channelId)
+        {
+            if (batches.Any() && batches.LastOrDefault().Item1.Any())
+            {
+                var lastBatchRecipients = batches.LastOrDefault().Item1.LastOrDefault()?.Recipients;
+
+                if (lastBatchRecipients is not null)
+                {
+                    lastBatchRecipients = channelId == (byte)ConversationChannel.Telegram ?
+                            AddMonitorRecipientForTelegram(lastBatchRecipients) :
+                            AddMonitorRecipient(lastBatchRecipients);
+                }
+
+                batches.LastOrDefault().Item1.LastOrDefault().Recipients = lastBatchRecipients;
+            }
         }
 
         protected internal virtual IEnumerable<ConversationInfo> AddMonitorRecipient(IEnumerable<ConversationInfo> conversations)
