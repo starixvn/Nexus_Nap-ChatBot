@@ -74,6 +74,10 @@
         grid-gap: 16px;
     }
 
+    .block {
+        display: block !important;
+    }
+
     .parameter-col {
         display: grid;
         grid-template-columns: 100px 1fr;

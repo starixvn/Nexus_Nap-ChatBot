@@ -476,6 +476,7 @@ export class AppContainer extends React.Component {
                 checked: values.platforms.split(',').includes(item.id.toString())
             }
         });
+        const isHaveOneParam = values.params.length === 1;
 
         return (
             <Form onSubmit={handleSubmit} className="new-notification-form">
@@ -599,13 +600,14 @@ export class AppContainer extends React.Component {
                     <FormGroup>
                         <fieldset className="parameter-area">
                             <legend>Parameters</legend>
-                            <FormGroup className="parameters">
+                            <FormGroup className={`parameters${isHaveOneParam ? ' block' : ''}`}>
                                 {values.params.map((x, i) =>
                                 (
                                     <div className="parameter-col">
                                         <Label for={`params.${i}.value`} className="form-label">{x.name}</Label>
                                         <div>
                                             <textarea value={x.values} name={`params.${i}.value`} disabled={values.mode === 'preview'} className="form-control"
+                                                rows={`${isHaveOneParam ? 4 : 2}`}
                                                 onChange={handleChange} onBlur={this.handleReplaceParamsWithValue}
                                             />
                                         </div>
