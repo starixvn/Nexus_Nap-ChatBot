@@ -90,7 +90,7 @@
         private bool IsUM()
         {
             var maintanceTime = maintenanceService.GetUnderMaintenanceTime();
-            logService.WriteLogFileWarning($"{jobSetting.JobName} Is UM: {maintanceTime.IsUnderMaintenanceTime}");
+            logService.WriteLogFileWarning($"Job: {jobSetting.JobName} - Is UM: {maintanceTime.IsUnderMaintenanceTime}");
             return maintanceTime.IsUnderMaintenanceTime;
         }
     }
