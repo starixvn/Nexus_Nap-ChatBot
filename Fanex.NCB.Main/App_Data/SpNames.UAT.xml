@@ -173,7 +173,7 @@
             <Mapping DataField="LogId" ObjectProperty="MessageId" />
             <Mapping DataField="CreatedDate" ObjectProperty="PostTime" />
         </Setting>
-    <Setting Key="NAP_Chatbot_MissingMonitoredPlayer_Sel" SpName="NAP_Chatbot_MissingMonitoredPlayer_Sel_xtest" DbName="DBAGE.bodb02.bodbAdminNet" Plain="0">
+    <Setting Key="NAP_Chatbot_MissingMonitoredPlayer_Sel" SpName="NAP_Chatbot_MissingMonitoredPlayer_Sel_xtest" DbName="DBEXT.bodb02.bodbAdminNet" Plain="0">
       <Mapping DataField="Content_en" ObjectProperty="Content" />
       <Mapping DataField="LogId" ObjectProperty="MessageId" />
       <Mapping DataField="CreatedDate" ObjectProperty="PostTime" />

@@ -38,7 +38,7 @@
     </Function>
     <Function Name="Monitored Player">
         <Setting Key="NCB_MsgSetting_MonitoredPlayer" SpName="NCB_MsgSetting_MonitoredPlayer" DbName="ChatBot" Plain="0" />
-        <Setting Key="NAP_Chatbot_MonitoredPlayer_Sel" SpName="NAP_Chatbot_MonitoredPlayer_Sel" DbName="DBAGE.bodb02.bodbAdminNet" Plain="0" />
+        <Setting Key="NAP_Chatbot_MonitoredPlayer_Sel" SpName="NAP_Chatbot_MonitoredPlayer_Sel" DbName="DBEXT.bodb02.bodbAdminNet" Plain="0" />
         <Setting Key="NCB_MonitoredPlayer_Import" SpName="NCB_MonitoredPlayer_Import" DbName="ChatBot" Plain="0" />
     </Function>
 </Functions>
