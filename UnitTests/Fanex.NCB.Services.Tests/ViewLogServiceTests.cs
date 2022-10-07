@@ -77,8 +77,8 @@
             var service = GetService();
 
             var total = _fixture.Create<int>();
-            var templates = _fixture.Create<IEnumerable<ViewLogConversationMessageLog>>();
-            var templateMap = _fixture.Create<IEnumerable<ViewLogConversationMessageLogRecipient>>();
+            var templates = _fixture.CreateMany<ViewLogConversationMessageLog>();
+            var templateMap = _fixture.CreateMany<ViewLogConversationMessageLogRecipient>();
             var notificationId = _fixture.Create<int?>();
             var pageIndex = _fixture.Create<int>();
             var pageSize = _fixture.Create<int>();
@@ -88,7 +88,7 @@
             baseService.FetchMultipleAsync<int, ViewLogConversationMessageLog, ViewLogConversationMessageLogRecipient>(Arg.Do<GetConversationMessageLogCriteria>(x => criteria = x))
                 .Returns((new List<int> { total }, templates, templateMap));
 
-            var result = await service.GetConversationMessageLogAsync(notificationId, pageIndex, pageSize).ConfigureAwait(false);
+            var result = await service.GetConversationMessageLogAsync(notificationId, pageIndex, pageSize);
 
             // Assert
             Assert.Equal(notificationId, criteria.NotificationId);

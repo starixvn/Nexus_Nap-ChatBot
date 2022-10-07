@@ -23,12 +23,11 @@
         {
             //Arrange
             var service = GetService();
-            var criteria = fixture.Create<GetCurrentPreviousMaxMessageCriteria>();
             var currentMaxMessageInfos = fixture.Create<IEnumerable<CurrentMaxMessageInfo>>();
             var messageTypeInfos = fixture.Create<IEnumerable<MessageTypeInfo>>();
             var tuple = (currentMaxMessageInfos, messageTypeInfos);
 
-            baseService.FetchMultipleAsync<CurrentMaxMessageInfo, MessageTypeInfo>(Arg.Do<GetCurrentPreviousMaxMessageCriteria>(x => criteria = x)).Returns(tuple);
+            baseService.FetchMultipleAsync<CurrentMaxMessageInfo, MessageTypeInfo>(Arg.Any<GetCurrentPreviousMaxMessageCriteria>()).Returns(tuple);
 
             //Act
             var actual = await service.GetCurrentPreviousMaxMessageAsync();

@@ -43,7 +43,7 @@
         public async Task GetListSiteDbAsync_WhenHaveCache_DoNotGetDataFromDb()
         {
             var fixture = new Fixture();
-            var siteDbs = fixture.Create<IEnumerable<SiteDBConfig>>();
+            var siteDbs = fixture.CreateMany<SiteDBConfig>();
             var service = GetService();
             cacheService.GetAsync<IEnumerable<SiteDBConfig>>(Arg.Is(ListSiteDbCacheKey)).Returns(siteDbs);
 

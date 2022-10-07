@@ -73,7 +73,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
                     Platforms = model.Platforms ?? string.Empty
                 });
 
-                if (result.IsSuccessful & !string.IsNullOrWhiteSpace(notificationIds))
+                if (result.IsSuccessful && !string.IsNullOrWhiteSpace(notificationIds))
                 {
                     PushSignalRNewNotification(notificationIds);
                 }

@@ -236,7 +236,7 @@
         {
             // Arrange
             var commandResult = new CommandResult { Code = 1, Message = "error" };
-            var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
+            var notifications = fixture.CreateMany<NotificationMessage>();
             var notificationIds = string.Join(",", notifications.Select(x => x.NotificationId));
             var service = GetService();
 

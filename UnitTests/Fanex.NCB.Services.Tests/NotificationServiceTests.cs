@@ -230,11 +230,6 @@
             var result = await service.EditAsync(model);
 
             Assert.True(result.IsSuccessful);
-            if (model.SendImmediately)
-            {
-                Task.Run(() => sendNotificationService.Received().SendNotificationImmediatelyAsync(model.NotificationId)).Wait();
-            }
-
             Assert.Equal(model.NotificationId, command.NotificationId);
             Assert.Equal(model.RecipientIds, command.RecipientIDLst);
             Assert.Equal(model.Title, command.Title);

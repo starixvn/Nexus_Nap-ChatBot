@@ -150,16 +150,14 @@
             // Assert
             Assert.Equal(notifications, result.Item1);
             Assert.Equal(recipients, result.Item2);
-
-            Task.Run(() => pushSignalService.DidNotReceive().PushNotificationUpdateStatus(Arg.Any<string>())).Wait();
         }
 
         [Fact]
         public async Task GetNotificationPlannedToSendAsync_HaveUpdatedNotificationIds_ReturnAsExpectedResult()
         {
             // Arrange
-            var notifications = fixture.Create<IEnumerable<NotificationSendMessage>>();
-            var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var notifications = fixture.CreateMany<NotificationSendMessage>();
+            var recipients = fixture.CreateMany<NotificationRecipient>();
             var criteria = new GetNotificationsToSendCriteria();
             var service = GetService();
             baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(Arg.Do<GetNotificationsToSendCriteria>(x => criteria = x))
@@ -171,8 +169,6 @@
             // Assert
             Assert.Equal(notifications, result.Item1);
             Assert.Equal(recipients, result.Item2);
-
-            Task.Run(() => pushSignalService.Received().PushNotificationUpdateStatus("1")).Wait();
         }
 
         #endregion GetNotificationPlannedToSendAsync
@@ -515,8 +511,6 @@
 
             // Assert
             Assert.Equal(JsonConvert.SerializeObject(messages), command.SentStatus);
-            Task.Run(() => pushSignalService.Received().PushNotificationUpdateStatus("1")).Wait();
-            Task.Run(() => pushSignalService.DidNotReceive().PushErrorNotification()).Wait();
         }
 
         [Fact]
@@ -535,8 +529,6 @@
 
             // Assert
             Assert.Equal(JsonConvert.SerializeObject(messages), command.SentStatus);
-            Task.Run(() => pushSignalService.DidNotReceive().PushNotificationUpdateStatus(Arg.Any<string>())).Wait();
-            Task.Run(() => pushSignalService.Received().PushErrorNotification()).Wait();
         }
 
         #endregion UpdateSentNotificationStatusAsync
