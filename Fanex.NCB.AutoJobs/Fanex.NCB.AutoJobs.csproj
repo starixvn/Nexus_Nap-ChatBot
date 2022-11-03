@@ -74,4 +74,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1prod_1json__JsonSchema="https://datahubproject.io/schemas/datahub_ingestion_schema.json" /></VisualStudio></ProjectExtensions>
 </Project>
