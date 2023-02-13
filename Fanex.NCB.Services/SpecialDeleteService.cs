@@ -26,7 +26,6 @@
         private readonly ISiteDbService siteDbService;
         private readonly string Environment;
         private const int VoidTicketForLicenseeJobIdentity = 1;
-        private const int VoidAbnormalbetsJobIdentity = 2;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
         public SpecialDeleteService(IBaseService baseService,
@@ -169,7 +168,7 @@
             await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg);
         }
 
-        private void MappingData(IEnumerable<AbnormalMessageDetail> historyDetail, IEnumerable<AbnormalMessageContent> msgContents)
+        private static void MappingData(IEnumerable<AbnormalMessageDetail> historyDetail, IEnumerable<AbnormalMessageContent> msgContents)
         {
             foreach (var msg in historyDetail)
             {

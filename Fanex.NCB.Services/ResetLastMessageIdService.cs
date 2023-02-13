@@ -64,7 +64,7 @@
             return missingInfo;
         }
 
-        private void CalculateMaxReferrenceId(IEnumerable<CurrentMaxMessageInfo> msgList, IEnumerable<MissingMesssageInfo> missingInfo)
+        private static void CalculateMaxReferrenceId(IEnumerable<CurrentMaxMessageInfo> msgList, IEnumerable<MissingMesssageInfo> missingInfo)
         {
             foreach (var item in msgList)
             {
@@ -76,7 +76,7 @@
             }
         }
 
-        private int GetMaxReferrenceIdOnListMissingMessageInfo(IEnumerable<MissingMesssageInfo> missingInfo, int jobIdentify)
+        private static int GetMaxReferrenceIdOnListMissingMessageInfo(IEnumerable<MissingMesssageInfo> missingInfo, int jobIdentify)
             => missingInfo.Max(x => jobIdentify == (int)JobIdentity.InternalCSD ? x.VoidingHistoryCollectionId : x.MessageId);
 
         private async Task<IEnumerable<MissingMesssageInfo>> GetMissingProblemAccountAsync(int fromLogId)
