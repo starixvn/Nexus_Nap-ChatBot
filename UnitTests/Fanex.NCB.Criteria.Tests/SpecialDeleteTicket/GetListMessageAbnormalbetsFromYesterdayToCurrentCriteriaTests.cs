@@ -9,7 +9,7 @@
         public void GetSettingKey_WhenCalled_ReturnExpectedSettingKey()
         {
             // Arrange
-            var criteria = new GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria();
+            var criteria = new GetVoidingHIstoryCollectionIdCriteria();
             var expected = "NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage";
 
             // Act
@@ -23,7 +23,7 @@
         public void IsValid_WhenCalled_ReturnTrue()
         {
             // Arrange
-            var criteria = new GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria();
+            var criteria = new GetVoidingHIstoryCollectionIdCriteria { BatchSize = 10 };
 
             // Act
             var actual = criteria.IsValid();

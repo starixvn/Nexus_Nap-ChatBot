@@ -44,9 +44,6 @@
         <Content Include="App_Data\SpNames.PROD.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="App_Data\SpNames.Development.xml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
         <Content Include="App_Data\SpNames.LOCAL.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>

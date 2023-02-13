@@ -43,25 +43,16 @@
             return await base.GetMessageFromVoidingForLicenseeAsync(systemSetting);
         }
 
-        public async Task Public_GetMessageAndImportToChatbotAsync(IEnumerable<MessageHistory> messageHistories, SystemSetting setting)
+        public async Task Public_GetMessageAndImportToChatbotAsync(IEnumerable<CollectionTransId> tickets, IEnumerable<CollectionUsername> usernames, SystemSetting setting)
         {
-            await base.GetMessageAndImportToChatbotAsync(messageHistories, setting);
-        }
-
-        public async Task<IEnumerable<AbnormalMessage>> Public_GetVoidingHistoryAsync(
-            IEnumerable<AbnormalTicketInfo> tickets,
-            IEnumerable<AbnormalUsernames> usernames,
-            IEnumerable<MessageHistory> messages)
-        {
-            return await base.GetVoidingHistoryAsync(tickets, usernames, messages);
+            await base.GetMessageAndImportToChatbotAsync(tickets, usernames, setting);
         }
 
         public async Task Public_ImportAbnormalBetNotificationToChatbotDBAsync(
-            IEnumerable<AbnormalMessage> messages,
-            IEnumerable<MessageHistory> msgHistories,
-            int maxMessageId)
+            IEnumerable<AbnormalMessageDetail> messages,
+            IEnumerable<AbnormalMessage> msgHistories)
         {
-            await base.ImportAbnormalBetNotificationToChatbotDBAsync(messages, msgHistories, maxMessageId);
+            await base.ImportAbnormalBetNotificationToChatbotDBAsync(messages, msgHistories);
         }
 
         public async Task Public_InsertToMessageChatbotAsync(string messages, int jobIdentity)

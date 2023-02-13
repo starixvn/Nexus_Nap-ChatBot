@@ -1,182 +1,182 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Functions>
-  <Function Name="Chat Group Mapping">
-    <Setting Key="NCB_ChatGroupMapping_Sel" SpName="NCB_ChatGroupMapping_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_ChatGroupMapping_Upd" SpName="NCB_ChatGroupMapping_Upd" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_ChatGroupMapping_ActiveGroup_Upd" SpName="NCB_ChatGroupMapping_ActiveGroup_Upd" DbName="ChatBot" Plain="0"></Setting>
-  </Function>
-  <Function Name="Setting">
-    <Setting Key="NCB_Setting_BotName_Sel" SpName="NCB_Setting_BotName_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_Setting_ChatGroupType_Sel" SpName="NCB_Setting_ChatGroupType_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_Setting_RecipientType_Sel" SpName="NCB_Setting_RecipientType_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_Setting_LicenseeStatus_Sel" SpName="NCB_Setting_LicenseeStatus_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_Setting_Recipient_Sel" SpName="NCB_Setting_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_Common_RecipientType_Sel" SpName="NCB_Common_RecipientType_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_Setting_SearchRecipient_Sel" SpName="NCB_Setting_SearchRecipient_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_Setting_SearchChatGroup_Sel" SpName="NCB_Setting_SearchChatGroup_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_Setting_System_Sel" SpName="NCB_Setting_System_Sel" DbName="ChatBot" Plain="0"></Setting>
-  </Function>
-  <Function Name="Notification Type">
-      <Setting Key="NCB_NotificationType_Sel" SpName="NCB_NotificationType_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
-      <Setting Key="NCB_NotificationType_Ins" SpName="NCB_NotificationType_Ins" DbName="ChatBot" Plain="0"></Setting>
-      <Setting Key="NCB_NotificationType_Upd" SpName="NCB_NotificationType_Upd" DbName="ChatBot" Plain="0"></Setting>
-      <Setting Key="NCB_NotificationType_Del" SpName="NCB_NotificationType_Del_xtest" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_System_Sel" SpName="NCB_System_Sel" DbName="ChatBot" Plain="0"></Setting>
-  </Function>
-  <Function Name="Common">
-    <Setting Key="NCB_Common_NotificationType_Sel" SpName="NCB_Common_NotificationType_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_Common_Product_Sel" SpName="NCB_Common_Product_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_Common_NotificationStatus_Sel" SpName="NCB_Common_NotificationStatus_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_Common_Recipient_Sel" SpName="NCB_Common_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_Common_User_Sel" SpName="NCB_Common_User_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_Channel_Sel" SpName="NCB_Channel_Sel" DbName="ChatBot" Plain="0" />
-    <Setting Key="NCB_Common_Platform_Sel" SpName="NCB_Common_Platform_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
-  </Function>
-  <Function Name="Send Notification">
-    <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SendNotification_GetImmedNotifUpdStatus" SpName="NCB_SendNotification_GetImmedNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>
-  </Function>
+    <Function Name="Chat Group Mapping">
+        <Setting Key="NCB_ChatGroupMapping_Sel" SpName="NCB_ChatGroupMapping_Sel" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_ChatGroupMapping_Upd" SpName="NCB_ChatGroupMapping_Upd" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_ChatGroupMapping_ActiveGroup_Upd" SpName="NCB_ChatGroupMapping_ActiveGroup_Upd" DbName="ChatBot" Plain="0"></Setting>
+    </Function>
+    <Function Name="Setting">
+        <Setting Key="NCB_Setting_BotName_Sel" SpName="NCB_Setting_BotName_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_Setting_ChatGroupType_Sel" SpName="NCB_Setting_ChatGroupType_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_Setting_RecipientType_Sel" SpName="NCB_Setting_RecipientType_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_Setting_LicenseeStatus_Sel" SpName="NCB_Setting_LicenseeStatus_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_Setting_Recipient_Sel" SpName="NCB_Setting_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_Common_RecipientType_Sel" SpName="NCB_Common_RecipientType_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_Setting_SearchRecipient_Sel" SpName="NCB_Setting_SearchRecipient_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_Setting_SearchChatGroup_Sel" SpName="NCB_Setting_SearchChatGroup_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_Setting_System_Sel" SpName="NCB_Setting_System_Sel" DbName="ChatBot" Plain="0"></Setting>
+    </Function>
+    <Function Name="Notification Type">
+        <Setting Key="NCB_NotificationType_Sel" SpName="NCB_NotificationType_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_NotificationType_Ins" SpName="NCB_NotificationType_Ins" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_NotificationType_Upd" SpName="NCB_NotificationType_Upd" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_NotificationType_Del" SpName="NCB_NotificationType_Del_xtest" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_System_Sel" SpName="NCB_System_Sel" DbName="ChatBot" Plain="0"></Setting>
+    </Function>
+    <Function Name="Common">
+        <Setting Key="NCB_Common_NotificationType_Sel" SpName="NCB_Common_NotificationType_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_Common_Product_Sel" SpName="NCB_Common_Product_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_Common_NotificationStatus_Sel" SpName="NCB_Common_NotificationStatus_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_Common_Recipient_Sel" SpName="NCB_Common_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_Common_User_Sel" SpName="NCB_Common_User_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_Channel_Sel" SpName="NCB_Channel_Sel" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_Common_Platform_Sel" SpName="NCB_Common_Platform_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
+    </Function>
+    <Function Name="Send Notification">
+        <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SendNotification_GetImmedNotifUpdStatus" SpName="NCB_SendNotification_GetImmedNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>
+    </Function>
 
-  <Function Name="New Notification">
-      <Setting Key="NCB_NewNotification_Ins" SpName="NCB_NewNotification_Ins_xtest" DbName="ChatBot" Plain="0"></Setting>
-      <Setting Key="NCB_NewNotification_Recipient_Sel" SpName="NCB_NewNotification_Recipient_Sel_xtest" DbName="ChatBot" Plain="0" />
-      <Setting Key="NCB_NewNotification_GetTemplates" SpName="NCB_NewNotification_GetTemplates" DbName="ChatBot" Plain="0" />
-      <Setting Key="NCB_ResendNotification_Sel" SpName="NCB_ResendNotification_Sel_xtest" DbName="ChatBot" Plain="0" />
-  </Function>
-  <Function Name="Notification List">
-    <Setting Key="NCB_NotificationList_Sel" SpName="NCB_NotificationList_Sel" DbName="ChatBot" Plain="0" />
-    <Setting Key="NCB_NotificationList_Cancel_Upd" SpName="NCB_NotificationList_Cancel_Upd" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_NotificationList_ErrDetail_Sel" SpName="NCB_NotificationList_ErrDetail_Sel" DbName="ChatBot" Plain="0" />
-    <Setting Key="NCB_NotificationList_Resolve_Upd" SpName="NCB_NotificationList_Resolve_Upd" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_EditNotification_Sel" SpName="NCB_EditNotification_Sel_xtest" DbName="ChatBot" Plain="0" />
-    <Setting Key="NCB_EditNotification_Upd" SpName="NCB_EditNotification_Upd_xtest" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_EditNotification_Recipient_Sel" SpName="NCB_EditNotification_Recipient_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_NotificationList_UpdatedNotification_Sel" SpName="NCB_NotificationList_UpdatedNotification_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_NotificationList_ErrorNotifications_Sel" SpName="NCB_NotificationList_ErrorNotifications_Sel" DbName="ChatBot" Plain="0"></Setting>
-  </Function>
-  <Function Name="Sync Data">
-    <Setting Key="NAP_ChatBot_GetDataBySiteId" SpName="NAP_ChatBot_GetDataBySiteId" DbName="DBPOL.NAP_UserControl.bodbAdminNet" Plain="0"></Setting>
-    <Setting Key="NAP_UserControl_SyncData" SpName="NAP_UserControl_SyncData" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NAP_UserControl_SyncData_ByUserId" SpName="NAP_UserControl_SyncData_ByUserId" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="OIC_SyncData" SpName="OIC_SyncData" DbName="ChatBot" Plain="0"></Setting>
-  </Function>
-  <Function Name="Local NAP">
-    <Setting Key="NAP_User_GetByUsername" SpName="NAP_User_GetByUsername" DbName="ChatBot" Plain="0">
-      <Mapping DataField="UserId" ObjectProperty="Id" Class="User" />
-      <Mapping DataField="GroupId" ObjectProperty="Id" Class="Group" />
-      <Mapping DataField="GroupName" ObjectProperty="Name" Class="Group" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" Class="User" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" Class="User" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" Class="User" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" Class="User" />
-    </Setting>
-    <Setting Key="NAP_User_GetById" SpName="NAP_User_GetById" DbName="ChatBot" Plain="0">
-      <Mapping DataField="UserId" ObjectProperty="Id" Class="User" />
-      <Mapping DataField="GroupId" ObjectProperty="Id" Class="Group" />
-      <Mapping DataField="GroupName" ObjectProperty="Name" Class="Group" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" Class="User" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" Class="User" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" Class="User" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" Class="User" />
-    </Setting>
-    <Setting Key="NAP_Site_GetByUser" SpName="NAP_Site_GetByUser" DbName="ChatBot" Plain="0">
-      <Mapping DataField="SiteId" ObjectProperty="Id" Class="Site" />
-      <Mapping DataField="SiteName" ObjectProperty="Name" Class="Site" />
-      <Mapping DataField="CreatorId" ObjectProperty="Id" Class="User" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" Class="User" />
-      <Mapping DataField="ModifierId" ObjectProperty="Id" Class="User" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" Class="User" />
-    </Setting>
-    <Setting Key="NAP_Group_GetById" SpName="NAP_Group_GetById" DbName="ChatBot" Plain="0">
-      <Mapping DataField="GroupId" ObjectProperty="Id" />
-      <Mapping DataField="GroupName" ObjectProperty="Name" />
-    </Setting>
+    <Function Name="New Notification">
+        <Setting Key="NCB_NewNotification_Ins" SpName="NCB_NewNotification_Ins_xtest" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_NewNotification_Recipient_Sel" SpName="NCB_NewNotification_Recipient_Sel_xtest" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_NewNotification_GetTemplates" SpName="NCB_NewNotification_GetTemplates" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_ResendNotification_Sel" SpName="NCB_ResendNotification_Sel_xtest" DbName="ChatBot" Plain="0" />
+    </Function>
+    <Function Name="Notification List">
+        <Setting Key="NCB_NotificationList_Sel" SpName="NCB_NotificationList_Sel" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_NotificationList_Cancel_Upd" SpName="NCB_NotificationList_Cancel_Upd" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_NotificationList_ErrDetail_Sel" SpName="NCB_NotificationList_ErrDetail_Sel" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_NotificationList_Resolve_Upd" SpName="NCB_NotificationList_Resolve_Upd" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_EditNotification_Sel" SpName="NCB_EditNotification_Sel_xtest" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_EditNotification_Upd" SpName="NCB_EditNotification_Upd_xtest" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_EditNotification_Recipient_Sel" SpName="NCB_EditNotification_Recipient_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_NotificationList_UpdatedNotification_Sel" SpName="NCB_NotificationList_UpdatedNotification_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_NotificationList_ErrorNotifications_Sel" SpName="NCB_NotificationList_ErrorNotifications_Sel" DbName="ChatBot" Plain="0"></Setting>
+    </Function>
+    <Function Name="Sync Data">
+        <Setting Key="NAP_ChatBot_GetDataBySiteId" SpName="NAP_ChatBot_GetDataBySiteId" DbName="DBPOL.NAP_UserControl.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_UserControl_SyncData" SpName="NAP_UserControl_SyncData" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_UserControl_SyncData_ByUserId" SpName="NAP_UserControl_SyncData_ByUserId" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="OIC_SyncData" SpName="OIC_SyncData" DbName="ChatBot" Plain="0"></Setting>
+    </Function>
+    <Function Name="Local NAP">
+        <Setting Key="NAP_User_GetByUsername" SpName="NAP_User_GetByUsername" DbName="ChatBot" Plain="0">
+            <Mapping DataField="UserId" ObjectProperty="Id" Class="User" />
+            <Mapping DataField="GroupId" ObjectProperty="Id" Class="Group" />
+            <Mapping DataField="GroupName" ObjectProperty="Name" Class="Group" />
+            <Mapping DataField="CreatorId" ObjectProperty="Id" Class="User" />
+            <Mapping DataField="CreatorUsername" ObjectProperty="Username" Class="User" />
+            <Mapping DataField="ModifierId" ObjectProperty="Id" Class="User" />
+            <Mapping DataField="ModifierUsername" ObjectProperty="Username" Class="User" />
+        </Setting>
+        <Setting Key="NAP_User_GetById" SpName="NAP_User_GetById" DbName="ChatBot" Plain="0">
+            <Mapping DataField="UserId" ObjectProperty="Id" Class="User" />
+            <Mapping DataField="GroupId" ObjectProperty="Id" Class="Group" />
+            <Mapping DataField="GroupName" ObjectProperty="Name" Class="Group" />
+            <Mapping DataField="CreatorId" ObjectProperty="Id" Class="User" />
+            <Mapping DataField="CreatorUsername" ObjectProperty="Username" Class="User" />
+            <Mapping DataField="ModifierId" ObjectProperty="Id" Class="User" />
+            <Mapping DataField="ModifierUsername" ObjectProperty="Username" Class="User" />
+        </Setting>
+        <Setting Key="NAP_Site_GetByUser" SpName="NAP_Site_GetByUser" DbName="ChatBot" Plain="0">
+            <Mapping DataField="SiteId" ObjectProperty="Id" Class="Site" />
+            <Mapping DataField="SiteName" ObjectProperty="Name" Class="Site" />
+            <Mapping DataField="CreatorId" ObjectProperty="Id" Class="User" />
+            <Mapping DataField="CreatorUsername" ObjectProperty="Username" Class="User" />
+            <Mapping DataField="ModifierId" ObjectProperty="Id" Class="User" />
+            <Mapping DataField="ModifierUsername" ObjectProperty="Username" Class="User" />
+        </Setting>
+        <Setting Key="NAP_Group_GetById" SpName="NAP_Group_GetById" DbName="ChatBot" Plain="0">
+            <Mapping DataField="GroupId" ObjectProperty="Id" />
+            <Mapping DataField="GroupName" ObjectProperty="Name" />
+        </Setting>
 
-    <Setting Key="NAP_LogUserLogin_Insert" SpName="NAP_LogUserLogin_Insert" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NAP_User_CheckIn" SpName="NAP_User_CheckIn" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NAP_User_GetUserSiteFunctionKeyPolicy" SpName="NAP_User_GetUserSiteFunctionKeyPolicy" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NAP_User_Logout" SpName="NAP_User_Logout" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_LogUserLogin_Insert" SpName="NAP_LogUserLogin_Insert" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_User_CheckIn" SpName="NAP_User_CheckIn" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_User_GetUserSiteFunctionKeyPolicy" SpName="NAP_User_GetUserSiteFunctionKeyPolicy" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_User_Logout" SpName="NAP_User_Logout" DbName="ChatBot" Plain="0"></Setting>
 
-    <Setting Key="NAP_MenuItem_GetByUserAndSiteIncludeGroup" SpName="NAP_MenuItem_GetByUserAndSiteIncludeGroup" DbName="ChatBot" Plain="0">
-      <Mapping DataField="MenuItemId" ObjectProperty="Id" Class="MenuItem" />
-      <Mapping DataField="MenuItemName" ObjectProperty="Name" Class="MenuItem" />
+        <Setting Key="NAP_MenuItem_GetByUserAndSiteIncludeGroup" SpName="NAP_MenuItem_GetByUserAndSiteIncludeGroup" DbName="ChatBot" Plain="0">
+            <Mapping DataField="MenuItemId" ObjectProperty="Id" Class="MenuItem" />
+            <Mapping DataField="MenuItemName" ObjectProperty="Name" Class="MenuItem" />
 
-      <Mapping DataField="ParentId" ObjectProperty="Id" Class="MenuItem" />
-      <Mapping DataField="ParentName" ObjectProperty="Name" Class="MenuItem" />
+            <Mapping DataField="ParentId" ObjectProperty="Id" Class="MenuItem" />
+            <Mapping DataField="ParentName" ObjectProperty="Name" Class="MenuItem" />
 
-      <Mapping DataField="FunctionId" ObjectProperty="Id" Class="Function" />
-      <Mapping DataField="FunctionName" ObjectProperty="Name" Class="Function" />
+            <Mapping DataField="FunctionId" ObjectProperty="Id" Class="Function" />
+            <Mapping DataField="FunctionName" ObjectProperty="Name" Class="Function" />
 
-      <Mapping DataField="SiteId" ObjectProperty="Id" Class="Site" />
-      <Mapping DataField="SiteName" ObjectProperty="Name" Class="Site" />
+            <Mapping DataField="SiteId" ObjectProperty="Id" Class="Site" />
+            <Mapping DataField="SiteName" ObjectProperty="Name" Class="Site" />
 
-      <Mapping DataField="CreatorId" ObjectProperty="Id" Class="User" />
-      <Mapping DataField="CreatorUsername" ObjectProperty="Username" Class="User" />
+            <Mapping DataField="CreatorId" ObjectProperty="Id" Class="User" />
+            <Mapping DataField="CreatorUsername" ObjectProperty="Username" Class="User" />
 
-      <Mapping DataField="ModifierId" ObjectProperty="Id" Class="User" />
-      <Mapping DataField="ModifierUsername" ObjectProperty="Username" Class="User" />
-    </Setting>
+            <Mapping DataField="ModifierId" ObjectProperty="Id" Class="User" />
+            <Mapping DataField="ModifierUsername" ObjectProperty="Username" Class="User" />
+        </Setting>
 
-    <Setting Key="NAP_User_ReCheckIn" SpName="NAP_User_ReCheckIn" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NAP_User_SSOCheckIn" SpName="NAP_User_SSOCheckIn" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NAP_User_SSOGetTime" SpName="NAP_User_SSOGetTime" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NAP_Site_GetById" SpName="NAP_Site_GetById" DbName="ChatBot" Plain="0">
-      <Mapping DataField="SiteId" ObjectProperty="Id" />
-      <Mapping DataField="SiteName" ObjectProperty="Name" />
-    </Setting>
-  </Function>
+        <Setting Key="NAP_User_ReCheckIn" SpName="NAP_User_ReCheckIn" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_User_SSOCheckIn" SpName="NAP_User_SSOCheckIn" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_User_SSOGetTime" SpName="NAP_User_SSOGetTime" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_Site_GetById" SpName="NAP_Site_GetById" DbName="ChatBot" Plain="0">
+            <Mapping DataField="SiteId" ObjectProperty="Id" />
+            <Mapping DataField="SiteName" ObjectProperty="Name" />
+        </Setting>
+    </Function>
 
-  <Function Name="Notification Template">
-      <Setting Key="NCB_NotificationTemplateList_Sel" SpName="NCB_NotificationTemplateList_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
-      <Setting Key="NCB_NotificationTemplate_Ins" SpName="NCB_NotificationTemplate_Ins" DbName="ChatBot" Plain="0"></Setting>
-      <Setting Key="NCB_NotificationTemplate_Upd" SpName="NCB_NotificationTemplate_Upd_xtest" DbName="ChatBot" Plain="0"></Setting>
-      <Setting Key="NCB_NotificationTemplate_Sel" SpName="NCB_NotificationTemplate_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
-      <Setting Key="NCB_NotificationTemplate_Del" SpName="NCB_NotificationTemplate_Del_xtest" DbName="ChatBot" Plain="0"></Setting>
-  </Function>
+    <Function Name="Notification Template">
+        <Setting Key="NCB_NotificationTemplateList_Sel" SpName="NCB_NotificationTemplateList_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_NotificationTemplate_Ins" SpName="NCB_NotificationTemplate_Ins" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_NotificationTemplate_Upd" SpName="NCB_NotificationTemplate_Upd_xtest" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_NotificationTemplate_Sel" SpName="NCB_NotificationTemplate_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_NotificationTemplate_Del" SpName="NCB_NotificationTemplate_Del_xtest" DbName="ChatBot" Plain="0"></Setting>
+    </Function>
 
-  <Function Name="Setting Configuration">
-    <Setting Key="NCB_SettingConfiguration_SettingTypeList_Sel" SpName="NCB_SettingConfiguration_SettingTypeList_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SettingConfiguration_SettingType_Sel" SpName="NCB_SettingConfiguration_SettingType_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SettingConfiguration_SettingType_Ins" SpName="NCB_SettingConfiguration_SettingType_Ins" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SettingConfiguration_SettingType_Upd" SpName="NCB_SettingConfiguration_SettingType_Upd" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SettingConfiguration_SettingType_Del" SpName="NCB_SettingConfiguration_SettingType_Del" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SettingConfiguration_JobInfo_Sel" SpName="NCB_SettingConfiguration_JobInfo_Sel_xtest" DbName="ChatBot" Plain="0" />
-    <Setting Key="NCB_SettingConfiguration_MappingList_Sel" SpName="NCB_SettingConfiguration_MappingList_Sel_xpre" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SettingConfiguration_JobInfo_Upd" SpName="NCB_SettingConfiguration_JobInfo_Upd" DbName="ChatBot" Plain="0" />
-    <Setting Key="NCB_SettingConfiguration_MsgContentsTypeList_Sel" SpName="NCB_SettingConfiguration_MsgContentsTypeList_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SettingConfiguration_NotificationTypeData_Sel" SpName="NCB_SettingConfiguration_NotificationTypeData_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SettingConfiguration_Mapping_Ins" SpName="NCB_SettingConfiguration_Mapping_Ins" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SettingConfiguration_Mapping_Sel" SpName="NCB_SettingConfiguration_Mapping_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SettingConfiguration_Mapping_Upd" SpName="NCB_SettingConfiguration_Mapping_Upd" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SettingConfiguration_Mapping_Del" SpName="NCB_SettingConfiguration_Mapping_Del" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_SettingConfiguration_MappingSettingTypeList_Sel" SpName="NCB_SettingConfiguration_MappingSettingTypeList_Sel" DbName="ChatBot" Plain="0"></Setting>
-  </Function>
+    <Function Name="Setting Configuration">
+        <Setting Key="NCB_SettingConfiguration_SettingTypeList_Sel" SpName="NCB_SettingConfiguration_SettingTypeList_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SettingConfiguration_SettingType_Sel" SpName="NCB_SettingConfiguration_SettingType_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SettingConfiguration_SettingType_Ins" SpName="NCB_SettingConfiguration_SettingType_Ins" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SettingConfiguration_SettingType_Upd" SpName="NCB_SettingConfiguration_SettingType_Upd" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SettingConfiguration_SettingType_Del" SpName="NCB_SettingConfiguration_SettingType_Del" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SettingConfiguration_JobInfo_Sel" SpName="NCB_SettingConfiguration_JobInfo_Sel_xtest" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_SettingConfiguration_MappingList_Sel" SpName="NCB_SettingConfiguration_MappingList_Sel_xpre" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SettingConfiguration_JobInfo_Upd" SpName="NCB_SettingConfiguration_JobInfo_Upd" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_SettingConfiguration_MsgContentsTypeList_Sel" SpName="NCB_SettingConfiguration_MsgContentsTypeList_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SettingConfiguration_NotificationTypeData_Sel" SpName="NCB_SettingConfiguration_NotificationTypeData_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SettingConfiguration_Mapping_Ins" SpName="NCB_SettingConfiguration_Mapping_Ins" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SettingConfiguration_Mapping_Sel" SpName="NCB_SettingConfiguration_Mapping_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SettingConfiguration_Mapping_Upd" SpName="NCB_SettingConfiguration_Mapping_Upd" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SettingConfiguration_Mapping_Del" SpName="NCB_SettingConfiguration_Mapping_Del" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SettingConfiguration_MappingSettingTypeList_Sel" SpName="NCB_SettingConfiguration_MappingSettingTypeList_Sel" DbName="ChatBot" Plain="0"></Setting>
+    </Function>
 
-  <Function Name="ViewLog">
-    <Setting Key="NCB_ViewLog_NotificationSystemMessage_Sel" SpName="NCB_ViewLog_NotificationSystemMessage_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_ViewLog_NotificationRecipientList_Sel" SpName="NCB_ViewLog_NotificationRecipientList_Sel" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NCB_ViewLog_ConversationMessageLog_Sel" SpName="NCB_ViewLog_ConversationMessageLog_Sel" DbName="ChatBot" Plain="0"></Setting>
-  </Function>
+    <Function Name="ViewLog">
+        <Setting Key="NCB_ViewLog_NotificationSystemMessage_Sel" SpName="NCB_ViewLog_NotificationSystemMessage_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_ViewLog_NotificationRecipientList_Sel" SpName="NCB_ViewLog_NotificationRecipientList_Sel" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_ViewLog_ConversationMessageLog_Sel" SpName="NCB_ViewLog_ConversationMessageLog_Sel" DbName="ChatBot" Plain="0"></Setting>
+    </Function>
 
-  <Function Name="ResetLastMessageId">
-    <Setting Key="NCB_JobInfo_Sel" SpName="NCB_JobInfo_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NAP_Chatbot_MaxMessageIdAndPostTime_Sel" SpName="NAP_Chatbot_MaxMessageIdAndPostTime_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
-    <Setting Key="NAP_Chatbot_AbnormalBets_MissingMesssageInfo_Sel" SpName="NAP_Chatbot_AbnormalBets_MissingMesssageInfo_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
-    <Setting Key="NAP_Chatbot_MissingMesssageInfo_Sel" SpName="NAP_Chatbot_MissingMesssageInfo_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0">
-      <Mapping DataField="Content_en" ObjectProperty="Content" />
-    </Setting>
-    <Setting Key="NAP_Chatbot_MissingMesssage_Ins" SpName="NAP_Chatbot_MissingMesssage_Ins" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
-    <Setting Key="NCB_JobInfo_Upd" SpName="NCB_JobInfo_Upd_xtest" DbName="ChatBot" Plain="0"></Setting>
-    <Setting Key="NAP_Chatbot_MissingProblemAccounts_Sel" SpName="NAP_Chatbot_MissingProblemAccounts_Sel_xtest" DbName="DBCUST.CustDB.bodbAdminNet" Plain="0">
-      <Mapping DataField="Content_en" ObjectProperty="Content" />
-      <Mapping DataField="LogId" ObjectProperty="MessageId" />
-      <Mapping DataField="CreatedDate" ObjectProperty="PostTime" />
-    </Setting>
-    <Setting Key="NAP_Chatbot_MissingMonitoredPlayer_Sel" SpName="NAP_Chatbot_MissingMonitoredPlayer_Sel_xtest" DbName="DBEXT.bodb02.bodbAdminNet" Plain="0">
-      <Mapping DataField="Content_en" ObjectProperty="Content" />
-      <Mapping DataField="LogId" ObjectProperty="MessageId" />
-      <Mapping DataField="CreatedDate" ObjectProperty="PostTime" />
-    </Setting>
-  </Function>
+    <Function Name="ResetLastMessageId">
+        <Setting Key="NCB_JobInfo_Sel" SpName="NCB_JobInfo_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
+
+        <Setting Key="NAP_Chatbot_AbnormalBets_MissingMesssageInfo_Sel" SpName="NAP_Chatbot_AbnormalBets_MissingMesssageInfo_Sel_xtest" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_MissingMesssageInfo_Sel" SpName="NAP_Chatbot_MissingMesssageInfo_Sel_xtest" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0">
+            <Mapping DataField="Content_en" ObjectProperty="Content" />
+        </Setting>
+        <Setting Key="NAP_Chatbot_MissingMesssage_Ins" SpName="NAP_Chatbot_MissingMesssage_Ins_xtest" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NCB_JobInfo_Upd" SpName="NCB_JobInfo_Upd_xtest" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_MissingProblemAccounts_Sel" SpName="NAP_Chatbot_MissingProblemAccounts_Sel_xtest" DbName="DBCUST.CustDB.bodbAdminNet" Plain="0">
+            <Mapping DataField="Content_en" ObjectProperty="Content" />
+            <Mapping DataField="LogId" ObjectProperty="MessageId" />
+            <Mapping DataField="CreatedDate" ObjectProperty="PostTime" />
+        </Setting>
+        <Setting Key="NAP_Chatbot_MissingMonitoredPlayer_Sel" SpName="NAP_Chatbot_MissingMonitoredPlayer_Sel_xtest" DbName="DBEXT.bodb02.bodbAdminNet" Plain="0">
+            <Mapping DataField="Content_en" ObjectProperty="Content" />
+            <Mapping DataField="LogId" ObjectProperty="MessageId" />
+            <Mapping DataField="CreatedDate" ObjectProperty="PostTime" />
+        </Setting>
+    </Function>
 </Functions>

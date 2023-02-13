@@ -161,7 +161,7 @@
 
     <Function Name="ResetLastMessageId">
         <Setting Key="NCB_JobInfo_Sel" SpName="NCB_JobInfo_Sel" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_MaxMessageIdAndPostTime_Sel" SpName="NAP_Chatbot_MaxMessageIdAndPostTime_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+
         <Setting Key="NAP_Chatbot_AbnormalBets_MissingMesssageInfo_Sel" SpName="NAP_Chatbot_AbnormalBets_MissingMesssageInfo_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_Chatbot_MissingMesssageInfo_Sel" SpName="NAP_Chatbot_MissingMesssageInfo_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0">
             <Mapping DataField="Content_en" ObjectProperty="Content" />

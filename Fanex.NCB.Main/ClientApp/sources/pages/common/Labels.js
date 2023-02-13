@@ -41,6 +41,7 @@
     TitleContent: 'Title/Content',
     UpdateMappingStatusSuccessfully: 'Update Mapping Status Successfully.',
     ViewDetail: 'View Detail',
+    VoidingHistoryCollectionID: 'Voiding History Collection ID',
     CreateNotificationSuccessfully: 'Your request has been submitted successfully',
     EditNotificationSuccessfully: 'Your request has been submitted successfully',
     CancelNotificationSuccessfully: 'Cancel notification successfully',

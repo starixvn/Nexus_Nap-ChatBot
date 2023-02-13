@@ -9,10 +9,10 @@ import NoDataTitle from '../../common/no-data-title/NoDataTitle';
 import Labels from '../../common/Labels';
 import PanelContent from '../../common/panel-content/PanelContent';
 import ContentPreview from '../../common/ContentPreview';
+import { element } from 'prop-types';
 var dateFormat = require("dateformat");
 
 export class EditNewMessage extends Component {
-
     constructor(props) {
         super(props);
 
@@ -30,7 +30,7 @@ export class EditNewMessage extends Component {
 
     getData = () => {
         const { data, id } = this.props;
-        const idMissingMessages = [1,2,3];
+        const idMissingMessages = [1, 2, 3];
         let missingData;
         if (idMissingMessages.indexOf(id) !== -1) {
             missingData = this.props.data.filter(item => item.jobIdentify === id);
@@ -57,6 +57,10 @@ export class EditNewMessage extends Component {
             <Row>
                 <Cell colWidth={5} header>{Labels.Select}</Cell>
                 <Cell colWidth={8} header>{(id === 4 || id === 5) ? Labels.ID : Labels.MessageID}</Cell>
+                {
+                    id === 2 &&
+                    <Cell colWidth={8} header>{Labels.VoidingHistoryCollectionID}</Cell>
+                }
                 <Cell colWidth={45} header>
                     <div className="has-icons">
                         {Labels.Content_en}
@@ -83,30 +87,34 @@ export class EditNewMessage extends Component {
     };
 
     handleSubmit = () => {
-        const messageId = this.props.selected.map(item => {
-            const element = {...item};
+        const messageIds = this.props.selected.map(item => {
+            const element = { ...item };
             if (item.id === this.props.id) {
                 element.newMaxMessageId = parseInt(this.selectedMessageId, 10);
             }
             return element;
         });
-        this.props.setSelected(messageId);
+        this.props.setSelected(messageIds);
         this.handleClose();
     };
 
     renderRow = (item, index) => (
         <Row key={index} >
             <Cell className="text-center">
-                <Input type="radio" name="radioEditNewMessage" value={item.messageId}
-                    defaultChecked = { item.messageId === this.props.newMaxId }
+                <Input type="radio" name="radioEditNewMessage" value={item.jobIdentify === 2 ? item.voidingHistoryCollectionId : item.messageId}
+                    defaultChecked={(item.jobIdentify === 2 ? item.voidingHistoryCollectionId : item.messageId) === this.props.newMaxId}
                     onChange={event => this.handleChangeCheck(event)}
                 />
             </Cell>
-            <Cell className="text-center">{item.messageId}</Cell>
+            <Cell className="text-center">{item.jobIdentify === 2 ? item.messageIds : item.messageId}</Cell>
+            {
+                item.jobIdentify === 2 &&
+                <Cell className="text-center">{item.voidingHistoryCollectionId}</Cell>
+            }
             <Cell>
                 {
-                    (item.content && item.content.length > 75) ? <PanelContent ref={panel => this.panels[index] = panel} content={item.content}/>
-                    : <ContentPreview text={item.content} />
+                    (item.content && item.content.length > 75) ? <PanelContent ref={panel => this.panels[index] = panel} content={item.content} />
+                        : <ContentPreview text={item.content} />
                 }
             </Cell>
             <Cell className="text-center">{dateFormat(item.postTime, DateTimeFormatV3)}</Cell>
@@ -121,10 +129,10 @@ export class EditNewMessage extends Component {
         return (
             <Modal isOpen toggle={this.handleClose} className="edit-new-message" backdrop="static" size="lg">
                 <ModalHeader toggle={this.handleClose}>
-                    {`${ (id === 4 || id === 5) ? Labels.NewPreviousMaxIDFor : Labels.NewPreviousMaxMessageIDFor} ${this.props.title}`}
+                    {`${(id === 4 || id === 5) ? Labels.NewPreviousMaxIDFor : Labels.NewPreviousMaxMessageIDFor} ${this.props.title}`}
                 </ModalHeader>
                 <ModalBody>
-                    <Label className="form-label">{ (id === 4 || id === 5) ? Labels.ListOfMissingID : Labels.ListOfMissingMessages }</Label>
+                    <Label className="form-label">{(id === 4 || id === 5) ? Labels.ListOfMissingID : Labels.ListOfMissingMessages}</Label>
                     <Table
                         width={925}
                         bodyHeight={215}

@@ -1,6 +1,5 @@
 ﻿namespace Fanex.NCB.Criteria.Tests.ResetLastMessageId
 {
-    using System;
     using System.Collections.Generic;
     using Fanex.NCB.Criteria.ResetLastMessageId;
     using Fanex.NCB.Models.ResetLastMessageId;
@@ -40,11 +39,11 @@
         public void MessageListXml_MessagesHaveData_ReturnAsExpected()
         {
             // Arrange
-            var messages = new List<MessageInfo>
+            var messages = new List<CurrentMaxMessageInfo>
             {
-                new MessageInfo { JobIdentify = 1, FromMessageId = 123, ToMessageId = 456, PostTime = new DateTime(2021, 10, 28) }
+                new CurrentMaxMessageInfo { JobIdentify = 1, ReferenceId = 123 }
             };
-            var messageListXml = XmlHelper<MessageInfo>.Serialize(messages);
+            var messageListXml = XmlHelper<CurrentMaxMessageInfo>.Serialize(messages);
 
             // Act
             var criteria = new GetMissingMessageInfoCriteria

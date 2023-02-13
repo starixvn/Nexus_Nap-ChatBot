@@ -13,8 +13,6 @@
         public override string GetSettingKey() => "NAP_Chatbot_AbnormalBets_UsernameTicketInfo_Sel";
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(ServerIp)
-                                        && !string.IsNullOrWhiteSpace(AbnormalBetsInfo)
-                                        && !string.IsNullOrWhiteSpace(AbnormalAccountsInfo)
                                         && SiteDBGroupId >= 0;
     }
 }

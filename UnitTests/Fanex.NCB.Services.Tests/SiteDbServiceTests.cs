@@ -59,13 +59,16 @@
         {
             var service = GetService();
             var (transIds, usernames, siteDbs) = FakeInputData();
+            var fixture = new Fixture();
+            var (tickets, u) = fixture.Create<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)>();
 
-            dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames>(Arg.Any<AbnormalBetGetUsernameTicketInfoCriteria>()).Returns(FakeOutputData());
+            baseService.GetDataAsync<SiteDBConfig>(Arg.Any<GetSiteDbListCriteria>()).Returns(siteDbs);
+            dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames>(Arg.Any<AbnormalBetGetUsernameTicketInfoCriteria>()).Returns((tickets, u));
 
-            var result = await service.GetTicketUsernamesAynnc(transIds, usernames, siteDbs);
+            var result = await service.GetTicketUsernamesAynnc(transIds, usernames);
 
-            var abnormalBetsInfo = XmlHelper<AbnormalTransId>.Serialize(transIds.ToList());
-            var abnormalAccounts = XmlHelper<AbnormalUsernames>.Serialize(usernames.ToList());
+            var abnormalBetsInfo = XmlHelper<CollectionTransId>.Serialize(transIds.ToList());
+            var abnormalAccounts = XmlHelper<CollectionUsername>.Serialize(usernames.ToList());
 
             await dynamicConnectionService.Received(siteDbs.Count()).FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames>(
                 Arg.Is<AbnormalBetGetUsernameTicketInfoCriteria>(i =>
@@ -86,10 +89,12 @@
                 new SiteDBConfig { AGIP = "1.1.1.1"},
                 new SiteDBConfig { AGIP = "1.2.3.4"}
             };
+            baseService.GetDataAsync<SiteDBConfig>(Arg.Any<GetSiteDbListCriteria>()).Returns(siteDbs);
+
             var (expectedTickets, expectedUsernames) = GetExpectedResult();
             PrepareDataForTest();
 
-            var (tickResult, usernameResult) = await service.GetTicketUsernamesParalellAynnc(transIds, usernames, siteDbs);
+            var (tickResult, usernameResult) = await service.GetTicketUsernamesParalellAynnc(transIds, usernames);
             Assert.Equal(JsonConvert.SerializeObject(expectedTickets), JsonConvert.SerializeObject(tickResult));
             Assert.Equal(JsonConvert.SerializeObject(expectedUsernames), JsonConvert.SerializeObject(usernameResult));
         }
@@ -98,13 +103,13 @@
         {
             var ticket = new List<AbnormalTicketInfo>
             {
-                new AbnormalTicketInfo {MessageId = 1, Bettype = 1, IsParlay = true, LiveIndicator = true, Recommend = 1},
-                new AbnormalTicketInfo {MessageId = 3, Bettype = 1, IsParlay = true, LiveIndicator = true, Recommend = 1}
+                new AbnormalTicketInfo { Bettype = 1, IsParlay = true, LiveIndicator = true, Recommend = 1, VoidingHistoryCollectionId = 10},
+                new AbnormalTicketInfo {Bettype = 1, IsParlay = true, LiveIndicator = true, Recommend = 1, VoidingHistoryCollectionId = 100}
             };
             var username = new List<AbnormalUsernames>
             {
-                new AbnormalUsernames {MessageId = 1, VoidingHistoryId = 10, Usernames = "ABC,DEF"},
-                new AbnormalUsernames {MessageId = 2, VoidingHistoryId = 10, Usernames = "ABC,DJI"},
+                new AbnormalUsernames {VoidingHistoryId = 10, Usernames = "ABC,DEF", VoidingHistoryCollectionId = 10},
+                new AbnormalUsernames { VoidingHistoryId = 10, Usernames = "ABC,DJI", VoidingHistoryCollectionId = 12},
             };
 
             return (ticket, username);
@@ -114,25 +119,25 @@
         {
             var ticket1 = new List<AbnormalTicketInfo>
             {
-                new AbnormalTicketInfo {MessageId = 1, Bettype = 1, IsParlay = true, LiveIndicator = true, Recommend = 1},
-                new AbnormalTicketInfo {MessageId = 3, Bettype = 1, IsParlay = true, LiveIndicator = true, Recommend = 1}
+                new AbnormalTicketInfo {Bettype = 1, IsParlay = true, LiveIndicator = true, Recommend = 1, VoidingHistoryCollectionId = 10},
+                new AbnormalTicketInfo {Bettype = 1, IsParlay = true, LiveIndicator = true, Recommend = 1, VoidingHistoryCollectionId = 100}
             };
             var ticket2 = new List<AbnormalTicketInfo>
             {
-                new AbnormalTicketInfo {MessageId = 1, Bettype = 1, IsParlay = true, LiveIndicator = true, Recommend = 1},
-                new AbnormalTicketInfo {MessageId = 3, Bettype = 1, IsParlay = true, LiveIndicator = true, Recommend = 1}
+                new AbnormalTicketInfo {Bettype = 1, IsParlay = true, LiveIndicator = true, Recommend = 1,VoidingHistoryCollectionId = 10},
+                new AbnormalTicketInfo {Bettype = 1, IsParlay = true, LiveIndicator = true, Recommend = 1,VoidingHistoryCollectionId = 100}
             };
 
             var username1 = new List<AbnormalUsernames>
             {
-                new AbnormalUsernames {MessageId = 1, VoidingHistoryId = 10, Usernames = "ABC"},
-                new AbnormalUsernames {MessageId = 1, VoidingHistoryId = 10, Usernames = "DEF"},
-                new AbnormalUsernames {MessageId = 2, VoidingHistoryId = 10, Usernames = "ABC"},
+                new AbnormalUsernames {VoidingHistoryId = 10, Usernames = "ABC", VoidingHistoryCollectionId = 10},
+                new AbnormalUsernames {VoidingHistoryId = 10, Usernames = "DEF", VoidingHistoryCollectionId = 10},
+                new AbnormalUsernames {VoidingHistoryId = 10, Usernames = "ABC", VoidingHistoryCollectionId = 12},
             };
 
             var username2 = new List<AbnormalUsernames>
             {
-                new AbnormalUsernames {MessageId = 2, VoidingHistoryId = 10, Usernames = "DJI"},
+                new AbnormalUsernames {VoidingHistoryId = 10, Usernames = "DJI", VoidingHistoryCollectionId = 12},
             };
 
             dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames>(
@@ -142,11 +147,11 @@
                 Arg.Is<AbnormalBetGetUsernameTicketInfoCriteria>(i => i.ServerIp == "1.2.3.4")).Returns((ticket2, username2));
         }
 
-        private (IEnumerable<AbnormalTransId>, IEnumerable<AbnormalUsernames>, IEnumerable<SiteDBConfig>) FakeInputData()
+        private (IEnumerable<CollectionTransId>, IEnumerable<CollectionUsername>, IEnumerable<SiteDBConfig>) FakeInputData()
         {
             var fixture = new Fixture();
-            var tranIds = fixture.Create<IEnumerable<AbnormalTransId>>();
-            var usernames = fixture.Create<IEnumerable<AbnormalUsernames>>();
+            var tranIds = fixture.Create<IEnumerable<CollectionTransId>>();
+            var usernames = fixture.Create<IEnumerable<CollectionUsername>>();
             var siteDbs = fixture.Create<IEnumerable<SiteDBConfig>>();
             return (tranIds, usernames, siteDbs);
         }

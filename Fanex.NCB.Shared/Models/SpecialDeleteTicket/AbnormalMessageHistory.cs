@@ -5,7 +5,7 @@
     [XmlType("r")]
     public class AbnormalMessageHistory
     {
-        [XmlAttribute("MessageID")]
+        [XmlAttribute("MessageId")]
         public int MessageId { get; set; }
 
         [XmlAttribute("VoidingHistoryId")]

@@ -9,10 +9,7 @@
     public class CreateMissingMessageCommand : BaseCommand
     {
         [SpParam(Ignored = true)]
-        public List<CurrentMaxMessageInfo> Messages { get; set; } = new List<CurrentMaxMessageInfo>();
-
-        [SpParam(Ignored = true)]
-        public List<MessageRequestId> Requests { get; set; } = new List<MessageRequestId>();
+        public List<MissingMesssageInfo> Messages { get; set; } = new List<MissingMesssageInfo>();
 
         public string Environment { get; set; }
 
@@ -23,29 +20,11 @@
             {
                 var xml = new StringBuilder();
                 xml.Append("<root>");
-                foreach (CurrentMaxMessageInfo message in Messages)
+                foreach (MissingMesssageInfo message in Messages)
                 {
                     xml.AppendFormat("<r JobIdentify='{0}' MessageId='{1}'/>",
                         message.JobIdentify,
-                        message.ReferenceId);
-                }
-                xml.Append("</root>");
-                return xml.ToString();
-            }
-        }
-
-        [SpParam(SqlParamName = "RequestList")]
-        public string RequestListXml
-        {
-            get
-            {
-                var xml = new StringBuilder();
-                xml.Append("<root>");
-                foreach (MessageRequestId request in Requests)
-                {
-                    xml.AppendFormat("<r MessageId='{0}' RequestId='{1}'/>",
-                        request.MessageId,
-                        request.RequestId);
+                        message.MessageId);
                 }
                 xml.Append("</root>");
                 return xml.ToString();

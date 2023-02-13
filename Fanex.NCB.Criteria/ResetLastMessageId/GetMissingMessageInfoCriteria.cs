@@ -9,7 +9,7 @@
     public class GetMissingMessageInfoCriteria : CriteriaBase
     {
         [SpParam(Ignored = true)]
-        public List<MessageInfo> Messages { get; set; } = new List<MessageInfo>();
+        public List<CurrentMaxMessageInfo> Messages { get; set; } = new List<CurrentMaxMessageInfo>();
 
         [SpParam(Ignored = true)]
         public List<MessageTypeInfo> MsgContentTypes { get; set; } = new List<MessageTypeInfo>();
@@ -22,7 +22,7 @@
         {
             get
             {
-                return XmlHelper<MessageInfo>.Serialize(Messages);
+                return XmlHelper<CurrentMaxMessageInfo>.Serialize(Messages);
             }
         }
 

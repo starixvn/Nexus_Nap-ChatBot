@@ -5,6 +5,9 @@
     [XmlType("r")]
     public class MessageRequestId
     {
+        [XmlAttribute("VoidingHistoryCollectionId")]
+        public int VoidingHistoryCollectionId { get; set; }
+
         [XmlAttribute("MessageId")]
         public int MessageId { get; set; }
 

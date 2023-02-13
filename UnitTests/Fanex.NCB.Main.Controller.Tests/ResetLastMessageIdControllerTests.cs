@@ -47,8 +47,12 @@
             // Arrange
             var currentMaxMessageInfos = fixture.Create<IEnumerable<CurrentMaxMessageInfo>>();
             var messageTypeInfos = fixture.Create<IEnumerable<MessageTypeInfo>>();
+            var msgReqIds = fixture.Create<IEnumerable<MessageRequestId>>();
+            var missedInfo = fixture.Create<IEnumerable<MissingMesssageInfo>>();
             var controller = GetController();
-            resetLastMessageIdService.GetCurrentPreviousMaxMessageAsync().Returns((currentMaxMessageInfos,messageTypeInfos));
+            resetLastMessageIdService.GetCurrentPreviousMaxMessageAsync().Returns((currentMaxMessageInfos, messageTypeInfos));
+            resetLastMessageIdService.GetAbnormalBetsMissingMessageAsync(Arg.Is(currentMaxMessageInfos)).Returns(msgReqIds);
+            resetLastMessageIdService.GetMissingMessageInfoAsync(Arg.Is(currentMaxMessageInfos), Arg.Is(messageTypeInfos), Arg.Is(msgReqIds)).Returns(missedInfo);
 
             // Act
             var result = await controller.GetCurrentPreviousMaxMessage();
@@ -56,108 +60,11 @@
             // Assert
             var jsonResult = Assert.IsType<JsonResult>(result);
             var currentMaxMessage = (IEnumerable<CurrentMaxMessageInfo>)jsonResult.Value.GetType().GetProperty("data").GetValue(jsonResult.Value);
-            var messageType = (IEnumerable<MessageTypeInfo>)jsonResult.Value.GetType().GetProperty("messageTypeInfos").GetValue(jsonResult.Value);
+            var internalMissingMsg = (IEnumerable<MessageRequestId>)jsonResult.Value.GetType().GetProperty("internalMissingMsg").GetValue(jsonResult.Value);
+            var missingMsgInfo = (IEnumerable<MissingMesssageInfo>)jsonResult.Value.GetType().GetProperty("missingMsgInfo").GetValue(jsonResult.Value);
             Assert.Equal(currentMaxMessageInfos, currentMaxMessage);
-            Assert.Equal(messageTypeInfos, messageType);
-        }
-
-        [Fact]
-        public async Task GetNewPreviousMaxMessage_WhenCalled_ReturnExpectedResult()
-        {
-            // Arrange
-            var criteria = fixture.Create<GetNewPreviousMaxMessageCriteria>();
-            var messagePostTimeInfos = fixture.Create<IEnumerable<MessagePostTime>>();
-            var newMaxMessageId = fixture.Create<int>();
-            var controller = GetController();
-            resetLastMessageIdService.GetNewPreviousMaxMessageAsync(criteria).Returns((messagePostTimeInfos, newMaxMessageId));
-
-            // Act
-            var result = await controller.GetNewPreviousMaxMessage(criteria);
-
-            // Assert
-            var jsonResult = Assert.IsType<JsonResult>(result);
-            var messagePostTime = (IEnumerable<MessagePostTime>)jsonResult.Value.GetType().GetProperty("messagePostTimeInfos").GetValue(jsonResult.Value);
-            var newId = jsonResult.Value.GetType().GetProperty("newMaxMessageId").GetValue(jsonResult.Value);
-            Assert.Equal(messagePostTimeInfos, messagePostTime);
-            Assert.Equal(newMaxMessageId, newId);
-        }
-
-        [Fact]
-        public async Task GetMissingMessageCsd_WhenCalled_ReturnExpectedResult()
-        {
-            // Arrange
-            var criteria = fixture.Create<GetMissingMesssageCsdCriteria>();
-            var missingMessageCsd = fixture.Create<IEnumerable<MessageRequestId>>();
-            var controller = GetController();
-            resetLastMessageIdService.GetMissingMessageCsdAsync(criteria).Returns(missingMessageCsd);
-
-            // Act
-            var result = await controller.GetMissingMessageCsd(criteria);
-
-            // Assert
-            var jsonResult = Assert.IsType<JsonResult>(result);
-            var actual = Assert.IsAssignableFrom<IEnumerable<MessageRequestId>>(jsonResult.Value);
-            Assert.Equal(missingMessageCsd, actual);
-        }
-
-        [Fact]
-        public async Task GetMissingMessageInfo_WhenCalled_ReturnExpectedResult()
-        {
-            // Arrange
-            var criteria = fixture.Create<GetMissingMessageInfoCriteria>();
-            var missingMessageInfos = fixture.Create<IEnumerable<MissingMesssageInfo>>();
-            var controller = GetController();
-            resetLastMessageIdService.GetMissingMessageInfoAsync(criteria).Returns(missingMessageInfos);
-
-            // Act
-            var result = await controller.GetMissingMessageInfo(criteria);
-
-            // Assert
-            var jsonResult = Assert.IsType<JsonResult>(result);
-            var actual = Assert.IsAssignableFrom<IEnumerable<MissingMesssageInfo>>(jsonResult.Value);
-            Assert.Equal(missingMessageInfos, actual);
-        }
-
-        [Fact]
-        public async Task GetMissingProblemAccount_WhenCalled_ReturnExpectedResult()
-        {
-            // Arrange
-            var criteria = fixture.Create<GetMissingProblemAccountCriteria>();
-            var fromToLogId = fixture.Create<IEnumerable<FromToLogId>>();
-            var missingMesssageInfo = fixture.Create<IEnumerable<MissingMesssageInfo>>();
-            var controller = GetController();
-            resetLastMessageIdService.GetMissingProblemAccountAsync(criteria).Returns((fromToLogId, missingMesssageInfo));
-
-            // Act
-            var result = await controller.GetMissingProblemAccount(criteria);
-
-            // Assert
-            var jsonResult = Assert.IsType<JsonResult>(result);
-            var fromToLogIdResult = (IEnumerable<FromToLogId>)jsonResult.Value.GetType().GetProperty("logId").GetValue(jsonResult.Value);
-            var missingMesssageInfoResult = (IEnumerable<MissingMesssageInfo>)jsonResult.Value.GetType().GetProperty("data").GetValue(jsonResult.Value);
-            Assert.Equal(fromToLogIdResult, fromToLogId);
-            Assert.Equal(missingMesssageInfoResult, missingMesssageInfo);
-        }
-
-        [Fact]
-        public async Task GetMissingMonitoredPlayer_WhenCalled_ReturnExpectedResult()
-        {
-            // Arrange
-            var criteria = fixture.Create<GetMissingMonitoredPlayerCriteria>();
-            var fromToLogId = fixture.Create<IEnumerable<FromToLogId>>();
-            var missingMesssageInfo = fixture.Create<IEnumerable<MissingMesssageInfo>>();
-            var controller = GetController();
-            resetLastMessageIdService.GetMissingMonitoredPlayerAsync(criteria).Returns((fromToLogId, missingMesssageInfo));
-
-            // Act
-            var result = await controller.GetMissingMonitoredPlayer(criteria);
-
-            // Assert
-            var jsonResult = Assert.IsType<JsonResult>(result);
-            var fromToLogIdResult = (IEnumerable<FromToLogId>)jsonResult.Value.GetType().GetProperty("logId").GetValue(jsonResult.Value);
-            var missingMesssageInfoResult = (IEnumerable<MissingMesssageInfo>)jsonResult.Value.GetType().GetProperty("data").GetValue(jsonResult.Value);
-            Assert.Equal(fromToLogIdResult, fromToLogId);
-            Assert.Equal(missingMesssageInfoResult, missingMesssageInfo);
+            Assert.Equal(msgReqIds, internalMissingMsg);
+            Assert.Equal(missedInfo, missingMsgInfo);
         }
 
         [Fact]
@@ -166,29 +73,12 @@
             // Arrange
             var command = fixture.Create<CreateMissingMessageCommand>();
             var commandResult = fixture.Create<CommandResult>();
+            var listMsgs = fixture.Create<List<MissingMesssageInfo>>();
             var controller = GetController();
-            resetLastMessageIdService.CreateMissingMessageAsync(command).Returns(commandResult);
+            resetLastMessageIdService.CreateMissingMessageAsync(listMsgs).Returns(commandResult);
 
             // Act
-            var result = await controller.CreateMissingMessage(command);
-
-            // Assert
-            var jsonResult = Assert.IsType<JsonResult>(result);
-            var actual = Assert.IsAssignableFrom<CommandResult>(jsonResult.Value);
-            Assert.Equal(commandResult, actual);
-        }
-
-        [Fact]
-        public async Task EditMessageInfo_WhenCalled_ReturnExpectedResult()
-        {
-            // Arrange
-            var command = fixture.Create<EditMessageInfoCommand>();
-            var commandResult = fixture.Create<CommandResult>();
-            var controller = GetController();
-            resetLastMessageIdService.EditMessageInfoAsync(command).Returns(commandResult);
-
-            // Act
-            var result = await controller.EditMessageInfo(command);
+            var result = await controller.CreateMissingMessage(listMsgs);
 
             // Assert
             var jsonResult = Assert.IsType<JsonResult>(result);

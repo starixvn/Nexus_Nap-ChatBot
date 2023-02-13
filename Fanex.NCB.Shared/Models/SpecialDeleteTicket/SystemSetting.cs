@@ -10,6 +10,8 @@
 
         public int MaxMessageID { get; set; }
 
+        public int LastLogId { get; set; }
+
         public string MsgContentsTypeLst { get; set; }
 
         public DateTime? LastPostTime { get; set; }

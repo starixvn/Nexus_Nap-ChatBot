@@ -2,7 +2,7 @@
 
 namespace Fanex.NCB.Shared.Models.SpecialDeleteTicket
 {
-    public class AbnormalMessage : Message
+    public class AbnormalMessageDetail1 : Message
     {
         public string RequestIDLst { get; set; }
 

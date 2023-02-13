@@ -41,9 +41,9 @@
         public void MessageListXml_MessagesHaveData_ReturnAsExpected()
         {
             // Arrange
-            var messages = new List<CurrentMaxMessageInfo>
+            var messages = new List<MissingMesssageInfo>
             {
-                new CurrentMaxMessageInfo { JobIdentify = 1, ReferenceId = 123 }
+                new MissingMesssageInfo { JobIdentify = 1, MessageId = 123 }
             };
             var messageListXml = "<root><r JobIdentify='1' MessageId='123'/></root>";
 
@@ -55,26 +55,6 @@
 
             // Assert
             Assert.Equal(messageListXml, criteria.MessageListXml);
-        }
-
-        [Fact]
-        public void RequestListXml_RequestsHaveData_ReturnAsExpected()
-        {
-            // Arrange
-            var requests = new List<MessageRequestId>
-            {
-                new MessageRequestId { MessageId = 1, RequestId = 123 }
-            };
-            var requestListXml = "<root><r MessageId='1' RequestId='123'/></root>";
-
-            // Act
-            var criteria = new CreateMissingMessageCommand
-            {
-                Requests = requests
-            };
-
-            // Assert
-            Assert.Equal(requestListXml, criteria.RequestListXml);
         }
     }
 }

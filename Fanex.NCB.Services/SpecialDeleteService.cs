@@ -145,110 +145,77 @@
             var systemSetting = await baseService.GetDataEntityAsync<SystemSetting>(new GetAbnormalBetSystemSettingCriteria());
             if (systemSetting != null)
             {
-                var criteria = new GetListMessageAbnormalbetsFromYesterdayToCurrentCriteria();
-                var messageHistories = await baseService.GetDataAsync<MessageHistory>(criteria);
+                var criteria = new GetVoidingHIstoryCollectionIdCriteria
+                {
+                    LastLogId = systemSetting.LastLogId,
+                    BatchSize = systemSetting.BatchSize
+                };
+                var (tranIds, usernames) = await baseService.FetchMultipleAsync<CollectionTransId, CollectionUsername>(criteria);
 
-                await GetMessageAndImportToChatbotAsync(messageHistories, systemSetting);
+                await GetMessageAndImportToChatbotAsync(tranIds, usernames, systemSetting);
             }
         }
 
         protected internal virtual async Task GetMessageAndImportToChatbotAsync(
-            IEnumerable<MessageHistory> messageHistories,
+            IEnumerable<CollectionTransId> tranIds,
+            IEnumerable<CollectionUsername> usernameList,
             SystemSetting setting)
         {
-            var messages = await GetAbnormalBetsMessageContentAsync(setting, messageHistories);
+            var (tickets, usernames) = await siteDbService.GetTicketUsernamesAynnc(tranIds, usernameList);
 
-            if (messages.Any())
-            {
-                var msgRequests = messages.Select(m => new MessageHistory
-                {
-                    MessageId = m.MessageID,
-                    RequestId = m.RequestID
-                });
-                var (tranIds, usernameList) = await GetUsernameAndTransIdAsync(msgRequests);
-
-                var siteDbs = await siteDbService.GetListSiteDbAsync();
-
-                var (tickets, usernames) = await siteDbService.GetTicketUsernamesAynnc(tranIds, usernameList, siteDbs);
-
-                var messageDetails = await GetVoidingHistoryAsync(tickets, usernames, msgRequests);
-
-                if (messageDetails.Any())
-                {
-                    MappingAbnormalBetsData(messages, messageDetails);
-                }
-
-                int maxMsgId = messages.Max(m => m.MessageID);
-                await ImportAbnormalBetNotificationToChatbotDBAsync(messageDetails, msgRequests, maxMsgId);
-            }
+            var (historyDetail, msg) = await GetVoidingHistoryDetailAsync(tickets, usernames);
+            var msgContents = await GetAbnormalBetsMessageContentAsync(msg);
+            MappingData(historyDetail, msgContents);
+            await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg);
         }
 
-        private async Task<(IEnumerable<AbnormalTransId>, IEnumerable<AbnormalUsernames>)> GetUsernameAndTransIdAsync(IEnumerable<MessageHistory> messages)
+        private void MappingData(IEnumerable<AbnormalMessageDetail> historyDetail, IEnumerable<AbnormalMessageContent> msgContents)
         {
-            var criteria = new AbnormalBetGetUsernameAndTransIdCriteria
+            foreach (var msg in historyDetail)
             {
-                MessageIdLst = XmlHelper<MessageHistory>.Serialize(messages.ToList())
-            };
-
-            return await baseService.FetchMultipleAsync<AbnormalTransId, AbnormalUsernames>(criteria);
-        }
-
-        private static void MappingAbnormalBetsData(IEnumerable<Message> messages, IEnumerable<AbnormalMessage> voidingHistories)
-        {
-            foreach (var msg in voidingHistories)
-            {
-                var message = messages.FirstOrDefault(m => m.MessageID == msg.MessageID);
+                var message = msgContents.FirstOrDefault(m => m.VoidingHistoryCollectionId == msg.VoidingHistoryCollectionId);
 
                 msg.Content_en = message?.Content_en?.Trim().Replace("@@", string.Empty);
                 msg.Content_cs = message?.Content_cs?.Trim().Replace("@@", string.Empty);
-                msg.MsgContentsType = message != null ? message.MsgContentsType : 0;
                 msg.LeagueName = TelegramFormatExtensions.EscapeSpecialSyntax(msg.LeagueName);
                 msg.HomeName = TelegramFormatExtensions.EscapeSpecialSyntax(msg.HomeName);
                 msg.AwayName = TelegramFormatExtensions.EscapeSpecialSyntax(msg.AwayName);
             }
         }
 
-        protected internal virtual async Task<IEnumerable<Message>> GetAbnormalBetsMessageContentAsync(
-            SystemSetting setting,
-            IEnumerable<MessageHistory> listMsgs)
+        internal virtual async Task<IEnumerable<AbnormalMessageContent>> GetAbnormalBetsMessageContentAsync(IEnumerable<AbnormalMessage> listMsgs)
         {
             var criteria = new GetAbnormalBetsMessageCriteria
             {
-                MessageIDLst = XmlHelper<MessageHistory>.Serialize(listMsgs.ToList()),
-                BatchSize = setting.BatchSize,
-                MsgContentsTypeLst = setting.MsgContentsTypeLst,
-                Environment = Environment
+                MessageIDLst = XmlHelper<AbnormalMessage>.Serialize(listMsgs.ToList()),
             };
 
-            return await baseService.GetDataAsync<Message>(criteria);
+            return await baseService.GetDataAsync<AbnormalMessageContent>(criteria);
         }
 
-        protected internal virtual async Task<IEnumerable<AbnormalMessage>> GetVoidingHistoryAsync(
+        protected internal virtual async Task<(IEnumerable<AbnormalMessageDetail>, IEnumerable<AbnormalMessage>)> GetVoidingHistoryDetailAsync(
             IEnumerable<AbnormalTicketInfo> tickets,
-            IEnumerable<AbnormalUsernames> usernames,
-            IEnumerable<MessageHistory> messages)
+            IEnumerable<AbnormalUsernames> usernames)
         {
             var criteria = new GetAbnormalBetInfoCriteria
             {
-                MessageIdLst = XmlHelper<MessageHistory>.Serialize(messages.ToList()),
                 TicketInfo = XmlHelper<AbnormalTicketInfo>.Serialize(tickets.ToList()),
                 UsernameLst = XmlHelper<AbnormalUsernames>.Serialize(usernames.ToList())
             };
 
-            return await baseService.GetDataAsync<AbnormalMessage>(criteria);
+            return await baseService.FetchMultipleAsync<AbnormalMessageDetail, AbnormalMessage>(criteria);
         }
 
         protected internal virtual async Task ImportAbnormalBetNotificationToChatbotDBAsync(
-            IEnumerable<AbnormalMessage> messages,
-            IEnumerable<MessageHistory> msgHistories,
-            int maxMessageId)
+            IEnumerable<AbnormalMessageDetail> historyDetails,
+            IEnumerable<AbnormalMessage> msgs)
         {
-            if (messages.Any())
+            if (historyDetails.Any())
             {
                 var criteria = new ImportAbnormalBetsMessageCriteria
                 {
-                    MessageHeader = JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
-                    MaxMessageId = maxMessageId
+                    MessageHeader = JsonConvert.SerializeObject(historyDetails, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
+                    MessageDetail = JsonConvert.SerializeObject(msgs, new JsonSerializerSettings { DateFormatString = DateTimeFormat })
                 };
                 var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
                 var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);
@@ -257,12 +224,6 @@
                     Code = criteria.ErrCode,
                     Message = criteria.ErrMsg
                 };
-
-                if (command.IsSuccessful && notifications.Any())
-                {
-                    var xmlString = XmlHelper<MessageHistory>.Serialize(msgHistories.ToList());
-                    await InsertToMessageChatbotAsync(xmlString, VoidAbnormalbetsJobIdentity);
-                }
 
                 await OnAfterImportDataAsync(command, notificationMessages);
             }

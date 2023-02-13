@@ -25,10 +25,7 @@
             // Arrange
             var criteria = new GetAbnormalBetsMessageCriteria
             {
-                MessageIDLst = "1",
-                BatchSize = 2,
-                MsgContentsTypeLst = "test",
-                Environment = "UAT"
+                MessageIDLst = "1"
             };
 
             // Act
@@ -44,10 +41,7 @@
             // Arrange
             var criteria = new GetAbnormalBetsMessageCriteria
             {
-                MessageIDLst = "1",
-                BatchSize = 0,
-                MsgContentsTypeLst = "",
-                Environment = "UAT"
+                MessageIDLst = ""
             };
 
             // Act

@@ -1,6 +1,5 @@
 ﻿namespace Fanex.NCB.Criteria.Tests.ResetLastMessageId
 {
-    using System;
     using Fanex.NCB.Criteria.ResetLastMessageId;
     using Xunit;
 
@@ -24,12 +23,7 @@
         public void IsValid_WhenCalled_ReturnTrue()
         {
             // Arrange
-            var criteria = new GetMissingMesssageCsdCriteria()
-            {
-                FromMessageId = 1,
-                ToMessageId = 2,
-                PostTime = new DateTime(2021, 10, 28)
-            };
+            var criteria = new GetMissingMesssageCsdCriteria();
 
             // Act
             var actual = criteria.IsValid();

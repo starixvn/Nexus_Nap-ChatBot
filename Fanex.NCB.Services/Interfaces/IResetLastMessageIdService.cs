@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NCB.Criteria.ResetLastMessageId;
     using Fanex.NCB.Models.ResetLastMessageId;
     using Fanex.NCB.Shared.Models;
 
@@ -10,18 +9,13 @@
     {
         Task<(IEnumerable<CurrentMaxMessageInfo>, IEnumerable<MessageTypeInfo>)> GetCurrentPreviousMaxMessageAsync();
 
-        Task<(IEnumerable<MessagePostTime>, int)> GetNewPreviousMaxMessageAsync(GetNewPreviousMaxMessageCriteria criteria);
+        Task<IEnumerable<MessageRequestId>> GetAbnormalBetsMissingMessageAsync(IEnumerable<CurrentMaxMessageInfo> messageInfoList);
 
-        Task<IEnumerable<MessageRequestId>> GetMissingMessageCsdAsync(GetMissingMesssageCsdCriteria criteria);
+        Task<IEnumerable<MissingMesssageInfo>> GetMissingMessageInfoAsync(
+            IEnumerable<CurrentMaxMessageInfo> msgList,
+            IEnumerable<MessageTypeInfo> contentTypeList,
+            IEnumerable<MessageRequestId> abnormalMissingMsgList);
 
-        Task<IEnumerable<MissingMesssageInfo>> GetMissingMessageInfoAsync(GetMissingMessageInfoCriteria criteria);
-
-        Task<(IEnumerable<FromToLogId>, IEnumerable<MissingMesssageInfo>)> GetMissingProblemAccountAsync(GetMissingProblemAccountCriteria criteria);
-
-        Task<(IEnumerable<FromToLogId> ,IEnumerable<MissingMesssageInfo>)> GetMissingMonitoredPlayerAsync(GetMissingMonitoredPlayerCriteria criteria);
-
-        Task<CommandResult> CreateMissingMessageAsync(CreateMissingMessageCommand command);
-
-        Task<CommandResult> EditMessageInfoAsync(EditMessageInfoCommand command);
+        Task<CommandResult> CreateMissingMessageAsync(List<MissingMesssageInfo> listMsg);
     }
 }

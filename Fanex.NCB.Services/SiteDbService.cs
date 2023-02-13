@@ -55,13 +55,14 @@
         }
 
         public async Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)> GetTicketUsernamesAynnc(
-            IEnumerable<AbnormalTransId> transIds, IEnumerable<AbnormalUsernames> usernames, IEnumerable<SiteDBConfig> siteDbList)
+            IEnumerable<CollectionTransId> transIds, IEnumerable<CollectionUsername> usernames)
         {
+            var siteDbList = await GetListSiteDbAsync();
             var (ticketLists, accountLists) = new ValueTuple<IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>>(
                 new List<AbnormalTicketInfo>(), new List<AbnormalUsernames>());
 
-            var abnormalBetsInfo = XmlHelper<AbnormalTransId>.Serialize(transIds.ToList());
-            var abnormalAccounts = XmlHelper<AbnormalUsernames>.Serialize(usernames.ToList());
+            var abnormalBetsInfo = XmlHelper<CollectionTransId>.Serialize(transIds.ToList());
+            var abnormalAccounts = XmlHelper<CollectionUsername>.Serialize(usernames.ToList());
 
             foreach (var siteDb in siteDbList)
             {
@@ -74,10 +75,12 @@
         }
 
         public async Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)> GetTicketUsernamesParalellAynnc(
-            IEnumerable<AbnormalTransId> transIds, IEnumerable<AbnormalUsernames> usernames, IEnumerable<SiteDBConfig> siteDbList)
+            IEnumerable<CollectionTransId> transIds, IEnumerable<CollectionUsername> usernames)
         {
-            var abnormalBetsInfo = XmlHelper<AbnormalTransId>.Serialize(transIds.ToList());
-            var abnormalAccounts = XmlHelper<AbnormalUsernames>.Serialize(usernames.ToList());
+            var siteDbList = await GetListSiteDbAsync();
+
+            var abnormalBetsInfo = XmlHelper<CollectionTransId>.Serialize(transIds.ToList());
+            var abnormalAccounts = XmlHelper<CollectionUsername>.Serialize(usernames.ToList());
 
             var tasks = new List<Task<ValueTuple<IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>>>>();
 
@@ -131,7 +134,7 @@
         {
             var outputTickets = ticketLists.GroupBy(x => new
             {
-                x.MessageId,
+                x.VoidingHistoryCollectionId,
                 x.Recommend,
                 x.IsParlay,
                 x.Bettype,
@@ -140,11 +143,11 @@
 
             var outputUsernames = accountLists.GroupBy(x => new
             {
-                x.MessageId,
+                x.VoidingHistoryCollectionId,
                 x.VoidingHistoryId
             }).Select(g => new AbnormalUsernames
             {
-                MessageId = g.Key.MessageId,
+                VoidingHistoryCollectionId = g.Key.VoidingHistoryCollectionId,
                 VoidingHistoryId = g.Key.VoidingHistoryId,
                 Usernames = string.Join(",", g.Select(i => i.Usernames).ToArray())
             });

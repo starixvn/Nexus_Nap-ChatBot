@@ -10,9 +10,9 @@
         Task<IEnumerable<SiteDBConfig>> GetListSiteDbAsync();
 
         Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)> GetTicketUsernamesAynnc(
-            IEnumerable<AbnormalTransId> transIds, IEnumerable<AbnormalUsernames> usernames, IEnumerable<SiteDBConfig> siteDbList);
+            IEnumerable<CollectionTransId> transIds, IEnumerable<CollectionUsername> usernames);
 
         Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)> GetTicketUsernamesParalellAynnc(
-            IEnumerable<AbnormalTransId> transIds, IEnumerable<AbnormalUsernames> usernames, IEnumerable<SiteDBConfig> siteDbList);
+            IEnumerable<CollectionTransId> transIds, IEnumerable<CollectionUsername> usernames);
     }
 }

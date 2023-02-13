@@ -9,6 +9,7 @@
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Configuration;
+    using Newtonsoft.Json;
     using NSubstitute;
     using Xunit;
 
@@ -37,95 +38,47 @@
         }
 
         [Fact]
-        public async Task GetNewPreviousMaxMessageAsync_WhenCalled_ReturnExpectResult()
-        {
-            //Arrange
-            var service = GetService();
-            var criteria = fixture.Create<GetNewPreviousMaxMessageCriteria>();
-            var messagePostTimeInfos = fixture.Create<IEnumerable<MessagePostTime>>();
-            var newMaxMessageId = fixture.Create<IEnumerable<int>>();
-            var tuple = (messagePostTimeInfos, newMaxMessageId);
-
-            baseService.FetchMultipleAsync<MessagePostTime, int>(Arg.Do<GetNewPreviousMaxMessageCriteria>(x => criteria = x)).Returns(tuple);
-
-            //Act
-            var actual = await service.GetNewPreviousMaxMessageAsync(criteria);
-
-            //Assert
-            Assert.Equal(messagePostTimeInfos, actual.Item1);
-            Assert.Equal(newMaxMessageId.FirstOrDefault(), actual.Item2);
-        }
-
-        [Fact]
-        public async Task GetMissingMessageCsdAsync_WhenCalled_ReturnExpectResult()
-        {
-            //Arrange
-            var service = GetService();
-            var criteria = fixture.Create<GetMissingMesssageCsdCriteria>();
-            var missingMessageCsd = fixture.Create<IEnumerable<MessageRequestId>>();
-
-            baseService.GetDataAsync<MessageRequestId>(Arg.Do<GetMissingMesssageCsdCriteria>(x => criteria = x)).Returns(missingMessageCsd);
-
-            //Act
-            var actual = await service.GetMissingMessageCsdAsync(criteria);
-
-            //Assert
-            Assert.Equal(missingMessageCsd, actual);
-        }
-
-        [Fact]
         public async Task GetMissingMessageInfoAsync_WhenCalled_ReturnExpectResult()
         {
             //Arrange
             var service = GetService();
-            var criteria = fixture.Create<GetMissingMessageInfoCriteria>();
-            var missingMessageInfos = fixture.Create<IEnumerable<MissingMesssageInfo>>();
+            var missingMessageInfos = new List<MissingMesssageInfo> {
+                new MissingMesssageInfo { JobIdentify = 1, VoidingHistoryCollectionId = 1, Content = "ABC", MessageId = 300 },
+                new MissingMesssageInfo { JobIdentify = 2, VoidingHistoryCollectionId = 2000, Content = "ABC", MessageId = 2 },
+            };
 
-            baseService.GetDataAsync<MissingMesssageInfo>(Arg.Do<GetMissingMessageInfoCriteria>(x => criteria = x)).Returns(missingMessageInfos);
+            var missedProblemAccounts = new List<MissingMesssageInfo>();
+            var missedMonitoredPlayers = new List<MissingMesssageInfo>
+            {
+               new MissingMesssageInfo { JobIdentify = 5, VoidingHistoryCollectionId = 5, Content = "ABC", MessageId = 5 }
+            };
 
+            var msgList = new List<CurrentMaxMessageInfo>
+            {
+                new CurrentMaxMessageInfo {JobIdentify = 1, ReferenceId = 1},
+                new CurrentMaxMessageInfo {JobIdentify = 2, ReferenceId = 1000},
+                new CurrentMaxMessageInfo {JobIdentify = 4, ReferenceId = 1000},
+                new CurrentMaxMessageInfo {JobIdentify = 5, ReferenceId = 1000}
+            };
+
+            var expected = new List<MissingMesssageInfo> {
+                new MissingMesssageInfo { JobIdentify = 1, VoidingHistoryCollectionId = 1, Content = "ABC", MessageId = 300 },
+                new MissingMesssageInfo { JobIdentify = 2, VoidingHistoryCollectionId = 2000, Content = "ABC", MessageId = 2 },
+                new MissingMesssageInfo { JobIdentify = 5, VoidingHistoryCollectionId = 5, Content = "ABC", MessageId = 5 }
+            };
+
+            baseService.GetDataAsync<MissingMesssageInfo>(Arg.Any<GetMissingMessageInfoCriteria>()).Returns(missingMessageInfos);
+            baseService.GetDataAsync<MissingMesssageInfo>(Arg.Any<GetMissingProblemAccountCriteria>()).Returns(missedProblemAccounts);
+            baseService.GetDataAsync<MissingMesssageInfo>(Arg.Any<GetMissingMonitoredPlayerCriteria>()).Returns(missedMonitoredPlayers);
+            var contentTypeList = fixture.Create<IEnumerable<MessageTypeInfo>>();
+            var abnormalMissingMsgList = fixture.Create<IEnumerable<MessageRequestId>>();
             //Act
-            var actual = await service.GetMissingMessageInfoAsync(criteria);
+            var actual = await service.GetMissingMessageInfoAsync(msgList, contentTypeList, abnormalMissingMsgList);
 
             //Assert
-            Assert.Equal(missingMessageInfos, actual);
-        }
-
-        [Fact]
-        public async Task GetMissingProblemAccountAsync_WhenCalled_ReturnExpectResult()
-        {
-            //Arrange
-            var service = GetService();
-            var criteria = fixture.Create<GetMissingProblemAccountCriteria>();
-            var fromToLogId = fixture.Create<IEnumerable<FromToLogId>>();
-            var missingMesssageInfo = fixture.Create<IEnumerable<MissingMesssageInfo>>();
-            var tuple = (fromToLogId, missingMesssageInfo);
-
-            baseService.FetchMultipleAsync<FromToLogId, MissingMesssageInfo>(Arg.Do<GetMissingProblemAccountCriteria>(x => criteria = x)).Returns(tuple);
-
-            //Act
-            var actual = await service.GetMissingProblemAccountAsync(criteria);
-
-            //Assert
-            Assert.Equal(tuple, actual);
-        }
-
-        [Fact]
-        public async Task GetMissingMonitoredPlayerAsync_WhenCalled_ReturnExpectResult()
-        {
-            //Arrange
-            var service = GetService();
-            var criteria = fixture.Create<GetMissingMonitoredPlayerCriteria>();
-            var fromToLogId = fixture.Create<IEnumerable<FromToLogId>>();
-            var missingMesssageInfo = fixture.Create<IEnumerable<MissingMesssageInfo>>();
-            var tuple = (fromToLogId, missingMesssageInfo);
-
-            baseService.FetchMultipleAsync<FromToLogId, MissingMesssageInfo>(Arg.Do<GetMissingMonitoredPlayerCriteria>(x => criteria = x)).Returns(tuple);
-
-            //Act
-            var actual = await service.GetMissingMonitoredPlayerAsync(criteria);
-
-            //Assert
-            Assert.Equal(tuple, actual);
+            Assert.Equal(300, msgList.FirstOrDefault(x => x.JobIdentify == 1).MaxReferenceId);
+            Assert.Equal(2000, msgList.FirstOrDefault(x => x.JobIdentify == 2).MaxReferenceId);
+            Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(actual));
         }
 
         [Fact]
@@ -133,33 +86,18 @@
         {
             //Arrange
             var service = GetService();
-            var command = fixture.Create<CreateMissingMessageCommand>();
-            var commandResult = fixture.Create<CommandResult>();
-
-            baseService.ExecuteNonQueryAsync(Arg.Do<CreateMissingMessageCommand>(x => command = x)).Returns(commandResult);
-
-            //Act
-            var actual = await service.CreateMissingMessageAsync(command);
-
-            //Assert
-            Assert.Equal(commandResult, actual);
-        }
-
-        [Fact]
-        public async Task EditMessageInfoAsync_WhenCalled_ReturnExpectResult()
-        {
-            //Arrange
-            var service = GetService();
-            var command = fixture.Create<EditMessageInfoCommand>();
-            var commandResult = fixture.Create<CommandResult>();
-
-            baseService.ExecuteNonQueryAsync(Arg.Do<EditMessageInfoCommand>(x => command = x)).Returns(commandResult);
+            var commandResult = new CommandResult { Code = 0, Message = string.Empty };
+            var commandResult2 = new CommandResult { Code = 1, Message = "ABCD" };
+            var expected = new CommandResult { Code = 1, Message = "ABCD" };
+            baseService.ExecuteNonQueryAsync(Arg.Any<CreateMissingMessageCommand>()).Returns(commandResult);
+            baseService.ExecuteNonQueryAsync(Arg.Any<EditMessageInfoCommand>()).Returns(commandResult2);
 
             //Act
-            var actual = await service.EditMessageInfoAsync(command);
+            var param = new List<MissingMesssageInfo> { new MissingMesssageInfo { MessageId = 1, JobIdentify = 1 } };
+            var actual = await service.CreateMissingMessageAsync(param);
 
             //Assert
-            Assert.Equal(commandResult, actual);
+            Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(actual));
         }
 
         private ResetLastMessageIdService GetService()

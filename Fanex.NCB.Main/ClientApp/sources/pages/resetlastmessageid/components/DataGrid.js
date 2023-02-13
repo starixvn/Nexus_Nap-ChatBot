@@ -10,7 +10,6 @@ import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
 
 export class DataGrid extends Component {
-
     constructor(props) {
         super(props);
 
@@ -28,63 +27,21 @@ export class DataGrid extends Component {
     }
 
     getAllData = async () => {
-        const messageIds = [];
         await this.props.getCurrentPreviousMaxMessage();
 
         const { currentMessages } = this.props;
-        const crmNotIncludeJobProPlayer = currentMessages.data.filter(item => item.jobIdentify !== 4 && item.jobIdentify !== 5);
-        crmNotIncludeJobProPlayer.map(item => messageIds.push(item.referenceId));
-        await this.props.getNewPreviousMaxMessage({ messages: messageIds });
 
-        const { newMessages } = this.props;
-        const messageIdJobTwo = currentMessages.data.find(item => item.jobIdentify === 2).referenceId;
-        const paramMissingMessageCsd = {
-            fromMessageId: messageIdJobTwo,
-            toMessageId: newMessages.newMaxMessageId,
-            postTime: newMessages.messagePostTimeInfos.find(item => item.messageId === messageIdJobTwo).postTime
-        }
-        await this.props.getMissingMessageCsd(paramMissingMessageCsd);
+        const { selected } = this.props;
 
-        const { missingMessageCsd } = this.props;
-        const messages = crmNotIncludeJobProPlayer.map(item => {
-            return {
-                jobIdentify: item.jobIdentify,
-                fromMessageId: item.referenceId,
-                toMessageId: newMessages.newMaxMessageId,
-                postTime: newMessages.messagePostTimeInfos.find(element => element.messageId === item.referenceId).postTime
-            }
-        });
+        const newMaxMessageIds = selected.map((item, index) => {
+            const element = { ...item };
 
-        const paramMissingMessage = {
-            messages: messages,
-            msgContentTypes: currentMessages.messageTypeInfos.filter(item => item.jobIdentify !== 4 && item.jobIdentify !== 5),
-            requests: missingMessageCsd
-        };
-        await this.props.getMissingMessageInfo(paramMissingMessage);
+            const newMaxMessageId = currentMessages.data.find(el => el.jobIdentify === item.id);
+            element.newMaxMessageId = newMaxMessageId.maxReferenceId;
 
-        const paramMissingProblemAccount = {
-            fromLogId : currentMessages.data.find(item => item.jobIdentify === 4).referenceId
-        };
-        await this.props.getMissingProblemAccount(paramMissingProblemAccount);
-
-        const paramMissingMonitoredPlayer = {
-            fromLogId : currentMessages.data.find(item => item.jobIdentify === 5).referenceId
-        };
-        await this.props.getMissingMonitoredPlayer(paramMissingMonitoredPlayer);
-
-        const { missingMessages, selected } = this.props;
-        const newMaxMessageIds = selected.map((item,index) => {
-            const element = {...item};
-            const newMaxMessageId = missingMessages.find(el => el.jobIdentify === item.id);
-            if (newMaxMessageId) {
-                element.newMaxMessageId = newMaxMessageId.messageId;
-            } else {
-                element.newMaxMessageId = currentMessages.data[index].referenceId
-            }
             return element;
         });
-        newMaxMessageIds[3].newMaxMessageId = this.props.missingProblemAccount.logId[0].toLogId;
-        newMaxMessageIds[4].newMaxMessageId = this.props.missingMonitoredPlayer.logId[0].toLogId;
+
         this.props.setSelected(newMaxMessageIds);
     };
 
@@ -100,14 +57,7 @@ export class DataGrid extends Component {
         const title = this.props.selected.find(item => item.id === jobIdentify).name;
         const newMaxMessageId = this.props.selected.find(item => item.id === jobIdentify).newMaxMessageId;
         let data;
-        if (jobIdentify === 4) {
-            data = this.props.missingProblemAccount.data
-        } else if (jobIdentify === 5) {
-            data = this.props.missingMonitoredPlayer.data
-        }
-        else {
-            data = this.props.missingMessages
-        }
+        data = this.props.currentMessages.missingMsgInfo.filter(x => x.jobIdentify === jobIdentify);
         this.props.setEditNewMessagePopup({ show: true, jobIdentify, title, newMaxMessageId, data });
     };
 
@@ -136,7 +86,7 @@ export class DataGrid extends Component {
     isAllEqualCurrentNew = () => {
         let isDisable = true;
         this.props.selected.map((item, key) => {
-            if(this.isNotEqualCurrentNew(key)) {
+            if (this.isNotEqualCurrentNew(key)) {
                 isDisable = false;
             }
         });
@@ -149,20 +99,11 @@ export class DataGrid extends Component {
         if (this.isAllEqualCurrentNew()) {
             return;
         }
-        this.setState({ 
+        this.setState({
             allChecked: !allChecked,
             checked: [!allChecked, !allChecked, !allChecked, !allChecked, !allChecked],
             isSubmitting: allChecked
         });
-    };
-
-    checkCondition = (item, index) => {
-        const { selected, currentMessages } = this.props;
-        const { checked } = this.state;
-        if (item > currentMessages.data[index].referenceId && item <= selected[index].newMaxMessageId && checked[index]) {
-            return true;
-        }
-        return false;
     };
 
     handleShowConfirm = () => {
@@ -191,53 +132,35 @@ export class DataGrid extends Component {
         }
     };
 
-    handleFilterPushData = (data, jobId, value) => {
-        data.filter(item => {
-            if (this.checkCondition(item.messageId, jobId - 1) && this.props.selected[jobId - 1].checked) {
-                value.push({jobIdentify: jobId, referenceId: item.messageId});
-            }
-        });
-    };
+    isSelectableItem = jobId => {
+        const currentMsg = this.props.currentMessages.data.filter(i => i.jobIdentify === jobId);
+        return currentMsg !== null &&
+            currentMsg.length > 0 &&
+            currentMsg[0].referenceId < currentMsg[0].maxReferenceId;
+    }
 
     handleSubmit = async () => {
         this.setState({ isSubmitting: true });
-        const { missingMessages, missingMessageCsd, selected, missingProblemAccount, missingMonitoredPlayer } = this.props;
+        const { selected } = this.props;
         const { checked } = this.state;
-        const messages = [], requests = [], jobInfoList = [];
-        missingMessages.filter(item => {
-            if (item.jobIdentify === 1 && this.checkCondition(item.messageId, 0) && selected[0].checked) {
-                messages.push({jobIdentify: 1, referenceId: item.messageId});
-            } else if (item.jobIdentify === 2 && this.checkCondition(item.messageId, 1) && selected[1].checked) {
-                messages.push({jobIdentify: 2, referenceId: item.messageId});
-            } else if (item.jobIdentify === 3 && this.checkCondition(item.messageId, 2) && selected[2].checked){
-                messages.push({jobIdentify: 3, referenceId: item.messageId});
-            }
-        });
-        this.handleFilterPushData(missingProblemAccount.data, 4, messages);
-        this.handleFilterPushData(missingMonitoredPlayer.data, 5, messages);
-
-        missingMessageCsd.filter(item => {
-            if (this.checkCondition(item.messageId, 1) && selected[1].checked) {
-                requests.push(item);
-            }
-        });
-        selected.map((item, index) => {
-            if (item.checked && item.newMaxMessageId !== 0 && checked[index] && this.isNotEqualCurrentNew(index)) {
-                jobInfoList.push({ jobIdentify: item.id, referenceId: item.newMaxMessageId });
-            }
-        });
-
-        this.setState({ isShowConfirmPopup: false  });
-        await this.props.createMissingMessage({ messages: messages, requests: requests }).then(res => {
-            if (res.data.isSuccessful) {
-                this.props.editMessageInfo({ jobInfoList: jobInfoList }).then(response => {
-                    this.setState({ editResult: response.data });
-                    if (response.data.isSuccessful) {
-                        this.setSubmit();
-                    }
+        const jobMsgs = [];
+        selected.map(item => {
+            if (checked[item.id - 1] && this.isSelectableItem(item.id)) {
+                jobMsgs.push({
+                    jobIdentify: item.id,
+                    messageId: item.newMaxMessageId
                 });
+            }
+        });
+
+        this.setState({ isShowConfirmPopup: false });
+
+        await this.props.createMissingMessage(jobMsgs).then(response => {
+            this.setState({ editResult: response.data });
+            if (response.data.isSuccessful) {
+                this.setSubmit();
             } else {
-                this.setState({ editResult: res.data, isSubmitting: false });
+                this.setState({ isSubmitting: false });
             }
             setTimeout(() => {
                 this.setState({ editResult: null });
@@ -283,21 +206,21 @@ export class DataGrid extends Component {
             <Cell className="text-center">
                 {
                     <Input type="checkbox"
-                        checked={this.state.checked[item.jobIdentify-1] && this.isNotEqualCurrentNew(item.jobIdentify-1)}
+                        checked={this.state.checked[item.jobIdentify - 1] && this.isNotEqualCurrentNew(item.jobIdentify - 1)}
                         onChange={event => this.handleChange(event)}
-                        value={item.jobIdentify-1}
-                        disabled={!this.isNotEqualCurrentNew(item.jobIdentify-1)}
+                        value={item.jobIdentify - 1}
+                        disabled={!this.isNotEqualCurrentNew(item.jobIdentify - 1)}
                     />
                 }
             </Cell>
-            <Cell>{this.props.selected[item.jobIdentify-1].name}</Cell>
+            <Cell>{this.props.selected[item.jobIdentify - 1].name}</Cell>
             <Cell className="text-center">{item.referenceId}</Cell>
             <Cell className="text-center">
                 <div className="new-message">
-                    <span className="messageId">{this.props.selected[item.jobIdentify-1].newMaxMessageId}</span>
+                    <span className="messageId">{this.props.selected[item.jobIdentify - 1].newMaxMessageId}</span>
                     {
-                       (isHost && this.isNotEqualCurrentNew(item.jobIdentify-1)) &&
-                       <span className="icon-edit messageIcon" onClick={() => this.handleShowEditNewMessage(item.jobIdentify)}/>
+                        (isHost && this.isNotEqualCurrentNew(item.jobIdentify - 1)) &&
+                        <span className="icon-edit messageIcon" onClick={() => this.handleShowEditNewMessage(item.jobIdentify)} />
                     }
                 </div>
             </Cell>
@@ -305,9 +228,9 @@ export class DataGrid extends Component {
     );
 
     render() {
-        const { currentMessages, newMessages, missingMessages, haveHostPermission } = this.props;
+        const { currentMessages, haveHostPermission } = this.props;
         const { isSubmitting, isShowConfirmPopup, editResult } = this.state;
-        if (currentMessages === null || newMessages === null || missingMessages === null)
+        if (currentMessages === null)
             return null;
 
         return (
@@ -345,8 +268,8 @@ export class DataGrid extends Component {
 const mapDispatchToProps = dispatch => bindActionCreators(ActionCreators, dispatch);
 
 const mapStateToProps = state => {
-    const { selected, currentMessages, newMessages, missingMessageCsd, missingMessages, missingProblemAccount, missingMonitoredPlayer } = state;
-    return { selected, currentMessages, newMessages, missingMessageCsd, missingMessages, missingProblemAccount, missingMonitoredPlayer };
+    const { selected, currentMessages } = state;
+    return { selected, currentMessages };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataGrid);

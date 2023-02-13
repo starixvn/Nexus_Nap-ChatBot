@@ -5,6 +5,9 @@
     [XmlType("r")]
     public class AbnormalTicketInfo
     {
+        [XmlAttribute("VoidingHistoryCollectionId")]
+        public int VoidingHistoryCollectionId { get; set; }
+
         [XmlAttribute("MessageId")]
         public long MessageId { get; set; }
 
