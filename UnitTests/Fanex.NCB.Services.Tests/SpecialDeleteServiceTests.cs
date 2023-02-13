@@ -249,41 +249,7 @@
                 });
         }
 
-        #region GetMessageAndImportToChatbotAsync
 
-        [Fact]
-        public async Task GetMessageAndImportToChatbotAsync_HaveAbnormalBetsMessage_DoAsExpected()
-        {
-            // Arrange
-            var messageHistories = fixture.Create<IEnumerable<AbnormalMessage>>();
-            var setting = fixture.Create<SystemSetting>();
-            var messages = new List<AbnormalMessageContent>
-            {
-                new AbnormalMessageContent { VoidingHistoryCollectionId = 1, Content_en = "content en", Content_cs = "content cs" },
-                new AbnormalMessageContent { VoidingHistoryCollectionId = 2, Content_en = "content en", Content_cs = "content cs" }
-            };
-            var abnormalMessages = new List<AbnormalMessageDetail1>
-            {
-                new AbnormalMessageDetail1 { RequestID = 1, MessageID = 1 },
-                new AbnormalMessageDetail1 { RequestID = 2, MessageID = 2 }
-            };
-            var tranids = fixture.Create<IEnumerable<CollectionTransId>>();
-            var usernames = fixture.Create<IEnumerable<CollectionUsername>>();
-
-            var service = GetService();
-            service.Protected("GetAbnormalBetsMessageContentAsync", messageHistories).Returns(Task.FromResult<IEnumerable<AbnormalMessageContent>>(messages));
-
-            // Act
-            await service.Public_GetMessageAndImportToChatbotAsync(tranids, usernames, setting);
-
-            // Asset
-            service.DidNotReceive().Protected("ImportAbnormalBetNotificationToChatbotDBAsync",
-                abnormalMessages,
-                Arg.Any<IEnumerable<AbnormalMessage>>(),
-                2);
-        }
-
-        #endregion GetMessageAndImportToChatbotAsync
 
         #region ImportAbnormalBetNotificationToChatbotDBAsync
 

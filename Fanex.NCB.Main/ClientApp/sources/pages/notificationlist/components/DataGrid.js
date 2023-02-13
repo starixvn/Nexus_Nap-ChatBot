@@ -77,7 +77,7 @@ export default class DataGrid extends PureComponent {
                 <Cell colWidth={100} header>
                     <div className="has-icons">
                         Title/Content
-                    <span className={this.state.expandPanels ? 'icon-collapse' : 'icon-expand'} onClick={this.toggleExpandPanels} />
+                        <span className={this.state.expandPanels ? 'icon-collapse' : 'icon-expand'} onClick={this.toggleExpandPanels} />
                     </div>
                 </Cell>
                 <Cell colWidth={12} className="col-status" header>Status</Cell>
@@ -120,7 +120,7 @@ export default class DataGrid extends PureComponent {
         return (
             <Row className={this.hightLightId && !isNaN(this.hightLightId) && (parseInt(this.hightLightId) === item.notificationId) ? 'hight-light-notification notification' : 'notification'} key={item.notificationId} >
                 <Cell className="col-order text-center">
-                    {this.renderNotificationId(item.notificationId, item.messageID)}
+                    {this.renderNotificationId(item.notificationId, item.messageIdList)}
                 </Cell>
                 <Cell>
                     {item.creatorName}
