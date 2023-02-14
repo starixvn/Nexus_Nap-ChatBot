@@ -67,13 +67,13 @@ export default class DataGrid extends PureComponent {
     buildHeader = isHost => {
         return (
             <Row style={{ height: 32 }}>
-                <Cell colWidth={15} header>
+                <Cell colWidth={20} header>
                     <p className='margin-bot0'>{Labels.NotificationID}</p>
                     <p className='margin-bot0'>{Labels.MessageID}</p>
                 </Cell>
                 <Cell colWidth={20} header>Sender/Notification Type</Cell>
                 <Cell colWidth={18} header>Send Date/Time (GMT+8)</Cell>
-                <Cell colWidth={18} header>{Labels.BotService}</Cell>
+                <Cell colWidth={15} header>{Labels.BotService}</Cell>
                 <Cell colWidth={100} header>
                     <div className="has-icons">
                         Title/Content
@@ -110,9 +110,10 @@ export default class DataGrid extends PureComponent {
         <Fragment key={notificationID}>
             <span>{notificationID}</span>
             {
-                messageID > 0 &&
-                <p className='margin-bot0'>(Msg: {messageID})</p>
+                messageID !== '' &&
+                <p className='margin-bot0 overflow-ellipsis' title={"Message Ids:" + messageID}>(Msg: {messageID})</p>
             }
+           
         </Fragment>
     );
 

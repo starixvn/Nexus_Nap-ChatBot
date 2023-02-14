@@ -56,7 +56,7 @@ export class EditNewMessage extends Component {
         return (
             <Row>
                 <Cell colWidth={5} header>{Labels.Select}</Cell>
-                <Cell colWidth={8} header>{(id === 4 || id === 5) ? Labels.ID : Labels.MessageID}</Cell>
+                <Cell colWidth={12} header>{(id === 4 || id === 5) ? Labels.ID : Labels.MessageID}</Cell>
                 {
                     id === 2 &&
                     <Cell colWidth={8} header>{Labels.VoidingHistoryCollectionID}</Cell>
@@ -98,15 +98,17 @@ export class EditNewMessage extends Component {
         this.handleClose();
     };
 
-    renderRow = (item, index) => (
-        <Row key={index} >
+    renderRow = (item, index) => {
+        const msgId = item.jobIdentify === 2 ? item.messageIds : item.messageId;
+        return (
+            <Row key={index} >
             <Cell className="text-center">
                 <Input type="radio" name="radioEditNewMessage" value={item.jobIdentify === 2 ? item.voidingHistoryCollectionId : item.messageId}
                     defaultChecked={(item.jobIdentify === 2 ? item.voidingHistoryCollectionId : item.messageId) === this.props.newMaxId}
                     onChange={event => this.handleChangeCheck(event)}
                 />
             </Cell>
-            <Cell className="text-center">{item.jobIdentify === 2 ? item.messageIds : item.messageId}</Cell>
+                <Cell className="text-center" title={msgId}>{msgId}</Cell>
             {
                 item.jobIdentify === 2 &&
                 <Cell className="text-center">{item.voidingHistoryCollectionId}</Cell>
@@ -119,7 +121,8 @@ export class EditNewMessage extends Component {
             </Cell>
             <Cell className="text-center">{dateFormat(item.postTime, DateTimeFormatV3)}</Cell>
         </Row>
-    );
+     )
+    };
 
     render() {
         const { data, id } = this.props;
