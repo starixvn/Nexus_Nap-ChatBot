@@ -14,14 +14,14 @@
         <Setting Key="Acc_SiteDBConfigSel" SpName="Acc_SiteDBConfigSel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_Chatbot_AbnormalBets_Info_Sel" SpName="NAP_Chatbot_AbnormalBets_Info_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NCB_MsgSetting_SpecialDelete_Sel" SpName="NCB_MsgSetting_SpecialDelete_Sel" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel" SpName="NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NCB_SpecialDeleteMsg_AbnormalBets_Import" SpName="NCB_SpecialDeleteMsg_AbnormalBets_Import" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel" SpName="NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SpecialDeleteMsg_AbnormalBets_Import" SpName="NCB_SpecialDeleteMsg_AbnormalBets_Import_xtest" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="NCB_SpecialDeleteMsg_Import" SpName="NCB_SpecialDeleteMsg_Import" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="NAP_Chatbot_SpecialDeleteMsg_Sel" SpName="NAP_Chatbot_SpecialDeleteMsg_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_SpecialDeleteMsg_AbnormalBets_Sel" SpName="NAP_Chatbot_SpecialDeleteMsg_AbnormalBets_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_AbnormalBets_UsernameTicketInfo_Sel" SpName="NAP_Chatbot_AbnormalBets_UsernameTicketInfo_Sel" DbName="DBTXN.bodb02.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_SpecialDeleteMsg_AbnormalBets_Sel" SpName="NAP_Chatbot_SpecialDeleteMsg_AbnormalBets_Sel_xtest" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel_xtest" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage_xtest" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_AbnormalBets_UsernameTicketInfo_Sel" SpName="NAP_Chatbot_AbnormalBets_UsernameTicketInfo_Sel_xtest" DbName="DBTXN.bodb02.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NCB_ViewLog_DeleteOldConversationMessageLog_Import" SpName="NCB_ViewLog_DeleteOldConversationMessageLog_Import" DbName="ChatBot" Plain="0"></Setting>
     </Function>
     <Function Name="Site Message">
@@ -37,8 +37,8 @@
         <Setting Key="NCB_ProblemAccount_Import" SpName="NCB_ProblemAccount_Import" DbName="ChatBot" Plain="0" />
     </Function>
     <Function Name="Monitored Player">
-        <Setting Key="NCB_MsgSetting_MonitoredPlayer" SpName="NCB_MsgSetting_MonitoredPlayer_xtest" DbName="ChatBot" Plain="0" />
-        <Setting Key="NAP_Chatbot_MonitoredPlayer_Sel" SpName="NAP_Chatbot_MonitoredPlayer_Sel_xtest" DbName="DBEXT.bodb02.bodbAdminNet" Plain="0" />
-        <Setting Key="NCB_MonitoredPlayer_Import" SpName="NCB_MonitoredPlayer_Import_xtest" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_MsgSetting_MonitoredPlayer" SpName="NCB_MsgSetting_MonitoredPlayer" DbName="ChatBot" Plain="0" />
+        <Setting Key="NAP_Chatbot_MonitoredPlayer_Sel" SpName="NAP_Chatbot_MonitoredPlayer_Sel" DbName="DBEXT.bodb02.bodbAdminNet" Plain="0" />
+        <Setting Key="NCB_MonitoredPlayer_Import" SpName="NCB_MonitoredPlayer_Import" DbName="ChatBot" Plain="0" />
     </Function>
 </Functions>
