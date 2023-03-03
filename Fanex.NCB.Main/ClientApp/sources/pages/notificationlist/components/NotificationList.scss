@@ -28,10 +28,9 @@
 .margin-bot0 {
     margin-bottom: 0;
 }
-.overflow-ellipsis {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+
+.overflow-brakespace {
+    white-space: break-spaces;
 }
 
 .tooltip {

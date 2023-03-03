@@ -106,16 +106,20 @@ export default class DataGrid extends PureComponent {
         );
     }
 
-    renderNotificationId = (notificationID, messageID) => (
-        <Fragment key={notificationID}>
-            <span>{notificationID}</span>
-            {
-                messageID !== '' &&
-                <p className='margin-bot0 overflow-ellipsis' title={"Message Ids:" + messageID}>(Msg: {messageID})</p>
-            }
-           
-        </Fragment>
-    );
+    renderNotificationId = (notificationID, messageID) => {
+        console.log(messageID);
+        const displayMsgIDs = messageID !== '' ? messageID.split(',').join(', ') : "";
+        return (
+            <Fragment key={notificationID}>
+                <span>{notificationID}</span>
+                {
+                    messageID !== '' &&
+                    <p className='margin-bot0 overflow-brakespace' title={"Message Ids:" + displayMsgIDs}>(Msg: {displayMsgIDs})</p>
+                }
+
+            </Fragment>
+        )
+    };
 
     renderRow = (item, index, isHost) => {
         return (
