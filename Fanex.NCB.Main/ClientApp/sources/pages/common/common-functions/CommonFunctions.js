@@ -61,4 +61,18 @@ export default class CommonFunctions {
             timeout = setTimeout(later, 500);
         };
     }
+
+    static renderPrivousIdTitle(jobId) {
+        console.log(jobId);
+        var title = 'Previous Max';
+        var postFix = 'ID';
+
+        if (jobId === 2) {
+            postFix = 'Voiding History Collection ID'
+        }
+        if (jobId === 4 || jobId === 5) {
+            postFix = 'MessageID';
+        }
+        return `${title} ${postFix}:`
+    }
 }

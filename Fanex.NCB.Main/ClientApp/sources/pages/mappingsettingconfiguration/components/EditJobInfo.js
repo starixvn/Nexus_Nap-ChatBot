@@ -9,6 +9,7 @@ import Labels from '../../common/Labels';
 import { Input, Tooltip } from 'reactstrap';
 import { toast } from 'react-toastify';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
+import CommonFunctions from '../../common/common-functions/CommonFunctions';
 
 export class EditJobInfo extends Component {
     constructor(props) {
@@ -46,7 +47,7 @@ export class EditJobInfo extends Component {
             this.props.setJobInfoData(data, () => this.props.setJobInfoFlag({ isEdit: false }));
         }
     }
-    
+
     handleChange = e => {
         this.setState({
             [e.target.name]: e.target.value
@@ -58,7 +59,7 @@ export class EditJobInfo extends Component {
     }
 
     toggleConfirmUpdateJobInfo = () => {
-        this.setState({confirmUpdateJobInfo: false });
+        this.setState({ confirmUpdateJobInfo: false });
         this.props.setJobInfoFlag({ isEdit: false });
     }
 
@@ -72,7 +73,23 @@ export class EditJobInfo extends Component {
         });
     }
 
+    renderPrivousID = jobId => {
+        console.log(jobId);
+        var title = 'Previous Max';
+        var postFix = 'ID';
+
+        if (jobId === 2) {
+            postFix = 'Voiding History Collection ID'
+        }
+        if (jobId === 4 || jobId === 5) {
+            postFix = 'MessageID';
+        }
+        return `${title} ${postFix}:`
+    }
+
     render() {
+        const jobId = this.props.jobInfo !== null ? this.props.jobInfo.id : 0;
+        const previousMaxIDTitle = CommonFunctions.renderPrivousIdTitle(jobId);
         return (
             this.props.jobInfo && <div className='job-info-container'>
                 <div className='job-info-item'>
@@ -80,7 +97,7 @@ export class EditJobInfo extends Component {
                     <p className={`job-info-value ${this.props.jobInfo.status === 'Done' ? 'status-done' : 'status-running'}`}>{this.props.jobInfo.status}</p>
                 </div>
                 <div className='job-info-item'>
-                    <p className='job-info-title'>{`Previous Max ${(this.props.jobInfo.id === 4 || this.props.jobInfo.id === 5) ? 'ID' : 'MessageID'}:`}</p>
+                    <p className='job-info-title'>{previousMaxIDTitle}</p>
                     <p className='job-info-value'>{this.props.jobInfo.previousMaxMessageId}</p>
                 </div>
                 <div className='job-info-item'>

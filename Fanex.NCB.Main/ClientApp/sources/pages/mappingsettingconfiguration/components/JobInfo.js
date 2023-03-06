@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions/index';
 import Labels from '../../common/Labels';
+import CommonFunctions from '../../common/common-functions/CommonFunctions';
 
 export class JobInfo extends Component {
     constructor(props) {
@@ -21,6 +22,9 @@ export class JobInfo extends Component {
     }
 
     render() {
+        const jobId = this.props.jobInfo !== null ? this.props.jobInfo.id : 0;
+        const previousMaxIDTitle = CommonFunctions.renderPrivousIdTitle(jobId);
+
         return (
             this.props.jobInfo && <div className='job-info-container'>
                 <div className='job-info-item'>
@@ -28,7 +32,7 @@ export class JobInfo extends Component {
                     <p className={`job-info-value ${this.props.jobInfo.status === 'Done' ? 'status-done' : 'status-running'}`}>{this.props.jobInfo.status}</p>
                 </div>
                 <div className='job-info-item'>
-                    <p className='job-info-title'>{`Previous Max ${(this.props.jobInfo.id === 4 || this.props.jobInfo.id === 5) ? 'ID' : 'MessageID'}:`}</p>
+                    <p className='job-info-title'>{previousMaxIDTitle}</p>
                     <p className='job-info-value'>{this.props.jobInfo.previousMaxMessageId}</p>
                 </div>
                 <div className='job-info-item'>
