@@ -55,13 +55,13 @@ export class EditNewMessage extends Component {
         const { id } = this.props;
         return (
             <Row>
-                <Cell colWidth={5} header>{Labels.Select}</Cell>
+                <Cell colWidth={7} header>{Labels.Select}</Cell>
                 <Cell colWidth={12} header>{(id === 4 || id === 5) ? Labels.ID : Labels.MessageID}</Cell>
                 {
                     id === 2 &&
-                    <Cell colWidth={8} header>{Labels.VoidingHistoryCollectionID}</Cell>
+                    <Cell colWidth={12} header>{Labels.VoidingHistoryCollectionID}</Cell>
                 }
-                <Cell colWidth={45} header>
+                <Cell colWidth={43} header>
                     <div className="has-icons">
                         {Labels.Content_en}
                         <span className={this.state.expandPanels ? 'icon-collapse' : 'icon-expand'} onClick={this.toggleExpandPanels} />
@@ -99,7 +99,7 @@ export class EditNewMessage extends Component {
     };
 
     renderRow = (item, index) => {
-        const msgId = item.jobIdentify === 2 ? item.messageIds : item.messageId;
+        const msgId = item.jobIdentify === 2 ? item.messageIds.split(',').join(', ') : item.messageId;
         return (
             <Row key={index} >
             <Cell className="text-center">
@@ -132,7 +132,7 @@ export class EditNewMessage extends Component {
         return (
             <Modal isOpen toggle={this.handleClose} className="edit-new-message" backdrop="static" size="lg">
                 <ModalHeader toggle={this.handleClose}>
-                    {`${(id === 4 || id === 5) ? Labels.NewPreviousMaxIDFor : Labels.NewPreviousMaxMessageIDFor} ${this.props.title}`}
+                    {`${Labels.ResetLastIdFor} ${this.props.title}`}
                 </ModalHeader>
                 <ModalBody>
                     <Label className="form-label">{(id === 4 || id === 5) ? Labels.ListOfMissingID : Labels.ListOfMissingMessages}</Label>
