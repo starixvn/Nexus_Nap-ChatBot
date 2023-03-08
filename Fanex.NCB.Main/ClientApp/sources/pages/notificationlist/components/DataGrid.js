@@ -108,7 +108,7 @@ export default class DataGrid extends PureComponent {
 
     renderNotificationId = (notificationID, messageID) => {
         console.log(messageID);
-        const displayMsgIDs = messageID !== '' ? messageID.split(',').join(', ') : "";
+        const displayMsgIDs = messageID !== null && messageID !== '' ? messageID.split(',').join(', ') : "";
         return (
             <Fragment key={notificationID}>
                 <span>{notificationID}</span>
