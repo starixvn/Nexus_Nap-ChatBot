@@ -146,7 +146,7 @@
             {
                 var criteria = new GetVoidingHIstoryCollectionIdCriteria
                 {
-                    LastLogId = systemSetting.LastLogId,
+                    LastVoidingHistoryCollectionId = systemSetting.LastVoidingHistoryCollectionId,
                     BatchSize = systemSetting.BatchSize
                 };
                 var (tranIds, usernames) = await baseService.FetchMultipleAsync<CollectionTransId, CollectionUsername>(criteria);

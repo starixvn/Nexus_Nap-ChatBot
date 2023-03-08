@@ -4,7 +4,7 @@
 
     public class GetVoidingHIstoryCollectionIdCriteria : CriteriaBase
     {
-        public int LastLogId { get; set; }
+        public int LastVoidingHistoryCollectionId { get; set; }
         public int BatchSize { get; set; }
 
         public override string GetSettingKey() => "NAP_Chatbot_SpecialDelete_AbnormalBets_GetMessage";

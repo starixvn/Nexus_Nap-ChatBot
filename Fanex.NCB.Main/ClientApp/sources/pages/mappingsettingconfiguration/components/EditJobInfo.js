@@ -73,20 +73,6 @@ export class EditJobInfo extends Component {
         });
     }
 
-    renderPrivousID = jobId => {
-        console.log(jobId);
-        var title = 'Previous Max';
-        var postFix = 'ID';
-
-        if (jobId === 2) {
-            postFix = 'Voiding History Collection ID'
-        }
-        if (jobId === 4 || jobId === 5) {
-            postFix = 'MessageID';
-        }
-        return `${title} ${postFix}:`
-    }
-
     render() {
         const jobId = this.props.jobInfo !== null ? this.props.jobInfo.id : 0;
         const previousMaxIDTitle = CommonFunctions.renderPrivousIdTitle(jobId);

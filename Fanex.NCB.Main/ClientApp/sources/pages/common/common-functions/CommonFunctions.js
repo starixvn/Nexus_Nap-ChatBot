@@ -70,7 +70,7 @@ export default class CommonFunctions {
         if (jobId === 2) {
             postFix = 'Voiding History Collection ID'
         }
-        if (jobId === 4 || jobId === 5) {
+        if (jobId === 1 || jobId === 3) {
             postFix = 'MessageID';
         }
         return `${title} ${postFix}:`
