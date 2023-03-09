@@ -102,26 +102,26 @@ export class EditNewMessage extends Component {
         const msgId = item.jobIdentify === 2 ? item.messageIds.split(',').join(', ') : item.messageId;
         return (
             <Row key={index} >
-            <Cell className="text-center">
-                <Input type="radio" name="radioEditNewMessage" value={item.jobIdentify === 2 ? item.voidingHistoryCollectionId : item.messageId}
-                    defaultChecked={(item.jobIdentify === 2 ? item.voidingHistoryCollectionId : item.messageId) === this.props.newMaxId}
-                    onChange={event => this.handleChangeCheck(event)}
-                />
-            </Cell>
-                <Cell className="text-center" title={msgId}>{msgId}</Cell>
-            {
-                item.jobIdentify === 2 &&
-                <Cell className="text-center">{item.voidingHistoryCollectionId}</Cell>
-            }
-            <Cell>
+                <Cell className="text-center">
+                    <Input type="radio" name="radioEditNewMessage" value={item.jobIdentify === 2 ? item.voidingHistoryCollectionId : item.messageId}
+                        defaultChecked={(item.jobIdentify === 2 ? item.voidingHistoryCollectionId : item.messageId) === this.props.newMaxId}
+                        onChange={event => this.handleChangeCheck(event)}
+                    />
+                </Cell>
+                <Cell className="text-center">{msgId}</Cell>
                 {
-                    (item.content && item.content.length > 75) ? <PanelContent ref={panel => this.panels[index] = panel} content={item.content} />
-                        : <ContentPreview text={item.content} />
+                    item.jobIdentify === 2 &&
+                    <Cell className="text-center">{item.voidingHistoryCollectionId}</Cell>
                 }
-            </Cell>
-            <Cell className="text-center">{dateFormat(item.postTime, DateTimeFormatV3)}</Cell>
-        </Row>
-     )
+                <Cell>
+                    {
+                        (item.content && item.content.length > 75) ? <PanelContent ref={panel => this.panels[index] = panel} content={item.content} />
+                            : <ContentPreview text={item.content} />
+                    }
+                </Cell>
+                <Cell className="text-center">{dateFormat(item.postTime, DateTimeFormatV3)}</Cell>
+            </Row>
+        )
     };
 
     render() {

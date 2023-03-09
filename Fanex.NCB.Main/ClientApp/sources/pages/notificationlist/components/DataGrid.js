@@ -113,8 +113,8 @@ export default class DataGrid extends PureComponent {
             <Fragment key={notificationID}>
                 <span>{notificationID}</span>
                 {
-                    messageID !== '' &&
-                    <p className='margin-bot0 overflow-brakespace' title={"Message Ids:" + displayMsgIDs}>(Msg: {displayMsgIDs})</p>
+                    messageID !== null && messageID !== '' &&
+                    <p className='margin-bot0 overflow-brakespace'>(Msg: {displayMsgIDs})</p>
                 }
 
             </Fragment>
