@@ -18,6 +18,7 @@
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Newtonsoft.Json;
 
     public class AuthController : Controller
     {
@@ -29,6 +30,7 @@
         private readonly INapSettings napSettings;
         private readonly ISecurityService securityService;
         private readonly ISyncDataService syncDataService;
+        private readonly ILogService logService;
 
         public AuthController(
             IUserService userService,
@@ -36,7 +38,8 @@
             ISecurityService securityService,
             INapSession napSession,
             INapSettings napSettings,
-            ISyncDataService syncDataService)
+            ISyncDataService syncDataService,
+            ILogService logService)
         {
             this.userService = userService;
             this.groupService = groupService;
@@ -44,6 +47,7 @@
             this.napSession = napSession;
             this.napSettings = napSettings;
             this.syncDataService = syncDataService;
+            this.logService = logService;
         }
 
         public IActionResult Index(string returnUrl, bool invalidLogin)
@@ -185,7 +189,7 @@
                 Platform = Environment.OSVersion.Platform.ToString(),
                 LoginDate = DateTime.Now
             };
-
+            await logService.WriteMessageSentryErrorAsync(JsonConvert.SerializeObject(loginParam));
             return await securityService.LoginAsync(loginParam);
         }
 
