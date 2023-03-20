@@ -16,14 +16,12 @@
     public class ResetLastMessageIdService : IResetLastMessageIdService
     {
         private readonly IBaseService baseService;
-        private readonly ILogService logService;
         private readonly string Environment;
 
-        public ResetLastMessageIdService(IBaseService baseService, IConfiguration configuration, ILogService logService)
+        public ResetLastMessageIdService(IBaseService baseService, IConfiguration configuration)
         {
             this.baseService = baseService;
             Environment = configuration.GetSection("Environment")?.Value;
-            this.logService = logService;
         }
 
         public async Task<(IEnumerable<CurrentMaxMessageInfo>, IEnumerable<MessageTypeInfo>)> GetCurrentPreviousMaxMessageAsync()
@@ -46,36 +44,25 @@
             IEnumerable<MessageTypeInfo> contentTypeList,
             IEnumerable<MessageRequestId> abnormalMissingMsgList)
         {
-            try
+            var criteria = new GetMissingMessageInfoCriteria
             {
-                var criteria = new GetMissingMessageInfoCriteria
-                {
-                    Messages = msgList.Where(m => m.JobIdentify != (int)JobIdentity.ProblemPlayer && m.JobIdentify != (int)JobIdentity.MonitoredPlayer).ToList(),
-                    MsgContentTypes = contentTypeList.Where(m => m.JobIdentify != (int)JobIdentity.ProblemPlayer && m.JobIdentify != (int)JobIdentity.MonitoredPlayer).ToList(),
-                    Requests = abnormalMissingMsgList.ToList()
-                };
-                var missingInfo = await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
-                await logService.WriteMessageSentryErrorAsync(JsonConvert.SerializeObject(missingInfo));
-                var problemAccountFromLogId = msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.ProblemPlayer).ReferenceId;
-                var problemMissingInfo = await GetMissingProblemAccountAsync(problemAccountFromLogId);
-                missingInfo = missingInfo.Concat(problemMissingInfo);
+                Messages = msgList.Where(m => m.JobIdentify != (int)JobIdentity.ProblemPlayer && m.JobIdentify != (int)JobIdentity.MonitoredPlayer).ToList(),
+                MsgContentTypes = contentTypeList.Where(m => m.JobIdentify != (int)JobIdentity.ProblemPlayer && m.JobIdentify != (int)JobIdentity.MonitoredPlayer).ToList(),
+                Requests = abnormalMissingMsgList.ToList()
+            };
+            var missingInfo = await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
 
-                var monitoredPlayerFromLogId = msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.MonitoredPlayer).ReferenceId;
-                var monitoredMissingInfo = await GetMissingMonitoredPlayerAsync(monitoredPlayerFromLogId);
-                missingInfo = missingInfo.Concat(monitoredMissingInfo);
+            var problemAccountFromLogId = msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.ProblemPlayer).ReferenceId;
+            var problemMissingInfo = await GetMissingProblemAccountAsync(problemAccountFromLogId);
+            missingInfo = missingInfo.Concat(problemMissingInfo);
 
-                CalculateMaxReferrenceId(msgList, missingInfo);
-                await logService.WriteMessageSentryErrorAsync(JsonConvert.SerializeObject(msgList));
-                await logService.WriteMessageSentryErrorAsync(JsonConvert.SerializeObject(missingInfo));
+            var monitoredPlayerFromLogId = msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.MonitoredPlayer).ReferenceId;
+            var monitoredMissingInfo = await GetMissingMonitoredPlayerAsync(monitoredPlayerFromLogId);
+            missingInfo = missingInfo.Concat(monitoredMissingInfo);
 
-                return missingInfo;
-            }
-            catch (System.Exception ex)
-            {
-                await logService.WriteExceptionSentryErrorAsync(ex);
+            CalculateMaxReferrenceId(msgList, missingInfo);
 
-                throw;
-            }
+            return missingInfo;
         }
 
         private static void CalculateMaxReferrenceId(IEnumerable<CurrentMaxMessageInfo> msgList, IEnumerable<MissingMesssageInfo> missingInfo)

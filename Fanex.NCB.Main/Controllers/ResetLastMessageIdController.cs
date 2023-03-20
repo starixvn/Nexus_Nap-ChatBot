@@ -25,8 +25,7 @@
             INapSettings napSettings,
             INapSession napSession,
             IUserService userService,
-            IResetLastMessageIdService resetLastMessageIdService,
-        )
+            IResetLastMessageIdService resetLastMessageIdService)
         {
             this.napSettings = napSettings;
             this.napSession = napSession;
