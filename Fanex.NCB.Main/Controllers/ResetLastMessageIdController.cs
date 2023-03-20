@@ -1,7 +1,6 @@
 ﻿namespace Fanex.NCB.Main.Controllers
 {
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
@@ -10,10 +9,8 @@
     using Fanex.NCB.Models.ResetLastMessageId;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
-    using Fanex.NCB.Shared.Extensions;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
-    using Newtonsoft.Json;
     using static Fanex.NAP.Core.Business.Constant;
 
     [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
@@ -58,15 +55,11 @@
             try
             {
                 var (currentMaxMessageInfos, messageTypeInfos) = await resetLastMessageIdService.GetCurrentPreviousMaxMessageAsync();
-                await logService.WriteMessageSentryErrorAsync(JsonConvert.SerializeObject(currentMaxMessageInfos));
-                await logService.WriteMessageSentryErrorAsync(XmlHelper<CurrentMaxMessageInfo>.Serialize(currentMaxMessageInfos.ToList()));
-                await logService.WriteMessageSentryErrorAsync(JsonConvert.SerializeObject(messageTypeInfos));
 
                 var abnormalBetsMissingMsg = await resetLastMessageIdService.GetAbnormalBetsMissingMessageAsync(currentMaxMessageInfos);
-                await logService.WriteMessageSentryErrorAsync(JsonConvert.SerializeObject(abnormalBetsMissingMsg));
 
-                var missingMsgInfo = await resetLastMessageIdService.GetMissingMessageInfoAsync(currentMaxMessageInfos, messageTypeInfos, abnormalBetsMissingMsg);
-                await logService.WriteMessageSentryErrorAsync(JsonConvert.SerializeObject(missingMsgInfo));
+                //var missingMsgInfo = await resetLastMessageIdService.GetMissingMessageInfoAsync(currentMaxMessageInfos, messageTypeInfos, abnormalBetsMissingMsg);
+                var missingMsgInfo = new List<MissingMesssageInfo>();
 
                 return Json(new
                 {
