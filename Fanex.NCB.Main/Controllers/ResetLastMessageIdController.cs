@@ -20,21 +20,18 @@
         private readonly INapSession napSession;
         private readonly IUserService userService;
         private readonly IResetLastMessageIdService resetLastMessageIdService;
-        private readonly ILogService logService;
 
         public ResetLastMessageIdController(
             INapSettings napSettings,
             INapSession napSession,
             IUserService userService,
             IResetLastMessageIdService resetLastMessageIdService,
-            ILogService logService
         )
         {
             this.napSettings = napSettings;
             this.napSession = napSession;
             this.userService = userService;
             this.resetLastMessageIdService = resetLastMessageIdService;
-            this.logService = logService;
         }
 
         [HttpGet]
@@ -51,28 +48,18 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Read)]
         public async Task<IActionResult> GetCurrentPreviousMaxMessage()
         {
-            await logService.WriteMessageSentryErrorAsync("go to action here!");
-            try
+            var (currentMaxMessageInfos, messageTypeInfos) = await resetLastMessageIdService.GetCurrentPreviousMaxMessageAsync();
+
+            var abnormalBetsMissingMsg = await resetLastMessageIdService.GetAbnormalBetsMissingMessageAsync(currentMaxMessageInfos);
+
+            var missingMsgInfo = await resetLastMessageIdService.GetMissingMessageInfoAsync(currentMaxMessageInfos, messageTypeInfos, abnormalBetsMissingMsg);
+
+            return Json(new
             {
-                var (currentMaxMessageInfos, messageTypeInfos) = await resetLastMessageIdService.GetCurrentPreviousMaxMessageAsync();
-
-                var abnormalBetsMissingMsg = await resetLastMessageIdService.GetAbnormalBetsMissingMessageAsync(currentMaxMessageInfos);
-
-                //var missingMsgInfo = await resetLastMessageIdService.GetMissingMessageInfoAsync(currentMaxMessageInfos, messageTypeInfos, abnormalBetsMissingMsg);
-                var missingMsgInfo = new List<MissingMesssageInfo>();
-
-                return Json(new
-                {
-                    data = currentMaxMessageInfos,
-                    internalMissingMsg = abnormalBetsMissingMsg,
-                    missingMsgInfo
-                });
-            }
-            catch (System.Exception ex)
-            {
-                await logService.WriteExceptionSentryErrorAsync(ex);
-                throw;
-            }
+                data = currentMaxMessageInfos,
+                internalMissingMsg = abnormalBetsMissingMsg,
+                missingMsgInfo
+            });
         }
 
         [HttpPost]
