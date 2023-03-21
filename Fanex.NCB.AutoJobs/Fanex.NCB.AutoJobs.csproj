@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="App_Data\SpNames.AWS.xml" />
     <None Remove="App_Data\SpNames.LOCAL.xml" />
     <None Remove="App_Data\SpNames.PROD.xml" />
     <None Remove="App_Data\SpNames.SIT.xml" />
@@ -19,9 +18,6 @@
   <ItemGroup>
     <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
     <Content Include="App_Data\SpNames.SIT.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\SpNames.AWS.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="App_Data\SpNames.LOCAL.xml">
