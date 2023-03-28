@@ -1,1 +1,29 @@
-﻿Sorry, the page you are looking for isn't available.
+﻿@{
+    ViewData["Title"] = "404 - Page Not Found";
+}
+<div id="error-content"></div>
+
+@section Styles {
+    <environment include="Development">
+        <link rel="stylesheet" href="~/dev/pages/error/pagenotfound.chunk.css" asp-append-version="true" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/pro/pages/error/pagenotfound.chunk.css" asp-append-version="true" />
+    </environment>
+}
+
+@section Scripts {
+    <environment include="Development">
+        <script src="~/dev/pages/error/pagenotfound.chunk.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/pro/pages/error/pagenotfound.chunk.js" asp-append-version="true"></script>
+    </environment>
+}
+
+@*<body>
+    <div class="error-page">
+        <p class="error-message">The page you are looking for may have been moved, deleted or possibly never existed.</p>
+        <p class="error-code">404</p>
+    </div>
+</body>*@

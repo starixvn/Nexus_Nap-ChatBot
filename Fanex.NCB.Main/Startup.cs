@@ -166,6 +166,16 @@
                 app.UseHsts();
             }
 
+            app.Use(async (context, next) =>
+            {
+                await next();
+                if (context.Response.StatusCode == 404)
+                {
+                    context.Request.Path = "/Error/PageNotFound";
+                    await next();
+                }
+            });
+
             NapClientManager
                .UseConfig(app.ApplicationServices.GetService<INapSettings>())
                .UseSession(app.ApplicationServices.GetService<INapSession>());

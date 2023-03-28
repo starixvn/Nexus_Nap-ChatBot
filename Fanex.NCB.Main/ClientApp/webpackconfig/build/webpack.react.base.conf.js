@@ -22,6 +22,9 @@ function generateConfig(environment) {
             [`${buildPath}/login/login`]: pathConfig.paths.login,
             [`${buildPath}/editnotification/editnotification`]: pathConfig.paths.editnotification,
             [`${buildPath}/resetlastmessageid/resetlastmessageid`]: pathConfig.paths.resetlastmessageid,
+            [`${buildPath}/error/accessdenied`]: pathConfig.paths.accessdenied,
+            [`${buildPath}/error/internalerror`]: pathConfig.paths.internalerror,
+            [`${buildPath}/error/pagenotfound`]: pathConfig.paths.pagenotfound,
         },
         output: {
             path: pathConfig.projectRoot,

@@ -1,4 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+      <TypeScriptCompileOnSaveEnabled>False</TypeScriptCompileOnSaveEnabled>
+    </PropertyGroup>
+    <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+      <TypeScriptCompileOnSaveEnabled>False</TypeScriptCompileOnSaveEnabled>
+    </PropertyGroup>
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <UserSecretsId>e71ec825-3c75-46af-9929-4a6fb891e103</UserSecretsId>

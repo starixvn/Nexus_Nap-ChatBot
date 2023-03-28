@@ -15,7 +15,10 @@ const paths = {
     viewlog: './sources/pages/viewlog/index.js',
     login: './sources/pages/login/index.js',
     editnotification: './sources/pages/editnotification/index.jsx',
-    resetlastmessageid: './sources/pages/resetlastmessageid/index.js'
+    resetlastmessageid: './sources/pages/resetlastmessageid/index.js',
+    accessdenied: './sources/pages/error/access-denied.js',
+    internalerror: './sources/pages/error/internal-server-error.js',
+    pagenotfound: './sources/pages/error/page-not-found.js',
 };
 module.exports = {
     projectRoot: projectRoot,

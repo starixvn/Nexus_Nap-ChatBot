@@ -7,7 +7,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Filters;
 
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
     public class NapChatBotSuperAuthAttribute : AuthorizeAttribute, IAuthorizationFilter
     {
         private readonly INapSession napSession;
