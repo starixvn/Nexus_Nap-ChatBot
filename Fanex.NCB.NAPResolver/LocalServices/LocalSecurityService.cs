@@ -135,6 +135,11 @@
                 return (int)RecheckInStatus.KickOut;
             }
 
+            if (criteria.IsPermissionChanged)
+            {
+                return (int)RecheckInStatus.KickOutPermission;
+            }
+
             return (int)RecheckInStatus.Success;
         }
 

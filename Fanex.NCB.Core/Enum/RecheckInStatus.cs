@@ -5,6 +5,7 @@
         Success,
         KickOut,
         InvalidSite,
-        UnderMaintenance
+        UnderMaintenance,
+        KickOutPermission
     }
 }

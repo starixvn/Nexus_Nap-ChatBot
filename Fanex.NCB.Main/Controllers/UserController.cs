@@ -40,7 +40,8 @@
             return Json(new
             {
                 napSession.OnUserId,
-                ErrCode = (int)recheckInStatus
+                ErrCode = (int)recheckInStatus,
+                isChangePermission = recheckInStatus == RecheckInStatus.KickOutPermission
             });
         }
 
@@ -52,7 +53,10 @@
             }
             else
             {
-                if (!napSettings.EnableReCheckIn)
+                var status = await securityService.ReCheckInAsync(napSession.OnUserId, napSettings.SiteId);
+                var reCheckInStatus = (RecheckInStatus)status;
+
+                if (!napSettings.EnableReCheckIn && reCheckInStatus != RecheckInStatus.KickOutPermission)
                 {
                     return RecheckInStatus.Success;
                 }
@@ -62,9 +66,7 @@
                     return RecheckInStatus.InvalidSite;
                 }
 
-                var status = await securityService.ReCheckInAsync(napSession.OnUserId, napSettings.SiteId);
-
-                return status > 0 ? RecheckInStatus.KickOut : RecheckInStatus.Success;
+                return reCheckInStatus;
             }
         }
 

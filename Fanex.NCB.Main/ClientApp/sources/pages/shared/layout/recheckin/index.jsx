@@ -9,7 +9,8 @@ export default class AuthRecheck extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            showModal: false
+            showModal: false,
+            isChangePermission: false
         };
     }
 
@@ -28,23 +29,28 @@ export default class AuthRecheck extends PureComponent {
                     'RequestVerificationToken': Site.getXsrfToken()
                 }
             }).then(response => {
-                if (response.data.errCode > 0) {
-                    this.setState({ showModal: true });
+                if (response.data.errCode > 0 || response.data.isChangePermission === true) {
+                    this.setState({
+                        showModal: true,
+                        isChangePermission: response.data.isChangePermission
+                    });
                 }
             }).catch(errorResponseHandler);
         }
     };
 
     handleRedirect = () => {
-        window.location.href = Site.resolveClientUrl('Auth/Index');
+        window.location.href = Site.resolveClientUrl('Auth/Logout');
     };
 
     render() {
+        const message = this.state.isChangePermission ? 'You have been logged out since your permission has been changed. Please re-login or contact admin for support.' :
+            'Someone logged in with this account, you will be redirected to login page.';
         return (
             <Modal isOpen={this.state.showModal} backdrop="static">
-                <ModalHeader>Alert</ModalHeader>
+                <ModalHeader>{this.state.isChangePermission ? 'Permission Alert' : 'Alert'}</ModalHeader>
                 <ModalBody>
-                    Someone logged in with this account, you will be redirected to login page.
+                    {message}
                 </ModalBody>
                 <ModalFooter>
                     <button className="btn-submit" onClick={this.handleRedirect}>OK</button>
