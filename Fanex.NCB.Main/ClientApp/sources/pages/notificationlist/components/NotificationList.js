@@ -18,6 +18,7 @@ import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import MultiselectTreeView from '../../common/react-multiselect-treeview/MultiselectTreeView';
 import buildFloatData from '../../common/react-multiselect-treeview/buildData';
 import { defaultPageSize, errorId } from '../../constants/constants';
+import CommonFunctions from '../../common/common-functions/CommonFunctions';
 
 export default class NotificationList extends Component {
     constructor(props) {
@@ -146,7 +147,7 @@ export default class NotificationList extends Component {
             && (parseInt(filter.messageId, 10) <= 0 || parseInt(filter.messageId, 10) > MaxMessageId)) {
             messageId = MaxMessageId;
         }
-
+        CommonFunctions.blockUI();
         axios.get(Site.resolveClientUrl('NotificationList/Get'), {
             params: {
                 notificationTypeIds: filter.notificationTypeIds,
@@ -161,6 +162,7 @@ export default class NotificationList extends Component {
                 pageSize: pageSize
             }
         }).then(response => {
+            CommonFunctions.unblockUI();
             response.data.data.forEach(notification => {
                 notification.configSendTime = DateTime.fromISO(notification.configSendTime);
                 notification.recipientSentStatusJson = JSON.parse(notification.recipientSentStatusJson);

@@ -46,24 +46,23 @@ export default class CommonFunctions {
         const time = DateTime.fromISO(value);
         return `${time.toFormat(DateFormat)} at ${time.toFormat(TimeFormat)}`;
     }
-    
+
     static debounce(func) {
         let timeout;
         return function () {
             const context = this,
                 args = arguments;
-    
+
             const later = function () {
                 func.apply(context, args);
             };
-    
+
             clearTimeout(timeout);
             timeout = setTimeout(later, 500);
         };
     }
 
     static renderPrivousIdTitle(jobId) {
-        console.log(jobId);
         var title = 'Previous Max';
         var postFix = 'ID';
 
@@ -74,5 +73,13 @@ export default class CommonFunctions {
             postFix = 'MessageID';
         }
         return `${title} ${postFix}:`
+    }
+
+    static blockUI() {
+        document.getElementById('loadingProcess').style.display = 'block';
+    }
+
+    static unblockUI() {
+        document.getElementById('loadingProcess').style.display = 'none';
     }
 }
