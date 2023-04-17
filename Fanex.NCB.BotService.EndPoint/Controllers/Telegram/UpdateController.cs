@@ -32,7 +32,6 @@
 
         [HttpPost]
         [Route("api/telegram/webhook/{botId:long}/update")]
-#pragma warning disable S1541 // Methods and properties should not be too complex
         public async Task<IActionResult> Post(long botId, [FromBody] Update update)
 #pragma warning restore S1541 // Methods and properties should not be too complex
         {
@@ -142,14 +141,20 @@
 
         protected internal virtual async Task HandleBotCommandAsync(User bot, Message message)
         {
-            var commands = message.Entities.Where(entity => entity.Type == MessageEntityType.BotCommand)
-                .Select(entity => message.Text.Substring(entity.Offset, entity.Length)).ToList();
-            foreach (var command in commands)
+            if (message.Entities is not null && message.Entities.Any())
             {
-                if (command.Equals("/getgroupid", StringComparison.CurrentCultureIgnoreCase)
-                    || command.Equals($"/getgroupid@{bot.Username}", StringComparison.CurrentCultureIgnoreCase))
+                var commands = message.Entities.Where(entity => entity.Type == MessageEntityType.BotCommand);
+                if (commands is not null && commands.Any())
                 {
-                    await botService.SendTextMessageAsync(bot.Id, message.Chat.Id, Regex.Replace(message.Chat.Id.ToString(), @"(.*?)(-|[\\][-])", "$1\\-"));
+                    var listText = commands.Select(entity => message.Text.Substring(entity.Offset, entity.Length)).ToList();
+                    foreach (var command in listText)
+                    {
+                        if (command.Equals("/getgroupid", StringComparison.CurrentCultureIgnoreCase)
+                            || command.Equals($"/getgroupid@{bot.Username}", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            await botService.SendTextMessageAsync(bot.Id, message.Chat.Id, Regex.Replace(message.Chat.Id.ToString(), @"(.*?)(-|[\\][-])", "$1\\-"));
+                        }
+                    }
                 }
             }
         }
