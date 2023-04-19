@@ -437,9 +437,10 @@ export default class NotificationList extends Component {
                                 </div>
                             </DateRangePicker>
                         </FormGroup>
-                        <FormGroup>
+                        <FormGroup className="sender-group">
                             <Label className="form-label">Sender</Label>
                             <Input type="select" name="creatorId"
+                                className="sender"
                                 value={filter.creatorId ? filter.creatorId : ''}
                                 onChange={this.handleCreatorChange}>
                                 <option value="" >{Labels.All}</option>
