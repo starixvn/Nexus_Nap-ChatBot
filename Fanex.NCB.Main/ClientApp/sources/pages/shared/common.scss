@@ -194,3 +194,16 @@ body {
         background: #b5b5b5;
     }
 }
+
+//daterangepicker
+.daterangepicker {
+    .ranges {
+        li.active {
+            background-color: #337ab7 !important;
+        }
+    }
+    .applyBtn {
+        background-color: #337ab7 !important;
+        border-color: #337ab7 !important;
+    }
+}

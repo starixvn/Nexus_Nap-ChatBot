@@ -23,6 +23,23 @@
             }
         }
     }
+
+    .date-range {
+        width: auto !important;
+    }
+    .label-date {
+        margin: 0 8px;
+    }
+    span.cr-down-date {
+        float: right;
+    }
+    .inputRange {
+        width: 82% !important;
+
+        .iconRange {
+            color: #798388;
+        }
+    }
 }
 
 .margin-bot0 {

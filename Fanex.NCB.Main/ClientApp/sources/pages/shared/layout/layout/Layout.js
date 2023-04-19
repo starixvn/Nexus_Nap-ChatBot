@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../../components/font.css';
 import './Layout.scss';
 import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap-daterangepicker/daterangepicker.css';
 
 import Sidebar from './../sidebar';
 import Content from './../content';

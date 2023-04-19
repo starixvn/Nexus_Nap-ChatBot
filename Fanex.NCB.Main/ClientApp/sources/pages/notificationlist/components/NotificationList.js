@@ -6,9 +6,8 @@ import axios from 'axios';
 import { DateTime } from 'luxon';
 import { toast } from 'react-toastify';
 import { NCBBreadcrum } from '../../common/breadcrumbs/breadcrumbs';
-import { Form, FormGroup, Label, Input, Tooltip } from 'reactstrap';
+import { Form, FormGroup, Label, Input } from 'reactstrap';
 import ErrorReport from './ErrorReport';
-import DatePicker from '../../common/DatePicker/index';
 import Labels from '../../common/Labels';
 import errorResponseHandler from '../../lib/errorResponseHandler';
 import Site from '../../lib/site';
@@ -19,6 +18,9 @@ import MultiselectTreeView from '../../common/react-multiselect-treeview/Multise
 import buildFloatData from '../../common/react-multiselect-treeview/buildData';
 import { defaultPageSize, errorId } from '../../constants/constants';
 import CommonFunctions from '../../common/common-functions/CommonFunctions';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import DateRangePicker from 'react-bootstrap-daterangepicker';
+import moment from 'moment';
 
 export default class NotificationList extends Component {
     constructor(props) {
@@ -57,6 +59,9 @@ export default class NotificationList extends Component {
                 report: null,
                 show: false,
                 isSubmitting: false
+            },
+            outOfDateRange: {
+                show: false
             }
         };
 
@@ -139,6 +144,14 @@ export default class NotificationList extends Component {
         }).catch(errorResponseHandler);
     }
 
+    checkValidDateRange = (fromDate, toDate) => {
+        const oneDay = 24 * 60 * 60 * 1000;
+        const range = Math.round(Math.abs((toDate.getTime() - fromDate.getTime()) / oneDay));
+        if (range > 31)
+            return false;
+        return true;
+    };
+
     getNotifications = (pageIndex = 1, pageSize = defaultPageSize) => {
         const MaxMessageId = 4294967295;
         const filter = this.state.filter;
@@ -147,35 +160,41 @@ export default class NotificationList extends Component {
             && (parseInt(filter.messageId, 10) <= 0 || parseInt(filter.messageId, 10) > MaxMessageId)) {
             messageId = MaxMessageId;
         }
-        CommonFunctions.blockUI();
-        axios.get(Site.resolveClientUrl('NotificationList/Get'), {
-            params: {
-                notificationTypeIds: filter.notificationTypeIds,
-                fromDate: filter.fromDate.toDateString(),
-                toDate: filter.toDate.toDateString(),
-                creatorId: filter.creatorId,
-                recipientIds: filter.recipientIds,
-                notificationStatusIds: filter.statusIds,
-                channelIds: filter.channelIds,
-                messageId: messageId,
-                pageIndex: pageIndex,
-                pageSize: pageSize
-            }
-        }).then(response => {
-            CommonFunctions.unblockUI();
-            response.data.data.forEach(notification => {
-                notification.configSendTime = DateTime.fromISO(notification.configSendTime);
-                notification.recipientSentStatusJson = JSON.parse(notification.recipientSentStatusJson);
-            });
 
-            this.setState({
-                tableData: {
-                    pageIndex,
-                    pageSize,
-                    ...response.data
+        if (!this.checkValidDateRange(filter.fromDate, filter.toDate)) {
+            this.setState({ outOfDateRange: { show: true } });
+        } else {
+            CommonFunctions.blockUI();
+            axios.get(Site.resolveClientUrl('NotificationList/Get'), {
+                params: {
+                    notificationTypeIds: filter.notificationTypeIds,
+                    fromDate: filter.fromDate.toDateString(),
+                    toDate: filter.toDate.toDateString(),
+                    creatorId: filter.creatorId,
+                    recipientIds: filter.recipientIds,
+                    notificationStatusIds: filter.statusIds,
+                    channelIds: filter.channelIds,
+                    messageId: messageId,
+                    pageIndex: pageIndex,
+                    pageSize: pageSize
                 }
-            });
-        }).catch(errorResponseHandler);
+            }).then(response => {
+                CommonFunctions.unblockUI();
+                response.data.data.forEach(notification => {
+                    notification.configSendTime = DateTime.fromISO(notification.configSendTime);
+                    notification.recipientSentStatusJson = JSON.parse(notification.recipientSentStatusJson);
+                });
+    
+                this.setState({
+                    tableData: {
+                        pageIndex,
+                        pageSize,
+                        ...response.data
+                    }
+                });
+            }).catch(errorResponseHandler);
+        }
+
     }
 
     handleFilterChange = (name, value) => {
@@ -342,8 +361,48 @@ export default class NotificationList extends Component {
         });
     }
 
+    getDateRangeSelect = () => {
+        return {
+            'Today': [moment().toDate(), moment().toDate()],
+            'Yesterday': [
+                moment().subtract(1, 'days').toDate(),
+                moment().subtract(1, 'days').toDate()
+            ],
+            'Last 2 Days': [
+                moment().subtract(1, 'days').toDate(),
+                moment().toDate()
+            ],
+            'Last 7 Days': [
+                moment().subtract(6, 'days').toDate(),
+                moment().toDate()
+            ],
+            'Last 31 Days': [
+                moment().subtract(30, 'days').toDate(),
+                moment().toDate()
+            ],
+            'This Month': [
+                moment().startOf('month').toDate(),
+                moment().endOf('month').toDate()
+            ],
+            'Last Month': [
+                moment().subtract(1, 'month').startOf('month').toDate(),
+                moment().subtract(1, 'month').endOf('month').toDate()
+            ]
+        }
+    };
+
+    handleCloseOutRangeDate = () => this.setState({ outOfDateRange: { show: false } });
+
+    handleDateChange = (fromDate, toDate) => {
+        this.setState(prevState => ({
+            filter: { ...prevState.filter, fromDate: fromDate.toDate(), toDate: toDate.toDate() }
+        }));
+    };
+
     render() {
         const { filter } = this.state;
+        const labelDate = `${moment(filter.fromDate).format('MMMM DD, YYYY')} - ${moment(filter.toDate).format('MMMM DD, YYYY')}`;
+
         return (
             <div>
                 <NCBBreadcrum chatbotName={Labels.ChatbotSystem} pageTitle="Notification List" />
@@ -361,13 +420,22 @@ export default class NotificationList extends Component {
                                 onChange={selectedItems => this.handleFilterChange('notificationTypeIds', selectedItems.map(item => item.id).join(','))}
                             />
                         </FormGroup>
-                        <FormGroup>
-                            <Label className="form-label">From</Label>
-                            <DatePicker selected={filter.fromDate} onChange={this.handleFromDateChange} />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label className="form-label">To</Label>
-                            <DatePicker selected={filter.toDate} onChange={this.handleToDateChange} />
+                        <FormGroup className="date-range">
+                            <Label className="form-label">From - To</Label>
+                            <DateRangePicker
+                                initialSettings={{
+                                    startDate: filter.fromDate,
+                                    endDate: filter.toDate,
+                                    ranges: this.getDateRangeSelect()
+                                }}
+                                onCallback={this.handleDateChange}
+                            >
+                                <div className="form-control inputRange">
+                                    <i className="fa fa-calendar iconRange" aria-hidden="true"></i>
+                                    <span className="label-date">{labelDate}</span>
+                                    <span className='cr-down-date'><i className="fa fa-caret-down iconRange"></i></span>
+                                </div>
+                            </DateRangePicker>
                         </FormGroup>
                         <FormGroup>
                             <Label className="form-label">Sender</Label>
@@ -437,7 +505,18 @@ export default class NotificationList extends Component {
                         haveHostPermission={this.haveEditNotificationPermission}
                     />
                 }
-
+                {
+                    this.state.outOfDateRange.show &&
+                    <Modal isOpen backdrop="static">
+                        <ModalHeader>Alert</ModalHeader>
+                        <ModalBody>
+                            Out of data range limit! Please select a time range within 31 days maximum!
+                        </ModalBody>
+                        <ModalFooter>
+                            <button className="btn-submit" onClick={this.handleCloseOutRangeDate}>OK</button>
+                        </ModalFooter>
+                    </Modal>
+                }
             </div>
         );
     }

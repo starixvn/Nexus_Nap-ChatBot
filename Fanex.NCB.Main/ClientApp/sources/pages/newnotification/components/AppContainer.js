@@ -664,7 +664,6 @@ export class AppContainer extends React.Component {
                     <NCBBreadcrum chatbotName={Labels.ChatbotSystem} pageTitle={pageTitle} />
                     <span className="icon-guide" onClick={this.handleOpenUserGuidePopup}/>
                 </div>
-                <span><i class="fa fa-address-book" aria-hidden="true"></i></span>
                 <div className="new-notification">
                     {
                         this.props.createNotificationResult &&
