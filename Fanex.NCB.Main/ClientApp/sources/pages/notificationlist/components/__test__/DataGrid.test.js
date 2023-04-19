@@ -15,7 +15,7 @@ describe('ErrorReport', () => {
             pageIndex: 1,
             pageSize: 100,
             total: 100,
-            data: [{ notificationId: 1, configSendTime: { toFormat: jest.fn() }, recipientSentStatusJson: [] }]
+            data: [{ notificationId: 1, configSendTime: { toFormat: jest.fn() }, recipientSentStatusJson: [], messageIdList: '1,2,3,4' }],
         }
     };
 
@@ -317,7 +317,7 @@ describe('ErrorReport', () => {
 
             // Act
             const container = shallow(<DataGrid {...props}/>);
-            const actual = container.instance().renderNotificationId(1, 1);
+            const actual = container.instance().renderNotificationId(1, "1,2,3");
         });
     });
 
@@ -328,7 +328,7 @@ describe('ErrorReport', () => {
                 ...initProps,
                 haveEditNotificationPermission: true
             };
-            const data = { notificationId: 2, configSendTime: { toFormat: jest.fn() }, recipientSentStatusJson: [] };
+            const data = { notificationId: 2, configSendTime: { toFormat: jest.fn() }, recipientSentStatusJson: [], messageIdList: '1,2,3,4' };
 
             // Act
             const container = shallow(<DataGrid {...props} />);

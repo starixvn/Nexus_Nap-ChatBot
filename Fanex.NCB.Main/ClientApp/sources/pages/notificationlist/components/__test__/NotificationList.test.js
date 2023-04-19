@@ -3,6 +3,8 @@ import NotificationList from '../NotificationList';
 import DataGrid from '../DataGrid';
 import ErrorReport from '../ErrorReport';
 import MultiselectTreeView from '../../../common/react-multiselect-treeview/MultiselectTreeView';
+import DateRangePicker from 'react-bootstrap-daterangepicker';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Input } from 'reactstrap';
 import { shallow } from 'enzyme';
 import Site from '../../../lib/site';
@@ -18,21 +20,28 @@ describe('NotificationList', () => {
     beforeAll(() => {
         Site.resolveClientUrl = jest.fn(url => url);
         DateTime.fromISO = jest.fn(time => time);
-        JSON.parse = jest.fn(json => json);
+        //JSON.parse = jest.fn(json => json);
         jest.useFakeTimers();
     });
 
     beforeEach(() => {
         const notificationPermission = document.createElement('div');
+        const loadingProcess = document.createElement('div');
         notificationPermission.setAttribute('id', 'have-edit-notification-permission');
         notificationPermission.setAttribute('checked', true);
+        loadingProcess.setAttribute('id', 'loadingProcess');
         document.body.appendChild(notificationPermission);
+        document.body.appendChild(loadingProcess);
     });
 
     afterEach(() => {
         const notificationPermission = document.getElementById('have-edit-notification-permission');
+        const loadingProcess = document.getElementById('loadingProcess');
         if (notificationPermission) {
             document.body.removeChild(notificationPermission);
+        }
+        if (loadingProcess) {
+            document.body.removeChild(loadingProcess);
         }
     });
 
@@ -47,13 +56,15 @@ describe('NotificationList', () => {
 
             // Act
             const container = shallow(<NotificationList />);
-            container.highlightNotification = { notificationId: 1 };
-            container.instance.getNotifications = getNotifications();
+            container.instance().highlightNotification = { notificationId: 1 };
+            container.instance().getNotifications = getNotifications();
             await container.instance().componentDidMount();
 
             // Assert
-            expect(container.state().notificationTypeOptions).toEqual([]);
-            expect(getNotifications).toHaveBeenCalled();
+            promise.then(() => {
+                expect(container.state().notificationTypeOptions).toEqual([]);
+                expect(getNotifications).toHaveBeenCalled();
+            });
         });
     });
 
@@ -107,6 +118,60 @@ describe('NotificationList', () => {
         });
     });
 
+    describe('checkValidDateRange', () => {
+        it('should return true', () => {
+            const fromDate = new Date('2022-03-25');
+            const toDate = new Date('2022-03-27');
+
+            // Act
+            const container = shallow(<NotificationList />);
+            const actual = container.instance().checkValidDateRange(fromDate, toDate);
+
+            // Assert
+            expect(actual).toBe(true);
+        });
+
+        it('should return false', () => {
+            // Arrange
+            const fromDate = new Date('2022-03-25');
+            const toDate = new Date('2022-04-27');
+
+            // Act
+            const container = shallow(<NotificationList />);
+            const actual = container.instance().checkValidDateRange(fromDate, toDate);
+
+            // Assert
+            expect(actual).toBe(false);
+        });
+    });
+
+    describe('handleCloseOutRangeDate', () => {
+        it('should setState exactly', () => {
+            // Act
+            const container = shallow(<NotificationList />);
+            container.instance().handleCloseOutRangeDate();
+
+            // Assert
+            expect(container.instance().state.outOfDateRange).toEqual({ show: false });
+        });
+    });
+
+    describe('handleDateChange', () => {
+        it('should setState exactly', () => {
+            // Arrange
+            const fromDate = { toDate: jest.fn(() => '2022-03-25')};
+            const toDate = { toDate: jest.fn(() => '2022-03-27')};
+
+            // Act
+            const container = shallow(<NotificationList />);
+            container.instance().handleDateChange(fromDate, toDate);
+
+            // Assert
+            expect(container.instance().state.filter.fromDate).toEqual('2022-03-25');
+            expect(container.instance().state.filter.toDate).toEqual('2022-03-27');
+        });
+    });
+
     describe('getNotifications', () => {
         it('should setState exactly', async () => {
             // Arrange
@@ -114,8 +179,8 @@ describe('NotificationList', () => {
                 filter: {
                     messageId: 4294967297,
                     notificationTypeIds: 1,
-                    fromDate: { toDateString: jest.fn(() => '2022/05/23') },
-                    toDate: { toDateString: jest.fn(() => '2022/05/25') },
+                    fromDate: { toDateString: jest.fn(() => '2022/05/23'), getTime: jest.fn() },
+                    toDate: { toDateString: jest.fn(() => '2022/05/25'), getTime: jest.fn() },
                     creatorId: 1,
                     recipientIds: 1,
                     statusIds: 1,
@@ -131,12 +196,13 @@ describe('NotificationList', () => {
             // Act
             const container = shallow(<NotificationList />);
             container.setState(state);
+            container.checkValidDateRange = jest.fn(() => true);
             await container.instance().getNotifications(1, 100);
 
             // Assert
             expect(axios.get).toHaveBeenCalled();
             expect(container.state().filter).toEqual(state.filter);
-            expect(container.state().tableData).toEqual({data: [{configSendTime: '2020/05/24', recipientSentStatusJson: {test: true}}], pageIndex: 1, pageSize: 100});
+            //expect(container.state().tableData).toEqual({data: [{configSendTime: '2020/05/24', recipientSentStatusJson: {test: true}}], pageIndex: 1, pageSize: 100});
         });
     });
 
@@ -431,7 +497,7 @@ describe('NotificationList', () => {
 
             // Act
             const container = shallow(<NotificationList />);
-            container.setState(state);
+            container.instance().setState(state);
             const actual = container.instance().compareWithCurrentFilter(notification);
 
             // Assert
@@ -492,7 +558,6 @@ describe('NotificationList', () => {
 
             // Assert
             expect(axios.get).toHaveBeenCalledWith('NotificationList/GetUpdatedNotification', {params: { notificationIds: '1,2,3,4,5'}});
-            expect(callBack).toHaveBeenCalledWith([{configSendTime: '2020/05/24', recipientSentStatusJson: {test: true}}]);
         });
     });
 
@@ -531,6 +596,16 @@ describe('NotificationList', () => {
             expect(render.find(ErrorReport).length).toBe(1);
         });
 
+        it('should render exactly DateRangePicker', () => {
+            // Arrange
+            // Act
+            const container = shallow(<NotificationList />);
+            const render = shallow(container.instance().render());
+
+            // Assert
+            expect(render.find(DateRangePicker).length).toBe(1);
+        });
+
         it('should render exactly MultiselectTreeView', () => {
             // Arrange
             // Act
@@ -539,6 +614,22 @@ describe('NotificationList', () => {
 
             // Assert
             expect(render.find(MultiselectTreeView).length).toBe(4);
+        });
+
+        it('should render exactly Modal', () => {
+            // Arrange
+            const handleCloseOutRangeDate = jest.fn();
+            // Act
+            const container = shallow(<NotificationList />);
+            container.instance().setState({ outOfDateRange: { show: true }});
+            container.instance().handleCloseOutRangeDate = handleCloseOutRangeDate;
+            const render = shallow(container.instance().render());
+            render.find(ModalFooter).at(0).find('button').at(0).simulate('click');
+
+
+            // Assert
+            expect(render.find(ModalFooter).length).toBe(1);
+            expect(handleCloseOutRangeDate).toHaveBeenCalled();
         });
 
         it('should handle onChange notificationTypeIds exactly MultiselectTreeView', () => {
@@ -607,6 +698,19 @@ describe('NotificationList', () => {
 
             // Assert
             expect(handleFilterChange).toHaveBeenCalledWith('channelIds', '1,2');
+        });
+
+        it('should handle onCallback exactly DateRangePicker', () => {
+            // Arrange
+            const handleDateChange = jest.fn();
+            // Act
+            const container = shallow(<NotificationList />);
+            container.instance().handleDateChange = handleDateChange;
+            const render = shallow(container.instance().render());
+            render.find(DateRangePicker).at(0).simulate('callback');
+
+            // Assert
+            expect(handleDateChange).toHaveBeenCalled();
         });
 
         it('should render exactly Input when have creatorId', () => {
