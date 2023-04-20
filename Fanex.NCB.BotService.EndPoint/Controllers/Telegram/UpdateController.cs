@@ -32,8 +32,8 @@
 
         [HttpPost]
         [Route("api/telegram/webhook/{botId:long}/update")]
-        public async Task<IActionResult> Post(long botId, [FromBody] Update update)
 #pragma warning restore S1541 // Methods and properties should not be too complex
+        public async Task<IActionResult> Post(long botId, [FromBody] Update update)
         {
             if (update == null || update.Type != UpdateType.Message)
             {
