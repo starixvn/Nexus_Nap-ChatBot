@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Controllers.Telegram
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
@@ -145,16 +146,21 @@
             if (message.Entities is not null && message.Entities.Any())
             {
                 var commands = message.Entities.Where(entity => entity.Type == MessageEntityType.BotCommand);
-                if (commands is not null && commands.Any())
+                await SendTextMessageAsync(bot, message, commands);
+            }
+        }
+
+        protected internal virtual async Task SendTextMessageAsync(User bot, Message message, IEnumerable<MessageEntity> commands)
+        {
+            if (commands is not null && commands.Any())
+            {
+                var listText = commands.Select(entity => message.Text.Substring(entity.Offset, entity.Length)).ToList();
+                foreach (var command in listText)
                 {
-                    var listText = commands.Select(entity => message.Text.Substring(entity.Offset, entity.Length)).ToList();
-                    foreach (var command in listText)
+                    if (command.Equals("/getgroupid", StringComparison.CurrentCultureIgnoreCase)
+                        || command.Equals($"/getgroupid@{bot.Username}", StringComparison.CurrentCultureIgnoreCase))
                     {
-                        if (command.Equals("/getgroupid", StringComparison.CurrentCultureIgnoreCase)
-                            || command.Equals($"/getgroupid@{bot.Username}", StringComparison.CurrentCultureIgnoreCase))
-                        {
-                            await botService.SendTextMessageAsync(bot.Id, message.Chat.Id, Regex.Replace(message.Chat.Id.ToString(), @"(.*?)(-|[\\][-])", "$1\\-"));
-                        }
+                        await botService.SendTextMessageAsync(bot.Id, message.Chat.Id, Regex.Replace(message.Chat.Id.ToString(), @"(.*?)(-|[\\][-])", "$1\\-"));
                     }
                 }
             }
