@@ -401,7 +401,7 @@ export default class NotificationList extends Component {
 
     render() {
         const { filter } = this.state;
-        const labelDate = `${moment(filter.fromDate).format('MMMM DD, YYYY')} - ${moment(filter.toDate).format('MMMM DD, YYYY')}`;
+        const labelDate = `${moment(filter.fromDate).format('MM/DD/YYYY')} - ${moment(filter.toDate).format('MM/DD/YYYY')}`;
 
         return (
             <div>
@@ -421,7 +421,7 @@ export default class NotificationList extends Component {
                             />
                         </FormGroup>
                         <FormGroup className="date-range">
-                            <Label className="form-label">From - To</Label>
+                            <Label className="form-label">Date Range</Label>
                             <DateRangePicker
                                 initialSettings={{
                                     startDate: filter.fromDate,
@@ -471,7 +471,7 @@ export default class NotificationList extends Component {
                                 onChange={selectedItems => this.handleFilterChange('channelIds', selectedItems.map(item => item.id).join(','))}
                             />
                         </FormGroup>
-                        <FormGroup>
+                        <FormGroup className="message-group">
                             <Label className="form-label">MessageID</Label>
                             <Input type="text" id="messageId" name="messageId" value={filter.messageId}
                                 onChange={this.handleMessageIdChange}

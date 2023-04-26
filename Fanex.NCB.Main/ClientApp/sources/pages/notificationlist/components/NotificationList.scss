@@ -17,9 +17,14 @@
             }
 
             &.status-group, &.botservice-group {
+                width: 100px !important;
                 .multiselect-treeview-dropdown-list {
-                    min-width: 150px;
+                    min-width: 100px;
                 }
+            }
+
+            &.message-group {
+                width: 120px !important;
             }
         }
     }
@@ -45,7 +50,7 @@
         width: 85% !important;
 
         .iconRange {
-            color: #798388;
+            color: #ccc;
         }
     }
 }

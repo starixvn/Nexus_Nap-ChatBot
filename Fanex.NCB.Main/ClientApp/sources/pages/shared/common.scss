@@ -199,11 +199,31 @@ body {
 .daterangepicker {
     .ranges {
         li.active {
-            background-color: #337ab7 !important;
+            background-color: #337ab7;
         }
     }
+
     .applyBtn {
         background-color: #337ab7 !important;
         border-color: #337ab7 !important;
+    }
+    
+    .calendar-table {
+        tr:nth-child(2n) {
+            background-color: #fff !important;
+        }
+    }
+}
+.show-calendar {
+    .ranges {
+        li.active {
+            background-color: #fff !important;
+            color: #333;
+        }
+
+        li[data-range-key="Custom Range"] {
+            background-color: #337ab7 !important;
+            color: #fff;
+        }
     }
 }
