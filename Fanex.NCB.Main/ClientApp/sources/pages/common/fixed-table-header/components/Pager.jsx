@@ -93,7 +93,7 @@ export default class Pager extends Component {
         const { PageIndex, PageSize, TotalItem, PageList } = this.props.pageOption;
         const totalPage = Math.ceil(TotalItem / PageSize);
         const pagerWidth = this.props.width ? this.props.width + 'px' : 'unset';
-        console.log('TotalItem', TotalItem);
+
         return (
             <div className="page-container" style={{ width: pagerWidth }}>
                 {TotalItem > 0 && <span>Page size</span>}
