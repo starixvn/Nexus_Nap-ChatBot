@@ -41,7 +41,7 @@
             {
                 napSession.OnUserId,
                 ErrCode = (int)recheckInStatus,
-                isChangePermission = recheckInStatus == RecheckInStatus.KickOutPermission
+                IsChangePermission = recheckInStatus == RecheckInStatus.KickOutPermission
             });
         }
 

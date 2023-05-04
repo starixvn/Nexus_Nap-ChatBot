@@ -53,7 +53,7 @@
         {
             var controller = GetController();
             napSession.OnUserId = 8;
-            var expected = new { OnUserId = 8, ErrCode = (int)RecheckInStatus.Success };
+            var expected = new { OnUserId = 8, ErrCode = (int)RecheckInStatus.Success, IsChangePermission = false };
             //Actual
             var actual = await controller.CheckUserOnlineStatus();
 
@@ -71,7 +71,7 @@
             napSettings.EnableReCheckIn.Returns(true);
             napSession.OnUserId = 8;
             siteService.IsActivatedAsync(Arg.Any<int>()).Returns(false);
-            var expected = new { OnUserId = 8, ErrCode = (int)RecheckInStatus.InvalidSite };
+            var expected = new { OnUserId = 8, ErrCode = (int)RecheckInStatus.InvalidSite, IsChangePermission = false };
             //Actual
             var actual = await controller.CheckUserOnlineStatus();
 
@@ -90,7 +90,7 @@
             napSession.OnUserId = 8;
             siteService.IsActivatedAsync(Arg.Any<int>()).Returns(true);
             securityService.ReCheckInAsync(napSession.OnUserId, Arg.Any<int>()).Returns(2);
-            var expected = new { OnUserId = 8, ErrCode = (int)RecheckInStatus.KickOut };
+            var expected = new { OnUserId = 8, ErrCode = (int)RecheckInStatus.InvalidSite, IsChangePermission = false };
             //Actual
             var actual = await controller.CheckUserOnlineStatus();
 
@@ -106,7 +106,7 @@
         {
             var controller = GetController();
             napSession = null;
-            var expected = new { OnUserId = 0, ErrCode = (int)RecheckInStatus.KickOut };
+            var expected = new { OnUserId = 0, ErrCode = (int)RecheckInStatus.KickOut, IsChangePermission = false };
             //Actual
             var actual = await controller.CheckUserOnlineStatus();
 
