@@ -44,7 +44,8 @@ export default class AuthRecheck extends PureComponent {
     };
 
     render() {
-        const message = this.state.isChangePermission ? 'You have been logged out since your permission has been changed. Please re-login or contact admin for support.' :
+        const message = this.state.isChangePermission ? `You have been logged out since your permission has been changed.
+        Please re-login or contact admin for support.` :
             'Someone logged in with this account, you will be redirected to login page.';
         return (
             <Modal isOpen={this.state.showModal} backdrop="static">
