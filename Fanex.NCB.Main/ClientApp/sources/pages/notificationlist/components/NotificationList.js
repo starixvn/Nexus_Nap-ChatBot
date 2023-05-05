@@ -83,7 +83,6 @@ export default class NotificationList extends Component {
             const data = response.data;
             if (isHasHighlight) {
                 data.notificationStatuses.forEach(status => status.checked = status.id === errorId);
-                data.notificationTypes.forEach(item => item.checked = parseInt(this.highlightNotification.notificationTypeId, 10) === item.id);
             }
 
             const notificationTypeIds = data.notificationTypes.filter(item => item.checked).map(item => item.id).join(',');
@@ -100,8 +99,7 @@ export default class NotificationList extends Component {
                 channelOptions: data.channels,
                 filter: {
                     ...prevState.filter,
-                    notificationTypeIds: isHasHighlight ?
-                        this.highlightNotification.notificationTypeId.toString() : notificationTypeIds,
+                    notificationTypeIds: notificationTypeIds,
                     statusIds,
                     recipientIds: data.recipientIds,
                     fromDate: isHasHighlight ? new Date(this.highlightNotification.configSendTime) : prevState.filter.fromDate,
@@ -184,7 +182,7 @@ export default class NotificationList extends Component {
                     notification.configSendTime = DateTime.fromISO(notification.configSendTime);
                     notification.recipientSentStatusJson = JSON.parse(notification.recipientSentStatusJson);
                 });
-    
+
                 this.setState({
                     tableData: {
                         pageIndex,
@@ -194,7 +192,6 @@ export default class NotificationList extends Component {
                 });
             }).catch(errorResponseHandler);
         }
-
     }
 
     handleFilterChange = (name, value) => {
@@ -402,7 +399,6 @@ export default class NotificationList extends Component {
     render() {
         const { filter } = this.state;
         const labelDate = `${moment(filter.fromDate).format('MM/DD/YYYY')} - ${moment(filter.toDate).format('MM/DD/YYYY')}`;
-
         return (
             <div>
                 <NCBBreadcrum chatbotName={Labels.ChatbotSystem} pageTitle="Notification List" />
@@ -459,7 +455,7 @@ export default class NotificationList extends Component {
                             <Label className="form-label">Status</Label>
                             <MultiselectTreeView
                                 data={this.state.statusOptions}
-                                isSelectedAll
+                                //isSelectedAll
                                 onChange={selectedItems => this.handleFilterChange('statusIds', selectedItems.map(item => item.id).join(','))}
                             />
                         </FormGroup>

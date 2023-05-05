@@ -227,7 +227,6 @@ export default class MultiselectTreeView extends React.Component {
         const { floatData, data } = this.state;
         const selected = floatData.filter(item => item.checked);
         const selectedText = getSelectedText(this.props, floatData);
-
         return (
             <div id={this.id} className="multiselect-treeview" ref={element => this.wrapper = element}
                 style={{ width: this.props.width ? this.props.width : '100%' }}>

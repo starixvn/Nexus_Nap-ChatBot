@@ -34,7 +34,7 @@ export default (data, isChecked = false) => {
 
         floatData.push({
             ...data[i],
-            checked: isChecked,
+            checked: data[i].checked,
             key: key,
             visible: true,
             expanded: true,
