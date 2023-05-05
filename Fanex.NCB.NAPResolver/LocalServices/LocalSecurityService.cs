@@ -130,7 +130,7 @@
                 await objectDb.ExecuteNonQueryAsync(criteria);
             }
 
-            if (criteria.IsKickedOut)
+            if (criteria.IsKickedOut && !criteria.IsPermissionChanged)
             {
                 return (int)RecheckInStatus.KickOut;
             }
