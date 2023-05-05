@@ -119,7 +119,7 @@
         </Setting>
 
         <Setting Key="NAP_User_ReCheckIn" SpName="NAP_User_ReCheckIn_xtest" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NAP_User_SSOCheckIn" SpName="NAP_User_SSOCheckIn" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_User_SSOCheckIn" SpName="NAP_User_SSOCheckIn_xtest" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="NAP_User_SSOGetTime" SpName="NAP_User_SSOGetTime" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="NAP_Site_GetById" SpName="NAP_Site_GetById" DbName="ChatBot" Plain="0">
             <Mapping DataField="SiteId" ObjectProperty="Id" />
