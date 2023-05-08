@@ -12,6 +12,7 @@
     using Fanex.NCB.NAPResolver.Attributes;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Configuration;
 
     [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class UserController : Controller
@@ -20,17 +21,20 @@
         private readonly INapSession napSession;
         private readonly INapSettings napSettings;
         private readonly ISecurityService securityService;
+        private readonly bool EnableCheckPermissionChanged;
 
         public UserController(
             ISecurityService securityService,
             ISiteService siteService,
             INapSession napSession,
-            INapSettings napSettings)
+            INapSettings napSettings,
+            IConfiguration configuration)
         {
             this.securityService = securityService;
             this.siteService = siteService;
             this.napSession = napSession;
             this.napSettings = napSettings;
+            EnableCheckPermissionChanged = configuration.GetValue<bool>("EnableCheckPermissionChanged");
         }
 
         [HttpPost]
@@ -53,18 +57,29 @@
             }
             else
             {
+                if (!napSettings.EnableReCheckIn && !EnableCheckPermissionChanged)
+                {
+                    return RecheckInStatus.Success;
+                }    
+
                 var status = await securityService.ReCheckInAsync(napSession.OnUserId, napSettings.SiteId);
                 var reCheckInStatus = (RecheckInStatus)status;
 
-                if (!napSettings.EnableReCheckIn && reCheckInStatus != RecheckInStatus.KickOutPermission)
+                if (!napSettings.EnableReCheckIn && reCheckInStatus == RecheckInStatus.KickOut)
+                {
+                    return RecheckInStatus.Success;
+                }   
+
+                if (!EnableCheckPermissionChanged && reCheckInStatus == RecheckInStatus.KickOutPermission)
                 {
                     return RecheckInStatus.Success;
                 }
 
                 if (!await siteService.IsActivatedAsync(napSettings.SiteId))
                 {
-                    return RecheckInStatus.InvalidSite;
+                        return RecheckInStatus.InvalidSite;
                 }
+
 
                 return reCheckInStatus;
             }

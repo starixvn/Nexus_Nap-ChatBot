@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.Main.Controllers.Tests
 {
     using System.Collections.Generic;
+    using System.Drawing;
     using System.Threading.Tasks;
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
@@ -10,6 +11,7 @@
     using Fanex.NCB.Core.Models;
     using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
     using NSubstitute;
     using Xunit;
@@ -124,7 +126,13 @@
             securityService = Substitute.For<ISecurityService>();
             napSession = Substitute.For<INapSession>();
 
-            return new UserController(securityService, siteService, napSession, napSettings);
+            var inMemorySettings = new Dictionary<string, string> {
+                    {"EnableCheckPermissionChanged", "false"},
+                };
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(inMemorySettings)
+                .Build();
+            return new UserController(securityService, siteService, napSession, napSettings, configuration);
         }
     }
 }
