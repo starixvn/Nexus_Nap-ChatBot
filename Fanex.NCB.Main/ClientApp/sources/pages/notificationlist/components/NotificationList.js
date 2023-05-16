@@ -163,11 +163,13 @@ export default class NotificationList extends Component {
             this.setState({ outOfDateRange: { show: true } });
         } else {
             CommonFunctions.blockUI();
+            console.log(filter.fromDate);
+            console.log(filter.toDate);
             axios.get(Site.resolveClientUrl('NotificationList/Get'), {
                 params: {
                     notificationTypeIds: filter.notificationTypeIds,
-                    fromDate: filter.fromDate.toDateString(),
-                    toDate: filter.toDate.toDateString(),
+                    fromDate: filter.fromDate.toUTCString(),
+                    toDate: filter.toDate.toUTCString(),
                     creatorId: filter.creatorId,
                     recipientIds: filter.recipientIds,
                     notificationStatusIds: filter.statusIds,
