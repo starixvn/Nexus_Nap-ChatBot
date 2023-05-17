@@ -45,7 +45,7 @@
         <Setting Key="NCB_ResendNotification_Sel" SpName="NCB_ResendNotification_Sel" DbName="ChatBot" Plain="0" />
     </Function>
     <Function Name="Notification List">
-        <Setting Key="NCB_NotificationList_Sel" SpName="NCB_NotificationList_Sel" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_NotificationList_Sel" SpName="NCB_NotificationList_Sel_xtest" DbName="ChatBot" Plain="0" />
         <Setting Key="NCB_NotificationList_Cancel_Upd" SpName="NCB_NotificationList_Cancel_Upd" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="NCB_NotificationList_ErrDetail_Sel" SpName="NCB_NotificationList_ErrDetail_Sel" DbName="ChatBot" Plain="0" />
         <Setting Key="NCB_NotificationList_Resolve_Upd" SpName="NCB_NotificationList_Resolve_Upd" DbName="ChatBot" Plain="0"></Setting>
@@ -58,7 +58,7 @@
     <Function Name="Sync Data">
         <Setting Key="NAP_ChatBot_GetDataBySiteId" SpName="NAP_ChatBot_GetDataBySiteId" DbName="DBPOL.NAP_UserControl.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_UserControl_SyncData" SpName="NAP_UserControl_SyncData" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NAP_UserControl_SyncData_ByUserId" SpName="NAP_UserControl_SyncData_ByUserId_xtest" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_UserControl_SyncData_ByUserId" SpName="NAP_UserControl_SyncData_ByUserId" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="OIC_SyncData" SpName="OIC_SyncData" DbName="ChatBot" Plain="0"></Setting>
     </Function>
     <Function Name="Local NAP">
@@ -118,8 +118,8 @@
             <Mapping DataField="ModifierUsername" ObjectProperty="Username" Class="User" />
         </Setting>
 
-        <Setting Key="NAP_User_ReCheckIn" SpName="NAP_User_ReCheckIn_xtest" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NAP_User_SSOCheckIn" SpName="NAP_User_SSOCheckIn_xtest" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_User_ReCheckIn" SpName="NAP_User_ReCheckIn" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_User_SSOCheckIn" SpName="NAP_User_SSOCheckIn" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="NAP_User_SSOGetTime" SpName="NAP_User_SSOGetTime" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="NAP_Site_GetById" SpName="NAP_Site_GetById" DbName="ChatBot" Plain="0">
             <Mapping DataField="SiteId" ObjectProperty="Id" />

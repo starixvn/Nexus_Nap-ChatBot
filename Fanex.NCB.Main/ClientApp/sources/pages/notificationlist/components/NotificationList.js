@@ -25,10 +25,11 @@ import moment from 'moment';
 export default class NotificationList extends Component {
     constructor(props) {
         super(props);
-
-        const toDate = new Date();
         const fromDate = new Date();
         fromDate.setDate(fromDate.getDate() - 1);
+        fromDate.setHours(0, 0, 0, 0);
+        const toDate = new Date();
+        toDate.setHours(23, 59, 59, 0);
 
         this.haveEditNotificationPermission = document.getElementById('have-edit-notification-permission').checked;
 
@@ -163,13 +164,14 @@ export default class NotificationList extends Component {
             this.setState({ outOfDateRange: { show: true } });
         } else {
             CommonFunctions.blockUI();
-            console.log(filter.fromDate);
-            console.log(filter.toDate);
+            const toDate = new Date(filter.toDate);
+            toDate.setSeconds(toDate.getSeconds() + 1);
+           
             axios.get(Site.resolveClientUrl('NotificationList/Get'), {
                 params: {
                     notificationTypeIds: filter.notificationTypeIds,
                     fromDate: filter.fromDate.toUTCString(),
-                    toDate: filter.toDate.toUTCString(),
+                    toDate: toDate.toUTCString(),
                     creatorId: filter.creatorId,
                     recipientIds: filter.recipientIds,
                     notificationStatusIds: filter.statusIds,
