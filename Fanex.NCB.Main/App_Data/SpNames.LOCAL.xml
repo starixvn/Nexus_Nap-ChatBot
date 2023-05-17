@@ -45,7 +45,7 @@
         <Setting Key="NCB_ResendNotification_Sel" SpName="NCB_ResendNotification_Sel" DbName="ChatBot" Plain="0" />
     </Function>
     <Function Name="Notification List">
-        <Setting Key="NCB_NotificationList_Sel" SpName="NCB_NotificationList_Sel_xtest" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_NotificationList_Sel" SpName="NCB_NotificationList_Sel" DbName="ChatBot" Plain="0" />
         <Setting Key="NCB_NotificationList_Cancel_Upd" SpName="NCB_NotificationList_Cancel_Upd" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="NCB_NotificationList_ErrDetail_Sel" SpName="NCB_NotificationList_ErrDetail_Sel" DbName="ChatBot" Plain="0" />
         <Setting Key="NCB_NotificationList_Resolve_Upd" SpName="NCB_NotificationList_Resolve_Upd" DbName="ChatBot" Plain="0"></Setting>
