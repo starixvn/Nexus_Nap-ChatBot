@@ -17,7 +17,8 @@
             IPushSignalRService pushSignalService,
             ILogService logService,
             ISiteDbService siteDbService,
-            IConfiguration configuration) : base(baseService, chatbotService, pushSignalService, logService, configuration, siteDbService)
+            IConfiguration configuration,
+            ICommonService commonService) : base(baseService, chatbotService, pushSignalService, logService, configuration, siteDbService, commonService)
         {
         }
 

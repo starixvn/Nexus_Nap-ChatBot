@@ -11,6 +11,8 @@
         [SpParam(Ignored = true)]
         public List<MissingMesssageInfo> Messages { get; set; } = new List<MissingMesssageInfo>();
 
+        public string SiteAsJson { get; set; }
+        public string DepCustSAsJson { get; set; }
         public string Environment { get; set; }
 
         [SpParam(SqlParamName = "MessageList")]

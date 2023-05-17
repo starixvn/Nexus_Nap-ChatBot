@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.NCB.Criteria.Common;
+    using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models.OIC;
@@ -69,6 +70,12 @@
         {
             var customerClassName = remotingRefService.GetResourceDataByRefIdAndResourceId("CustomerClass", customerClass, languageCode, string.Empty);
             return customerClassName;
+        }
+
+        public async Task<string> GetJsonDataFromDbACCAsync(string tableName)
+        {
+            string jsonData = await baseService.GetDataEntityAsync<string>(new GetJsonDataOnDbACCCriteria { TableName = tableName });
+            return jsonData;
         }
     }
 }

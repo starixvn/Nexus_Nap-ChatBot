@@ -16,12 +16,14 @@
     public class ResetLastMessageIdService : IResetLastMessageIdService
     {
         private readonly IBaseService baseService;
+        private readonly ICommonService commonService;
         private readonly string Environment;
 
-        public ResetLastMessageIdService(IBaseService baseService, IConfiguration configuration)
+        public ResetLastMessageIdService(IBaseService baseService, IConfiguration configuration, ICommonService commonService)
         {
             this.baseService = baseService;
             Environment = configuration.GetSection("Environment")?.Value;
+            this.commonService = commonService;
         }
 
         public async Task<(IEnumerable<CurrentMaxMessageInfo>, IEnumerable<MessageTypeInfo>)> GetCurrentPreviousMaxMessageAsync()
@@ -46,6 +48,8 @@
         {
             var criteria = new GetMissingMessageInfoCriteria
             {
+                SiteAsJson = await commonService.GetJsonDataFromDbACCAsync("Site"),
+                DepCustSAsJson = await commonService.GetJsonDataFromDbACCAsync("Dep_CustSuper"),
                 Messages = msgList.Where(m => m.JobIdentify != (int)JobIdentity.ProblemPlayer && m.JobIdentify != (int)JobIdentity.MonitoredPlayer).ToList(),
                 MsgContentTypes = contentTypeList.Where(m => m.JobIdentify != (int)JobIdentity.ProblemPlayer && m.JobIdentify != (int)JobIdentity.MonitoredPlayer).ToList(),
                 Requests = abnormalMissingMsgList.ToList()
@@ -114,6 +118,8 @@
         {
             var command = new CreateMissingMessageCommand
             {
+                SiteAsJson = await commonService.GetJsonDataFromDbACCAsync("Site"),
+                DepCustSAsJson = await commonService.GetJsonDataFromDbACCAsync("Dep_CustSuper"),
                 Environment = Environment,
                 Messages = listMsg
             };

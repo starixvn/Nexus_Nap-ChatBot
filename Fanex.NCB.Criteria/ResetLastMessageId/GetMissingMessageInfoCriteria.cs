@@ -44,6 +44,9 @@
             }
         }
 
+        public string SiteAsJson { get; set; }
+        public string DepCustSAsJson { get; set; }
+
         public override string GetSettingKey() => "NAP_Chatbot_MissingMesssageInfo_Sel";
 
         public override bool IsValid() => true;

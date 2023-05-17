@@ -22,6 +22,7 @@
         private readonly IPushSignalRService pushSignalService;
         private readonly IChatbotService chatbotService;
         private readonly ILogService logService;
+        private readonly ICommonService commonService;
         private readonly string Environment;
         private const int SiteMessageJobIdentify = 3;
 
@@ -30,13 +31,15 @@
             IChatbotService chatbotService,
             IPushSignalRService pushSignalService,
             ILogService logService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ICommonService commonService)
         {
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;
             this.chatbotService = chatbotService;
             this.logService = logService;
             Environment = configuration.GetSection("Environment")?.Value;
+            this.commonService = commonService;
         }
 
         public async Task PullMessageFromSiteMessageAsync()
@@ -151,6 +154,7 @@
         {
             var criteria = new GetMessageInfoFromAdminSiteCriteria
             {
+                SiteAsJson = await commonService.GetJsonDataFromDbACCAsync("Site"),
                 MessageID = systemSetting.MaxMessageID,
                 BatchSize = systemSetting.BatchSize,
                 LastPostTime = systemSetting.LastPostTime,

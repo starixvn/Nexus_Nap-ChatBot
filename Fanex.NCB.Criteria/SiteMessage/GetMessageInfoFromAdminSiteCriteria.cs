@@ -15,6 +15,8 @@
 
         public string Environment { get; set; } = "UAT";
 
+        public string SiteAsJson { get; set; }
+
         public override string GetSettingKey() => "NAP_Chatbot_SiteMesssage_Sel";
 
         public override bool IsValid() => MessageID > 0 &&

@@ -27,6 +27,7 @@
         private IPushSignalRService pushSignalService;
         private ILogService logService;
         private IConfiguration configuration;
+        private ICommonService commonService;
 
         #region PullMessageFromSiteMessageAsync
 
@@ -291,13 +292,15 @@
             configuration = Substitute.For<IConfiguration>();
             pushSignalService = Substitute.For<IPushSignalRService>();
             logService = Substitute.For<ILogService>();
+            commonService = Substitute.For<ICommonService>();
 
             return Substitute.For<SiteMessageServiceTestable>(
                 baseService,
                 chatbotService,
                 pushSignalService,
                 logService,
-                configuration);
+                configuration,
+                commonService);
         }
 
         #endregion Helpers

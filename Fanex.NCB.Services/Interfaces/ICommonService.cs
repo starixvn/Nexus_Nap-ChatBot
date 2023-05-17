@@ -1,9 +1,9 @@
 ﻿namespace Fanex.NCB.Services.Interfaces
 {
-    using Fanex.NCB.Models.Common;
-    using Fanex.NCB.Shared.Models.OIC;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Fanex.NCB.Models.Common;
+    using Fanex.NCB.Shared.Models.OIC;
 
     public interface ICommonService
     {
@@ -24,5 +24,7 @@
         string GetCategogyName(string categoryId, string languageCode);
 
         string GetCustomerClassName(string customerClass, string languageCode);
+
+        Task<string> GetJsonDataFromDbACCAsync(string tableName);
     }
 }

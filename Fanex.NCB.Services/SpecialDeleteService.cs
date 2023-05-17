@@ -24,6 +24,7 @@
         private readonly IChatbotService chatbotService;
         private readonly ILogService logService;
         private readonly ISiteDbService siteDbService;
+        private readonly ICommonService commonService;
         private readonly string Environment;
         private const int VoidTicketForLicenseeJobIdentity = 1;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
@@ -33,13 +34,15 @@
             IPushSignalRService pushSignalService,
             ILogService logService,
             IConfiguration configuration,
-            ISiteDbService siteDbService)
+            ISiteDbService siteDbService,
+            ICommonService commonService)
         {
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;
             this.chatbotService = chatbotService;
             this.logService = logService;
             this.siteDbService = siteDbService;
+            this.commonService = commonService;
             Environment = configuration.GetSection("Environment")?.Value;
         }
 
@@ -119,6 +122,8 @@
         {
             var criteria = new GetMessageFromSpecialDeleteCriteria
             {
+                SiteAsJson = await commonService.GetJsonDataFromDbACCAsync("Site"),
+                DepCustSAsJson = await commonService.GetJsonDataFromDbACCAsync("Dep_CustSuper"),
                 MessageID = systemSetting.MaxMessageID,
                 BatchSize = systemSetting.BatchSize,
                 MsgContentsTypeLst = systemSetting.MsgContentsTypeLst,

@@ -29,6 +29,7 @@
         private ILogService logService;
         private IConfiguration configuration;
         private ISiteDbService siteDbService;
+        private ICommonService commonService;
 
         #region PullVoidingMessageLicenseeAsync
 
@@ -249,8 +250,6 @@
                 });
         }
 
-
-
         #region ImportAbnormalBetNotificationToChatbotDBAsync
 
         [Fact]
@@ -389,7 +388,8 @@
             configuration = Substitute.For<IConfiguration>();
             siteDbService = Substitute.For<ISiteDbService>();
             configuration.GetSection("Environment").Value.Returns("UAT");
-            return Substitute.For<SpecialDeleteServiceTestable>(baseService, chatbotService, pushSignalService, logService, siteDbService, configuration);
+            commonService = Substitute.For<ICommonService>();
+            return Substitute.For<SpecialDeleteServiceTestable>(baseService, chatbotService, pushSignalService, logService, siteDbService, configuration, commonService);
         }
 
         #endregion Helpers

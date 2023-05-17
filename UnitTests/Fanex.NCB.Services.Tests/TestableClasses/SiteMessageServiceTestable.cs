@@ -16,8 +16,9 @@
                IChatbotService chatbotService,
                IPushSignalRService pushSignalService,
                ILogService logService,
-               IConfiguration configuration)
-            : base(baseService, chatbotService, pushSignalService, logService, configuration)
+               IConfiguration configuration,
+               ICommonService commonService)
+            : base(baseService, chatbotService, pushSignalService, logService, configuration, commonService)
         { }
 
         public async Task<(CommandResult, IEnumerable<NotificationMessage>)> Public_ImportMessageToChatbotDBAsync(

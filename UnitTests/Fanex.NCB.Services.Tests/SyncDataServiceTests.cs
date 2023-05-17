@@ -6,7 +6,6 @@
     using AutoFixture;
     using Fanex.Data.Repository;
     using Fanex.Logging;
-    using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SyncData;
     using Fanex.NCB.Repository.Interfaces;
@@ -103,7 +102,6 @@
                 NapGroups = fixture.Create<List<NapGroup>>(),
                 NapGroupFunction = fixture.Create<List<NapGroupFunction>>(),
                 NapMenuItems = fixture.Create<List<NapMenuItem>>(),
-                NapOnUser = fixture.Create<List<NapOnUser>>(),
                 NapSites = fixture.Create<List<NapSite>>(),
                 NapSiteURL = fixture.Create<List<NapSiteURL>>(),
                 NapUserFunction = fixture.Create<List<NapUserFunction>>(),
