@@ -80,6 +80,15 @@ export default class NotificationList extends Component {
 
     componentDidMount() {
         const isHasHighlight = this.highlightNotification.notificationId && !isNaN(this.highlightNotification.notificationId);
+        let fromDate = this.state.filter.fromDate;
+        let toDate = this.state.filter.toDate;
+        if (isHasHighlight) {
+            let highlightFromDate = new Date(this.highlightNotification.configSendTime);
+            let highlightToDate = new Date(this.highlightNotification.configSendTime);
+            fromDate = new Date(highlightFromDate.setHours(0, 0, 0));
+            toDate = new Date(highlightToDate.setHours(23, 59, 59));
+        }
+     
         axios(Site.resolveClientUrl('NotificationList/GetSettings')).then(response => {
             const data = response.data;
             if (isHasHighlight) {
@@ -88,7 +97,6 @@ export default class NotificationList extends Component {
 
             const notificationTypeIds = data.notificationTypes.filter(item => item.checked).map(item => item.id).join(',');
             const statusIds = data.notificationStatuses.filter(item => item.checked).map(item => item.id).join(',');
-
             const recipientData = buildFloatData(data.recipients, true);
 
             this.setState(prevState => ({
@@ -103,8 +111,8 @@ export default class NotificationList extends Component {
                     notificationTypeIds: notificationTypeIds,
                     statusIds,
                     recipientIds: data.recipientIds,
-                    fromDate: isHasHighlight ? new Date(this.highlightNotification.configSendTime) : prevState.filter.fromDate,
-                    toDate: isHasHighlight ? new Date(this.highlightNotification.configSendTime) : prevState.filter.toDate,
+                    fromDate: isHasHighlight ? fromDate : prevState.filter.fromDate,
+                    toDate: isHasHighlight ? toDate : prevState.filter.toDate,
                     creatorId: this.highlightNotification.creatorId,
                     channelIds: data.channelIds
                 }
