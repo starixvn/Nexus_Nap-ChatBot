@@ -20,16 +20,15 @@ import { defaultPageSize, errorId } from '../../constants/constants';
 import CommonFunctions from '../../common/common-functions/CommonFunctions';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 export default class NotificationList extends Component {
     constructor(props) {
         super(props);
-        const fromDate = new Date();
+        const current = new Date().toLocaleDateString("en-US", { timeZone: "Asia/Taipei" });
+        const fromDate = new Date(current);
         fromDate.setDate(fromDate.getDate() - 1);
-        fromDate.setHours(0, 0, 0, 0);
-        const toDate = new Date();
-        toDate.setHours(23, 59, 59, 0);
+        const toDate = new Date(current);
 
         this.haveEditNotificationPermission = document.getElementById('have-edit-notification-permission').checked;
 
@@ -83,10 +82,9 @@ export default class NotificationList extends Component {
         let fromDate = this.state.filter.fromDate;
         let toDate = this.state.filter.toDate;
         if (isHasHighlight) {
-            let highlightFromDate = new Date(this.highlightNotification.configSendTime);
-            let highlightToDate = new Date(this.highlightNotification.configSendTime);
-            fromDate = new Date(highlightFromDate.setHours(0, 0, 0));
-            toDate = new Date(highlightToDate.setHours(23, 59, 59));
+            let highlightDate = new Date(this.highlightNotification.configSendTime);
+            fromDate = highlightDate;
+            fromDate = highlightDate;
         }
      
         axios(Site.resolveClientUrl('NotificationList/GetSettings')).then(response => {
@@ -172,14 +170,12 @@ export default class NotificationList extends Component {
             this.setState({ outOfDateRange: { show: true } });
         } else {
             CommonFunctions.blockUI();
-            const toDate = new Date(filter.toDate);
-            toDate.setSeconds(toDate.getSeconds() + 1);
            
             axios.get(Site.resolveClientUrl('NotificationList/Get'), {
                 params: {
                     notificationTypeIds: filter.notificationTypeIds,
-                    fromDate: filter.fromDate.toUTCString(),
-                    toDate: toDate.toUTCString(),
+                    fromDate: filter.fromDate.toDateString(),
+                    toDate: filter.toDate.toDateString(),
                     creatorId: filter.creatorId,
                     recipientIds: filter.recipientIds,
                     notificationStatusIds: filter.statusIds,
@@ -370,32 +366,35 @@ export default class NotificationList extends Component {
         });
     }
 
+    convertToGTM8 = (dateTime) => {
+        return moment.tz(dateTime, 'Asia/Taipei')
+    }
     getDateRangeSelect = () => {
         return {
-            'Today': [moment().toDate(), moment().toDate()],
+            'Today': [this.convertToGTM8(moment()).toDate(), this.convertToGTM8(moment()).toDate()],
             'Yesterday': [
-                moment().subtract(1, 'days').toDate(),
-                moment().subtract(1, 'days').toDate()
+                this.convertToGTM8(moment()).subtract(1, 'days').toDate(),
+                this.convertToGTM8(moment()).subtract(1, 'days').toDate()
             ],
             'Last 2 Days': [
-                moment().subtract(1, 'days').toDate(),
-                moment().toDate()
+                this.convertToGTM8(moment()).subtract(1, 'days').toDate(),
+                this.convertToGTM8(moment()).toDate()
             ],
             'Last 7 Days': [
-                moment().subtract(6, 'days').toDate(),
-                moment().toDate()
+                this.convertToGTM8(moment()).subtract(6, 'days').toDate(),
+                this.convertToGTM8(moment()).toDate()
             ],
             'Last 31 Days': [
-                moment().subtract(30, 'days').toDate(),
-                moment().toDate()
+                this.convertToGTM8(moment()).subtract(30, 'days').toDate(),
+                this.convertToGTM8(moment()).toDate()
             ],
             'This Month': [
-                moment().startOf('month').toDate(),
-                moment().endOf('month').toDate()
+                this.convertToGTM8(moment()).startOf('month').toDate(),
+                this.convertToGTM8(moment()).endOf('month').toDate()
             ],
             'Last Month': [
-                moment().subtract(1, 'month').startOf('month').toDate(),
-                moment().subtract(1, 'month').endOf('month').toDate()
+                this.convertToGTM8(moment()).subtract(1, 'month').startOf('month').toDate(),
+                this.convertToGTM8(moment()).subtract(1, 'month').endOf('month').toDate()
             ]
         }
     };
@@ -404,7 +403,7 @@ export default class NotificationList extends Component {
 
     handleDateChange = (fromDate, toDate) => {
         this.setState(prevState => ({
-            filter: { ...prevState.filter, fromDate: fromDate.toDate(), toDate: toDate.toDate() }
+            filter: { ...prevState.filter, fromDate: this.convertToGTM8(fromDate).toDate(), toDate: this.convertToGTM8(toDate).toDate() }
         }));
     };
 

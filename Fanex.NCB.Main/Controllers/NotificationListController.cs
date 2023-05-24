@@ -1,5 +1,6 @@
 namespace Fanex.NCB.SkypeBot.Controllers
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -7,6 +8,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
+    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Main.Hubs;
     using Fanex.NCB.Main.ViewModel;
     using Fanex.NCB.Main.ViewModel.Notification;
@@ -99,11 +101,13 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
         public async Task<IActionResult> Get(GetNotificationViewModel filter)
         {
+            DateTime fromDate = filter.FromDate.ConvertToUTC();
+            DateTime toDate = filter.ToDate.AddDays(1).ConvertToUTC();
             var result = await notificationService.GetNotificationsAsync(new GetNotifications
             {
                 NotificationTypeIds = filter.NotificationTypeIds,
-                FromDate = filter.FromDate,
-                ToDate = filter.ToDate,
+                FromDate = fromDate,
+                ToDate = toDate,
                 CreatorId = filter.CreatorId,
                 NotificationStatusIds = filter.NotificationStatusIds,
                 RecipientIds = filter.RecipientIds,
