@@ -84,7 +84,7 @@ export default class NotificationList extends Component {
         if (isHasHighlight) {
             let highlightDate = new Date(this.highlightNotification.configSendTime);
             fromDate = highlightDate;
-            fromDate = highlightDate;
+            toDate = highlightDate;
         }
      
         axios(Site.resolveClientUrl('NotificationList/GetSettings')).then(response => {
@@ -150,9 +150,9 @@ export default class NotificationList extends Component {
     }
 
     checkValidDateRange = (fromDate, toDate) => {
-        const oneDay = 24 * 60 * 60 * 1000;
-        const range = Math.round(Math.abs((toDate.getTime() - fromDate.getTime()) / oneDay));
-        if (range > 31)
+        const range = Math.abs((new Date(toDate) - new Date(fromDate)) / 86400000);
+        console.log(Math.round(range));
+        if (Math.round(range) > 31)
             return false;
         return true;
     };
@@ -170,12 +170,13 @@ export default class NotificationList extends Component {
             this.setState({ outOfDateRange: { show: true } });
         } else {
             CommonFunctions.blockUI();
-           
+            const fromDate = new Date(filter.fromDate);
+            const toDate = new Date(filter.toDate);
             axios.get(Site.resolveClientUrl('NotificationList/Get'), {
                 params: {
                     notificationTypeIds: filter.notificationTypeIds,
-                    fromDate: filter.fromDate.toDateString(),
-                    toDate: filter.toDate.toDateString(),
+                    fromDate: fromDate.toDateString(),
+                    toDate: toDate.toDateString(),
                     creatorId: filter.creatorId,
                     recipientIds: filter.recipientIds,
                     notificationStatusIds: filter.statusIds,
@@ -366,35 +367,52 @@ export default class NotificationList extends Component {
         });
     }
 
-    convertToGTM8 = (dateTime) => {
-        return moment.tz(dateTime, 'Asia/Taipei')
-    }
     getDateRangeSelect = () => {
+        const current = new Date().toLocaleDateString("en-US", { timeZone: "Asia/Taipei" });
+        const today = new Date(current);
+        const yesterday = new Date(current);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        const last2Days= new Date(current);
+        last2Days.setDate(last2Days.getDate() - 1);
+
+        const last6Days= new Date(current);
+        last6Days.setDate(last6Days.getDate() - 6);
+
+        const last30Days = new Date(current);
+        last30Days.setDate(last30Days.getDate() - 30);
+
+        const thisMonthFirstDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        const thisMonthLastDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+        const lastMonthFistDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        const lastMonthLastDate = new Date(today.getFullYear(), today.getMonth(), 0);
+
         return {
-            'Today': [this.convertToGTM8(moment()).toDate(), this.convertToGTM8(moment()).toDate()],
+            'Today': [today, today],
             'Yesterday': [
-                this.convertToGTM8(moment()).subtract(1, 'days').toDate(),
-                this.convertToGTM8(moment()).subtract(1, 'days').toDate()
+                yesterday,
+                yesterday
             ],
             'Last 2 Days': [
-                this.convertToGTM8(moment()).subtract(1, 'days').toDate(),
-                this.convertToGTM8(moment()).toDate()
+                last2Days,
+                today
             ],
             'Last 7 Days': [
-                this.convertToGTM8(moment()).subtract(6, 'days').toDate(),
-                this.convertToGTM8(moment()).toDate()
+                last6Days,
+                today
             ],
             'Last 31 Days': [
-                this.convertToGTM8(moment()).subtract(30, 'days').toDate(),
-                this.convertToGTM8(moment()).toDate()
+                last30Days,
+                today
             ],
             'This Month': [
-                this.convertToGTM8(moment()).startOf('month').toDate(),
-                this.convertToGTM8(moment()).endOf('month').toDate()
+                thisMonthFirstDate,
+                thisMonthLastDate
             ],
             'Last Month': [
-                this.convertToGTM8(moment()).subtract(1, 'month').startOf('month').toDate(),
-                this.convertToGTM8(moment()).subtract(1, 'month').endOf('month').toDate()
+                lastMonthFistDate,
+                lastMonthLastDate
             ]
         }
     };
@@ -402,8 +420,9 @@ export default class NotificationList extends Component {
     handleCloseOutRangeDate = () => this.setState({ outOfDateRange: { show: false } });
 
     handleDateChange = (fromDate, toDate) => {
+        const dateFormat = "YYYY-MM-DD HH:mm:ss";
         this.setState(prevState => ({
-            filter: { ...prevState.filter, fromDate: this.convertToGTM8(fromDate).toDate(), toDate: this.convertToGTM8(toDate).toDate() }
+            filter: { ...prevState.filter, fromDate: fromDate.format(dateFormat), toDate: toDate.format(dateFormat) }
         }));
     };
 
