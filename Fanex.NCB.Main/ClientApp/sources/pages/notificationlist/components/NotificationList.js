@@ -20,7 +20,7 @@ import { defaultPageSize, errorId } from '../../constants/constants';
 import CommonFunctions from '../../common/common-functions/CommonFunctions';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
-import moment from 'moment-timezone';
+import moment from 'moment';
 
 export default class NotificationList extends Component {
     constructor(props) {

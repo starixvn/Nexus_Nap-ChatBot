@@ -91,5 +91,6 @@
     Ok: 'Ok',
     Proceed: 'Proceed',
     ConfirmResetLastId: 'Do you want to reset Last ID?',
-    ResetLastMessageIdSuccessfully: 'Last ID has been reset successfully'
+    ResetLastMessageIdSuccessfully: 'Last ID has been reset successfully',
+    NoFullFillParamsErrMsg: 'Brace(s) (\'{\' or \'}\') found in the field. All parameters must be replaced before being sent.'
 };

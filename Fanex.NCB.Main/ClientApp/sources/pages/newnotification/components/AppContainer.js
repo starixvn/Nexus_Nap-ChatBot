@@ -1,7 +1,7 @@
 ﻿import './AppContainer.scss';
 import "react-mde/lib/styles/css/react-mde-all.css";
 
-import React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { DateTime } from 'luxon';
 import { Form, FormGroup, Label, Button, Input, FormFeedback } from 'reactstrap';
@@ -39,6 +39,7 @@ export class AppContainer extends React.Component {
         this.state = {
             isSummited: false,
             manuallyEditted: false,
+            noFilledParams: [],
             template: {
                 title: {
                     originTemplate: '',
@@ -101,7 +102,7 @@ export class AppContainer extends React.Component {
         const { notificationId, isResendAll } = this.resendNotifcation;
         this.props.getResendNotification(notificationId, '', isResendAll).then(response => {
             const { resendNotification, recipients, unSelectableRecipients } = response.data;
-            this.props.setRecipients({ recipients: recipients});
+            this.props.setRecipients({ recipients: recipients });
             this.selectedRecipientIds = resendNotification.recipients.map(r => r.recipientId);
             const selectedRecipients = resendNotification.recipients.map(r => {
                 return {
@@ -115,7 +116,7 @@ export class AppContainer extends React.Component {
                 let selectedPlatforms = [];
                 let platforms = '';
 
-                if (res.data.length> 0) {
+                if (res.data.length > 0) {
                     selectedPlatforms = res.data.map(item => ({ id: item.platformId, name: item.platformName }));
                 }
 
@@ -216,12 +217,13 @@ export class AppContainer extends React.Component {
 
     handleSubmit = values => {
         const isValidContentLength = values.content.trim().length <= this.messageContentLength;
-        if (!isValidContentLength) {
+        const isValidParams = this.isValidParams(values);
+        if (!isValidContentLength || !isValidParams) {
             const formik = this.refs.form;
             formik.setSubmitting(false);
             return;
         }
-
+       
         const formatDate = values.sendDate.toLocaleString('en-US',
             { hour12: true, month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
@@ -230,6 +232,17 @@ export class AppContainer extends React.Component {
         this.props.setConfirmationPopup({ isOpen: true, content: message });
     };
 
+    isValidParams = values => {
+        if (values.canEditTitleContent)
+            return true;
+
+        const params = values.params;
+        const notFilledParams = params.filter(p => p.value === '');
+        this.setState({ noFilledParams: notFilledParams  });
+    
+        return notFilledParams.length === 0;
+    }
+
     handleNotificationTypeChange = event => {
         const value = event.target.value;
         const formik = this.refs.form;
@@ -237,14 +250,14 @@ export class AppContainer extends React.Component {
         this.props.getPlatforms(event.target.value).then(response => {
             if (response.data.length > 0) {
                 platforms = response.data.map(item => item.platformId).join(',');
-                const platformOptions = response.data.map(item => { return { id: item.platformId, name: item.platformName, checked: true }});
+                const platformOptions = response.data.map(item => { return { id: item.platformId, name: item.platformName, checked: true } });
                 this.setState({ platformOptions: platformOptions });
             } else {
                 this.setState({ platformOptions: [] });
             }
 
             formik.setFieldValue('platforms', platforms);
-            this.props.getRecipients(value, platforms, '',formik.state.values.productId, formik.state.values.channelIds);
+            this.props.getRecipients(value, platforms, '', formik.state.values.productId, formik.state.values.channelIds);
             this.props.getNotificationTemplates(value);
             formik.setValues({
                 ...formik.state.values,
@@ -324,7 +337,7 @@ export class AppContainer extends React.Component {
             recipients = formik.state.values.recipients.map(item => this.getRealValue(item.value)).join(',');
         }
 
-        await this.props.getRecipients(formik.state.values.notificationTypeId, value, recipients,formik.state.values.productId, formik.state.values.channelIds);
+        await this.props.getRecipients(formik.state.values.notificationTypeId, value, recipients, formik.state.values.productId, formik.state.values.channelIds);
 
         if (formik.state.values.recipients.length > 0) {
             const valuesRecipients = formik.state.values.recipients.filter(item => this.props.selectedRecipients.includes(this.getRealValue(item.value)));
@@ -477,6 +490,7 @@ export class AppContainer extends React.Component {
             }
         });
         const isHaveOneParam = values.params.length === 1;
+        const noFilledParams = this.state.noFilledParams;
 
         return (
             <Form onSubmit={handleSubmit} className="new-notification-form">
@@ -540,7 +554,7 @@ export class AppContainer extends React.Component {
                     </div>
                 </FormGroup>
                 <FormGroup className="row-has-reset">
-                    <Label for="notificationTypeId" className="form-label">Notification Template</Label>
+                    <Label for="notificationTemplate" className="form-label">Notification Template</Label>
                     <div>
                         <Input type="select"
                             invalid={touched.templateId && errors.templateId}
@@ -572,6 +586,10 @@ export class AppContainer extends React.Component {
                             onChange={handleChange} readOnly={!values.canEditTitleContent && values.templateId}
                         />
                         {touched.title && errors.title && <FormFeedback>{errors.title}</FormFeedback>}
+                        {
+                            !values.canEditTitleContent && noFilledParams.length > 0 && noFilledParams.some(p => values.title.includes(p.name)) &&
+                            <FormFeedback>{Labels.NoFullFillParamsErrMsg}</FormFeedback>
+                        }
                     </div>
                 </FormGroup>
                 <FormGroup>
@@ -586,6 +604,10 @@ export class AppContainer extends React.Component {
                             maxEditorHeight={400} readOnly={!values.canEditTitleContent && values.templateId}
                         />
                         {touched.content && errors.content && <FormFeedback>{errors.content}</FormFeedback>}
+                        {
+                            !values.canEditTitleContent && noFilledParams.length > 0 && noFilledParams.some(p => values.content.includes(p.name)) &&
+                            <FormFeedback>{Labels.NoFullFillParamsErrMsg}</FormFeedback>
+                        }
                         <div className="extension-content-section">
                             <div className="markdown-rules" onClick={this.handleOpenMarkdownRulesPopup}>
                                 Markdown Rules: <span className="icon-book" />
@@ -594,29 +616,33 @@ export class AppContainer extends React.Component {
                                 Maximum Length {values.content.trim().length}/{this.messageContentLength}
                             </div>
                         </div>
+                       
                     </div>
+                    
                 </FormGroup>
                 {values.params.length > 0 && !values.canEditTitleContent &&
-                    <FormGroup>
-                        <fieldset className="parameter-area">
-                            <legend>Parameters</legend>
-                            <FormGroup className={`parameters${isHaveOneParam ? ' block' : ''}`}>
-                                {values.params.map((x, i) =>
-                                (
-                                    <div className="parameter-col">
-                                        <Label for={`params.${i}.value`} className="form-label">{x.name}</Label>
-                                        <div>
-                                            <textarea value={x.values} name={`params.${i}.value`} disabled={values.mode === 'preview'} className="form-control"
-                                                rows={`${isHaveOneParam ? 4 : 2}`}
-                                                onChange={handleChange} onBlur={this.handleReplaceParamsWithValue}
-                                            />
+                    <Fragment>
+                        <FormGroup>
+                            <fieldset className="parameter-area">
+                                <legend>Parameters</legend>
+                                <FormGroup className={`parameters${isHaveOneParam ? ' block' : ''}`}>
+                                    {values.params.map((x, i) =>
+                                    (
+                                        <div className="parameter-col">
+                                            <Label for={`params.${i}.value`} className="form-label">{x.name}</Label>
+                                            <div>
+                                                <textarea value={x.values} name={`params.${i}.value`} disabled={values.mode === 'preview'} className="form-control"
+                                                    rows={`${isHaveOneParam ? 4 : 2}`}
+                                                    onChange={handleChange} onBlur={this.handleReplaceParamsWithValue}
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
-                                )
-                                )}
-                            </FormGroup>
-                        </fieldset>
-                    </FormGroup>
+                                    )
+                                    )}
+                                </FormGroup>
+                            </fieldset>
+                        </FormGroup>
+                    </Fragment>
                 }
                 <FormGroup>
                     <Label for="sendMode" className="form-label required">Send Date/Time</Label>
@@ -662,7 +688,7 @@ export class AppContainer extends React.Component {
             <>
                 <div className="new-guide">
                     <NCBBreadcrum chatbotName={Labels.ChatbotSystem} pageTitle={pageTitle} />
-                    <span className="icon-guide" onClick={this.handleOpenUserGuidePopup}/>
+                    <span className="icon-guide" onClick={this.handleOpenUserGuidePopup} />
                 </div>
                 <div className="new-notification">
                     {
