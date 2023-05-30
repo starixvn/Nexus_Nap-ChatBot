@@ -223,7 +223,7 @@ export class AppContainer extends React.Component {
             formik.setSubmitting(false);
             return;
         }
-       
+
         const formatDate = values.sendDate.toLocaleString('en-US',
             { hour12: true, month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
@@ -235,11 +235,11 @@ export class AppContainer extends React.Component {
     isValidParams = values => {
         if (values.canEditTitleContent)
             return true;
-
+    
         const params = values.params;
         const notFilledParams = params.filter(p => p.value === '');
-        this.setState({ noFilledParams: notFilledParams  });
-    
+        this.setState({ noFilledParams: notFilledParams });
+
         return notFilledParams.length === 0;
     }
 
@@ -616,9 +616,9 @@ export class AppContainer extends React.Component {
                                 Maximum Length {values.content.trim().length}/{this.messageContentLength}
                             </div>
                         </div>
-                       
+
                     </div>
-                    
+
                 </FormGroup>
                 {values.params.length > 0 && !values.canEditTitleContent &&
                     <Fragment>

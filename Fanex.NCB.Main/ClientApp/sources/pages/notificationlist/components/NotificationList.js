@@ -25,10 +25,29 @@ import moment from 'moment';
 export default class NotificationList extends Component {
     constructor(props) {
         super(props);
+
+        const windowUrl = window.location.search;
+        const params = new URLSearchParams(windowUrl);
+
+        this.highlightNotification = {
+            notificationId: params.get('Id'),
+            notificationTypeId: params.get('typeId'),
+            configSendTime: params.get('sendTime'),
+            creatorId: params.get('creatorId'),
+            pageIndex: params.get('pageIndex')
+        };
+
         const current = new Date().toLocaleDateString("en-US", { timeZone: "Asia/Taipei" });
-        const fromDate = new Date(current);
+        let fromDate = new Date(current);
         fromDate.setDate(fromDate.getDate() - 1);
-        const toDate = new Date(current);
+        let toDate = new Date(current);
+
+        const isHasHighlight = this.highlightNotification.notificationId && !isNaN(this.highlightNotification.notificationId);
+        if (isHasHighlight) {
+            let highlightDate = new Date(this.highlightNotification.configSendTime);
+            fromDate = new Date(highlightDate.toDateString());
+            toDate = new Date(highlightDate.toDateString());
+        }
 
         this.haveEditNotificationPermission = document.getElementById('have-edit-notification-permission').checked;
 
@@ -65,16 +84,7 @@ export default class NotificationList extends Component {
             }
         };
 
-        const windowUrl = window.location.search;
-        const params = new URLSearchParams(windowUrl);
-
-        this.highlightNotification = {
-            notificationId: params.get('Id'),
-            notificationTypeId: params.get('typeId'),
-            configSendTime: params.get('sendTime'),
-            creatorId: params.get('creatorId'),
-            pageIndex: params.get('pageIndex')
-        };
+       
     }
 
     componentDidMount() {
@@ -83,8 +93,8 @@ export default class NotificationList extends Component {
         let toDate = this.state.filter.toDate;
         if (isHasHighlight) {
             let highlightDate = new Date(this.highlightNotification.configSendTime);
-            fromDate = highlightDate;
-            toDate = highlightDate;
+            fromDate = new Date(highlightDate.toDateString());
+            toDate = new Date(highlightDate.toDateString());
         }
      
         axios(Site.resolveClientUrl('NotificationList/GetSettings')).then(response => {
@@ -151,7 +161,6 @@ export default class NotificationList extends Component {
 
     checkValidDateRange = (fromDate, toDate) => {
         const range = Math.abs((new Date(toDate) - new Date(fromDate)) / 86400000);
-        console.log(Math.round(range));
         if (Math.round(range) > 31)
             return false;
         return true;
@@ -452,7 +461,8 @@ export default class NotificationList extends Component {
                                 initialSettings={{
                                     startDate: filter.fromDate,
                                     endDate: filter.toDate,
-                                    ranges: this.getDateRangeSelect()
+                                    ranges: this.getDateRangeSelect(),
+                                    showCustomRangeLabel: true
                                 }}
                                 onCallback={this.handleDateChange}
                             >
