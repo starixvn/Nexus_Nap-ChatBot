@@ -7,6 +7,7 @@
     public class WhoamiController : Controller
     {
         [Route("Whoami")]
+        [Route("Whoami.aspx")]
         [AllowAnonymous]
         public IActionResult Whoami()
         {
