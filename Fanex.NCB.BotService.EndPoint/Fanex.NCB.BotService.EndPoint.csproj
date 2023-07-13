@@ -38,6 +38,9 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
+        <None Update="App_Data\SpNames.UAT.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="App_Data\SpNames.SIT.xml">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
