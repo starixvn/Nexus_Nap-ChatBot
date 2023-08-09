@@ -306,7 +306,11 @@
                             AddMonitorRecipient(lastBatchRecipients);
                 }
 
-                batches.LastOrDefault().Item1.LastOrDefault().Recipients = lastBatchRecipients;
+                var lastItem = batches.LastOrDefault().Item1.LastOrDefault();
+                if (lastItem is not null)
+                {
+                    lastItem.Recipients = lastBatchRecipients;
+                }
             }
         }
 

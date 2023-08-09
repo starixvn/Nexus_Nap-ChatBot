@@ -73,7 +73,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
                 return Json(result);
             }
 
-            var errors = ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.FirstOrDefault().ErrorMessage });
+            var errors = ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.FirstOrDefault()?.ErrorMessage });
             return Json(new { isSuccessful = false, errors });
         }
 
@@ -96,7 +96,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
                 return Json(result);
             }
 
-            var errors = ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.FirstOrDefault().ErrorMessage });
+            var errors = ModelState.Where(x => x.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors.FirstOrDefault()?.ErrorMessage });
             return Json(new { isSuccessful = false, errors });
         }
 

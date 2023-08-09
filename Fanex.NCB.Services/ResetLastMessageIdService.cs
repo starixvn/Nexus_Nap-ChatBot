@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -56,11 +57,13 @@
             };
             var missingInfo = await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
 
-            var problemAccountFromLogId = msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.ProblemPlayer).ReferenceId;
+            var problemAccountFromLogId = msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.ProblemPlayer)?.ReferenceId
+                ?? throw new ArgumentNullException(JsonConvert.SerializeObject(msgList));
             var problemMissingInfo = await GetMissingProblemAccountAsync(problemAccountFromLogId);
             missingInfo = missingInfo.Concat(problemMissingInfo);
 
-            var monitoredPlayerFromLogId = msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.MonitoredPlayer).ReferenceId;
+            var monitoredPlayerFromLogId = msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.MonitoredPlayer)?.ReferenceId
+                ?? throw new ArgumentNullException(JsonConvert.SerializeObject(msgList));
             var monitoredMissingInfo = await GetMissingMonitoredPlayerAsync(monitoredPlayerFromLogId);
             missingInfo = missingInfo.Concat(monitoredMissingInfo);
 

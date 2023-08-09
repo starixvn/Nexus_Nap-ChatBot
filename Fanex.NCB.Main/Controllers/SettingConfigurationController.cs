@@ -63,7 +63,7 @@
                 return Json(result);
             }
 
-            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage;
+            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()?.ErrorMessage;
             return Json(new { isSuccessful = false, message });
         }
 
@@ -92,7 +92,7 @@
                 return Json(result);
             }
 
-            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage;
+            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()?.ErrorMessage;
             return Json(new { isSuccessful = false, message });
         }
 
@@ -107,7 +107,7 @@
                 return Json(result);
             }
 
-            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage;
+            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()?.ErrorMessage;
             return Json(new { isSuccessful = false, message });
         }
 
@@ -163,7 +163,7 @@
                 return Json(result);
             }
 
-            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage;
+            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()?.ErrorMessage;
             return Json(new { isSuccessful = false, message });
         }
 
@@ -205,7 +205,7 @@
                 return Json(result);
             }
 
-            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage;
+            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()?.ErrorMessage;
             return Json(new { isSuccessful = false, message });
         }
 
@@ -247,7 +247,7 @@
                 return Json(result);
             }
 
-            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage;
+            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()?.ErrorMessage;
             return Json(new { isSuccessful = false, message });
         }
 
@@ -270,7 +270,7 @@
                 return Json(result);
             }
 
-            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage;
+            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()?.ErrorMessage;
             return Json(new { isSuccessful = false, message });
         }
     }
