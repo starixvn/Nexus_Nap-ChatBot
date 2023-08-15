@@ -154,20 +154,21 @@
                     LastVoidingHistoryCollectionId = systemSetting.LastVoidingHistoryCollectionId,
                     BatchSize = systemSetting.BatchSize
                 };
-                var (tranIds, usernames) = await baseService.FetchMultipleAsync<CollectionTransId, CollectionUsername>(criteria);
+                var (tranIds, usernames, duplicatedTickets) = await baseService.FetchMultipleAsync<CollectionTransId, CollectionUsername, CollectionDuplicatedTickets>(criteria);
 
-                await GetMessageAndImportToChatbotAsync(tranIds, usernames, systemSetting);
+                await GetMessageAndImportToChatbotAsync(tranIds, usernames, duplicatedTickets, systemSetting);
             }
         }
 
         protected internal virtual async Task GetMessageAndImportToChatbotAsync(
             IEnumerable<CollectionTransId> tranIds,
             IEnumerable<CollectionUsername> usernameList,
+            IEnumerable<CollectionDuplicatedTickets> duplicatedTickets,
             SystemSetting setting)
         {
-            var (tickets, usernames) = await siteDbService.GetTicketUsernamesAynnc(tranIds, usernameList);
+            var (tickets, usernames, dupTickets) = await siteDbService.GetTicketUsernamesAynnc(tranIds, usernameList, duplicatedTickets);
 
-            var (historyDetail, msg) = await GetVoidingHistoryDetailAsync(tickets, usernames);
+            var (historyDetail, msg, dupTicketDetails) = await GetVoidingHistoryDetailAsync(tickets, usernames, dupTickets);
             var msgContents = await GetAbnormalBetsMessageContentAsync(msg);
             MappingData(historyDetail, msgContents);
             await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg);
@@ -197,17 +198,19 @@
             return await baseService.GetDataAsync<AbnormalMessageContent>(criteria);
         }
 
-        protected internal virtual async Task<(IEnumerable<AbnormalMessageDetail>, IEnumerable<AbnormalMessage>)> GetVoidingHistoryDetailAsync(
+        protected internal virtual async Task<(IEnumerable<AbnormalMessageDetail>, IEnumerable<AbnormalMessage>, IEnumerable<DuplicateTicketDetail>)> GetVoidingHistoryDetailAsync(
             IEnumerable<AbnormalTicketInfo> tickets,
-            IEnumerable<AbnormalUsernames> usernames)
+            IEnumerable<AbnormalUsernames> usernames,
+            IEnumerable<DuplicatedTicketInfo> dupTickets)
         {
             var criteria = new GetAbnormalBetInfoCriteria
             {
                 TicketInfo = XmlHelper<AbnormalTicketInfo>.Serialize(tickets.ToList()),
-                UsernameLst = XmlHelper<AbnormalUsernames>.Serialize(usernames.ToList())
+                UsernameLst = XmlHelper<AbnormalUsernames>.Serialize(usernames.ToList()),
+                DuplicatedInfo = XmlHelper<DuplicatedTicketInfo>.Serialize(dupTickets.ToList())
             };
 
-            return await baseService.FetchMultipleAsync<AbnormalMessageDetail, AbnormalMessage>(criteria);
+            return await baseService.FetchMultipleAsync<AbnormalMessageDetail, AbnormalMessage, DuplicateTicketDetail>(criteria);
         }
 
         protected internal virtual async Task ImportAbnormalBetNotificationToChatbotDBAsync(

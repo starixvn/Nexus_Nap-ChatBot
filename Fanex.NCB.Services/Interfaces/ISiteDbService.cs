@@ -9,10 +9,10 @@
     {
         Task<IEnumerable<SiteDBConfig>> GetListSiteDbAsync();
 
-        Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)> GetTicketUsernamesAynnc(
-            IEnumerable<CollectionTransId> transIds, IEnumerable<CollectionUsername> usernames);
+        Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>, IEnumerable<DuplicatedTicketInfo>)> GetTicketUsernamesAynnc(
+            IEnumerable<CollectionTransId> transIds, IEnumerable<CollectionUsername> usernames, IEnumerable<CollectionDuplicatedTickets> duplicatedTickets);
 
-        Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)> GetTicketUsernamesParalellAynnc(
-            IEnumerable<CollectionTransId> transIds, IEnumerable<CollectionUsername> usernames);
+        Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>, IEnumerable<DuplicatedTicketInfo>)> GetTicketUsernamesParalellAynnc(
+            IEnumerable<CollectionTransId> transIds, IEnumerable<CollectionUsername> usernames, IEnumerable<CollectionDuplicatedTickets> duplicatedTickets);
     }
 }

@@ -54,61 +54,66 @@
             return siteDbList;
         }
 
-        public async Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)> GetTicketUsernamesAynnc(
-            IEnumerable<CollectionTransId> transIds, IEnumerable<CollectionUsername> usernames)
+        public async Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>, IEnumerable<DuplicatedTicketInfo>)> GetTicketUsernamesAynnc(
+            IEnumerable<CollectionTransId> transIds, IEnumerable<CollectionUsername> usernames, IEnumerable<CollectionDuplicatedTickets> duplicatedTickets)
         {
             var siteDbList = await GetListSiteDbAsync();
-            var (ticketLists, accountLists) = new ValueTuple<IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>>(
-                new List<AbnormalTicketInfo>(), new List<AbnormalUsernames>());
+            var (ticketLists, accountLists, dupTicketLists) = new ValueTuple<IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>, IEnumerable<DuplicatedTicketInfo>>(
+                new List<AbnormalTicketInfo>(), new List<AbnormalUsernames>(), new List<DuplicatedTicketInfo>());
 
             var abnormalBetsInfo = XmlHelper<CollectionTransId>.Serialize(transIds.ToList());
             var abnormalAccounts = XmlHelper<CollectionUsername>.Serialize(usernames.ToList());
+            var dupTicketsInfo = XmlHelper<CollectionDuplicatedTickets>.Serialize(duplicatedTickets.ToList());
 
             foreach (var siteDb in siteDbList)
             {
-                var (tickets, accounts) = await GetTicketUsernameInfoFromSiteDbAsync(abnormalBetsInfo, abnormalAccounts, siteDb);
+                var (tickets, accounts, dupTickets) = await GetTicketUsernameInfoFromSiteDbAsync(abnormalBetsInfo, abnormalAccounts, dupTicketsInfo, siteDb);
                 ticketLists = ticketLists.Concat(tickets);
                 accountLists = accountLists.Concat(accounts);
+                dupTicketLists = dupTicketLists.Concat(dupTickets);
             }
 
-            return DistinctTicketAndCombineUsernames(ticketLists, accountLists);
+            return DistinctTicketAndCombineUsernames(ticketLists, accountLists, dupTicketLists);
         }
 
-        public async Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)> GetTicketUsernamesParalellAynnc(
-            IEnumerable<CollectionTransId> transIds, IEnumerable<CollectionUsername> usernames)
+        public async Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>, IEnumerable<DuplicatedTicketInfo>)> GetTicketUsernamesParalellAynnc(
+            IEnumerable<CollectionTransId> transIds, IEnumerable<CollectionUsername> usernames, IEnumerable<CollectionDuplicatedTickets> duplicatedTickets)
         {
             var siteDbList = await GetListSiteDbAsync();
 
             var abnormalBetsInfo = XmlHelper<CollectionTransId>.Serialize(transIds.ToList());
             var abnormalAccounts = XmlHelper<CollectionUsername>.Serialize(usernames.ToList());
+            var dupTickets = XmlHelper<CollectionDuplicatedTickets>.Serialize(duplicatedTickets.ToList());
 
-            var tasks = new List<Task<ValueTuple<IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>>>>();
+            var tasks = new List<Task<ValueTuple<IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>, IEnumerable<DuplicatedTicketInfo>>>>();
 
             foreach (var siteDb in siteDbList)
             {
                 tasks.Add(
-                    GetTicketUsernameInfoFromSiteDbAsync(abnormalBetsInfo, abnormalAccounts, siteDb)
+                    GetTicketUsernameInfoFromSiteDbAsync(abnormalBetsInfo, abnormalAccounts, dupTickets, siteDb)
                     );
             }
 
-            List<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)> results = (await Task.WhenAll(tasks)).ToList();
+            List<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>, IEnumerable<DuplicatedTicketInfo>)> results = (await Task.WhenAll(tasks)).ToList();
 
-            var (ticketLists, accountLists) = new ValueTuple<IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>>(
-                new List<AbnormalTicketInfo>(), new List<AbnormalUsernames>());
+            var (ticketLists, accountLists, dupTicketLists) = new ValueTuple<IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>, IEnumerable<DuplicatedTicketInfo>>(
+                new List<AbnormalTicketInfo>(), new List<AbnormalUsernames>(), new List<DuplicatedTicketInfo>());
 
             foreach (var result in results)
             {
                 ticketLists = ticketLists.Concat(result.Item1);
                 accountLists = accountLists.Concat(result.Item2);
+                dupTicketLists = dupTicketLists.Concat(result.Item3);
             }
 
-            return DistinctTicketAndCombineUsernames(ticketLists, accountLists);
+            return DistinctTicketAndCombineUsernames(ticketLists, accountLists, dupTicketLists);
         }
 
-        private async Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)> GetTicketUsernameInfoFromSiteDbAsync(
-            string abnormalBetsInfo, string abnormalAccounts, SiteDBConfig siteDb)
+        private async Task<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>, IEnumerable<DuplicatedTicketInfo>)> GetTicketUsernameInfoFromSiteDbAsync(
+            string abnormalBetsInfo, string abnormalAccounts, string duplicatedTickets, SiteDBConfig siteDb)
         {
-            (IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>) results = (new List<AbnormalTicketInfo>(), new List<AbnormalUsernames>());
+            (IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>, IEnumerable<DuplicatedTicketInfo>) results =
+                (new List<AbnormalTicketInfo>(), new List<AbnormalUsernames>(), new List<DuplicatedTicketInfo>());
             try
             {
                 var criteria = new AbnormalBetGetUsernameTicketInfoCriteria
@@ -116,10 +121,11 @@
                     ServerIp = siteDb.AGIP,
                     AbnormalBetsInfo = abnormalBetsInfo,
                     AbnormalAccountsInfo = abnormalAccounts,
+                    DuplicatedTickets = duplicatedTickets,
                     SiteDBGroupId = siteDb.SiteDBGroupID
                 };
 
-                results = await dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames>(criteria);
+                results = await dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames, DuplicatedTicketInfo>(criteria);
             }
             catch (Exception exception)
             {
@@ -129,8 +135,8 @@
             return results;
         }
 
-        private static (IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>) DistinctTicketAndCombineUsernames(
-            IEnumerable<AbnormalTicketInfo> ticketLists, IEnumerable<AbnormalUsernames> accountLists)
+        private static (IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>, IEnumerable<DuplicatedTicketInfo>) DistinctTicketAndCombineUsernames(
+            IEnumerable<AbnormalTicketInfo> ticketLists, IEnumerable<AbnormalUsernames> accountLists, IEnumerable<DuplicatedTicketInfo> dupTicketLists)
         {
             var outputTickets = ticketLists.GroupBy(x => new
             {
@@ -152,7 +158,19 @@
                 Usernames = string.Join(",", g.Select(i => i.Usernames).ToArray())
             });
 
-            return (outputTickets, outputUsernames);
+            var outputDupTickets = dupTicketLists.GroupBy(x => new
+            {
+                x.VoidingHistoryCollectionId,
+                x.VoidingHistoryId,
+                x.CustId,
+                x.OrgTransId,
+                x.VoidedTransId,
+                x.Status,
+                x.Stake,
+                x.IsParlay
+            }).Select(g => g.FirstOrDefault());
+
+            return (outputTickets, outputUsernames, outputDupTickets);
         }
     }
 }
