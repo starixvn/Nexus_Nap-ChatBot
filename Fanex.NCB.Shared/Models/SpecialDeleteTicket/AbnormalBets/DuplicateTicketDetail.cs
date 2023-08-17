@@ -28,5 +28,8 @@
 
         [XmlAttribute("Stake")]
         public decimal Stake { get; set; }
+
+        [XmlAttribute("TransInfo")]
+        public string TransInfo { get; set; }
     }
 }

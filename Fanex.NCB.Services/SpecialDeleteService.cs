@@ -25,6 +25,7 @@
         private readonly ILogService logService;
         private readonly ISiteDbService siteDbService;
         private readonly ICommonService commonService;
+        private readonly IRefNoTicketService refNoTicketService;
         private readonly string Environment;
         private const int VoidTicketForLicenseeJobIdentity = 1;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
@@ -35,7 +36,8 @@
             ILogService logService,
             IConfiguration configuration,
             ISiteDbService siteDbService,
-            ICommonService commonService)
+            ICommonService commonService,
+            IRefNoTicketService refNoTicketService)
         {
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;
@@ -43,6 +45,7 @@
             this.logService = logService;
             this.siteDbService = siteDbService;
             this.commonService = commonService;
+            this.refNoTicketService = refNoTicketService;
             Environment = configuration.GetSection("Environment")?.Value;
         }
 
@@ -170,8 +173,29 @@
 
             var (historyDetail, msg, dupTicketDetails) = await GetVoidingHistoryDetailAsync(tickets, usernames, dupTickets);
             var msgContents = await GetAbnormalBetsMessageContentAsync(msg);
+            await GetTransInfoAsync(dupTicketDetails);
             MappingData(historyDetail, msgContents);
             await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg);
+        }
+
+        private async Task GetTransInfoAsync(IEnumerable<DuplicateTicketDetail> dupTicketDetails)
+        {
+            var distinctVoidedTransIds = dupTicketDetails.Select(i => i.VoidedTransId).Distinct();
+            var tasks = new List<Task<(long, string)>>();
+            foreach (var transid in distinctVoidedTransIds)
+            {
+                tasks.Add(Task.Run(() => refNoTicketService.GetTransInfoAsync(transid)));
+            }
+
+            var results = await Task.WhenAll(tasks);
+            foreach (var (tranid, transinfo) in results)
+            {
+                var tickets = dupTicketDetails.Where(x => x.VoidedTransId == tranid);
+                foreach (var item in tickets)
+                {
+                    item.TransInfo = transinfo;
+                }
+            }
         }
 
         private static void MappingData(IEnumerable<AbnormalMessageDetail> historyDetail, IEnumerable<AbnormalMessageContent> msgContents)

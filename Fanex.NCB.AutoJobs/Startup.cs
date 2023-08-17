@@ -169,6 +169,7 @@
             services.AddSingleton<ISiteMessageService, SiteMessageService>();
             services.AddSingleton<INotificationService, NotificationService>();
             services.AddSingleton<IPushSignalRService, PushSignalRService>();
+            services.AddSingleton<IRefNoTicketService, RefNoTicketService>();
 
             services.AddSingleton<IDynamicRepository, DynamicRepository>();
             services.AddSingleton<IBaseRepository, BaseRepository>();
