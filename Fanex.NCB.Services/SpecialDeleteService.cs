@@ -57,9 +57,12 @@
             if (systemSetting != null)
             {
                 var (messages, details) = await GetMessageFromVoidingForLicenseeAsync(systemSetting);
+
                 if (messages.Any() && details.Any())
                 {
-                    var (command, notifications) = await ImportMessageToChatbotDBAsync(messages, details);
+                    var issueTypes = await GetIssueTypeAsync(messages);
+
+                    var (command, notifications) = await ImportMessageToChatbotDBAsync(issueTypes, details);
 
                     if (command.IsSuccessful && notifications.Any())
                     {
@@ -69,6 +72,15 @@
                     await OnAfterImportDataAsync(command, notifications);
                 }
             }
+        }
+
+        private async Task<IEnumerable<SpecialDeleteIssueType>> GetIssueTypeAsync(IEnumerable<Message> messages)
+        {
+            var criteria = new GetMessageIssueTypeCriteria
+            {
+                Message = XmlHelper<Message>.Serialize(messages.ToList())
+            };
+            return await baseService.GetDataAsync<SpecialDeleteIssueType>(criteria);
         }
 
         protected internal virtual async Task UpdateMessageHistoryVoidingForLicenseeAsync(IEnumerable<MessageDetail> msgDetails)
@@ -102,7 +114,7 @@
         }
 
         protected internal virtual async Task<(CommandResult, IEnumerable<NotificationMessage>)> ImportMessageToChatbotDBAsync(
-            IEnumerable<Message> messages,
+            IEnumerable<SpecialDeleteIssueType> messages,
             IEnumerable<MessageDetail> messageDetails)
         {
             var criteria = new ImportMessageFromSpecialDeleteCriteria
