@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.SpecialDeleteTicket
 {
+    using Fanex.Data;
     using Fanex.NCB.Shared.FanexDataExtensions;
 
     public class AbnormalBetGetUsernameTicketInfoCriteria : CriteriaBaseExtend
@@ -8,7 +9,10 @@
         public override string DbName { get; set; }
         public string AbnormalBetsInfo { get; set; }
         public string AbnormalAccountsInfo { get; set; }
+
+        [SpParam(SqlParamName = "DuplicatedTickets")]
         public string DuplicatedTickets { get; set; }
+
         public int SiteDBGroupId { get; set; }
 
         public override string GetSettingKey() => "NAP_Chatbot_AbnormalBets_UsernameTicketInfo_Sel";
