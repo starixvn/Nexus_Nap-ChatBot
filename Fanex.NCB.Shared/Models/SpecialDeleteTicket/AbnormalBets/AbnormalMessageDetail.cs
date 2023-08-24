@@ -26,5 +26,8 @@
         public bool IsTest { get; set; }
         public DateTime? MinWinlostDate { get; set; }
         public DateTime? MaxWinlostDate { get; set; }
+        public int MatchId { get; set; }
+        public int IssueTypeId { get; set; }
+        public bool IsParlay { get; set; }
     }
 }

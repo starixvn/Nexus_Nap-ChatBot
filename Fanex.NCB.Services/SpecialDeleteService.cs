@@ -187,7 +187,7 @@
             var msgContents = await GetAbnormalBetsMessageContentAsync(msg);
             await GetTransInfoAsync(dupTicketDetails);
             MappingData(historyDetail, msgContents);
-            await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg);
+            await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg, dupTicketDetails);
         }
 
         private async Task GetTransInfoAsync(IEnumerable<DuplicateTicketDetail> dupTicketDetails)
@@ -251,14 +251,16 @@
 
         protected internal virtual async Task ImportAbnormalBetNotificationToChatbotDBAsync(
             IEnumerable<AbnormalMessageDetail> historyDetails,
-            IEnumerable<AbnormalMessage> msgs)
+            IEnumerable<AbnormalMessage> msgs,
+            IEnumerable<DuplicateTicketDetail> duplicateTicketDetails)
         {
             if (historyDetails.Any())
             {
                 var criteria = new ImportAbnormalBetsMessageCriteria
                 {
                     MessageHeader = JsonConvert.SerializeObject(historyDetails, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
-                    MessageDetail = JsonConvert.SerializeObject(msgs, new JsonSerializerSettings { DateFormatString = DateTimeFormat })
+                    MessageDetail = JsonConvert.SerializeObject(msgs, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
+                    DuplicatedInfo = JsonConvert.SerializeObject(duplicateTicketDetails, new JsonSerializerSettings { DateFormatString = DateTimeFormat })
                 };
                 var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
                 var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);

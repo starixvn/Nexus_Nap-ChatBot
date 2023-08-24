@@ -33,8 +33,12 @@
 
             var url = new Uri(napUrl + "BetListApi/GetBetListByRefNo?refno=" + refno);
             using var response = await httpClient.GetAsync(url);
-            var jsonString = await response.Content.ReadAsStringAsync();
-            return !string.IsNullOrEmpty(jsonString) ? JsonConvert.DeserializeObject<TicketInfo>(jsonString) : await Task.FromResult<TicketInfo>(null);
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonString = await response.Content.ReadAsStringAsync();
+                return !string.IsNullOrEmpty(jsonString) ? JsonConvert.DeserializeObject<TicketInfo>(jsonString) : await Task.FromResult<TicketInfo>(null);
+            }
+            return default;
         }
 
         private static AuthenticationHeaderValue GenerateHeaderAuthorization(string apiKey)
@@ -49,6 +53,11 @@
         public async Task<(long, string)> GetTransInfoAsync(long refno)
         {
             var tickInfo = await GetTicketByRefNoAsync(refno);
+            if (tickInfo is null)
+            {
+                return (refno, string.Empty);
+            }
+
             string content = GenerateTransInfoContent(tickInfo);
             return (refno, content);
         }
