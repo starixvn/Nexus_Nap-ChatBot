@@ -21,5 +21,6 @@
         public string RecipientTypeNames { get; set; }
 
         public string RequiredParams { get; set; }
+        public bool IsProtected { get; set; }
     }
 }

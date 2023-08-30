@@ -85,7 +85,7 @@ export class DataGrid extends Component {
                 <Cell className="text-center">
                     <>
                         {
-                            isIntelnalCSDJob ?
+                            isIntelnalCSDJob || item.isProtected ?
                                 <span className="icon-edit icon-disabled" /> :
                                 <span className={"icon-edit"}
                                     data-templateid={item.notificationTemplateID}
@@ -93,7 +93,7 @@ export class DataGrid extends Component {
                                     onClick={this.handleEditMapping} />
                         }
                         {
-                            (item.unRemovable || isIntelnalCSDJob) ?
+                            (item.unRemovable || isIntelnalCSDJob || item.isProtected) ?
                                 <span className="icon-delete icon-disabled" /> :
                                 <span className="icon-delete"
                                     data-templateid={item.notificationTemplateID}

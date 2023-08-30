@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.Services
 {
     using System;
+    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Security.Cryptography;
@@ -16,11 +17,13 @@
     {
         private readonly IConfiguration configuration;
         private readonly IHttpClientFactory httpClientFactory;
+        private readonly ILogService logService;
 
-        public RefNoTicketService(IConfiguration configuration, IHttpClientFactory httpClientFactory)
+        public RefNoTicketService(IConfiguration configuration, IHttpClientFactory httpClientFactory, ILogService logService)
         {
             this.configuration = configuration;
             this.httpClientFactory = httpClientFactory;
+            this.logService = logService;
         }
 
         public async Task<TicketInfo> GetTicketByRefNoAsync(long refno)
@@ -57,7 +60,7 @@
             {
                 return (refno, string.Empty);
             }
-
+            await logService.WriteMessageSentryErrorAsync(JsonConvert.SerializeObject(tickInfo));
             string content = GenerateTransInfoContent(tickInfo);
             return (refno, content);
         }
@@ -71,18 +74,30 @@
                 if (!string.IsNullOrEmpty(tickInfo.Odds))
                 {
                     content.Append(Environment.NewLine);
-                    content.Append($"Odds: {TextHelper.HtmlToPlainText(tickInfo.Odds)}");
+                    content.Append($"Odds: {GenerateOdds(tickInfo.Odds)}");
                 }
             }
             return content.ToString();
         }
 
+        private static string GenerateOdds(string oddHtml)
+        {
+            string spaceStringReplaced = "ODDSPACE";
+            string contentSpace = oddHtml.Replace(" ", spaceStringReplaced)
+                .Replace(Environment.NewLine, spaceStringReplaced)
+                .Replace("<br>", spaceStringReplaced);
+            var rawText = TextHelper.HtmlToPlainText(contentSpace);
+            string result = rawText.Replace(spaceStringReplaced, " ");
+            return result;
+        }
+
         private static string GenerateTickInfoContent(string html)
         {
-            string content = html.Replace("</br>", "")
+            string removedRefNoAndTimeHtml = html.Split("</br>").LastOrDefault();
+            string content = removedRefNoAndTimeHtml.Replace("</br>", "")
                                     .Replace("> <", "><")
                                     .Replace("<div", "<br><div")
-                                    .Replace("> ", ">");
+                                    .Replace("class=\"bettype\"> ", "class=\"bettype\">");
 
             return TextHelper.HtmlToPlainText(content);
         }

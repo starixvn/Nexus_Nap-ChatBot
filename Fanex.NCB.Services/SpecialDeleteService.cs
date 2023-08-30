@@ -187,6 +187,7 @@
             var msgContents = await GetAbnormalBetsMessageContentAsync(msg);
             await GetTransInfoAsync(dupTicketDetails);
             MappingData(historyDetail, msgContents);
+            await logService.WriteMessageSentryErrorAsync(JsonConvert.SerializeObject(dupTicketDetails));
             await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg, dupTicketDetails);
         }
 
