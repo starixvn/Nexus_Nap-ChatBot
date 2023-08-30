@@ -11,5 +11,7 @@
         public int LeagueGroupID { get; set; }
 
         public int IsChinaView { get; set; }
+
+        public byte SpecialPlatform { get; set; }
     }
 }
