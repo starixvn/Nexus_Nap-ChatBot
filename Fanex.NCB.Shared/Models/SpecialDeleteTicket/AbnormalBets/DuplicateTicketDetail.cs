@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Shared.Models.SpecialDeleteTicket.AbnormalBets
 {
+    using System;
     using System.Xml.Serialization;
 
     [XmlType("r")]
@@ -31,5 +32,20 @@
 
         [XmlAttribute("TransInfo")]
         public string TransInfo { get; set; }
+
+        [XmlAttribute("MessageId")]
+        public int MessageId { get; set; }
+
+        [XmlAttribute("Transdate")]
+        public DateTime Transdate { get; set; }
+
+        [XmlAttribute("SiteName")]
+        public string SiteName { get; set; }
+
+        [XmlAttribute("IsDeposit")]
+        public bool IsDeposit { get; set; }
+
+        [XmlAttribute("IsTest")]
+        public bool IsTest { get; set; }
     }
 }

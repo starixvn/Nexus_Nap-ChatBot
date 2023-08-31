@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Shared.Models.SpecialDeleteTicket.AbnormalBets
 {
+    using System;
     using System.Xml.Serialization;
 
     [XmlType("r")]
@@ -28,5 +29,8 @@
 
         [XmlAttribute("IsParlay")]
         public bool IsParlay { get; set; }
+
+        [XmlAttribute("Transdate")]
+        public DateTime Transdate { get; set; }
     }
 }
