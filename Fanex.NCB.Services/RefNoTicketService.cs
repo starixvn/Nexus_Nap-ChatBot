@@ -91,18 +91,13 @@
 
         private static string GenerateTickInfoContent(string html)
         {
-            string removedRefNoAndTimeHtml = html.Split("</br>").LastOrDefault().Trim('\n');
-
-            if (removedRefNoAndTimeHtml.StartsWith("\\n") || removedRefNoAndTimeHtml.StartsWith("\n") || removedRefNoAndTimeHtml.StartsWith(Environment.NewLine))
-            {
-                removedRefNoAndTimeHtml = removedRefNoAndTimeHtml.Substring(2);
-            }
+            string removedRefNoAndTimeHtml = html.Split("</br>").LastOrDefault();
             string content = removedRefNoAndTimeHtml.Replace("</br>", "")
                                     .Replace("> <", "><")
                                     .Replace("<div", "<br><div")
                                     .Replace("class=\"bettype\"> ", "class=\"bettype\">");
 
-            return TextHelper.HtmlToPlainText(content);
+            return TextHelper.HtmlToPlainText(content).TrimStart(Environment.NewLine.ToCharArray());
         }
     }
 }
