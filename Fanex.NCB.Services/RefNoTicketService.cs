@@ -17,13 +17,11 @@
     {
         private readonly IConfiguration configuration;
         private readonly IHttpClientFactory httpClientFactory;
-        private readonly ILogService logService;
 
-        public RefNoTicketService(IConfiguration configuration, IHttpClientFactory httpClientFactory, ILogService logService)
+        public RefNoTicketService(IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             this.configuration = configuration;
             this.httpClientFactory = httpClientFactory;
-            this.logService = logService;
         }
 
         public async Task<TicketInfo> GetTicketByRefNoAsync(long refno)
@@ -36,6 +34,7 @@
 
             var url = new Uri(napUrl + "BetListApi/GetBetListByRefNo?refno=" + refno);
             using var response = await httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
             if (response.IsSuccessStatusCode)
             {
                 var jsonString = await response.Content.ReadAsStringAsync();
@@ -60,7 +59,6 @@
             {
                 return (refno, string.Empty);
             }
-            await logService.WriteMessageSentryErrorAsync(JsonConvert.SerializeObject(tickInfo));
             string content = GenerateTransInfoContent(tickInfo);
             return (refno, content);
         }
@@ -93,7 +91,12 @@
 
         private static string GenerateTickInfoContent(string html)
         {
-            string removedRefNoAndTimeHtml = html.Split("</br>").LastOrDefault();
+            string removedRefNoAndTimeHtml = html.Split("</br>").LastOrDefault().Trim('\n');
+
+            if (removedRefNoAndTimeHtml.StartsWith("\\n") || removedRefNoAndTimeHtml.StartsWith("\n") || removedRefNoAndTimeHtml.StartsWith(Environment.NewLine))
+            {
+                removedRefNoAndTimeHtml = removedRefNoAndTimeHtml.Substring(2);
+            }
             string content = removedRefNoAndTimeHtml.Replace("</br>", "")
                                     .Replace("> <", "><")
                                     .Replace("<div", "<br><div")
