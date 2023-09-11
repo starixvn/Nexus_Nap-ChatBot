@@ -27,12 +27,12 @@
             {
                 JobId = 1,
                 OldNotificationTypeId = 1,
-                NotificationTypeId = 1,
-                NotificationTemplateId = 1,
+                NewNotificationTypeId = 1,
+                NewNotificationTemplateId = 1,
                 OldNotificationTemplateId = 1,
-                MsgContentsType = 1,
-                RequiredParam = "test",
-                IsTest = true,
+                NewMsgContentsType = 1,
+                NewRequiredParam = "test",
+                NewIsTest = true,
                 OldMsgContentsType = 1,
                 ModifiedBy = 1
             };
@@ -52,12 +52,12 @@
             {
                 JobId = 0,
                 OldNotificationTypeId = 1,
-                NotificationTypeId = 0,
-                NotificationTemplateId = 0,
+                NewNotificationTypeId = 0,
+                NewNotificationTemplateId = 0,
                 OldNotificationTemplateId = 1,
-                MsgContentsType = 1,
-                RequiredParam = "test",
-                IsTest = true,
+                NewMsgContentsType = 1,
+                NewRequiredParam = "test",
+                NewIsTest = true,
                 OldMsgContentsType = 1,
                 ModifiedBy = 1
             };

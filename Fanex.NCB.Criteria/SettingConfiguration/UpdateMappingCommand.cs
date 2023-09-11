@@ -8,17 +8,17 @@
 
         public int OldNotificationTypeId { get; set; }
 
-        public int NotificationTypeId { get; set; }
+        public int NewNotificationTypeId { get; set; }
 
-        public int NotificationTemplateId { get; set; }
+        public int NewNotificationTemplateId { get; set; }
 
         public int OldNotificationTemplateId { get; set; }
 
-        public int MsgContentsType { get; set; }
+        public int NewMsgContentsType { get; set; }
 
-        public string RequiredParam { get; set; }
+        public string NewRequiredParam { get; set; }
 
-        public bool IsTest { get; set; }
+        public bool NewIsTest { get; set; }
 
         public int OldMsgContentsType { get; set; }
 
@@ -26,6 +26,6 @@
 
         public override string GetSettingKey() => "NCB_SettingConfiguration_Mapping_Upd";
 
-        public override bool IsValid() => JobId > 0 && NotificationTypeId > 0 && NotificationTemplateId > 0;
+        public override bool IsValid() => JobId > 0 && NewNotificationTypeId > 0 && NewNotificationTemplateId > 0;
     }
 }

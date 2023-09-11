@@ -333,12 +333,12 @@
             var result = await service.UpdateMappingAsync(model);
 
             // Assert
-            Assert.Equal(model.NotificationTypeID, command.NotificationTypeId);
+            Assert.Equal(model.NotificationTypeID, command.NewNotificationTypeId);
             Assert.Equal(model.JobId, command.JobId);
-            Assert.Equal(model.NotificationTemplateID, command.NotificationTemplateId);
-            Assert.Equal(model.MsgContentsType, command.MsgContentsType);
-            Assert.Equal(model.RequiredParams, command.RequiredParam);
-            Assert.Equal(model.IsTest, command.IsTest);
+            Assert.Equal(model.NotificationTemplateID, command.NewNotificationTemplateId);
+            Assert.Equal(model.MsgContentsType, command.NewMsgContentsType);
+            Assert.Equal(model.RequiredParams, command.NewRequiredParam);
+            Assert.Equal(model.IsTest, command.NewIsTest);
             Assert.Equal(model.ModifiedBy, command.ModifiedBy);
             Assert.Equal(model.OldMsgContentsType, command.OldMsgContentsType);
             Assert.Equal(0, result.Code);

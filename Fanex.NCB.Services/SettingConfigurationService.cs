@@ -195,11 +195,11 @@
             var command = new UpdateMappingCommand
             {
                 JobId = model.JobId,
-                NotificationTypeId = model.NotificationTypeID,
-                NotificationTemplateId = model.NotificationTemplateID,
-                MsgContentsType = model.MsgContentsType,
-                RequiredParam = model.RequiredParams,
-                IsTest = model.IsTest,
+                NewNotificationTypeId = model.NotificationTypeID,
+                NewNotificationTemplateId = model.NotificationTemplateID,
+                NewMsgContentsType = model.MsgContentsType,
+                NewRequiredParam = model.RequiredParams,
+                NewIsTest = model.IsTest,
                 OldMsgContentsType = model.OldMsgContentsType,
                 OldNotificationTemplateId = model.OldNotificationTemplateId,
                 OldNotificationTypeId = model.OldNotificationTypeId,
