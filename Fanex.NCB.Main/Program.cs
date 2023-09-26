@@ -31,6 +31,10 @@
             WebHost.CreateDefaultBuilder(args)
                 .UseUrls($"http://*:5000")
                 .UseStartup<Startup>()
+                .ConfigureKestrel((context, options) =>
+                {
+                    options.Limits.MaxRequestLineSize = 32768;
+                })
                 .ConfigureLogging(logging =>
                 {
                     logging.ClearProviders();
