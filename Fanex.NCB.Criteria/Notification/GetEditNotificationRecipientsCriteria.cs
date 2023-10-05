@@ -4,18 +4,20 @@
 
     public class GetEditNotificationRecipientsCriteria : CriteriaBase
     {
-        public int NotificationId { get; set; }
+        public int InNotificationId { get; set; }
 
-        public int NotificationTypeId { get; set; }
+        public int InNotificationTypeId { get; set; }
 
-        public int? ProductId { get; set; }
+        public int? InProductId { get; set; }
 
-        public string Platforms { get; set; }
+        public string InPlatformIds { get; set; }
 
-        public string RecipientIds { get; set; }
+        public string InRecipientIds { get; set; }
+
+        public string InIntegrationMethodIds { get; set; }
 
         public override string GetSettingKey() => "NCB_EditNotification_Recipient_Sel";
 
-        public override bool IsValid() => NotificationTypeId > 0 && NotificationId > 0;
+        public override bool IsValid() => InNotificationTypeId > 0 && InNotificationId > 0;
     }
 }

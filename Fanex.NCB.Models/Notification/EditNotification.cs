@@ -20,5 +20,7 @@
         public int UserId { get; set; }
 
         public string Platforms { get; set; }
+
+        public string InIntegrationMethodIds { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.Shared.Models.OIC
 {
     using System.Collections.Generic;
+    using Fanex.NCB.Shared.Models.IntegrationMethod;
 
     public class OicData
     {
@@ -15,5 +16,10 @@
         public IEnumerable<Product> Products { get; set; }
 
         public IEnumerable<Platform> Platforms { get; set; }
+
+        public IEnumerable<IntegrationMethodInfo> IntegrationMethod { get; set; }
+
+        public IEnumerable<LicenseeIntegrationMethod> LicenseeIntegrationMethod { get; set; }
+
     }
 }

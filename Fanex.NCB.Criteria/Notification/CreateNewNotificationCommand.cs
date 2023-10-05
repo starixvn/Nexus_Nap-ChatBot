@@ -5,33 +5,35 @@
 
     public class CreateNewNotificationCommand : BaseCommand
     {
-        public int NotificationTypeId { get; set; }
+        public int InNotificationTypeId { get; set; }
 
-        public int? ProductId { get; set; }
+        public int? InProductId { get; set; }
 
-        public string RecipientIDLst { get; set; }
+        public string InRecipientIds { get; set; }
 
-        public string Title { get; set; }
+        public string InTitle { get; set; }
 
-        public string ContentLst { get; set; }
+        public string InContentLst { get; set; }
 
-        public DateTimeOffset ConfigSendTime { get; set; }
+        public DateTimeOffset InConfigSendTime { get; set; }
 
-        public bool SendImmediately { get; set; }
+        public bool InSendImmediately { get; set; }
 
-        public int CreatorId { get; set; }
+        public int InCreatorId { get; set; }
 
         public string NotificationIDLst { get; set; }
 
-        public string Platforms { get; set; }
+        public string InPlatformIds { get; set; }
+
+        public string InIntegrationMethodIds { get; set; }
 
         public override string GetSettingKey() => "NCB_NewNotification_Ins";
 
         public override bool IsValid()
         {
-            bool isValidNotiInfo = NotificationTypeId > 0 && CreatorId > 0;
-            return isValidNotiInfo && !string.IsNullOrWhiteSpace(RecipientIDLst) && !string.IsNullOrWhiteSpace(Title)
-                            && !string.IsNullOrWhiteSpace(ContentLst);
+            bool isValidNotiInfo = InNotificationTypeId > 0 && InCreatorId > 0;
+            return isValidNotiInfo && !string.IsNullOrWhiteSpace(InRecipientIds) && !string.IsNullOrWhiteSpace(InTitle)
+                            && !string.IsNullOrWhiteSpace(InContentLst);
         }
     }
 }

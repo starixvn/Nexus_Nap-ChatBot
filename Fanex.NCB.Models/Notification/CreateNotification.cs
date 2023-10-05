@@ -21,5 +21,7 @@
         public int CreatorId { get; set; }
 
         public string Platforms { get; set; }
+
+        public string IntegrationMethodIds { get; set; }
     }
 }

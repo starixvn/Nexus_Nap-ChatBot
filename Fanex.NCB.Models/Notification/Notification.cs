@@ -18,5 +18,7 @@
         public int StatusId { get; set; }
         public string Status { get; set; }
         public string RecipientSentStatusJson { get; set; }
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
     }
 }

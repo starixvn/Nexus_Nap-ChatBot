@@ -11,7 +11,11 @@
         public int? CreatorId { get; set; }
 
         public string NotificationStatusIds { get; set; }
+
         public string ChannelIds { get; set; }
+
+        public string ProductIds { get; set; }
+
         public uint? MessageId { get; set; }
 
         public DateTime FromDate { get; set; }

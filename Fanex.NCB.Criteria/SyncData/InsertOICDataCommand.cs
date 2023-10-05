@@ -16,6 +16,10 @@
 
         public string Platforms { get; set; }
 
+        public string IntegrationMethod { get; set; }
+
+        public string LicenseeIntegrationMethod { get; set; }
+
         public override string GetSettingKey() => "NCB_OIC_SyncData";
 
         public override bool IsValid() => true;

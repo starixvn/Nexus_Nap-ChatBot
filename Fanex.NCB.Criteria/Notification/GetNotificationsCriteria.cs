@@ -1,30 +1,27 @@
 ﻿namespace Fanex.NCB.Criteria.Notification
 {
-    using Fanex.Data;
     using Fanex.Data.Repository;
     using System;
 
     public class GetNotificationsCriteria : CriteriaBase
     {
-        [SpParam(SqlParamName = "notificationTypeIDLst")]
-        public string NotificationTypeIds { get; set; }
+        public string InNotificationTypeIds { get; set; }
 
-        [SpParam(SqlParamName = "recipientIDLst")]
-        public string RecipientIds { get; set; }
+        public string InRecipientIds { get; set; }
 
-        public int? CreatorId { get; set; }
+        public int? InCreatorId { get; set; }
 
-        [SpParam(SqlParamName = "notificationStatusIDLst")]
-        public string NotificationStatusIds { get; set; }
+        public string InNotificationStatusId { get; set; }
 
-        [SpParam(SqlParamName = "ChannelIDLst")]
-        public string ChannelIds { get; set; }
+        public string InChannelIds { get; set; }
 
-        public uint? MessageId { get; set; }
+        public string InProductIds { get; set; }
 
-        public DateTime ConfigSendTimeFrom { get; set; }
+        public uint? InMessageId { get; set; }
 
-        public DateTime ConfigSendTimeTo { get; set; }
+        public DateTime InConfigSendTimeFrom { get; set; }
+
+        public DateTime InConfigSendTimeTo { get; set; }
 
         public int PageIndex { get; set; }
 

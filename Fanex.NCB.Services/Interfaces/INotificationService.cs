@@ -10,7 +10,10 @@
     {
         Task<(CommandResult, string)> CreateAsync(CreateNotification model);
 
-        Task<(IEnumerable<Recipient>, IEnumerable<uint>)> GetRecipientsAsync(int notificationTypeId, string platforms, string recipientIds, int? productId = null, string channelIds = null);
+        Task<(IEnumerable<Recipient>, IEnumerable<uint>)> GetRecipientsAsync(
+            int notificationTypeId, string platforms, string recipientIds, int? productId = null,
+            string integrationMethodIds = null, string channelIds = null
+        );
 
         Task<(long, IEnumerable<Notification>)> GetNotificationsAsync(GetNotifications model);
 
@@ -24,7 +27,10 @@
 
         Task<CommandResult> EditAsync(EditNotification model);
 
-        Task<(IEnumerable<Recipient>, IEnumerable<uint>)> GetEditNotificationRecipientsAsync(int notificationId, int notificationTypeId, int? productId, string platforms, string recipientIds);
+        Task<(IEnumerable<Recipient>, IEnumerable<uint>)> GetEditNotificationRecipientsAsync(
+            int notificationId, int notificationTypeId, int? productId, string platforms,
+            string recipientIds, string inIntegrationMethodIds
+        );
 
         Task<IEnumerable<Template>> GetTemplatesAsync(int notificationTypeId);
 

@@ -112,6 +112,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
                 NotificationStatusIds = filter.NotificationStatusIds,
                 RecipientIds = filter.RecipientIds,
                 ChannelIds = filter.ChannelIds,
+                ProductIds = filter.ProductIds,
                 MessageId = filter.MessageId,
                 PageIndex = filter.PageIndex,
                 PageSize = filter.PageSize
