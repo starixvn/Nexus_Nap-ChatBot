@@ -38,11 +38,11 @@
             // Arrange
             var fixture = new Fixture();
             var criteria = fixture.Create<CreateNewNotificationCommand>();
-            criteria.NotificationTypeId = notificationTypeId;
-            criteria.CreatorId = creatorId;
-            criteria.RecipientIDLst = recipientIds;
-            criteria.Title = title;
-            criteria.ContentLst = content;
+            criteria.InNotificationTypeId = notificationTypeId;
+            criteria.InCreatorId = creatorId;
+            criteria.InRecipientIds = recipientIds;
+            criteria.InTitle = title;
+            criteria.InContentLst = content;
 
             // Act
             var result = criteria.IsValid();

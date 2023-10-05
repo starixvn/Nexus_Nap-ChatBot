@@ -63,6 +63,7 @@
             var fixture = new Fixture();
             int notificationTypeId = fixture.Create<int>();
             int? productId = fixture.Create<int?>();
+            string integrationMethodIds = fixture.Create<string>();
             string channellIds = fixture.Create<string>();
             string platforms = fixture.Create<string>();
             string recipientIds = fixture.Create<string>();
@@ -76,13 +77,14 @@
             baseService.FetchMultipleAsync<Recipient, uint>(Arg.Do<GetRecipientsCriteria>(x => criteria = x))
                 .Returns(tuple);
 
-            var result = await service.GetRecipientsAsync(notificationTypeId, platforms, recipientIds, productId, channellIds);
+            var result = await service.GetRecipientsAsync(notificationTypeId, platforms, recipientIds, productId, integrationMethodIds, channellIds);
 
-            Assert.Equal(notificationTypeId, criteria.NotificationTypeId);
-            Assert.Equal(productId, criteria.ProductId);
-            Assert.Equal(platforms, criteria.Platforms);
-            Assert.Equal(channellIds, criteria.ChannelIdLst);
-            Assert.Equal(recipientIds, criteria.RecipientIds);
+            Assert.Equal(notificationTypeId, criteria.InNotificationTypeId);
+            Assert.Equal(productId, criteria.InProductId);
+            Assert.Equal(integrationMethodIds, criteria.InIntegrationMethodIds);
+            Assert.Equal(platforms, criteria.InPlatformIds);
+            Assert.Equal(channellIds, criteria.InChannelIds);
+            Assert.Equal(recipientIds, criteria.InRecipientIds);
             Assert.Equal(recipients.Count(), result.Item1.Count());
             Assert.Equal(recipients, result.Item1);
             Assert.Equal(selectedRecipient, result.Item2);
@@ -107,12 +109,13 @@
 
             Assert.Equal(total, result.Item1);
             Assert.Equal(notifications.Count(), result.Item2.Count());
-            Assert.Equal(model.NotificationTypeIds, criteria.NotificationTypeIds);
-            Assert.Equal(model.CreatorId, criteria.CreatorId);
-            Assert.Equal(model.FromDate, criteria.ConfigSendTimeFrom);
-            Assert.Equal(model.ToDate, criteria.ConfigSendTimeTo);
-            Assert.Equal(model.NotificationStatusIds, criteria.NotificationStatusIds);
-            Assert.Equal(model.RecipientIds, criteria.RecipientIds);
+            Assert.Equal(model.NotificationTypeIds, criteria.InNotificationTypeIds);
+            Assert.Equal(model.CreatorId, criteria.InCreatorId);
+            Assert.Equal(model.ProductIds, criteria.InProductIds);
+            Assert.Equal(model.FromDate, criteria.InConfigSendTimeFrom);
+            Assert.Equal(model.ToDate, criteria.InConfigSendTimeTo);
+            Assert.Equal(model.NotificationStatusIds, criteria.InNotificationStatusId);
+            Assert.Equal(model.RecipientIds, criteria.InRecipientIds);
             Assert.Equal(model.PageIndex, criteria.PageIndex);
             Assert.Equal(model.PageSize, criteria.PageSize);
         }
@@ -206,7 +209,7 @@
 
             var result = await service.GetEditNotificationInfoAsync(notificationId);
 
-            Assert.Equal(notificationId, criteria.NotificationId);
+            Assert.Equal(notificationId, criteria.InNotificationId);
             Assert.Equal(expectedNotification.NotificationId, result.NotificationId);
             Assert.Equal(expectedNotification.NotificationTypeId, result.NotificationTypeId);
             Assert.Equal(expectedNotification.Content, result.Content);
@@ -230,13 +233,13 @@
             var result = await service.EditAsync(model);
 
             Assert.True(result.IsSuccessful);
-            Assert.Equal(model.NotificationId, command.NotificationId);
-            Assert.Equal(model.RecipientIds, command.RecipientIDLst);
-            Assert.Equal(model.Title, command.Title);
-            Assert.Equal(model.Content, command.Content);
+            Assert.Equal(model.NotificationId, command.InNotificationId);
+            Assert.Equal(model.RecipientIds, command.InRecipientIds);
+            Assert.Equal(model.Title, command.InTitle);
+            Assert.Equal(model.Content, command.InContent);
             Assert.Equal(model.UserId, command.UserId);
-            Assert.Equal(model.SendImmediately, command.SendImmediately);
-            Assert.Equal(model.Platforms, command.Platforms);
+            Assert.Equal(model.SendImmediately, command.InSendImmediately);
+            Assert.Equal(model.Platforms, command.InPlatformIds);
         }
 
         [Fact]
@@ -250,6 +253,7 @@
             var productId = fixture.Create<int?>();
             var platforms = fixture.Create<string>();
             var recipientIds = fixture.Create<string>();
+            var inIntegrationMethodIds = fixture.Create<string>();
 
             var recipients = fixture.Create<IEnumerable<Recipient>>();
             var selectedRecipient = fixture.Create<IEnumerable<uint>>();
@@ -260,14 +264,15 @@
 
             baseService.FetchMultipleAsync<Recipient, uint>(Arg.Do<GetEditNotificationRecipientsCriteria>(x => criteria = x)).Returns(tuple);
 
-            var result = await service.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId, platforms, recipientIds);
+            var result = await service.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId, platforms, recipientIds, inIntegrationMethodIds);
 
-            Assert.Equal(notificationId, criteria.NotificationId);
-            Assert.Equal(notificationTypeId, criteria.NotificationTypeId);
-            Assert.Equal(productId, criteria.ProductId);
-            Assert.Equal(platforms, criteria.Platforms);
+            Assert.Equal(notificationId, criteria.InNotificationId);
+            Assert.Equal(notificationTypeId, criteria.InNotificationTypeId);
+            Assert.Equal(productId, criteria.InProductId);
+            Assert.Equal(platforms, criteria.InPlatformIds);
             Assert.Equal(recipients.Count(), result.Item1.Count());
-            Assert.Equal(recipientIds, criteria.RecipientIds);
+            Assert.Equal(recipientIds, criteria.InRecipientIds);
+            Assert.Equal(inIntegrationMethodIds, criteria.InIntegrationMethodIds);
             Assert.Equal(recipients, result.Item1);
             Assert.Equal(selectedRecipient, result.Item2);
         }
@@ -307,7 +312,7 @@
             expected.Recipients = recipients;
             expected.Platforms = platforms;
 
-            var criteria = new GetResendNotificationInfoCriteria { NotificationId = notificationId, IsSendAll = isSendAll };
+            var criteria = new GetResendNotificationInfoCriteria { InNotificationId = notificationId, InIsSendAll = isSendAll };
 
             baseService.FetchMultipleAsync<ResendNotification, Recipient, Platform>(Arg.Do<GetResendNotificationInfoCriteria>(x => criteria = x)).Returns(valueTuple);
 

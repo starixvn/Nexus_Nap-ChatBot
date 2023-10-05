@@ -28,7 +28,7 @@ namespace Fanex.NCB.Criteria.Tests.Notification
         public void GetEditNotificationInfoCriteria_IsValid_CheckCorrectly(int notificationId, bool expectedResult)
         {
             // Arrange
-            var command = new GetEditNotificationInfoCriteria { NotificationId = notificationId };
+            var command = new GetEditNotificationInfoCriteria { InNotificationId = notificationId };
 
             // Act
             var result = command.IsValid();

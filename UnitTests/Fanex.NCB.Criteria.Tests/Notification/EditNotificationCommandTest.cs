@@ -41,11 +41,11 @@ namespace Fanex.NCB.Criteria.Tests.Notification
             // Arrange
             var fixture = new Fixture();
             var criteria = fixture.Create<EditNotificationCommand>();
-            criteria.NotificationId = notificationId;
+            criteria.InNotificationId = notificationId;
             criteria.UserId = userId;
-            criteria.RecipientIDLst = recipientIds;
-            criteria.Title = title;
-            criteria.Content = content;
+            criteria.InRecipientIds = recipientIds;
+            criteria.InTitle = title;
+            criteria.InContent = content;
 
             // Act
             var result = criteria.IsValid();

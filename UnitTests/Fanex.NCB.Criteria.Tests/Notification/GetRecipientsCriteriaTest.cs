@@ -31,7 +31,7 @@ namespace Fanex.NCB.Criteria.Tests.Notification
             // Arrange
             var fixture = new Fixture();
             var command = fixture.Create<GetRecipientsCriteria>();
-            command.NotificationTypeId = notificationTypeId;
+            command.InNotificationTypeId = notificationTypeId;
 
             // Act
             var result = command.IsValid();

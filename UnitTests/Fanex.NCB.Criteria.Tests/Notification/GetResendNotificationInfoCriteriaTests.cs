@@ -28,8 +28,8 @@
             // Arrange
             var criteria = new GetResendNotificationInfoCriteria
             {
-                NotificationId = notificationId,
-                IsSendAll = isSendAll
+                InNotificationId = notificationId,
+                InIsSendAll = isSendAll
             };
 
             // Act

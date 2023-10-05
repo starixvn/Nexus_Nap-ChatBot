@@ -32,8 +32,8 @@ namespace Fanex.NCB.Criteria.Tests.Notification
             // Arrange
             var fixture = new Fixture();
             var command = fixture.Create<GetEditNotificationRecipientsCriteria>();
-            command.NotificationTypeId = notificationTypeId;
-            command.NotificationId = notificationId;
+            command.InNotificationTypeId = notificationTypeId;
+            command.InNotificationId = notificationId;
 
             // Act
             var result = command.IsValid();
