@@ -174,6 +174,7 @@
             services.AddSingleton<IDynamicRepository, DynamicRepository>();
             services.AddSingleton<IBaseRepository, BaseRepository>();
             services.AddSingleton<ISyncDataRepository, SyncDataRepository>();
+            services.AddSingleton<INotificationRepository, NotificationRepository>();
             services.AddSingleton<IViewLogService, ViewLogService>();
             services.AddSingleton<ICommonService, CommonService>();
             services.AddSingleton<IProblemAccountService, ProblemAccountService>();

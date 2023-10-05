@@ -4,6 +4,7 @@
     using Fanex.Data;
     using Fanex.Data.Repository;
     using Fanex.NCB.Repository.Interfaces;
+    using Fanex.NCB.Shared.Models.IntegrationMethod;
     using Fanex.NCB.Shared.Models.NapUserControl;
     using Fanex.NCB.Shared.Models.OIC;
 
@@ -49,7 +50,9 @@
                         LicenseeProducts = multi.Read<LicenseeProduct>(),
                         LicenseeTypes = multi.Read<LicenseeType>(),
                         Products = multi.Read<Product>(),
-                        Platforms = multi.Read<Platform>()
+                        Platforms = multi.Read<Platform>(),
+                        IntegrationMethod = multi.Read<IntegrationMethodInfo>(),
+                        LicenseeIntegrationMethod = multi.Read<LicenseeIntegrationMethod>()
                     };
 
                     return data;
