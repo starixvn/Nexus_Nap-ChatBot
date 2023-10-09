@@ -26,5 +26,8 @@
 
         [XmlAttribute("PostTime")]
         public DateTime PostTime { get; set; }
+
+        [XmlAttribute("MatchId")]
+        public int MatchId { get; set; }
     }
 }
