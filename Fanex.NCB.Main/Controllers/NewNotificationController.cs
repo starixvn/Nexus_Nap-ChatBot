@@ -84,10 +84,13 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
-        public async Task<IActionResult> GetRecipients(int notificationTypeId, string platforms, string recipientIds, int? productId = null, string channelIds = null)
+        public async Task<IActionResult> GetRecipients(
+            int notificationTypeId, string platforms, string recipientIds, int? productId = null,
+            string integrationMethodIds = null, string channelIds = null
+        )
         {
             platforms = platforms ?? string.Empty;
-            var (recipients, selectedRecipients) = await notificationService.GetRecipientsAsync(notificationTypeId, platforms, recipientIds, productId, channelIds);
+            var (recipients, selectedRecipients) = await notificationService.GetRecipientsAsync(notificationTypeId, platforms, recipientIds, productId, integrationMethodIds, channelIds);
             var tree = GenerateTreeHelper.FromRecipient(recipients);
 
             return Json(new { recipients = tree, selectedRecipients });

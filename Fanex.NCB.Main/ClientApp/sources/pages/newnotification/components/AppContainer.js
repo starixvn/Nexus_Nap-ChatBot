@@ -24,6 +24,7 @@ import MarkdownRules from '../../common/markdown-rules';
 import CommonFunction from '../../common/common-functions/CommonFunctions';
 import MultipleSelect from '../../common/multiple-select/index';
 import UserGuide from '../../common/user-guide';
+import { async } from 'regenerator-runtime';
 
 const SendModeOptions = [
     { value: '1', label: 'Send Immediately' },
@@ -58,6 +59,7 @@ export class AppContainer extends React.Component {
             searchValue: '',
             searchPlatformValue: '',
             platformOptions: [],
+            integrationMethodOptions: [],
             initValue: {
                 channelIds: `${Channels.Skype},${Channels.Telegram}`,
                 channelName: '',
@@ -65,6 +67,7 @@ export class AppContainer extends React.Component {
                 templateId: '',
                 productId: '',
                 platforms: '',
+                integrationMethodIds: '',
                 recipients: [],
                 title: '',
                 content: '',
@@ -257,7 +260,7 @@ export class AppContainer extends React.Component {
             }
 
             formik.setFieldValue('platforms', platforms);
-            this.props.getRecipients(value, platforms, '', formik.state.values.productId, formik.state.values.channelIds);
+            this.props.getRecipients(value, platforms, '', formik.state.values.productId, '', formik.state.values.channelIds);
             this.props.getNotificationTemplates(value);
             formik.setValues({
                 ...formik.state.values,
@@ -314,7 +317,7 @@ export class AppContainer extends React.Component {
             recipients = formik.state.values.recipients.map(item => this.getRealValue(item.value)).join(',');
         }
 
-        await this.props.getRecipients(formik.state.values.notificationTypeId, platforms, recipients, value, formik.state.values.channelIds);
+        await this.props.getRecipients(formik.state.values.notificationTypeId, platforms, recipients, value, '', formik.state.values.channelIds);
 
         if (formik.state.values.recipients.length > 0) {
             const valuesRecipients = formik.state.values.recipients.filter(item => this.props.selectedRecipients.includes(this.getRealValue(item.value)));
@@ -337,7 +340,7 @@ export class AppContainer extends React.Component {
             recipients = formik.state.values.recipients.map(item => this.getRealValue(item.value)).join(',');
         }
 
-        await this.props.getRecipients(formik.state.values.notificationTypeId, value, recipients, formik.state.values.productId, formik.state.values.channelIds);
+        await this.props.getRecipients(formik.state.values.notificationTypeId, value, recipients, formik.state.values.productId, '', formik.state.values.channelIds);
 
         if (formik.state.values.recipients.length > 0) {
             const valuesRecipients = formik.state.values.recipients.filter(item => this.props.selectedRecipients.includes(this.getRealValue(item.value)));
@@ -537,6 +540,19 @@ export class AppContainer extends React.Component {
                         keyField='id' valueField='name'
                         maxDisplayItemCount={2}
                         hasAllOption={platformOptions.length > 0}
+                        onChange={(currentItem, selectedItemsKey) => {
+                            this.handlePlatformChange(selectedItemsKey);
+                        }}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="integrationMethods" className="form-label">Integration Method</Label>
+                    <MultipleSelect
+                        dataSource={this.state.integrationMethodOptions}
+                        hasNoneOption
+                        keyField='id' valueField='name'
+                        maxDisplayItemCount={2}
+                        hasAllOption={this.state.integrationMethodOptions.length > 0}
                         onChange={(currentItem, selectedItemsKey) => {
                             this.handlePlatformChange(selectedItemsKey);
                         }}

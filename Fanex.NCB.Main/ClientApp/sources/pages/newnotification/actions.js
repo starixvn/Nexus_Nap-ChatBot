@@ -34,9 +34,9 @@ const getProducts = () => async dispatch => {
     });
 };
 
-const getRecipients = (notificationTypeId, platforms, recipientIds, productId, channelIds) => async dispatch => {
+const getRecipients = (notificationTypeId, platforms, recipientIds, productId, integrationMethodIds, channelIds) => async dispatch => {
     const url = Site.resolveClientUrl('NewNotification/GetRecipients');
-    await DataService.getDataAsync(url, { notificationTypeId, platforms, recipientIds, productId, channelIds }).then(response => {
+    await DataService.getDataAsync(url, { notificationTypeId, platforms, recipientIds, productId, integrationMethodIds, channelIds }).then(response => {
         dispatch(setRecipients(response.data));
     });
 };
@@ -58,6 +58,11 @@ const createNewNotification = params => async dispatch => {
     });
 };
 
+const getIntegrationMethods = () => async () => {
+    const url = Site.resolveClientUrl('Common/GetIntegrationMethods');
+    return await DataService.getDataAsync(url, { inInTegrationMethodId: null, inInTegrationMethodName: null }).then(response => response);
+};
+
 export const ActionCreators = {
     getNotificationTypes,
     getNotificationTemplates,
@@ -75,5 +80,6 @@ export const ActionCreators = {
     setEditConfirmationPopup,
     setMarkdownRulesPopup,
     setUserGuidePopup,
-    setCreateNotificationResult
+    setCreateNotificationResult,
+    getIntegrationMethods
 };

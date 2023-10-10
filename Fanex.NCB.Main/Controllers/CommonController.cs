@@ -6,6 +6,7 @@
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models.IntegrationMethod;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
 
@@ -81,6 +82,14 @@
             var platforms = await commonService.GetPlatformAsync(notificationTypeId);
 
             return Json(platforms);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetIntegrationMethods(uint? inIntegrationMethodId, string inIntegrationMethodName)
+        {
+            var integrationMethods = await commonService.GetIntegrationMethodAsync(inIntegrationMethodId, inIntegrationMethodName);
+
+            return Json(integrationMethods);
         }
     }
 }

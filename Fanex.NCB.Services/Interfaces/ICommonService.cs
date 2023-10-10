@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Models.IntegrationMethod;
     using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services;
 
@@ -28,7 +29,9 @@
         string GetCustomerClassName(string customerClass, string languageCode);
 
         Task<string> GetJsonDataFromDbACCAsync(string tableName);
-
+        
         Task<ServiceSetting> GetServiceSetting(string inServiceName);
+
+        Task<IEnumerable<IntegrationMethodInfo>> GetIntegrationMethodAsync(uint? inIntegrationMethodId, string inIntegrationMethodName);
     }
 }
