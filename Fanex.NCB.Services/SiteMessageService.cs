@@ -130,6 +130,8 @@
                     message.SportNameCS = matchInfo.SportNameCS;
                     message.KickOffTime = matchInfo.KickOffTime;
                     message.IsTestMatch = matchInfo.IsTestMatch;
+                    message.OrigLeagueNameEN = matchInfo.LeagueNameEN;
+                    message.OrigLeagueNameCS = matchInfo.LeagueNameCS;
                     message.LeagueNameEN = TelegramFormatExtensions.EscapeSpecialSyntax(matchInfo.LeagueNameEN);
                     message.LeagueNameCS = TelegramFormatExtensions.EscapeSpecialSyntax(matchInfo.LeagueNameCS);
                     message.HomeNameEN = TelegramFormatExtensions.EscapeSpecialSyntax(matchInfo.HomeNameEN);

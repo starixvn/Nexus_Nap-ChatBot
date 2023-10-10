@@ -16,7 +16,11 @@
 
         public string LeagueNameEN { get; set; } = string.Empty;
 
+        public string OrigLeagueNameEN { get; set; } = string.Empty;
+
         public string LeagueNameCS { get; set; } = string.Empty;
+
+        public string OrigLeagueNameCS { get; set; } = string.Empty;
 
         public string HomeNameEN { get; set; } = string.Empty;
 
