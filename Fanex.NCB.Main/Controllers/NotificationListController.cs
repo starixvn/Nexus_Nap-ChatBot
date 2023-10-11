@@ -53,6 +53,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
             IEnumerable<NotificationStatus> notificationStatuses = await commonService.GetNotificationStatusesAsync();
             IEnumerable<Recipient> recipients = await commonService.GetRecipientsAsync();
             IEnumerable<ConversationChannel> channels = await commonService.GetConversationChannelAsync();
+            IEnumerable<Product> products = await commonService.GetProductsAsync();
 
             var viewModel = new NotificationListFilterViewModel
             {
@@ -60,6 +61,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
                 NotificationStatusIds = string.Join(",", notificationStatuses.Select(item => item.Id)),
                 RecipientIds = string.Join(",", recipients.Select(item => item.RecipientId)),
                 ChannelIds = string.Join(",", channels.Select(item => item.ChannelId)),
+                ProductIds = string.Join(",", products.Select(item => item.Id)),
                 NotificationTypes = notificationTypes.Select(item => new MultiSelectViewModel
                 {
                     Id = item.NotificationTypeID,
@@ -80,6 +82,13 @@ namespace Fanex.NCB.SkypeBot.Controllers
                 {
                     Id = item.ChannelId,
                     Text = item.ChannelName,
+                    Checked = true,
+                    IsLeaf = true
+                }).ToList(),
+                Products = products.Select(item => new MultiSelectViewModel
+                {
+                    Id = item.Id,
+                    Text = item.Name,
                     Checked = true,
                     IsLeaf = true
                 }).ToList()

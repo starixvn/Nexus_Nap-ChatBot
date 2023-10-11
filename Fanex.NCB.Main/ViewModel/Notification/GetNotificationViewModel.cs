@@ -14,7 +14,7 @@
         public string ChannelIds { get; set; }
         public uint? MessageId { get; set; }
 
-        public string ProductIds { get; set; } = "ALL";
+        public string ProductIds { get; set; }
 
         public DateTime FromDate { get; set; }
 

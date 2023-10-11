@@ -61,6 +61,7 @@ export default class NotificationList extends Component {
                 recipientIds: '',
                 statusId: '',
                 channelIds: '',
+                productIds: '',
                 messageId: ''
             },
             notificationTypeOptions: [],
@@ -69,6 +70,7 @@ export default class NotificationList extends Component {
             statusOptions: [],
             userOptions: [],
             channelOptions: [],
+            productOptions: [],
             tableData: null,
             notificationCancellation: {
                 show: false
@@ -114,6 +116,7 @@ export default class NotificationList extends Component {
                 statusOptions: data.notificationStatuses,
                 userOptions: data.senders,
                 channelOptions: data.channels,
+                productOptions: data.products,
                 filter: {
                     ...prevState.filter,
                     notificationTypeIds: notificationTypeIds,
@@ -122,7 +125,8 @@ export default class NotificationList extends Component {
                     fromDate: isHasHighlight ? fromDate : prevState.filter.fromDate,
                     toDate: isHasHighlight ? toDate : prevState.filter.toDate,
                     creatorId: this.highlightNotification.creatorId,
-                    channelIds: data.channelIds
+                    channelIds: data.channelIds,
+                    productIds: data.productIds
                 }
             }), () => {
                 const pageIndex = this.highlightNotification.pageIndex ? parseInt(this.highlightNotification.pageIndex, 10) : 1;
@@ -174,7 +178,6 @@ export default class NotificationList extends Component {
             && (parseInt(filter.messageId, 10) <= 0 || parseInt(filter.messageId, 10) > MaxMessageId)) {
             messageId = MaxMessageId;
         }
-
         if (!this.checkValidDateRange(filter.fromDate, filter.toDate)) {
             this.setState({ outOfDateRange: { show: true } });
         } else {
@@ -190,6 +193,7 @@ export default class NotificationList extends Component {
                     recipientIds: filter.recipientIds,
                     notificationStatusIds: filter.statusIds,
                     channelIds: filter.channelIds,
+                    productIds: filter.productIds.split(',').length === this.state.productOptions.length ? 'ALL' : filter.productIds,
                     messageId: messageId,
                     pageIndex: pageIndex,
                     pageSize: pageSize
@@ -334,6 +338,7 @@ export default class NotificationList extends Component {
         const recipientNames = this.state.floatRecipients.filter(item => item.isLeaf).map(item => item.text);
         const statusIds = filter.statusIds.split(','),
             channelIds = filter.channelIds.split(','),
+            productIds = filter.productIds.split(','),
             messageId = filter.messageId;
 
         let filteredNotifications = notifications
@@ -344,6 +349,7 @@ export default class NotificationList extends Component {
             .filter(t => statusIds.some(st => parseInt(st, 10) === t.statusId))
             .filter(n => n.recipientSentStatusJson.map(x => x.recipientName).every(v => recipientNames.includes(v)))
             .filter(noti => channelIds.some(x => parseInt(x, 10) === noti.channelId))
+            .filter(noti => productIds.some(x => parseInt(x, 10) === noti.productId))
             .filter(noti => messageId === '' || parseInt(messageId, 10) === noti.messageID);
 
         return filteredNotifications;
@@ -511,6 +517,14 @@ export default class NotificationList extends Component {
                             <Label className="form-label">MessageID</Label>
                             <Input type="text" id="messageId" name="messageId" value={filter.messageId}
                                 onChange={this.handleMessageIdChange}
+                            />
+                        </FormGroup>
+                        <FormGroup className="product-group">
+                            <Label className="form-label">{Labels.Product}</Label>
+                            <MultiselectTreeView
+                                data={this.state.productOptions}
+                                isSelectedAll
+                                onChange={selectedItems => this.handleFilterChange('productIds', selectedItems.map(item => item.id).join(','))}
                             />
                         </FormGroup>
                         <FormGroup>
