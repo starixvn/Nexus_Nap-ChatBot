@@ -58,9 +58,9 @@ const createNewNotification = params => async dispatch => {
     });
 };
 
-const getIntegrationMethods = () => async () => {
+const getIntegrationMethods = notificationTypeId => async () => {
     const url = Site.resolveClientUrl('Common/GetIntegrationMethods');
-    return await DataService.getDataAsync(url, { inInTegrationMethodId: null, inInTegrationMethodName: null }).then(response => response);
+    return await DataService.getDataAsync(url, { notificationTypeId }).then(response => response);
 };
 
 export const ActionCreators = {

@@ -70,7 +70,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
                     SendDate = model.SendDate,
                     SendImmediately = model.SendImmediately,
                     CreatorId = napSession.UserId,
-                    Platforms = model.Platforms ?? string.Empty
+                    Platforms = model.Platforms ?? string.Empty,
+                    IntegrationMethodIds = model.IntegrationMethodIds ?? string.Empty
                 });
 
                 if (result.IsSuccessful && !string.IsNullOrWhiteSpace(notificationIds))
@@ -113,7 +114,10 @@ namespace Fanex.NCB.SkypeBot.Controllers
             var channelIds = resendNotification.ChannelId.ToString();
             var platformsLst = resendNotification.Platforms.Select(item => item.PlatformId).ToList();
             var platforms = string.Join(",", platformsLst);
-            var (recipients, selectedRecipients) = await notificationService.GetRecipientsAsync(resendNotification.NotificationTypeId, platforms, recipientIds, channelIds: channelIds);
+            var integrationLst = resendNotification.IntegrationMethods.Select(item => item.IntegrationMethodId).ToList();
+            var integrationIds = string.Join(",", integrationLst);
+            var notiTypeId = resendNotification.NotificationTypeId;
+            var (recipients, selectedRecipients) = await notificationService.GetRecipientsAsync(notiTypeId, platforms, recipientIds, integrationMethodIds: integrationIds, channelIds: channelIds);
             IEnumerable<Recipient> unSelectableRecipients = resendNotification.Recipients.Where(r => !recipients.Any(x => x.RecipientId == r.RecipientId)).ToList();
 
             resendNotification.Recipients = resendNotification.Recipients.Where(x => !unSelectableRecipients.Any(u => u.RecipientId == x.RecipientId)).ToList();

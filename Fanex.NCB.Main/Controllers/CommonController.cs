@@ -85,9 +85,9 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetIntegrationMethods(uint? inIntegrationMethodId, string inIntegrationMethodName)
+        public async Task<IActionResult> GetIntegrationMethods(int notificationTypeId)
         {
-            var integrationMethods = await commonService.GetIntegrationMethodAsync(inIntegrationMethodId, inIntegrationMethodName);
+            var integrationMethods = await commonService.GetIntegrationMethodAsync(notificationTypeId);
 
             return Json(integrationMethods);
         }

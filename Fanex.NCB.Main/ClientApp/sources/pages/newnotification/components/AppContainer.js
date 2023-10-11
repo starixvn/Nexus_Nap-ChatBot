@@ -24,7 +24,6 @@ import MarkdownRules from '../../common/markdown-rules';
 import CommonFunction from '../../common/common-functions/CommonFunctions';
 import MultipleSelect from '../../common/multiple-select/index';
 import UserGuide from '../../common/user-guide';
-import { async } from 'regenerator-runtime';
 
 const SendModeOptions = [
     { value: '1', label: 'Send Immediately' },
@@ -82,7 +81,6 @@ export class AppContainer extends React.Component {
         this.messageContentLength = parseInt(document.getElementById('MessageContentLength').value, 10);
         this.debounceHandleSearchRecipents = CommonFunction.debounce(this.handleSearchRecipents);
         this.searchRecipients = [];
-        this.searchPlatforms = [];
 
         const windowUrl = window.location.search;
         const params = new URLSearchParams(windowUrl);
@@ -103,7 +101,7 @@ export class AppContainer extends React.Component {
 
     handleInitResendNotification = () => {
         const { notificationId, isResendAll } = this.resendNotifcation;
-        this.props.getResendNotification(notificationId, '', isResendAll).then(response => {
+        this.props.getResendNotification(notificationId, '', isResendAll).then(async response => {
             const { resendNotification, recipients, unSelectableRecipients } = response.data;
             this.props.setRecipients({ recipients: recipients });
             this.selectedRecipientIds = resendNotification.recipients.map(r => r.recipientId);
@@ -115,36 +113,44 @@ export class AppContainer extends React.Component {
                         r.recipientTypeId + '-' + r.recipientId
                 };
             });
-            this.props.getPlatforms(resendNotification.notificationTypeId).then(res => {
-                let selectedPlatforms = [];
-                let platforms = '';
 
-                if (res.data.length > 0) {
-                    selectedPlatforms = res.data.map(item => ({ id: item.platformId, name: item.platformName }));
-                }
+            console.log('resendNotification', resendNotification);
+            var platforms = await this.getResendOptions(this.props.getPlatforms, resendNotification, 'platforms', { id: 'platformId', name: 'platformName'});
+            var integrationMethods = await this.getResendOptions(this.props.getIntegrationMethods, resendNotification, 'integrationMethods', { id: 'integrationMethodId', name: 'integrationMethodName'});
 
-                if (resendNotification.platforms.length > 0) {
-                    platforms = resendNotification.platforms.map(item => item.platformId).join(',');
-                }
-
-                this.setState({
-                    initValue: {
-                        ...this.state.initValue,
-                        channelIds: resendNotification.channelId.toString(),
-                        channelName: resendNotification.channelName,
-                        notificationTypeId: resendNotification.notificationTypeId,
-                        recipients: selectedRecipients,
-                        title: resendNotification.title,
-                        content: resendNotification.content,
-                        sendDate: Today,
-                        sendMode: '1',
-                        platforms: platforms
-                    },
-                    platformOptions: selectedPlatforms
-                });
-                this.displayUnselectableRecipients(unSelectableRecipients);
+            this.setState({
+                initValue: {
+                    ...this.state.initValue,
+                    channelIds: resendNotification.channelId.toString(),
+                    channelName: resendNotification.channelName,
+                    notificationTypeId: resendNotification.notificationTypeId,
+                    recipients: selectedRecipients,
+                    title: resendNotification.title,
+                    content: resendNotification.content,
+                    sendDate: Today,
+                    sendMode: '1',
+                    platforms: platforms.data,
+                    integrationMethodIds: integrationMethods.data
+                },
+                platformOptions: platforms.options,
+                integrationMethodOptions: integrationMethods.options
             });
+            this.displayUnselectableRecipients(unSelectableRecipients);
         });
+    };
+
+    getResendOptions = async (propsFunc, resendNotification, values, key) => {
+        var data = '', options = [];
+        await propsFunc(resendNotification.notificationTypeId).then(res => {
+            if (res.data.length > 0) {
+                options = res.data.map(item => ({ id: item[`${key.id}`], name: item[`${key.name}`] }));
+            }
+
+            if (resendNotification[`${values}`].length > 0) {
+                data = resendNotification[`${values}`].map(item => item[`${key.id}`]).join(',');
+            }
+        });
+        return { data, options };
     };
 
     displayUnselectableRecipients = recipients => {
@@ -185,17 +191,33 @@ export class AppContainer extends React.Component {
             content: values.content.trim(),
             sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
             sendImmediately: values.sendMode === '1',
-            platforms: values.platforms
+            platforms: values.platforms,
+            integrationMethodIds: values.integrationMethodIds
         });
 
-        this.props.createNewNotification(data).then(() => {
-            formik.setSubmitting(false);
-            if (this.props.createNotificationResult.isSuccessful) {
-                setTimeout(function () {
-                    window.location = Site.resolveClientUrl('NotificationList');
-                }, 3000);
-            }
-        });
+        const data1 = {
+            channelIds: values.channelIds,
+            notificationTypeId: values.notificationTypeId,
+            productId: values.productId,
+            recipientIds: recipientIds.toString(),
+            title: values.title.trim(),
+            content: values.content.trim(),
+            sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
+            sendImmediately: values.sendMode === '1',
+            platforms: values.platforms,
+            integrationMethodIds: values.integrationMethodIds
+        };
+
+        console.log('data1', data1);
+
+        // this.props.createNewNotification(data).then(() => {
+        //     formik.setSubmitting(false);
+        //     if (this.props.createNotificationResult.isSuccessful) {
+        //         setTimeout(function () {
+        //             window.location = Site.resolveClientUrl('NotificationList');
+        //         }, 3000);
+        //     }
+        // });
     };
 
     schema = object().shape({
@@ -246,11 +268,9 @@ export class AppContainer extends React.Component {
         return notFilledParams.length === 0;
     }
 
-    handleNotificationTypeChange = event => {
-        const value = event.target.value;
-        const formik = this.refs.form;
-        var platforms = '';
-        this.props.getPlatforms(event.target.value).then(response => {
+    getPlatformCreateOptions = async (value, formik) => {
+        await this.props.getPlatforms(value).then(response => {
+            var platforms = '';
             if (response.data.length > 0) {
                 platforms = response.data.map(item => item.platformId).join(',');
                 const platformOptions = response.data.map(item => { return { id: item.platformId, name: item.platformName, checked: true } });
@@ -258,21 +278,42 @@ export class AppContainer extends React.Component {
             } else {
                 this.setState({ platformOptions: [] });
             }
-
             formik.setFieldValue('platforms', platforms);
-            this.props.getRecipients(value, platforms, '', formik.state.values.productId, '', formik.state.values.channelIds);
-            this.props.getNotificationTemplates(value);
-            formik.setValues({
-                ...formik.state.values,
-                notificationTypeId: value,
-                recipients: [],
-                templateId: '',
-                params: [],
-                title: '',
-                content: ''
-            });
-            this.setState({ searchValue: '', searchPlatformValue: '' });
         });
+    };
+
+    getIntegrationCreateOptions = async (value, formik) => {
+        await this.props.getIntegrationMethods(value).then(response => {
+            var integrationMethodIds = '';
+            if (response.data.length > 0) {
+                integrationMethodIds = response.data.map(item => item.integrationMethodId).join(',');
+                const integrationMethodOptions = response.data.map(item => { return { id: item.integrationMethodId, name: item.integrationMethodName, checked: true } });
+                this.setState({ integrationMethodOptions: integrationMethodOptions });
+            } else {
+                this.setState({ integrationMethodOptions: [] });
+            }
+            formik.setFieldValue('integrationMethodIds', integrationMethodIds);
+        });
+    };
+
+    handleNotificationTypeChange = async event => {
+        const value = event.target.value;
+        const formik = this.refs.form;
+        await this.getPlatformCreateOptions(value, formik);
+        await this.getIntegrationCreateOptions(value, formik);
+
+        this.props.getRecipients(value, formik.state.values.platforms, '', formik.state.values.productId, formik.state.values.integrationMethodIds, formik.state.values.channelIds);
+        this.props.getNotificationTemplates(value);
+        formik.setValues({
+            ...formik.state.values,
+            notificationTypeId: value,
+            recipients: [],
+            templateId: '',
+            params: [],
+            title: '',
+            content: ''
+        });
+        this.setState({ searchValue: '', searchPlatformValue: '' });
     };
 
     handleTemplateChange = event => {
@@ -317,7 +358,7 @@ export class AppContainer extends React.Component {
             recipients = formik.state.values.recipients.map(item => this.getRealValue(item.value)).join(',');
         }
 
-        await this.props.getRecipients(formik.state.values.notificationTypeId, platforms, recipients, value, '', formik.state.values.channelIds);
+        await this.props.getRecipients(formik.state.values.notificationTypeId, platforms, recipients, value, formik.state.values.integrationMethodIds, formik.state.values.channelIds);
 
         if (formik.state.values.recipients.length > 0) {
             const valuesRecipients = formik.state.values.recipients.filter(item => this.props.selectedRecipients.includes(this.getRealValue(item.value)));
@@ -340,7 +381,24 @@ export class AppContainer extends React.Component {
             recipients = formik.state.values.recipients.map(item => this.getRealValue(item.value)).join(',');
         }
 
-        await this.props.getRecipients(formik.state.values.notificationTypeId, value, recipients, formik.state.values.productId, '', formik.state.values.channelIds);
+        await this.props.getRecipients(formik.state.values.notificationTypeId, value, recipients, formik.state.values.productId, formik.state.values.integrationMethodIds, formik.state.values.channelIds);
+
+        if (formik.state.values.recipients.length > 0) {
+            const valuesRecipients = formik.state.values.recipients.filter(item => this.props.selectedRecipients.includes(this.getRealValue(item.value)));
+            formik.setFieldValue('recipients', valuesRecipients);
+        }
+    };
+
+    handleIntegrationMethodChange = async value => {
+        const formik = this.refs.form;
+        formik.setFieldValue('integrationMethodIds', value);
+
+        var recipients = '';
+        if (formik.state.values.recipients.length > 0) {
+            recipients = formik.state.values.recipients.map(item => this.getRealValue(item.value)).join(',');
+        }
+
+        await this.props.getRecipients(formik.state.values.notificationTypeId, formik.state.values.platforms, recipients, formik.state.values.productId, value, formik.state.values.channelIds);
 
         if (formik.state.values.recipients.length > 0) {
             const valuesRecipients = formik.state.values.recipients.filter(item => this.props.selectedRecipients.includes(this.getRealValue(item.value)));
@@ -467,6 +525,16 @@ export class AppContainer extends React.Component {
         }
     };
 
+    getOptionChange = (data, options) => {
+        return options.map(item => {
+            return {
+                id: item.id,
+                name: item.name,
+                checked: data.split(',').includes(item.id.toString())
+            }
+        });
+    };
+
     handleOpenMarkdownRulesPopup = () => this.props.setMarkdownRulesPopup({ isOpen: true });
 
     handleCloseMarkdownRulesPopup = () => this.props.setMarkdownRulesPopup({ isOpen: false });
@@ -485,13 +553,8 @@ export class AppContainer extends React.Component {
         isSubmitting
     }) => {
         const isValidContentLength = values.content.trim().length <= this.messageContentLength;
-        const platformOptions = this.state.platformOptions.map(item => {
-            return {
-                id: item.id,
-                name: item.name,
-                checked: values.platforms.split(',').includes(item.id.toString())
-            }
-        });
+        const platformOptions = this.getOptionChange(values.platforms, this.state.platformOptions);
+        const integrationMethodOptions = this.getOptionChange(values.integrationMethodIds, this.state.integrationMethodOptions);
         const isHaveOneParam = values.params.length === 1;
         const noFilledParams = this.state.noFilledParams;
 
@@ -548,13 +611,13 @@ export class AppContainer extends React.Component {
                 <FormGroup>
                     <Label for="integrationMethods" className="form-label">Integration Method</Label>
                     <MultipleSelect
-                        dataSource={this.state.integrationMethodOptions}
+                        dataSource={integrationMethodOptions}
                         hasNoneOption
                         keyField='id' valueField='name'
                         maxDisplayItemCount={2}
-                        hasAllOption={this.state.integrationMethodOptions.length > 0}
+                        hasAllOption={integrationMethodOptions.length > 0}
                         onChange={(currentItem, selectedItemsKey) => {
-                            this.handlePlatformChange(selectedItemsKey);
+                            this.handleIntegrationMethodChange(selectedItemsKey);
                         }}
                     />
                 </FormGroup>

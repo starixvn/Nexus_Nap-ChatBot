@@ -4,12 +4,14 @@
 
     public class GetIntegrationMethodCriteria : CriteriaBase
     {
+        public int InNotificationTypeId { get; set; }
+
         public uint? InIntegrationMethodId { get; set; }
 
         public string InIntegrationMethodName { get; set; }
 
         public override string GetSettingKey() => "NCB_IntegrationMethod_Sel";
 
-        public override bool IsValid() => true;
+        public override bool IsValid() => InNotificationTypeId > 0;
     }
 }
