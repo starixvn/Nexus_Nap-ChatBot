@@ -32,6 +32,6 @@
         
         Task<ServiceSetting> GetServiceSetting(string inServiceName);
 
-        Task<IEnumerable<IntegrationMethodInfo>> GetIntegrationMethodAsync(uint? inIntegrationMethodId, string inIntegrationMethodName);
+        Task<IEnumerable<IntegrationMethodInfo>> GetIntegrationMethodAsync(int notificationTypeId);
     }
 }

@@ -40,6 +40,7 @@ export default class EditNotification extends React.Component {
             notification: null,
             recipientOptions: null,
             platformOptions: [],
+            integrationMethodOptions: [],
             confimrationPopup: {
                 isOpen: false,
                 message: ''
@@ -48,15 +49,14 @@ export default class EditNotification extends React.Component {
                 isOpen: false
             },
             searchValue: '',
-            searchPlatformValue: '',
             allPlatform: [],
+            allIntegrationMethod: [],
             selectedRecipients: []
         };
 
         this.messageContentLength = parseInt(document.getElementById('MessageContentLength').value, 10);
         this.debounceHandleSearchRecipents = CommonFunction.debounce(this.handleSearchRecipents);
         this.searchRecipients = [];
-        this.searchPlatforms = [];
     }
 
     componentDidMount() {
@@ -71,9 +71,11 @@ export default class EditNotification extends React.Component {
                 const notificationTypeId = notification.notificationTypeId;
                 const productId = notification.productId;
                 const platforms = notification.platforms.length > 0 ?  notification.platforms.map(item => item.platformId).join(',') : '';
+                const integrationMethodIds = notification.integrationMethods.length > 0 ?  notification.integrationMethods.map(item => item.integrationMethodId).join(',') : '';
 
                 this.getAllPlatforms(notificationTypeId);
-                this.getRecipients(this.state.notificationId, notificationTypeId, productId, platforms, '')
+                this.getIntegrationMethods(notificationTypeId);
+                this.getRecipients(this.state.notificationId, notificationTypeId, productId, platforms, '', integrationMethodIds)
                 this.setState({ notification });
             }).catch(errorResponseHandler);
     }
@@ -89,12 +91,19 @@ export default class EditNotification extends React.Component {
             };
         });
         const selectedPlatforms = this.state.allPlatform.map(item => ({ id: item.platformId, name: item.platformName }));
-        let platforms = '';
+        const selectedIntegrations = this.state.allIntegrationMethod.map(item => ({ id: item.integrationMethodId, name: item.integrationMethodName }));
+        let platforms, integrationMethodIds = '';
         if (notification.platforms.length > 0) {
             platforms = notification.platforms.map(item => item.platformId).join(',');
         }
+        if (notification.integrationMethods.length > 0) {
+            integrationMethodIds = notification.integrationMethods.map(item => item.integrationMethodId).join(',');
+        }
 
-        this.setState({ platformOptions: selectedPlatforms });
+        this.setState({
+            platformOptions: selectedPlatforms,
+            integrationMethodOptions: selectedIntegrations
+        });
 
         return {
             channelId: notification.channelId,
@@ -105,7 +114,8 @@ export default class EditNotification extends React.Component {
             sendMode: notification.sendImmediately ? '1' : '2',
             sendDate: notification.configSendTime,
             productId: notification.productId || '',
-            platforms: platforms
+            platforms: platforms,
+            integrationMethodIds: integrationMethodIds
         };
     };
 
@@ -117,14 +127,23 @@ export default class EditNotification extends React.Component {
         }).catch(errorResponseHandler);
     };
 
-    getRecipients = async (notificationId, notificationTypeId, productId, platforms, recipientIds) => {
+    getIntegrationMethods = notificationTypeId => {
+        axios.get(Site.resolveClientUrl('Common/GetIntegrationMethods'), {
+            params: { notificationTypeId: notificationTypeId }
+        }).then(response => {
+            this.setState({ allIntegrationMethod: response.data });
+        }).catch(errorResponseHandler);
+    };
+
+    getRecipients = async (notificationId, notificationTypeId, productId, platforms, recipientIds, integrationMethodIds) => {
         await axios.get(Site.resolveClientUrl('EditNotification/GetRecipients'), {
             params: {
                 notificationId: notificationId,
                 notificationTypeId: notificationTypeId,
                 productId: productId,
                 platforms: platforms,
-                recipientIds: recipientIds
+                recipientIds: recipientIds,
+                integrationMethodIds: integrationMethodIds
             }
         }).then(response => {
             const initialObj = this.initializeObj();
@@ -152,7 +171,8 @@ export default class EditNotification extends React.Component {
             content: values.content.trim(),
             sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
             sendImmediately: values.sendMode === '1',
-            platforms: values.platforms
+            platforms: values.platforms,
+            integrationMethodIds: values.integrationMethodIds
         });
 
         this.handleCloseConfirmationPopup();
@@ -286,12 +306,39 @@ export default class EditNotification extends React.Component {
         if (formik.state.values.recipients.length > 0) {
             recipients = formik.state.values.recipients.map(item => this.getRealValue(item.value)).join(',');
         }
-        await this.getRecipients(notificationId, notification.notificationTypeId, formik.state.values.productId, value, recipients);
+        await this.getRecipients(notificationId, notification.notificationTypeId, formik.state.values.productId, value, recipients, formik.state.values.integrationMethodIds);
 
         if (formik.state.values.recipients.length > 0) {
             const valueRecipients = formik.state.values.recipients.filter(item => this.state.selectedRecipients.includes(this.getRealValue(item.value)));
             formik.setFieldValue('recipients', valueRecipients);
         }
+    };
+
+    handleIntegrationChange = async value => {
+        const formik = this.refs.form;
+        const { notificationId, notification } = this.state;
+        formik.setFieldValue('integrationMethodIds', value);
+
+        var recipients = '';
+        if (formik.state.values.recipients.length > 0) {
+            recipients = formik.state.values.recipients.map(item => this.getRealValue(item.value)).join(',');
+        }
+        await this.getRecipients(notificationId, notification.notificationTypeId, formik.state.values.productId, formik.state.values.platforms, recipients, value);
+
+        if (formik.state.values.recipients.length > 0) {
+            const valueRecipients = formik.state.values.recipients.filter(item => this.state.selectedRecipients.includes(this.getRealValue(item.value)));
+            formik.setFieldValue('recipients', valueRecipients);
+        }
+    };
+
+    getOptions = (data, options) => {
+        return options.map(item => {
+            return {
+                id: item.id,
+                name: item.name,
+                checked: data.split(',').includes(item.id.toString())
+            }
+        });
     };
 
     renderForm = ({
@@ -308,14 +355,8 @@ export default class EditNotification extends React.Component {
         const isContentInvalid = this.touchedAndErrors(touched, errors, 'content');
         const isSendDateInvalid = this.touchedAndErrors(touched, errors, 'sendDate');
         const isValidContentLength = values.content.trim().length <= this.messageContentLength;
-
-        const platformOptions = this.state.platformOptions.map(item => {
-            return {
-                id: item.id,
-                name: item.name,
-                checked: values.platforms.split(',').includes(item.id.toString())
-            }
-        });
+        const platformOptions = this.getOptions(values.platforms, this.state.platformOptions);
+        const integrationOptions = this.getOptions(values.integrationMethodIds, this.state.integrationMethodOptions);
 
         return (
             <Form onSubmit={handleSubmit} className="edit-notification-form">
@@ -362,6 +403,21 @@ export default class EditNotification extends React.Component {
                             hasAllOption={platformOptions.length > 0}
                             onChange={(currentItem, selectedItemsKey) => {
                                 this.handlePlatformChange(selectedItemsKey);
+                            }}
+                        />
+                    </Col>
+                </FormGroup>
+                <FormGroup style={{display: 'flex'}}>
+                    <Label for="integrationMethods" className="form-label" sm={2}>Integration Method</Label>
+                    <Col sm={10}>
+                        <MultipleSelect
+                            dataSource={integrationOptions}
+                            hasNoneOption
+                            keyField='id' valueField='name'
+                            maxDisplayItemCount={2}
+                            hasAllOption={integrationOptions.length > 0}
+                            onChange={(currentItem, selectedItemsKey) => {
+                                this.handleIntegrationChange(selectedItemsKey);
                             }}
                         />
                     </Col>

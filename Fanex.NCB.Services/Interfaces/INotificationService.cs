@@ -29,7 +29,7 @@
 
         Task<(IEnumerable<Recipient>, IEnumerable<uint>)> GetEditNotificationRecipientsAsync(
             int notificationId, int notificationTypeId, int? productId, string platforms,
-            string recipientIds, string inIntegrationMethodIds
+            string recipientIds, string integrationMethodIds
         );
 
         Task<IEnumerable<Template>> GetTemplatesAsync(int notificationTypeId);

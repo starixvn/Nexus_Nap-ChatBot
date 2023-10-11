@@ -54,9 +54,9 @@
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
-        public async Task<IActionResult> GetRecipients(int notificationId, int notificationTypeId, int? productId, string platforms, string recipientIds, string inIntegrationMethodIds)
+        public async Task<IActionResult> GetRecipients(int notificationId, int notificationTypeId, int? productId, string platforms, string recipientIds, string integrationMethodIds)
         {
-            var result = await notificationService.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId, platforms, recipientIds, inIntegrationMethodIds);
+            var result = await notificationService.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId, platforms, recipientIds, integrationMethodIds);
             var (recipients, selectedRecipients) = result;
             var tree = GenerateTreeHelper.FromRecipient(recipients);
 

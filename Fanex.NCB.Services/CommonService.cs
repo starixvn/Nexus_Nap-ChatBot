@@ -89,12 +89,13 @@
             return await baseService.GetDataEntityAsync<ServiceSetting>(criteria);
         }
 
-        public async Task<IEnumerable<IntegrationMethodInfo>> GetIntegrationMethodAsync(uint? inIntegrationMethodId, string inIntegrationMethodName)
+        public async Task<IEnumerable<IntegrationMethodInfo>> GetIntegrationMethodAsync(int notificationTypeId)
         {
             var criteria = new GetIntegrationMethodCriteria
             {
-                InIntegrationMethodId = inIntegrationMethodId,
-                InIntegrationMethodName = inIntegrationMethodName
+                InNotificationTypeId = notificationTypeId,
+                InIntegrationMethodId = null,
+                InIntegrationMethodName = null
             };
             return await baseService.GetDataAsync<IntegrationMethodInfo>(criteria);
         }

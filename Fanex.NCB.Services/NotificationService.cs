@@ -200,7 +200,7 @@
         }
 
         public async Task<(IEnumerable<Recipient>, IEnumerable<uint>)> GetEditNotificationRecipientsAsync
-        (int notificationId, int notificationTypeId, int? productId, string platforms, string recipientIds, string inIntegrationMethodIds)
+        (int notificationId, int notificationTypeId, int? productId, string platforms, string recipientIds, string integrationMethodIds)
         {
             return await baseService.FetchMultipleAsync<Recipient, uint>(new GetEditNotificationRecipientsCriteria
             {
@@ -209,7 +209,7 @@
                 InProductId = productId,
                 InPlatformIds = platforms,
                 InRecipientIds = recipientIds,
-                InIntegrationMethodIds = inIntegrationMethodIds
+                InIntegrationMethodIds = integrationMethodIds
             });
         }
 
