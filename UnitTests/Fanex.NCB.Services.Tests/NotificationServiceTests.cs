@@ -237,7 +237,7 @@
             Assert.Equal(model.RecipientIds, command.InRecipientIds);
             Assert.Equal(model.Title, command.InTitle);
             Assert.Equal(model.Content, command.InContent);
-            Assert.Equal(model.UserId, command.UserId);
+            Assert.Equal(model.UserId, command.InUserId);
             Assert.Equal(model.SendImmediately, command.InSendImmediately);
             Assert.Equal(model.Platforms, command.InPlatformIds);
         }

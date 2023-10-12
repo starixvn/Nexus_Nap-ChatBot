@@ -17,7 +17,7 @@
 
         public bool InSendImmediately { get; set; }
 
-        public int UserId { get; set; }
+        public int InUserId { get; set; }
 
         public string InPlatformIds { get; set; }
 
@@ -29,7 +29,7 @@
 
         public override bool IsValid() => InNotificationId > 0 && !string.IsNullOrWhiteSpace(InRecipientIds) 
             && !string.IsNullOrWhiteSpace(InTitle)
-             && !string.IsNullOrWhiteSpace(InContent) && UserId > 0;
+             && !string.IsNullOrWhiteSpace(InContent) && InUserId > 0;
 
 #pragma warning restore S1067 // Expressions should not be too complex
     }

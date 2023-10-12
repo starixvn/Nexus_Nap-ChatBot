@@ -42,7 +42,7 @@ namespace Fanex.NCB.Criteria.Tests.Notification
             var fixture = new Fixture();
             var criteria = fixture.Create<EditNotificationCommand>();
             criteria.InNotificationId = notificationId;
-            criteria.UserId = userId;
+            criteria.InUserId = userId;
             criteria.InRecipientIds = recipientIds;
             criteria.InTitle = title;
             criteria.InContent = content;

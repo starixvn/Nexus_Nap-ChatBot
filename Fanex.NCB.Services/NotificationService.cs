@@ -4,19 +4,15 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.Data.Repository;
-    using Fanex.Data;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Criteria.Notification;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Models.Notification;
+    using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Models.IntegrationMethod;
-    using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Newtonsoft.Json;
-    using Fanex.NCB.Repository.Interfaces;
 
     public class NotificationService : INotificationService
     {
@@ -185,7 +181,7 @@
                 InContent = model.Content,
                 InConfigSendTime = model.SendImmediately ? DateTimeOffset.UtcNow : model.SendDate.ConvertToUTC(),
                 InSendImmediately = model.SendImmediately,
-                UserId = model.UserId,
+                InUserId = model.UserId,
                 InPlatformIds = model.Platforms,
                 InIntegrationMethodIds = model.InIntegrationMethodIds
             };

@@ -114,7 +114,6 @@ export class AppContainer extends React.Component {
                 };
             });
 
-            console.log('resendNotification', resendNotification);
             var platforms = await this.getResendOptions(this.props.getPlatforms, resendNotification, 'platforms', { id: 'platformId', name: 'platformName'});
             var integrationMethods = await this.getResendOptions(this.props.getIntegrationMethods, resendNotification, 'integrationMethods', { id: 'integrationMethodId', name: 'integrationMethodName'});
 
@@ -129,6 +128,7 @@ export class AppContainer extends React.Component {
                     content: resendNotification.content,
                     sendDate: Today,
                     sendMode: '1',
+                    productId: resendNotification.productId ? resendNotification.productId : '',
                     platforms: platforms.data,
                     integrationMethodIds: integrationMethods.data
                 },
@@ -195,29 +195,14 @@ export class AppContainer extends React.Component {
             integrationMethodIds: values.integrationMethodIds
         });
 
-        const data1 = {
-            channelIds: values.channelIds,
-            notificationTypeId: values.notificationTypeId,
-            productId: values.productId,
-            recipientIds: recipientIds.toString(),
-            title: values.title.trim(),
-            content: values.content.trim(),
-            sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
-            sendImmediately: values.sendMode === '1',
-            platforms: values.platforms,
-            integrationMethodIds: values.integrationMethodIds
-        };
-
-        console.log('data1', data1);
-
-        // this.props.createNewNotification(data).then(() => {
-        //     formik.setSubmitting(false);
-        //     if (this.props.createNotificationResult.isSuccessful) {
-        //         setTimeout(function () {
-        //             window.location = Site.resolveClientUrl('NotificationList');
-        //         }, 3000);
-        //     }
-        // });
+        this.props.createNewNotification(data).then(() => {
+            formik.setSubmitting(false);
+            if (this.props.createNotificationResult.isSuccessful) {
+                setTimeout(function () {
+                    window.location = Site.resolveClientUrl('NotificationList');
+                }, 3000);
+            }
+        });
     };
 
     schema = object().shape({
