@@ -128,7 +128,7 @@ export class AppContainer extends React.Component {
                     content: resendNotification.content,
                     sendDate: Today,
                     sendMode: '1',
-                    productId: resendNotification.productId ? resendNotification.productId : '',
+                    productId: this.props.products.find(x => x.id === resendNotification.productId) ? resendNotification.productId : '',
                     platforms: platforms.data,
                     integrationMethodIds: integrationMethods.data
                 },
