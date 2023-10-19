@@ -178,5 +178,6 @@
             <Mapping DataField="LogId" ObjectProperty="MessageId" />
             <Mapping DataField="CreatedDate" ObjectProperty="PostTime" />
         </Setting>
+        <Setting Key="NAP_Chatbot_DataToJSON_Sel" SpName="NAP_Chatbot_DataToJSON_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
     </Function>
 </Functions>
