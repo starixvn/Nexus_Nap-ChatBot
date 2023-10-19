@@ -8,6 +8,7 @@
     using Fanex.NCB.Criteria.SiteMessage;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Models.NotifictaionSendMessage;
+    using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Services.Tests.TestableClasses;
     using Fanex.NCB.Shared.Extensions;
@@ -30,6 +31,8 @@
         private IConfiguration configuration;
         private ISiteDbService siteDbService;
         private ICommonService commonService;
+        private IRefNoTicketService refNoTicketService;
+        private ISpecialDeleteRepository specialDeleteRepository;
 
         #region PullVoidingMessageLicenseeAsync
 
@@ -74,12 +77,13 @@
             var setting = fixture.Create<SystemSetting>();
             var messages = fixture.Create<IEnumerable<Message>>();
             var messageDetails = fixture.Create<IEnumerable<MessageDetail>>();
+            var messageImport = fixture.Create<IEnumerable<SpecialDeleteIssueType>>();
             var command = new CommandResult { Code = 0 };
             var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
             var service = GetService();
             baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns(setting);
             service.Protected("GetMessageFromVoidingForLicenseeAsync", setting).Returns(Task.FromResult<(IEnumerable<Message>, IEnumerable<MessageDetail>)>((messages, messageDetails)));
-            service.Protected("ImportMessageToChatbotDBAsync", messages, messageDetails).Returns(Task.FromResult<(CommandResult, IEnumerable<NotificationMessage>)>((command, notifications)));
+            service.Protected("ImportMessageToChatbotDBAsync", messageImport, messageDetails).Returns(Task.FromResult<(CommandResult, IEnumerable<NotificationMessage>)>((command, notifications)));
 
             // Act
             await service.PullVoidingMessageLicenseeAsync();
@@ -113,16 +117,16 @@
         {
             // Arrange
             var setting = fixture.Create<SystemSetting>();
-            var (tranIds, usernames) = fixture.Create<(IEnumerable<CollectionTransId>, IEnumerable<CollectionUsername>)>();
+            var (tranIds, usernames, duplicatedTicket) = fixture.Create<(IEnumerable<CollectionTransId>, IEnumerable<CollectionUsername>, IEnumerable<CollectionDuplicatedTickets>)>();
             var service = GetService();
             baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>()).Returns(setting);
-            baseService.FetchMultipleAsync<CollectionTransId, CollectionUsername>(Arg.Any<GetVoidingHIstoryCollectionIdCriteria>()).Returns((tranIds, usernames));
+            baseService.FetchMultipleAsync<CollectionTransId, CollectionUsername, CollectionDuplicatedTickets>(Arg.Any<GetVoidingHIstoryCollectionIdCriteria>()).Returns((tranIds, usernames, duplicatedTicket));
 
             // Act
             await service.PullVoidingMessageInternalDepartmentAsync();
 
             // Assert
-            service.Received().Protected("GetMessageAndImportToChatbotAsync", tranIds, usernames, setting);
+            service.Received().Protected("GetMessageAndImportToChatbotAsync", tranIds, usernames, duplicatedTicket, setting);
         }
 
         #endregion PullVoidingMessageInternalDepartmentAsync
@@ -193,7 +197,7 @@
         public async Task ImportMessageToChatbotDBAsync_WhenCalled_ReturnAsExpectedResult()
         {
             // Arrange
-            var messages = fixture.Create<IEnumerable<Message>>();
+            var messages = fixture.Create<IEnumerable<SpecialDeleteIssueType>>();
             var messageDetails = fixture.Create<IEnumerable<MessageDetail>>();
             var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
             var notificationMessages = fixture.Create<IEnumerable<NotificationSendMessage>>();
@@ -258,10 +262,12 @@
             // Arrange
             var messages = new List<AbnormalMessageDetail>();
             var histories = fixture.Create<IEnumerable<AbnormalMessage>>();
+            var duplicateTicketDetail = fixture.Create<IEnumerable<DuplicateTicketDetail>>();
+            var abnormalAccountInfo = fixture.Create<IEnumerable<AbnormalAccountInfo>>();
             var service = GetService();
 
             // Act
-            await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories);
+            await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories, duplicateTicketDetail, abnormalAccountInfo);
 
             // Assert
             await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportAbnormalBetsMessageCriteria>());
@@ -274,6 +280,8 @@
             var messages = fixture.Create<IEnumerable<AbnormalMessageDetail>>();
             var histories = fixture.Create<IEnumerable<AbnormalMessage>>();
             var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
+            var duplicateTicketDetail = fixture.Create<IEnumerable<DuplicateTicketDetail>>();
+            var abnormalAccountInfo = fixture.Create<IEnumerable<AbnormalAccountInfo>>();
             var notifications = fixture.Create<IEnumerable<NotificationSendMessage>>();
             var notificationMessages = fixture.Create<IEnumerable<NotificationMessage>>();
             var criteria = new ImportAbnormalBetsMessageCriteria();
@@ -283,7 +291,7 @@
             chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients).Returns(notificationMessages);
 
             // Act
-            await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories);
+            await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories, duplicateTicketDetail, abnormalAccountInfo);
 
             // Assert
             Assert.Equal(JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = "yyyy-MM-dd HH:mm:ss.fff" }), criteria.MessageHeader);
@@ -297,6 +305,8 @@
             // Arrange
             var messages = fixture.Create<IEnumerable<AbnormalMessageDetail>>();
             var histories = fixture.Create<IEnumerable<AbnormalMessage>>();
+            var duplicateTicketDetail = fixture.Create<IEnumerable<DuplicateTicketDetail>>();
+            var abnormalAccountInfo = fixture.Create<IEnumerable<AbnormalAccountInfo>>();
             var xml = XmlHelper<AbnormalMessage>.Serialize(histories.ToList());
             var maxMessageId = fixture.Create<int>();
             var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
@@ -309,7 +319,7 @@
             chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients).Returns(notificationMessages);
 
             // Act
-            await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories);
+            await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories, duplicateTicketDetail, abnormalAccountInfo);
 
             // Assert
             Assert.Equal(JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = "yyyy-MM-dd HH:mm:ss.fff" }), criteria.MessageHeader);
@@ -389,7 +399,9 @@
             siteDbService = Substitute.For<ISiteDbService>();
             configuration.GetSection("Environment").Value.Returns("UAT");
             commonService = Substitute.For<ICommonService>();
-            return Substitute.For<SpecialDeleteServiceTestable>(baseService, chatbotService, pushSignalService, logService, siteDbService, configuration, commonService);
+            refNoTicketService = Substitute.For<IRefNoTicketService>();
+            specialDeleteRepository = Substitute.For<ISpecialDeleteRepository>();
+            return Substitute.For<SpecialDeleteServiceTestable>(baseService, chatbotService, pushSignalService, logService, siteDbService, configuration, commonService, refNoTicketService, specialDeleteRepository);
         }
 
         #endregion Helpers

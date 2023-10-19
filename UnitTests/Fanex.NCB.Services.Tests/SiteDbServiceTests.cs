@@ -58,14 +58,14 @@
         public async Task GetTicketUsernamesAynnc_WhenCalled_WillCallExpectedService()
         {
             var service = GetService();
-            var (transIds, usernames, siteDbs) = FakeInputData();
+            var (transIds, usernames, siteDbs, duclicatedTicked) = FakeInputData();
             var fixture = new Fixture();
             var (tickets, u) = fixture.Create<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)>();
 
             baseService.GetDataAsync<SiteDBConfig>(Arg.Any<GetSiteDbListCriteria>()).Returns(siteDbs);
             dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames>(Arg.Any<AbnormalBetGetUsernameTicketInfoCriteria>()).Returns((tickets, u));
 
-            var result = await service.GetTicketUsernamesAynnc(transIds, usernames);
+            var result = await service.GetTicketUsernamesAynnc(transIds, usernames, duclicatedTicked);
 
             var abnormalBetsInfo = XmlHelper<CollectionTransId>.Serialize(transIds.ToList());
             var abnormalAccounts = XmlHelper<CollectionUsername>.Serialize(usernames.ToList());
@@ -83,7 +83,7 @@
         public async Task GetTicketUsernamesParalellAynnc_WhenCall_ReturnExpectedDistinctAndGroupUsernamesResult()
         {
             var service = GetService();
-            var (transIds, usernames, siteDbs) = FakeInputData();
+            var (transIds, usernames, siteDbs, duclicatedTicked) = FakeInputData();
             siteDbs = new List<SiteDBConfig>
             {
                 new SiteDBConfig { AGIP = "1.1.1.1"},
@@ -94,7 +94,7 @@
             var (expectedTickets, expectedUsernames) = GetExpectedResult();
             PrepareDataForTest();
 
-            var (tickResult, usernameResult) = await service.GetTicketUsernamesParalellAynnc(transIds, usernames);
+            var (tickResult, usernameResult, duplicatedTicketInfo) = await service.GetTicketUsernamesParalellAynnc(transIds, usernames, duclicatedTicked);
             Assert.Equal(JsonConvert.SerializeObject(expectedTickets), JsonConvert.SerializeObject(tickResult));
             Assert.Equal(JsonConvert.SerializeObject(expectedUsernames), JsonConvert.SerializeObject(usernameResult));
         }
@@ -147,13 +147,14 @@
                 Arg.Is<AbnormalBetGetUsernameTicketInfoCriteria>(i => i.ServerIp == "1.2.3.4")).Returns((ticket2, username2));
         }
 
-        private (IEnumerable<CollectionTransId>, IEnumerable<CollectionUsername>, IEnumerable<SiteDBConfig>) FakeInputData()
+        private (IEnumerable<CollectionTransId>, IEnumerable<CollectionUsername>, IEnumerable<SiteDBConfig>, IEnumerable<CollectionDuplicatedTickets>) FakeInputData()
         {
             var fixture = new Fixture();
             var tranIds = fixture.Create<IEnumerable<CollectionTransId>>();
             var usernames = fixture.Create<IEnumerable<CollectionUsername>>();
             var siteDbs = fixture.Create<IEnumerable<SiteDBConfig>>();
-            return (tranIds, usernames, siteDbs);
+            var duclicatedTicked = fixture.Create<IEnumerable<CollectionDuplicatedTickets>>();
+            return (tranIds, usernames, siteDbs, duclicatedTicked);
         }
 
         private (IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>) FakeOutputData()

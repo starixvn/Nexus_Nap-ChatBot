@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
@@ -18,7 +19,9 @@
             ILogService logService,
             ISiteDbService siteDbService,
             IConfiguration configuration,
-            ICommonService commonService) : base(baseService, chatbotService, pushSignalService, logService, configuration, siteDbService, commonService)
+            ICommonService commonService,
+            IRefNoTicketService refNoTicketService,
+            ISpecialDeleteRepository specialDeleteRepository) : base(baseService, chatbotService, pushSignalService, logService, configuration, siteDbService, commonService, refNoTicketService, specialDeleteRepository)
         {
         }
 
@@ -33,7 +36,7 @@
         }
 
         public async Task<(CommandResult, IEnumerable<NotificationMessage>)> Public_ImportMessageToChatbotDBAsync(
-            IEnumerable<Message> messages,
+            IEnumerable<SpecialDeleteIssueType> messages,
             IEnumerable<MessageDetail> messageDetails)
         {
             return await base.ImportMessageToChatbotDBAsync(messages, messageDetails);
@@ -44,16 +47,18 @@
             return await base.GetMessageFromVoidingForLicenseeAsync(systemSetting);
         }
 
-        public async Task Public_GetMessageAndImportToChatbotAsync(IEnumerable<CollectionTransId> tickets, IEnumerable<CollectionUsername> usernames, SystemSetting setting)
+        public async Task Public_GetMessageAndImportToChatbotAsync(IEnumerable<CollectionTransId> tickets, IEnumerable<CollectionUsername> usernames, IEnumerable<CollectionDuplicatedTickets> duplicatedTickets, SystemSetting setting)
         {
-            await base.GetMessageAndImportToChatbotAsync(tickets, usernames, setting);
+            await base.GetMessageAndImportToChatbotAsync(tickets, usernames, duplicatedTickets, setting);
         }
 
         public async Task Public_ImportAbnormalBetNotificationToChatbotDBAsync(
             IEnumerable<AbnormalMessageDetail> messages,
-            IEnumerable<AbnormalMessage> msgHistories)
+            IEnumerable<AbnormalMessage> msgHistories,
+            IEnumerable<DuplicateTicketDetail> duplicateTicketDetails,
+            IEnumerable<AbnormalAccountInfo> abnormalAccountInfos)
         {
-            await base.ImportAbnormalBetNotificationToChatbotDBAsync(messages, msgHistories);
+            await base.ImportAbnormalBetNotificationToChatbotDBAsync(messages, msgHistories, duplicateTicketDetails, abnormalAccountInfos);
         }
 
         public async Task Public_InsertToMessageChatbotAsync(string messages, int jobIdentity)
