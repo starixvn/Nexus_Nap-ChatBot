@@ -18,11 +18,11 @@
         [XmlAttribute("CustId")]
         public int CustId { get; set; }
 
-        [XmlAttribute("MinWinLostDate")]
-        public DateTime MinWinLostDate { get; set; }
+        [XmlAttribute("MinWinlostDate")]
+        public DateTime MinWinlostDate { get; set; }
 
-        [XmlAttribute("MaxWinLostDate")]
-        public DateTime MaxWinLostDate { get; set; }
+        [XmlAttribute("MaxWinlostDate")]
+        public DateTime MaxWinlostDate { get; set; }
 
         [XmlAttribute("SiteName")]
         public string SiteName { get; set; }

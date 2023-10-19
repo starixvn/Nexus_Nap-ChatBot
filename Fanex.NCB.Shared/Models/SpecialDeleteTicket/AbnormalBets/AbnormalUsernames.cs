@@ -9,9 +9,6 @@
         [XmlAttribute("VoidingHistoryCollectionId")]
         public int VoidingHistoryCollectionId { get; set; }
 
-        [XmlAttribute("MessageId")]
-        public long MessageId { get; set; }
-
         [XmlAttribute("VoidingHistoryId")]
         public long VoidingHistoryId { get; set; }
 
@@ -21,10 +18,10 @@
         [XmlAttribute("CustId")]
         public int CustId { get; set; }
 
-        [XmlAttribute("MinWinLostDate")]
-        public DateTime MinWinLostDate { get; set; }
+        [XmlAttribute("MinWinlostDate")]
+        public DateTime MinWinlostDate { get; set; }
 
-        [XmlAttribute("MaxWinLostDate")]
-        public DateTime MaxWinLostDate { get; set; }
+        [XmlAttribute("MaxWinlostDate")]
+        public DateTime MaxWinlostDate { get; set; }
     }
 }
