@@ -69,7 +69,7 @@
             {
                 var (tickets, accounts, dupTickets) = await GetTicketUsernameInfoFromSiteDbAsync(abnormalBetsInfo, abnormalAccounts, dupTicketsInfo, siteDb);
                 ticketLists = ticketLists.Concat(tickets);
-                accountLists = accountLists.Concat(accounts);
+                accountLists = accountLists.Union(accounts);
                 dupTicketLists = dupTicketLists.Concat(dupTickets);
             }
 
@@ -147,17 +147,6 @@
                 x.LiveIndicator
             }).Select(g => g.FirstOrDefault());
 
-            var outputUsernames = accountLists.GroupBy(x => new
-            {
-                x.VoidingHistoryCollectionId,
-                x.VoidingHistoryId
-            }).Select(g => new AbnormalUsernames
-            {
-                VoidingHistoryCollectionId = g.Key.VoidingHistoryCollectionId,
-                VoidingHistoryId = g.Key.VoidingHistoryId,
-                Usernames = string.Join(",", g.Select(i => i.Usernames).ToArray())
-            });
-
             var outputDupTickets = dupTicketLists.GroupBy(x => new
             {
                 x.VoidingHistoryCollectionId,
@@ -170,7 +159,7 @@
                 x.IsParlay
             }).Select(g => g.FirstOrDefault());
 
-            return (outputTickets, outputUsernames, outputDupTickets);
+            return (outputTickets, accountLists, outputDupTickets);
         }
     }
 }

@@ -15,9 +15,6 @@
         [XmlAttribute("VoidingHistoryId")]
         public long VoidingHistoryId { get; set; }
 
-        [XmlAttribute("Usernames")]
-        public string Usernames { get; set; }
-
         [XmlAttribute("Username")]
         public string Username { get; set; }
 
