@@ -7,7 +7,10 @@
         public string MessageHeader { get; set; }
 
         public string MessageDetail { get; set; }
+
         public string DuplicatedInfo { get; set; }
+
+        public string AbnormalAccountInfo { get; set; }
 
         public int ErrCode { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Shared.Models.SpecialDeleteTicket.AbnormalBets
 {
+    using System;
     using System.Xml.Serialization;
 
     [XmlType("r")]
@@ -16,5 +17,17 @@
 
         [XmlAttribute("Usernames")]
         public string Usernames { get; set; }
+
+        [XmlAttribute("Username")]
+        public string Username { get; set; }
+
+        [XmlAttribute("CustId")]
+        public int CustId { get; set; }
+
+        [XmlAttribute("MinWinLostDate")]
+        public DateTime MinWinLostDate { get; set; }
+
+        [XmlAttribute("MaxWinLostDate")]
+        public DateTime MaxWinLostDate { get; set; }
     }
 }

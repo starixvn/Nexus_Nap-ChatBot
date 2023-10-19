@@ -181,6 +181,7 @@
             services.AddSingleton<ISiteDbService, SiteDbService>();
             services.AddSingleton<IDynamicConnectionService, DynamicConnectionService>();
             services.AddSingleton<ICacheService, CacheService>();
+            services.AddSingleton<ISpecialDeleteRepository, SpecialDeleteRepository>();
         }
 
         private static void AddWorker(IServiceCollection services)

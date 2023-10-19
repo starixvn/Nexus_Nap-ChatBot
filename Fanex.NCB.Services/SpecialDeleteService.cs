@@ -8,6 +8,7 @@
     using Fanex.NCB.Criteria.SiteMessage;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Models.NotifictaionSendMessage;
+    using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Extensions;
     using Fanex.NCB.Shared.Models;
@@ -26,6 +27,7 @@
         private readonly ISiteDbService siteDbService;
         private readonly ICommonService commonService;
         private readonly IRefNoTicketService refNoTicketService;
+        private readonly ISpecialDeleteRepository specialDeleteRepository;
         private readonly string Environment;
         private const int VoidTicketForLicenseeJobIdentity = 1;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
@@ -37,7 +39,8 @@
             IConfiguration configuration,
             ISiteDbService siteDbService,
             ICommonService commonService,
-            IRefNoTicketService refNoTicketService)
+            IRefNoTicketService refNoTicketService,
+            ISpecialDeleteRepository specialDeleteRepository)
         {
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;
@@ -46,6 +49,7 @@
             this.siteDbService = siteDbService;
             this.commonService = commonService;
             this.refNoTicketService = refNoTicketService;
+            this.specialDeleteRepository = specialDeleteRepository;
             Environment = configuration.GetSection("Environment")?.Value;
         }
 
@@ -183,11 +187,11 @@
         {
             var (tickets, usernames, dupTickets) = await siteDbService.GetTicketUsernamesAynnc(tranIds, usernameList, duplicatedTickets);
 
-            var (historyDetail, msg, dupTicketDetails) = await GetVoidingHistoryDetailAsync(tickets, usernames, dupTickets);
+            var (historyDetail, msg, abnormalAccountInfos, dupTicketDetails) = await GetVoidingHistoryDetailAsync(tickets, usernames, dupTickets);
             var msgContents = await GetAbnormalBetsMessageContentAsync(msg);
             await GetTransInfoAsync(dupTicketDetails);
             MappingData(historyDetail, msgContents);
-            await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg, dupTicketDetails);
+            await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg, dupTicketDetails, abnormalAccountInfos);
         }
 
         private async Task GetTransInfoAsync(IEnumerable<DuplicateTicketDetail> dupTicketDetails)
@@ -234,7 +238,8 @@
             return await baseService.GetDataAsync<AbnormalMessageContent>(criteria);
         }
 
-        protected internal virtual async Task<(IEnumerable<AbnormalMessageDetail>, IEnumerable<AbnormalMessage>, IEnumerable<DuplicateTicketDetail>)> GetVoidingHistoryDetailAsync(
+        protected internal virtual async Task<(IEnumerable<AbnormalMessageDetail>, IEnumerable<AbnormalMessage>, IEnumerable<AbnormalAccountInfo>, IEnumerable<DuplicateTicketDetail>)>
+        GetVoidingHistoryDetailAsync(
             IEnumerable<AbnormalTicketInfo> tickets,
             IEnumerable<AbnormalUsernames> usernames,
             IEnumerable<DuplicatedTicketInfo> dupTickets)
@@ -246,13 +251,15 @@
                 DuplicatedInfo = XmlHelper<DuplicatedTicketInfo>.Serialize(dupTickets.ToList())
             };
 
-            return await baseService.FetchMultipleAsync<AbnormalMessageDetail, AbnormalMessage, DuplicateTicketDetail>(criteria);
+            return await specialDeleteRepository.FetchVoidingHistoryInfo(criteria);
         }
 
         protected internal virtual async Task ImportAbnormalBetNotificationToChatbotDBAsync(
             IEnumerable<AbnormalMessageDetail> historyDetails,
             IEnumerable<AbnormalMessage> msgs,
-            IEnumerable<DuplicateTicketDetail> duplicateTicketDetails)
+            IEnumerable<DuplicateTicketDetail> duplicateTicketDetails,
+            IEnumerable<AbnormalAccountInfo> abnormalAccountInfos
+        )
         {
             if (historyDetails.Any())
             {
@@ -260,7 +267,8 @@
                 {
                     MessageHeader = JsonConvert.SerializeObject(historyDetails, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
                     MessageDetail = JsonConvert.SerializeObject(msgs, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
-                    DuplicatedInfo = JsonConvert.SerializeObject(duplicateTicketDetails, new JsonSerializerSettings { DateFormatString = DateTimeFormat })
+                    DuplicatedInfo = JsonConvert.SerializeObject(duplicateTicketDetails, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
+                    AbnormalAccountInfo = JsonConvert.SerializeObject(abnormalAccountInfos, new JsonSerializerSettings { DateFormatString = DateTimeFormat })
                 };
                 var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
                 var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);

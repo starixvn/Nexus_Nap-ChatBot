@@ -57,6 +57,7 @@
         {
             services.AddScoped<IDynamicRepository, DynamicRepository>();
             services.AddTransient<IBaseRepository, BaseRepository>();
+            services.AddTransient<ISpecialDeleteRepository, SpecialDeleteRepository>();
             services.AddTransient<ISyncDataRepository, SyncDataRepository>();
         }
 
