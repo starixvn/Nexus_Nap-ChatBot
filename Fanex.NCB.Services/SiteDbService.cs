@@ -69,7 +69,7 @@
             {
                 var (tickets, accounts, dupTickets) = await GetTicketUsernameInfoFromSiteDbAsync(abnormalBetsInfo, abnormalAccounts, dupTicketsInfo, siteDb);
                 ticketLists = ticketLists.Concat(tickets);
-                accountLists = accountLists.Union(accounts);
+                accountLists = accountLists.Concat(accounts);
                 dupTicketLists = dupTicketLists.Concat(dupTickets);
             }
 
