@@ -11,22 +11,22 @@
 
     public class SettlementInternalCSDWorker : BaseWorker
     {
-        private readonly ISettlementInternalCSDService settledmentInternalCSDService;
+        private readonly ISettlementInternalLicenseeService settlementInternalLicenseeService;
 
         public SettlementInternalCSDWorker(
-            ISettlementInternalCSDService settledmentInternalCSDService,
+            ISettlementInternalLicenseeService settlementInternalLicenseeService,
             IMaintenanceService maintenanceService,
             IOptions<List<JobSetting>> jobSettings,
             ILogService logService)
                 : base(maintenanceService, logService)
         {
-            this.settledmentInternalCSDService = settledmentInternalCSDService;
+            this.settlementInternalLicenseeService = settlementInternalLicenseeService;
             jobSetting = JobHelper.GetJobConfig(jobSettings.Value, JobConstants.SettlementInternalCSD);
         }
 
         public override async Task ExecuteJobAsync()
         {
-            await settledmentInternalCSDService.SettlementInternalCSDAsync();
+            await settlementInternalLicenseeService.SettlementInternalCSDAsync();
         }
     }
 }

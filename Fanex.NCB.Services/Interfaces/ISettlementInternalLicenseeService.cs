@@ -2,8 +2,10 @@
 {
     using System.Threading.Tasks;
 
-    public interface ISettlementInternalCSDService
+    public interface ISettlementInternalLicenseeService
     {
         Task SettlementInternalCSDAsync();
+
+        Task SettlementLicenseeAsync();
     }
 }

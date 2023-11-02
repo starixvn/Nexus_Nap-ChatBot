@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Criteria.SettlementInternalCSD;
+    using Fanex.NCB.Criteria.SettlementLicensee;
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Extensions;
@@ -16,7 +17,7 @@
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
 
-    public class SettlementInternalCSDService : ISettlementInternalCSDService
+    public class SettlementInternalLicenseeService : ISettlementInternalLicenseeService
     {
         private readonly IBaseService baseService;
         private readonly IPushSignalRService pushSignalService;
@@ -27,7 +28,7 @@
         private readonly string Environment;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
-        public SettlementInternalCSDService(IBaseService baseService,
+        public SettlementInternalLicenseeService(IBaseService baseService,
             IPushSignalRService pushSignalService,
             IChatbotService chatbotService,
             ILogService logService,
@@ -161,6 +162,75 @@
             catch (Exception ex)
             {
                 logService.WriteLogFileError(ex.Message);
+            }
+        }
+
+
+
+        public async Task SettlementLicenseeAsync()
+        {
+            var systemSetting = await GetServcieSetting("Settlement - Licensee");
+
+            if (systemSetting != null)
+            {
+                var criteria = new GetMessageSettlementLicenseeCriteria
+                {
+                    LastMsgTargetId = systemSetting.LastMsgTargetId,
+                    BatchSize = systemSetting.BatchSize,
+                    SiteAsJSON = await commonService.GetJsonDataFromDbACCAsync("Site"),
+                    DepCustSAsJSON = await commonService.GetJsonDataFromDbACCAsync("Dep_CustSuper"),
+                };
+
+                var (messageInfos, messageDetails, messageTargets) = await baseService.FetchMultipleAsync<MessageSettlement, MessageSettlementDetail, MessageSettlementInfo>(criteria);
+                await GetMessageLicenseeAndImportToChatbotAsync(messageInfos, messageDetails, messageTargets);
+            }
+        }
+
+        protected internal virtual async Task GetMessageLicenseeAndImportToChatbotAsync(
+            IEnumerable<MessageSettlement> messageInfos,
+            IEnumerable<MessageSettlementDetail> messageDetails,
+            IEnumerable<MessageSettlementInfo> messageTargets
+        )
+        {
+            var messageHeaders = await GetLeagueAsync(messageInfos);
+            await ImportSettlementLicenseeToChatbotDBAsync(messageHeaders, messageDetails, messageTargets);
+        }
+
+        protected internal virtual async Task<IEnumerable<MessageLeagueLicensee>> GetLeagueAsync(
+            IEnumerable<MessageSettlement> messageInfo
+        )
+        {
+            var criteria = new GetLeagueSettlementLicenseeCriteria
+            {
+                Message = XmlHelper<MessageSettlement>.Serialize(messageInfo.ToList())
+            };
+
+            return await baseService.GetDataAsync<MessageLeagueLicensee>(criteria);
+        }
+
+        protected internal virtual async Task ImportSettlementLicenseeToChatbotDBAsync(
+            IEnumerable<MessageLeagueLicensee> messageHeaders,
+            IEnumerable<MessageSettlementDetail> messageDetails,
+            IEnumerable<MessageSettlementInfo> messageTargets
+        )
+        {
+            if (messageHeaders.Any())
+            {
+                var criteria = new ImportSettlementLicenseeCommand
+                {
+                    MessageHeader = JsonConvert.SerializeObject(messageHeaders, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
+                    MessageDetail = JsonConvert.SerializeObject(messageDetails, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
+                    MessageTarget = JsonConvert.SerializeObject(messageTargets, new JsonSerializerSettings { DateFormatString = DateTimeFormat })
+                };
+                var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
+                var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);
+                var command = new CommandResult
+                {
+                    Code = criteria.ErrCode,
+                    Message = criteria.ErrMsg
+                };
+
+                await OnAfterImportDataAsync(command, notificationMessages);
             }
         }
     }

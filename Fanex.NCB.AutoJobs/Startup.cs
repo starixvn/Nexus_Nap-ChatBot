@@ -182,7 +182,7 @@
             services.AddSingleton<IDynamicConnectionService, DynamicConnectionService>();
             services.AddSingleton<ICacheService, CacheService>();
             services.AddSingleton<ISpecialDeleteRepository, SpecialDeleteRepository>();
-            services.AddSingleton<ISettlementInternalCSDService, SettlementInternalCSDService>();
+            services.AddSingleton<ISettlementInternalLicenseeService, SettlementInternalLicenseeService>();
         }
 
         private static void AddWorker(IServiceCollection services)
