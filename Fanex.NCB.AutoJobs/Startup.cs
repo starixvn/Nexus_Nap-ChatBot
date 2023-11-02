@@ -199,6 +199,7 @@
             services.AddHostedService<SendMessageProblemAccountWorker>();
             services.AddHostedService<SendMessageMonitoredPlayerWorker>();
             services.AddHostedService<SettlementInternalCSDWorker>();
+            services.AddHostedService<SettlementLicenseeWorker>();
         }
     }
 }

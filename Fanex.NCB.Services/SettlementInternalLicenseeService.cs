@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Configuration;
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Enum;
@@ -14,7 +13,6 @@
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.Settlement;
     using Fanex.NCB.Shared.Services.Interfaces;
-    using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
 
     public class SettlementInternalLicenseeService : ISettlementInternalLicenseeService
@@ -23,17 +21,14 @@
         private readonly IPushSignalRService pushSignalService;
         private readonly IChatbotService chatbotService;
         private readonly ILogService logService;
-        private readonly ISiteDbService siteDbService;
         private readonly ICommonService commonService;
-        private readonly string Environment;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
-        public SettlementInternalLicenseeService(IBaseService baseService,
+        public SettlementInternalLicenseeService(
+            IBaseService baseService,
             IPushSignalRService pushSignalService,
             IChatbotService chatbotService,
             ILogService logService,
-            IConfiguration configuration,
-            ISiteDbService siteDbService,
             ICommonService commonService
         )
         {
@@ -41,9 +36,7 @@
             this.pushSignalService = pushSignalService;
             this.chatbotService = chatbotService;
             this.logService = logService;
-            this.siteDbService = siteDbService;
             this.commonService = commonService;
-            Environment = configuration.GetSection("Environment")?.Value;
         }
 
         public async Task<ServiceSetting> GetServcieSetting(string inServiceName)
@@ -54,6 +47,45 @@
             };
             return await baseService.GetDataEntityAsync<ServiceSetting>(criteria);
         }
+
+        protected internal virtual async Task OnAfterImportDataAsync(
+            CommandResult commandResult,
+            IEnumerable<NotificationMessage> notifications
+)
+        {
+            if (!commandResult.IsSuccessful)
+            {
+                await chatbotService.NotifyToChatGroupAsync(commandResult.Message);
+            }
+            else
+            {
+                if (notifications.Any())
+                {
+                    await Task.WhenAll(
+                        SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications),
+                        SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications)
+                    );
+
+                    var notificationIds = string.Join(",", notifications.Select(item => item.NotificationId));
+                    await pushSignalService.PushNewNotification(notificationIds);
+                }
+            }
+        }
+
+        protected internal virtual async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications)
+        {
+            try
+            {
+                var filterNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
+                await chatbotService.SendMultiMessageAsync(channelId, filterNotifications);
+            }
+            catch (Exception ex)
+            {
+                logService.WriteLogFileError(ex.Message);
+            }
+        }
+
+        #region Settlement Internal CSD
 
         public async Task SettlementInternalCSDAsync()
         {
@@ -128,44 +160,9 @@
             }
         }
 
-        protected internal virtual async Task OnAfterImportDataAsync(
-            CommandResult commandResult,
-            IEnumerable<NotificationMessage> notifications
-        )
-        {
-            if (!commandResult.IsSuccessful)
-            {
-                await chatbotService.NotifyToChatGroupAsync(commandResult.Message);
-            }
-            else
-            {
-                if (notifications.Any())
-                {
-                    await Task.WhenAll(
-                        SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications),
-                        SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications)
-                    );
+        #endregion Settlement Internal CSD
 
-                    var notificationIds = string.Join(",", notifications.Select(item => item.NotificationId));
-                    await pushSignalService.PushNewNotification(notificationIds);
-                }
-            }
-        }
-
-        protected internal virtual async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications)
-        {
-            try
-            {
-                var filterNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
-                await chatbotService.SendMultiMessageAsync(channelId, filterNotifications);
-            }
-            catch (Exception ex)
-            {
-                logService.WriteLogFileError(ex.Message);
-            }
-        }
-
-
+        #region Settlement Licensee
 
         public async Task SettlementLicenseeAsync()
         {
@@ -233,5 +230,7 @@
                 await OnAfterImportDataAsync(command, notificationMessages);
             }
         }
+
+        #endregion Settlement Licensee
     }
 }
