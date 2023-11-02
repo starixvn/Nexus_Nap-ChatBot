@@ -48,5 +48,8 @@
         <Setting Key="NAP_Chatbot_Settlement_InternalCSD_MessageSel" SpName="NAP_Chatbot_Settlement_InternalCSD_MessageSel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_Chatbot_Settlement_InternalCSD_EventInfoSel" SpName="NAP_Chatbot_Settlement_InternalCSD_EventInfoSel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NCB_Settlement_InternalCSD_Import" SpName="NCB_Settlement_InternalCSD_Import" DbName="ChatBot" Plain="0" />
+        <Setting Key="NAP_Chatbot_Settlement_Licensee_MessageSel" SpName="NAP_Chatbot_Settlement_Licensee_MessageSel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_Settlement_Licensee_LeagueSel" SpName="NAP_Chatbot_Settlement_Licensee_LeagueSel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NCB_Settlement_Licensee_Import" SpName="NCB_Settlement_Licensee_Import" DbName="ChatBot" Plain="0" />
     </Function>
 </Functions>
