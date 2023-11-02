@@ -108,8 +108,8 @@
             };
             var username = new List<AbnormalUsernames>
             {
-                new AbnormalUsernames {VoidingHistoryId = 10, Usernames = "ABC,DEF", VoidingHistoryCollectionId = 10},
-                new AbnormalUsernames { VoidingHistoryId = 10, Usernames = "ABC,DJI", VoidingHistoryCollectionId = 12},
+                new AbnormalUsernames {VoidingHistoryId = 10, Username = "ABC,DEF", VoidingHistoryCollectionId = 10},
+                new AbnormalUsernames { VoidingHistoryId = 10, Username = "ABC,DJI", VoidingHistoryCollectionId = 12},
             };
 
             return (ticket, username);
@@ -130,14 +130,14 @@
 
             var username1 = new List<AbnormalUsernames>
             {
-                new AbnormalUsernames {VoidingHistoryId = 10, Usernames = "ABC", VoidingHistoryCollectionId = 10},
-                new AbnormalUsernames {VoidingHistoryId = 10, Usernames = "DEF", VoidingHistoryCollectionId = 10},
-                new AbnormalUsernames {VoidingHistoryId = 10, Usernames = "ABC", VoidingHistoryCollectionId = 12},
+                new AbnormalUsernames {VoidingHistoryId = 10, Username = "ABC", VoidingHistoryCollectionId = 10},
+                new AbnormalUsernames {VoidingHistoryId = 10, Username = "DEF", VoidingHistoryCollectionId = 10},
+                new AbnormalUsernames {VoidingHistoryId = 10, Username = "ABC", VoidingHistoryCollectionId = 12},
             };
 
             var username2 = new List<AbnormalUsernames>
             {
-                new AbnormalUsernames {VoidingHistoryId = 10, Usernames = "DJI", VoidingHistoryCollectionId = 12},
+                new AbnormalUsernames {VoidingHistoryId = 10, Username = "DJI", VoidingHistoryCollectionId = 12},
             };
 
             dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames>(
