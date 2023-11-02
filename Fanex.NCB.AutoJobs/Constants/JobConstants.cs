@@ -23,5 +23,9 @@
         public const string SendMesageProblemAccount = "SendMessageProblemAccount";
 
         public const string SendMesageMonitoredPlayer = "SendMessageMonitoredPlayer";
+
+        public const string SettlementInternalCSD = "SettlementInternalCSD";
+
+        public const string SettlementLicensee = "SettlementLicensee";
     }
 }

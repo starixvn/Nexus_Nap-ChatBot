@@ -182,6 +182,7 @@
             services.AddSingleton<IDynamicConnectionService, DynamicConnectionService>();
             services.AddSingleton<ICacheService, CacheService>();
             services.AddSingleton<ISpecialDeleteRepository, SpecialDeleteRepository>();
+            services.AddSingleton<ISettlementInternalCSDService, SettlementInternalCSDService>();
         }
 
         private static void AddWorker(IServiceCollection services)
@@ -197,6 +198,7 @@
             services.AddHostedService<DeleteOldConversationMessageLogWorker>();
             services.AddHostedService<SendMessageProblemAccountWorker>();
             services.AddHostedService<SendMessageMonitoredPlayerWorker>();
+            services.AddHostedService<SettlementInternalCSDWorker>();
         }
     }
 }
