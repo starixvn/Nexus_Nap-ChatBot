@@ -2,7 +2,7 @@
 {
     public class ServiceSetting
     {
-        public int JobStatus { get; set; }
+        public string JobStatus { get; set; }
 
         public int BatchSize { get; set; }
 
