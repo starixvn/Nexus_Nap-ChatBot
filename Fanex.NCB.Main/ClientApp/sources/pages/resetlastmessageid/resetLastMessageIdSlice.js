@@ -8,7 +8,9 @@ const resetLastMessageIdSlice = createSlice({
             { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 0 },
             { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 },
             { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 0 },
-            { id: 5, name: 'Monitored Player', checked: true, newMaxMessageId: 0 }
+            { id: 5, name: 'Monitored Player', checked: true, newMaxMessageId: 0 },
+            { id: 6, name: 'Settlement - Licensee', checked: true, newMaxMessageId: 0 },
+            { id: 7, name: 'Settlement - Internal CSD', checked: true, newMaxMessageId: 0 },
         ],
         currentMessages: null,
         editNewMessagePopup: { show: false }

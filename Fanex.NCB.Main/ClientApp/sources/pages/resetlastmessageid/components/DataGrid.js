@@ -14,7 +14,7 @@ export class DataGrid extends Component {
         super(props);
 
         this.state = {
-            checked: [false, false, false, false, false],
+            checked: [false, false, false, false, false, false, false],
             allChecked: false,
             isSubmitting: true,
             isShowConfirmPopup: false,
@@ -190,7 +190,7 @@ export class DataGrid extends Component {
     buildBody = isHost => {
         const data = [];
         this.props.currentMessages.data.map((item, index) => {
-            if (this.props.selected[index].checked) {
+            if (this.props.selected[index]?.checked) {
                 data.push(item);
             }
         });
