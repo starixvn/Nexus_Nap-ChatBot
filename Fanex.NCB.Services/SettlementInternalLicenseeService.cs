@@ -119,10 +119,11 @@
             foreach (var item in messageHeaders)
             {
                 item.SportName = TelegramFormatExtensions.EscapeSpecialSyntax(item.SportName);
+                item.SportNameEN = TelegramFormatExtensions.EscapeSpecialSyntax(item.SportNameEN);
             }
         }
 
-        protected internal virtual async Task<(IEnumerable<MessageSettlementHeader>, IEnumerable<MessageSettlementInfo>)> GetEventInfoAsync(
+        protected internal virtual async Task<(IEnumerable<MessageSettlementHeader>, IEnumerable<MessageTarget>)> GetEventInfoAsync(
             IEnumerable<MessageSettlement> messageInfo,
             IEnumerable<MessageSettlementInfo> messageDetail
         )
@@ -133,12 +134,12 @@
                 MessageDetail = XmlHelper<MessageSettlementInfo>.Serialize(messageDetail.ToList())
             };
 
-            return await baseService.FetchMultipleAsync<MessageSettlementHeader, MessageSettlementInfo>(criteria);
+            return await baseService.FetchMultipleAsync<MessageSettlementHeader, MessageTarget>(criteria);
         }
 
         protected internal virtual async Task ImportSettlementInternalCSDToChatbotDBAsync(
             IEnumerable<MessageSettlementHeader> messageHeaders,
-            IEnumerable<MessageSettlementInfo> msgs
+            IEnumerable<MessageTarget> msgs
         )
         {
             if (messageHeaders.Any())

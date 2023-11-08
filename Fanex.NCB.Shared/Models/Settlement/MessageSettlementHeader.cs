@@ -13,5 +13,9 @@
         public string CreditSiteList { get; set; }
 
         public string DepositSiteList { get; set; }
+
+        public string SportNameEN { get; set; }
+
+        public bool IsTest { get; set; }
     }
 }
