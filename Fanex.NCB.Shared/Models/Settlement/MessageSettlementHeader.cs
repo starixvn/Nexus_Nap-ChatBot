@@ -6,8 +6,6 @@
     {
         public DateTime EventDate { get; set; }
 
-        public string SportName { get; set; }
-
         public int TotalTickets { get; set; }
 
         public string CreditSiteList { get; set; }

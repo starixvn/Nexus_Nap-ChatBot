@@ -118,7 +118,6 @@
         {
             foreach (var item in messageHeaders)
             {
-                item.SportName = TelegramFormatExtensions.EscapeSpecialSyntax(item.SportName);
                 item.SportNameEN = TelegramFormatExtensions.EscapeSpecialSyntax(item.SportNameEN);
             }
         }
