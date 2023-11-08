@@ -61,6 +61,10 @@ export class EditNewMessage extends Component {
                     id === 2 &&
                     <Cell colWidth={12} header>{Labels.VoidingHistoryCollectionID}</Cell>
                 }
+                {
+                    (id === 6 || id === 7) &&
+                    <Cell colWidth={12} header>{Labels.MsgTargetID}</Cell>
+                }
                 <Cell colWidth={43} header>
                     <div className="has-icons">
                         {Labels.Content_en}
@@ -98,13 +102,23 @@ export class EditNewMessage extends Component {
         this.handleClose();
     };
 
+    getValueByJobIdentify = item => {
+        const identifyMapping = {
+            2: 'voidingHistoryCollectionId',
+            6: 'msgTargetId',
+            7: 'msgTargetId'
+        };
+
+        return item[identifyMapping[item.jobIdentify]] || item.messageId;
+    };
+
     renderRow = (item, index) => {
         const msgId = item.jobIdentify === 2 ? item.messageIds.split(',').join(', ') : item.messageId;
         return (
             <Row key={index} >
                 <Cell className="text-center">
-                    <Input type="radio" name="radioEditNewMessage" value={item.jobIdentify === 2 ? item.voidingHistoryCollectionId : item.messageId}
-                        defaultChecked={(item.jobIdentify === 2 ? item.voidingHistoryCollectionId : item.messageId) === this.props.newMaxId}
+                    <Input type="radio" name="radioEditNewMessage" value={this.getValueByJobIdentify(item)}
+                        defaultChecked={this.getValueByJobIdentify(item) === this.props.newMaxId}
                         onChange={event => this.handleChangeCheck(event)}
                     />
                 </Cell>
@@ -112,6 +126,10 @@ export class EditNewMessage extends Component {
                 {
                     item.jobIdentify === 2 &&
                     <Cell className="text-center">{item.voidingHistoryCollectionId}</Cell>
+                }
+                {
+                    (item.jobIdentify === 6 || item.jobIdentify === 7) &&
+                    <Cell className="text-center">{item.msgTargetId}</Cell>
                 }
                 <Cell>
                     {

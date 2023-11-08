@@ -85,7 +85,21 @@
         }
 
         private static int GetMaxReferrenceIdOnListMissingMessageInfo(IEnumerable<MissingMesssageInfo> missingInfo, int jobIdentify)
-            => missingInfo.Max(x => jobIdentify == (int)JobIdentity.InternalCSD ? x.VoidingHistoryCollectionId : x.MessageId);
+            => missingInfo.Max(x => GetIdByJobIdentify(jobIdentify, x));
+
+        private static int GetIdByJobIdentify(int jobIdentify, MissingMesssageInfo item)
+        {
+            switch ((JobIdentity)jobIdentify)
+            {
+                case JobIdentity.InternalCSD:
+                    return item.VoidingHistoryCollectionId;
+                case JobIdentity.SettlementInternalCSD:
+                case JobIdentity.SettlementLicensee:
+                    return item.MsgTargetId;
+                default:
+                    return item.MessageId;
+            }
+        }
 
         private async Task<IEnumerable<MissingMesssageInfo>> GetMissingProblemAccountAsync(int fromLogId)
         {

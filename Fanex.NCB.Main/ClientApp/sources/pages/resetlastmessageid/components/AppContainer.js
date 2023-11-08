@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions';
 import { NCBBreadcrum } from '../../common/breadcrumbs/breadcrumbs';
-import DataGrid from './Datagrid';
+import DataGrid from './DataGrid';
 import Filter from './Filter';
 import EditNewMessage from './EditNewMessage';
 

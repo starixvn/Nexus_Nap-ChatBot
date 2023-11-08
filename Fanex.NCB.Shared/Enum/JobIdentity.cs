@@ -6,6 +6,8 @@
         InternalCSD,
         SiteMessage,
         ProblemPlayer,
-        MonitoredPlayer
+        MonitoredPlayer,
+        SettlementInternalCSD,
+        SettlementLicensee
     }
 }

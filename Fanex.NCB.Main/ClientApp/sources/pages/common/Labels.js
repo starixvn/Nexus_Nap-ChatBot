@@ -53,6 +53,7 @@
     SettingType: 'Setting Type',
     CreateNewSetting: 'Create New Setting',
     MsgContentsType: 'Msg Contents Type',
+    MsgTargetID: 'MsgTargetID',
     Name: 'Name',
     CreateNewMsgContentsTypeSuccessfully: 'Create New Msg Contents Type Successfully',
     EditMsgContentsTypeSuccessfully: 'Edit Msg Contents Type Successfully',
