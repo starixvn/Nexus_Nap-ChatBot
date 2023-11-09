@@ -72,6 +72,9 @@ export default class CommonFunctions {
         if (jobId === 1 || jobId === 3) {
             postFix = 'MessageID';
         }
+        if (jobId === 6 || jobId === 7) {
+            postFix = 'MsgTargetID';
+        }
         return `${title} ${postFix}:`
     }
 
