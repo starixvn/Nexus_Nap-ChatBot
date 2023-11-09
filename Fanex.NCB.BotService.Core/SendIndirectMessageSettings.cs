@@ -2,6 +2,7 @@
 {
     public class SendIndirectMessageSettings
     {
+        public bool IsOnlySendIndirect { get; set; }
         public bool IsEnabled { get; set; }
         public string AppCredentialId { get; set; }
         public string AppCredentialPassword { get; set; }

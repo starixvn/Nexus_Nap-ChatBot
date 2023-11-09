@@ -87,6 +87,11 @@
         {
             try
             {
+                if (sendIndirectMessageSettings.IsOnlySendIndirect)
+                {
+                    return await SendIndirectTextMessageAsync(conversationInfo);
+                }
+
                 _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
                 _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
                 await SendTextMessageAsync(botId, chatId, conversationInfo.Message.ToMarkdownV2());
@@ -130,7 +135,7 @@
 
                 return result;
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 var logMessage = new LogMessage(exception.Message)
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));

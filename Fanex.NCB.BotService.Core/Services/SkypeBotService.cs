@@ -83,6 +83,10 @@
         {
             try
             {
+                if (sendIndirectMessageSettings.IsOnlySendIndirect)
+                {
+                    return await SendIndirectMessageAsync(conversationInfo);
+                }
                 var conversationReference = GetConversationReference(conversationInfo);
                 var appId = GetAppId(conversationInfo.BotName);
 
