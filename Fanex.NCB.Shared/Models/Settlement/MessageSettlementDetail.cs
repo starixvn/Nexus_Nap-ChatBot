@@ -12,6 +12,6 @@
 
         public byte SpecialPlatform { get; set; }
 
-        public short LeagueGroupID { get; set; }
+        public short LeagueGroupId { get; set; }
     }
 }
