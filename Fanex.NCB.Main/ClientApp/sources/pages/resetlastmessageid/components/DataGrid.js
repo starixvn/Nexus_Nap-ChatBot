@@ -101,7 +101,7 @@ export class DataGrid extends Component {
         }
         this.setState({
             allChecked: !allChecked,
-            checked: [!allChecked, !allChecked, !allChecked, !allChecked, !allChecked],
+            checked: [!allChecked, !allChecked, !allChecked, !allChecked, !allChecked, !allChecked, !allChecked],
             isSubmitting: allChecked
         });
     };
