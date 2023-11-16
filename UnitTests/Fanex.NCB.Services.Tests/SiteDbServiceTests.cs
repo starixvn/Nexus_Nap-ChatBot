@@ -60,17 +60,17 @@
             var service = GetService();
             var (transIds, usernames, siteDbs, duclicatedTicked) = FakeInputData();
             var fixture = new Fixture();
-            var (tickets, u) = fixture.Create<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>)>();
+            var (tickets, username, duplicatedTickets) = fixture.Create<(IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>, IEnumerable<DuplicatedTicketInfo>)>();
 
             baseService.GetDataAsync<SiteDBConfig>(Arg.Any<GetSiteDbListCriteria>()).Returns(siteDbs);
-            dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames>(Arg.Any<AbnormalBetGetUsernameTicketInfoCriteria>()).Returns((tickets, u));
+            dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames, DuplicatedTicketInfo>(Arg.Any<AbnormalBetGetUsernameTicketInfoCriteria>()).Returns((tickets, username, duplicatedTickets));
 
             var result = await service.GetTicketUsernamesAynnc(transIds, usernames, duclicatedTicked);
 
             var abnormalBetsInfo = XmlHelper<CollectionTransId>.Serialize(transIds.ToList());
             var abnormalAccounts = XmlHelper<CollectionUsername>.Serialize(usernames.ToList());
 
-            await dynamicConnectionService.Received(siteDbs.Count()).FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames>(
+            await dynamicConnectionService.Received(siteDbs.Count()).FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames, DuplicatedTicketInfo>(
                 Arg.Is<AbnormalBetGetUsernameTicketInfoCriteria>(i =>
                     siteDbs.Any(s => s.AGIP == i.ServerIp) &&
                     i.AbnormalBetsInfo == abnormalBetsInfo &&
@@ -91,15 +91,16 @@
             };
             baseService.GetDataAsync<SiteDBConfig>(Arg.Any<GetSiteDbListCriteria>()).Returns(siteDbs);
 
-            var (expectedTickets, expectedUsernames) = GetExpectedResult();
+            var (expectedTickets, expectedUsernames, expectedDuplicate) = GetExpectedResult();
             PrepareDataForTest();
 
             var (tickResult, usernameResult, duplicatedTicketInfo) = await service.GetTicketUsernamesParalellAynnc(transIds, usernames, duclicatedTicked);
             Assert.Equal(JsonConvert.SerializeObject(expectedTickets), JsonConvert.SerializeObject(tickResult));
             Assert.Equal(JsonConvert.SerializeObject(expectedUsernames), JsonConvert.SerializeObject(usernameResult));
+            Assert.Equal(JsonConvert.SerializeObject(expectedDuplicate), JsonConvert.SerializeObject(duplicatedTicketInfo));
         }
 
-        private (IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>) GetExpectedResult()
+        private (IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>, IEnumerable<DuplicatedTicketInfo>) GetExpectedResult()
         {
             var ticket = new List<AbnormalTicketInfo>
             {
@@ -108,11 +109,19 @@
             };
             var username = new List<AbnormalUsernames>
             {
-                new AbnormalUsernames {VoidingHistoryId = 10, Username = "ABC,DEF", VoidingHistoryCollectionId = 10},
-                new AbnormalUsernames { VoidingHistoryId = 10, Username = "ABC,DJI", VoidingHistoryCollectionId = 12},
+                new AbnormalUsernames {VoidingHistoryId = 10, Username = "ABC", VoidingHistoryCollectionId = 10},
+                new AbnormalUsernames { VoidingHistoryId = 10, Username = "DEF", VoidingHistoryCollectionId = 10},
+                new AbnormalUsernames { VoidingHistoryId = 10, Username = "ABC", VoidingHistoryCollectionId = 12},
+                new AbnormalUsernames { VoidingHistoryId = 10, Username = "DJI", VoidingHistoryCollectionId = 12}
             };
 
-            return (ticket, username);
+            var duplicate = new List<DuplicatedTicketInfo>
+            {
+                new DuplicatedTicketInfo {VoidingHistoryCollectionId = 20, VoidedTransId = 1, CustId = 1,IsParlay = false},
+                new DuplicatedTicketInfo {VoidingHistoryCollectionId = 20, VoidedTransId = 1, CustId = 3,IsParlay = false},
+            };
+
+            return (ticket, username, duplicate);
         }
 
         private void PrepareDataForTest()
@@ -139,12 +148,21 @@
             {
                 new AbnormalUsernames {VoidingHistoryId = 10, Username = "DJI", VoidingHistoryCollectionId = 12},
             };
+            var duplicate1 = new List<DuplicatedTicketInfo>
+            {
+                new DuplicatedTicketInfo {CustId =1, VoidedTransId = 1, VoidingHistoryCollectionId = 20}
+            };
 
-            dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames>(
-                Arg.Is<AbnormalBetGetUsernameTicketInfoCriteria>(i => i.ServerIp == "1.1.1.1")).Returns((ticket1, username1));
+            var duplicate2 = new List<DuplicatedTicketInfo>
+            {
+                new DuplicatedTicketInfo {CustId = 3, VoidedTransId = 1, VoidingHistoryCollectionId = 20}
+            };
 
-            dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames>(
-                Arg.Is<AbnormalBetGetUsernameTicketInfoCriteria>(i => i.ServerIp == "1.2.3.4")).Returns((ticket2, username2));
+            dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames, DuplicatedTicketInfo>(
+                Arg.Is<AbnormalBetGetUsernameTicketInfoCriteria>(i => i.ServerIp == "1.1.1.1")).Returns((ticket1, username1, duplicate1));
+
+            dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames, DuplicatedTicketInfo>(
+                Arg.Is<AbnormalBetGetUsernameTicketInfoCriteria>(i => i.ServerIp == "1.2.3.4")).Returns((ticket2, username2, duplicate2));
         }
 
         private (IEnumerable<CollectionTransId>, IEnumerable<CollectionUsername>, IEnumerable<SiteDBConfig>, IEnumerable<CollectionDuplicatedTickets>) FakeInputData()
@@ -155,14 +173,6 @@
             var siteDbs = fixture.Create<IEnumerable<SiteDBConfig>>();
             var duclicatedTicked = fixture.Create<IEnumerable<CollectionDuplicatedTickets>>();
             return (tranIds, usernames, siteDbs, duclicatedTicked);
-        }
-
-        private (IEnumerable<AbnormalTicketInfo>, IEnumerable<AbnormalUsernames>) FakeOutputData()
-        {
-            var fixture = new Fixture();
-            var tickets = fixture.Create<IEnumerable<AbnormalTicketInfo>>();
-            var accounts = fixture.Create<IEnumerable<AbnormalUsernames>>();
-            return (tickets, accounts);
         }
 
         private SiteDbService GetService()

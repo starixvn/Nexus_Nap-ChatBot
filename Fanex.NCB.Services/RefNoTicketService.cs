@@ -91,7 +91,7 @@
 
         private static string GenerateTickInfoContent(string html)
         {
-            string removedRefNoAndTimeHtml = html.Split("</br>").LastOrDefault();
+            string removedRefNoAndTimeHtml = html.Split("</br>").LastOrDefault() ?? string.Empty;
             string content = removedRefNoAndTimeHtml.Replace("</br>", "")
                                     .Replace("> <", "><")
                                     .Replace("<div", "<br><div")
