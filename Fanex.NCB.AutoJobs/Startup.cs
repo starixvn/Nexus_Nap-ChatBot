@@ -43,7 +43,7 @@
     using Sentry;
     using StackExchange.Redis;
 
-    [ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage(Justification = "Code Starup inject needed services")]
     public class Startup
     {
         public Startup(IConfiguration configuration)

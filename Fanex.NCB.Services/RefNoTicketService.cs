@@ -80,7 +80,7 @@
 
         private static string GenerateOdds(string oddHtml)
         {
-            string spaceStringReplaced = "ODDSPACE";
+            const string spaceStringReplaced = "ODDSPACE";
             string contentSpace = oddHtml.Replace(" ", spaceStringReplaced)
                 .Replace(Environment.NewLine, spaceStringReplaced)
                 .Replace("<br>", spaceStringReplaced);

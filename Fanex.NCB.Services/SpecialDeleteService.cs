@@ -32,6 +32,8 @@
         private const int VoidTicketForLicenseeJobIdentity = 1;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
+#pragma warning disable S107 // Methods should not have too many parameters
+
         public SpecialDeleteService(IBaseService baseService,
             IChatbotService chatbotService,
             IPushSignalRService pushSignalService,
@@ -41,6 +43,7 @@
             ICommonService commonService,
             IRefNoTicketService refNoTicketService,
             ISpecialDeleteRepository specialDeleteRepository)
+#pragma warning restore S107 // Methods should not have too many parameters
         {
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;

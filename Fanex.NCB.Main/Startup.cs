@@ -36,9 +36,11 @@
     using Sentry;
     using StackExchange.Redis;
 
-    [ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage(Justification = "Startup code inject services")]
     public class Startup
     {
+        private const int NotFoundStatus = 404;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -169,7 +171,7 @@
             app.Use(async (context, next) =>
             {
                 await next();
-                if (context.Response.StatusCode == 404)
+                if (context.Response.StatusCode == NotFoundStatus)
                 {
                     context.Request.Path = "/Error/PageNotFound";
                     await next();

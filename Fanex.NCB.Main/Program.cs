@@ -8,6 +8,8 @@
 
     public static class Program
     {
+        private const int MaxRequestLineSize = 32768;
+
         public static void Main(string[] args)
         {
             var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
@@ -33,7 +35,7 @@
                 .UseStartup<Startup>()
                 .ConfigureKestrel((context, options) =>
                 {
-                    options.Limits.MaxRequestLineSize = 32768;
+                    options.Limits.MaxRequestLineSize = MaxRequestLineSize;
                 })
                 .ConfigureLogging(logging =>
                 {

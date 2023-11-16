@@ -89,7 +89,7 @@
 
             foreach (var conversation in conversations)
             {
-                if (results.Any(r => r.Message == conversation.Message && r.ConversationId == conversation.ConversationId && IsNotExceptionGroup(r.ConversationId)))
+                if (results.Exists(r => r.Message == conversation.Message && r.ConversationId == conversation.ConversationId && IsNotExceptionGroup(r.ConversationId)))
                 {
                     conversation.IsDuplicated = true;
                 }

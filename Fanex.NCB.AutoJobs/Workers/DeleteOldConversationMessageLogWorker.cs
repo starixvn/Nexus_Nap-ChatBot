@@ -1,14 +1,14 @@
 ﻿namespace Fanex.NCB.AutoJobs.Workers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Constants;
     using Fanex.NCB.AutoJobs.Extensions;
     using Fanex.NCB.AutoJobs.Models;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using ONEbook.UM.Services;
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
 
     public class DeleteOldConversationMessageLogWorker : BaseWorker
     {
@@ -27,8 +27,8 @@
 
         public override async Task ExecuteJobAsync()
         {
-            var currrentDate = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
-            await viewLogService.DeleteOldConversationMessageLogAsync(currrentDate);         
+            var currrentDate = DateTimeOffset.Now.ToString("yyyy-MM-dd hh:mm:ss");
+            await viewLogService.DeleteOldConversationMessageLogAsync(currrentDate);
         }
     }
 }

@@ -33,11 +33,10 @@
         private readonly ILogger<SkypeBotService> filelogger;
         private readonly Logging.ILogger logger;
         private readonly IAdapterIntegration adapter;
-
-        [Obsolete]
+#pragma warning disable CS0618 // Type or member is obsolete
         private readonly BotConfiguration botConfig;
+#pragma warning restore CS0618 // Type or member is obsolete
 
-        [Obsolete]
         public SkypeBotService(
             IHttpClientFactory httpClientFactory,
             IOptions<SendIndirectMessageSettings> sendIndirectMessageSettings,
@@ -45,7 +44,9 @@
             ILogger<SkypeBotService> filelogger,
             Logging.ILogger logger,
             IAdapterIntegration adapter,
+#pragma warning disable CS0618 // Type or member is obsolete
             BotConfiguration botConfig)
+#pragma warning restore CS0618 // Type or member is obsolete
         {
             this.sendIndirectMessageSettings = sendIndirectMessageSettings.Value;
             this.filelogger = filelogger;
@@ -64,7 +65,6 @@
             }
         }
 
-        [Obsolete]
         public async Task SendMessageAsync(ConversationInfo conversationInfo)
         {
             var appId = GetAppId(conversationInfo.BotName);
@@ -72,13 +72,14 @@
             await adapter.ContinueConversationAsync(appId, conversationReference,
                 async (context, token) =>
                 {
+#pragma warning disable CS0618 // Type or member is obsolete
                     AppCredentials.TrustServiceUrl(conversationReference.ServiceUrl);
+#pragma warning restore CS0618 // Type or member is obsolete
                     await context.SendActivityAsync(conversationInfo.Message, cancellationToken: token);
                 },
                 new CancellationToken());
         }
 
-        [Obsolete]
         public async Task<SendMessageResult> SendMessageWithRetryAsync(ConversationInfo conversationInfo)
         {
             try
@@ -93,7 +94,9 @@
                 await adapter.ContinueConversationAsync(appId, conversationReference,
                     async (context, token) =>
                     {
+#pragma warning disable CS0618 // Type or member is obsolete
                         AppCredentials.TrustServiceUrl(conversationReference.ServiceUrl);
+#pragma warning restore CS0618 // Type or member is obsolete
                         await context.SendActivityAsync(conversationInfo.Message, cancellationToken: token);
                     },
                     new CancellationToken());
@@ -114,7 +117,7 @@
                     NotificationId = conversationInfo.NotificationId,
                     ErrorCode = 1,
                     ErrorMessage = exception.Message,
-                    SentTime = DateTime.UtcNow
+                    SentTime = DateTimeOffset.UtcNow
                 };
             }
 
@@ -122,15 +125,16 @@
             {
                 ConversationId = conversationInfo.ConversationId,
                 NotificationId = conversationInfo.NotificationId,
-                SentTime = DateTime.UtcNow
+                SentTime = DateTimeOffset.UtcNow
             };
         }
 
-        [Obsolete]
         private string GetAppId(string botName)
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             var endpoint = (EndpointService)botConfig.Services
                 .FirstOrDefault(t => t.Name.Equals(botName, StringComparison.InvariantCultureIgnoreCase));
+#pragma warning restore CS0618 // Type or member is obsolete
             string appId;
             if (endpoint != null && !string.IsNullOrEmpty(endpoint.AppId))
             {

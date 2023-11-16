@@ -131,8 +131,7 @@
                     - If you are running this bot locally, consider adding a appsettings.json file with botFilePath and botFileSecret.
                     - See https://aka.ms/about-bot-file to learn more about .bot file its use and bot configuration.";
 
-                logger.LogCritical(msg, ex);
-                throw new InvalidOperationException(msg);
+                throw new InvalidOperationException(msg, ex);
             }
 
             return botConfig;
