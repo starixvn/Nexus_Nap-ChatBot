@@ -1,7 +1,5 @@
 ﻿namespace Fanex.NCB.Shared.Models.SpecialDeleteTicket.AbnormalBets
 {
-    using System;
-
     public class AbnormalMessageDetail : AbnormalMessageContent
     {
         public string RequestIDLst { get; set; }

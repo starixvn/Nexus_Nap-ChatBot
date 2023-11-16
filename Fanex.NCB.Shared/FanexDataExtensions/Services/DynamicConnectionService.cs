@@ -8,7 +8,7 @@
     using System.Threading.Tasks;
     using Fanex.NCB.Shared.FanexDataExtensions.ObjectDb;
 
-    [ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage(Justification = "The same BaseService, no need to re-write unit tests")]
     public class DynamicConnectionService : IDynamicConnectionService
     {
         public async Task<IEnumerable<T>> QueryAsync<T>(ICriteriaExtend criteria)
@@ -88,7 +88,7 @@
                 throw new ArgumentException($"{nameof(mappingTypes)} is null or empty.", nameof(mappingTypes));
             }
 
-            if (mappingTypes.Any(type => type == null))
+            if (mappingTypes.ToList().Exists(type => type == null))
             {
                 throw new ArgumentException($"{nameof(mappingTypes)} must not contain any null value.", nameof(mappingTypes));
             }

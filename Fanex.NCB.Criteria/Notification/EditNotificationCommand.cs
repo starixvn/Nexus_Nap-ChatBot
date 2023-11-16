@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.Criteria.Notification
 {
-    using Fanex.NCB.Shared.Models;
     using System;
+    using Fanex.NCB.Shared.Models;
 
     public class EditNotificationCommand : BaseCommand
     {
@@ -13,7 +13,7 @@
 
         public string Content { get; set; }
 
-        public DateTime ConfigSendTime { get; set; }
+        public DateTimeOffset ConfigSendTime { get; set; }
 
         public bool SendImmediately { get; set; }
 
@@ -25,7 +25,7 @@
 
 #pragma warning disable S1067 // Expressions should not be too complex
 
-        public override bool IsValid() => NotificationId > 0 && !string.IsNullOrWhiteSpace(RecipientIDLst) 
+        public override bool IsValid() => NotificationId > 0 && !string.IsNullOrWhiteSpace(RecipientIDLst)
             && !string.IsNullOrWhiteSpace(Title)
              && !string.IsNullOrWhiteSpace(Content) && UserId > 0;
 

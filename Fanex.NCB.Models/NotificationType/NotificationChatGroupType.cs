@@ -1,10 +1,7 @@
-﻿using Fanex.NCB.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Fanex.NCB.Models.NotificationType
+﻿namespace Fanex.NCB.Models.NotificationType
 {
+    using Fanex.NCB.Core.Models;
+
     public class NotificationChatGroupType : BaseModel
     {
         public int NotificationTypeId { get; set; }

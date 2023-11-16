@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models.NotificationType;
     using Fanex.NCB.Shared.Models;
 

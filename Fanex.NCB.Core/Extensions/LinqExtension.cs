@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public static class LinqExtension
     {
@@ -9,13 +10,9 @@
     (this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
             HashSet<TKey> seenKeys = new();
-            foreach (TSource element in source)
-            {
-                if (seenKeys.Add(keySelector(element)))
-                {
-                    yield return element;
-                }
-            }
+            return from TSource element in source
+                   where seenKeys.Add(keySelector(element))
+                   select element;
         }
     }
 }

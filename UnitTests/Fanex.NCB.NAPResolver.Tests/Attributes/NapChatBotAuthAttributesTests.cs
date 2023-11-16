@@ -60,7 +60,6 @@
 
             Assert.True(attribute.PermissionCache);
             await userService.Received().GetPermissionAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<string>());
-            cache.ReceivedCalls();
         }
 
         [Fact]

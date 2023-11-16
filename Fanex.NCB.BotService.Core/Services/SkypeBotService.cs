@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
@@ -133,7 +132,7 @@
         {
 #pragma warning disable CS0618 // Type or member is obsolete
             var endpoint = (EndpointService)botConfig.Services
-                .FirstOrDefault(t => t.Name.Equals(botName, StringComparison.InvariantCultureIgnoreCase));
+                .Find(t => t.Name.Equals(botName, StringComparison.InvariantCultureIgnoreCase));
 #pragma warning restore CS0618 // Type or member is obsolete
             string appId;
             if (endpoint != null && !string.IsNullOrEmpty(endpoint.AppId))
@@ -176,7 +175,7 @@
 
                 result.ConversationId = conversationInfo.ConversationId;
                 result.NotificationId = conversationInfo.NotificationId;
-                result.SentTime = DateTime.UtcNow;
+                result.SentTime = DateTimeOffset.UtcNow;
 
                 return result;
             }
@@ -192,7 +191,7 @@
                     NotificationId = conversationInfo.NotificationId,
                     ErrorCode = 1,
                     ErrorMessage = exception.Message,
-                    SentTime = DateTime.UtcNow
+                    SentTime = DateTimeOffset.UtcNow
                 };
             }
         }

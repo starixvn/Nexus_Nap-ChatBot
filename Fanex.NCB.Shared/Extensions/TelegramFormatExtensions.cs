@@ -56,7 +56,7 @@
             var hyperlinks = regex.Matches(text).Cast<Match>().ToList();
             return Regex.Replace(text, pattern, delegate (Match match)
             {
-                return hyperlinks.Any(x => x.Index <= match.Index && match.Index <= (x.Index + x.Length - 1))
+                return hyperlinks.Exists(x => x.Index <= match.Index && match.Index <= (x.Index + x.Length - 1))
                     ? match.Value : replacement;
             });
         }

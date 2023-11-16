@@ -1,8 +1,6 @@
 ﻿namespace Fanex.NCB.Main.Controllers
 {
     using System.Threading.Tasks;
-    using Fanex.NAP.Client.Helpers.Web;
-    using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Constants;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
@@ -48,7 +46,7 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Read)]
         public async Task<IActionResult> GetConversationMessageLog(int? notificationId, int pageIndex, int pageSize)
         {
-            var(totalItems, conversationMessages, mapRecipient) = await viewLogService.GetConversationMessageLogAsync(notificationId, pageIndex, pageSize);
+            var (totalItems, conversationMessages, mapRecipient) = await viewLogService.GetConversationMessageLogAsync(notificationId, pageIndex, pageSize);
 
             return Json(new { total = totalItems, data = conversationMessages, dataMapRecipient = mapRecipient });
         }

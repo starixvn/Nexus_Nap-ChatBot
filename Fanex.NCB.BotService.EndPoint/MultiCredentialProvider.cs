@@ -11,10 +11,14 @@
     {
         private readonly Dictionary<string, string> Credentials;
 
-        [Obsolete]
+#pragma warning disable CS0618 // Type or member is obsolete
+
         public MultiCredentialProvider(BotConfiguration botConfig)
+#pragma warning restore CS0618 // Type or member is obsolete
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             Credentials = botConfig.Services.ToDictionary(t => ((EndpointService)t).AppId, t => ((EndpointService)t).AppPassword);
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         public Task<bool> IsValidAppIdAsync(string appId)

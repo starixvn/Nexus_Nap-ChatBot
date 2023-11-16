@@ -11,7 +11,6 @@
     using Fanex.NCB.Criteria.Setting;
     using Fanex.NCB.Models.Setting;
     using Fanex.NCB.Services.Interfaces;
-    using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services.Interfaces;
 
     public class SettingService : ISettingService

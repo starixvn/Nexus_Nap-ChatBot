@@ -101,7 +101,7 @@
 
         private bool IsNotExceptionGroup(string conversationId)
         {
-            return !settings.ExceptionConversatiionIDs.Any(x => x == conversationId);
+            return !settings.ExceptionConversatiionIDs.ToList().Exists(x => x == conversationId);
         }
 
         private static IEnumerable<ConversationInfo> DistinctConversationIdAndNotificationId(IEnumerable<ConversationInfo> conversations)
