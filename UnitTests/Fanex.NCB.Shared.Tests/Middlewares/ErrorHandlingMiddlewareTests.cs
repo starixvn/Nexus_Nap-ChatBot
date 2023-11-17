@@ -22,7 +22,7 @@
             //Actual
             await middleware.InvokeAsync(httpContext);
 
-            next.Received();
+            await next.Received().Invoke(Arg.Any<HttpContext>());
             logger.DidNotReceive().Error(Arg.Any<string>());
         }
 
