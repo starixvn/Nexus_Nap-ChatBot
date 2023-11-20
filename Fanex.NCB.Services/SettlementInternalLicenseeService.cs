@@ -61,10 +61,14 @@
             {
                 if (notifications.Any())
                 {
+                    await logService.WriteMessageSentryErrorAsync($"Before Send {JsonConvert.SerializeObject(notifications)}");
+
                     await Task.WhenAll(
                         SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications),
                         SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications)
                     );
+
+                    await logService.WriteMessageSentryErrorAsync($"After Send {JsonConvert.SerializeObject(notifications)}");
 
                     var notificationIds = string.Join(",", notifications.Select(item => item.NotificationId));
                     await pushSignalService.PushNewNotification(notificationIds);
