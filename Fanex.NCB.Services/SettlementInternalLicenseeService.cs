@@ -66,8 +66,6 @@
                         SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications)
                     );
 
-                    await logService.WriteMessageSentryErrorAsync($"After Send {JsonConvert.SerializeObject(notifications)}");
-
                     var notificationIds = string.Join(",", notifications.Select(item => item.NotificationId));
                     await pushSignalService.PushNewNotification(notificationIds);
                 }
@@ -79,8 +77,6 @@
             try
             {
                 var filterNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
-
-                await logService.WriteMessageSentryErrorAsync($"ChannelId: {channelId} ,Send time: {DateTime.Now}, {JsonConvert.SerializeObject(notifications)}");
                 await chatbotService.SendMultiMessageAsync(channelId, filterNotifications);
             }
             catch (Exception ex)

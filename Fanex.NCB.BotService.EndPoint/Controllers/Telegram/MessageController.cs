@@ -89,7 +89,6 @@
                     var tasks = new List<Task<SendMessageResult>>();
                     foreach (ConversationInfo conversationInfo in batch)
                     {
-                        await logger.ErrorAsync($"telegram 1 ,Send time: {DateTime.Now}, {JsonConvert.SerializeObject(notifications)}");
                         SendMessage(tasks, conversationInfo);
                     }
 
@@ -195,7 +194,6 @@
 
         protected internal virtual async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo)
         {
-            await logger.ErrorAsync($"telegram 2 ,Send time: {DateTime.Now}, {JsonConvert.SerializeObject(conversationInfo)}");
             if (conversationInfo.IsDuplicated)
             {
                 return DuplicatedResult(conversationInfo.NotificationId, conversationInfo.ConversationId);

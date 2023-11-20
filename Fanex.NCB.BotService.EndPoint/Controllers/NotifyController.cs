@@ -18,7 +18,6 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Newtonsoft.Json;
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class NotifyController : ControllerBase
@@ -84,7 +83,6 @@
         [Route("api/notifymulti")]
         public async Task<ObjectResult> SendMulti([FromBody] IList<NotificationMessage> notificationMessages)
         {
-            await logger.InfoAsync($"{DateTime.UtcNow} : {JsonConvert.SerializeObject(notificationMessages)}");
             var results = new List<SendMessageResult>();
             var tasks = new List<Task<SendMessageResult>>();
 
@@ -105,7 +103,6 @@
 
                 results = (await Task.WhenAll(tasks)).ToList();
             }
-            await logger.InfoAsync($"{DateTime.UtcNow} : {JsonConvert.SerializeObject(results)}");
 
             return Ok(results);
         }
@@ -114,8 +111,6 @@
         [Route("api/sendIndirectMessage")]
         public async Task<ObjectResult> SendIndirectMessageAsync([FromBody] ConversationInfo conversationInfo)
         {
-            await logger.InfoAsync("go to send indirect");
-
             var param = new Dictionary<string, object>
             {
                 { "notificationId", conversationInfo.NotificationId },
