@@ -61,8 +61,6 @@
             {
                 if (notifications.Any())
                 {
-                    await logService.WriteMessageSentryErrorAsync($"Before Send {JsonConvert.SerializeObject(notifications)}");
-
                     await Task.WhenAll(
                         SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications),
                         SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications)
@@ -81,6 +79,8 @@
             try
             {
                 var filterNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
+
+                await logService.WriteMessageSentryErrorAsync($"ChannelId: {channelId} ,Send time: {DateTime.Now}, {JsonConvert.SerializeObject(notifications)}");
                 await chatbotService.SendMultiMessageAsync(channelId, filterNotifications);
             }
             catch (Exception ex)

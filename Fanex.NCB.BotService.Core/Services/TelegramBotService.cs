@@ -78,6 +78,7 @@
 
         public async Task<Message> SendTextMessageAsync(long botId, long chatId, string messageContent, ParseMode parseMode = ParseMode.MarkdownV2)
         {
+            await logger.ErrorAsync($"telegram 4 ,Send time: {DateTime.Now}, {JsonConvert.SerializeObject(messageContent)}");
             TelegramBotConfigurations bot = botConfigurations.First(x => x.BotId == botId);
             var message = await bot.BotClient.SendTextMessageAsync(new ChatId(chatId), messageContent, parseMode);
             return message;
@@ -85,6 +86,7 @@
 
         public async Task<SendMessageResult> SendTextMessageAsync(ConversationInfo conversationInfo)
         {
+            await logger.ErrorAsync($"telegram 3 ,Send time: {DateTime.Now}, {JsonConvert.SerializeObject(conversationInfo)}");
             try
             {
                 if (sendIndirectMessageSettings.IsOnlySendIndirect)

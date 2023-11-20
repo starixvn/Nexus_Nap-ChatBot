@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.BotService.Core;
@@ -19,6 +20,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using Newtonsoft.Json;
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class MessageController : Controller
@@ -88,6 +90,7 @@
                     var tasks = new List<Task<SendMessageResult>>();
                     foreach (ConversationInfo conversationInfo in batch)
                     {
+                        await logger.ErrorAsync($"telegram 1 ,Send time: {DateTime.Now}, {JsonConvert.SerializeObject(notifications)}");
                         SendMessage(tasks, conversationInfo);
                     }
 
@@ -193,6 +196,7 @@
 
         protected internal virtual async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo)
         {
+            await logger.ErrorAsync($"telegram 2 ,Send time: {DateTime.Now}, {JsonConvert.SerializeObject(conversationInfo)}");
             if (conversationInfo.IsDuplicated)
             {
                 return DuplicatedResult(conversationInfo.NotificationId, conversationInfo.ConversationId);
