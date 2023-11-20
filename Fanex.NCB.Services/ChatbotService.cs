@@ -58,13 +58,11 @@
             var url = new Uri($"{botSettings.BotDomain}{apiConfigs.SendMultiMessageUrl}");
             using (var response = await httpClient.PostAsJsonAsync(url, messages))
             {
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseData = await response.Content.ReadAsStringAsync();
-                    messageResponse.NotificationMessageResult = JsonConvert.DeserializeObject<List<SendMessageResult>>(responseData);
-                    messageResponse.IsSuccessStatusCode = true;
-                    messageResponse.StatusCode = response.StatusCode;
-                }
+                response.EnsureSuccessStatusCode();
+                var responseData = await response.Content.ReadAsStringAsync();
+                messageResponse.NotificationMessageResult = JsonConvert.DeserializeObject<List<SendMessageResult>>(responseData);
+                messageResponse.IsSuccessStatusCode = true;
+                messageResponse.StatusCode = response.StatusCode;
             }
 
             return messageResponse;
