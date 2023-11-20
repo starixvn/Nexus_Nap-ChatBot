@@ -249,9 +249,9 @@
             var cfsDescryptTime = Data.Cryptography.DecryptPassword(time.Replace(" ", "+"));
             var serverTime = await securityService.GetTimeAsync();
             var serverDateTime = NapServicesRegistrationExtension.NAPResolverType == NapResolverType.Local
-                ? DateTime.Parse(serverTime).AddHours(DiffTimeZoneBetweenNAPServerAndChatBotServer)
-                : DateTime.Parse(serverTime);
-            var expiration = serverDateTime - DateTime.Parse(cfsDescryptTime);
+                ? DateTime.Parse(serverTime, new CultureInfo("en-US")).AddHours(DiffTimeZoneBetweenNAPServerAndChatBotServer)
+                : DateTime.Parse(serverTime, new CultureInfo("en-US"));
+            var expiration = serverDateTime - DateTime.Parse(cfsDescryptTime, new CultureInfo("en-US"));
 
             return expiration.TotalSeconds <= SSOExpiredTimeInSeconds;
         }
