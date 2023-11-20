@@ -27,7 +27,7 @@
 
         public override async Task ExecuteJobAsync()
         {
-            var currrentDate = DateTimeOffset.Now.ToString("yyyy-MM-dd hh:mm:ss");
+            var currrentDate = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
             await viewLogService.DeleteOldConversationMessageLogAsync(currrentDate);
         }
     }

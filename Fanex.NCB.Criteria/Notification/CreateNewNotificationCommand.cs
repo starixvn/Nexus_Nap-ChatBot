@@ -15,7 +15,7 @@
 
         public string ContentLst { get; set; }
 
-        public DateTimeOffset ConfigSendTime { get; set; }
+        public DateTime ConfigSendTime { get; set; }
 
         public bool SendImmediately { get; set; }
 

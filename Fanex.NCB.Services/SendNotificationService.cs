@@ -79,7 +79,7 @@
                 {
                     NotificationID = r.NotificationId,
                     RecipientID = r.RecipientId,
-                    SentTime = DateTimeExtension.ConvertToDateTimeString(DateTimeOffset.UtcNow),
+                    SentTime = DateTimeExtension.ConvertToDateTimeString(DateTime.UtcNow),
                     ConversationGroupID = r.ChatGroupId,
                     ConversationBotID = r.BotId,
                     Retry = isRetry,
@@ -201,7 +201,7 @@
                     {
                         NotificationID = recipient.NotificationId,
                         RecipientID = recipient.RecipientId,
-                        SentTime = DateTimeExtension.ConvertToDateTimeString(DateTimeOffset.UtcNow),
+                        SentTime = DateTimeExtension.ConvertToDateTimeString(DateTime.UtcNow),
                         ConversationGroupID = recipient.ChatGroupId,
                         ConversationBotID = recipient.BotId,
                         Retry = true,

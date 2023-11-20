@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.BotService.Core;
@@ -187,7 +186,7 @@
             {
                 NotificationId = conversationInfo.NotificationId,
                 ConversationId = conversationInfo.ConversationId,
-                SentTime = DateTimeOffset.UtcNow,
+                SentTime = DateTime.UtcNow,
                 ErrorCode = 1,
                 ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
                 IsIgnoreRetry = true
@@ -234,7 +233,7 @@
                 {
                     NotificationId = conversationInfo.NotificationId,
                     ConversationId = conversationInfo.ConversationId,
-                    SentTime = DateTimeOffset.UtcNow,
+                    SentTime = DateTime.UtcNow,
                     ErrorCode = 1,
                     ErrorMessage = exception.Message
                 };
@@ -245,7 +244,7 @@
             => new()
             {
                 ConversationId = conversationId,
-                SentTime = DateTimeOffset.UtcNow,
+                SentTime = DateTime.UtcNow,
                 ErrorCode = -1,
                 ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
                 NotificationId = notificationId,

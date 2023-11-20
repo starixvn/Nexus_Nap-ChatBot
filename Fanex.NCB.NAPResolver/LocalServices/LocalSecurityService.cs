@@ -22,7 +22,7 @@
         {
             var criteria = new UserSsoGetTimeUserCriteria
             {
-                Time = DateTimeOffset.Now
+                Time = DateTime.Now
             };
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
