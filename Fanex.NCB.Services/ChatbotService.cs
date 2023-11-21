@@ -18,7 +18,6 @@
     public class ChatbotService : IChatbotService
     {
         private readonly IHttpClientFactory httpClientFactory;
-        private readonly ILogService logger;
         private readonly AppSettings appSettings;
         private readonly BotSettings botSettings;
         private readonly MonitorChatbot monitorChatbot;
@@ -31,8 +30,7 @@
             IOptions<BotSettings> botSettings,
             IOptions<MonitorChatbot> monitorChatbot,
             IOptions<NotifyChatGroupOption> notifyChatGroupOptions,
-            IOptions<MonitorTelegramBot> monitorTelegramBot,
-            ILogService logger)
+            IOptions<MonitorTelegramBot> monitorTelegramBot)
         {
             this.httpClientFactory = httpClientFactory;
             this.appSettings = appSettings.Value;
@@ -40,7 +38,6 @@
             this.monitorChatbot = monitorChatbot.Value;
             this.notifyChatGroupOptions = notifyChatGroupOptions.Value;
             this.monitorTelegramBot = monitorTelegramBot.Value;
-            this.logger = logger;
         }
 
         public async Task<NotificationMessageResponse> SendMultiMessageAsync(byte channelId, IEnumerable<NotificationMessage> messages)
@@ -178,7 +175,6 @@
             using var authDataContent = new FormUrlEncodedContent(authData);
             using var response = await httpClient.PostAsync(url, authDataContent);
             var responseData = await response.Content.ReadAsStringAsync();
-            await logger.WriteMessageSentryErrorAsync(responseData);
             var token = JsonConvert.DeserializeObject<ChatbotToken>(responseData);
             return token;
         }
