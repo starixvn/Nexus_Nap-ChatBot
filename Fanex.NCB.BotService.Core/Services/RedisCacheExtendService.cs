@@ -6,7 +6,6 @@
     using Fanex.Caching;
     using Fanex.NCB.BotService.Core.Models;
     using Microsoft.Extensions.Logging;
-    using Newtonsoft.Json;
     using StackExchange.Redis;
 
     public interface IRedisCacheExtendService
@@ -34,23 +33,38 @@
 
         public IEnumerable<T> GetValueByKeyContains<T>(string key)
         {
+            filelogger.LogWarning($"GetValueByKeyContains Key: {key}");
             EndPoint endPoint = redisConnection.GetEndPoints().FirstOrDefault();
             IServer server = redisConnection.GetServer(endPoint);
 
             IEnumerable<RedisKey> keys = server.Keys(redisConfiguration.Db, pattern: $"*{key}*");
+            filelogger.LogWarning($"GetValueByKeyContains: End Get all keys");
+            var keyArray = keys.ToArray();
+            filelogger.LogWarning($"GetValueByKeyContains: End Get all keys to Array");
 
-            string[] keysArr = keys.Select(k => GetActualKey(k)).ToArray();
-            filelogger.LogWarning($"GetValueByKeyContains 1: {JsonConvert.SerializeObject(keysArr)}");
+            //var stringKeys = keys.Select(x => (string)x);
+            var stringKeys = new List<string>();
+            foreach (var k in keys)
+            {
+                stringKeys.Add((string)k);
+            }
+            filelogger.LogWarning($"GetValueByKeyContains: convert RedisKey to string");
+
+            string[] keysArr = stringKeys.Select(k => GetActualKey(k)).ToArray();
+            filelogger.LogWarning("GetValueByKeyContains: Get actual key");
             var result = GetValueByKey<T>(keysArr);
             filelogger.LogWarning("GetValueByKeyContains: 7");
             return result;
         }
 
-        private string GetActualKey(RedisKey key)
+        private string GetActualKey(string key)
         {
-            var keyString = key.ToString();
-            filelogger.LogWarning($"Key string: {keyString}");
-            return keyString.Replace($"{{{redisConfiguration.ApplicationName}}}:", string.Empty).Replace("{", string.Empty).Replace("}", string.Empty);
+            filelogger.LogWarning($"GetActualKey: Keys: {key}");
+
+            var value = key.Replace($"{{{redisConfiguration.ApplicationName}}}:", string.Empty).Replace("{", string.Empty).Replace("}", string.Empty);
+            filelogger.LogWarning($"GetActualKey: Value: {value}");
+
+            return value;
         }
 
         private IEnumerable<T> GetValueByKey<T>(string[] keysArr)
