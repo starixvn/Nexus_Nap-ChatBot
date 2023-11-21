@@ -6,6 +6,7 @@
     using Fanex.Caching;
     using Fanex.NCB.BotService.Core.Models;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
     using StackExchange.Redis;
 
     public interface IRedisCacheExtendService
@@ -33,24 +34,23 @@
 
         public IEnumerable<T> GetValueByKeyContains<T>(string key)
         {
-            filelogger.LogWarning("GetValueByKeyContains: 1");
             EndPoint endPoint = redisConnection.GetEndPoints().FirstOrDefault();
-            filelogger.LogWarning("GetValueByKeyContains: 2");
             IServer server = redisConnection.GetServer(endPoint);
-            filelogger.LogWarning("GetValueByKeyContains: 3");
 
             IEnumerable<RedisKey> keys = server.Keys(redisConfiguration.Db, pattern: $"*{key}*");
- 
-            string[] keysArr = keys.Select(key => GetActualKey(key)).ToArray();
-            filelogger.LogWarning("GetValueByKeyContains: 5");
+
+            string[] keysArr = keys.Select(k => GetActualKey(k)).ToArray();
+            filelogger.LogWarning($"GetValueByKeyContains 1: {JsonConvert.SerializeObject(keysArr)}");
             var result = GetValueByKey<T>(keysArr);
-            filelogger.LogWarning("GetValueByKeyContains: 6");
+            filelogger.LogWarning("GetValueByKeyContains: 7");
             return result;
         }
 
-        private string GetActualKey(string key)
+        private string GetActualKey(RedisKey key)
         {
-            return key.Replace($"{{{redisConfiguration.ApplicationName}}}:", string.Empty).Replace("{", string.Empty).Replace("}", string.Empty);
+            var keyString = key.ToString();
+            filelogger.LogWarning($"Key string: {keyString}");
+            return keyString.Replace($"{{{redisConfiguration.ApplicationName}}}:", string.Empty).Replace("{", string.Empty).Replace("}", string.Empty);
         }
 
         private IEnumerable<T> GetValueByKey<T>(string[] keysArr)

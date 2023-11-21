@@ -18,7 +18,6 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Newtonsoft.Json;
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class NotifyController : ControllerBase
@@ -84,7 +83,6 @@
         [Route("api/notifymulti")]
         public async Task<ObjectResult> SendMulti([FromBody] IList<NotificationMessage> notificationMessages)
         {
-            filelogger.LogWarning($"Receive message at: {DateTime.UtcNow}. Source = {JsonConvert.SerializeObject(notificationMessages)}");
             var results = new List<SendMessageResult>();
             var tasks = new List<Task<SendMessageResult>>();
 
@@ -106,9 +104,6 @@
                 results = (await Task.WhenAll(tasks)).ToList();
             }
 
-            filelogger.LogWarning(
-                $"Received result at: {DateTime.UtcNow}. Result = {JsonConvert.SerializeObject(results)}");
-     
             return Ok(results);
         }
 

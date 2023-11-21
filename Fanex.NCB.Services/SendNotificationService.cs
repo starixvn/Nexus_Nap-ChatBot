@@ -147,7 +147,6 @@
             var batches = DivideNotificationBatch(channelId, filterNotifications, distinctRecipients);
             foreach (var batch in batches)
             {
-                await logService.WriteMessageSentryErrorAsync($"Start send from auto service at: {DateTime.UtcNow}");
                 await SendMultiMessageAsync(channelId, batch.Item1, batch.Item2, recipients);
             }
         }
