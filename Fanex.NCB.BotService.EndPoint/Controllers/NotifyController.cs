@@ -94,6 +94,8 @@
                 var notifications = conversationService.GetDistinctNotificationConversation(notificationMessages);
                 TransformMessageContentAvoidSpecialSyntax(notifications);
 
+                await logger.ErrorAsync("TransformMessageContentAvoidSpecialSyntax: end");
+
                 foreach (var notification in notifications)
                 {
                     foreach (var conversationInfo in notification.Recipients)
@@ -190,6 +192,7 @@
 
         private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo)
         {
+            await logger.ErrorAsync("SendNotification: start");
             if (conversationInfo.IsDuplicated)
             {
                 return DuplicatedResult(conversationInfo.NotificationId, conversationInfo.ConversationId);

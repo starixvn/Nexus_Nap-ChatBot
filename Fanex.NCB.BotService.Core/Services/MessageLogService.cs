@@ -63,6 +63,7 @@
 
         public async Task InsertMessageLogIntoCache(string conversationId, string messageContent, string guiid)
         {
+            await logger.ErrorAsync("InsertMessageLogIntoCache: start");
             if (settings.IsEnabled && !await IsExistedOnCache(conversationId, messageContent))
             {
                 try

@@ -81,6 +81,7 @@
 
         public async Task<SendMessageResult> SendMessageWithRetryAsync(ConversationInfo conversationInfo)
         {
+            await logger.ErrorAsync("SendMessageWithRetryAsync: start");
             try
             {
                 if (sendIndirectMessageSettings.IsOnlySendIndirect)
@@ -119,6 +120,8 @@
                     SentTime = DateTime.UtcNow
                 };
             }
+
+            await logger.ErrorAsync("SendMessageWithRetryAsync: end");
 
             return new SendMessageResult
             {
