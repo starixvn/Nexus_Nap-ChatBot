@@ -84,8 +84,7 @@
         [Route("api/notifymulti")]
         public async Task<ObjectResult> SendMulti([FromBody] IList<NotificationMessage> notificationMessages)
         {
-            await logger.ErrorAsync($"Receive message at: {DateTime.UtcNow}. Source = {JsonConvert.SerializeObject(notificationMessages)}");
-
+            filelogger.LogWarning($"Receive message at: {DateTime.UtcNow}. Source = {JsonConvert.SerializeObject(notificationMessages)}");
             var results = new List<SendMessageResult>();
             var tasks = new List<Task<SendMessageResult>>();
 
@@ -93,8 +92,6 @@
             {
                 var notifications = conversationService.GetDistinctNotificationConversation(notificationMessages);
                 TransformMessageContentAvoidSpecialSyntax(notifications);
-
-                await logger.ErrorAsync("TransformMessageContentAvoidSpecialSyntax: end");
 
                 foreach (var notification in notifications)
                 {
@@ -108,8 +105,10 @@
 
                 results = (await Task.WhenAll(tasks)).ToList();
             }
-            await logger.ErrorAsync($"Received result at: {DateTime.UtcNow}. Result = {JsonConvert.SerializeObject(results)}");
 
+            filelogger.LogWarning(
+                $"Received result at: {DateTime.UtcNow}. Result = {JsonConvert.SerializeObject(results)}");
+     
             return Ok(results);
         }
 
@@ -192,7 +191,7 @@
 
         private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo)
         {
-            await logger.ErrorAsync("SendNotification: start");
+            filelogger.LogWarning("SendNotification: start");
             if (conversationInfo.IsDuplicated)
             {
                 return DuplicatedResult(conversationInfo.NotificationId, conversationInfo.ConversationId);
@@ -207,7 +206,11 @@
             string guiid = Guid.NewGuid().ToString();
             try
             {
+                filelogger.LogWarning("InsertMessageLogIntoCache: start");
                 await messageLogService.InsertMessageLogIntoCache(conversationInfo.ConversationId, conversationInfo.Message, guiid);
+
+                filelogger.LogWarning("InsertMessageLogIntoCache: end");
+
                 SendMessageResult result = await skypeBotService.SendMessageWithRetryAsync(conversationInfo);
                 if (result.ErrorCode != 0)
                 {

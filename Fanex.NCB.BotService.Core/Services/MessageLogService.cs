@@ -7,6 +7,8 @@
     using Fanex.Logging;
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
+    using Microsoft.Extensions.Logging;
+    using ILogger = Logging.ILogger;
 
     public class MessageLogService : IMessageLogService
     {
@@ -14,16 +16,19 @@
         private readonly ICacheService cacheService;
         private readonly IRedisCacheExtendService redisCacheExtend;
         private readonly ILogger logger;
+        private readonly ILogger<MessageLogService> filelogger;
 
         public MessageLogService(CheckDuplicatedMessageLogSetting settings,
             ICacheService cacheService,
             IRedisCacheExtendService redisCacheExtend,
-            ILogger logger)
+            ILogger logger,
+            ILogger<MessageLogService> filelogger)
         {
             this.settings = settings;
             this.cacheService = cacheService;
             this.redisCacheExtend = redisCacheExtend;
             this.logger = logger;
+            this.filelogger = filelogger;
         }
 
         public bool IsInvalidSendMessageToBotService(string conversationId, string message)
@@ -41,7 +46,11 @@
 
             try
             {
+                filelogger.LogWarning("IsInvalidSendMessageToBotService: start");
+
                 var messageContentList = redisCacheExtend.GetValueByKeyContains<string>(ModifyConversationId(conversationId));
+
+                filelogger.LogWarning("IsInvalidSendMessageToBotService: end");
 
                 foreach (string logContent in messageContentList)
                 {
@@ -63,7 +72,6 @@
 
         public async Task InsertMessageLogIntoCache(string conversationId, string messageContent, string guiid)
         {
-            await logger.ErrorAsync("InsertMessageLogIntoCache: start");
             if (settings.IsEnabled && !await IsExistedOnCache(conversationId, messageContent))
             {
                 try

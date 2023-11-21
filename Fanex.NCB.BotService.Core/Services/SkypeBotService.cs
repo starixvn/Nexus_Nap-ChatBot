@@ -81,7 +81,7 @@
 
         public async Task<SendMessageResult> SendMessageWithRetryAsync(ConversationInfo conversationInfo)
         {
-            await logger.ErrorAsync("SendMessageWithRetryAsync: start");
+            filelogger.LogWarning("SendMessageWithRetryAsync: start");
             try
             {
                 if (sendIndirectMessageSettings.IsOnlySendIndirect)
@@ -90,6 +90,8 @@
                 }
                 var conversationReference = GetConversationReference(conversationInfo);
                 var appId = GetAppId(conversationInfo.BotName);
+
+                filelogger.LogWarning("ContinueConversationAsync: start");
 
                 await adapter.ContinueConversationAsync(appId, conversationReference,
                     async (context, token) =>
@@ -100,6 +102,7 @@
                         await context.SendActivityAsync(conversationInfo.Message, cancellationToken: token);
                     },
                     new CancellationToken());
+                filelogger.LogWarning("ContinueConversationAsync: end");
             }
             catch (Exception exception)
             {
@@ -121,7 +124,7 @@
                 };
             }
 
-            await logger.ErrorAsync("SendMessageWithRetryAsync: end");
+            filelogger.LogWarning("SendMessageWithRetryAsync: end");
 
             return new SendMessageResult
             {
