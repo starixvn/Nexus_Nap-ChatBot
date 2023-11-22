@@ -151,8 +151,6 @@
             services.Configure<RedisConfiguration>(settingConfiguration);
             var redisConfig = settingConfiguration.Get<RedisConfiguration>();
 
-            int dbNumber = int.Parse(redisConfig.ConnectionString.Substring(redisConfig.ConnectionString.LastIndexOf("=") + 1));
-            redisConfig.Db = dbNumber;
             services.AddSingleton(redisConfig);
 
             var multiplexer = ConnectionMultiplexer.Connect(redisConfig.ConnectionString);

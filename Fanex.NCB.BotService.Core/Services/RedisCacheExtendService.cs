@@ -5,7 +5,6 @@
     using System.Net;
     using Fanex.Caching;
     using Fanex.NCB.BotService.Core.Models;
-    using Microsoft.Extensions.Logging;
     using StackExchange.Redis;
 
     public interface IRedisCacheExtendService
@@ -18,47 +17,28 @@
         private readonly IConnectionMultiplexer redisConnection;
         private readonly ICacheService cacheService;
         private readonly RedisConfiguration redisConfiguration;
-        private readonly ILogger<RedisCacheExtendService> filelogger;
 
         public RedisCacheExtendService(IConnectionMultiplexer redisConnection,
             ICacheService cacheService,
-            RedisConfiguration redisConfiguration,
-            ILogger<RedisCacheExtendService> filelogger)
+            RedisConfiguration redisConfiguration)
         {
             this.redisConnection = redisConnection;
             this.cacheService = cacheService;
             this.redisConfiguration = redisConfiguration;
-            this.filelogger = filelogger;
         }
 
         public IEnumerable<T> GetValueByKeyContains<T>(string key)
         {
-            try
-            {
-                filelogger.LogWarning($"GetValueByKeyContains Key: {key}");
-                EndPoint endPoint = redisConnection.GetEndPoints().FirstOrDefault();
-                IServer server = redisConnection.GetServer(endPoint);
+            EndPoint endPoint = redisConnection.GetEndPoints().FirstOrDefault();
+            IServer server = redisConnection.GetServer(endPoint);
 
-                IEnumerable<RedisKey> keys = server.Keys(redisConfiguration.Db, pattern: $"*{key}*");
-                filelogger.LogWarning($"GetValueByKeyContains: End Get all keys");
-                var lstKeys = keys.ToList();
+            IEnumerable<RedisKey> keys = server.Keys(redisConfiguration.Db, pattern: $"*{key}*");
 
-                var stringKeys = new List<string>();
-                filelogger.LogWarning($"GetValueByKeyContains: start Add key to list");
-                stringKeys.Add((string)keys.FirstOrDefault());
-                filelogger.LogWarning($"GetValueByKeyContains: end Add key to list");
+            List<string> keyList = keys.Select(k => GetActualKey(k)).ToList();
 
-                List<string> keyList = stringKeys.Select(k => GetActualKey(k)).ToList();
-                filelogger.LogWarning("GetValueByKeyContains: Get actual key");
-                var result = GetValueByKey<T>(keyList);
-                filelogger.LogWarning("GetValueByKeyContains: 7");
-                return result;
-            }
-            catch (System.Exception ex)
-            {
-                filelogger.LogError(ex.ToString());
-                throw;
-            }
+            var result = GetValueByKey<T>(keyList);
+
+            return result;
         }
 
         private string GetActualKey(string key) =>
