@@ -33,10 +33,13 @@
             IServer server = redisConnection.GetServer(endPoint);
 
             IEnumerable<RedisKey> keys = server.Keys(redisConfiguration.Db, pattern: $"*{key}*");
+            var result = Enumerable.Empty<T>();
+            if (keys.Any())
+            {
+                List<string> keyList = keys.Select(k => GetActualKey(k)).ToList();
 
-            List<string> keyList = keys.Select(k => GetActualKey(k)).ToList();
-
-            var result = GetValueByKey<T>(keyList);
+                result = GetValueByKey<T>(keyList);
+            }
 
             return result;
         }

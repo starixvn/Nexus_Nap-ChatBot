@@ -4,10 +4,8 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.Caching;
-    using Fanex.Logging;
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
-    using Microsoft.Extensions.Logging;
     using ILogger = Logging.ILogger;
 
     public class MessageLogService : IMessageLogService
@@ -16,19 +14,16 @@
         private readonly ICacheService cacheService;
         private readonly IRedisCacheExtendService redisCacheExtend;
         private readonly ILogger logger;
-        private readonly ILogger<MessageLogService> filelogger;
 
         public MessageLogService(CheckDuplicatedMessageLogSetting settings,
             ICacheService cacheService,
             IRedisCacheExtendService redisCacheExtend,
-            ILogger logger,
-            ILogger<MessageLogService> filelogger)
+            ILogger logger)
         {
             this.settings = settings;
             this.cacheService = cacheService;
             this.redisCacheExtend = redisCacheExtend;
             this.logger = logger;
-            this.filelogger = filelogger;
         }
 
         public bool IsInvalidSendMessageToBotService(string conversationId, string message)
@@ -46,11 +41,7 @@
 
             try
             {
-                filelogger.LogWarning("IsInvalidSendMessageToBotService: start");
-
                 var messageContentList = redisCacheExtend.GetValueByKeyContains<string>(ModifyConversationId(conversationId));
-
-                filelogger.LogWarning("IsInvalidSendMessageToBotService: end");
 
                 foreach (string logContent in messageContentList)
                 {
@@ -105,9 +96,7 @@
         }
 
         private async Task<bool> IsExistedOnCache(string conversationId, string guid)
-        {
-            return await cacheService.ContainAsync(ModifyKey(conversationId, guid));
-        }
+            => await cacheService.ContainAsync(ModifyKey(conversationId, guid));
 
         private static string ModifyKey(string key, string guiid) => $"{key}:{guiid}";
 

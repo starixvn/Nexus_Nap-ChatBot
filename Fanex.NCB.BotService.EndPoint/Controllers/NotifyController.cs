@@ -186,7 +186,6 @@
 
         private async Task<SendMessageResult> SendNotification(ConversationInfo conversationInfo)
         {
-            filelogger.LogWarning("SendNotification: start");
             if (conversationInfo.IsDuplicated)
             {
                 return DuplicatedResult(conversationInfo.NotificationId, conversationInfo.ConversationId);
@@ -201,10 +200,7 @@
             string guiid = Guid.NewGuid().ToString();
             try
             {
-                filelogger.LogWarning("InsertMessageLogIntoCache: start");
                 await messageLogService.InsertMessageLogIntoCache(conversationInfo.ConversationId, conversationInfo.Message, guiid);
-
-                filelogger.LogWarning("InsertMessageLogIntoCache: end");
 
                 SendMessageResult result = await skypeBotService.SendMessageWithRetryAsync(conversationInfo);
                 if (result.ErrorCode != 0)
