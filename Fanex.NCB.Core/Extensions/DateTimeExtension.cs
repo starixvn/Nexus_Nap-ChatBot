@@ -23,7 +23,7 @@
             return TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(dateTime, DateTimeKind.Utc), info);
         }
 
-        public static string ConvertToDateTimeString(DateTime dateTime)
+        public static string ConvertToDateTimeString(DateTimeOffset dateTime)
         {
             return dateTime.ToString("yyyy-MM-dd HH:mm:ss");
         }

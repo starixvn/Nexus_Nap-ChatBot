@@ -35,7 +35,7 @@
                 RecipientIDLst = model.RecipientIds,
                 Title = model.Title,
                 ContentLst = model.Content,
-                ConfigSendTime = model.SendImmediately ? DateTime.UtcNow : model.SendDate.ConvertToUTC(),
+                ConfigSendTime = model.SendImmediately ? DateTimeOffset.UtcNow : model.SendDate.ConvertToUTC(),
                 SendImmediately = model.SendImmediately,
                 CreatorId = model.CreatorId,
                 Platforms = model.Platforms
@@ -169,7 +169,7 @@
                 RecipientIDLst = model.RecipientIds,
                 Title = model.Title,
                 Content = model.Content,
-                ConfigSendTime = model.SendImmediately ? DateTime.UtcNow : model.SendDate.ConvertToUTC(),
+                ConfigSendTime = model.SendImmediately ? DateTimeOffset.UtcNow : model.SendDate.ConvertToUTC(),
                 SendImmediately = model.SendImmediately,
                 UserId = model.UserId,
                 Platforms = model.Platforms

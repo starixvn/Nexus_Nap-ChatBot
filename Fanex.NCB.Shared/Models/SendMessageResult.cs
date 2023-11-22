@@ -8,7 +8,7 @@
 
         public string ConversationId { get; set; }
 
-        public DateTime SentTime { get; set; }
+        public DateTimeOffset SentTime { get; set; }
 
         public int ErrorCode { get; set; }
 

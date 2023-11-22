@@ -177,7 +177,7 @@
             {
                 NotificationId = conversationInfo.NotificationId,
                 ConversationId = conversationInfo.ConversationId,
-                SentTime = DateTime.UtcNow,
+                SentTime = DateTimeOffset.UtcNow,
                 ErrorCode = 1,
                 ErrorMessage = Resources.Resources.DisableChannelErrorMessage,
                 IsIgnoreRetry = true
@@ -222,7 +222,7 @@
                 {
                     NotificationId = conversationInfo.NotificationId,
                     ConversationId = conversationInfo.ConversationId,
-                    SentTime = DateTime.UtcNow,
+                    SentTime = DateTimeOffset.UtcNow,
                     ErrorCode = 1,
                     ErrorMessage = exception.Message
                 };
@@ -233,7 +233,7 @@
             => new()
             {
                 ConversationId = conversationId,
-                SentTime = DateTime.UtcNow,
+                SentTime = DateTimeOffset.UtcNow,
                 ErrorCode = -1,
                 ErrorMessage = Resources.Resources.DuplicatedErrorMessage,
                 NotificationId = notificationId,

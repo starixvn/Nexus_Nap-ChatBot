@@ -113,7 +113,7 @@
             {
                 ConversationId = conversationInfo.ConversationId,
                 NotificationId = conversationInfo.NotificationId,
-                SentTime = DateTime.UtcNow
+                SentTime = DateTimeOffset.UtcNow
             };
         }
 
@@ -131,7 +131,7 @@
 
                 result.ConversationId = conversationInfo.ConversationId;
                 result.NotificationId = conversationInfo.NotificationId;
-                result.SentTime = DateTime.UtcNow;
+                result.SentTime = DateTimeOffset.UtcNow;
 
                 return result;
             }
@@ -147,7 +147,7 @@
                     NotificationId = conversationInfo.NotificationId,
                     ErrorCode = 1,
                     ErrorMessage = exception.Message,
-                    SentTime = DateTime.UtcNow
+                    SentTime = DateTimeOffset.UtcNow
                 };
             }
         }
@@ -176,7 +176,7 @@
                 NotificationId = conversationInfo.NotificationId,
                 ErrorCode = 1,
                 ErrorMessage = exception.Message,
-                SentTime = DateTime.UtcNow
+                SentTime = DateTimeOffset.UtcNow
             };
             if (exception.Message.Contains("Message is too long", StringComparison.InvariantCultureIgnoreCase))
             {
