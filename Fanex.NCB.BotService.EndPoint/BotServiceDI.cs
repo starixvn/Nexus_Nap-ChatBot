@@ -150,7 +150,7 @@
             var settingConfiguration = configuration.GetSection("Fanex.Caching.Redis");
             services.Configure<RedisConfiguration>(settingConfiguration);
             var redisConfig = settingConfiguration.Get<RedisConfiguration>();
-
+            redisConfig.Db = GetDbNumber(redisConfig.ConnectionString);
             services.AddSingleton(redisConfig);
 
             var multiplexer = ConnectionMultiplexer.Connect(redisConfig.ConnectionString);
@@ -192,6 +192,23 @@
             {
                 services.AddHttpClient();
             }
+        }
+
+        private static int GetDbNumber(string cnn)
+        {
+            var db = BetweenStrings(cnn, "defaultDatabase=", ",");
+            return int.Parse(db);
+        }
+
+        private static string BetweenStrings(string text, string start, string end)
+        {
+            int p1 = text.IndexOf(start) + start.Length;
+            int p2 = text.IndexOf(end, p1);
+            if (p2 == -1 || end == string.Empty)
+            {
+                return text.Substring(p1);
+            }
+            return text.Substring(p1, p2 - p1);
         }
     }
 }
