@@ -33,46 +33,43 @@
 
         public IEnumerable<T> GetValueByKeyContains<T>(string key)
         {
-            filelogger.LogWarning($"GetValueByKeyContains Key: {key}");
-            EndPoint endPoint = redisConnection.GetEndPoints().FirstOrDefault();
-            IServer server = redisConnection.GetServer(endPoint);
-
-            IEnumerable<RedisKey> keys = server.Keys(redisConfiguration.Db, pattern: $"*{key}*");
-            filelogger.LogWarning($"GetValueByKeyContains: End Get all keys");
-            var keyArray = keys.ToArray();
-            filelogger.LogWarning($"GetValueByKeyContains: End Get all keys to Array");
-
-            //var stringKeys = keys.Select(x => (string)x);
-            var stringKeys = new List<string>();
-            foreach (var k in keys)
+            try
             {
-                stringKeys.Add((string)k);
+                filelogger.LogWarning($"GetValueByKeyContains Key: {key}");
+                EndPoint endPoint = redisConnection.GetEndPoints().FirstOrDefault();
+                IServer server = redisConnection.GetServer(endPoint);
+
+                IEnumerable<RedisKey> keys = server.Keys(redisConfiguration.Db, pattern: $"*{key}*");
+                filelogger.LogWarning($"GetValueByKeyContains: End Get all keys");
+                var lstKeys = keys.ToList();
+
+                var stringKeys = new List<string>();
+                filelogger.LogWarning($"GetValueByKeyContains: start Add key to list");
+                stringKeys.Add((string)keys.FirstOrDefault());
+                filelogger.LogWarning($"GetValueByKeyContains: end Add key to list");
+
+                List<string> keyList = stringKeys.Select(k => GetActualKey(k)).ToList();
+                filelogger.LogWarning("GetValueByKeyContains: Get actual key");
+                var result = GetValueByKey<T>(keyList);
+                filelogger.LogWarning("GetValueByKeyContains: 7");
+                return result;
             }
-            filelogger.LogWarning($"GetValueByKeyContains: convert RedisKey to string");
-
-            string[] keysArr = stringKeys.Select(k => GetActualKey(k)).ToArray();
-            filelogger.LogWarning("GetValueByKeyContains: Get actual key");
-            var result = GetValueByKey<T>(keysArr);
-            filelogger.LogWarning("GetValueByKeyContains: 7");
-            return result;
+            catch (System.Exception ex)
+            {
+                filelogger.LogError(ex.ToString());
+                throw;
+            }
         }
 
-        private string GetActualKey(string key)
-        {
-            filelogger.LogWarning($"GetActualKey: Keys: {key}");
+        private string GetActualKey(string key) =>
+                key.Replace($"{{{redisConfiguration.ApplicationName}}}:", string.Empty).Replace("{", string.Empty).Replace("}", string.Empty);
 
-            var value = key.Replace($"{{{redisConfiguration.ApplicationName}}}:", string.Empty).Replace("{", string.Empty).Replace("}", string.Empty);
-            filelogger.LogWarning($"GetActualKey: Value: {value}");
-
-            return value;
-        }
-
-        private IEnumerable<T> GetValueByKey<T>(string[] keysArr)
+        private IEnumerable<T> GetValueByKey<T>(List<string> keyList)
         {
             var values = new List<T>();
-            for (int i = 0; i < keysArr.Length; i++)
+            foreach (var key in keyList)
             {
-                T value = cacheService.Get<T>(keysArr[i]);
+                T value = cacheService.Get<T>(key);
                 if (!Equals(value, default(T)))
                 {
                     values.Add(value);
