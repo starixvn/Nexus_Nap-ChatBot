@@ -6,6 +6,7 @@
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Fanex.RemotingRef;
@@ -76,6 +77,15 @@
         {
             string jsonData = await baseService.GetDataEntityAsync<string>(new GetJsonDataOnDbACCCriteria { TableName = tableName });
             return jsonData;
+        }
+
+        public async Task<ServiceSetting> GetServcieSetting(string inServiceName)
+        {
+            var criteria = new GetServiceSettingCriteria
+            {
+                InServiceName = inServiceName
+            };
+            return await baseService.GetDataEntityAsync<ServiceSetting>(criteria);
         }
     }
 }

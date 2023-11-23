@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Criteria.SettlementInternalCSD;
     using Fanex.NCB.Criteria.SettlementLicensee;
@@ -37,15 +38,6 @@
             this.chatbotService = chatbotService;
             this.logService = logService;
             this.commonService = commonService;
-        }
-
-        public async Task<ServiceSetting> GetServcieSetting(string inServiceName)
-        {
-            var criteria = new GetServiceSettingCriteria
-            {
-                InServiceName = inServiceName
-            };
-            return await baseService.GetDataEntityAsync<ServiceSetting>(criteria);
         }
 
         protected internal virtual async Task OnAfterImportDataAsync(
@@ -89,7 +81,7 @@
 
         public async Task SettlementInternalCSDAsync()
         {
-            var systemSetting = await GetServcieSetting("Settlement - Internal CSD");
+            var systemSetting = await commonService.GetServcieSetting(Constants.ServiceName_SettlementInternalCSD);
 
             if (systemSetting != null)
             {
@@ -166,7 +158,7 @@
 
         public async Task SettlementLicenseeAsync()
         {
-            var systemSetting = await GetServcieSetting("Settlement - Licensee");
+            var systemSetting = await commonService.GetServcieSetting(Constants.ServiceName_SettlementLicensee);
 
             if (systemSetting != null)
             {

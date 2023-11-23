@@ -3,7 +3,9 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.NCB.Models.Common;
+    using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.OIC;
+    using Fanex.NCB.Shared.Services;
 
     public interface ICommonService
     {
@@ -26,5 +28,7 @@
         string GetCustomerClassName(string customerClass, string languageCode);
 
         Task<string> GetJsonDataFromDbACCAsync(string tableName);
+
+        Task<ServiceSetting> GetServcieSetting(string inServiceName);
     }
 }

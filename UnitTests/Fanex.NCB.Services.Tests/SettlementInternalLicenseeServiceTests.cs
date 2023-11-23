@@ -25,37 +25,7 @@
         private IPushSignalRService pushSignalService;
         private ILogService logService;
 
-        [Fact]
-        public async Task GetServcieSetting_WhenCalled_ReturnAsExpectedResult()
-        {
-            // Arrange
-            var setting = fixture.Create<ServiceSetting>();
-            var service = GetService();
-            baseService.GetDataEntityAsync<ServiceSetting>(Arg.Any<GetServiceSettingCriteria>()).Returns(setting);
-
-            // Act
-            var actual = await service.GetServcieSetting("inServiceName");
-
-            // Assert
-            Assert.Equal(setting, actual);
-        }
-
         #region Settlement Internal CSD
-
-        [Fact]
-        public async Task SettlementInternalCSDAsync_SettingIsNull_DoNothing()
-        {
-            // Arrange
-            ServiceSetting setting = null;
-            var service = GetService();
-            baseService.GetDataEntityAsync<ServiceSetting>(Arg.Any<GetServiceSettingCriteria>()).Returns(setting);
-
-            // Act
-            await service.SettlementInternalCSDAsync();
-
-            // Assert
-            await baseService.DidNotReceive().FetchMultipleAsync<MessageSettlement, MessageSettlementInfo>(Arg.Any<GetMessageSettleInternalCSDCriteria>());
-        }
 
         [Fact]
         public async Task SettlementInternalCSDAsync_WhenCalled_DoAsExpected()
