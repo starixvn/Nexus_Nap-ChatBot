@@ -12,6 +12,8 @@
 
         public string AbnormalAccountInfo { get; set; }
 
+        public int InMsgTargetId { get; set; }
+
         public int ErrCode { get; set; }
 
         public string ErrMsg { get; set; }

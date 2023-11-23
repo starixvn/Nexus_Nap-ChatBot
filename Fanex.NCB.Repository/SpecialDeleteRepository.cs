@@ -28,5 +28,25 @@
                 }
             }
         }
+
+        public async Task<(IEnumerable<CollectionTransId>, IEnumerable<CollectionUsername>, IEnumerable<CollectionDuplicatedTickets>, IEnumerable<AbnormalMessage>)>
+        FetchVoidingHistoryMessage(ICriteria criteria)
+        {
+            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+            {
+                using (IMultiResultReader multi = await db.QueryMultipleAsync(criteria))
+                {
+                    var data = new VoidingHistoryMessage
+                    {
+                        CollectionTransId = multi.Read<CollectionTransId>(),
+                        CollectionUsername = multi.Read<CollectionUsername>(),
+                        CollectionDuplicatedTickets = multi.Read<CollectionDuplicatedTickets>(),
+                        AbnormalMessage = multi.Read<AbnormalMessage>()
+                    };
+
+                    return (data.CollectionTransId, data.CollectionUsername, data.CollectionDuplicatedTickets, data.AbnormalMessage);
+                }
+            }
+        }
     }
 }

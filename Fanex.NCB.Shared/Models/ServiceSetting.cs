@@ -11,5 +11,7 @@
         public string NotificationTemplate { get; set; }
 
         public string TestingGroup { get; set; }
+
+        public int LastVoidingHistoryCollectionId { set; get; }
     }
 }

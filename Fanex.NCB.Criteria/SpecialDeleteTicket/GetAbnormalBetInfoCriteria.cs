@@ -5,8 +5,15 @@
     public class GetAbnormalBetInfoCriteria : CriteriaBase
     {
         public string TicketInfo { get; set; }
+
         public string UsernameLst { get; set; }
+
         public string DuplicatedInfo { get; set; }
+
+        public string MessageInfo { get; set; }
+
+        public string MessageDetail { get; set; }
+
 
         public override string GetSettingKey() => "NAP_Chatbot_SpecialDelete_AbnormalBets_Sel";
 

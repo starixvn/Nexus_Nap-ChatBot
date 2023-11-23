@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Criteria.SiteMessage;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
@@ -168,7 +169,7 @@
 
         public async Task PullVoidingMessageInternalDepartmentAsync()
         {
-            var systemSetting = await baseService.GetDataEntityAsync<SystemSetting>(new GetAbnormalBetSystemSettingCriteria());
+            var systemSetting = await commonService.GetServcieSetting(Constants.ServiceName_SpecialDeleteInternalCSD);
             if (systemSetting != null)
             {
                 var criteria = new GetVoidingHIstoryCollectionIdCriteria
@@ -176,9 +177,9 @@
                     LastVoidingHistoryCollectionId = systemSetting.LastVoidingHistoryCollectionId,
                     BatchSize = systemSetting.BatchSize
                 };
-                var (tranIds, usernames, duplicatedTickets) = await baseService.FetchMultipleAsync<CollectionTransId, CollectionUsername, CollectionDuplicatedTickets>(criteria);
+                var (tranIds, usernames, duplicatedTickets, messageIdLst) = await specialDeleteRepository.FetchVoidingHistoryMessage(criteria);
 
-                await GetMessageAndImportToChatbotAsync(tranIds, usernames, duplicatedTickets, systemSetting);
+                await GetMessageAndImportToChatbotAsync(tranIds, usernames, duplicatedTickets, messageIdLst, systemSetting);
             }
         }
 
@@ -186,15 +187,15 @@
             IEnumerable<CollectionTransId> tranIds,
             IEnumerable<CollectionUsername> usernameList,
             IEnumerable<CollectionDuplicatedTickets> duplicatedTickets,
-            SystemSetting setting)
+            IEnumerable<AbnormalMessage> messageIdLst,
+            ServiceSetting setting)
         {
+            var (messageInfo, messageDetail, maxMsgTargetId) = await GetAbnormalBetsMessageContentAsync(messageIdLst, setting.BatchSize, setting.LastMsgTargetId);
             var (tickets, usernames, dupTickets) = await siteDbService.GetTicketUsernamesAynnc(tranIds, usernameList, duplicatedTickets);
-
-            var (historyDetail, msg, abnormalAccountInfos, dupTicketDetails) = await GetVoidingHistoryDetailAsync(tickets, usernames, dupTickets);
-            var msgContents = await GetAbnormalBetsMessageContentAsync(msg);
+            var (historyDetail, msg, abnormalAccountInfos, dupTicketDetails) = await GetVoidingHistoryDetailAsync(tickets, usernames, dupTickets, messageInfo, messageDetail);
             await GetTransInfoAsync(dupTicketDetails);
-            MappingData(historyDetail, msgContents);
-            await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg, dupTicketDetails, abnormalAccountInfos);
+            MappingData(historyDetail, messageInfo);
+            await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg, dupTicketDetails, abnormalAccountInfos, maxMsgTargetId);
         }
 
         private async Task GetTransInfoAsync(IEnumerable<DuplicateTicketDetail> dupTicketDetails)
@@ -231,27 +232,35 @@
             }
         }
 
-        internal virtual async Task<IEnumerable<AbnormalMessageContent>> GetAbnormalBetsMessageContentAsync(IEnumerable<AbnormalMessage> listMsgs)
+        internal virtual async Task<ValueTuple<IEnumerable<AbnormalMessageContent>, IEnumerable<MessageMsgDetail> ,int>>
+        GetAbnormalBetsMessageContentAsync(IEnumerable<AbnormalMessage> listMsgs, int batchSize, int lastMsgTargetId)
         {
             var criteria = new GetAbnormalBetsMessageCriteria
             {
                 MessageIDLst = XmlHelper<AbnormalMessage>.Serialize(listMsgs.ToList()),
+                BacthSize = batchSize,
+                LastMsgTargetId = lastMsgTargetId
             };
+            var data = await baseService.FetchMultipleAsync<AbnormalMessageContent, MessageMsgDetail>(criteria);
 
-            return await baseService.GetDataAsync<AbnormalMessageContent>(criteria);
+            return new ValueTuple<IEnumerable<AbnormalMessageContent>, IEnumerable<MessageMsgDetail>, int>(data.Item1, data.Item2, criteria.MaxMsgtargetId);
         }
 
         protected internal virtual async Task<(IEnumerable<AbnormalMessageDetail>, IEnumerable<AbnormalMessage>, IEnumerable<AbnormalAccountInfo>, IEnumerable<DuplicateTicketDetail>)>
         GetVoidingHistoryDetailAsync(
             IEnumerable<AbnormalTicketInfo> tickets,
             IEnumerable<AbnormalUsernames> usernames,
-            IEnumerable<DuplicatedTicketInfo> dupTickets)
+            IEnumerable<DuplicatedTicketInfo> dupTickets,
+            IEnumerable<AbnormalMessageContent> messageInfo, 
+            IEnumerable<MessageMsgDetail> messageDetail)
         {
             var criteria = new GetAbnormalBetInfoCriteria
             {
                 TicketInfo = XmlHelper<AbnormalTicketInfo>.Serialize(tickets.ToList()),
                 UsernameLst = XmlHelper<AbnormalUsernames>.Serialize(usernames.ToList()),
-                DuplicatedInfo = XmlHelper<DuplicatedTicketInfo>.Serialize(dupTickets.ToList())
+                DuplicatedInfo = XmlHelper<DuplicatedTicketInfo>.Serialize(dupTickets.ToList()),
+                MessageInfo = XmlHelper<AbnormalMessageContent>.Serialize(messageInfo.ToList()),
+                MessageDetail = XmlHelper<MessageMsgDetail>.Serialize(messageDetail.ToList()),
             };
 
             return await specialDeleteRepository.FetchVoidingHistoryInfo(criteria);
@@ -261,7 +270,8 @@
             IEnumerable<AbnormalMessageDetail> historyDetails,
             IEnumerable<AbnormalMessage> msgs,
             IEnumerable<DuplicateTicketDetail> duplicateTicketDetails,
-            IEnumerable<AbnormalAccountInfo> abnormalAccountInfos
+            IEnumerable<AbnormalAccountInfo> abnormalAccountInfos,
+            int maxMsgTargetId
         )
         {
             if (historyDetails.Any())
@@ -271,7 +281,8 @@
                     MessageHeader = JsonConvert.SerializeObject(historyDetails, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
                     MessageDetail = JsonConvert.SerializeObject(msgs, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
                     DuplicatedInfo = JsonConvert.SerializeObject(duplicateTicketDetails, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
-                    AbnormalAccountInfo = JsonConvert.SerializeObject(abnormalAccountInfos, new JsonSerializerSettings { DateFormatString = DateTimeFormat })
+                    AbnormalAccountInfo = JsonConvert.SerializeObject(abnormalAccountInfos, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
+                    InMsgTargetId = maxMsgTargetId
                 };
                 var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
                 var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);
