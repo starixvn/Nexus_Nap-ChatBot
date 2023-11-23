@@ -6,13 +6,10 @@
     using System.Threading;
     using Fanex.Caching;
     using Fanex.Caching.Redis;
-    using Fanex.Data.MySql;
     using Fanex.Data.Repository;
-    using Fanex.Data.SqlServer;
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.AspNetCore;
-    using Fanex.Logging.Extensions.Database;
     using Fanex.Logging.Sentry;
     using Fanex.NCB.AutoJobs.Models;
     using Fanex.NCB.AutoJobs.Workers;
@@ -21,9 +18,7 @@
     using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services;
     using Fanex.NCB.Services.Interfaces;
-    using Fanex.NCB.Shared.FanexDataExtensions.Services;
     using Fanex.NCB.Shared.Middlewares;
-    using Fanex.NCB.Shared.Repositories;
     using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Fanex.RemotingRef;
@@ -53,6 +48,7 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddFanexData(Configuration);
             services.AddControllers();
             AddConfiguration(services, Configuration);
             AddRedisCacheConfig(services);
@@ -99,7 +95,6 @@
         private static void AddConfiguration(IServiceCollection services, IConfiguration configuration)
         {
             services.AddFanexSql(configuration).AddFanexMySql(configuration);
-
             LogManager
             .SetDefaultLogCategory(configuration.GetSection("LogCategory").Value)
             .Use(new List<ILogEngine>
@@ -111,15 +106,14 @@
             });
 
             RefDataTypeContainer
-            .ConnectTo(new Uri(configuration.GetSection("RemotingRefService:Fanex.RemotingRef.Service.Url").Value))
-            .FromApplication("Fanex.NCB.AutoJobs");
+                .ConnectTo(new Uri(configuration.GetSection("RemotingRefService:Fanex.RemotingRef.Service.Url").Value))
+                .FromApplication("Fanex.NCB.AutoJobs");
 
             services.Configure<IConfiguration>(configuration);
             services.AddSingleton<IRemotingRefService, RemotingRefService>();
 
             ExceptionHandler
-                .UseConfig(new LoggingConfiguration())
-                .UseGetDbExceptionInfo(DatabaseInfoGetters.GetDbExceptionInfo);
+                .UseConfig(new LoggingConfiguration());
 
             services.AddSingleton(configuration);
             services.Configure<MonitorChatbot>(configuration.GetSection("MonitorChatbot"));
@@ -157,7 +151,7 @@
             services.AddSingleton<IRefNoTicketService, RefNoTicketService>();
 
             services.AddSingleton<IDynamicRepository, DynamicRepository>();
-            services.AddSingleton<IBaseRepository, BaseRepository>();
+            //services.AddSingleton<IBaseRepository, BaseRepository>();
             services.AddSingleton<ISyncDataRepository, SyncDataRepository>();
             services.AddSingleton<INotificationRepository, NotificationRepository>();
             services.AddSingleton<IViewLogService, ViewLogService>();
@@ -165,9 +159,9 @@
             services.AddSingleton<IProblemAccountService, ProblemAccountService>();
             services.AddSingleton<IMonitoredPlayerService, MonitoredPlayerService>();
             services.AddSingleton<ISiteDbService, SiteDbService>();
-            services.AddSingleton<IDynamicConnectionService, DynamicConnectionService>();
+            //services.AddSingleton<IDynamicConnectionService, DynamicConnectionService>();
             services.AddSingleton<ICacheService, CacheService>();
-            services.AddSingleton<ISpecialDeleteRepository, SpecialDeleteRepository>();
+            //services.AddSingleton<ISpecialDeleteRepository, SpecialDeleteRepository>();
             services.AddSingleton<ISettlementInternalLicenseeService, SettlementInternalLicenseeService>();
         }
 

@@ -3,7 +3,6 @@
     using System;
     using System.Threading.Tasks;
     using Fanex.Logging.Extensions;
-    using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.Services.Interfaces;
     using Microsoft.Extensions.Logging;
 
@@ -25,7 +24,6 @@
             try
             {
                 var logMessage = new LogMessage(exception.Message)
-                       .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
                        .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
                        .ToString();

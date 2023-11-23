@@ -9,7 +9,6 @@
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Extensions;
-    using Fanex.NCB.Shared.FanexDataExtensions.Services;
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket.AbnormalBets;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Configuration;
@@ -18,20 +17,17 @@
     {
         private readonly IBaseService baseService;
         private readonly ICacheService cacheService;
-        private readonly IDynamicConnectionService dynamicConnectionService;
         private readonly ILogService logService;
         private const string ListSiteDbCacheKey = "ListSiteDbCachingKey";
         private readonly int CacheExpiration;
 
         public SiteDbService(IBaseService baseService,
             ICacheService cacheService,
-            IDynamicConnectionService dynamicConnectionService,
             IConfiguration configuration,
             ILogService logService)
         {
             this.baseService = baseService;
             this.cacheService = cacheService;
-            this.dynamicConnectionService = dynamicConnectionService;
             CacheExpiration = configuration.GetValue<int>("SiteDbCachingExpiration");
             this.logService = logService;
         }
@@ -118,14 +114,13 @@
             {
                 var criteria = new AbnormalBetGetUsernameTicketInfoCriteria
                 {
-                    ServerIp = siteDb.AGIP,
                     AbnormalBetsInfo = abnormalBetsInfo,
                     AbnormalAccountsInfo = abnormalAccounts,
                     DuplicatedTickets = duplicatedTickets,
                     SiteDBGroupId = siteDb.SiteDBGroupID
                 };
 
-                results = await dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames, DuplicatedTicketInfo>(criteria);
+                results = await baseService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames, DuplicatedTicketInfo>(criteria, siteDb.AGIP);
             }
             catch (Exception exception)
             {

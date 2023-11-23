@@ -3,15 +3,22 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.Data;
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ValueObject;
     using Fanex.NAP.Client.Services;
     using Fanex.NAP.Core.Business;
     using Fanex.NCB.Criteria.LocalNap.User;
+    using Fanex.NCB.Shared.Services.Interfaces;
 
     public class LocalUserService : IUserService
     {
+        private readonly IBaseService baseService;
+
+        public LocalUserService(IBaseService baseService)
+        {
+            this.baseService = baseService;
+        }
+
         public User Get(int userId)
         {
             throw new NotImplementedException();
@@ -125,10 +132,7 @@
                 FunctionKey = functionKey
             };
 
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                return objectDb.QueryEntity<int>(criteria);
-            }
+            return baseService.GetDataEntityAsync<int>(criteria).Result;
         }
 
         public async Task<int> GetPermissionAsync(int userId, int siteId, string functionKey)
@@ -140,10 +144,7 @@
                 FunctionKey = functionKey
             };
 
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                return await objectDb.QueryEntityAsync<int>(criteria);
-            }
+            return await baseService.GetDataEntityAsync<int>(criteria);
         }
 
         public IEnumerable<FunctionPolicy> GetPermissions(int userId, int siteId, string parentFunctionKey, string environment = "UAT")

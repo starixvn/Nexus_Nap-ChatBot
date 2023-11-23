@@ -3,16 +3,23 @@
     using System;
     using System.Globalization;
     using System.Threading.Tasks;
-    using Fanex.Data;
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ParameterObject;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Criteria.LocalNap.Security;
     using Fanex.NCB.Criteria.LocalNap.Site;
+    using Fanex.NCB.Shared.Services.Interfaces;
 
     public class LocalSecurityService : ISecurityService
     {
+        private readonly IBaseService baseService;
+
+        public LocalSecurityService(IBaseService baseService)
+        {
+            this.baseService = baseService;
+        }
+
         public string GetTime()
         {
             throw new NotImplementedException();
@@ -25,12 +32,8 @@
                 Time = DateTimeOffset.Now.DateTime
             };
 
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                await objectDb.ExecuteNonQueryAsync(criteria);
-
-                return criteria.Time.ToString(CultureInfo.InvariantCulture);
-            }
+            await baseService.GetDataAsync<int>(criteria);
+            return criteria.Time.ToString(CultureInfo.InvariantCulture);
         }
 
         public int Login(LoginParameter parameter)
@@ -49,7 +52,7 @@
             return onUserId;
         }
 
-        private static async Task LogUserLoginAsync(LoginParameter parameter)
+        private async Task LogUserLoginAsync(LoginParameter parameter)
         {
             var logCriteria = new LogUserLoginCriteria
             {
@@ -62,14 +65,10 @@
                 IP = parameter.Ip,
                 CountryCode = parameter.CountryCode,
             };
-
-            using (var objectDb = ObjectDbFactory.CreateInstance(logCriteria.GetSettingKey()))
-            {
-                await objectDb.ExecuteNonQueryAsync(logCriteria);
-            }
+            await baseService.GetDataAsync<int>(logCriteria);
         }
 
-        private static async Task<int> UserCheckIn(LoginParameter parameter)
+        private async Task<int> UserCheckIn(LoginParameter parameter)
         {
             var criteria = new UserCheckInCriteria
             {
@@ -80,11 +79,9 @@
                 LoginDate = parameter.LoginDate
             };
 
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                await objectDb.ExecuteNonQueryAsync(criteria);
-                return criteria.OnUserId;
-            }
+            await baseService.GetDataAsync<int>(criteria);
+
+            return criteria.OnUserId;
         }
 
         public void Logout(int onlineUserId)
@@ -99,10 +96,7 @@
                 OnUserId = onlineUserId
             };
 
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                await objectDb.ExecuteNonQueryAsync(criteria);
-            }
+            await baseService.GetDataAsync<int>(criteria);
         }
 
         public int ReCheckIn(int onlineUserId, int siteId)
@@ -125,10 +119,7 @@
                 IsKickedOut = false
             };
 
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                await objectDb.ExecuteNonQueryAsync(criteria);
-            }
+            await baseService.GetDataAsync<int>(criteria);
 
             if (criteria.IsPermissionChanged)
             {
@@ -159,7 +150,7 @@
             return onUserId;
         }
 
-        private static async Task<int> SSOCheckIn(SSOLoginParameter parameter)
+        private async Task<int> SSOCheckIn(SSOLoginParameter parameter)
         {
             var criteria = new UserSsoCheckInUserCriteria
             {
@@ -172,15 +163,11 @@
                 Platform = parameter.Platform,
                 LoginDate = parameter.LoginDate
             };
-
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                await objectDb.ExecuteNonQueryAsync(criteria);
-                return criteria.OnUserId;
-            }
+            await baseService.GetDataAsync<int>(criteria);
+            return criteria.OnUserId;
         }
 
-        private static async Task LogSSOLoginAsync(SSOLoginParameter parameter)
+        private async Task LogSSOLoginAsync(SSOLoginParameter parameter)
         {
             var logCriteria = new LogUserLoginCriteria
             {
@@ -194,10 +181,7 @@
                 CountryCode = parameter.CountryCode,
             };
 
-            using (var objectDb = ObjectDbFactory.CreateInstance(logCriteria.GetSettingKey()))
-            {
-                await objectDb.ExecuteNonQueryAsync(logCriteria);
-            }
+            await baseService.GetDataAsync<int>(logCriteria);
         }
 
         public bool UpdatePassword(int siteId, int userId, string password)
@@ -220,7 +204,7 @@
             throw new NotImplementedException();
         }
 
-        private static async Task<bool> IsActivatedAsync(int siteId)
+        private async Task<bool> IsActivatedAsync(int siteId)
         {
             var criteria = new GetByIdSiteCriteria
             {
@@ -228,17 +212,14 @@
             };
 
             bool isActive = false;
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+            var site = await baseService.GetDataEntityAsync<Site>(criteria);
+
+            if (site != null)
             {
-                var site = await objectDb.QueryEntityAsync<Site>(criteria);
-
-                if (site != null)
-                {
-                    isActive = site.IsActive;
-                }
-
-                return isActive;
+                isActive = site.IsActive;
             }
+
+            return isActive;
         }
     }
 }

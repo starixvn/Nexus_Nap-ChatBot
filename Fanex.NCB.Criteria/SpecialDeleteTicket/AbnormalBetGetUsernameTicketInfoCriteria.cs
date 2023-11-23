@@ -1,11 +1,9 @@
 ﻿namespace Fanex.NCB.Criteria.SpecialDeleteTicket
 {
-    using Fanex.NCB.Shared.FanexDataExtensions;
+    using Fanex.Data.Repository;
 
-    public class AbnormalBetGetUsernameTicketInfoCriteria : CriteriaBaseExtend
+    public class AbnormalBetGetUsernameTicketInfoCriteria : CriteriaBase
     {
-        public override string ServerIp { get; set; }
-        public override string DbName { get; set; }
         public string AbnormalBetsInfo { get; set; }
         public string AbnormalAccountsInfo { get; set; }
         public string DuplicatedTickets { get; set; }
@@ -13,7 +11,6 @@
 
         public override string GetSettingKey() => "NAP_Chatbot_AbnormalBets_UsernameTicketInfo_Sel";
 
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(ServerIp)
-                                        && SiteDBGroupId >= 0;
+        public override bool IsValid() => SiteDBGroupId >= 0;
     }
 }

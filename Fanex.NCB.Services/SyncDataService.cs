@@ -124,8 +124,17 @@
         private async Task<OicData> GetDataFromOIC()
         {
             var criteria = new GetDataFromOicCriteria();
-
-            return await syncDataRepository.FetchDataFromOIC(criteria);
+            var (licensees, statuses, licProducts, types, products, platforms) =
+                await baseService.FetchMultipleAsync<Licensee, LicenseeStatus, LicenseeProduct, LicenseeType, Product, Platform>(criteria);
+            return new OicData
+            {
+                Licensees = licensees,
+                LicenseeStatuses = statuses,
+                LicenseeProducts = licProducts,
+                LicenseeTypes = types,
+                Products = products,
+                Platforms = platforms
+            };
         }
 
         private async Task InsertOICData(OicData data)

@@ -1,52 +1,32 @@
-﻿namespace Fanex.NCB.Repository
-{
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Fanex.Data;
-    using Fanex.Data.Repository;
-    using Fanex.NCB.Repository.Interfaces;
-    using Fanex.NCB.Shared.Models.SpecialDeleteTicket.AbnormalBets;
+﻿//namespace Fanex.NCB.Repository
+//{
+//    using System.Collections.Generic;
+//    using System.Threading.Tasks;
+//    using Fanex.Data;
+//    using Fanex.Data.Repository;
+//    using Fanex.NCB.Repository.Interfaces;
+//    using Fanex.NCB.Shared.Models.SpecialDeleteTicket.AbnormalBets;
 
-    public class SpecialDeleteRepository : ISpecialDeleteRepository
-    {
-        public async Task<(IEnumerable<AbnormalMessageDetail>, IEnumerable<AbnormalMessage>, IEnumerable<AbnormalAccountInfo>, IEnumerable<DuplicateTicketDetail>)>
-        FetchVoidingHistoryInfo(ICriteria criteria)
-        {
-            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                using (IMultiResultReader multi = await db.QueryMultipleAsync(criteria))
-                {
-                    var data = new VoidingHistoryInfo
-                    {
-                        AbnormalMessageDetail = multi.Read<AbnormalMessageDetail>(),
-                        AbnormalMessage =  multi.Read<AbnormalMessage>(),
-                        AbnormalAccountInfo = multi.Read<AbnormalAccountInfo>(),
-                        DuplicateTicketDetail = multi.Read<DuplicateTicketDetail>()
-                    };
+//    public class SpecialDeleteRepository : ISpecialDeleteRepository
+//    {
+//        public async Task<(IEnumerable<AbnormalMessageDetail>, IEnumerable<AbnormalMessage>, IEnumerable<AbnormalAccountInfo>, IEnumerable<DuplicateTicketDetail>)>
+//        FetchVoidingHistoryInfo(ICriteria criteria)
+//        {
+//            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+//            {
+//                using (IMultiResultReader multi = await db.QueryMultipleAsync(criteria))
+//                {
+//                    var data = new VoidingHistoryInfo
+//                    {
+//                        AbnormalMessageDetail = multi.Read<AbnormalMessageDetail>(),
+//                        AbnormalMessage =  multi.Read<AbnormalMessage>(),
+//                        AbnormalAccountInfo = multi.Read<AbnormalAccountInfo>(),
+//                        DuplicateTicketDetail = multi.Read<DuplicateTicketDetail>()
+//                    };
 
-                    return (data.AbnormalMessageDetail, data.AbnormalMessage, data.AbnormalAccountInfo, data.DuplicateTicketDetail);
-                }
-            }
-        }
-
-        public async Task<(IEnumerable<CollectionTransId>, IEnumerable<CollectionUsername>, IEnumerable<CollectionDuplicatedTickets>, IEnumerable<AbnormalMessage>)>
-        FetchVoidingHistoryMessage(ICriteria criteria)
-        {
-            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                using (IMultiResultReader multi = await db.QueryMultipleAsync(criteria))
-                {
-                    var data = new VoidingHistoryMessage
-                    {
-                        CollectionTransId = multi.Read<CollectionTransId>(),
-                        CollectionUsername = multi.Read<CollectionUsername>(),
-                        CollectionDuplicatedTickets = multi.Read<CollectionDuplicatedTickets>(),
-                        AbnormalMessage = multi.Read<AbnormalMessage>()
-                    };
-
-                    return (data.CollectionTransId, data.CollectionUsername, data.CollectionDuplicatedTickets, data.AbnormalMessage);
-                }
-            }
-        }
-    }
-}
+//                    return (data.AbnormalMessageDetail, data.AbnormalMessage, data.AbnormalAccountInfo, data.DuplicateTicketDetail);
+//                }
+//            }
+//        }
+//    }
+//}

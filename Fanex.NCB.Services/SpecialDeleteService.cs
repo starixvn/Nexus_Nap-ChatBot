@@ -9,7 +9,6 @@
     using Fanex.NCB.Criteria.SiteMessage;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Models.NotifictaionSendMessage;
-    using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Extensions;
     using Fanex.NCB.Shared.Models;
@@ -28,7 +27,6 @@
         private readonly ISiteDbService siteDbService;
         private readonly ICommonService commonService;
         private readonly IRefNoTicketService refNoTicketService;
-        private readonly ISpecialDeleteRepository specialDeleteRepository;
         private readonly string Environment;
         private const int VoidTicketForLicenseeJobIdentity = 1;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
@@ -42,8 +40,7 @@
             IConfiguration configuration,
             ISiteDbService siteDbService,
             ICommonService commonService,
-            IRefNoTicketService refNoTicketService,
-            ISpecialDeleteRepository specialDeleteRepository)
+            IRefNoTicketService refNoTicketService)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             this.baseService = baseService;
@@ -53,7 +50,6 @@
             this.siteDbService = siteDbService;
             this.commonService = commonService;
             this.refNoTicketService = refNoTicketService;
-            this.specialDeleteRepository = specialDeleteRepository;
             Environment = configuration.GetSection("Environment")?.Value;
         }
 
