@@ -11,6 +11,9 @@
         [XmlAttribute("ReferenceId")]
         public int ReferenceId { get; set; }
 
+        [XmlAttribute("SettingName")]
+        public string SettingName { get; set; }
+
         [XmlIgnore]
         public int MaxReferenceId { get; set; }
     }
