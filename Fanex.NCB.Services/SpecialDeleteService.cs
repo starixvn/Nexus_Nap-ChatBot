@@ -238,7 +238,7 @@
             var criteria = new GetAbnormalBetsMessageCriteria
             {
                 MessageIDLst = XmlHelper<AbnormalMessage>.Serialize(listMsgs.ToList()),
-                BacthSize = batchSize,
+                BatchSize = batchSize,
                 LastMsgTargetId = lastMsgTargetId
             };
             var data = await baseService.FetchMultipleAsync<AbnormalMessageContent, MessageMsgDetail>(criteria);

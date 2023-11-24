@@ -6,7 +6,7 @@
     {
         public string MessageIDLst { get; set; }
 
-        public int BacthSize { get; set; }
+        public int BatchSize { get; set; }
 
         public int LastMsgTargetId { get; set; }
 
