@@ -5,7 +5,7 @@
 
     public class UserSsoGetTimeUserCriteria : CriteriaBase
     {
-        public DateTimeOffset Time { get; set; }
+        public DateTime Time { get; set; }
 
         public override bool IsValid() => true;
 
