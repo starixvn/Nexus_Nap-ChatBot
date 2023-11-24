@@ -65,8 +65,7 @@
 
         private async Task<bool> UserHasValidFunctionPolicy(INapSession currentSession)
         {
-            int policy = 0;
-
+            int policy;
             if (PermissionCache)
             {
                 var cacheKey = string.Format("{0}_{1}_{2}_{3}", napSettings.AccessKey, currentSession.UserId,

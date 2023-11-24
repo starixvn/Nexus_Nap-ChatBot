@@ -11,6 +11,7 @@
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ParameterObject;
     using Fanex.NAP.Client.Services;
+    using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Models.Auth;
     using Fanex.NCB.NAPResolver;
     using Fanex.NCB.Services.Interfaces;
@@ -108,8 +109,8 @@
             var isValidTime = await IsValidateTime(ssoLogin.Time);
             if (isValidTime)
             {
-                var userId = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.UserId.Replace(" ", "+")));
-                var onUserid = int.Parse(Data.Cryptography.DecryptPassword(ssoLogin.OnUserId.Replace(" ", "+")));
+                var userId = int.Parse(CryptographyExtend.DecryptPassword(ssoLogin.UserId.Replace(" ", "+")));
+                var onUserid = int.Parse(CryptographyExtend.DecryptPassword(ssoLogin.OnUserId.Replace(" ", "+")));
 
                 await syncDataService.SyncNapDataForSSOLogin(userId);
 
@@ -246,7 +247,7 @@
 
         private async Task<bool> IsValidateTime(string time)
         {
-            var cfsDescryptTime = Data.Cryptography.DecryptPassword(time.Replace(" ", "+"));
+            var cfsDescryptTime = CryptographyExtend.DecryptPassword(time.Replace(" ", "+"));
             var serverTime = await securityService.GetTimeAsync();
             var serverDateTime = NapServicesRegistrationExtension.NAPResolverType == NapResolverType.Local
                 ? DateTime.Parse(serverTime, new CultureInfo("en-US")).AddHours(DiffTimeZoneBetweenNAPServerAndChatBotServer)

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using Fanex.NCB.Shared.Models;
@@ -22,6 +23,8 @@
             FetchMultipleAsync<T1, T2, T3, T4, T5, T6>(ICriteria criteria, string serverIp = "");
 
         Task<T> GetDataEntityAsync<T>(ICriteria criteria, string serverIp = "");
+
+        T GetDataEntity<T>(ICriteria criteria, string serverIp = "");
 
         Task<CommandResult> ExecuteNonQueryAsync(INonQueryCommand command, string serverIp = "");
     }

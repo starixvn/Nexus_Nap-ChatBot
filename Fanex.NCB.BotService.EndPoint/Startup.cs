@@ -6,10 +6,8 @@
     using System.Text;
     using System.Threading;
     using Fanex.Caching.Redis;
-    using Fanex.Data.MySql;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.AspNetCore;
-    using Fanex.Logging.Extensions.Database;
     using Fanex.Logging.Sentry;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.Shared.Middlewares;
@@ -69,8 +67,7 @@
             });
 
             ExceptionHandler
-                .UseConfig(new LoggingConfiguration())
-                .UseGetDbExceptionInfo(DatabaseInfoGetters.GetDbExceptionInfo);
+                .UseConfig(new LoggingConfiguration());
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);

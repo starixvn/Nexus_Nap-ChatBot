@@ -6,7 +6,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Fanex.Logging.Extensions;
-    using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Enum;
@@ -273,7 +272,6 @@
         protected internal virtual async Task WriteLogAsync(Exception exception, IDictionary<string, object> param = null)
         {
             var logMessage = new LogMessage(exception.Message)
-                        .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
                         .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
                         .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
             if (param != null)

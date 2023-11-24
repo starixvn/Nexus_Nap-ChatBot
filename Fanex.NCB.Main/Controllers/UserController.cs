@@ -95,7 +95,7 @@
 
         private static IEnumerable<Menu> GetMenus(IEnumerable<MenuItem> menuItems)
         {
-            return menuItems.Where(m => m.Parent == null)
+            return menuItems.Where(m => m.Parent == null || m.Parent.Id == 0)
                 .Select(m => new Menu
                 {
                     Id = m.Id,

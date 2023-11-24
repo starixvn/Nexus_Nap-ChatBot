@@ -2,13 +2,21 @@
 {
     using System;
     using System.Threading.Tasks;
-    using Fanex.Data;
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Criteria.LocalNap.Group;
+    using Fanex.NCB.NAPResolver.Model;
+    using Fanex.NCB.Shared.Services.Interfaces;
 
     public class LocalGroupService : IGroupService
     {
+        private readonly IBaseService baseService;
+
+        public LocalGroupService(IBaseService baseService)
+        {
+            this.baseService = baseService;
+        }
+
         public Group Get(int groupId)
         {
             throw new NotImplementedException();
@@ -21,20 +29,9 @@
                 GroupId = groupId
             };
 
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                var result = await objectDb.QueryEntityAsync<Group, User, User, Group>(
-                    (group, creator, modifier) =>
-                    {
-                        group.Creator = creator;
-                        group.Modifier = modifier;
-                        return group;
-                    },
-                    "CreatorId, ModifierId",
-                    criteria);
+            var flatGroups = await baseService.GetDataEntityAsync<FlatGroup>(criteria);
 
-                return result;
-            }
+            return flatGroups is not null ? flatGroups.ConvertToNestedModel() : null;
         }
     }
 }

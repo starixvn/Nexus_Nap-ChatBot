@@ -2,21 +2,25 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.Data.Repository;
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ValueObject;
     using Fanex.NAP.Client.Services;
     using Fanex.NAP.Core.Business;
     using Fanex.NCB.Criteria.LocalNap.User;
+    using Fanex.NCB.NAPResolver.Model;
+    using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
 
     public class LocalUserService : IUserService
     {
         private readonly IBaseService baseService;
 
-        public LocalUserService(IBaseService baseService)
+        public LocalUserService()
         {
-            this.baseService = baseService;
+            baseService = new BaseService(new DynamicRepository());
         }
 
         public User Get(int userId)
@@ -46,22 +50,8 @@
                 UserId = userId
             };
 
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                var result = await objectDb.QueryEntityAsync<User, Group, User, User, User>(
-                    (user, group, creator, modifier) =>
-                    {
-                        user.Group = group;
-                        user.Creator = creator;
-                        user.Modifier = modifier;
-
-                        return user;
-                    },
-                    "GroupId,CreatorId,ModifierId",
-                    criteria);
-
-                return result;
-            }
+            var flatUser = await baseService.GetDataEntityAsync<FlatUser>(criteria);
+            return flatUser.ConvertFlatUserToNestedModel();
         }
 
         public async Task<User> GetAsync(string username)
@@ -71,22 +61,9 @@
                 Username = username
             };
 
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                var result = await objectDb.QueryEntityAsync<User, Group, User, User, User>(
-                    (user, group, creator, modifier) =>
-                    {
-                        user.Group = group;
-                        user.Creator = creator;
-                        user.Modifier = modifier;
-
-                        return user;
-                    },
-                    "GroupId,CreatorId,ModifierId",
-                    criteria);
-
-                return result;
-            }
+            var flatUser = await baseService.GetDataEntityAsync<FlatUser>(criteria);
+            var user = flatUser.ConvertFlatUserToNestedModel();
+            return user;
         }
 
         public IEnumerable<MenuItem> GetMenuItem(int userId, int siteId, string environment = "UAT", bool? isActive = null)
@@ -102,25 +79,9 @@
                 SiteId = siteId,
                 Environment = environment
             };
-
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                var result = await objectDb.QueryAsync<MenuItem, MenuItem, Function, Site, User, User, MenuItem>(
-                  (menu, parent, function, site, creator, modififer) =>
-                  {
-                      menu.Parent = parent;
-                      menu.Function = function;
-                      menu.Site = site;
-                      menu.Creator = creator;
-                      menu.Modifier = modififer;
-
-                      return menu;
-                  },
-                  "ParentId, FunctionId, SiteId, CreatorId, ModifierId",
-                  criteria);
-
-                return result;
-            }
+            var flatMenus = await baseService.GetDataAsync<FlatMenuItem>(criteria);
+            var menus = flatMenus.Select(i => i.ConvertToNestedModel());
+            return menus;
         }
 
         public int GetPermission(int userId, int siteId, string functionKey)
@@ -132,7 +93,7 @@
                 FunctionKey = functionKey
             };
 
-            return baseService.GetDataEntityAsync<int>(criteria).Result;
+            return baseService.GetDataEntity<int>(criteria);
         }
 
         public async Task<int> GetPermissionAsync(int userId, int siteId, string functionKey)
@@ -162,24 +123,13 @@
             var criteria = new GetSiteLevelCriteria
             {
                 UserId = userId,
+                IsActive = true,
                 Environment = environment
             };
 
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                var result = await objectDb.QueryAsync<SiteLevel, Site, User, User, SiteLevel>(
-                  (siteLevel, site, creator, modifier) =>
-                  {
-                      siteLevel.Site = site;
-                      siteLevel.Creator = creator;
-                      siteLevel.Modifier = modifier;
-                      return siteLevel;
-                  },
-                  "SiteId, CreatorId, ModifierId",
-                  criteria);
+            var flatSiteLevels = await baseService.GetDataAsync<FlatSiteLevel>(criteria);
 
-                return result;
-            }
+            return flatSiteLevels.Select(i => i.ConvertToNestedModel());
         }
 
         public int GetUserLevel(int userId, int siteId)

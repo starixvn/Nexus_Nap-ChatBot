@@ -8,7 +8,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Fanex.Logging.Extensions;
-    using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Bot.Builder.Integration;
     using Microsoft.Bot.Configuration;
@@ -228,7 +227,6 @@
                 { "messageContent", conversationInfo.Message }
             };
             var logMessage = new LogMessage(exception.Message)
-                .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
                 .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
                 .AddSection("Params", param);

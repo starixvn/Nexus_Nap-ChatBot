@@ -100,5 +100,15 @@
 
             return commandResult;
         }
+
+        public T GetDataEntity<T>(ICriteria criteria, string serverIp = "")
+        {
+            if (criteria != null && criteria.IsValid())
+            {
+                return dynamicRepository.Get<T>(criteria, serverIp);
+            }
+
+            return default;
+        }
     }
 }

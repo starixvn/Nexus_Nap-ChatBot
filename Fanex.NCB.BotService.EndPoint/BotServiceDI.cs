@@ -14,7 +14,6 @@
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.BotService.EndPoint.Bots;
-    using Fanex.NCB.Shared.Repositories;
     using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.AspNetCore.Hosting;
@@ -36,7 +35,6 @@
             services.Configure<ProxySettings>(options => configuration.GetSection("ProxySettings").Bind(options));
             services.Configure<SendIndirectMessageSettings>(options => configuration.GetSection("SendIndirectMessageSettings").Bind(options));
 
-            services.AddSingleton<IBaseRepository, BaseRepository>();
             services.AddSingleton<IDynamicRepository, DynamicRepository>();
             services.AddSingleton<IBaseService, BaseService>();
             services.AddSingleton<IConversationService, ConversationService>();

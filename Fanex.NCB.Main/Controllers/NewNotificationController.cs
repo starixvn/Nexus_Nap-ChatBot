@@ -90,11 +90,18 @@ namespace Fanex.NCB.SkypeBot.Controllers
             string integrationMethodIds = null, string channelIds = null
         )
         {
-            platforms = platforms ?? string.Empty;
+            try
+            {
+                platforms = platforms ?? string.Empty;
             var (recipients, selectedRecipients) = await notificationService.GetRecipientsAsync(notificationTypeId, platforms, recipientIds, productId, integrationMethodIds, channelIds);
-            var tree = GenerateTreeHelper.FromRecipient(recipients);
+                var tree = GenerateTreeHelper.FromRecipient(recipients);
 
-            return Json(new { recipients = tree, selectedRecipients });
+                return Json(new { recipients = tree, selectedRecipients });
+            }
+            catch (System.Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpGet]

@@ -8,7 +8,6 @@
     using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services;
     using Fanex.NCB.Services.Interfaces;
-    using Fanex.NCB.Shared.Repositories;
     using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Fanex.RemotingRef;
@@ -56,8 +55,8 @@
         public static void RegisterRepositories(this IServiceCollection services)
         {
             services.AddScoped<IDynamicRepository, DynamicRepository>();
-            services.AddTransient<IBaseRepository, BaseRepository>();
-            services.AddTransient<ISpecialDeleteRepository, SpecialDeleteRepository>();
+            //services.AddTransient<IBaseRepository, BaseRepository>();
+            //services.AddTransient<ISpecialDeleteRepository, SpecialDeleteRepository>();
             services.AddTransient<ISyncDataRepository, SyncDataRepository>();
             services.AddTransient<INotificationRepository, NotificationRepository>();
         }

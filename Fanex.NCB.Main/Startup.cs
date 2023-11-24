@@ -4,12 +4,9 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
-    using Fanex.Data.MySql;
-    using Fanex.Data.SqlServer;
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.AspNetCore;
-    using Fanex.Logging.Extensions.Database;
     using Fanex.Logging.Sentry;
     using Fanex.NAP.Client;
     using Fanex.NAP.Client.Configuration;
@@ -68,8 +65,7 @@
             });
 
             ExceptionHandler
-                .UseConfig(new LoggingConfiguration())
-                .UseGetDbExceptionInfo(DatabaseInfoGetters.GetDbExceptionInfo);
+                .UseConfig(new LoggingConfiguration());
 
             services.AddSingleton(Configuration);
             services.RegisterConfigs(Configuration);

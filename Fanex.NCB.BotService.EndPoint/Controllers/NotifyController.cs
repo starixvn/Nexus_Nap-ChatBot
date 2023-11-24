@@ -6,7 +6,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Fanex.Logging.Extensions;
-    using Fanex.Logging.Extensions.Database;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Enum;
@@ -101,7 +100,7 @@
                     }
                 }
 
-                results = (await Task.WhenAll(tasks)).ToList();
+                results = [.. (await Task.WhenAll(tasks))];
             }
 
             return Ok(results);
@@ -158,9 +157,9 @@
                     string msgContent = msg.Message;
                     if (msg.Message.StartsWith("1)") || msg.Message.StartsWith("1."))
                     {
-                        string startString = msgContent.Substring(0, 2);
+                        string startString = msgContent[..2];
                         string newStartString = startString.Replace("1)", "1\\)").Replace("1.", "1\\.");
-                        string content = msgContent.Substring(2);
+                        string content = msgContent[2..];
                         msgContent = $"{newStartString}{content}";
                     }
 
@@ -265,7 +264,6 @@
         protected internal virtual async Task WriteLogAsync(Exception exception)
         {
             var logMessage = new LogMessage(exception.Message)
-                .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
                 .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
                 .ToString();
