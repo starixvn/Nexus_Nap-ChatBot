@@ -25,7 +25,6 @@
         public int MatchId { get; set; }
         public int IssueTypeId { get; set; }
         public bool IsParlay { get; set; }
-        public int MessageId { get; set; }
         public string ContentEN { get; set; }
         public string ContentCS { get; set; }
     }
