@@ -169,7 +169,7 @@
 
         public async Task PullVoidingMessageInternalDepartmentAsync()
         {
-            var systemSetting = await commonService.GetServcieSetting(Constants.ServiceName_SpecialDeleteInternalCSD);
+            var systemSetting = await commonService.GetServiceSetting(Constants.ServiceName_SpecialDeleteInternalCSD);
             if (systemSetting != null)
             {
                 var criteria = new GetVoidingHIstoryCollectionIdCriteria

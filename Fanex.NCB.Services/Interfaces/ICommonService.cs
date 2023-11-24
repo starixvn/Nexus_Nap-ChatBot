@@ -29,6 +29,6 @@
 
         Task<string> GetJsonDataFromDbACCAsync(string tableName);
 
-        Task<ServiceSetting> GetServcieSetting(string inServiceName);
+        Task<ServiceSetting> GetServiceSetting(string inServiceName);
     }
 }

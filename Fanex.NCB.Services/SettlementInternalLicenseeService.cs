@@ -81,7 +81,7 @@
 
         public async Task SettlementInternalCSDAsync()
         {
-            var systemSetting = await commonService.GetServcieSetting(Constants.ServiceName_SettlementInternalCSD);
+            var systemSetting = await commonService.GetServiceSetting(Constants.ServiceName_SettlementInternalCSD);
 
             if (systemSetting != null)
             {
@@ -158,7 +158,7 @@
 
         public async Task SettlementLicenseeAsync()
         {
-            var systemSetting = await commonService.GetServcieSetting(Constants.ServiceName_SettlementLicensee);
+            var systemSetting = await commonService.GetServiceSetting(Constants.ServiceName_SettlementLicensee);
 
             if (systemSetting != null)
             {

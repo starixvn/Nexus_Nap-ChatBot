@@ -79,7 +79,7 @@
             return jsonData;
         }
 
-        public async Task<ServiceSetting> GetServcieSetting(string inServiceName)
+        public async Task<ServiceSetting> GetServiceSetting(string inServiceName)
         {
             var criteria = new GetServiceSettingCriteria
             {
