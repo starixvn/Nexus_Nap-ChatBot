@@ -187,21 +187,19 @@ export class DataGrid extends Component {
             }
         });
 
-        console.log('jobMsgs', jobMsgs);
+        this.setState({ isShowConfirmPopup: false });
 
-        // this.setState({ isShowConfirmPopup: false });
-
-        // await this.props.createMissingMessage(jobMsgs).then(response => {
-        //     this.setState({ editResult: response.data });
-        //     if (response.data.isSuccessful) {
-        //         this.setSubmit();
-        //     } else {
-        //         this.setState({ isSubmitting: false });
-        //     }
-        //     setTimeout(() => {
-        //         this.setState({ editResult: null });
-        //     }, 3000);
-        // });
+        await this.props.createMissingMessage(jobMsgs).then(response => {
+            this.setState({ editResult: response.data });
+            if (response.data.isSuccessful) {
+                this.setSubmit();
+            } else {
+                this.setState({ isSubmitting: false });
+            }
+            setTimeout(() => {
+                this.setState({ editResult: null });
+            }, 3000);
+        });
     };
 
     buildHeader = isHost => {

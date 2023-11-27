@@ -100,7 +100,8 @@ export class EditNewMessage extends Component {
     getValueByJobIdentify = item => {
         const msgTargetId = 'msgTargetId';
         const voidingHistoryCollectionId = 'voidingHistoryCollectionId';
-        const msgItem = item.settingName === LastVoidingHistoryCollectionId ? voidingHistoryCollectionId : msgTargetId;
+        const msgItem = this.props.settingName === LastVoidingHistoryCollectionId ? voidingHistoryCollectionId : msgTargetId;
+
         const identifyMapping = {
             2: msgItem,
             6: msgTargetId,
