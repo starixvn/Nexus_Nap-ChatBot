@@ -29,12 +29,20 @@ export class JobInfo extends Component {
             this.props.jobInfo && <div className='job-info-container'>
                 <div className='job-info-item'>
                     <p className='job-info-title'>Job Sync Status:</p>
-                    <p className={`job-info-value ${this.props.jobInfo.status === 'Done' ? 'status-done' : 'status-running'}`}>{this.props.jobInfo.status}</p>
+                    <p className={`job-info-value ${this.props.jobInfo.jobStatus === 'Done' ? 'status-done' : 'status-running'}`}>{this.props.jobInfo.jobStatus}</p>
                 </div>
                 <div className='job-info-item'>
                     <p className='job-info-title'>{previousMaxIDTitle}</p>
-                    <p className='job-info-value'>{this.props.jobInfo.previousMaxMessageId}</p>
+                    <p className='job-info-value'>{CommonFunctions.renderMaxMessageId(jobId, this.props.jobInfo)}</p>
                 </div>
+                {
+                    jobId === 2 && (
+                        <div className='job-info-item'>
+                            <p className='job-info-title'>Previous Max MsgTargetID:</p>
+                            <p className='job-info-value'>{this.props.jobInfo.lastMsgTargetId}</p>
+                        </div>
+                    )
+                }
                 <div className='job-info-item'>
                     <p className='job-info-title'>Batch Size:</p>
                     <p className='job-info-value'>{this.props.jobInfo.batchSize}</p>

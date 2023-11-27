@@ -85,4 +85,22 @@ export default class CommonFunctions {
     static unblockUI() {
         document.getElementById('loadingProcess').style.display = 'none';
     }
+
+    static renderMaxMessageId (jobId, jobInfo) {
+        switch (jobId) {
+            case 1:
+            case 3:
+                return jobInfo.previousMaxMessageId;
+            case 2:
+                return jobInfo.lastVoidingHistoryCollectionId;
+            case 4:
+            case 5:
+                return jobInfo.lastLogId;
+            case 6:
+            case 7:
+                return jobInfo.lastMsgTargetId;
+            default:
+                return;
+        }
+    };
 }

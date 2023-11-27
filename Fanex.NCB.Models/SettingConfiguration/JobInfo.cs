@@ -27,5 +27,7 @@
         public string ServerName { get; set; }
 
         public string LastDataRow { get; set; }
+
+        public int LastLogId { get; set; }
     }
 }

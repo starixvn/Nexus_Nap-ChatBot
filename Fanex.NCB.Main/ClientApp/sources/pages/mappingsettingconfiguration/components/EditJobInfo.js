@@ -16,7 +16,7 @@ export class EditJobInfo extends Component {
         super(props);
         this.state = {
             id: props.jobInfo.id,
-            status: props.jobInfo.status,
+            status: props.jobInfo.jobStatus,
             previousMaxMessageId: props.jobInfo.previousMaxMessageId,
             batchSize: props.jobInfo.batchSize,
             testingGroup: props.jobInfo.testingGroup,
@@ -39,7 +39,7 @@ export class EditJobInfo extends Component {
             let data = {
                 id: this.state.id,
                 status: this.state.status,
-                previousMaxMessageId: this.state.previousMaxMessageId,
+                previousMaxMessageId: CommonFunctions.renderMaxMessageId(this.props.jobInfo.id, this.props.jobInfo),
                 batchSize: parseInt(this.state.batchSize),
                 testingGroup: this.state.testingGroup
             };
@@ -80,12 +80,20 @@ export class EditJobInfo extends Component {
             this.props.jobInfo && <div className='job-info-container'>
                 <div className='job-info-item'>
                     <p className='job-info-title'>Job Sync Status:</p>
-                    <p className={`job-info-value ${this.props.jobInfo.status === 'Done' ? 'status-done' : 'status-running'}`}>{this.props.jobInfo.status}</p>
+                    <p className={`job-info-value ${this.props.jobInfo.jobStatus === 'Done' ? 'status-done' : 'status-running'}`}>{this.props.jobInfo.jobStatus}</p>
                 </div>
                 <div className='job-info-item'>
                     <p className='job-info-title'>{previousMaxIDTitle}</p>
-                    <p className='job-info-value'>{this.props.jobInfo.previousMaxMessageId}</p>
+                    <p className='job-info-value'>{CommonFunctions.renderMaxMessageId(jobId, this.props.jobInfo)}</p>
                 </div>
+                {
+                    jobId === 2 && (
+                        <div className='job-info-item'>
+                            <p className='job-info-title'>Previous Max MsgTargetID:</p>
+                            <p className='job-info-value'>{this.props.jobInfo.lastMsgTargetId}</p>
+                        </div>
+                    )
+                }
                 <div className='job-info-item'>
                     <p className='job-info-title'>Batch Size:</p>
                     <Input
