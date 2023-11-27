@@ -30,6 +30,7 @@ export class AppContainer extends Component {
                         title={editNewMessagePopup.title}
                         newMaxId={editNewMessagePopup.newMaxMessageId}
                         data={editNewMessagePopup.data}
+                        settingName={editNewMessagePopup.settingName}
                     />
                 }
             </div>

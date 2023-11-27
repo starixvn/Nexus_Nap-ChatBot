@@ -4,13 +4,14 @@ const resetLastMessageIdSlice = createSlice({
     name: 'resetLastMessageId',
     initialState: {
         selected: [
-            { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 0 },
-            { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 0 },
-            { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 },
-            { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 0 },
-            { id: 5, name: 'Monitored Player', checked: true, newMaxMessageId: 0 },
-            { id: 6, name: 'Settlement - Internal CSD', checked: true, newMaxMessageId: 0 },
-            { id: 7, name: 'Settlement - Licensee', checked: true, newMaxMessageId: 0 },
+            { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 0, settingName: 'PreviousMaxMessageId' },
+            { id: 2, name: 'Special Delete - Internal CSD: Voiding Request', checked: true, newMaxMessageId: 0, settingName: 'LastVoidingHistoryCollectionId' },
+            { id: 2, name: 'Special Delete - Internal CSD: Void by BetID', checked: true, newMaxMessageId: 0, settingName: 'LastMsgTargetId' },
+            { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0, settingName: 'PreviousMaxMessageId' },
+            { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 0, settingName: 'LastLogId' },
+            { id: 5, name: 'Monitored Player', checked: true, newMaxMessageId: 0, settingName: 'LastLogId' },
+            { id: 6, name: 'Settlement - Internal CSD', checked: true, newMaxMessageId: 0, settingName: 'LastMsgTargetId' },
+            { id: 7, name: 'Settlement - Licensee', checked: true, newMaxMessageId: 0, settingName: 'LastMsgTargetId' },
         ],
         currentMessages: null,
         editNewMessagePopup: { show: false }

@@ -78,17 +78,21 @@
             {
                 var jobMissedInfo = missingInfo.Where(m => m.JobIdentify == item.JobIdentify).ToList();
                 int maxRefenceId = jobMissedInfo.Any()
-                    ? GetMaxReferrenceIdOnListMissingMessageInfo(jobMissedInfo, item.JobIdentify)
+                    ? GetMaxReferrenceIdOnListMissingMessageInfo(jobMissedInfo, item.JobIdentify, item.SettingName)
                     : item.ReferenceId;
                 item.MaxReferenceId = maxRefenceId;
             }
         }
 
-        private static int GetMaxReferrenceIdOnListMissingMessageInfo(IEnumerable<MissingMesssageInfo> missingInfo, int jobIdentify)
-            => missingInfo.Max(x => GetIdByJobIdentify(jobIdentify, x));
+        private static int GetMaxReferrenceIdOnListMissingMessageInfo(IEnumerable<MissingMesssageInfo> missingInfo, int jobIdentify, string settingName)
+            => missingInfo.Max(x => GetIdByJobIdentify(jobIdentify, x, settingName));
 
-        private static int GetIdByJobIdentify(int jobIdentify, MissingMesssageInfo item)
+        private static int GetIdByJobIdentify(int jobIdentify, MissingMesssageInfo item, string settingName)
         {
+            if ((JobIdentity)jobIdentify == JobIdentity.InternalCSD && settingName == "LastMsgTargetId")
+            {
+                return item.MsgTargetId;
+            } 
             switch ((JobIdentity)jobIdentify)
             {
                 case JobIdentity.InternalCSD:

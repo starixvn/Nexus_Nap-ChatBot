@@ -46,8 +46,6 @@ export default class Header extends React.PureComponent {
             .build();
 
         this.connection.on('UpdateErrNotification', (notifications) => {
-            console.log(notifications);
-
             this.setState({
                 notifications: notifications
             });

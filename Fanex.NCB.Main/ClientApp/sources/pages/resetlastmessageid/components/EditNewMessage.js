@@ -28,20 +28,8 @@ export class EditNewMessage extends Component {
         this.props.setEditNewMessagePopup({ show: false });
     };
 
-    getData = () => {
-        const { data, id } = this.props;
-        const idMissingMessages = [1, 2, 3];
-        let missingData;
-        if (idMissingMessages.indexOf(id) !== -1) {
-            missingData = this.props.data.filter(item => item.jobIdentify === id);
-        } else {
-            missingData = data;
-        }
-        return missingData;
-    };
-
     toggleExpandPanels = () => {
-        const missingData = this.getData();
+        const missingData = this.props.data;
         this.setState(prevState => ({ expandPanels: !prevState.expandPanels }), () => {
             if (missingData.length > 0) {
                 this.panels.filter(x => x && (x.state.isOpen !== this.state.expandPanels)).forEach(panel => {
@@ -51,18 +39,25 @@ export class EditNewMessage extends Component {
         });
     };
 
+    isRenderMsgTargetId = (id, settingName) => {
+        if (id === 6 || id === 7 || (id === 2 && settingName === 'LastMsgTargetId')) {
+            return true;
+        }
+        return false;
+    };
+
     buildHeader = () => {
-        const { id } = this.props;
+        const { id, settingName } = this.props;
         return (
             <Row>
                 <Cell colWidth={7} header>{Labels.Select}</Cell>
                 <Cell colWidth={12} header>{(id === 4 || id === 5) ? Labels.ID : Labels.MessageID}</Cell>
                 {
-                    id === 2 &&
+                    id === 2 && settingName === 'LastVoidingHistoryCollectionId' &&
                     <Cell colWidth={12} header>{Labels.VoidingHistoryCollectionID}</Cell>
                 }
                 {
-                    (id === 6 || id === 7) &&
+                    this.isRenderMsgTargetId(id, settingName) &&
                     <Cell colWidth={12} header>{Labels.MsgTargetID}</Cell>
                 }
                 <Cell colWidth={43} header>
@@ -77,7 +72,7 @@ export class EditNewMessage extends Component {
     };
 
     buildBody = () => {
-        const missingData = this.getData();
+        const missingData = this.props.data;
 
         if (missingData.length > 0) {
             return missingData.map((item, index) => this.renderRow(item, index));
@@ -93,18 +88,20 @@ export class EditNewMessage extends Component {
     handleSubmit = () => {
         const messageIds = this.props.selected.map(item => {
             const element = { ...item };
-            if (item.id === this.props.id) {
+            if (item.id === this.props.id && item.settingName === this.props.settingName) {
                 element.newMaxMessageId = parseInt(this.selectedMessageId, 10);
             }
             return element;
         });
+        console.log('messageIds', messageIds);
         this.props.setSelected(messageIds);
         this.handleClose();
     };
 
     getValueByJobIdentify = item => {
+        const msg = item.settingName === 'LastVoidingHistoryCollectionId' ? 'voidingHistoryCollectionId' : 'msgTargetId';
         const identifyMapping = {
-            2: 'voidingHistoryCollectionId',
+            2: msg,
             6: 'msgTargetId',
             7: 'msgTargetId'
         };
@@ -113,7 +110,10 @@ export class EditNewMessage extends Component {
     };
 
     renderRow = (item, index) => {
-        const msgId = item.jobIdentify === 2 ? item.messageIds.split(',').join(', ') : item.messageId;
+        const { settingName } = this.props;
+        const msgId = (item.jobIdentify === 2 && settingName === 'LastVoidingHistoryCollectionId') ? item.messageIds?.split(',').join(', ') : item.messageId;
+
+        console.log('item', item);
         return (
             <Row key={index} >
                 <Cell className="text-center">
@@ -124,11 +124,11 @@ export class EditNewMessage extends Component {
                 </Cell>
                 <Cell className="text-center">{msgId}</Cell>
                 {
-                    item.jobIdentify === 2 &&
+                    item.jobIdentify === 2 && settingName === 'LastVoidingHistoryCollectionId' &&
                     <Cell className="text-center">{item.voidingHistoryCollectionId}</Cell>
                 }
                 {
-                    (item.jobIdentify === 6 || item.jobIdentify === 7) &&
+                    this.isRenderMsgTargetId(item.jobIdentify, settingName) &&
                     <Cell className="text-center">{item.msgTargetId}</Cell>
                 }
                 <Cell>
