@@ -58,3 +58,7 @@ export const Channels = {
 };
 
 export const internalCSDJobId = 2;
+
+export const LastVoidingHistoryCollectionId = 'LastVoidingHistoryCollectionId';
+
+export const LastMsgTargetId = 'LastMsgTargetId';

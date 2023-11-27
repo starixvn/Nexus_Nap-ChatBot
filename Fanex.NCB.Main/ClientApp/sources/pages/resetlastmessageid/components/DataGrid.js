@@ -8,6 +8,7 @@ import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
+import { LastVoidingHistoryCollectionId, LastMsgTargetId } from '../../constants/constants';
 
 export class DataGrid extends Component {
     constructor(props) {
@@ -29,13 +30,8 @@ export class DataGrid extends Component {
     getAllData = async () => {
         await this.props.getCurrentPreviousMaxMessage();
 
-        const { currentMessages } = this.props;
-
-        const { selected } = this.props;
-
+        const { currentMessages, selected } = this.props;
         const checked = [];
-
-        console.log('currentMessages.data', currentMessages.data);
 
         const newMaxMessageIds = selected.map((item, index) => {
             const element = { ...item };
@@ -47,8 +43,6 @@ export class DataGrid extends Component {
 
             return element;
         });
-
-        console.log('newMaxMessageIds', newMaxMessageIds);
 
         this.setState({checked});
         this.props.setSelected(newMaxMessageIds);
@@ -64,10 +58,10 @@ export class DataGrid extends Component {
     };
 
     filterDataJobInternalCSD = (data, jobIdentify, settingName) => {
-        if (jobIdentify === 2 && settingName === 'LastMsgTargetId') {
+        if (jobIdentify === 2 && settingName === LastMsgTargetId) {
             data = data.filter(x => x.msgTargetId > 0);
         }
-        if (jobIdentify === 2 && settingName === 'LastVoidingHistoryCollectionId') {
+        if (jobIdentify === 2 && settingName === LastVoidingHistoryCollectionId) {
             data = data.filter(x => x.voidingHistoryCollectionId > 0);
         }
         return data;
@@ -78,10 +72,8 @@ export class DataGrid extends Component {
         const title = itemSelected?.name;
         const newMaxMessageId = itemSelected?.newMaxMessageId;
         let data;
-        console.log('this.props.currentMessages', this.props.currentMessages);
         data = this.props.currentMessages.missingMsgInfo.filter(x => x.jobIdentify === jobIdentify);
         data = this.filterDataJobInternalCSD(data, jobIdentify, settingName);
-        console.log('newMaxMessageId', newMaxMessageId);
         this.props.setEditNewMessagePopup({ show: true, jobIdentify, title, newMaxMessageId, data, settingName });
     };
 
@@ -90,12 +82,12 @@ export class DataGrid extends Component {
         checked[index] = !checked[index];
         this.setState({ checked: checked });
 
-        var flagCount = 0;
+        var numberEqualCurrentNew = 0;
         const flagCheckTrue = checked;
         checked.filter((item, key) => {
             if (!this.isNotEqualCurrentNewByIndex(key)) {
                 flagCheckTrue[key] = true;
-                flagCount++;
+                numberEqualCurrentNew++;
             }
         });
 
@@ -103,7 +95,7 @@ export class DataGrid extends Component {
             this.setState({ allChecked: true, isSubmitting: false });
         } else if (checked.every(item => item === false)) {
             this.setState({ allChecked: false, isSubmitting: true });
-        } else if (flagCount === checked.filter(item => item === true).length) {
+        } else if (numberEqualCurrentNew === checked.filter(item => item === true).length) {
             this.setState({ allChecked: false, isSubmitting: true });
         } else {
             this.setState({ allChecked: false, isSubmitting: false });
@@ -238,9 +230,7 @@ export class DataGrid extends Component {
                 data.push(item);
             }
         });
-        console.log('data', data);
-        console.log('this.props.selected', this.props.selected);
-        console.log('this.state', this.state);
+
         if (data.length > 0) {
             return data.map((item, index) => this.renderRow(item, index, isHost));
         }

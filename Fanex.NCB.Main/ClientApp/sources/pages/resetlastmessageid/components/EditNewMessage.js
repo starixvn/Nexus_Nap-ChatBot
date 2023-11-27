@@ -9,7 +9,7 @@ import NoDataTitle from '../../common/no-data-title/NoDataTitle';
 import Labels from '../../common/Labels';
 import PanelContent from '../../common/panel-content/PanelContent';
 import ContentPreview from '../../common/ContentPreview';
-import { element } from 'prop-types';
+import { LastVoidingHistoryCollectionId, LastMsgTargetId } from '../../constants/constants';
 var dateFormat = require("dateformat");
 
 export class EditNewMessage extends Component {
@@ -40,7 +40,7 @@ export class EditNewMessage extends Component {
     };
 
     isRenderMsgTargetId = (id, settingName) => {
-        if (id === 6 || id === 7 || (id === 2 && settingName === 'LastMsgTargetId')) {
+        if (id === 6 || id === 7 || (id === 2 && settingName === LastMsgTargetId)) {
             return true;
         }
         return false;
@@ -53,7 +53,7 @@ export class EditNewMessage extends Component {
                 <Cell colWidth={7} header>{Labels.Select}</Cell>
                 <Cell colWidth={12} header>{(id === 4 || id === 5) ? Labels.ID : Labels.MessageID}</Cell>
                 {
-                    id === 2 && settingName === 'LastVoidingHistoryCollectionId' &&
+                    id === 2 && settingName === LastVoidingHistoryCollectionId &&
                     <Cell colWidth={12} header>{Labels.VoidingHistoryCollectionID}</Cell>
                 }
                 {
@@ -93,17 +93,18 @@ export class EditNewMessage extends Component {
             }
             return element;
         });
-        console.log('messageIds', messageIds);
         this.props.setSelected(messageIds);
         this.handleClose();
     };
 
     getValueByJobIdentify = item => {
-        const msg = item.settingName === 'LastVoidingHistoryCollectionId' ? 'voidingHistoryCollectionId' : 'msgTargetId';
+        const msgTargetId = 'msgTargetId';
+        const voidingHistoryCollectionId = 'voidingHistoryCollectionId';
+        const msgItem = item.settingName === LastVoidingHistoryCollectionId ? voidingHistoryCollectionId : msgTargetId;
         const identifyMapping = {
-            2: msg,
-            6: 'msgTargetId',
-            7: 'msgTargetId'
+            2: msgItem,
+            6: msgTargetId,
+            7: msgTargetId
         };
 
         return item[identifyMapping[item.jobIdentify]] || item.messageId;
@@ -111,9 +112,8 @@ export class EditNewMessage extends Component {
 
     renderRow = (item, index) => {
         const { settingName } = this.props;
-        const msgId = (item.jobIdentify === 2 && settingName === 'LastVoidingHistoryCollectionId') ? item.messageIds?.split(',').join(', ') : item.messageId;
+        const msgId = (item.jobIdentify === 2 && settingName === LastVoidingHistoryCollectionId) ? item.messageIds?.split(',').join(', ') : item.messageId;
 
-        console.log('item', item);
         return (
             <Row key={index} >
                 <Cell className="text-center">

@@ -77,9 +77,8 @@
             foreach (var item in msgList)
             {
                 var jobMissedInfo = missingInfo.Where(m => m.JobIdentify == item.JobIdentify).ToList();
-                int maxRefenceId = jobMissedInfo.Any()
-                    ? GetMaxReferrenceIdOnListMissingMessageInfo(jobMissedInfo, item.JobIdentify, item.SettingName)
-                    : item.ReferenceId;
+                int maxReferrenceIdOnList = jobMissedInfo.Any() ? GetMaxReferrenceIdOnListMissingMessageInfo(jobMissedInfo, item.JobIdentify, item.SettingName) : 0;
+                int maxRefenceId = maxReferrenceIdOnList != 0 ? maxReferrenceIdOnList : item.ReferenceId;
                 item.MaxReferenceId = maxRefenceId;
             }
         }
@@ -87,14 +86,13 @@
         private static int GetMaxReferrenceIdOnListMissingMessageInfo(IEnumerable<MissingMesssageInfo> missingInfo, int jobIdentify, string settingName)
             => missingInfo.Max(x => GetIdByJobIdentify(jobIdentify, x, settingName));
 
+        #pragma warning disable S1172 // Unused method parameters should be removed
         private static int GetIdByJobIdentify(int jobIdentify, MissingMesssageInfo item, string settingName)
         {
-            if ((JobIdentity)jobIdentify == JobIdentity.InternalCSD && settingName == "LastMsgTargetId")
-            {
-                return item.MsgTargetId;
-            } 
             switch ((JobIdentity)jobIdentify)
             {
+                case JobIdentity.InternalCSD when settingName == "LastMsgTargetId":
+                    return item.MsgTargetId;
                 case JobIdentity.InternalCSD:
                     return item.VoidingHistoryCollectionId;
                 case JobIdentity.SettlementInternalCSD:
@@ -104,6 +102,7 @@
                     return item.MessageId;
             }
         }
+        #pragma warning restore S1172 // Unused method parameters should be removed
 
         private async Task<IEnumerable<MissingMesssageInfo>> GetMissingProblemAccountAsync(int fromLogId)
         {
@@ -159,7 +158,8 @@
             var jobLstSystemSettings = listMsg.Select(i => new
             {
                 i.JobIdentify,
-                ReferenceId = i.MessageId
+                ReferenceId = i.MessageId,
+                i.SettingName
             }).ToList();
 
             var command = new EditMessageInfoCommand
