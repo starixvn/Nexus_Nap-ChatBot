@@ -42,6 +42,15 @@
             return await baseService.GetDataAsync<MessageRequestId>(criteria);
         }
 
+        public async Task<IEnumerable<MissingMesssageInfo>> GetMissingMessageDataAsync(IEnumerable<MissingMesssageInfo> missingMesssages)
+        {
+            var criteria = new GetMissingMessageDataCriteria
+            {
+                Messages = missingMesssages.ToList()
+            };
+            return await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
+        }
+
         public async Task<IEnumerable<MissingMesssageInfo>> GetMissingMessageInfoAsync(
             IEnumerable<CurrentMaxMessageInfo> msgList,
             IEnumerable<MessageTypeInfo> contentTypeList,
@@ -55,7 +64,8 @@
                 MsgContentTypes = contentTypeList.Where(m => m.JobIdentify != (int)JobIdentity.ProblemPlayer && m.JobIdentify != (int)JobIdentity.MonitoredPlayer).ToList(),
                 Requests = abnormalMissingMsgList.ToList()
             };
-            var missingInfo = await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
+            var missingMsg = await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
+            var missingInfo = await GetMissingMessageDataAsync(missingMsg);
 
             var problemAccountFromLogId = msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.ProblemPlayer)?.ReferenceId
                 ?? throw new ArgumentNullException(JsonConvert.SerializeObject(msgList));

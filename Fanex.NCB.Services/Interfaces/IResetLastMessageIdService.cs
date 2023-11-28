@@ -16,6 +16,8 @@
             IEnumerable<MessageTypeInfo> contentTypeList,
             IEnumerable<MessageRequestId> abnormalMissingMsgList);
 
+        Task<IEnumerable<MissingMesssageInfo>> GetMissingMessageDataAsync(IEnumerable<MissingMesssageInfo> missingMesssages);
+
         Task<CommandResult> CreateMissingMessageAsync(List<MissingMesssageInfo> listMsg);
     }
 }
