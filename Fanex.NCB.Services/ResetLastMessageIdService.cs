@@ -46,7 +46,7 @@
         {
             var criteria = new GetMissingMessageDataCriteria
             {
-                Messages = missingMesssages.ToList()
+                MessageList = XmlHelper<MissingMesssageInfo>.Serialize(missingMesssages.ToList())
             };
             return await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
         }
