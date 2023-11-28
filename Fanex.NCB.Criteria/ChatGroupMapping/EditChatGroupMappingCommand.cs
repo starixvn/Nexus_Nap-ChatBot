@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.ChatGroupMapping
 {
+    using Fanex.Data;
     using Fanex.NCB.Shared.Models;
 
     public class EditChatGroupMappingCommand : BaseCommand
@@ -14,6 +15,7 @@
 
         public int ChatGroupTypeId { get; set; }
 
+        [SpParam(AllowNull = true)]
         public string Remark { get; set; }
 
         public override string GetSettingKey() => "NCB_ChatGroupMapping_Upd";

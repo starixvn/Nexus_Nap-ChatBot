@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.Notification
 {
+    using Fanex.Data;
     using Fanex.Data.Repository;
 
     public class GetEditNotificationRecipientsCriteria : CriteriaBase
