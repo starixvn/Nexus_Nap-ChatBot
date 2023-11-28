@@ -134,8 +134,8 @@ export class EditNewMessage extends Component {
                 }
                 <Cell>
                     {
-                        (item.content && item.content.length > 75) ? <PanelContent ref={panel => this.panels[index] = panel} content={item.content} />
-                            : <ContentPreview text={item.content} />
+                        (item.content_en && item.content_en.length > 75) ? <PanelContent ref={panel => this.panels[index] = panel} content={item.content_en} />
+                            : <ContentPreview text={item.content_en} />
                     }
                 </Cell>
                 <Cell className="text-center">{dateFormat(item.postTime, DateTimeFormatV3)}</Cell>
