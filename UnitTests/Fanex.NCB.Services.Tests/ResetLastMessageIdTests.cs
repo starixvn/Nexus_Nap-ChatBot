@@ -45,14 +45,14 @@
             //Arrange
             var service = GetService();
             var missingMessageInfos = new List<MissingMesssageInfo> {
-                new MissingMesssageInfo { JobIdentify = 1, VoidingHistoryCollectionId = 1, Content = "ABC", MessageId = 300 },
-                new MissingMesssageInfo { JobIdentify = 2, VoidingHistoryCollectionId = 2000, Content = "ABC", MessageId = 2 },
+                new MissingMesssageInfo { JobIdentify = 1, VoidingHistoryCollectionId = 1, Content_en = "ABC", MessageId = 300 },
+                new MissingMesssageInfo { JobIdentify = 2, VoidingHistoryCollectionId = 2000, Content_en = "ABC", MessageId = 2 },
             };
 
             var missedProblemAccounts = new List<MissingMesssageInfo>();
             var missedMonitoredPlayers = new List<MissingMesssageInfo>
             {
-               new MissingMesssageInfo { JobIdentify = 5, VoidingHistoryCollectionId = 5, Content = "ABC", MessageId = 5 }
+               new MissingMesssageInfo { JobIdentify = 5, VoidingHistoryCollectionId = 5, Content_en = "ABC", MessageId = 5 }
             };
 
             var msgList = new List<CurrentMaxMessageInfo>
@@ -64,9 +64,9 @@
             };
 
             var expected = new List<MissingMesssageInfo> {
-                new MissingMesssageInfo { JobIdentify = 1, VoidingHistoryCollectionId = 1, Content = "ABC", MessageId = 300 },
-                new MissingMesssageInfo { JobIdentify = 2, VoidingHistoryCollectionId = 2000, Content = "ABC", MessageId = 2 },
-                new MissingMesssageInfo { JobIdentify = 5, VoidingHistoryCollectionId = 5, Content = "ABC", MessageId = 5 }
+                new MissingMesssageInfo { JobIdentify = 1, VoidingHistoryCollectionId = 1, Content_en = "ABC", MessageId = 300 },
+                new MissingMesssageInfo { JobIdentify = 2, VoidingHistoryCollectionId = 2000, Content_en = "ABC", MessageId = 2 },
+                new MissingMesssageInfo { JobIdentify = 5, VoidingHistoryCollectionId = 5, Content_en = "ABC", MessageId = 5 }
             };
 
             baseService.GetDataAsync<MissingMesssageInfo>(Arg.Any<GetMissingMessageInfoCriteria>()).Returns(missingMessageInfos);

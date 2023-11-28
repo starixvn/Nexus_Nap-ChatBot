@@ -15,8 +15,8 @@
         [XmlAttribute("MessageIds")]
         public string MessageIds { get; set; }
 
-        [XmlAttribute("Content")]
-        public string Content { get; set; }
+        [XmlAttribute("Content_en")]
+        public string Content_en { get; set; }
 
         [XmlAttribute("PostTime")]
         public DateTime PostTime { get; set; }
