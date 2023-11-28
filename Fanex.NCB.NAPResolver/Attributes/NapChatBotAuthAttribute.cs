@@ -6,11 +6,11 @@
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
-    using Fanex.NAP.Core.Business;
     using Fanex.NCB.NAPResolver.LocalServices;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Filters;
     using Microsoft.Extensions.Caching.Memory;
+    using static Fanex.NAP.Core.Business.Constant;
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class NapChatBotAuthAttribute : Attribute, IAsyncAuthorizationFilter
@@ -35,7 +35,7 @@
 
         public string FunctionKey { get; set; }
 
-        public Constant.Policy Policy { get; set; }
+        public Policy Policy { get; set; }
 
         public bool PermissionCache { get; set; }
 
@@ -68,7 +68,7 @@
             int policy;
             if (PermissionCache)
             {
-                var cacheKey = string.Format("{0}_{1}_{2}_{3}", napSettings.AccessKey, currentSession.UserId,
+                var cacheKey = string.Format("{0}_{1}_{2}", currentSession.UserId,
                     napSettings.SiteId, FunctionKey);
                 var cachedPolicy = cache.Get(cacheKey);
 

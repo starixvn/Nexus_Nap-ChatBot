@@ -33,16 +33,6 @@
             throw new NotImplementedException();
         }
 
-        public IEnumerable<User> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<User>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<User> GetAsync(int userId)
         {
             var criteria = new GetByUserIdCriteria
@@ -113,6 +103,11 @@
             throw new NotImplementedException();
         }
 
+        public static Task<IEnumerable<FunctionPolicy>> GetPermissionsAsync(int userId, int siteId, string parentFunctionKey, string environment = "UAT")
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<SiteLevel> GetSiteLevel(int userId, string environment = "UAT")
         {
             throw new NotImplementedException();
@@ -142,6 +137,38 @@
             throw new NotImplementedException();
         }
 
+        public static bool IgnoredOtp(int userId, string system)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Task<bool> IgnoredOtpAsync(int userId, string system)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsHavingPermission(int userId, int siteId, string functionKey, Constant.Policy policy)
+        {
+            var currentPolicy = GetPermission(userId, siteId, functionKey);
+
+            return currentPolicy >= (int)policy;
+        }
+
+        public static Task<bool> IsHavingPermissionAsync(int userId, int siteId, string functionKey, Constant.Policy policy)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool VerifyOtp(int userId, string system, string otp)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Task<bool> VerifyOtpAsync(int userId, string system, string otp)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool HasAnyPermission(int userId, int siteId, string environment = "UAT")
         {
             throw new NotImplementedException();
@@ -152,11 +179,14 @@
             throw new NotImplementedException();
         }
 
-        public bool IsHavingPermission(int userId, int siteId, string functionKey, Constant.Policy policy)
+        public IEnumerable<User> GetAll()
         {
-            var currentPolicy = GetPermission(userId, siteId, functionKey);
+            throw new NotImplementedException();
+        }
 
-            return currentPolicy >= (int)policy;
+        public Task<IEnumerable<User>> GetAllAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

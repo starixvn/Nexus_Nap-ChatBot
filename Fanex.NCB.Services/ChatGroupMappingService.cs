@@ -35,9 +35,9 @@
                 PageSize = model.PageSize
             };
 
-            var result = await baseService.FetchMultipleAsync<BotConversation, BotConversationMember, ConversationRecipient>(critera);
+            var (bots, conversations, recipients) = await baseService.FetchMultipleAsync<BotConversation, BotConversationMember, ConversationRecipient>(critera);
 
-            return (MappingData(result.Item1, result.Item2, result.Item3), critera.TotalItems);
+            return (MappingData(bots, conversations, recipients), critera.TotalItems);
         }
 
         public async Task<CommandResult> EditAsync(EditChatGroupMapping model)

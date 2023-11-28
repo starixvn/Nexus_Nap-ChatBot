@@ -17,7 +17,7 @@
         public override string GetSettingKey() => "NCB_NotificationType_Ins";
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(NotificationTypeName) &&
-                                            SystemId > 0 && 
+                                            SystemId > 0 &&
                                             !string.IsNullOrWhiteSpace(RecipientTypeIds) &&
                                             !string.IsNullOrWhiteSpace(ChatGroupTypeIds);
     }

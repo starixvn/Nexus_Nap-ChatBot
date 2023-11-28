@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
+    using Fanex.NAP.Core.Extensions;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
 
@@ -32,7 +33,6 @@
             {
                 return await dynamicRepository.FetchMultipleAsync<T1, T2>(criteria, serverIp);
             }
-
             return new ValueTuple<IEnumerable<T1>, IEnumerable<T2>>(new List<T1>(), new List<T2>());
         }
 
@@ -94,8 +94,13 @@
 
             if (command != null && command.IsValid())
             {
-                var result = await dynamicRepository.ExecuteAsync(command, serverIp);
-                commandResult.Code = result;
+                await dynamicRepository.ExecuteAsync(command, serverIp);
+                var properties = command.ToPropertyDictionary();
+                if (properties.ContainsKey("ErrCode"))
+                {
+                    commandResult.Code = int.Parse(properties["ErrCode"].ToString());
+                    commandResult.Message = properties["ErrMsg"] != null ? properties["ErrMsg"].ToString() : string.Empty;
+                }
             }
 
             return commandResult;

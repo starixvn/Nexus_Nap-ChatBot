@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.ChatGroupMapping
 {
+    using Fanex.Data;
     using Fanex.Data.Repository;
 
     public class GetChatGroupMappingCriteria : CriteriaBase
@@ -9,8 +10,10 @@
 
         public string RecipientTypeIDs { get; set; }
 
+        [SpParam(AllowNull = true)]
         public string RecipientName { get; set; }
 
+        [SpParam(AllowNull = true)]
         public string GroupName { get; set; }
 
         public string MappingStatusIds { get; set; }

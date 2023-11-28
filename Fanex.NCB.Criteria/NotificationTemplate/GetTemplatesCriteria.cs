@@ -1,9 +1,11 @@
 ﻿namespace Fanex.NCB.Criteria.NotificationTemplate
 {
+    using Fanex.Data;
     using Fanex.Data.Repository;
 
     public class GetTemplatesCriteria : CriteriaBase
     {
+        [SpParam(AllowNull = true)]
         public int? NotificationTypeId { get; set; }
 
         public int PageIndex { get; set; }

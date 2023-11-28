@@ -50,7 +50,7 @@
             };
 
             bool isActive = false;
-            var site = await baseService.GetDataEntityAsync<Site>(criteria);
+            var site = await baseService.GetDataEntityAsync<SiteUrl>(criteria);
 
             if (site != null)
             {

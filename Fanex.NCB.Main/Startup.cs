@@ -140,14 +140,14 @@
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseForwardedHeaders();
+                app.UseMiddleware<ErrorHandlingMiddleware>();
             }
             else
             {
                 app.UseMiddleware<ErrorHandlingMiddleware>();
-                app.UseForwardedHeaders();
                 app.UseHsts();
             }
+            app.UseForwardedHeaders();
 
             app.Use(async (context, next) =>
             {

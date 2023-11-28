@@ -3,8 +3,8 @@
     using System;
     using System.Globalization;
     using System.Threading.Tasks;
-    using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ParameterObject;
+    using Fanex.NAP.Client.Models.ValueObject;
     using Fanex.NAP.Client.Services;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Criteria.LocalNap.Security;
@@ -194,16 +194,6 @@
             throw new NotImplementedException();
         }
 
-        public bool UpdateProfile(int siteId, UpdateUserInfoParameter parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateProfileAsync(int siteId, UpdateUserInfoParameter parameter)
-        {
-            throw new NotImplementedException();
-        }
-
         private async Task<bool> IsActivatedAsync(int siteId)
         {
             var criteria = new GetByIdSiteCriteria
@@ -212,7 +202,7 @@
             };
 
             bool isActive = false;
-            var site = await baseService.GetDataEntityAsync<Site>(criteria);
+            var site = await baseService.GetDataEntityAsync<SiteUrl>(criteria);
 
             if (site != null)
             {
@@ -220,6 +210,16 @@
             }
 
             return isActive;
+        }
+
+        public bool UpdateProfile(int siteId, UpdateUserInfoParameter parameter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateProfileAsync(int siteId, UpdateUserInfoParameter parameter)
+        {
+            throw new NotImplementedException();
         }
     }
 }
