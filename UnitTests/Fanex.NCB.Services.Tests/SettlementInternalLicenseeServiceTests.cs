@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
+    using Fanex.NCB.Criteria.Common;
     using Fanex.NCB.Criteria.SettlementInternalCSD;
     using Fanex.NCB.Criteria.SettlementLicensee;
     using Fanex.NCB.Models.NotifictaionSendMessage;
@@ -37,7 +38,7 @@
             var tuple = (messageSettlement, messageSettlementInfo);
             var service = GetService();
 
-            baseService.GetDataEntityAsync<ServiceSetting>(Arg.Any<GetServiceSettingCriteria>()).Returns(setting);
+            commonService.GetServiceSetting(Arg.Any<string>()).Returns(setting);
             baseService.FetchMultipleAsync<MessageSettlement, MessageSettlementInfo>(Arg.Any<GetMessageSettleInternalCSDCriteria>()).Returns(tuple);
 
             // Act
@@ -157,7 +158,7 @@
             var tuple = (messageSettlement, messageSettlementDetail, messageSettlementInfo);
             var service = GetService();
 
-            baseService.GetDataEntityAsync<ServiceSetting>(Arg.Any<GetServiceSettingCriteria>()).Returns(setting);
+            commonService.GetServiceSetting(Arg.Any<string>()).Returns(setting);
             baseService.FetchMultipleAsync<MessageSettlement, MessageSettlementDetail, MessageSettlementInfo>(Arg.Any<GetMessageSettlementLicenseeCriteria>()).Returns(tuple);
 
             // Act

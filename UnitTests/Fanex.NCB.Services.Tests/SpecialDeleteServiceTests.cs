@@ -5,9 +5,11 @@
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
+    using Fanex.NCB.Criteria.Common;
     using Fanex.NCB.Criteria.SiteMessage;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Models.NotifictaionSendMessage;
+    using Fanex.NCB.Repository;
     using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Services.Tests.TestableClasses;
@@ -120,17 +122,16 @@
         public async Task PullVoidingMessageInternalDepartmentAsync_NoDataVoidingHistory_StillGoOn()
         {
             // Arrange
-            var setting = fixture.Create<SystemSetting>();
-            var (tranIds, usernames, duplicatedTicket) = fixture.Create<(IEnumerable<CollectionTransId>, IEnumerable<CollectionUsername>, IEnumerable<CollectionDuplicatedTickets>)>();
+            var setting = fixture.Create<ServiceSetting>();
+            var (tranIds, usernames, duplicatedTicket, messageIdLst) = fixture.Create<(IEnumerable<CollectionTransId>, IEnumerable<CollectionUsername>, IEnumerable<CollectionDuplicatedTickets>, IEnumerable<AbnormalMessage>)>();
             var service = GetService();
-            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>()).Returns(setting);
-            baseService.FetchMultipleAsync<CollectionTransId, CollectionUsername, CollectionDuplicatedTickets>(Arg.Any<GetVoidingHIstoryCollectionIdCriteria>()).Returns((tranIds, usernames, duplicatedTicket));
-
+            commonService.GetServiceSetting(Arg.Any<string>()).Returns(setting);
+            specialDeleteRepository.FetchVoidingHistoryMessage(Arg.Any<GetVoidingHIstoryCollectionIdCriteria>()).Returns((tranIds, usernames, duplicatedTicket, messageIdLst));
             // Act
             await service.PullVoidingMessageInternalDepartmentAsync();
 
             // Assert
-            service.Received().Protected("GetMessageAndImportToChatbotAsync", tranIds, usernames, duplicatedTicket, setting);
+            service.Received().Protected("GetMessageAndImportToChatbotAsync", tranIds, usernames, duplicatedTicket, messageIdLst, setting);
         }
 
         #endregion PullVoidingMessageInternalDepartmentAsync
@@ -271,7 +272,7 @@
             var service = GetService();
 
             // Act
-            await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories, duplicateTicketDetail, abnormalAccountInfo);
+            await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories, duplicateTicketDetail, abnormalAccountInfo, 1);
 
             // Assert
             await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportAbnormalBetsMessageCriteria>());
@@ -295,7 +296,7 @@
             chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients).Returns(notificationMessages);
 
             // Act
-            await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories, duplicateTicketDetail, abnormalAccountInfo);
+            await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories, duplicateTicketDetail, abnormalAccountInfo,1);
 
             // Assert
             Assert.Equal(JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = "yyyy-MM-dd HH:mm:ss.fff" }), criteria.MessageHeader);
@@ -323,7 +324,7 @@
             chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients).Returns(notificationMessages);
 
             // Act
-            await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories, duplicateTicketDetail, abnormalAccountInfo);
+            await service.Public_ImportAbnormalBetNotificationToChatbotDBAsync(messages, histories, duplicateTicketDetail, abnormalAccountInfo,1);
 
             // Assert
             Assert.Equal(JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = "yyyy-MM-dd HH:mm:ss.fff" }), criteria.MessageHeader);
