@@ -177,6 +177,8 @@
             <Mapping DataField="CreatedDate" ObjectProperty="PostTime" />
         </Setting>
         <Setting Key="NAP_Chatbot_DataToJSON_Sel" SpName="NAP_Chatbot_DataToJSON_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_MissingMessage_Sel" SpName="NAP_Chatbot_MissingMessage_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_MissingMessage_Sel" SpName="NAP_Chatbot_MissingMessage_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0">
+            <Mapping DataField="Content_en" ObjectProperty="Content" />
+        </Setting>
     </Function>
 </Functions>
