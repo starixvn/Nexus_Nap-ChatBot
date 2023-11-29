@@ -44,6 +44,10 @@
 
         public async Task<IEnumerable<MissingMesssageInfo>> GetMissingMessageDataAsync(IEnumerable<MissingMesssageInfo> missingMesssages)
         {
+            foreach (var item in missingMesssages)
+            {
+                item.Content_en = item.Content;
+            }
             var criteria = new GetMissingMessageDataCriteria
             {
                 MessageList = XmlHelper<MissingMesssageInfo>.Serialize(missingMesssages.ToList())
