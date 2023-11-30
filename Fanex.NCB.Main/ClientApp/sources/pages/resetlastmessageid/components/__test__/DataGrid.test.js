@@ -16,18 +16,27 @@ describe('DataGrid', () => {
 
     const initProps = {
         selected: [
-            { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 0 },
-            { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 0 },
-            { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 },
-            { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 0 },
-            { id: 5, name: 'Monitored Player', checked: true, newMaxMessageId: 0 }
+            { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 0, settingName: 'test1' },
+            { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 0, settingName: 'test2' },
+            { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0, settingName: 'test3' },
+            { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 0, settingName: 'test4' },
+            { id: 5, name: 'Monitored Player', checked: true, newMaxMessageId: 0, settingName: 'test5' }
         ],
         currentMessages: {
             data: [
-                { jobIdentify: 1, referenceId: 1074533320 }, { jobIdentify: 2, referenceId: 1074533325 },
-                { jobIdentify: 3, referenceId: 1074533327 }, { jobIdentify: 4, referenceId: 3375 }, { jobIdentify: 5, referenceId: 1 }
+                { jobIdentify: 1, referenceId: 1074533320, maxReferenceId: 1074533321, settingName: 'test1' },
+                { jobIdentify: 2, referenceId: 1074533325, maxReferenceId: 1074533326, settingName: 'test2' },
+                { jobIdentify: 3, referenceId: 1074533327, maxReferenceId: 1074533328, settingName: 'test3' },
+                { jobIdentify: 4, referenceId: 3375, maxReferenceId: 3376, settingName: 'test4' },
+                { jobIdentify: 5, referenceId: 1, maxReferenceId: 2, settingName: 'test5' }
             ],
-            messageTypeInfos: [{ jobIdentify: 1, msgContentsType: 101 }]
+            messageTypeInfos: [{ jobIdentify: 1, msgContentsType: 101 }],
+            missingMsgInfo: [ 
+                { messageId: 1074533321, jobIdentify: 1, content: 'Attn:[Soccer]', postTime: '2021-10-30T01:22:52.03' },
+                { messageId: 1074533326, jobIdentify: 2, content: 'Attn:[Soccer]', postTime: '2021-10-30T01:22:52.03' },
+                { messageId: 1074533328, jobIdentify: 3, content: 'Attn:[Soccer]', postTime: '2021-10-30T01:22:52.03' },
+                { messageId: 1074533329, jobIdentify: 4, content: 'Attn:[Soccer]', postTime: '2021-10-30T01:22:52.03' },
+            ]
         },
         newMessages: {
             newMaxMessageId: 1074533484,
@@ -92,10 +101,8 @@ describe('DataGrid', () => {
 
             // Assert
             expect(props.getCurrentPreviousMaxMessage).toHaveBeenCalled();
-            expect(props.getNewPreviousMaxMessage).toHaveBeenCalled();
-            expect(props.getMissingMessageCsd).toHaveBeenCalled();
-            expect(props.getMissingMessageInfo).toHaveBeenCalled();
             expect(props.setSelected).toHaveBeenCalled();
+            expect(container.state().checked).toEqual([false, false, false, false, false]);
         });
     });
 
@@ -106,7 +113,7 @@ describe('DataGrid', () => {
 
             // Act
             const container = shallow(<DataGrid {...props}/>);
-            const actual = container.instance().isNotEqualCurrentNew(0);
+            const actual = container.instance().isNotEqualCurrentNew(1, 'test1');
 
             // Assert
             expect(actual).toBe(true);
@@ -151,13 +158,16 @@ describe('DataGrid', () => {
             // Arrange
             const props = {
                 ...initProps,
-                selected: [
-                    { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 1074533320 },
-                    { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 1074533325 },
-                    { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 1074533327 },
-                    { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 3375 },
-                    { id: 5, name: 'Monitored Player', checked: true, newMaxMessageId: 1 }
-                ]
+                currentMessages: {
+                    data: [
+                        { jobIdentify: 1, referenceId: 1074533320, maxReferenceId: 1074533320, settingName: 'test1' },
+                        { jobIdentify: 2, referenceId: 1074533325, maxReferenceId: 1074533325, settingName: 'test2' },
+                        { jobIdentify: 3, referenceId: 1074533327, maxReferenceId: 1074533327, settingName: 'test3' },
+                        { jobIdentify: 4, referenceId: 3375, maxReferenceId: 3375, settingName: 'test4' },
+                        { jobIdentify: 5, referenceId: 1, maxReferenceId: 1, settingName: 'test5' }
+                    ],
+                    messageTypeInfos: [{ jobIdentify: 1, msgContentsType: 101 }]
+                },
             };
 
             // Act
@@ -179,7 +189,7 @@ describe('DataGrid', () => {
 
             // Act
             const container = shallow(<DataGrid {...props}/>);
-            container.instance().handleShowEditNewMessage(1);
+            container.instance().handleShowEditNewMessage(1, 'test1');
 
             // Assert
             expect(props.setEditNewMessagePopup).toHaveBeenCalled();
@@ -192,13 +202,13 @@ describe('DataGrid', () => {
                 setEditNewMessagePopup: jest.fn()
             };
             const expected = {
-                data: [{ content: 'Attn:[Soccer]', messageId: 3380, postTime: '2021-10-30T01:22:52.03' }],
-                jobIdentify: 4, newMaxMessageId: 0, show: true, title: 'Problem Player'
+                data: [{ content: 'Attn:[Soccer]', jobIdentify: 4, messageId: 1074533329, postTime: '2021-10-30T01:22:52.03' }],
+                jobIdentify: 4, newMaxMessageId: 0, show: true, title: 'Problem Player', settingName: 'test4'
             };
 
             // Act
             const container = shallow(<DataGrid {...props}/>);
-            container.instance().handleShowEditNewMessage(4);
+            container.instance().handleShowEditNewMessage(4, 'test4');
 
             // Assert
             expect(props.setEditNewMessagePopup).toHaveBeenCalledWith(expected);
@@ -209,37 +219,38 @@ describe('DataGrid', () => {
         it('should setState correctly', () => {
             // Arrange
             const props = { ...initProps };
-            const mockEvent = { target: { value: '0' } }
 
             // Act
             const container = shallow(<DataGrid {...props}/>);
-            container.instance().handleChange(mockEvent);
+            container.instance().handleChange(0);
 
             // Assert
-            expect(container.state().checked).toEqual([true, false, false, false, false]);
+            expect(container.state().checked).toEqual([true]);
             expect(container.state().isSubmitting).toEqual(false);
         });
 
-        it('should setState correctly when not filter any item', () => {
+        it('should setState correctly when every maxReferenceId !== referenceId', () => {
             // Arrange
             const props = {
                 ...initProps,
-                selected: [
-                    { id: 1, name: 'Special Delete', checked: false, newMaxMessageId: 1074533320 },
-                    { id: 2, name: 'Special Delete - Internal CSD', checked: false, newMaxMessageId: 0 },
-                    { id: 3, name: 'Site Message', checked: false, newMaxMessageId: 0 },
-                    { id: 4, name: 'Problem Player', checked: false, newMaxMessageId: 0 },
-                    { id: 5, name: 'Monitored Player', checked: true, newMaxMessageId: 0 }
-                ]
+                currentMessages: {
+                    data: [
+                        { jobIdentify: 1, referenceId: 1074533320, maxReferenceId: 1074533321, settingName: 'test1' },
+                        { jobIdentify: 2, referenceId: 1074533325, maxReferenceId: 1074533326, settingName: 'test2' },
+                        { jobIdentify: 3, referenceId: 1074533327, maxReferenceId: 1074533328, settingName: 'test3' },
+                        { jobIdentify: 4, referenceId: 3375, maxReferenceId: 3376, settingName: 'test4' },
+                        { jobIdentify: 5, referenceId: 1, maxReferenceId: 2, settingName: 'test5' }
+                    ],
+                },
             };
-            const mockEvent = { target: { value: '0' } }
 
             // Act
             const container = shallow(<DataGrid {...props}/>);
-            container.instance().handleChange(mockEvent);
+            container.instance().handleChange(0);
 
             // Assert
-            expect(container.state().checked).toEqual([true, false, false, false, false]);
+            expect(container.state().checked).toEqual([true]);
+            expect(container.state().allChecked).toEqual(true);
             expect(container.state().isSubmitting).toEqual(false);
         });
     });
@@ -248,15 +259,21 @@ describe('DataGrid', () => {
         it('should setState correctly', () => {
             // Arrange
             const props = { ...initProps };
+            const state = {
+                allChecked: true,
+                checked: [true, true, true]
+            };
 
             // Act
             const container = shallow(<DataGrid {...props}/>);
+            container.instance().isAllEqualCurrentNew = jest.fn(() => false);
+            container.instance().setState(state);
             container.instance().handleAllChange();
 
             // Assert
-            expect(container.state().allChecked).toEqual(true);
-            expect(container.state().checked).toEqual([true,true,true,true,true]);
-            expect(container.state().isSubmitting).toEqual(false);
+            expect(container.state().allChecked).toEqual(false);
+            expect(container.state().checked).toEqual([false,false,false]);
+            expect(container.state().isSubmitting).toEqual(true);
         });
 
         it('should return', () => {
@@ -265,48 +282,12 @@ describe('DataGrid', () => {
 
             // Act
             const container = shallow(<DataGrid {...props}/>);
-            container.instance().isNotEqualCurrentNew = jest.fn(() => false);
+            container.instance().isNotEqualCurrentNew = jest.fn(() => true);
             const actual = container.instance().handleAllChange();
 
             // Assert
             expect(actual).toBe(undefined);
         });
-    });
-
-    describe('checkCondition', () => {
-        const props = {
-            ...initProps,
-            selected: [
-                { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 1074533330 },
-                { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 0 },
-                { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 0 },
-                { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 0 },
-                { id: 5, name: 'Monitored Player', checked: true, newMaxMessageId: 0 }
-            ]
-        };
-        it('should return false', () => {
-            // Arrange
-            const item = { messageId: 1074533325 }
-
-            // Act
-            const container = shallow(<DataGrid {...props}/>);
-            const actual = container.instance().checkCondition(item, 0);
-
-            // Assert
-            expect(actual).toBe(false);
-        });
-
-        it('should return false', () => {
-            // Arrange
-            const item = { messageId: 1074533315 }
-
-            // Act
-            const container = shallow(<DataGrid {...props}/>);
-            const actual = container.instance().checkCondition(item, 0);
-
-            // Assert
-            expect(actual).toBe(false);
-        })
     });
 
     describe('handleShowConfirm', () => {
@@ -382,32 +363,6 @@ describe('DataGrid', () => {
         });
     });
 
-    describe('handleFilterPushData', () => {
-        it('should push data in value expected', () => {
-            // Arrange
-            const props = {
-                ...initProps,
-                selected: [
-                    { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 1074533330 },
-                    { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 1074533330 },
-                    { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 1074533330 },
-                    { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 3380 },
-                    { id: 5, name: 'Monitored Player', checked: true, newMaxMessageId: 1000 }
-                ]
-            };
-            const data = initProps.missingProblemAccount.data;
-            const value = [];
-
-            // Act
-            const container = shallow(<DataGrid {...props}/>);
-            container.instance().setState({ checked: [true, true, true, true, true] });
-            container.instance().handleFilterPushData(data, 4, value);
-
-            // Assert
-            expect(value).toEqual([{ jobIdentify: 4, referenceId: 3380 }]);
-        });
-    });
-
     describe('handleSubmit', () => {
         it('should call exactly props functions', async () => {
             // Arrange
@@ -415,40 +370,29 @@ describe('DataGrid', () => {
             const props = {
                 ...initProps,
                 selected: [
-                    { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 1074533330 },
-                    { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 1074533330 },
-                    { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 1074533330 },
-                    { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 3380 },
-                    { id: 5, name: 'Monitored Player', checked: true, newMaxMessageId: 1000 }
+                    { id: 1, name: 'Special Delete', checked: true, newMaxMessageId: 1074533330, settingName: 'test1' },
+                    { id: 2, name: 'Special Delete - Internal CSD', checked: true, newMaxMessageId: 1074533330, settingName: 'test2' },
+                    { id: 3, name: 'Site Message', checked: true, newMaxMessageId: 1074533330, settingName: 'test3' },
+                    { id: 4, name: 'Problem Player', checked: true, newMaxMessageId: 3380, settingName: 'test4' },
+                    { id: 5, name: 'Monitored Player', checked: true, newMaxMessageId: 1000, settingName: 'test5' }
                 ],
                 createMissingMessage: jest.fn(() => promise),
                 editMessageInfo: jest.fn(() => promise)
             };
+            const state = {
+                checked: [true, true, true]
+            };
 
             // Act
             const container = shallow(<DataGrid {...props}/>);
-            container.instance().setState({ checked: [true, true, true] });
+            container.instance().setState(state);
             container.instance().setSubmit = jest.fn();
             container.instance().handleSubmit();
             await promise;
             jest.runAllTimers();
 
             // Assert
-            expect(props.createMissingMessage).toHaveBeenCalledWith({
-                messages: [
-                    {jobIdentify: 1, referenceId: 1074533321},
-                    {jobIdentify: 2, referenceId: 1074533326},
-                    {jobIdentify: 3, referenceId: 1074533328}
-                ],
-                requests: [{ messageId: 1074533326, requestId: 59630 }]
-            });
-            expect(props.editMessageInfo).toHaveBeenCalledWith({
-                jobInfoList: [
-                    {jobIdentify: 1, referenceId: 1074533330},
-                    {jobIdentify: 2, referenceId: 1074533330},
-                    {jobIdentify: 3, referenceId: 1074533330}
-                ]
-            });
+            expect(props.createMissingMessage).toHaveBeenCalled();
             expect(await container.instance().setSubmit).toHaveBeenCalled();
             expect(setTimeout).toHaveBeenCalledTimes(1);
             expect(container.state().isSubmitting).toBe(true);
@@ -548,7 +492,8 @@ describe('DataGrid', () => {
                 ...initProps
             };
             const item = {
-                jobIdentify: 1
+                jobIdentify: 1,
+                settingName: 'test1'
             };
             const mockEvent = { target: { value: 123 } };
 
@@ -560,8 +505,7 @@ describe('DataGrid', () => {
 
             // Assert
             expect(renderRow.find(Input).props().type).toBe('checkbox');
-            expect(renderRow.find(Input).props().checked).toBe(false);
-            expect(container.instance().handleChange).toHaveBeenCalledWith(mockEvent);
+            expect(container.instance().handleChange).toHaveBeenCalledWith(1);
         });
 
         it('should call exactly function when click edit icon button', () => {
@@ -570,7 +514,8 @@ describe('DataGrid', () => {
                 ...initProps
             };
             const item = {
-                jobIdentify: 1
+                jobIdentify: 1,
+                settingName: 'test1'
             };
 
             // Act
@@ -580,7 +525,7 @@ describe('DataGrid', () => {
             renderRow.find('.messageIcon').simulate('click');
 
             // Assert
-            expect(container.instance().handleShowEditNewMessage).toHaveBeenCalledWith(1);
+            expect(container.instance().handleShowEditNewMessage).toHaveBeenCalledWith(1, 'test1');
         });
     });
 

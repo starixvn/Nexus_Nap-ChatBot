@@ -25,38 +25,6 @@ describe('EditNewMessage', () => {
         data: [ { messageId: 1, jobIdentify: 1, content: 'Attn:[Soccer]', postTime: '2021-10-30T01:22:52.03' } ]
     };
 
-    describe('getData', () => {
-        it('should return data when id !== 4', () => {
-            // Arrange
-            const props = {
-                ...initProps,
-                id: 1
-            };
-
-            // Act
-            const container = shallow(<EditNewMessage {...props}/>);
-            const actual = container.instance().getData();
-
-            // Assert
-            expect(actual).toEqual([{content: 'Attn:[Soccer]', jobIdentify: 1, messageId: 1, postTime: '2021-10-30T01:22:52.03'}]);
-        });
-
-        it('should return data when id === 4', () => {
-            // Arrange
-            const props = {
-                ...initProps,
-                id: 4
-            };
-
-            // Act
-            const container = shallow(<EditNewMessage {...props}/>);
-            const actual = container.instance().getData();
-
-            // Assert
-            expect(actual).toEqual([{content: 'Attn:[Soccer]', jobIdentify: 1, messageId: 1, postTime: '2021-10-30T01:22:52.03'}]);
-        });
-    });
-
     describe('handleClose', () => {
         it('should call exactly prop function', () => {
             // Arrange
