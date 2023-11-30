@@ -194,7 +194,7 @@
             var (tickets, usernames, dupTickets) = await siteDbService.GetTicketUsernamesAynnc(tranIds, usernameList, duplicatedTickets);
             var (historyDetail, msg, abnormalAccountInfos, dupTicketDetails) = await GetVoidingHistoryDetailAsync(tickets, usernames, dupTickets, messageInfo, messageDetail);
             await GetTransInfoAsync(dupTicketDetails);
-            MappingData(historyDetail, messageInfo);
+            FormatTelegramData(historyDetail);
             await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg, dupTicketDetails, abnormalAccountInfos, maxMsgTargetId);
         }
 
@@ -218,14 +218,10 @@
             }
         }
 
-        private static void MappingData(IEnumerable<AbnormalMessageDetail> historyDetail, IEnumerable<AbnormalMessageContent> msgContents)
+        private static void FormatTelegramData(IEnumerable<AbnormalMessageDetail> historyDetail)
         {
             foreach (var msg in historyDetail)
             {
-                var message = msgContents.FirstOrDefault(m => m.VoidingHistoryCollectionId == msg.VoidingHistoryCollectionId);
-
-                msg.Content_en = message?.Content_en?.Trim().Replace("@@", string.Empty);
-                msg.Content_cs = message?.Content_cs?.Trim().Replace("@@", string.Empty);
                 msg.LeagueName = TelegramFormatExtensions.EscapeSpecialSyntax(msg.LeagueName);
                 msg.HomeName = TelegramFormatExtensions.EscapeSpecialSyntax(msg.HomeName);
                 msg.AwayName = TelegramFormatExtensions.EscapeSpecialSyntax(msg.AwayName);
