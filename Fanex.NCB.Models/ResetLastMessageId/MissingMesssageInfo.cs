@@ -32,5 +32,8 @@
 
         [XmlAttribute("SettingName")]
         public string SettingName { get; set; }
+
+        [XmlAttribute("TargetId")]
+        public int TargetId { get; set; }
     }
 }
