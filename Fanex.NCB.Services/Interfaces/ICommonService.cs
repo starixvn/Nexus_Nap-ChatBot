@@ -6,7 +6,6 @@
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.IntegrationMethod;
     using Fanex.NCB.Shared.Models.OIC;
-    using Fanex.NCB.Shared.Services;
 
     public interface ICommonService
     {
