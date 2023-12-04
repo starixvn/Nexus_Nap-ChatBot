@@ -121,6 +121,7 @@ export default class DataGrid extends PureComponent {
     };
 
     renderRow = (item, index, isHost) => {
+        console.log('item.content', item.content);
         return (
             <Row className={this.hightLightId && !isNaN(this.hightLightId) && (parseInt(this.hightLightId) === item.notificationId) ? 'hight-light-notification notification' : 'notification'} key={item.notificationId} >
                 <Cell className="col-order text-center">
@@ -138,6 +139,9 @@ export default class DataGrid extends PureComponent {
                 <Cell className="col-content">
                     <Panel ref={panel => this.panels[index] = panel}>
                         <PanelHeader>
+                            {
+                                item.productName && <div className="title-date">{`Product: ${item.productName}`}</div>
+                            }
                             <div className="recipient-list">To {item.recipientSentStatusJson.length} recipient(s): {item.recipientSentStatusJson.map(this.renderRecipient)}</div>
                             <div className="title-date">{item.title}</div>
                         </PanelHeader>
