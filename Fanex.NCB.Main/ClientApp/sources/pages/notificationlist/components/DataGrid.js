@@ -121,7 +121,6 @@ export default class DataGrid extends PureComponent {
     };
 
     renderRow = (item, index, isHost) => {
-        console.log('item.content', item.content);
         return (
             <Row className={this.hightLightId && !isNaN(this.hightLightId) && (parseInt(this.hightLightId) === item.notificationId) ? 'hight-light-notification notification' : 'notification'} key={item.notificationId} >
                 <Cell className="col-order text-center">

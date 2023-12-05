@@ -87,7 +87,8 @@
                         SendDate = data.SendDate,
                         SendImmediately = data.SendImmediately,
                         UserId = napSession.UserId,
-                        Platforms = data.Platforms ?? string.Empty
+                        Platforms = data.Platforms ?? string.Empty,
+                        InIntegrationMethodIds = data.IntegrationMethodIds
                     });
                 }
                 catch (Exception ex)
