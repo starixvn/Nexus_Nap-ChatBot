@@ -524,6 +524,7 @@ export default class NotificationList extends Component {
                             <MultiselectTreeView
                                 data={this.state.productOptions}
                                 isSelectedAll
+                                hasSearchBox
                                 onChange={selectedItems => this.handleFilterChange('productIds', selectedItems.map(item => item.id).join(','))}
                             />
                         </FormGroup>
