@@ -92,7 +92,7 @@ export default class EditNotification extends React.Component {
         });
         const selectedPlatforms = this.state.allPlatform.map(item => ({ id: item.platformId, name: item.platformName }));
         const selectedIntegrations = this.state.allIntegrationMethod.map(item => ({ id: item.integrationMethodId, name: item.integrationMethodName }));
-        let platforms, integrationMethodIds = '';
+        let platforms = '', integrationMethodIds = '';
         if (notification.platforms.length > 0) {
             platforms = notification.platforms.map(item => item.platformId).join(',');
         }
