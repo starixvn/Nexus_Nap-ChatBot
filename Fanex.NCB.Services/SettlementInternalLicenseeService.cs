@@ -92,18 +92,19 @@
                 };
 
                 var (messageInfos, messageDetails) = await baseService.FetchMultipleAsync<MessageSettlement, MessageSettlementInfo>(criteria);
-                await GetMessageAndImportToChatbotAsync(messageInfos, messageDetails);
+                await GetMessageAndImportToChatbotAsync(messageInfos, messageDetails, criteria.MaxMsgTargetId);
             }
         }
 
         protected internal virtual async Task GetMessageAndImportToChatbotAsync(
             IEnumerable<MessageSettlement> messageInfos,
-            IEnumerable<MessageSettlementInfo> messageDetails
+            IEnumerable<MessageSettlementInfo> messageDetails,
+            int maxMsgTargetId
         )
         {
             var (messageHeaders, msgs) = await GetEventInfoAsync(messageInfos, messageDetails);
             FormatTelegram(messageHeaders);
-            await ImportSettlementInternalCSDToChatbotDBAsync(messageHeaders, msgs);
+            await ImportSettlementInternalCSDToChatbotDBAsync(messageHeaders, msgs, maxMsgTargetId);
         }
 
         private static void FormatTelegram(IEnumerable<MessageSettlementHeader> messageHeaders)
@@ -130,7 +131,8 @@
 
         protected internal virtual async Task ImportSettlementInternalCSDToChatbotDBAsync(
             IEnumerable<MessageSettlementHeader> messageHeaders,
-            IEnumerable<MessageTarget> msgs
+            IEnumerable<MessageTarget> msgs,
+            int maxMsgTargetId
         )
         {
             if (messageHeaders.Any())
@@ -139,6 +141,7 @@
                 {
                     MessageHeader = JsonConvert.SerializeObject(messageHeaders, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
                     MessageDetail = JsonConvert.SerializeObject(msgs, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
+                    InMaxMsgTargetId = maxMsgTargetId
                 };
                 var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
                 var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);

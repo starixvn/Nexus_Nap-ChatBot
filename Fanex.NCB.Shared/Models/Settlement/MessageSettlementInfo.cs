@@ -13,5 +13,8 @@
 
         [XmlAttribute("BetTransId")]
         public string BetTransId { get; set; }
+
+        [XmlAttribute("TargetId")]
+        public int TargetId { get; set; }
     }
 }
