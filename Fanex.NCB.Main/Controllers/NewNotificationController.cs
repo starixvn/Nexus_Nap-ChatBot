@@ -116,8 +116,11 @@ namespace Fanex.NCB.SkypeBot.Controllers
             var platforms = string.Join(",", platformsLst);
             var integrationLst = resendNotification.IntegrationMethods.Select(item => item.IntegrationMethodId).ToList();
             var integrationIds = string.Join(",", integrationLst);
+            var productId = resendNotification.ProductId;
             var notiTypeId = resendNotification.NotificationTypeId;
-            var (recipients, selectedRecipients) = await notificationService.GetRecipientsAsync(notiTypeId, platforms, recipientIds, integrationMethodIds: integrationIds, channelIds: channelIds);
+            #pragma warning disable S103 // Lines should not be too long
+            var (recipients, selectedRecipients) = await notificationService.GetRecipientsAsync(notiTypeId, platforms, recipientIds, productId, integrationMethodIds: integrationIds, channelIds: channelIds);
+            #pragma warning restore S103 // Lines should not be too long
             IEnumerable<Recipient> unSelectableRecipients = resendNotification.Recipients.Where(r => !recipients.Any(x => x.RecipientId == r.RecipientId)).ToList();
 
             resendNotification.Recipients = resendNotification.Recipients.Where(x => !unSelectableRecipients.Any(u => u.RecipientId == x.RecipientId)).ToList();
