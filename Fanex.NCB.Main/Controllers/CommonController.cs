@@ -6,7 +6,6 @@
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
-    using Fanex.NCB.Shared.Models.IntegrationMethod;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
 
