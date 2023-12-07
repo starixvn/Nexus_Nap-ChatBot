@@ -135,24 +135,21 @@
             int maxMsgTargetId
         )
         {
-            if (messageHeaders.Any())
+            var criteria = new ImportSettleInternalCSDCommand
             {
-                var criteria = new ImportSettleInternalCSDCommand
-                {
-                    MessageHeader = JsonConvert.SerializeObject(messageHeaders, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
-                    MessageDetail = JsonConvert.SerializeObject(msgs, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
-                    InMaxMsgTargetId = maxMsgTargetId
-                };
-                var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
-                var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);
-                var command = new CommandResult
-                {
-                    Code = criteria.ErrCode,
-                    Message = criteria.ErrMsg
-                };
+                MessageHeader = JsonConvert.SerializeObject(messageHeaders, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
+                MessageDetail = JsonConvert.SerializeObject(msgs, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
+                InMaxMsgTargetId = maxMsgTargetId
+            };
+            var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
+            var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);
+            var command = new CommandResult
+            {
+                Code = criteria.ErrCode,
+                Message = criteria.ErrMsg
+            };
 
-                await OnAfterImportDataAsync(command, notificationMessages);
-            }
+            await OnAfterImportDataAsync(command, notificationMessages);
         }
 
         #endregion Settlement Internal CSD
