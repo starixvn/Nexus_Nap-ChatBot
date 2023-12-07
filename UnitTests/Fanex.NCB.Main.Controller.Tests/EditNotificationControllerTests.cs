@@ -90,11 +90,12 @@
             var productId = fixture.Create<int?>();
             var platforms = fixture.Create<string>();
             var recipientIds = fixture.Create<string>();
+            var integrationMethodIds = fixture.Create<string>();
             var allRecipients = fixture.Create<(IEnumerable<Recipient>, IEnumerable<uint>)>();
 
-            notificationService.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId, platforms, recipientIds).Returns(allRecipients);
+            notificationService.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId, platforms, recipientIds, integrationMethodIds).Returns(allRecipients);
 
-            var result = await controller.GetRecipients(notificationId, notificationTypeId, productId, platforms, recipientIds);
+            var result = await controller.GetRecipients(notificationId, notificationTypeId, productId, platforms, recipientIds, integrationMethodIds);
 
             var jsonResult = Assert.IsType<JsonResult>(result);
             var recipients = jsonResult.Value.GetType().GetProperty("recipients").GetValue(jsonResult.Value);

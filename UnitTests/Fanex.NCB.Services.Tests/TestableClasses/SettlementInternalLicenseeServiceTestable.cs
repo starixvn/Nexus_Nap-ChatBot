@@ -29,9 +29,9 @@
             await base.SendMessageByChannelAsync(channelId, notifications);
         }
 
-        public async Task Public_GetMessageAndImportToChatbotAsync(IEnumerable<MessageSettlement> messageInfos, IEnumerable<MessageSettlementInfo> messageDetails)
+        public async Task Public_GetMessageAndImportToChatbotAsync(IEnumerable<MessageSettlement> messageInfos, IEnumerable<MessageSettlementInfo> messageDetails, int maxMsgTargetId)
         {
-            await base.GetMessageAndImportToChatbotAsync(messageInfos, messageDetails);
+            await base.GetMessageAndImportToChatbotAsync(messageInfos, messageDetails, maxMsgTargetId);
         }
 
         public async Task<(IEnumerable<MessageSettlementHeader>, IEnumerable<MessageTarget>)> Public_GetEventInfoAsync(
@@ -42,9 +42,9 @@
             return await base.GetEventInfoAsync(messageInfo, messageDetail);
         }
 
-        public async Task Public_ImportSettlementInternalCSDToChatbotDBAsync(IEnumerable<MessageSettlementHeader> messageHeaders, IEnumerable<MessageTarget> msgs)
+        public async Task Public_ImportSettlementInternalCSDToChatbotDBAsync(IEnumerable<MessageSettlementHeader> messageHeaders, IEnumerable<MessageTarget> msgs, int maxMsgTargetId)
         {
-            await base.ImportSettlementInternalCSDToChatbotDBAsync(messageHeaders, msgs);
+            await base.ImportSettlementInternalCSDToChatbotDBAsync(messageHeaders, msgs, maxMsgTargetId);
         }
 
         public async Task Public_GetMessageLicenseeAndImportToChatbotAsync(

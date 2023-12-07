@@ -156,8 +156,10 @@
                 selectedRecipients = allRecipients.Item2
             };
             var platforms = resendNotifictaion.Platforms.Select(item => item.PlatformId).ToList();
+            var integrationMethods = resendNotifictaion.IntegrationMethods.Select(item => item.IntegrationMethodId).ToList();
+            var productId = resendNotifictaion.ProductId;
             notificationService.GetResendNotificationInfoAsync(notificationId, isResendAll).Returns(resendNotifictaion);
-            notificationService.GetRecipientsAsync(resendNotifictaion.NotificationTypeId, string.Join(",", platforms), recipientIds, null, resendNotifictaion.ChannelId.ToString()).Returns(allRecipients);
+            notificationService.GetRecipientsAsync(resendNotifictaion.NotificationTypeId, string.Join(",", platforms), recipientIds, productId, string.Join(",", integrationMethods), resendNotifictaion.ChannelId.ToString()).Returns(allRecipients);
 
             var result = await controller.GetResendNotification(notificationId, recipientIds, isResendAll);
 

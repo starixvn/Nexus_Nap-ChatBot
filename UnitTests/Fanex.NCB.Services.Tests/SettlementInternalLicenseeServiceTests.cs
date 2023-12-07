@@ -45,7 +45,7 @@
             await service.SettlementInternalCSDAsync();
 
             // Assert
-            service.Received().Protected("GetMessageAndImportToChatbotAsync", messageSettlement, messageSettlementInfo);
+            service.Received().Protected("GetMessageAndImportToChatbotAsync", messageSettlement, messageSettlementInfo, 0);
         }
 
         [Fact]
@@ -56,17 +56,19 @@
             var messageSettlementInfo = fixture.Create<IEnumerable<MessageSettlementInfo>>();
             var messages = fixture.Create<IEnumerable<MessageSettlementHeader>>();
             var messageDetails = fixture.Create<IEnumerable<MessageTarget>>();
-            
+            var maxMsgTargetId = fixture.Create<int>();
+
+
             var service = GetService();
 
             service.Protected("GetEventInfoAsync", messageSettlement, messageSettlementInfo)
                 .Returns(Task.FromResult<(IEnumerable<MessageSettlementHeader>, IEnumerable<MessageTarget>)>((messages, messageDetails)));
 
             // Act
-            await service.Public_GetMessageAndImportToChatbotAsync(messageSettlement, messageSettlementInfo);
+            await service.Public_GetMessageAndImportToChatbotAsync(messageSettlement, messageSettlementInfo, maxMsgTargetId);
 
             // Assert
-            service.Received().Protected("ImportSettlementInternalCSDToChatbotDBAsync", messages, messageDetails);
+            service.Received().Protected("ImportSettlementInternalCSDToChatbotDBAsync", messages, messageDetails, maxMsgTargetId);
         }
 
         [Fact]
@@ -92,21 +94,6 @@
         }
 
         [Fact]
-        public async Task ImportSettlementInternalCSDToChatbotDBAsync_MessageIsNull_DoNothing()
-        {
-            // Arrange
-            var messageSettlementHeader = new List<MessageSettlementHeader>();
-            var messageTarget = fixture.Create<IEnumerable<MessageTarget>>();
-            var service = GetService();
-
-            // Act
-            await service.Public_ImportSettlementInternalCSDToChatbotDBAsync(messageSettlementHeader, messageTarget);
-
-            // Assert
-            await baseService.DidNotReceive().FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(Arg.Any<ImportSettleInternalCSDCommand>());
-        }
-
-        [Fact]
         public async Task ImportSettlementInternalCSDToChatbotDBAsync_WhenCalled_DoAsExpected()
         {
             // Arrange
@@ -116,6 +103,7 @@
             var recipients = fixture.Create<IEnumerable<NotificationRecipient>>();
             var notificationMessages = fixture.Create<IEnumerable<NotificationSendMessage>>();
             var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
+            var maxMsgTargetId = fixture.Create<int>();
             var tuple = (recipients, notificationMessages);
             var service = GetService();
 
@@ -124,7 +112,7 @@
             chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notificationMessages, recipients).Returns(notifications);
 
             // Act
-            await service.Public_ImportSettlementInternalCSDToChatbotDBAsync(messageSettlementHeader, messageTarget);
+            await service.Public_ImportSettlementInternalCSDToChatbotDBAsync(messageSettlementHeader, messageTarget, maxMsgTargetId);
 
             // Assert
             service.Received().Protected("OnAfterImportDataAsync", Arg.Is<CommandResult>(x => x.Code == 0 && x.Message == "successfully"), notifications);

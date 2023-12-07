@@ -45,31 +45,31 @@
             //Arrange
             var service = GetService();
             var missingMessageInfos = new List<MissingMesssageInfo> {
-                new MissingMesssageInfo { JobIdentify = 1, VoidingHistoryCollectionId = 1, Content_en = "ABC", MessageId = 300 },
-                new MissingMesssageInfo { JobIdentify = 2, VoidingHistoryCollectionId = 2000, Content_en = "ABC", MessageId = 2 },
+                new MissingMesssageInfo { JobIdentify = 1, VoidingHistoryCollectionId = 1, Content_en = "ABC", MessageId = 300, SettingName = "1" },
+                new MissingMesssageInfo { JobIdentify = 2, VoidingHistoryCollectionId = 2000, Content_en = "ABC", MessageId = 2, SettingName = "2" },
             };
 
             var missedProblemAccounts = new List<MissingMesssageInfo>();
             var missedMonitoredPlayers = new List<MissingMesssageInfo>
             {
-               new MissingMesssageInfo { JobIdentify = 5, VoidingHistoryCollectionId = 5, Content_en = "ABC", MessageId = 5 }
+               new MissingMesssageInfo { JobIdentify = 5, VoidingHistoryCollectionId = 5, Content_en = "ABC", MessageId = 5, SettingName = "5" }
             };
 
             var msgList = new List<CurrentMaxMessageInfo>
             {
-                new CurrentMaxMessageInfo {JobIdentify = 1, ReferenceId = 1},
-                new CurrentMaxMessageInfo {JobIdentify = 2, ReferenceId = 1000},
-                new CurrentMaxMessageInfo {JobIdentify = 4, ReferenceId = 1000},
-                new CurrentMaxMessageInfo {JobIdentify = 5, ReferenceId = 1000}
+                new CurrentMaxMessageInfo {JobIdentify = 1, ReferenceId = 1, SettingName = "1"},
+                new CurrentMaxMessageInfo {JobIdentify = 2, ReferenceId = 1000, SettingName = "2"},
+                new CurrentMaxMessageInfo {JobIdentify = 4, ReferenceId = 1000, SettingName = "4"},
+                new CurrentMaxMessageInfo {JobIdentify = 5, ReferenceId = 1000, SettingName = "5"}
             };
 
             var expected = new List<MissingMesssageInfo> {
-                new MissingMesssageInfo { JobIdentify = 1, VoidingHistoryCollectionId = 1, Content_en = "ABC", MessageId = 300 },
-                new MissingMesssageInfo { JobIdentify = 2, VoidingHistoryCollectionId = 2000, Content_en = "ABC", MessageId = 2 },
-                new MissingMesssageInfo { JobIdentify = 5, VoidingHistoryCollectionId = 5, Content_en = "ABC", MessageId = 5 }
+                new MissingMesssageInfo { JobIdentify = 1, VoidingHistoryCollectionId = 1, Content_en = "ABC", MessageId = 300, SettingName = "1" },
+                new MissingMesssageInfo { JobIdentify = 2, VoidingHistoryCollectionId = 2000, Content_en = "ABC", MessageId = 2, SettingName = "2"},
+                new MissingMesssageInfo { JobIdentify = 5, VoidingHistoryCollectionId = 5, Content_en = "ABC", MessageId = 5, SettingName = "5" }
             };
 
-            baseService.GetDataAsync<MissingMesssageInfo>(Arg.Any<GetMissingMessageInfoCriteria>()).Returns(missingMessageInfos);
+            baseService.GetDataAsync<MissingMesssageInfo>(Arg.Any<GetMissingMessageDataCriteria>()).Returns(missingMessageInfos);
             baseService.GetDataAsync<MissingMesssageInfo>(Arg.Any<GetMissingProblemAccountCriteria>()).Returns(missedProblemAccounts);
             baseService.GetDataAsync<MissingMesssageInfo>(Arg.Any<GetMissingMonitoredPlayerCriteria>()).Returns(missedMonitoredPlayers);
             var contentTypeList = fixture.Create<IEnumerable<MessageTypeInfo>>();
