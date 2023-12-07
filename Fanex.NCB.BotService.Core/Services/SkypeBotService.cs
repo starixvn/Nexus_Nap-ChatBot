@@ -120,7 +120,7 @@
                     NotificationId = conversationInfo.NotificationId,
                     ErrorCode = 1,
                     ErrorMessage = exception.Message,
-                    SentTime = DateTimeOffset.UtcNow
+                    SentTime = DateTimeOffset.UtcNow.DateTime
                 };
             }
 
@@ -130,7 +130,7 @@
             {
                 ConversationId = conversationInfo.ConversationId,
                 NotificationId = conversationInfo.NotificationId,
-                SentTime = DateTimeOffset.UtcNow
+                SentTime = DateTimeOffset.UtcNow.DateTime
             };
         }
 
@@ -181,7 +181,7 @@
 
                 result.ConversationId = conversationInfo.ConversationId;
                 result.NotificationId = conversationInfo.NotificationId;
-                result.SentTime = DateTimeOffset.UtcNow;
+                result.SentTime = DateTimeOffset.UtcNow.DateTime;
 
                 return result;
             }
@@ -197,7 +197,7 @@
                     NotificationId = conversationInfo.NotificationId,
                     ErrorCode = 1,
                     ErrorMessage = exception.Message,
-                    SentTime = DateTimeOffset.UtcNow
+                    SentTime = DateTimeOffset.UtcNow.DateTime
                 };
             }
         }

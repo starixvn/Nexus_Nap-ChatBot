@@ -76,7 +76,7 @@
                 if (cachedPolicy == null)
                 {
                     policy = await userService.GetPermissionAsync(currentSession.UserId, napSettings.SiteId, FunctionKey);
-                    cache.Set(cacheKey, policy, DateTimeOffset.Now.AddSeconds(CacheDuration));
+                    cache.Set(cacheKey, policy, DateTimeOffset.Now.DateTime.AddSeconds(CacheDuration));
                 }
                 else
                 {
