@@ -4,7 +4,7 @@
   "services": [
     {
       "type": "endpoint",
-      "name": "SABASports",
+      "name": "公告 / Service Notifications",
       "endpoint": "https://licbotwebhook.starixplay.com/api/messages",
       "appId": "e63aedd7-660c-46ca-8637-1df5fb133f96",
       "appPassword": "Lrb@U45PXP4F=3t:kAyjLdoBNqnlCQr-",
@@ -12,7 +12,7 @@
     },
     {
       "type": "endpoint",
-      "name": "SABA",
+      "name": "Internal Notifications",
       "endpoint": "https://licbotwebhook.starixplay.com/api/messages",
       "appId": "6de2b90e-03b5-4bf7-9268-6cec3ed6f87b",
       "appPassword": ":DQdaPNlj2n1]dx[R4YkTjsNq?cYDd3Z",
@@ -20,7 +20,7 @@
     },
     {
       "type": "endpoint",
-      "name": "沙巴体育公告 / Saba Sports Announcement",
+      "name": "公告 / Technical Notifications",
       "endpoint": "https://licbotwebhook.starixplay.com/api/messages",
       "appId": "3eb816dc-4b12-4614-a539-3a789b37a456",
       "appPassword": "6c06ENM.MaWI.AwG3Bk3PRwji0nS.-nKS4",
