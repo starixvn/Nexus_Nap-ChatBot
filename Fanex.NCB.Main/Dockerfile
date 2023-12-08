@@ -12,13 +12,15 @@ COPY ["Fanex.NCB.Repository/Fanex.NCB.Repository.csproj", "Fanex.NCB.Repository/
 COPY ["Fanex.NCB.Models/Fanex.NCB.Models.csproj", "Fanex.NCB.Models/"]
 COPY ["Fanex.NCB.Resources/Fanex.NCB.Resources.csproj", "Fanex.NCB.Resources/"]
 COPY ["nuget.config", ""]
-RUN dotnet restore "Fanex.NCB.Main/Fanex.NCB.Main.csproj"
+RUN --mount=type=cache,target=/root/.nuget/packages \
+dotnet restore "Fanex.NCB.Main/Fanex.NCB.Main.csproj"
 
 COPY . .
 
 WORKDIR "/src/Fanex.NCB.Main"
 
-RUN dotnet publish -r linux-x64 --self-contained false -o /app
+RUN --mount=type=cache,target=/root/.nuget/packages \
+dotnet publish -r linux-x64 --self-contained false -o /app
 
 FROM hub.nexdev.net/base/dotnet/core/aspnet:6.0-alpine AS base
 

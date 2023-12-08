@@ -19,7 +19,7 @@
 //                    var data = new VoidingHistoryInfo
 //                    {
 //                        AbnormalMessageDetail = multi.Read<AbnormalMessageDetail>(),
-//                        AbnormalMessage =  multi.Read<AbnormalMessage>(),
+//                        AbnormalMessage = multi.Read<AbnormalMessage>(),
 //                        AbnormalAccountInfo = multi.Read<AbnormalAccountInfo>(),
 //                        DuplicateTicketDetail = multi.Read<DuplicateTicketDetail>()
 //                    };
