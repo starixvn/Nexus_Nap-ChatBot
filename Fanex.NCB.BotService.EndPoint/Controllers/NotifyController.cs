@@ -100,7 +100,7 @@
                     }
                 }
 
-                results = [.. (await Task.WhenAll(tasks))];
+                results = (await Task.WhenAll(tasks)).ToList();
             }
 
             return Ok(results);
