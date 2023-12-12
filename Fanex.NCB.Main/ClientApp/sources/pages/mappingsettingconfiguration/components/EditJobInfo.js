@@ -16,12 +16,17 @@ export class EditJobInfo extends Component {
         super(props);
         this.state = {
             id: props.jobInfo.id,
-            status: props.jobInfo.jobStatus,
+            jobStatus: props.jobInfo.jobStatus,
             previousMaxMessageId: props.jobInfo.previousMaxMessageId,
             batchSize: props.jobInfo.batchSize,
             testingGroup: props.jobInfo.testingGroup,
             confirmUpdateJobInfo: false,
-            tooltipOpen: false
+            tooltipOpen: false,
+            lastMsgTargetId: props.jobInfo.lastMsgTargetId,
+            previousMaxMessageId: props.jobInfo.previousMaxMessageId,
+            lastVoidingHistoryCollectionId: props.jobInfo.lastVoidingHistoryCollectionId,
+            lastLogId: props.jobInfo.lastLogId,
+            lastMsgTargetId: props.jobInfo.lastMsgTargetId
         };
 
         this.haveHostPermission = document.getElementById('have-host-permission') && document.getElementById('have-host-permission').checked;
@@ -38,10 +43,13 @@ export class EditJobInfo extends Component {
         } else {
             let data = {
                 id: this.state.id,
-                status: this.state.status,
-                previousMaxMessageId: CommonFunctions.renderMaxMessageId(this.props.jobInfo.id, this.props.jobInfo),
+                jobStatus: this.state.jobStatus,
                 batchSize: parseInt(this.state.batchSize),
-                testingGroup: this.state.testingGroup
+                testingGroup: this.state.testingGroup,
+                previousMaxMessageId: this.state.previousMaxMessageId ? this.state.previousMaxMessageId : 0,
+                lastVoidingHistoryCollectionId: this.state.lastVoidingHistoryCollectionId ? this.state.lastVoidingHistoryCollectionId : 0,
+                lastLogId: this.state.lastLogId ? this.state.lastLogId : 0,
+                lastMsgTargetId: this.state.lastMsgTargetId ? this.state.lastMsgTargetId : 0
             };
 
             this.props.setJobInfoData(data, () => this.props.setJobInfoFlag({ isEdit: false }));
@@ -80,17 +88,32 @@ export class EditJobInfo extends Component {
             this.props.jobInfo && <div className='job-info-container'>
                 <div className='job-info-item'>
                     <p className='job-info-title'>Job Sync Status:</p>
-                    <p className={`job-info-value ${this.props.jobInfo.jobStatus === 'Done' ? 'status-done' : 'status-running'}`}>{this.props.jobInfo.jobStatus}</p>
+                    <Input
+                        name='jobStatus'
+                        onChange={this.handleChange}
+                        className={`job-info-input`}
+                        defaultValue={this.props.jobInfo.jobStatus}
+                    />
                 </div>
                 <div className='job-info-item'>
                     <p className='job-info-title'>{previousMaxIDTitle}</p>
-                    <p className='job-info-value'>{CommonFunctions.renderMaxMessageId(jobId, this.props.jobInfo)}</p>
+                    <Input
+                        name={CommonFunctions.renderLabelMaxMessageId(jobId)}
+                        onChange={this.handleChange}
+                        className='job-info-input maxId-input'
+                        defaultValue={CommonFunctions.renderMaxMessageId(jobId, this.props.jobInfo)}
+                    />
                 </div>
                 {
                     jobId === 2 && (
                         <div className='job-info-item'>
                             <p className='job-info-title'>Previous Max MsgTargetID:</p>
-                            <p className='job-info-value'>{this.props.jobInfo.lastMsgTargetId}</p>
+                            <Input
+                                name='lastMsgTargetId'
+                                onChange={this.handleChange}
+                                className='job-info-input maxId-input'
+                                defaultValue={this.props.jobInfo.lastMsgTargetId}
+                            />
                         </div>
                     )
                 }

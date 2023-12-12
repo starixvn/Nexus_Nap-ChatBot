@@ -103,4 +103,22 @@ export default class CommonFunctions {
                 return;
         }
     };
+
+    static renderLabelMaxMessageId (jobId) {
+        switch (jobId) {
+            case 1:
+            case 3:
+                return 'previousMaxMessageId';
+            case 2:
+                return 'lastVoidingHistoryCollectionId';
+            case 4:
+            case 5:
+                return 'lastLogId';
+            case 6:
+            case 7:
+                return 'lastMsgTargetId';
+            default:
+                return;
+        }
+    };
 }
