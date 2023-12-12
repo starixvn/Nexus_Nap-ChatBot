@@ -2,12 +2,20 @@
 {
     public class UpdateJobInfo
     {
-        public int Id { get; set; }
+        public int JobIdentify { get; set; }
 
         public int BatchSize { get; set; }
 
         public string TestingGroup { get; set; }
 
-        public int ModifiedBy { get; set; }
+        public string JobStatus { get; set; }
+
+        public int PreviousMaxMessageId { get; set; }
+
+        public int LastMsgTargetId { get; set; }
+
+        public int LastVoidingHistoryCollectionId { get; set; }
+
+        public int LastLogId { get; set; }
     }
 }

@@ -24,7 +24,7 @@
 
         Task<(long, IEnumerable<Mapping>)> GetMappingsAsync(int jobId, int pageIndex, int pageSize);
 
-        Task<CommandResult> UpdateJobInfoAsync(UpdateJobInfo model);
+        Task<CommandResult> UpdateJobInfoAsync(UpdateJobInfo model, int modifiedBy);
 
         Task<IEnumerable<SettingType>> GetMsgContentsTypesAsync();
 

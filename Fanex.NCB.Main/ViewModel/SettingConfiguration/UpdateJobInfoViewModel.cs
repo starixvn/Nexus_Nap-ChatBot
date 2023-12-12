@@ -12,5 +12,16 @@
 
         [Required]
         public string TestingGroup { get; set; }
+
+        [Required]
+        public string JobStatus { get; set; }
+
+        public int PreviousMaxMessageId { get; set; }
+
+        public int LastMsgTargetId { get; set; }
+
+        public int LastVoidingHistoryCollectionId { get; set; }
+
+        public int LastLogId { get; set; }
     }
 }

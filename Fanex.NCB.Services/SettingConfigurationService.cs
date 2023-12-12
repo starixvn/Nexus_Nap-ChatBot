@@ -2,7 +2,9 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
+    using Fanex.NCB.Core.Constants;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SettingConfiguration;
     using Fanex.NCB.Models.Notification;
@@ -10,6 +12,7 @@
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Newtonsoft.Json;
 
     public class SettingConfigurationService : ISettingConfigurationService
     {
@@ -119,19 +122,29 @@
             return (criteria.Total, mappings);
         }
 
-        public async Task<CommandResult> UpdateJobInfoAsync(UpdateJobInfo model)
+        public async Task<CommandResult> UpdateJobInfoAsync(UpdateJobInfo model, int modifiedBy)
         {
+            var jobInfo = new List<UpdateJobSettingInfo>();
+            foreach (PropertyInfo property in model.GetType().GetProperties())
+            {
+                if (property.Name != Constants.JobIdentify)
+                {
+                    jobInfo.Add(new UpdateJobSettingInfo
+                    {
+                        JobIdentify = model.JobIdentify,
+                        SettingName = property.Name,
+                        SettingValue = property.GetValue(model).ToString()
+                    });
+                }
+            }
+
             var command = new UpdateJobInfoCommand
             {
-                Id = model.Id,
-                BatchSize = model.BatchSize,
-                TestingGroup = model.TestingGroup,
-                ModifiedBy = model.ModifiedBy
+                JobInfo = JsonConvert.SerializeObject(jobInfo),
+                ModifiedBy = modifiedBy
             };
 
-            var result = await baseService.ExecuteNonQueryAsync(command);
-
-            return result;
+            return await baseService.ExecuteNonQueryAsync(command);
         }
 
         public async Task<IEnumerable<SettingType>> GetMsgContentsTypesAsync()

@@ -155,11 +155,15 @@
             {
                 CommandResult result = await settingConfigurationService.UpdateJobInfoAsync(new UpdateJobInfo
                 {
-                    Id = viewModel.Id,
+                    JobIdentify = viewModel.Id,
                     BatchSize = viewModel.BatchSize,
                     TestingGroup = viewModel.TestingGroup,
-                    ModifiedBy = napSession.UserId
-                });
+                    JobStatus = viewModel.JobStatus,
+                    PreviousMaxMessageId = viewModel.PreviousMaxMessageId,
+                    LastMsgTargetId = viewModel.LastMsgTargetId,
+                    LastVoidingHistoryCollectionId = viewModel.LastVoidingHistoryCollectionId,
+                    LastLogId = viewModel.LastLogId
+                }, napSession.UserId);
                 return Json(result);
             }
 
