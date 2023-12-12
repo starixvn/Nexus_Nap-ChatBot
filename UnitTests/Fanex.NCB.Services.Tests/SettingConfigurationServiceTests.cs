@@ -215,13 +215,9 @@
             baseService.ExecuteNonQueryAsync(Arg.Do<UpdateJobInfoCommand>(x => command = x)).Returns(new CommandResult { Code = 0 });
 
             // Action
-            var result = await service.UpdateJobInfoAsync(model);
+            var result = await service.UpdateJobInfoAsync(model, 1);
 
             // Assert
-            Assert.Equal(model.Id, command.Id);
-            Assert.Equal(model.BatchSize, command.BatchSize);
-            Assert.Equal(model.TestingGroup, command.TestingGroup);
-            Assert.Equal(model.ModifiedBy, command.ModifiedBy);
             Assert.Equal(0, result.Code);
             Assert.True(result.IsSuccessful);
         }

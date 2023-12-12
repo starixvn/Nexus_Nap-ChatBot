@@ -25,9 +25,7 @@
             // Arrange
             var criteria = new UpdateJobInfoCommand
             {
-                Id = 1,
-                BatchSize = 100,
-                TestingGroup = "test",
+                JobInfo = "test",
                 ModifiedBy = 1
             };
 
@@ -44,9 +42,7 @@
             // Arrange
             var criteria = new UpdateJobInfoCommand
             {
-                Id = 0,
-                BatchSize = 0,
-                TestingGroup = "",
+                JobInfo = "",
                 ModifiedBy = 0
             };
 

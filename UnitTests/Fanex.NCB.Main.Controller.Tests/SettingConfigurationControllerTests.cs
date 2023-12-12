@@ -268,16 +268,14 @@
             var viewModel = fixture.Create<UpdateJobInfoViewModel>();
             var model = new UpdateJobInfo();
             var expected = fixture.Create<CommandResult>();
-            settingConfigurationService.UpdateJobInfoAsync(Arg.Do<UpdateJobInfo>(x => model = x)).Returns(expected);
+            settingConfigurationService.UpdateJobInfoAsync(Arg.Do<UpdateJobInfo>(x => model = x), napSession.UserId).Returns(expected);
 
             // Action
             var actual = await controller.UpdateJobInfo(viewModel) as JsonResult;
 
             // Assert
-            Assert.Equal(model.Id, viewModel.Id);
             Assert.Equal(model.BatchSize, viewModel.BatchSize);
             Assert.Equal(model.TestingGroup, viewModel.TestingGroup);
-            Assert.Equal(model.ModifiedBy, napSession.UserId);
             Assert.Equal(expected, actual.Value);
         }
 
