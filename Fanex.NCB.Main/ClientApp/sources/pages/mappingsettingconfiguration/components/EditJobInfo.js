@@ -32,14 +32,27 @@ export class EditJobInfo extends Component {
         this.haveHostPermission = document.getElementById('have-host-permission') && document.getElementById('have-host-permission').checked;
     }
 
+    isValueExceedMaxInt = (value) => {
+        const maxInt = 2147483647;
+        if (value) {
+            return parseInt(value) >= maxInt;
+        }
+        return false;
+    }
+
     handleChangeSaveMode = () => {
         this.toggleConfirmUpdateJobInfo();
         const groupIds = this.state.testingGroup.trim().split(',');
+        const { previousMaxMessageId, lastVoidingHistoryCollectionId, lastLogId, lastMsgTargetId } = this.state;
+        const idsToCheck = [previousMaxMessageId, lastVoidingHistoryCollectionId, lastLogId, lastMsgTargetId];
+
         let rexegNumber = new RegExp('[^0-9]');
         if (rexegNumber.test(this.state.batchSize)) {
             toast.error('Batch Size must be integer');
         } else if (groupIds.length === 0 || groupIds.filter(item => rexegNumber.test(item)).length > 0) {
             toast.error('Testing Group must be integer and separated by \',\' for multiple group.');
+        } else if (idsToCheck.some(this.isValueExceedMaxInt)) {
+            toast.error('Cannot save, new Previous Max ID exceeds the Integer datatype range!');
         } else {
             let data = {
                 id: this.state.id,
