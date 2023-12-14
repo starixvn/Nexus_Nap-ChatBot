@@ -14,6 +14,7 @@
         <CodeAnalysisRuleSet>..\.sonarlint\napchatbotcsharp.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
     <ItemGroup>
+        <None Remove="App_Data\SpNames.KLDR.xml" />
         <None Remove="App_Data\SpNames.LOCAL_1.xml" />
         <None Remove="App_Data\SpNames.LOCAL_2.xml" />
         <None Remove="App_Data\SpNames.LOCAL_3.xml" />
@@ -26,6 +27,9 @@
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+        <Content Include="App_Data\SpNames.KLDR.xml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
         <Content Include="App_Data\SpNames.SIT.xml">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
@@ -81,6 +85,9 @@
         <ProjectReference Include="..\Fanex.NCB.Services\Fanex.NCB.Services.csproj" />
     </ItemGroup>
     <ItemGroup>
+        <Content Update="appsettings.KLDR.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
         <Content Update="appsettings.PROD.json">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
