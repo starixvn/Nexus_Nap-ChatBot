@@ -7,8 +7,8 @@
     <Function Name="Sync Data">
         <Setting Key="NAP_ChatBot_GetDataBySiteId" SpName="NAP_ChatBot_GetDataBySiteId" DbName="DBPOL.NAP_UserControl.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_UserControl_SyncData" SpName="NAP_UserControl_SyncData" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_GetDataToSync" SpName="NAP_Chatbot_GetDataToSync_xtest" DbName="DBOIC.bodb_OIC.bodbAdminNet" Plain="0"></Setting>
-        <Setting Key="NCB_OIC_SyncData" SpName="NCB_OIC_SyncData_xtest" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_GetDataToSync" SpName="NAP_Chatbot_GetDataToSync" DbName="DBOIC.bodb_OIC.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NCB_OIC_SyncData" SpName="NCB_OIC_SyncData" DbName="ChatBot" Plain="0"></Setting>
     </Function>
     <Function Name="Special Delete">
         <Setting Key="Acc_SiteDBConfigSel" SpName="Acc_SiteDBConfigSel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
@@ -45,9 +45,9 @@
     </Function>
     <Function Name="Settlement">
         <Setting Key="NCB_ChatBot_Service_SettingSel" SpName="NCB_ChatBot_Service_SettingSel" DbName="ChatBot" Plain="0" />
-        <Setting Key="NAP_Chatbot_Settlement_InternalCSD_MessageSel" SpName="NAP_Chatbot_Settlement_InternalCSD_MessageSel_xtest" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_Settlement_InternalCSD_EventInfoSel" SpName="NAP_Chatbot_Settlement_InternalCSD_EventInfoSel_xtest" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
-        <Setting Key="NCB_Settlement_InternalCSD_Import" SpName="NCB_Settlement_InternalCSD_Import_xtest" DbName="ChatBot" Plain="0" />
+        <Setting Key="NAP_Chatbot_Settlement_InternalCSD_MessageSel" SpName="NAP_Chatbot_Settlement_InternalCSD_MessageSel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_Settlement_InternalCSD_EventInfoSel" SpName="NAP_Chatbot_Settlement_InternalCSD_EventInfoSel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NCB_Settlement_InternalCSD_Import" SpName="NCB_Settlement_InternalCSD_Import" DbName="ChatBot" Plain="0" />
         <Setting Key="NAP_Chatbot_Settlement_Licensee_MessageSel" SpName="NAP_Chatbot_Settlement_Licensee_MessageSel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_Chatbot_Settlement_Licensee_LeagueSel" SpName="NAP_Chatbot_Settlement_Licensee_LeagueSel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NCB_Settlement_Licensee_Import" SpName="NCB_Settlement_Licensee_Import" DbName="ChatBot" Plain="0" />

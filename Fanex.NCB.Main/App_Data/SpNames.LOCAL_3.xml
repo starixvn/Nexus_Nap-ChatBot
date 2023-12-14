@@ -31,7 +31,7 @@
         <Setting Key="NCB_Common_User_Sel" SpName="NCB_Common_User_Sel" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="NCB_Channel_Sel" SpName="NCB_Channel_Sel" DbName="ChatBot" Plain="0" />
         <Setting Key="NCB_Common_Platform_Sel" SpName="NCB_Common_Platform_Sel" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NCB_IntegrationMethod_Sel" SpName="NCB_IntegrationMethod_Sel_xtest" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_IntegrationMethod_Sel" SpName="NCB_IntegrationMethod_Sel" DbName="ChatBot" Plain="0" />
     </Function>
     <Function Name="Send Notification">
         <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>
@@ -40,19 +40,19 @@
     </Function>
 
     <Function Name="New Notification">
-        <Setting Key="NCB_NewNotification_Ins" SpName="NCB_NewNotification_Ins_xtest" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NCB_NewNotification_Recipient_Sel" SpName="NCB_NewNotification_Recipient_Sel_xtest" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_NewNotification_Ins" SpName="NCB_NewNotification_Ins" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_NewNotification_Recipient_Sel" SpName="NCB_NewNotification_Recipient_Sel" DbName="ChatBot" Plain="0" />
         <Setting Key="NCB_NewNotification_GetTemplates" SpName="NCB_NewNotification_GetTemplates" DbName="ChatBot" Plain="0" />
-        <Setting Key="NCB_ResendNotification_Sel" SpName="NCB_ResendNotification_Sel_xtest" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_ResendNotification_Sel" SpName="NCB_ResendNotification_Sel" DbName="ChatBot" Plain="0" />
     </Function>
     <Function Name="Notification List">
-        <Setting Key="NCB_NotificationList_Sel" SpName="NCB_NotificationList_Sel_xtest" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_NotificationList_Sel" SpName="NCB_NotificationList_Sel" DbName="ChatBot" Plain="0" />
         <Setting Key="NCB_NotificationList_Cancel_Upd" SpName="NCB_NotificationList_Cancel_Upd" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="NCB_NotificationList_ErrDetail_Sel" SpName="NCB_NotificationList_ErrDetail_Sel" DbName="ChatBot" Plain="0" />
         <Setting Key="NCB_NotificationList_Resolve_Upd" SpName="NCB_NotificationList_Resolve_Upd" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NCB_EditNotification_Sel" SpName="NCB_EditNotification_Sel_xtest" DbName="ChatBot" Plain="0" />
-        <Setting Key="NCB_EditNotification_Upd" SpName="NCB_EditNotification_Upd_xtest" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NCB_EditNotification_Recipient_Sel" SpName="NCB_EditNotification_Recipient_Sel_xtest" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_EditNotification_Sel" SpName="NCB_EditNotification_Sel" DbName="ChatBot" Plain="0" />
+        <Setting Key="NCB_EditNotification_Upd" SpName="NCB_EditNotification_Upd" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_EditNotification_Recipient_Sel" SpName="NCB_EditNotification_Recipient_Sel" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="NCB_NotificationList_UpdatedNotification_Sel" SpName="NCB_NotificationList_UpdatedNotification_Sel" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="NCB_NotificationList_ErrorNotifications_Sel" SpName="NCB_NotificationList_ErrorNotifications_Sel" DbName="ChatBot" Plain="0"></Setting>
     </Function>
@@ -164,7 +164,7 @@
         <Setting Key="NCB_JobInfo_Sel" SpName="NCB_JobInfo_Sel" DbName="ChatBot" Plain="0"></Setting>
 
         <Setting Key="NAP_Chatbot_AbnormalBets_MissingMesssageInfo_Sel" SpName="NAP_Chatbot_AbnormalBets_MissingMesssageInfo_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_MissingMesssageInfo_Sel" SpName="NAP_Chatbot_MissingMesssageInfo_Sel_xtest" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0">
+        <Setting Key="NAP_Chatbot_MissingMesssageInfo_Sel" SpName="NAP_Chatbot_MissingMesssageInfo_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0">
             <Mapping DataField="Content_en" ObjectProperty="Content" />
         </Setting>
         <Setting Key="NAP_Chatbot_MissingMesssage_Ins" SpName="NAP_Chatbot_MissingMesssage_Ins" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
@@ -180,7 +180,7 @@
             <Mapping DataField="CreatedDate" ObjectProperty="PostTime" />
         </Setting>
         <Setting Key="NAP_Chatbot_DataToJSON_Sel" SpName="NAP_Chatbot_DataToJSON_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_MissingMessage_Sel" SpName="NAP_Chatbot_MissingMessage_Sel_xtest" DbName="DBACC.bodb02.bodbAdminNet" Plain="0">
+        <Setting Key="NAP_Chatbot_MissingMessage_Sel" SpName="NAP_Chatbot_MissingMessage_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0">
             <Mapping DataField="Content_en" ObjectProperty="Content" />
         </Setting>
     </Function>
