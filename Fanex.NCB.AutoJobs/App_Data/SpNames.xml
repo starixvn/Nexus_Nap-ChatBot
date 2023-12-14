@@ -7,8 +7,8 @@
     <Function Name="Sync Data">
         <Setting Key="NAP_ChatBot_GetDataBySiteId" SpName="NAP_ChatBot_GetDataBySiteId" DbName="DBPOL.NAP_UserControl.bodbAdminNet" Plain="0"></Setting>
         <Setting Key="NAP_UserControl_SyncData" SpName="NAP_UserControl_SyncData" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_GetDataToSync" SpName="NAP_Chatbot_GetDataToSync_xpre" DbName="DBOIC.bodb_OIC.bodbAdminNet" Plain="0"></Setting>
-        <Setting Key="NCB_OIC_SyncData" SpName="NCB_OIC_SyncData_xpre" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_GetDataToSync" SpName="NAP_Chatbot_GetDataToSync" DbName="DBOIC.bodb_OIC.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NCB_OIC_SyncData" SpName="NCB_OIC_SyncData" DbName="ChatBot" Plain="0"></Setting>
     </Function>
     <Function Name="Special Delete">
         <Setting Key="Acc_SiteDBConfigSel" SpName="Acc_SiteDBConfigSel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
