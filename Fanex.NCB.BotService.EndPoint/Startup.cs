@@ -3,11 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
     using System.Text;
     using System.Threading;
     using Fanex.Caching.Redis;
-    using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.AspNetCore;
@@ -51,18 +49,7 @@
         [Obsolete]
         public void ConfigureServices(IServiceCollection services)
         {
-            Dictionary<string, ConnectionConfiguration> connections = Configuration
-                .GetSection("ConnectionStrings")
-                .GetChildren()
-                .ToDictionary(connection => connection.Key,
-                              connection => new ConnectionConfiguration(connection.Key, connection.Value));
-
-            DbSettingProviderManager
-               .StartNewSession()
-               .Use(connections)
-               .WithMySql()
-               .UseDefaultDbSettingProvider("~/App_Data/SpNames.xml")
-               .Run();
+            services.AddFanexMySql(Configuration);
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {
