@@ -60,7 +60,7 @@
             DbSettingProviderManager
                .StartNewSession()
                .Use(connections)
-               .WithMySql(resourcePath: $"~/App_Data/SpNames.xml")
+               .WithMySql()
                .Run();
 
             services.Configure<ForwardedHeadersOptions>(options =>
