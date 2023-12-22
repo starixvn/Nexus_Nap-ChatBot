@@ -3,9 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Data.SqlServer;
     using Fanex.Logging;
@@ -50,20 +48,7 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var connections = Configuration.GetSection("ConnectionStrings")
-                                    .GetChildren()
-                                    .AsEnumerable()
-                                    .Where(x => !string.IsNullOrWhiteSpace(x.GetValue<string>("Name")))
-                                    .ToDictionary(x => x.GetValue<string>("Name"),
-                                    y => new ConnectionConfiguration(y.GetValue<string>("Name"), y.GetValue<string>("ConnectionString"), y.GetValue<string>("ProviderName")));
-
-            DbSettingProviderManager
-               .StartNewSession()
-               .Use(connections)
-               .WithMySql()
-               .WithSqlServer()
-               .UseDefaultDbSettingProvider(resourcePath: $"~/App_Data/SpNames.xml")
-               .Run();
+            services.AddFanexSql(Configuration).AddFanexMySql(Configuration);
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {

@@ -61,6 +61,7 @@
                .StartNewSession()
                .Use(connections)
                .WithMySql()
+               .UseDefaultDbSettingProvider("~/App_Data/SpNames.xml")
                .Run();
 
             services.Configure<ForwardedHeadersOptions>(options =>

@@ -3,11 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
     using System.Threading;
     using Fanex.Caching;
     using Fanex.Caching.Redis;
-    using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Data.Repository;
     using Fanex.Data.SqlServer;
@@ -100,20 +98,7 @@
 
         private static void AddConfiguration(IServiceCollection services, IConfiguration configuration)
         {
-            var connections = configuration.GetSection("ConnectionStrings")
-                                    .GetChildren()
-                                    .AsEnumerable()
-                                    .Where(x => !string.IsNullOrWhiteSpace(x.GetValue<string>("Name")))
-                                    .ToDictionary(x => x.GetValue<string>("Name"),
-                                    y => new ConnectionConfiguration(y.GetValue<string>("Name"), y.GetValue<string>("ConnectionString"), y.GetValue<string>("ProviderName")));
-
-            DbSettingProviderManager
-                       .StartNewSession()
-                       .Use(connections)
-                       .WithMySql()
-                       .WithSqlServer()
-                       .UseDefaultDbSettingProvider("~/App_Data/SpNames.xml")
-                       .Run();
+            services.AddFanexSql(configuration).AddFanexMySql(configuration);
 
             LogManager
             .SetDefaultLogCategory(configuration.GetSection("LogCategory").Value)
