@@ -13,7 +13,6 @@
     using Fanex.NCB.Shared.Models.SpecialDeleteTicket.AbnormalBets;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Configuration;
-    using Newtonsoft.Json;
 
     public class SiteDbService : ISiteDbService
     {
@@ -40,16 +39,10 @@
         public async Task<IEnumerable<SiteDBConfig>> GetListSiteDbAsync()
         {
             var siteDbList = await baseService.GetDataAsync<SiteDBConfig>(new GetSiteDbListCriteria());
-            await logService.WriteMessageSentryErrorAsync($"Get from SP: \n {JsonConvert.SerializeObject(siteDbList)}");
-            await cacheService.SetAsync(ListSiteDbCacheKey, siteDbList,
-                    new CacheItemOptions
-                    {
-                        RelativeExpiration = TimeSpan.FromMinutes(CacheExpiration)
-                    });
+
             if (siteDbList is null || !siteDbList.Any())
             {
                 siteDbList = await baseService.GetDataAsync<SiteDBConfig>(new GetSiteDbListCriteria());
-                await logService.WriteMessageSentryErrorAsync($"Get from SP: \n {JsonConvert.SerializeObject(siteDbList)}");
 
                 await cacheService.SetAsync(ListSiteDbCacheKey, siteDbList,
                     new CacheItemOptions
