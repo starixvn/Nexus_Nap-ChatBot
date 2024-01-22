@@ -172,27 +172,50 @@
             var systemSetting = await commonService.GetServiceSetting(Constants.ServiceName_SpecialDeleteInternalCSD);
             if (systemSetting != null)
             {
-                var criteria = new GetVoidingHIstoryCollectionIdCriteria
+                var criteria = new GetVoidingHistoryCollectionIdCriteria
                 {
                     LastVoidingHistoryCollectionId = systemSetting.LastVoidingHistoryCollectionId,
                     BatchSize = systemSetting.BatchSize
                 };
-                var (tranIds, usernames, duplicatedTickets, messageIdLst) = await specialDeleteRepository.FetchVoidingHistoryMessage(criteria);
-
-                await GetMessageAndImportToChatbotAsync(tranIds, usernames, duplicatedTickets, messageIdLst, systemSetting);
+                var messageIdLst = await baseService.GetDataAsync<AbnormalMessage>(criteria);
+                await GetMessageAndImportToChatbotAsync(systemSetting, messageIdLst);
             }
         }
 
-        protected internal virtual async Task GetMessageAndImportToChatbotAsync(
-            IEnumerable<CollectionTransId> tranIds,
-            IEnumerable<CollectionUsername> usernameList,
-            IEnumerable<CollectionDuplicatedTickets> duplicatedTickets,
+        protected internal virtual async Task<ValueTuple<IEnumerable<AbnormalMessageContent>, IEnumerable<MessageMsgDetail>, int>> GetAbnormalMessageDetail(
             IEnumerable<AbnormalMessage> messageIdLst,
-            ServiceSetting setting)
+            int batchSize,
+            int lastMsgTargetId
+        )
         {
-            var (messageInfo, messageDetail, maxMsgTargetId) = await GetAbnormalBetsMessageContentAsync(messageIdLst, setting.BatchSize, setting.LastMsgTargetId);
-            var (tickets, usernames, dupTickets) = await siteDbService.GetTicketUsernamesAynnc(tranIds, usernameList, duplicatedTickets);
-            var (historyDetail, msg, abnormalAccountInfos, dupTicketDetails) = await GetVoidingHistoryDetailAsync(tickets, usernames, dupTickets, messageInfo, messageDetail);
+            var criteria = new GetAbnormalBetMessageDetailCriteria
+            {
+                MessageIdLst = XmlHelper<AbnormalMessage>.Serialize(messageIdLst.ToList()),
+                BatchSize = batchSize,
+                LastMsgTargetId = lastMsgTargetId
+            };
+            var data = await baseService.FetchMultipleAsync<AbnormalMessageContent, MessageMsgDetail>(criteria);
+            return new ValueTuple<IEnumerable<AbnormalMessageContent>, IEnumerable<MessageMsgDetail>, int>(data.Item1, data.Item2, criteria.MaxMsgtargetId);
+        }
+
+        protected internal virtual async Task<(IEnumerable<AbnormalMessageDetail>, IEnumerable<AbnormalMessage>, IEnumerable<AbnormalAccountInfo>, IEnumerable<DuplicateTicketDetail>)>
+        GetVoidingHistoryInternalCSDInfoAsync(
+            IEnumerable<AbnormalMessageContent> messageInfo,
+            IEnumerable<MessageMsgDetail> messageDetail)
+        {
+            var criteria = new GetVoidingHistoryInternalCSDInfoCriteria
+            {
+                MessageInfo = XmlHelper<AbnormalMessageContent>.Serialize(messageInfo.ToList()),
+                MessageDetail = XmlHelper<MessageMsgDetail>.Serialize(messageDetail.ToList()),
+            };
+
+            return await specialDeleteRepository.FetchVoidingHistoryInfo(criteria);
+        }
+
+        protected internal virtual async Task GetMessageAndImportToChatbotAsync(ServiceSetting setting, IEnumerable<AbnormalMessage> messageIdLst)
+        {
+            var (messageInfo, messageDetail, maxMsgTargetId) = await GetAbnormalMessageDetail(messageIdLst, setting.BatchSize, setting.LastMsgTargetId);
+            var (historyDetail, msg, abnormalAccountInfos, dupTicketDetails) = await GetVoidingHistoryInternalCSDInfoAsync(messageInfo, messageDetail);
             await GetTransInfoAsync(dupTicketDetails);
             FormatTelegramData(historyDetail);
             await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg, dupTicketDetails, abnormalAccountInfos, maxMsgTargetId);
@@ -226,40 +249,6 @@
                 msg.HomeName = TelegramFormatExtensions.EscapeSpecialSyntax(msg.HomeName);
                 msg.AwayName = TelegramFormatExtensions.EscapeSpecialSyntax(msg.AwayName);
             }
-        }
-
-        internal virtual async Task<ValueTuple<IEnumerable<AbnormalMessageContent>, IEnumerable<MessageMsgDetail> ,int>>
-        GetAbnormalBetsMessageContentAsync(IEnumerable<AbnormalMessage> listMsgs, int batchSize, int lastMsgTargetId)
-        {
-            var criteria = new GetAbnormalBetsMessageCriteria
-            {
-                MessageIDLst = XmlHelper<AbnormalMessage>.Serialize(listMsgs.ToList()),
-                BatchSize = batchSize,
-                LastMsgTargetId = lastMsgTargetId
-            };
-            var data = await baseService.FetchMultipleAsync<AbnormalMessageContent, MessageMsgDetail>(criteria);
-
-            return new ValueTuple<IEnumerable<AbnormalMessageContent>, IEnumerable<MessageMsgDetail>, int>(data.Item1, data.Item2, criteria.MaxMsgtargetId);
-        }
-
-        protected internal virtual async Task<(IEnumerable<AbnormalMessageDetail>, IEnumerable<AbnormalMessage>, IEnumerable<AbnormalAccountInfo>, IEnumerable<DuplicateTicketDetail>)>
-        GetVoidingHistoryDetailAsync(
-            IEnumerable<AbnormalTicketInfo> tickets,
-            IEnumerable<AbnormalUsernames> usernames,
-            IEnumerable<DuplicatedTicketInfo> dupTickets,
-            IEnumerable<AbnormalMessageContent> messageInfo, 
-            IEnumerable<MessageMsgDetail> messageDetail)
-        {
-            var criteria = new GetAbnormalBetInfoCriteria
-            {
-                TicketInfo = XmlHelper<AbnormalTicketInfo>.Serialize(tickets.ToList()),
-                UsernameLst = XmlHelper<AbnormalUsernames>.Serialize(usernames.ToList()),
-                DuplicatedInfo = XmlHelper<DuplicatedTicketInfo>.Serialize(dupTickets.ToList()),
-                MessageInfo = XmlHelper<AbnormalMessageContent>.Serialize(messageInfo.ToList()),
-                MessageDetail = XmlHelper<MessageMsgDetail>.Serialize(messageDetail.ToList()),
-            };
-
-            return await specialDeleteRepository.FetchVoidingHistoryInfo(criteria);
         }
 
         protected internal virtual async Task ImportAbnormalBetNotificationToChatbotDBAsync(
