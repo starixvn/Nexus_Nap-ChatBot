@@ -47,9 +47,9 @@
             return await base.GetMessageFromVoidingForLicenseeAsync(systemSetting);
         }
 
-        public async Task Public_GetMessageAndImportToChatbotAsync(IEnumerable<CollectionTransId> tickets, IEnumerable<CollectionUsername> usernames, IEnumerable<CollectionDuplicatedTickets> duplicatedTickets, IEnumerable<AbnormalMessage> messageIdLst, ServiceSetting setting)
+        public async Task Public_GetMessageAndImportToChatbotAsync(ServiceSetting setting, IEnumerable<AbnormalMessage> messageIdLst)
         {
-            await base.GetMessageAndImportToChatbotAsync(tickets, usernames, duplicatedTickets, messageIdLst, setting);
+            await base.GetMessageAndImportToChatbotAsync(setting, messageIdLst);
         }
 
         public async Task Public_ImportAbnormalBetNotificationToChatbotDBAsync(

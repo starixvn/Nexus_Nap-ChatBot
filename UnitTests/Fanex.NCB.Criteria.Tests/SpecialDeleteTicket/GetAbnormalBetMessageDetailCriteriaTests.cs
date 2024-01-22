@@ -3,14 +3,14 @@
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Xunit;
 
-    public class GetAbnormalBetsMessageCriteriaTests
+    public class GetAbnormalBetMessageDetailCriteriaTests
     {
         [Fact]
         public void GetSettingKey_WhenCalled_ReturnExpectedSettingKey()
         {
             // Arrange
-            var criteria = new GetAbnormalBetsMessageCriteria();
-            var expected = "NAP_Chatbot_SpecialDeleteMsg_AbnormalBets_Sel";
+            var criteria = new GetAbnormalBetMessageDetailCriteria();
+            var expected = "NAP_Chatbot_SpecialDelete_InternalCSD_MessageSel";
 
             // Act
             var actual = criteria.GetSettingKey();
@@ -23,9 +23,9 @@
         public void IsValid_WhenCalled_ReturnTrue()
         {
             // Arrange
-            var criteria = new GetAbnormalBetsMessageCriteria
+            var criteria = new GetAbnormalBetMessageDetailCriteria
             {
-                MessageIDLst = "1"
+                MessageIdLst = "1"
             };
 
             // Act
@@ -39,9 +39,9 @@
         public void IsValid_WhenCalled_ReturnFalse()
         {
             // Arrange
-            var criteria = new GetAbnormalBetsMessageCriteria
+            var criteria = new GetAbnormalBetMessageDetailCriteria
             {
-                MessageIDLst = ""
+                MessageIdLst = ""
             };
 
             // Act

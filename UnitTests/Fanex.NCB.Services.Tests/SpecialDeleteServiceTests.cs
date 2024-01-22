@@ -115,23 +115,7 @@
             await service.PullVoidingMessageInternalDepartmentAsync();
 
             // Assert
-            await baseService.DidNotReceive().GetDataAsync<MessageHistory>(Arg.Any<GetVoidingHIstoryCollectionIdCriteria>());
-        }
-
-        [Fact]
-        public async Task PullVoidingMessageInternalDepartmentAsync_NoDataVoidingHistory_StillGoOn()
-        {
-            // Arrange
-            var setting = fixture.Create<ServiceSetting>();
-            var (tranIds, usernames, duplicatedTicket, messageIdLst) = fixture.Create<(IEnumerable<CollectionTransId>, IEnumerable<CollectionUsername>, IEnumerable<CollectionDuplicatedTickets>, IEnumerable<AbnormalMessage>)>();
-            var service = GetService();
-            commonService.GetServiceSetting(Arg.Any<string>()).Returns(setting);
-            specialDeleteRepository.FetchVoidingHistoryMessage(Arg.Any<GetVoidingHIstoryCollectionIdCriteria>()).Returns((tranIds, usernames, duplicatedTicket, messageIdLst));
-            // Act
-            await service.PullVoidingMessageInternalDepartmentAsync();
-
-            // Assert
-            service.Received().Protected("GetMessageAndImportToChatbotAsync", tranIds, usernames, duplicatedTicket, messageIdLst, setting);
+            await baseService.DidNotReceive().GetDataAsync<MessageHistory>(Arg.Any<GetVoidingHistoryCollectionIdCriteria>());
         }
 
         #endregion PullVoidingMessageInternalDepartmentAsync
