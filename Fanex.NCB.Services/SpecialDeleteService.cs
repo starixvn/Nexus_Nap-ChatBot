@@ -68,9 +68,9 @@
 
                 if (messages.Any() && details.Any())
                 {
-                    var issueTypes = await GetIssueTypeAsync(messages);
+                    var (issueTypes, messageDetails) = await GetIssueTypeAsync(messages, details);
 
-                    var (command, notifications) = await ImportMessageToChatbotDBAsync(issueTypes, details);
+                    var (command, notifications) = await ImportMessageToChatbotDBAsync(issueTypes, messageDetails);
 
                     if (command.IsSuccessful && notifications.Any())
                     {
@@ -82,13 +82,14 @@
             }
         }
 
-        private async Task<IEnumerable<SpecialDeleteIssueType>> GetIssueTypeAsync(IEnumerable<Message> messages)
+        private async Task<ValueTuple<IEnumerable<SpecialDeleteIssueType>, IEnumerable<MessageDetail>>> GetIssueTypeAsync(IEnumerable<Message> messages, IEnumerable<MessageDetail> messageDetails)
         {
             var criteria = new GetMessageIssueTypeCriteria
             {
-                Message = XmlHelper<Message>.Serialize(messages.ToList())
+                Message = XmlHelper<Message>.Serialize(messages.ToList()),
+                MessageDetail = XmlHelper<MessageDetail>.Serialize(messageDetails.ToList())
             };
-            return await baseService.GetDataAsync<SpecialDeleteIssueType>(criteria);
+            return await baseService.FetchMultipleAsync<SpecialDeleteIssueType, MessageDetail>(criteria);
         }
 
         protected internal virtual async Task UpdateMessageHistoryVoidingForLicenseeAsync(IEnumerable<MessageDetail> msgDetails)
