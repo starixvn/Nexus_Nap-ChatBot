@@ -82,14 +82,14 @@
             var setting = fixture.Create<SystemSetting>();
             var messages = fixture.Create<IEnumerable<Message>>();
             var messageDetails = fixture.Create<IEnumerable<MessageDetail>>();
-            var messageImport = fixture.Create<IEnumerable<SpecialDeleteIssueType>>();
+            var messageImport = fixture.Create<ValueTuple<IEnumerable<SpecialDeleteIssueType>, IEnumerable<MessageDetail>>>();
             var command = new CommandResult { Code = 0 };
             var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
             var service = GetService();
             baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetSystemSettingCriteria>()).Returns(setting);
-            baseService.GetDataAsync<SpecialDeleteIssueType>(Arg.Any<GetMessageIssueTypeCriteria>()).Returns(messageImport);
+            baseService.FetchMultipleAsync<SpecialDeleteIssueType, MessageDetail>(Arg.Any<GetMessageIssueTypeCriteria>()).Returns(messageImport);
             service.Protected("GetMessageFromVoidingForLicenseeAsync", setting).Returns(Task.FromResult<(IEnumerable<Message>, IEnumerable<MessageDetail>)>((messages, messageDetails)));
-            service.Protected("ImportMessageToChatbotDBAsync", messageImport, messageDetails).Returns(Task.FromResult<(CommandResult, IEnumerable<NotificationMessage>)>((command, notifications)));
+            service.Protected("ImportMessageToChatbotDBAsync", messageImport.Item1, messageImport.Item2).Returns(Task.FromResult<(CommandResult, IEnumerable<NotificationMessage>)>((command, notifications)));
 
             // Act
             await service.PullVoidingMessageLicenseeAsync();
