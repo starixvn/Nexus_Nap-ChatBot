@@ -7,7 +7,7 @@
     public class Message
     {
         [XmlAttribute("MessageId")]
-        public int MessageID { get; set; }
+        public int MessageId { get; set; }
 
         [XmlAttribute("MsgContentsType")]
         public int MsgContentsType { get; set; }
