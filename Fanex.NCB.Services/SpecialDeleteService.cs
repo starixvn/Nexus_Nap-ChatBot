@@ -94,7 +94,7 @@
 
         protected internal virtual async Task UpdateMessageHistoryVoidingForLicenseeAsync(IEnumerable<MessageDetail> msgDetails)
         {
-            var msgHistories = msgDetails.Select(x => new MessageHistory { MessageId = x.MessageId, TargetId = x.TargetID }).ToList();
+            var msgHistories = msgDetails.Select(x => new MessageHistory { MessageId = x.MessageId, TargetId = x.TargetId }).ToList();
             var xmlMsg = XmlHelper<MessageHistory>.Serialize(msgHistories);
             await InsertToMessageChatbotAsync(xmlMsg, VoidTicketForLicenseeJobIdentity);
         }
