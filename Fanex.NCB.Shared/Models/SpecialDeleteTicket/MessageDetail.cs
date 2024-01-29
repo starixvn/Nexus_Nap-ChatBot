@@ -2,13 +2,13 @@
 {
     public class MessageDetail
     {
-        public long MessageID { get; set; }
+        public long MessageId { get; set; }
 
         public string Site { get; set; }
 
-        public int TargetID { get; set; }
+        public int TargetId { get; set; }
 
-        public int LeagueGroupID { get; set; }
+        public int LeagueGroupId { get; set; }
 
         public int IsChinaView { get; set; }
 
