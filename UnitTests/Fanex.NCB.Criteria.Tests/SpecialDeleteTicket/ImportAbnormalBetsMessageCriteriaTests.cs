@@ -10,7 +10,7 @@
         {
             // Arrange
             var criteria = new ImportAbnormalBetsMessageCriteria();
-            var expected = "NCB_SpecialDeleteMsg_AbnormalBets_Import";
+            var expected = "NCB_SpecialDelete_InternalCSD_Import";
 
             // Act
             var actual = criteria.GetSettingKey();

@@ -27,5 +27,6 @@
         public bool IsParlay { get; set; }
         public string ContentEN { get; set; }
         public string ContentCS { get; set; }
+        public string SiteNameGroup { get; set; }
     }
 }

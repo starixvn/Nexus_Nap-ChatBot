@@ -15,5 +15,7 @@
         public string SportNameEN { get; set; }
 
         public bool IsTest { get; set; }
+
+        public string SiteNameGroup {  get; set; }
     }
 }

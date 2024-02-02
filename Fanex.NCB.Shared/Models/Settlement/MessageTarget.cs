@@ -5,5 +5,7 @@
         public int MessageId { get; set; }
 
         public int MsgTargetId { get; set; }
+
+        public string SiteNameGroup { get; set; }
     }
 }

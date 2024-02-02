@@ -47,5 +47,8 @@
 
         [XmlAttribute("IsTest")]
         public bool IsTest { get; set; }
+
+        [XmlAttribute("SiteNameGroup")]
+        public string SiteNameGroup { get; set; }
     }
 }

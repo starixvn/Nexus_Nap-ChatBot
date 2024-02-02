@@ -18,7 +18,7 @@
 
         public string ErrMsg { get; set; }
 
-        public override string GetSettingKey() => "NCB_SpecialDeleteMsg_AbnormalBets_Import";
+        public override string GetSettingKey() => "NCB_SpecialDelete_InternalCSD_Import";
 
         public override bool IsValid() => true;
     }

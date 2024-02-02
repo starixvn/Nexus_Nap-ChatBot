@@ -10,5 +10,8 @@
 
         [XmlAttribute("MessageId")]
         public int MessageId { get; set; }
+
+        [XmlAttribute("SiteNameGroup")]
+        public string SiteNameGroup { get; set; }
     }
 }
