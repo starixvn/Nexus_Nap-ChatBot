@@ -25,6 +25,8 @@
 
         public string ServiceUrl { get; set; }
 
+        public string SiteNameGroup { get; set; }
+
         public int ErrCode { get; set; }
 
         public string ErrorMessage { get; set; }

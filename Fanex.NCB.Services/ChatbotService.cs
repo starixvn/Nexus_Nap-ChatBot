@@ -131,7 +131,7 @@
                         NotificationId = noti.NotificationId,
                         Message = noti.Content,
                         ChannelId = noti.ChannelId,
-                        Recipients = recipients.Where(r => r.ChannelId == noti.ChannelId).Select(r =>
+                        Recipients = recipients.Where(r => r.ChannelId == noti.ChannelId && (string.IsNullOrEmpty(noti.SiteNameGroup) || r.SiteNameGroup == noti.SiteNameGroup)).Select(r =>
                             new ConversationInfo
                             {
                                 BotConversationId = r.BotConversationId,
