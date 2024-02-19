@@ -28,7 +28,10 @@ export class AppContainer extends Component {
 
     handleOpenCreateTemplatePopup = () => this.props.setCreateTemplatePopup({ show: true })
 
-    handleCloseCreateTemplatePopup = () => this.props.setCreateTemplatePopup({ show: false })
+    handleCloseCreateTemplatePopup = () => {
+        this.props.setCreateTemplateResult(null);
+        this.props.setCreateTemplatePopup({ show: false });
+    }
 
     handleCreateSuccess = () => {
         this.handleCloseCreateTemplatePopup();
