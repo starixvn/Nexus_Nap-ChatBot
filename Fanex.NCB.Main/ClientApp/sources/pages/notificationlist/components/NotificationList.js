@@ -314,6 +314,7 @@ export default class NotificationList extends Component {
                 this.setState({ tableData: tableData });
             }
         });
+        this.getNotifications();
     }
 
     onInsertedNewNotification = (notificationIds) => {
@@ -327,6 +328,7 @@ export default class NotificationList extends Component {
 
             this.setState({ tableData: tableData });
         });
+        this.getNotifications();
     }
 
     compareWithCurrentFilter = (notifications) => {
