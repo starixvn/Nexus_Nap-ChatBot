@@ -57,7 +57,7 @@
         <Setting Key="NCB_NotificationList_ErrorNotifications_Sel" SpName="NCB_NotificationList_ErrorNotifications_Sel" DbName="ChatBot" Plain="0"></Setting>
     </Function>
     <Function Name="Sync Data">
-        <Setting Key="NAP_ChatBot_GetDataBySiteId" SpName="NAP_ChatBot_GetDataBySiteId" DbName="DBPOL.NAP_UserControl.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_ChatBot_GetDataBySiteId" SpName="NAP_ChatBot_GetDataBySiteId" DbName="DBPOL.NAP_UserControl.wsv_nap" Plain="0"></Setting>
         <Setting Key="NAP_UserControl_SyncData" SpName="NAP_UserControl_SyncData" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="NAP_UserControl_SyncData_ByUserId" SpName="NAP_UserControl_SyncData_ByUserId" DbName="ChatBot" Plain="0"></Setting>
         <Setting Key="OIC_SyncData" SpName="OIC_SyncData" DbName="ChatBot" Plain="0"></Setting>
@@ -163,24 +163,24 @@
     <Function Name="ResetLastMessageId">
         <Setting Key="NCB_JobInfo_Sel" SpName="NCB_JobInfo_Sel" DbName="ChatBot" Plain="0"></Setting>
 
-        <Setting Key="NAP_Chatbot_AbnormalBets_MissingMesssageInfo_Sel" SpName="NAP_Chatbot_AbnormalBets_MissingMesssageInfo_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_MissingMesssageInfo_Sel" SpName="NAP_Chatbot_MissingMesssageInfo_Sel" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0">
+        <Setting Key="NAP_Chatbot_AbnormalBets_MissingMesssageInfo_Sel" SpName="NAP_Chatbot_AbnormalBets_MissingMesssageInfo_Sel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_MissingMesssageInfo_Sel" SpName="NAP_Chatbot_MissingMesssageInfo_Sel" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0">
             <Mapping DataField="Content_en" ObjectProperty="Content" />
         </Setting>
-        <Setting Key="NAP_Chatbot_MissingMesssage_Ins" SpName="NAP_Chatbot_MissingMesssage_Ins" DbName="DBMSG.bodb_Message.bodbAdminNet" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_MissingMesssage_Ins" SpName="NAP_Chatbot_MissingMesssage_Ins" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0"></Setting>
         <Setting Key="NCB_JobInfo_Upd" SpName="NCB_JobInfo_Upd" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_MissingProblemAccounts_Sel" SpName="NAP_Chatbot_MissingProblemAccounts_Sel" DbName="DBCUST.CustDB.bodbAdminNet" Plain="0">
+        <Setting Key="NAP_Chatbot_MissingProblemAccounts_Sel" SpName="NAP_Chatbot_MissingProblemAccounts_Sel" DbName="DBCUST.CustDB.wsv_nap" Plain="0">
             <Mapping DataField="Content_en" ObjectProperty="Content" />
             <Mapping DataField="LogId" ObjectProperty="MessageId" />
             <Mapping DataField="CreatedDate" ObjectProperty="PostTime" />
         </Setting>
-        <Setting Key="NAP_Chatbot_MissingMonitoredPlayer_Sel" SpName="NAP_Chatbot_MissingMonitoredPlayer_Sel" DbName="DBEXT.bodb02.bodbAdminNet" Plain="0">
+        <Setting Key="NAP_Chatbot_MissingMonitoredPlayer_Sel" SpName="NAP_Chatbot_MissingMonitoredPlayer_Sel" DbName="DBEXT.bodb02.wsv_nap" Plain="0">
             <Mapping DataField="Content_en" ObjectProperty="Content" />
             <Mapping DataField="LogId" ObjectProperty="MessageId" />
             <Mapping DataField="CreatedDate" ObjectProperty="PostTime" />
         </Setting>
-        <Setting Key="NAP_Chatbot_DataToJSON_Sel" SpName="NAP_Chatbot_DataToJSON_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_MissingMessage_Sel" SpName="NAP_Chatbot_MissingMessage_Sel" DbName="DBACC.bodb02.bodbAdminNet" Plain="0">
+        <Setting Key="NAP_Chatbot_DataToJSON_Sel" SpName="NAP_Chatbot_DataToJSON_Sel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_MissingMessage_Sel" SpName="NAP_Chatbot_MissingMessage_Sel" DbName="DBACC.bodb02.wsv_nap" Plain="0">
             <Mapping DataField="Content_en" ObjectProperty="Content" />
         </Setting>
     </Function>
