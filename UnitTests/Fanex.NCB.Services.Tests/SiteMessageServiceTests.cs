@@ -1,6 +1,5 @@
 ﻿namespace Fanex.NCB.Services.Tests
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -25,7 +24,6 @@
         private IBaseService baseService;
         private IChatbotService chatbotService;
         private IPushSignalRService pushSignalService;
-        private ILogService logService;
         private IConfiguration configuration;
         private ICommonService commonService;
 
@@ -147,8 +145,8 @@
             await chatbotService.DidNotReceive().NotifyToChatGroupAsync(Arg.Any<string>());
 
             await pushSignalService.Received().PushNewNotification(notificationIds);
-            service.Received().Protected("SendMessageByChannelAsync", (byte)1, notifications);
-            service.Received().Protected("SendMessageByChannelAsync", (byte)2, notifications);
+            await commonService.Received(1).SendMessageByChannelAsync((byte)1, notifications);
+            await commonService.Received(1).SendMessageByChannelAsync((byte)2, notifications);
         }
 
         [Fact]
@@ -168,8 +166,8 @@
             await chatbotService.Received().NotifyToChatGroupAsync("error");
 
             await pushSignalService.DidNotReceive().PushNewNotification(notificationIds);
-            service.DidNotReceive().Protected("SendMessageByChannelAsync", (byte)1, notifications);
-            service.DidNotReceive().Protected("SendMessageByChannelAsync", (byte)2, notifications);
+            await commonService.DidNotReceive().SendMessageByChannelAsync((byte)1, notifications);
+            await commonService.DidNotReceive().SendMessageByChannelAsync((byte)2, notifications);
         }
 
         #endregion OnAfterImportDataAsync
@@ -246,43 +244,6 @@
                 });
         }
 
-        #region SendMessageByChannelAsync
-
-        [Fact]
-        public async Task SendMessageByChannelAsync_WhenCalled_DoAsExpected()
-        {
-            // Arrange
-            var channelId = fixture.Create<byte>();
-            var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
-            var service = GetService();
-
-            // Act
-            await service.Public_SendMessageByChannelAsync(channelId, notifications);
-
-            // Assert
-            await chatbotService.Received().SendMultiMessageAsync(channelId, Arg.Any<IEnumerable<NotificationMessage>>());
-        }
-
-        [Fact]
-        public async Task SendMessageByChannelAsync_Exception_ExpectedWriteLog()
-        {
-            // Arrange
-            var channelId = fixture.Create<byte>();
-            var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
-            var exception = fixture.Create<Exception>();
-            var service = GetService();
-            chatbotService.SendMultiMessageAsync(channelId, Arg.Any<IEnumerable<NotificationMessage>>())
-                .Returns(Task.FromException<NotificationMessageResponse>(exception));
-
-            // Act
-            await service.Public_SendMessageByChannelAsync(channelId, notifications);
-
-            // Assert
-            logService.Received().WriteLogFileError(exception.Message);
-        }
-
-        #endregion SendMessageByChannelAsync
-
         #region Helpers
 
         private SiteMessageServiceTestable GetService()
@@ -291,14 +252,12 @@
             chatbotService = Substitute.For<IChatbotService>();
             configuration = Substitute.For<IConfiguration>();
             pushSignalService = Substitute.For<IPushSignalRService>();
-            logService = Substitute.For<ILogService>();
             commonService = Substitute.For<ICommonService>();
 
             return Substitute.For<SiteMessageServiceTestable>(
                 baseService,
                 chatbotService,
                 pushSignalService,
-                logService,
                 configuration,
                 commonService);
         }

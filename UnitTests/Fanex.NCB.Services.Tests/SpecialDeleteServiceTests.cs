@@ -5,11 +5,9 @@
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.Criteria.Common;
     using Fanex.NCB.Criteria.SiteMessage;
     using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Models.NotifictaionSendMessage;
-    using Fanex.NCB.Repository;
     using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Services.Tests.TestableClasses;
@@ -28,10 +26,7 @@
         private readonly IFixture fixture = new Fixture();
         private IBaseService baseService;
         private IChatbotService chatbotService;
-        private IPushSignalRService pushSignalService;
-        private ILogService logService;
         private IConfiguration configuration;
-        private ISiteDbService siteDbService;
         private ICommonService commonService;
         private IRefNoTicketService refNoTicketService;
         private ISpecialDeleteRepository specialDeleteRepository;
@@ -96,7 +91,7 @@
 
             // Assert
             service.Received().Protected("UpdateMessageHistoryVoidingForLicenseeAsync", messageDetails);
-            service.Received().Protected("OnAfterImportDataAsync", command, notifications);
+            await commonService.Received(1).OnAfterImportDataAsync(command, notifications);
         }
 
         #endregion PullVoidingMessageLicenseeAsync
@@ -137,50 +132,6 @@
         }
 
         #endregion UpdateMessageHistoryVoidingForLicenseeAsync
-
-        #region OnAfterImportDataAsync
-
-        [Fact]
-        public async Task OnAfterImportDataAsync_IsSuccessful_DoAsExpected()
-        {
-            // Arrange
-            var commandResult = new CommandResult { Code = 0 };
-            var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
-            var notificationIds = string.Join(",", notifications.Select(x => x.NotificationId));
-            var service = GetService();
-
-            // Act
-            await service.Public_OnAfterImportDataAsync(commandResult, notifications);
-
-            // Assert
-            await chatbotService.DidNotReceive().NotifyToChatGroupAsync(Arg.Any<string>());
-
-            await pushSignalService.Received().PushNewNotification(notificationIds);
-            service.Received().Protected("SendMessageByChannelAsync", (byte)1, notifications);
-            service.Received().Protected("SendMessageByChannelAsync", (byte)2, notifications);
-        }
-
-        [Fact]
-        public async Task OnAfterImportDataAsync_IsUnsuccessful_WithMessage_DoAsExpected()
-        {
-            // Arrange
-            var commandResult = new CommandResult { Code = 1, Message = "error" };
-            var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
-            var notificationIds = string.Join(",", notifications.Select(x => x.NotificationId));
-            var service = GetService();
-
-            // Act
-            await service.Public_OnAfterImportDataAsync(commandResult, notifications);
-
-            // Assert
-            await chatbotService.Received().NotifyToChatGroupAsync("error");
-
-            await pushSignalService.DidNotReceive().PushNewNotification(notificationIds);
-            service.DidNotReceive().Protected("SendMessageByChannelAsync", (byte)1, notifications);
-            service.DidNotReceive().Protected("SendMessageByChannelAsync", (byte)2, notifications);
-        }
-
-        #endregion OnAfterImportDataAsync
 
         [Fact]
         public async Task ImportMessageToChatbotDBAsync_WhenCalled_ReturnAsExpectedResult()
@@ -285,7 +236,7 @@
             // Assert
             Assert.Equal(JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = "yyyy-MM-dd HH:mm:ss.fff" }), criteria.MessageHeader);
 
-            service.Received().Protected("OnAfterImportDataAsync", Arg.Is<CommandResult>(x => x.Code == 0 && x.Message == ""), notificationMessages);
+            await commonService.Received(1).OnAfterImportDataAsync(Arg.Is<CommandResult>(x => x.Code == 0 && x.Message == ""), notificationMessages);
         }
 
         [Fact]
@@ -314,7 +265,7 @@
             Assert.Equal(JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = "yyyy-MM-dd HH:mm:ss.fff" }), criteria.MessageHeader);
 
             service.DidNotReceive().Protected("InsertToMessageChatbotAsync", xml, 2);
-            service.Received().Protected("OnAfterImportDataAsync", Arg.Is<CommandResult>(x => x.Code == 1 && x.Message == "error message"), notificationMessages);
+            await commonService.Received(1).OnAfterImportDataAsync(Arg.Is<CommandResult>(x => x.Code == 1 && x.Message == "error message"), notificationMessages);
         }
 
         #endregion ImportAbnormalBetNotificationToChatbotDBAsync
@@ -339,58 +290,18 @@
             Assert.Equal(messages, command.MessageIDLst);
         }
 
-        #region SendMessageByChannelAsync
-
-        [Fact]
-        public async Task SendMessageByChannelAsync_WhenCalled_DoAsExpected()
-        {
-            // Arrange
-            var channelId = fixture.Create<byte>();
-            var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
-            var service = GetService();
-
-            // Act
-            await service.Public_SendMessageByChannelAsync(channelId, notifications);
-
-            // Assert
-            await chatbotService.Received().SendMultiMessageAsync(channelId, Arg.Any<IEnumerable<NotificationMessage>>());
-        }
-
-        [Fact]
-        public async Task SendMessageByChannelAsync_Exception_DoAsExpected()
-        {
-            // Arrange
-            var channelId = fixture.Create<byte>();
-            var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
-            var exception = fixture.Create<Exception>();
-            var service = GetService();
-            chatbotService.SendMultiMessageAsync(channelId, Arg.Any<IEnumerable<NotificationMessage>>())
-                .Returns(Task.FromException<NotificationMessageResponse>(exception));
-
-            // Act
-            await service.Public_SendMessageByChannelAsync(channelId, notifications);
-
-            // Assert
-            logService.Received().WriteLogFileError(exception.Message);
-        }
-
-        #endregion SendMessageByChannelAsync
-
         #region Helpers
 
         private SpecialDeleteServiceTestable GetService()
         {
             baseService = Substitute.For<IBaseService>();
             chatbotService = Substitute.For<IChatbotService>();
-            pushSignalService = Substitute.For<IPushSignalRService>();
-            logService = Substitute.For<ILogService>();
             configuration = Substitute.For<IConfiguration>();
-            siteDbService = Substitute.For<ISiteDbService>();
             configuration.GetSection("Environment").Value.Returns("UAT");
             commonService = Substitute.For<ICommonService>();
             refNoTicketService = Substitute.For<IRefNoTicketService>();
             specialDeleteRepository = Substitute.For<ISpecialDeleteRepository>();
-            return Substitute.For<SpecialDeleteServiceTestable>(baseService, chatbotService, pushSignalService, logService, siteDbService, configuration, commonService, refNoTicketService, specialDeleteRepository);
+            return Substitute.For<SpecialDeleteServiceTestable>(baseService, chatbotService, configuration, commonService, refNoTicketService, specialDeleteRepository);
         }
 
         #endregion Helpers

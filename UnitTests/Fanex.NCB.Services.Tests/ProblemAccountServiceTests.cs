@@ -1,8 +1,6 @@
 ﻿namespace Fanex.NCB.Services.Tests
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.Core.Constants;
@@ -23,8 +21,6 @@
         private IBaseService baseService;
         private ICommonService commonService;
         private IChatbotService chatbotService;
-        private IPushSignalRService pushSignalService;
-        private ILogService logService;
 
         [Fact]
         public async Task SendMessageProblemAccountAsync_SettingIsNull_DoNothing()
@@ -209,98 +205,15 @@
             Assert.Equal(notifications, result.Item2);
         }
 
-        #region OnAfterImportDataAsync
-
-        [Fact]
-        public async Task OnAfterImportDataAsync_IsSuccessful_DoAsExpected()
-        {
-            // Arrange
-            var commandResult = new CommandResult { Code = 0 };
-            var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
-            var notificationIds = string.Join(",", notifications.Select(x => x.NotificationId));
-            var service = GetService();
-
-            // Act
-            await service.Public_OnAfterImportDataAsync(commandResult, notifications);
-
-            // Assert
-            await chatbotService.DidNotReceive().NotifyToChatGroupAsync(Arg.Any<string>());
-
-            await pushSignalService.Received().PushNewNotification(notificationIds);
-            service.Received().Protected("SendMessageByChannelAsync", (byte)1, notifications);
-            service.Received().Protected("SendMessageByChannelAsync", (byte)2, notifications);
-        }
-
-        [Fact]
-        public async Task OnAfterImportDataAsync_IsUnsuccessful_DoAsExpected()
-        {
-            // Arrange
-            var commandResult = new CommandResult { Code = 1, Message = "error" };
-            var notifications = fixture.CreateMany<NotificationMessage>();
-            var notificationIds = string.Join(",", notifications.Select(x => x.NotificationId));
-            var service = GetService();
-
-            // Act
-            await service.Public_OnAfterImportDataAsync(commandResult, notifications);
-
-            // Assert
-            await chatbotService.Received().NotifyToChatGroupAsync("error");
-
-            await pushSignalService.DidNotReceive().PushNewNotification(notificationIds);
-            service.DidNotReceive().Protected("SendMessageByChannelAsync", (byte)1, notifications);
-            service.DidNotReceive().Protected("SendMessageByChannelAsync", (byte)2, notifications);
-        }
-
-        #endregion OnAfterImportDataAsync
-
-        #region SendMessageByChannelAsync
-
-        [Fact]
-        public async Task SendMessageByChannelAsync_WhenCalled_DoAsExpected()
-        {
-            // Arrange
-            var channelId = fixture.Create<byte>();
-            var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
-            var service = GetService();
-
-            // Act
-            await service.Public_SendMessageByChannelAsync(channelId, notifications);
-
-            // Assert
-            await chatbotService.Received().SendMultiMessageAsync(channelId, Arg.Any<IEnumerable<NotificationMessage>>());
-        }
-
-        [Fact]
-        public async Task SendMessageByChannelAsync_Exception_DoAsExpected()
-        {
-            // Arrange
-            var channelId = fixture.Create<byte>();
-            var notifications = fixture.Create<IEnumerable<NotificationMessage>>();
-            var exception = fixture.Create<Exception>();
-            var service = GetService();
-            chatbotService.SendMultiMessageAsync(channelId, Arg.Any<IEnumerable<NotificationMessage>>())
-                .Returns(Task.FromException<NotificationMessageResponse>(exception));
-
-            // Act
-            await service.Public_SendMessageByChannelAsync(channelId, notifications);
-
-            // Assert
-            logService.Received().WriteLogFileError(exception.Message);
-        }
-
-        #endregion SendMessageByChannelAsync
-
         #region Helpers
 
-        private ProblemAccountServiceTestable GetService()
+        private ProblemAccountService GetService()
         {
             baseService = Substitute.For<IBaseService>();
             commonService = Substitute.For<ICommonService>();
             chatbotService = Substitute.For<IChatbotService>();
-            pushSignalService = Substitute.For<IPushSignalRService>();
-            logService = Substitute.For<ILogService>();
 
-            return Substitute.For<ProblemAccountServiceTestable>(baseService, commonService, chatbotService, pushSignalService, logService);
+            return Substitute.For<ProblemAccountService>(baseService, commonService, chatbotService);
         }
 
         #endregion Helpers

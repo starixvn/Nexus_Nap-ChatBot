@@ -15,24 +15,16 @@
         public SpecialDeleteServiceTestable(
             IBaseService baseService,
             IChatbotService chatbotService,
-            IPushSignalRService pushSignalService,
-            ILogService logService,
-            ISiteDbService siteDbService,
             IConfiguration configuration,
             ICommonService commonService,
             IRefNoTicketService refNoTicketService,
-            ISpecialDeleteRepository specialDeleteRepository) : base(baseService, chatbotService, pushSignalService, logService, configuration, siteDbService, commonService, refNoTicketService, specialDeleteRepository)
+            ISpecialDeleteRepository specialDeleteRepository) : base(baseService, chatbotService, configuration, commonService, refNoTicketService, specialDeleteRepository)
         {
         }
 
         public async Task Public_UpdateMessageHistoryVoidingForLicenseeAsync(IEnumerable<MessageDetail> msgDetails)
         {
             await base.UpdateMessageHistoryVoidingForLicenseeAsync(msgDetails);
-        }
-
-        public async Task Public_OnAfterImportDataAsync(CommandResult commandResult, IEnumerable<NotificationMessage> notifications)
-        {
-            await base.OnAfterImportDataAsync(commandResult, notifications);
         }
 
         public async Task<(CommandResult, IEnumerable<NotificationMessage>)> Public_ImportMessageToChatbotDBAsync(
@@ -65,11 +57,6 @@
         public async Task Public_InsertToMessageChatbotAsync(string messages, int jobIdentity)
         {
             await base.InsertToMessageChatbotAsync(messages, jobIdentity);
-        }
-
-        public async Task Public_SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications)
-        {
-            await base.SendMessageByChannelAsync(channelId, notifications);
         }
     }
 }
