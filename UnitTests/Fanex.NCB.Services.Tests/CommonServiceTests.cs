@@ -96,9 +96,9 @@
         public async Task GetConversationChannelAsync_WhenCalled_ReturnExpectedChannels()
         {
             // Arrange
-            var channels = fixture.CreateMany<ConversationChannel>();
+            var channels = fixture.CreateMany<ChannelInfo>();
             var service = GetService();
-            baseService.GetDataAsync<ConversationChannel>(Arg.Any<GetConversationChannelCriteria>()).Returns(channels);
+            baseService.GetDataAsync<ChannelInfo>(Arg.Any<GetConversationChannelCriteria>()).Returns(channels);
 
             // Act
             var result = await service.GetConversationChannelAsync();

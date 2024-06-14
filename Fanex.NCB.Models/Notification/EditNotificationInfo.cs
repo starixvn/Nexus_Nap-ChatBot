@@ -6,7 +6,7 @@
     using Fanex.NCB.Shared.Models.IntegrationMethod;
     using Fanex.NCB.Shared.Models.OIC;
 
-    public class EditNotificationInfo : ConversationChannel
+    public class EditNotificationInfo : ChannelInfo
     {
         public int NotificationId { get; set; }
 

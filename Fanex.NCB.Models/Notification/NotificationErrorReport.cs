@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Fanex.NCB.Models.Common;
 
-    public class NotificationErrorReport :ConversationChannel
+    public class NotificationErrorReport :ChannelInfo
     {
         public int NotificationId { get; set; }
 

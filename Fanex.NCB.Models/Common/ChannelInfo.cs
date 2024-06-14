@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Models.Common
 {
-    public class ConversationChannel
+    public class ChannelInfo
     {
         public byte ChannelId { get; set; }
         public string ChannelName { get; set; }

@@ -19,7 +19,7 @@
 
         Task<IEnumerable<User>> GetUsersAsync();
 
-        Task<IEnumerable<ConversationChannel>> GetConversationChannelAsync();
+        Task<IEnumerable<ChannelInfo>> GetConversationChannelAsync();
 
         Task<IEnumerable<Platform>> GetPlatformAsync(int notificationTypeId);
 
@@ -32,5 +32,9 @@
         Task<ServiceSetting> GetServiceSetting(string inServiceName);
 
         Task<IEnumerable<IntegrationMethodInfo>> GetIntegrationMethodAsync(int notificationTypeId);
+
+        Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications);
+
+        Task OnAfterImportDataAsync(CommandResult commandResult, IEnumerable<NotificationMessage> notificationMessages);
     }
 }

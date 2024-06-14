@@ -1,6 +1,5 @@
 ﻿namespace Fanex.NCB.Services
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -21,7 +20,6 @@
         private readonly IBaseService baseService;
         private readonly IPushSignalRService pushSignalService;
         private readonly IChatbotService chatbotService;
-        private readonly ILogService logService;
         private readonly ICommonService commonService;
         private readonly string Environment;
         private const int SiteMessageJobIdentify = 3;
@@ -30,14 +28,12 @@
             IBaseService baseService,
             IChatbotService chatbotService,
             IPushSignalRService pushSignalService,
-            ILogService logService,
             IConfiguration configuration,
             ICommonService commonService)
         {
             this.baseService = baseService;
             this.pushSignalService = pushSignalService;
             this.chatbotService = chatbotService;
-            this.logService = logService;
             Environment = configuration.GetSection("Environment")?.Value;
             this.commonService = commonService;
         }
@@ -95,8 +91,8 @@
                     await InsertMessageHistoryAsync(messageDetails);
 
                     await Task.WhenAll(
-                        SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications),
-                        SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications)
+                        commonService.SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications),
+                        commonService.SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications)
                     );
 
                     var notificationIds = string.Join(",", notifications.Select(item => item.NotificationId));
@@ -171,19 +167,6 @@
             }
 
             return (messages, messageDetails);
-        }
-
-        protected internal virtual async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications)
-        {
-            try
-            {
-                var filterNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
-                await chatbotService.SendMultiMessageAsync(channelId, filterNotifications);
-            }
-            catch (Exception ex)
-            {
-                logService.WriteLogFileError(ex.Message);
-            }
         }
     }
 }

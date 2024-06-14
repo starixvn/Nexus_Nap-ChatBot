@@ -2,7 +2,7 @@
 {
     using Fanex.NCB.Models.Common;
 
-    public class ChatGroupMappingResult : ConversationChannel
+    public class ChatGroupMappingResult : ChannelInfo
     {
         public string BotName { get; set; }
         public int GroupID { get; set; }

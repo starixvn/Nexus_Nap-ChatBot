@@ -60,9 +60,9 @@
                     RecipientId = 2, RecipientName = "AG Casino"
                 },
             };
-            var channels = new List<ConversationChannel>
+            var channels = new List<ChannelInfo>
             {
-                new ConversationChannel { ChannelId = 1, ChannelName = "skype" }
+                new ChannelInfo { ChannelId = 1, ChannelName = "skype" }
             };
             var controller = GetController();
             commonService.GetNotificationTypesAsync().Returns(notificationTypes);

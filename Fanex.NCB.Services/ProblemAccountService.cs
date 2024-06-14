@@ -1,11 +1,9 @@
 ﻿namespace Fanex.NCB.Services
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Criteria.ProblemAccount;
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
@@ -19,22 +17,16 @@
         private readonly IBaseService baseService;
         private readonly ICommonService commonService;
         private readonly IChatbotService chatbotService;
-        private readonly IPushSignalRService pushSignalService;
-        private readonly ILogService logService;
 
         public ProblemAccountService(
             IBaseService baseService,
             ICommonService commonService,
-            IChatbotService chatbotService,
-            IPushSignalRService pushSignalService,
-            ILogService logService
+            IChatbotService chatbotService
         )
         {
             this.baseService = baseService;
             this.commonService = commonService;
             this.chatbotService = chatbotService;
-            this.pushSignalService = pushSignalService;
-            this.logService = logService;
         }
 
         public async Task SendMessageProblemAccountAsync()
@@ -47,7 +39,7 @@
                 if (message.Any() && categoriesId.Any() && customerClass.Any())
                 {
                     var (command, notifications) = await ImportMessageFromProblemAccountAsync(message, categoriesId, customerClass);
-                    await OnAfterImportDataAsync(command, notifications);
+                    await commonService.OnAfterImportDataAsync(command, notifications);
                 }
             }
         }
@@ -124,40 +116,6 @@
             };
 
             return (command, notifications);
-        }
-
-        protected internal virtual async Task OnAfterImportDataAsync(CommandResult commandResult, IEnumerable<NotificationMessage> notificationMessages)
-        {
-            if (!commandResult.IsSuccessful)
-            {
-                await chatbotService.NotifyToChatGroupAsync(commandResult.Message);
-            }
-            else
-            {
-                if (notificationMessages.Any())
-                {
-                    await Task.WhenAll(
-                        SendMessageByChannelAsync((byte)ConversationChannel.Skype, notificationMessages),
-                        SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notificationMessages)
-                    );
-
-                    var notificationIds = string.Join(",", notificationMessages.Select(item => item.NotificationId));
-                    await pushSignalService.PushNewNotification(notificationIds);
-                }
-            }
-        }
-
-        protected internal virtual async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications)
-        {
-            try
-            {
-                var selectedNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
-                await chatbotService.SendMultiMessageAsync(channelId, selectedNotifications);
-            }
-            catch (Exception ex)
-            {
-                logService.WriteLogFileError(ex.Message);
-            }
         }
     }
 }
