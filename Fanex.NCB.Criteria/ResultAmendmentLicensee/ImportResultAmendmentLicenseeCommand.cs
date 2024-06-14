@@ -10,7 +10,7 @@
 
         public string MessageTarget { get; set; }
 
-        public override string GetSettingKey() => "NCB_ResultAmendment_InternalCSD_Import";
+        public override string GetSettingKey() => "NCB_ResultAmendment_Licensee_Import";
 
         public override bool IsValid() => true;
     }

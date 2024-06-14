@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Criteria.ResultAmendmentCSD
+﻿namespace Fanex.NCB.Criteria.ResultAmendmentInternalCSD
 {
     using System;
     using Fanex.NCB.Shared.Models;

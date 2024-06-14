@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Criteria.ResultAmendmentCSD
+﻿namespace Fanex.NCB.Criteria.ResultAmendmentInternalCSD
 {
     using System;
     using Fanex.Data.Repository;
@@ -9,7 +9,7 @@
 
         public DateTime NewLastModifiedTime { get; set; }
 
-        public override string GetSettingKey() => "NAP_Chatbot_Settlement_InternalCSD_EventInfoSel";
+        public override string GetSettingKey() => "NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel";
 
         public override bool IsValid() => true;
     }

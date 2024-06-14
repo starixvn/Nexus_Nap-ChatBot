@@ -21,7 +21,8 @@
         private readonly ICommonService commonService;
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
-        public SettlementInternalLicenseeService(
+        public SettlementInternalLicenseeService
+        (
             IBaseService baseService,
             IChatbotService chatbotService,
             ICommonService commonService
