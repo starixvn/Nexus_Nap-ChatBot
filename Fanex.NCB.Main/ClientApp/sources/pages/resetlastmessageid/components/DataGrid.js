@@ -8,7 +8,8 @@ import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
-import { LastVoidingHistoryCollectionId, LastMsgTargetId } from '../../constants/constants';
+import { LastVoidingHistoryCollectionId, LastMsgTargetId, DateTimeFormatV3 } from '../../constants/constants';
+var dateFormat = require("dateformat");
 
 export class DataGrid extends Component {
     constructor(props) {
@@ -39,6 +40,9 @@ export class DataGrid extends Component {
             const newMaxMessageId = currentMessages.data.find(el => el.jobIdentify === item.id && el.settingName === item.settingName);
             element.newMaxMessageId = newMaxMessageId.maxReferenceId;
 
+            const notificationId = element.id === 9 && currentMessages.missingMsgInfo.find(item => dateFormat(item.postTime, DateTimeFormatV3) ===  newMaxMessageId.maxReferenceId && item.jobIdentify === 9).notificationId;
+            element.notificationId = notificationId;
+
             checked.push(false);
 
             return element;
@@ -51,7 +55,7 @@ export class DataGrid extends Component {
     isNotEqualCurrentNew = (jobIdentify, settingName) => {
         const { currentMessages } = this.props;
         var itemCurrentMessages = currentMessages.data.find(item => item.jobIdentify === jobIdentify && item.settingName === settingName);
-        if (itemCurrentMessages?.maxReferenceId !== itemCurrentMessages?.referenceId) {
+        if (itemCurrentMessages?.maxReferenceId !== itemCurrentMessages?.referenceValue) {
             return true;
         }
         return false;
@@ -104,7 +108,7 @@ export class DataGrid extends Component {
 
     isNotEqualCurrentNewByIndex = index => {
         const { currentMessages } = this.props;
-        if (currentMessages.data[index]?.maxReferenceId !== currentMessages.data[index]?.referenceId) {
+        if (currentMessages.data[index]?.maxReferenceId !== currentMessages.data[index]?.referenceValue) {
             return true;
         }
         return false;
@@ -164,7 +168,7 @@ export class DataGrid extends Component {
         const currentMsg = this.props.currentMessages.data.filter(i => i.jobIdentify === jobId && i.settingName === settingName);
         return currentMsg !== null &&
             currentMsg.length > 0 &&
-            currentMsg[0].referenceId < currentMsg[0].maxReferenceId;
+            currentMsg[0].referenceValue < currentMsg[0].maxReferenceId;
     };
 
     getSettingJobItem = (jobIdentifyId, settingName) => {
@@ -181,7 +185,8 @@ export class DataGrid extends Component {
             if (checked[index] && this.isSelectableItem(item.id, item.settingName)) {
                 jobMsgs.push({
                     jobIdentify: item.id,
-                    messageId: item.newMaxMessageId,
+                    messageId: item.id !== 9 ? item.newMaxMessageId : dateFormat(item.newMaxMessageId, 'yyyy-mm-dd HH:MM:ss'),
+                    notificationId: item.id !== 9 ? 0 : parseInt(item.notificationId, 10),
                     settingName: item.settingName
                 });
             }
@@ -228,7 +233,6 @@ export class DataGrid extends Component {
                 data.push(item);
             }
         });
-
         if (data.length > 0) {
             return data.map((item, index) => this.renderRow(item, index, isHost));
         }
@@ -249,7 +253,7 @@ export class DataGrid extends Component {
                 }
             </Cell>
             <Cell>{this.getSettingJobItem(item.jobIdentify, item.settingName)?.name}</Cell>
-            <Cell className="text-center">{item.referenceId}</Cell>
+            <Cell className="text-center">{item.referenceValue}</Cell>
             <Cell className="text-center">
                 <div className="new-message">
                     <span className="messageId">{this.getSettingJobItem(item.jobIdentify, item.settingName)?.newMaxMessageId}</span>

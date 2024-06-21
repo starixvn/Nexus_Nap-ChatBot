@@ -50,7 +50,7 @@ export class Filter extends Component {
         return (
             <Form className="form-filter-new">
                 <div className="form-row">
-                    <FormGroup>
+                    <FormGroup className="settingType">
                         <Label className="form-label">{Labels.MappingSettingType}</Label>
                         <Input type="select"
                             name="settingType"

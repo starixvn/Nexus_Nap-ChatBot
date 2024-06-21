@@ -1,6 +1,7 @@
-﻿import { mappingStatus, DateFormat, TimeFormat } from '../../constants/constants';
+﻿import { mappingStatus, DateFormat, TimeFormat, DateTimeFormatV3 } from '../../constants/constants';
 import Labels from '../Labels';
 import { DateTime } from 'luxon';
+var dateFormat = require("dateformat");
 
 export default class CommonFunctions {
     static getMappingClass(mappingStatusId) {
@@ -72,8 +73,11 @@ export default class CommonFunctions {
         if (jobId === 1 || jobId === 3) {
             postFix = 'MessageID';
         }
-        if (jobId === 6 || jobId === 7) {
+        if (jobId === 6 || jobId === 7 || jobId === 8) {
             postFix = 'MsgTargetID';
+        }
+        if (jobId === 9) {
+            postFix = 'ModifiedTime';
         }
         return `${title} ${postFix}:`
     }
@@ -98,7 +102,10 @@ export default class CommonFunctions {
                 return jobInfo.lastLogId;
             case 6:
             case 7:
+            case 8:
                 return jobInfo.lastMsgTargetId;
+            case 9:
+                return dateFormat(jobInfo.lastModifiedTime, DateTimeFormatV3);
             default:
                 return;
         }
