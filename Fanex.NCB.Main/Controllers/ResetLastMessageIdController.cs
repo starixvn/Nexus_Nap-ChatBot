@@ -63,7 +63,7 @@
 
         [HttpPost]
         [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Host)]
-        public async Task<IActionResult> CreateMissingMessage([FromBody] List<MissingMesssageInfo> listMsg)
+        public async Task<IActionResult> CreateMissingMessage([FromBody] List<MissingInfoIns> listMsg)
         {
             var commandResult = await resetLastMessageIdService.CreateMissingMessageAsync(listMsg);
 

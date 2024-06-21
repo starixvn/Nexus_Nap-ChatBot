@@ -71,19 +71,21 @@
             var missingMsg = await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
             var missingInfo = await GetMissingMessageDataAsync(missingMsg);
 
-            var problemAccountFromLogId = msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.ProblemPlayer)?.ReferenceId
+            var problemAccountFromLogId = msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.ProblemPlayer)?.ReferenceValue
                 ?? throw new ArgumentNullException(JsonConvert.SerializeObject(msgList));
             var problemMissingInfo = await GetMissingProblemAccountAsync(problemAccountFromLogId);
             missingInfo = missingInfo.Concat(problemMissingInfo);
 
-            var monitoredPlayerFromLogId = msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.MonitoredPlayer)?.ReferenceId
+            var monitoredPlayerFromLogId = msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.MonitoredPlayer)?.ReferenceValue
                 ?? throw new ArgumentNullException(JsonConvert.SerializeObject(msgList));
             var monitoredMissingInfo = await GetMissingMonitoredPlayerAsync(monitoredPlayerFromLogId);
             missingInfo = missingInfo.Concat(monitoredMissingInfo);
 
-            CalculateMaxReferrenceId(msgList, missingInfo);
+            var messageMissingInfo = await GetMissingMessageNotificationAsync(msgList, missingInfo);
 
-            return missingInfo;
+            CalculateMaxReferrenceId(msgList, messageMissingInfo);
+
+            return messageMissingInfo;
         }
 
         private static void CalculateMaxReferrenceId(IEnumerable<CurrentMaxMessageInfo> msgList, IEnumerable<MissingMesssageInfo> missingInfo)
@@ -91,17 +93,26 @@
             foreach (var item in msgList)
             {
                 var jobMissedInfo = missingInfo.Where(m => m.JobIdentify == item.JobIdentify).ToList();
-                int maxReferrenceIdOnList = jobMissedInfo.Any() ? GetMaxReferrenceIdOnListMissingMessageInfo(jobMissedInfo, item.JobIdentify, item.SettingName) : 0;
-                int maxRefenceId = maxReferrenceIdOnList != 0 ? maxReferrenceIdOnList : item.ReferenceId;
+                string maxReferrenceIdOnList = jobMissedInfo.Any() ? GetMaxReferrenceIdOnListMissingMessageInfo(jobMissedInfo, item.JobIdentify, item.SettingName) : "0";
+                string maxRefenceId = maxReferrenceIdOnList != "0" ? maxReferrenceIdOnList : item.ReferenceValue;
                 item.MaxReferenceId = maxRefenceId;
             }
         }
 
-        private static int GetMaxReferrenceIdOnListMissingMessageInfo(IEnumerable<MissingMesssageInfo> missingInfo, int jobIdentify, string settingName)
-            => missingInfo.Max(x => GetIdByJobIdentify(jobIdentify, x, settingName));
+        private static string GetMaxReferrenceIdOnListMissingMessageInfo(IEnumerable<MissingMesssageInfo> missingInfo, int jobIdentify, string settingName)
+        {
+            var maxRefenceId = missingInfo.Max(x => GetIdByJobIdentify(jobIdentify, x, settingName));
+
+            if ((JobIdentity)jobIdentify == JobIdentity.ResultAmendmentInternalCSD && maxRefenceId is DateTime dateTime)
+            {
+                return dateTime.ToString("MM/dd/yyyy hh:mm:ss tt", System.Globalization.CultureInfo.InvariantCulture);
+            }
+
+            return maxRefenceId.ToString();
+        }
 
         #pragma warning disable S1172 // Unused method parameters should be removed
-        private static int GetIdByJobIdentify(int jobIdentify, MissingMesssageInfo item, string settingName)
+        private static object GetIdByJobIdentify(int jobIdentify, MissingMesssageInfo item, string settingName)
         {
             switch ((JobIdentity)jobIdentify)
             {
@@ -112,13 +123,17 @@
                 case JobIdentity.SettlementInternalCSD:
                 case JobIdentity.SettlementLicensee:
                     return item.MsgTargetId;
+                case JobIdentity.ResultAmendmentLicensee:
+                    return item.MsgTargetId;
+                case JobIdentity.ResultAmendmentInternalCSD:
+                    return item.PostTime;
                 default:
                     return item.MessageId;
             }
         }
         #pragma warning restore S1172 // Unused method parameters should be removed
 
-        private async Task<IEnumerable<MissingMesssageInfo>> GetMissingProblemAccountAsync(int fromLogId)
+        private async Task<IEnumerable<MissingMesssageInfo>> GetMissingProblemAccountAsync(string fromLogId)
         {
             var criteria = new GetMissingProblemAccountCriteria
             {
@@ -133,7 +148,7 @@
             return result;
         }
 
-        private async Task<IEnumerable<MissingMesssageInfo>> GetMissingMonitoredPlayerAsync(int fromLogId)
+        private async Task<IEnumerable<MissingMesssageInfo>> GetMissingMonitoredPlayerAsync(string fromLogId)
         {
             var criteria = new GetMissingMonitoredPlayerCriteria
             {
@@ -148,7 +163,21 @@
             return result;
         }
 
-        public async Task<CommandResult> CreateMissingMessageAsync(List<MissingMesssageInfo> listMsg)
+        private async Task<IEnumerable<MissingMesssageInfo>> GetMissingMessageNotificationAsync(IEnumerable<CurrentMaxMessageInfo> msgList, IEnumerable<MissingMesssageInfo> missingMesssages)
+        {
+            foreach (var item in missingMesssages)
+            {
+                item.Content_en = item.Content;
+            }
+            var criteria = new GetMissingMessageNotificationCriteria
+            {
+                Setting = XmlHelper<CurrentMaxMessageInfo>.Serialize(msgList.ToList()),
+                MessageList = XmlHelper<MissingMesssageInfo>.Serialize(missingMesssages.ToList())
+            };
+            return await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
+        }
+
+        public async Task<CommandResult> CreateMissingMessageAsync(List<MissingInfoIns> listMsg)
         {
             var command = new CreateMissingMessageCommand
             {
@@ -167,18 +196,25 @@
             };
         }
 
-        private async Task<CommandResult> UpdateSystemSettingAsync(List<MissingMesssageInfo> listMsg)
+        private async Task<CommandResult> UpdateSystemSettingAsync(List<MissingInfoIns> listMsg)
         {
-            var jobLstSystemSettings = listMsg.Select(i => new
+            var jobInfos = listMsg.Select(i => new
             {
                 i.JobIdentify,
-                ReferenceId = i.MessageId,
+                ReferenceValue = i.MessageId,
                 i.SettingName
             }).ToList();
 
+            var jobDetails = listMsg.Select(j => new
+            {
+                j.JobIdentify,
+                j.NotificationId
+            }).Where(j => (JobIdentity)j.JobIdentify == JobIdentity.ResultAmendmentInternalCSD).ToList();
+
             var command = new EditMessageInfoCommand
             {
-                JobInfo = JsonConvert.SerializeObject(jobLstSystemSettings)
+                JobInfo = JsonConvert.SerializeObject(jobInfos),
+                JobDetail = JsonConvert.SerializeObject(jobDetails)
             };
             return await baseService.ExecuteNonQueryAsync(command);
         }

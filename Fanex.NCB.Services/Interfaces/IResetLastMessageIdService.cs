@@ -18,6 +18,6 @@
 
         Task<IEnumerable<MissingMesssageInfo>> GetMissingMessageDataAsync(IEnumerable<MissingMesssageInfo> missingMesssages);
 
-        Task<CommandResult> CreateMissingMessageAsync(List<MissingMesssageInfo> listMsg);
+        Task<CommandResult> CreateMissingMessageAsync(List<MissingInfoIns> listMsg);
     }
 }

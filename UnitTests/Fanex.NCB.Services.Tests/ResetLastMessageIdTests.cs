@@ -57,10 +57,10 @@
 
             var msgList = new List<CurrentMaxMessageInfo>
             {
-                new CurrentMaxMessageInfo {JobIdentify = 1, ReferenceId = 1, SettingName = "1"},
-                new CurrentMaxMessageInfo {JobIdentify = 2, ReferenceId = 1000, SettingName = "2"},
-                new CurrentMaxMessageInfo {JobIdentify = 4, ReferenceId = 1000, SettingName = "4"},
-                new CurrentMaxMessageInfo {JobIdentify = 5, ReferenceId = 1000, SettingName = "5"}
+                new CurrentMaxMessageInfo {JobIdentify = 1, ReferenceValue = "1", SettingName = "1"},
+                new CurrentMaxMessageInfo {JobIdentify = 2, ReferenceValue = "1000", SettingName = "2"},
+                new CurrentMaxMessageInfo {JobIdentify = 4, ReferenceValue = "1000", SettingName = "4"},
+                new CurrentMaxMessageInfo {JobIdentify = 5, ReferenceValue = "1000", SettingName = "5"}
             };
 
             var expected = new List<MissingMesssageInfo> {
@@ -78,8 +78,8 @@
             var actual = await service.GetMissingMessageInfoAsync(msgList, contentTypeList, abnormalMissingMsgList);
 
             //Assert
-            Assert.Equal(300, msgList.FirstOrDefault(x => x.JobIdentify == 1).MaxReferenceId);
-            Assert.Equal(2000, msgList.FirstOrDefault(x => x.JobIdentify == 2).MaxReferenceId);
+            Assert.Equal("300", msgList.FirstOrDefault(x => x.JobIdentify == 1).MaxReferenceId);
+            Assert.Equal("2000", msgList.FirstOrDefault(x => x.JobIdentify == 2).MaxReferenceId);
             Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(actual));
         }
 
@@ -95,7 +95,7 @@
             baseService.ExecuteNonQueryAsync(Arg.Any<EditMessageInfoCommand>()).Returns(commandResult2);
 
             //Act
-            var param = new List<MissingMesssageInfo> { new MissingMesssageInfo { MessageId = 1, JobIdentify = 1 } };
+            var param = new List<MissingInfoIns> { new MissingInfoIns { MessageId = "1", JobIdentify = 1 } };
             var actual = await service.CreateMissingMessageAsync(param);
 
             //Assert
