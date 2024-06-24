@@ -7,7 +7,7 @@
     {
         public DateTime LastModifiedTime { get; set; }
 
-        public DateTime NewLastModifiedTime { get; set; }
+        public DateTime? NewLastModifiedTime { get; set; }
 
         public override string GetSettingKey() => "NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel";
 

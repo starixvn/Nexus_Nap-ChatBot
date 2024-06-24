@@ -48,7 +48,7 @@
             }
         }
 
-        protected internal async Task ImportResultAmendmentInternalCSDAsync(IEnumerable<MessageAmendmentCsd> messages, DateTime newLastModifiedTime)
+        protected internal async Task ImportResultAmendmentInternalCSDAsync(IEnumerable<MessageAmendmentCsd> messages, DateTime? newLastModifiedTime)
         {
             if (messages.Any())
             {

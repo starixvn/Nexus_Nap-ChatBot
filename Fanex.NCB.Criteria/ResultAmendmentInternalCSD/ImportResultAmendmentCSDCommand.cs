@@ -7,7 +7,7 @@
     {
         public string Message {  get; set; }
 
-        public DateTime LastModifiedTime { get; set; }
+        public DateTime? LastModifiedTime { get; set; }
 
         public override string GetSettingKey() => "NCB_ResultAmendment_InternalCSD_Import";
 
