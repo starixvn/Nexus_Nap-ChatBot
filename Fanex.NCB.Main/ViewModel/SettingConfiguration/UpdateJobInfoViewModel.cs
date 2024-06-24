@@ -23,5 +23,7 @@
         public int LastVoidingHistoryCollectionId { get; set; }
 
         public int LastLogId { get; set; }
+
+        public string LastModifiedTime { get; set; }
     }
 }

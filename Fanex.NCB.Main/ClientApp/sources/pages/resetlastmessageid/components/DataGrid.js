@@ -8,7 +8,7 @@ import { Table, Row, Cell } from '../../common/fixed-table-header/index';
 import NoDataTitle from '../../common/no-data-title/NoDataTitle';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import ResponseMessage from '../../common/response-message/ResponseMessage';
-import { LastVoidingHistoryCollectionId, LastMsgTargetId, DateTimeFormatV3 } from '../../constants/constants';
+import { LastVoidingHistoryCollectionId, LastMsgTargetId, DateTimeFormatV3, DateTimeModified } from '../../constants/constants';
 var dateFormat = require("dateformat");
 
 export class DataGrid extends Component {
@@ -40,7 +40,7 @@ export class DataGrid extends Component {
             const newMaxMessageId = currentMessages.data.find(el => el.jobIdentify === item.id && el.settingName === item.settingName);
             element.newMaxMessageId = newMaxMessageId.maxReferenceId;
 
-            const notificationId = element.id === 9 && currentMessages.missingMsgInfo.find(item => dateFormat(item.postTime, DateTimeFormatV3) ===  newMaxMessageId.maxReferenceId && item.jobIdentify === 9).notificationId;
+            const notificationId = element.id === 9 && currentMessages.missingMsgInfo.find(item => dateFormat(item.postTime, DateTimeFormatV3) ===  newMaxMessageId.maxReferenceId && item.jobIdentify === 9)?.notificationId;
             element.notificationId = notificationId;
 
             checked.push(false);
@@ -185,7 +185,7 @@ export class DataGrid extends Component {
             if (checked[index] && this.isSelectableItem(item.id, item.settingName)) {
                 jobMsgs.push({
                     jobIdentify: item.id,
-                    messageId: item.id !== 9 ? item.newMaxMessageId : dateFormat(item.newMaxMessageId, 'yyyy-mm-dd HH:MM:ss'),
+                    messageId: item.id !== 9 ? item.newMaxMessageId : dateFormat(item.newMaxMessageId, DateTimeModified),
                     notificationId: item.id !== 9 ? 0 : parseInt(item.notificationId, 10),
                     settingName: item.settingName
                 });

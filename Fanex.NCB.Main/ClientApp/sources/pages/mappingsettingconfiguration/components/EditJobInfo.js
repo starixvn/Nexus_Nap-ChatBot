@@ -10,6 +10,9 @@ import { Input, Tooltip } from 'reactstrap';
 import { toast } from 'react-toastify';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import CommonFunctions from '../../common/common-functions/CommonFunctions';
+import { DateTimeModified } from '../../constants/constants'
+import DatePicker from '../../common/DatePicker/index';
+var dateFormat = require("dateformat");
 
 export class EditJobInfo extends Component {
     constructor(props) {
@@ -22,11 +25,10 @@ export class EditJobInfo extends Component {
             testingGroup: props.jobInfo.testingGroup,
             confirmUpdateJobInfo: false,
             tooltipOpen: false,
-            lastMsgTargetId: props.jobInfo.lastMsgTargetId,
-            previousMaxMessageId: props.jobInfo.previousMaxMessageId,
             lastVoidingHistoryCollectionId: props.jobInfo.lastVoidingHistoryCollectionId,
             lastLogId: props.jobInfo.lastLogId,
-            lastMsgTargetId: props.jobInfo.lastMsgTargetId
+            lastMsgTargetId: props.jobInfo.lastMsgTargetId,
+            lastModifiedTime: props.jobInfo.lastModifiedTime
         };
 
         this.haveHostPermission = document.getElementById('have-host-permission') && document.getElementById('have-host-permission').checked;
@@ -43,8 +45,8 @@ export class EditJobInfo extends Component {
     handleChangeSaveMode = () => {
         this.toggleConfirmUpdateJobInfo();
         const groupIds = this.state.testingGroup.trim().split(',');
-        const { previousMaxMessageId, lastVoidingHistoryCollectionId, lastLogId, lastMsgTargetId } = this.state;
-        const idsToCheck = [previousMaxMessageId, lastVoidingHistoryCollectionId, lastLogId, lastMsgTargetId];
+        const { previousMaxMessageId, lastVoidingHistoryCollectionId, lastLogId, lastMsgTargetId, lastModifiedTime } = this.state;
+        const idsToCheck = [previousMaxMessageId, lastVoidingHistoryCollectionId, lastLogId, lastMsgTargetId, lastModifiedTime];
 
         let rexegNumber = new RegExp('[^0-9]');
         if (rexegNumber.test(this.state.batchSize)) {
@@ -59,10 +61,11 @@ export class EditJobInfo extends Component {
                 jobStatus: this.state.jobStatus,
                 batchSize: parseInt(this.state.batchSize),
                 testingGroup: this.state.testingGroup,
-                previousMaxMessageId: this.state.previousMaxMessageId ? this.state.previousMaxMessageId : 0,
-                lastVoidingHistoryCollectionId: this.state.lastVoidingHistoryCollectionId ? this.state.lastVoidingHistoryCollectionId : 0,
-                lastLogId: this.state.lastLogId ? this.state.lastLogId : 0,
-                lastMsgTargetId: this.state.lastMsgTargetId ? this.state.lastMsgTargetId : 0
+                previousMaxMessageId: previousMaxMessageId ? previousMaxMessageId : 0,
+                lastVoidingHistoryCollectionId: lastVoidingHistoryCollectionId ? lastVoidingHistoryCollectionId : 0,
+                lastLogId: lastLogId ? lastLogId : 0,
+                lastMsgTargetId: lastMsgTargetId ? lastMsgTargetId : 0,
+                lastModifiedTime: this.props.jobInfo.id === 9 ? dateFormat(lastModifiedTime, DateTimeModified) : ""
             };
 
             this.props.setJobInfoData(data, () => this.props.setJobInfoFlag({ isEdit: false }));
@@ -94,6 +97,10 @@ export class EditJobInfo extends Component {
         });
     }
 
+    handleDateChange = value => {
+        this.setState({ lastModifiedTime: value });
+    };
+
     render() {
         const jobId = this.props.jobInfo !== null ? this.props.jobInfo.id : 0;
         const previousMaxIDTitle = CommonFunctions.renderPrivousIdTitle(jobId);
@@ -110,12 +117,23 @@ export class EditJobInfo extends Component {
                 </div>
                 <div className='job-info-item'>
                     <p className='job-info-title'>{previousMaxIDTitle}</p>
-                    <Input
-                        name={CommonFunctions.renderLabelMaxMessageId(jobId)}
-                        onChange={this.handleChange}
-                        className='job-info-input maxId-input'
-                        defaultValue={CommonFunctions.renderMaxMessageId(jobId, this.props.jobInfo)}
-                    />
+                    {
+                        jobId === 9 ? (
+                            <DatePicker selected={new Date(this.state.lastModifiedTime)}
+                                showTimeSelect
+                                onChange={value => this.handleDateChange(value)}
+                                className='picker-modifier'
+                            />
+                        ) :
+                        (
+                            <Input
+                                name={CommonFunctions.renderLabelMaxMessageId(jobId)}
+                                onChange={this.handleChange}
+                                className='job-info-input maxId-input'
+                                defaultValue={CommonFunctions.renderMaxMessageId(jobId, this.props.jobInfo)}
+                            />
+                        )
+                    }
                 </div>
                 {
                     jobId === 2 && (
