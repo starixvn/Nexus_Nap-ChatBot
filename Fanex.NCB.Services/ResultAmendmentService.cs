@@ -19,7 +19,6 @@
         private readonly IBaseService baseService;
         private readonly IChatbotService chatbotService;
         private readonly ICommonService commonService;
-        private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
         public ResultAmendmentService
         (
@@ -56,7 +55,7 @@
                 var criteria = new ImportResultAmendmentCSDCommand
                 {
                     LastModifiedTime = newLastModifiedTime,
-                    Message = JsonConvert.SerializeObject(messages, new JsonSerializerSettings { DateFormatString = DateTimeFormat })
+                    Message = JsonConvert.SerializeObject(messages)
                 };
                 var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
                 var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);
@@ -100,9 +99,9 @@
             {
                 var criteria = new ImportResultAmendmentLicenseeCommand
                 {
-                    MessageHeader = JsonConvert.SerializeObject(messageHeaders, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
-                    MessageDetail = JsonConvert.SerializeObject(messageDetails, new JsonSerializerSettings { DateFormatString = DateTimeFormat }),
-                    MessageTarget = JsonConvert.SerializeObject(messageTargets, new JsonSerializerSettings { DateFormatString = DateTimeFormat })
+                    MessageHeader = JsonConvert.SerializeObject(messageHeaders),
+                    MessageDetail = JsonConvert.SerializeObject(messageDetails),
+                    MessageTarget = JsonConvert.SerializeObject(messageTargets)
                 };
                 var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
                 var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);
