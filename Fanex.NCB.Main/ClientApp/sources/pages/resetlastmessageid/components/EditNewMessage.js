@@ -133,7 +133,7 @@ export class EditNewMessage extends Component {
         if (item.jobIdentify === 9) {
             return item.notificationId;
         }
-        if (item.jobIdentify === 2 && settingName === LastVoidingHistoryCollectionId) {
+        if (item.jobIdentify === 2 && this.props.settingName === LastVoidingHistoryCollectionId) {
             return item.messageIds?.split(',').join(', ');
         }
         return item.messageId;
