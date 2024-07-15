@@ -11,5 +11,7 @@
         public string SiteNameGroup { get; set; }
 
         public string Content {  get; set; }
+
+        public byte IsTest { get; set; }
     }
 }
