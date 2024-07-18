@@ -77,7 +77,7 @@ export class EditNewMessage extends Component {
                         <span className={this.state.expandPanels ? 'icon-collapse' : 'icon-expand'} onClick={this.toggleExpandPanels} />
                     </div>
                 </Cell>
-                <Cell colWidth={17} header>{`${(id === 4 || id === 5) ? Labels.Date : Labels.PostTime} (GMT +8)`}</Cell>
+                <Cell colWidth={20} header>{`${(id === 4 || id === 5) ? Labels.Date : Labels.PostTime} (GMT +8)`}</Cell>
             </Row>
         );
     };

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Globalization;
     using Fanex.NCB.Criteria.ResetLastMessageId;
     using Fanex.NCB.Models.ResetLastMessageId;
     using Fanex.NCB.Services.Interfaces;
@@ -96,7 +97,7 @@
                 string maxReferrenceIdOnList = jobMissedInfo.Any() ? GetMaxReferrenceIdOnListMissingMessageInfo(jobMissedInfo, item.JobIdentify, item.SettingName) : "0";
                 string maxRefenceId = maxReferrenceIdOnList != "0" ? maxReferrenceIdOnList : item.ReferenceValue;
                 item.MaxReferenceId = maxRefenceId;
-            }
+            }         
         }
 
         private static string GetMaxReferrenceIdOnListMissingMessageInfo(IEnumerable<MissingMesssageInfo> missingInfo, int jobIdentify, string settingName)
@@ -105,7 +106,7 @@
 
             if ((JobIdentity)jobIdentify == JobIdentity.ResultAmendmentInternalCSD && maxRefenceId is DateTime dateTime)
             {
-                return dateTime.ToString("MM/dd/yyyy hh:mm:ss tt", System.Globalization.CultureInfo.InvariantCulture);
+                return dateTime.ToString("MM/dd/yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture);
             }
 
             return maxRefenceId.ToString();
@@ -125,7 +126,7 @@
                     return item.MsgTargetId;
                 case JobIdentity.ResultAmendmentLicensee:
                     return item.MsgTargetId;
-                case JobIdentity.ResultAmendmentInternalCSD:
+                case JobIdentity.ResultAmendmentInternalCSD when settingName == "LastModifiedTime":
                     return item.PostTime;
                 default:
                     return item.MessageId;
