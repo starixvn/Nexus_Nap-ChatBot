@@ -10,7 +10,7 @@ import { Input, Tooltip } from 'reactstrap';
 import { toast } from 'react-toastify';
 import ConfirmPopup from '../../common/confirm-popup/ConfirmPopup';
 import CommonFunctions from '../../common/common-functions/CommonFunctions';
-import { DateTimeModified } from '../../constants/constants'
+import { DateTimeMillModified } from '../../constants/constants'
 import DatePicker from '../../common/DatePicker/index';
 var dateFormat = require("dateformat");
 
@@ -65,7 +65,7 @@ export class EditJobInfo extends Component {
                 lastVoidingHistoryCollectionId: lastVoidingHistoryCollectionId ? lastVoidingHistoryCollectionId : 0,
                 lastLogId: lastLogId ? lastLogId : 0,
                 lastMsgTargetId: lastMsgTargetId ? lastMsgTargetId : 0,
-                lastModifiedTime: this.props.jobInfo.id === 9 ? dateFormat(lastModifiedTime, DateTimeModified) : ""
+                lastModifiedTime: this.props.jobInfo.id === 9 ? dateFormat(lastModifiedTime, DateTimeMillModified) : ""
             };
 
             this.props.setJobInfoData(data, () => this.props.setJobInfoFlag({ isEdit: false }));
