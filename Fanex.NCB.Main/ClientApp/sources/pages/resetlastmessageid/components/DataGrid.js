@@ -32,7 +32,6 @@ export class DataGrid extends Component {
         await this.props.getCurrentPreviousMaxMessage();
 
         const { currentMessages, selected } = this.props;
-        console.log('currentMessages', currentMessages);
         const checked = [];
 
         const newMaxMessageIds = selected.map((item, index) => {
@@ -167,11 +166,6 @@ export class DataGrid extends Component {
 
     isSelectableItem = (jobId, settingName) => {
         const currentMsg = this.props.currentMessages.data.filter(i => i.jobIdentify === jobId && i.settingName === settingName);
-        if (jobId === 9) {
-            console.log('currentMsg[0].referenceValue', currentMsg[0].referenceValue);
-            console.log('currentMsg[0].maxReferenceId', currentMsg[0].maxReferenceId);
-            console.log('isss', currentMsg[0].referenceValue < currentMsg[0].maxReferenceId);
-        }
         return currentMsg !== null &&
             currentMsg.length > 0 &&
             currentMsg[0].referenceValue < currentMsg[0].maxReferenceId;
@@ -187,7 +181,7 @@ export class DataGrid extends Component {
         const { selected } = this.props;
         const { checked } = this.state;
         const jobMsgs = [];
-        console.log('selected', selected);
+
         selected.map((item, index) => {
             if (checked[index] && this.isSelectableItem(item.id, item.settingName)) {
                 jobMsgs.push({
@@ -201,18 +195,17 @@ export class DataGrid extends Component {
 
         this.setState({ isShowConfirmPopup: false });
 
-        console.log('jobMsgs', jobMsgs);
-        // await this.props.createMissingMessage(jobMsgs).then(response => {
-        //     this.setState({ editResult: response.data });
-        //     if (response.data.isSuccessful) {
-        //         this.setSubmit();
-        //     } else {
-        //         this.setState({ isSubmitting: false });
-        //     }
-        //     setTimeout(() => {
-        //         this.setState({ editResult: null });
-        //     }, 3000);
-        // });
+        await this.props.createMissingMessage(jobMsgs).then(response => {
+            this.setState({ editResult: response.data });
+            if (response.data.isSuccessful) {
+                this.setSubmit();
+            } else {
+                this.setState({ isSubmitting: false });
+            }
+            setTimeout(() => {
+                this.setState({ editResult: null });
+            }, 3000);
+        });
     };
 
     buildHeader = isHost => {
@@ -250,6 +243,7 @@ export class DataGrid extends Component {
 
     renderRow = (item, index, isHost) => {
         var newMaxMessageId = this.getSettingJobItem(item.jobIdentify, item.settingName)?.newMaxMessageId;
+
         return (
             <Row key={`${item.jobIdentify}-${index}-${item.settingName}`} >
                 <Cell className="text-center">

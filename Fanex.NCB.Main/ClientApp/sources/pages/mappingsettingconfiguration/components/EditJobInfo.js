@@ -104,6 +104,7 @@ export class EditJobInfo extends Component {
     render() {
         const jobId = this.props.jobInfo !== null ? this.props.jobInfo.id : 0;
         const previousMaxIDTitle = CommonFunctions.renderPrivousIdTitle(jobId);
+
         return (
             this.props.jobInfo && <div className='job-info-container'>
                 <div className='job-info-item'>

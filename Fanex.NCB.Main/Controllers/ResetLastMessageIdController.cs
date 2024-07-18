@@ -55,28 +55,12 @@
             var abnormalBetsMissingMsg = await resetLastMessageIdService.GetAbnormalBetsMissingMessageAsync(currentMaxMessageInfos);
             var missingMsgInfo = await resetLastMessageIdService.GetMissingMessageInfoAsync(currentMaxMessageInfos, messageTypeInfos, abnormalBetsMissingMsg);
 
-            var messageInfosList = currentMaxMessageInfos.ToList();
-            var index = messageInfosList.FindIndex(item => (JobIdentity)item.JobIdentify == JobIdentity.ResultAmendmentInternalCSD && item.SettingName == "LastModifiedTime");
-
-            if (index >= 0)
-            {
-                var messageInfo = messageInfosList[index];
-                messageInfo.ReferenceValue = ParseAndFormatDate(messageInfo.ReferenceValue);
-                messageInfo.MaxReferenceId = ParseAndFormatDate(messageInfo.MaxReferenceId);
-            }
-
             return Json(new
             {
-                data = messageInfosList,
+                data = currentMaxMessageInfos,
                 internalMissingMsg = abnormalBetsMissingMsg,
                 missingMsgInfo
             });
-        }
-
-        private static string ParseAndFormatDate(string dateString)
-        {
-            return DateTime.ParseExact(dateString, "MM/dd/yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture)
-                           .ToString("MM/dd/yyyy hh:mm:ss.fff tt", CultureInfo.InvariantCulture);
         }
 
         [HttpPost]

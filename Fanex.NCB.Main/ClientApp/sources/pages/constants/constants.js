@@ -27,7 +27,7 @@ export const DateTimeFormat = 'MM/dd/yyyy hh:mm:ss a';
 
 export const DateTimeFormatV2 = 'dd/mm/yyyy hh:MM:ss TT';
 
-export const DateTimeFormatV3 = 'mm/dd/yyyy hh:MM:ss.l TT';
+export const DateTimeFormatV3 = 'mm/dd/yyyy HH:MM:ss.l';
 
 export const DateTimeModified = 'yyyy-mm-dd HH:MM:ss';
 
