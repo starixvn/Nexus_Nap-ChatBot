@@ -170,6 +170,8 @@
 
         public async Task PullVoidingMessageInternalDepartmentAsync()
         {
+            //var t = await refNoTicketService.GetTransInfoAsync(283202653079470087);
+
             var systemSetting = await commonService.GetServiceSetting(Constants.ServiceName_SpecialDeleteInternalCSD);
             if (systemSetting != null)
             {
@@ -217,14 +219,32 @@
         {
             var (messageInfo, messageDetail, maxMsgTargetId) = await GetAbnormalMessageDetail(messageIdLst, setting.BatchSize, setting.LastMsgTargetId);
             var (historyDetail, msg, abnormalAccountInfos, dupTicketDetails) = await GetVoidingHistoryInternalCSDInfoAsync(messageInfo, messageDetail);
+
+            foreach (var dupTicketDetail in dupTicketDetails)
+            {
+                await logService.WriteMessageSentryErrorAsync($"before dupTicketDetails: {JsonConvert.SerializeObject(dupTicketDetail)}");
+            }
+
             await GetTransInfoAsync(dupTicketDetails);
             FormatTelegramData(historyDetail);
+
+            foreach (var dupTicketDetail in dupTicketDetails)
+            {
+                await logService.WriteMessageSentryErrorAsync($"after dupTicketDetails: {JsonConvert.SerializeObject(dupTicketDetail)}");
+            }
+
             await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg, dupTicketDetails, abnormalAccountInfos, maxMsgTargetId);
         }
 
         private async Task GetTransInfoAsync(IEnumerable<DuplicateTicketDetail> dupTicketDetails)
         {
             var distinctVoidedTransIds = dupTicketDetails.Select(i => i.VoidedTransId).Distinct();
+
+            foreach (var distinctVoidedTransId in distinctVoidedTransIds)
+            {
+                await logService.WriteMessageSentryErrorAsync($"distinctVoidedTransIds: {JsonConvert.SerializeObject(distinctVoidedTransId)}");
+            }
+
             var tasks = new List<Task<(long, string)>>();
             foreach (var transid in distinctVoidedTransIds)
             {
