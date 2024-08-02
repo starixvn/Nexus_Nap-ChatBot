@@ -1,0 +1,17 @@
+﻿namespace Fanex.NCB.AutoJobs.Core.Models.OIC
+{
+    public class Licensee
+    {
+        public int LicenseeId { get; set; }
+
+        public string LicenseeName { get; set; }
+
+        public string RegisteredLicenseeName { get; set; }
+
+        public int LicenseeStatusId { get; set; }
+
+        public int LicenseeTypeId { get; set; }
+
+        public int? PlatformId { get; set; }
+    }
+}

@@ -6,21 +6,20 @@
     using System.Threading;
     using Fanex.Caching;
     using Fanex.Caching.Redis;
+    using Fanex.Data.MySql;
     using Fanex.Data.Repository;
+    using Fanex.Data.SqlServer;
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.AspNetCore;
     using Fanex.Logging.Sentry;
+    using Fanex.NCB.AutoJobs.Core.FanexDataExtensions.Services;
+    using Fanex.NCB.AutoJobs.Core.Models.Configurations;
+    using Fanex.NCB.AutoJobs.Core.Repository;
+    using Fanex.NCB.AutoJobs.Core.Services;
+    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
     using Fanex.NCB.AutoJobs.Models;
     using Fanex.NCB.AutoJobs.Workers;
-    using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Repository;
-    using Fanex.NCB.Repository.Interfaces;
-    using Fanex.NCB.Services;
-    using Fanex.NCB.Services.Interfaces;
-    using Fanex.NCB.Shared.Middlewares;
-    using Fanex.NCB.Shared.Services;
-    using Fanex.NCB.Shared.Services.Interfaces;
     using Fanex.RemotingRef;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.DataProtection;
@@ -48,7 +47,7 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddFanexData(Configuration);
+            services.AddFanexSql(Configuration).AddFanexMySql(Configuration);
             services.AddControllers();
             AddConfiguration(services, Configuration);
             AddRedisCacheConfig(services);
@@ -94,7 +93,6 @@
 
         private static void AddConfiguration(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddFanexSql(configuration).AddFanexMySql(configuration);
             LogManager
             .SetDefaultLogCategory(configuration.GetSection("LogCategory").Value)
             .Use(new List<ILogEngine>
@@ -146,22 +144,19 @@
             services.AddSingleton<ISyncDataService, SyncDataService>();
             services.AddSingleton<ISpecialDeleteService, SpecialDeleteService>();
             services.AddSingleton<ISiteMessageService, SiteMessageService>();
-            services.AddSingleton<INotificationService, NotificationService>();
             services.AddSingleton<IPushSignalRService, PushSignalRService>();
             services.AddSingleton<IRefNoTicketService, RefNoTicketService>();
 
             services.AddSingleton<IDynamicRepository, DynamicRepository>();
-            //services.AddSingleton<IBaseRepository, BaseRepository>();
+            services.AddSingleton<IBaseRepository, BaseRepository>();
             services.AddSingleton<ISyncDataRepository, SyncDataRepository>();
-            services.AddSingleton<INotificationRepository, NotificationRepository>();
-            services.AddSingleton<IViewLogService, ViewLogService>();
+
             services.AddSingleton<ICommonService, CommonService>();
             services.AddSingleton<IProblemAccountService, ProblemAccountService>();
             services.AddSingleton<IMonitoredPlayerService, MonitoredPlayerService>();
             services.AddSingleton<ISiteDbService, SiteDbService>();
-            //services.AddSingleton<IDynamicConnectionService, DynamicConnectionService>();
+            services.AddSingleton<IDynamicConnectionService, DynamicConnectionService>();
             services.AddSingleton<ICacheService, CacheService>();
-            //services.AddSingleton<ISpecialDeleteRepository, SpecialDeleteRepository>();
             services.AddSingleton<ISettlementInternalLicenseeService, SettlementInternalLicenseeService>();
         }
 

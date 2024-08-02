@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
+    using Fanex.Data;
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.AspNetCore;
@@ -45,7 +46,7 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddFanexSql(Configuration).AddFanexMySql(Configuration);
+            services.AddFanexData(Configuration);
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {

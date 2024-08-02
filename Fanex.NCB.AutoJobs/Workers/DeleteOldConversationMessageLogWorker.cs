@@ -4,31 +4,31 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Constants;
+    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
     using Fanex.NCB.AutoJobs.Extensions;
     using Fanex.NCB.AutoJobs.Models;
-    using Fanex.NCB.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using ONEbook.UM.Services;
 
     public class DeleteOldConversationMessageLogWorker : BaseWorker
     {
-        private readonly IViewLogService viewLogService;
+        private readonly ICommonService commonService;
 
         public DeleteOldConversationMessageLogWorker(
-            IViewLogService viewLogService,
+            ICommonService commonService,
             IMaintenanceService maintenanceService,
             IOptions<List<JobSetting>> jobSettings,
             ILogService logService)
                 : base(maintenanceService, logService)
         {
-            this.viewLogService = viewLogService;
+            this.commonService = commonService;
             jobSetting = JobHelper.GetJobConfig(jobSettings.Value, JobConstants.DeleteOldConversationMessageLog);
         }
 
         public override async Task ExecuteJobAsync()
         {
             var currrentDate = DateTimeOffset.Now.DateTime.ToString("yyyy-MM-dd hh:mm:ss");
-            await viewLogService.DeleteOldConversationMessageLogAsync(currrentDate);
+            await commonService.DeleteOldLog(currrentDate);
         }
     }
 }

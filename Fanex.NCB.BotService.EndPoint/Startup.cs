@@ -6,6 +6,7 @@
     using System.Text;
     using System.Threading;
     using Fanex.Caching.Redis;
+    using Fanex.Data;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.AspNetCore;
     using Fanex.Logging.Sentry;
@@ -47,7 +48,7 @@
         [Obsolete]
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddFanexMySql(Configuration);
+            services.AddFanexData(Configuration);
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {

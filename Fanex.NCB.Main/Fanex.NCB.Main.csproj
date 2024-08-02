@@ -65,8 +65,6 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Fanex.Data.SqlServer" Version="4.2.5.3" />
-        <PackageReference Include="Fanex.Data.MySql" Version="4.2.2" />
         <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.7" />
         <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.0" />

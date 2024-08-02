@@ -3,9 +3,9 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Constants;
+    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
     using Fanex.NCB.AutoJobs.Extensions;
     using Fanex.NCB.AutoJobs.Models;
-    using Fanex.NCB.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using ONEbook.UM.Services;
 
@@ -17,7 +17,7 @@
             IChatbotService chatbotService,
             IMaintenanceService maintenanceService,
             IOptions<List<JobSetting>> jobSettings,
-            ILogService logService) 
+            ILogService logService)
                 : base(maintenanceService, logService)
         {
             this.chatbotService = chatbotService;

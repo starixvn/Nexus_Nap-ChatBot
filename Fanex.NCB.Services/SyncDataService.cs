@@ -3,6 +3,7 @@
     using System;
     using System.Globalization;
     using System.Threading.Tasks;
+    using Fanex.Data.Repository;
     using Fanex.Logging;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SyncData;
@@ -155,9 +156,7 @@
         }
 
         private static string ConvertToJsonWithDateTimeFormatString(object data)
-        {
-            return JsonConvert.SerializeObject(data, new JsonSerializerSettings { DateFormatString = DateTimeFormat });
-        }
+            => JsonConvert.SerializeObject(data, new JsonSerializerSettings { DateFormatString = DateTimeFormat });
 
         private async Task NapSSOSyncDataByUserIdAsync(int userId)
         {

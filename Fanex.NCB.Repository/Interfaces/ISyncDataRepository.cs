@@ -8,7 +8,5 @@
     public interface ISyncDataRepository
     {
         Task<NapData> FetchDataFromNapUserControl(ICriteria criteria);
-
-        Task<OicData> FetchDataFromOIC(ICriteria criteria);
     }
 }

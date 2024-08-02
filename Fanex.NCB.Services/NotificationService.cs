@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.Data.Repository;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Criteria.Notification;
     using Fanex.NCB.Models.Common;
@@ -11,6 +12,8 @@
     using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Models.IntegrationMethod;
+    using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Newtonsoft.Json;
 
@@ -157,8 +160,8 @@
                 InNotificationId = notificationId
             };
 
-            var result = await notificationRepository.FetchEditNotificationInfo(criteria);
-       
+            var result = await FetchEditNotificationInfo(criteria);
+
             var notification = result.EditNotificationInfos.FirstOrDefault();
             if (notification != null)
             {
@@ -169,6 +172,20 @@
             }
 
             return notification;
+        }
+
+        private async Task<EditNotificationRepository> FetchEditNotificationInfo(ICriteria criteria)
+        {
+            var (info, recipients, platforms, integrationMethods) = await baseService.FetchMultipleAsync<EditNotificationInfo, Recipient, Platform, IntegrationMethodInfo>(criteria);
+            var data = new EditNotificationRepository
+            {
+                EditNotificationInfos = info,
+                Recipients = recipients,
+                Platforms = platforms,
+                IntegrationMethods = integrationMethods
+            };
+
+            return data;
         }
 
         public async Task<CommandResult> EditAsync(EditNotification model)
@@ -233,7 +250,7 @@
                 InIsSendAll = isResendAll
             };
 
-            var result = await notificationRepository.FetchResendNotificationInfo(criteria);
+            var result = await FetchResendNotification(criteria);
             var notification = result.ResendNotifications.FirstOrDefault();
             if (notification != null)
             {
@@ -243,6 +260,20 @@
             }
 
             return notification;
+        }
+
+        private async Task<ResendNotificationRepository> FetchResendNotification(ICriteria criteria)
+        {
+            var (notifications, recipients, platforms, methods) = await baseService.FetchMultipleAsync<ResendNotification, Recipient, Platform, IntegrationMethodInfo>(criteria);
+            var data = new ResendNotificationRepository
+            {
+                ResendNotifications = notifications,
+                Recipients = recipients,
+                Platforms = platforms,
+                IntegrationMethods = methods
+            };
+
+            return data;
         }
 
         public async Task<IEnumerable<Notification>> GetUpdatedNotificationAsync(string notificationIds)

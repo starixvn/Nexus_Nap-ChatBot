@@ -3,7 +3,6 @@
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using Fanex.NCB.Repository.Interfaces;
-    using Fanex.NCB.Shared.Models.IntegrationMethod;
     using Fanex.NCB.Shared.Models.NapUserControl;
     using Fanex.NCB.Shared.Models.OIC;
 
@@ -35,29 +34,6 @@
             //    }
             //}
             return new NapData();
-        }
-
-        public async Task<OicData> FetchDataFromOIC(ICriteria criteria)
-        {
-            //using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            //{
-            //    using (IMultiResultReader multi = await db.QueryMultipleAsync(criteria))
-            //    {
-            //        var data = new OicData
-            //        {
-            //            Licensees = multi.Read<Licensee>(),
-            //            LicenseeStatuses = multi.Read<LicenseeStatus>(),
-            //            LicenseeProducts = multi.Read<LicenseeProduct>(),
-            //            LicenseeTypes = multi.Read<LicenseeType>(),
-            //            Products = multi.Read<Product>(),
-                        Platforms = multi.Read<Platform>(),
-                        IntegrationMethod = multi.Read<IntegrationMethodInfo>(),
-                        LicenseeIntegrationMethod = multi.Read<LicenseeIntegrationMethod>()
-
-            //        return data;
-            //    }
-            //}
-            return new OicData();
         }
     }
 }
