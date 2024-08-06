@@ -54,10 +54,7 @@
         public static void RegisterRepositories(this IServiceCollection services)
         {
             services.AddScoped<IDynamicRepository, DynamicRepository>();
-            //services.AddTransient<IBaseRepository, BaseRepository>();
-            //services.AddTransient<ISpecialDeleteRepository, SpecialDeleteRepository>();
             services.AddTransient<ISyncDataRepository, SyncDataRepository>();
-            services.AddTransient<INotificationRepository, NotificationRepository>();
         }
 
         public static void RegisterJWTAuthenticate(this IServiceCollection services, IConfiguration configuration)

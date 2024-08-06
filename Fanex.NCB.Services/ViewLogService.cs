@@ -16,7 +16,7 @@
 
         public ViewLogService(IBaseService baseService)
         {
-           this.baseService = baseService;
+            this.baseService = baseService;
         }
 
         public async Task<(int, IEnumerable<ViewLogNotificationSystemMessage>)> GetNotificationSystemMessageAsync(int? notificationId, int pageIndex, int pageSize)
@@ -69,16 +69,6 @@
             }
 
             return (totalItems.FirstOrDefault(), conversationMessages, mapRecipient);
-        }
-
-        public async Task<CommandResult> DeleteOldConversationMessageLogAsync(string currentDate)
-        {
-            var command = new DeleteOldConversationMessageLogCommand
-            {
-                CurrentDate = currentDate,
-            };
-
-            return await baseService.ExecuteNonQueryAsync(command);                      
         }
     }
 }

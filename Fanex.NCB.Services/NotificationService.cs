@@ -9,7 +9,6 @@
     using Fanex.NCB.Criteria.Notification;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Models.Notification;
-    using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.IntegrationMethod;
@@ -21,17 +20,13 @@
     {
         private readonly IBaseService baseService;
         private readonly ISendNotificationService sendNotificationService;
-        private readonly INotificationRepository notificationRepository;
 
         public NotificationService(
             IBaseService baseService,
-            ISendNotificationService sendNotificationService,
-            INotificationRepository notificationRepository
-        )
+            ISendNotificationService sendNotificationService)
         {
             this.baseService = baseService;
             this.sendNotificationService = sendNotificationService;
-            this.notificationRepository = notificationRepository;
         }
 
         public async Task<(CommandResult, string)> CreateAsync(CreateNotification model)

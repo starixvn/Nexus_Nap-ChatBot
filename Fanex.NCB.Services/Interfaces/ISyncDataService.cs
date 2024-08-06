@@ -4,10 +4,6 @@
 
     public interface ISyncDataService
     {
-        Task NapUserControlSyncDataAsync();
-
         Task SyncNapDataForSSOLogin(int userId);
-
-        Task OicSyncDataAsync();
     }
 }
