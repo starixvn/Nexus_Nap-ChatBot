@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.LocalNap.User
 {
+    using Fanex.Data;
     using Fanex.Data.Repository;
 
     public class GetSiteLevelCriteria : CriteriaBase
@@ -8,6 +9,7 @@
 
         public string Environment { get; set; }
 
+        [SpParam(AllowNull = true)]
         public bool? IsActive { get; set; }
 
         public override string GetSettingKey() => "NAP_Site_GetByUser";

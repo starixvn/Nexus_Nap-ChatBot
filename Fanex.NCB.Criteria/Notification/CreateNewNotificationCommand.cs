@@ -1,12 +1,14 @@
 ﻿namespace Fanex.NCB.Criteria.Notification
 {
     using System;
+    using Fanex.Data;
     using Fanex.NCB.Shared.Models;
 
     public class CreateNewNotificationCommand : BaseCommand
     {
         public int InNotificationTypeId { get; set; }
 
+        [SpParam(AllowNull = true)]
         public int? InProductId { get; set; }
 
         public string InRecipientIds { get; set; }

@@ -1,11 +1,13 @@
 ﻿namespace Fanex.NCB.Criteria.Common
 {
+    using Fanex.Data;
     using Fanex.Data.Repository;
 
     public class GetIntegrationMethodCriteria : CriteriaBase
     {
         public int InNotificationTypeId { get; set; }
 
+        [SpParam(AllowNull = true)]
         public uint? InIntegrationMethodId { get; set; }
 
         public string InIntegrationMethodName { get; set; }

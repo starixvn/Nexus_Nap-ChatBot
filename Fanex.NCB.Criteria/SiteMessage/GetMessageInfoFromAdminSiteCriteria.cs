@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.Criteria.SiteMessage
 {
     using System;
+    using Fanex.Data;
     using Fanex.Data.Repository;
 
     public class GetMessageInfoFromAdminSiteCriteria : CriteriaBase
@@ -11,6 +12,7 @@
 
         public string MsgContentsTypeLst { get; set; }
 
+        [SpParam(AllowNull = true)]
         public DateTime? LastPostTime { get; set; }
 
         public string Environment { get; set; } = "UAT";

@@ -1,9 +1,11 @@
 ﻿namespace Fanex.NCB.Criteria.ViewLog
 {
+    using Fanex.Data;
     using Fanex.Data.Repository;
 
     public class GetNotificationRecipientListCriteria : CriteriaBase
     {
+        [SpParam(AllowNull = true)]
         public int? NotificationId { get; set; }
 
         public int PageIndex { get; set; }

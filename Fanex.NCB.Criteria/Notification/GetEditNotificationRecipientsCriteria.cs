@@ -9,6 +9,7 @@
 
         public int InNotificationTypeId { get; set; }
 
+        [SpParam(AllowNull = true)]
         public int? InProductId { get; set; }
 
         public string InPlatformIds { get; set; }

@@ -4,6 +4,7 @@
 
     public class GetConversationMessageLogCriteria : CriteriaBase
     {
+        [SpParam(AllowNull = true)]
         public int? NotificationId { get; set; }
 
         public int PageIndex { get; set; }

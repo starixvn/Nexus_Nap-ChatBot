@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.Criteria.Notification
 {
     using System;
+    using Fanex.Data;
     using Fanex.Data.Repository;
     using Newtonsoft.Json;
 
@@ -10,7 +11,7 @@
 
         public string InRecipientIds { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Include)]
+        [SpParam(AllowNull = true)]
         public int? InCreatorId { get; set; }
 
         public string InNotificationStatusId { get; set; }
@@ -19,7 +20,7 @@
 
         public string InProductIds { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Include)]
+        [SpParam(AllowNull = true)]
         public uint? InMessageId { get; set; }
 
         public DateTime InConfigSendTimeFrom { get; set; }
