@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.ViewLog
 {
+    using Fanex.Data;
     using Fanex.Data.Repository;
 
     public class GetConversationMessageLogCriteria : CriteriaBase

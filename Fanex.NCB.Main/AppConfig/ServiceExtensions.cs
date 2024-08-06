@@ -24,9 +24,9 @@
         public static void RegisterServices(this IServiceCollection services)
         {
             services.AddTransient<IBaseService, BaseService>();
-            services.AddTransient<IChatbotService, ChatbotService>();
             services.AddTransient<ILogService, LogServiceExtend>();
             services.AddScoped<IChatGroupMappingService, ChatGroupMappingService>();
+            services.AddScoped<IChatbotService, ChatbotService>();
             services.AddScoped<ISettingService, SettingService>();
             services.AddScoped<INotificationTypeService, NotificationTypeService>();
             services.AddScoped<ICommonService, CommonService>();
@@ -39,8 +39,6 @@
             services.AddScoped<IPushSignalRService, PushSignalRService>();
             services.AddScoped<IResetLastMessageIdService, ResetLastMessageIdService>();
             services.AddScoped<IRemotingRefService, RemotingRefService>();
-            services.AddScoped<IProblemAccountService, ProblemAccountService>();
-            services.AddScoped<IMonitoredPlayerService, MonitoredPlayerService>();
 
             services.AddSingleton<IUMCacheService, UMCacheService>();
             services.AddSingleton<IUMRestClient, UMRestClient>();

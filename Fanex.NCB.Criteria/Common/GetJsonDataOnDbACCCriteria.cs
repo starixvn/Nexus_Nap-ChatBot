@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Criteria.SpecialDeleteTicket
+﻿namespace Fanex.NCB.Criteria.Common
 {
     using Fanex.Data.Repository;
 

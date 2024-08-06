@@ -23,13 +23,7 @@
 
         Task<IEnumerable<Platform>> GetPlatformAsync(int notificationTypeId);
 
-        string GetCategogyName(string categoryId, string languageCode);
-
-        string GetCustomerClassName(string customerClass, string languageCode);
-
         Task<string> GetJsonDataFromDbACCAsync(string tableName);
-        
-        Task<ServiceSetting> GetServiceSetting(string inServiceName);
 
         Task<IEnumerable<IntegrationMethodInfo>> GetIntegrationMethodAsync(int notificationTypeId);
     }

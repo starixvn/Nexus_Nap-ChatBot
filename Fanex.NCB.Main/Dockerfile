@@ -12,6 +12,7 @@ COPY ["Fanex.NCB.Repository/Fanex.NCB.Repository.csproj", "Fanex.NCB.Repository/
 COPY ["Fanex.NCB.Models/Fanex.NCB.Models.csproj", "Fanex.NCB.Models/"]
 COPY ["Fanex.NCB.Resources/Fanex.NCB.Resources.csproj", "Fanex.NCB.Resources/"]
 COPY ["nuget.config", ""]
+
 RUN --mount=type=cache,target=/root/.nuget/packages \
 dotnet restore "Fanex.NCB.Main/Fanex.NCB.Main.csproj"
 

@@ -1,14 +1,13 @@
 ﻿namespace Fanex.NCB.Services
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Criteria.ViewLog;
     using Fanex.NCB.Models.ViewLog;
     using Fanex.NCB.Services.Interfaces;
-    using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     public class ViewLogService : IViewLogService
     {

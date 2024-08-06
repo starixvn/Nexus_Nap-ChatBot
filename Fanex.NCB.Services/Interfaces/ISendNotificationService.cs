@@ -4,8 +4,6 @@
 
     public interface ISendNotificationService
     {
-        Task ScanAndSendNotificationAsync();
-
         Task SendNotificationImmediatelyAsync(int notifiactionId);
     }
 }
