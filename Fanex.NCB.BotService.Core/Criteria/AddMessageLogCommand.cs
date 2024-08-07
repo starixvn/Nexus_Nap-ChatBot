@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.BotService.Core.Criteria
 {
+    using Fanex.Data;
     using Fanex.NCB.Shared.Models;
 
     public class AddMessageLogCommand : BaseCommand
@@ -14,6 +15,7 @@
 
         public bool IsSuccessfull { get; set; }
 
+        [SpParam(AllowNull = true)]
         public string ErrorMessage { get; set; }
 
         public override string GetSettingKey() => "NCB_Conversation_AddMessageLog";
