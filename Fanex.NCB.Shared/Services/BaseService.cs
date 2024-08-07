@@ -29,18 +29,11 @@
 
         public async Task<ValueTuple<IEnumerable<T1>, IEnumerable<T2>>> FetchMultipleAsync<T1, T2>(ICriteria criteria, string serverIp = "")
         {
-            try
+            if (criteria != null && criteria.IsValid())
             {
-                if (criteria != null && criteria.IsValid())
-                {
-                    return await dynamicRepository.FetchMultipleAsync<T1, T2>(criteria, serverIp);
-                }
-                return new ValueTuple<IEnumerable<T1>, IEnumerable<T2>>(new List<T1>(), new List<T2>());
+                return await dynamicRepository.FetchMultipleAsync<T1, T2>(criteria, serverIp);
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return new ValueTuple<IEnumerable<T1>, IEnumerable<T2>>(new List<T1>(), new List<T2>());
         }
 
         public async Task<ValueTuple<IEnumerable<T1>, IEnumerable<T2>, IEnumerable<T3>>> FetchMultipleAsync<T1, T2, T3>(ICriteria criteria, string serverIp = "")

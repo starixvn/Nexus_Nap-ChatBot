@@ -10,6 +10,7 @@
         [SpParam(AllowNull = true)]
         public uint? InIntegrationMethodId { get; set; }
 
+        [SpParam(AllowNull = true)]
         public string InIntegrationMethodName { get; set; }
 
         public override string GetSettingKey() => "NCB_IntegrationMethod_Sel";

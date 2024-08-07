@@ -3,21 +3,25 @@
     using System;
     using Fanex.Data;
     using Fanex.Data.Repository;
-    using Newtonsoft.Json;
 
     public class GetNotificationsCriteria : CriteriaBase
     {
+        [SpParam(AllowNull = true)]
         public string InNotificationTypeIds { get; set; }
 
-        public string InRecipientIds { get; set; }
+        [SpParam(AllowNull = true)]
+        public string InRecipientIds { get; set; } = string.Empty;
 
         [SpParam(AllowNull = true)]
         public int? InCreatorId { get; set; }
 
+        [SpParam(AllowNull = true)]
         public string InNotificationStatusId { get; set; }
 
+        [SpParam(AllowNull = true)]
         public string InChannelIds { get; set; }
 
+        [SpParam(AllowNull = true)]
         public string InProductIds { get; set; }
 
         [SpParam(AllowNull = true)]

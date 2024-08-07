@@ -9,6 +9,7 @@
 
         public int RecipientTypeID { get; set; }
 
+        [SpParam(AllowNull = true)]
         public string RecipientIDs { get; set; }
 
         public int CreatorID { get; set; }

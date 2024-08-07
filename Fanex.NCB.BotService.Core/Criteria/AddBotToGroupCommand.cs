@@ -1,15 +1,24 @@
 ﻿namespace Fanex.NCB.BotService.Core.Criteria
 {
+    using Fanex.Data;
     using Fanex.NCB.Shared.Models;
 
     public class AddBotToGroupCommand : BaseCommand
     {
         public string BotConversationId { get; set; }
+
+        [SpParam(AllowNull = true)]
         public string BotName { get; set; }
+
         public string ConversationId { get; set; }
+
+        [SpParam(AllowNull = true)]
         public string GroupName { get; set; } = string.Empty;
+
         public byte ChannelId { get; set; }
+
         public string ServiceUrl { get; set; }
+
         public string UpdatedBy { get; set; }
 
         public override string GetSettingKey() => "NCB_Conversation_AddBotToGroup";

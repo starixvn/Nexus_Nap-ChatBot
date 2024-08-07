@@ -12,8 +12,10 @@
         [SpParam(AllowNull = true)]
         public int? InProductId { get; set; }
 
+        [SpParam(AllowNull = true)]
         public string InPlatformIds { get; set; }
 
+        [SpParam(AllowNull = true)]
         public string InRecipientIds { get; set; }
 
         public string InIntegrationMethodIds { get; set; }
