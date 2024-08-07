@@ -2,6 +2,7 @@
 
 namespace Fanex.NCB.Criteria.LocalNap.Security
 {
+    using Fanex.Data;
     using Fanex.Data.Repository;
 
     public class LogUserLoginCriteria : CriteriaBase
@@ -14,6 +15,7 @@ namespace Fanex.NCB.Criteria.LocalNap.Security
 
         public DateTime LogDate { get; set; }
 
+        [SpParam(AllowNull = true)]
         public string Doing { get; set; }
 
         public string DomainName { get; set; }
