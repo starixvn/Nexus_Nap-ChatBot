@@ -151,6 +151,7 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Host)]
         public async Task<IActionResult> UpdateJobInfo([FromBody] UpdateJobInfoViewModel viewModel)
         {
+
             if (ModelState.IsValid)
             {
                 CommandResult result = await settingConfigurationService.UpdateJobInfoAsync(new UpdateJobInfo
@@ -162,7 +163,8 @@
                     PreviousMaxMessageId = viewModel.PreviousMaxMessageId,
                     LastMsgTargetId = viewModel.LastMsgTargetId,
                     LastVoidingHistoryCollectionId = viewModel.LastVoidingHistoryCollectionId,
-                    LastLogId = viewModel.LastLogId
+                    LastLogId = viewModel.LastLogId,
+                    LastModifiedTime = viewModel.LastModifiedTime
                 }, napSession.UserId);
                 return Json(result);
             }

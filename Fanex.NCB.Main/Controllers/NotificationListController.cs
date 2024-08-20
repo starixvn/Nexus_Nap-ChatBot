@@ -52,7 +52,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
             IEnumerable<User> senders = await commonService.GetUsersAsync();
             IEnumerable<NotificationStatus> notificationStatuses = await commonService.GetNotificationStatusesAsync();
             IEnumerable<Recipient> recipients = await commonService.GetRecipientsAsync();
-            IEnumerable<ConversationChannel> channels = await commonService.GetConversationChannelAsync();
+            IEnumerable<ChannelInfo> channels = await commonService.GetConversationChannelAsync();
             IEnumerable<Product> products = await commonService.GetProductsAsync();
 
             var viewModel = new NotificationListFilterViewModel

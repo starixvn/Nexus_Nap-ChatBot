@@ -22,10 +22,7 @@
     public class SpecialDeleteService : ISpecialDeleteService
     {
         private readonly IBaseService baseService;
-        private readonly IPushSignalRService pushSignalService;
         private readonly IChatbotService chatbotService;
-        private readonly ILogService logService;
-        private readonly ISiteDbService siteDbService;
         private readonly ICommonService commonService;
         private readonly IRefNoTicketService refNoTicketService;
         private readonly string Environment;
@@ -36,19 +33,13 @@
 
         public SpecialDeleteService(IBaseService baseService,
             IChatbotService chatbotService,
-            IPushSignalRService pushSignalService,
-            ILogService logService,
             IConfiguration configuration,
-            ISiteDbService siteDbService,
             ICommonService commonService,
             IRefNoTicketService refNoTicketService)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             this.baseService = baseService;
-            this.pushSignalService = pushSignalService;
             this.chatbotService = chatbotService;
-            this.logService = logService;
-            this.siteDbService = siteDbService;
             this.commonService = commonService;
             this.refNoTicketService = refNoTicketService;
             Environment = configuration.GetSection("Environment")?.Value;
@@ -74,7 +65,7 @@
                         await UpdateMessageHistoryVoidingForLicenseeAsync(details);
                     }
 
-                    await OnAfterImportDataAsync(command, notifications);
+                    await commonService.OnAfterImportDataAsync(command, notifications);
                 }
             }
         }
@@ -94,29 +85,6 @@
             var msgHistories = msgDetails.Select(x => new MessageHistory { MessageId = x.MessageId, TargetId = x.TargetId }).ToList();
             var xmlMsg = XmlHelper<MessageHistory>.Serialize(msgHistories);
             await InsertToMessageChatbotAsync(xmlMsg, VoidTicketForLicenseeJobIdentity);
-        }
-
-        protected internal virtual async Task OnAfterImportDataAsync(
-            CommandResult commandResult,
-            IEnumerable<NotificationMessage> notifications)
-        {
-            if (!commandResult.IsSuccessful)
-            {
-                await chatbotService.NotifyToChatGroupAsync(commandResult.Message);
-            }
-            else
-            {
-                if (notifications.Any())
-                {
-                    await Task.WhenAll(
-                        SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications),
-                        SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications)
-                    );
-
-                    var notificationIds = string.Join(",", notifications.Select(item => item.NotificationId));
-                    await pushSignalService.PushNewNotification(notificationIds);
-                }
-            }
         }
 
         protected internal virtual async Task<(CommandResult, IEnumerable<NotificationMessage>)> ImportMessageToChatbotDBAsync(
@@ -278,7 +246,7 @@
                     Message = criteria.ErrMsg
                 };
 
-                await OnAfterImportDataAsync(command, notificationMessages);
+                await commonService.OnAfterImportDataAsync(command, notificationMessages);
             }
         }
 
@@ -293,20 +261,6 @@
 
             await baseService.ExecuteNonQueryAsync(command);
         }
-
-        protected internal virtual async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications)
-        {
-            try
-            {
-                var filterNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
-                await chatbotService.SendMultiMessageAsync(channelId, filterNotifications);
-            }
-            catch (Exception ex)
-            {
-                logService.WriteLogFileError(ex.Message);
-            }
-        }
-
         #endregion Pull voiding ticket and send to internal department
     }
 }

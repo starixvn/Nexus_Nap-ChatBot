@@ -8,6 +8,8 @@
         ProblemPlayer,
         MonitoredPlayer,
         SettlementInternalCSD,
-        SettlementLicensee
+        SettlementLicensee,
+        ResultAmendmentLicensee,
+        ResultAmendmentInternalCSD
     }
 }

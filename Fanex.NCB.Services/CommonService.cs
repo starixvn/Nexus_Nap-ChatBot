@@ -1,7 +1,10 @@
 ﻿namespace Fanex.NCB.Services
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Criteria.Common;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Services.Interfaces;
@@ -14,11 +17,23 @@
     {
         private readonly IBaseService baseService;
         private readonly IRemotingRefService remotingRefService;
+        private readonly IChatbotService chatbotService;
+        private readonly IPushSignalRService pushSignalService;
+        private readonly ILogService logService;
 
-        public CommonService(IBaseService baseService, IRemotingRefService remotingRefService)
+        public CommonService(
+            IBaseService baseService,
+            IRemotingRefService remotingRefService,
+            IChatbotService chatbotService,
+            IPushSignalRService pushSignalService,
+            ILogService logService
+        )
         {
             this.baseService = baseService;
             this.remotingRefService = remotingRefService;
+            this.chatbotService = chatbotService;
+            this.pushSignalService = pushSignalService;
+            this.logService = logService;
         }
 
         public async Task<IEnumerable<NotificationType>> GetNotificationTypesAsync()
@@ -46,9 +61,9 @@
             return await baseService.GetDataAsync<User>(new GetUsersCriteria());
         }
 
-        public async Task<IEnumerable<ConversationChannel>> GetConversationChannelAsync()
+        public async Task<IEnumerable<ChannelInfo>> GetConversationChannelAsync()
         {
-            return await baseService.GetDataAsync<ConversationChannel>(new GetConversationChannelCriteria());
+            return await baseService.GetDataAsync<ChannelInfo>(new GetConversationChannelCriteria());
         }
 
         public Task<IEnumerable<Platform>> GetPlatformAsync(int notificationTypeId)
@@ -75,6 +90,40 @@
                 InIntegrationMethodName = null
             };
             return await baseService.GetDataAsync<IntegrationMethodInfo>(criteria);
+        }
+
+        public async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications)
+        {
+            try
+            {
+                var selectedNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
+                await chatbotService.SendMultiMessageAsync(channelId, selectedNotifications);
+            }
+            catch (Exception ex)
+            {
+                logService.WriteLogFileError(ex.Message);
+            }
+        }
+
+        public async Task OnAfterImportDataAsync(CommandResult commandResult, IEnumerable<NotificationMessage> notificationMessages)
+        {
+            if (!commandResult.IsSuccessful)
+            {
+                await chatbotService.NotifyToChatGroupAsync(commandResult.Message);
+            }
+            else
+            {
+                if (notificationMessages.Any())
+                {
+                    await Task.WhenAll(
+                        SendMessageByChannelAsync((byte)ConversationChannel.Skype, notificationMessages),
+                        SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notificationMessages)
+                    );
+
+                    var notificationIds = string.Join(",", notificationMessages.Select(item => item.NotificationId));
+                    await pushSignalService.PushNewNotification(notificationIds);
+                }
+            }
         }
     }
 }

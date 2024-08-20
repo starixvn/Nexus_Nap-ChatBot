@@ -35,5 +35,8 @@
 
         [XmlAttribute("TargetId")]
         public int TargetId { get; set; }
+
+        [XmlAttribute("NotificationId")]
+        public int NotificationId { get; set; }
     }
 }

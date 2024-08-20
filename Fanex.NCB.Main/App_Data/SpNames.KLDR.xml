@@ -183,5 +183,8 @@
         <Setting Key="NAP_Chatbot_MissingMessage_Sel" SpName="NAP_Chatbot_MissingMessage_Sel" DbName="DBACC.bodb02.wsv_nap" Plain="0">
             <Mapping DataField="Content_en" ObjectProperty="Content" />
         </Setting>
+        <Setting Key="NAP_Chatbot_MissingNotification_Sel" SpName="NAP_Chatbot_MissingNotification_Sel_xtest" DbName="DBCRM.MessageNotification.wsv_nap" Plain="0">
+            <Mapping DataField="Content_en" ObjectProperty="Content" />
+        </Setting>
     </Function>
 </Functions>

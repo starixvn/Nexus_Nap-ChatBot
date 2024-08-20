@@ -19,12 +19,16 @@
 
         Task<IEnumerable<User>> GetUsersAsync();
 
-        Task<IEnumerable<ConversationChannel>> GetConversationChannelAsync();
+        Task<IEnumerable<ChannelInfo>> GetConversationChannelAsync();
 
         Task<IEnumerable<Platform>> GetPlatformAsync(int notificationTypeId);
 
         Task<string> GetJsonDataFromDbACCAsync(string tableName);
 
         Task<IEnumerable<IntegrationMethodInfo>> GetIntegrationMethodAsync(int notificationTypeId);
+
+        Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications);
+
+        Task OnAfterImportDataAsync(CommandResult commandResult, IEnumerable<NotificationMessage> notificationMessages);
     }
 }

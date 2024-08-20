@@ -1,6 +1,9 @@
 ﻿namespace Fanex.NCB.Main.Controllers
 {
+    using System;
     using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
@@ -9,6 +12,7 @@
     using Fanex.NCB.Models.ResetLastMessageId;
     using Fanex.NCB.NAPResolver.Attributes;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Enum;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
     using static Fanex.NAP.Core.Business.Constant;
@@ -48,9 +52,7 @@
         public async Task<IActionResult> GetCurrentPreviousMaxMessage()
         {
             var (currentMaxMessageInfos, messageTypeInfos) = await resetLastMessageIdService.GetCurrentPreviousMaxMessageAsync();
-
             var abnormalBetsMissingMsg = await resetLastMessageIdService.GetAbnormalBetsMissingMessageAsync(currentMaxMessageInfos);
-
             var missingMsgInfo = await resetLastMessageIdService.GetMissingMessageInfoAsync(currentMaxMessageInfos, messageTypeInfos, abnormalBetsMissingMsg);
 
             return Json(new
@@ -63,7 +65,7 @@
 
         [HttpPost]
         [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Host)]
-        public async Task<IActionResult> CreateMissingMessage([FromBody] List<MissingMesssageInfo> listMsg)
+        public async Task<IActionResult> CreateMissingMessage([FromBody] List<MissingInfoIns> listMsg)
         {
             var commandResult = await resetLastMessageIdService.CreateMissingMessageAsync(listMsg);
 

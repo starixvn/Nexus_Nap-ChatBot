@@ -2,7 +2,7 @@
 {
     using Fanex.NCB.Core.Enum;
 
-    public class BotConversation : Models.Common.ConversationChannel
+    public class BotConversation : Models.Common.ChannelInfo
     {
         public string GroupName { get; set; }
 

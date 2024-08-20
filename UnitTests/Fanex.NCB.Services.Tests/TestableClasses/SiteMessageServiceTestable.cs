@@ -15,10 +15,9 @@
                IBaseService baseService,
                IChatbotService chatbotService,
                IPushSignalRService pushSignalService,
-               ILogService logService,
                IConfiguration configuration,
                ICommonService commonService)
-            : base(baseService, chatbotService, pushSignalService, logService, configuration, commonService)
+            : base(baseService, chatbotService, pushSignalService, configuration, commonService)
         { }
 
         public async Task<(CommandResult, IEnumerable<NotificationMessage>)> Public_ImportMessageToChatbotDBAsync(
@@ -49,11 +48,6 @@
         public async Task<(IEnumerable<SiteMessageModel>, IEnumerable<SiteMessageDetail>)> Public_GetDataFromSiteMessageAsync(SystemSetting systemSetting)
         {
             return await base.GetDataFromSiteMessageAsync(systemSetting);
-        }
-
-        public async Task Public_SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications)
-        {
-            await base.SendMessageByChannelAsync(channelId, notifications);
         }
     }
 }

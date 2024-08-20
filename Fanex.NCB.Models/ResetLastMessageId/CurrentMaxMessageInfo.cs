@@ -8,13 +8,13 @@
         [XmlAttribute("JobIdentify")]
         public int JobIdentify { get; set; }
 
-        [XmlAttribute("ReferenceId")]
-        public int ReferenceId { get; set; }
+        [XmlAttribute("ReferenceValue")]
+        public string ReferenceValue { get; set; }
 
         [XmlAttribute("SettingName")]
         public string SettingName { get; set; }
 
         [XmlIgnore]
-        public int MaxReferenceId { get; set; }
+        public string MaxReferenceId { get; set; }
     }
 }

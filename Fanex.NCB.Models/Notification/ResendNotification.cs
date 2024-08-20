@@ -5,7 +5,7 @@
     using Fanex.NCB.Shared.Models.IntegrationMethod;
     using Fanex.NCB.Shared.Models.OIC;
 
-    public class ResendNotification : ConversationChannel
+    public class ResendNotification : ChannelInfo
     {
         public int NotificationId { get; set; }
 

@@ -54,7 +54,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSettings()
         {
-            IEnumerable<ConversationChannel> channels = await commonService.GetConversationChannelAsync();
+            IEnumerable<ChannelInfo> channels = await commonService.GetConversationChannelAsync();
             IEnumerable<BotName> bots = await settingService.GetBotNameAsync();
 
             var viewModel = new ChatGroupMappingFilterViewModel

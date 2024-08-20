@@ -41,7 +41,7 @@
             // Arrange
             var messages = new List<CurrentMaxMessageInfo>
             {
-                new CurrentMaxMessageInfo { JobIdentify = 1, ReferenceId = 123 }
+                new CurrentMaxMessageInfo { JobIdentify = 1, ReferenceValue = "123" }
             };
             var messageListXml = XmlHelper<CurrentMaxMessageInfo>.Serialize(messages);
 

@@ -53,4 +53,10 @@
         <Setting Key="NAP_Chatbot_Settlement_Licensee_LeagueSel" SpName="NAP_Chatbot_Settlement_Licensee_LeagueSel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
         <Setting Key="NCB_Settlement_Licensee_Import" SpName="NCB_Settlement_Licensee_Import" DbName="ChatBot" Plain="0" />
     </Function>
+    <Function Name="ResultAmendment">
+        <Setting Key="NAP_Chatbot_ResultAmendment_Licensee_MessageSel" SpName="NAP_Chatbot_ResultAmendment_Licensee_MessageSel" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0" />
+        <Setting Key="NCB_ResultAmendment_Licensee_Import" SpName="NCB_ResultAmendment_Licensee_Import" DbName="ChatBot" Plain="0" />
+        <Setting Key="NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel" SpName="NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel" DbName="DBCRM.MessageNotification.wsv_nap" Plain="0" />
+        <Setting Key="NCB_ResultAmendment_InternalCSD_Import" SpName="NCB_ResultAmendment_InternalCSD_Import" DbName="ChatBot" Plain="0" />
+    </Function>
 </Functions>

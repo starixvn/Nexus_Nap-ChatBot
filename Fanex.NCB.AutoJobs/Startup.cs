@@ -158,6 +158,7 @@
             services.AddSingleton<IDynamicConnectionService, DynamicConnectionService>();
             services.AddSingleton<ICacheService, CacheService>();
             services.AddSingleton<ISettlementInternalLicenseeService, SettlementInternalLicenseeService>();
+            services.AddSingleton<IResultAmendmentService, ResultAmendmentService>();
         }
 
         private static void AddWorker(IServiceCollection services)
@@ -175,6 +176,8 @@
             services.AddHostedService<SendMessageMonitoredPlayerWorker>();
             services.AddHostedService<SettlementInternalCSDWorker>();
             services.AddHostedService<SettlementLicenseeWorker>();
+            services.AddHostedService<ResultAmendmentInternalCSDWorkder>();
+            services.AddHostedService<ResultAmendmentLicenseeWorkder>();
         }
     }
 }

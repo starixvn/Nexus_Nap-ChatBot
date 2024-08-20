@@ -27,5 +27,9 @@
         public const string SettlementInternalCSD = "SettlementInternalCSD";
 
         public const string SettlementLicensee = "SettlementLicensee";
+
+        public const string ResultAmendmentInternalCSD = "ResultAmendmentInternalCSD";
+
+        public const string ResultAmendmentILicensee = "ResultAmendmentLicensee";
     }
 }

@@ -64,9 +64,9 @@
         {
             var controller = GetController();
 
-            var channels = new List<Models.Common.ConversationChannel>
+            var channels = new List<Models.Common.ChannelInfo>
             {
-                new Models.Common.ConversationChannel { ChannelId = 1, ChannelName = "skype" }
+                new Models.Common.ChannelInfo { ChannelId = 1, ChannelName = "skype" }
             };
             var bots = new List<BotName> { new BotName { Id = 1, Name = "Test", ChannelId = 1, ChannelName = "skype" } };
             var recipientTypes = new List<BaseModel> { new BaseModel { Id = 1, Name = "Test" } };

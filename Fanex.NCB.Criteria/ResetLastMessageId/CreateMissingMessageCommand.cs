@@ -9,7 +9,7 @@
     public class CreateMissingMessageCommand : BaseCommand
     {
         [SpParam(Ignored = true)]
-        public List<MissingMesssageInfo> Messages { get; set; } = new List<MissingMesssageInfo>();
+        public List<MissingInfoIns> Messages { get; set; } = new List<MissingInfoIns>();
 
         public string SiteAsJson { get; set; }
         public string DepCustSAsJson { get; set; }
@@ -22,7 +22,7 @@
             {
                 var xml = new StringBuilder();
                 xml.Append("<root>");
-                foreach (MissingMesssageInfo message in Messages)
+                foreach (MissingInfoIns message in Messages)
                 {
                     xml.AppendFormat("<r JobIdentify='{0}' MessageId='{1}'/>",
                         message.JobIdentify,

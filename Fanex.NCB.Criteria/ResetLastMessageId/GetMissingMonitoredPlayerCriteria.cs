@@ -4,7 +4,7 @@
 
     public class GetMissingMonitoredPlayerCriteria : CriteriaBase
     {
-        public int FromLogId { get; set; }
+        public string FromLogId { get; set; }
 
         public override string GetSettingKey() => "NAP_Chatbot_MissingMonitoredPlayer_Sel";
 

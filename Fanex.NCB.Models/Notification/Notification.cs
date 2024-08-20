@@ -3,7 +3,7 @@
     using System;
     using Fanex.NCB.Models.Common;
 
-    public class Notification : ConversationChannel
+    public class Notification : ChannelInfo
     {
         public int NotificationId { get; set; }
         public int MessageID { get; set; }

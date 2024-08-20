@@ -37,6 +37,10 @@
         .maxId-input {
             width: 95px !important;
         }
+
+        .picker-modifier {
+            background-color: #fff !important;
+        }
     }
 
     p {
@@ -55,6 +59,10 @@
 
 .status-running {
     color: #e74c3c;
+}
+
+.settingType {
+    width: 230px !important;
 }
 
 .form-group {

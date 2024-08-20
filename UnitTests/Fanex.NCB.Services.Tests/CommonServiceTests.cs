@@ -5,6 +5,7 @@
     using AutoFixture;
     using Fanex.NCB.Criteria.Common;
     using Fanex.NCB.Models.Common;
+    using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Fanex.RemotingRef;
@@ -16,6 +17,9 @@
         private readonly IFixture fixture = new Fixture();
         private IBaseService baseService;
         private IRemotingRefService remotingRefService;
+        private IChatbotService chatbotService;
+        private IPushSignalRService pushSignalService;
+        private ILogService logService;
 
         [Fact]
         public async Task GetNotificationTypesAsync_WhenCalled_ReturnExpectedResult()
@@ -96,9 +100,9 @@
         public async Task GetConversationChannelAsync_WhenCalled_ReturnExpectedChannels()
         {
             // Arrange
-            var channels = fixture.CreateMany<ConversationChannel>();
+            var channels = fixture.CreateMany<ChannelInfo>();
             var service = GetService();
-            baseService.GetDataAsync<ConversationChannel>(Arg.Any<GetConversationChannelCriteria>()).Returns(channels);
+            baseService.GetDataAsync<ChannelInfo>(Arg.Any<GetConversationChannelCriteria>()).Returns(channels);
 
             // Act
             var result = await service.GetConversationChannelAsync();
@@ -126,8 +130,11 @@
         {
             baseService = Substitute.For<IBaseService>();
             remotingRefService = Substitute.For<IRemotingRefService>();
+            chatbotService = Substitute.For<IChatbotService>();
+            pushSignalService = Substitute.For<IPushSignalRService>();
+            logService = Substitute.For<ILogService>();
 
-            return new CommonService(baseService, remotingRefService);
+            return new CommonService(baseService, remotingRefService, chatbotService, pushSignalService, logService);
         }
     }
 }
