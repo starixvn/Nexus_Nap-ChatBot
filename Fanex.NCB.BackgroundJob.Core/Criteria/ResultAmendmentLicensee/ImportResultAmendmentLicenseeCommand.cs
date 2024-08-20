@@ -1,7 +1,5 @@
-﻿namespace Fanex.NCB.Criteria.ResultAmendmentLicensee
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentLicensee
 {
-    using Fanex.NCB.Shared.Models;
-
     public class ImportResultAmendmentLicenseeCommand : BaseCommand
     {
         public string MessageHeader { get; set; }

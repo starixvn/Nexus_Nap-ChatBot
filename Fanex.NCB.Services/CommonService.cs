@@ -8,6 +8,7 @@
     using Fanex.NCB.Criteria.Common;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.IntegrationMethod;
     using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services.Interfaces;

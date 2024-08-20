@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Shared.Models.ResultAmendment
+﻿namespace Fanex.NCB.AutoJobs.Core.Models.ResultAmendment
 {
     public class MessageAmendmentTarget
     {

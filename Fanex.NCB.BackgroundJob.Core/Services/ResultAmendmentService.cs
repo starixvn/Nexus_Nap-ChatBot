@@ -1,17 +1,15 @@
-﻿namespace Fanex.NCB.Services
+﻿namespace Fanex.NCB.AutoJobs.Core.Services
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.Criteria.ResultAmendmentInternalCSD;
-    using Fanex.NCB.Criteria.ResultAmendmentLicensee;
-    using Fanex.NCB.Models.NotifictaionSendMessage;
-    using Fanex.NCB.Services.Interfaces;
-    using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Models.ResultAmendment;
-    using Fanex.NCB.Shared.Services.Interfaces;
+    using Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentInternalCSD;
+    using Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentLicensee;
+    using Fanex.NCB.AutoJobs.Core.Models.Core;
+    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
+    using Fanex.NCB.AutoJobs.Core.Models.ResultAmendment;
+    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
     using Newtonsoft.Json;
 
     public class ResultAmendmentService : IResultAmendmentService
@@ -33,9 +31,10 @@
         }
 
         #region ResultAmendment Internal CSD
+
         public async Task ResultAmendmentInternalCSDAsync()
         {
-            var systemSetting = await commonService.GetServiceSetting(Constants.ServiceName_ResultAmendmentInternalCSD);
+            var systemSetting = await commonService.GetServiceSetting(Constants.Constants.ServiceName_ResultAmendmentInternalCSD);
 
             if (systemSetting != null)
             {
@@ -68,12 +67,14 @@
                 await commonService.OnAfterImportDataAsync(command, notificationMessages);
             }
         }
+
         #endregion ResultAmendment Internal CSD
 
         #region ResultAmendment Licensee
+
         public async Task ResultAmendmentLicenseeAsync()
         {
-            var systemSetting = await commonService.GetServiceSetting(Constants.ServiceName_ResultAmendmentLicensee);
+            var systemSetting = await commonService.GetServiceSetting(Constants.Constants.ServiceName_ResultAmendmentLicensee);
 
             if (systemSetting != null)
             {
@@ -114,6 +115,7 @@
                 await commonService.OnAfterImportDataAsync(command, notificationMessages);
             }
         }
+
         #endregion ResultAmendment Licensee
     }
 }

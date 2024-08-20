@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Shared.Models.ResultAmendment
+﻿namespace Fanex.NCB.AutoJobs.Core.Models.ResultAmendment
 {
     public class MessageAmendmentCsd
     {
@@ -10,7 +10,7 @@
 
         public string SiteNameGroup { get; set; }
 
-        public string Content {  get; set; }
+        public string Content { get; set; }
 
         public byte IsTest { get; set; }
     }

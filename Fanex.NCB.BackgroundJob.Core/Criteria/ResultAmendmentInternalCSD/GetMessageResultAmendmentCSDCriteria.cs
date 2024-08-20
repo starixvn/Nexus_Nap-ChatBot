@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Criteria.ResultAmendmentInternalCSD
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentInternalCSD
 {
     using System;
     using Fanex.Data.Repository;

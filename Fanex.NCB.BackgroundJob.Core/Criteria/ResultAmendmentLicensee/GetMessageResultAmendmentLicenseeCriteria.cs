@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.Criteria.ResultAmendmentLicensee
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentLicensee
 {
     using Fanex.Data.Repository;
 

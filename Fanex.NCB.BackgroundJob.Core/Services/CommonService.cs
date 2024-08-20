@@ -3,7 +3,10 @@
     using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Core.Criteria.Common;
     using Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
+    using Fanex.NCB.AutoJobs.Core.Enum;
     using Fanex.NCB.AutoJobs.Core.Models.Common;
+    using Fanex.NCB.AutoJobs.Core.Models.Core;
+    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
     using Fanex.RemotingRef;
 
@@ -11,11 +14,21 @@
     {
         private readonly IBaseService baseService;
         private readonly IRemotingRefService remotingRefService;
+        private readonly IChatbotService chatbotService;
+        private readonly ILogService logService;
+        private readonly IPushSignalRService pushSignalRService;
 
-        public CommonService(IBaseService baseService, IRemotingRefService remotingRefService)
+        public CommonService(IBaseService baseService,
+            IRemotingRefService remotingRefService,
+            IChatbotService chatbotService,
+            ILogService logService,
+            IPushSignalRService pushSignalRService)
         {
             this.baseService = baseService;
             this.remotingRefService = remotingRefService;
+            this.chatbotService = chatbotService;
+            this.logService = logService;
+            this.pushSignalRService = pushSignalRService;
         }
 
         public async Task DeleteOldLog(string currentDate)
@@ -53,6 +66,40 @@
                 InServiceName = inServiceName
             };
             return await baseService.GetDataEntityAsync<ServiceSetting>(criteria);
+        }
+
+        public async Task OnAfterImportDataAsync(CommandResult commandResult, IEnumerable<NotificationMessage> notificationMessages)
+        {
+            if (!commandResult.IsSuccessful)
+            {
+                await chatbotService.NotifyToChatGroupAsync(commandResult.Message);
+            }
+            else
+            {
+                if (notificationMessages.Any())
+                {
+                    await Task.WhenAll(
+                        SendMessageByChannelAsync((byte)ConversationChannel.Skype, notificationMessages),
+                        SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notificationMessages)
+                    );
+
+                    var notificationIds = string.Join(",", notificationMessages.Select(item => item.NotificationId));
+                    await pushSignalRService.PushNewNotification(notificationIds);
+                }
+            }
+        }
+
+        public async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications)
+        {
+            try
+            {
+                var selectedNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
+                await chatbotService.SendMultiMessageAsync(channelId, selectedNotifications);
+            }
+            catch (Exception ex)
+            {
+                logService.WriteLogFileError(ex.Message);
+            }
         }
     }
 }

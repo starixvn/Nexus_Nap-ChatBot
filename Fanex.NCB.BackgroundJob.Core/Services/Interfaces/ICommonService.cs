@@ -2,6 +2,8 @@
 {
     using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Core.Models.Common;
+    using Fanex.NCB.AutoJobs.Core.Models.Core;
+    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
 
     public interface ICommonService
     {
@@ -14,5 +16,9 @@
         string GetCustomerClassName(string customerClass, string languageCode);
 
         Task DeleteOldLog(string currentDate);
+
+        Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications);
+
+        Task OnAfterImportDataAsync(CommandResult commandResult, IEnumerable<NotificationMessage> notificationMessages);
     }
 }

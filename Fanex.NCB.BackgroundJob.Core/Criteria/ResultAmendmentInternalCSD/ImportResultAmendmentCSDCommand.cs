@@ -1,11 +1,10 @@
-﻿namespace Fanex.NCB.Criteria.ResultAmendmentInternalCSD
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentInternalCSD
 {
     using System;
-    using Fanex.NCB.Shared.Models;
 
     public class ImportResultAmendmentCSDCommand : BaseCommand
     {
-        public string Message {  get; set; }
+        public string Message { get; set; }
 
         public DateTime? LastModifiedTime { get; set; }
 
