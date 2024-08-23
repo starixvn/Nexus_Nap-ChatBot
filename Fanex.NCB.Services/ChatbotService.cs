@@ -6,6 +6,7 @@
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Models;
@@ -129,7 +130,7 @@
                     var notification = new NotificationMessage
                     {
                         NotificationId = noti.NotificationId,
-                        Message = noti.Content,
+                        Message = RemoveUnsupportedTags(noti.Content),
                         ChannelId = noti.ChannelId,
                         Recipients = recipients.Where(r => r.ChannelId == noti.ChannelId && (string.IsNullOrEmpty(noti.SiteNameGroup) || r.SiteNameGroup == noti.SiteNameGroup)).Select(r =>
                             new ConversationInfo
@@ -147,6 +148,15 @@
             }
 
             return messages;
+        }
+
+        private static string RemoveUnsupportedTags(string content)
+        {
+            string[] allowedTagsHtml = { "b", "strong", "i", "em", "ins", "u", "s", "strike", "del", "a", "tg-emoji", "code", "pre", "br" };
+            var regex = new Regex(@"(<br />|<hr />)");
+            var replaceNewLine = regex.Replace(content, string.Empty);
+            string messageContentReplace = Regex.Replace(replaceNewLine, "<(?!/?(" + string.Join("|", allowedTagsHtml) + ")(>|\\s.*?>)).*?>", "");
+            return messageContentReplace;
         }
 
         protected internal virtual async Task<HttpResponseMessage> SendSingleMessageAsync(byte channelId, ConversationInfo conversationInfo)
