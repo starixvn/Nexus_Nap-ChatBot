@@ -49,6 +49,11 @@
                 return messageResponse;
             }
 
+            foreach (var message in messages)
+            {
+                message.Message = RemoveUnsupportedTags(message.Message);
+            }
+
             BotServiceEndPointConfigs apiConfigs = botSettings.ApiConfigs.First(x => x.ChannelId == channelId);
             var token = await GetTokenAsync();
 
@@ -67,6 +72,15 @@
             }
 
             return messageResponse;
+        }
+
+        private static string RemoveUnsupportedTags(string content)
+        {
+            string[] allowedTagsHtml = { "b", "strong", "i", "em", "ins", "u", "s", "strike", "del", "a", "tg-emoji", "code", "pre", "br" };
+            var regex = new Regex(@"(<br />|<hr />)");
+            var replaceNewLine = regex.Replace(content, string.Empty);
+            string messageContentReplace = Regex.Replace(replaceNewLine, "<(?!/?(" + string.Join("|", allowedTagsHtml) + ")(>|\\s.*?>)).*?>", "");
+            return messageContentReplace;
         }
 
         public async Task MonitorChatbotAsync()
@@ -130,7 +144,7 @@
                     var notification = new NotificationMessage
                     {
                         NotificationId = noti.NotificationId,
-                        Message = RemoveUnsupportedTags(noti.Content),
+                        Message = noti.Content,
                         ChannelId = noti.ChannelId,
                         Recipients = recipients.Where(r => r.ChannelId == noti.ChannelId && (string.IsNullOrEmpty(noti.SiteNameGroup) || r.SiteNameGroup == noti.SiteNameGroup)).Select(r =>
                             new ConversationInfo
@@ -148,15 +162,6 @@
             }
 
             return messages;
-        }
-
-        private static string RemoveUnsupportedTags(string content)
-        {
-            string[] allowedTagsHtml = { "b", "strong", "i", "em", "ins", "u", "s", "strike", "del", "a", "tg-emoji", "code", "pre", "br" };
-            var regex = new Regex(@"(<br />|<hr />)");
-            var replaceNewLine = regex.Replace(content, string.Empty);
-            string messageContentReplace = Regex.Replace(replaceNewLine, "<(?!/?(" + string.Join("|", allowedTagsHtml) + ")(>|\\s.*?>)).*?>", "");
-            return messageContentReplace;
         }
 
         protected internal virtual async Task<HttpResponseMessage> SendSingleMessageAsync(byte channelId, ConversationInfo conversationInfo)
