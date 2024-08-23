@@ -144,7 +144,7 @@ export default class DataGrid extends PureComponent {
                             <div className="recipient-list">To {item.recipientSentStatusJson.length} recipient(s): {item.recipientSentStatusJson.map(this.renderRecipient)}</div>
                             <div className="title-date">{item.title}</div>
                         </PanelHeader>
-                        <ContentPreview text={item.content.replaceAll(/\n/g, '<Br/>')} />
+                        <ContentPreview text={item.content} />
                     </Panel>
                 </Cell>
                 <Cell><span className={this.getNotificationStatusClass(item.statusId)}>{item.status}</span></Cell>
