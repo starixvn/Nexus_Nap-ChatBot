@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using Fanex.NCB.Criteria.ResetLastMessageId;
+    using Fanex.NCB.Models.Notification;
     using Fanex.NCB.Models.ResetLastMessageId;
     using Xunit;
 
@@ -41,9 +42,9 @@
         public void MessageListXml_MessagesHaveData_ReturnAsExpected()
         {
             // Arrange
-            var messages = new List<MissingMesssageInfo>
+            var messages = new List<MissingInfoIns>
             {
-                new MissingMesssageInfo { JobIdentify = 1, MessageId = 123 }
+                new MissingInfoIns { JobIdentify = 1, MessageId = "123", SettingName = "SettingName", NotificationId = 123  }
             };
             var messageListXml = "<root><r JobIdentify='1' MessageId='123'/></root>";
 
