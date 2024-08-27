@@ -189,7 +189,7 @@
             await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg, dupTicketDetails, abnormalAccountInfos, maxMsgTargetId);
         }
 
-        private async Task GetTransInfoAsync(IEnumerable<DuplicateTicketDetail> dupTicketDetails)
+        protected internal virtual async Task GetTransInfoAsync(IEnumerable<DuplicateTicketDetail> dupTicketDetails)
         {
             var distinctVoidedTransIds = dupTicketDetails.Select(i => i.VoidedTransId).Distinct();
             var tasks = new List<Task<(long, string)>>();
@@ -209,7 +209,7 @@
             }
         }
 
-        private static void FormatTelegramData(IEnumerable<AbnormalMessageDetail> historyDetail)
+        protected internal static void FormatTelegramData(IEnumerable<AbnormalMessageDetail> historyDetail)
         {
             foreach (var msg in historyDetail)
             {
