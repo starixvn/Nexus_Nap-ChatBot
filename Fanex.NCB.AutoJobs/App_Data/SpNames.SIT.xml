@@ -24,7 +24,7 @@
         <Setting Key="NAP_Chatbot_SpecialDelete_InternalCSD_GetCollection" SpName="NAP_Chatbot_SpecialDelete_InternalCSD_GetCollection" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
         <Setting Key="NAP_Chatbot_AbnormalBets_UsernameTicketInfo_Sel" SpName="NAP_Chatbot_AbnormalBets_UsernameTicketInfo_Sel" DbName="DBTXN.bodb02.wsv_nap" Plain="0"></Setting>
         <Setting Key="NCB_ViewLog_DeleteOldConversationMessageLog_Import" SpName="NCB_ViewLog_DeleteOldConversationMessageLog_Import" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NAP_Chatbot_SpecialDelete_InternalCSD_Info" SpName="NAP_Chatbot_SpecialDelete_InternalCSD_Info" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
+        <Setting Key="NAP_Chatbot_SpecialDelete_InternalCSD_Info" SpName="NAP_Chatbot_SpecialDelete_InternalCSD_Info_xtest" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
     </Function>
     <Function Name="Site Message">
         <Setting Key="NCB_MsgSetting_SiteMessage_Sel" SpName="NCB_MsgSetting_SiteMessage_Sel" DbName="ChatBot" Plain="0"></Setting>
@@ -54,9 +54,9 @@
         <Setting Key="NCB_Settlement_Licensee_Import" SpName="NCB_Settlement_Licensee_Import" DbName="ChatBot" Plain="0" />
     </Function>
     <Function Name="ResultAmendment">
-        <Setting Key="NAP_Chatbot_ResultAmendment_Licensee_MessageSel" SpName="NAP_Chatbot_ResultAmendment_Licensee_MessageSel_xtest" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0" />
-        <Setting Key="NCB_ResultAmendment_Licensee_Import" SpName="NCB_ResultAmendment_Licensee_Import_xtest" DbName="ChatBot" Plain="0" />
-        <Setting Key="NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel" SpName="NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel_xtest" DbName="DBCRM.MessageNotification.wsv_nap" Plain="0" />
-        <Setting Key="NCB_ResultAmendment_InternalCSD_Import" SpName="NCB_ResultAmendment_InternalCSD_Import_xtest" DbName="ChatBot" Plain="0" />
+        <Setting Key="NAP_Chatbot_ResultAmendment_Licensee_MessageSel" SpName="NAP_Chatbot_ResultAmendment_Licensee_MessageSel" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0" />
+        <Setting Key="NCB_ResultAmendment_Licensee_Import" SpName="NCB_ResultAmendment_Licensee_Import" DbName="ChatBot" Plain="0" />
+        <Setting Key="NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel" SpName="NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel" DbName="DBCRM.MessageNotification.wsv_nap" Plain="0" />
+        <Setting Key="NCB_ResultAmendment_InternalCSD_Import" SpName="NCB_ResultAmendment_InternalCSD_Import" DbName="ChatBot" Plain="0" />
     </Function>
 </Functions>
