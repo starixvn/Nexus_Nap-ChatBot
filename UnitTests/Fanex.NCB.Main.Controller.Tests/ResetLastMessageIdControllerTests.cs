@@ -73,7 +73,7 @@
             // Arrange
             var command = fixture.Create<CreateMissingMessageCommand>();
             var commandResult = fixture.Create<CommandResult>();
-            var listMsgs = fixture.Create<List<MissingMesssageInfo>>();
+            var listMsgs = fixture.Create<List<MissingInfoIns>>();
             var controller = GetController();
             resetLastMessageIdService.CreateMissingMessageAsync(listMsgs).Returns(commandResult);
 

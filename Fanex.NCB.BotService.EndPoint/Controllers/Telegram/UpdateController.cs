@@ -1,10 +1,5 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Controllers.Telegram
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
     using Fanex.Logging;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Enum;
@@ -14,6 +9,11 @@
     using global::Telegram.Bot.Types;
     using global::Telegram.Bot.Types.Enums;
     using Microsoft.AspNetCore.Mvc;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
 
     public class UpdateController : Controller
     {
@@ -33,7 +33,6 @@
 
         [HttpPost]
         [Route("api/telegram/webhook/{botId:long}/update")]
-#pragma warning disable S1541 // Methods and properties should not be too complex
         public async Task<IActionResult> Post(long botId, [FromBody] Update update)
 #pragma warning restore S1541 // Methods and properties should not be too complex
         {

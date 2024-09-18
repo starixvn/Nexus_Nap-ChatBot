@@ -1,12 +1,5 @@
 ﻿namespace Fanex.NCB.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Net.Http.Json;
-    using System.Threading.Tasks;
     using Fanex.NCB.Core.Enum;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Models.NotifictaionSendMessage;
@@ -14,6 +7,14 @@
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Net.Http.Json;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
 
     public class ChatbotService : IChatbotService
     {
@@ -48,7 +49,12 @@
                 return messageResponse;
             }
 
-            BotServiceEndPointConfigs apiConfigs = botSettings.ApiConfigs.First(x => x.ChannelId == channelId);
+            foreach (var message in messages)
+            {
+                message.Message = RemoveUnsupportedTags(message.Message);
+            }
+
+            BotServiceEndPointConfigs apiConfigs = botSettings.ApiConfigs.FirstOrDefault(x => x.ChannelId == channelId);
             var token = await GetTokenAsync();
 
             var httpClient = httpClientFactory.CreateClient();
@@ -66,6 +72,15 @@
             }
 
             return messageResponse;
+        }
+
+        private static string RemoveUnsupportedTags(string content)
+        {
+            string[] allowedTagsHtml = { "b", "strong", "i", "em", "ins", "u", "s", "strike", "del", "a", "tg-emoji", "code", "pre", "br" };
+            var regex = new Regex(@"(<br />|<hr />)");
+            var replaceNewLine = regex.Replace(content, string.Empty);
+            string messageContentReplace = Regex.Replace(replaceNewLine, "<(?!/?(" + string.Join("|", allowedTagsHtml) + ")(>|\\s.*?>)).*?>", "");
+            return messageContentReplace;
         }
 
         public async Task MonitorChatbotAsync()
@@ -151,7 +166,7 @@
 
         protected internal virtual async Task<HttpResponseMessage> SendSingleMessageAsync(byte channelId, ConversationInfo conversationInfo)
         {
-            BotServiceEndPointConfigs apiConfigs = botSettings.ApiConfigs.First(x => x.ChannelId == channelId);
+            BotServiceEndPointConfigs apiConfigs = botSettings.ApiConfigs.FirstOrDefault(x => x.ChannelId == channelId);
             var token = await GetTokenAsync();
 
             var httpClient = httpClientFactory.CreateClient();

@@ -1,12 +1,5 @@
 ﻿namespace Fanex.NCB.BotService.Core.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Net.Http.Json;
-    using System.Threading.Tasks;
     using Fanex.Logging.Extensions;
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.Resources;
@@ -15,6 +8,13 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Net.Http.Json;
+    using System.Threading.Tasks;
     using Telegram.Bot;
     using Telegram.Bot.Types;
     using Telegram.Bot.Types.Enums;
@@ -71,13 +71,13 @@
 
         public async Task<User> GetBotInfoAsync(long botId)
         {
-            TelegramBotConfigurations bot = botConfigurations.First(x => x.BotId == botId);
+            TelegramBotConfigurations bot = botConfigurations.FirstOrDefault(x => x.BotId == botId);
             return await bot.BotClient.GetMeAsync();
         }
 
         public async Task<Message> SendTextMessageAsync(long botId, long chatId, string messageContent, ParseMode parseMode = ParseMode.MarkdownV2)
         {
-            TelegramBotConfigurations bot = botConfigurations.First(x => x.BotId == botId);
+            TelegramBotConfigurations bot = botConfigurations.FirstOrDefault(x => x.BotId == botId);
             var message = await bot.BotClient.SendTextMessageAsync(new ChatId(chatId), messageContent, parseMode);
             return message;
         }

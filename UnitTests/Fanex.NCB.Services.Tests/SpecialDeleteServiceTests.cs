@@ -94,45 +94,6 @@
             await commonService.Received(1).OnAfterImportDataAsync(command, notifications);
         }
 
-        #endregion PullVoidingMessageLicenseeAsync
-
-        #region PullVoidingMessageInternalDepartmentAsync
-
-        [Fact]
-        public async Task PullVoidingMessageInternalDepartmentAsync_SettingIsNull_DoNothing()
-        {
-            // Arrange
-            SystemSetting setting = null;
-            var service = GetService();
-            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>()).Returns(setting);
-
-            // Act
-            await service.PullVoidingMessageInternalDepartmentAsync();
-
-            // Assert
-            await baseService.DidNotReceive().GetDataAsync<MessageHistory>(Arg.Any<GetVoidingHistoryCollectionIdCriteria>());
-        }
-
-        #endregion PullVoidingMessageInternalDepartmentAsync
-
-        #region UpdateMessageHistoryVoidingForLicenseeAsync
-
-        [Fact]
-        public async Task UpdateMessageHistoryVoidingForLicenseeAsync_IsSuccessful_DoAsExpected()
-        {
-            // Arrange
-            var messageDetails = fixture.Create<IEnumerable<MessageDetail>>();
-            var service = GetService();
-
-            // Act
-            await service.Public_UpdateMessageHistoryVoidingForLicenseeAsync(messageDetails);
-
-            // Assert
-            service.Received().Protected("InsertToMessageChatbotAsync", Arg.Any<string>(), 1);
-        }
-
-        #endregion UpdateMessageHistoryVoidingForLicenseeAsync
-
         [Fact]
         public async Task ImportMessageToChatbotDBAsync_WhenCalled_ReturnAsExpectedResult()
         {
@@ -193,6 +154,65 @@
                     Assert.Equal("content cs", item.Content_cs);
                 });
         }
+
+        [Fact]
+        public async Task InsertToMessageChatbotAsync_WhenCalled_DoAsExpected()
+        {
+            // Arrange
+            var messages = fixture.Create<string>();
+            var jobIdentity = fixture.Create<int>();
+            var command = new InsertMessageHistoryCommand();
+            var service = GetService();
+            baseService.ExecuteNonQueryAsync(Arg.Do<InsertMessageHistoryCommand>(x => command = x)).Returns(Task.FromResult(new CommandResult()));
+
+            // Act
+            await service.Public_InsertToMessageChatbotAsync(messages, jobIdentity);
+
+            // Assert
+            await baseService.Received().ExecuteNonQueryAsync(command);
+
+            Assert.Equal(jobIdentity, command.JobIdentify);
+            Assert.Equal(messages, command.MessageIDLst);
+        }
+
+        #endregion PullVoidingMessageLicenseeAsync
+
+        #region PullVoidingMessageInternalDepartmentAsync
+
+        [Fact]
+        public async Task PullVoidingMessageInternalDepartmentAsync_SettingIsNull_DoNothing()
+        {
+            // Arrange
+            SystemSetting setting = null;
+            var service = GetService();
+            baseService.GetDataEntityAsync<SystemSetting>(Arg.Any<GetAbnormalBetSystemSettingCriteria>()).Returns(setting);
+
+            // Act
+            await service.PullVoidingMessageInternalDepartmentAsync();
+
+            // Assert
+            await baseService.DidNotReceive().GetDataAsync<MessageHistory>(Arg.Any<GetVoidingHistoryCollectionIdCriteria>());
+        }
+
+        #endregion PullVoidingMessageInternalDepartmentAsync
+
+        #region UpdateMessageHistoryVoidingForLicenseeAsync
+
+        [Fact]
+        public async Task UpdateMessageHistoryVoidingForLicenseeAsync_IsSuccessful_DoAsExpected()
+        {
+            // Arrange
+            var messageDetails = fixture.Create<IEnumerable<MessageDetail>>();
+            var service = GetService();
+
+            // Act
+            await service.Public_UpdateMessageHistoryVoidingForLicenseeAsync(messageDetails);
+
+            // Assert
+            service.Received().Protected("InsertToMessageChatbotAsync", Arg.Any<string>(), 1);
+        }
+
+        #endregion UpdateMessageHistoryVoidingForLicenseeAsync
 
         #region ImportAbnormalBetNotificationToChatbotDBAsync
 
@@ -270,25 +290,100 @@
 
         #endregion ImportAbnormalBetNotificationToChatbotDBAsync
 
+        #region PullVoidingMessageInternalDepartmentAsync
         [Fact]
-        public async Task InsertToMessageChatbotAsync_WhenCalled_DoAsExpected()
+        public async Task PullVoidingMessageInternalDepartmentAsync_HasDataToImport_DoAsExpected()
         {
             // Arrange
-            var messages = fixture.Create<string>();
-            var jobIdentity = fixture.Create<int>();
-            var command = new InsertMessageHistoryCommand();
+            var setting = fixture.Create<ServiceSetting>();
+            var messageIdLst = fixture.Create<IEnumerable<AbnormalMessage>>();
+
             var service = GetService();
-            baseService.ExecuteNonQueryAsync(Arg.Do<InsertMessageHistoryCommand>(x => command = x)).Returns(Task.FromResult(new CommandResult()));
+            commonService.GetServiceSetting(Arg.Any<string>()).Returns(setting);
+            baseService.GetDataAsync<AbnormalMessage>(Arg.Any<GetVoidingHistoryCollectionIdCriteria>()).Returns(messageIdLst);
 
             // Act
-            await service.Public_InsertToMessageChatbotAsync(messages, jobIdentity);
+            await service.PullVoidingMessageInternalDepartmentAsync();
 
             // Assert
-            await baseService.Received().ExecuteNonQueryAsync(command);
-
-            Assert.Equal(jobIdentity, command.JobIdentify);
-            Assert.Equal(messages, command.MessageIDLst);
+            service.Received().Protected("GetMessageAndImportToChatbotAsync", setting, messageIdLst);
         }
+
+        [Fact]
+        public async Task GetAbnormalMessageDetail_HasDataToImport_DoAsExpected()
+        {
+            // Arrange
+            var messageIdLst = fixture.Create<IEnumerable<AbnormalMessage>>();
+            var abnormalMessageContent = fixture.Create<IEnumerable<AbnormalMessageContent>>();
+            var messageMsgDetail = fixture.Create<IEnumerable<MessageMsgDetail>>();
+            var tupe = (abnormalMessageContent, messageMsgDetail);
+
+            var service = GetService();
+            baseService.FetchMultipleAsync<AbnormalMessageContent, MessageMsgDetail>(Arg.Any<GetAbnormalBetMessageDetailCriteria>()).Returns(tupe);
+
+            // Act
+            var actual = await service.Public_GetAbnormalMessageDetail(messageIdLst, 100, 1);
+
+            // Assert
+            Assert.Equal(abnormalMessageContent, actual.Item1);
+            Assert.Equal(messageMsgDetail, actual.Item2);
+        }
+
+        [Fact]
+        public async Task GetVoidingHistoryInternalCSDInfoAsync_HasDataToImport_DoAsExpected()
+        {
+            // Arrange
+            var messageInfo = fixture.Create<IEnumerable<AbnormalMessageContent>>();
+            var messageDetail = fixture.Create<IEnumerable<MessageMsgDetail>>();
+
+            var service = GetService();
+
+            // Act
+            await service.Public_GetVoidingHistoryInternalCSDInfoAsync(messageInfo, messageDetail);
+
+            // Assert
+            await specialDeleteRepository.Received(1).FetchVoidingHistoryInfo(Arg.Any<GetVoidingHistoryInternalCSDInfoCriteria>());
+        }
+
+        [Fact]
+        public async Task GetTransInfoAsync_HasDataToImport_DoAsExpected()
+        {
+            // Arrange
+            var dupTicketDetails = fixture.Create<IEnumerable<DuplicateTicketDetail>>();
+            foreach (var item in dupTicketDetails)
+            {
+                item.VoidedTransId = 1;
+            }
+            var (tranid, transinfo) = (1, "test");
+
+            var service = GetService();
+            refNoTicketService.GetTransInfoAsync(Arg.Any<long>()).Returns((tranid, transinfo));
+
+            // Act
+            await service.Public_GetTransInfoAsync(dupTicketDetails);
+
+            // Assert
+            Assert.Equal(transinfo, dupTicketDetails.FirstOrDefault().TransInfo);
+        }
+
+        [Fact]
+        public void FormatTelegramData_HasDataToImport_DoAsExpected()
+        {
+            // Arrange
+            var historyDetail = new List<AbnormalMessageDetail>
+            {
+                new() { LeagueName = "LeagueName_01", HomeName = "HomeName_01", AwayName = "AwayName_01" }
+            };
+            var service = GetService();
+
+            // Act
+            SpecialDeleteServiceTestable.Public_FormatTelegramData(historyDetail);
+
+            // Assert
+            Assert.Equal("LeagueName\\_01", historyDetail[0].LeagueName);
+        }
+
+        #endregion PullVoidingMessageInternalDepartmentAsync
 
         #region Helpers
 

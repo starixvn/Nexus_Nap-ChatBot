@@ -62,6 +62,14 @@
         }
 
         [Fact]
+        public void IsInvalidSendMessageToBotService_ThrowException()
+        {
+            var service = GetService();
+            service.IsInvalidSendMessageToBotService(null, null);
+            logger.Received(1).Error(Arg.Any<string>());
+        }
+
+        [Fact]
         public async Task InsertMessageLogIntoCache_WhenCalled_InsertOnCache()
         {
             var conversationLogMsg = new ConversationMessageLog { ConversationId = "A:1234", Message = "ABC", Status = SentMessageStatus.Success };
@@ -70,6 +78,31 @@
             await cacheService.Received().SetAsync(Arg.Do<string>(x => x.Contains("A-1234")),
                 Arg.Is(conversationLogMsg.Message),
                 Arg.Any<CacheItemOptions>());
+        }
+
+        [Fact]
+        public async Task InsertMessageLogIntoCache_ThrowException()
+        {
+            var service = GetService();
+            await service.InsertMessageLogIntoCache(null, null, null);
+            await logger.Received(1).ErrorAsync(Arg.Any<string>());
+        }
+
+        [Fact]
+        public async Task RemoveMessageLogOnCache_WhenCalled_InsertOnCache()
+        {
+            var conversationLogMsg = new ConversationMessageLog { ConversationId = "A:1234", Message = "ABC", Status = SentMessageStatus.Success };
+            var service = GetService();
+            await service.RemoveMessageLogOnCache(conversationLogMsg.ConversationId,  "Guid");
+            await cacheService.Received().RemoveAsync(Arg.Do<string>(x => x.Contains("A-1234")));
+        }
+
+        [Fact]
+        public async Task RemoveMessageLogOnCache_ThrowException()
+        {
+            var service = GetService();
+            await service.RemoveMessageLogOnCache(null, null);
+            logger.Received(1).Error(Arg.Any<string>());
         }
 
         private MessageLogService GetService()

@@ -40,6 +40,40 @@
         }
 
         [Fact]
+        public async Task GetAbnormalBetsMissingMessageAsync_WhenCalled_ReturnExpectResult()
+        {
+            //Arrange
+            var service = GetService();
+            var messageRequestId = fixture.Create<IEnumerable<MessageRequestId>>();
+            var messageInfoList = fixture.Create<IEnumerable<CurrentMaxMessageInfo>>();
+
+            baseService.GetDataAsync<MessageRequestId >(Arg.Any<GetMissingMesssageCsdCriteria>()).Returns(messageRequestId);
+
+            //Act
+            var actual = await service.GetAbnormalBetsMissingMessageAsync(messageInfoList);
+
+            //Assert
+            Assert.Equal(messageRequestId, actual);
+        }
+
+        [Fact]
+        public async Task GetMissingMessageDataAsync_WhenCalled_ReturnExpectResult()
+        {
+            //Arrange
+            var service = GetService();
+            var missingMesssages = fixture.Create<IEnumerable<MissingMesssageInfo>>();
+            var missingMesssageInfo = fixture.Create<IEnumerable<MissingMesssageInfo>>();
+
+            baseService.GetDataAsync<MissingMesssageInfo>(Arg.Any<GetMissingMessageDataCriteria>()).Returns(missingMesssageInfo);
+
+            //Act
+            var actual = await service.GetMissingMessageDataAsync(missingMesssages);
+
+            //Assert
+            Assert.Equal(missingMesssageInfo, actual);
+        }
+
+        [Fact]
         public async Task GetMissingMessageInfoAsync_WhenCalled_ReturnExpectResult()
         {
             //Arrange
@@ -72,6 +106,7 @@
             baseService.GetDataAsync<MissingMesssageInfo>(Arg.Any<GetMissingMessageDataCriteria>()).Returns(missingMessageInfos);
             baseService.GetDataAsync<MissingMesssageInfo>(Arg.Any<GetMissingProblemAccountCriteria>()).Returns(missedProblemAccounts);
             baseService.GetDataAsync<MissingMesssageInfo>(Arg.Any<GetMissingMonitoredPlayerCriteria>()).Returns(missedMonitoredPlayers);
+            baseService.GetDataAsync<MissingMesssageInfo>(Arg.Any<GetMissingMessageNotificationCriteria>()).Returns(expected);
             var contentTypeList = fixture.Create<IEnumerable<MessageTypeInfo>>();
             var abnormalMissingMsgList = fixture.Create<IEnumerable<MessageRequestId>>();
             //Act
