@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NCB.Main.Controllers.Tests
 {
+    using System.Collections;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoFixture;
@@ -47,12 +48,12 @@
             // Arrange
             var currentMaxMessageInfos = fixture.Create<IEnumerable<CurrentMaxMessageInfo>>();
             var messageTypeInfos = fixture.Create<IEnumerable<MessageTypeInfo>>();
-            var msgReqIds = fixture.Create<IEnumerable<MessageRequestId>>();
+            var (msgReqIds, messageIds) = fixture.Create<(IEnumerable<MessageRequestId>, IEnumerable<int>)>();
             var missedInfo = fixture.Create<IEnumerable<MissingMesssageInfo>>();
             var controller = GetController();
             resetLastMessageIdService.GetCurrentPreviousMaxMessageAsync().Returns((currentMaxMessageInfos, messageTypeInfos));
-            resetLastMessageIdService.GetAbnormalBetsMissingMessageAsync(Arg.Is(currentMaxMessageInfos)).Returns(msgReqIds);
-            resetLastMessageIdService.GetMissingMessageInfoAsync(Arg.Is(currentMaxMessageInfos), Arg.Is(messageTypeInfos), Arg.Is(msgReqIds)).Returns(missedInfo);
+            resetLastMessageIdService.GetAbnormalBetsMissingMessageAsync().Returns((msgReqIds, messageIds));
+            resetLastMessageIdService.GetMissingMessageInfoAsync(Arg.Is(currentMaxMessageInfos), Arg.Is(messageTypeInfos), Arg.Is(msgReqIds), Arg.Is(messageIds)).Returns(missedInfo);
 
             // Act
             var result = await controller.GetCurrentPreviousMaxMessage();

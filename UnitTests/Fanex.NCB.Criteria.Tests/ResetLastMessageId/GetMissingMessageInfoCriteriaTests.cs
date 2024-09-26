@@ -5,6 +5,7 @@
     using Fanex.NCB.Models.ResetLastMessageId;
     using Fanex.NCB.Shared.Extensions;
     using Xunit;
+    using Xunit.Sdk;
 
     public class GetMissingMessageInfoCriteriaTests
     {
@@ -92,7 +93,25 @@
             };
 
             // Assert
-            Assert.Equal(requestListXml, criteria.RequestListXml);
+            Assert.Equal(requestListXml, criteria.VoidingCollectionRequestListXml);
+        }
+
+        [Fact]
+        public void VoidingHistoryRequestListXml_RequestsHaveData_ReturnAsExpected()
+        {
+            // Arrange
+            var messageIds = new List<int>(new int[] { 1 });
+
+            var voidingHistoryRequestListXml = XmlHelper<int>.Serialize(messageIds); ;
+
+            // Act
+            var criteria = new GetMissingMessageInfoCriteria
+            {
+                MessageIds = messageIds
+            };
+
+            // Assert
+            Assert.Equal(voidingHistoryRequestListXml, criteria.VoidingHistoryRequestListXml);
         }
     }
 }
