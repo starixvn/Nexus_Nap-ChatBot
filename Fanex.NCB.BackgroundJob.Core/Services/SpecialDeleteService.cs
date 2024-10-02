@@ -185,7 +185,10 @@
         {
             var (messageInfo, messageDetail, maxMsgTargetId) = await GetAbnormalMessageDetail(messageIdLst, setting.BatchSize, setting.LastMsgTargetId);
             var (historyDetail, msg, abnormalAccountInfos, dupTicketDetails) = await GetVoidingHistoryInternalCSDInfoAsync(messageInfo, messageDetail);
-            await GetTransInfoAsync(dupTicketDetails);
+            if (dupTicketDetails.Any())
+            {
+                await GetTransInfoAsync(dupTicketDetails);
+            }
             FormatTelegramData(historyDetail);
             await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg, dupTicketDetails, abnormalAccountInfos, maxMsgTargetId);
         }

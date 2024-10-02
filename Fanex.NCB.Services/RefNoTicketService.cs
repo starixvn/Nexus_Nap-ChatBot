@@ -26,21 +26,28 @@
 
         public async Task<TicketInfo> GetTicketByRefNoAsync(long refno)
         {
-            var napUrl = configuration.GetSection("NapSettings:Url").Value;
-            var apiKey = configuration.GetSection("NapSettings:APIKey").Value;
-
-            var httpClient = httpClientFactory.CreateClient();
-            httpClient.DefaultRequestHeaders.Authorization = GenerateHeaderAuthorization(apiKey);
-
-            var url = new Uri(napUrl + "BetListApi/GetBetListByRefNo?refno=" + refno);
-            using var response = await httpClient.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var jsonString = await response.Content.ReadAsStringAsync();
-                return !string.IsNullOrEmpty(jsonString) ? JsonConvert.DeserializeObject<TicketInfo>(jsonString) : await Task.FromResult<TicketInfo>(null);
+                var napUrl = configuration.GetSection("NapSettings:Url").Value;
+                var apiKey = configuration.GetSection("NapSettings:APIKey").Value;
+
+                var httpClient = httpClientFactory.CreateClient();
+                httpClient.DefaultRequestHeaders.Authorization = GenerateHeaderAuthorization(apiKey);
+
+                var url = new Uri(napUrl + "BetListApi/GetBetListByRefNo?refno=" + refno);
+                using var response = await httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonString = await response.Content.ReadAsStringAsync();
+                    return !string.IsNullOrEmpty(jsonString) ? JsonConvert.DeserializeObject<TicketInfo>(jsonString) : await Task.FromResult<TicketInfo>(null);
+                }
+                return default;
             }
-            return default;
+            catch (HttpRequestException ex)
+            {
+                throw new HttpRequestException($"Error fetching ticket by refno {refno}: {ex.Message}", ex);
+            }
         }
 
         private static AuthenticationHeaderValue GenerateHeaderAuthorization(string apiKey)

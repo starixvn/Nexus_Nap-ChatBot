@@ -48,8 +48,8 @@
         public async Task<IActionResult> GetCurrentPreviousMaxMessage()
         {
             var (currentMaxMessageInfos, messageTypeInfos) = await resetLastMessageIdService.GetCurrentPreviousMaxMessageAsync();
-            var abnormalBetsMissingMsg = await resetLastMessageIdService.GetAbnormalBetsMissingMessageAsync(currentMaxMessageInfos);
-            var missingMsgInfo = await resetLastMessageIdService.GetMissingMessageInfoAsync(currentMaxMessageInfos, messageTypeInfos, abnormalBetsMissingMsg);
+            var (abnormalBetsMissingMsg, messageIds) = await resetLastMessageIdService.GetAbnormalBetsMissingMessageAsync();
+            var missingMsgInfo = await resetLastMessageIdService.GetMissingMessageInfoAsync(currentMaxMessageInfos, messageTypeInfos, abnormalBetsMissingMsg, messageIds);
 
             return Json(new
             {

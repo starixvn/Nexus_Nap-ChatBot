@@ -45,15 +45,17 @@
             //Arrange
             var service = GetService();
             var messageRequestId = fixture.Create<IEnumerable<MessageRequestId>>();
-            var messageInfoList = fixture.Create<IEnumerable<CurrentMaxMessageInfo>>();
+            var messageIds = fixture.Create<IEnumerable<int>>();
+            var tupe = (messageRequestId, messageIds);
 
-            baseService.GetDataAsync<MessageRequestId >(Arg.Any<GetMissingMesssageCsdCriteria>()).Returns(messageRequestId);
+            baseService.FetchMultipleAsync<MessageRequestId, int>(Arg.Any<GetMissingMesssageCsdCriteria>()).Returns(tupe);
 
             //Act
-            var actual = await service.GetAbnormalBetsMissingMessageAsync(messageInfoList);
+            var actual = await service.GetAbnormalBetsMissingMessageAsync();
 
             //Assert
-            Assert.Equal(messageRequestId, actual);
+            Assert.Equal(messageRequestId, actual.Item1);
+            Assert.Equal(messageIds, actual.Item2);
         }
 
         [Fact]
@@ -109,8 +111,9 @@
             baseService.GetDataAsync<MissingMesssageInfo>(Arg.Any<GetMissingMessageNotificationCriteria>()).Returns(expected);
             var contentTypeList = fixture.Create<IEnumerable<MessageTypeInfo>>();
             var abnormalMissingMsgList = fixture.Create<IEnumerable<MessageRequestId>>();
+            var messageIds = fixture.Create<IEnumerable<int>>();
             //Act
-            var actual = await service.GetMissingMessageInfoAsync(msgList, contentTypeList, abnormalMissingMsgList);
+            var actual = await service.GetMissingMessageInfoAsync(msgList, contentTypeList, abnormalMissingMsgList, messageIds);
 
             //Assert
             Assert.Equal("300", msgList.FirstOrDefault(x => x.JobIdentify == 1).MaxReferenceId);

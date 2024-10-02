@@ -9,12 +9,13 @@
     {
         Task<(IEnumerable<CurrentMaxMessageInfo>, IEnumerable<MessageTypeInfo>)> GetCurrentPreviousMaxMessageAsync();
 
-        Task<IEnumerable<MessageRequestId>> GetAbnormalBetsMissingMessageAsync(IEnumerable<CurrentMaxMessageInfo> messageInfoList);
+        Task<(IEnumerable<MessageRequestId>, IEnumerable<int>)> GetAbnormalBetsMissingMessageAsync();
 
         Task<IEnumerable<MissingMesssageInfo>> GetMissingMessageInfoAsync(
             IEnumerable<CurrentMaxMessageInfo> msgList,
             IEnumerable<MessageTypeInfo> contentTypeList,
-            IEnumerable<MessageRequestId> abnormalMissingMsgList);
+            IEnumerable<MessageRequestId> abnormalMissingMsgList,
+            IEnumerable<int> messageIds);
 
         Task<IEnumerable<MissingMesssageInfo>> GetMissingMessageDataAsync(IEnumerable<MissingMesssageInfo> missingMesssages);
 

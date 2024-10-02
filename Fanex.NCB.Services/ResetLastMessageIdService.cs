@@ -34,13 +34,10 @@
             return await baseService.FetchMultipleAsync<CurrentMaxMessageInfo, MessageTypeInfo>(criteria);
         }
 
-        public async Task<IEnumerable<MessageRequestId>> GetAbnormalBetsMissingMessageAsync(IEnumerable<CurrentMaxMessageInfo> messageInfoList)
+        public async Task<(IEnumerable<MessageRequestId>, IEnumerable<int>)> GetAbnormalBetsMissingMessageAsync()
         {
-            var criteria = new GetMissingMesssageCsdCriteria
-            {
-                MessageList = XmlHelper<CurrentMaxMessageInfo>.Serialize(messageInfoList.ToList())
-            };
-            return await baseService.GetDataAsync<MessageRequestId>(criteria);
+            var criteria = new GetMissingMesssageCsdCriteria();
+            return await baseService.FetchMultipleAsync<MessageRequestId, int>(criteria);
         }
 
         public async Task<IEnumerable<MissingMesssageInfo>> GetMissingMessageDataAsync(IEnumerable<MissingMesssageInfo> missingMesssages)
@@ -59,7 +56,8 @@
         public async Task<IEnumerable<MissingMesssageInfo>> GetMissingMessageInfoAsync(
             IEnumerable<CurrentMaxMessageInfo> msgList,
             IEnumerable<MessageTypeInfo> contentTypeList,
-            IEnumerable<MessageRequestId> abnormalMissingMsgList)
+            IEnumerable<MessageRequestId> abnormalMissingMsgList,
+            IEnumerable<int> messageIds)
         {
             var criteria = new GetMissingMessageInfoCriteria
             {
@@ -67,7 +65,8 @@
                 DepCustSAsJson = await commonService.GetJsonDataFromDbACCAsync("Dep_CustSuper"),
                 Messages = msgList.Where(m => m.JobIdentify != (int)JobIdentity.ProblemPlayer && m.JobIdentify != (int)JobIdentity.MonitoredPlayer).ToList(),
                 MsgContentTypes = contentTypeList.Where(m => m.JobIdentify != (int)JobIdentity.ProblemPlayer && m.JobIdentify != (int)JobIdentity.MonitoredPlayer).ToList(),
-                Requests = abnormalMissingMsgList.ToList()
+                Requests = abnormalMissingMsgList.ToList(),
+                MessageIds = messageIds.ToList()
             };
             var missingMsg = await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
             var missingInfo = await GetMissingMessageDataAsync(missingMsg);

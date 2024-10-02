@@ -17,6 +17,9 @@
         [SpParam(Ignored = true)]
         public List<MessageRequestId> Requests { get; set; } = new List<MessageRequestId>();
 
+        [SpParam(Ignored = true)]
+        public List<int> MessageIds { get; set; } = new List<int>();
+
         [SpParam(SqlParamName = "MessageList")]
         public string MessageListXml
         {
@@ -35,12 +38,21 @@
             }
         }
 
-        [SpParam(SqlParamName = "RequestList")]
-        public string RequestListXml
+        [SpParam(SqlParamName = "VoidingCollectionRequestList")]
+        public string VoidingCollectionRequestListXml
         {
             get
             {
                 return XmlHelper<MessageRequestId>.Serialize(Requests);
+            }
+        }
+
+        [SpParam(SqlParamName = "VoidingHistoryRequestList")]
+        public string VoidingHistoryRequestListXml
+        {
+            get
+            {
+                return XmlHelper<int>.Serialize(MessageIds);
             }
         }
 
