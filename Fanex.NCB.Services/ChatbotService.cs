@@ -61,7 +61,7 @@
             httpClient.Timeout = TimeSpan.FromSeconds(appSettings.HttpClientTimeout);
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
-            var url = new Uri($"{botSettings.BotDomain}{apiConfigs.SendMultiMessageUrl}");
+            var url = new Uri($"{botSettings.BotDomain}{apiConfigs?.SendMultiMessageUrl}");
             using (var response = await httpClient.PostAsJsonAsync(url, messages))
             {
                 response.EnsureSuccessStatusCode();
@@ -173,7 +173,7 @@
             httpClient.Timeout = TimeSpan.FromSeconds(appSettings.HttpClientTimeout);
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
-            var url = new Uri($"{botSettings.BotDomain}{apiConfigs.SendMessageUrl}");
+            var url = new Uri($"{botSettings.BotDomain}{apiConfigs?.SendMessageUrl}");
             return await httpClient.PostAsJsonAsync(url, conversationInfo);
         }
 

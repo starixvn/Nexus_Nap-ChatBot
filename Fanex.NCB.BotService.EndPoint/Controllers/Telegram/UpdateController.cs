@@ -49,6 +49,13 @@
             }
 
             Message message = update.Message;
+            await HandleBotEvents(bot, message);
+
+            return Ok();
+        }
+
+        private async Task HandleBotEvents(User bot, Message message)
+        {
             switch (message.Type)
             {
                 case MessageType.Text:
@@ -83,8 +90,6 @@
                     // do nothing
                     break;
             }
-
-            return Ok();
         }
 
         protected internal virtual async Task<CommandResult> EditChatTitledAsync(Message message)

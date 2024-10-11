@@ -72,13 +72,13 @@
         public async Task<User> GetBotInfoAsync(long botId)
         {
             TelegramBotConfigurations bot = botConfigurations.FirstOrDefault(x => x.BotId == botId);
-            return await bot.BotClient.GetMeAsync();
+            return await bot?.BotClient.GetMeAsync();
         }
 
         public async Task<Message> SendTextMessageAsync(long botId, long chatId, string messageContent, ParseMode parseMode = ParseMode.MarkdownV2)
         {
             TelegramBotConfigurations bot = botConfigurations.FirstOrDefault(x => x.BotId == botId);
-            var message = await bot.BotClient.SendTextMessageAsync(new ChatId(chatId), messageContent, parseMode);
+            var message = await bot?.BotClient.SendTextMessageAsync(new ChatId(chatId), messageContent, parseMode);
             return message;
         }
 
