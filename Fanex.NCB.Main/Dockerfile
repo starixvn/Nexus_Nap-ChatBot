@@ -1,4 +1,14 @@
+ARG CI_REGISTRY_IMAGE
+
+FROM $CI_REGISTRY_IMAGE:builder as deps
+
+RUN mkdir -p /src/packages
+
 FROM hub.nexdev.net/base/dotnet/core/sdk:6.0-alpine AS builder
+
+ENV NUGET_PACKAGES=/src/packages
+
+COPY --from=deps $NUGET_PACKAGES/. $NUGET_PACKAGES/
 
 WORKDIR /src
 
@@ -12,7 +22,10 @@ COPY ["Fanex.NCB.Repository/Fanex.NCB.Repository.csproj", "Fanex.NCB.Repository/
 COPY ["Fanex.NCB.Models/Fanex.NCB.Models.csproj", "Fanex.NCB.Models/"]
 COPY ["Fanex.NCB.Resources/Fanex.NCB.Resources.csproj", "Fanex.NCB.Resources/"]
 COPY ["nuget.config", ""]
-RUN dotnet restore "Fanex.NCB.Main/Fanex.NCB.Main.csproj"
+
+RUN dotnet nuget add source https://nuget.nexdev.net/api/v2
+
+RUN dotnet restore -v n -r linux-x64 "Fanex.NCB.Main/Fanex.NCB.Main.csproj"
 
 COPY . .
 
