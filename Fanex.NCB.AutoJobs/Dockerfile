@@ -1,4 +1,14 @@
+ARG CI_REGISTRY_IMAGE
+
+FROM $CI_REGISTRY_IMAGE:builder as deps
+
+RUN mkdir -p /src/packages
+
 FROM hub.nexdev.net/base/dotnet/core/sdk:6.0-alpine AS builder
+
+ENV NUGET_PACKAGES=/src/packages
+
+COPY --from=deps $NUGET_PACKAGES/. $NUGET_PACKAGES/
 
 WORKDIR /src
 
@@ -6,7 +16,10 @@ COPY ["nuget.config", "."]
 COPY ["Fanex.NCB.AutoJobs/Fanex.NCB.AutoJobs.csproj", "Fanex.NCB.AutoJobs/"]
 COPY ["Fanex.NCB.BackgroundJob.Core/Fanex.NCB.AutoJobs.Core.csproj", "Fanex.NCB.BackgroundJob.Core/"]
 COPY ["Fanex.NCB.Resources/Fanex.NCB.Resources.csproj", "Fanex.NCB.Resources/"]
-RUN dotnet restore "Fanex.NCB.AutoJobs/Fanex.NCB.AutoJobs.csproj"
+
+RUN dotnet nuget add source https://nuget.nexdev.net/api/v2
+
+RUN dotnet restore -v n -r linux-x64 "Fanex.NCB.AutoJobs/Fanex.NCB.AutoJobs.csproj"
 
 COPY . .
 

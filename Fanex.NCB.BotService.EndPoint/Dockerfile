@@ -1,4 +1,14 @@
+ARG CI_REGISTRY_IMAGE
+
+FROM $CI_REGISTRY_IMAGE:builder as deps
+
+RUN mkdir -p /src/packages
+
 FROM hub.nexdev.net/base/dotnet/core/sdk:6.0-alpine AS builder
+
+ENV NUGET_PACKAGES=/src/packages
+
+COPY --from=deps $NUGET_PACKAGES/. $NUGET_PACKAGES/
 
 WORKDIR /src
 
@@ -8,8 +18,9 @@ COPY ["Fanex.NCB.BotService.Core/Fanex.NCB.BotService.Core.csproj", "Fanex.NCB.B
 COPY ["Fanex.NCB.Shared/Fanex.NCB.Shared.csproj", "Fanex.NCB.Shared/"]
 COPY ["Fanex.NCB.Resources/Fanex.NCB.Resources.csproj", "Fanex.NCB.Resources/"]
 
-RUN --mount=type=cache,target=/root/.nuget/packages \
-    dotnet restore "Fanex.NCB.BotService.EndPoint/Fanex.NCB.BotService.EndPoint.csproj"
+RUN dotnet nuget add source https://nuget.nexdev.net/api/v2
+
+RUN dotnet restore -v n -r linux-x64 "Fanex.NCB.BotService.EndPoint/Fanex.NCB.BotService.EndPoint.csproj"
 
 COPY . .
 
