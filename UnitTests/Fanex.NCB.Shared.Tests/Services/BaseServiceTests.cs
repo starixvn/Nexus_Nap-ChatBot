@@ -1,4 +1,4 @@
-﻿namespace NexGoal.Core.UnitTests.Services
+﻿namespace Fanex.NCB.Shared.Services.Services
 {
     using System;
     using System.Collections.Generic;
@@ -263,7 +263,7 @@
             await baseService.ExecuteNonQueryAsync(command);
 
             // Assert
-            await baseRepository.Received().ExecuteNonQueryAsync(Arg.Is<INonQueryCommand>(x => x.IsValid()));
+            await dynamicRepository.Received().ExecuteAsync(Arg.Is<INonQueryCommand>(x => x.IsValid()));
         }
 
         #endregion ExecuteNonQueryAsync
@@ -287,8 +287,7 @@
         private BaseService GetBaseService()
         {
             dynamicRepository = FakeDynamicRepository();
-            baseRepository = FakeBaseRepository();
-            var service = new BaseService(dynamicRepository, baseRepository);
+            var service = new BaseService(dynamicRepository);
 
             return service;
         }

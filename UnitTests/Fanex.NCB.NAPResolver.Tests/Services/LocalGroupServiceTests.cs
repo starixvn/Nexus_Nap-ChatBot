@@ -3,51 +3,55 @@
     using System;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.Data;
-    using Fanex.NAP.Client.Models;
     using Fanex.NCB.Criteria.LocalNap.Group;
     using Fanex.NCB.NAPResolver.LocalServices;
+    using Fanex.NCB.NAPResolver.Model;
+    using Fanex.NCB.Shared.Services.Interfaces;
     using NSubstitute;
     using Xunit;
 
     public class LocalGroupServiceTests
     {
-        private readonly IObjectDb objectDb;
-
-        public LocalGroupServiceTests()
-        {
-            DbSettingProviderManager.StartTestingSession().Run();
-
-            objectDb = Substitute.For<IObjectDb>();
-            ObjectDbFactory.Mock((key, time) => objectDb);
-        }
+        private IBaseService baseService;
 
         [Fact]
         public async Task GetAsync_WhenCalled_ReturnExpectedResult()
         {
-            var service = new LocalGroupService();
+            var service = GetService();
 
             var fixture = new Fixture();
             var groupId = fixture.Create<int>();
-            var expectedGroup = new Group
+            var expectedGroup = new FlatGroup
             {
-                Id = 1,
-                Name = "Test",
-                IsActive = true
+                GroupId = 1,
+                GroupName = "Test",
+                IsActive = true,
+                Description = "Test",
+                CreatedDate = DateTime.UtcNow,
+                CreatorId = 1,
+                CreatorUsername = "Test",
+                ModifierId = 1,
+                ModifierUsername = "Test"
             };
 
             var criteria = new GetGroupByIdCriteria();
 
-            objectDb.QueryEntityAsync(
-                Arg.Any<Func<Group, User, User, Group>>(),
-                    "CreatorId, ModifierId",
-                Arg.Do<GetGroupByIdCriteria>(x => criteria = x)).Returns(expectedGroup);
+            baseService.GetDataEntityAsync<FlatGroup>(Arg.Any<GetGroupByIdCriteria>()).Returns(expectedGroup);
 
             var result = await service.GetAsync(groupId);
 
-            Assert.Equal(expectedGroup.Id, result.Id);
-            Assert.Equal(expectedGroup.Name, result.Name);
+            Assert.Equal(expectedGroup.GroupId, result.Id);
+            Assert.Equal(expectedGroup.GroupName, result.Name);
             Assert.Equal(expectedGroup.IsActive, result.IsActive);
         }
+
+        #region Helpers
+        private LocalGroupService GetService()
+        {
+            baseService = Substitute.For<IBaseService>();
+
+            return Substitute.For<LocalGroupService>(baseService);
+        }
+        #endregion Helpers
     }
 }
