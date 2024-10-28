@@ -18,9 +18,9 @@
     {
         private readonly IBaseService baseService;
 
-        public LocalUserService()
+        public LocalUserService(IBaseService baseService = null)
         {
-            baseService = new BaseService(new DynamicRepository());
+            this.baseService = baseService ?? new BaseService(new DynamicRepository());
         }
 
         public User Get(int userId)
