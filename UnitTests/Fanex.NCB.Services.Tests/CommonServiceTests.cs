@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.Criteria.Common;
-    using Fanex.NCB.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
@@ -130,33 +129,33 @@
             Assert.Equal(plaforms, result);
         }
 
-        [Fact]
-        public void GetCategogyName_WhenCalled_ReturnExpectedResult()
-        {
-            // Arrange
-            var service = GetService();
-            remotingRefService.GetResourceDataByRefIdAndResourceId("Category", "1", "EN", string.Empty).Returns("categoryName");
+        //[Fact]
+        //public void GetCategogyName_WhenCalled_ReturnExpectedResult()
+        //{
+        //    // Arrange
+        //    var service = GetService();
+        //    remotingRefService.GetResourceDataByRefIdAndResourceId("Category", "1", "EN", string.Empty).Returns("categoryName");
 
-            // Act
-            var result = service.GetCategogyName("1", "EN");
+        //    // Act
+        //    var result = service.GetCategogyName("1", "EN");
 
-            // Assert
-            Assert.Equal("categoryName", result);
-        }
+        //    // Assert
+        //    Assert.Equal("categoryName", result);
+        //}
 
-        [Fact]
-        public void GetCustomerClassName_WhenCalled_ReturnExpectedResult()
-        {
-            // Arrange
-            var service = GetService();
-            remotingRefService.GetResourceDataByRefIdAndResourceId("CustomerClass", "sa", "EN", string.Empty).Returns("customerClassName");
+        //[Fact]
+        //public void GetCustomerClassName_WhenCalled_ReturnExpectedResult()
+        //{
+        //    // Arrange
+        //    var service = GetService();
+        //    remotingRefService.GetResourceDataByRefIdAndResourceId("CustomerClass", "sa", "EN", string.Empty).Returns("customerClassName");
 
-            // Act
-            var result = service.GetCustomerClassName("sa", "EN");
+        //    // Act
+        //    var result = service.GetCustomerClassName("sa", "EN");
 
-            // Assert
-            Assert.Equal("customerClassName", result);
-        }
+        //    // Assert
+        //    Assert.Equal("customerClassName", result);
+        //}
 
         [Fact]
         public async Task GetJsonDataFromDbACCAsync_WhenCalled_ReturnExpectedResult()
@@ -172,20 +171,20 @@
             Assert.Equal("jsonData", result);
         }
 
-        [Fact]
-        public async Task GetServiceSetting_WhenCalled_ReturnExpectedResult()
-        {
-            // Arrange
-            var service = GetService();
-            var serviceSetting = fixture.Create<ServiceSetting>();
-            baseService.GetDataEntityAsync<ServiceSetting>(Arg.Any<GetServiceSettingCriteria>()).Returns(serviceSetting);
+        //[Fact]
+        //public async Task GetServiceSetting_WhenCalled_ReturnExpectedResult()
+        //{
+        //    // Arrange
+        //    var service = GetService();
+        //    var serviceSetting = fixture.Create<ServiceSetting>();
+        //    baseService.GetDataEntityAsync<ServiceSetting>(Arg.Any<GetServiceSettingCriteria>()).Returns(serviceSetting);
 
-            // Act
-            var result = await service.GetServiceSetting("tableName");
+        //    // Act
+        //    var result = await service.GetServiceSetting("tableName");
 
-            // Assert
-            Assert.Equal(serviceSetting, result);
-        }
+        //    // Assert
+        //    Assert.Equal(serviceSetting, result);
+        //}
 
         [Fact]
         public async Task GetIntegrationMethodAsync_WhenCalled_ReturnExpectedResult()

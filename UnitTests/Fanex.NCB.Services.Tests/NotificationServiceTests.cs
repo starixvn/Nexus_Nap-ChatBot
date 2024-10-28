@@ -7,7 +7,6 @@
     using Fanex.NCB.Criteria.Notification;
     using Fanex.NCB.Models.Common;
     using Fanex.NCB.Models.Notification;
-    using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.IntegrationMethod;
@@ -20,7 +19,6 @@
     {
         private IBaseService baseService;
         private ISendNotificationService sendNotificationService;
-        private INotificationRepository notificationRepository;
 
         [Fact]
         public async Task CreateAsync_ValidData_ReturnSuccessResult()
@@ -200,15 +198,20 @@
 
             var fixture = new Fixture();
             var notificationId = fixture.Create<int>();
+            var editNotificationInfos = fixture.Create<IEnumerable<EditNotificationInfo>>();
+            var recipients = fixture.Create<IEnumerable<Recipient>>();
+            var platforms = fixture.Create<IEnumerable<Platform>>();
+            var integrationMethods = fixture.Create<IEnumerable<IntegrationMethodInfo>>();
+            var tupe = (editNotificationInfos, recipients, platforms, integrationMethods);
             var expected = new EditNotificationRepository
             {
-                EditNotificationInfos = fixture.Create<IEnumerable<EditNotificationInfo>>(),
-                Recipients = fixture.Create<IEnumerable<Recipient>>(),
-                Platforms = fixture.Create<IEnumerable<Platform>>(),
-                IntegrationMethods = fixture.Create<IEnumerable<IntegrationMethodInfo>>(),
+                EditNotificationInfos = editNotificationInfos,
+                Recipients = recipients,
+                Platforms = platforms,
+                IntegrationMethods = integrationMethods,
             };
+            baseService.FetchMultipleAsync<EditNotificationInfo, Recipient, Platform, IntegrationMethodInfo>(Arg.Any<GetEditNotificationInfoCriteria>()).Returns(tupe);
 
-            notificationRepository.FetchEditNotificationInfo(Arg.Any<GetEditNotificationInfoCriteria>()).Returns(expected);
             var result = await service.GetEditNotificationInfoAsync(notificationId);
 
             Assert.Equal(expected.EditNotificationInfos.FirstOrDefault(), result);
@@ -300,15 +303,20 @@
             var fixture = new Fixture();
             var notificationId = fixture.Create<int>();
             var isSendAll = fixture.Create<bool>();
+            var resendNotifications = fixture.Create<IEnumerable<ResendNotification>>();
+            var recipients = fixture.Create<IEnumerable<Recipient>>();
+            var platforms = fixture.Create<IEnumerable<Platform>>();
+            var integrationMethods = fixture.Create<IEnumerable<IntegrationMethodInfo>>();
+            var tupe = (resendNotifications, recipients, platforms, integrationMethods);
             var expected = new ResendNotificationRepository
             {
-                ResendNotifications = fixture.Create<IEnumerable<ResendNotification>>(),
-                Recipients = fixture.Create<IEnumerable<Recipient>>(),
-                Platforms = fixture.Create<IEnumerable<Platform>>(),
-                IntegrationMethods = fixture.Create<IEnumerable<IntegrationMethodInfo>>(),
+                ResendNotifications = resendNotifications,
+                Recipients = recipients,
+                Platforms = platforms,
+                IntegrationMethods = integrationMethods,
             };
+            baseService.FetchMultipleAsync<ResendNotification, Recipient, Platform, IntegrationMethodInfo>(Arg.Any<GetResendNotificationInfoCriteria>()).Returns(tupe);
 
-            notificationRepository.FetchResendNotificationInfo(Arg.Any<GetResendNotificationInfoCriteria>()).Returns(expected);
             var result = await service.GetResendNotificationInfoAsync(notificationId, isSendAll);
 
             Assert.Equal(expected.ResendNotifications.FirstOrDefault(), result);
@@ -346,9 +354,8 @@
         {
             baseService = Substitute.For<IBaseService>();
             sendNotificationService = Substitute.For<ISendNotificationService>();
-            notificationRepository = Substitute.For<INotificationRepository>();
 
-            return new NotificationService(baseService, sendNotificationService, notificationRepository);
+            return new NotificationService(baseService, sendNotificationService);
         }
     }
 }

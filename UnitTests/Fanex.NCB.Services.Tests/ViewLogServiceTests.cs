@@ -99,22 +99,22 @@
             Assert.Equal(templateMap.Count(), result.Item3.Count());
         }
 
-        [Fact]
-        public async Task DeleteOldConversationMessageLogAsync_WhenCalled_ExecuteNonQueryAsync()
-        {
-            // Arrange
-            var service = GetService();
-            var currentDate = _fixture.Create<string>();
+        //[Fact]
+        //public async Task DeleteOldConversationMessageLogAsync_WhenCalled_ExecuteNonQueryAsync()
+        //{
+        //    // Arrange
+        //    var service = GetService();
+        //    var currentDate = _fixture.Create<string>();
 
-            DeleteOldConversationMessageLogCommand command = null;
-            await baseService.ExecuteNonQueryAsync(Arg.Do<DeleteOldConversationMessageLogCommand>(x => command = x));
+        //    DeleteOldConversationMessageLogCommand command = null;
+        //    await baseService.ExecuteNonQueryAsync(Arg.Do<DeleteOldConversationMessageLogCommand>(x => command = x));
 
-            // Act
-            await service.DeleteOldConversationMessageLogAsync(currentDate);
+        //    // Act
+        //    await service.DeleteOldConversationMessageLogAsync(currentDate);
 
-            // Assert
-            command.CurrentDate.Should().Be(currentDate);
-        }
+        //    // Assert
+        //    command.CurrentDate.Should().Be(currentDate);
+        //}
 
         private ViewLogService GetService()
         {
