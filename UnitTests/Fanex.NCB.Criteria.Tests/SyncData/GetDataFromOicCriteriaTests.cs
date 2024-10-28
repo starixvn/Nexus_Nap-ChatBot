@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.Tests.SyncData
 {
-    using Fanex.NCB.Criteria.SyncData;
+    using Fanex.NCB.AutoJobs.Core.Criteria.SyncData;
     using Xunit;
 
     public class GetDataFromOicCriteriaTests

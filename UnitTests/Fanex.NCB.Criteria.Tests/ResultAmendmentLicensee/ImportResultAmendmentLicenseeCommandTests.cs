@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.Tests.ResultAmendmentLicensee
 {
-    using Fanex.NCB.Criteria.ResultAmendmentLicensee;
+    using Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentLicensee;
     using Xunit;
 
     public class ImportResultAmendmentLicenseeCommandTests

@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.Tests.SpecialDeleteTicket
 {
-    using Fanex.NCB.Criteria.SpecialDeleteTicket;
+    using Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
     using Xunit;
 
     public class GetVoidingHistoryInternalCSDInfoCriteriaTests

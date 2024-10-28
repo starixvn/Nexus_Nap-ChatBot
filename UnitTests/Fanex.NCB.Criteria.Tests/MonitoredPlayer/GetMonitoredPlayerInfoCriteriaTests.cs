@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.Tests.MonitoredPlayer
 {
-    using Fanex.NCB.Criteria.MonitoredPlayer;
+    using Fanex.NCB.AutoJobs.Core.Criteria.MonitoredPlayer;
     using Xunit;
 
     public class GetMonitoredPlayerInfoCriteriaTests

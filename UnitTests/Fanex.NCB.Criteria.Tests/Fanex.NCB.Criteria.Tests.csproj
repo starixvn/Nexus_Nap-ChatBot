@@ -23,6 +23,7 @@
     <Folder Include="SyncData\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Fanex.NCB.BackgroundJob.Core\Fanex.NCB.AutoJobs.Core.csproj" />
     <ProjectReference Include="..\..\Fanex.NCB.Criteria\Fanex.NCB.Criteria.csproj" />
   </ItemGroup>
 </Project>

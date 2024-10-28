@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.Tests.SettlementLicensee
 {
-    using Fanex.NCB.Criteria.SettlementLicensee;
+    using Fanex.NCB.AutoJobs.Core.Criteria.SettlementLicensee;
     using Xunit;
 
     public class GetMessageSettlementLicenseeCriteriaTests

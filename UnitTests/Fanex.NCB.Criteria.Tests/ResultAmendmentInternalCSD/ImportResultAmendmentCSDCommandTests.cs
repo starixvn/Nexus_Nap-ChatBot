@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.Tests.ResultAmendmentInternalCSD
 {
-    using Fanex.NCB.Criteria.ResultAmendmentInternalCSD;
+    using Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentInternalCSD;
     using Xunit;
 
     public class ImportResultAmendmentCSDCommandTests

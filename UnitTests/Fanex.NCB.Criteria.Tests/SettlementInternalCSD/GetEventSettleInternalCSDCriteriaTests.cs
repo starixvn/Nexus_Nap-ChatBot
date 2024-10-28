@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.Tests.SettlementInternalCSD
 {
-    using Fanex.NCB.Criteria.SettlementInternalCSD;
+    using Fanex.NCB.AutoJobs.Core.Criteria.SettlementInternalCSD;
     using Xunit;
 
     public class GetEventSettleInternalCSDCriteriaTests

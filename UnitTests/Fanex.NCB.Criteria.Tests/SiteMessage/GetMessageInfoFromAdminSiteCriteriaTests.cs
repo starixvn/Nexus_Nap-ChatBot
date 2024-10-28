@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.Criteria.Tests.SiteMessage
 {
     using System;
-    using Fanex.NCB.Criteria.SiteMessage;
+    using Fanex.NCB.AutoJobs.Core.Criteria.SiteMessage;
     using Xunit;
 
     public class GetMessageInfoFromAdminSiteCriteriaTests

@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.Tests.ViewLog
 {
-    using Fanex.NCB.Criteria.ViewLog;
+    using Fanex.NCB.AutoJobs.Core.Criteria.Common;
     using FluentAssertions;
     using Xunit;
 

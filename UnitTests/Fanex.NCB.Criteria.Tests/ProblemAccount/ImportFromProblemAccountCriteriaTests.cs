@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.Tests.ProblemAccount
 {
-    using Fanex.NCB.Criteria.ProblemAccount;
+    using Fanex.NCB.AutoJobs.Core.Criteria.ProblemAccount;
     using Xunit;
 
     public class ImportFromProblemAccountCriteriaTests

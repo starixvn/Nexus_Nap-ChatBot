@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.Tests.SiteMessage
 {
-    using Fanex.NCB.Criteria.SiteMessage;
+    using Fanex.NCB.AutoJobs.Core.Criteria.SiteMessage;
     using Xunit;
 
     public class ImportDataSiteMessageAndGetGroupTestCriteriaTests
