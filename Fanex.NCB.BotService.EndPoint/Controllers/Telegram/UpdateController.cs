@@ -31,10 +31,10 @@
             this.conversationService = conversationService;
         }
 
+        #pragma warning disable S1541 // Methods and properties should not be too complex
         [HttpPost]
         [Route("api/telegram/webhook/{botId:long}/update")]
         public async Task<IActionResult> Post(long botId, [FromBody] Update update)
-#pragma warning restore S1541 // Methods and properties should not be too complex
         {
             if (update == null || update.Type != UpdateType.Message)
             {
@@ -91,6 +91,7 @@
                     break;
             }
         }
+        #pragma warning restore S1541 // Methods and properties should not be too complex
 
         protected internal virtual async Task<CommandResult> EditChatTitledAsync(Message message)
         {
