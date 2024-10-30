@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Constants
 {
-    public class Constants
+    public static class Constants
     {
         public const int SystemId = -1;
         public const string JobIdentify = "JobIdentify";

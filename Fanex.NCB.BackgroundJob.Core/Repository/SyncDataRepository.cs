@@ -15,13 +15,6 @@ namespace Fanex.NCB.AutoJobs.Core.Repository
 
     public class SyncDataRepository : ISyncDataRepository
     {
-        private readonly IDynamicRepository dynamicRepository;
-
-        public SyncDataRepository(IDynamicRepository dynamicRepository)
-        {
-            this.dynamicRepository = dynamicRepository;
-        }
-
         public async Task<NapData> FetchDataFromNapUserControl(ICriteria criteria)
         {
             using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))

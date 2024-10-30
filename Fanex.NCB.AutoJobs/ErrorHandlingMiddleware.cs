@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using Fanex.Logging;
-using Fanex.Logging.Extensions;
-using Microsoft.AspNetCore.Http;
-
-namespace Fanex.NCB.AutoJobs
+﻿namespace Fanex.NCB.AutoJobs
 {
-    internal class ErrorHandlingMiddleware
+    using System;
+    using System.Threading.Tasks;
+    using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Microsoft.AspNetCore.Http;
+
+    public class ErrorHandlingMiddleware
     {
         private readonly RequestDelegate next;
         private readonly ILogger logger;

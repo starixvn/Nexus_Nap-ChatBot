@@ -6,7 +6,6 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fanex.NCB.AutoJobs.Core.FanexDataExtensions;
     using Fanex.NCB.Shared.FanexDataExtensions.ObjectDb;
 
     public interface IDynamicConnectionService

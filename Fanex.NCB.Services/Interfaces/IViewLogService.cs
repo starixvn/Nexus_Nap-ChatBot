@@ -1,9 +1,8 @@
 ﻿namespace Fanex.NCB.Services.Interfaces
 {
-    using Fanex.NCB.Models.ViewLog;
-    using Fanex.NCB.Shared.Models;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Fanex.NCB.Models.ViewLog;
 
     public interface IViewLogService
     {

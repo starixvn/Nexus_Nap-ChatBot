@@ -8,6 +8,7 @@
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
 
+    #pragma warning disable S2436
     public class BaseService : IBaseService
     {
         private readonly IDynamicRepository dynamicRepository;
@@ -27,6 +28,16 @@
             return new List<T>();
         }
 
+        public async Task<T> GetDataEntityAsync<T>(ICriteria criteria, string serverIp = "")
+        {
+            if (criteria != null && criteria.IsValid())
+            {
+                return await dynamicRepository.GetAsync<T>(criteria, serverIp);
+            }
+
+            return default;
+        }
+
         public async Task<ValueTuple<IEnumerable<T1>, IEnumerable<T2>>> FetchMultipleAsync<T1, T2>(ICriteria criteria, string serverIp = "")
         {
             if (criteria != null && criteria.IsValid())
@@ -44,16 +55,6 @@
             }
 
             return new ValueTuple<IEnumerable<T1>, IEnumerable<T2>, IEnumerable<T3>>(new List<T1>(), new List<T2>(), new List<T3>());
-        }
-
-        public async Task<T> GetDataEntityAsync<T>(ICriteria criteria, string serverIp = "")
-        {
-            if (criteria != null && criteria.IsValid())
-            {
-                return await dynamicRepository.GetAsync<T>(criteria, serverIp);
-            }
-
-            return default;
         }
 
         public async Task<(IEnumerable<T1>, IEnumerable<T2>, IEnumerable<T3>, IEnumerable<T4>)> FetchMultipleAsync<T1, T2, T3, T4>(ICriteria criteria, string serverIp = "")
@@ -116,4 +117,5 @@
             return default;
         }
     }
+    #pragma warning restore S2436
 }

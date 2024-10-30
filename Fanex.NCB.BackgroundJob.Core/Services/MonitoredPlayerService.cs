@@ -4,7 +4,6 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Core.Criteria.MonitoredPlayer;
-    using Fanex.NCB.AutoJobs.Core.Enum;
     using Fanex.NCB.AutoJobs.Core.Models.Common;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
     using Fanex.NCB.AutoJobs.Core.Models.MonitoredPlayer;

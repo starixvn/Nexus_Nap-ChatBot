@@ -12,26 +12,22 @@
     using Fanex.NCB.Shared.Models.IntegrationMethod;
     using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services.Interfaces;
-    using Fanex.RemotingRef;
 
     public class CommonService : ICommonService
     {
         private readonly IBaseService baseService;
-        private readonly IRemotingRefService remotingRefService;
         private readonly IChatbotService chatbotService;
         private readonly IPushSignalRService pushSignalService;
         private readonly ILogService logService;
 
         public CommonService(
             IBaseService baseService,
-            IRemotingRefService remotingRefService,
             IChatbotService chatbotService,
             IPushSignalRService pushSignalService,
             ILogService logService
         )
         {
             this.baseService = baseService;
-            this.remotingRefService = remotingRefService;
             this.chatbotService = chatbotService;
             this.pushSignalService = pushSignalService;
             this.logService = logService;

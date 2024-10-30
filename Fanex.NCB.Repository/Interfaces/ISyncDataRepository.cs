@@ -3,7 +3,6 @@
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using Fanex.NCB.Shared.Models.NapUserControl;
-    using Fanex.NCB.Shared.Models.OIC;
 
     public interface ISyncDataRepository
     {

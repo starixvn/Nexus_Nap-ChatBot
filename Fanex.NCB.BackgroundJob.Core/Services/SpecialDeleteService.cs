@@ -177,7 +177,8 @@
             return await FetchVoidingHistoryInfo(criteria);
         }
 
-        private async Task<(IEnumerable<AbnormalMessageDetail>, IEnumerable<AbnormalMessage>, IEnumerable<AbnormalAccountInfo>, IEnumerable<DuplicateTicketDetail>)> FetchVoidingHistoryInfo(ICriteria criteria)
+        private async Task<(IEnumerable<AbnormalMessageDetail>, IEnumerable<AbnormalMessage>, IEnumerable<AbnormalAccountInfo>, IEnumerable<DuplicateTicketDetail>)>
+        FetchVoidingHistoryInfo(ICriteria criteria)
             => await baseService.FetchMultipleAsync<AbnormalMessageDetail, AbnormalMessage, AbnormalAccountInfo, DuplicateTicketDetail>(criteria);
 
         protected internal virtual async Task GetMessageAndImportToChatbotAsync(ServiceSetting setting, IEnumerable<AbnormalMessage> messageIdLst)

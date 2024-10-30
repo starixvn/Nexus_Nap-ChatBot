@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Repositories;
     using Fanex.NCB.Shared.Services;
     using NSubstitute;
     using Xunit;
@@ -13,7 +12,6 @@
     public class BaseServiceTests
     {
         private IDynamicRepository dynamicRepository;
-        private IBaseRepository baseRepository;
 
         #region GetDataAsync
 
@@ -273,13 +271,6 @@
         private static IDynamicRepository FakeDynamicRepository()
         {
             var repository = Substitute.For<IDynamicRepository>();
-
-            return repository;
-        }
-
-        private static IBaseRepository FakeBaseRepository()
-        {
-            var repository = Substitute.For<IBaseRepository>();
 
             return repository;
         }

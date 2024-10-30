@@ -6,7 +6,6 @@
     using Fanex.NCB.AutoJobs.Core.Constants;
     using Fanex.NCB.AutoJobs.Core.Criteria.SettlementInternalCSD;
     using Fanex.NCB.AutoJobs.Core.Criteria.SettlementLicensee;
-    using Fanex.NCB.AutoJobs.Core.Enum;
     using Fanex.NCB.AutoJobs.Core.Helpers;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
     using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;

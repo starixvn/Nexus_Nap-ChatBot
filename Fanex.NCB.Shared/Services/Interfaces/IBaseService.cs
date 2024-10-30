@@ -6,9 +6,14 @@
     using Fanex.Data.Repository;
     using Fanex.NCB.Shared.Models;
 
+    #pragma warning disable S2436
     public interface IBaseService
     {
         Task<IEnumerable<T>> GetDataAsync<T>(ICriteria criteria, string serverIp = "");
+
+        T GetDataEntity<T>(ICriteria criteria, string serverIp = "");
+
+        Task<T> GetDataEntityAsync<T>(ICriteria criteria, string serverIp = "");
 
         Task<ValueTuple<IEnumerable<T1>, IEnumerable<T2>>> FetchMultipleAsync<T1, T2>(ICriteria criteria, string serverIp = "");
 
@@ -21,10 +26,7 @@
         Task<ValueTuple<IEnumerable<T1>, IEnumerable<T2>, IEnumerable<T3>, IEnumerable<T4>, IEnumerable<T5>, IEnumerable<T6>>>
             FetchMultipleAsync<T1, T2, T3, T4, T5, T6>(ICriteria criteria, string serverIp = "");
 
-        Task<T> GetDataEntityAsync<T>(ICriteria criteria, string serverIp = "");
-
-        T GetDataEntity<T>(ICriteria criteria, string serverIp = "");
-
         Task<CommandResult> ExecuteNonQueryAsync(INonQueryCommand command, string serverIp = "");
     }
+    #pragma warning restore S2436
 }

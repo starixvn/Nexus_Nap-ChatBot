@@ -5,6 +5,7 @@
     using Fanex.NCB.AutoJobs.Core.Repository;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
 
+    #pragma warning disable S2436
     public class BaseService : IBaseService
     {
         private readonly IDynamicRepository dynamicRepository;
@@ -102,4 +103,5 @@
             return commandResult;
         }
     }
+    #pragma warning restore S2436
 }

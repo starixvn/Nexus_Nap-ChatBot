@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Core.Constants;
     using Fanex.NCB.AutoJobs.Core.Criteria.ProblemAccount;
-    using Fanex.NCB.AutoJobs.Core.Enum;
     using Fanex.NCB.AutoJobs.Core.Models.Common;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
     using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;

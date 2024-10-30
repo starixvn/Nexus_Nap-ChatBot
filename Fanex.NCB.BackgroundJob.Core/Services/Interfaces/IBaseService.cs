@@ -3,6 +3,7 @@
     using Fanex.Data.Repository;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
 
+    #pragma warning disable S2436
     public interface IBaseService
     {
         Task<IEnumerable<T>> GetDataAsync<T>(ICriteria criteria);
@@ -21,4 +22,5 @@
 
         Task<CommandResult> ExecuteNonQueryAsync(INonQueryCommand command);
     }
+    #pragma warning restore S2436
 }

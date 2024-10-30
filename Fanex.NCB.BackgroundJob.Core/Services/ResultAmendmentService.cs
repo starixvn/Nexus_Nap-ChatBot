@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.NCB.AutoJobs.Core.Constants;
     using Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentInternalCSD;
     using Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentLicensee;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
@@ -34,7 +35,7 @@
 
         public async Task ResultAmendmentInternalCSDAsync()
         {
-            var systemSetting = await commonService.GetServiceSetting(Constants.Constants.ServiceName_ResultAmendmentInternalCSD);
+            var systemSetting = await commonService.GetServiceSetting(Constants.ServiceName_ResultAmendmentInternalCSD);
 
             if (systemSetting != null)
             {
@@ -74,7 +75,7 @@
 
         public async Task ResultAmendmentLicenseeAsync()
         {
-            var systemSetting = await commonService.GetServiceSetting(Constants.Constants.ServiceName_ResultAmendmentLicensee);
+            var systemSetting = await commonService.GetServiceSetting(Constants.ServiceName_ResultAmendmentLicensee);
 
             if (systemSetting != null)
             {

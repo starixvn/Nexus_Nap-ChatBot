@@ -11,7 +11,6 @@
     using Fanex.NCB.Shared.Models.IntegrationMethod;
     using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.Shared.Services.Interfaces;
-    using Fanex.RemotingRef;
     using NSubstitute;
     using Xunit;
 
@@ -19,7 +18,6 @@
     {
         private readonly IFixture fixture = new Fixture();
         private IBaseService baseService;
-        private IRemotingRefService remotingRefService;
         private IChatbotService chatbotService;
         private IPushSignalRService pushSignalService;
         private ILogService logService;
@@ -213,12 +211,11 @@
         private CommonService GetService()
         {
             baseService = Substitute.For<IBaseService>();
-            remotingRefService = Substitute.For<IRemotingRefService>();
             chatbotService = Substitute.For<IChatbotService>();
             pushSignalService = Substitute.For<IPushSignalRService>();
             logService = Substitute.For<ILogService>();
 
-            return new CommonService(baseService, remotingRefService, chatbotService, pushSignalService, logService);
+            return new CommonService(baseService, chatbotService, pushSignalService, logService);
         }
     }
 }

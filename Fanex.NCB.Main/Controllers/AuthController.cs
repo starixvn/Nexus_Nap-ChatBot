@@ -20,6 +20,7 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
+    #pragma warning disable S4487, S125
     public class AuthController : Controller
     {
         private const int SSOExpiredTimeInSeconds = 30;
@@ -258,4 +259,5 @@
             return expiration.TotalSeconds <= SSOExpiredTimeInSeconds;
         }
     }
+    #pragma warning restore S4487, S125
 }

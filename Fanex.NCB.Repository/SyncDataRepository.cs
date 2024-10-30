@@ -43,6 +43,7 @@
             }
         }
 
+        #pragma warning disable S1449, S3267, S108, S2486
         private static List<T> ConvertDataTableToList<T>(DataTable dt)
         {
             var columnNames = dt.Columns.Cast<DataColumn>().Select(c => c.ColumnName.ToLower()).ToList();
@@ -64,5 +65,6 @@
                 return objT;
             }).ToList();
         }
+        #pragma warning restore S1449, S3267, S108, S2486
     }
 }
