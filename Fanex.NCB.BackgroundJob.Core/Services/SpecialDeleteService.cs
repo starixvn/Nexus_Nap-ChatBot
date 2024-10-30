@@ -8,7 +8,6 @@
     using Fanex.NCB.AutoJobs.Core.Constants;
     using Fanex.NCB.AutoJobs.Core.Criteria.SiteMessage;
     using Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
-    using Fanex.NCB.AutoJobs.Core.Enum;
     using Fanex.NCB.AutoJobs.Core.Helpers;
     using Fanex.NCB.AutoJobs.Core.Models.Common;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
@@ -178,7 +177,7 @@
             return await FetchVoidingHistoryInfo(criteria);
         }
 
-        protected internal virtual async Task<(IEnumerable<AbnormalMessageDetail>, IEnumerable<AbnormalMessage>, IEnumerable<AbnormalAccountInfo>, IEnumerable<DuplicateTicketDetail>)> FetchVoidingHistoryInfo(ICriteria criteria)
+        private async Task<(IEnumerable<AbnormalMessageDetail>, IEnumerable<AbnormalMessage>, IEnumerable<AbnormalAccountInfo>, IEnumerable<DuplicateTicketDetail>)> FetchVoidingHistoryInfo(ICriteria criteria)
             => await baseService.FetchMultipleAsync<AbnormalMessageDetail, AbnormalMessage, AbnormalAccountInfo, DuplicateTicketDetail>(criteria);
 
         protected internal virtual async Task GetMessageAndImportToChatbotAsync(ServiceSetting setting, IEnumerable<AbnormalMessage> messageIdLst)
