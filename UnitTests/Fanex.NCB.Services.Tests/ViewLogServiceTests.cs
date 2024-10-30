@@ -7,7 +7,6 @@
     using Fanex.NCB.Criteria.ViewLog;
     using Fanex.NCB.Models.ViewLog;
     using Fanex.NCB.Shared.Services.Interfaces;
-    using FluentAssertions;
     using NSubstitute;
     using Xunit;
 
@@ -98,23 +97,6 @@
             Assert.Equal(templates.Count(), result.Item2.Count());
             Assert.Equal(templateMap.Count(), result.Item3.Count());
         }
-
-        //[Fact]
-        //public async Task DeleteOldConversationMessageLogAsync_WhenCalled_ExecuteNonQueryAsync()
-        //{
-        //    // Arrange
-        //    var service = GetService();
-        //    var currentDate = _fixture.Create<string>();
-
-        //    DeleteOldConversationMessageLogCommand command = null;
-        //    await baseService.ExecuteNonQueryAsync(Arg.Do<DeleteOldConversationMessageLogCommand>(x => command = x));
-
-        //    // Act
-        //    await service.DeleteOldConversationMessageLogAsync(currentDate);
-
-        //    // Assert
-        //    command.CurrentDate.Should().Be(currentDate);
-        //}
 
         private ViewLogService GetService()
         {

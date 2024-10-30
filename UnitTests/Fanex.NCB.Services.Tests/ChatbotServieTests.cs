@@ -45,31 +45,6 @@
             Assert.Empty(result.NotificationMessageResult);
         }
 
-        ////[Fact]
-        ////public async Task SendMultiMessageAsync_RequestIsUnsuccessful_ReturnAsExpectedResult()
-        ////{
-        ////    // Arrange
-        ////    byte channelId = 1;
-        ////    var messages = fixture.Create<IEnumerable<NotificationMessage>>();
-        ////    var token = fixture.Create<ChatbotToken>();
-        ////    var httpMessageHandler = new MockHttpMessageHandler(new HttpResponseMessage()
-        ////    {
-        ////        StatusCode = HttpStatusCode.NotFound
-        ////    });
-        ////    var httpClient = new HttpClient(httpMessageHandler);
-        ////    var service = GetService();
-        ////    httpClientFactory.CreateClient().Returns(httpClient);
-        ////    service.Protected("GetTokenAsync").Returns(Task.FromResult(token));
-
-        ////    // Act
-        ////    var result = await service.SendMultiMessageAsync(channelId, messages);
-
-        ////    // Assert
-        ////    Assert.False(result.IsSuccessStatusCode);
-        ////    Assert.Equal((HttpStatusCode)0, result.StatusCode);
-        ////    Assert.Empty(result.NotificationMessageResult);
-        ////}
-
         [Fact]
         public async Task SendMultiMessageAsync_RequestIsSuccessful_ReturnAsExpectedResult()
         {
@@ -236,29 +211,6 @@
             // Assert
             Assert.Equal(httpResponse, result);
         }
-
-        ////[Fact]
-        ////public async Task GetTokenAsync_WhenCalled_ReturnAsExpectedResult()
-        ////{
-        ////    // Arrange
-        ////    var token = fixture.Create<ChatbotToken>();
-        ////    var httpMessageHandler = new MockHttpMessageHandler(new HttpResponseMessage()
-        ////    {
-        ////        StatusCode = HttpStatusCode.OK,
-        ////        Content = new StringContent(JsonConvert.SerializeObject(token))
-        ////    });
-        ////    var httpClient = new HttpClient(httpMessageHandler);
-        ////    var service = GetService();
-        ////    httpClientFactory.CreateClient().Returns(httpClient);
-
-        ////    // Act
-        ////    var result = await service.Public_GetTokenAsync();
-
-        ////    // Assert
-        ////    Assert.Equal(token.TokenType, result.TokenType);
-        ////    Assert.Equal(token.ExpiresIn, result.ExpiresIn);
-        ////    Assert.Equal(token.AccessToken, result.AccessToken);
-        ////}
 
         #region Helpers
 

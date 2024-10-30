@@ -87,10 +87,5 @@
         {
             FormatTelegramData(historyDetail);
         }
-
-        public async Task Public_FetchVoidingHistoryInfo(ICriteria criteria)
-        {
-            await base.FetchVoidingHistoryInfo(criteria);
-        }
     }
 }
