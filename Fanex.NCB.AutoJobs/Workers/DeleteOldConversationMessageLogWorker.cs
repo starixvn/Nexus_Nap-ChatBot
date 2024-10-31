@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Constants;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
@@ -10,6 +11,7 @@
     using Microsoft.Extensions.Options;
     using ONEbook.UM.Services;
 
+    [ExcludeFromCodeCoverage(Justification = "Worker don't needed test")]
     public class DeleteOldConversationMessageLogWorker : BaseWorker
     {
         private readonly ICommonService commonService;

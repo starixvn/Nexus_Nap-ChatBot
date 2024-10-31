@@ -68,7 +68,7 @@
                 await bot.BotClient.SetWebhookAsync(webhook);
             }
         }
-
+        #pragma warning disable S2259 //Is null on at least one execution path
         public async Task<User> GetBotInfoAsync(long botId)
         {
             TelegramBotConfigurations bot = botConfigurations.FirstOrDefault(x => x.BotId == botId);
@@ -81,6 +81,7 @@
             var message = await bot?.BotClient.SendTextMessageAsync(new ChatId(chatId), messageContent, parseMode);
             return message;
         }
+        #pragma warning restore S2259
 
         public async Task<SendMessageResult> SendTextMessageAsync(ConversationInfo conversationInfo)
         {
