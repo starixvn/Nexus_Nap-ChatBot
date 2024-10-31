@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
@@ -14,6 +15,9 @@
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 
+    #pragma warning disable IDE0079 // Remove unnecessary suppression
+    [SuppressMessage("Major Code Smell", "S4144:Methods should not have identical implementations", Justification = "Intentional duplication")]
+    #pragma warning restore IDE0079 // Remove unnecessary suppression
     public class ChatbotService : IChatbotService
     {
         private readonly IHttpClientFactory httpClientFactory;

@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Services
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Core.Models.Configurations;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
@@ -8,6 +9,7 @@
     using Microsoft.AspNetCore.SignalR.Client;
     using Microsoft.Extensions.Options;
 
+    [ExcludeFromCodeCoverage(Justification = "SignalR")]
     public class PushSignalRService : IPushSignalRService
     {
         private readonly HubConnection hubConnection;

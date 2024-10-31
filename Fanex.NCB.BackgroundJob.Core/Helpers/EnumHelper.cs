@@ -2,8 +2,10 @@
 {
     using System;
     using System.ComponentModel;
+    using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
 
+    [ExcludeFromCodeCoverage(Justification = "Helpers")]
     public static class EnumHelper
     {
         public static string GetDescription(Enum enumType)

@@ -1,10 +1,12 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Helpers
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Security.Cryptography;
     using System.Text;
 
+    [ExcludeFromCodeCoverage(Justification = "Helpers")]
     public static class CryptographyExtend
     {
         private static readonly DESCryptoServiceProvider CryptoServiceProvider = new();

@@ -1,9 +1,11 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Helpers
 {
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Xml.Serialization;
 
+    [ExcludeFromCodeCoverage(Justification = "Helpers")]
     public static class XmlHelper<T>
     {
         private static readonly XmlSerializer serializer =

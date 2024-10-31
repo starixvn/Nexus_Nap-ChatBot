@@ -1,9 +1,11 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Helpers
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Net;
     using System.Text.RegularExpressions;
 
+    [ExcludeFromCodeCoverage(Justification = "Helpers")]
     public static class TextHelper
     {
         public static string HtmlToPlainText(string html)

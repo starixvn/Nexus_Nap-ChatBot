@@ -1,9 +1,11 @@
 ﻿namespace Fanex.NCB.Shared.FanexDataExtensions.ObjectDb
 {
+    using System.Diagnostics.CodeAnalysis;
     using Fanex.Data;
     using Fanex.Data.SqlServer;
     using Microsoft.Data.SqlClient;
 
+    [ExcludeFromCodeCoverage(Justification = "No need to re-write unit tests")]
     public class SqlObjectDbExtend : ObjectDb
     {
         public SqlObjectDbExtend(string newServerIp, string dbName, string key, int? commandTimeout = null)

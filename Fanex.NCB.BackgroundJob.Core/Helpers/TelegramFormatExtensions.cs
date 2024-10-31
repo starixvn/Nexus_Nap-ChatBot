@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Text.RegularExpressions;
 
+    [ExcludeFromCodeCoverage(Justification = "Helpers")]
     public static class TelegramFormatExtensions
     {
         private const string BoldRegex = "\\<b>$2</b>";

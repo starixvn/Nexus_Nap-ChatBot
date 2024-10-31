@@ -1,8 +1,10 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Helpers
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Runtime.InteropServices;
 
+    [ExcludeFromCodeCoverage(Justification = "Helpers")]
     public static class DateTimeExtension
     {
         public static DateTime ConvertToUTC(this DateTime dateTime)

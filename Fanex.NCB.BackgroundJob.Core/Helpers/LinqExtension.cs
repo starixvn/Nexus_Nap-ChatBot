@@ -2,8 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
+    [ExcludeFromCodeCoverage(Justification = "Helpers")]
     public static class LinqExtension
     {
         public static IEnumerable<TSource> CustomeDistinctBy<TSource, TKey>
