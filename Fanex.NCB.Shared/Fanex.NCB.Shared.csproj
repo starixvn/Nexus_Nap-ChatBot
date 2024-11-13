@@ -7,7 +7,7 @@
         <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Fanex.Data.ProxyClient" Version="1.0.0" />
+        <PackageReference Include="Fanex.Data.ProxyClient" Version="1.0.1" />
         <PackageReference Include="Fanex.Logging.Extensions.AspNetCore" Version="1.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
         <PackageReference Include="Fanex.NAP.Client.AspNetCore" Version="1.0.0.8" />
