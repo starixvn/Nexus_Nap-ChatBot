@@ -1,10 +1,10 @@
 ﻿namespace Fanex.NCB.Main
 {
-    using System;
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Logging;
     using NLog.Web;
+    using System;
 
     public static class Program
     {

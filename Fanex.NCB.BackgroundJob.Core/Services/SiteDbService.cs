@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Services
 {
     using Fanex.Caching;
+    using Fanex.Data.Repository;
     using Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
     using Fanex.NCB.AutoJobs.Core.FanexDataExtensions.Services;
     using Fanex.NCB.AutoJobs.Core.Helpers;
@@ -14,6 +15,7 @@
         private readonly IBaseService baseService;
         private readonly ICacheService cacheService;
         private readonly IDynamicConnectionService dynamicConnectionService;
+        private readonly IDynamicRepository dynamicRepository;
         private readonly ILogService logService;
         private const string ListSiteDbCacheKey = "ListSiteDbCachingKey";
         private readonly int CacheExpiration;
@@ -22,11 +24,13 @@
             ICacheService cacheService,
             IDynamicConnectionService dynamicConnectionService,
             IConfiguration configuration,
+            IDynamicRepository dynamicRepository,
             ILogService logService)
         {
             this.baseService = baseService;
             this.cacheService = cacheService;
             this.dynamicConnectionService = dynamicConnectionService;
+            this.dynamicRepository = dynamicRepository;
             CacheExpiration = configuration.GetValue<int>("SiteDbCachingExpiration");
             this.logService = logService;
         }
@@ -120,7 +124,8 @@
                     SiteDBGroupId = siteDb.SiteDBGroupID
                 };
 
-                results = await dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames, DuplicatedTicketInfo>(criteria);
+                results = await dynamicRepository.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames, DuplicatedTicketInfo>(criteria, siteDb.AGIP);
+                //results = await dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames, DuplicatedTicketInfo>(criteria);
             }
             catch (Exception exception)
             {
