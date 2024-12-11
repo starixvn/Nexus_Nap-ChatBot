@@ -1,14 +1,8 @@
 ﻿namespace Fanex.NCB.BotService.Core.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Net.Http.Json;
-    using System.Threading;
-    using System.Threading.Tasks;
     using Fanex.Logging.Extensions;
     using Fanex.NCB.Shared.Models;
+    using Microsoft.Bot.Builder;
     using Microsoft.Bot.Builder.Integration;
     using Microsoft.Bot.Configuration;
     using Microsoft.Bot.Connector.Authentication;
@@ -16,6 +10,13 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Net.Http.Json;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     public interface ISkypeBotService
     {
@@ -73,7 +74,19 @@
 #pragma warning disable CS0618 // Type or member is obsolete
                     AppCredentials.TrustServiceUrl(conversationReference.ServiceUrl);
 #pragma warning restore CS0618 // Type or member is obsolete
-                    await context.SendActivityAsync(conversationInfo.Message, cancellationToken: token);
+                    var activity = MessageFactory.Text(conversationInfo.Message);
+                    if (conversationInfo.Attachments != null && conversationInfo.Attachments.Count > 0)
+                    {
+                        foreach (var attachment in conversationInfo.Attachments)
+                        {
+                            activity.Attachments.Add(new Attachment
+                            {
+                                ContentType = "image",
+                                ContentUrl = attachment
+                            });
+                        }
+                    }
+                    await context.SendActivityAsync(activity, cancellationToken: token);
                 },
                 new CancellationToken());
         }

@@ -1,4 +1,6 @@
-﻿namespace Fanex.NCB.Shared.Models
+﻿using System.Collections.Generic;
+
+namespace Fanex.NCB.Shared.Models
 {
     public class ConversationInfo
     {
@@ -17,5 +19,9 @@
         public string Message { get; set; }
 
         public bool IsDuplicated { get; set; }
+        public bool RetryImageOnly => FailedAttachments is not null && FailedAttachments.Count > 0;
+        public List<string> FailedAttachments { get; set; }
+
+        public List<string> Attachments { get; set; }
     }
 }

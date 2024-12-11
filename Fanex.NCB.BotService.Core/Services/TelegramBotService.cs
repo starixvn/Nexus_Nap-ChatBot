@@ -68,7 +68,9 @@
                 await bot.BotClient.SetWebhookAsync(webhook);
             }
         }
-        #pragma warning disable S2259 //Is null on at least one execution path
+
+#pragma warning disable S2259 //Is null on at least one execution path
+
         public async Task<User> GetBotInfoAsync(long botId)
         {
             TelegramBotConfigurations bot = botConfigurations.FirstOrDefault(x => x.BotId == botId);
@@ -81,7 +83,63 @@
             var message = await bot?.BotClient.SendTextMessageAsync(new ChatId(chatId), messageContent, parseMode);
             return message;
         }
-        #pragma warning restore S2259
+
+#pragma warning restore S2259
+
+        public async Task<SendMessageResult> ResendImageOnlyAsync(ConversationInfo conversationInfo)
+        {
+            var sendResult = new SendMessageResult();
+            _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
+            _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
+
+            foreach (var attachment in conversationInfo.Attachments)
+            {
+                await HandleSendImageAsync(botId, chatId, attachment, sendResult);
+            }
+            return sendResult;
+        }
+
+        public async Task<SendMessageResult> SendMessageWithImagesAsync(ConversationInfo conversationInfo)
+        {
+            var sendResult = await SendTextMessageAsync(conversationInfo);
+            if (sendResult != null && sendResult.ErrorCode == 0 &&
+                conversationInfo.Attachments != null && conversationInfo.Attachments.Count > 0)
+            {
+                _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
+                _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
+
+                foreach (var attachment in conversationInfo.Attachments)
+                {
+                    await HandleSendImageAsync(botId, chatId, attachment, sendResult);
+                }
+            }
+            return sendResult;
+        }
+
+        private async Task HandleSendImageAsync(long botId, long chatId, string urlImage, SendMessageResult sendMessageResult)
+        {
+            try
+            {
+                await SendImageAsync(botId, chatId, urlImage);
+            }
+            catch (Exception ex)
+            {
+                sendMessageResult.ErrorCode = 1;
+                sendMessageResult.ErrorMessage = ex.Message;
+                sendMessageResult.FailedAttachments.Add(urlImage);
+            }
+        }
+
+        public async Task<Message> SendImageAsync(long botId, long chatId, string urlImage)
+        {
+            TelegramBotConfigurations bot = botConfigurations.First(x => x.BotId == botId);
+
+            var photo = new Telegram.Bot.Types.InputFiles.InputOnlineFile(urlImage);
+            Message message = await bot.BotClient.SendPhotoAsync(
+                chatId: chatId,
+                photo: photo);
+            return message;
+        }
 
         public async Task<SendMessageResult> SendTextMessageAsync(ConversationInfo conversationInfo)
         {

@@ -8,5 +8,6 @@
         public byte ChannelId { get; set; }
         public string ChannelName { get; set; }
         public string SiteNameGroup { get; set; }
+        public List<string> Attachments { get; set; }
     }
 }

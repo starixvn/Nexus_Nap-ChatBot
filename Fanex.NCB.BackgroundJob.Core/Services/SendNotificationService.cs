@@ -1,7 +1,5 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Services
 {
-    using System.Net;
-    using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Core.Criteria.SendNotification;
     using Fanex.NCB.AutoJobs.Core.Enum;
     using Fanex.NCB.AutoJobs.Core.Helpers;
@@ -12,6 +10,8 @@
     using Fanex.NCB.Resources;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
+    using System.Net;
+    using System.Threading.Tasks;
 
     public class SendNotificationService : ISendNotificationService
     {
@@ -81,7 +81,8 @@
                     ConversationBotID = r.BotId,
                     Retry = isRetry,
                     IsSuccess = false,
-                    ErrMsg = GenerateErrorMessage(r.RecipientStatus, r.ErrorMessage)
+                    ErrMsg = GenerateErrorMessage(r.RecipientStatus, r.ErrorMessage),
+                    FailedAttachments = r.FailedAttachments
                 });
 
                 await UpdateSentNotificationStatusAsync(updateNoti);
@@ -142,9 +143,10 @@
             var distinctRecipients = GetDistinctChatGroupConversationId(filterRecipients);
 
             var batches = DivideNotificationBatch(channelId, filterNotifications, distinctRecipients);
-            foreach (var batch in batches)
+
+            foreach (var (notificationList, recipientList) in batches)
             {
-                await SendMultiMessageAsync(channelId, batch.Item1, batch.Item2, recipients);
+                await SendMultiMessageAsync(channelId, notificationList, recipientList, recipients);
             }
         }
 
@@ -233,6 +235,7 @@
                         ConversationBotID = recipient.BotId,
                         Retry = result.ErrorCode != 0 && !result.IsIgnoreRetry,
                         IsSuccess = result.ErrorCode == 0,
+                        FailedAttachments = recipient.FailedAttachments,
                         ErrMsg = result.ErrorCode == 0
                             ? string.Empty : GenerateErrorMessage(RecipientStatuses.BotServiceError, result.ErrorMessage)
                     };

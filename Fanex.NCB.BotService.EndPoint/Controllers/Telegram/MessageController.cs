@@ -1,10 +1,5 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Controllers.Telegram
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
     using Fanex.Logging.Extensions;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
@@ -18,6 +13,11 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class MessageController : Controller

@@ -20,5 +20,7 @@
         public bool Retry { get; set; }
 
         public string ErrMsg { get; set; }
+
+        public List<string> FailedAttachments { get; set; }
     }
 }
