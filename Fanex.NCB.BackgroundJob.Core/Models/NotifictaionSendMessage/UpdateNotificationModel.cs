@@ -21,6 +21,6 @@
 
         public string ErrMsg { get; set; }
 
-        public List<string> FailedAttachments { get; set; }
+        public string FailedImages { get; set; }
     }
 }

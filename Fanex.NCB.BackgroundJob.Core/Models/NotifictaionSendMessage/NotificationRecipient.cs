@@ -19,6 +19,6 @@ namespace Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage
         public int ErrCode { get; set; }
         public string ErrorMessage { get; set; }
         public RecipientStatuses RecipientStatus => (RecipientStatuses)ErrCode;
-        public List<string> FailedAttachments { get; set; }
+        public string FailedImages { get; set; }
     }
 }

@@ -13,6 +13,10 @@
 
         Task<Message> SendTextMessageAsync(long botId, long chatId, string messageContent, ParseMode parseMode = ParseMode.MarkdownV2);
 
+        Task<SendMessageResult> SendMessageWithImagesAsync(ConversationInfo conversationInfo);
+
         Task<SendMessageResult> SendTextMessageAsync(ConversationInfo conversationInfo);
+
+        Task<SendMessageResult> ResendImageOnlyAsync(ConversationInfo conversationInfo);
     }
 }

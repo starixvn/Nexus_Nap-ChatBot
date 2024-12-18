@@ -6,17 +6,15 @@
     public class AddMessageLogCommand : BaseCommand
     {
         public int ReferenceId { get; set; }
-
         public string FromConversationId { get; set; }
-
         public string ToConversationId { get; set; }
-
         public string Content { get; set; }
-
         public bool IsSuccessfull { get; set; }
 
         [SpParam(AllowNull = true)]
         public string ErrorMessage { get; set; }
+
+        public string FileName { get; set; }
 
         public override string GetSettingKey() => "NCB_Conversation_AddMessageLog";
 

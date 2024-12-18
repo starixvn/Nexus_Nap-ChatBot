@@ -9,6 +9,5 @@
         public string ChannelName { get; set; }
         public string SiteNameGroup { get; set; }
         public string FileName { get; set; }
-        public List<string> Attachments { get; set; }
     }
 }

@@ -197,6 +197,11 @@
                 return DuplicatedResult(conversationInfo.NotificationId, conversationInfo.ConversationId);
             }
 
+            if (conversationInfo.RetryImageOnly)
+            {
+                return await botService.ResendImageOnlyAsync(conversationInfo);
+            }
+
             bool isDuplicated = messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, conversationInfo.Message);
 
             if (isDuplicated)
@@ -207,10 +212,8 @@
             string guiid = Guid.NewGuid().ToString();
             try
             {
-                _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
-                _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
                 await messageLogService.InsertMessageLogIntoCache(conversationInfo.ConversationId, conversationInfo.Message, guiid);
-                SendMessageResult result = await botService.SendTextMessageAsync(conversationInfo);
+                SendMessageResult result = await botService.SendMessageWithImagesAsync(conversationInfo);
                 if (result.ErrorCode != 0)
                 {
                     await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
