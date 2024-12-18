@@ -1,11 +1,12 @@
 ﻿namespace Fanex.NCB.BotService.Core.Services
 {
     using Fanex.Logging.Extensions;
+    using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Models;
+    using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Resources;
     using Fanex.NCB.Shared.Extensions;
     using Fanex.NCB.Shared.Models;
-    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
     using System;
@@ -14,6 +15,7 @@
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
+    using System.Threading;
     using System.Threading.Tasks;
     using Telegram.Bot;
     using Telegram.Bot.Types;
@@ -26,7 +28,7 @@
         private readonly SendIndirectMessageSettings sendIndirectMessageSettings;
         private readonly IEnumerable<TelegramBotConfigurations> botConfigurations;
         private readonly Logging.ILogger logger;
-        private readonly ILogger<TelegramBotService> filelogger;
+        private readonly IConversationService conversationService;
 
         public TelegramBotService(
             IHttpClientFactory httpClientFactory,
@@ -35,13 +37,12 @@
             IOptions<ProxySettings> proxySettings,
             List<TelegramBotConfigurations> botConfigurations,
             Logging.ILogger logger,
-            ILogger<TelegramBotService> filelogger)
+            IConversationService conversationService)
         {
             this.appSettings = appSettings;
             this.sendIndirectMessageSettings = sendIndirectMessageSettings.Value;
             this.botConfigurations = botConfigurations;
             this.logger = logger;
-            this.filelogger = filelogger;
 
             if (proxySettings.Value.IsUseProxy)
             {
@@ -57,6 +58,8 @@
             {
                 bot.BotClient = new TelegramBotClient(bot.Token, httpClient);
             }
+
+            this.conversationService = conversationService;
         }
 
         public async Task SetWebhookAsync()
@@ -95,6 +98,16 @@
             foreach (var attachment in conversationInfo.Attachments)
             {
                 await HandleSendImageAsync(botId, chatId, attachment, sendResult);
+                var command = new AddMessageLogCommand
+                {
+                    FromConversationId = conversationInfo.BotConversationId,
+                    ToConversationId = conversationInfo.BotConversationId,
+                    ReferenceId = conversationInfo.NotificationId,
+                    Content = attachment,
+                    IsSuccessfull = sendResult.ErrorCode == 0,
+                    ErrCode = sendResult.ErrorCode
+                };
+                AddImageLogToDatabaseAsync(command);
             }
             return sendResult;
         }
@@ -102,6 +115,7 @@
         public async Task<SendMessageResult> SendMessageWithImagesAsync(ConversationInfo conversationInfo)
         {
             var sendResult = await SendTextMessageAsync(conversationInfo);
+            await AddMessageLogToDatabaseAsync(conversationInfo, sendResult);
             if (sendResult != null && sendResult.ErrorCode == 0 &&
                 conversationInfo.Attachments != null && conversationInfo.Attachments.Count > 0)
             {
@@ -111,9 +125,60 @@
                 foreach (var attachment in conversationInfo.Attachments)
                 {
                     await HandleSendImageAsync(botId, chatId, attachment, sendResult);
+                    var command = new AddMessageLogCommand
+                    {
+                        FromConversationId = conversationInfo.BotConversationId,
+                        ToConversationId = conversationInfo.BotConversationId,
+                        ReferenceId = conversationInfo.NotificationId,
+                        Content = attachment,
+                        IsSuccessfull = sendResult.ErrorCode == 0,
+                        ErrCode = sendResult.ErrorCode
+                    };
+                    AddImageLogToDatabaseAsync(command);
                 }
             }
             return sendResult;
+        }
+
+        private void AddImageLogToDatabaseAsync(AddMessageLogCommand command)
+        {
+            var thread = new Thread(async () => await conversationService.AddMessageLog(command));
+            thread.Start();
+        }
+
+        private async Task AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, SendMessageResult result)
+        {
+            try
+            {
+                var command = new AddMessageLogCommand
+                {
+                    FromConversationId = conversationInfo.BotConversationId,
+                    ToConversationId = conversationInfo.ConversationId,
+                    Content = conversationInfo.Message,
+                    ReferenceId = result.NotificationId,
+                    IsSuccessfull = result.ErrorCode == 0,
+                    ErrorMessage = result.ErrorMessage
+                };
+
+                await conversationService.AddMessageLog(command);
+            }
+            catch (Exception ex)
+            {
+                await WriteLogAsync(ex);
+            }
+        }
+
+        private async Task WriteLogAsync(Exception exception, IDictionary<string, object> param = null)
+        {
+            var logMessage = new LogMessage(exception.Message)
+                        .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
+                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
+            if (param != null)
+            {
+                logMessage.AddSection("Params", param);
+            }
+
+            await logger.ErrorAsync(logMessage.ToString());
         }
 
         private async Task HandleSendImageAsync(long botId, long chatId, string urlImage, SendMessageResult sendMessageResult)
@@ -197,7 +262,6 @@
             {
                 var logMessage = new LogMessage(exception.Message)
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
-                filelogger.LogWarning(logMessage.ToString());
 
                 return new SendMessageResult
                 {

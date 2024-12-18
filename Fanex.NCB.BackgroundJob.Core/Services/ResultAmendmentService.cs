@@ -1,9 +1,5 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Core.Constants;
     using Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentInternalCSD;
     using Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentLicensee;
@@ -12,6 +8,10 @@
     using Fanex.NCB.AutoJobs.Core.Models.ResultAmendment;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
     using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public class ResultAmendmentService : IResultAmendmentService
     {
@@ -63,8 +63,6 @@
 
             var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
 
-            ProcessNotificationAttachments(notifications);
-
             var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);
 
             var command = new CommandResult
@@ -84,17 +82,6 @@
                 {
                     var formattedRemark = $"**Remark**: {message.Remark}";
                     message.Content += formattedRemark;
-                }
-            }
-        }
-
-        protected internal static void ProcessNotificationAttachments(IEnumerable<NotificationSendMessage> notifications)
-        {
-            foreach (var notification in notifications)
-            {
-                if (!string.IsNullOrEmpty(notification.FileName))
-                {
-                    notification.Attachments = notification.FileName.Split(",").ToList();
                 }
             }
         }

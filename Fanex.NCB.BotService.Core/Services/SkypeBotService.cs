@@ -111,6 +111,18 @@
 #pragma warning disable CS0618 // Type or member is obsolete
                         AppCredentials.TrustServiceUrl(conversationReference.ServiceUrl);
 #pragma warning restore CS0618 // Type or member is obsolete
+                        var activity = MessageFactory.Text(conversationInfo.Message);
+                        if (conversationInfo.Attachments != null && conversationInfo.Attachments.Count > 0)
+                        {
+                            foreach (var attachment in conversationInfo.Attachments)
+                            {
+                                activity.Attachments.Add(new Attachment
+                                {
+                                    ContentType = "image",
+                                    ContentUrl = attachment
+                                });
+                            }
+                        }
                         await context.SendActivityAsync(conversationInfo.Message, cancellationToken: token);
                     },
                     new CancellationToken());

@@ -249,7 +249,8 @@
                     ToConversationId = conversationInfo.ConversationId,
                     Content = conversationInfo.Message,
                     ReferenceId = result.NotificationId,
-                    FileName = string.Join(",", conversationInfo.Attachments),
+                    FileName = conversationInfo.Attachments != null && conversationInfo.Attachments.Count > 0 ?
+                                        string.Join(",", conversationInfo.Attachments) : string.Empty,
                     IsSuccessfull = result.ErrorCode == 0,
                     ErrorMessage = result.ErrorMessage
                 };

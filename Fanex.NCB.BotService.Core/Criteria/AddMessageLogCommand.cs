@@ -14,7 +14,8 @@
         [SpParam(AllowNull = true)]
         public string ErrorMessage { get; set; }
 
-        public string FileName { get; set; }
+        [SpParam(AllowNull = true)]
+        public string FileName { get; set; } = string.Empty;
 
         public override string GetSettingKey() => "NCB_Conversation_AddMessageLog";
 
