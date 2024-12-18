@@ -67,6 +67,7 @@ export class AppContainer extends React.Component {
                 productId: '',
                 platforms: '',
                 integrationMethodIds: '',
+                fileName: null,
                 recipients: [],
                 title: '',
                 content: '',
@@ -130,7 +131,8 @@ export class AppContainer extends React.Component {
                     sendMode: '1',
                     productId: this.props.products.find(x => x.id === resendNotification.productId) ? resendNotification.productId : '',
                     platforms: platforms.data,
-                    integrationMethodIds: integrationMethods.data
+                    integrationMethodIds: integrationMethods.data,
+                    fileName: resendNotification.fileName
                 },
                 platformOptions: platforms.options,
                 integrationMethodOptions: integrationMethods.options
@@ -192,7 +194,8 @@ export class AppContainer extends React.Component {
             sendDate: DateTime.fromJSDate(values.sendDate).toFormat(DateTimeFormat),
             sendImmediately: values.sendMode === '1',
             platforms: values.platforms,
-            integrationMethodIds: values.integrationMethodIds
+            integrationMethodIds: values.integrationMethodIds,
+            fileName: values.fileName
         });
 
         this.props.createNewNotification(data).then(() => {

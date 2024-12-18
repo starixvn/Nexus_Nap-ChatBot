@@ -29,6 +29,8 @@
 
         public string InIntegrationMethodIds { get; set; }
 
+        public string InFileName { get; set; }
+
         public override string GetSettingKey() => "NCB_NewNotification_Ins";
 
         public override bool IsValid()

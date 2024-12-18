@@ -17,6 +17,8 @@
 
         public string Content { get; set; }
 
+        public string FileName { get; set; }
+
         public IEnumerable<Recipient> Recipients { get; set; }
 
         public IEnumerable<Platform> Platforms { get; set; }
