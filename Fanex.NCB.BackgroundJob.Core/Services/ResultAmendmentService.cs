@@ -50,22 +50,52 @@
 
         protected internal async Task ImportResultAmendmentInternalCSDAsync(IEnumerable<MessageAmendmentCsd> messages, DateTime? newLastModifiedTime)
         {
-            if (messages.Any())
-            {
-                var criteria = new ImportResultAmendmentCSDCommand
-                {
-                    LastModifiedTime = newLastModifiedTime,
-                    Message = JsonConvert.SerializeObject(messages)
-                };
-                var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
-                var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);
-                var command = new CommandResult
-                {
-                    Code = criteria.ErrCode,
-                    Message = criteria.ErrMsg
-                };
+            if (!messages.Any())
+                return;
 
-                await commonService.OnAfterImportDataAsync(command, notificationMessages);
+            AppendRemarksToMessages(messages);
+
+            var criteria = new ImportResultAmendmentCSDCommand
+            {
+                LastModifiedTime = newLastModifiedTime,
+                Message = JsonConvert.SerializeObject(messages)
+            };
+
+            var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
+
+            ProcessNotificationAttachments(notifications);
+
+            var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);
+
+            var command = new CommandResult
+            {
+                Code = criteria.ErrCode,
+                Message = criteria.ErrMsg
+            };
+
+            await commonService.OnAfterImportDataAsync(command, notificationMessages);
+        }
+
+        protected internal static void AppendRemarksToMessages(IEnumerable<MessageAmendmentCsd> messages)
+        {
+            foreach (var message in messages)
+            {
+                if (!string.IsNullOrWhiteSpace(message.Remark))
+                {
+                    var formattedRemark = $"**Remark**: {message.Remark}";
+                    message.Content += formattedRemark;
+                }
+            }
+        }
+
+        protected internal static void ProcessNotificationAttachments(IEnumerable<NotificationSendMessage> notifications)
+        {
+            foreach (var notification in notifications)
+            {
+                if (!string.IsNullOrEmpty(notification.FileName))
+                {
+                    notification.Attachments = notification.FileName.Split(",").ToList();
+                }
             }
         }
 
