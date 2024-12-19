@@ -95,7 +95,7 @@
             _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
             _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
 
-            foreach (var attachment in conversationInfo.Attachments)
+            foreach (var attachment in conversationInfo.FailedAttachments)
             {
                 await HandleSendImageAsync(botId, chatId, attachment, sendResult);
                 var command = new AddMessageLogCommand
@@ -114,6 +114,8 @@
 
         public async Task<SendMessageResult> SendMessageWithImagesAsync(ConversationInfo conversationInfo)
         {
+            await logger.InfoAsync(JsonConvert.SerializeObject(conversationInfo));
+
             var sendResult = await SendTextMessageAsync(conversationInfo);
             await AddMessageLogToDatabaseAsync(conversationInfo, sendResult);
             if (sendResult != null && sendResult.ErrorCode == 0 &&
