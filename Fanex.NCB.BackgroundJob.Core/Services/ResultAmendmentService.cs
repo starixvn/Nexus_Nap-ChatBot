@@ -51,7 +51,9 @@
         protected internal async Task ImportResultAmendmentInternalCSDAsync(IEnumerable<MessageAmendmentCsd> messages, DateTime? newLastModifiedTime)
         {
             if (!messages.Any())
+            {
                 return;
+            }
 
             AppendRemarksToMessages(messages);
 
