@@ -8,6 +8,7 @@
     using System.Net.Http.Json;
     using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Core.Enum;
+    using Fanex.NCB.AutoJobs.Core.Helpers;
     using Fanex.NCB.AutoJobs.Core.Models.Configurations;
     using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
@@ -130,6 +131,7 @@
                         NotificationId = noti.NotificationId,
                         Message = noti.Content,
                         ChannelId = noti.ChannelId,
+                        Attachments = TextHelper.SplitStringToList(noti.FileName),
                         Recipients = recipients.Where(r => r.ChannelId == noti.ChannelId && (string.IsNullOrEmpty(noti.SiteNameGroup) || r.SiteNameGroup == noti.SiteNameGroup)).Select(r =>
                             new ConversationInfo
                             {
