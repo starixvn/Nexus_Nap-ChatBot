@@ -114,8 +114,6 @@
 
         public async Task<SendMessageResult> SendMessageWithImagesAsync(ConversationInfo conversationInfo)
         {
-            await logger.InfoAsync(JsonConvert.SerializeObject(conversationInfo));
-
             var sendResult = await SendTextMessageAsync(conversationInfo);
             await AddMessageLogToDatabaseAsync(conversationInfo, sendResult);
             if (sendResult != null && sendResult.ErrorCode == 0 &&

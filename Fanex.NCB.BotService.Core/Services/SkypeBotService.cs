@@ -12,6 +12,7 @@
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
@@ -94,6 +95,7 @@
         public async Task<SendMessageResult> SendMessageWithRetryAsync(ConversationInfo conversationInfo)
         {
             filelogger.LogWarning("SendMessageWithRetryAsync: start");
+            filelogger.LogWarning($"SendMessageWithRetryAsync: {JsonConvert.SerializeObject(conversationInfo)}");
             try
             {
                 if (sendIndirectMessageSettings.IsOnlySendIndirect)
@@ -102,8 +104,6 @@
                 }
                 var conversationReference = GetConversationReference(conversationInfo);
                 var appId = GetAppId(conversationInfo.BotName);
-
-                filelogger.LogWarning("ContinueConversationAsync: start");
 
                 await adapter.ContinueConversationAsync(appId, conversationReference,
                     async (context, token) =>
@@ -114,19 +114,20 @@
                         var activity = MessageFactory.Text(conversationInfo.Message);
                         if (conversationInfo.Attachments != null && conversationInfo.Attachments.Count > 0)
                         {
-                            foreach (var attachment in conversationInfo.Attachments)
+                            var attachments = conversationInfo.Attachments.Select(img =>
                             {
-                                activity.Attachments.Add(new Attachment
+                                return new Attachment
                                 {
                                     ContentType = "image",
-                                    ContentUrl = attachment
-                                });
-                            }
+                                    ContentUrl = img
+                                };
+                            }).ToList();
+                            activity.Attachments = attachments;
                         }
-                        await context.SendActivityAsync(conversationInfo.Message, cancellationToken: token);
+
+                        await context.SendActivityAsync(activity, cancellationToken: token);
                     },
                     new CancellationToken());
-                filelogger.LogWarning("ContinueConversationAsync: end");
             }
             catch (Exception exception)
             {
