@@ -82,7 +82,7 @@
             {
                 if (!string.IsNullOrWhiteSpace(message.Remark))
                 {
-                    var formattedRemark = $"**Remark**: {message.Remark}";
+                    var formattedRemark = $"\n**Remark**: {message.Remark}";
                     message.Content += formattedRemark;
                 }
             }
