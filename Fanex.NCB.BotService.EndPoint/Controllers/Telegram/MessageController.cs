@@ -194,11 +194,17 @@
 
         protected internal virtual async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo)
         {
-            filelogger.LogInformation(JsonConvert.SerializeObject(conversationInfo));
+            filelogger.LogInformation($"Failed image if existed: {JsonConvert.SerializeObject(conversationInfo.FailedImages)}");
 
             if (conversationInfo.IsDuplicated)
             {
                 return DuplicatedResult(conversationInfo.NotificationId, conversationInfo.ConversationId);
+            }
+
+            if (conversationInfo.FailedImages is not null && conversationInfo.FailedImages.Count > 0)
+            {
+                filelogger.LogInformation($"Retry images {JsonConvert.SerializeObject(conversationInfo)}");
+                return await botService.ResendImageOnlyAsync(conversationInfo);
             }
 
             bool isDuplicated = messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, conversationInfo.Message);
@@ -207,11 +213,7 @@
             {
                 return DuplicatedResult(conversationInfo.NotificationId, conversationInfo.ConversationId);
             }
-            if (conversationInfo.FailedImages is not null && conversationInfo.FailedImages.Count > 0)
-            {
-                filelogger.LogInformation($"Retry images {JsonConvert.SerializeObject(conversationInfo)}");
-                return await botService.ResendImageOnlyAsync(conversationInfo);
-            }
+
             string guiid = Guid.NewGuid().ToString();
             try
             {
