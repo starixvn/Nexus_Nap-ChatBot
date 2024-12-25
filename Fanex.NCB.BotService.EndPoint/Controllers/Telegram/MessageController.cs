@@ -13,6 +13,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -199,6 +200,7 @@
 
             if (conversationInfo.RetryImageOnly)
             {
+                await logger.InfoAsync($"Retry: {JsonConvert.SerializeObject(conversationInfo)}");
                 return await botService.ResendImageOnlyAsync(conversationInfo);
             }
 

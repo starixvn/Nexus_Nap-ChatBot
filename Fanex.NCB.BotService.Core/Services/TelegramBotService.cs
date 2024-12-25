@@ -15,7 +15,6 @@
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
-    using System.Threading;
     using System.Threading.Tasks;
     using Telegram.Bot;
     using Telegram.Bot.Types;
@@ -101,13 +100,13 @@
                 var command = new AddMessageLogCommand
                 {
                     FromConversationId = conversationInfo.BotConversationId,
-                    ToConversationId = conversationInfo.BotConversationId,
+                    ToConversationId = conversationInfo.ConversationId,
                     ReferenceId = conversationInfo.NotificationId,
                     Content = attachment,
                     IsSuccessfull = sendResult.ErrorCode == 0,
                     ErrCode = sendResult.ErrorCode
                 };
-                AddImageLogToDatabaseAsync(command);
+                await AddImageLogToDatabaseAsync(command);
             }
             return sendResult;
         }
@@ -128,22 +127,21 @@
                     var command = new AddMessageLogCommand
                     {
                         FromConversationId = conversationInfo.BotConversationId,
-                        ToConversationId = conversationInfo.BotConversationId,
+                        ToConversationId = conversationInfo.ConversationId,
                         ReferenceId = conversationInfo.NotificationId,
                         Content = attachment,
                         IsSuccessfull = sendResult.ErrorCode == 0,
                         ErrCode = sendResult.ErrorCode
                     };
-                    AddImageLogToDatabaseAsync(command);
+                    await AddImageLogToDatabaseAsync(command);
                 }
             }
             return sendResult;
         }
 
-        private void AddImageLogToDatabaseAsync(AddMessageLogCommand command)
+        private async Task AddImageLogToDatabaseAsync(AddMessageLogCommand command)
         {
-            var thread = new Thread(async () => await conversationService.AddMessageLog(command));
-            thread.Start();
+            await conversationService.AddMessageLog(command);
         }
 
         private async Task AddMessageLogToDatabaseAsync(ConversationInfo conversationInfo, SendMessageResult result)
@@ -189,6 +187,7 @@
             }
             catch (Exception ex)
             {
+                await WriteLogAsync(ex, new Dictionary<string, object> { { chatId.ToString(), urlImage } });
                 sendMessageResult.ErrorCode = 1;
                 sendMessageResult.ErrorMessage = ex.Message;
                 sendMessageResult.FailedAttachments.Add(urlImage);
@@ -197,7 +196,7 @@
 
         public async Task<Message> SendImageAsync(long botId, long chatId, string urlImage)
         {
-            TelegramBotConfigurations bot = botConfigurations.First(x => x.BotId == botId);
+            TelegramBotConfigurations bot = botConfigurations.FirstOrDefault(x => x.BotId == botId);
 
             var photo = new Telegram.Bot.Types.InputFiles.InputOnlineFile(urlImage);
             Message message = await bot.BotClient.SendPhotoAsync(
