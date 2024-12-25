@@ -77,6 +77,7 @@
         [Route("api/telegram/sendMultiMessage")]
         public async Task<ObjectResult> SendMultiMessage([FromBody] IList<NotificationMessage> notificationMessages)
         {
+            filelogger.LogInformation(JsonConvert.SerializeObject(notificationMessages));
             const short Milliseconds = 1000;
             var results = new List<SendMessageResult>();
             if (notificationMessages != null && notificationMessages.Any())
@@ -206,8 +207,9 @@
             {
                 return DuplicatedResult(conversationInfo.NotificationId, conversationInfo.ConversationId);
             }
-            if (conversationInfo.RetryImageOnly)
+            if (conversationInfo.FailedImages is not null && conversationInfo.FailedImages.Count > 0)
             {
+                filelogger.LogInformation($"Retry images {JsonConvert.SerializeObject(conversationInfo)}");
                 return await botService.ResendImageOnlyAsync(conversationInfo);
             }
             string guiid = Guid.NewGuid().ToString();

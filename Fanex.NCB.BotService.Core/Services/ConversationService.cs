@@ -62,7 +62,7 @@
                     ConversationId = r.ConversationId,
                     ServiceUrl = r.ServiceUrl,
                     Attachments = notification.Attachments,
-                    FailedAttachments = r.FailedAttachments
+                    FailedImages = r.FailedImages
                 }));
             }
 

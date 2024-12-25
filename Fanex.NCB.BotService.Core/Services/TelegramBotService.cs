@@ -94,7 +94,7 @@
             _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
             _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
 
-            foreach (var attachment in conversationInfo.FailedAttachments)
+            foreach (var attachment in conversationInfo.FailedImages)
             {
                 await HandleSendImageAsync(botId, chatId, attachment, sendResult);
                 var command = new AddMessageLogCommand
