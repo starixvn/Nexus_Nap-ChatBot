@@ -6,6 +6,7 @@
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Core.Enum;
     using Fanex.NCB.AutoJobs.Core.Helpers;
@@ -48,6 +49,11 @@
                 return messageResponse;
             }
 
+            foreach (var message in messages)
+            {
+                message.Message = RemoveUnsupportedTags(message.Message);
+            }
+
             BotServiceEndPointConfigs apiConfigs = botSettings.ApiConfigs.First(x => x.ChannelId == channelId);
             var token = await GetTokenAsync();
 
@@ -66,6 +72,15 @@
             }
 
             return messageResponse;
+        }
+
+        private static string RemoveUnsupportedTags(string content)
+        {
+            string[] allowedTagsHtml = { "b", "strong", "i", "em", "ins", "u", "s", "strike", "del", "a", "tg-emoji", "code", "pre", "br" };
+            var regex = new Regex(@"(<br />|<hr />)");
+            var replaceNewLine = regex.Replace(content, string.Empty);
+            string messageContentReplace = Regex.Replace(replaceNewLine, "<(?!/?(" + string.Join("|", allowedTagsHtml) + ")(>|\\s.*?>)).*?>", "");
+            return messageContentReplace;
         }
 
         public async Task MonitorChatbotAsync()
