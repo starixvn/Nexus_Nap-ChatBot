@@ -17,7 +17,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading;
     using System.Threading.Tasks;
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -220,9 +219,6 @@
                 {
                     await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
                 }
-
-                var thread = new Thread(async () => await AddMessageLogToDatabaseAsync(conversationInfo, result));
-                thread.Start();
 
                 return result;
             }

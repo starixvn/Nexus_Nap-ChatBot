@@ -91,7 +91,11 @@
 
         public async Task<SendMessageResult> ResendImageOnlyAsync(ConversationInfo conversationInfo)
         {
-            var sendResult = new SendMessageResult();
+            var sendResult = new SendMessageResult
+            {
+                NotificationId = conversationInfo.NotificationId,
+                ConversationId = conversationInfo.ConversationId
+            };
             _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
             _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
 
@@ -182,6 +186,8 @@
 
         private async Task HandleSendImageAsync(long botId, long chatId, string urlImage, SendMessageResult sendMessageResult)
         {
+            sendMessageResult.SentTime = DateTimeOffset.UtcNow.DateTime;
+
             try
             {
                 await SendImageAsync(botId, chatId, urlImage);

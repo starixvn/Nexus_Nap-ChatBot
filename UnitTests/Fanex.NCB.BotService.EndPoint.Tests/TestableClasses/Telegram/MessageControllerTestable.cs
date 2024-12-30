@@ -1,24 +1,23 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Tests.TestableClasses.Telegram
 {
-    using System;
-    using System.Threading.Tasks;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.BotService.EndPoint.Controllers.Telegram;
     using Fanex.NCB.Shared.Models;
-    using Microsoft.Extensions.Logging;
+    using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
+    using System;
+    using System.Threading.Tasks;
 
     public class MessageControllerTestable : MessageController
     {
         public MessageControllerTestable(
             IOptions<AppSettings> appSettings,
-            ILogger<MessageController> filelogger,
-            Logging.ILogger logger,
+            ICommonLogService commonLogService,
             IConversationService conversationService,
             ITelegramBotService botService,
-            IMessageLogService messageLogService) : base(appSettings, filelogger, logger, conversationService, botService, messageLogService)
+            IMessageLogService messageLogService) : base(appSettings, commonLogService, conversationService, botService, messageLogService)
         {
         }
 
