@@ -26,9 +26,19 @@
             nlog.Error(message);
         }
 
+        public void SentryError(string errMsg, Exception exception = null)
+        {
+            logger.Error(errMsg, exception);
+        }
+
         public async Task SentryErrorAsync(string errMsg, Exception exception = null)
         {
             await logger.ErrorAsync(errMsg, exception);
+        }
+
+        public void SentryInfo(string info)
+        {
+            logger.Info(info);
         }
 
         public async Task SentryInfoAsync(string info)

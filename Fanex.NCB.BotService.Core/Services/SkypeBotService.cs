@@ -2,12 +2,12 @@
 {
     using Fanex.Logging.Extensions;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Builder.Integration;
     using Microsoft.Bot.Configuration;
     using Microsoft.Bot.Connector.Authentication;
     using Microsoft.Bot.Schema;
-    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
     using System;
@@ -30,8 +30,7 @@
     {
         private readonly HttpClient httpClient;
         private readonly SendIndirectMessageSettings sendIndirectMessageSettings;
-        private readonly ILogger<SkypeBotService> filelogger;
-        private readonly Logging.ILogger logger;
+        private readonly ICommonLogService logService;
         private readonly IAdapterIntegration adapter;
 #pragma warning disable CS0618 // Type or member is obsolete
         private readonly BotConfiguration botConfig;
@@ -41,16 +40,14 @@
             IHttpClientFactory httpClientFactory,
             IOptions<SendIndirectMessageSettings> sendIndirectMessageSettings,
             IOptions<ProxySettings> proxySettings,
-            ILogger<SkypeBotService> filelogger,
-            Logging.ILogger logger,
+            ICommonLogService logService,
             IAdapterIntegration adapter,
 #pragma warning disable CS0618 // Type or member is obsolete
             BotConfiguration botConfig)
 #pragma warning restore CS0618 // Type or member is obsolete
         {
             this.sendIndirectMessageSettings = sendIndirectMessageSettings.Value;
-            this.filelogger = filelogger;
-            this.logger = logger;
+            this.logService = logService;
             this.adapter = adapter;
             this.botConfig = botConfig;
 
@@ -94,8 +91,7 @@
 
         public async Task<SendMessageResult> SendMessageWithRetryAsync(ConversationInfo conversationInfo)
         {
-            filelogger.LogWarning("SendMessageWithRetryAsync: start");
-            filelogger.LogWarning($"SendMessageWithRetryAsync: {JsonConvert.SerializeObject(conversationInfo)}");
+            logService.LogFileMessage($"SendMessageWithRetryAsync start: {JsonConvert.SerializeObject(conversationInfo)}");
             try
             {
                 if (sendIndirectMessageSettings.IsOnlySendIndirect)
@@ -149,7 +145,7 @@
                 };
             }
 
-            filelogger.LogWarning("SendMessageWithRetryAsync: end");
+            logService.LogFileMessage("SendMessageWithRetryAsync: end");
 
             return new SendMessageResult
             {
@@ -173,7 +169,7 @@
             else
             {
                 appId = Guid.NewGuid().ToString();
-                logger.Error($"BotName : {botName} is not supported by system.");
+                logService.SentryError($"BotName : {botName} is not supported by system.");
             }
 
             return appId;
@@ -214,7 +210,7 @@
             {
                 var logMessage = new LogMessage(exception.Message)
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
-                filelogger.LogWarning(logMessage.ToString());
+                logService.LogFileMessage(logMessage.ToString());
 
                 return new SendMessageResult
                 {
@@ -250,14 +246,15 @@
                 { "notificationId", conversationInfo.NotificationId },
                 { "botId", conversationInfo.BotConversationId },
                 { "chatId", conversationInfo.ConversationId },
-                { "messageContent", conversationInfo.Message }
+                { "messageContent", conversationInfo.Message },
+                { "attachments", conversationInfo.Attachments }
             };
             var logMessage = new LogMessage(exception.Message)
                 .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
                 .AddSection("Params", param);
 
-            await logger.ErrorAsync(logMessage.ToString());
+            await logService.SentryErrorAsync(logMessage.ToString());
         }
     }
 }

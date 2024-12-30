@@ -7,10 +7,10 @@
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using System;
     using System.Collections.Generic;
@@ -24,21 +24,18 @@
         private readonly AppSettings appSettings;
         private readonly IConversationService conversationService;
         private readonly IMessageLogService messageLogService;
-        private readonly ILogger<NotifyController> filelogger;
-        private readonly Logging.ILogger logger;
+        private readonly ICommonLogService commonLogService;
         private readonly ISkypeBotService skypeBotService;
 
         public NotifyController(
             IOptions<AppSettings> appSettings,
-            ILogger<NotifyController> filelogger,
-            Logging.ILogger logger,
+            ICommonLogService commonLogService,
             IMessageLogService messageLogService,
             IConversationService conversationService,
             ISkypeBotService skypeBotService)
         {
             this.appSettings = appSettings.Value;
-            this.filelogger = filelogger;
-            this.logger = logger;
+            this.commonLogService = commonLogService;
             this.conversationService = conversationService;
             this.messageLogService = messageLogService;
             this.skypeBotService = skypeBotService;
@@ -46,10 +43,10 @@
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("api/Test")]
+        [Route("api/test-sentry")]
         public async Task<ObjectResult> Test()
         {
-            await logger.ErrorAsync("test sentry");
+            await commonLogService.SentryErrorAsync("test sentry");
             return Ok("ok");
         }
 
@@ -119,7 +116,7 @@
             };
             var logMessage = new LogMessage("Send indirect message")
                 .AddSection("Params", param);
-            filelogger.LogWarning(logMessage.ToString());
+            commonLogService.LogFileMessage(logMessage.ToString());
 
             var result = new SendMessageResult();
             if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
@@ -141,7 +138,7 @@
                     logMessage = new LogMessage(exception.Message)
                         .AddSection("Params", param)
                         .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
-                    filelogger.LogWarning(logMessage.ToString());
+                    commonLogService.LogFileMessage(logMessage.ToString());
                 }
             }
 
@@ -269,7 +266,7 @@
                 .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
                 .ToString();
-            await logger.ErrorAsync(logMessage);
+            await commonLogService.SentryErrorAsync(logMessage, exception);
         }
     }
 }

@@ -7,6 +7,7 @@
     using Fanex.NCB.Resources;
     using Fanex.NCB.Shared.Extensions;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
     using System;
@@ -26,7 +27,7 @@
         private readonly AppSettings appSettings;
         private readonly SendIndirectMessageSettings sendIndirectMessageSettings;
         private readonly IEnumerable<TelegramBotConfigurations> botConfigurations;
-        private readonly Logging.ILogger logger;
+        private readonly ICommonLogService logService;
         private readonly IConversationService conversationService;
 
         public TelegramBotService(
@@ -35,13 +36,13 @@
             IOptions<SendIndirectMessageSettings> sendIndirectMessageSettings,
             IOptions<ProxySettings> proxySettings,
             List<TelegramBotConfigurations> botConfigurations,
-            Logging.ILogger logger,
+            ICommonLogService logService,
             IConversationService conversationService)
         {
             this.appSettings = appSettings;
             this.sendIndirectMessageSettings = sendIndirectMessageSettings.Value;
             this.botConfigurations = botConfigurations;
-            this.logger = logger;
+            this.logService = logService;
 
             if (proxySettings.Value.IsUseProxy)
             {
@@ -176,7 +177,7 @@
                 logMessage.AddSection("Params", param);
             }
 
-            await logger.ErrorAsync(logMessage.ToString());
+            await logService.SentryErrorAsync(logMessage.ToString());
         }
 
         private async Task HandleSendImageAsync(long botId, long chatId, string urlImage, SendMessageResult sendMessageResult)
@@ -330,7 +331,7 @@
                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
                 .AddSection("Params", param);
 
-            await logger.ErrorAsync(logMessage.ToString());
+            await logService.SentryErrorAsync(logMessage.ToString());
         }
     }
 }

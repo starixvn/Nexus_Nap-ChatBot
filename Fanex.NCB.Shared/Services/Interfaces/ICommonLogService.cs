@@ -5,6 +5,10 @@
 
     public interface ICommonLogService
     {
+        void SentryError(string errMsg, Exception exception = null);
+
+        void SentryInfo(string info);
+
         Task SentryErrorAsync(string errMsg, Exception exception = null);
 
         Task SentryInfoAsync(string info);

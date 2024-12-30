@@ -8,10 +8,10 @@
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Extensions;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
     using System;
@@ -24,23 +24,20 @@
     public class MessageController : Controller
     {
         private readonly AppSettings appSettings;
-        private readonly ILogger<MessageController> filelogger;
-        private readonly Logging.ILogger logger;
+        private readonly ICommonLogService logService;
         private readonly IConversationService conversationService;
         private readonly ITelegramBotService botService;
         private readonly IMessageLogService messageLogService;
 
         public MessageController(
             IOptions<AppSettings> appSettings,
-            ILogger<MessageController> filelogger,
-            Logging.ILogger logger,
+            ICommonLogService logService,
             IConversationService conversationService,
             ITelegramBotService botService,
             IMessageLogService messageLogService)
         {
             this.appSettings = appSettings.Value;
-            this.filelogger = filelogger;
-            this.logger = logger;
+            this.logService = logService;
             this.conversationService = conversationService;
             this.botService = botService;
             this.messageLogService = messageLogService;
@@ -77,7 +74,7 @@
         [Route("api/telegram/sendMultiMessage")]
         public async Task<ObjectResult> SendMultiMessage([FromBody] IList<NotificationMessage> notificationMessages)
         {
-            filelogger.LogInformation(JsonConvert.SerializeObject(notificationMessages));
+            logService.LogFileMessage(JsonConvert.SerializeObject(notificationMessages));
             const short Milliseconds = 1000;
             var results = new List<SendMessageResult>();
             if (notificationMessages != null && notificationMessages.Any())
@@ -113,7 +110,7 @@
             };
             var logMessage = new LogMessage("Send indirect message")
                 .AddSection("Params", param);
-            filelogger.LogWarning(logMessage.ToString());
+            logService.LogFileMessage(logMessage.ToString());
 
             var result = new SendMessageResult();
             if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Telegram))
@@ -137,7 +134,7 @@
                     logMessage = new LogMessage(exception.Message)
                         .AddSection("Params", param)
                         .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
-                    filelogger.LogWarning(logMessage.ToString());
+                    logService.LogFileMessage(logMessage.ToString());
                 }
             }
 
@@ -194,7 +191,7 @@
 
         protected internal virtual async Task<SendMessageResult> SendMessageAsync(ConversationInfo conversationInfo)
         {
-            filelogger.LogInformation($"Failed image if existed: {JsonConvert.SerializeObject(conversationInfo.FailedImages)}");
+            logService.LogFileMessage($"Failed image if existed: {JsonConvert.SerializeObject(conversationInfo.FailedImages)}");
 
             if (conversationInfo.IsDuplicated)
             {
@@ -203,7 +200,7 @@
 
             if (conversationInfo.FailedImages is not null && conversationInfo.FailedImages.Count > 0)
             {
-                filelogger.LogInformation($"Retry images {JsonConvert.SerializeObject(conversationInfo)}");
+                logService.LogFileMessage($"Retry images {JsonConvert.SerializeObject(conversationInfo)}");
                 return await botService.ResendImageOnlyAsync(conversationInfo);
             }
 
@@ -287,7 +284,7 @@
                 logMessage.AddSection("Params", param);
             }
 
-            await logger.ErrorAsync(logMessage.ToString());
+            await logService.SentryErrorAsync(logMessage.ToString(), exception);
         }
     }
 }

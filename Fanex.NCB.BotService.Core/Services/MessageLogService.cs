@@ -1,29 +1,29 @@
 ﻿namespace Fanex.NCB.BotService.Core.Services
 {
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Fanex.Caching;
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
-    using ILogger = Logging.ILogger;
+    using Fanex.NCB.Shared.Services.Interfaces;
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public class MessageLogService : IMessageLogService
     {
         private readonly CheckDuplicatedMessageLogSetting settings;
         private readonly ICacheService cacheService;
         private readonly IRedisCacheExtendService redisCacheExtend;
-        private readonly ILogger logger;
+        private readonly ICommonLogService commonLogService;
 
         public MessageLogService(CheckDuplicatedMessageLogSetting settings,
             ICacheService cacheService,
             IRedisCacheExtendService redisCacheExtend,
-            ILogger logger)
+            ICommonLogService commonLogService)
         {
             this.settings = settings;
             this.cacheService = cacheService;
             this.redisCacheExtend = redisCacheExtend;
-            this.logger = logger;
+            this.commonLogService = commonLogService;
         }
 
         public bool IsInvalidSendMessageToBotService(string conversationId, string message)
@@ -55,7 +55,7 @@
             }
             catch (Exception ex)
             {
-                logger.Error(ex.Message);
+                commonLogService.LogFileError(ex);
             }
 
             return isInvalid;
@@ -77,7 +77,7 @@
                 }
                 catch (Exception ex)
                 {
-                    await logger.ErrorAsync(ex.Message);
+                    await commonLogService.SentryErrorAsync(ex.Message, ex);
                 }
             }
         }
@@ -91,7 +91,7 @@
             }
             catch (Exception ex)
             {
-                logger.Error(ex.Message);
+                await commonLogService.SentryErrorAsync(ex.Message, ex);
             }
         }
 
