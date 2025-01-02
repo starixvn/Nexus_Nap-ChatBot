@@ -1,9 +1,13 @@
 ﻿namespace Fanex.NCB.Shared.Extensions
 {
     using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Net;
     using System.Text.RegularExpressions;
 
+    [ExcludeFromCodeCoverage(Justification = "Helpers")]
     public static class TextHelper
     {
         public static string HtmlToPlainText(string html)
@@ -22,6 +26,15 @@
             text = stripFormattingRegex.Replace(text, string.Empty);
 
             return text;
+        }
+
+        public static List<string> SplitStringToList(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return new List<string>();
+            }
+            return text.Split(",").ToList();
         }
     }
 }

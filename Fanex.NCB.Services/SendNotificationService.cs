@@ -11,6 +11,7 @@
     using Fanex.NCB.Criteria.SendNotification;
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Extensions;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
@@ -271,7 +272,8 @@
                                 {
                                     NotificationId = n.NotificationId,
                                     ChannelId = n.ChannelId,
-                                    Message = n.Content
+                                    Message = n.Content,
+                                    Attachments = n.Attachments
                                 }));
 
                 foreach (var item in newBatches)
@@ -283,7 +285,8 @@
                             ServiceUrl = r.ServiceUrl,
                             ChannelId = r.ChannelName,
                             ConversationId = r.ChatGroupConversationId,
-                            BotName = r.BotName
+                            BotName = r.BotName,
+                            FailedImages = TextHelper.SplitStringToList(r.FailedImages)
                         }).CustomeDistinctBy(r => r.ConversationId));
                 }
 
