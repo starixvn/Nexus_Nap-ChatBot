@@ -65,8 +65,6 @@
             };
             var (notifications, recipients) = await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria);
 
-            await logService.WriteMessageSentryErrorAsync(JsonConvert.SerializeObject(notifications));
-
             await UpdateFailedRecipientStatusAsync(recipients.Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)
                     && !r.RecipientStatus.Equals(RecipientStatuses.BotServiceError)).ToList());
 
