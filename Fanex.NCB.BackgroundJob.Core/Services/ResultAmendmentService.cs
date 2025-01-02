@@ -55,8 +55,6 @@
                 return;
             }
 
-            AppendRemarksToMessages(messages);
-
             var criteria = new ImportResultAmendmentCSDCommand
             {
                 LastModifiedTime = newLastModifiedTime,
@@ -74,18 +72,6 @@
             };
 
             await commonService.OnAfterImportDataAsync(command, notificationMessages);
-        }
-
-        protected internal static void AppendRemarksToMessages(IEnumerable<MessageAmendmentCsd> messages)
-        {
-            foreach (var message in messages)
-            {
-                if (!string.IsNullOrWhiteSpace(message.Remark))
-                {
-                    var formattedRemark = $"\n**Remark**: {message.Remark}";
-                    message.Content += formattedRemark;
-                }
-            }
         }
 
         #endregion ResultAmendment Internal CSD
