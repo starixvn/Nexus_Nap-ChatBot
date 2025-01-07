@@ -82,7 +82,7 @@
                     Retry = isRetry,
                     IsSuccess = false,
                     ErrMsg = GenerateErrorMessage(r.RecipientStatus, r.ErrorMessage),
-                    FailedImages = r.FailedImages != null && r.FailedImages.Count() > 0 ? string.Join(",", r.FailedImages) : string.Empty
+                    FailedImages = r.FailedImages != null && r.FailedImages.Any() ? string.Join(",", r.FailedImages) : string.Empty
                 });
 
                 await UpdateSentNotificationStatusAsync(updateNoti);

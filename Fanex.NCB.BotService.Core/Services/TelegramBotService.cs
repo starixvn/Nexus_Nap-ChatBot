@@ -87,6 +87,40 @@
             return message;
         }
 
+        public async Task<SendMessageResult> SendTextMessageAsync(ConversationInfo conversationInfo)
+        {
+            try
+            {
+                if (sendIndirectMessageSettings.IsOnlySendIndirect)
+                {
+                    return await SendIndirectTextMessageAsync(conversationInfo);
+                }
+
+                _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
+                _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
+                await SendTextMessageAsync(botId, chatId, conversationInfo.Message.ToMarkdownV2());
+            }
+            catch (Exception exception)
+            {
+                await WriteLogAsync(conversationInfo, exception);
+
+                var result = new SendMessageResult { ErrorCode = 1 };
+                if (sendIndirectMessageSettings.IsEnabled)
+                {
+                    result = await SendIndirectTextMessageAsync(conversationInfo);
+                }
+
+                return result.ErrorCode == 0 ? result : GetSendMessageResult(conversationInfo, exception);
+            }
+
+            return new SendMessageResult
+            {
+                ConversationId = conversationInfo.ConversationId,
+                NotificationId = conversationInfo.NotificationId,
+                SentTime = DateTimeOffset.UtcNow.DateTime
+            };
+        }
+
 #pragma warning restore S2259
 
         public async Task<SendMessageResult> ResendImageOnlyAsync(ConversationInfo conversationInfo)
@@ -212,40 +246,6 @@
             return message;
         }
 
-        public async Task<SendMessageResult> SendTextMessageAsync(ConversationInfo conversationInfo)
-        {
-            try
-            {
-                if (sendIndirectMessageSettings.IsOnlySendIndirect)
-                {
-                    return await SendIndirectTextMessageAsync(conversationInfo);
-                }
-
-                _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
-                _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
-                await SendTextMessageAsync(botId, chatId, conversationInfo.Message.ToMarkdownV2());
-            }
-            catch (Exception exception)
-            {
-                await WriteLogAsync(conversationInfo, exception);
-
-                var result = new SendMessageResult { ErrorCode = 1 };
-                if (sendIndirectMessageSettings.IsEnabled)
-                {
-                    result = await SendIndirectTextMessageAsync(conversationInfo);
-                }
-
-                return result.ErrorCode == 0 ? result : GetSendMessageResult(conversationInfo, exception);
-            }
-
-            return new SendMessageResult
-            {
-                ConversationId = conversationInfo.ConversationId,
-                NotificationId = conversationInfo.NotificationId,
-                SentTime = DateTimeOffset.UtcNow.DateTime
-            };
-        }
-
         protected internal virtual async Task<SendMessageResult> SendIndirectTextMessageAsync(ConversationInfo conversationInfo)
         {
             try
@@ -268,7 +268,7 @@
             {
                 var logMessage = new LogMessage(exception.Message)
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
-
+                await logService.SentryErrorAsync(logService.ToString(), exception);
                 return new SendMessageResult
                 {
                     ConversationId = conversationInfo.ConversationId,
