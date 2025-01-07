@@ -36,11 +36,6 @@
             await logger.ErrorAsync(errMsg, exception);
         }
 
-        public void SentryInfo(string info)
-        {
-            logger.Info(info);
-        }
-
         public async Task SentryInfoAsync(string info)
         {
             await logger.InfoAsync(info);

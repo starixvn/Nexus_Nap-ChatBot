@@ -1,19 +1,19 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Tests.Services
 {
-    using System.Collections.Generic;
     using AutoFixture;
-    using System.Net.Http;
     using Fanex.NCB.AutoJobs.Core.Models.Configurations;
-    using Fanex.NCB.AutoJobs.Core.Tests.Services.TestableClasses;
-    using NSubstitute;
-    using Microsoft.Extensions.Options;
-    using Xunit;
-    using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
-    using System.Net;
-    using System.Linq;
     using Fanex.NCB.AutoJobs.Core.Tests.Services.Helper;
+    using Fanex.NCB.AutoJobs.Core.Tests.Services.TestableClasses;
+    using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
+    using NSubstitute;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http;
+    using System.Threading.Tasks;
+    using Xunit;
 
     public class ChatbotServiceTests
     {
@@ -147,33 +147,32 @@
             // Arrange
             var notifications = new List<NotificationSendMessage>
             {
-                new NotificationSendMessage {  NotificationId = 10,  Content = fixture.Create<string>()}
+                new() {  NotificationId = 10,  Content = fixture.Create<string>(), FileName = string.Empty}
             };
             var recipients = new List<NotificationRecipient>
             {
-                new NotificationRecipient
-                {
+                new() {
                     NotificationId = 10,
                     BotConversationId = fixture.Create<string>(),
                     BotName = fixture.Create<string>(),
                     ServiceUrl = fixture.Create<string>(),
-                    ChatGroupConversationId = fixture.Create<string>(),
+                    ChatGroupConversationId = fixture.Create<string>()
                 }
             };
             var expected = new List<NotificationMessage>
             {
-                new NotificationMessage
-                {
+                new() {
                     NotificationId = 10,
                     Message = notifications.FirstOrDefault().Content,
+                    Attachments = new List<string>(),
                     Recipients = new List<ConversationInfo>
                     {
-                        new ConversationInfo
-                        {
+                        new() {
                             ConversationId = recipients.FirstOrDefault().ChatGroupConversationId,
                             BotConversationId = recipients.FirstOrDefault().BotConversationId,
                             BotName = recipients.FirstOrDefault().BotName,
-                            ServiceUrl = recipients.FirstOrDefault().ServiceUrl
+                            ServiceUrl = recipients.FirstOrDefault().ServiceUrl,
+                            FailedImages = null
                         },
                     }
                 }
@@ -235,6 +234,7 @@
         }
 
         #region Helpers
+
         private ChatbotServiceTestable GetService()
         {
             notifyChatGroupOptions = new NotifyChatGroupOption
@@ -296,6 +296,7 @@
                 sponGroupOptions,
                 monitorTelegramBotOptions);
         }
+
         #endregion Helpers
     }
 }

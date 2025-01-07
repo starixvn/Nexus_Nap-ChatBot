@@ -1,17 +1,17 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Tests
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.BotService.EndPoint.Controllers;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Bot.Schema;
-    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using NSubstitute;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Xunit;
 
     public class NotifyControllerTests
@@ -19,8 +19,7 @@
         private AppSettings appSettings;
         private IMessageLogService messageLogService;
         private IConversationService conversationService;
-        private ILogger<NotifyController> filelogger;
-        private Logging.ILogger logger;
+        private ICommonLogService commonLogService;
         private ISkypeBotService skypeBotService;
 
         [Fact]
@@ -37,7 +36,7 @@
             Assert.Equal(200, okResult.StatusCode);
             Assert.Equal("ok", okResult.Value);
 
-            await logger.Received().ErrorAsync("test sentry");
+            await commonLogService.Received().SentryErrorAsync("test sentry");
         }
 
         #region Send
@@ -180,12 +179,11 @@
             var appSettingOptions = Substitute.For<IOptions<AppSettings>>();
             appSettingOptions.Value.Returns(appSettings);
 
-            filelogger = Substitute.For<ILogger<NotifyController>>();
-            logger = Substitute.For<Logging.ILogger>();
+            commonLogService = Substitute.For<ICommonLogService>();
             messageLogService = Substitute.For<IMessageLogService>();
             conversationService = Substitute.For<IConversationService>();
             skypeBotService = Substitute.For<ISkypeBotService>();
-            return new NotifyController(appSettingOptions, filelogger, logger, messageLogService, conversationService, skypeBotService);
+            return new NotifyController(appSettingOptions, commonLogService, messageLogService, conversationService, skypeBotService);
         }
     }
 }

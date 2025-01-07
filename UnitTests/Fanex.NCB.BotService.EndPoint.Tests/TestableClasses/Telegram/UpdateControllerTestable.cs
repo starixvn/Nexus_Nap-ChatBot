@@ -1,17 +1,17 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Tests.TestableClasses.Telegram
 {
-    using System.Threading.Tasks;
-    using Fanex.Logging;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.BotService.EndPoint.Controllers.Telegram;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services.Interfaces;
     using global::Telegram.Bot.Types;
+    using System.Threading.Tasks;
 
     public class UpdateControllerTestable : UpdateController
     {
         public UpdateControllerTestable(
-            ILogger logger,
+            ICommonLogService logger,
             ITelegramBotService botService,
             IConversationService conversationService) : base(logger, botService, conversationService)
         {

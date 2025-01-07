@@ -1,14 +1,16 @@
 ﻿namespace Fanex.NCB.BotService.Core.Tests.Services
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
     using Fanex.Caching;
-    using Fanex.Logging;
     using Fanex.NCB.BotService.Core.Enum;
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services;
+    using Fanex.NCB.Shared.Services.Interfaces;
     using Newtonsoft.Json;
     using NSubstitute;
+    using NSubstitute.ExceptionExtensions;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Xunit;
 
     public class MessageLogSerrviceTests
@@ -16,7 +18,7 @@
         private readonly CheckDuplicatedMessageLogSetting settings = new() { IsEnabled = true, TimeSpanInMinutes = 5 };
         private ICacheService cacheService;
         private IRedisCacheExtendService cacheExtendService;
-        private ILogger logger;
+        private ICommonLogService logger;
 
         [Fact]
         public void IsInvalidSendMessageToBotService_IsDisbaledSetting_ReturnFalse()
@@ -66,7 +68,7 @@
         {
             var service = GetService();
             service.IsInvalidSendMessageToBotService(null, null);
-            logger.Received(1).Error(Arg.Any<string>());
+            logger.Received(1).LogFileError(Arg.Any<Exception>());
         }
 
         [Fact]
@@ -84,8 +86,10 @@
         public async Task InsertMessageLogIntoCache_ThrowException()
         {
             var service = GetService();
+            cacheService.ContainAsync(Arg.Any<string>()).Returns(false);
+            cacheService.SetAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CacheItemOptions>()).Throws(new Exception());
             await service.InsertMessageLogIntoCache(null, null, null);
-            await logger.Received(1).ErrorAsync(Arg.Any<string>());
+            await logger.Received(1).SentryErrorAsync(Arg.Any<string>(), Arg.Any<Exception>());
         }
 
         [Fact]
@@ -93,7 +97,7 @@
         {
             var conversationLogMsg = new ConversationMessageLog { ConversationId = "A:1234", Message = "ABC", Status = SentMessageStatus.Success };
             var service = GetService();
-            await service.RemoveMessageLogOnCache(conversationLogMsg.ConversationId,  "Guid");
+            await service.RemoveMessageLogOnCache(conversationLogMsg.ConversationId, "Guid");
             await cacheService.Received().RemoveAsync(Arg.Do<string>(x => x.Contains("A-1234")));
         }
 
@@ -102,14 +106,14 @@
         {
             var service = GetService();
             await service.RemoveMessageLogOnCache(null, null);
-            logger.Received(1).Error(Arg.Any<string>());
+            await logger.Received(1).SentryErrorAsync(Arg.Any<string>(), Arg.Any<Exception>());
         }
 
         private MessageLogService GetService()
         {
             cacheService = Substitute.For<ICacheService>();
             cacheExtendService = Substitute.For<IRedisCacheExtendService>();
-            logger = Substitute.For<ILogger>();
+            logger = Substitute.For<ICommonLogService>();
             return new MessageLogService(settings, cacheService, cacheExtendService, logger);
         }
     }

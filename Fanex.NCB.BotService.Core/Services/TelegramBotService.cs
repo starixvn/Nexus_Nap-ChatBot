@@ -239,11 +239,16 @@
         {
             TelegramBotConfigurations bot = botConfigurations.FirstOrDefault(x => x.BotId == botId);
 
-            var photo = new Telegram.Bot.Types.InputFiles.InputOnlineFile(urlImage);
-            Message message = await bot.BotClient.SendPhotoAsync(
-                chatId: chatId,
-                photo: photo);
-            return message;
+            if (bot != null && bot.BotClient != null)
+            {
+                var photo = new Telegram.Bot.Types.InputFiles.InputOnlineFile(urlImage);
+                Message message = await bot.BotClient.SendPhotoAsync(
+                    chatId: chatId,
+                    photo: photo);
+                return message;
+            }
+
+            throw new ArgumentNullException($"{botId} does not existed on config file");
         }
 
         protected internal virtual async Task<SendMessageResult> SendIndirectTextMessageAsync(ConversationInfo conversationInfo)
@@ -268,7 +273,7 @@
             {
                 var logMessage = new LogMessage(exception.Message)
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
-                await logService.SentryErrorAsync(logService.ToString(), exception);
+                await logService.SentryErrorAsync(logMessage.ToString(), exception);
                 return new SendMessageResult
                 {
                     ConversationId = conversationInfo.ConversationId,

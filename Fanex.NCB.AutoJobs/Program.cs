@@ -1,11 +1,13 @@
 namespace Fanex.NCB.AutoJobs
 {
-    using System;
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Logging;
     using NLog.Web;
+    using System;
+    using System.Diagnostics.CodeAnalysis;
 
+    [ExcludeFromCodeCoverage(Justification = "Code Starup inject needed services")]
     public static class Program
     {
         public static void Main(string[] args)
