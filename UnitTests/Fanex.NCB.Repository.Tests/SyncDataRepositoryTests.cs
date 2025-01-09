@@ -1,96 +1,111 @@
 ﻿namespace Fanex.NCB.Repository.Tests
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Fanex.Data;
+    using AutoFixture;
     using Fanex.Data.Repository;
     using Fanex.NCB.Shared.Models.NapUserControl;
-    using Fanex.NCB.Shared.Models.OIC;
+    using Newtonsoft.Json;
     using NSubstitute;
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
     using Xunit;
 
-    //public class SyncDataRepositoryTests
-    //{
-    //    private readonly IObjectDb objectDb;
+    public class SyncDataRepositoryTests
+    {
+        private IDynamicRepository dynamicRepository;
+        private static readonly Fixture fixture = new();
 
-    //    public SyncDataRepositoryTests()
-    //    {
-    //        DbSettingProviderManager
-    //        .StartTestingSession()
-    //        .Run();
+        [Fact]
+        public async void FetchDataFromNapUserControl_WhenCalledReturnExpectedResult()
+        {
+            var criteria = Substitute.For<ICriteria>();
+            var (datasetResponse, expectedResult) = FakeDataResponse();
+            var repository = GetRepository();
+            dynamicRepository.FetchDataSetAsync(criteria).Returns(datasetResponse);
 
-    //        objectDb = Substitute.For<IObjectDb>();
-    //        ObjectDbFactory.Mock((key, time) => objectDb);
-    //    }
+            var actual = await repository.FetchDataFromNapUserControl(criteria);
 
-    //    [Fact]
-    //    public async Task FetchDataFromNapUserControl_WhenCalled_ReturnExpectedResult()
-    //    {
-    //        var multiReader = FakeMultipleResultReader();
-    //        var criteria = FakeCriteria();
-    //        var repository = new SyncDataRepository();
-    //        multiReader.Read<NapFunction>().Returns(new List<NapFunction> { new NapFunction { FunctionId = 1 } });
-    //        multiReader.Read<NapGroup>().Returns(new List<NapGroup>());
-    //        multiReader.Read<NapGroupFunction>().Returns(new List<NapGroupFunction>());
-    //        multiReader.Read<NapMenuItem>().Returns(new List<NapMenuItem>());
-    //        multiReader.Read<NapOnUser>().Returns(new List<NapOnUser>());
-    //        multiReader.Read<NapSite>().Returns(new List<NapSite>());
-    //        multiReader.Read<NapSiteURL>().Returns(new List<NapSiteURL>());
-    //        multiReader.Read<NapUserFunction>().Returns(new List<NapUserFunction>());
-    //        multiReader.Read<NapUser>().Returns(new List<NapUser>());
-    //        multiReader.Read<NapUserSite>().Returns(new List<NapUserSite>());
-    //        multiReader.Read<Customer>().Returns(new List<Customer>());
-    //        multiReader.Read<CustInfo>().Returns(new List<CustInfo>());
-    //        objectDb.QueryMultipleAsync(criteria).Returns(multiReader);
+            Assert.Equal(JsonConvert.SerializeObject(expectedResult), JsonConvert.SerializeObject(actual));
+        }
 
-    //        //Actual
-    //        var actual = await repository.FetchDataFromNapUserControl(criteria);
+        private ValueTuple<DataSet, NapData> FakeDataResponse()
+        {
+            var data0 = FakeDataTable();
+            var data1 = FakeDataTable(); ;
+            var data2 = FakeDataTable(); ;
+            var data5 = FakeDataTable(); ;
+            var data6 = FakeDataTable(); ;
+            var menuItems = fixture.Create<List<NapMenuItem>>();
+            var onUsers = fixture.Create<List<NapOnUser>>();
+            var userFunctions = fixture.Create<List<NapUserFunction>>();
+            var users = fixture.Create<List<NapUser>>();
+            var userSites = fixture.Create<List<NapUserSite>>();
+            var customers = fixture.Create<List<Customer>>();
+            var custInfo = fixture.Create<List<CustInfo>>();
+            var dataSet = new DataSet();
+            dataSet.Tables.Add(data0);
+            dataSet.Tables.Add(data1);
+            dataSet.Tables.Add(data2);
+            dataSet.Tables.Add(ConvertToDataTable(menuItems));
+            dataSet.Tables.Add(ConvertToDataTable(onUsers));
+            dataSet.Tables.Add(data5);
+            dataSet.Tables.Add(data6);
+            dataSet.Tables.Add(ConvertToDataTable(userFunctions));
+            dataSet.Tables.Add(ConvertToDataTable(users));
+            dataSet.Tables.Add(ConvertToDataTable(userSites));
+            dataSet.Tables.Add(ConvertToDataTable(customers));
+            dataSet.Tables.Add(ConvertToDataTable(custInfo));
 
-    //        //Assert
-    //        await objectDb.Received(1).QueryMultipleAsync(Arg.Any<ICriteria>());
-    //        Assert.Equal(1, actual.NapFunctions.FirstOrDefault().FunctionId);
-    //    }
+            return new ValueTuple<DataSet, NapData>(dataSet, new NapData
+            {
+                NapMenuItems = menuItems,
+                NapOnUser = onUsers,
+                NapUserFunction = userFunctions,
+                NapUsers = users,
+                NapUserSite = userSites,
+                Customer = customers,
+                CustInfo = custInfo
+            });
+        }
 
-    //    [Fact]
-    //    public async Task FetchDataFromOIC_WhenCalled_ReturnExpectedResult()
-    //    {
-    //        var multiReader = FakeMultipleResultReader();
-    //        var criteria = FakeCriteria();
-    //        var repository = new SyncDataRepository();
-    //        multiReader.Read<Licensee>().Returns(new List<Licensee> { new Licensee { LicenseeId = 1, LicenseeName = "Test" } });
-    //        multiReader.Read<LicenseeStatus>().Returns(new List<LicenseeStatus>());
-    //        multiReader.Read<LicenseeProduct>().Returns(new List<LicenseeProduct>());
-    //        multiReader.Read<LicenseeType>().Returns(new List<LicenseeType>());
-    //        multiReader.Read<Product>().Returns(new List<Product>());
-    //        multiReader.Read<Platform>().Returns(new List<Platform>());
+        private static DataTable ConvertToDataTable<T>(List<T> data)
+        {
+            DataTable table = new();
 
-    //        objectDb.QueryMultipleAsync(criteria).Returns(multiReader);
+            var properties = typeof(T).GetProperties();
 
-    //        //Actual
-    //        var actual = await repository.FetchDataFromOIC(criteria);
+            foreach (var prop in properties)
+            {
+                table.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
+            }
 
-    //        //Assert
-    //        await objectDb.Received(1).QueryMultipleAsync(Arg.Any<ICriteria>());
-    //        Assert.Equal(1, actual.Licensees.FirstOrDefault().LicenseeId);
-    //        Assert.Equal("Test", actual.Licensees.FirstOrDefault().LicenseeName);
-    //    }
+            foreach (var item in data)
+            {
+                var row = table.NewRow();
+                foreach (var prop in properties)
+                {
+                    row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
+                }
+                table.Rows.Add(row);
+            }
 
-    //    #region Helper
+            return table;
+        }
 
-    //    private ICriteria FakeCriteria()
-    //    {
-    //        var criteria = Substitute.For<ICriteria>();
-    //        criteria.GetSettingKey().Returns("NapChatBot_Test");
+        private static DataTable FakeDataTable()
+        {
+            var table1 = new DataTable();
+            table1.Columns.Add("ID", typeof(int));
+            table1.Columns.Add("Name", typeof(string));
+            table1.Rows.Add(1, "John");
+            table1.Rows.Add(2, "Doe");
+            return table1;
+        }
 
-    //        return criteria;
-    //    }
-
-    //    private IMultiResultReader FakeMultipleResultReader()
-    //    {
-    //        return Substitute.For<IMultiResultReader>();
-    //    }
-
-    //    #endregion Helper
-    //}
+        private SyncDataRepository GetRepository()
+        {
+            dynamicRepository = Substitute.For<IDynamicRepository>();
+            return new SyncDataRepository(dynamicRepository);
+        }
+    }
 }
