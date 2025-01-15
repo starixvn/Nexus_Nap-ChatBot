@@ -1,17 +1,17 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Controllers
 {
-    using Fanex.Logging.Extensions;
-    using Fanex.NCB.BotService.Core;
-    using Fanex.NCB.BotService.Core.Criteria;
-    using Fanex.NCB.BotService.Core.Enum;
-    using Fanex.NCB.BotService.Core.Services;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
-    using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Services.Interfaces;
+    using Core;
+    using Core.Criteria;
+    using Core.Enum;
+    using Core.Services;
+    using Core.Services.Interfaces;
+    using Logging.Extensions;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
+    using Shared.Models;
+    using Shared.Services.Interfaces;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -57,7 +57,7 @@
             var errorMessage = string.Empty;
             try
             {
-                if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
+                if (appSettings.EnableChannels.All(x => x != (byte)ConversationChannel.Skype))
                 {
                     errorMessage = Resources.Resources.DisableChannelErrorMessage;
                 }
@@ -193,15 +193,15 @@
                 return DuplicatedResult(conversationInfo.NotificationId, conversationInfo.ConversationId);
             }
 
-            string guiid = Guid.NewGuid().ToString();
+            var guid = Guid.NewGuid().ToString();
             try
             {
-                await messageLogService.InsertMessageLogIntoCache(conversationInfo.ConversationId, conversationInfo.Message, guiid);
+                await messageLogService.InsertMessageLogIntoCache(conversationInfo.ConversationId, conversationInfo.Message, guid);
 
-                SendMessageResult result = await skypeBotService.SendMessageWithRetryAsync(conversationInfo);
+                var result = await skypeBotService.SendMessageWithRetryAsync(conversationInfo);
                 if (result.ErrorCode != 0)
                 {
-                    await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
+                    await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guid);
                 }
 
                 var thread = new Thread(async () => await AddMessageLogOnDb(conversationInfo, result));
@@ -212,7 +212,7 @@
             catch (Exception exception)
             {
                 await WriteLogAsync(exception);
-                await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guiid);
+                await messageLogService.RemoveMessageLogOnCache(conversationInfo.ConversationId, guid);
 
                 return new SendMessageResult
                 {

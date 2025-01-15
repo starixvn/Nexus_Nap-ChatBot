@@ -1,15 +1,15 @@
 ﻿namespace Fanex.NCB.BotService.Core.Services
 {
-    using Fanex.Logging.Extensions;
-    using Fanex.NCB.BotService.Core.Criteria;
-    using Fanex.NCB.BotService.Core.Models;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
-    using Fanex.NCB.Resources;
-    using Fanex.NCB.Shared.Extensions;
+    using Criteria;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Interfaces;
+    using Logging.Extensions;
     using Microsoft.Extensions.Options;
+    using Models;
     using Newtonsoft.Json;
+    using Resources;
+    using Shared.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -154,26 +154,24 @@
         {
             var sendResult = await SendTextMessageAsync(conversationInfo);
             await AddMessageLogToDatabaseAsync(conversationInfo, sendResult);
-            if (sendResult != null && sendResult.ErrorCode == 0 &&
-                conversationInfo.Attachments != null && conversationInfo.Attachments.Count > 0)
-            {
-                _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
-                _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
+            if (sendResult is not { ErrorCode: 0 } ||
+                conversationInfo.Attachments == null || conversationInfo.Attachments.Count <= 0) return sendResult;
+            _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
+            _ = long.TryParse(conversationInfo.ConversationId, out var chatId);
 
-                foreach (var attachment in conversationInfo.Attachments)
+            foreach (var attachment in conversationInfo.Attachments)
+            {
+                await HandleSendImageAsync(botId, chatId, attachment, sendResult);
+                var command = new AddMessageLogCommand
                 {
-                    await HandleSendImageAsync(botId, chatId, attachment, sendResult);
-                    var command = new AddMessageLogCommand
-                    {
-                        FromConversationId = conversationInfo.BotConversationId,
-                        ToConversationId = conversationInfo.ConversationId,
-                        ReferenceId = conversationInfo.NotificationId,
-                        Content = attachment,
-                        IsSuccessfull = sendResult.ErrorCode == 0,
-                        ErrCode = sendResult.ErrorCode
-                    };
-                    await AddImageLogToDatabaseAsync(command);
-                }
+                    FromConversationId = conversationInfo.BotConversationId,
+                    ToConversationId = conversationInfo.ConversationId,
+                    ReferenceId = conversationInfo.NotificationId,
+                    Content = attachment,
+                    IsSuccessfull = sendResult.ErrorCode == 0,
+                    ErrCode = sendResult.ErrorCode
+                };
+                await AddImageLogToDatabaseAsync(command);
             }
             return sendResult;
         }
@@ -239,7 +237,7 @@
         {
             TelegramBotConfigurations bot = botConfigurations.FirstOrDefault(x => x.BotId == botId);
 
-            if (bot != null && bot.BotClient != null)
+            if (bot is { BotClient: { } })
             {
                 var photo = new Telegram.Bot.Types.InputFiles.InputOnlineFile(urlImage);
                 Message message = await bot.BotClient.SendPhotoAsync(

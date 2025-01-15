@@ -110,13 +110,10 @@
                         var activity = MessageFactory.Text(conversationInfo.Message);
                         if (conversationInfo.Attachments != null && conversationInfo.Attachments.Count > 0)
                         {
-                            var attachments = conversationInfo.Attachments.Select(img =>
+                            var attachments = conversationInfo.Attachments.Select(img => new Attachment
                             {
-                                return new Attachment
-                                {
-                                    ContentType = "image",
-                                    ContentUrl = img
-                                };
+                                ContentType = "image",
+                                ContentUrl = img
                             }).ToList();
                             activity.Attachments = attachments;
                         }
