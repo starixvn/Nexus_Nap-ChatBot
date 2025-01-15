@@ -18,6 +18,7 @@
         [SpParam(AllowNull = true)]
         public string InRecipientIds { get; set; }
 
+        [SpParam(AllowNull = true)]
         public string InIntegrationMethodIds { get; set; }
 
         public override string GetSettingKey() => "NCB_EditNotification_Recipient_Sel";
