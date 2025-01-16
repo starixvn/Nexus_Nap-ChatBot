@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Model.ChatGroupMapping
 {
-    using Fanex.NCB.Core.Enum;
+    using Core.Enum;
 
     public class BotConversation : Models.Common.ChannelInfo
     {

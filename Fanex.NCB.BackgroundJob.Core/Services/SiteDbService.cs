@@ -1,13 +1,13 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Services
 {
-    using Fanex.Caching;
+    using Caching;
     using Fanex.Data.Repository;
-    using Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
+    using Criteria.SpecialDeleteTicket;
     using Fanex.NCB.AutoJobs.Core.FanexDataExtensions.Services;
-    using Fanex.NCB.AutoJobs.Core.Helpers;
-    using Fanex.NCB.AutoJobs.Core.Models.Common;
-    using Fanex.NCB.AutoJobs.Core.Models.SpecialDeleteTicket.AbnormalBets;
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+    using Helpers;
+    using Models.Common;
+    using Models.SpecialDeleteTicket.AbnormalBets;
+    using Interfaces;
     using Microsoft.Extensions.Configuration;
 
     public class SiteDbService : ISiteDbService

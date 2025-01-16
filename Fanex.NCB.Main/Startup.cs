@@ -1,17 +1,17 @@
 ﻿namespace Fanex.NCB.Main
 {
-    using Fanex.Data;
-    using Fanex.Logging;
-    using Fanex.Logging.Extensions;
-    using Fanex.Logging.Extensions.AspNetCore;
+    using Data;
+    using Logging;
+    using Logging.Extensions;
+    using Logging.Extensions.AspNetCore;
     using Fanex.Logging.Sentry;
-    using Fanex.NAP.Client;
-    using Fanex.NAP.Client.Configuration;
-    using Fanex.NAP.Client.Helpers.Web;
-    using Fanex.NCB.Main.AppConfig;
-    using Fanex.NCB.Main.Hubs;
-    using Fanex.NCB.NAPResolver;
-    using Fanex.NCB.Shared.Middlewares;
+    using NAP.Client;
+    using NAP.Client.Configuration;
+    using NAP.Client.Helpers.Web;
+    using AppConfig;
+    using Hubs;
+    using NAPResolver;
+    using Shared.Middlewares;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.DataProtection;

@@ -1,8 +1,8 @@
 ﻿namespace Fanex.NCB.BotService.Core.Tests.Services
 {
-    using Fanex.Caching;
-    using Fanex.NCB.BotService.Core.Enum;
-    using Fanex.NCB.BotService.Core.Models;
+    using Caching;
+    using Enum;
+    using Models;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Newtonsoft.Json;

@@ -1,10 +1,10 @@
 ﻿namespace Fanex.NCB.Criteria.ResetLastMessageId
 {
     using System.Collections.Generic;
-    using Fanex.Data;
-    using Fanex.Data.Repository;
+    using Data;
+    using Data.Repository;
     using Fanex.NCB.Models.ResetLastMessageId;
-    using Fanex.NCB.Shared.Extensions;
+    using Shared.Extensions;
 
     public class GetMissingMessageInfoCriteria : CriteriaBase
     {

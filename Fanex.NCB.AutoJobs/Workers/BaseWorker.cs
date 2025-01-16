@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.AutoJobs.Workers
 {
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
-    using Fanex.NCB.AutoJobs.Models;
+    using Core.Services.Interfaces;
+    using Models;
     using Microsoft.Extensions.Hosting;
     using ONEbook.UM.Services;
     using System;

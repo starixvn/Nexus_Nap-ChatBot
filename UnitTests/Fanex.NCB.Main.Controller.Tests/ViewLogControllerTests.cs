@@ -3,8 +3,8 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.Models.ViewLog;
-    using Fanex.NCB.Services.Interfaces;
+    using Models.ViewLog;
+    using Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
     using NSubstitute;
     using Xunit;

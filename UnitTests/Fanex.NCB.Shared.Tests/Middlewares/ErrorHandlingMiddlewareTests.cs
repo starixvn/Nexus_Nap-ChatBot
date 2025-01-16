@@ -2,7 +2,7 @@
 {
     using System;
     using System.Threading.Tasks;
-    using Fanex.Logging;
+    using Logging;
     using Fanex.NCB.Shared.Middlewares;
     using Microsoft.AspNetCore.Http;
     using NSubstitute;

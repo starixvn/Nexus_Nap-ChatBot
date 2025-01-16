@@ -6,9 +6,9 @@
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Criteria.SettingConfiguration;
-    using Fanex.NCB.Models.Notification;
-    using Fanex.NCB.Models.SettingConfiguration;
+    using Criteria.SettingConfiguration;
+    using Models.Notification;
+    using Models.SettingConfiguration;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using FluentAssertions;

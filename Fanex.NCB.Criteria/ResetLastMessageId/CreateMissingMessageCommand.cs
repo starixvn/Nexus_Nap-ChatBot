@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Text;
-    using Fanex.Data;
+    using Data;
     using Fanex.NCB.Models.ResetLastMessageId;
     using Fanex.NCB.Shared.Models;
 

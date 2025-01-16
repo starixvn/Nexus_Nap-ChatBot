@@ -3,13 +3,13 @@
     using System.Text;
     using Fanex.Data.Repository;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Repository;
-    using Fanex.NCB.Repository.Interfaces;
-    using Fanex.NCB.Services;
-    using Fanex.NCB.Services.Interfaces;
+    using Repository;
+    using Repository.Interfaces;
+    using Services;
+    using Services.Interfaces;
     using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
-    using Fanex.RemotingRef;
+    using RemotingRef;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;

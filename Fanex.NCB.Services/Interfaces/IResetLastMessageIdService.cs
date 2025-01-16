@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NCB.Models.ResetLastMessageId;
+    using Models.ResetLastMessageId;
     using Fanex.NCB.Shared.Models;
 
     public interface IResetLastMessageIdService

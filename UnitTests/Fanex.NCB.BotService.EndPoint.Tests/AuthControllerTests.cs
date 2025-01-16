@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Tests
 {
-    using Fanex.NCB.BotService.Core;
-    using Fanex.NCB.BotService.EndPoint.Controllers;
+    using Core;
+    using Controllers;
     using Microsoft.AspNetCore.Mvc;
     using NSubstitute;
     using Xunit;

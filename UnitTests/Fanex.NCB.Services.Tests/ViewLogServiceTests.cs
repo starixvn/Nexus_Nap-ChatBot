@@ -4,8 +4,8 @@
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.Criteria.ViewLog;
-    using Fanex.NCB.Models.ViewLog;
+    using Criteria.ViewLog;
+    using Models.ViewLog;
     using Fanex.NCB.Shared.Services.Interfaces;
     using NSubstitute;
     using Xunit;

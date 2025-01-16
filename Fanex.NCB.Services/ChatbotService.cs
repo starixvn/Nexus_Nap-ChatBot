@@ -1,9 +1,9 @@
 ﻿namespace Fanex.NCB.Services
 {
-    using Fanex.NCB.Core.Enum;
+    using Core.Enum;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Models.NotifictaionSendMessage;
-    using Fanex.NCB.Services.Interfaces;
+    using Models.NotifictaionSendMessage;
+    using Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;

@@ -1,10 +1,10 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Tests
 {
-    using Fanex.NCB.BotService.Core;
-    using Fanex.NCB.BotService.Core.Services;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
-    using Fanex.NCB.BotService.EndPoint.Controllers;
-    using Fanex.NCB.Shared.Models;
+    using Core;
+    using Core.Services;
+    using Core.Services.Interfaces;
+    using Controllers;
+    using Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Bot.Schema;

@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.Notification
 {
-    using Fanex.Data.Repository;
+    using Data.Repository;
 
     public class GetNotificationErrorDetailCriteria : CriteriaBase
     {

@@ -4,12 +4,12 @@
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.Caching;
-    using Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
+    using Caching;
+    using Criteria.SpecialDeleteTicket;
     using Fanex.NCB.AutoJobs.Core.FanexDataExtensions.Services;
-    using Fanex.NCB.AutoJobs.Core.Helpers;
-    using Fanex.NCB.AutoJobs.Core.Models.Common;
-    using Fanex.NCB.AutoJobs.Core.Models.SpecialDeleteTicket.AbnormalBets;
+    using Helpers;
+    using Models.Common;
+    using Models.SpecialDeleteTicket.AbnormalBets;
     using Fanex.NCB.AutoJobs.Core.Services;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
     using Microsoft.Extensions.Configuration;

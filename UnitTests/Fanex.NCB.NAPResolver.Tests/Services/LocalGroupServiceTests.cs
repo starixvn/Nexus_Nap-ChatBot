@@ -3,10 +3,10 @@
     using System;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.Criteria.LocalNap.Group;
-    using Fanex.NCB.NAPResolver.LocalServices;
-    using Fanex.NCB.NAPResolver.Model;
-    using Fanex.NCB.Shared.Services.Interfaces;
+    using Criteria.LocalNap.Group;
+    using LocalServices;
+    using Model;
+    using Shared.Services.Interfaces;
     using NSubstitute;
     using Xunit;
 

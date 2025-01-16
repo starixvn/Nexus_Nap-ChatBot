@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.Criteria.Notification
 {
     using System;
-    using Fanex.Data;
+    using Data;
     using Fanex.NCB.Shared.Models;
 
     public class CreateNewNotificationCommand : BaseCommand

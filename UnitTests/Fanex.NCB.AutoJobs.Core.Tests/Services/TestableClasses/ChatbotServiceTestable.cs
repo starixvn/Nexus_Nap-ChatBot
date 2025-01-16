@@ -2,8 +2,8 @@
 {
     using System.Net.Http;
     using System.Threading.Tasks;
-    using Fanex.NCB.AutoJobs.Core.Models.Configurations;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
+    using Models.Configurations;
+    using Models.NotifictaionSendMessage;
     using Fanex.NCB.AutoJobs.Core.Services;
     using Microsoft.Extensions.Options;
 

@@ -4,14 +4,14 @@
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.AutoJobs.Core.Criteria.Common;
-    using Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
-    using Fanex.NCB.AutoJobs.Core.Models.Common;
+    using Criteria.Common;
+    using Criteria.SpecialDeleteTicket;
+    using Models.Common;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
+    using Models.NotifictaionSendMessage;
     using Fanex.NCB.AutoJobs.Core.Services;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
-    using Fanex.RemotingRef;
+    using RemotingRef;
     using NSubstitute;
     using Xunit;
 

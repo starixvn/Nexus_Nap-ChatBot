@@ -7,10 +7,10 @@
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Criteria.SendNotification;
-    using Fanex.NCB.Models.NotifictaionSendMessage;
-    using Fanex.NCB.Services.Interfaces;
-    using Fanex.NCB.Services.Tests.TestableClasses;
+    using Criteria.SendNotification;
+    using Models.NotifictaionSendMessage;
+    using Interfaces;
+    using TestableClasses;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;

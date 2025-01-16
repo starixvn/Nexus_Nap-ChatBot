@@ -1,9 +1,9 @@
 ﻿namespace Fanex.NCB.Main.Controllers
 {
     using System.Threading.Tasks;
-    using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.NAPResolver.Attributes;
-    using Fanex.NCB.Services.Interfaces;
+    using Core.Constants;
+    using NAPResolver.Attributes;
+    using Services.Interfaces;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
     using static Fanex.NAP.Core.Business.Constant;

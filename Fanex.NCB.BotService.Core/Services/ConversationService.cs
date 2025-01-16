@@ -1,8 +1,8 @@
 ﻿namespace Fanex.NCB.BotService.Core.Services
 {
-    using Fanex.NCB.BotService.Core.Criteria;
-    using Fanex.NCB.BotService.Core.Models;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
+    using Criteria;
+    using Models;
+    using Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using System.Collections.Generic;

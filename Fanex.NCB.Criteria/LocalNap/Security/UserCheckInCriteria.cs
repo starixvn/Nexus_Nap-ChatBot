@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.Criteria.LocalNap.Security
 {
     using System;
-    using Fanex.Data.Repository;
+    using Data.Repository;
 
     public class UserCheckInCriteria : CriteriaBase
     {

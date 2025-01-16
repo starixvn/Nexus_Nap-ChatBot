@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.AutoJobs
 {
-    using Fanex.Logging;
+    using Logging;
     using Fanex.Logging.Extensions;
     using Microsoft.AspNetCore.Http;
     using System;

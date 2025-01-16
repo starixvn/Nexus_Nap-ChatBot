@@ -2,8 +2,8 @@
 
 namespace Fanex.NCB.Criteria.LocalNap.Security
 {
-    using Fanex.Data;
-    using Fanex.Data.Repository;
+    using Data;
+    using Data.Repository;
 
     public class LogUserLoginCriteria : CriteriaBase
     {

@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.Criteria.Notification
 {
-    using Fanex.Data;
-    using Fanex.Data.Repository;
+    using Data;
+    using Data.Repository;
 
     public class GetRecipientsCriteria : CriteriaBase
     {

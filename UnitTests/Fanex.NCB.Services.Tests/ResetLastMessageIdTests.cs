@@ -4,9 +4,9 @@
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.Criteria.ResetLastMessageId;
-    using Fanex.NCB.Models.ResetLastMessageId;
-    using Fanex.NCB.Services.Interfaces;
+    using Criteria.ResetLastMessageId;
+    using Models.ResetLastMessageId;
+    using Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Configuration;

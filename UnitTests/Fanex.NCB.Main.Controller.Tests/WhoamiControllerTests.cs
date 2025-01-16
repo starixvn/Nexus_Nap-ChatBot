@@ -2,7 +2,7 @@
 {
     using System.Net;
     using AutoFixture;
-    using Fanex.NCB.Shared;
+    using Shared;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Xunit;

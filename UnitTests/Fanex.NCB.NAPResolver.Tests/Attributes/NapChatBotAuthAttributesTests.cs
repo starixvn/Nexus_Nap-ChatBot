@@ -2,9 +2,9 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NAP.Client.Configuration;
-    using Fanex.NAP.Client.Helpers.Web;
-    using Fanex.NAP.Client.Services;
+    using NAP.Client.Configuration;
+    using NAP.Client.Helpers.Web;
+    using NAP.Client.Services;
     using Fanex.NCB.NAPResolver.Attributes;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;

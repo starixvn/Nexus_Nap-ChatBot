@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Models.NotifictaionSendMessage
 {
-    using Fanex.NCB.Core.Enum;
+    using Core.Enum;
 
     public class NotificationRecipient
     {

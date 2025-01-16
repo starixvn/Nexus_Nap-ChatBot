@@ -1,8 +1,8 @@
 ﻿namespace Fanex.NCB.Shared.FanexDataExtensions.ObjectDb
 {
     using System.Diagnostics.CodeAnalysis;
-    using Fanex.Data;
-    using Fanex.Data.SqlServer;
+    using Data;
+    using Data.SqlServer;
     using Microsoft.Data.SqlClient;
 
     [ExcludeFromCodeCoverage(Justification = "No need to re-write unit tests")]

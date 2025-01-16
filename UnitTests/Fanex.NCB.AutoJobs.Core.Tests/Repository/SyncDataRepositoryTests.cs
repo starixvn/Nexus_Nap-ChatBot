@@ -3,10 +3,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.Data;
+    using Data;
     using Fanex.Data.Repository;
-    using Fanex.NCB.AutoJobs.Core.Models.NapUserControl;
-    using Fanex.NCB.AutoJobs.Core.Models.OIC;
+    using Models.NapUserControl;
+    using Models.OIC;
     using Fanex.NCB.AutoJobs.Core.Repository;
     using NSubstitute;
     using Xunit;

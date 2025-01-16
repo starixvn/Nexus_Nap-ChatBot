@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.SyncData
 {
-    using Fanex.Data.Repository;
+    using Data.Repository;
 
     public abstract class NapUserControlSyncDataBaseCommand : NonQueryCommand
     {

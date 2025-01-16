@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.SendNotification
 {
-    using Fanex.Data.Repository;
+    using Data.Repository;
 
     public class GetNotificationByIdCriteria : CriteriaBase
     {

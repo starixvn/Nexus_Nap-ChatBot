@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.Criteria.Common
 {
-    using Fanex.Data;
-    using Fanex.Data.Repository;
+    using Data;
+    using Data.Repository;
 
     public class GetConversationChannelCriteria : CriteriaBase
     {

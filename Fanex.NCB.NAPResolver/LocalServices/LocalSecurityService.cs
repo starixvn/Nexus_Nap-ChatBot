@@ -5,11 +5,11 @@
     using System.Threading.Tasks;
     using Fanex.NAP.Client.Models.ParameterObject;
     using Fanex.NAP.Client.Models.ValueObject;
-    using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Core.Enum;
-    using Fanex.NCB.Criteria.LocalNap.Security;
-    using Fanex.NCB.Criteria.LocalNap.Site;
-    using Fanex.NCB.Shared.Services.Interfaces;
+    using NAP.Client.Services;
+    using Core.Enum;
+    using Criteria.LocalNap.Security;
+    using Criteria.LocalNap.Site;
+    using Shared.Services.Interfaces;
 
     public class LocalSecurityService : ISecurityService
     {

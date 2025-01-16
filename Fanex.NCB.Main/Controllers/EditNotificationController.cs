@@ -2,14 +2,14 @@
 {
     using System;
     using System.Threading.Tasks;
-    using Fanex.NAP.Client.Helpers.Web;
-    using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.Main.Hubs;
-    using Fanex.NCB.Main.ViewModel.Notification;
-    using Fanex.NCB.Main.ViewModel.TreeSelect;
-    using Fanex.NCB.Models.Notification;
-    using Fanex.NCB.NAPResolver.Attributes;
-    using Fanex.NCB.Services.Interfaces;
+    using NAP.Client.Helpers.Web;
+    using Core.Constants;
+    using Hubs;
+    using ViewModel.Notification;
+    using ViewModel.TreeSelect;
+    using Models.Notification;
+    using NAPResolver.Attributes;
+    using Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;

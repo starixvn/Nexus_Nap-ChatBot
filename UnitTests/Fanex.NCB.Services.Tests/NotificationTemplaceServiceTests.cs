@@ -4,8 +4,8 @@
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.Criteria.NotificationTemplate;
-    using Fanex.NCB.Models.NotificationTemplate;
+    using Criteria.NotificationTemplate;
+    using Models.NotificationTemplate;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using NSubstitute;

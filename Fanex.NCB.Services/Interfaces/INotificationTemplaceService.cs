@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NCB.Models.NotificationTemplate;
+    using Models.NotificationTemplate;
     using Fanex.NCB.Shared.Models;
 
     public interface INotificationTemplaceService

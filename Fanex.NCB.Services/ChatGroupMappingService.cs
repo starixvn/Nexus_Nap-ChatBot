@@ -3,11 +3,11 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NCB.Core.Extensions;
-    using Fanex.NCB.Criteria.ChatGroupMapping;
-    using Fanex.NCB.Model.ChatGroupMapping;
-    using Fanex.NCB.Models.ChatGroupMapping;
-    using Fanex.NCB.Services.Interfaces;
+    using Core.Extensions;
+    using Criteria.ChatGroupMapping;
+    using Model.ChatGroupMapping;
+    using Models.ChatGroupMapping;
+    using Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
 

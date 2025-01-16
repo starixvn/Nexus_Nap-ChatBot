@@ -2,13 +2,13 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NAP.Client.Configuration;
-    using Fanex.NAP.Client.Helpers.Web;
+    using NAP.Client.Configuration;
+    using NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.Models.ResetLastMessageId;
-    using Fanex.NCB.NAPResolver.Attributes;
-    using Fanex.NCB.Services.Interfaces;
+    using Core.Constants;
+    using Models.ResetLastMessageId;
+    using NAPResolver.Attributes;
+    using Services.Interfaces;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
     using static Fanex.NAP.Core.Business.Constant;

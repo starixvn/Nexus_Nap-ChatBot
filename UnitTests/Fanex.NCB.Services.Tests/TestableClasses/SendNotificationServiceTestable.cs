@@ -3,8 +3,8 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Models.NotifictaionSendMessage;
-    using Fanex.NCB.Services.Interfaces;
+    using Models.NotifictaionSendMessage;
+    using Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;

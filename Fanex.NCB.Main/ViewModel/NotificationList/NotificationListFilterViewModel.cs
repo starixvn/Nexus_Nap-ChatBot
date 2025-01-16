@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.Main.ViewModel.NotificationList
 {
     using System.Collections.Generic;
-    using Fanex.NCB.Models.Common;
+    using Models.Common;
 
     public class NotificationListFilterViewModel
     {

@@ -1,9 +1,9 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Services.Interfaces
 {
     using System.Threading.Tasks;
-    using Fanex.NCB.AutoJobs.Core.Models.Common;
+    using Models.Common;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
+    using Models.NotifictaionSendMessage;
 
     public interface ICommonService
     {

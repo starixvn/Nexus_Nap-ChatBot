@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.SendNotification
 {
-    using Fanex.NCB.AutoJobs.Core.Criteria;
+    using Criteria;
 
     public class UpdateRecipientSendNotifiactionStatusCommand : BaseCommand
     {

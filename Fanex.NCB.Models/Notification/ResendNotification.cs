@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.Models.Notification
 {
     using System.Collections.Generic;
-    using Fanex.NCB.Models.Common;
+    using Common;
     using Fanex.NCB.Shared.Models.IntegrationMethod;
     using Fanex.NCB.Shared.Models.OIC;
 

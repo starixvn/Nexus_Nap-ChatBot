@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NCB.Services.Interfaces;
+    using Interfaces;
     using Fanex.NCB.Shared.Services.Interfaces;
 
     //public class SettlementInternalLicenseeServiceTestable : SettlementInternalLicenseeService

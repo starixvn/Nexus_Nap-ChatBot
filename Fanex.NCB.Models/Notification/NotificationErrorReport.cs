@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using Fanex.NCB.Models.Common;
+    using Common;
 
     public class NotificationErrorReport :ChannelInfo
     {

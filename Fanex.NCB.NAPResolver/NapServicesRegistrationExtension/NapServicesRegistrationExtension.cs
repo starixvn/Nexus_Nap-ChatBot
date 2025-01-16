@@ -1,12 +1,12 @@
 ﻿namespace Fanex.NCB.NAPResolver
 {
     using System;
-    using Fanex.NAP.Client.AspNetCore.Configuration;
-    using Fanex.NAP.Client.AspNetCore.Session;
-    using Fanex.NAP.Client.Configuration;
-    using Fanex.NAP.Client.Helpers.Web;
-    using Fanex.NAP.Client.Services;
-    using Fanex.NCB.NAPResolver.LocalServices;
+    using NAP.Client.AspNetCore.Configuration;
+    using NAP.Client.AspNetCore.Session;
+    using NAP.Client.Configuration;
+    using NAP.Client.Helpers.Web;
+    using NAP.Client.Services;
+    using LocalServices;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 

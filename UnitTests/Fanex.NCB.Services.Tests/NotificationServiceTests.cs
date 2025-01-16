@@ -4,10 +4,10 @@
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.Criteria.Notification;
-    using Fanex.NCB.Models.Common;
-    using Fanex.NCB.Models.Notification;
-    using Fanex.NCB.Services.Interfaces;
+    using Criteria.Notification;
+    using Models.Common;
+    using Models.Notification;
+    using Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.IntegrationMethod;
     using Fanex.NCB.Shared.Models.OIC;

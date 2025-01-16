@@ -3,10 +3,10 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.AutoJobs.Core.Criteria.MonitoredPlayer;
-    using Fanex.NCB.AutoJobs.Core.Models.Common;
-    using Fanex.NCB.AutoJobs.Core.Models.MonitoredPlayer;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
+    using Criteria.MonitoredPlayer;
+    using Models.Common;
+    using Models.MonitoredPlayer;
+    using Models.NotifictaionSendMessage;
     using Fanex.NCB.AutoJobs.Core.Services;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
     using Newtonsoft.Json;

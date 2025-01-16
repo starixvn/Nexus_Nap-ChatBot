@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.SettingConfiguration
 {
-    using Fanex.Data.Repository;
+    using Data.Repository;
 
     public class GetMappingsCriteria : CriteriaBase
     {

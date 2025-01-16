@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.NotificationType
 {
-    using Fanex.Data.Repository;
+    using Data.Repository;
 
     public class GetNotificationTypeSystemCriteria : CriteriaBase
     {

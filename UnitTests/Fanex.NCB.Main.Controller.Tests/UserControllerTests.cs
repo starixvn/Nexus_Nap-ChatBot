@@ -3,11 +3,11 @@
     using System.Collections.Generic;
     using System.Drawing;
     using System.Threading.Tasks;
-    using Fanex.NAP.Client.Configuration;
-    using Fanex.NAP.Client.Helpers.Web;
+    using NAP.Client.Configuration;
+    using NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Core.Enum;
+    using Core.Enum;
     using Fanex.NCB.Core.Models;
     using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;

@@ -4,7 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.NCB.BotService.Core.Criteria;
-    using Fanex.NCB.BotService.Core.Models;
+    using Models;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;

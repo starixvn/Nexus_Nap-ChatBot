@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Models.SettingConfiguration;
+    using Models.SettingConfiguration;
     using Fanex.NCB.Shared.Models;
 
     public interface ISettingConfigurationService

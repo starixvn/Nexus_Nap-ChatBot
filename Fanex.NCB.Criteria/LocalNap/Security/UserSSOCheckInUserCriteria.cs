@@ -1,8 +1,8 @@
 ﻿namespace Fanex.NCB.Criteria.LocalNap.Security
 {
     using System;
-    using Fanex.Data;
-    using Fanex.Data.Repository;
+    using Data;
+    using Data.Repository;
 
     public class UserSsoCheckInUserCriteria : CriteriaBase
     {

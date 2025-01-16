@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.LocalNap.Group
 {
-    using Fanex.Data.Repository;
+    using Data.Repository;
 
     public class GetGroupByIdCriteria : CriteriaBase
     {

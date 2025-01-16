@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NCB.AutoJobs.Core.Models.ResultAmendment;
+    using Models.ResultAmendment;
     using Fanex.NCB.AutoJobs.Core.Services;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
 

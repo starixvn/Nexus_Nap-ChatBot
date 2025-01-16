@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Models.Setting
 {
-    using Fanex.NCB.Models.Common;
+    using Common;
 
     public class BotName : ChannelInfo
     {

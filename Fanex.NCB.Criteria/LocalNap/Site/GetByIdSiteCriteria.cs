@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.LocalNap.Site
 {
-    using Fanex.Data.Repository;
+    using Data.Repository;
 
     public class GetByIdSiteCriteria : CriteriaBase
     {

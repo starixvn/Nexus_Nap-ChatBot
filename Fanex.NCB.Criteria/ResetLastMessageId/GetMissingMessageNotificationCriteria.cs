@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.ResetLastMessageId
 {
-    using Fanex.Data.Repository;
+    using Data.Repository;
 
     public class GetMissingMessageNotificationCriteria : CriteriaBase
     {

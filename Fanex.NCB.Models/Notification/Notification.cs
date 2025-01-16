@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.Models.Notification
 {
     using System;
-    using Fanex.NCB.Models.Common;
+    using Common;
 
     public class Notification : ChannelInfo
     {

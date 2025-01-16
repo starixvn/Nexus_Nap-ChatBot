@@ -3,7 +3,7 @@
     using System.Threading.Tasks;
     using System;
     using AutoFixture;
-    using Fanex.Logging.Extensions;
+    using Logging.Extensions;
     using Fanex.NCB.AutoJobs.Core.Services;
     using Microsoft.Extensions.Logging;
     using NSubstitute;

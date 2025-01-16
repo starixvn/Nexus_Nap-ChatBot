@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.Data.Repository;
-    using Fanex.NCB.Shared.Models;
+    using Data.Repository;
+    using Models;
 
     #pragma warning disable S2436
     public interface IBaseService

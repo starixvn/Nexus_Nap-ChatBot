@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.Common
 {
-    using Fanex.Data.Repository;
+    using Data.Repository;
 
     public class GetProductsCriteria : CriteriaBase
     {

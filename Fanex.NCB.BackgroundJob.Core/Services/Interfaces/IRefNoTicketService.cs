@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Services.Interfaces
 {
     using System.Threading.Tasks;
-    using Fanex.NCB.AutoJobs.Core.Models.SpecialDeleteTicket.TicketInfo;
+    using Models.SpecialDeleteTicket.TicketInfo;
 
     public interface IRefNoTicketService
     {

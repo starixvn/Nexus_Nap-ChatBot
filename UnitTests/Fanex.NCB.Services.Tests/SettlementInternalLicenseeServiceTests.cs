@@ -3,9 +3,9 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.Models.NotifictaionSendMessage;
-    using Fanex.NCB.Services.Interfaces;
-    using Fanex.NCB.Services.Tests.TestableClasses;
+    using Models.NotifictaionSendMessage;
+    using Interfaces;
+    using TestableClasses;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using NSubstitute;

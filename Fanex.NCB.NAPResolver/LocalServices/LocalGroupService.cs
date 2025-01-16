@@ -3,10 +3,10 @@
     using System;
     using System.Threading.Tasks;
     using Fanex.NAP.Client.Models;
-    using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Criteria.LocalNap.Group;
-    using Fanex.NCB.NAPResolver.Model;
-    using Fanex.NCB.Shared.Services.Interfaces;
+    using NAP.Client.Services;
+    using Criteria.LocalNap.Group;
+    using Model;
+    using Shared.Services.Interfaces;
 
     public class LocalGroupService : IGroupService
     {

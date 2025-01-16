@@ -2,14 +2,14 @@ namespace Fanex.NCB.SkypeBot.Controllers
 {
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NAP.Client;
-    using Fanex.NAP.Client.Helpers.Web;
+    using NAP.Client;
+    using NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.Main.ViewModel.NotificationTemplate;
-    using Fanex.NCB.Models.NotificationTemplate;
-    using Fanex.NCB.NAPResolver.Attributes;
-    using Fanex.NCB.Services.Interfaces;
+    using Core.Constants;
+    using Main.ViewModel.NotificationTemplate;
+    using Models.NotificationTemplate;
+    using NAPResolver.Attributes;
+    using Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;

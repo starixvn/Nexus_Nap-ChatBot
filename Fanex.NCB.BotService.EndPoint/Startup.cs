@@ -1,17 +1,11 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Text;
-    using System.Threading;
-    using Fanex.Caching.Redis;
-    using Fanex.Data;
-    using Fanex.Logging.Extensions;
-    using Fanex.Logging.Extensions.AspNetCore;
+    using Caching.Redis;
+    using Core;
+    using Data;
     using Fanex.Logging.Sentry;
-    using Fanex.NCB.BotService.Core;
-    using Fanex.NCB.Shared.Middlewares;
+    using Logging.Extensions;
+    using Logging.Extensions.AspNetCore;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.DataProtection;
@@ -25,7 +19,13 @@
     using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
     using Sentry;
+    using Shared.Middlewares;
     using StackExchange.Redis;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Text;
+    using System.Threading;
 
     [ExcludeFromCodeCoverage]
     public class Startup

@@ -3,15 +3,15 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NCB.AutoJobs.Core.Criteria.SiteMessage;
-    using Fanex.NCB.AutoJobs.Core.Enum;
-    using Fanex.NCB.AutoJobs.Core.Helpers;
-    using Fanex.NCB.AutoJobs.Core.Models.Common;
+    using Criteria.SiteMessage;
+    using Enum;
+    using Helpers;
+    using Models.Common;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
-    using Fanex.NCB.AutoJobs.Core.Models.SiteMessage;
-    using Fanex.NCB.AutoJobs.Core.Models.SpecialDeleteTicket;
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+    using Models.NotifictaionSendMessage;
+    using Models.SiteMessage;
+    using Models.SpecialDeleteTicket;
+    using Interfaces;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
 

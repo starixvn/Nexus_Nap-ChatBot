@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
+    using Models.NotifictaionSendMessage;
 
     public interface IChatbotService
     {

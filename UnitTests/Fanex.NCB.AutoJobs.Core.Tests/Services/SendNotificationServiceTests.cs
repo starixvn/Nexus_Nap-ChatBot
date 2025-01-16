@@ -7,12 +7,12 @@
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.AutoJobs.Core.Criteria.SendNotification;
-    using Fanex.NCB.AutoJobs.Core.Models.Configurations;
+    using Models.Configurations;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
-    using Fanex.NCB.AutoJobs.Core.SendNotification;
+    using Models.NotifictaionSendMessage;
+    using SendNotification;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
-    using Fanex.NCB.AutoJobs.Core.Tests.Services.TestableClasses;
+    using TestableClasses;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
     using NSubstitute;

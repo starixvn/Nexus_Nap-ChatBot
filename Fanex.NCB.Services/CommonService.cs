@@ -4,10 +4,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NCB.Core.Enum;
-    using Fanex.NCB.Criteria.Common;
-    using Fanex.NCB.Models.Common;
-    using Fanex.NCB.Services.Interfaces;
+    using Core.Enum;
+    using Criteria.Common;
+    using Models.Common;
+    using Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.IntegrationMethod;
     using Fanex.NCB.Shared.Models.OIC;
@@ -38,9 +38,9 @@
             return await baseService.GetDataAsync<NotificationType>(new GetNotificationTypesCriteria());
         }
 
-        public async Task<IEnumerable<Models.Common.Product>> GetProductsAsync()
+        public async Task<IEnumerable<Product>> GetProductsAsync()
         {
-            return await baseService.GetDataAsync<Models.Common.Product>(new GetProductsCriteria());
+            return await baseService.GetDataAsync<Product>(new GetProductsCriteria());
         }
 
         public async Task<IEnumerable<NotificationStatus>> GetNotificationStatusesAsync()

@@ -5,16 +5,16 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
-    using Fanex.NCB.AutoJobs.Core.Constants;
-    using Fanex.NCB.AutoJobs.Core.Criteria.SiteMessage;
-    using Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
-    using Fanex.NCB.AutoJobs.Core.Helpers;
-    using Fanex.NCB.AutoJobs.Core.Models.Common;
+    using Constants;
+    using Criteria.SiteMessage;
+    using Criteria.SpecialDeleteTicket;
+    using Helpers;
+    using Models.Common;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
-    using Fanex.NCB.AutoJobs.Core.Models.SpecialDeleteTicket;
-    using Fanex.NCB.AutoJobs.Core.Models.SpecialDeleteTicket.AbnormalBets;
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+    using Models.NotifictaionSendMessage;
+    using Models.SpecialDeleteTicket;
+    using Models.SpecialDeleteTicket.AbnormalBets;
+    using Interfaces;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
 

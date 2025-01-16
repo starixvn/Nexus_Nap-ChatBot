@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Main.ViewModel.TreeSelect
 {
-    using Fanex.NCB.Models.Common;
+    using Models.Common;
     using System.Collections.Generic;
     using System.Linq;
 

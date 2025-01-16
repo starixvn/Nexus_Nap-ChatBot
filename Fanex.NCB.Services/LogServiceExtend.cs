@@ -2,8 +2,8 @@
 {
     using System;
     using System.Threading.Tasks;
-    using Fanex.Logging.Extensions;
-    using Fanex.NCB.Services.Interfaces;
+    using Logging.Extensions;
+    using Interfaces;
     using Microsoft.Extensions.Logging;
 
     public class LogServiceExtend : ILogService

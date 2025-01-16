@@ -1,9 +1,9 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Tests.Services
 {
     using AutoFixture;
-    using Fanex.NCB.AutoJobs.Core.Models.Configurations;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
-    using Fanex.NCB.AutoJobs.Core.Tests.Services.Helper;
+    using Models.Configurations;
+    using Models.NotifictaionSendMessage;
+    using Helper;
     using Fanex.NCB.AutoJobs.Core.Tests.Services.TestableClasses;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;

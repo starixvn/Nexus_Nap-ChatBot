@@ -2,11 +2,11 @@
 {
     using System;
     using System.Threading.Tasks;
-    using Fanex.NAP.Client;
-    using Fanex.NAP.Client.Configuration;
-    using Fanex.NAP.Client.Helpers.Web;
-    using Fanex.NAP.Client.Services;
-    using Fanex.NCB.NAPResolver.LocalServices;
+    using NAP.Client;
+    using NAP.Client.Configuration;
+    using NAP.Client.Helpers.Web;
+    using NAP.Client.Services;
+    using LocalServices;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Filters;
     using Microsoft.Extensions.Caching.Memory;

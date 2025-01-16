@@ -3,12 +3,12 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NCB.AutoJobs.Core.Criteria.MonitoredPlayer;
-    using Fanex.NCB.AutoJobs.Core.Models.Common;
+    using Criteria.MonitoredPlayer;
+    using Models.Common;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
-    using Fanex.NCB.AutoJobs.Core.Models.MonitoredPlayer;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+    using Models.MonitoredPlayer;
+    using Models.NotifictaionSendMessage;
+    using Interfaces;
     using Newtonsoft.Json;
 
     public class MonitoredPlayerService : IMonitoredPlayerService

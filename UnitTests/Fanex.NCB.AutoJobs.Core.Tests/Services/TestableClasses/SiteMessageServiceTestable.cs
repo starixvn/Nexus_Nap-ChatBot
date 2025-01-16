@@ -3,9 +3,9 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
-    using Fanex.NCB.AutoJobs.Core.Models.SiteMessage;
-    using Fanex.NCB.AutoJobs.Core.Models.SpecialDeleteTicket;
+    using Models.NotifictaionSendMessage;
+    using Models.SiteMessage;
+    using Models.SpecialDeleteTicket;
     using Fanex.NCB.AutoJobs.Core.Services;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
     using Microsoft.Extensions.Configuration;

@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Repository
 {
-    using Fanex.Data;
+    using Data;
     using System.Collections;
     using Fanex.Data.Repository;
     using Fanex.NCB.AutoJobs.Core.Models.Core;

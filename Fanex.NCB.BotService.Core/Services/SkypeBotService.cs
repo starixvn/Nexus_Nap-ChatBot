@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.BotService.Core.Services
 {
-    using Fanex.Logging.Extensions;
+    using Logging.Extensions;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Bot.Builder;

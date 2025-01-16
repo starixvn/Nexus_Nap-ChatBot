@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Models.Setting;
+    using Models.Setting;
 
     public class ChatGroupMappingFilterViewModel
     {

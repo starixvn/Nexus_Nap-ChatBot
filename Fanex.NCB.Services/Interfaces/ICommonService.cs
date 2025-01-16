@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NCB.Models.Common;
+    using Models.Common;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.IntegrationMethod;
     using Fanex.NCB.Shared.Models.OIC;
@@ -11,7 +11,7 @@
     {
         Task<IEnumerable<NotificationType>> GetNotificationTypesAsync();
 
-        Task<IEnumerable<Models.Common.Product>> GetProductsAsync();
+        Task<IEnumerable<Product>> GetProductsAsync();
 
         Task<IEnumerable<Recipient>> GetRecipientsAsync();
 

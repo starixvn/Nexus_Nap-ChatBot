@@ -3,9 +3,9 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NCB.Criteria.NotificationTemplate;
-    using Fanex.NCB.Models.NotificationTemplate;
-    using Fanex.NCB.Services.Interfaces;
+    using Criteria.NotificationTemplate;
+    using Models.NotificationTemplate;
+    using Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
 

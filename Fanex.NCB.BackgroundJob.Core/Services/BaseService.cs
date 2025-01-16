@@ -2,8 +2,8 @@
 {
     using Fanex.Data.Repository;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
-    using Fanex.NCB.AutoJobs.Core.Repository;
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+    using Repository;
+    using Interfaces;
 
     #pragma warning disable S2436
     public class BaseService : IBaseService

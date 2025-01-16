@@ -4,13 +4,13 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NCB.Core.Enum;
-    using Fanex.NCB.Core.Extensions;
+    using Core.Enum;
+    using Core.Extensions;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Criteria.NotificationType;
-    using Fanex.NCB.Criteria.Setting;
-    using Fanex.NCB.Models.Setting;
-    using Fanex.NCB.Services.Interfaces;
+    using Criteria.NotificationType;
+    using Criteria.Setting;
+    using Models.Setting;
+    using Interfaces;
     using Fanex.NCB.Shared.Services.Interfaces;
 
     public class SettingService : ISettingService

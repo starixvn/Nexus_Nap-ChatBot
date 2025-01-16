@@ -3,13 +3,13 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NAP.Client.Configuration;
-    using Fanex.NAP.Client.Helpers.Web;
+    using NAP.Client.Configuration;
+    using NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Core.Enum;
+    using Core.Enum;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.NAPResolver.Attributes;
+    using NAPResolver.Attributes;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;

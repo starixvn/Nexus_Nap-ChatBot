@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Services
 {
-    using Fanex.Logging.Extensions;
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+    using Logging.Extensions;
+    using Interfaces;
     using Microsoft.Extensions.Logging;
 
     public class LogServiceExtend : ILogService

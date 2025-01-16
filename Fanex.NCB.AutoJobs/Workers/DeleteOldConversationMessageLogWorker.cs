@@ -4,10 +4,10 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
-    using Fanex.NCB.AutoJobs.Constants;
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
-    using Fanex.NCB.AutoJobs.Extensions;
-    using Fanex.NCB.AutoJobs.Models;
+    using Constants;
+    using Core.Services.Interfaces;
+    using Extensions;
+    using Models;
     using Microsoft.Extensions.Options;
     using ONEbook.UM.Services;
 

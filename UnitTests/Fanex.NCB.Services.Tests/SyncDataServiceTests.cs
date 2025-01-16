@@ -5,9 +5,9 @@
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.Data.Repository;
-    using Fanex.Logging;
+    using Logging;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Criteria.SyncData;
+    using Criteria.SyncData;
     using Fanex.NCB.Repository.Interfaces;
     using Fanex.NCB.Shared.Models.NapUserControl;
     using Fanex.NCB.Shared.Services.Interfaces;

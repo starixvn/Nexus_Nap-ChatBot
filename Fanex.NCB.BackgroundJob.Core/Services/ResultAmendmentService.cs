@@ -1,12 +1,12 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Services
 {
-    using Fanex.NCB.AutoJobs.Core.Constants;
-    using Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentInternalCSD;
-    using Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentLicensee;
+    using Constants;
+    using Criteria.ResultAmendmentInternalCSD;
+    using Criteria.ResultAmendmentLicensee;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
-    using Fanex.NCB.AutoJobs.Core.Models.ResultAmendment;
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+    using Models.NotifictaionSendMessage;
+    using Models.ResultAmendment;
+    using Interfaces;
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;

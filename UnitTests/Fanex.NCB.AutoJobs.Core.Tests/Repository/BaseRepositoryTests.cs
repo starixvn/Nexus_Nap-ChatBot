@@ -2,7 +2,7 @@
 {
     using System.Collections;
     using System.Threading.Tasks;
-    using Fanex.Data;
+    using Data;
     using Fanex.Data.Repository;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
     using Fanex.NCB.AutoJobs.Core.Repository;

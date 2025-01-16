@@ -1,26 +1,24 @@
-﻿namespace Fanex.NCB.AutoJobs
+﻿using Fanex.Data;
+
+namespace Fanex.NCB.AutoJobs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Threading;
-    using Fanex.Caching;
-    using Fanex.Caching.Redis;
-    using Fanex.Data.MySql;
-    using Fanex.Data.Repository;
-    using Fanex.Data.SqlServer;
-    using Fanex.Logging;
+    using Caching;
+    using Caching.Redis;
+    using Data.MySql;
+    using Data.Repository;
+    using Data.SqlServer;
+    using Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.AspNetCore;
     using Fanex.Logging.Sentry;
-    using Fanex.NCB.AutoJobs.Core.FanexDataExtensions.Services;
+    using Core.FanexDataExtensions.Services;
     using Fanex.NCB.AutoJobs.Core.Models.Configurations;
-    using Fanex.NCB.AutoJobs.Core.Repository;
-    using Fanex.NCB.AutoJobs.Core.Services;
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
-    using Fanex.NCB.AutoJobs.Models;
-    using Fanex.NCB.AutoJobs.Workers;
-    using Fanex.RemotingRef;
+    using Core.Repository;
+    using Core.Services;
+    using Core.Services.Interfaces;
+    using Models;
+    using Workers;
+    using RemotingRef;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Hosting;
@@ -34,6 +32,10 @@
     using ONEbook.UM.Transport;
     using Sentry;
     using StackExchange.Redis;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
 
     [ExcludeFromCodeCoverage(Justification = "Code Starup inject needed services")]
     public class Startup
@@ -47,7 +49,12 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddFanexSql(Configuration).AddFanexMySql(Configuration);
+            DbSettingProviderManager.StartNewSession()
+                .WithSqlServer(Configuration)
+                .WithMySql(Configuration)
+                .UseDefaultDbSettingProvider("App_Data/SpNames.xml", true)
+                .Run();
+
             services.AddControllers();
             AddConfiguration(services, Configuration);
             AddRedisCacheConfig(services);

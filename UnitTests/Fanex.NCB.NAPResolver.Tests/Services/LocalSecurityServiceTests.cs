@@ -6,11 +6,11 @@
     using AutoFixture;
     using Fanex.NAP.Client.Models.ParameterObject;
     using Fanex.NAP.Client.Models.ValueObject;
-    using Fanex.NCB.Core.Enum;
-    using Fanex.NCB.Criteria.LocalNap.Security;
-    using Fanex.NCB.Criteria.LocalNap.Site;
-    using Fanex.NCB.NAPResolver.LocalServices;
-    using Fanex.NCB.Shared.Services.Interfaces;
+    using Core.Enum;
+    using Criteria.LocalNap.Security;
+    using Criteria.LocalNap.Site;
+    using LocalServices;
+    using Shared.Services.Interfaces;
     using NSubstitute;
     using Xunit;
 

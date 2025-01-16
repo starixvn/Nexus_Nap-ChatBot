@@ -5,10 +5,10 @@
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
-    using Fanex.NCB.BotService.Core;
-    using Fanex.NCB.BotService.Core.Criteria;
-    using Fanex.NCB.BotService.Core.Enum;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
+    using Core;
+    using Core.Criteria;
+    using Core.Enum;
+    using Core.Services.Interfaces;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Schema;
 

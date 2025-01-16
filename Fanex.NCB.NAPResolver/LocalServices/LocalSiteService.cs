@@ -4,9 +4,9 @@
     using System.Threading.Tasks;
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ValueObject;
-    using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Criteria.LocalNap.Site;
-    using Fanex.NCB.Shared.Services.Interfaces;
+    using NAP.Client.Services;
+    using Criteria.LocalNap.Site;
+    using Shared.Services.Interfaces;
 
     public class LocalSiteService : ISiteService
     {

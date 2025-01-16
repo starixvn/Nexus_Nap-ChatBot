@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Models.OIC
 {
     using System.Collections.Generic;
-    using Fanex.NCB.AutoJobs.Core.Models.IntegrationMethod;
+    using IntegrationMethod;
 
     public class OicData
     {

@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.LocalNap.User
 {
-    using Fanex.Data.Repository;
+    using Data.Repository;
 
     public class GetMenuItemCriteria : CriteriaBase
     {

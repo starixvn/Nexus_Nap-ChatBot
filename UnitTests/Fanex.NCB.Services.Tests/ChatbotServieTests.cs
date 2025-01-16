@@ -7,9 +7,9 @@
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Models.NotifictaionSendMessage;
-    using Fanex.NCB.Services.Tests.Helper;
-    using Fanex.NCB.Services.Tests.TestableClasses;
+    using Models.NotifictaionSendMessage;
+    using Helper;
+    using TestableClasses;
     using Fanex.NCB.Shared.Models;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;

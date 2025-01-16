@@ -6,9 +6,9 @@
     using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fanex.NCB.BotService.Core.Criteria;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
-    using Fanex.NCB.BotService.EndPoint.Bots;
+    using Core.Criteria;
+    using Core.Services.Interfaces;
+    using Bots;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Schema;
     using NSubstitute;

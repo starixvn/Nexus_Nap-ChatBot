@@ -1,14 +1,14 @@
 ﻿namespace Fanex.NCB.Main.Controllers
 {
-    using Fanex.NAP.Client.Configuration;
-    using Fanex.NAP.Client.Helpers.Web;
+    using NAP.Client.Configuration;
+    using NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ParameterObject;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Core.Extensions;
-    using Fanex.NCB.Models.Auth;
-    using Fanex.NCB.NAPResolver;
-    using Fanex.NCB.Services.Interfaces;
+    using Core.Extensions;
+    using Models.Auth;
+    using NAPResolver;
+    using Services.Interfaces;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;

@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using Fanex.NCB.Criteria.ResetLastMessageId;
     using Fanex.NCB.Models.ResetLastMessageId;
-    using Fanex.NCB.Shared.Extensions;
+    using Shared.Extensions;
     using Xunit;
     using Xunit.Sdk;
 

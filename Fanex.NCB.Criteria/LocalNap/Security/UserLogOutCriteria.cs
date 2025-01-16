@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.LocalNap.Security
 {
-    using Fanex.Data.Repository;
+    using Data.Repository;
 
     public class UserLogOutCriteria : CriteriaBase
 

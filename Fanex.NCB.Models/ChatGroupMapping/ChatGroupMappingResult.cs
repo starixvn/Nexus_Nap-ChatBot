@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Models.ChatGroupMapping
 {
-    using Fanex.NCB.Models.Common;
+    using Common;
 
     public class ChatGroupMappingResult : ChannelInfo
     {

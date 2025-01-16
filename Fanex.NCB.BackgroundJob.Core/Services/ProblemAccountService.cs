@@ -3,13 +3,13 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NCB.AutoJobs.Core.Constants;
-    using Fanex.NCB.AutoJobs.Core.Criteria.ProblemAccount;
-    using Fanex.NCB.AutoJobs.Core.Models.Common;
+    using Constants;
+    using Criteria.ProblemAccount;
+    using Models.Common;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
-    using Fanex.NCB.AutoJobs.Core.Models.ProblemAccounts;
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+    using Models.NotifictaionSendMessage;
+    using Models.ProblemAccounts;
+    using Interfaces;
     using Newtonsoft.Json;
 
     public class ProblemAccountService : IProblemAccountService

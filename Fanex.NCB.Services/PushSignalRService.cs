@@ -3,7 +3,7 @@
     using System;
     using System.Threading.Tasks;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Services.Interfaces;
+    using Interfaces;
     using Microsoft.AspNetCore.Http.Connections;
     using Microsoft.AspNetCore.SignalR.Client;
     using Microsoft.Extensions.Options;

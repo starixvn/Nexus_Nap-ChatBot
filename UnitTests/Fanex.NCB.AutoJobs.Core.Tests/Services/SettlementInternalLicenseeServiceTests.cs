@@ -3,15 +3,15 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.AutoJobs.Core.Criteria.Common;
-    using Fanex.NCB.AutoJobs.Core.Criteria.SettlementInternalCSD;
-    using Fanex.NCB.AutoJobs.Core.Criteria.SettlementLicensee;
-    using Fanex.NCB.AutoJobs.Core.Models.Common;
+    using Criteria.Common;
+    using Criteria.SettlementInternalCSD;
+    using Criteria.SettlementLicensee;
+    using Models.Common;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
-    using Fanex.NCB.AutoJobs.Core.Models.Settlement;
+    using Models.NotifictaionSendMessage;
+    using Models.Settlement;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
-    using Fanex.NCB.AutoJobs.Core.Tests.Services.TestableClasses;
+    using TestableClasses;
     using NSubstitute;
     using Xunit;
 

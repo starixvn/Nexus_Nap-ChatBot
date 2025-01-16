@@ -3,10 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.Data.Repository;
+    using Data.Repository;
     using Fanex.NAP.Core.Extensions;
-    using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Services.Interfaces;
+    using Models;
+    using Interfaces;
 
     #pragma warning disable S2436
     public class BaseService : IBaseService

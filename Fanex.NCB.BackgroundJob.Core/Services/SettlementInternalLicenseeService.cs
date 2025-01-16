@@ -3,14 +3,14 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NCB.AutoJobs.Core.Constants;
-    using Fanex.NCB.AutoJobs.Core.Criteria.SettlementInternalCSD;
-    using Fanex.NCB.AutoJobs.Core.Criteria.SettlementLicensee;
-    using Fanex.NCB.AutoJobs.Core.Helpers;
+    using Constants;
+    using Criteria.SettlementInternalCSD;
+    using Criteria.SettlementLicensee;
+    using Helpers;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
-    using Fanex.NCB.AutoJobs.Core.Models.Settlement;
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+    using Models.NotifictaionSendMessage;
+    using Models.Settlement;
+    using Interfaces;
     using Newtonsoft.Json;
 
     public class SettlementInternalLicenseeService : ISettlementInternalLicenseeService

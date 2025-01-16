@@ -3,10 +3,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NCB.Core.Extensions;
-    using Fanex.NCB.Criteria.ViewLog;
-    using Fanex.NCB.Models.ViewLog;
-    using Fanex.NCB.Services.Interfaces;
+    using Core.Extensions;
+    using Criteria.ViewLog;
+    using Models.ViewLog;
+    using Interfaces;
     using Fanex.NCB.Shared.Services.Interfaces;
 
     public class ViewLogService : IViewLogService

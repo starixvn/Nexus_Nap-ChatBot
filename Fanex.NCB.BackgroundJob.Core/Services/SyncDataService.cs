@@ -3,14 +3,14 @@
     using System;
     using System.Globalization;
     using System.Threading.Tasks;
-    using Fanex.Logging;
-    using Fanex.NCB.AutoJobs.Core.Criteria.SyncData;
-    using Fanex.NCB.AutoJobs.Core.Models.Configurations;
+    using Logging;
+    using Criteria.SyncData;
+    using Models.Configurations;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
-    using Fanex.NCB.AutoJobs.Core.Models.NapUserControl;
-    using Fanex.NCB.AutoJobs.Core.Models.OIC;
-    using Fanex.NCB.AutoJobs.Core.Repository;
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+    using Models.NapUserControl;
+    using Models.OIC;
+    using Repository;
+    using Interfaces;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 

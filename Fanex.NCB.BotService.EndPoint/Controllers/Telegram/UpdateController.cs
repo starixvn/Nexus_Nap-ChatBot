@@ -1,10 +1,10 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Controllers.Telegram
 {
-    using Fanex.NCB.BotService.Core.Criteria;
-    using Fanex.NCB.BotService.Core.Enum;
-    using Fanex.NCB.BotService.Core.Services;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
-    using Fanex.NCB.Shared.Models;
+    using Core.Criteria;
+    using Core.Enum;
+    using Core.Services;
+    using Core.Services.Interfaces;
+    using Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using global::Telegram.Bot.Types;
     using global::Telegram.Bot.Types.Enums;

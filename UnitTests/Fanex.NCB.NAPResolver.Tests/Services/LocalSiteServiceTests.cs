@@ -3,9 +3,9 @@
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NAP.Client.Models.ValueObject;
-    using Fanex.NCB.Criteria.LocalNap.Site;
-    using Fanex.NCB.NAPResolver.LocalServices;
-    using Fanex.NCB.Shared.Services.Interfaces;
+    using Criteria.LocalNap.Site;
+    using LocalServices;
+    using Shared.Services.Interfaces;
     using NSubstitute;
     using Xunit;
 

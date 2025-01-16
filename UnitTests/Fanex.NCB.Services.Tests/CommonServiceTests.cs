@@ -4,9 +4,9 @@
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.Criteria.Common;
-    using Fanex.NCB.Models.Common;
-    using Fanex.NCB.Services.Interfaces;
+    using Criteria.Common;
+    using Models.Common;
+    using Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Models.IntegrationMethod;
     using Fanex.NCB.Shared.Models.OIC;
@@ -42,8 +42,8 @@
         {
             // Arrange
             var service = GetService();
-            var products = fixture.Create<IEnumerable<Models.Common.Product>>();
-            baseService.GetDataAsync<Models.Common.Product>(Arg.Any<GetProductsCriteria>()).Returns(products);
+            var products = fixture.Create<IEnumerable<Product>>();
+            baseService.GetDataAsync<Product>(Arg.Any<GetProductsCriteria>()).Returns(products);
 
             // Act
             var result = await service.GetProductsAsync();

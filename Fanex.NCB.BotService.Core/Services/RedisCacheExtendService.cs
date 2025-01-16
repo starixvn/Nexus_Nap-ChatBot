@@ -3,8 +3,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
-    using Fanex.Caching;
-    using Fanex.NCB.BotService.Core.Models;
+    using Caching;
+    using Models;
     using StackExchange.Redis;
 
     public interface IRedisCacheExtendService

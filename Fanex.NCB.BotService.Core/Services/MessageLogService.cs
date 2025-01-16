@@ -1,8 +1,8 @@
 ﻿namespace Fanex.NCB.BotService.Core.Services
 {
-    using Fanex.Caching;
-    using Fanex.NCB.BotService.Core.Models;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
+    using Caching;
+    using Models;
+    using Interfaces;
     using Fanex.NCB.Shared.Services.Interfaces;
     using System;
     using System.Linq;

@@ -1,8 +1,8 @@
 ﻿namespace Fanex.NCB.NAPResolver.Attributes
 {
     using System;
-    using Fanex.NAP.Client;
-    using Fanex.NAP.Client.Helpers.Web;
+    using NAP.Client;
+    using NAP.Client.Helpers.Web;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Filters;

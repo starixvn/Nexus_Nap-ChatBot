@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Criteria.Setting
 {
-    using Fanex.Data.Repository;
+    using Data.Repository;
 
     public class GetBotNameCriteria : CriteriaBase
     {

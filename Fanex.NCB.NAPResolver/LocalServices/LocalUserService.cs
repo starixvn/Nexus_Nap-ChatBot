@@ -4,15 +4,15 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.Data.Repository;
+    using Data.Repository;
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ValueObject;
-    using Fanex.NAP.Client.Services;
+    using NAP.Client.Services;
     using Fanex.NAP.Core.Business;
-    using Fanex.NCB.Criteria.LocalNap.User;
-    using Fanex.NCB.NAPResolver.Model;
-    using Fanex.NCB.Shared.Services;
-    using Fanex.NCB.Shared.Services.Interfaces;
+    using Criteria.LocalNap.User;
+    using Model;
+    using Shared.Services;
+    using Shared.Services.Interfaces;
 
     public class LocalUserService : IUserService
     {

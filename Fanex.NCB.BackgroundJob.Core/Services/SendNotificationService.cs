@@ -1,13 +1,13 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Services
 {
     using Fanex.NCB.AutoJobs.Core.Criteria.SendNotification;
-    using Fanex.NCB.AutoJobs.Core.Enum;
-    using Fanex.NCB.AutoJobs.Core.Helpers;
-    using Fanex.NCB.AutoJobs.Core.Models.Configurations;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
-    using Fanex.NCB.AutoJobs.Core.SendNotification;
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
-    using Fanex.NCB.Resources;
+    using Enum;
+    using Helpers;
+    using Models.Configurations;
+    using Models.NotifictaionSendMessage;
+    using SendNotification;
+    using Interfaces;
+    using Resources;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
     using System.Net;

@@ -4,14 +4,14 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentInternalCSD;
-    using Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentLicensee;
-    using Fanex.NCB.AutoJobs.Core.Models.Common;
+    using Criteria.ResultAmendmentInternalCSD;
+    using Criteria.ResultAmendmentLicensee;
+    using Models.Common;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
-    using Fanex.NCB.AutoJobs.Core.Models.ResultAmendment;
+    using Models.NotifictaionSendMessage;
+    using Models.ResultAmendment;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
-    using Fanex.NCB.AutoJobs.Core.Tests.Services.TestableClasses;
+    using TestableClasses;
     using NSubstitute;
     using Xunit;
 

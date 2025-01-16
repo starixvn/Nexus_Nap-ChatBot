@@ -1,14 +1,14 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint
 {
-    using Fanex.Caching;
-    using Fanex.Data.Repository;
-    using Fanex.NCB.BotService.Core;
-    using Fanex.NCB.BotService.Core.Models;
-    using Fanex.NCB.BotService.Core.Services;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
-    using Fanex.NCB.BotService.EndPoint.Bots;
-    using Fanex.NCB.Shared.Services;
-    using Fanex.NCB.Shared.Services.Interfaces;
+    using Caching;
+    using Data.Repository;
+    using Core;
+    using Core.Models;
+    using Core.Services;
+    using Core.Services.Interfaces;
+    using Bots;
+    using Shared.Services;
+    using Shared.Services.Interfaces;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Builder.Integration.AspNet.Core;

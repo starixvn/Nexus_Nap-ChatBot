@@ -5,11 +5,11 @@
     using System.Linq;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.Data;
-    using Fanex.NCB.Criteria.LocalNap.User;
-    using Fanex.NCB.NAPResolver.LocalServices;
-    using Fanex.NCB.NAPResolver.Model;
-    using Fanex.NCB.Shared.Services.Interfaces;
+    using Data;
+    using Criteria.LocalNap.User;
+    using LocalServices;
+    using Model;
+    using Shared.Services.Interfaces;
     using NSubstitute;
     using Xunit;
     using static Fanex.NAP.Core.Business.Constant;

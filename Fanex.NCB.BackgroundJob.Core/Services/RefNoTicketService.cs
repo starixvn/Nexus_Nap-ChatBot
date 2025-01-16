@@ -7,9 +7,9 @@
     using System.Security.Cryptography;
     using System.Text;
     using System.Threading.Tasks;
-    using Fanex.NCB.AutoJobs.Core.Helpers;
-    using Fanex.NCB.AutoJobs.Core.Models.SpecialDeleteTicket.TicketInfo;
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+    using Helpers;
+    using Models.SpecialDeleteTicket.TicketInfo;
+    using Interfaces;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
 

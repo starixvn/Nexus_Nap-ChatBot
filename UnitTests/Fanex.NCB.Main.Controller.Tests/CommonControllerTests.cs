@@ -3,9 +3,9 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.Main.ViewModel.TreeSelect;
-    using Fanex.NCB.Models.Common;
-    using Fanex.NCB.Services.Interfaces;
+    using ViewModel.TreeSelect;
+    using Models.Common;
+    using Services.Interfaces;
     using Fanex.NCB.Shared.Models.OIC;
     using Fanex.NCB.SkypeBot.Controllers;
     using FluentAssertions;
@@ -38,14 +38,14 @@
         {
             var controller = GetController();
             var fixture = new Fixture();
-            var expectedProducts = fixture.Create<IEnumerable<Models.Common.Product>>();
+            var expectedProducts = fixture.Create<IEnumerable<Product>>();
 
             commonService.GetProductsAsync().Returns(expectedProducts);
 
             var result = await controller.GetProducts();
 
             var json = Assert.IsType<JsonResult>(result);
-            var returnedProducts = Assert.IsAssignableFrom<IEnumerable<Models.Common.Product>>(json.Value);
+            var returnedProducts = Assert.IsAssignableFrom<IEnumerable<Product>>(json.Value);
             Assert.Equal(expectedProducts, returnedProducts);
         }
 

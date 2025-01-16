@@ -3,8 +3,8 @@
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
-    using Fanex.NCB.AutoJobs.Core.Models.Configurations;
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+    using Models.Configurations;
+    using Interfaces;
     using Microsoft.AspNetCore.Http.Connections;
     using Microsoft.AspNetCore.SignalR.Client;
     using Microsoft.Extensions.Options;

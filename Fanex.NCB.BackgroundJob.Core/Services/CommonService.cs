@@ -1,14 +1,14 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Services
 {
     using System.Threading.Tasks;
-    using Fanex.NCB.AutoJobs.Core.Criteria.Common;
-    using Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
-    using Fanex.NCB.AutoJobs.Core.Enum;
-    using Fanex.NCB.AutoJobs.Core.Models.Common;
+    using Criteria.Common;
+    using Criteria.SpecialDeleteTicket;
+    using Enum;
+    using Models.Common;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
-    using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
-    using Fanex.RemotingRef;
+    using Models.NotifictaionSendMessage;
+    using Interfaces;
+    using RemotingRef;
 
     public class CommonService : ICommonService
     {

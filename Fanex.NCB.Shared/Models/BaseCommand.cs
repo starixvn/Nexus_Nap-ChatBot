@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Shared.Models
 {
-    using Fanex.Data.Repository;
+    using Data.Repository;
 
     public abstract class BaseCommand : NonQueryCommand
     {

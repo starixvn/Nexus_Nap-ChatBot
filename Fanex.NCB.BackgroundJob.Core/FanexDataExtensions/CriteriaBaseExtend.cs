@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.FanexDataExtensions
 {
-    using Fanex.Data;
+    using Data;
     using Fanex.Data.Repository;
 
     public interface ICriteriaExtend : ICriteria

@@ -2,8 +2,8 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NCB.Models.Common;
-    using Fanex.NCB.Models.Notification;
+    using Models.Common;
+    using Models.Notification;
     using Fanex.NCB.Shared.Models;
 
     public interface INotificationService

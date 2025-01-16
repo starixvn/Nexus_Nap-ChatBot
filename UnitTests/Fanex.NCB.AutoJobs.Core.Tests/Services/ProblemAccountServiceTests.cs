@@ -3,11 +3,11 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.NCB.AutoJobs.Core.Constants;
-    using Fanex.NCB.AutoJobs.Core.Criteria.ProblemAccount;
-    using Fanex.NCB.AutoJobs.Core.Models.Common;
-    using Fanex.NCB.AutoJobs.Core.Models.NotifictaionSendMessage;
-    using Fanex.NCB.AutoJobs.Core.Models.ProblemAccounts;
+    using Constants;
+    using Criteria.ProblemAccount;
+    using Models.Common;
+    using Models.NotifictaionSendMessage;
+    using Models.ProblemAccounts;
     using Fanex.NCB.AutoJobs.Core.Services;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
     using Newtonsoft.Json;

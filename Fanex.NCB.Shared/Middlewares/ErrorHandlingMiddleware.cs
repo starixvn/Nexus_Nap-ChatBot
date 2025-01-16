@@ -2,7 +2,7 @@
 {
     using System;
     using System.Threading.Tasks;
-    using Fanex.Logging;
+    using Logging;
     using Fanex.Logging.Extensions;
     using Microsoft.AspNetCore.Http;
 

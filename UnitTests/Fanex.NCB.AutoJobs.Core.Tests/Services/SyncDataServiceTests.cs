@@ -5,11 +5,11 @@
     using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.Data.Repository;
-    using Fanex.Logging;
-    using Fanex.NCB.AutoJobs.Core.Criteria.SyncData;
-    using Fanex.NCB.AutoJobs.Core.Models.Configurations;
-    using Fanex.NCB.AutoJobs.Core.Models.NapUserControl;
-    using Fanex.NCB.AutoJobs.Core.Models.OIC;
+    using Logging;
+    using Criteria.SyncData;
+    using Models.Configurations;
+    using Models.NapUserControl;
+    using Models.OIC;
     using Fanex.NCB.AutoJobs.Core.Repository;
     using Fanex.NCB.AutoJobs.Core.Services;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;

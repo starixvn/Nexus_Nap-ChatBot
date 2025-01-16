@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Tests
 {
     using System.Threading.Tasks;
-    using Fanex.NCB.BotService.EndPoint.Controllers;
+    using Controllers;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Builder.Integration.AspNet.Core;

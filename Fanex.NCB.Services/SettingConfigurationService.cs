@@ -4,12 +4,12 @@
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
-    using Fanex.NCB.Core.Constants;
+    using Core.Constants;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Criteria.SettingConfiguration;
-    using Fanex.NCB.Models.Notification;
-    using Fanex.NCB.Models.SettingConfiguration;
-    using Fanex.NCB.Services.Interfaces;
+    using Criteria.SettingConfiguration;
+    using Models.Notification;
+    using Models.SettingConfiguration;
+    using Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Newtonsoft.Json;
