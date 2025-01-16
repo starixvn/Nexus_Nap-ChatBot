@@ -4,38 +4,37 @@ namespace Fanex.NCB.AutoJobs
 {
     using Caching;
     using Caching.Redis;
-    using Data.MySql;
-    using Data.Repository;
-    using Data.SqlServer;
-    using Logging;
-    using Fanex.Logging.Extensions;
-    using Fanex.Logging.Extensions.AspNetCore;
-    using Fanex.Logging.Sentry;
-    using Core.FanexDataExtensions.Services;
-    using Fanex.NCB.AutoJobs.Core.Models.Configurations;
     using Core.Repository;
     using Core.Services;
     using Core.Services.Interfaces;
-    using Models;
-    using Workers;
-    using RemotingRef;
+    using Data.MySql;
+    using Data.Repository;
+    using Data.SqlServer;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.AspNetCore;
+    using Fanex.Logging.Sentry;
+    using Fanex.NCB.AutoJobs.Core.Models.Configurations;
+    using Logging;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Models;
     using ONEbook.UM.AspNetCore;
     using ONEbook.UM.Configurations;
     using ONEbook.UM.Helpers;
     using ONEbook.UM.Services;
     using ONEbook.UM.Transport;
+    using RemotingRef;
     using Sentry;
     using StackExchange.Redis;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
+    using Workers;
 
     [ExcludeFromCodeCoverage(Justification = "Code Starup inject needed services")]
     public class Startup
@@ -162,7 +161,6 @@ namespace Fanex.NCB.AutoJobs
             services.AddSingleton<IProblemAccountService, ProblemAccountService>();
             services.AddSingleton<IMonitoredPlayerService, MonitoredPlayerService>();
             services.AddSingleton<ISiteDbService, SiteDbService>();
-            services.AddSingleton<IDynamicConnectionService, DynamicConnectionService>();
             services.AddSingleton<ICacheService, CacheService>();
             services.AddSingleton<ISettlementInternalLicenseeService, SettlementInternalLicenseeService>();
             services.AddSingleton<IResultAmendmentService, ResultAmendmentService>();

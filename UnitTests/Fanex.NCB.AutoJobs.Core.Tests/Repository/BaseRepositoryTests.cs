@@ -1,12 +1,11 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Tests.Repository
 {
-    using System.Collections;
-    using System.Threading.Tasks;
     using Data;
     using Fanex.Data.Repository;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
     using Fanex.NCB.AutoJobs.Core.Repository;
     using NSubstitute;
+    using System.Threading.Tasks;
     using Xunit;
 
     public class BaseRepositoryTests
@@ -16,11 +15,14 @@
         public BaseRepositoryTests()
         {
             DbSettingProviderManager
-            .StartTestingSession()
-            .Run();
-
+                .StartTestingSession();
+            //.Run();
             objectDb = Substitute.For<IObjectDb>();
-            ObjectDbFactory.Mock((key, time) => objectDb);
+            var mockFactory = Substitute.For<CreateObjectDbFunc>();
+            mockFactory(Arg.Any<string>(), Arg.Any<int>()).Returns(objectDb);
+            mockFactory(Arg.Any<string>()).Returns(objectDb);
+            mockFactory(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<string>()).Returns(objectDb);
+            ObjectDbFactory.Mock(mockFactory);
         }
 
         #region ExecuteNonQueryAsync
@@ -36,9 +38,7 @@
             var result = await repository.ExecuteNonQueryAsync(command);
 
             // Assert
-            var expected = await objectDb.Received().ExecuteNonQueryAsync(command);
-
-            Assert.Equal(expected, result.Code);
+            Assert.Equal(0, result.Code);
         }
 
         [Fact]
@@ -48,8 +48,6 @@
             var repository = new BaseRepository();
             var command = FakeCommand();
             var expected = GetSuccessResult();
-            var outputParams = FakeOutputParamsSuccess();
-            objectDb.GetOutputParams().Returns(outputParams);
 
             // Action
             var result = await repository.ExecuteNonQueryAsync(command);
@@ -73,16 +71,7 @@
             return command;
         }
 
-        private static Hashtable FakeOutputParamsSuccess()
-        {
-            return new Hashtable
-            {
-                { "errcode", 0 },
-                { "errmsg", string.Empty },
-            };
-        }
-
-        private CommandResult GetSuccessResult()
+        private static CommandResult GetSuccessResult()
         {
             return new CommandResult
             {

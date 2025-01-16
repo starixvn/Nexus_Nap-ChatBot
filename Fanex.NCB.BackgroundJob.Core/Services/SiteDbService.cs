@@ -1,37 +1,30 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Services
 {
     using Caching;
-    using Fanex.Data.Repository;
     using Criteria.SpecialDeleteTicket;
-    using Fanex.NCB.AutoJobs.Core.FanexDataExtensions.Services;
+    using Fanex.Data.Repository;
     using Helpers;
-    using Models.Common;
-    using Models.SpecialDeleteTicket.AbnormalBets;
     using Interfaces;
     using Microsoft.Extensions.Configuration;
+    using Models.Common;
+    using Models.SpecialDeleteTicket.AbnormalBets;
 
     public class SiteDbService : ISiteDbService
     {
-        private readonly IBaseService baseService;
         private readonly ICacheService cacheService;
-        private readonly IDynamicConnectionService dynamicConnectionService;
         private readonly IDynamicRepository dynamicRepository;
         private readonly ILogService logService;
         private const string ListSiteDbCacheKey = "ListSiteDbCachingKey";
-        private readonly int CacheExpiration;
+        private readonly int cacheExpiration;
 
-        public SiteDbService(IBaseService baseService,
-            ICacheService cacheService,
-            IDynamicConnectionService dynamicConnectionService,
+        public SiteDbService(ICacheService cacheService,
             IConfiguration configuration,
             IDynamicRepository dynamicRepository,
             ILogService logService)
         {
-            this.baseService = baseService;
             this.cacheService = cacheService;
-            this.dynamicConnectionService = dynamicConnectionService;
             this.dynamicRepository = dynamicRepository;
-            CacheExpiration = configuration.GetValue<int>("SiteDbCachingExpiration");
+            cacheExpiration = configuration.GetValue<int>("SiteDbCachingExpiration");
             this.logService = logService;
         }
 
@@ -41,12 +34,12 @@
 
             if (siteDbList is null || !siteDbList.Any())
             {
-                siteDbList = await baseService.GetDataAsync<SiteDBConfig>(new GetSiteDbListCriteria());
+                siteDbList = await dynamicRepository.FetchAsync<SiteDBConfig>(new GetSiteDbListCriteria());
 
                 await cacheService.SetAsync(ListSiteDbCacheKey, siteDbList,
                     new CacheItemOptions
                     {
-                        RelativeExpiration = TimeSpan.FromMinutes(CacheExpiration)
+                        RelativeExpiration = TimeSpan.FromMinutes(cacheExpiration)
                     });
             }
 
@@ -117,7 +110,6 @@
             {
                 var criteria = new AbnormalBetGetUsernameTicketInfoCriteria
                 {
-                    ServerIp = siteDb.AGIP,
                     AbnormalBetsInfo = abnormalBetsInfo,
                     AbnormalAccountsInfo = abnormalAccounts,
                     DuplicatedTickets = duplicatedTickets,
@@ -125,7 +117,6 @@
                 };
 
                 results = await dynamicRepository.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames, DuplicatedTicketInfo>(criteria, siteDb.AGIP);
-                //results = await dynamicConnectionService.FetchMultipleAsync<AbnormalTicketInfo, AbnormalUsernames, DuplicatedTicketInfo>(criteria);
             }
             catch (Exception exception)
             {

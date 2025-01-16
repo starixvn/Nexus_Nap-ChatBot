@@ -1,9 +1,9 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Repository
 {
     using Data;
-    using System.Collections;
     using Fanex.Data.Repository;
     using Fanex.NCB.AutoJobs.Core.Models.Core;
+    using System.Collections;
 
     public interface IBaseRepository
     {
@@ -14,13 +14,11 @@
     {
         public async Task<CommandResult> ExecuteNonQueryAsync(INonQueryCommand command)
         {
-            using (var db = ObjectDbFactory.CreateInstance(command.GetSettingKey()))
-            {
-                await db.ExecuteNonQueryAsync(command);
-                CommandResult commandResult = GetCommandResult(db.GetOutputParams());
+            using var db = ObjectDbFactory.CreateInstance(command.GetSettingKey());
+            await db.ExecuteNonQueryAsync(command);
+            var commandResult = GetCommandResult(db.GetOutputParams());
 
-                return commandResult;
-            }
+            return commandResult;
         }
 
         private static CommandResult GetCommandResult(Hashtable hash)

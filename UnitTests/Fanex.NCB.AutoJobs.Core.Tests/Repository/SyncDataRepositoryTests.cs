@@ -1,14 +1,14 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Tests.Repository
 {
+    using Data;
+    using Fanex.Data.Repository;
+    using Fanex.NCB.AutoJobs.Core.Repository;
+    using Models.NapUserControl;
+    using Models.OIC;
+    using NSubstitute;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Data;
-    using Fanex.Data.Repository;
-    using Models.NapUserControl;
-    using Models.OIC;
-    using Fanex.NCB.AutoJobs.Core.Repository;
-    using NSubstitute;
     using Xunit;
 
     public class SyncDataRepositoryTests
@@ -18,11 +18,11 @@
         public SyncDataRepositoryTests()
         {
             DbSettingProviderManager
-            .StartTestingSession()
-            .Run();
-
+                .StartTestingSession();
             objectDb = Substitute.For<IObjectDb>();
-            ObjectDbFactory.Mock((key, time) => objectDb);
+            var mockFactory = Substitute.For<CreateObjectDbFunc>();
+            mockFactory.Invoke(Arg.Any<string>(), Arg.Any<int>()).Returns(objectDb);
+            ObjectDbFactory.Mock(mockFactory);
         }
 
         [Fact]
