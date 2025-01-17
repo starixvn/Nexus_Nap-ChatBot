@@ -21,8 +21,9 @@
                 .StartTestingSession();
             objectDb = Substitute.For<IObjectDb>();
             var mockFactory = Substitute.For<CreateObjectDbFunc>();
-            mockFactory.Invoke(Arg.Any<string>(), Arg.Any<int>()).Returns(objectDb);
+            mockFactory(Arg.Any<string>(), Arg.Any<int>()).Returns(objectDb);
             ObjectDbFactory.Mock(mockFactory);
+            ObjectDbFactory.CreateInstance(Arg.Any<string>()).Returns(objectDb);
         }
 
         [Fact]
@@ -31,7 +32,7 @@
             var multiReader = FakeMultipleResultReader();
             var criteria = FakeCriteria();
             var repository = new SyncDataRepository();
-            multiReader.Read<NapFunction>().Returns(new List<NapFunction> { new NapFunction { FunctionId = 1 } });
+            multiReader.Read<NapFunction>().Returns(new List<NapFunction> { new() { FunctionId = 1 } });
             multiReader.Read<NapGroup>().Returns(new List<NapGroup>());
             multiReader.Read<NapGroupFunction>().Returns(new List<NapGroupFunction>());
             multiReader.Read<NapMenuItem>().Returns(new List<NapMenuItem>());

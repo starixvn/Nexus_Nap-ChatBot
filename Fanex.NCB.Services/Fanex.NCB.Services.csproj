@@ -7,17 +7,17 @@
       <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Fanex.Logging" Version="2.0.1" />
-        <PackageReference Include="Fanex.RemotingRef" Version="1.5.0" />
+        <PackageReference Include="Fanex.Logging" Version="2.0.2" />
+        <PackageReference Include="Fanex.RemotingRef" Version="1.5.4" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.0" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
-        <PackageReference Include="ONEbook.UM.AspNetCore" Version="3.1.0-beta05" />
-        <PackageReference Include="ONEbook.UM.Transport" Version="3.1.1" />
+        <PackageReference Include="ONEbook.UM" Version="3.2.4" />
         <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.0" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Fanex.NCB.Core\Fanex.NCB.Core.csproj" />

@@ -1,4 +1,7 @@
 ﻿using Fanex.Data;
+using Fanex.Logging.Sentry.RavenClient;
+using ONEbook.UM.DependencyInjection;
+using SharpRaven;
 
 namespace Fanex.NCB.AutoJobs
 {
@@ -12,7 +15,6 @@ namespace Fanex.NCB.AutoJobs
     using Data.SqlServer;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.AspNetCore;
-    using Fanex.Logging.Sentry;
     using Fanex.NCB.AutoJobs.Core.Models.Configurations;
     using Logging;
     using Microsoft.AspNetCore.Builder;
@@ -22,13 +24,7 @@ namespace Fanex.NCB.AutoJobs
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Models;
-    using ONEbook.UM.AspNetCore;
-    using ONEbook.UM.Configurations;
-    using ONEbook.UM.Helpers;
-    using ONEbook.UM.Services;
-    using ONEbook.UM.Transport;
     using RemotingRef;
-    using Sentry;
     using StackExchange.Redis;
     using System;
     using System.Collections.Generic;
@@ -133,10 +129,7 @@ namespace Fanex.NCB.AutoJobs
         {
             #region ONEbookUM
 
-            services.AddSingleton(new UMClientConfiguration().Initialize(configuration));
-            services.AddSingleton<IUMCacheService, UMCacheService>();
-            services.AddSingleton<IUMRestClient, UMRestClient>();
-            services.AddSingleton<IMaintenanceService, MaintenanceService>();
+            services.AddOneBookUmForService(configuration);
 
             #endregion ONEbookUM
 

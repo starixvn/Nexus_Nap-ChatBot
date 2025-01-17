@@ -1,17 +1,14 @@
-﻿namespace Fanex.NCB.Main
+﻿using Fanex.Logging.Sentry.RavenClient;
+using ONEbook.UM.DependencyInjection;
+using SharpRaven;
+
+namespace Fanex.NCB.Main
 {
     using Data;
+    using Hubs;
     using Logging;
     using Logging.Extensions;
     using Logging.Extensions.AspNetCore;
-    using Fanex.Logging.Sentry;
-    using NAP.Client;
-    using NAP.Client.Configuration;
-    using NAP.Client.Helpers.Web;
-    using AppConfig;
-    using Hubs;
-    using NAPResolver;
-    using Shared.Middlewares;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.DataProtection;
@@ -23,9 +20,11 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using ONEbook.UM.AspNetCore;
-    using ONEbook.UM.Configurations;
-    using Sentry;
+    using NAP.Client;
+    using NAP.Client.Configuration;
+    using NAP.Client.Helpers.Web;
+    using NAPResolver;
+    using Shared.Middlewares;
     using StackExchange.Redis;
     using System;
     using System.Collections.Generic;
@@ -102,7 +101,7 @@
 
             services.AddNapServices(Configuration);
             services.AddTransient<ILogger, Logger>();
-            services.AddSingleton(new UMClientConfiguration().Initialize(Configuration));
+            services.AddOneBookUmForWeb(Configuration);
 
             services.RegisterServices();
             services.RegisterRepositories();

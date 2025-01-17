@@ -1,9 +1,11 @@
-﻿namespace Fanex.NCB.BotService.EndPoint
+﻿using Fanex.Logging.Sentry.RavenClient;
+using SharpRaven;
+
+namespace Fanex.NCB.BotService.EndPoint
 {
     using Caching.Redis;
     using Core;
     using Data;
-    using Fanex.Logging.Sentry;
     using Logging.Extensions;
     using Logging.Extensions.AspNetCore;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,7 +20,6 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
-    using Sentry;
     using Shared.Middlewares;
     using StackExchange.Redis;
     using System;

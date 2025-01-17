@@ -16,11 +16,8 @@
         {
             DbSettingProviderManager
                 .StartTestingSession();
-            //.Run();
             objectDb = Substitute.For<IObjectDb>();
             var mockFactory = Substitute.For<CreateObjectDbFunc>();
-            mockFactory(Arg.Any<string>(), Arg.Any<int>()).Returns(objectDb);
-            mockFactory(Arg.Any<string>()).Returns(objectDb);
             mockFactory(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<string>()).Returns(objectDb);
             ObjectDbFactory.Mock(mockFactory);
         }
