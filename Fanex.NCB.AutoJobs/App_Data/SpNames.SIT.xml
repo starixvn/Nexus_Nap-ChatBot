@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Functions>
     <Function Name="Send Notification">
-        <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>
-        <Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus_xpre" DbName="ChatBot" Plain="0"></Setting>
+        <Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd_xpre" DbName="ChatBot" Plain="0"></Setting>
     </Function>
     <Function Name="Sync Data">
         <Setting Key="NAP_ChatBot_GetDataBySiteId" SpName="NAP_ChatBot_GetDataBySiteId" DbName="DBPOL.NAP_UserControl.wsv_nap" Plain="0"></Setting>
