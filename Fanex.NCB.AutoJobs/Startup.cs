@@ -22,7 +22,6 @@ namespace Fanex.NCB.AutoJobs
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
     using Models;
     using RemotingRef;
     using StackExchange.Redis;

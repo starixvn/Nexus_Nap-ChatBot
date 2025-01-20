@@ -1,15 +1,15 @@
 ﻿namespace Fanex.NCB.AutoJobs.Workers
 {
+    using Constants;
+    using Core.Services.Interfaces;
+    using Extensions;
+    using Microsoft.Extensions.Options;
+    using Models;
+    using ONEbook.UM.Services;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
-    using Constants;
-    using Core.Services.Interfaces;
-    using Extensions;
-    using Models;
-    using Microsoft.Extensions.Options;
-    using ONEbook.UM.Services;
 
     [ExcludeFromCodeCoverage(Justification = "Worker don't needed test")]
     public class DeleteOldConversationMessageLogWorker : BaseWorker
@@ -24,7 +24,7 @@
                 : base(maintenanceService, logService)
         {
             this.commonService = commonService;
-            jobSetting = JobHelper.GetJobConfig(jobSettings.Value, JobConstants.DeleteOldConversationMessageLog);
+            JobSetting = JobHelper.GetJobConfig(jobSettings.Value, JobConstants.DeleteOldConversationMessageLog);
         }
 
         public override async Task ExecuteJobAsync()

@@ -2,7 +2,6 @@
 {
     using Core.Services.Interfaces;
     using Models;
-    using Microsoft.Extensions.Hosting;
     using ONEbook.UM.Services;
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -15,7 +14,7 @@
         private readonly IMaintenanceService maintenanceService;
         private readonly ILogService logService;
 
-        protected JobSetting jobSetting;
+        protected JobSetting JobSetting;
 
         protected BaseWorker(
             IMaintenanceService maintenanceService,
@@ -27,8 +26,8 @@
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            const byte MillisecondsDelay = 10;
-            await Task.Delay(MillisecondsDelay).ConfigureAwait(false);
+            const byte millisecondsDelay = 10;
+            await Task.Delay(millisecondsDelay, stoppingToken).ConfigureAwait(false);
 
             try
             {
@@ -36,7 +35,7 @@
                 {
                     await RunJobAsync();
 
-                    await Task.Delay(TimeSpan.FromSeconds(jobSetting.TimeInterval), stoppingToken);
+                    await Task.Delay(TimeSpan.FromSeconds(JobSetting.TimeInterval), stoppingToken);
                 }
 
                 logService.WriteLogFileInfo($"Execution ended. Cancelation token cancelled = {stoppingToken.IsCancellationRequested}");
@@ -50,7 +49,7 @@
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            logService.WriteLogFileInfo($"{jobSetting.JobName}: Service Starting");
+            logService.WriteLogFileInfo($"{JobSetting.JobName}: Service Starting");
             return base.StartAsync(cancellationToken);
         }
 
@@ -58,18 +57,18 @@
         {
             try
             {
-                if (jobSetting.IsEnabled
-                    && (!jobSetting.HasCheckUM || !IsUM()))
+                if (JobSetting.IsEnabled
+                    && (!JobSetting.HasCheckUM || !IsUM()))
                 {
-                    logService.WriteLogFileWarning($"{jobSetting.JobName}: Doing...");
+                    logService.WriteLogFileWarning($"{JobSetting.JobName}: Doing...");
                     await ExecuteJobAsync();
-                    logService.WriteLogFileWarning($"{jobSetting.JobName}: Done.");
+                    logService.WriteLogFileWarning($"{JobSetting.JobName}: Done.");
                 }
             }
             catch (Exception ex)
             {
                 _ = logService.WriteExceptionSentryErrorAsync(ex);
-                logService.WriteLogFileError($"{jobSetting.JobName}: Error - {ex}");
+                logService.WriteLogFileError($"{JobSetting.JobName}: Error - {ex}");
             }
         }
 
@@ -77,14 +76,14 @@
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            logService.WriteLogFileWarning($"{jobSetting.JobName}: Stopping Service");
+            logService.WriteLogFileWarning($"{JobSetting.JobName}: Stopping Service");
 
             await base.StopAsync(cancellationToken);
         }
 
         public override void Dispose()
         {
-            logService.WriteLogFileWarning($"{jobSetting.JobName}: Disposing Service");
+            logService.WriteLogFileWarning($"{JobSetting.JobName}: Disposing Service");
             GC.SuppressFinalize(this);
             base.Dispose();
         }
@@ -92,7 +91,7 @@
         private bool IsUM()
         {
             var maintanceTime = maintenanceService.GetUnderMaintenanceTime();
-            logService.WriteLogFileWarning($"Job: {jobSetting.JobName} - Is UM: {maintanceTime.IsUnderMaintenanceTime}");
+            logService.WriteLogFileWarning($"Job: {JobSetting.JobName} - Is UM: {maintanceTime.IsUnderMaintenanceTime}");
             return maintanceTime.IsUnderMaintenanceTime;
         }
     }

@@ -1,14 +1,14 @@
 ﻿namespace Fanex.NCB.AutoJobs.Workers
 {
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Threading.Tasks;
     using Constants;
     using Core.Services.Interfaces;
     using Extensions;
-    using Models;
     using Microsoft.Extensions.Options;
+    using Models;
     using ONEbook.UM.Services;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Threading.Tasks;
 
     [ExcludeFromCodeCoverage(Justification = "Worker don't needed test")]
     public class SyncDataFromOICWorker : BaseWorker
@@ -23,7 +23,7 @@
                 : base(maintenanceService, logService)
         {
             this.syncDataService = syncDataService;
-            jobSetting = JobHelper.GetJobConfig(jobSettings.Value, JobConstants.SyncOICData);
+            JobSetting = JobHelper.GetJobConfig(jobSettings.Value, JobConstants.SyncOICData);
         }
 
         public override async Task ExecuteJobAsync()

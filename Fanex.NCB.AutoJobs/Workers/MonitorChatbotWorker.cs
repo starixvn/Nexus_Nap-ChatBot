@@ -1,14 +1,14 @@
 ﻿namespace Fanex.NCB.AutoJobs.Workers
 {
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Threading.Tasks;
     using Constants;
     using Core.Services.Interfaces;
     using Extensions;
-    using Models;
     using Microsoft.Extensions.Options;
+    using Models;
     using ONEbook.UM.Services;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Threading.Tasks;
 
     [ExcludeFromCodeCoverage(Justification = "Worker don't needed test")]
     public class MonitorChatbotWorker : BaseWorker
@@ -23,7 +23,7 @@
                 : base(maintenanceService, logService)
         {
             this.chatbotService = chatbotService;
-            jobSetting = JobHelper.GetJobConfig(jobSettings.Value, JobConstants.MonitorSkypebot);
+            JobSetting = JobHelper.GetJobConfig(jobSettings.Value, JobConstants.MonitorSkypebot);
         }
 
         public override async Task ExecuteJobAsync()
