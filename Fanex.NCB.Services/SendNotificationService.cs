@@ -85,7 +85,8 @@
                     ConversationBotID = r.BotId,
                     Retry = isRetry,
                     IsSuccess = false,
-                    ErrMsg = GenerateErrorMessage(r.RecipientStatus, r.ErrorMessage)
+                    ErrMsg = GenerateErrorMessage(r.RecipientStatus, r.ErrorMessage),
+                    FailedImages = r.FailedImages != null && r.FailedImages.Any() ? string.Join(",", r.FailedImages) : string.Empty
                 });
 
                 await UpdateSentNotificationStatusAsync(updateNoti);
@@ -207,7 +208,8 @@
                         ConversationBotID = recipient.BotId,
                         Retry = true,
                         IsSuccess = false,
-                        ErrMsg = GenerateErrorMessage(RecipientStatuses.BotServiceError, errorMessage)
+                        ErrMsg = GenerateErrorMessage(RecipientStatuses.BotServiceError, errorMessage),
+                        FailedImages = string.Empty
                     };
                     updateNotiModels.Add(model);
                 }
@@ -237,6 +239,7 @@
                         ConversationBotID = recipient.BotId,
                         Retry = result.ErrorCode != 0 && !result.IsIgnoreRetry,
                         IsSuccess = result.ErrorCode == 0,
+                        FailedImages = result.FailedImages,
                         ErrMsg = result.ErrorCode == 0
                             ? string.Empty : GenerateErrorMessage(RecipientStatuses.BotServiceError, result.ErrorMessage)
                     };
