@@ -6,40 +6,39 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace Fanex.NCB.Criteria.Tests.LocalNap
+namespace Fanex.NCB.Criteria.Tests.LocalNap;
+
+public class UserSsoCheckInUserCriteriaTest
 {
-    public class UserSsoCheckInUserCriteriaTest
+    [Fact]
+    public void UserSsoCheckInUserCriteria_GetSettingKey_ReturnCorrectSettingKey()
     {
-        [Fact]
-        public void UserSsoCheckInUserCriteria_GetSettingKey_ReturnCorrectSettingKey()
-        {
-            // Arrange
-            var command = new UserSsoCheckInUserCriteria();
+        // Arrange
+        var command = new UserSsoCheckInUserCriteria();
 
-            // Act
-            var result = command.GetSettingKey();
+        // Act
+        var result = command.GetSettingKey();
 
-            // Assert
-            result.Should().Be("NAP_User_SSOCheckIn");
-        }
+        // Assert
+        result.Should().Be("NAP_User_SSOCheckIn");
+    }
 
-        [Theory]
-        [InlineData(0, 1, false)]
-        [InlineData(1, 0, false)]
-        [InlineData(1, 1, true)]
-        public void UserSsoCheckInUserCriteria_IsValid_CheckCorrectly(int userId, int siteId, bool expectedResult)
-        {
-            // Arrange
-            var fixture = new Fixture();
-            var criteria = fixture.Create<UserSsoCheckInUserCriteria>();
-            criteria.UserId = userId;
-            criteria.SiteId = siteId;
+    [Theory]
+    [InlineData(0, 1, false)]
+    [InlineData(1, 0, false)]
+    [InlineData(1, 1, true)]
+    public void UserSsoCheckInUserCriteria_IsValid_CheckCorrectly(int userId, int siteId, bool expectedResult)
+    {
+        // Arrange
+        var fixture = new Fixture();
+        var criteria = fixture.Create<UserSsoCheckInUserCriteria>();
+        criteria.UserId = userId;
+        criteria.SiteId = siteId;
 
-            // Act
-            var result = criteria.IsValid();
+        // Act
+        var result = criteria.IsValid();
 
-            // Assert
-            result.Should().Be(expectedResult);
-        }
+        // Assert
+        result.Should().Be(expectedResult);
     }
 }

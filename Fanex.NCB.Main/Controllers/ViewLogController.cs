@@ -29,7 +29,8 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Read)]
         public async Task<IActionResult> GetNotificationSystemMessage(int? notificationId, int pageIndex, int pageSize)
         {
-            var (totalItems, systemMessages) = await viewLogService.GetNotificationSystemMessageAsync(notificationId, pageIndex, pageSize);
+            var (totalItems, systemMessages) =
+                await viewLogService.GetNotificationSystemMessageAsync(notificationId, pageIndex, pageSize);
             return Json(new { total = totalItems, data = systemMessages });
         }
 
@@ -37,7 +38,8 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Read)]
         public async Task<IActionResult> GetNotificationRecipientList(int? notificationId, int pageIndex, int pageSize)
         {
-            var (totalItems, recipients) = await viewLogService.GetNotificationRecipientListAsync(notificationId, pageIndex, pageSize);
+            var (totalItems, recipients) =
+                await viewLogService.GetNotificationRecipientListAsync(notificationId, pageIndex, pageSize);
 
             return Json(new { total = totalItems, data = recipients });
         }
@@ -46,7 +48,8 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Read)]
         public async Task<IActionResult> GetConversationMessageLog(int? notificationId, int pageIndex, int pageSize)
         {
-            var (totalItems, conversationMessages, mapRecipient) = await viewLogService.GetConversationMessageLogAsync(notificationId, pageIndex, pageSize);
+            var (totalItems, conversationMessages, mapRecipient) =
+                await viewLogService.GetConversationMessageLogAsync(notificationId, pageIndex, pageSize);
 
             return Json(new { total = totalItems, data = conversationMessages, dataMapRecipient = mapRecipient });
         }

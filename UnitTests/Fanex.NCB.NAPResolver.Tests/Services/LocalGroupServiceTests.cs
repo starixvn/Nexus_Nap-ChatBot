@@ -1,57 +1,58 @@
-﻿namespace Fanex.NCB.NAPResolver.Tests
+﻿namespace Fanex.NCB.NAPResolver.Tests;
+
+using System;
+using System.Threading.Tasks;
+using AutoFixture;
+using Criteria.LocalNap.Group;
+using LocalServices;
+using Model;
+using Shared.Services.Interfaces;
+using NSubstitute;
+using Xunit;
+
+public class LocalGroupServiceTests
 {
-    using System;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using Criteria.LocalNap.Group;
-    using LocalServices;
-    using Model;
-    using Shared.Services.Interfaces;
-    using NSubstitute;
-    using Xunit;
+    private IBaseService baseService;
 
-    public class LocalGroupServiceTests
+    [Fact]
+    public async Task GetAsync_WhenCalled_ReturnExpectedResult()
     {
-        private IBaseService baseService;
+        var service = GetService();
 
-        [Fact]
-        public async Task GetAsync_WhenCalled_ReturnExpectedResult()
+        var fixture = new Fixture();
+        var groupId = fixture.Create<int>();
+        var expectedGroup = new FlatGroup
         {
-            var service = GetService();
+            GroupId = 1,
+            GroupName = "Test",
+            IsActive = true,
+            Description = "Test",
+            CreatedDate = DateTime.UtcNow,
+            CreatorId = 1,
+            CreatorUsername = "Test",
+            ModifierId = 1,
+            ModifierUsername = "Test"
+        };
 
-            var fixture = new Fixture();
-            var groupId = fixture.Create<int>();
-            var expectedGroup = new FlatGroup
-            {
-                GroupId = 1,
-                GroupName = "Test",
-                IsActive = true,
-                Description = "Test",
-                CreatedDate = DateTime.UtcNow,
-                CreatorId = 1,
-                CreatorUsername = "Test",
-                ModifierId = 1,
-                ModifierUsername = "Test"
-            };
+        var criteria = new GetGroupByIdCriteria();
 
-            var criteria = new GetGroupByIdCriteria();
+        baseService.GetDataEntityAsync<FlatGroup>(Arg.Any<GetGroupByIdCriteria>()).Returns(expectedGroup);
 
-            baseService.GetDataEntityAsync<FlatGroup>(Arg.Any<GetGroupByIdCriteria>()).Returns(expectedGroup);
+        var result = await service.GetAsync(groupId);
 
-            var result = await service.GetAsync(groupId);
-
-            Assert.Equal(expectedGroup.GroupId, result.Id);
-            Assert.Equal(expectedGroup.GroupName, result.Name);
-            Assert.Equal(expectedGroup.IsActive, result.IsActive);
-        }
-
-        #region Helpers
-        private LocalGroupService GetService()
-        {
-            baseService = Substitute.For<IBaseService>();
-
-            return Substitute.For<LocalGroupService>(baseService);
-        }
-        #endregion Helpers
+        Assert.Equal(expectedGroup.GroupId, result.Id);
+        Assert.Equal(expectedGroup.GroupName, result.Name);
+        Assert.Equal(expectedGroup.IsActive, result.IsActive);
     }
+
+    #region Helpers
+
+    private LocalGroupService GetService()
+    {
+        baseService = Substitute.For<IBaseService>();
+
+        return Substitute.For<LocalGroupService>(baseService);
+    }
+
+    #endregion Helpers
 }

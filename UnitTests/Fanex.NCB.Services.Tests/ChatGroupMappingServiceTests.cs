@@ -1,104 +1,106 @@
-namespace Fanex.NCB.Services.Tests
+namespace Fanex.NCB.Services.Tests;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Criteria.ChatGroupMapping;
+using Model.ChatGroupMapping;
+using Models.ChatGroupMapping;
+using Fanex.NCB.Shared.Models;
+using Fanex.NCB.Shared.Services.Interfaces;
+using NSubstitute;
+using Xunit;
+
+public class ChatGroupMappingServiceTests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Criteria.ChatGroupMapping;
-    using Model.ChatGroupMapping;
-    using Models.ChatGroupMapping;
-    using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Services.Interfaces;
-    using NSubstitute;
-    using Xunit;
+    private IBaseService baseService;
 
-    public class ChatGroupMappingServiceTests
+    [Fact]
+    public async Task GetChatGroupMappingListAsync_WhenCalled_ReturnExpectedResult()
     {
-        private IBaseService baseService;
+        var model = new GetChapGroupMapping { BotIDs = "1,2,3" };
+        var data = FakeTupleValue();
+        var criteria = new GetChatGroupMappingCriteria { TotalItems = 10 };
+        var service = GetService();
 
-        [Fact]
-        public async Task GetChatGroupMappingListAsync_WhenCalled_ReturnExpectedResult()
-        {
-            var model = new GetChapGroupMapping { BotIDs = "1,2,3" };
-            var data = FakeTupleValue();
-            var criteria = new GetChatGroupMappingCriteria { TotalItems = 10 };
-            var service = GetService();
+        baseService
+            .FetchMultipleAsync<BotConversation, BotConversationMember, ConversationRecipient>(
+                Arg.Do<GetChatGroupMappingCriteria>(x => criteria = x)).Returns(data);
 
-            baseService.FetchMultipleAsync<BotConversation, BotConversationMember, ConversationRecipient>(Arg.Do<GetChatGroupMappingCriteria>(x => criteria = x)).Returns(data);
+        //Act
+        var actual = await service.GetChatGroupMappingListAsync(model);
 
-            //Act
-            var actual = await service.GetChatGroupMappingListAsync(model);
+        //Assert
+        Assert.Equal(criteria.TotalItems, actual.Item2);
+        Assert.Equal("Test", actual.Item1.FirstOrDefault().ConversationID);
+        Assert.Equal(1, actual.Item1.FirstOrDefault().GroupID);
+        Assert.Equal(2, actual.Item1.FirstOrDefault().RecipientTypeID);
+        Assert.Equal("1on1Notify", actual.Item1.FirstOrDefault().BotName);
+    }
 
-            //Assert
-            Assert.Equal(criteria.TotalItems, actual.Item2);
-            Assert.Equal("Test", actual.Item1.FirstOrDefault().ConversationID);
-            Assert.Equal(1, actual.Item1.FirstOrDefault().GroupID);
-            Assert.Equal(2, actual.Item1.FirstOrDefault().RecipientTypeID);
-            Assert.Equal("1on1Notify", actual.Item1.FirstOrDefault().BotName);
-        }
+    [Fact]
+    public async Task EditAsync_IsSuccessful_ReturnExpectedCommandResult()
+    {
+        var model = new EditChatGroupMapping { GroupID = 1 };
+        var command = new EditChatGroupMappingCommand();
+        var commandResult = new CommandResult { Code = 0 };
+        var service = GetService();
 
-        [Fact]
-        public async Task EditAsync_IsSuccessful_ReturnExpectedCommandResult()
-        {
-            var model = new EditChatGroupMapping { GroupID = 1 };
-            var command = new EditChatGroupMappingCommand();
-            var commandResult = new CommandResult { Code = 0 };
-            var service = GetService();
+        baseService.ExecuteNonQueryAsync(Arg.Do<EditChatGroupMappingCommand>(x => command = x)).Returns(commandResult);
 
-            baseService.ExecuteNonQueryAsync(Arg.Do<EditChatGroupMappingCommand>(x => command = x)).Returns(commandResult);
+        //Act
+        var actual = await service.EditAsync(model);
 
-            //Act
-            var actual = await service.EditAsync(model);
+        //Assert
+        Assert.Equal(commandResult, actual);
+    }
 
-            //Assert
-            Assert.Equal(commandResult, actual);
-        }
+    [Fact]
+    public async Task UpdateActiveAsync_WhenCall_ReturnsCorrectCommandResult()
+    {
+        // Arrange
+        var model = new UpdateActiveConversationGroup { GroupID = 1 };
+        var command = new UpdateActiveConverstionGroupCommand();
+        var commandResult = new CommandResult { Code = 0 };
+        var service = GetService();
 
-        [Fact]
-        public async Task UpdateActiveAsync_WhenCall_ReturnsCorrectCommandResult()
-        {
-            // Arrange
-            var model = new UpdateActiveConversationGroup { GroupID = 1 };
-            var command = new UpdateActiveConverstionGroupCommand();
-            var commandResult = new CommandResult { Code = 0 };
-            var service = GetService();
+        baseService.ExecuteNonQueryAsync(Arg.Do<UpdateActiveConverstionGroupCommand>(x => command = x))
+            .Returns(commandResult);
 
-            baseService.ExecuteNonQueryAsync(Arg.Do<UpdateActiveConverstionGroupCommand>(x => command = x)).Returns(commandResult);
+        //Act
+        var actual = await service.UpdateActiveAsync(model);
 
-            //Act
-            var actual = await service.UpdateActiveAsync(model);
+        //Assert
+        Assert.Equal(commandResult, actual);
+    }
 
-            //Assert
-            Assert.Equal(commandResult, actual);
-        }
-
-        private ValueTuple<IEnumerable<BotConversation>,
+    private ValueTuple<IEnumerable<BotConversation>,
             IEnumerable<BotConversationMember>,
             IEnumerable<ConversationRecipient>>
-            FakeTupleValue()
+        FakeTupleValue()
+    {
+        var botConversations = new List<BotConversation>
         {
-            var botConversations = new List<BotConversation>
-            {
-                new BotConversation {GroupID = 1, ConversationID = "Test", RecipientTypeId = 2}
-            };
-            var members = new List<BotConversationMember>
-            {
-                new BotConversationMember { ConversationID = "Test", BotName = "1on1Notify"}
-            };
-            var recipients = new List<ConversationRecipient>
-            {
-                new ConversationRecipient { RecipientID = 2, GroupID = 1}
-            };
+            new() { GroupID = 1, ConversationID = "Test", RecipientTypeId = 2 }
+        };
+        var members = new List<BotConversationMember>
+        {
+            new() { ConversationID = "Test", BotName = "1on1Notify" }
+        };
+        var recipients = new List<ConversationRecipient>
+        {
+            new() { RecipientID = 2, GroupID = 1 }
+        };
 
-            return new ValueTuple<IEnumerable<BotConversation>,
+        return new ValueTuple<IEnumerable<BotConversation>,
             IEnumerable<BotConversationMember>,
             IEnumerable<ConversationRecipient>>(botConversations, members, recipients);
-        }
+    }
 
-        private ChatGroupMappingService GetService()
-        {
-            baseService = Substitute.For<IBaseService>();
-            return new ChatGroupMappingService(baseService);
-        }
+    private ChatGroupMappingService GetService()
+    {
+        baseService = Substitute.For<IBaseService>();
+        return new ChatGroupMappingService(baseService);
     }
 }

@@ -1,11 +1,16 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SyncData
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SyncData;
+
+using Fanex.Data.Repository;
+
+public class GetDataFromOicCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
-
-    public class GetDataFromOicCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public override string GetSettingKey() => "NAP_Chatbot_GetDataToSync";
+        return "NAP_Chatbot_GetDataToSync";
+    }
 
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

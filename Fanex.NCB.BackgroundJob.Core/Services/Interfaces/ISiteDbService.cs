@@ -1,6 +1,5 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Services.Interfaces
+﻿namespace Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+
+public interface ISiteDbService
 {
-    public interface ISiteDbService
-    {
-    }
 }

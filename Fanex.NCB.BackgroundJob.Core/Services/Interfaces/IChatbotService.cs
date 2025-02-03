@@ -1,21 +1,20 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Services.Interfaces
+﻿namespace Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Models.NotifictaionSendMessage;
+
+public interface IChatbotService
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Models.NotifictaionSendMessage;
+    Task<NotificationMessageResponse> SendMultiMessageAsync(byte channelId, IEnumerable<NotificationMessage> messages);
 
-    public interface IChatbotService
-    {
-        Task<NotificationMessageResponse> SendMultiMessageAsync(byte channelId, IEnumerable<NotificationMessage> messages);
+    Task MonitorChatbotAsync();
 
-        Task MonitorChatbotAsync();
+    Task NotifyToChatGroupAsync(string message);
 
-        Task NotifyToChatGroupAsync(string message);
+    IEnumerable<NotificationMessage> GenerateNotifificationMessageForCarbonGroupAsync(
+        IEnumerable<NotificationSendMessage> notifications,
+        IEnumerable<NotificationRecipient> recipients);
 
-        IEnumerable<NotificationMessage> GenerateNotifificationMessageForCarbonGroupAsync(
-            IEnumerable<NotificationSendMessage> notifications,
-            IEnumerable<NotificationRecipient> recipients);
-
-        Task MonitorTelegramBotAsync();
-    }
+    Task MonitorTelegramBotAsync();
 }

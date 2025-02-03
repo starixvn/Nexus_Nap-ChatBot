@@ -1,15 +1,20 @@
-﻿namespace Fanex.NCB.Criteria.Notification
+﻿namespace Fanex.NCB.Criteria.Notification;
+
+using Data.Repository;
+
+public class GetResendNotificationInfoCriteria : CriteriaBase
 {
-    using Data.Repository;
+    public int InNotificationId { get; set; }
 
-    public class GetResendNotificationInfoCriteria : CriteriaBase
+    public bool InIsSendAll { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int InNotificationId { get; set; }
+        return "NCB_ResendNotification_Sel";
+    }
 
-        public bool InIsSendAll { get; set; }
-
-        public override string GetSettingKey() => "NCB_ResendNotification_Sel";
-
-        public override bool IsValid() => InNotificationId > 0;
+    public override bool IsValid()
+    {
+        return InNotificationId > 0;
     }
 }

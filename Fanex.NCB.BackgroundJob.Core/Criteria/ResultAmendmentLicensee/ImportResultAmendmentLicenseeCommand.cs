@@ -1,15 +1,20 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentLicensee
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentLicensee;
+
+public class ImportResultAmendmentLicenseeCommand : BaseCommand
 {
-    public class ImportResultAmendmentLicenseeCommand : BaseCommand
+    public string MessageHeader { get; set; }
+
+    public string MessageDetail { get; set; }
+
+    public string MessageTarget { get; set; }
+
+    public override string GetSettingKey()
     {
-        public string MessageHeader { get; set; }
+        return "NCB_ResultAmendment_Licensee_Import";
+    }
 
-        public string MessageDetail { get; set; }
-
-        public string MessageTarget { get; set; }
-
-        public override string GetSettingKey() => "NCB_ResultAmendment_Licensee_Import";
-
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

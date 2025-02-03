@@ -1,15 +1,20 @@
-﻿namespace Fanex.NCB.Criteria.SettingConfiguration
+﻿namespace Fanex.NCB.Criteria.SettingConfiguration;
+
+using Fanex.NCB.Shared.Models;
+
+public class UpdateJobInfoCommand : BaseCommand
 {
-    using Fanex.NCB.Shared.Models;
+    public string JobInfo { get; set; }
 
-    public class UpdateJobInfoCommand : BaseCommand
+    public int ModifiedBy { get; set; }
+
+    public override string GetSettingKey()
     {
-        public string JobInfo { get; set; }
+        return "NCB_SettingConfiguration_JobInfo_Upd";
+    }
 
-        public int ModifiedBy { get; set; }
-
-        public override string GetSettingKey() => "NCB_SettingConfiguration_JobInfo_Upd";
-
-        public override bool IsValid() => ModifiedBy > 0;
+    public override bool IsValid()
+    {
+        return ModifiedBy > 0;
     }
 }

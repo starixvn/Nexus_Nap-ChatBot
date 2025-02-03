@@ -1,27 +1,35 @@
-﻿namespace Fanex.NCB.Criteria.NotificationTemplate
+﻿namespace Fanex.NCB.Criteria.NotificationTemplate;
+
+using Fanex.NCB.Shared.Models;
+
+public class EditNotificationTemplateCommand : BaseCommand
 {
-    using Fanex.NCB.Shared.Models;
+    public int NotificationTemplateId { get; set; }
 
-    public class EditNotificationTemplateCommand : BaseCommand
+    public int NotificationTypeId { get; set; }
+
+    public string NotificationTemplateName { get; set; }
+
+    public string Title { get; set; }
+
+    public string Content { get; set; }
+
+    public int ModifierId { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int NotificationTemplateId { get; set; }
+        return "NCB_NotificationTemplate_Upd";
+    }
 
-        public int NotificationTypeId { get; set; }
+    private bool IsValidIntParam()
+    {
+        return NotificationTemplateId > 0 && NotificationTypeId > 0 && ModifierId > 0;
+    }
 
-        public string NotificationTemplateName { get; set; }
-
-        public string Title { get; set; }
-
-        public string Content { get; set; }
-
-        public int ModifierId { get; set; }
-
-        public override string GetSettingKey() => "NCB_NotificationTemplate_Upd";
-
-        private bool IsValidIntParam() => NotificationTemplateId > 0 && NotificationTypeId > 0 && ModifierId > 0;
-
-        public override bool IsValid() => IsValidIntParam() &&
-            !string.IsNullOrWhiteSpace(NotificationTemplateName)
-            && !string.IsNullOrWhiteSpace(Title) && !string.IsNullOrWhiteSpace(Content);
+    public override bool IsValid()
+    {
+        return IsValidIntParam() &&
+               !string.IsNullOrWhiteSpace(NotificationTemplateName)
+               && !string.IsNullOrWhiteSpace(Title) && !string.IsNullOrWhiteSpace(Content);
     }
 }

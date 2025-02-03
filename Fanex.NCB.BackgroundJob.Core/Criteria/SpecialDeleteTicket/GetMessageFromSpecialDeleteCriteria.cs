@@ -1,22 +1,27 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
+
+using System;
+using Fanex.Data.Repository;
+
+public class GetMessageFromSpecialDeleteCriteria : CriteriaBase
 {
-    using System;
-    using Fanex.Data.Repository;
+    public int MessageID { get; set; }
+    public int BatchSize { get; set; }
+    public string Environment { get; set; }
+    public string MsgContentsTypeLst { get; set; }
+    public string SiteAsJson { get; set; }
+    public string DepCustSAsJson { get; set; }
+    public DateTime? LastPostTime { get; set; }
 
-    public class GetMessageFromSpecialDeleteCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public int MessageID { get; set; }
-        public int BatchSize { get; set; }
-        public string Environment { get; set; }
-        public string MsgContentsTypeLst { get; set; }
-        public string SiteAsJson { get; set; }
-        public string DepCustSAsJson { get; set; }
-        public DateTime? LastPostTime { get; set; }
+        return "NAP_Chatbot_SpecialDeleteMsg_Sel";
+    }
 
-        public override string GetSettingKey() => "NAP_Chatbot_SpecialDeleteMsg_Sel";
-
-        public override bool IsValid() => MessageID > 0 &&
-                                          BatchSize > 0 &&
-                                          !string.IsNullOrWhiteSpace(MsgContentsTypeLst);
+    public override bool IsValid()
+    {
+        return MessageID > 0 &&
+               BatchSize > 0 &&
+               !string.IsNullOrWhiteSpace(MsgContentsTypeLst);
     }
 }

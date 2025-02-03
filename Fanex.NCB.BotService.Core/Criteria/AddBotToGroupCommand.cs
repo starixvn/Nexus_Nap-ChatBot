@@ -1,30 +1,33 @@
-﻿namespace Fanex.NCB.BotService.Core.Criteria
+﻿namespace Fanex.NCB.BotService.Core.Criteria;
+
+using Data;
+using Fanex.NCB.Shared.Models;
+
+public class AddBotToGroupCommand : BaseCommand
 {
-    using Data;
-    using Fanex.NCB.Shared.Models;
+    public string BotConversationId { get; set; }
 
-    public class AddBotToGroupCommand : BaseCommand
+    [SpParam(AllowNull = true)] public string BotName { get; set; }
+
+    public string ConversationId { get; set; }
+
+    [SpParam(AllowNull = true)] public string GroupName { get; set; } = string.Empty;
+
+    public byte ChannelId { get; set; }
+
+    public string ServiceUrl { get; set; }
+
+    public string UpdatedBy { get; set; }
+
+    public override string GetSettingKey()
     {
-        public string BotConversationId { get; set; }
+        return "NCB_Conversation_AddBotToGroup";
+    }
 
-        [SpParam(AllowNull = true)]
-        public string BotName { get; set; }
-
-        public string ConversationId { get; set; }
-
-        [SpParam(AllowNull = true)]
-        public string GroupName { get; set; } = string.Empty;
-
-        public byte ChannelId { get; set; }
-
-        public string ServiceUrl { get; set; }
-
-        public string UpdatedBy { get; set; }
-
-        public override string GetSettingKey() => "NCB_Conversation_AddBotToGroup";
-
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(BotConversationId)
-            && !string.IsNullOrWhiteSpace(ConversationId)
-            && ChannelId > 0;
+    public override bool IsValid()
+    {
+        return !string.IsNullOrWhiteSpace(BotConversationId)
+               && !string.IsNullOrWhiteSpace(ConversationId)
+               && ChannelId > 0;
     }
 }

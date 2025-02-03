@@ -1,15 +1,14 @@
-﻿namespace Fanex.NCB.Models.ViewLog
+﻿namespace Fanex.NCB.Models.ViewLog;
+
+using System;
+
+public class ViewLogNotificationSystemMessage
 {
-    using System;
+    public int MessageID { get; set; }
 
-    public class ViewLogNotificationSystemMessage
-    {
-        public int MessageID { get; set; }
+    public int NotificationID { get; set; }
 
-        public int NotificationID { get; set; }
+    public DateTime CreatedDate { get; set; }
 
-        public DateTime CreatedDate { get; set; }
-
-        public string CheckMsg { get; set; }
-    }
+    public string CheckMsg { get; set; }
 }

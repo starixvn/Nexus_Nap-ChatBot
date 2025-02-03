@@ -1,33 +1,32 @@
-﻿namespace Fanex.NCB.BotService.EndPoint.Tests
+﻿namespace Fanex.NCB.BotService.EndPoint.Tests;
+
+using System.Threading.Tasks;
+using Controllers;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using NSubstitute;
+using Xunit;
+
+public class BotControllerTests
 {
-    using System.Threading.Tasks;
-    using Controllers;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.Bot.Builder;
-    using Microsoft.Bot.Builder.Integration.AspNet.Core;
-    using NSubstitute;
-    using Xunit;
+    private IBotFrameworkHttpAdapter adapter;
+    private IBot bot;
 
-    public class BotControllerTests
+    [Fact]
+    public async Task PostAsync_WhenCalled_ExecuteAdapter()
     {
-        private IBotFrameworkHttpAdapter adapter;
-        private IBot bot;
+        var controller = GetController();
+        //Act
+        await controller.PostAsync();
 
-        [Fact]
-        public async Task PostAsync_WhenCalled_ExecuteAdapter()
-        {
-            var controller = GetController();
-            //Act
-            await controller.PostAsync();
+        await adapter.Received().ProcessAsync(Arg.Any<HttpRequest>(), Arg.Any<HttpResponse>(), bot);
+    }
 
-            await adapter.Received().ProcessAsync(Arg.Any<HttpRequest>(), Arg.Any<HttpResponse>(), bot);
-        }
-
-        private BotController GetController()
-        {
-            adapter = Substitute.For<IBotFrameworkHttpAdapter>();
-            bot = Substitute.For<IBot>();
-            return new BotController(adapter, bot);
-        }
+    private BotController GetController()
+    {
+        adapter = Substitute.For<IBotFrameworkHttpAdapter>();
+        bot = Substitute.For<IBot>();
+        return new BotController(adapter, bot);
     }
 }

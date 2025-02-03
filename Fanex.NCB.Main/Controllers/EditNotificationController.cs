@@ -44,19 +44,18 @@
         public async Task<IActionResult> Get(int id)
         {
             var notification = await notificationService.GetEditNotificationInfoAsync(id);
-            if (notification != null)
-            {
-                return Json(notification);
-            }
+            if (notification != null) return Json(notification);
 
             return NotFound();
         }
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
-        public async Task<IActionResult> GetRecipients(int notificationId, int notificationTypeId, int? productId, string platforms, string recipientIds, string integrationMethodIds)
+        public async Task<IActionResult> GetRecipients(int notificationId, int notificationTypeId, int? productId,
+            string platforms, string recipientIds, string integrationMethodIds)
         {
-            var result = await notificationService.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId, platforms, recipientIds, integrationMethodIds);
+            var result = await notificationService.GetEditNotificationRecipientsAsync(notificationId,
+                notificationTypeId, productId, platforms, recipientIds, integrationMethodIds);
             var (recipients, selectedRecipients) = result;
             var tree = GenerateTreeHelper.FromRecipient(recipients);
 
@@ -97,10 +96,7 @@
                     result.Message = ex.Message;
                 }
 
-                if (result.IsSuccessful)
-                {
-                    PushSignalRUpdateNotificationStatus(data.NotificationId);
-                }
+                if (result.IsSuccessful) PushSignalRUpdateNotificationStatus(data.NotificationId);
             }
 
             return Json(result);

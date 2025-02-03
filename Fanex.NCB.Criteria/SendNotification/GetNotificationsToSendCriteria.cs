@@ -1,13 +1,18 @@
-﻿namespace Fanex.NCB.Criteria.SendNotification
+﻿namespace Fanex.NCB.Criteria.SendNotification;
+
+using Data.Repository;
+
+public class GetNotificationsToSendCriteria : CriteriaBase
 {
-    using Data.Repository;
+    public string UpdatedNotificationIds { get; set; }
 
-    public class GetNotificationsToSendCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public string UpdatedNotificationIds { get; set; }
+        return "NCB_SendNotification_GetPlanRetryNotifUpdStatus";
+    }
 
-        public override string GetSettingKey() => "NCB_SendNotification_GetPlanRetryNotifUpdStatus";
-
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

@@ -1,17 +1,22 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SettlementInternalCSD
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SettlementInternalCSD;
+
+using Fanex.Data.Repository;
+
+public class GetMessageSettleInternalCSDCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public int BatchSize { get; set; }
 
-    public class GetMessageSettleInternalCSDCriteria : CriteriaBase
+    public int LastMsgTargetId { get; set; }
+
+    public int MaxMsgTargetId { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int BatchSize { get; set; }
+        return "NAP_Chatbot_Settlement_InternalCSD_MessageSel";
+    }
 
-        public int LastMsgTargetId { get; set; }
-
-        public int MaxMsgTargetId { get; set; }
-
-        public override string GetSettingKey() => "NAP_Chatbot_Settlement_InternalCSD_MessageSel";
-
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

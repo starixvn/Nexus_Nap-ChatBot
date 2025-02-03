@@ -1,43 +1,44 @@
-﻿namespace Fanex.NCB.NAPResolver.Tests
+﻿namespace Fanex.NCB.NAPResolver.Tests;
+
+using System.Threading.Tasks;
+using AutoFixture;
+using Fanex.NAP.Client.Models.ValueObject;
+using Criteria.LocalNap.Site;
+using LocalServices;
+using Shared.Services.Interfaces;
+using NSubstitute;
+using Xunit;
+
+public class LocalSiteServiceTests
 {
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using Fanex.NAP.Client.Models.ValueObject;
-    using Criteria.LocalNap.Site;
-    using LocalServices;
-    using Shared.Services.Interfaces;
-    using NSubstitute;
-    using Xunit;
+    private IBaseService baseService;
 
-    public class LocalSiteServiceTests
+    [Fact]
+    public async Task IsActivatedAsync_ValidData_ReturnExpectedResult()
     {
-        private IBaseService baseService;
+        var service = GetService();
+        var fixture = new Fixture();
 
-        [Fact]
-        public async Task IsActivatedAsync_ValidData_ReturnExpectedResult()
-        {
-            var service = GetService();
-            var fixture = new Fixture();
+        var siteId = fixture.Create<int>();
+        var site = fixture.Create<SiteUrl>();
+        var criteria = new GetByIdSiteCriteria();
 
-            var siteId = fixture.Create<int>();
-            var site = fixture.Create<SiteUrl>();
-            var criteria = new GetByIdSiteCriteria();
+        baseService.GetDataEntityAsync<SiteUrl>(Arg.Do<GetByIdSiteCriteria>(x => criteria = x)).Returns(site);
 
-            baseService.GetDataEntityAsync<SiteUrl>(Arg.Do<GetByIdSiteCriteria>(x => criteria = x)).Returns(site);
+        var result = await service.IsActivatedAsync(siteId);
 
-            var result = await service.IsActivatedAsync(siteId);
-
-            Assert.Equal(siteId, criteria.SiteId);
-            Assert.Equal(site.IsActive, result);
-        }
-
-        #region Helpers
-        public LocalSiteService GetService()
-        {
-            baseService = Substitute.For<IBaseService>();
-
-            return Substitute.For<LocalSiteService>(baseService);
-        }
-        #endregion Helpers
+        Assert.Equal(siteId, criteria.SiteId);
+        Assert.Equal(site.IsActive, result);
     }
+
+    #region Helpers
+
+    public LocalSiteService GetService()
+    {
+        baseService = Substitute.For<IBaseService>();
+
+        return Substitute.For<LocalSiteService>(baseService);
+    }
+
+    #endregion Helpers
 }

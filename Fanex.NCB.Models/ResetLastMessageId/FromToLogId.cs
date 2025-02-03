@@ -1,9 +1,8 @@
-﻿namespace Fanex.NCB.Models.ResetLastMessageId
-{
-    public class FromToLogId
-    {
-        public int FromLogId { get; set; }
+﻿namespace Fanex.NCB.Models.ResetLastMessageId;
 
-        public int ToLogId { get; set; }
-    }
+public class FromToLogId
+{
+    public int FromLogId { get; set; }
+
+    public int ToLogId { get; set; }
 }

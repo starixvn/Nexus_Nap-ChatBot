@@ -1,361 +1,371 @@
-﻿namespace Fanex.NCB.Services.Tests
+﻿namespace Fanex.NCB.Services.Tests;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoFixture;
+using Criteria.Notification;
+using Models.Common;
+using Models.Notification;
+using Interfaces;
+using Fanex.NCB.Shared.Models;
+using Fanex.NCB.Shared.Models.IntegrationMethod;
+using Fanex.NCB.Shared.Models.OIC;
+using Fanex.NCB.Shared.Services.Interfaces;
+using NSubstitute;
+using Xunit;
+
+public class NotificationServiceTests
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using AutoFixture;
-    using Criteria.Notification;
-    using Models.Common;
-    using Models.Notification;
-    using Interfaces;
-    using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Models.IntegrationMethod;
-    using Fanex.NCB.Shared.Models.OIC;
-    using Fanex.NCB.Shared.Services.Interfaces;
-    using NSubstitute;
-    using Xunit;
+    private IBaseService baseService;
+    private ISendNotificationService sendNotificationService;
 
-    public class NotificationServiceTests
+    [Fact]
+    public async Task CreateAsync_ValidData_ReturnSuccessResult()
     {
-        private IBaseService baseService;
-        private ISendNotificationService sendNotificationService;
+        var fixture = new Fixture();
+        var model = fixture.Create<CreateNotification>();
+        var service = GetService();
+        baseService.ExecuteNonQueryAsync(Arg.Any<CreateNewNotificationCommand>())
+            .Returns(new CommandResult { Code = 0 });
 
-        [Fact]
-        public async Task CreateAsync_ValidData_ReturnSuccessResult()
+        var (result, notiIds) = await service.CreateAsync(model);
+
+        Assert.True(result.IsSuccessful);
+        Assert.Equal(string.Empty, notiIds);
+    }
+
+    [Fact]
+    public async Task CreateAsync_SendImmiedatelyIsTrue_SendNotificationImmediatelyIsCalled()
+    {
+        var service = GetService();
+        var model = new CreateNotification
         {
-            var fixture = new Fixture();
-            var model = fixture.Create<CreateNotification>();
-            var service = GetService();
-            baseService.ExecuteNonQueryAsync(Arg.Any<CreateNewNotificationCommand>())
-                .Returns(new CommandResult { Code = 0 });
+            SendImmediately = true
+        };
 
-            var (result, notiIds) = await service.CreateAsync(model);
+        var command = new CreateNewNotificationCommand();
 
-            Assert.True(result.IsSuccessful);
-            Assert.Equal(string.Empty, notiIds);
-        }
+        baseService.ExecuteNonQueryAsync(Arg.Do<CreateNewNotificationCommand>(x => command = x))
+            .Returns(new CommandResult { Code = 0 })
+            .AndDoes(x => command.NotificationIDLst = "[{\"NotificationId\":1},{\"NotificationId\":2}]");
 
-        [Fact]
-        public async Task CreateAsync_SendImmiedatelyIsTrue_SendNotificationImmediatelyIsCalled()
-        {
-            var service = GetService();
-            var model = new CreateNotification
-            {
-                SendImmediately = true
-            };
+        var (result, notiIds) = await service.CreateAsync(model);
 
-            var command = new CreateNewNotificationCommand();
+        Assert.True(result.IsSuccessful);
+    }
 
-            baseService.ExecuteNonQueryAsync(Arg.Do<CreateNewNotificationCommand>(x => command = x))
-                .Returns(new CommandResult { Code = 0 })
-                .AndDoes(x => command.NotificationIDLst = "[{\"NotificationId\":1},{\"NotificationId\":2}]");
+    [Fact]
+    public async Task GetRecipientsAsync_ValidData_ReturnExpectedResult()
+    {
+        var service = GetService();
 
-            var (result, notiIds) = await service.CreateAsync(model);
+        var fixture = new Fixture();
+        var notificationTypeId = fixture.Create<int>();
+        var productId = fixture.Create<int?>();
+        var integrationMethodIds = fixture.Create<string>();
+        var channellIds = fixture.Create<string>();
+        var platforms = fixture.Create<string>();
+        var recipientIds = fixture.Create<string>();
 
-            Assert.True(result.IsSuccessful);
-        }
+        var recipients = fixture.Create<IEnumerable<Recipient>>();
+        var selectedRecipient = fixture.Create<IEnumerable<uint>>();
+        var tuple = (recipients, selectedRecipient);
 
-        [Fact]
-        public async Task GetRecipientsAsync_ValidData_ReturnExpectedResult()
-        {
-            var service = GetService();
+        var criteria = new GetRecipientsCriteria();
 
-            var fixture = new Fixture();
-            int notificationTypeId = fixture.Create<int>();
-            int? productId = fixture.Create<int?>();
-            string integrationMethodIds = fixture.Create<string>();
-            string channellIds = fixture.Create<string>();
-            string platforms = fixture.Create<string>();
-            string recipientIds = fixture.Create<string>();
+        baseService.FetchMultipleAsync<Recipient, uint>(Arg.Do<GetRecipientsCriteria>(x => criteria = x))
+            .Returns(tuple);
 
-            var recipients = fixture.Create<IEnumerable<Recipient>>();
-            var selectedRecipient = fixture.Create<IEnumerable<uint>>();
-            var tuple = (recipients, selectedRecipient);
+        var result = await service.GetRecipientsAsync(notificationTypeId, platforms, recipientIds, productId,
+            integrationMethodIds, channellIds);
 
-            var criteria = new GetRecipientsCriteria();
+        Assert.Equal(notificationTypeId, criteria.InNotificationTypeId);
+        Assert.Equal(productId, criteria.InProductId);
+        Assert.Equal(integrationMethodIds, criteria.InIntegrationMethodIds);
+        Assert.Equal(platforms, criteria.InPlatformIds);
+        Assert.Equal(channellIds, criteria.InChannelIds);
+        Assert.Equal(recipientIds, criteria.InRecipientIds);
+        Assert.Equal(recipients.Count(), result.Item1.Count());
+        Assert.Equal(recipients, result.Item1);
+        Assert.Equal(selectedRecipient, result.Item2);
+    }
 
-            baseService.FetchMultipleAsync<Recipient, uint>(Arg.Do<GetRecipientsCriteria>(x => criteria = x))
-                .Returns(tuple);
+    [Fact]
+    public async Task GetNotificationsAsync_ValidData_ReturnExpectedResult()
+    {
+        var service = GetService();
 
-            var result = await service.GetRecipientsAsync(notificationTypeId, platforms, recipientIds, productId, integrationMethodIds, channellIds);
+        var fixture = new Fixture();
+        var model = fixture.Create<GetNotifications>();
+        var notifications = fixture.Create<IEnumerable<Notification>>();
+        var total = fixture.Create<long>();
 
-            Assert.Equal(notificationTypeId, criteria.InNotificationTypeId);
-            Assert.Equal(productId, criteria.InProductId);
-            Assert.Equal(integrationMethodIds, criteria.InIntegrationMethodIds);
-            Assert.Equal(platforms, criteria.InPlatformIds);
-            Assert.Equal(channellIds, criteria.InChannelIds);
-            Assert.Equal(recipientIds, criteria.InRecipientIds);
-            Assert.Equal(recipients.Count(), result.Item1.Count());
-            Assert.Equal(recipients, result.Item1);
-            Assert.Equal(selectedRecipient, result.Item2);
-        }
+        var criteria = new GetNotificationsCriteria();
 
-        [Fact]
-        public async Task GetNotificationsAsync_ValidData_ReturnExpectedResult()
-        {
-            var service = GetService();
+        baseService.FetchMultipleAsync<long, Notification>(Arg.Do<GetNotificationsCriteria>(x => criteria = x))
+            .Returns((new List<long> { total }, notifications));
 
-            var fixture = new Fixture();
-            var model = fixture.Create<GetNotifications>();
-            var notifications = fixture.Create<IEnumerable<Notification>>();
-            var total = fixture.Create<long>();
+        var result = await service.GetNotificationsAsync(model);
 
-            var criteria = new GetNotificationsCriteria();
+        Assert.Equal(total, result.Item1);
+        Assert.Equal(notifications.Count(), result.Item2.Count());
+        Assert.Equal(model.NotificationTypeIds, criteria.InNotificationTypeIds);
+        Assert.Equal(model.CreatorId, criteria.InCreatorId);
+        Assert.Equal(model.ProductIds, criteria.InProductIds);
+        Assert.Equal(model.FromDate, criteria.InConfigSendTimeFrom);
+        Assert.Equal(model.ToDate, criteria.InConfigSendTimeTo);
+        Assert.Equal(model.NotificationStatusIds, criteria.InNotificationStatusId);
+        Assert.Equal(model.RecipientIds, criteria.InRecipientIds);
+        Assert.Equal(model.PageIndex, criteria.PageIndex);
+        Assert.Equal(model.PageSize, criteria.PageSize);
+    }
 
-            baseService.FetchMultipleAsync<long, Notification>(Arg.Do<GetNotificationsCriteria>(x => criteria = x))
-                .Returns((new List<long> { total }, notifications));
+    [Fact]
+    public async Task CancelAsync_ValidData_ReturnSuccessResult()
+    {
+        var service = GetService();
 
-            var result = await service.GetNotificationsAsync(model);
+        var fixture = new Fixture();
+        var notificationId = fixture.Create<int>();
+        var userId = fixture.Create<int>();
 
-            Assert.Equal(total, result.Item1);
-            Assert.Equal(notifications.Count(), result.Item2.Count());
-            Assert.Equal(model.NotificationTypeIds, criteria.InNotificationTypeIds);
-            Assert.Equal(model.CreatorId, criteria.InCreatorId);
-            Assert.Equal(model.ProductIds, criteria.InProductIds);
-            Assert.Equal(model.FromDate, criteria.InConfigSendTimeFrom);
-            Assert.Equal(model.ToDate, criteria.InConfigSendTimeTo);
-            Assert.Equal(model.NotificationStatusIds, criteria.InNotificationStatusId);
-            Assert.Equal(model.RecipientIds, criteria.InRecipientIds);
-            Assert.Equal(model.PageIndex, criteria.PageIndex);
-            Assert.Equal(model.PageSize, criteria.PageSize);
-        }
+        var command = new CancelNotificationCommand();
 
-        [Fact]
-        public async Task CancelAsync_ValidData_ReturnSuccessResult()
-        {
-            var service = GetService();
+        baseService.ExecuteNonQueryAsync(Arg.Do<CancelNotificationCommand>(x => command = x))
+            .Returns(new CommandResult { Code = 0 });
 
-            var fixture = new Fixture();
-            int notificationId = fixture.Create<int>();
-            int userId = fixture.Create<int>();
+        var result = await service.CancelAsync(notificationId, userId);
 
-            var command = new CancelNotificationCommand();
+        Assert.True(result.IsSuccessful);
+        Assert.Equal(notificationId, command.NotificationId);
+        Assert.Equal(userId, command.UserId);
+    }
 
-            baseService.ExecuteNonQueryAsync(Arg.Do<CancelNotificationCommand>(x => command = x)).Returns(new CommandResult { Code = 0 });
+    [Fact]
+    public async Task GetNotificationErrorAsync_ValidData_ReturnExpectedResult()
+    {
+        var service = GetService();
 
-            var result = await service.CancelAsync(notificationId, userId);
+        var fixture = new Fixture();
+        var notificationId = fixture.Create<int>();
 
-            Assert.True(result.IsSuccessful);
-            Assert.Equal(notificationId, command.NotificationId);
-            Assert.Equal(userId, command.UserId);
-        }
+        var report = fixture.Create<NotificationErrorReport>();
 
-        [Fact]
-        public async Task GetNotificationErrorAsync_ValidData_ReturnExpectedResult()
-        {
-            var service = GetService();
+        var criteria = new GetNotificationErrorDetailCriteria();
 
-            var fixture = new Fixture();
-            var notificationId = fixture.Create<int>();
-
-            var report = fixture.Create<NotificationErrorReport>();
-
-            var criteria = new GetNotificationErrorDetailCriteria();
-
-            baseService.FetchMultipleAsync<NotificationErrorReport, string, NotificationErrorDetail>
+        baseService.FetchMultipleAsync<NotificationErrorReport, string, NotificationErrorDetail>
                 (Arg.Do<GetNotificationErrorDetailCriteria>(x => criteria = x))
-                .Returns((new List<NotificationErrorReport> { report }, report.SuccessRecipients, report.ErrorDetails));
+            .Returns((new List<NotificationErrorReport> { report }, report.SuccessRecipients, report.ErrorDetails));
 
-            var result = await service.GetNotificationErrorAsync(notificationId);
+        var result = await service.GetNotificationErrorAsync(notificationId);
 
-            Assert.Equal(notificationId, criteria.NotificationId);
-            Assert.Equal(report.NotificationId, result.NotificationId);
-            Assert.Equal(report.ResolvedBy, result.ResolvedBy);
-            Assert.Equal(report.ResolvedByUserName, result.ResolvedByUserName);
-            Assert.Equal(report.ResolvedRemark, result.ResolvedRemark);
-            Assert.Equal(report.StatusId, result.StatusId);
-            Assert.Equal(report.Title, result.Title);
-            Assert.Equal(report.ConfigSendTime, result.ConfigSendTime);
-            Assert.Equal(report.SuccessRecipients, result.SuccessRecipients);
-        }
+        Assert.Equal(notificationId, criteria.NotificationId);
+        Assert.Equal(report.NotificationId, result.NotificationId);
+        Assert.Equal(report.ResolvedBy, result.ResolvedBy);
+        Assert.Equal(report.ResolvedByUserName, result.ResolvedByUserName);
+        Assert.Equal(report.ResolvedRemark, result.ResolvedRemark);
+        Assert.Equal(report.StatusId, result.StatusId);
+        Assert.Equal(report.Title, result.Title);
+        Assert.Equal(report.ConfigSendTime, result.ConfigSendTime);
+        Assert.Equal(report.SuccessRecipients, result.SuccessRecipients);
+    }
 
-        [Fact]
-        public async Task ResolveAsync_ValidData_ReturnSuccessResult()
+    [Fact]
+    public async Task ResolveAsync_ValidData_ReturnSuccessResult()
+    {
+        var service = GetService();
+
+        var fixture = new Fixture();
+        var notificationId = fixture.Create<int>();
+        var userId = fixture.Create<int>();
+        var resolvedRemark = fixture.Create<string>();
+
+        var command = new ResolveNotificationCommand();
+
+        baseService.ExecuteNonQueryAsync(Arg.Do<ResolveNotificationCommand>(x => command = x))
+            .Returns(new CommandResult { Code = 0 });
+
+        var result = await service.ResolveAsync(notificationId, resolvedRemark, userId);
+
+        Assert.True(result.IsSuccessful);
+        Assert.Equal(notificationId, command.NotificationId);
+        Assert.Equal(userId, command.UserId);
+        Assert.Equal(resolvedRemark, command.ResolvedRemark);
+    }
+
+    [Fact]
+    public async Task GetEditNotificationInfoAsync_ValidData_ReturnExpectedResult()
+    {
+        var service = GetService();
+
+        var fixture = new Fixture();
+        var notificationId = fixture.Create<int>();
+        var editNotificationInfos = fixture.Create<IEnumerable<EditNotificationInfo>>();
+        var recipients = fixture.Create<IEnumerable<Recipient>>();
+        var platforms = fixture.Create<IEnumerable<Platform>>();
+        var integrationMethods = fixture.Create<IEnumerable<IntegrationMethodInfo>>();
+        var tupe = (editNotificationInfos, recipients, platforms, integrationMethods);
+        var expected = new EditNotificationRepository
         {
-            var service = GetService();
+            EditNotificationInfos = editNotificationInfos,
+            Recipients = recipients,
+            Platforms = platforms,
+            IntegrationMethods = integrationMethods
+        };
+        baseService
+            .FetchMultipleAsync<EditNotificationInfo, Recipient, Platform, IntegrationMethodInfo>(
+                Arg.Any<GetEditNotificationInfoCriteria>()).Returns(tupe);
 
-            var fixture = new Fixture();
-            var notificationId = fixture.Create<int>();
-            var userId = fixture.Create<int>();
-            var resolvedRemark = fixture.Create<string>();
+        var result = await service.GetEditNotificationInfoAsync(notificationId);
 
-            var command = new ResolveNotificationCommand();
+        Assert.Equal(expected.EditNotificationInfos.FirstOrDefault(), result);
+    }
 
-            baseService.ExecuteNonQueryAsync(Arg.Do<ResolveNotificationCommand>(x => command = x)).Returns(new CommandResult { Code = 0 });
+    [Fact]
+    public async Task EditAsync_ValidData_ReturnSuccessResult()
+    {
+        var service = GetService();
 
-            var result = await service.ResolveAsync(notificationId, resolvedRemark, userId);
+        var fixture = new Fixture();
+        var model = fixture.Create<EditNotification>();
 
-            Assert.True(result.IsSuccessful);
-            Assert.Equal(notificationId, command.NotificationId);
-            Assert.Equal(userId, command.UserId);
-            Assert.Equal(resolvedRemark, command.ResolvedRemark);
-        }
+        var command = new EditNotificationCommand();
 
-        [Fact]
-        public async Task GetEditNotificationInfoAsync_ValidData_ReturnExpectedResult()
+        baseService.ExecuteNonQueryAsync(Arg.Do<EditNotificationCommand>(x => command = x))
+            .Returns(new CommandResult { Code = 0 });
+
+        var result = await service.EditAsync(model);
+
+        Assert.True(result.IsSuccessful);
+        Assert.Equal(model.NotificationId, command.InNotificationId);
+        Assert.Equal(model.RecipientIds, command.InRecipientIds);
+        Assert.Equal(model.Title, command.InTitle);
+        Assert.Equal(model.Content, command.InContent);
+        Assert.Equal(model.UserId, command.InUserId);
+        Assert.Equal(model.SendImmediately, command.InSendImmediately);
+        Assert.Equal(model.Platforms, command.InPlatformIds);
+    }
+
+    [Fact]
+    public async Task GetEditNotificationRecipientsAsync_ValidData_ReturnExpectedResult()
+    {
+        var service = GetService();
+
+        var fixture = new Fixture();
+        var notificationId = fixture.Create<int>();
+        var notificationTypeId = fixture.Create<int>();
+        var productId = fixture.Create<int?>();
+        var platforms = fixture.Create<string>();
+        var recipientIds = fixture.Create<string>();
+        var inIntegrationMethodIds = fixture.Create<string>();
+
+        var recipients = fixture.Create<IEnumerable<Recipient>>();
+        var selectedRecipient = fixture.Create<IEnumerable<uint>>();
+
+        var tuple = (recipients, selectedRecipient);
+
+        var criteria = new GetEditNotificationRecipientsCriteria();
+
+        baseService
+            .FetchMultipleAsync<Recipient, uint>(Arg.Do<GetEditNotificationRecipientsCriteria>(x => criteria = x))
+            .Returns(tuple);
+
+        var result = await service.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId,
+            platforms, recipientIds, inIntegrationMethodIds);
+
+        Assert.Equal(notificationId, criteria.InNotificationId);
+        Assert.Equal(notificationTypeId, criteria.InNotificationTypeId);
+        Assert.Equal(productId, criteria.InProductId);
+        Assert.Equal(platforms, criteria.InPlatformIds);
+        Assert.Equal(recipients.Count(), result.Item1.Count());
+        Assert.Equal(recipientIds, criteria.InRecipientIds);
+        Assert.Equal(inIntegrationMethodIds, criteria.InIntegrationMethodIds);
+        Assert.Equal(recipients, result.Item1);
+        Assert.Equal(selectedRecipient, result.Item2);
+    }
+
+    [Fact]
+    public async Task GetTemplatesAsync_ValidData_ReturnExpectedResult()
+    {
+        var service = GetService();
+
+        var fixture = new Fixture();
+        var notificationTypeId = fixture.Create<int>();
+        var templates = fixture.Create<IEnumerable<Template>>();
+
+        var criteria = new GetTemplatesCriteria();
+
+        baseService.GetDataAsync<Template>(Arg.Do<GetTemplatesCriteria>(x => criteria = x)).Returns(templates);
+
+        var result = await service.GetTemplatesAsync(notificationTypeId);
+
+        Assert.Equal(notificationTypeId, criteria.NotificationTypeId);
+        Assert.Equal(templates.Count(), result.Count());
+    }
+
+    [Fact]
+    public async Task GetResendNotificationInfoAsync_WhenCalled_ReturnExpectedResult()
+    {
+        var service = GetService();
+
+        var fixture = new Fixture();
+        var notificationId = fixture.Create<int>();
+        var isSendAll = fixture.Create<bool>();
+        var resendNotifications = fixture.Create<IEnumerable<ResendNotification>>();
+        var recipients = fixture.Create<IEnumerable<Recipient>>();
+        var platforms = fixture.Create<IEnumerable<Platform>>();
+        var integrationMethods = fixture.Create<IEnumerable<IntegrationMethodInfo>>();
+        var tupe = (resendNotifications, recipients, platforms, integrationMethods);
+        var expected = new ResendNotificationRepository
         {
-            var service = GetService();
+            ResendNotifications = resendNotifications,
+            Recipients = recipients,
+            Platforms = platforms,
+            IntegrationMethods = integrationMethods
+        };
+        baseService
+            .FetchMultipleAsync<ResendNotification, Recipient, Platform, IntegrationMethodInfo>(
+                Arg.Any<GetResendNotificationInfoCriteria>()).Returns(tupe);
 
-            var fixture = new Fixture();
-            var notificationId = fixture.Create<int>();
-            var editNotificationInfos = fixture.Create<IEnumerable<EditNotificationInfo>>();
-            var recipients = fixture.Create<IEnumerable<Recipient>>();
-            var platforms = fixture.Create<IEnumerable<Platform>>();
-            var integrationMethods = fixture.Create<IEnumerable<IntegrationMethodInfo>>();
-            var tupe = (editNotificationInfos, recipients, platforms, integrationMethods);
-            var expected = new EditNotificationRepository
-            {
-                EditNotificationInfos = editNotificationInfos,
-                Recipients = recipients,
-                Platforms = platforms,
-                IntegrationMethods = integrationMethods,
-            };
-            baseService.FetchMultipleAsync<EditNotificationInfo, Recipient, Platform, IntegrationMethodInfo>(Arg.Any<GetEditNotificationInfoCriteria>()).Returns(tupe);
+        var result = await service.GetResendNotificationInfoAsync(notificationId, isSendAll);
 
-            var result = await service.GetEditNotificationInfoAsync(notificationId);
+        Assert.Equal(expected.ResendNotifications.FirstOrDefault(), result);
+    }
 
-            Assert.Equal(expected.EditNotificationInfos.FirstOrDefault(), result);
-        }
+    [Fact]
+    public async Task GetUpdatedNotificationAsync_WhenCalled_ReturnExpectedResult()
+    {
+        var service = GetService();
 
-        [Fact]
-        public async Task EditAsync_ValidData_ReturnSuccessResult()
-        {
-            var service = GetService();
+        var fixture = new Fixture();
+        var notifications = fixture.Create<IEnumerable<Notification>>();
+        baseService.GetDataAsync<Notification>(Arg.Any<GetUpdatedNotificationCriteria>()).Returns(notifications);
 
-            var fixture = new Fixture();
-            var model = fixture.Create<EditNotification>();
+        var result = await service.GetUpdatedNotificationAsync("1,2,3,4");
 
-            var command = new EditNotificationCommand();
+        Assert.Equal(notifications, result);
+    }
 
-            baseService.ExecuteNonQueryAsync(Arg.Do<EditNotificationCommand>(x => command = x)).Returns(new CommandResult { Code = 0 });
+    [Fact]
+    public async Task GetErrNotificationsAsync_WhenCalled_ReturnExpectedResult()
+    {
+        var service = GetService();
 
-            var result = await service.EditAsync(model);
+        var fixture = new Fixture();
+        var notifications = fixture.Create<IEnumerable<NotificationPaging>>();
+        baseService.GetDataAsync<NotificationPaging>(Arg.Any<GetAllErrNotificationsCriteria>()).Returns(notifications);
 
-            Assert.True(result.IsSuccessful);
-            Assert.Equal(model.NotificationId, command.InNotificationId);
-            Assert.Equal(model.RecipientIds, command.InRecipientIds);
-            Assert.Equal(model.Title, command.InTitle);
-            Assert.Equal(model.Content, command.InContent);
-            Assert.Equal(model.UserId, command.InUserId);
-            Assert.Equal(model.SendImmediately, command.InSendImmediately);
-            Assert.Equal(model.Platforms, command.InPlatformIds);
-        }
+        var result = await service.GetErrNotificationsAsync();
 
-        [Fact]
-        public async Task GetEditNotificationRecipientsAsync_ValidData_ReturnExpectedResult()
-        {
-            var service = GetService();
+        Assert.Equal(notifications, result);
+    }
 
-            var fixture = new Fixture();
-            var notificationId = fixture.Create<int>();
-            var notificationTypeId = fixture.Create<int>();
-            var productId = fixture.Create<int?>();
-            var platforms = fixture.Create<string>();
-            var recipientIds = fixture.Create<string>();
-            var inIntegrationMethodIds = fixture.Create<string>();
+    private NotificationService GetService()
+    {
+        baseService = Substitute.For<IBaseService>();
+        sendNotificationService = Substitute.For<ISendNotificationService>();
 
-            var recipients = fixture.Create<IEnumerable<Recipient>>();
-            var selectedRecipient = fixture.Create<IEnumerable<uint>>();
-
-            var tuple = (recipients, selectedRecipient);
-
-            var criteria = new GetEditNotificationRecipientsCriteria();
-
-            baseService.FetchMultipleAsync<Recipient, uint>(Arg.Do<GetEditNotificationRecipientsCriteria>(x => criteria = x)).Returns(tuple);
-
-            var result = await service.GetEditNotificationRecipientsAsync(notificationId, notificationTypeId, productId, platforms, recipientIds, inIntegrationMethodIds);
-
-            Assert.Equal(notificationId, criteria.InNotificationId);
-            Assert.Equal(notificationTypeId, criteria.InNotificationTypeId);
-            Assert.Equal(productId, criteria.InProductId);
-            Assert.Equal(platforms, criteria.InPlatformIds);
-            Assert.Equal(recipients.Count(), result.Item1.Count());
-            Assert.Equal(recipientIds, criteria.InRecipientIds);
-            Assert.Equal(inIntegrationMethodIds, criteria.InIntegrationMethodIds);
-            Assert.Equal(recipients, result.Item1);
-            Assert.Equal(selectedRecipient, result.Item2);
-        }
-
-        [Fact]
-        public async Task GetTemplatesAsync_ValidData_ReturnExpectedResult()
-        {
-            var service = GetService();
-
-            var fixture = new Fixture();
-            var notificationTypeId = fixture.Create<int>();
-            var templates = fixture.Create<IEnumerable<Template>>();
-
-            var criteria = new GetTemplatesCriteria();
-
-            baseService.GetDataAsync<Template>(Arg.Do<GetTemplatesCriteria>(x => criteria = x)).Returns(templates);
-
-            var result = await service.GetTemplatesAsync(notificationTypeId);
-
-            Assert.Equal(notificationTypeId, criteria.NotificationTypeId);
-            Assert.Equal(templates.Count(), result.Count());
-        }
-
-        [Fact]
-        public async Task GetResendNotificationInfoAsync_WhenCalled_ReturnExpectedResult()
-        {
-            var service = GetService();
-
-            var fixture = new Fixture();
-            var notificationId = fixture.Create<int>();
-            var isSendAll = fixture.Create<bool>();
-            var resendNotifications = fixture.Create<IEnumerable<ResendNotification>>();
-            var recipients = fixture.Create<IEnumerable<Recipient>>();
-            var platforms = fixture.Create<IEnumerable<Platform>>();
-            var integrationMethods = fixture.Create<IEnumerable<IntegrationMethodInfo>>();
-            var tupe = (resendNotifications, recipients, platforms, integrationMethods);
-            var expected = new ResendNotificationRepository
-            {
-                ResendNotifications = resendNotifications,
-                Recipients = recipients,
-                Platforms = platforms,
-                IntegrationMethods = integrationMethods,
-            };
-            baseService.FetchMultipleAsync<ResendNotification, Recipient, Platform, IntegrationMethodInfo>(Arg.Any<GetResendNotificationInfoCriteria>()).Returns(tupe);
-
-            var result = await service.GetResendNotificationInfoAsync(notificationId, isSendAll);
-
-            Assert.Equal(expected.ResendNotifications.FirstOrDefault(), result);
-        }
-
-        [Fact]
-        public async Task GetUpdatedNotificationAsync_WhenCalled_ReturnExpectedResult()
-        {
-            var service = GetService();
-
-            var fixture = new Fixture();
-            var notifications = fixture.Create<IEnumerable<Notification>>();
-            baseService.GetDataAsync<Notification>(Arg.Any<GetUpdatedNotificationCriteria>()).Returns(notifications);
-
-            var result = await service.GetUpdatedNotificationAsync("1,2,3,4");
-
-            Assert.Equal(notifications, result);
-        }
-
-        [Fact]
-        public async Task GetErrNotificationsAsync_WhenCalled_ReturnExpectedResult()
-        {
-            var service = GetService();
-
-            var fixture = new Fixture();
-            var notifications = fixture.Create<IEnumerable<NotificationPaging>>();
-            baseService.GetDataAsync<NotificationPaging>(Arg.Any<GetAllErrNotificationsCriteria>()).Returns(notifications);
-
-            var result = await service.GetErrNotificationsAsync();
-
-            Assert.Equal(notifications, result);
-        }
-
-        private NotificationService GetService()
-        {
-            baseService = Substitute.For<IBaseService>();
-            sendNotificationService = Substitute.For<ISendNotificationService>();
-
-            return new NotificationService(baseService, sendNotificationService);
-        }
+        return new NotificationService(baseService, sendNotificationService);
     }
 }

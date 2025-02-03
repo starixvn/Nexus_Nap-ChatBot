@@ -1,43 +1,42 @@
-﻿namespace Fanex.NCB.Services.Interfaces
+﻿namespace Fanex.NCB.Services.Interfaces;
+
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Models.Common;
+using Models.Notification;
+using Fanex.NCB.Shared.Models;
+
+public interface INotificationService
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Models.Common;
-    using Models.Notification;
-    using Fanex.NCB.Shared.Models;
+    Task<(CommandResult, string)> CreateAsync(CreateNotification model);
 
-    public interface INotificationService
-    {
-        Task<(CommandResult, string)> CreateAsync(CreateNotification model);
+    Task<(IEnumerable<Recipient>, IEnumerable<uint>)> GetRecipientsAsync(
+        int notificationTypeId, string platforms, string recipientIds, int? productId = null,
+        string integrationMethodIds = null, string channelIds = null
+    );
 
-        Task<(IEnumerable<Recipient>, IEnumerable<uint>)> GetRecipientsAsync(
-            int notificationTypeId, string platforms, string recipientIds, int? productId = null,
-            string integrationMethodIds = null, string channelIds = null
-        );
+    Task<(long, IEnumerable<Notification>)> GetNotificationsAsync(GetNotifications model);
 
-        Task<(long, IEnumerable<Notification>)> GetNotificationsAsync(GetNotifications model);
+    Task<CommandResult> CancelAsync(int notificationId, int userId);
 
-        Task<CommandResult> CancelAsync(int notificationId, int userId);
+    Task<NotificationErrorReport> GetNotificationErrorAsync(int notificationId);
 
-        Task<NotificationErrorReport> GetNotificationErrorAsync(int notificationId);
+    Task<CommandResult> ResolveAsync(int notificationId, string resolvedRemark, int userId);
 
-        Task<CommandResult> ResolveAsync(int notificationId, string resolvedRemark, int userId);
+    Task<EditNotificationInfo> GetEditNotificationInfoAsync(int notificationId);
 
-        Task<EditNotificationInfo> GetEditNotificationInfoAsync(int notificationId);
+    Task<CommandResult> EditAsync(EditNotification model);
 
-        Task<CommandResult> EditAsync(EditNotification model);
+    Task<(IEnumerable<Recipient>, IEnumerable<uint>)> GetEditNotificationRecipientsAsync(
+        int notificationId, int notificationTypeId, int? productId, string platforms,
+        string recipientIds, string integrationMethodIds
+    );
 
-        Task<(IEnumerable<Recipient>, IEnumerable<uint>)> GetEditNotificationRecipientsAsync(
-            int notificationId, int notificationTypeId, int? productId, string platforms,
-            string recipientIds, string integrationMethodIds
-        );
+    Task<IEnumerable<Template>> GetTemplatesAsync(int notificationTypeId);
 
-        Task<IEnumerable<Template>> GetTemplatesAsync(int notificationTypeId);
+    Task<ResendNotification> GetResendNotificationInfoAsync(int notificationId, bool isResendAll);
 
-        Task<ResendNotification> GetResendNotificationInfoAsync(int notificationId, bool isResendAll);
+    Task<IEnumerable<Notification>> GetUpdatedNotificationAsync(string notificationIds);
 
-        Task<IEnumerable<Notification>> GetUpdatedNotificationAsync(string notificationIds);
-
-        Task<IEnumerable<NotificationPaging>> GetErrNotificationsAsync();
-    }
+    Task<IEnumerable<NotificationPaging>> GetErrNotificationsAsync();
 }

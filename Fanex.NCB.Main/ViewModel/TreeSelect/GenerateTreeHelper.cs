@@ -18,7 +18,8 @@
                     RealValue = x.RecipientId
                 }).ToList();
 
-                children.AddRange(list.Where(x => x.LicenseeTypeId.HasValue).GroupBy(x => new { x.LicenseeTypeId, x.LicenseeTypeName },
+                children.AddRange(list.Where(x => x.LicenseeTypeId.HasValue).GroupBy(
+                    x => new { x.LicenseeTypeId, x.LicenseeTypeName },
                     x => x,
                     (licensee, recipients) =>
                     {

@@ -1,15 +1,20 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SettlementInternalCSD
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SettlementInternalCSD;
+
+using Fanex.Data.Repository;
+
+public class GetEventSettleInternalCSDCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public string MessageInfo { get; set; }
 
-    public class GetEventSettleInternalCSDCriteria : CriteriaBase
+    public string MessageDetail { get; set; }
+
+    public override string GetSettingKey()
     {
-        public string MessageInfo { get; set; }
+        return "NAP_Chatbot_Settlement_InternalCSD_EventInfoSel";
+    }
 
-        public string MessageDetail { get; set; }
-
-        public override string GetSettingKey() => "NAP_Chatbot_Settlement_InternalCSD_EventInfoSel";
-
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

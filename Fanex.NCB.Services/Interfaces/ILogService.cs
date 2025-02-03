@@ -1,18 +1,17 @@
-﻿namespace Fanex.NCB.Services.Interfaces
+﻿namespace Fanex.NCB.Services.Interfaces;
+
+using System;
+using System.Threading.Tasks;
+
+public interface ILogService
 {
-    using System;
-    using System.Threading.Tasks;
+    Task WriteExceptionSentryErrorAsync(Exception exception);
 
-    public interface ILogService
-    {
-        Task WriteExceptionSentryErrorAsync(Exception exception);
+    Task WriteMessageSentryErrorAsync(string logMessage);
 
-        Task WriteMessageSentryErrorAsync(string logMessage);
+    void WriteLogFileError(string logMessage);
 
-        void WriteLogFileError(string logMessage);
+    void WriteLogFileWarning(string logMessage);
 
-        void WriteLogFileWarning(string logMessage);
-
-        void WriteLogFileInfo(string logMessage);
-    }
+    void WriteLogFileInfo(string logMessage);
 }

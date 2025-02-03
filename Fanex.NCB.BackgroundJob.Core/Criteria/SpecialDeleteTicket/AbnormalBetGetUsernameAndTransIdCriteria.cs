@@ -1,13 +1,18 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
+
+using Fanex.Data.Repository;
+
+public class AbnormalBetGetUsernameAndTransIdCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public string MessageIdLst { get; set; }
 
-    public class AbnormalBetGetUsernameAndTransIdCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public string MessageIdLst { get; set; }
+        return "NAP_Chatbot_AbnormalBets_Info_Sel";
+    }
 
-        public override string GetSettingKey() => "NAP_Chatbot_AbnormalBets_Info_Sel";
-
-        public override bool IsValid() => !string.IsNullOrEmpty(MessageIdLst);
+    public override bool IsValid()
+    {
+        return !string.IsNullOrEmpty(MessageIdLst);
     }
 }

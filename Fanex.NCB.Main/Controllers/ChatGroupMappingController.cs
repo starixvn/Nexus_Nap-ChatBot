@@ -54,8 +54,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSettings()
         {
-            IEnumerable<ChannelInfo> channels = await commonService.GetConversationChannelAsync();
-            IEnumerable<BotName> bots = await settingService.GetBotNameAsync();
+            var channels = await commonService.GetConversationChannelAsync();
+            var bots = await settingService.GetBotNameAsync();
 
             var viewModel = new ChatGroupMappingFilterViewModel
             {
@@ -68,20 +68,21 @@ namespace Fanex.NCB.SkypeBot.Controllers
                     Checked = true,
                     IsLeaf = true
                 }).ToList(),
-                Bots = bots.GroupBy(item => new { item.ChannelId, item.ChannelName }).Select(item => new MultiSelectViewModel
-                {
-                    Id = -item.Key.ChannelId,
-                    Text = item.Key.ChannelName,
-                    Checked = true,
-                    IsLeaf = false,
-                    Items = item.Select(x => new MultiSelectViewModel
+                Bots = bots.GroupBy(item => new { item.ChannelId, item.ChannelName }).Select(item =>
+                    new MultiSelectViewModel
                     {
-                        Id = x.Id,
-                        Text = x.Name,
+                        Id = -item.Key.ChannelId,
+                        Text = item.Key.ChannelName,
                         Checked = true,
-                        IsLeaf = true
-                    }).ToList()
-                }).ToList(),
+                        IsLeaf = false,
+                        Items = item.Select(x => new MultiSelectViewModel
+                        {
+                            Id = x.Id,
+                            Text = x.Name,
+                            Checked = true,
+                            IsLeaf = true
+                        }).ToList()
+                    }).ToList(),
                 RecipientTypes = await settingService.GetFilterRecipientTypesAsync(),
                 Recipients = await settingService.GetRecipientsAsync(),
                 ChatGroupTypes = await settingService.GetChatGroupTypeAsync(),
@@ -97,7 +98,9 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> GetAll(GetChapGroupMapping model)
         {
             var result = await chatGroupMappingService.GetChatGroupMappingListAsync(model);
-            var permission = await userService.GetPermissionAsync(napSession.UserId, napSettings.SiteId, FunctionKey.ChatGroupMapping);
+            var permission =
+                await userService.GetPermissionAsync(napSession.UserId, napSettings.SiteId,
+                    FunctionKey.ChatGroupMapping);
             return Json(new { data = result.Item1, count = result.Item2, isHost = permission >= (int)Policy.Host });
         }
 

@@ -1,19 +1,23 @@
-﻿namespace Fanex.NCB.Criteria.SettingConfiguration
+﻿namespace Fanex.NCB.Criteria.SettingConfiguration;
+
+using Data;
+using Data.Repository;
+
+public class GetSettingTypeListCriteria : CriteriaBase
 {
-    using Data;
-    using Data.Repository;
+    public int PageIndex { get; set; }
 
-    public class GetSettingTypeListCriteria : CriteriaBase
+    public int PageSize { get; set; }
+
+    [SpParam(AllowNull = true)] public int? SettingType { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int PageIndex { get; set; }
+        return "NCB_SettingConfiguration_SettingTypeList_Sel";
+    }
 
-        public int PageSize { get; set; }
-
-        [SpParam(AllowNull = true)]
-        public int? SettingType { get; set; }
-
-        public override string GetSettingKey() => "NCB_SettingConfiguration_SettingTypeList_Sel";
-
-        public override bool IsValid() => PageIndex > 0 && PageSize > 0;
+    public override bool IsValid()
+    {
+        return PageIndex > 0 && PageSize > 0;
     }
 }

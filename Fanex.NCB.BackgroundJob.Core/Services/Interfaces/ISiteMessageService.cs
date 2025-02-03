@@ -1,9 +1,8 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Services.Interfaces
-{
-    using System.Threading.Tasks;
+﻿namespace Fanex.NCB.AutoJobs.Core.Services.Interfaces;
 
-    public interface ISiteMessageService
-    {
-        Task PullMessageFromSiteMessageAsync();
-    }
+using System.Threading.Tasks;
+
+public interface ISiteMessageService
+{
+    Task PullMessageFromSiteMessageAsync();
 }

@@ -1,17 +1,22 @@
-﻿namespace Fanex.NCB.Criteria.SendNotification
+﻿namespace Fanex.NCB.Criteria.SendNotification;
+
+using Fanex.NCB.Shared.Models;
+
+public class UpdateRecipientSendNotifiactionStatusCommand : BaseCommand
 {
-    using Fanex.NCB.Shared.Models;
+    public string SentStatus { get; set; }
 
-    public class UpdateRecipientSendNotifiactionStatusCommand : BaseCommand
+    public string UpdatedNotificationIds { get; set; }
+
+    public bool IsHaveErrNotification { get; set; }
+
+    public override string GetSettingKey()
     {
-        public string SentStatus { get; set; }
+        return "NCB_SendNotification_RecipientSentStatus_Upd";
+    }
 
-        public string UpdatedNotificationIds { get; set; }
-
-        public bool IsHaveErrNotification { get; set; }
-
-        public override string GetSettingKey() => "NCB_SendNotification_RecipientSentStatus_Upd";
-
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(SentStatus);
+    public override bool IsValid()
+    {
+        return !string.IsNullOrWhiteSpace(SentStatus);
     }
 }

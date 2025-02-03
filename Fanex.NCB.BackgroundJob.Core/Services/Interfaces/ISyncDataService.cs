@@ -1,13 +1,12 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Services.Interfaces
+﻿namespace Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+
+using System.Threading.Tasks;
+
+public interface ISyncDataService
 {
-    using System.Threading.Tasks;
+    Task NapUserControlSyncDataAsync();
 
-    public interface ISyncDataService
-    {
-        Task NapUserControlSyncDataAsync();
+    Task SyncNapDataForSSOLogin(int userId);
 
-        Task SyncNapDataForSSOLogin(int userId);
-
-        Task OicSyncDataAsync();
-    }
+    Task OicSyncDataAsync();
 }

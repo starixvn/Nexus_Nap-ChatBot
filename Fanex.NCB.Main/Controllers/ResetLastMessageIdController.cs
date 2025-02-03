@@ -38,7 +38,8 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Read)]
         public IActionResult Index()
         {
-            ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId, napSettings.SiteId, FunctionKey.ResetLastMessageId, Policy.Host);
+            ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId, napSettings.SiteId,
+                FunctionKey.ResetLastMessageId, Policy.Host);
 
             return View("~/Views/SkypeBot/ResetLastMessageId/Index.cshtml");
         }
@@ -47,9 +48,12 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Read)]
         public async Task<IActionResult> GetCurrentPreviousMaxMessage()
         {
-            var (currentMaxMessageInfos, messageTypeInfos) = await resetLastMessageIdService.GetCurrentPreviousMaxMessageAsync();
-            var (abnormalBetsMissingMsg, messageIds) = await resetLastMessageIdService.GetAbnormalBetsMissingMessageAsync();
-            var missingMsgInfo = await resetLastMessageIdService.GetMissingMessageInfoAsync(currentMaxMessageInfos, messageTypeInfos, abnormalBetsMissingMsg, messageIds);
+            var (currentMaxMessageInfos, messageTypeInfos) =
+                await resetLastMessageIdService.GetCurrentPreviousMaxMessageAsync();
+            var (abnormalBetsMissingMsg, messageIds) =
+                await resetLastMessageIdService.GetAbnormalBetsMissingMessageAsync();
+            var missingMsgInfo = await resetLastMessageIdService.GetMissingMessageInfoAsync(currentMaxMessageInfos,
+                messageTypeInfos, abnormalBetsMissingMsg, messageIds);
 
             return Json(new
             {

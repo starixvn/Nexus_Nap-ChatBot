@@ -1,15 +1,14 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Services.Interfaces
+﻿namespace Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+
+public interface ILogService
 {
-    public interface ILogService
-    {
-        Task WriteExceptionSentryErrorAsync(Exception exception);
+    Task WriteExceptionSentryErrorAsync(Exception exception);
 
-        Task WriteMessageSentryErrorAsync(string logMessage);
+    Task WriteMessageSentryErrorAsync(string logMessage);
 
-        void WriteLogFileError(string logMessage);
+    void WriteLogFileError(string logMessage);
 
-        void WriteLogFileWarning(string logMessage);
+    void WriteLogFileWarning(string logMessage);
 
-        void WriteLogFileInfo(string logMessage);
-    }
+    void WriteLogFileInfo(string logMessage);
 }

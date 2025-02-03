@@ -1,13 +1,18 @@
-﻿namespace Fanex.NCB.Criteria.SettingConfiguration
+﻿namespace Fanex.NCB.Criteria.SettingConfiguration;
+
+using Data.Repository;
+
+public class GetJobInfoCriteria : CriteriaBase
 {
-    using Data.Repository;
+    public int JobId { get; set; }
 
-    public class GetJobInfoCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public int JobId { get; set; }
+        return "NCB_SettingConfiguration_JobInfo_Sel";
+    }
 
-        public override string GetSettingKey() => "NCB_SettingConfiguration_JobInfo_Sel";
-
-        public override bool IsValid() => JobId > 0;
+    public override bool IsValid()
+    {
+        return JobId > 0;
     }
 }

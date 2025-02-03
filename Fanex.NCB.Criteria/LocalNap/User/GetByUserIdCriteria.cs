@@ -1,13 +1,18 @@
-﻿namespace Fanex.NCB.Criteria.LocalNap.User
+﻿namespace Fanex.NCB.Criteria.LocalNap.User;
+
+using Data.Repository;
+
+public class GetByUserIdCriteria : CriteriaBase
 {
-    using Data.Repository;
+    public int UserId { get; set; }
 
-    public class GetByUserIdCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public int UserId { get; set; }
+        return "NAP_User_GetById";
+    }
 
-        public override string GetSettingKey() => "NAP_User_GetById";
-
-        public override bool IsValid() => UserId > 0;
+    public override bool IsValid()
+    {
+        return UserId > 0;
     }
 }

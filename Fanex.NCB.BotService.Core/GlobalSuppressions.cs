@@ -3,11 +3,17 @@
 // Project-level suppressions either have no target or are given
 // a specific target and scoped to a namespace, type, member, etc.
 
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3996:URI properties should not be strings",
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell",
+    "S3996:URI properties should not be strings",
     Justification = "<Pending>", Scope = "member", Target = "~P:Fanex.NCB.BotService.Core.AppSettings.TokenUrl")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3996:URI properties should not be strings",
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell",
+    "S3996:URI properties should not be strings",
     Justification = "<Pending>", Scope = "member", Target = "~P:Fanex.NCB.BotService.Core.AppSettings.SkypeServiceUrl")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3996:URI properties should not be strings",
-    Justification = "<Pending>", Scope = "member", Target = "~P:Fanex.NCB.BotService.Core.Criteria.AddBotToGroupCommand.ServiceUrl")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3996:URI properties should not be strings",
-    Justification = "<Pending>", Scope = "member", Target = "~P:Fanex.NCB.BotService.Core.Models.ConversationGroup.ServiceUrl")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell",
+    "S3996:URI properties should not be strings",
+    Justification = "<Pending>", Scope = "member",
+    Target = "~P:Fanex.NCB.BotService.Core.Criteria.AddBotToGroupCommand.ServiceUrl")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell",
+    "S3996:URI properties should not be strings",
+    Justification = "<Pending>", Scope = "member",
+    Target = "~P:Fanex.NCB.BotService.Core.Models.ConversationGroup.ServiceUrl")]

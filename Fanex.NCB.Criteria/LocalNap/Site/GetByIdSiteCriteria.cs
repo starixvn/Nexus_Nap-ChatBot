@@ -1,13 +1,18 @@
-﻿namespace Fanex.NCB.Criteria.LocalNap.Site
+﻿namespace Fanex.NCB.Criteria.LocalNap.Site;
+
+using Data.Repository;
+
+public class GetByIdSiteCriteria : CriteriaBase
 {
-    using Data.Repository;
+    public int SiteId { get; set; }
 
-    public class GetByIdSiteCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public int SiteId { get; set; }
+        return "NAP_Site_GetById";
+    }
 
-        public override string GetSettingKey() => "NAP_Site_GetById";
-
-        public override bool IsValid() => SiteId > 0;
+    public override bool IsValid()
+    {
+        return SiteId > 0;
     }
 }

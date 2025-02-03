@@ -1,11 +1,10 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Enum
+﻿namespace Fanex.NCB.AutoJobs.Core.Enum;
+
+public enum RecheckInStatus
 {
-    public enum RecheckInStatus
-    {
-        Success,
-        KickOut,
-        InvalidSite,
-        UnderMaintenance,
-        KickOutPermission
-    }
+    Success,
+    KickOut,
+    InvalidSite,
+    UnderMaintenance,
+    KickOutPermission
 }

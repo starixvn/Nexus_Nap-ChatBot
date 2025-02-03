@@ -1,9 +1,8 @@
-﻿namespace Fanex.NCB.Core.Models
-{
-    public class BaseModel
-    {
-        public int Id { get; set; }
+﻿namespace Fanex.NCB.Core.Models;
 
-        public string Name { get; set; }
-    }
+public class BaseModel
+{
+    public int Id { get; set; }
+
+    public string Name { get; set; }
 }

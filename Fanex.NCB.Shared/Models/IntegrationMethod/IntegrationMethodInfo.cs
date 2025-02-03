@@ -1,9 +1,8 @@
-﻿namespace Fanex.NCB.Shared.Models.IntegrationMethod
-{
-    public class IntegrationMethodInfo
-    {
-        public uint IntegrationMethodId { get; set; }
+﻿namespace Fanex.NCB.Shared.Models.IntegrationMethod;
 
-        public string IntegrationMethodName { get; set; }
-    }
+public class IntegrationMethodInfo
+{
+    public uint IntegrationMethodId { get; set; }
+
+    public string IntegrationMethodName { get; set; }
 }

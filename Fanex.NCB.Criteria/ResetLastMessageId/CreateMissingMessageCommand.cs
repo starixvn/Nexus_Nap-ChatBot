@@ -1,40 +1,42 @@
-﻿namespace Fanex.NCB.Criteria.ResetLastMessageId
+﻿namespace Fanex.NCB.Criteria.ResetLastMessageId;
+
+using System.Collections.Generic;
+using System.Text;
+using Data;
+using Fanex.NCB.Models.ResetLastMessageId;
+using Fanex.NCB.Shared.Models;
+
+public class CreateMissingMessageCommand : BaseCommand
 {
-    using System.Collections.Generic;
-    using System.Text;
-    using Data;
-    using Fanex.NCB.Models.ResetLastMessageId;
-    using Fanex.NCB.Shared.Models;
+    [SpParam(Ignored = true)] public List<MissingInfoIns> Messages { get; set; } = new();
 
-    public class CreateMissingMessageCommand : BaseCommand
+    public string SiteAsJson { get; set; }
+    public string DepCustSAsJson { get; set; }
+    public string Environment { get; set; }
+
+    [SpParam(SqlParamName = "MessageList")]
+    public string MessageListXml
     {
-        [SpParam(Ignored = true)]
-        public List<MissingInfoIns> Messages { get; set; } = new List<MissingInfoIns>();
-
-        public string SiteAsJson { get; set; }
-        public string DepCustSAsJson { get; set; }
-        public string Environment { get; set; }
-
-        [SpParam(SqlParamName = "MessageList")]
-        public string MessageListXml
+        get
         {
-            get
-            {
-                var xml = new StringBuilder();
-                xml.Append("<root>");
-                foreach (MissingInfoIns message in Messages)
-                {
-                    xml.AppendFormat("<r JobIdentify='{0}' MessageId='{1}'/>",
-                        message.JobIdentify,
-                        message.MessageId);
-                }
-                xml.Append("</root>");
-                return xml.ToString();
-            }
+            var xml = new StringBuilder();
+            xml.Append("<root>");
+            foreach (var message in Messages)
+                xml.AppendFormat("<r JobIdentify='{0}' MessageId='{1}'/>",
+                    message.JobIdentify,
+                    message.MessageId);
+            xml.Append("</root>");
+            return xml.ToString();
         }
+    }
 
-        public override string GetSettingKey() => "NAP_Chatbot_MissingMesssage_Ins";
+    public override string GetSettingKey()
+    {
+        return "NAP_Chatbot_MissingMesssage_Ins";
+    }
 
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

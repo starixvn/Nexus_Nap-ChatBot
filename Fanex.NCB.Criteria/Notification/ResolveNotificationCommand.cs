@@ -1,17 +1,22 @@
-﻿namespace Fanex.NCB.Criteria.Notification
+﻿namespace Fanex.NCB.Criteria.Notification;
+
+using Fanex.NCB.Shared.Models;
+
+public class ResolveNotificationCommand : BaseCommand
 {
-    using Fanex.NCB.Shared.Models;
+    public int NotificationId { get; set; }
 
-    public class ResolveNotificationCommand : BaseCommand
+    public string ResolvedRemark { get; set; }
+
+    public int UserId { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int NotificationId { get; set; }
+        return "NCB_NotificationList_Resolve_Upd";
+    }
 
-        public string ResolvedRemark { get; set; }
-
-        public int UserId { get; set; }
-
-        public override string GetSettingKey() => "NCB_NotificationList_Resolve_Upd";
-
-        public override bool IsValid() => NotificationId > 0 && !string.IsNullOrWhiteSpace(ResolvedRemark) && UserId > 0;
+    public override bool IsValid()
+    {
+        return NotificationId > 0 && !string.IsNullOrWhiteSpace(ResolvedRemark) && UserId > 0;
     }
 }

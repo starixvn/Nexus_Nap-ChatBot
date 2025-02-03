@@ -6,40 +6,39 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace Fanex.NCB.Criteria.Tests.NotificationTemplate
+namespace Fanex.NCB.Criteria.Tests.NotificationTemplate;
+
+public class GetTemplatesCriteriaTest
 {
-    public class GetTemplatesCriteriaTest
+    [Fact]
+    public void GetTemplatesCriteria_GetSettingKey_ReturnCorrectSettingKey()
     {
-        [Fact]
-        public void GetTemplatesCriteria_GetSettingKey_ReturnCorrectSettingKey()
-        {
-            // Arrange
-            var command = new GetTemplatesCriteria();
+        // Arrange
+        var command = new GetTemplatesCriteria();
 
-            // Act
-            var result = command.GetSettingKey();
+        // Act
+        var result = command.GetSettingKey();
 
-            // Assert
-            result.Should().Be("NCB_NotificationTemplateList_Sel");
-        }
+        // Assert
+        result.Should().Be("NCB_NotificationTemplateList_Sel");
+    }
 
-        [Theory]
-        [InlineData(0, 1, false)]
-        [InlineData(1, 0, false)]
-        [InlineData(1, 1, true)]
-        public void GetTemplatesCriteria_IsValid_CheckCorrectly(int pageIndex, int pageSize, bool expectedResult)
-        {
-            // Arrange
-            var fixture = new Fixture();
-            var command = fixture.Create<GetTemplatesCriteria>();
-            command.PageIndex = pageIndex;
-            command.PageSize = pageSize;
+    [Theory]
+    [InlineData(0, 1, false)]
+    [InlineData(1, 0, false)]
+    [InlineData(1, 1, true)]
+    public void GetTemplatesCriteria_IsValid_CheckCorrectly(int pageIndex, int pageSize, bool expectedResult)
+    {
+        // Arrange
+        var fixture = new Fixture();
+        var command = fixture.Create<GetTemplatesCriteria>();
+        command.PageIndex = pageIndex;
+        command.PageSize = pageSize;
 
-            // Act
-            var result = command.IsValid();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            result.Should().Be(expectedResult);
-        }
+        // Assert
+        result.Should().Be(expectedResult);
     }
 }

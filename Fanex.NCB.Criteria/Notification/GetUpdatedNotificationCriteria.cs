@@ -1,15 +1,19 @@
-﻿namespace Fanex.NCB.Criteria.Notification
+﻿namespace Fanex.NCB.Criteria.Notification;
+
+using Data;
+using Data.Repository;
+
+public class GetUpdatedNotificationCriteria : CriteriaBase
 {
-    using Data;
-    using Data.Repository;
+    [SpParam(AllowNull = true)] public string NotificationIds { get; set; }
 
-    public class GetUpdatedNotificationCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        [SpParam(AllowNull = true)]
-        public string NotificationIds { get; set; }
+        return "NCB_NotificationList_UpdatedNotification_Sel";
+    }
 
-        public override string GetSettingKey() => "NCB_NotificationList_UpdatedNotification_Sel";
-
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

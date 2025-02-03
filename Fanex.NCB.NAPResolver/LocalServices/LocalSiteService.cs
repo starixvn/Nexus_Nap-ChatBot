@@ -1,63 +1,59 @@
-﻿namespace Fanex.NCB.NAPResolver.LocalServices
+﻿namespace Fanex.NCB.NAPResolver.LocalServices;
+
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Fanex.NAP.Client.Models;
+using Fanex.NAP.Client.Models.ValueObject;
+using NAP.Client.Services;
+using Criteria.LocalNap.Site;
+using Shared.Services.Interfaces;
+
+public class LocalSiteService : ISiteService
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Fanex.NAP.Client.Models;
-    using Fanex.NAP.Client.Models.ValueObject;
-    using NAP.Client.Services;
-    using Criteria.LocalNap.Site;
-    using Shared.Services.Interfaces;
+    private readonly IBaseService baseService;
 
-    public class LocalSiteService : ISiteService
+    public LocalSiteService(IBaseService baseService)
     {
-        private readonly IBaseService baseService;
+        this.baseService = baseService;
+    }
 
-        public LocalSiteService(IBaseService baseService)
+    public IEnumerable<MenuItem> GetMenuItemBySiteId(int siteId, string enviroment, bool? isActive = null)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<IEnumerable<MenuItem>> GetMenuItemBySiteIdAsync(int siteId, string enviroment, bool? isActive = null)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public IEnumerable<SiteUrl> GetUrlById(int siteId, string environment)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<IEnumerable<SiteUrl>> GetUrlByIdAsync(int siteId, string environment)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public bool IsActivated(int siteId)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public async Task<bool> IsActivatedAsync(int siteId)
+    {
+        var criteria = new GetByIdSiteCriteria
         {
-            this.baseService = baseService;
-        }
+            SiteId = siteId
+        };
 
-        public IEnumerable<MenuItem> GetMenuItemBySiteId(int siteId, string enviroment, bool? isActive = null)
-        {
-            throw new System.NotImplementedException();
-        }
+        var isActive = false;
+        var site = await baseService.GetDataEntityAsync<SiteUrl>(criteria);
 
-        public Task<IEnumerable<MenuItem>> GetMenuItemBySiteIdAsync(int siteId, string enviroment, bool? isActive = null)
-        {
-            throw new System.NotImplementedException();
-        }
+        if (site != null) isActive = site.IsActive;
 
-        public IEnumerable<SiteUrl> GetUrlById(int siteId, string environment)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<IEnumerable<SiteUrl>> GetUrlByIdAsync(int siteId, string environment)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool IsActivated(int siteId)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public async Task<bool> IsActivatedAsync(int siteId)
-        {
-            var criteria = new GetByIdSiteCriteria
-            {
-                SiteId = siteId
-            };
-
-            bool isActive = false;
-            var site = await baseService.GetDataEntityAsync<SiteUrl>(criteria);
-
-            if (site != null)
-            {
-                isActive = site.IsActive;
-            }
-
-            return isActive;
-        }
+        return isActive;
     }
 }

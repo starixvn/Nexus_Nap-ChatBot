@@ -1,35 +1,34 @@
-﻿namespace Fanex.NCB.Criteria.Tests.Setting
+﻿namespace Fanex.NCB.Criteria.Tests.Setting;
+
+using Fanex.NCB.Criteria.Setting;
+using Xunit;
+
+public class GetBotNameCriteriaTests
 {
-    using Fanex.NCB.Criteria.Setting;
-    using Xunit;
-
-    public class GetBotNameCriteriaTests
+    [Fact]
+    public void GetSettingKey_ReturnCorrectSettingKey()
     {
-        [Fact]
-        public void GetSettingKey_ReturnCorrectSettingKey()
-        {
-            // Arrange
-            var criteria = new GetBotNameCriteria();
-            var expected = "NCB_Setting_BotName_Sel";
+        // Arrange
+        var criteria = new GetBotNameCriteria();
+        var expected = "NCB_Setting_BotName_Sel";
 
-            // Act
-            var actual = criteria.GetSettingKey();
+        // Act
+        var actual = criteria.GetSettingKey();
 
-            // Assert
-            Assert.Equal(expected, actual);
-        }
+        // Assert
+        Assert.Equal(expected, actual);
+    }
 
-        [Fact]
-        public void IsValid_ParamsArevalid_ReturnTrue()
-        {
-            // Arrange
-            var criteria = new GetBotNameCriteria();
+    [Fact]
+    public void IsValid_ParamsArevalid_ReturnTrue()
+    {
+        // Arrange
+        var criteria = new GetBotNameCriteria();
 
-            // Act
-            var actual = criteria.IsValid();
+        // Act
+        var actual = criteria.IsValid();
 
-            // Assert
-            Assert.True(actual);
-        }
+        // Assert
+        Assert.True(actual);
     }
 }

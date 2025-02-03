@@ -1,17 +1,13 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Models.SpecialDeleteTicket
+﻿namespace Fanex.NCB.AutoJobs.Core.Models.SpecialDeleteTicket;
+
+using System.Xml.Serialization;
+
+[XmlType("r")]
+public class AbnormalMessageHistory
 {
-    using System.Xml.Serialization;
+    [XmlAttribute("MessageId")] public int MessageId { get; set; }
 
-    [XmlType("r")]
-    public class AbnormalMessageHistory
-    {
-        [XmlAttribute("MessageId")]
-        public int MessageId { get; set; }
+    [XmlAttribute("VoidingHistoryId")] public int VoidingHistoryId { get; set; }
 
-        [XmlAttribute("VoidingHistoryId")]
-        public int VoidingHistoryId { get; set; }
-
-        [XmlAttribute("UsernameLst")]
-        public string UsernameLst { get; set; }
-    }
+    [XmlAttribute("UsernameLst")] public string UsernameLst { get; set; }
 }

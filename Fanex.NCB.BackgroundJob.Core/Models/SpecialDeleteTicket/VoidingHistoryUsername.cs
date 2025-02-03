@@ -1,13 +1,12 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Models.SpecialDeleteTicket
+﻿namespace Fanex.NCB.AutoJobs.Core.Models.SpecialDeleteTicket;
+
+public class VoidingHistoryUsername
 {
-    public class VoidingHistoryUsername
-    {
-        public int MessageID { get; set; }
+    public int MessageID { get; set; }
 
-        public string UsernameLst { get; set; }
+    public string UsernameLst { get; set; }
 
-        public string CreditSiteLst { get; set; }
+    public string CreditSiteLst { get; set; }
 
-        public string DepositSiteLst { get; set; }
-    }
+    public string DepositSiteLst { get; set; }
 }

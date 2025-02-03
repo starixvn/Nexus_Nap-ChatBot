@@ -1,34 +1,33 @@
-﻿namespace Fanex.NCB.AutoJobs.Workers
+﻿namespace Fanex.NCB.AutoJobs.Workers;
+
+using Constants;
+using Core.Services.Interfaces;
+using Extensions;
+using Microsoft.Extensions.Options;
+using Models;
+using ONEbook.UM.Services;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+
+[ExcludeFromCodeCoverage(Justification = "Worker don't needed test")]
+public class SyncDataFromNapUserControlWorker : BaseWorker
 {
-    using Constants;
-    using Core.Services.Interfaces;
-    using Extensions;
-    using Microsoft.Extensions.Options;
-    using Models;
-    using ONEbook.UM.Services;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Threading.Tasks;
+    private readonly ISyncDataService syncDataService;
 
-    [ExcludeFromCodeCoverage(Justification = "Worker don't needed test")]
-    public class SyncDataFromNapUserControlWorker : BaseWorker
+    public SyncDataFromNapUserControlWorker(
+        ISyncDataService syncDataService,
+        IMaintenanceService maintenanceService,
+        IOptions<List<JobSetting>> jobSettings,
+        ILogService logService)
+        : base(maintenanceService, logService)
     {
-        private readonly ISyncDataService syncDataService;
+        this.syncDataService = syncDataService;
+        JobSetting = JobHelper.GetJobConfig(jobSettings.Value, JobConstants.SyncNapUserControlData);
+    }
 
-        public SyncDataFromNapUserControlWorker(
-            ISyncDataService syncDataService,
-            IMaintenanceService maintenanceService,
-            IOptions<List<JobSetting>> jobSettings,
-            ILogService logService)
-                : base(maintenanceService, logService)
-        {
-            this.syncDataService = syncDataService;
-            JobSetting = JobHelper.GetJobConfig(jobSettings.Value, JobConstants.SyncNapUserControlData);
-        }
-
-        public override async Task ExecuteJobAsync()
-        {
-            await syncDataService.NapUserControlSyncDataAsync();
-        }
+    public override async Task ExecuteJobAsync()
+    {
+        await syncDataService.NapUserControlSyncDataAsync();
     }
 }

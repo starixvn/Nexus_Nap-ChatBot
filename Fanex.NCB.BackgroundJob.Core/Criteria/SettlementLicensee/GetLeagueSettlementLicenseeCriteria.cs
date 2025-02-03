@@ -1,13 +1,18 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SettlementLicensee
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SettlementLicensee;
+
+using Fanex.Data.Repository;
+
+public class GetLeagueSettlementLicenseeCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public string Message { get; set; }
 
-    public class GetLeagueSettlementLicenseeCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public string Message { get; set; }
+        return "NAP_Chatbot_Settlement_Licensee_LeagueSel";
+    }
 
-        public override string GetSettingKey() => "NAP_Chatbot_Settlement_Licensee_LeagueSel";
-
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

@@ -1,34 +1,33 @@
-﻿namespace Fanex.NCB.Services.Interfaces
+﻿namespace Fanex.NCB.Services.Interfaces;
+
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Models.Common;
+using Fanex.NCB.Shared.Models;
+using Fanex.NCB.Shared.Models.IntegrationMethod;
+using Fanex.NCB.Shared.Models.OIC;
+
+public interface ICommonService
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Models.Common;
-    using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Models.IntegrationMethod;
-    using Fanex.NCB.Shared.Models.OIC;
+    Task<IEnumerable<NotificationType>> GetNotificationTypesAsync();
 
-    public interface ICommonService
-    {
-        Task<IEnumerable<NotificationType>> GetNotificationTypesAsync();
+    Task<IEnumerable<Product>> GetProductsAsync();
 
-        Task<IEnumerable<Product>> GetProductsAsync();
+    Task<IEnumerable<Recipient>> GetRecipientsAsync();
 
-        Task<IEnumerable<Recipient>> GetRecipientsAsync();
+    Task<IEnumerable<NotificationStatus>> GetNotificationStatusesAsync();
 
-        Task<IEnumerable<NotificationStatus>> GetNotificationStatusesAsync();
+    Task<IEnumerable<User>> GetUsersAsync();
 
-        Task<IEnumerable<User>> GetUsersAsync();
+    Task<IEnumerable<ChannelInfo>> GetConversationChannelAsync();
 
-        Task<IEnumerable<ChannelInfo>> GetConversationChannelAsync();
+    Task<IEnumerable<Platform>> GetPlatformAsync(int notificationTypeId);
 
-        Task<IEnumerable<Platform>> GetPlatformAsync(int notificationTypeId);
+    Task<string> GetJsonDataFromDbACCAsync(string tableName);
 
-        Task<string> GetJsonDataFromDbACCAsync(string tableName);
+    Task<IEnumerable<IntegrationMethodInfo>> GetIntegrationMethodAsync(int notificationTypeId);
 
-        Task<IEnumerable<IntegrationMethodInfo>> GetIntegrationMethodAsync(int notificationTypeId);
+    Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications);
 
-        Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationMessage> notifications);
-
-        Task OnAfterImportDataAsync(CommandResult commandResult, IEnumerable<NotificationMessage> notificationMessages);
-    }
+    Task OnAfterImportDataAsync(CommandResult commandResult, IEnumerable<NotificationMessage> notificationMessages);
 }

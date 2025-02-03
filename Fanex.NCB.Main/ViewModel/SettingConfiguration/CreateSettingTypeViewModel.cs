@@ -4,10 +4,8 @@
 
     public class CreateSettingTypeViewModel
     {
-        [Required]
-        public int Type { get; set; }
+        [Required] public int Type { get; set; }
 
-        [Required]
-        public string Name { get; set; }
+        [Required] public string Name { get; set; }
     }
 }

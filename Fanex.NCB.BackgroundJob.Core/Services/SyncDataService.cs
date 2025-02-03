@@ -1,53 +1,53 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Services
+﻿namespace Fanex.NCB.AutoJobs.Core.Services;
+
+using System;
+using System.Globalization;
+using System.Threading.Tasks;
+using Logging;
+using Criteria.SyncData;
+using Models.Configurations;
+using Fanex.NCB.AutoJobs.Core.Models.Core;
+using Models.NapUserControl;
+using Models.OIC;
+using Repository;
+using Interfaces;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+
+public class SyncDataService : ISyncDataService
 {
-    using System;
-    using System.Globalization;
-    using System.Threading.Tasks;
-    using Logging;
-    using Criteria.SyncData;
-    using Models.Configurations;
-    using Fanex.NCB.AutoJobs.Core.Models.Core;
-    using Models.NapUserControl;
-    using Models.OIC;
-    using Repository;
-    using Interfaces;
-    using Microsoft.Extensions.Options;
-    using Newtonsoft.Json;
+    private readonly IOptions<AppSettings> appSettings;
+    private readonly ISyncDataRepository syncDataRepository;
+    private readonly IBaseService baseService;
+    private readonly ILogger logger;
+    private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
-    public class SyncDataService : ISyncDataService
+    public SyncDataService(IOptions<AppSettings> appSettings,
+        ISyncDataRepository syncDataRepository,
+        IBaseService baseService,
+        ILogger logger)
     {
-        private readonly IOptions<AppSettings> appSettings;
-        private readonly ISyncDataRepository syncDataRepository;
-        private readonly IBaseService baseService;
-        private readonly ILogger logger;
-        private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
+        this.appSettings = appSettings;
+        this.syncDataRepository = syncDataRepository;
+        this.baseService = baseService;
+        this.logger = logger;
+    }
 
-        public SyncDataService(IOptions<AppSettings> appSettings,
-            ISyncDataRepository syncDataRepository,
-            IBaseService baseService,
-            ILogger logger)
+    public async Task NapUserControlSyncDataAsync()
+    {
+        var data = await GetDataFromNapUserControl(null);
+        await InsertNapData(data);
+    }
+
+    public async Task SyncNapDataForSSOLogin(int userId)
+    {
+        try
         {
-            this.appSettings = appSettings;
-            this.syncDataRepository = syncDataRepository;
-            this.baseService = baseService;
-            this.logger = logger;
+            await NapSSOSyncDataByUserIdAsync(userId);
         }
-
-        public async Task NapUserControlSyncDataAsync()
+        catch (Exception exception)
         {
-            var data = await GetDataFromNapUserControl(null);
-            await InsertNapData(data);
-        }
-
-        public async Task SyncNapDataForSSOLogin(int userId)
-        {
-            try
-            {
-                await NapSSOSyncDataByUserIdAsync(userId);
-            }
-            catch (Exception exception)
-            {
-                string errMsg = string.Format(
+            var errMsg = string.Format(
                 CultureInfo.InvariantCulture,
                 "{0}\n\rSource: {1}\n\rDomain: {2}\n\rTargetSite: {3}\n\rStackTrace: {4}",
                 exception.Message,
@@ -55,101 +55,102 @@
                 string.Empty,
                 exception.TargetSite,
                 exception.StackTrace);
-                await logger.ErrorAsync(errMsg);
-            }
+            await logger.ErrorAsync(errMsg);
         }
+    }
 
-        public async Task OicSyncDataAsync()
+    public async Task OicSyncDataAsync()
+    {
+        var data = await GetDataFromOIC();
+        await InsertOICData(data);
+    }
+
+    private async Task<NapData> GetDataFromNapUserControl(int? userId)
+    {
+        var criteria = new GetDataFromNapUserControlCriteria
         {
-            var data = await GetDataFromOIC();
-            await InsertOICData(data);
-        }
+            SiteId = appSettings.Value.SiteId,
+            UserId = userId
+        };
 
-        private async Task<NapData> GetDataFromNapUserControl(int? userId)
+        return await syncDataRepository.FetchDataFromNapUserControl(criteria);
+    }
+
+    private async Task InsertNapData(NapData data)
+    {
+        var command = new InsertNapUserControlDataCommand
         {
-            var criteria = new GetDataFromNapUserControlCriteria
-            {
-                SiteId = appSettings.Value.SiteId,
-                UserId = userId
-            };
+            Customer = ConvertToJsonWithDateTimeFormatString(data.Customer),
+            NapGroups = ConvertToJsonWithDateTimeFormatString(data.NapGroups),
+            GroupFunction = ConvertToJsonWithDateTimeFormatString(data.NapGroupFunction),
+            MenuItems = ConvertToJsonWithDateTimeFormatString(data.NapMenuItems),
+            OnUser = ConvertToJsonWithDateTimeFormatString(data.NapOnUser),
+            Sites = ConvertToJsonWithDateTimeFormatString(data.NapSites),
+            Functions = ConvertToJsonWithDateTimeFormatString(data.NapFunctions),
+            SiteURL = ConvertToJsonWithDateTimeFormatString(data.NapSiteURL),
+            UserFunction = ConvertToJsonWithDateTimeFormatString(data.NapUserFunction),
+            Users = ConvertToJsonWithDateTimeFormatString(data.NapUsers),
+            UserSite = ConvertToJsonWithDateTimeFormatString(data.NapUserSite),
+            CustInfo = ConvertToJsonWithDateTimeFormatString(data.CustInfo)
+        };
 
-            return await syncDataRepository.FetchDataFromNapUserControl(criteria);
-        }
+        await baseService.ExecuteNonQueryAsync(command);
+    }
 
-        private async Task InsertNapData(NapData data)
+    private async Task<CommandResult> InsertNapDataOnUser(NapData data, int userId)
+    {
+        var command = new UpdateNapDataByUserIdCommand
         {
-            var command = new InsertNapUserControlDataCommand
-            {
-                Customer = ConvertToJsonWithDateTimeFormatString(data.Customer),
-                NapGroups = ConvertToJsonWithDateTimeFormatString(data.NapGroups),
-                GroupFunction = ConvertToJsonWithDateTimeFormatString(data.NapGroupFunction),
-                MenuItems = ConvertToJsonWithDateTimeFormatString(data.NapMenuItems),
-                OnUser = ConvertToJsonWithDateTimeFormatString(data.NapOnUser),
-                Sites = ConvertToJsonWithDateTimeFormatString(data.NapSites),
-                Functions = ConvertToJsonWithDateTimeFormatString(data.NapFunctions),
-                SiteURL = ConvertToJsonWithDateTimeFormatString(data.NapSiteURL),
-                UserFunction = ConvertToJsonWithDateTimeFormatString(data.NapUserFunction),
-                Users = ConvertToJsonWithDateTimeFormatString(data.NapUsers),
-                UserSite = ConvertToJsonWithDateTimeFormatString(data.NapUserSite),
-                CustInfo = ConvertToJsonWithDateTimeFormatString(data.CustInfo)
-            };
+            Functions = ConvertToJsonWithDateTimeFormatString(data.NapFunctions),
 
-            await baseService.ExecuteNonQueryAsync(command);
-        }
+            UserSite = ConvertToJsonWithDateTimeFormatString(data.NapUserSite),
+            Customer = ConvertToJsonWithDateTimeFormatString(data.Customer),
+            CustInfo = ConvertToJsonWithDateTimeFormatString(data.CustInfo),
+            NapGroups = ConvertToJsonWithDateTimeFormatString(data.NapGroups),
+            GroupFunction = ConvertToJsonWithDateTimeFormatString(data.NapGroupFunction),
+            MenuItems = ConvertToJsonWithDateTimeFormatString(data.NapMenuItems),
+            OnUser = ConvertToJsonWithDateTimeFormatString(data.NapOnUser),
+            Sites = ConvertToJsonWithDateTimeFormatString(data.NapSites),
+            SiteURL = ConvertToJsonWithDateTimeFormatString(data.NapSiteURL),
+            UserFunction = ConvertToJsonWithDateTimeFormatString(data.NapUserFunction),
+            Users = ConvertToJsonWithDateTimeFormatString(data.NapUsers),
+            UserId = userId
+        };
 
-        private async Task<CommandResult> InsertNapDataOnUser(NapData data, int userId)
+        return await baseService.ExecuteNonQueryAsync(command);
+    }
+
+    private async Task<OicData> GetDataFromOIC()
+    {
+        var criteria = new GetDataFromOicCriteria();
+        return await syncDataRepository.FetchDataFromOIC(criteria);
+    }
+
+    private async Task InsertOICData(OicData data)
+    {
+        var command = new InsertOicDataCommand
         {
-            var command = new UpdateNapDataByUserIdCommand
-            {
-                Functions = ConvertToJsonWithDateTimeFormatString(data.NapFunctions),
+            Licensees = ConvertToJsonWithDateTimeFormatString(data.Licensees),
+            LicenseeStatuses = ConvertToJsonWithDateTimeFormatString(data.LicenseeStatuses),
+            LicenseeProducts = ConvertToJsonWithDateTimeFormatString(data.LicenseeProducts),
+            LicenseeTypes = ConvertToJsonWithDateTimeFormatString(data.LicenseeTypes),
+            Products = ConvertToJsonWithDateTimeFormatString(data.Products),
+            Platforms = ConvertToJsonWithDateTimeFormatString(data.Platforms),
+            IntegrationMethod = ConvertToJsonWithDateTimeFormatString(data.IntegrationMethod),
+            LicenseeIntegrationMethod = ConvertToJsonWithDateTimeFormatString(data.LicenseeIntegrationMethod)
+        };
 
-                UserSite = ConvertToJsonWithDateTimeFormatString(data.NapUserSite),
-                Customer = ConvertToJsonWithDateTimeFormatString(data.Customer),
-                CustInfo = ConvertToJsonWithDateTimeFormatString(data.CustInfo),
-                NapGroups = ConvertToJsonWithDateTimeFormatString(data.NapGroups),
-                GroupFunction = ConvertToJsonWithDateTimeFormatString(data.NapGroupFunction),
-                MenuItems = ConvertToJsonWithDateTimeFormatString(data.NapMenuItems),
-                OnUser = ConvertToJsonWithDateTimeFormatString(data.NapOnUser),
-                Sites = ConvertToJsonWithDateTimeFormatString(data.NapSites),
-                SiteURL = ConvertToJsonWithDateTimeFormatString(data.NapSiteURL),
-                UserFunction = ConvertToJsonWithDateTimeFormatString(data.NapUserFunction),
-                Users = ConvertToJsonWithDateTimeFormatString(data.NapUsers),
-                UserId = userId
-            };
+        await baseService.ExecuteNonQueryAsync(command);
+    }
 
-            return await baseService.ExecuteNonQueryAsync(command);
-        }
+    private static string ConvertToJsonWithDateTimeFormatString(object data)
+    {
+        return JsonConvert.SerializeObject(data, new JsonSerializerSettings { DateFormatString = DateTimeFormat });
+    }
 
-        private async Task<OicData> GetDataFromOIC()
-        {
-            var criteria = new GetDataFromOicCriteria();
-            return await syncDataRepository.FetchDataFromOIC(criteria);
-        }
-
-        private async Task InsertOICData(OicData data)
-        {
-            var command = new InsertOicDataCommand
-            {
-                Licensees = ConvertToJsonWithDateTimeFormatString(data.Licensees),
-                LicenseeStatuses = ConvertToJsonWithDateTimeFormatString(data.LicenseeStatuses),
-                LicenseeProducts = ConvertToJsonWithDateTimeFormatString(data.LicenseeProducts),
-                LicenseeTypes = ConvertToJsonWithDateTimeFormatString(data.LicenseeTypes),
-                Products = ConvertToJsonWithDateTimeFormatString(data.Products),
-                Platforms = ConvertToJsonWithDateTimeFormatString(data.Platforms),
-                IntegrationMethod = ConvertToJsonWithDateTimeFormatString(data.IntegrationMethod),
-                LicenseeIntegrationMethod = ConvertToJsonWithDateTimeFormatString(data.LicenseeIntegrationMethod)
-            };
-
-            await baseService.ExecuteNonQueryAsync(command);
-        }
-
-        private static string ConvertToJsonWithDateTimeFormatString(object data)
-            => JsonConvert.SerializeObject(data, new JsonSerializerSettings { DateFormatString = DateTimeFormat });
-
-        private async Task NapSSOSyncDataByUserIdAsync(int userId)
-        {
-            var data = await GetDataFromNapUserControl(userId);
-            await InsertNapDataOnUser(data, userId);
-        }
+    private async Task NapSSOSyncDataByUserIdAsync(int userId)
+    {
+        var data = await GetDataFromNapUserControl(userId);
+        await InsertNapDataOnUser(data, userId);
     }
 }

@@ -1,9 +1,8 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Models.OIC
-{
-    public class LicenseeIntegrationMethod
-    {
-        public int LicenseeId { get; set; }
+﻿namespace Fanex.NCB.AutoJobs.Core.Models.OIC;
 
-        public uint IntegrationMethodId { get; set; }
-    }
+public class LicenseeIntegrationMethod
+{
+    public int LicenseeId { get; set; }
+
+    public uint IntegrationMethodId { get; set; }
 }

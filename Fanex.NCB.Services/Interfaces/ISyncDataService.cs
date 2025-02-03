@@ -1,9 +1,8 @@
-﻿namespace Fanex.NCB.Services.Interfaces
-{
-    using System.Threading.Tasks;
+﻿namespace Fanex.NCB.Services.Interfaces;
 
-    public interface ISyncDataService
-    {
-        Task SyncNapDataForSSOLogin(int userId);
-    }
+using System.Threading.Tasks;
+
+public interface ISyncDataService
+{
+    Task SyncNapDataForSSOLogin(int userId);
 }

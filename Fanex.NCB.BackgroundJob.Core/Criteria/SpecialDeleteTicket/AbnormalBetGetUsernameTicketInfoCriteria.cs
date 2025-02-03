@@ -1,16 +1,21 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
+
+using Fanex.Data.Repository;
+
+public class AbnormalBetGetUsernameTicketInfoCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public string AbnormalBetsInfo { get; set; }
+    public string AbnormalAccountsInfo { get; set; }
+    public string DuplicatedTickets { get; set; }
+    public int SiteDBGroupId { get; set; }
 
-    public class AbnormalBetGetUsernameTicketInfoCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public string AbnormalBetsInfo { get; set; }
-        public string AbnormalAccountsInfo { get; set; }
-        public string DuplicatedTickets { get; set; }
-        public int SiteDBGroupId { get; set; }
+        return "NAP_Chatbot_AbnormalBets_UsernameTicketInfo_Sel";
+    }
 
-        public override string GetSettingKey() => "NAP_Chatbot_AbnormalBets_UsernameTicketInfo_Sel";
-
-        public override bool IsValid() => SiteDBGroupId >= 0;
+    public override bool IsValid()
+    {
+        return SiteDBGroupId >= 0;
     }
 }

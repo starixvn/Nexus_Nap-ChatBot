@@ -1,10 +1,9 @@
-﻿namespace Fanex.NCB.Models.Setting
-{
-    using Common;
+﻿namespace Fanex.NCB.Models.Setting;
 
-    public class BotName : ChannelInfo
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
+using Common;
+
+public class BotName : ChannelInfo
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
 }

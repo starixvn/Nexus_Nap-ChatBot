@@ -1,22 +1,22 @@
-﻿namespace Fanex.NCB.AutoJobs.Extensions
+﻿namespace Fanex.NCB.AutoJobs.Extensions;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Models;
+
+public static class JobHelper
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Models;
-
-    public static class JobHelper
+    public static JobSetting GetJobConfig(IEnumerable<JobSetting> jobConfigs, string jobName)
     {
-        public static JobSetting GetJobConfig(IEnumerable<JobSetting> jobConfigs, string jobName)
-        {
-            return jobConfigs.FirstOrDefault(job => job.JobName.Equals(jobName, StringComparison.InvariantCultureIgnoreCase));
-        }
+        return jobConfigs.FirstOrDefault(
+            job => job.JobName.Equals(jobName, StringComparison.InvariantCultureIgnoreCase));
+    }
 
-        public static bool IsEnabledJob(IEnumerable<JobSetting> jobConfigs, string jobName)
-        {
-            var settings = GetJobConfig(jobConfigs, jobName);
+    public static bool IsEnabledJob(IEnumerable<JobSetting> jobConfigs, string jobName)
+    {
+        var settings = GetJobConfig(jobConfigs, jobName);
 
-            return settings != null && settings.IsEnabled;
-        }
+        return settings != null && settings.IsEnabled;
     }
 }

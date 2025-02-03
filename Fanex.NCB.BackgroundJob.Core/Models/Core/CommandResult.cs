@@ -1,17 +1,16 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Models.Core
+﻿namespace Fanex.NCB.AutoJobs.Core.Models.Core;
+
+public class CommandResult
 {
-    public class CommandResult
+    public CommandResult()
     {
-        public CommandResult()
-        {
-            Code = 1;
-            Message = "Invalid Data";
-        }
-
-        public int Code { get; set; }
-
-        public string Message { get; set; }
-
-        public bool IsSuccessful => Code == 0;
+        Code = 1;
+        Message = "Invalid Data";
     }
+
+    public int Code { get; set; }
+
+    public string Message { get; set; }
+
+    public bool IsSuccessful => Code == 0;
 }

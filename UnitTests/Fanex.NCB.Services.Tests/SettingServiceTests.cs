@@ -1,220 +1,221 @@
-﻿namespace Fanex.NCB.Services.Tests
+﻿namespace Fanex.NCB.Services.Tests;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Core.Enum;
+using Core.Extensions;
+using Fanex.NCB.Core.Models;
+using Criteria.NotificationType;
+using Criteria.Setting;
+using Models.Setting;
+using Fanex.NCB.Shared.Services.Interfaces;
+using NSubstitute;
+using Xunit;
+
+public class SettingServiceTests
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Core.Enum;
-    using Core.Extensions;
-    using Fanex.NCB.Core.Models;
-    using Criteria.NotificationType;
-    using Criteria.Setting;
-    using Models.Setting;
-    using Fanex.NCB.Shared.Services.Interfaces;
-    using NSubstitute;
-    using Xunit;
+    private IBaseService baseService;
 
-    public class SettingServiceTests
+    [Fact]
+    public void GetAllMappingStatus_WhenCalled_ReturnExpectedResult()
     {
-        private IBaseService baseService;
-
-        [Fact]
-        public void GetAllMappingStatus_WhenCalled_ReturnExpectedResult()
+        var expected = new List<BaseModel>
         {
-            var expected = new List<BaseModel>
-            {
-                new BaseModel {Id = 0, Name = EnumHelper.GetDescription(MappingStatus.BotRemoved)},
-                new BaseModel {Id = 1, Name = EnumHelper.GetDescription(MappingStatus.Mapped)},
-                new BaseModel {Id = 2, Name = EnumHelper.GetDescription(MappingStatus.NotMapped)},
-            };
-            var service = GetService();
+            new() { Id = 0, Name = EnumHelper.GetDescription(MappingStatus.BotRemoved) },
+            new() { Id = 1, Name = EnumHelper.GetDescription(MappingStatus.Mapped) },
+            new() { Id = 2, Name = EnumHelper.GetDescription(MappingStatus.NotMapped) }
+        };
+        var service = GetService();
 
-            //Act
-            var actual = service.GetAllMappingStatus();
+        //Act
+        var actual = service.GetAllMappingStatus();
 
-            //Assert
-            Assert.Equal(expected.ToList().ToString(), actual.ToList().ToString());
-        }
+        //Assert
+        Assert.Equal(expected.ToList().ToString(), actual.ToList().ToString());
+    }
 
-        [Fact]
-        public async Task GetBotNameAsync_WhenCalled_ReturnExpectedResult()
+    [Fact]
+    public async Task GetBotNameAsync_WhenCalled_ReturnExpectedResult()
+    {
+        var expected = new List<BotName>
         {
-            var expected = new List<BotName>
-            {
-                new BotName { Id = 1, Name = "1on1Notify"}
-            };
+            new() { Id = 1, Name = "1on1Notify" }
+        };
 
-            var criteria = new GetBotNameCriteria();
-            var service = GetService();
-            baseService.GetDataAsync<BotName>(Arg.Do<GetBotNameCriteria>(x => criteria = x)).Returns(expected);
+        var criteria = new GetBotNameCriteria();
+        var service = GetService();
+        baseService.GetDataAsync<BotName>(Arg.Do<GetBotNameCriteria>(x => criteria = x)).Returns(expected);
 
-            //Act
-            var actual = await service.GetBotNameAsync();
+        //Act
+        var actual = await service.GetBotNameAsync();
 
-            //Assert
-            Assert.Equal(expected, actual);
-        }
+        //Assert
+        Assert.Equal(expected, actual);
+    }
 
-        [Fact]
-        public async Task GetChatGroupTypeAsync_WhenCalled_ReturnExpectedResult()
+    [Fact]
+    public async Task GetChatGroupTypeAsync_WhenCalled_ReturnExpectedResult()
+    {
+        var expected = new List<BaseModel>
         {
-            var expected = new List<BaseModel>
-            {
-                new BaseModel { Id = 1, Name = "Test Recipient"}
-            };
+            new() { Id = 1, Name = "Test Recipient" }
+        };
 
-            var criteria = new GetFilterRecipientTypeCriteria();
-            var service = GetService();
-            baseService.GetDataAsync<BaseModel>(Arg.Do<GetFilterRecipientTypeCriteria>(x => criteria = x)).Returns(expected);
+        var criteria = new GetFilterRecipientTypeCriteria();
+        var service = GetService();
+        baseService.GetDataAsync<BaseModel>(Arg.Do<GetFilterRecipientTypeCriteria>(x => criteria = x))
+            .Returns(expected);
 
-            //Act
-            var actual = await service.GetFilterRecipientTypesAsync();
+        //Act
+        var actual = await service.GetFilterRecipientTypesAsync();
 
-            //Assert
-            Assert.Equal(1, actual.FirstOrDefault().Id);
-            Assert.Equal("Test Recipient", actual.FirstOrDefault().Name);
-        }
+        //Assert
+        Assert.Equal(1, actual.FirstOrDefault().Id);
+        Assert.Equal("Test Recipient", actual.FirstOrDefault().Name);
+    }
 
-        [Fact]
-        public async Task GetLicenseeStatusAsync_WhenCalled_ReturnExpectedResult()
+    [Fact]
+    public async Task GetLicenseeStatusAsync_WhenCalled_ReturnExpectedResult()
+    {
+        var expected = new List<BaseModel>
         {
-            var expected = new List<BaseModel>
-            {
-                new BaseModel { Id = 1, Name = "Terminated"}
-            };
+            new() { Id = 1, Name = "Terminated" }
+        };
 
-            var criteria = new GetLicenseeStatusCriteria();
-            var service = GetService();
-            baseService.GetDataAsync<BaseModel>(Arg.Do<GetLicenseeStatusCriteria>(x => criteria = x)).Returns(expected);
+        var criteria = new GetLicenseeStatusCriteria();
+        var service = GetService();
+        baseService.GetDataAsync<BaseModel>(Arg.Do<GetLicenseeStatusCriteria>(x => criteria = x)).Returns(expected);
 
-            //Act
-            var actual = await service.GetLicenseeStatusAsync();
+        //Act
+        var actual = await service.GetLicenseeStatusAsync();
 
-            //Assert
-            Assert.Equal(1, actual.FirstOrDefault().Id);
-            Assert.Equal("Terminated", actual.FirstOrDefault().Name);
-        }
+        //Assert
+        Assert.Equal(1, actual.FirstOrDefault().Id);
+        Assert.Equal("Terminated", actual.FirstOrDefault().Name);
+    }
 
-        [Fact]
-        public async Task GetFilterRecipientAsync_WhenCalled_ReturnExpectedResult()
+    [Fact]
+    public async Task GetFilterRecipientAsync_WhenCalled_ReturnExpectedResult()
+    {
+        var expected = new List<ChatGroupType>
         {
-            var expected = new List<ChatGroupType>
-            {
-                new ChatGroupType { Id = "1", Name = "Test Type"}
-            };
+            new() { Id = "1", Name = "Test Type" }
+        };
 
-            var criteria = new GetChatGroupTypeCriteria();
-            var service = GetService();
-            baseService.GetDataAsync<ChatGroupType>(Arg.Do<GetChatGroupTypeCriteria>(x => criteria = x)).Returns(expected);
+        var criteria = new GetChatGroupTypeCriteria();
+        var service = GetService();
+        baseService.GetDataAsync<ChatGroupType>(Arg.Do<GetChatGroupTypeCriteria>(x => criteria = x)).Returns(expected);
 
-            //Act
-            var actual = await service.GetChatGroupTypeAsync();
+        //Act
+        var actual = await service.GetChatGroupTypeAsync();
 
-            //Assert
-            Assert.Equal("1", actual.FirstOrDefault().Id);
-            Assert.Equal("Test Type", actual.FirstOrDefault().Name);
-        }
+        //Assert
+        Assert.Equal("1", actual.FirstOrDefault().Id);
+        Assert.Equal("Test Type", actual.FirstOrDefault().Name);
+    }
 
-        [Fact]
-        public async Task GetRecipientsAsync_WhenCalled_ReturnExpectedResult()
+    [Fact]
+    public async Task GetRecipientsAsync_WhenCalled_ReturnExpectedResult()
+    {
+        var expected = new List<Recipient>
         {
-            var expected = new List<Recipient>
-            {
-                new Recipient { Id = 1, Name = "10 Bet test"}
-            };
+            new() { Id = 1, Name = "10 Bet test" }
+        };
 
-            var criteria = new GetRecipientCriteria();
-            var service = GetService();
-            baseService.GetDataAsync<Recipient>(Arg.Do<GetRecipientCriteria>(x => criteria = x)).Returns(expected);
+        var criteria = new GetRecipientCriteria();
+        var service = GetService();
+        baseService.GetDataAsync<Recipient>(Arg.Do<GetRecipientCriteria>(x => criteria = x)).Returns(expected);
 
-            //Act
-            var actual = await service.GetRecipientsAsync();
+        //Act
+        var actual = await service.GetRecipientsAsync();
 
-            //Assert
-            Assert.Equal(1, actual.FirstOrDefault().Id);
-            Assert.Equal("10 Bet test", actual.FirstOrDefault().Name);
-        }
+        //Assert
+        Assert.Equal(1, actual.FirstOrDefault().Id);
+        Assert.Equal("10 Bet test", actual.FirstOrDefault().Name);
+    }
 
-        [Fact]
-        public async Task GetRecipientTypeAsync_WhenCalled_ReturnExpectedResult()
+    [Fact]
+    public async Task GetRecipientTypeAsync_WhenCalled_ReturnExpectedResult()
+    {
+        var expected = new List<BaseModel>
         {
-            var expected = new List<BaseModel>
-            {
-                new BaseModel { Id = 1, Name = "Licensee"}
-            };
+            new() { Id = 1, Name = "Licensee" }
+        };
 
-            var criteria = new GetRecipientTypeCriteria();
-            var service = GetService();
-            baseService.GetDataAsync<BaseModel>(Arg.Do<GetRecipientTypeCriteria>(x => criteria = x)).Returns(expected);
+        var criteria = new GetRecipientTypeCriteria();
+        var service = GetService();
+        baseService.GetDataAsync<BaseModel>(Arg.Do<GetRecipientTypeCriteria>(x => criteria = x)).Returns(expected);
 
-            //Act
-            var actual = await service.GetRecipientTypesAsync();
+        //Act
+        var actual = await service.GetRecipientTypesAsync();
 
-            //Assert
-            Assert.Equal(1, actual.FirstOrDefault().Id);
-            Assert.Equal("Licensee", actual.FirstOrDefault().Name);
-        }
+        //Assert
+        Assert.Equal(1, actual.FirstOrDefault().Id);
+        Assert.Equal("Licensee", actual.FirstOrDefault().Name);
+    }
 
-        [Fact]
-        public async Task SearchChatGroupAsync_WhenCalled_ReturnExpectedResult()
+    [Fact]
+    public async Task SearchChatGroupAsync_WhenCalled_ReturnExpectedResult()
+    {
+        var expected = new List<BaseModel>
         {
-            var expected = new List<BaseModel>
-            {
-                new BaseModel {Id = 1, Name = "Test"}
-            };
-            var criteria = new SearchChatGroupNameCriteria();
-            var service = GetService();
-            baseService.GetDataAsync<BaseModel>(Arg.Do<SearchChatGroupNameCriteria>(x => criteria = x)).Returns(expected);
+            new() { Id = 1, Name = "Test" }
+        };
+        var criteria = new SearchChatGroupNameCriteria();
+        var service = GetService();
+        baseService.GetDataAsync<BaseModel>(Arg.Do<SearchChatGroupNameCriteria>(x => criteria = x)).Returns(expected);
 
-            //Act
-            var actual = await service.SearchChatGroupAsync("Test");
+        //Act
+        var actual = await service.SearchChatGroupAsync("Test");
 
-            //Assert
-            Assert.Equal(1, actual.FirstOrDefault().Id);
-            Assert.Equal("Test", actual.FirstOrDefault().Name);
-        }
+        //Assert
+        Assert.Equal(1, actual.FirstOrDefault().Id);
+        Assert.Equal("Test", actual.FirstOrDefault().Name);
+    }
 
-        [Fact]
-        public async Task SearchRecipientAsync_WhenCalled_ReturnExpectedResult()
+    [Fact]
+    public async Task SearchRecipientAsync_WhenCalled_ReturnExpectedResult()
+    {
+        var expected = new List<Recipient>
         {
-            var expected = new List<Recipient>
-            {
-                new Recipient {Id = 1, Name = "Test"}
-            };
-            var criteria = new SearchRecipientCriteria();
-            var service = GetService();
-            baseService.GetDataAsync<Recipient>(Arg.Do<SearchRecipientCriteria>(x => criteria = x)).Returns(expected);
+            new() { Id = 1, Name = "Test" }
+        };
+        var criteria = new SearchRecipientCriteria();
+        var service = GetService();
+        baseService.GetDataAsync<Recipient>(Arg.Do<SearchRecipientCriteria>(x => criteria = x)).Returns(expected);
 
-            //Act
-            var actual = await service.SearchRecipientsAsync("Test");
+        //Act
+        var actual = await service.SearchRecipientsAsync("Test");
 
-            //Assert
-            Assert.Equal(1, actual.FirstOrDefault().Id);
-            Assert.Equal("Test", actual.FirstOrDefault().Name);
-        }
+        //Assert
+        Assert.Equal(1, actual.FirstOrDefault().Id);
+        Assert.Equal("Test", actual.FirstOrDefault().Name);
+    }
 
-        [Fact]
-        public async Task GetSystemAsync_WhenCalled_ReturnExpectedResult()
+    [Fact]
+    public async Task GetSystemAsync_WhenCalled_ReturnExpectedResult()
+    {
+        var expected = new List<BaseModel>
         {
-            var expected = new List<BaseModel>
-            {
-                new BaseModel {Id = 1, Name = "Test"}
-            };
-            var criteria = new GetNotificationTypeSystemCriteria();
-            var service = GetService();
-            baseService.GetDataAsync<BaseModel>(Arg.Do<GetNotificationTypeSystemCriteria>(x => criteria = x)).Returns(expected);
+            new() { Id = 1, Name = "Test" }
+        };
+        var criteria = new GetNotificationTypeSystemCriteria();
+        var service = GetService();
+        baseService.GetDataAsync<BaseModel>(Arg.Do<GetNotificationTypeSystemCriteria>(x => criteria = x))
+            .Returns(expected);
 
-            //Act
-            var actual = await service.GetSystemAsync();
+        //Act
+        var actual = await service.GetSystemAsync();
 
-            //Assert
-            Assert.Equal(1, actual.FirstOrDefault().Id);
-            Assert.Equal("Test", actual.FirstOrDefault().Name);
-        }
+        //Assert
+        Assert.Equal(1, actual.FirstOrDefault().Id);
+        Assert.Equal("Test", actual.FirstOrDefault().Name);
+    }
 
-        private SettingService GetService()
-        {
-            baseService = Substitute.For<IBaseService>();
-            return new SettingService(baseService);
-        }
+    private SettingService GetService()
+    {
+        baseService = Substitute.For<IBaseService>();
+        return new SettingService(baseService);
     }
 }

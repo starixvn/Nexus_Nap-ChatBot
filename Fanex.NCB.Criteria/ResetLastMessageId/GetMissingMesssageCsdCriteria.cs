@@ -1,11 +1,16 @@
-﻿namespace Fanex.NCB.Criteria.ResetLastMessageId
+﻿namespace Fanex.NCB.Criteria.ResetLastMessageId;
+
+using Data.Repository;
+
+public class GetMissingMesssageCsdCriteria : CriteriaBase
 {
-    using Data.Repository;
-
-    public class GetMissingMesssageCsdCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public override string GetSettingKey() => "NAP_Chatbot_AbnormalBets_MissingMesssageInfo_Sel";
+        return "NAP_Chatbot_AbnormalBets_MissingMesssageInfo_Sel";
+    }
 
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

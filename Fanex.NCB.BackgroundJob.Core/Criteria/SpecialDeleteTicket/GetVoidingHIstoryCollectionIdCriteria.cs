@@ -1,14 +1,19 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
+
+using Fanex.Data.Repository;
+
+public class GetVoidingHistoryCollectionIdCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public int LastVoidingHistoryCollectionId { get; set; }
+    public int BatchSize { get; set; }
 
-    public class GetVoidingHistoryCollectionIdCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public int LastVoidingHistoryCollectionId { get; set; }
-        public int BatchSize { get; set; }
+        return "NAP_Chatbot_SpecialDelete_InternalCSD_GetCollection";
+    }
 
-        public override string GetSettingKey() => "NAP_Chatbot_SpecialDelete_InternalCSD_GetCollection";
-
-        public override bool IsValid() => BatchSize > 0;
+    public override bool IsValid()
+    {
+        return BatchSize > 0;
     }
 }

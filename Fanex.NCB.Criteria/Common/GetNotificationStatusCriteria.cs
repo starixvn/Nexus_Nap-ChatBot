@@ -1,11 +1,16 @@
-﻿namespace Fanex.NCB.Criteria.Common
+﻿namespace Fanex.NCB.Criteria.Common;
+
+using Data.Repository;
+
+public class GetNotificationStatusCriteria : CriteriaBase
 {
-    using Data.Repository;
-
-    public class GetNotificationStatusCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public override string GetSettingKey() => "NCB_Common_NotificationStatus_Sel";
+        return "NCB_Common_NotificationStatus_Sel";
+    }
 
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

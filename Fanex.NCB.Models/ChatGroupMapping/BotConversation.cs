@@ -1,29 +1,28 @@
-﻿namespace Fanex.NCB.Model.ChatGroupMapping
+﻿namespace Fanex.NCB.Model.ChatGroupMapping;
+
+using Core.Enum;
+
+public class BotConversation : Models.Common.ChannelInfo
 {
-    using Core.Enum;
+    public string GroupName { get; set; }
 
-    public class BotConversation : Models.Common.ChannelInfo
-    {
-        public string GroupName { get; set; }
+    public int GroupID { get; set; }
 
-        public int GroupID { get; set; }
+    public string ConversationID { get; set; }
 
-        public string ConversationID { get; set; }
+    public int ChatGroupTypeID { get; set; }
 
-        public int ChatGroupTypeID { get; set; }
+    public string ChatGroupTypeName { get; set; }
 
-        public string ChatGroupTypeName { get; set; }
+    public string Remark { get; set; }
 
-        public string Remark { get; set; }
+    public int RecipientTypeId { get; set; }
 
-        public int RecipientTypeId { get; set; }
+    public string RecipientTypeName { get; set; }
 
-        public string RecipientTypeName { get; set; }
+    public int MappingStatusCode { get; set; }
 
-        public int MappingStatusCode { get; set; }
+    public bool IsActive { get; set; }
 
-        public bool IsActive { get; set; }
-
-        public MappingStatus MappingStatus => (MappingStatus)MappingStatusCode;
-    }
+    public MappingStatus MappingStatus => (MappingStatus)MappingStatusCode;
 }

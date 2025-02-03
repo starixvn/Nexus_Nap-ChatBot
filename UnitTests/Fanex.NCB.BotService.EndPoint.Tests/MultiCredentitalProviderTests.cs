@@ -1,76 +1,75 @@
-﻿namespace Fanex.NCB.BotService.EndPoint.Tests
+﻿namespace Fanex.NCB.BotService.EndPoint.Tests;
+
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Bot.Configuration;
+using Xunit;
+
+public class MultiCredentitalProviderTests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Microsoft.Bot.Configuration;
-    using Xunit;
-
-    public class MultiCredentitalProviderTests
+    [Theory]
+    [InlineData("BotId", false)]
+    [InlineData("Bot_1", true)]
+    [Obsolete]
+    public async Task IsValidAppIdAsync_WhenCalled_ReturnExpectedResult(string appId, bool expected)
     {
-        [Theory]
-        [InlineData("BotId", false)]
-        [InlineData("Bot_1", true)]
-        [Obsolete]
-        public async Task IsValidAppIdAsync_WhenCalled_ReturnExpectedResult(string appId, bool expected)
+        var provider = SetUp();
+
+        //Act
+        var actual = await provider.IsValidAppIdAsync(appId);
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    [Obsolete]
+    public async Task GetAppPasswordAsync_WhenExistsAppId_ReturnPassword()
+    {
+        var provider = SetUp();
+
+        //Act
+        var actual = await provider.GetAppPasswordAsync("Bot_1");
+
+        Assert.Equal("Pass1", actual);
+    }
+
+    [Fact]
+    [Obsolete]
+    public async Task GetAppPasswordAsync_WhenNotExistsAppId_ReturnNull()
+    {
+        var provider = SetUp();
+
+        //Act
+        var actual = await provider.GetAppPasswordAsync("Bot");
+
+        Assert.Null(actual);
+    }
+
+    [Fact]
+    [Obsolete]
+    public async Task IsAuthenticationDisabledAsync_WhenCalled_ReturnExpected()
+    {
+        var provider = SetUp();
+
+        //Act
+        var actual = await provider.IsAuthenticationDisabledAsync();
+
+        Assert.False(actual);
+    }
+
+    [Obsolete]
+    private MultiCredentialProvider SetUp()
+    {
+        var listBotConfig = new List<ConnectedService>
         {
-            var provider = SetUp();
+            new EndpointService { AppId = "Bot_1", AppPassword = "Pass1" }
+        };
 
-            //Act
-            var actual = await provider.IsValidAppIdAsync(appId);
-
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
-        [Obsolete]
-        public async Task GetAppPasswordAsync_WhenExistsAppId_ReturnPassword()
+        var botConfig = new BotConfiguration
         {
-            var provider = SetUp();
-
-            //Act
-            var actual = await provider.GetAppPasswordAsync("Bot_1");
-
-            Assert.Equal("Pass1", actual);
-        }
-
-        [Fact]
-        [Obsolete]
-        public async Task GetAppPasswordAsync_WhenNotExistsAppId_ReturnNull()
-        {
-            var provider = SetUp();
-
-            //Act
-            var actual = await provider.GetAppPasswordAsync("Bot");
-
-            Assert.Null(actual);
-        }
-
-        [Fact]
-        [Obsolete]
-        public async Task IsAuthenticationDisabledAsync_WhenCalled_ReturnExpected()
-        {
-            var provider = SetUp();
-
-            //Act
-            var actual = await provider.IsAuthenticationDisabledAsync();
-
-            Assert.False(actual);
-        }
-
-        [Obsolete]
-        private MultiCredentialProvider SetUp()
-        {
-            var listBotConfig = new List<ConnectedService>
-            {
-                new EndpointService {AppId = "Bot_1", AppPassword = "Pass1"}
-            };
-
-            var botConfig = new BotConfiguration
-            {
-                Services = listBotConfig
-            };
-            return new MultiCredentialProvider(botConfig);
-        }
+            Services = listBotConfig
+        };
+        return new MultiCredentialProvider(botConfig);
     }
 }

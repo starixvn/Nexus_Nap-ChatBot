@@ -1,11 +1,10 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Services.Interfaces
+﻿namespace Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+
+using System.Threading.Tasks;
+
+public interface IResultAmendmentService
 {
-    using System.Threading.Tasks;
+    Task ResultAmendmentInternalCSDAsync();
 
-    public interface IResultAmendmentService
-    {
-        Task ResultAmendmentInternalCSDAsync();
-
-        Task ResultAmendmentLicenseeAsync();
-    }
+    Task ResultAmendmentLicenseeAsync();
 }

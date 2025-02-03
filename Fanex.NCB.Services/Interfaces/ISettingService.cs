@@ -1,30 +1,29 @@
-﻿namespace Fanex.NCB.Services.Interfaces
+﻿namespace Fanex.NCB.Services.Interfaces;
+
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Fanex.NCB.Core.Models;
+using Models.Setting;
+
+public interface ISettingService
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Fanex.NCB.Core.Models;
-    using Models.Setting;
+    Task<IEnumerable<BotName>> GetBotNameAsync();
 
-    public interface ISettingService
-    {
-        Task<IEnumerable<BotName>> GetBotNameAsync();
+    Task<IEnumerable<BaseModel>> GetRecipientTypesAsync();
 
-        Task<IEnumerable<BaseModel>> GetRecipientTypesAsync();
+    Task<IEnumerable<ChatGroupType>> GetChatGroupTypeAsync();
 
-        Task<IEnumerable<ChatGroupType>> GetChatGroupTypeAsync();
+    Task<IEnumerable<BaseModel>> GetLicenseeStatusAsync();
 
-        Task<IEnumerable<BaseModel>> GetLicenseeStatusAsync();
+    Task<IEnumerable<Recipient>> SearchRecipientsAsync(string query);
 
-        Task<IEnumerable<Recipient>> SearchRecipientsAsync(string query);
+    Task<IEnumerable<Recipient>> GetRecipientsAsync();
 
-        Task<IEnumerable<Recipient>> GetRecipientsAsync();
+    Task<IEnumerable<BaseModel>> GetFilterRecipientTypesAsync();
 
-        Task<IEnumerable<BaseModel>> GetFilterRecipientTypesAsync();
+    Task<IEnumerable<BaseModel>> SearchChatGroupAsync(string query);
 
-        Task<IEnumerable<BaseModel>> SearchChatGroupAsync(string query);
+    IEnumerable<BaseModel> GetAllMappingStatus();
 
-        IEnumerable<BaseModel> GetAllMappingStatus();
-
-        Task<IEnumerable<BaseModel>> GetSystemAsync();
-    }
+    Task<IEnumerable<BaseModel>> GetSystemAsync();
 }

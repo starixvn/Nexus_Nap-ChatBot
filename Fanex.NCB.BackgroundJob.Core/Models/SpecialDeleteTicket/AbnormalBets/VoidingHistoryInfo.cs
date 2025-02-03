@@ -1,15 +1,14 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Models.SpecialDeleteTicket.AbnormalBets
+﻿namespace Fanex.NCB.AutoJobs.Core.Models.SpecialDeleteTicket.AbnormalBets;
+
+using System.Collections.Generic;
+
+public class VoidingHistoryInfo
 {
-    using System.Collections.Generic;
+    public IEnumerable<AbnormalMessageDetail> AbnormalMessageDetail { get; set; }
 
-    public class VoidingHistoryInfo
-    {
-        public IEnumerable<AbnormalMessageDetail> AbnormalMessageDetail { get; set; }
+    public IEnumerable<AbnormalMessage> AbnormalMessage { get; set; }
 
-        public IEnumerable<AbnormalMessage> AbnormalMessage { get; set; }
+    public IEnumerable<DuplicateTicketDetail> DuplicateTicketDetail { get; set; }
 
-        public IEnumerable<DuplicateTicketDetail> DuplicateTicketDetail { get; set; }
-
-        public IEnumerable<AbnormalAccountInfo> AbnormalAccountInfo { get; set; }
-    }
+    public IEnumerable<AbnormalAccountInfo> AbnormalAccountInfo { get; set; }
 }

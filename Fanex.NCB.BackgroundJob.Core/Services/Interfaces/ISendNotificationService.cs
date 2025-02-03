@@ -1,7 +1,6 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Services.Interfaces
+﻿namespace Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+
+public interface ISendNotificationService
 {
-    public interface ISendNotificationService
-    {
-        Task ScanAndSendNotificationAsync();
-    }
+    Task ScanAndSendNotificationAsync();
 }

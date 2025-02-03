@@ -1,7 +1,6 @@
-﻿namespace Fanex.NCB.NAPResolver.Model
+﻿namespace Fanex.NCB.NAPResolver.Model;
+
+public class NapOption
 {
-    public class NapOption
-    {
-        public NapResolverType NAPResolverType { get; set; }
-    }
+    public NapResolverType NAPResolverType { get; set; }
 }

@@ -1,11 +1,16 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.MonitoredPlayer
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.MonitoredPlayer;
+
+using Fanex.Data.Repository;
+
+public class GetMsgSettingMonitoredPlayerCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
-
-    public class GetMsgSettingMonitoredPlayerCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public override string GetSettingKey() => "NCB_MsgSetting_MonitoredPlayer";
+        return "NCB_MsgSetting_MonitoredPlayer";
+    }
 
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

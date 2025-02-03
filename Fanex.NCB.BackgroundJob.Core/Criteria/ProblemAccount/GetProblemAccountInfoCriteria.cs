@@ -1,15 +1,20 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.ProblemAccount
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.ProblemAccount;
+
+using Fanex.Data.Repository;
+
+public class GetProblemAccountInfoCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public int BatchSize { get; set; }
 
-    public class GetProblemAccountInfoCriteria : CriteriaBase
+    public int LastLogId { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int BatchSize { get; set; }
+        return "NAP_Chatbot_ProblemAccounts_Sel";
+    }
 
-        public int LastLogId { get; set; }
-
-        public override string GetSettingKey() => "NAP_Chatbot_ProblemAccounts_Sel";
-
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

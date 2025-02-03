@@ -4,17 +4,13 @@
 
     public class UpdateJobInfoViewModel
     {
-        [Required]
-        public int Id { get; set; }
+        [Required] public int Id { get; set; }
 
-        [Required]
-        public int BatchSize { get; set; }
+        [Required] public int BatchSize { get; set; }
 
-        [Required]
-        public string TestingGroup { get; set; }
+        [Required] public string TestingGroup { get; set; }
 
-        [Required]
-        public string JobStatus { get; set; }
+        [Required] public string JobStatus { get; set; }
 
         public int PreviousMaxMessageId { get; set; }
 

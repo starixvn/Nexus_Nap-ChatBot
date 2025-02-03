@@ -1,13 +1,12 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Models.NapUserControl
+﻿namespace Fanex.NCB.AutoJobs.Core.Models.NapUserControl;
+
+using System;
+
+public class NapUser : NapBaseEntity
 {
-    using System;
+    public int UserId { get; set; }
 
-    public class NapUser : NapBaseEntity
-    {
-        public int UserId { get; set; }
+    public int GroupId { get; set; }
 
-        public int GroupId { get; set; }
-
-        public DateTime? LastLoginDate { get; set; }
-    }
+    public DateTime? LastLoginDate { get; set; }
 }

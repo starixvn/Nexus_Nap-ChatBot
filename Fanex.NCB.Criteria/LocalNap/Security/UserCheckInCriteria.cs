@@ -1,24 +1,29 @@
-﻿namespace Fanex.NCB.Criteria.LocalNap.Security
+﻿namespace Fanex.NCB.Criteria.LocalNap.Security;
+
+using System;
+using Data.Repository;
+
+public class UserCheckInCriteria : CriteriaBase
 {
-    using System;
-    using Data.Repository;
+    public int UserId { get; set; }
 
-    public class UserCheckInCriteria : CriteriaBase
+    public int SiteId { get; set; }
+
+    public string NetSessionId { get; set; }
+
+    public string Ip { get; set; }
+
+    public DateTime LoginDate { get; set; }
+
+    public int OnUserId { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int UserId { get; set; }
+        return "NAP_User_CheckIn";
+    }
 
-        public int SiteId { get; set; }
-
-        public string NetSessionId { get; set; }
-
-        public string Ip { get; set; }
-
-        public DateTime LoginDate { get; set; }
-
-        public int OnUserId { get; set; }
-
-        public override string GetSettingKey() => "NAP_User_CheckIn";
-
-        public override bool IsValid() => UserId > 0 && SiteId > 0;
+    public override bool IsValid()
+    {
+        return UserId > 0 && SiteId > 0;
     }
 }

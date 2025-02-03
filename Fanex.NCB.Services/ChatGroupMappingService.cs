@@ -1,105 +1,109 @@
-﻿namespace Fanex.NCB.Services
+﻿namespace Fanex.NCB.Services;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Core.Extensions;
+using Criteria.ChatGroupMapping;
+using Model.ChatGroupMapping;
+using Models.ChatGroupMapping;
+using Interfaces;
+using Fanex.NCB.Shared.Models;
+using Fanex.NCB.Shared.Services.Interfaces;
+
+public class ChatGroupMappingService : IChatGroupMappingService
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Core.Extensions;
-    using Criteria.ChatGroupMapping;
-    using Model.ChatGroupMapping;
-    using Models.ChatGroupMapping;
-    using Interfaces;
-    using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Services.Interfaces;
+    private readonly IBaseService baseService;
 
-    public class ChatGroupMappingService : IChatGroupMappingService
+    public ChatGroupMappingService(IBaseService baseService)
     {
-        private readonly IBaseService baseService;
+        this.baseService = baseService;
+    }
 
-        public ChatGroupMappingService(IBaseService baseService)
+    public async Task<(IEnumerable<ChatGroupMappingResult>, long)> GetChatGroupMappingListAsync(
+        GetChapGroupMapping model)
+    {
+        var critera = new GetChatGroupMappingCriteria
         {
-            this.baseService = baseService;
-        }
+            ChannelIds = model.ChannelIds,
+            BotIds = model.BotIDs,
+            RecipientName = model.RecipientName,
+            GroupName = model.GroupName,
+            RecipientTypeIDs = model.RecipientTypeIDs,
+            LicenseeStatusIds = model.LicenseeStatusIds,
+            MappingStatusIds = model.MappingStatusIds,
+            PageIndex = model.PageIndex,
+            PageSize = model.PageSize
+        };
 
-        public async Task<(IEnumerable<ChatGroupMappingResult>, long)> GetChatGroupMappingListAsync(GetChapGroupMapping model)
+        var (bots, conversations, recipients) =
+            await baseService
+                .FetchMultipleAsync<BotConversation, BotConversationMember, ConversationRecipient>(critera);
+
+        return (MappingData(bots, conversations, recipients), critera.TotalItems);
+    }
+
+    public async Task<CommandResult> EditAsync(EditChatGroupMapping model)
+    {
+        var command = new EditChatGroupMappingCommand
         {
-            var critera = new GetChatGroupMappingCriteria
+            GroupID = model.GroupID,
+            ChatGroupTypeId = model.ChatGroupTypeId,
+            RecipientTypeID = model.RecipientTypeID,
+            RecipientIDs = model.RecipientIDs,
+            CreatorID = model.CreatorID,
+            Remark = model.Remark
+        };
+
+        return await baseService.ExecuteNonQueryAsync(command);
+    }
+
+    public async Task<CommandResult> UpdateActiveAsync(UpdateActiveConversationGroup model)
+    {
+        var command = new UpdateActiveConverstionGroupCommand
+        {
+            GroupID = model.GroupID,
+            UserID = model.UserID,
+            IsActive = model.IsActive
+        };
+
+        return await baseService.ExecuteNonQueryAsync(command);
+    }
+
+    private static IEnumerable<ChatGroupMappingResult> MappingData(IEnumerable<BotConversation> conversations,
+        IEnumerable<BotConversationMember> members,
+        IEnumerable<ConversationRecipient> conversationRecipients)
+    {
+        var chatGroupMappings = new List<ChatGroupMappingResult>();
+        foreach (var conversation in conversations)
+        {
+            var member = members.FirstOrDefault(m => m.ConversationID == conversation.ConversationID);
+            var recipients = conversationRecipients.Where(r => r.GroupID == conversation.GroupID);
+            var chatGroupMapping = new ChatGroupMappingResult
             {
-                ChannelIds = model.ChannelIds,
-                BotIds = model.BotIDs,
-                RecipientName = model.RecipientName,
-                GroupName = model.GroupName,
-                RecipientTypeIDs = model.RecipientTypeIDs,
-                LicenseeStatusIds = model.LicenseeStatusIds,
-                MappingStatusIds = model.MappingStatusIds,
-                PageIndex = model.PageIndex,
-                PageSize = model.PageSize
+                ChannelId = conversation.ChannelId,
+                ChannelName = conversation.ChannelName,
+                BotName = member?.BotName,
+                GroupID = conversation.GroupID,
+                ConversationID = conversation.ConversationID,
+                GroupName = conversation.GroupName,
+                ChatGroupTypeID = conversation.ChatGroupTypeID,
+                ChatGroupTypeName = conversation.ChatGroupTypeName,
+                RecipientTypeID = conversation.RecipientTypeId,
+                RecipientTypeName = conversation.RecipientTypeName,
+                RecipientIDs = string.Join(",", recipients.Select(x => x.RecipientID)),
+                RecipientNames = string.Join(", ", recipients.Select(x => x.RecipientName)),
+                RecipientStatusNames = string.Join(", ",
+                    recipients.Where(x => !string.IsNullOrEmpty(x.RecipientStatusName))
+                        .Select(r => r.RecipientStatusName)),
+                MappingStatusID = (int)conversation.MappingStatus,
+                MappingStatusName = EnumHelper.GetDescription(conversation.MappingStatus),
+                Remark = conversation.Remark,
+                IsActive = conversation.IsActive
             };
-
-            var (bots, conversations, recipients) = await baseService.FetchMultipleAsync<BotConversation, BotConversationMember, ConversationRecipient>(critera);
-
-            return (MappingData(bots, conversations, recipients), critera.TotalItems);
+            chatGroupMappings.Add(chatGroupMapping);
         }
 
-        public async Task<CommandResult> EditAsync(EditChatGroupMapping model)
-        {
-            var command = new EditChatGroupMappingCommand
-            {
-                GroupID = model.GroupID,
-                ChatGroupTypeId = model.ChatGroupTypeId,
-                RecipientTypeID = model.RecipientTypeID,
-                RecipientIDs = model.RecipientIDs,
-                CreatorID = model.CreatorID,
-                Remark = model.Remark
-            };
-
-            return await baseService.ExecuteNonQueryAsync(command);
-        }
-
-        public async Task<CommandResult> UpdateActiveAsync(UpdateActiveConversationGroup model)
-        {
-            var command = new UpdateActiveConverstionGroupCommand
-            {
-                GroupID = model.GroupID,
-                UserID = model.UserID,
-                IsActive = model.IsActive
-            };
-
-            return await baseService.ExecuteNonQueryAsync(command);
-        }
-
-        private static IEnumerable<ChatGroupMappingResult> MappingData(IEnumerable<BotConversation> conversations,
-            IEnumerable<BotConversationMember> members,
-            IEnumerable<ConversationRecipient> conversationRecipients)
-        {
-            var chatGroupMappings = new List<ChatGroupMappingResult>();
-            foreach (var conversation in conversations)
-            {
-                var member = members.FirstOrDefault(m => m.ConversationID == conversation.ConversationID);
-                var recipients = conversationRecipients.Where(r => r.GroupID == conversation.GroupID);
-                var chatGroupMapping = new ChatGroupMappingResult
-                {
-                    ChannelId = conversation.ChannelId,
-                    ChannelName = conversation.ChannelName,
-                    BotName = member?.BotName,
-                    GroupID = conversation.GroupID,
-                    ConversationID = conversation.ConversationID,
-                    GroupName = conversation.GroupName,
-                    ChatGroupTypeID = conversation.ChatGroupTypeID,
-                    ChatGroupTypeName = conversation.ChatGroupTypeName,
-                    RecipientTypeID = conversation.RecipientTypeId,
-                    RecipientTypeName = conversation.RecipientTypeName,
-                    RecipientIDs = string.Join(",", recipients.Select(x => x.RecipientID)),
-                    RecipientNames = string.Join(", ", recipients.Select(x => x.RecipientName)),
-                    RecipientStatusNames = string.Join(", ", recipients.Where(x => !string.IsNullOrEmpty(x.RecipientStatusName)).Select(r => r.RecipientStatusName)),
-                    MappingStatusID = (int)conversation.MappingStatus,
-                    MappingStatusName = EnumHelper.GetDescription(conversation.MappingStatus),
-                    Remark = conversation.Remark,
-                    IsActive = conversation.IsActive
-                };
-                chatGroupMappings.Add(chatGroupMapping);
-            }
-
-            return chatGroupMappings;
-        }
+        return chatGroupMappings;
     }
 }

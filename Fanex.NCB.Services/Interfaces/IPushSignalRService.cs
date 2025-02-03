@@ -1,13 +1,12 @@
-﻿namespace Fanex.NCB.Services.Interfaces
+﻿namespace Fanex.NCB.Services.Interfaces;
+
+using System.Threading.Tasks;
+
+public interface IPushSignalRService
 {
-    using System.Threading.Tasks;
+    Task PushNewNotification(string notificationIds);
 
-    public interface IPushSignalRService
-    {
-        Task PushNewNotification(string notificationIds);
+    Task PushNotificationUpdateStatus(string notificationIds);
 
-        Task PushNotificationUpdateStatus(string notificationIds);
-
-        Task PushErrorNotification();
-    }
+    Task PushErrorNotification();
 }

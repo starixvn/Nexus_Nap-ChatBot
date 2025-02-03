@@ -1,26 +1,31 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SiteMessage
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SiteMessage;
+
+using System;
+using Fanex.Data.Repository;
+
+public class GetMessageInfoFromAdminSiteCriteria : CriteriaBase
 {
-    using System;
-    using Fanex.Data.Repository;
+    public int MessageID { get; set; }
 
-    public class GetMessageInfoFromAdminSiteCriteria : CriteriaBase
+    public int BatchSize { get; set; }
+
+    public string MsgContentsTypeLst { get; set; }
+
+    public DateTime? LastPostTime { get; set; }
+
+    public string Environment { get; set; } = "UAT";
+
+    public string SiteAsJson { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int MessageID { get; set; }
+        return "NAP_Chatbot_SiteMesssage_Sel";
+    }
 
-        public int BatchSize { get; set; }
-
-        public string MsgContentsTypeLst { get; set; }
-
-        public DateTime? LastPostTime { get; set; }
-
-        public string Environment { get; set; } = "UAT";
-
-        public string SiteAsJson { get; set; }
-
-        public override string GetSettingKey() => "NAP_Chatbot_SiteMesssage_Sel";
-
-        public override bool IsValid() => MessageID > 0 &&
-                                          BatchSize > 0 &&
-                                          !string.IsNullOrWhiteSpace(MsgContentsTypeLst);
+    public override bool IsValid()
+    {
+        return MessageID > 0 &&
+               BatchSize > 0 &&
+               !string.IsNullOrWhiteSpace(MsgContentsTypeLst);
     }
 }

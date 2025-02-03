@@ -1,16 +1,21 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentInternalCSD
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentInternalCSD;
+
+using System;
+using Fanex.Data.Repository;
+
+public class GetMessageResultAmendmentCsdCriteria : CriteriaBase
 {
-    using System;
-    using Fanex.Data.Repository;
+    public DateTime LastModifiedTime { get; set; }
 
-    public class GetMessageResultAmendmentCsdCriteria : CriteriaBase
+    public DateTime? NewLastModifiedTime { get; set; }
+
+    public override string GetSettingKey()
     {
-        public DateTime LastModifiedTime { get; set; }
+        return "NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel";
+    }
 
-        public DateTime? NewLastModifiedTime { get; set; }
-
-        public override string GetSettingKey() => "NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel";
-
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

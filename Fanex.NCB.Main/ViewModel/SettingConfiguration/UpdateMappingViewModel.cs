@@ -4,32 +4,24 @@
 
     public class UpdateMappingViewModel
     {
-        [Required]
-        public int JobId { get; set; }
+        [Required] public int JobId { get; set; }
 
-        [Required]
-        public int NotificationTypeId { get; set; }
+        [Required] public int NotificationTypeId { get; set; }
 
-        [Required]
-        public int NotificationTemplateId { get; set; }
+        [Required] public int NotificationTemplateId { get; set; }
 
-        [Required]
-        public int OldNotificationTypeId { get; set; }
+        [Required] public int OldNotificationTypeId { get; set; }
 
-        [Required]
-        public int OldNotificationTemplateId { get; set; }
+        [Required] public int OldNotificationTemplateId { get; set; }
 
-        [Required]
-        public int MsgContentsType { get; set; }
+        [Required] public int MsgContentsType { get; set; }
 
         [Required]
         [RegularExpression(@"(\s*{[-_\w\s]+}\s*,\s*)*{[-_\w\s]+}\s*", ErrorMessage = "Invalid Required Params format")]
         public string RequiredParam { get; set; }
 
-        [Required]
-        public bool IsTest { get; set; }
+        [Required] public bool IsTest { get; set; }
 
-        [Required]
-        public int OldMsgContentsType { get; set; }
+        [Required] public int OldMsgContentsType { get; set; }
     }
 }

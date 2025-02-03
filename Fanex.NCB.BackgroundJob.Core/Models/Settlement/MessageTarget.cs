@@ -1,11 +1,10 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Models.Settlement
+﻿namespace Fanex.NCB.AutoJobs.Core.Models.Settlement;
+
+public class MessageTarget
 {
-    public class MessageTarget
-    {
-        public int MessageId { get; set; }
+    public int MessageId { get; set; }
 
-        public int MsgTargetId { get; set; }
+    public int MsgTargetId { get; set; }
 
-        public string SiteNameGroup { get; set; }
-    }
+    public string SiteNameGroup { get; set; }
 }

@@ -1,15 +1,20 @@
-﻿namespace Fanex.NCB.Criteria.SettingConfiguration
+﻿namespace Fanex.NCB.Criteria.SettingConfiguration;
+
+using Data.Repository;
+
+public class GetMappingCriteria : CriteriaBase
 {
-    using Data.Repository;
+    public int JobId { get; set; }
 
-    public class GetMappingCriteria : CriteriaBase
+    public int MsgContentsType { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int JobId { get; set; }
+        return "NCB_SettingConfiguration_Mapping_Sel";
+    }
 
-        public int MsgContentsType { get; set; }
-
-        public override string GetSettingKey() => "NCB_SettingConfiguration_Mapping_Sel";
-
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

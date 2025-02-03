@@ -1,52 +1,51 @@
-﻿namespace Fanex.NCB.Services.Tests.TestableClasses
-{
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Interfaces;
-    using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
-    using Fanex.NCB.Shared.Services.Interfaces;
-    using Microsoft.Extensions.Configuration;
+﻿namespace Fanex.NCB.Services.Tests.TestableClasses;
 
-    //public class SiteMessageServiceTestable : SiteMessageService
-    //{
-    //    public SiteMessageServiceTestable(
-    //           IBaseService baseService,
-    //           IChatbotService chatbotService,
-    //           IPushSignalRService pushSignalService,
-    //           IConfiguration configuration,
-    //           ICommonService commonService)
-    //        : base(baseService, chatbotService, pushSignalService, configuration, commonService)
-    //    { }
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Interfaces;
+using Fanex.NCB.Shared.Models;
+using Fanex.NCB.Shared.Models.SpecialDeleteTicket;
+using Fanex.NCB.Shared.Services.Interfaces;
+using Microsoft.Extensions.Configuration;
 
-    //    public async Task<(CommandResult, IEnumerable<NotificationMessage>)> Public_ImportMessageToChatbotDBAsync(
-    //        IEnumerable<SiteMessageModel> messages,
-    //        IEnumerable<SiteMessageDetail> messageDetails)
-    //    {
-    //        return await base.ImportMessageToChatbotDBAsync(messages, messageDetails);
-    //    }
+//public class SiteMessageServiceTestable : SiteMessageService
+//{
+//    public SiteMessageServiceTestable(
+//           IBaseService baseService,
+//           IChatbotService chatbotService,
+//           IPushSignalRService pushSignalService,
+//           IConfiguration configuration,
+//           ICommonService commonService)
+//        : base(baseService, chatbotService, pushSignalService, configuration, commonService)
+//    { }
 
-    //    public async Task Public_OnAfterImportDataAsync(
-    //        CommandResult commandResult,
-    //        IEnumerable<NotificationMessage> notifications,
-    //        IEnumerable<SiteMessageDetail> messageDetails)
-    //    {
-    //        await base.OnAfterImportDataAsync(commandResult, notifications, messageDetails);
-    //    }
+//    public async Task<(CommandResult, IEnumerable<NotificationMessage>)> Public_ImportMessageToChatbotDBAsync(
+//        IEnumerable<SiteMessageModel> messages,
+//        IEnumerable<SiteMessageDetail> messageDetails)
+//    {
+//        return await base.ImportMessageToChatbotDBAsync(messages, messageDetails);
+//    }
 
-    //    public async Task Public_InsertMessageHistoryAsync(IEnumerable<SiteMessageDetail> messageDetails)
-    //    {
-    //        await base.InsertMessageHistoryAsync(messageDetails);
-    //    }
+//    public async Task Public_OnAfterImportDataAsync(
+//        CommandResult commandResult,
+//        IEnumerable<NotificationMessage> notifications,
+//        IEnumerable<SiteMessageDetail> messageDetails)
+//    {
+//        await base.OnAfterImportDataAsync(commandResult, notifications, messageDetails);
+//    }
 
-    //    public async Task<IEnumerable<SiteMessageMatchInfoModel>> Public_GetMatchInfoAsync(string matchIds)
-    //    {
-    //        return await base.GetMatchInfoAsync(matchIds);
-    //    }
+//    public async Task Public_InsertMessageHistoryAsync(IEnumerable<SiteMessageDetail> messageDetails)
+//    {
+//        await base.InsertMessageHistoryAsync(messageDetails);
+//    }
 
-    //    public async Task<(IEnumerable<SiteMessageModel>, IEnumerable<SiteMessageDetail>)> Public_GetDataFromSiteMessageAsync(SystemSetting systemSetting)
-    //    {
-    //        return await base.GetDataFromSiteMessageAsync(systemSetting);
-    //    }
-    //}
-}
+//    public async Task<IEnumerable<SiteMessageMatchInfoModel>> Public_GetMatchInfoAsync(string matchIds)
+//    {
+//        return await base.GetMatchInfoAsync(matchIds);
+//    }
+
+//    public async Task<(IEnumerable<SiteMessageModel>, IEnumerable<SiteMessageDetail>)> Public_GetDataFromSiteMessageAsync(SystemSetting systemSetting)
+//    {
+//        return await base.GetDataFromSiteMessageAsync(systemSetting);
+//    }
+//}

@@ -1,14 +1,14 @@
-﻿namespace Fanex.NCB.Repository.Tests
-{
+﻿namespace Fanex.NCB.Repository.Tests;
+
     using AutoFixture;
-    using Fanex.Data.Repository;
-    using Fanex.NCB.Shared.Models.NapUserControl;
+using Fanex.Data.Repository;
+using Fanex.NCB.Shared.Models.NapUserControl;
     using Newtonsoft.Json;
-    using NSubstitute;
+using NSubstitute;
     using System;
     using System.Collections.Generic;
     using System.Data;
-    using Xunit;
+using Xunit;
 
     public class SyncDataRepositoryTests
     {
@@ -108,4 +108,3 @@
             return new SyncDataRepository(dynamicRepository);
         }
     }
-}

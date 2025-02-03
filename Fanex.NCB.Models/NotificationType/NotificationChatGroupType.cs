@@ -1,9 +1,8 @@
-﻿namespace Fanex.NCB.Models.NotificationType
-{
-    using Fanex.NCB.Core.Models;
+﻿namespace Fanex.NCB.Models.NotificationType;
 
-    public class NotificationChatGroupType : BaseModel
-    {
-        public int NotificationTypeId { get; set; }
-    }
+using Fanex.NCB.Core.Models;
+
+public class NotificationChatGroupType : BaseModel
+{
+    public int NotificationTypeId { get; set; }
 }

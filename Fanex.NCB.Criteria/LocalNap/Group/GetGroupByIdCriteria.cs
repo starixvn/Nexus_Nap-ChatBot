@@ -1,13 +1,18 @@
-﻿namespace Fanex.NCB.Criteria.LocalNap.Group
+﻿namespace Fanex.NCB.Criteria.LocalNap.Group;
+
+using Data.Repository;
+
+public class GetGroupByIdCriteria : CriteriaBase
 {
-    using Data.Repository;
+    public int GroupId { get; set; }
 
-    public class GetGroupByIdCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public int GroupId { get; set; }
+        return "NAP_Group_GetById";
+    }
 
-        public override string GetSettingKey() => "NAP_Group_GetById";
-
-        public override bool IsValid() => GroupId > 0;
+    public override bool IsValid()
+    {
+        return GroupId > 0;
     }
 }

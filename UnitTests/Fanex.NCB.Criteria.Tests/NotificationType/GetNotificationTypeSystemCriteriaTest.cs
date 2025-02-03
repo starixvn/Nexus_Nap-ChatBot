@@ -5,34 +5,33 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace Fanex.NCB.Criteria.Tests.NotificationType
+namespace Fanex.NCB.Criteria.Tests.NotificationType;
+
+public class GetNotificationTypeSystemCriteriaTest
 {
-    public class GetNotificationTypeSystemCriteriaTest
+    [Fact]
+    public void GetNotificationTypeSystemCriteria_GetSettingKey_ReturnCorrectSettingKey()
     {
-        [Fact]
-        public void GetNotificationTypeSystemCriteria_GetSettingKey_ReturnCorrectSettingKey()
-        {
-            // Arrange
-            var command = new GetNotificationTypeSystemCriteria();
+        // Arrange
+        var command = new GetNotificationTypeSystemCriteria();
 
-            // Act
-            var result = command.GetSettingKey();
+        // Act
+        var result = command.GetSettingKey();
 
-            // Assert
-            result.Should().Be("NCB_Setting_System_Sel");
-        }
+        // Assert
+        result.Should().Be("NCB_Setting_System_Sel");
+    }
 
-        [Fact]
-        public void GetNotificationTypeSystemCriteria_IsValid_CheckCorrectly()
-        {
-            // Arrange
-            var command = new GetNotificationTypeSystemCriteria();
+    [Fact]
+    public void GetNotificationTypeSystemCriteria_IsValid_CheckCorrectly()
+    {
+        // Arrange
+        var command = new GetNotificationTypeSystemCriteria();
 
-            // Act
-            var result = command.IsValid();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            result.Should().Be(true);
-        }
+        // Assert
+        result.Should().Be(true);
     }
 }

@@ -1,11 +1,16 @@
-﻿namespace Fanex.NCB.Criteria.Notification
+﻿namespace Fanex.NCB.Criteria.Notification;
+
+using Data.Repository;
+
+public class GetAllErrNotificationsCriteria : CriteriaBase
 {
-    using Data.Repository;
-
-    public class GetAllErrNotificationsCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public override string GetSettingKey() => "NCB_NotificationList_ErrorNotifications_Sel";
+        return "NCB_NotificationList_ErrorNotifications_Sel";
+    }
 
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

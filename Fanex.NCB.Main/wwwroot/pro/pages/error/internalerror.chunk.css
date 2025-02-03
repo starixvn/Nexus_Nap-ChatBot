@@ -1,1 +1,68 @@
-.error-container{max-width:calc(100% - 400px);flex-basis:calc(100% - 400px);margin:0 auto}.error-container img{max-width:100%;height:auto}.error-container .main-content-error{display:flex;justify-content:center;align-items:center;margin:14rem 0}.error-container .main-content-error .content-page-error{width:40rem;margin-left:4rem;color:#333}.error-container .main-content-error .content-page-error h1{font-weight:700;font-size:30px;line-height:35px;text-transform:uppercase;margin:-6px 0 0}.error-container .main-content-error .content-page-error .describe{margin:12px 0}.error-container .main-content-error .content-page-error .describe h2{font-style:normal;font-weight:700;font-size:16px;line-height:24px;margin:0}.error-container .main-content-error .content-page-error .describe .content-error{font-weight:400}.error-container .main-content-error .content-page-error .describe .title-sub{margin-bottom:0}.error-container .main-content-error .content-page-error .btn{padding-top:6px;padding-left:0}.error-container .main-content-error .content-page-error .btn .btn-login{font-weight:500;font-size:16px;line-height:16px;background:#0b599c;padding:6px 16px;color:#ededed;text-decoration:none;text-align:center;text-transform:capitalize}.error-container .main-content-error .page-error{width:44rem;margin-left:0;margin-right:4rem}
+.error-container {
+    max-width: calc(100% - 400px);
+    flex-basis: calc(100% - 400px);
+    margin: 0 auto
+}
+
+.error-container img {
+    max-width: 100%;
+    height: auto
+}
+
+.error-container .main-content-error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 14rem 0
+}
+
+.error-container .main-content-error .content-page-error {
+    width: 40rem;
+    margin-left: 4rem;
+    color: #333
+}
+
+.error-container .main-content-error .content-page-error h1 {
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 35px;
+    text-transform: uppercase;
+    margin: -6px 0 0
+}
+
+.error-container .main-content-error .content-page-error .describe { margin: 12px 0 }
+
+.error-container .main-content-error .content-page-error .describe h2 {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 0
+}
+
+.error-container .main-content-error .content-page-error .describe .content-error { font-weight: 400 }
+
+.error-container .main-content-error .content-page-error .describe .title-sub { margin-bottom: 0 }
+
+.error-container .main-content-error .content-page-error .btn {
+    padding-top: 6px;
+    padding-left: 0
+}
+
+.error-container .main-content-error .content-page-error .btn .btn-login {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 16px;
+    background: #0b599c;
+    padding: 6px 16px;
+    color: #ededed;
+    text-decoration: none;
+    text-align: center;
+    text-transform: capitalize
+}
+
+.error-container .main-content-error .page-error {
+    width: 44rem;
+    margin-left: 0;
+    margin-right: 4rem
+}

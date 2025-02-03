@@ -1,10 +1,9 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Constants
+﻿namespace Fanex.NCB.AutoJobs.Core.Constants;
+
+public static class Language
 {
-    public static class Language
-    {
-        public const string en_US = "en-US";
-        public const string zh_CN = "zh-CN";
-        public const string vi_VN = "vi-VN";
-        public const string th_TH = "th-TH";
-    }
+    public const string en_US = "en-US";
+    public const string zh_CN = "zh-CN";
+    public const string vi_VN = "vi-VN";
+    public const string th_TH = "th-TH";
 }

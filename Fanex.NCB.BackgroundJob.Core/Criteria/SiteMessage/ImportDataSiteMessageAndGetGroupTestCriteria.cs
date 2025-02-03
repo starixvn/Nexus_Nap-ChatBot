@@ -1,20 +1,25 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SiteMessage
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SiteMessage;
+
+using Fanex.Data.Repository;
+
+public class ImportDataSiteMessageAndGetGroupTestCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public string MessageHeader { get; set; }
 
-    public class ImportDataSiteMessageAndGetGroupTestCriteria : CriteriaBase
+    public string MessageDetail { get; set; }
+
+    public int ErrCode { get; set; }
+
+    public string ErrMsg { get; set; }
+
+    public override string GetSettingKey()
     {
-        public string MessageHeader { get; set; }
+        return "NCB_SiteMessage_Import";
+    }
 
-        public string MessageDetail { get; set; }
-
-        public int ErrCode { get; set; }
-
-        public string ErrMsg { get; set; }
-
-        public override string GetSettingKey() => "NCB_SiteMessage_Import";
-
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(MessageHeader) &&
-                                        !string.IsNullOrWhiteSpace(MessageDetail);
+    public override bool IsValid()
+    {
+        return !string.IsNullOrWhiteSpace(MessageHeader) &&
+               !string.IsNullOrWhiteSpace(MessageDetail);
     }
 }

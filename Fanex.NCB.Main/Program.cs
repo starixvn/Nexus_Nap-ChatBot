@@ -29,19 +29,18 @@
             }
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            return WebHost.CreateDefaultBuilder(args)
                 .UseUrls($"http://*:5000")
                 .UseStartup<Startup>()
-                .ConfigureKestrel((context, options) =>
-                {
-                    options.Limits.MaxRequestLineSize = MaxRequestLineSize;
-                })
+                .ConfigureKestrel((context, options) => { options.Limits.MaxRequestLineSize = MaxRequestLineSize; })
                 .ConfigureLogging(logging =>
                 {
                     logging.ClearProviders();
                     logging.SetMinimumLevel(LogLevel.Trace);
                 })
                 .UseNLog();
+        }
     }
 }

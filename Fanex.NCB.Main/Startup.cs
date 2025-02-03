@@ -55,15 +55,15 @@ namespace Fanex.NCB.Main
             });
 
             LogManager
-            .SetDefaultLogCategory(Configuration.GetSection("LogCategory").Value)
-            .Use(new List<ILogEngine>
-            {
-                new SentryLogging(new SentryEngineOptions
+                .SetDefaultLogCategory(Configuration.GetSection("LogCategory").Value)
+                .Use(new List<ILogEngine>
                 {
-                    Dsn = new Dsn(Configuration.GetSection("SentryEngineOptions:Dsn").Value),
-                    FrontEndDsn = new Dsn(Configuration.GetSection("SentryEngineOptions:FrontEndDsn").Value)
-                })
-            });
+                    new SentryLogging(new SentryEngineOptions
+                    {
+                        Dsn = new Dsn(Configuration.GetSection("SentryEngineOptions:Dsn").Value),
+                        FrontEndDsn = new Dsn(Configuration.GetSection("SentryEngineOptions:FrontEndDsn").Value)
+                    })
+                });
 
             ExceptionHandler
                 .UseConfig(new LoggingConfiguration());
@@ -73,10 +73,7 @@ namespace Fanex.NCB.Main
 
             RegisterAuthenticationCookie(services, Configuration);
 
-            services.AddMvc(options =>
-            {
-                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-            });
+            services.AddMvc(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });
 
             var redisConfig = Configuration.GetSection("AuthSettings:RedisConfig").Value;
             var redis = ConnectionMultiplexer.Connect(redisConfig);
@@ -93,7 +90,8 @@ namespace Fanex.NCB.Main
             services.AddSession(options =>
             {
                 options.Cookie.IsEssential = true;
-                options.IdleTimeout = TimeSpan.FromMinutes(int.Parse(Configuration.GetSection("AuthSettings:SessionTimeOut").Value));
+                options.IdleTimeout =
+                    TimeSpan.FromMinutes(int.Parse(Configuration.GetSection("AuthSettings:SessionTimeOut").Value));
                 options.Cookie.Name = "Fanex.NCB.Session";
             });
 
@@ -106,34 +104,31 @@ namespace Fanex.NCB.Main
             services.RegisterServices();
             services.RegisterRepositories();
 
-            services.AddSignalR(hubOptions =>
-            {
-                hubOptions.EnableDetailedErrors = true;
-            }).AddStackExchangeRedis(redisConfig, options =>
-            {
+            services.AddSignalR(hubOptions => { hubOptions.EnableDetailedErrors = true; }).AddStackExchangeRedis(
+                redisConfig, options => { options.Configuration.ChannelPrefix = "ChatBotForLicensee:SignalR"; });
                 options.Configuration.ChannelPrefix = RedisChannel.Literal(SignalRPrefix);
-            });
         }
 
         private static void RegisterAuthenticationCookie(IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                       .AddCookie(options =>
-                       {
-                           options.LoginPath = configuration.GetSection("AuthSettings:LoginPath").Value;
-                           options.LogoutPath = configuration.GetSection("AuthSettings:LogoutPath").Value;
-                           options.ExpireTimeSpan = TimeSpan.FromMinutes(int.Parse(configuration.GetSection("AuthSettings:CookieTimeOut").Value));
-                           options.Cookie = new CookieBuilder
-                           {
-                               Name = "Fanex.NCB.Cookie",
-                               SecurePolicy = CookieSecurePolicy.SameAsRequest
-                           };
-                           options.Events.OnSigningOut = context =>
-                           {
-                               context.Response.Redirect(options.LoginPath);
-                               return Task.CompletedTask;
-                           };
-                       });
+                .AddCookie(options =>
+                {
+                    options.LoginPath = configuration.GetSection("AuthSettings:LoginPath").Value;
+                    options.LogoutPath = configuration.GetSection("AuthSettings:LogoutPath").Value;
+                    options.ExpireTimeSpan =
+                        TimeSpan.FromMinutes(int.Parse(configuration.GetSection("AuthSettings:CookieTimeOut").Value));
+                    options.Cookie = new CookieBuilder
+                    {
+                        Name = "Fanex.NCB.Cookie",
+                        SecurePolicy = CookieSecurePolicy.SameAsRequest
+                    };
+                    options.Events.OnSigningOut = context =>
+                    {
+                        context.Response.Redirect(options.LoginPath);
+                        return Task.CompletedTask;
+                    };
+                });
         }
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -148,6 +143,7 @@ namespace Fanex.NCB.Main
                 app.UseMiddleware<ErrorHandlingMiddleware>();
                 app.UseHsts();
             }
+
             app.UseForwardedHeaders();
 
             app.Use(async (context, next) =>
@@ -161,8 +157,8 @@ namespace Fanex.NCB.Main
             });
 
             NapClientManager
-               .UseConfig(app.ApplicationServices.GetService<INapSettings>())
-               .UseSession(app.ApplicationServices.GetService<INapSession>());
+                .UseConfig(app.ApplicationServices.GetService<INapSettings>())
+                .UseSession(app.ApplicationServices.GetService<INapSession>());
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -173,14 +169,12 @@ namespace Fanex.NCB.Main
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<ChatbotHub>("/chatbot/hubs", options =>
-                {
-                    options.Transports = HttpTransportType.WebSockets;
-                });
+                endpoints.MapHub<ChatbotHub>("/chatbot/hubs",
+                    options => { options.Transports = HttpTransportType.WebSockets; });
 
                 endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Auth}/{action=Index}/{id?}");
+                    "default",
+                    "{controller=Auth}/{action=Index}/{id?}");
             });
         }
     }

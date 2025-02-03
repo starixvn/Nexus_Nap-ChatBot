@@ -5,36 +5,35 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace Fanex.NCB.Criteria.Tests.LocalNap
+namespace Fanex.NCB.Criteria.Tests.LocalNap;
+
+public class GetGroupByIdCriteriaTest
 {
-    public class GetGroupByIdCriteriaTest
+    [Fact]
+    public void GetGroupByIdCriteria_GetSettingKey_ReturnCorrectSettingKey()
     {
-        [Fact]
-        public void GetGroupByIdCriteria_GetSettingKey_ReturnCorrectSettingKey()
-        {
-            // Arrange
-            var command = new GetGroupByIdCriteria();
+        // Arrange
+        var command = new GetGroupByIdCriteria();
 
-            // Act
-            var result = command.GetSettingKey();
+        // Act
+        var result = command.GetSettingKey();
 
-            // Assert
-            result.Should().Be("NAP_Group_GetById");
-        }
+        // Assert
+        result.Should().Be("NAP_Group_GetById");
+    }
 
-        [Theory]
-        [InlineData(0, false)]
-        [InlineData(1, true)]
-        public void GetGroupByIdCriteria_IsValid_CheckCorrectly(int groupId, bool expectedResult)
-        {
-            // Arrange
-            var command = new GetGroupByIdCriteria { GroupId = groupId };
+    [Theory]
+    [InlineData(0, false)]
+    [InlineData(1, true)]
+    public void GetGroupByIdCriteria_IsValid_CheckCorrectly(int groupId, bool expectedResult)
+    {
+        // Arrange
+        var command = new GetGroupByIdCriteria { GroupId = groupId };
 
-            // Act
-            var result = command.IsValid();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            result.Should().Be(expectedResult);
-        }
+        // Assert
+        result.Should().Be(expectedResult);
     }
 }

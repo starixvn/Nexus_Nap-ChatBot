@@ -1,11 +1,16 @@
-﻿namespace Fanex.NCB.Criteria.SettingConfiguration
+﻿namespace Fanex.NCB.Criteria.SettingConfiguration;
+
+using Data.Repository;
+
+public class GetAllSettingTypeCriteria : CriteriaBase
 {
-    using Data.Repository;
-
-    public class GetAllSettingTypeCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public override string GetSettingKey() => "NCB_SettingConfiguration_MappingSettingTypeList_Sel";
+        return "NCB_SettingConfiguration_MappingSettingTypeList_Sel";
+    }
 
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

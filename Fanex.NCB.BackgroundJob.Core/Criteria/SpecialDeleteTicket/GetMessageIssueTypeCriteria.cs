@@ -1,15 +1,20 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
+
+using Fanex.Data.Repository;
+
+public class GetMessageIssueTypeCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public string Message { get; set; }
 
-    public class GetMessageIssueTypeCriteria : CriteriaBase
+    public string MessageDetail { get; set; }
+
+    public override string GetSettingKey()
     {
-        public string Message { get; set; }
+        return "NAP_Chatbot_SpecialDeleteIssueType_Sel";
+    }
 
-        public string MessageDetail { get; set; }
-
-        public override string GetSettingKey() => "NAP_Chatbot_SpecialDeleteIssueType_Sel";
-
-        public override bool IsValid() => !string.IsNullOrEmpty(Message);
+    public override bool IsValid()
+    {
+        return !string.IsNullOrEmpty(Message);
     }
 }

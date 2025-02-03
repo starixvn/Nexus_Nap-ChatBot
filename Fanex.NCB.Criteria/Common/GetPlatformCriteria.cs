@@ -1,13 +1,18 @@
-﻿namespace Fanex.NCB.Criteria.Common
+﻿namespace Fanex.NCB.Criteria.Common;
+
+using Data.Repository;
+
+public class GetPlatformCriteria : CriteriaBase
 {
-    using Data.Repository;
+    public int NotificationTypeId { get; set; }
 
-    public class GetPlatformCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public int NotificationTypeId { get; set; }
+        return "NCB_Common_Platform_Sel";
+    }
 
-        public override string GetSettingKey() => "NCB_Common_Platform_Sel";
-
-        public override bool IsValid() => NotificationTypeId > 0;
+    public override bool IsValid()
+    {
+        return NotificationTypeId > 0;
     }
 }

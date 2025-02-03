@@ -1,17 +1,22 @@
-﻿namespace Fanex.NCB.Criteria.ChatGroupMapping
+﻿namespace Fanex.NCB.Criteria.ChatGroupMapping;
+
+using Fanex.NCB.Shared.Models;
+
+public class UpdateActiveConverstionGroupCommand : BaseCommand
 {
-    using Fanex.NCB.Shared.Models;
+    public int GroupID { get; set; }
 
-    public class UpdateActiveConverstionGroupCommand : BaseCommand
+    public int UserID { get; set; }
+
+    public bool IsActive { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int GroupID { get; set; }
+        return "NCB_ChatGroupMapping_ActiveGroup_Upd";
+    }
 
-        public int UserID { get; set; }
-
-        public bool IsActive { get; set; }
-
-        public override string GetSettingKey() => "NCB_ChatGroupMapping_ActiveGroup_Upd";
-
-        public override bool IsValid() => GroupID > 0;
+    public override bool IsValid()
+    {
+        return GroupID > 0;
     }
 }

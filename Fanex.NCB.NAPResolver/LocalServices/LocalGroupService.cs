@@ -1,37 +1,36 @@
-﻿namespace Fanex.NCB.NAPResolver.LocalServices
+﻿namespace Fanex.NCB.NAPResolver.LocalServices;
+
+using System;
+using System.Threading.Tasks;
+using Fanex.NAP.Client.Models;
+using NAP.Client.Services;
+using Criteria.LocalNap.Group;
+using Model;
+using Shared.Services.Interfaces;
+
+public class LocalGroupService : IGroupService
 {
-    using System;
-    using System.Threading.Tasks;
-    using Fanex.NAP.Client.Models;
-    using NAP.Client.Services;
-    using Criteria.LocalNap.Group;
-    using Model;
-    using Shared.Services.Interfaces;
+    private readonly IBaseService baseService;
 
-    public class LocalGroupService : IGroupService
+    public LocalGroupService(IBaseService baseService)
     {
-        private readonly IBaseService baseService;
+        this.baseService = baseService;
+    }
 
-        public LocalGroupService(IBaseService baseService)
+    public Group Get(int groupId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<Group> GetAsync(int groupId)
+    {
+        var criteria = new GetGroupByIdCriteria
         {
-            this.baseService = baseService;
-        }
+            GroupId = groupId
+        };
 
-        public Group Get(int groupId)
-        {
-            throw new NotImplementedException();
-        }
+        var flatGroups = await baseService.GetDataEntityAsync<FlatGroup>(criteria);
 
-        public async Task<Group> GetAsync(int groupId)
-        {
-            var criteria = new GetGroupByIdCriteria
-            {
-                GroupId = groupId
-            };
-
-            var flatGroups = await baseService.GetDataEntityAsync<FlatGroup>(criteria);
-
-            return flatGroups is not null ? flatGroups.ConvertToNestedModel() : null;
-        }
+        return flatGroups is not null ? flatGroups.ConvertToNestedModel() : null;
     }
 }

@@ -1,29 +1,29 @@
-﻿namespace Fanex.NCB.Criteria.Notification
+﻿namespace Fanex.NCB.Criteria.Notification;
+
+using Data;
+using Data.Repository;
+
+public class GetRecipientsCriteria : CriteriaBase
 {
-    using Data;
-    using Data.Repository;
+    public int InNotificationTypeId { get; set; }
 
-    public class GetRecipientsCriteria : CriteriaBase
+    [SpParam(AllowNull = true)] public int? InProductId { get; set; }
+
+    [SpParam(AllowNull = true)] public string InIntegrationMethodIds { get; set; }
+
+    [SpParam(AllowNull = true)] public string InChannelIds { get; set; }
+
+    [SpParam(AllowNull = true)] public string InPlatformIds { get; set; }
+
+    [SpParam(AllowNull = true)] public string InRecipientIds { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int InNotificationTypeId { get; set; }
+        return "NCB_NewNotification_Recipient_Sel";
+    }
 
-        [SpParam(AllowNull = true)]
-        public int? InProductId { get; set; }
-
-        [SpParam(AllowNull = true)]
-        public string InIntegrationMethodIds { get; set; }
-
-        [SpParam(AllowNull = true)]
-        public string InChannelIds { get; set; }
-
-        [SpParam(AllowNull = true)]
-        public string InPlatformIds { get; set; }
-
-        [SpParam(AllowNull = true)]
-        public string InRecipientIds { get; set; }
-
-        public override string GetSettingKey() => "NCB_NewNotification_Recipient_Sel";
-
-        public override bool IsValid() => InNotificationTypeId > 0;
+    public override bool IsValid()
+    {
+        return InNotificationTypeId > 0;
     }
 }
