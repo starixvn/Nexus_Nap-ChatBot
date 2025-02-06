@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.BotService.Core.Services
 {
-    using System.Threading.Tasks;
     using Fanex.NCB.Shared.Models;
+    using System.Threading.Tasks;
     using Telegram.Bot.Types;
     using Telegram.Bot.Types.Enums;
 
@@ -14,5 +14,9 @@
         Task<Message> SendTextMessageAsync(long botId, long chatId, string messageContent, ParseMode parseMode = ParseMode.MarkdownV2);
 
         Task<SendMessageResult> SendTextMessageAsync(ConversationInfo conversationInfo);
+
+        Task<SendMessageResult> SendMessageWithImagesAsync(ConversationInfo conversationInfo);
+
+        Task<SendMessageResult> ResendImageOnlyAsync(ConversationInfo conversationInfo);
     }
 }

@@ -7,7 +7,10 @@
 
     public static class CryptographyExtend
     {
-        private static readonly DESCryptoServiceProvider CryptoServiceProvider = new();
+#pragma warning disable S2278 // Neither DES (Data Encryption Standard) nor DESede (3DES) should be used
+        private static readonly DESCryptoServiceProvider CryptoServiceProvider = new DESCryptoServiceProvider();
+#pragma warning restore S2278 // Neither DES (Data Encryption
+
         private static readonly byte[] RgbKey = new byte[] { 33, 99, 84, 90, 145, 172, 110, 204 };
         private static readonly byte[] RgbIv = Encoding.UTF8.GetBytes("&％#@?,:*!~^.");
 
@@ -18,9 +21,11 @@
                 throw new ArgumentNullException(nameof(encryptedPassword));
             }
 
-            using MemoryStream stream = new(Convert.FromBase64String(StandardizeEncryptedPasswordLength(encryptedPassword)));
+            string s = StandardizeEncryptedPasswordLength(encryptedPassword);
+            byte[] buffer = Convert.FromBase64String(s);
+            using MemoryStream stream = new MemoryStream(buffer);
             using ICryptoTransform transform = ((SymmetricAlgorithm)(object)CryptoServiceProvider).CreateDecryptor(RgbKey, RgbIv);
-            using StreamReader streamReader = new(new CryptoStream(stream, transform, CryptoStreamMode.Read));
+            using StreamReader streamReader = new StreamReader(new CryptoStream(stream, transform, CryptoStreamMode.Read));
             return streamReader.ReadToEnd().Trim();
         }
 

@@ -1,9 +1,5 @@
 ﻿namespace Fanex.NCB.Main
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Threading.Tasks;
     using Fanex.Data;
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
@@ -15,7 +11,6 @@
     using Fanex.NCB.Main.AppConfig;
     using Fanex.NCB.Main.Hubs;
     using Fanex.NCB.NAPResolver;
-    using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Middlewares;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
@@ -32,11 +27,16 @@
     using ONEbook.UM.Configurations;
     using Sentry;
     using StackExchange.Redis;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Threading.Tasks;
 
     [ExcludeFromCodeCoverage(Justification = "Startup code inject services")]
     public class Startup
     {
         private const int NotFoundStatus = 404;
+        private const string SignalRPrefix = "ChatBotForLicensee:SignalR";
 
         public Startup(IConfiguration configuration)
         {
@@ -112,7 +112,7 @@
                 hubOptions.EnableDetailedErrors = true;
             }).AddStackExchangeRedis(redisConfig, options =>
             {
-                options.Configuration.ChannelPrefix = "ChatBotForLicensee:SignalR";
+                options.Configuration.ChannelPrefix = RedisChannel.Literal(SignalRPrefix);
             });
         }
 

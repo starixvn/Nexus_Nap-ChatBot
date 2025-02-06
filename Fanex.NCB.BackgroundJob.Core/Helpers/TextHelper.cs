@@ -25,5 +25,14 @@
 
             return text;
         }
+
+        public static List<string> SplitStringToList(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return new List<string>();
+            }
+            return text.Split(",").ToList();
+        }
     }
 }

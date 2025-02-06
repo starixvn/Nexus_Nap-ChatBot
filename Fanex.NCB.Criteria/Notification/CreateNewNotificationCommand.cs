@@ -29,6 +29,9 @@
 
         public string InIntegrationMethodIds { get; set; }
 
+        [SpParam(AllowNull = true)]
+        public string InFileName { get; set; }
+
         public override string GetSettingKey() => "NCB_NewNotification_Ins";
 
         public override bool IsValid()

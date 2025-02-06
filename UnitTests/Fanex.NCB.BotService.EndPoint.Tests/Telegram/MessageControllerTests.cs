@@ -1,29 +1,27 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Tests.Telegram
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
     using AutoFixture;
     using Fanex.NCB.BotService.Core;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
-    using Fanex.NCB.BotService.EndPoint.Controllers.Telegram;
     using Fanex.NCB.BotService.EndPoint.Tests.TestableClasses.Telegram;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services.Interfaces;
     using global::Telegram.Bot.Types;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using NSubstitute;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Xunit;
 
     public class MessageControllerTests
     {
         private readonly IFixture fixture = new Fixture();
         private AppSettings appSettings;
-        private ILogger<MessageController> filelogger;
-        private Logging.ILogger logger;
+        private ICommonLogService commonLogService;
         private IConversationService conversationService;
         private ITelegramBotService botService;
         private IMessageLogService messageLogService;
@@ -211,6 +209,7 @@
             // Arrange
             var conversationInfo = fixture.Create<ConversationInfo>();
             conversationInfo.IsDuplicated = false;
+            conversationInfo.FailedImages = new List<string>();
             var exception = fixture.Create<Exception>();
             var controller = GetController();
             messageLogService.IsInvalidSendMessageToBotService(conversationInfo.ConversationId, conversationInfo.Message).Returns(false);
@@ -313,7 +312,7 @@
             await controller.Public_WriteLogAsync(exception);
 
             // Assert
-            await logger.Received().ErrorAsync(Arg.Is<string>(x => x.Contains(exception.Message)));
+            await commonLogService.Received().SentryErrorAsync(Arg.Is<string>(x => x.Contains(exception.Message)), exception);
         }
 
         #region Helpers
@@ -324,12 +323,11 @@
             var settings = Substitute.For<IOptions<AppSettings>>();
             settings.Value.Returns(appSettings);
 
-            filelogger = Substitute.For<ILogger<MessageController>>();
-            logger = Substitute.For<Logging.ILogger>();
+            commonLogService = Substitute.For<ICommonLogService>();
             botService = Substitute.For<ITelegramBotService>();
             conversationService = Substitute.For<IConversationService>();
             messageLogService = Substitute.For<IMessageLogService>();
-            return Substitute.ForPartsOf<MessageControllerTestable>(settings, filelogger, logger, conversationService, botService, messageLogService);
+            return Substitute.ForPartsOf<MessageControllerTestable>(settings, commonLogService, conversationService, botService, messageLogService);
         }
 
         #endregion Helpers

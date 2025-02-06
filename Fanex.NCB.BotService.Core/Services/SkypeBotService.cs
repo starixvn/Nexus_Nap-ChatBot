@@ -1,21 +1,23 @@
 ﻿namespace Fanex.NCB.BotService.Core.Services
 {
+    using Fanex.Logging.Extensions;
+    using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services.Interfaces;
+    using Microsoft.Bot.Builder;
+    using Microsoft.Bot.Builder.Integration;
+    using Microsoft.Bot.Configuration;
+    using Microsoft.Bot.Connector.Authentication;
+    using Microsoft.Bot.Schema;
+    using Microsoft.Extensions.Options;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
     using System.Threading;
     using System.Threading.Tasks;
-    using Fanex.Logging.Extensions;
-    using Fanex.NCB.Shared.Models;
-    using Microsoft.Bot.Builder.Integration;
-    using Microsoft.Bot.Configuration;
-    using Microsoft.Bot.Connector.Authentication;
-    using Microsoft.Bot.Schema;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
-    using Newtonsoft.Json;
 
     public interface ISkypeBotService
     {
@@ -28,8 +30,7 @@
     {
         private readonly HttpClient httpClient;
         private readonly SendIndirectMessageSettings sendIndirectMessageSettings;
-        private readonly ILogger<SkypeBotService> filelogger;
-        private readonly Logging.ILogger logger;
+        private readonly ICommonLogService logService;
         private readonly IAdapterIntegration adapter;
 #pragma warning disable CS0618 // Type or member is obsolete
         private readonly BotConfiguration botConfig;
@@ -39,16 +40,14 @@
             IHttpClientFactory httpClientFactory,
             IOptions<SendIndirectMessageSettings> sendIndirectMessageSettings,
             IOptions<ProxySettings> proxySettings,
-            ILogger<SkypeBotService> filelogger,
-            Logging.ILogger logger,
+            ICommonLogService logService,
             IAdapterIntegration adapter,
 #pragma warning disable CS0618 // Type or member is obsolete
             BotConfiguration botConfig)
 #pragma warning restore CS0618 // Type or member is obsolete
         {
             this.sendIndirectMessageSettings = sendIndirectMessageSettings.Value;
-            this.filelogger = filelogger;
-            this.logger = logger;
+            this.logService = logService;
             this.adapter = adapter;
             this.botConfig = botConfig;
 
@@ -73,14 +72,26 @@
 #pragma warning disable CS0618 // Type or member is obsolete
                     AppCredentials.TrustServiceUrl(conversationReference.ServiceUrl);
 #pragma warning restore CS0618 // Type or member is obsolete
-                    await context.SendActivityAsync(conversationInfo.Message, cancellationToken: token);
+                    var activity = MessageFactory.Text(conversationInfo.Message);
+                    if (conversationInfo.Attachments != null && conversationInfo.Attachments.Count > 0)
+                    {
+                        foreach (var attachment in conversationInfo.Attachments)
+                        {
+                            activity.Attachments.Add(new Attachment
+                            {
+                                ContentType = "image",
+                                ContentUrl = attachment
+                            });
+                        }
+                    }
+                    await context.SendActivityAsync(activity, cancellationToken: token);
                 },
                 new CancellationToken());
         }
 
         public async Task<SendMessageResult> SendMessageWithRetryAsync(ConversationInfo conversationInfo)
         {
-            filelogger.LogWarning("SendMessageWithRetryAsync: start");
+            logService.LogFileMessage($"SendMessageWithRetryAsync start: {JsonConvert.SerializeObject(conversationInfo)}");
             try
             {
                 if (sendIndirectMessageSettings.IsOnlySendIndirect)
@@ -90,18 +101,26 @@
                 var conversationReference = GetConversationReference(conversationInfo);
                 var appId = GetAppId(conversationInfo.BotName);
 
-                filelogger.LogWarning("ContinueConversationAsync: start");
-
                 await adapter.ContinueConversationAsync(appId, conversationReference,
                     async (context, token) =>
                     {
 #pragma warning disable CS0618 // Type or member is obsolete
                         AppCredentials.TrustServiceUrl(conversationReference.ServiceUrl);
 #pragma warning restore CS0618 // Type or member is obsolete
-                        await context.SendActivityAsync(conversationInfo.Message, cancellationToken: token);
+                        var activity = MessageFactory.Text(conversationInfo.Message);
+                        if (conversationInfo.Attachments != null && conversationInfo.Attachments.Count > 0)
+                        {
+                            var attachments = conversationInfo.Attachments.Select(img => new Attachment
+                            {
+                                ContentType = "image",
+                                ContentUrl = img
+                            }).ToList();
+                            activity.Attachments = attachments;
+                        }
+
+                        await context.SendActivityAsync(activity, cancellationToken: token);
                     },
                     new CancellationToken());
-                filelogger.LogWarning("ContinueConversationAsync: end");
             }
             catch (Exception exception)
             {
@@ -123,7 +142,7 @@
                 };
             }
 
-            filelogger.LogWarning("SendMessageWithRetryAsync: end");
+            logService.LogFileMessage("SendMessageWithRetryAsync: end");
 
             return new SendMessageResult
             {
@@ -147,7 +166,7 @@
             else
             {
                 appId = Guid.NewGuid().ToString();
-                logger.Error($"BotName : {botName} is not supported by system.");
+                logService.SentryError($"BotName : {botName} is not supported by system.");
             }
 
             return appId;
@@ -188,7 +207,7 @@
             {
                 var logMessage = new LogMessage(exception.Message)
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
-                filelogger.LogWarning(logMessage.ToString());
+                logService.LogFileMessage(logMessage.ToString());
 
                 return new SendMessageResult
                 {
@@ -224,14 +243,15 @@
                 { "notificationId", conversationInfo.NotificationId },
                 { "botId", conversationInfo.BotConversationId },
                 { "chatId", conversationInfo.ConversationId },
-                { "messageContent", conversationInfo.Message }
+                { "messageContent", conversationInfo.Message },
+                { "attachments", conversationInfo.Attachments }
             };
             var logMessage = new LogMessage(exception.Message)
                 .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
                 .AddSection("Params", param);
 
-            await logger.ErrorAsync(logMessage.ToString());
+            await logService.SentryErrorAsync(logMessage.ToString());
         }
     }
 }

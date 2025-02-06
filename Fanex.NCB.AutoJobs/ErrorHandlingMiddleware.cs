@@ -1,11 +1,13 @@
 ﻿namespace Fanex.NCB.AutoJobs
 {
-    using System;
-    using System.Threading.Tasks;
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Microsoft.AspNetCore.Http;
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Threading.Tasks;
 
+    [ExcludeFromCodeCoverage(Justification = "Tested on other project")]
     public class ErrorHandlingMiddleware
     {
         private readonly RequestDelegate next;

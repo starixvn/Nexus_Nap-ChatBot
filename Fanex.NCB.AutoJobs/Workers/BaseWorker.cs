@@ -1,13 +1,15 @@
 ﻿namespace Fanex.NCB.AutoJobs.Workers
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
     using Fanex.NCB.AutoJobs.Models;
     using Microsoft.Extensions.Hosting;
     using ONEbook.UM.Services;
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
+    using System.Threading.Tasks;
 
+    [ExcludeFromCodeCoverage(Justification = "Code Starup inject needed services")]
     public abstract class BaseWorker : BackgroundService
     {
         private readonly IMaintenanceService maintenanceService;

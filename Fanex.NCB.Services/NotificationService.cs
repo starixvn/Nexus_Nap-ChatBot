@@ -42,7 +42,8 @@
                 InSendImmediately = model.SendImmediately,
                 InCreatorId = model.CreatorId,
                 InPlatformIds = model.Platforms,
-                InIntegrationMethodIds = model.IntegrationMethodIds
+                InIntegrationMethodIds = model.IntegrationMethodIds,
+                InFileName = model.FileName
             };
             var notificationIds = string.Empty;
             var result = await baseService.ExecuteNonQueryAsync(command);

@@ -11,6 +11,7 @@
     using Fanex.NCB.Criteria.SendNotification;
     using Fanex.NCB.Models.NotifictaionSendMessage;
     using Fanex.NCB.Services.Interfaces;
+    using Fanex.NCB.Shared.Extensions;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
@@ -84,7 +85,8 @@
                     ConversationBotID = r.BotId,
                     Retry = isRetry,
                     IsSuccess = false,
-                    ErrMsg = GenerateErrorMessage(r.RecipientStatus, r.ErrorMessage)
+                    ErrMsg = GenerateErrorMessage(r.RecipientStatus, r.ErrorMessage),
+                    FailedImages = r.FailedImages != null && r.FailedImages.Any() ? string.Join(",", r.FailedImages) : string.Empty
                 });
 
                 await UpdateSentNotificationStatusAsync(updateNoti);
@@ -206,7 +208,8 @@
                         ConversationBotID = recipient.BotId,
                         Retry = true,
                         IsSuccess = false,
-                        ErrMsg = GenerateErrorMessage(RecipientStatuses.BotServiceError, errorMessage)
+                        ErrMsg = GenerateErrorMessage(RecipientStatuses.BotServiceError, errorMessage),
+                        FailedImages = string.Empty
                     };
                     updateNotiModels.Add(model);
                 }
@@ -236,6 +239,7 @@
                         ConversationBotID = recipient.BotId,
                         Retry = result.ErrorCode != 0 && !result.IsIgnoreRetry,
                         IsSuccess = result.ErrorCode == 0,
+                        FailedImages = result.FailedImages,
                         ErrMsg = result.ErrorCode == 0
                             ? string.Empty : GenerateErrorMessage(RecipientStatuses.BotServiceError, result.ErrorMessage)
                     };
@@ -269,7 +273,8 @@
                                 {
                                     NotificationId = n.NotificationId,
                                     ChannelId = n.ChannelId,
-                                    Message = n.Content
+                                    Message = n.Content,
+                                    Attachments = n.Attachments
                                 }));
 
                 foreach (var item in newBatches)
@@ -281,7 +286,8 @@
                             ServiceUrl = r.ServiceUrl,
                             ChannelId = r.ChannelName,
                             ConversationId = r.ChatGroupConversationId,
-                            BotName = r.BotName
+                            BotName = r.BotName,
+                            FailedImages = TextHelper.SplitStringToList(r.FailedImages)
                         }).CustomeDistinctBy(r => r.ConversationId));
                 }
 

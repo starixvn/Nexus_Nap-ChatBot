@@ -1,22 +1,22 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Tests.Telegram
 {
-    using System.Threading.Tasks;
     using AutoFixture;
-    using Fanex.Logging;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.BotService.EndPoint.Tests.TestableClasses.Telegram;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services.Interfaces;
     using global::Telegram.Bot.Types;
     using Microsoft.AspNetCore.Mvc;
     using NSubstitute;
+    using System.Threading.Tasks;
     using Xunit;
 
     public class UpdateControllerTests
     {
         private readonly IFixture fixture = new Fixture();
-        private ILogger logger;
+        private ICommonLogService logger;
         private ITelegramBotService botService;
         private IConversationService conversationService;
 
@@ -73,7 +73,7 @@
             Assert.Equal(200, okResult.StatusCode);
             Assert.Equal("Telegram Bot 1 is invalid.", okResult.Value);
 
-            await logger.Received().ErrorAsync("Telegram Bot 1 is invalid.");
+            await logger.Received().SentryErrorAsync("Telegram Bot 1 is invalid.");
         }
 
         [Fact]
@@ -321,7 +321,7 @@
 
         private UpdateControllerTestable GetController()
         {
-            logger = Substitute.For<ILogger>();
+            logger = Substitute.For<ICommonLogService>();
             botService = Substitute.For<ITelegramBotService>();
             conversationService = Substitute.For<IConversationService>();
             return Substitute.ForPartsOf<UpdateControllerTestable>(logger, botService, conversationService);

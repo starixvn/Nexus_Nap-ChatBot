@@ -71,7 +71,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
                     SendImmediately = model.SendImmediately,
                     CreatorId = napSession.UserId,
                     Platforms = model.Platforms ?? string.Empty,
-                    IntegrationMethodIds = model.IntegrationMethodIds ?? string.Empty
+                    IntegrationMethodIds = model.IntegrationMethodIds ?? string.Empty,
+                    FileName = model.FileName ?? null
                 });
 
                 if (result.IsSuccessful && !string.IsNullOrWhiteSpace(notificationIds))

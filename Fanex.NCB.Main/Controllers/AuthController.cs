@@ -1,11 +1,5 @@
 ﻿namespace Fanex.NCB.Main.Controllers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
-    using System.Security.Claims;
-    using System.Threading.Tasks;
     using Fanex.NAP.Client.Configuration;
     using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Models;
@@ -19,8 +13,15 @@
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Security.Claims;
+    using System.Threading.Tasks;
 
-    #pragma warning disable S4487, S125
+#pragma warning disable S4487, S125
+
     public class AuthController : Controller
     {
         private const int SSOExpiredTimeInSeconds = 30;
@@ -114,7 +115,7 @@
                 var userId = int.Parse(CryptographyExtend.DecryptPassword(ssoLogin.UserId.Replace(" ", "+")));
                 var onUserid = int.Parse(CryptographyExtend.DecryptPassword(ssoLogin.OnUserId.Replace(" ", "+")));
 
-                //await syncDataService.SyncNapDataForSSOLogin(userId);
+                await syncDataService.SyncNapDataForSSOLogin(userId);
 
                 var newOnUserId = await SSOLogin(userId, onUserid);
 
@@ -259,5 +260,6 @@
             return expiration.TotalSeconds <= SSOExpiredTimeInSeconds;
         }
     }
-    #pragma warning restore S4487, S125
+
+#pragma warning restore S4487, S125
 }

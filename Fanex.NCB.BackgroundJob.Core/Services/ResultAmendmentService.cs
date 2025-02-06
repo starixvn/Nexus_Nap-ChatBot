@@ -1,9 +1,5 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Fanex.NCB.AutoJobs.Core.Constants;
     using Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentInternalCSD;
     using Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentLicensee;
@@ -12,6 +8,10 @@
     using Fanex.NCB.AutoJobs.Core.Models.ResultAmendment;
     using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
     using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public class ResultAmendmentService : IResultAmendmentService
     {
@@ -50,23 +50,28 @@
 
         protected internal async Task ImportResultAmendmentInternalCSDAsync(IEnumerable<MessageAmendmentCsd> messages, DateTime? newLastModifiedTime)
         {
-            if (messages.Any())
+            if (!messages.Any())
             {
-                var criteria = new ImportResultAmendmentCSDCommand
-                {
-                    LastModifiedTime = newLastModifiedTime,
-                    Message = JsonConvert.SerializeObject(messages)
-                };
-                var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
-                var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);
-                var command = new CommandResult
-                {
-                    Code = criteria.ErrCode,
-                    Message = criteria.ErrMsg
-                };
-
-                await commonService.OnAfterImportDataAsync(command, notificationMessages);
+                return;
             }
+
+            var criteria = new ImportResultAmendmentCSDCommand
+            {
+                LastModifiedTime = newLastModifiedTime,
+                Message = JsonConvert.SerializeObject(messages)
+            };
+
+            var (recipients, notifications) = await baseService.FetchMultipleAsync<NotificationRecipient, NotificationSendMessage>(criteria);
+
+            var notificationMessages = chatbotService.GenerateNotifificationMessageForCarbonGroupAsync(notifications, recipients);
+
+            var command = new CommandResult
+            {
+                Code = criteria.ErrCode,
+                Message = criteria.ErrMsg
+            };
+
+            await commonService.OnAfterImportDataAsync(command, notificationMessages);
         }
 
         #endregion ResultAmendment Internal CSD

@@ -1,11 +1,11 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Controllers.Telegram
 {
-    using Fanex.Logging;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Enum;
     using Fanex.NCB.BotService.Core.Services;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services.Interfaces;
     using global::Telegram.Bot.Types;
     using global::Telegram.Bot.Types.Enums;
     using Microsoft.AspNetCore.Mvc;
@@ -17,12 +17,12 @@
 
     public class UpdateController : Controller
     {
-        private readonly ILogger logger;
+        private readonly ICommonLogService logger;
         private readonly ITelegramBotService botService;
         private readonly IConversationService conversationService;
 
         public UpdateController(
-            ILogger logger,
+            ICommonLogService logger,
             ITelegramBotService botService,
             IConversationService conversationService)
         {
@@ -31,7 +31,8 @@
             this.conversationService = conversationService;
         }
 
-        #pragma warning disable S1541 // Methods and properties should not be too complex
+#pragma warning disable S1541 // Methods and properties should not be too complex
+
         [HttpPost]
         [Route("api/telegram/webhook/{botId:long}/update")]
         public async Task<IActionResult> Post(long botId, [FromBody] Update update)
@@ -44,7 +45,7 @@
             User bot = await botService.GetBotInfoAsync(botId);
             if (bot == null)
             {
-                await logger.ErrorAsync($"Telegram Bot {botId} is invalid.");
+                await logger.SentryErrorAsync($"Telegram Bot {botId} is invalid.");
                 return Ok($"Telegram Bot {botId} is invalid.");
             }
 
@@ -91,7 +92,8 @@
                     break;
             }
         }
-        #pragma warning restore S1541 // Methods and properties should not be too complex
+
+#pragma warning restore S1541 // Methods and properties should not be too complex
 
         protected internal virtual async Task<CommandResult> EditChatTitledAsync(Message message)
         {

@@ -1,12 +1,5 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Security;
-    using System.Security.Authentication;
     using Fanex.Caching;
     using Fanex.Data.Repository;
     using Fanex.NCB.BotService.Core;
@@ -25,6 +18,13 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using StackExchange.Redis;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Net;
+    using System.Net.Http;
+    using System.Net.Security;
+    using System.Security.Authentication;
 
     public static class BotServiceDI
     {
@@ -37,6 +37,8 @@
 
             services.AddSingleton<IDynamicRepository, DynamicRepository>();
             services.AddSingleton<IBaseService, BaseService>();
+            services.AddSingleton<ICommonLogService, CommonLogService>();
+
             services.AddSingleton<IConversationService, ConversationService>();
             services.AddSingleton<ISkypeBotService, SkypeBotService>();
             services.AddSingleton<IMessageLogService, MessageLogService>();

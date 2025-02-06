@@ -1,13 +1,13 @@
 ﻿namespace Fanex.NCB.BotService.Core.Services
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Fanex.NCB.BotService.Core.Criteria;
     using Fanex.NCB.BotService.Core.Models;
     using Fanex.NCB.BotService.Core.Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public class ConversationService : IConversationService
     {
@@ -61,6 +61,8 @@
                     ChannelId = r.ChannelId,
                     ConversationId = r.ConversationId,
                     ServiceUrl = r.ServiceUrl,
+                    Attachments = notification.Attachments,
+                    FailedImages = r.FailedImages
                 }));
             }
 
