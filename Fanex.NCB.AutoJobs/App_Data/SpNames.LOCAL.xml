@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Functions>
 	<Function Name="Send Notification">
-		<Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus_xpre" DbName="ChatBot" Plain="0"></Setting>
-		<Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd_xpre" DbName="ChatBot" Plain="0"></Setting>
+		<Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>
+		<Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd" DbName="ChatBot" Plain="0"></Setting>
 	</Function>
 	<Function Name="Sync Data">
 		<Setting Key="NAP_ChatBot_GetDataBySiteId" SpName="NAP_ChatBot_GetDataBySiteId" DbName="DBPOL.NAP_UserControl.wsv_nap" Plain="0"></Setting>
@@ -56,7 +56,7 @@
 	<Function Name="ResultAmendment">
 		<Setting Key="NAP_Chatbot_ResultAmendment_Licensee_MessageSel" SpName="NAP_Chatbot_ResultAmendment_Licensee_MessageSel" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0" />
 		<Setting Key="NCB_ResultAmendment_Licensee_Import" SpName="NCB_ResultAmendment_Licensee_Import" DbName="ChatBot" Plain="0" />
-		<Setting Key="NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel" SpName="NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel_xtest" DbName="DBCRM.MessageNotification.wsv_nap" Plain="0" />
-		<Setting Key="NCB_ResultAmendment_InternalCSD_Import" SpName="NCB_ResultAmendment_InternalCSD_Import_xpre" DbName="ChatBot" Plain="0" />
+		<Setting Key="NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel" SpName="NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel" DbName="DBCRM.MessageNotification.wsv_nap" Plain="0" />
+		<Setting Key="NCB_ResultAmendment_InternalCSD_Import" SpName="NCB_ResultAmendment_InternalCSD_Import" DbName="ChatBot" Plain="0" />
 	</Function>
 </Functions>
