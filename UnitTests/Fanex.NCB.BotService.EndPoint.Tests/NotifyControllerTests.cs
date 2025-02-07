@@ -1,17 +1,17 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Tests;
 
+using Controllers;
 using Core;
 using Core.Services;
 using Core.Services.Interfaces;
-using Controllers;
-using Shared.Models;
-    using Fanex.NCB.Shared.Services.Interfaces;
+using Fanex.NCB.Shared.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Options;
 using NSubstitute;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
+using Shared.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xunit;
 
 public class NotifyControllerTests
@@ -19,7 +19,7 @@ public class NotifyControllerTests
     private AppSettings appSettings;
     private IMessageLogService messageLogService;
     private IConversationService conversationService;
-        private ICommonLogService commonLogService;
+    private ICommonLogService commonLogService;
     private ISkypeBotService skypeBotService;
 
     [Fact]
@@ -36,7 +36,7 @@ public class NotifyControllerTests
         Assert.Equal(200, okResult.StatusCode);
         Assert.Equal("ok", okResult.Value);
 
-            await commonLogService.Received().SentryErrorAsync("test sentry");
+        await commonLogService.Received().SentryErrorAsync("test sentry");
     }
 
     #region Send
@@ -133,7 +133,7 @@ public class NotifyControllerTests
         conversationService.GetDistinctNotificationConversation(Arg.Any<List<NotificationMessage>>())
             .Returns(notificationMessage);
         skypeBotService.SendMessageWithRetryAsync(Arg.Any<ConversationInfo>()).Returns(new SendMessageResult
-            { NotificationId = 1, ConversationId = "ConversationId" });
+        { NotificationId = 1, ConversationId = "ConversationId" });
         //Actual
         var actual = await controller.SendMulti(notificationMessage);
 
@@ -167,7 +167,7 @@ public class NotifyControllerTests
             .Returns(notificationMessage);
         skypeBotService.SendMessageWithRetryAsync(Arg.Any<ConversationInfo>())
             .Returns(new SendMessageResult
-                { NotificationId = 1, ConversationId = "ConversationId", ErrorCode = 1, ErrorMessage = "error msg" });
+            { NotificationId = 1, ConversationId = "ConversationId", ErrorCode = 1, ErrorMessage = "error msg" });
 
         //Actual
         var actual = await controller.SendMulti(notificationMessage);
@@ -186,11 +186,10 @@ public class NotifyControllerTests
         var appSettingOptions = Substitute.For<IOptions<AppSettings>>();
         appSettingOptions.Value.Returns(appSettings);
 
-            commonLogService = Substitute.For<ICommonLogService>();
+        commonLogService = Substitute.For<ICommonLogService>();
         messageLogService = Substitute.For<IMessageLogService>();
         conversationService = Substitute.For<IConversationService>();
         skypeBotService = Substitute.For<ISkypeBotService>();
-            return new NotifyController(appSettingOptions, commonLogService, messageLogService, conversationService, skypeBotService);
-            skypeBotService);
+        return new NotifyController(appSettingOptions, commonLogService, messageLogService, conversationService, skypeBotService);
     }
 }

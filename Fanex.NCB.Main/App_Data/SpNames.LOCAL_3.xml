@@ -263,7 +263,7 @@
 		<Setting Key="NAP_Chatbot_MissingMesssage_Ins" SpName="NAP_Chatbot_MissingMesssage_Ins"
 		         DbName="DBMSG.bodb_Message.wsv_nap" Plain="0">
 		</Setting>
-		<Setting Key="NCB_JobInfo_Upd" SpName="NCB_JobInfo_Upd_xtests" DbName="DBCB.ChatBot.ncb_admin" Plain="0"></Setting>
+		<Setting Key="NCB_JobInfo_Upd" SpName="NCB_JobInfo_Upds" DbName="DBCB.ChatBot.ncb_admin" Plain="0"></Setting>
 		<Setting Key="NAP_Chatbot_MissingProblemAccounts_Sel" SpName="NAP_Chatbot_MissingProblemAccounts_Sel"
 		         DbName="DBCUST.CustDB.wsv_nap" Plain="0">
 			<Mapping DataField="Content_en" ObjectProperty="Content" />

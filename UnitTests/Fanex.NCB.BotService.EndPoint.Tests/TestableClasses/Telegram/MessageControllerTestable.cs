@@ -4,11 +4,11 @@ using Core;
 using Core.Services;
 using Core.Services.Interfaces;
 using Fanex.NCB.BotService.EndPoint.Controllers.Telegram;
-using Shared.Models;
-    using Fanex.NCB.Shared.Services.Interfaces;
+using Fanex.NCB.Shared.Services.Interfaces;
 using Microsoft.Extensions.Options;
-    using System;
-    using System.Threading.Tasks;
+using Shared.Models;
+using System;
+using System.Threading.Tasks;
 
 public class MessageControllerTestable : MessageController
 {
@@ -18,7 +18,6 @@ public class MessageControllerTestable : MessageController
         IConversationService conversationService,
         ITelegramBotService botService,
             IMessageLogService messageLogService) : base(appSettings, commonLogService, conversationService, botService, messageLogService)
-        messageLogService)
     {
     }
 

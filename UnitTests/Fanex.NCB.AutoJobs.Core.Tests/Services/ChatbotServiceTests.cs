@@ -1,19 +1,19 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Tests.Services;
 
 using AutoFixture;
+using Fanex.NCB.AutoJobs.Core.Tests.Services.TestableClasses;
+using Helper;
+using Microsoft.Extensions.Options;
 using Models.Configurations;
 using Models.NotifictaionSendMessage;
-using Helper;
-    using Fanex.NCB.AutoJobs.Core.Tests.Services.TestableClasses;
-    using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-    using NSubstitute;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using Xunit;
+using NSubstitute;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Xunit;
 
 public class ChatbotServiceTests
 {
@@ -176,6 +176,7 @@ public class ChatbotServiceTests
                             FailedImages = null
                 }
             }
+                }
         };
         var service = GetService();
 
