@@ -1,13 +1,13 @@
 ﻿namespace Fanex.NCB.Repository
 {
+    using Fanex.Data.Repository;
+    using Fanex.NCB.Repository.Interfaces;
+    using Fanex.NCB.Shared.Models.NapUserControl;
     using System;
     using System.Collections.Generic;
     using System.Data;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.Data.Repository;
-    using Fanex.NCB.Repository.Interfaces;
-    using Fanex.NCB.Shared.Models.NapUserControl;
 
     public class SyncDataRepository : ISyncDataRepository
     {
@@ -43,7 +43,8 @@
             }
         }
 
-        #pragma warning disable S1449, S3267, S108, S2486
+#pragma warning disable S1449, S3267, S108, S2486
+
         private static List<T> ConvertDataTableToList<T>(DataTable dt)
         {
             var columnNames = dt.Columns.Cast<DataColumn>().Select(c => c.ColumnName.ToLower()).ToList();
@@ -55,16 +56,13 @@
                 {
                     if (columnNames.Contains(pro.Name.ToLowerInvariant()))
                     {
-                        try
-                        {
-                            pro.SetValue(objT, row[pro.Name]);
-                        }
-                        catch { }
+                        pro.SetValue(objT, row[pro.Name]);
                     }
                 }
                 return objT;
             }).ToList();
         }
-        #pragma warning restore S1449, S3267, S108, S2486
+
+#pragma warning restore S1449, S3267, S108, S2486
     }
 }

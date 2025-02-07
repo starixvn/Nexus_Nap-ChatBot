@@ -115,8 +115,6 @@
                 var userId = int.Parse(CryptographyExtend.DecryptPassword(ssoLogin.UserId.Replace(" ", "+")));
                 var onUserid = int.Parse(CryptographyExtend.DecryptPassword(ssoLogin.OnUserId.Replace(" ", "+")));
 
-                await syncDataService.SyncNapDataForSSOLogin(userId);
-
                 var newOnUserId = await SSOLogin(userId, onUserid);
 
                 if (newOnUserId > 0)

@@ -1,8 +1,5 @@
 ﻿namespace Fanex.NCB.Services
 {
-    using System;
-    using System.Globalization;
-    using System.Threading.Tasks;
     using Fanex.Logging;
     using Fanex.NCB.Core.Models;
     using Fanex.NCB.Criteria.SyncData;
@@ -13,6 +10,9 @@
     using Fanex.NCB.Shared.Services.Interfaces;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
+    using System;
+    using System.Globalization;
+    using System.Threading.Tasks;
 
     public class SyncDataService : ISyncDataService
     {
@@ -92,7 +92,7 @@
         private async Task NapSSOSyncDataByUserIdAsync(int userId)
         {
             var data = await GetDataFromNapUserControl(userId);
-            await InsertNapDataOnUser(data, userId);
+            //await InsertNapDataOnUser(data, userId);
         }
     }
 }
