@@ -1,14 +1,14 @@
 ﻿namespace Fanex.NCB.Main.Controllers
 {
-    using NAP.Client.Configuration;
-    using NAP.Client.Helpers.Web;
+    using Fanex.NAP.Client.Configuration;
+    using Fanex.NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Models.ParameterObject;
     using Fanex.NAP.Client.Services;
-    using Core.Extensions;
-    using Models.Auth;
-    using NAPResolver;
-    using Services.Interfaces;
+    using Fanex.NCB.Core.Extensions;
+    using Fanex.NCB.Models.Auth;
+    using Fanex.NCB.NAPResolver;
+    using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;
@@ -60,8 +60,8 @@
         [HttpPost]
         public async Task<IActionResult> SignIn(UserLogin userLogin)
         {
-            var errorMsg = string.Empty;
-            var user = await userService.GetAsync(userLogin.Username);
+            string errorMsg = string.Empty;
+            User user = await userService.GetAsync(userLogin.Username);
 
             if (user != null)
             {
@@ -81,10 +81,7 @@
                     var url = napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url;
                     var urlContent = Url.Content($"~{(!string.IsNullOrEmpty(url) ? url : "/Error/UnauthorizedUser")}");
 
-                    return Redirect(
-                        !string.IsNullOrWhiteSpace(userLogin.ReturnUrl) && Url.IsLocalUrl(userLogin.ReturnUrl)
-                            ? $"~{userLogin.ReturnUrl}"
-                            : urlContent);
+                    return Redirect(!string.IsNullOrWhiteSpace(userLogin.ReturnUrl) && Url.IsLocalUrl(userLogin.ReturnUrl) ? $"~{userLogin.ReturnUrl}" : urlContent);
                 }
             }
             else
@@ -128,13 +125,9 @@
                         await DoCheckIn(user, newOnUserId);
 
                         var url = napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url;
-                        var urlContent =
-                            Url.Content($"~{(!string.IsNullOrEmpty(url) ? url : "/Error/UnauthorizedUser")}");
+                        var urlContent = Url.Content($"~{(!string.IsNullOrEmpty(url) ? url : "/Error/UnauthorizedUser")}");
 
-                        return Redirect(
-                            !string.IsNullOrWhiteSpace(ssoLogin.RedirectUrl) && Url.IsLocalUrl(ssoLogin.RedirectUrl)
-                                ? ssoLogin.RedirectUrl
-                                : urlContent);
+                        return Redirect(!string.IsNullOrWhiteSpace(ssoLogin.RedirectUrl) && Url.IsLocalUrl(ssoLogin.RedirectUrl) ? ssoLogin.RedirectUrl : urlContent);
                     }
                 }
             }
@@ -166,14 +159,14 @@
             napSession.UserId = user.Id;
             napSession.OnUserId = onUserId;
             napSession.MenuItemList = (await userService.GetMenuItemAsync(user.Id, napSettings.SiteId,
-                    napSettings.Environment, true)).Where(x => !string.IsNullOrWhiteSpace(x.Url))
+                napSettings.Environment, true)).Where(x => !string.IsNullOrWhiteSpace(x.Url))
                 .OrderBy(x => x.DisplayOrder).ToList();
 
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-            };
+                        {
+                            new Claim(ClaimTypes.Name, user.Username),
+                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                        };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
@@ -200,7 +193,10 @@
         private static string GetClientIP(HttpContext httpContext)
         {
             var clientIP = httpContext.Request?.Headers["x-forwarded-for"].ToString();
-            if (string.IsNullOrWhiteSpace(clientIP)) clientIP = httpContext?.Connection?.RemoteIpAddress?.ToString();
+            if (string.IsNullOrWhiteSpace(clientIP))
+            {
+                clientIP = httpContext?.Connection?.RemoteIpAddress?.ToString();
+            }
 
             return clientIP;
         }
@@ -209,7 +205,10 @@
         {
             var culture = ResolveCulture(request);
 
-            if (culture != null) return new RegionInfo(culture.LCID);
+            if (culture != null)
+            {
+                return new RegionInfo(culture.LCID);
+            }
 
             return null;
         }
@@ -229,8 +228,7 @@
 
         private async Task<bool> IsExistNapSite(User user)
         {
-            return (await userService.GetSiteLevelAsync(user.Id, napSettings.Environment)).Any(s =>
-                s.Site.Id == napSettings.SiteId && s.IsActive);
+            return (await userService.GetSiteLevelAsync(user.Id, napSettings.Environment)).Any(s => s.Site.Id == napSettings.SiteId && s.IsActive);
         }
 
         private async Task<bool> IsExistNapGroup(User user)
@@ -239,7 +237,10 @@
             {
                 var group = await groupService.GetAsync(user.Group.Id);
 
-                if (group != null && !group.IsActive) return false;
+                if (group != null && !group.IsActive)
+                {
+                    return false;
+                }
             }
 
             return true;
@@ -250,8 +251,7 @@
             var cfsDescryptTime = CryptographyExtend.DecryptPassword(time.Replace(" ", "+"));
             var serverTime = await securityService.GetTimeAsync();
             var serverDateTime = NapServicesRegistrationExtension.NAPResolverType == NapResolverType.Local
-                ? DateTime.Parse(serverTime, new CultureInfo("en-US"))
-                    .AddHours(DiffTimeZoneBetweenNAPServerAndChatBotServer)
+                ? DateTime.Parse(serverTime, new CultureInfo("en-US")).AddHours(DiffTimeZoneBetweenNAPServerAndChatBotServer)
                 : DateTime.Parse(serverTime, new CultureInfo("en-US"));
             var expiration = serverDateTime - DateTime.Parse(cfsDescryptTime, new CultureInfo("en-US"));
 

@@ -5,6 +5,7 @@ using SharpRaven;
 namespace Fanex.NCB.Main
 {
     using Data;
+    using Fanex.NCB.Main.AppConfig;
     using Hubs;
     using Logging;
     using Logging.Extensions;
@@ -20,6 +21,7 @@ namespace Fanex.NCB.Main
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Options;
     using NAP.Client;
     using NAP.Client.Configuration;
     using NAP.Client.Helpers.Web;
@@ -104,9 +106,13 @@ namespace Fanex.NCB.Main
             services.RegisterServices();
             services.RegisterRepositories();
 
-            services.AddSignalR(hubOptions => { hubOptions.EnableDetailedErrors = true; }).AddStackExchangeRedis(
-                redisConfig, options => { options.Configuration.ChannelPrefix = "ChatBotForLicensee:SignalR"; });
+            services.AddSignalR(hubOptions =>
+            {
+                hubOptions.EnableDetailedErrors = true;
+            }).AddStackExchangeRedis(redisConfig, options =>
+            {
                 options.Configuration.ChannelPrefix = RedisChannel.Literal(SignalRPrefix);
+            });
         }
 
         private static void RegisterAuthenticationCookie(IServiceCollection services, IConfiguration configuration)

@@ -59,7 +59,7 @@ public class ConversationService : IConversationService
                     BotConversationId = r.BotConversationId,
                     ChannelId = r.ChannelId,
                     ConversationId = r.ConversationId,
-                    ServiceUrl = r.ServiceUrl
+                    ServiceUrl = r.ServiceUrl,
                     Attachments = notification.Attachments,
                     FailedImages = r.FailedImages
                 }));

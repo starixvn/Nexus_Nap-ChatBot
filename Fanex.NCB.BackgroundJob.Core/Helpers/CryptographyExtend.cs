@@ -1,35 +1,40 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Helpers;
-
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
-
-[ExcludeFromCodeCoverage(Justification = "Helpers")]
-public static class CryptographyExtend
+﻿namespace Fanex.NCB.AutoJobs.Core.Helpers
 {
-    private static readonly DESCryptoServiceProvider CryptoServiceProvider = new();
-    private static readonly byte[] RgbKey = new byte[] { 33, 99, 84, 90, 145, 172, 110, 204 };
-    private static readonly byte[] RgbIv = Encoding.UTF8.GetBytes("&％#@?,:*!~^.");
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.IO;
+    using System.Security.Cryptography;
+    using System.Text;
 
-    public static string DecryptPassword(string encryptedPassword)
+    [ExcludeFromCodeCoverage(Justification = "Helpers")]
+    public static class CryptographyExtend
     {
-        if (encryptedPassword == null) throw new ArgumentNullException(nameof(encryptedPassword));
+        private static readonly DESCryptoServiceProvider CryptoServiceProvider = new();
+        private static readonly byte[] RgbKey = new byte[] { 33, 99, 84, 90, 145, 172, 110, 204 };
+        private static readonly byte[] RgbIv = Encoding.UTF8.GetBytes("&％#@?,:*!~^.");
 
-        using MemoryStream stream =
-            new(Convert.FromBase64String(StandardizeEncryptedPasswordLength(encryptedPassword)));
-        using var transform = ((SymmetricAlgorithm)(object)CryptoServiceProvider).CreateDecryptor(RgbKey, RgbIv);
-        using StreamReader streamReader = new(new CryptoStream(stream, transform, CryptoStreamMode.Read));
-        return streamReader.ReadToEnd().Trim();
-    }
+        public static string DecryptPassword(string encryptedPassword)
+        {
+            if (encryptedPassword == null)
+            {
+                throw new ArgumentNullException(nameof(encryptedPassword));
+            }
 
-    private static string StandardizeEncryptedPasswordLength(string encryptedPassword)
-    {
-        var result = string.Empty;
-        if (!string.IsNullOrWhiteSpace(encryptedPassword))
-            result = encryptedPassword[..((encryptedPassword.Length >> 2) << 2)];
+            using MemoryStream stream = new(Convert.FromBase64String(StandardizeEncryptedPasswordLength(encryptedPassword)));
+            using ICryptoTransform transform = ((SymmetricAlgorithm)(object)CryptoServiceProvider).CreateDecryptor(RgbKey, RgbIv);
+            using StreamReader streamReader = new(new CryptoStream(stream, transform, CryptoStreamMode.Read));
+            return streamReader.ReadToEnd().Trim();
+        }
 
-        return result;
+        private static string StandardizeEncryptedPasswordLength(string encryptedPassword)
+        {
+            string result = string.Empty;
+            if (!string.IsNullOrWhiteSpace(encryptedPassword))
+            {
+                result = encryptedPassword[..(encryptedPassword.Length >> 2 << 2)];
+            }
+
+            return result;
+        }
     }
 }
