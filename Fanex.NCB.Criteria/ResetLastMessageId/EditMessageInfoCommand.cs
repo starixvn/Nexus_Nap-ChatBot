@@ -1,15 +1,20 @@
-﻿namespace Fanex.NCB.Criteria.ResetLastMessageId
+﻿namespace Fanex.NCB.Criteria.ResetLastMessageId;
+
+using Fanex.NCB.Shared.Models;
+
+public class EditMessageInfoCommand : BaseCommand
 {
-    using Fanex.NCB.Shared.Models;
+    public string JobInfo { get; set; }
 
-    public class EditMessageInfoCommand : BaseCommand
+    public string JobDetail { get; set; }
+
+    public override string GetSettingKey()
     {
-        public string JobInfo { get; set; }
+        return "NCB_JobInfo_Upd";
+    }
 
-        public string JobDetail { get; set; }
-
-        public override string GetSettingKey() => "NCB_JobInfo_Upd";
-
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

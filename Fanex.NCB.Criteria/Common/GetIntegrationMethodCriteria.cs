@@ -1,20 +1,23 @@
-﻿namespace Fanex.NCB.Criteria.Common
+﻿namespace Fanex.NCB.Criteria.Common;
+
+using Data;
+using Data.Repository;
+
+public class GetIntegrationMethodCriteria : CriteriaBase
 {
-    using Fanex.Data;
-    using Fanex.Data.Repository;
+    public int InNotificationTypeId { get; set; }
 
-    public class GetIntegrationMethodCriteria : CriteriaBase
+    [SpParam(AllowNull = true)] public uint? InIntegrationMethodId { get; set; }
+
+    [SpParam(AllowNull = true)] public string InIntegrationMethodName { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int InNotificationTypeId { get; set; }
+        return "NCB_IntegrationMethod_Sel";
+    }
 
-        [SpParam(AllowNull = true)]
-        public uint? InIntegrationMethodId { get; set; }
-
-        [SpParam(AllowNull = true)]
-        public string InIntegrationMethodName { get; set; }
-
-        public override string GetSettingKey() => "NCB_IntegrationMethod_Sel";
-
-        public override bool IsValid() => InNotificationTypeId > 0;
+    public override bool IsValid()
+    {
+        return InNotificationTypeId > 0;
     }
 }

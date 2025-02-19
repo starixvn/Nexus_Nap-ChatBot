@@ -1,23 +1,19 @@
 ﻿namespace Fanex.NCB.Main.AppConfig
 {
-    using System.Text;
     using Fanex.Data.Repository;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.Repository;
-    using Fanex.NCB.Repository.Interfaces;
-    using Fanex.NCB.Services;
-    using Fanex.NCB.Services.Interfaces;
     using Fanex.NCB.Shared.Services;
     using Fanex.NCB.Shared.Services.Interfaces;
-    using Fanex.RemotingRef;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.IdentityModel.Tokens;
-    using ONEbook.UM.Helpers;
-    using ONEbook.UM.Services;
-    using ONEbook.UM.Transport;
+    using RemotingRef;
+    using Repository;
+    using Repository.Interfaces;
+    using Services;
+    using Services.Interfaces;
+    using System.Text;
 
     public static class ServiceExtensions
     {
@@ -40,12 +36,6 @@
             services.AddScoped<IResetLastMessageIdService, ResetLastMessageIdService>();
             services.AddScoped<IRemotingRefService, RemotingRefService>();
 
-            services.AddSingleton<IUMCacheService, UMCacheService>();
-            services.AddSingleton<IUMRestClient, UMRestClient>();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<IHttpContextHelper, HttpContextHelper>();
-            services.AddSingleton<IMaintenanceService, MaintenanceService>();
-
             services.AddHttpClient();
         }
 
@@ -61,18 +51,18 @@
             var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.SecretKey);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
+                .AddJwtBearer(x =>
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
         }
 
         public static void RegisterConfigs(this IServiceCollection services, IConfiguration configuration)

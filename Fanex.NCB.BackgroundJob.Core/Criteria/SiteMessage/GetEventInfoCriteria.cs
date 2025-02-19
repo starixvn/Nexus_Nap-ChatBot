@@ -1,13 +1,18 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SiteMessage
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SiteMessage;
+
+using Fanex.Data.Repository;
+
+public class GetEventInfoCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public string MatchIDLst { get; set; }
 
-    public class GetEventInfoCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public string MatchIDLst { get; set; }
+        return "NAP_Chatbot_SiteMesssage_EventInfo_Sel";
+    }
 
-        public override string GetSettingKey() => "NAP_Chatbot_SiteMesssage_EventInfo_Sel";
-
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(MatchIDLst);
+    public override bool IsValid()
+    {
+        return !string.IsNullOrWhiteSpace(MatchIDLst);
     }
 }

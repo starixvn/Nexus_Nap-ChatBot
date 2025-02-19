@@ -1,15 +1,20 @@
-﻿namespace Fanex.NCB.Criteria.LocalNap.Security
+﻿namespace Fanex.NCB.Criteria.LocalNap.Security;
+
+using Data.Repository;
+
+public class UserReCheckInUserCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public int OnUserId { get; set; }
+    public bool IsKickedOut { get; set; }
+    public bool IsPermissionChanged { get; set; }
 
-    public class UserReCheckInUserCriteria : CriteriaBase
+    public override bool IsValid()
     {
-        public int OnUserId { get; set; }
-        public bool IsKickedOut { get; set; }
-        public bool IsPermissionChanged { get; set; }
+        return OnUserId > 0;
+    }
 
-        public override bool IsValid() => OnUserId > 0;
-
-        public override string GetSettingKey() => "NAP_User_ReCheckIn";
+    public override string GetSettingKey()
+    {
+        return "NAP_User_ReCheckIn";
     }
 }

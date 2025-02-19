@@ -1,9 +1,8 @@
-﻿namespace Fanex.NCB.Models.SettingConfiguration
-{
-    public class SettingType
-    {
-        public int Type { get; set; }
+﻿namespace Fanex.NCB.Models.SettingConfiguration;
 
-        public string Name { get; set; }
-    }
+public class SettingType
+{
+    public int Type { get; set; }
+
+    public string Name { get; set; }
 }

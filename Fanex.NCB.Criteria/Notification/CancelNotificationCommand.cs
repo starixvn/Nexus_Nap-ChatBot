@@ -1,15 +1,20 @@
-﻿namespace Fanex.NCB.Criteria.Notification
+﻿namespace Fanex.NCB.Criteria.Notification;
+
+using Fanex.NCB.Shared.Models;
+
+public class CancelNotificationCommand : BaseCommand
 {
-    using Fanex.NCB.Shared.Models;
+    public int NotificationId { get; set; }
 
-    public class CancelNotificationCommand : BaseCommand
+    public int UserId { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int NotificationId { get; set; }
+        return "NCB_NotificationList_Cancel_Upd";
+    }
 
-        public int UserId { get; set; }
-
-        public override string GetSettingKey() => "NCB_NotificationList_Cancel_Upd";
-
-        public override bool IsValid() => NotificationId > 0 && UserId > 0;
+    public override bool IsValid()
+    {
+        return NotificationId > 0 && UserId > 0;
     }
 }

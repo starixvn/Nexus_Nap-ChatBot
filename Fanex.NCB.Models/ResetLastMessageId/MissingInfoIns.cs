@@ -1,19 +1,14 @@
-﻿namespace Fanex.NCB.Models.ResetLastMessageId
+﻿namespace Fanex.NCB.Models.ResetLastMessageId;
+
+using System.Xml.Serialization;
+
+public class MissingInfoIns
 {
-    using System.Xml.Serialization;
+    [XmlAttribute("JobIdentify")] public int JobIdentify { get; set; }
 
-    public class MissingInfoIns
-    {
-        [XmlAttribute("JobIdentify")]
-        public int JobIdentify { get; set; }
+    [XmlAttribute("MessageId")] public string MessageId { get; set; }
 
-        [XmlAttribute("MessageId")]
-        public string MessageId { get; set; }
+    [XmlAttribute("SettingName")] public string SettingName { get; set; }
 
-        [XmlAttribute("SettingName")]
-        public string SettingName { get; set; }
-
-        [XmlAttribute("NotificationId")]
-        public int NotificationId { get; set; }
-    }
+    [XmlAttribute("NotificationId")] public int NotificationId { get; set; }
 }

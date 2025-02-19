@@ -1,15 +1,14 @@
-﻿namespace Fanex.NCB.Shared.Enum
+﻿namespace Fanex.NCB.Shared.Enum;
+
+public enum JobIdentity
 {
-    public enum JobIdentity
-    {
-        SpecialDelete = 1,
-        InternalCSD,
-        SiteMessage,
-        ProblemPlayer,
-        MonitoredPlayer,
-        SettlementInternalCSD,
-        SettlementLicensee,
-        ResultAmendmentLicensee,
-        ResultAmendmentInternalCSD
-    }
+    SpecialDelete = 1,
+    InternalCSD,
+    SiteMessage,
+    ProblemPlayer,
+    MonitoredPlayer,
+    SettlementInternalCSD,
+    SettlementLicensee,
+    ResultAmendmentLicensee,
+    ResultAmendmentInternalCSD
 }

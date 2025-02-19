@@ -1,17 +1,13 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Models.SpecialDeleteTicket.AbnormalBets
+﻿namespace Fanex.NCB.AutoJobs.Core.Models.SpecialDeleteTicket.AbnormalBets;
+
+using System.Xml.Serialization;
+
+[XmlType("r")]
+public class CollectionDuplicatedTickets : VoidingHistoryCollection
 {
-    using System.Xml.Serialization;
+    [XmlAttribute("DuplicatedTickets")] public string DuplicatedTickets { get; set; }
 
-    [XmlType("r")]
-    public class CollectionDuplicatedTickets : VoidingHistoryCollection
-    {
-        [XmlAttribute("DuplicatedTickets")]
-        public string DuplicatedTickets { get; set; }
+    [XmlAttribute("FilterBy")] public int FilterBy { get; set; }
 
-        [XmlAttribute("FilterBy")]
-        public int FilterBy { get; set; }
-
-        [XmlAttribute("IssueTypeId")]
-        public int IssueTypeId { get; set; }
-    }
+    [XmlAttribute("IssueTypeId")] public int IssueTypeId { get; set; }
 }

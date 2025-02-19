@@ -1,13 +1,18 @@
-﻿namespace Fanex.NCB.Criteria.ResetLastMessageId
+﻿namespace Fanex.NCB.Criteria.ResetLastMessageId;
+
+using Data.Repository;
+
+public class GetMissingMonitoredPlayerCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public string FromLogId { get; set; }
 
-    public class GetMissingMonitoredPlayerCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public string FromLogId { get; set; }
+        return "NAP_Chatbot_MissingMonitoredPlayer_Sel";
+    }
 
-        public override string GetSettingKey() => "NAP_Chatbot_MissingMonitoredPlayer_Sel";
-
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

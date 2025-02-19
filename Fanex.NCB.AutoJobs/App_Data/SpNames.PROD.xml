@@ -1,62 +1,62 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Functions>
-	<Function Name="Send Notification">
-		<Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus" DbName="ChatBot" Plain="0"></Setting>
-		<Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd" DbName="ChatBot" Plain="0"></Setting>
-	</Function>
-	<Function Name="Sync Data">
-		<Setting Key="NAP_ChatBot_GetDataBySiteId" SpName="NAP_ChatBot_GetDataBySiteId" DbName="DBPOL.NAP_UserControl.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NAP_UserControl_SyncData" SpName="NAP_UserControl_SyncData" DbName="ChatBot" Plain="0"></Setting>
-		<Setting Key="NAP_Chatbot_GetDataToSync" SpName="NAP_Chatbot_GetDataToSync" DbName="DBOIC.bodb_OIC.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NCB_OIC_SyncData" SpName="NCB_OIC_SyncData" DbName="ChatBot" Plain="0"></Setting>
-	</Function>
-	<Function Name="Special Delete">
-		<Setting Key="Acc_SiteDBConfigSel" SpName="Acc_SiteDBConfigSel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NAP_Chatbot_AbnormalBets_Info_Sel" SpName="NAP_Chatbot_AbnormalBets_Info_Sel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NCB_MsgSetting_SpecialDelete_Sel" SpName="NCB_MsgSetting_SpecialDelete_Sel" DbName="ChatBot" Plain="0"></Setting>
-		<Setting Key="NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel" SpName="NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel" DbName="ChatBot" Plain="0"></Setting>
-		<Setting Key="NCB_SpecialDelete_InternalCSD_Import" SpName="NCB_SpecialDelete_InternalCSD_Import" DbName="ChatBot" Plain="0"></Setting>
-		<Setting Key="NCB_SpecialDeleteMsg_Import" SpName="NCB_SpecialDeleteMsg_Import" DbName="ChatBot" Plain="0"></Setting>
-		<Setting Key="NAP_Chatbot_SpecialDeleteMsg_Sel" SpName="NAP_Chatbot_SpecialDeleteMsg_Sel" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NAP_Chatbot_SpecialDelete_InternalCSD_MessageSel" SpName="NAP_Chatbot_SpecialDelete_InternalCSD_MessageSel" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NAP_Chatbot_SpecialDeleteIssueType_Sel" SpName="NAP_Chatbot_SpecialDeleteIssueType_Sel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NAP_Chatbot_SpecialDelete_InternalCSD_GetCollection" SpName="NAP_Chatbot_SpecialDelete_InternalCSD_GetCollection" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NAP_Chatbot_AbnormalBets_UsernameTicketInfo_Sel" SpName="NAP_Chatbot_AbnormalBets_UsernameTicketInfo_Sel" DbName="DBTXN.bodb02.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NCB_ViewLog_DeleteOldConversationMessageLog_Import" SpName="NCB_ViewLog_DeleteOldConversationMessageLog_Import" DbName="ChatBot" Plain="0"></Setting>
-		<Setting Key="NAP_Chatbot_SpecialDelete_InternalCSD_Info" SpName="NAP_Chatbot_SpecialDelete_InternalCSD_Info" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
-	</Function>
-	<Function Name="Site Message">
-		<Setting Key="NCB_MsgSetting_SiteMessage_Sel" SpName="NCB_MsgSetting_SiteMessage_Sel" DbName="ChatBot" Plain="0"></Setting>
-		<Setting Key="NAP_Chatbot_SiteMesssage_Sel" SpName="NAP_Chatbot_SiteMesssage_Sel" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NAP_Chatbot_MsgChatBot_Ins" SpName="NAP_Chatbot_MsgChatBot_Ins" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NAP_Chatbot_SiteMesssage_EventInfo_Sel" SpName="NAP_Chatbot_SiteMesssage_EventInfo_Sel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NCB_SiteMessage_Import" SpName="NCB_SiteMessage_Import" DbName="ChatBot" Plain="0"></Setting>
-		<Setting Key="NAP_Chatbot_DataToJSON_Sel" SpName="NAP_Chatbot_DataToJSON_Sel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
-	</Function>
-	<Function Name="Problem Account">
-		<Setting Key="NCB_MsgSetting_ProblemAccounts" SpName="NCB_MsgSetting_ProblemAccounts" DbName="ChatBot" Plain="0" />
-		<Setting Key="NAP_Chatbot_ProblemAccounts_Sel" SpName="NAP_Chatbot_ProblemAccounts_Sel" DbName="DBCUST.CustDB.wsv_nap" Plain="0" />
-		<Setting Key="NCB_ProblemAccount_Import" SpName="NCB_ProblemAccount_Import" DbName="ChatBot" Plain="0" />
-	</Function>
-	<Function Name="Monitored Player">
-		<Setting Key="NCB_MsgSetting_MonitoredPlayer" SpName="NCB_MsgSetting_MonitoredPlayer" DbName="ChatBot" Plain="0" />
-		<Setting Key="NAP_Chatbot_MonitoredPlayer_Sel" SpName="NAP_Chatbot_MonitoredPlayer_Sel" DbName="DBEXT.bodb02.wsv_nap" Plain="0" />
-		<Setting Key="NCB_MonitoredPlayer_Import" SpName="NCB_MonitoredPlayer_Import" DbName="ChatBot" Plain="0" />
-	</Function>
-	<Function Name="Settlement">
-		<Setting Key="NCB_ChatBot_Service_SettingSel" SpName="NCB_ChatBot_Service_SettingSel" DbName="ChatBot" Plain="0" />
-		<Setting Key="NAP_Chatbot_Settlement_InternalCSD_MessageSel" SpName="NAP_Chatbot_Settlement_InternalCSD_MessageSel" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NAP_Chatbot_Settlement_InternalCSD_EventInfoSel" SpName="NAP_Chatbot_Settlement_InternalCSD_EventInfoSel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NCB_Settlement_InternalCSD_Import" SpName="NCB_Settlement_InternalCSD_Import" DbName="ChatBot" Plain="0" />
-		<Setting Key="NAP_Chatbot_Settlement_Licensee_MessageSel" SpName="NAP_Chatbot_Settlement_Licensee_MessageSel" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NAP_Chatbot_Settlement_Licensee_LeagueSel" SpName="NAP_Chatbot_Settlement_Licensee_LeagueSel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
-		<Setting Key="NCB_Settlement_Licensee_Import" SpName="NCB_Settlement_Licensee_Import" DbName="ChatBot" Plain="0" />
-	</Function>
-	<Function Name="ResultAmendment">
-		<Setting Key="NAP_Chatbot_ResultAmendment_Licensee_MessageSel" SpName="NAP_Chatbot_ResultAmendment_Licensee_MessageSel" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0" />
-		<Setting Key="NCB_ResultAmendment_Licensee_Import" SpName="NCB_ResultAmendment_Licensee_Import" DbName="ChatBot" Plain="0" />
-		<Setting Key="NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel" SpName="NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel" DbName="DBCRM.MessageNotification.wsv_nap" Plain="0" />
-		<Setting Key="NCB_ResultAmendment_InternalCSD_Import" SpName="NCB_ResultAmendment_InternalCSD_Import" DbName="ChatBot" Plain="0" />
-	</Function>
+  <Function Name="Send Notification">
+    <Setting Key="NCB_SendNotification_GetPlanRetryNotifUpdStatus" SpName="NCB_SendNotification_GetPlanRetryNotifUpdStatus" DbName="DBCB.ChatBot.ncb_admin" Plain="0"></Setting>
+    <Setting Key="NCB_SendNotification_RecipientSentStatus_Upd" SpName="NCB_SendNotification_RecipientSentStatus_Upd" DbName="DBCB.ChatBot.ncb_admin" Plain="0"></Setting>
+  </Function>
+  <Function Name="Sync Data">
+    <Setting Key="NAP_ChatBot_GetDataBySiteId" SpName="NAP_ChatBot_GetDataBySiteId" DbName="DBPOL.NAP_UserControl.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NAP_UserControl_SyncData" SpName="NAP_UserControl_SyncData" DbName="DBCB.ChatBot.ncb_admin" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_GetDataToSync" SpName="NAP_Chatbot_GetDataToSync" DbName="DBOIC.bodb_OIC.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NCB_OIC_SyncData" SpName="NCB_OIC_SyncData" DbName="DBCB.ChatBot.ncb_admin" Plain="0"></Setting>
+  </Function>
+  <Function Name="Special Delete">
+    <Setting Key="Acc_SiteDBConfigSel" SpName="Acc_SiteDBConfigSel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_AbnormalBets_Info_Sel" SpName="NAP_Chatbot_AbnormalBets_Info_Sel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NCB_MsgSetting_SpecialDelete_Sel" SpName="NCB_MsgSetting_SpecialDelete_Sel" DbName="DBCB.ChatBot.ncb_admin" Plain="0"></Setting>
+    <Setting Key="NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel" SpName="NCB_MsgSetting_SpecialDelete_AbnormalBets_Sel" DbName="DBCB.ChatBot.ncb_admin" Plain="0"></Setting>
+    <Setting Key="NCB_SpecialDelete_InternalCSD_Import" SpName="NCB_SpecialDelete_InternalCSD_Import" DbName="DBCB.ChatBot.ncb_admin" Plain="0"></Setting>
+    <Setting Key="NCB_SpecialDeleteMsg_Import" SpName="NCB_SpecialDeleteMsg_Import" DbName="DBCB.ChatBot.ncb_admin" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_SpecialDeleteMsg_Sel" SpName="NAP_Chatbot_SpecialDeleteMsg_Sel" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_SpecialDelete_InternalCSD_MessageSel" SpName="NAP_Chatbot_SpecialDelete_InternalCSD_MessageSel" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel" SpName="NAP_Chatbot_SpecialDelete_AbnormalBets_Sel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_SpecialDeleteIssueType_Sel" SpName="NAP_Chatbot_SpecialDeleteIssueType_Sel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_SpecialDelete_InternalCSD_GetCollection" SpName="NAP_Chatbot_SpecialDelete_InternalCSD_GetCollection" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_AbnormalBets_UsernameTicketInfo_Sel" SpName="NAP_Chatbot_AbnormalBets_UsernameTicketInfo_Sel" DbName="DBTXN.bodb02.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NCB_ViewLog_DeleteOldConversationMessageLog_Import" SpName="NCB_ViewLog_DeleteOldConversationMessageLog_Import" DbName="DBCB.ChatBot.ncb_admin" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_SpecialDelete_InternalCSD_Info" SpName="NAP_Chatbot_SpecialDelete_InternalCSD_Info" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
+  </Function>
+  <Function Name="Site Message">
+    <Setting Key="NCB_MsgSetting_SiteMessage_Sel" SpName="NCB_MsgSetting_SiteMessage_Sel" DbName="DBCB.ChatBot.ncb_admin" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_SiteMesssage_Sel" SpName="NAP_Chatbot_SiteMesssage_Sel" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_MsgChatBot_Ins" SpName="NAP_Chatbot_MsgChatBot_Ins" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_SiteMesssage_EventInfo_Sel" SpName="NAP_Chatbot_SiteMesssage_EventInfo_Sel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NCB_SiteMessage_Import" SpName="NCB_SiteMessage_Import" DbName="DBCB.ChatBot.ncb_admin" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_DataToJSON_Sel" SpName="NAP_Chatbot_DataToJSON_Sel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
+  </Function>
+  <Function Name="Problem Account">
+    <Setting Key="NCB_MsgSetting_ProblemAccounts" SpName="NCB_MsgSetting_ProblemAccounts" DbName="DBCB.ChatBot.ncb_admin" Plain="0" />
+    <Setting Key="NAP_Chatbot_ProblemAccounts_Sel" SpName="NAP_Chatbot_ProblemAccounts_Sel" DbName="DBCUST.CustDB.wsv_nap" Plain="0" />
+    <Setting Key="NCB_ProblemAccount_Import" SpName="NCB_ProblemAccount_Import" DbName="DBCB.ChatBot.ncb_admin" Plain="0" />
+  </Function>
+  <Function Name="Monitored Player">
+    <Setting Key="NCB_MsgSetting_MonitoredPlayer" SpName="NCB_MsgSetting_MonitoredPlayer" DbName="DBCB.ChatBot.ncb_admin" Plain="0" />
+    <Setting Key="NAP_Chatbot_MonitoredPlayer_Sel" SpName="NAP_Chatbot_MonitoredPlayer_Sel" DbName="DBEXT.bodb02.wsv_nap" Plain="0" />
+    <Setting Key="NCB_MonitoredPlayer_Import" SpName="NCB_MonitoredPlayer_Import" DbName="DBCB.ChatBot.ncb_admin" Plain="0" />
+  </Function>
+  <Function Name="Settlement">
+    <Setting Key="NCB_ChatBot_Service_SettingSel" SpName="NCB_ChatBot_Service_SettingSel" DbName="DBCB.ChatBot.ncb_admin" Plain="0" />
+    <Setting Key="NAP_Chatbot_Settlement_InternalCSD_MessageSel" SpName="NAP_Chatbot_Settlement_InternalCSD_MessageSel" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_Settlement_InternalCSD_EventInfoSel" SpName="NAP_Chatbot_Settlement_InternalCSD_EventInfoSel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NCB_Settlement_InternalCSD_Import" SpName="NCB_Settlement_InternalCSD_Import" DbName="DBCB.ChatBot.ncb_admin" Plain="0" />
+    <Setting Key="NAP_Chatbot_Settlement_Licensee_MessageSel" SpName="NAP_Chatbot_Settlement_Licensee_MessageSel" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NAP_Chatbot_Settlement_Licensee_LeagueSel" SpName="NAP_Chatbot_Settlement_Licensee_LeagueSel" DbName="DBACC.bodb02.wsv_nap" Plain="0"></Setting>
+    <Setting Key="NCB_Settlement_Licensee_Import" SpName="NCB_Settlement_Licensee_Import" DbName="DBCB.ChatBot.ncb_admin" Plain="0" />
+  </Function>
+  <Function Name="ResultAmendment">
+    <Setting Key="NAP_Chatbot_ResultAmendment_Licensee_MessageSel" SpName="NAP_Chatbot_ResultAmendment_Licensee_MessageSel" DbName="DBMSG.bodb_Message.wsv_nap" Plain="0" />
+    <Setting Key="NCB_ResultAmendment_Licensee_Import" SpName="NCB_ResultAmendment_Licensee_Import" DbName="DBCB.ChatBot.ncb_admin" Plain="0" />
+    <Setting Key="NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel" SpName="NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel" DbName="DBCRM.MessageNotification.wsv_nap" Plain="0" />
+    <Setting Key="NCB_ResultAmendment_InternalCSD_Import" SpName="NCB_ResultAmendment_InternalCSD_Import" DbName="DBCB.ChatBot.ncb_admin" Plain="0" />
+  </Function>
 </Functions>

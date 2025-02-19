@@ -1,12 +1,12 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Tests.Telegram
 {
     using AutoFixture;
-    using Fanex.NCB.BotService.Core;
-    using Fanex.NCB.BotService.Core.Criteria;
-    using Fanex.NCB.BotService.Core.Services;
-    using Fanex.NCB.BotService.Core.Services.Interfaces;
+    using Core;
+    using Core.Criteria;
+    using Core.Services;
+    using Core.Services.Interfaces;
     using Fanex.NCB.BotService.EndPoint.Tests.TestableClasses.Telegram;
-    using Fanex.NCB.Shared.Models;
+    using Shared.Models;
     using Fanex.NCB.Shared.Services.Interfaces;
     using global::Telegram.Bot.Types;
     using Microsoft.AspNetCore.Mvc;

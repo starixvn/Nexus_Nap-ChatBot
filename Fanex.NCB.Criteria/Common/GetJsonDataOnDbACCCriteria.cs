@@ -1,13 +1,18 @@
-﻿namespace Fanex.NCB.Criteria.Common
+﻿namespace Fanex.NCB.Criteria.Common;
+
+using Data.Repository;
+
+public class GetJsonDataOnDbACCCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public string TableName { get; set; }
 
-    public class GetJsonDataOnDbACCCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public string TableName { get; set; }
+        return "NAP_Chatbot_DataToJSON_Sel";
+    }
 
-        public override string GetSettingKey() => "NAP_Chatbot_DataToJSON_Sel";
-
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(TableName);
+    public override bool IsValid()
+    {
+        return !string.IsNullOrWhiteSpace(TableName);
     }
 }

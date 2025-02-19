@@ -1,11 +1,16 @@
-﻿namespace Fanex.NCB.Criteria.Common
+﻿namespace Fanex.NCB.Criteria.Common;
+
+using Data.Repository;
+
+public class GetUsersCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
-
-    public class GetUsersCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public override string GetSettingKey() => "NCB_Common_User_Sel";
+        return "NCB_Common_User_Sel";
+    }
 
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

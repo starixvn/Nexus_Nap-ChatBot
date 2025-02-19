@@ -1,7 +1,6 @@
-﻿namespace Fanex.NCB.Models.Notification
+﻿namespace Fanex.NCB.Models.Notification;
+
+public class NotificationPaging : Notification
 {
-    public class NotificationPaging : Notification
-    {
-        public int PageIndex { get; set; }
-    }
+    public int PageIndex { get; set; }
 }

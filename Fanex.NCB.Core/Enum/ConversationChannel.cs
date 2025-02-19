@@ -1,8 +1,7 @@
-﻿namespace Fanex.NCB.Core.Enum
+﻿namespace Fanex.NCB.Core.Enum;
+
+public enum ConversationChannel
 {
-    public enum ConversationChannel
-    {
-        Skype = 1,
-        Telegram
-    }
+    Skype = 1,
+    Telegram
 }

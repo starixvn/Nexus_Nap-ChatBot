@@ -1,9 +1,9 @@
 ﻿namespace Fanex.NCB.Main.Controllers
 {
     using System.Threading.Tasks;
-    using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.NAPResolver.Attributes;
-    using Fanex.NCB.Services.Interfaces;
+    using Core.Constants;
+    using NAPResolver.Attributes;
+    using Services.Interfaces;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
     using static Fanex.NAP.Core.Business.Constant;
@@ -29,7 +29,8 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Read)]
         public async Task<IActionResult> GetNotificationSystemMessage(int? notificationId, int pageIndex, int pageSize)
         {
-            var (totalItems, systemMessages) = await viewLogService.GetNotificationSystemMessageAsync(notificationId, pageIndex, pageSize);
+            var (totalItems, systemMessages) =
+                await viewLogService.GetNotificationSystemMessageAsync(notificationId, pageIndex, pageSize);
             return Json(new { total = totalItems, data = systemMessages });
         }
 
@@ -37,7 +38,8 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Read)]
         public async Task<IActionResult> GetNotificationRecipientList(int? notificationId, int pageIndex, int pageSize)
         {
-            var (totalItems, recipients) = await viewLogService.GetNotificationRecipientListAsync(notificationId, pageIndex, pageSize);
+            var (totalItems, recipients) =
+                await viewLogService.GetNotificationRecipientListAsync(notificationId, pageIndex, pageSize);
 
             return Json(new { total = totalItems, data = recipients });
         }
@@ -46,7 +48,8 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.ViewLog, Policy = Policy.Read)]
         public async Task<IActionResult> GetConversationMessageLog(int? notificationId, int pageIndex, int pageSize)
         {
-            var (totalItems, conversationMessages, mapRecipient) = await viewLogService.GetConversationMessageLogAsync(notificationId, pageIndex, pageSize);
+            var (totalItems, conversationMessages, mapRecipient) =
+                await viewLogService.GetConversationMessageLogAsync(notificationId, pageIndex, pageSize);
 
             return Json(new { total = totalItems, data = conversationMessages, dataMapRecipient = mapRecipient });
         }

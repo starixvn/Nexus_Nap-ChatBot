@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.Main.Hubs
 {
     using System.Threading.Tasks;
-    using Fanex.NCB.Services.Interfaces;
+    using Services.Interfaces;
     using Microsoft.AspNetCore.SignalR;
 
     public class ChatbotHub : Hub<IChatbotClient>

@@ -1,13 +1,18 @@
-﻿namespace Fanex.NCB.Criteria.Setting
+﻿namespace Fanex.NCB.Criteria.Setting;
+
+using Data.Repository;
+
+public class SearchChatGroupNameCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public string Keyword { get; set; }
 
-    public class SearchChatGroupNameCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public string Keyword { get; set; }
+        return "NCB_Setting_SearchChatGroup_Sel";
+    }
 
-        public override string GetSettingKey() => "NCB_Setting_SearchChatGroup_Sel";
-
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(Keyword);
+    public override bool IsValid()
+    {
+        return !string.IsNullOrWhiteSpace(Keyword);
     }
 }

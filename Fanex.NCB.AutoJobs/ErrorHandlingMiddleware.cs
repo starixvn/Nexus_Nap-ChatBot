@@ -1,51 +1,48 @@
-﻿namespace Fanex.NCB.AutoJobs
-{
-    using Fanex.Logging;
-    using Fanex.Logging.Extensions;
-    using Microsoft.AspNetCore.Http;
+﻿namespace Fanex.NCB.AutoJobs;
+
+using Logging;
+using Fanex.Logging.Extensions;
+using Microsoft.AspNetCore.Http;
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
 
     [ExcludeFromCodeCoverage(Justification = "Tested on other project")]
-    public class ErrorHandlingMiddleware
+public class ErrorHandlingMiddleware
+{
+    private readonly RequestDelegate next;
+    private readonly ILogger logger;
+
+    public ErrorHandlingMiddleware(RequestDelegate next, ILogger logger)
     {
-        private readonly RequestDelegate next;
-        private readonly ILogger logger;
+        this.next = next;
+        this.logger = logger;
+    }
 
-        public ErrorHandlingMiddleware(RequestDelegate next, ILogger logger)
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
         {
-            this.next = next;
-            this.logger = logger;
+            await next(context);
         }
-
-        public async Task InvokeAsync(HttpContext context)
+        catch (Exception ex)
         {
-            try
-            {
-                await next(context);
-            }
-            catch (Exception ex)
-            {
-                await HandleException(context, ex);
-            }
+            await HandleException(context, ex);
         }
+    }
 
-        private async Task HandleException(HttpContext context, Exception exception)
-        {
-            var logMessage = new LogMessage(exception.Message)
-                        .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
-                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
-                        .ToString();
-            await logger.ErrorAsync(logMessage);
+    private async Task HandleException(HttpContext context, Exception exception)
+    {
+        var logMessage = new LogMessage(exception.Message)
+            .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
+            .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
+            .ToString();
+        await logger.ErrorAsync(logMessage);
 
-            var method = context.Request.Method.ToLowerInvariant();
-            var requestedWith = context.Request.Headers["X-Requested-With"];
+        var method = context.Request.Method.ToLowerInvariant();
+        var requestedWith = context.Request.Headers["X-Requested-With"];
 
-            if ((method == "post" || method == "put" || method == "delete") && requestedWith == "XMLHttpRequest")
-            {
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            }
-        }
+        if ((method == "post" || method == "put" || method == "delete") && requestedWith == "XMLHttpRequest")
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
     }
 }

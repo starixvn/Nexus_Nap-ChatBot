@@ -1,43 +1,42 @@
-﻿namespace Fanex.NCB.Criteria.Tests.MonitoredPlayer
+﻿namespace Fanex.NCB.Criteria.Tests.MonitoredPlayer;
+
+using Fanex.NCB.AutoJobs.Core.Criteria.MonitoredPlayer;
+using Xunit;
+
+public class ImportFromMonitoredPlayerCriteriaTests
 {
-    using Fanex.NCB.AutoJobs.Core.Criteria.MonitoredPlayer;
-    using Xunit;
-
-    public class ImportFromMonitoredPlayerCriteriaTests
+    [Fact]
+    public void GetSettingKey_WhenCalled_ReturnExpectedSettingKey()
     {
-        [Fact]
-        public void GetSettingKey_WhenCalled_ReturnExpectedSettingKey()
+        // Arrange
+        var criteria = new ImportFromMonitoredPlayerCriteria();
+        var expected = "NCB_MonitoredPlayer_Import";
+
+        // Act
+        var actual = criteria.GetSettingKey();
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void IsValid_WhenCalled_ReturnTrue()
+    {
+        // Arrange
+        var criteria = new ImportFromMonitoredPlayerCriteria()
         {
-            // Arrange
-            var criteria = new ImportFromMonitoredPlayerCriteria();
-            var expected = "NCB_MonitoredPlayer_Import";
+            Message = "[{}]",
+            ServerName = "TestDb2053",
+            LastDataRow = "1",
+            PLastLogId = 1,
+            ErrCode = 0,
+            ErrMsg = ""
+        };
 
-            // Act
-            var actual = criteria.GetSettingKey();
+        // Act
+        var actual = criteria.IsValid();
 
-            // Assert
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
-        public void IsValid_WhenCalled_ReturnTrue()
-        {
-            // Arrange
-            var criteria = new ImportFromMonitoredPlayerCriteria()
-            {
-                Message = "[{}]",
-                ServerName = "TestDb2053",
-                LastDataRow = "1",
-                PLastLogId = 1,
-                ErrCode = 0,
-                ErrMsg = ""
-            };
-
-            // Act
-            var actual = criteria.IsValid();
-
-            // Assert
-            Assert.True(actual);
-        }
+        // Assert
+        Assert.True(actual);
     }
 }

@@ -1,8 +1,7 @@
-﻿namespace Fanex.NCB.Models.NotificationTemplate
+﻿namespace Fanex.NCB.Models.NotificationTemplate;
+
+public class NotificationTemplateContent
 {
-    public class NotificationTemplateContent
-    {
-        public byte ChannelId { get; set; }
-        public string Content { get; set; }
-    }
+    public byte ChannelId { get; set; }
+    public string Content { get; set; }
 }

@@ -1,14 +1,19 @@
-﻿namespace Fanex.NCB.Criteria.LocalNap.Security
+﻿namespace Fanex.NCB.Criteria.LocalNap.Security;
+
+using System;
+using Data.Repository;
+
+public class UserSsoGetTimeUserCriteria : CriteriaBase
 {
-    using System;
-    using Fanex.Data.Repository;
+    public DateTime Time { get; set; }
 
-    public class UserSsoGetTimeUserCriteria : CriteriaBase
+    public override bool IsValid()
     {
-        public DateTime Time { get; set; }
+        return true;
+    }
 
-        public override bool IsValid() => true;
-
-        public override string GetSettingKey() => "NAP_User_SSOGetTime";
+    public override string GetSettingKey()
+    {
+        return "NAP_User_SSOGetTime";
     }
 }

@@ -1,13 +1,12 @@
-﻿namespace Fanex.NCB.Models.Notification
+﻿namespace Fanex.NCB.Models.Notification;
+
+public class NotificationErrorDetail
 {
-    public class NotificationErrorDetail
-    {
-        public string RecipientTypeName { get; set; }
+    public string RecipientTypeName { get; set; }
 
-        public string RecipientName { get; set; }
+    public string RecipientName { get; set; }
 
-        public string GroupName { get; set; }
+    public string GroupName { get; set; }
 
-        public string ErrorMessage { get; set; }
-    }
+    public string ErrorMessage { get; set; }
 }

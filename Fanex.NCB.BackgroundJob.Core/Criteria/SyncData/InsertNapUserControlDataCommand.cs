@@ -1,9 +1,14 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SyncData
-{
-    public class InsertNapUserControlDataCommand : NapUserControlSyncDataBaseCommand
-    {
-        public override string GetSettingKey() => "NAP_UserControl_SyncData";
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SyncData;
 
-        public override bool IsValid() => true;
+public class InsertNapUserControlDataCommand : NapUserControlSyncDataBaseCommand
+{
+    public override string GetSettingKey()
+    {
+        return "NAP_UserControl_SyncData";
+    }
+
+    public override bool IsValid()
+    {
+        return true;
     }
 }

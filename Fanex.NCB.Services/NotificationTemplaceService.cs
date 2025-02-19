@@ -1,79 +1,79 @@
-﻿namespace Fanex.NCB.Services
+﻿namespace Fanex.NCB.Services;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Criteria.NotificationTemplate;
+using Models.NotificationTemplate;
+using Interfaces;
+using Fanex.NCB.Shared.Models;
+using Fanex.NCB.Shared.Services.Interfaces;
+
+public class NotificationTemplaceService : INotificationTemplaceService
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Fanex.NCB.Criteria.NotificationTemplate;
-    using Fanex.NCB.Models.NotificationTemplate;
-    using Fanex.NCB.Services.Interfaces;
-    using Fanex.NCB.Shared.Models;
-    using Fanex.NCB.Shared.Services.Interfaces;
+    private readonly IBaseService baseService;
 
-    public class NotificationTemplaceService : INotificationTemplaceService
+    public NotificationTemplaceService(IBaseService baseService)
     {
-        private readonly IBaseService baseService;
+        this.baseService = baseService;
+    }
 
-        public NotificationTemplaceService(IBaseService baseService)
+    public async Task<(long, IEnumerable<NotificationTemplate>)> GetAsync(int? notificationTypeId, int pageIndex,
+        int pageSize)
+    {
+        var result = await baseService.FetchMultipleAsync<long, NotificationTemplate>(new GetTemplatesCriteria
         {
-            this.baseService = baseService;
-        }
+            NotificationTypeId = notificationTypeId,
+            PageIndex = pageIndex,
+            PageSize = pageSize
+        });
 
-        public async Task<(long, IEnumerable<NotificationTemplate>)> GetAsync(int? notificationTypeId, int pageIndex, int pageSize)
+        return (result.Item1.FirstOrDefault(), result.Item2);
+    }
+
+    public async Task<CommandResult> CreateAsync(CreateNotificationTemplate model)
+    {
+        var command = new CreateNotificationTemplateCommand
         {
-            var result = await baseService.FetchMultipleAsync<long, NotificationTemplate>(new GetTemplatesCriteria
-            {
-                NotificationTypeId = notificationTypeId,
-                PageIndex = pageIndex,
-                PageSize = pageSize
-            });
+            NotificationTypeId = model.NotificationTypeId,
+            NotificationTemplateName = model.NotificationTemplateName,
+            Title = model.Title,
+            Content = model.Content,
+            CreatorId = model.CreatorId
+        };
+        return await baseService.ExecuteNonQueryAsync(command);
+    }
 
-            return (result.Item1.FirstOrDefault(), result.Item2);
-        }
-
-        public async Task<CommandResult> CreateAsync(CreateNotificationTemplate model)
+    public async Task<CommandResult> EditAsync(EditNotificationTemplate model)
+    {
+        var command = new EditNotificationTemplateCommand
         {
-            var command = new CreateNotificationTemplateCommand
-            {
-                NotificationTypeId = model.NotificationTypeId,
-                NotificationTemplateName = model.NotificationTemplateName,
-                Title = model.Title,
-                Content = model.Content,
-                CreatorId = model.CreatorId
-            };
-            return await baseService.ExecuteNonQueryAsync(command);
-        }
+            NotificationTemplateId = model.NotificationTemplateId,
+            NotificationTypeId = model.NotificationTypeId,
+            NotificationTemplateName = model.NotificationTemplateName,
+            Title = model.Title,
+            Content = model.Content,
+            ModifierId = model.ModifierId
+        };
+        return await baseService.ExecuteNonQueryAsync(command);
+    }
 
-        public async Task<CommandResult> EditAsync(EditNotificationTemplate model)
+    public async Task<NotificationTemplate> GetByIdAsync(int notificationTemplateId)
+    {
+        var criteria = new GetTemplateByIdCriteria
         {
-            var command = new EditNotificationTemplateCommand
-            {
-                NotificationTemplateId = model.NotificationTemplateId,
-                NotificationTypeId = model.NotificationTypeId,
-                NotificationTemplateName = model.NotificationTemplateName,
-                Title = model.Title,
-                Content = model.Content,
-                ModifierId = model.ModifierId
-            };
-            return await baseService.ExecuteNonQueryAsync(command);
-        }
+            NotificationTemplateId = notificationTemplateId
+        };
+        return await baseService.GetDataEntityAsync<NotificationTemplate>(criteria);
+    }
 
-        public async Task<NotificationTemplate> GetByIdAsync(int notificationTemplateId)
+    public async Task<CommandResult> DeleteAsync(int notificationTemplateId, int userId)
+    {
+        var command = new DeleteNotificationTemplateCommand
         {
-            var criteria = new GetTemplateByIdCriteria
-            {
-                NotificationTemplateId = notificationTemplateId
-            };
-            return await baseService.GetDataEntityAsync<NotificationTemplate>(criteria);
-        }
-
-        public async Task<CommandResult> DeleteAsync(int notificationTemplateId, int userId)
-        {
-            var command = new DeleteNotificationTemplateCommand
-            {
-                NotificationTemplateId = notificationTemplateId,
-                UserId = userId
-            };
-            return await baseService.ExecuteNonQueryAsync(command);
-        }
+            NotificationTemplateId = notificationTemplateId,
+            UserId = userId
+        };
+        return await baseService.ExecuteNonQueryAsync(command);
     }
 }

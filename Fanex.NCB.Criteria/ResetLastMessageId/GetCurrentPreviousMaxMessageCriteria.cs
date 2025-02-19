@@ -1,11 +1,16 @@
-﻿namespace Fanex.NCB.Criteria.ResetLastMessageId
+﻿namespace Fanex.NCB.Criteria.ResetLastMessageId;
+
+using Data.Repository;
+
+public class GetCurrentPreviousMaxMessageCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
-
-    public class GetCurrentPreviousMaxMessageCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public override string GetSettingKey() => "NCB_JobInfo_Sel";
+        return "NCB_JobInfo_Sel";
+    }
 
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

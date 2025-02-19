@@ -2,14 +2,14 @@
 {
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NAP.Client;
-    using Fanex.NAP.Client.Helpers.Web;
+    using NAP.Client;
+    using NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.Main.ViewModel.SettingConfiguration;
-    using Fanex.NCB.Models.SettingConfiguration;
-    using Fanex.NCB.NAPResolver.Attributes;
-    using Fanex.NCB.Services.Interfaces;
+    using Core.Constants;
+    using ViewModel.SettingConfiguration;
+    using Models.SettingConfiguration;
+    using NAPResolver.Attributes;
+    using Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
@@ -22,7 +22,8 @@
         private readonly ISettingConfigurationService settingConfigurationService;
         private readonly IUserService userService;
 
-        public SettingConfigurationController(INapSession napSession, ISettingConfigurationService settingConfigurationService, IUserService userService)
+        public SettingConfigurationController(INapSession napSession,
+            ISettingConfigurationService settingConfigurationService, IUserService userService)
         {
             this.napSession = napSession;
             this.settingConfigurationService = settingConfigurationService;
@@ -33,7 +34,8 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.SettingManagement, Policy = Policy.Read)]
         public IActionResult Index()
         {
-            ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.SettingManagement, Policy.Host);
+            ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId,
+                NapClientManager.NapSettings.SiteId, FunctionKey.SettingManagement, Policy.Host);
 
             return View("~/Views/SkypeBot/SettingConfiguration/Index.cshtml");
         }
@@ -63,7 +65,8 @@
                 return Json(result);
             }
 
-            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()?.ErrorMessage;
+            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()
+                ?.ErrorMessage;
             return Json(new { isSuccessful = false, message });
         }
 
@@ -86,13 +89,14 @@
                 {
                     Type = viewModel.Type,
                     Name = viewModel.Name,
-                    ModifiedBy = napSession.UserId,
+                    ModifiedBy = napSession.UserId
                 });
 
                 return Json(result);
             }
 
-            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()?.ErrorMessage;
+            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()
+                ?.ErrorMessage;
             return Json(new { isSuccessful = false, message });
         }
 
@@ -107,7 +111,8 @@
                 return Json(result);
             }
 
-            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()?.ErrorMessage;
+            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()
+                ?.ErrorMessage;
             return Json(new { isSuccessful = false, message });
         }
 
@@ -115,7 +120,8 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Read)]
         public IActionResult Mapping()
         {
-            ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.MappingSettingManagement, Policy.Host);
+            ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId,
+                NapClientManager.NapSettings.SiteId, FunctionKey.MappingSettingManagement, Policy.Host);
 
             return View("~/Views/SkypeBot/SettingConfiguration/Mapping.cshtml");
         }
@@ -134,7 +140,7 @@
         public async Task<IActionResult> GetJobInfo(int? jobId)
         {
             var value = jobId ?? 1;
-            JobInfo jobInfo = await settingConfigurationService.GetJobInfoAsync(value);
+            var jobInfo = await settingConfigurationService.GetJobInfoAsync(value);
             return Json(jobInfo);
         }
 
@@ -151,10 +157,9 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.MappingSettingManagement, Policy = Policy.Host)]
         public async Task<IActionResult> UpdateJobInfo([FromBody] UpdateJobInfoViewModel viewModel)
         {
-
             if (ModelState.IsValid)
             {
-                CommandResult result = await settingConfigurationService.UpdateJobInfoAsync(new UpdateJobInfo
+                var result = await settingConfigurationService.UpdateJobInfoAsync(new UpdateJobInfo
                 {
                     JobIdentify = viewModel.Id,
                     BatchSize = viewModel.BatchSize,
@@ -169,7 +174,8 @@
                 return Json(result);
             }
 
-            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()?.ErrorMessage;
+            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()
+                ?.ErrorMessage;
             return Json(new { isSuccessful = false, message });
         }
 
@@ -211,7 +217,8 @@
                 return Json(result);
             }
 
-            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()?.ErrorMessage;
+            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()
+                ?.ErrorMessage;
             return Json(new { isSuccessful = false, message });
         }
 
@@ -253,7 +260,8 @@
                 return Json(result);
             }
 
-            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()?.ErrorMessage;
+            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()
+                ?.ErrorMessage;
             return Json(new { isSuccessful = false, message });
         }
 
@@ -276,7 +284,8 @@
                 return Json(result);
             }
 
-            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()?.ErrorMessage;
+            var message = ModelState.FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault()
+                ?.ErrorMessage;
             return Json(new { isSuccessful = false, message });
         }
     }

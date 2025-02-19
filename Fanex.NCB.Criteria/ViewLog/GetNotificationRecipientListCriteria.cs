@@ -1,19 +1,23 @@
-﻿namespace Fanex.NCB.Criteria.ViewLog
+﻿namespace Fanex.NCB.Criteria.ViewLog;
+
+using Data;
+using Data.Repository;
+
+public class GetNotificationRecipientListCriteria : CriteriaBase
 {
-    using Fanex.Data;
-    using Fanex.Data.Repository;
+    [SpParam(AllowNull = true)] public int? NotificationId { get; set; }
 
-    public class GetNotificationRecipientListCriteria : CriteriaBase
+    public int PageIndex { get; set; }
+
+    public int PageSize { get; set; }
+
+    public override string GetSettingKey()
     {
-        [SpParam(AllowNull = true)]
-        public int? NotificationId { get; set; }
+        return "NCB_ViewLog_NotificationRecipientList_Sel";
+    }
 
-        public int PageIndex { get; set; }
-
-        public int PageSize { get; set; }
-
-        public override string GetSettingKey() => "NCB_ViewLog_NotificationRecipientList_Sel";
-
-        public override bool IsValid() => PageIndex > 0 && PageSize > 0;
+    public override bool IsValid()
+    {
+        return PageIndex > 0 && PageSize > 0;
     }
 }

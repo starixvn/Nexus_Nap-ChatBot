@@ -1,11 +1,10 @@
-﻿namespace Fanex.NCB.Core.Enum
+﻿namespace Fanex.NCB.Core.Enum;
+
+public enum RecheckInStatus
 {
-    public enum RecheckInStatus
-    {
-        Success,
-        KickOut,
-        InvalidSite,
-        UnderMaintenance,
-        KickOutPermission
-    }
+    Success,
+    KickOut,
+    InvalidSite,
+    UnderMaintenance,
+    KickOutPermission
 }

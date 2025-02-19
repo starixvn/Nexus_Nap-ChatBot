@@ -2,10 +2,10 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NCB.Main.ViewModel.TreeSelect;
-    using Fanex.NCB.Models.Common;
-    using Fanex.NCB.NAPResolver.Attributes;
-    using Fanex.NCB.Services.Interfaces;
+    using Main.ViewModel.TreeSelect;
+    using Models.Common;
+    using NAPResolver.Attributes;
+    using Services.Interfaces;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
 

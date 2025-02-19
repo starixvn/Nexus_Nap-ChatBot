@@ -1,24 +1,29 @@
-﻿namespace Fanex.NCB.Criteria.NotificationType
+﻿namespace Fanex.NCB.Criteria.NotificationType;
+
+using Fanex.NCB.Shared.Models;
+
+public class InsertNotificationTypeCommand : BaseCommand
 {
-    using Fanex.NCB.Shared.Models;
+    public string NotificationTypeName { get; set; }
 
-    public class InsertNotificationTypeCommand : BaseCommand
+    public string RecipientTypeIds { get; set; }
+
+    public string ChatGroupTypeIds { get; set; }
+
+    public int SystemId { get; set; }
+
+    public int UserId { get; set; }
+
+    public override string GetSettingKey()
     {
-        public string NotificationTypeName { get; set; }
+        return "NCB_NotificationType_Ins";
+    }
 
-        public string RecipientTypeIds { get; set; }
-
-        public string ChatGroupTypeIds { get; set; }
-
-        public int SystemId { get; set; }
-
-        public int UserId { get; set; }
-
-        public override string GetSettingKey() => "NCB_NotificationType_Ins";
-
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(NotificationTypeName) &&
-                                            SystemId > 0 &&
-                                            !string.IsNullOrWhiteSpace(RecipientTypeIds) &&
-                                            !string.IsNullOrWhiteSpace(ChatGroupTypeIds);
+    public override bool IsValid()
+    {
+        return !string.IsNullOrWhiteSpace(NotificationTypeName) &&
+               SystemId > 0 &&
+               !string.IsNullOrWhiteSpace(RecipientTypeIds) &&
+               !string.IsNullOrWhiteSpace(ChatGroupTypeIds);
     }
 }

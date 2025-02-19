@@ -1,19 +1,24 @@
-﻿namespace Fanex.NCB.Criteria.SettingConfiguration
+﻿namespace Fanex.NCB.Criteria.SettingConfiguration;
+
+using Fanex.NCB.Shared.Models;
+
+public class DeleteMappingCommand : BaseCommand
 {
-    using Fanex.NCB.Shared.Models;
+    public int JobId { get; set; }
 
-    public class DeleteMappingCommand : BaseCommand
+    public int NotificationTemplateId { get; set; }
+
+    public int MsgContentsType { get; set; }
+
+    public int ModifiedBy { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int JobId { get; set; }
+        return "NCB_SettingConfiguration_Mapping_Del";
+    }
 
-        public int NotificationTemplateId { get; set; }
-
-        public int MsgContentsType { get; set; }
-
-        public int ModifiedBy { get; set; }
-
-        public override string GetSettingKey() => "NCB_SettingConfiguration_Mapping_Del";
-
-        public override bool IsValid() => JobId > 0 && NotificationTemplateId > 0 && ModifiedBy > 0;
+    public override bool IsValid()
+    {
+        return JobId > 0 && NotificationTemplateId > 0 && ModifiedBy > 0;
     }
 }

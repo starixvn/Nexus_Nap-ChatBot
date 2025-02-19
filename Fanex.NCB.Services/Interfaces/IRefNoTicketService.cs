@@ -1,12 +1,11 @@
-﻿namespace Fanex.NCB.Services.Interfaces
+﻿namespace Fanex.NCB.Services.Interfaces;
+
+using System.Threading.Tasks;
+using Fanex.NCB.Shared.Models.SpecialDeleteTicket.TicketInfo;
+
+public interface IRefNoTicketService
 {
-    using System.Threading.Tasks;
-    using Fanex.NCB.Shared.Models.SpecialDeleteTicket.TicketInfo;
+    Task<TicketInfo> GetTicketByRefNoAsync(long refno);
 
-    public interface IRefNoTicketService
-    {
-        Task<TicketInfo> GetTicketByRefNoAsync(long refno);
-
-        Task<(long, string)> GetTransInfoAsync(long refno);
-    }
+    Task<(long, string)> GetTransInfoAsync(long refno);
 }

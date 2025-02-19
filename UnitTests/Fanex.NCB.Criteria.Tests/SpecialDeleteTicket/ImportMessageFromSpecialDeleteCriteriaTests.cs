@@ -1,60 +1,59 @@
-﻿namespace Fanex.NCB.Criteria.Tests.SpecialDeleteTicket
+﻿namespace Fanex.NCB.Criteria.Tests.SpecialDeleteTicket;
+
+using Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
+using Xunit;
+
+public class ImportMessageFromSpecialDeleteCriteriaTests
 {
-    using Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
-    using Xunit;
-
-    public class ImportMessageFromSpecialDeleteCriteriaTests
+    [Fact]
+    public void GetSettingKey_WhenCalled_ReturnExpectedSettingKey()
     {
-        [Fact]
-        public void GetSettingKey_WhenCalled_ReturnExpectedSettingKey()
+        // Arrange
+        var criteria = new ImportMessageFromSpecialDeleteCriteria();
+        var expected = "NCB_SpecialDeleteMsg_Import";
+
+        // Act
+        var actual = criteria.GetSettingKey();
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void IsValid_WhenCalled_ReturnTrue()
+    {
+        // Arrange
+        var criteria = new ImportMessageFromSpecialDeleteCriteria
         {
-            // Arrange
-            var criteria = new ImportMessageFromSpecialDeleteCriteria();
-            var expected = "NCB_SpecialDeleteMsg_Import";
+            MessageHeader = "test",
+            MessageDetail = "content",
+            ErrCode = 0,
+            ErrMsg = ""
+        };
 
-            // Act
-            var actual = criteria.GetSettingKey();
+        // Act
+        var actual = criteria.IsValid();
 
-            // Assert
-            Assert.Equal(expected, actual);
-        }
+        // Assert
+        Assert.True(actual);
+    }
 
-        [Fact]
-        public void IsValid_WhenCalled_ReturnTrue()
+    [Fact]
+    public void IsValid_WhenCalled_ReturnFalse()
+    {
+        // Arrange
+        var criteria = new ImportMessageFromSpecialDeleteCriteria
         {
-            // Arrange
-            var criteria = new ImportMessageFromSpecialDeleteCriteria
-            {
-                MessageHeader = "test",
-                MessageDetail = "content",
-                ErrCode = 0,
-                ErrMsg = ""
-            };
+            MessageHeader = "",
+            MessageDetail = "",
+            ErrCode = 0,
+            ErrMsg = ""
+        };
 
-            // Act
-            var actual = criteria.IsValid();
+        // Act
+        var actual = criteria.IsValid();
 
-            // Assert
-            Assert.True(actual);
-        }
-
-        [Fact]
-        public void IsValid_WhenCalled_ReturnFalse()
-        {
-            // Arrange
-            var criteria = new ImportMessageFromSpecialDeleteCriteria
-            {
-                MessageHeader = "",
-                MessageDetail = "",
-                ErrCode = 0,
-                ErrMsg = ""
-            };
-
-            // Act
-            var actual = criteria.IsValid();
-
-            // Assert
-            Assert.False(actual);
-        }
+        // Assert
+        Assert.False(actual);
     }
 }

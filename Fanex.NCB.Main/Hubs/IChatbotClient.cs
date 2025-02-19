@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NCB.Models.Notification;
+    using Models.Notification;
 
     public interface IChatbotClient
     {

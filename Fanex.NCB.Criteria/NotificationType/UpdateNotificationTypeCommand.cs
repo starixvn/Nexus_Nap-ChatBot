@@ -1,34 +1,33 @@
-﻿namespace Fanex.NCB.Criteria.NotificationType
+﻿namespace Fanex.NCB.Criteria.NotificationType;
+
+using Fanex.NCB.Shared.Models;
+
+public class UpdateNotificationTypeCommand : BaseCommand
 {
-    using Fanex.NCB.Shared.Models;
+    public int NotificationTypeId { get; set; }
 
-    public class UpdateNotificationTypeCommand : BaseCommand
+    public string NotificationTypeName { get; set; }
+
+    public string RecipientTypeIds { get; set; }
+
+    public string ChatGroupTypeIds { get; set; }
+
+    public int SystemId { get; set; }
+
+    public int UserId { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int NotificationTypeId { get; set; }
+        return "NCB_NotificationType_Upd";
+    }
 
-        public string NotificationTypeName { get; set; }
+    public override bool IsValid()
+    {
+        if (NotificationTypeId <= 0) return false;
 
-        public string RecipientTypeIds { get; set; }
-
-        public string ChatGroupTypeIds { get; set; }
-
-        public int SystemId { get; set; }
-
-        public int UserId { get; set; }
-
-        public override string GetSettingKey() => "NCB_NotificationType_Upd";
-
-        public override bool IsValid()
-        {
-            if(NotificationTypeId <= 0)
-            {
-                return false;
-            }
-
-            return SystemId > 0 &&
-                    !string.IsNullOrWhiteSpace(NotificationTypeName) &&
-                    !string.IsNullOrWhiteSpace(RecipientTypeIds) &&
-                    !string.IsNullOrWhiteSpace(ChatGroupTypeIds);
-        }        
+        return SystemId > 0 &&
+               !string.IsNullOrWhiteSpace(NotificationTypeName) &&
+               !string.IsNullOrWhiteSpace(RecipientTypeIds) &&
+               !string.IsNullOrWhiteSpace(ChatGroupTypeIds);
     }
 }

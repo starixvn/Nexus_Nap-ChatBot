@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Fanex.NCB.Shared.Models
+﻿namespace Fanex.NCB.Shared.Models
 {
+    using System.Collections.Generic;
+
     public class ConversationInfo
     {
         public int NotificationId { get; set; }

@@ -1,35 +1,34 @@
-﻿namespace Fanex.NCB.AutoJobs.Constants
+﻿namespace Fanex.NCB.AutoJobs.Constants;
+
+public static class JobConstants
 {
-    public static class JobConstants
-    {
-        public const string SendNotification = "SendNotification";
+    public const string SendNotification = "SendNotification";
 
-        public const string SyncNapUserControlData = "SyncNapUserControlData";
+    public const string SyncNapUserControlData = "SyncNapUserControlData";
 
-        public const string SyncOICData = "SyncOICData";
+    public const string SyncOICData = "SyncOICData";
 
-        public const string PullVoidingMessageLicensee = "PullVoidingMessageLicensee";
+    public const string PullVoidingMessageLicensee = "PullVoidingMessageLicensee";
 
-        public const string PullVoidingMessageInternalDepartment = "PullVoidingMessageInternalDepartment";
+    public const string PullVoidingMessageInternalDepartment = "PullVoidingMessageInternalDepartment";
 
-        public const string PullMessageFromSiteMessage = "PullMessageFromSiteMessage";
+    public const string PullMessageFromSiteMessage = "PullMessageFromSiteMessage";
 
-        public const string MonitorSkypebot = "MonitorSkypebot";
+    public const string MonitorSkypebot = "MonitorSkypebot";
 
-        public const string MonitorTelegramBot = "MonitorTelegramBot";
+    public const string MonitorTelegramBot = "MonitorTelegramBot";
 
-        public const string DeleteOldConversationMessageLog = "DeleteOldConversationMessageLog";
+    public const string DeleteOldConversationMessageLog = "DeleteOldConversationMessageLog";
 
-        public const string SendMesageProblemAccount = "SendMessageProblemAccount";
+    public const string SendMesageProblemAccount = "SendMessageProblemAccount";
 
-        public const string SendMesageMonitoredPlayer = "SendMessageMonitoredPlayer";
+    public const string SendMesageMonitoredPlayer = "SendMessageMonitoredPlayer";
 
-        public const string SettlementInternalCSD = "SettlementInternalCSD";
+    public const string SettlementInternalCSD = "SettlementInternalCSD";
 
-        public const string SettlementLicensee = "SettlementLicensee";
+    public const string SettlementLicensee = "SettlementLicensee";
 
-        public const string ResultAmendmentInternalCSD = "ResultAmendmentInternalCSD";
+    public const string ResultAmendmentInternalCSD = "ResultAmendmentInternalCSD";
 
-        public const string ResultAmendmentILicensee = "ResultAmendmentLicensee";
-    }
+    public const string ResultAmendmentILicensee = "ResultAmendmentLicensee";
 }

@@ -1,25 +1,25 @@
 ﻿@{
-    ViewData["Title"] = "Mapping Setting Management";
+	ViewData["Title"] = "Mapping Setting Management";
 }
 
-<input class="d-none" type="checkbox" checked="@((bool)ViewBag.HaveHostPermission)" id="have-host-permission" />
+<input class="d-none" type="checkbox" checked="@((bool)ViewBag.HaveHostPermission)" id="have-host-permission"/>
 
 <div id="root"></div>
 
 @section Styles {
-    <environment include="Development">
-        <link rel="stylesheet" href="~/dev/pages/mappingsettingconfiguration/mappingsettingconfiguration.chunk.css" asp-append-version="true" />
-    </environment>
-    <environment exclude="Development">
-        <link rel="stylesheet" href="~/pro/pages/mappingsettingconfiguration/mappingsettingconfiguration.chunk.css" asp-append-version="true" />
-    </environment>
+	<environment include="Development">
+		<link rel="stylesheet" href="~/dev/pages/mappingsettingconfiguration/mappingsettingconfiguration.chunk.css" asp-append-version="true"/>
+	</environment>
+	<environment exclude="Development">
+		<link rel="stylesheet" href="~/pro/pages/mappingsettingconfiguration/mappingsettingconfiguration.chunk.css" asp-append-version="true"/>
+	</environment>
 }
 
 @section Scripts {
-    <environment include="Development">
-        <script src="~/dev/pages/mappingsettingconfiguration/mappingsettingconfiguration.chunk.js" asp-append-version="true"></script>
-    </environment>
-    <environment exclude="Development">
-        <script src="~/pro/pages/mappingsettingconfiguration/mappingsettingconfiguration.chunk.js" asp-append-version="true"></script>
-    </environment>
+	<environment include="Development">
+		<script src="~/dev/pages/mappingsettingconfiguration/mappingsettingconfiguration.chunk.js" asp-append-version="true"></script>
+	</environment>
+	<environment exclude="Development">
+		<script src="~/pro/pages/mappingsettingconfiguration/mappingsettingconfiguration.chunk.js" asp-append-version="true"></script>
+	</environment>
 }

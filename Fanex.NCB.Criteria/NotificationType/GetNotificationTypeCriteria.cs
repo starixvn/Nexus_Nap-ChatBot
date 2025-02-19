@@ -1,17 +1,22 @@
-﻿namespace Fanex.NCB.Criteria.NotificationType
+﻿namespace Fanex.NCB.Criteria.NotificationType;
+
+using Data.Repository;
+
+public class GetNotificationTypeCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public int PageSize { get; set; }
 
-    public class GetNotificationTypeCriteria : CriteriaBase
+    public int PageIndex { get; set; }
+
+    public int TotalItems { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int PageSize { get; set; }
+        return "NCB_NotificationType_Sel";
+    }
 
-        public int PageIndex { get; set; }
-
-        public int TotalItems { get; set; }
-
-        public override string GetSettingKey() => "NCB_NotificationType_Sel";
-
-        public override bool IsValid() => PageIndex > 0 && PageSize > 0;
+    public override bool IsValid()
+    {
+        return PageIndex > 0 && PageSize > 0;
     }
 }

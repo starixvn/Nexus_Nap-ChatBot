@@ -1,13 +1,18 @@
-﻿namespace Fanex.NCB.Criteria.SettingConfiguration
+﻿namespace Fanex.NCB.Criteria.SettingConfiguration;
+
+using Data.Repository;
+
+public class GetNotificationTypeDataCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public int NotificationTypeId { get; set; }
 
-    public class GetNotificationTypeDataCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public int NotificationTypeId { get; set; }
+        return "NCB_SettingConfiguration_NotificationTypeData_Sel";
+    }
 
-        public override string GetSettingKey() => "NCB_SettingConfiguration_NotificationTypeData_Sel";
-
-        public override bool IsValid() => NotificationTypeId > 0;
+    public override bool IsValid()
+    {
+        return NotificationTypeId > 0;
     }
 }

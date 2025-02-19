@@ -1,23 +1,22 @@
-﻿namespace Fanex.NCB.Models.ViewLog
+﻿namespace Fanex.NCB.Models.ViewLog;
+
+using System;
+
+public class ViewLogNotificationRecipientList
 {
-    using System;
+    public int NotificationID { get; set; }
 
-    public class ViewLogNotificationRecipientList
-    {
-        public int NotificationID { get; set; }
+    public string Name { get; set; }
 
-        public string Name { get; set; }
+    public string ChatGroupTypeName { get; set; }
 
-        public string ChatGroupTypeName { get; set; }
+    public string RecipientName { get; set; }
 
-        public string RecipientName { get; set; }
+    public DateTime SentTime { get; set; }
 
-        public DateTime SentTime { get; set; }
+    public string Status { get; set; }
 
-        public string Status { get; set; }
+    public byte RetryTime { get; set; }
 
-        public byte RetryTime { get; set; }
-
-        public string ErrMsg { get; set; }
-    }
+    public string ErrMsg { get; set; }
 }

@@ -1,13 +1,18 @@
-﻿namespace Fanex.NCB.Criteria.NotificationTemplate
+﻿namespace Fanex.NCB.Criteria.NotificationTemplate;
+
+using Data.Repository;
+
+public class GetTemplateByIdCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public int NotificationTemplateId { get; set; }
 
-    public class GetTemplateByIdCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public int NotificationTemplateId { get; set; }
+        return "NCB_NotificationTemplate_Sel";
+    }
 
-        public override string GetSettingKey() => "NCB_NotificationTemplate_Sel";
-
-        public override bool IsValid() => NotificationTemplateId > 0;
+    public override bool IsValid()
+    {
+        return NotificationTemplateId > 0;
     }
 }

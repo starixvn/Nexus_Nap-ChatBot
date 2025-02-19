@@ -1,9 +1,8 @@
-﻿namespace Fanex.NCB.Models.Common
-{
-    public class User
-    {
-        public int Id { get; set; }
+﻿namespace Fanex.NCB.Models.Common;
 
-        public string Name { get; set; }
-    }
+public class User
+{
+    public int Id { get; set; }
+
+    public string Name { get; set; }
 }

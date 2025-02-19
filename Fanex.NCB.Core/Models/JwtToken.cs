@@ -1,11 +1,10 @@
-﻿namespace Fanex.NCB.Core.Models
+﻿namespace Fanex.NCB.Core.Models;
+
+public class JwtToken
 {
-    public class JwtToken
-    {
-        public string TokenType { get; set; }
+    public string TokenType { get; set; }
 
-        public int ExpiresIn { get; set; }
+    public int ExpiresIn { get; set; }
 
-        public string AccessToken { get; set; }
-    }
+    public string AccessToken { get; set; }
 }

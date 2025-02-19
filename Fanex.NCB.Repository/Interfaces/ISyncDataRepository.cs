@@ -1,11 +1,10 @@
-﻿namespace Fanex.NCB.Repository.Interfaces
-{
-    using System.Threading.Tasks;
-    using Fanex.Data.Repository;
-    using Fanex.NCB.Shared.Models.NapUserControl;
+﻿namespace Fanex.NCB.Repository.Interfaces;
 
-    public interface ISyncDataRepository
-    {
-        Task<NapData> FetchDataFromNapUserControl(ICriteria criteria);
-    }
+using System.Threading.Tasks;
+using Fanex.Data.Repository;
+using Fanex.NCB.Shared.Models.NapUserControl;
+
+public interface ISyncDataRepository
+{
+    Task<NapData> FetchDataFromNapUserControl(ICriteria criteria);
 }

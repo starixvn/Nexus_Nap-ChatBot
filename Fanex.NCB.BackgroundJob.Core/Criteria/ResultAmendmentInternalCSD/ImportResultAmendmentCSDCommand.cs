@@ -1,15 +1,20 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentInternalCSD
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.ResultAmendmentInternalCSD;
+
+using System;
+
+public class ImportResultAmendmentCSDCommand : BaseCommand
 {
-    using System;
+    public string Message { get; set; }
 
-    public class ImportResultAmendmentCSDCommand : BaseCommand
+    public DateTime? LastModifiedTime { get; set; }
+
+    public override string GetSettingKey()
     {
-        public string Message { get; set; }
+        return "NCB_ResultAmendment_InternalCSD_Import";
+    }
 
-        public DateTime? LastModifiedTime { get; set; }
-
-        public override string GetSettingKey() => "NCB_ResultAmendment_InternalCSD_Import";
-
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

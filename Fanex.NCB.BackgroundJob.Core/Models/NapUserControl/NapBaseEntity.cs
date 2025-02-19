@@ -1,15 +1,14 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Models.NapUserControl
+﻿namespace Fanex.NCB.AutoJobs.Core.Models.NapUserControl;
+
+using System;
+
+public class NapBaseEntity
 {
-    using System;
+    public int CreatedBy { get; set; }
 
-    public class NapBaseEntity
-    {
-        public int CreatedBy { get; set; }
+    public DateTime CreatedDate { get; set; }
 
-        public DateTime CreatedDate { get; set; }
+    public int? ModifiedBy { get; set; }
 
-        public int? ModifiedBy { get; set; }
-
-        public DateTime? ModifiedDate { get; set; }
-    }
+    public DateTime? ModifiedDate { get; set; }
 }

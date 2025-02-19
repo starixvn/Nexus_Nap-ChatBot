@@ -1,11 +1,16 @@
-﻿namespace Fanex.NCB.Criteria.Setting
+﻿namespace Fanex.NCB.Criteria.Setting;
+
+using Data.Repository;
+
+public class GetBotNameCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
-
-    public class GetBotNameCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public override string GetSettingKey() => "NCB_Setting_BotName_Sel";
+        return "NCB_Setting_BotName_Sel";
+    }
 
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

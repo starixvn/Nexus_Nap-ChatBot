@@ -1,13 +1,18 @@
-﻿namespace Fanex.NCB.Criteria.Notification
+﻿namespace Fanex.NCB.Criteria.Notification;
+
+using Data.Repository;
+
+public class GetEditNotificationInfoCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public int InNotificationId { get; set; }
 
-    public class GetEditNotificationInfoCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public int InNotificationId { get; set; }
+        return "NCB_EditNotification_Sel";
+    }
 
-        public override string GetSettingKey() => "NCB_EditNotification_Sel";
-
-        public override bool IsValid() => InNotificationId > 0;
+    public override bool IsValid()
+    {
+        return InNotificationId > 0;
     }
 }

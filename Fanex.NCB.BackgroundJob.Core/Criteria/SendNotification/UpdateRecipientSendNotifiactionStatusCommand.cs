@@ -1,17 +1,22 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.SendNotification
+﻿namespace Fanex.NCB.AutoJobs.Core.SendNotification;
+
+using Criteria;
+
+public class UpdateRecipientSendNotifiactionStatusCommand : BaseCommand
 {
-    using Fanex.NCB.AutoJobs.Core.Criteria;
+    public string SentStatus { get; set; }
 
-    public class UpdateRecipientSendNotifiactionStatusCommand : BaseCommand
+    public string UpdatedNotificationIds { get; set; }
+
+    public bool IsHaveErrNotification { get; set; }
+
+    public override string GetSettingKey()
     {
-        public string SentStatus { get; set; }
+        return "NCB_SendNotification_RecipientSentStatus_Upd";
+    }
 
-        public string UpdatedNotificationIds { get; set; }
-
-        public bool IsHaveErrNotification { get; set; }
-
-        public override string GetSettingKey() => "NCB_SendNotification_RecipientSentStatus_Upd";
-
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(SentStatus);
+    public override bool IsValid()
+    {
+        return !string.IsNullOrWhiteSpace(SentStatus);
     }
 }

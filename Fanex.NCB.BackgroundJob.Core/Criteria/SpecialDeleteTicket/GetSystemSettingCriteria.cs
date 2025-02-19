@@ -1,11 +1,16 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
+
+using Fanex.Data.Repository;
+
+public class GetSystemSettingCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
-
-    public class GetSystemSettingCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public override string GetSettingKey() => "NCB_MsgSetting_SpecialDelete_Sel";
+        return "NCB_MsgSetting_SpecialDelete_Sel";
+    }
 
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

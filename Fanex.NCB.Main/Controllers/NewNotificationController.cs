@@ -3,16 +3,16 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NAP.Client.Helpers.Web;
-    using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.Main.Hubs;
-    using Fanex.NCB.Main.ViewModel.Notification;
-    using Fanex.NCB.Main.ViewModel.TreeSelect;
-    using Fanex.NCB.Models.Common;
-    using Fanex.NCB.Models.Notification;
-    using Fanex.NCB.Models.NotificationTemplate;
-    using Fanex.NCB.NAPResolver.Attributes;
-    using Fanex.NCB.Services.Interfaces;
+    using NAP.Client.Helpers.Web;
+    using Core.Constants;
+    using Main.Hubs;
+    using Main.ViewModel.Notification;
+    using Main.ViewModel.TreeSelect;
+    using Models.Common;
+    using Models.Notification;
+    using Models.NotificationTemplate;
+    using NAPResolver.Attributes;
+    using Services.Interfaces;
     using Fanex.NCB.Shared.Models;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
@@ -27,7 +27,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
         private readonly INapSession napSession;
         private readonly IHubContext<ChatbotHub, IChatbotClient> chatHubContext;
 
-        public NewNotificationController(INotificationService notificationService, INapSession napSession, IHubContext<ChatbotHub, IChatbotClient> chatHubContext)
+        public NewNotificationController(INotificationService notificationService, INapSession napSession,
+            IHubContext<ChatbotHub, IChatbotClient> chatHubContext)
         {
             this.notificationService = notificationService;
             this.napSession = napSession;
@@ -55,11 +56,11 @@ namespace Fanex.NCB.SkypeBot.Controllers
             else
             {
                 var contents = model.ChannelIds.Split(",").Select(x => byte.Parse(x))
-                       .Select(x => new NotificationTemplateContent
-                       {
-                           ChannelId = x,
-                           Content = model.Content
-                       }).ToList();
+                    .Select(x => new NotificationTemplateContent
+                    {
+                        ChannelId = x,
+                        Content = model.Content
+                    }).ToList();
                 (result, notificationIds) = await notificationService.CreateAsync(new CreateNotification
                 {
                     NotificationTypeId = model.NotificationTypeId,
@@ -76,9 +77,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
                 });
 
                 if (result.IsSuccessful && !string.IsNullOrWhiteSpace(notificationIds))
-                {
                     PushSignalRNewNotification(notificationIds);
-                }
             }
 
             return Json(result);
@@ -92,7 +91,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
         )
         {
             platforms = platforms ?? string.Empty;
-            var (recipients, selectedRecipients) = await notificationService.GetRecipientsAsync(notificationTypeId, platforms, recipientIds, productId, integrationMethodIds, channelIds);
+            var (recipients, selectedRecipients) = await notificationService.GetRecipientsAsync(notificationTypeId,
+                platforms, recipientIds, productId, integrationMethodIds, channelIds);
             var tree = GenerateTreeHelper.FromRecipient(recipients);
 
             return Json(new { recipients = tree, selectedRecipients });
@@ -109,22 +109,28 @@ namespace Fanex.NCB.SkypeBot.Controllers
 
         [HttpGet]
         [NapChatBotAuth(FunctionKey = FunctionKey.NewNotification, Policy = Policy.Host)]
-        public async Task<IActionResult> GetResendNotification(int notificationId, string recipientIds, bool isResendAll)
+        public async Task<IActionResult> GetResendNotification(int notificationId, string recipientIds,
+            bool isResendAll)
         {
-            ResendNotification resendNotification = await notificationService.GetResendNotificationInfoAsync(notificationId, isResendAll);
+            var resendNotification =
+                await notificationService.GetResendNotificationInfoAsync(notificationId, isResendAll);
             var channelIds = resendNotification.ChannelId.ToString();
             var platformsLst = resendNotification.Platforms.Select(item => item.PlatformId).ToList();
             var platforms = string.Join(",", platformsLst);
-            var integrationLst = resendNotification.IntegrationMethods.Select(item => item.IntegrationMethodId).ToList();
+            var integrationLst =
+                resendNotification.IntegrationMethods.Select(item => item.IntegrationMethodId).ToList();
             var integrationIds = string.Join(",", integrationLst);
             var productId = resendNotification.ProductId;
             var notiTypeId = resendNotification.NotificationTypeId;
-            #pragma warning disable S103 // Lines should not be too long
-            var (recipients, selectedRecipients) = await notificationService.GetRecipientsAsync(notiTypeId, platforms, recipientIds, productId, integrationMethodIds: integrationIds, channelIds: channelIds);
-            #pragma warning restore S103 // Lines should not be too long
-            IEnumerable<Recipient> unSelectableRecipients = resendNotification.Recipients.Where(r => !recipients.Any(x => x.RecipientId == r.RecipientId)).ToList();
+#pragma warning disable S103 // Lines should not be too long
+            var (recipients, selectedRecipients) = await notificationService.GetRecipientsAsync(notiTypeId, platforms,
+                recipientIds, productId, integrationIds, channelIds);
+#pragma warning restore S103 // Lines should not be too long
+            IEnumerable<Recipient> unSelectableRecipients = resendNotification.Recipients
+                .Where(r => !recipients.Any(x => x.RecipientId == r.RecipientId)).ToList();
 
-            resendNotification.Recipients = resendNotification.Recipients.Where(x => !unSelectableRecipients.Any(u => u.RecipientId == x.RecipientId)).ToList();
+            resendNotification.Recipients = resendNotification.Recipients
+                .Where(x => !unSelectableRecipients.Any(u => u.RecipientId == x.RecipientId)).ToList();
 
             var tree = GenerateTreeHelper.FromRecipient(recipients);
 

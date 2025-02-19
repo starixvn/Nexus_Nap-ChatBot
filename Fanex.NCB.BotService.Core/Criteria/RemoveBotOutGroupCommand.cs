@@ -1,18 +1,23 @@
-﻿namespace Fanex.NCB.BotService.Core.Criteria
+﻿namespace Fanex.NCB.BotService.Core.Criteria;
+
+using Fanex.NCB.Shared.Models;
+
+public class RemoveBotOutGroupCommand : BaseCommand
 {
-    using Fanex.NCB.Shared.Models;
+    public string BotConversationId { get; set; }
 
-    public class RemoveBotOutGroupCommand : BaseCommand
+    public string ConversationId { get; set; }
+
+    public string UpdatedBy { get; set; }
+
+    public override string GetSettingKey()
     {
-        public string BotConversationId { get; set; }
+        return "NCB_Conversation_RemoveBotOutGroup";
+    }
 
-        public string ConversationId { get; set; }
-
-        public string UpdatedBy { get; set; }
-
-        public override string GetSettingKey() => "NCB_Conversation_RemoveBotOutGroup";
-
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(BotConversationId)
-            && !string.IsNullOrWhiteSpace(ConversationId);
+    public override bool IsValid()
+    {
+        return !string.IsNullOrWhiteSpace(BotConversationId)
+               && !string.IsNullOrWhiteSpace(ConversationId);
     }
 }

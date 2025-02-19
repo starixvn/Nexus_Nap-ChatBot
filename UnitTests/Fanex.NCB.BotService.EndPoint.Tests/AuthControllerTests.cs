@@ -1,57 +1,56 @@
-﻿namespace Fanex.NCB.BotService.EndPoint.Tests
+﻿namespace Fanex.NCB.BotService.EndPoint.Tests;
+
+using Core;
+using Controllers;
+using Microsoft.AspNetCore.Mvc;
+using NSubstitute;
+using Xunit;
+
+public class AuthControllerTests
 {
-    using Fanex.NCB.BotService.Core;
-    using Fanex.NCB.BotService.EndPoint.Controllers;
-    using Microsoft.AspNetCore.Mvc;
-    using NSubstitute;
-    using Xunit;
+    private AppSettings appSettings;
 
-    public class AuthControllerTests
+    [Fact]
+    public void Authenticate_InvalidUserOrPassword_ReturnBadRequestResult()
     {
-        private AppSettings appSettings;
+        var controller = GetController();
 
-        [Fact]
-        public void Authenticate_InvalidUserOrPassword_ReturnBadRequestResult()
-        {
-            var controller = GetController();
-            
-            var userName = string.Empty;
-            var password = string.Empty;
+        var userName = string.Empty;
+        var password = string.Empty;
 
-            appSettings.AppCredentialId = "AppCredentialId";
-            appSettings.AppCredentialPassword = "AppCredentialPassword";
+        appSettings.AppCredentialId = "AppCredentialId";
+        appSettings.AppCredentialPassword = "AppCredentialPassword";
 
-            //Actual
-            var actual = controller.Authenticate(userName, password);
+        //Actual
+        var actual = controller.Authenticate(userName, password);
 
-            //Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(actual);
-            Assert.Equal("Username or password is incorrect", badRequestResult.Value);
-        }
+        //Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(actual);
+        Assert.Equal("Username or password is incorrect", badRequestResult.Value);
+    }
 
-        [Fact]
-        public void Authenticate_ValidUserAndPassword_ReturnOkObjectResult()
-        {
-            var controller = GetController();
+    [Fact]
+    public void Authenticate_ValidUserAndPassword_ReturnOkObjectResult()
+    {
+        var controller = GetController();
 
-            var userName = "ChatBotForLicensee";
-            var password = "ZSI6IjMiLCJuYmYiOjE1";
+        var userName = "ChatBotForLicensee";
+        var password = "ZSI6IjMiLCJuYmYiOjE1";
 
-            appSettings.AppCredentialId = "ChatBotForLicensee";
-            appSettings.AppCredentialPassword = "ZSI6IjMiLCJuYmYiOjE1";
-            appSettings.Secret = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ";
+        appSettings.AppCredentialId = "ChatBotForLicensee";
+        appSettings.AppCredentialPassword = "ZSI6IjMiLCJuYmYiOjE1";
+        appSettings.Secret = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ";
 
-            //Actual
-            var actual = controller.Authenticate(userName, password);
+        //Actual
+        var actual = controller.Authenticate(userName, password);
 
-            //Assert
-            Assert.IsType<OkObjectResult>(actual);
-        }
+        //Assert
+        Assert.IsType<OkObjectResult>(actual);
+    }
 
-        private AuthController GetController()
-        {
-            appSettings = Substitute.For<AppSettings>();
-            return new AuthController(appSettings);
-        }
+    private AuthController GetController()
+    {
+        appSettings = Substitute.For<AppSettings>();
+        return new AuthController(appSettings);
     }
 }

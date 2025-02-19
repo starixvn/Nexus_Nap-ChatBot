@@ -4,19 +4,19 @@ namespace Fanex.NCB.SkypeBot.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NAP.Client;
-    using Fanex.NAP.Client.Helpers.Web;
+    using NAP.Client;
+    using NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.Core.Extensions;
-    using Fanex.NCB.Main.Hubs;
-    using Fanex.NCB.Main.ViewModel;
-    using Fanex.NCB.Main.ViewModel.Notification;
-    using Fanex.NCB.Main.ViewModel.NotificationList;
-    using Fanex.NCB.Models.Common;
-    using Fanex.NCB.Models.Notification;
-    using Fanex.NCB.NAPResolver.Attributes;
-    using Fanex.NCB.Services.Interfaces;
+    using Core.Constants;
+    using Core.Extensions;
+    using Main.Hubs;
+    using Main.ViewModel;
+    using Main.ViewModel.Notification;
+    using Main.ViewModel.NotificationList;
+    using Models.Common;
+    using Models.Notification;
+    using NAPResolver.Attributes;
+    using Services.Interfaces;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.SignalR;
@@ -48,12 +48,12 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSettings()
         {
-            IEnumerable<NotificationType> notificationTypes = await commonService.GetNotificationTypesAsync();
-            IEnumerable<User> senders = await commonService.GetUsersAsync();
-            IEnumerable<NotificationStatus> notificationStatuses = await commonService.GetNotificationStatusesAsync();
-            IEnumerable<Recipient> recipients = await commonService.GetRecipientsAsync();
-            IEnumerable<ChannelInfo> channels = await commonService.GetConversationChannelAsync();
-            IEnumerable<Product> products = await commonService.GetProductsAsync();
+            var notificationTypes = await commonService.GetNotificationTypesAsync();
+            var senders = await commonService.GetUsersAsync();
+            var notificationStatuses = await commonService.GetNotificationStatusesAsync();
+            var recipients = await commonService.GetRecipientsAsync();
+            var channels = await commonService.GetConversationChannelAsync();
+            var products = await commonService.GetProductsAsync();
 
             var viewModel = new NotificationListFilterViewModel
             {
@@ -101,7 +101,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
         public IActionResult Index()
         {
-            ViewBag.HaveEditNotificationPermission = userService.IsHavingPermission(napSession.UserId, NapClientManager.NapSettings.SiteId, FunctionKey.NotifiactionList, Policy.Host);
+            ViewBag.HaveEditNotificationPermission = userService.IsHavingPermission(napSession.UserId,
+                NapClientManager.NapSettings.SiteId, FunctionKey.NotifiactionList, Policy.Host);
 
             return View("~/Views/SkypeBot/NotificationList/Index.cshtml");
         }
@@ -110,8 +111,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Read, PermissionCache = true)]
         public async Task<IActionResult> Get(GetNotificationViewModel filter)
         {
-            DateTime fromDate = filter.FromDate.ConvertToUTC();
-            DateTime toDate = filter.ToDate.AddDays(1).ConvertToUTC();
+            var fromDate = filter.FromDate.ConvertToUTC();
+            var toDate = filter.ToDate.AddDays(1).ConvertToUTC();
             var result = await notificationService.GetNotificationsAsync(new GetNotifications
             {
                 NotificationTypeIds = filter.NotificationTypeIds,
@@ -144,10 +145,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> Cancel(int notificationId)
         {
             var result = await notificationService.CancelAsync(notificationId, napSession.UserId);
-            if (result.IsSuccessful)
-            {
-                PushSignalRUpdateNotificationStatus(notificationId.ToString());
-            }
+            if (result.IsSuccessful) PushSignalRUpdateNotificationStatus(notificationId.ToString());
 
             return Json(result);
         }
@@ -156,7 +154,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NotifiactionList, Policy = Policy.Host, PermissionCache = true)]
         public async Task<IActionResult> Resolve([FromBody] ResolveNotificationViewModel data)
         {
-            var result = await notificationService.ResolveAsync(data.NotificationId, data.ResolvedRemark, napSession.UserId);
+            var result =
+                await notificationService.ResolveAsync(data.NotificationId, data.ResolvedRemark, napSession.UserId);
 
             if (result.IsSuccessful)
             {
@@ -164,6 +163,7 @@ namespace Fanex.NCB.SkypeBot.Controllers
                 var errNotifications = await notificationService.GetErrNotificationsAsync();
                 PushSignalUpdateErrNotification(errNotifications);
             }
+
             return Json(result);
         }
 
@@ -203,7 +203,8 @@ namespace Fanex.NCB.SkypeBot.Controllers
                     IsLeaf = true
                 }).ToList();
 
-                children.AddRange(list.Where(x => x.LicenseeTypeId.HasValue).GroupBy(x => new { x.LicenseeTypeId, x.LicenseeTypeName },
+                children.AddRange(list.Where(x => x.LicenseeTypeId.HasValue).GroupBy(
+                    x => new { x.LicenseeTypeId, x.LicenseeTypeName },
                     x => x,
                     (licensee, childs) =>
                     {

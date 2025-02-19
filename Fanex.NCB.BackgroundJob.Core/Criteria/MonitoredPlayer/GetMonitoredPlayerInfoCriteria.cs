@@ -1,21 +1,26 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.MonitoredPlayer
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.MonitoredPlayer;
+
+using Fanex.Data.Repository;
+
+public class GetMonitoredPlayerInfoCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public int LastLogId { get; set; }
 
-    public class GetMonitoredPlayerInfoCriteria : CriteriaBase
+    public int BatchSize { get; set; }
+
+    public string LastDataRow { get; set; }
+
+    public string ServerName { get; set; }
+
+    public int MaxLogId { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int LastLogId { get; set; }
+        return "NAP_Chatbot_MonitoredPlayer_Sel";
+    }
 
-        public int BatchSize { get; set; }
-
-        public string LastDataRow { get; set; }
-
-        public string ServerName { get; set; }
-
-        public int MaxLogId { get; set; }
-
-        public override string GetSettingKey() => "NAP_Chatbot_MonitoredPlayer_Sel";
-
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

@@ -1,13 +1,18 @@
-﻿namespace Fanex.NCB.Criteria.LocalNap.User
+﻿namespace Fanex.NCB.Criteria.LocalNap.User;
+
+using Data.Repository;
+
+public class GetUserByUsernameCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public string Username { get; set; }
 
-    public class GetUserByUsernameCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public string Username { get; set; }
+        return "NAP_User_GetByUsername";
+    }
 
-        public override string GetSettingKey() => "NAP_User_GetByUsername";
-
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(Username);
+    public override bool IsValid()
+    {
+        return !string.IsNullOrWhiteSpace(Username);
     }
 }

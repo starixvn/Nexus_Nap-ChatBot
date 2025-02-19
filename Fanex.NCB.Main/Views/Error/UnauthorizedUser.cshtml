@@ -1,22 +1,22 @@
 ﻿@{
-    ViewData["Title"] = "403 - Access Denied";
+	ViewData["Title"] = "403 - Access Denied";
 }
 <div id="root"></div>
 
 @section Styles {
-            <environment include="Development">
-                <link rel="stylesheet" href="~/dev/pages/error/accessdenied.chunk.css" asp-append-version="true" />
-            </environment>
-            <environment exclude="Development">
-                <link rel="stylesheet" href="~/pro/pages/error/accessdenied.chunk.css" asp-append-version="true" />
-            </environment>
+	<environment include="Development">
+		<link rel="stylesheet" href="~/dev/pages/error/accessdenied.chunk.css" asp-append-version="true"/>
+	</environment>
+	<environment exclude="Development">
+		<link rel="stylesheet" href="~/pro/pages/error/accessdenied.chunk.css" asp-append-version="true"/>
+	</environment>
 }
 
 @section Scripts {
-            <environment include="Development">
-                <script src="~/dev/pages/error/accessdenied.chunk.js" asp-append-version="true"></script>
-            </environment>
-            <environment exclude="Development">
-                <script src="~/pro/pages/error/accessdenied.chunk.js" asp-append-version="true"></script>
-            </environment>
+	<environment include="Development">
+		<script src="~/dev/pages/error/accessdenied.chunk.js" asp-append-version="true"></script>
+	</environment>
+	<environment exclude="Development">
+		<script src="~/pro/pages/error/accessdenied.chunk.js" asp-append-version="true"></script>
+	</environment>
 }

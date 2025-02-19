@@ -1,7 +1,6 @@
-﻿namespace Fanex.NCB.Core.Constants
+﻿namespace Fanex.NCB.Core.Constants;
+
+public static class Constants
 {
-    public static class Constants
-    {
-        public const string JobIdentify = "JobIdentify";
-    }
+    public const string JobIdentify = "JobIdentify";
 }

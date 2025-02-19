@@ -1,35 +1,34 @@
-﻿namespace Fanex.NCB.Criteria.Tests.SpecialDeleteTicket
+﻿namespace Fanex.NCB.Criteria.Tests.SpecialDeleteTicket;
+
+using Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
+using Xunit;
+
+public class GetListMessageAbnormalbetsFromYesterdayToCurrentCriteriaTests
 {
-    using Fanex.NCB.AutoJobs.Core.Criteria.SpecialDeleteTicket;
-    using Xunit;
-
-    public class GetListMessageAbnormalbetsFromYesterdayToCurrentCriteriaTests
+    [Fact]
+    public void GetSettingKey_WhenCalled_ReturnExpectedSettingKey()
     {
-        [Fact]
-        public void GetSettingKey_WhenCalled_ReturnExpectedSettingKey()
-        {
-            // Arrange
-            var criteria = new GetVoidingHistoryCollectionIdCriteria();
-            var expected = "NAP_Chatbot_SpecialDelete_InternalCSD_GetCollection";
+        // Arrange
+        var criteria = new GetVoidingHistoryCollectionIdCriteria();
+        var expected = "NAP_Chatbot_SpecialDelete_InternalCSD_GetCollection";
 
-            // Act
-            var actual = criteria.GetSettingKey();
+        // Act
+        var actual = criteria.GetSettingKey();
 
-            // Assert
-            Assert.Equal(expected, actual);
-        }
+        // Assert
+        Assert.Equal(expected, actual);
+    }
 
-        [Fact]
-        public void IsValid_WhenCalled_ReturnTrue()
-        {
-            // Arrange
-            var criteria = new GetVoidingHistoryCollectionIdCriteria { BatchSize = 10 };
+    [Fact]
+    public void IsValid_WhenCalled_ReturnTrue()
+    {
+        // Arrange
+        var criteria = new GetVoidingHistoryCollectionIdCriteria { BatchSize = 10 };
 
-            // Act
-            var actual = criteria.IsValid();
+        // Act
+        var actual = criteria.IsValid();
 
-            // Assert
-            Assert.True(actual);
-        }
+        // Assert
+        Assert.True(actual);
     }
 }

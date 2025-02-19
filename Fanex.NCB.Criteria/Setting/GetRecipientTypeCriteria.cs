@@ -1,11 +1,16 @@
-﻿namespace Fanex.NCB.Criteria.Setting
+﻿namespace Fanex.NCB.Criteria.Setting;
+
+using Data.Repository;
+
+public class GetRecipientTypeCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
-
-    public class GetRecipientTypeCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public override string GetSettingKey() => "NCB_Common_RecipientType_Sel";
+        return "NCB_Common_RecipientType_Sel";
+    }
 
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

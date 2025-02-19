@@ -1,15 +1,20 @@
-﻿namespace Fanex.NCB.Criteria.SettingConfiguration
+﻿namespace Fanex.NCB.Criteria.SettingConfiguration;
+
+using Fanex.NCB.Shared.Models;
+
+public class DeleteSettingTypeCommand : BaseCommand
 {
-    using Fanex.NCB.Shared.Models;
+    public int Type { get; set; }
 
-    public class DeleteSettingTypeCommand : BaseCommand
+    public int ModifiedBy { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int Type { get; set; }
+        return "NCB_SettingConfiguration_SettingType_Del";
+    }
 
-        public int ModifiedBy { get; set; }
-
-        public override string GetSettingKey() => "NCB_SettingConfiguration_SettingType_Del";
-
-        public override bool IsValid() => ModifiedBy > 0;
+    public override bool IsValid()
+    {
+        return ModifiedBy > 0;
     }
 }

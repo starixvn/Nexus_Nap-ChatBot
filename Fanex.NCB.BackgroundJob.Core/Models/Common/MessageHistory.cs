@@ -1,17 +1,13 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Models.Common
+﻿namespace Fanex.NCB.AutoJobs.Core.Models.Common;
+
+using System.Xml.Serialization;
+
+[XmlType("r")]
+public class MessageHistory
 {
-    using System.Xml.Serialization;
+    [XmlAttribute("MessageId")] public long MessageId { get; set; }
 
-    [XmlType("r")]
-    public class MessageHistory
-    {
-        [XmlAttribute("MessageId")]
-        public long MessageId { get; set; }
+    [XmlAttribute("TargetId")] public int TargetId { get; set; }
 
-        [XmlAttribute("TargetId")]
-        public int TargetId { get; set; }
-
-        [XmlAttribute("RequestId")]
-        public int RequestId { get; set; }
-    }
+    [XmlAttribute("RequestId")] public int RequestId { get; set; }
 }

@@ -1,18 +1,21 @@
-﻿namespace Fanex.NCB.Criteria.Common
+﻿namespace Fanex.NCB.Criteria.Common;
+
+using Data;
+using Data.Repository;
+
+public class GetConversationChannelCriteria : CriteriaBase
 {
-    using Fanex.Data;
-    using Fanex.Data.Repository;
+    [SpParam(AllowNull = true)] public byte? Id { get; set; }
 
-    public class GetConversationChannelCriteria : CriteriaBase
+    [SpParam(AllowNull = true)] public string Name { get; set; }
+
+    public override string GetSettingKey()
     {
-        [SpParam(AllowNull = true)]
-        public byte? Id { get; set; }
+        return "NCB_Channel_Sel";
+    }
 
-        [SpParam(AllowNull = true)]
-        public string Name { get; set; }
-
-        public override string GetSettingKey() => "NCB_Channel_Sel";
-
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

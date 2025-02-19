@@ -1,21 +1,26 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.ProblemAccount
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.ProblemAccount;
+
+using Fanex.Data.Repository;
+
+public class ImportFromProblemAccountCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public string Message { get; set; }
 
-    public class ImportFromProblemAccountCriteria : CriteriaBase
+    public string CategoryInfo { get; set; }
+
+    public string CustomerClassInfo { get; set; }
+
+    public int ErrCode { get; set; }
+
+    public string ErrMsg { get; set; }
+
+    public override string GetSettingKey()
     {
-        public string Message { get; set; }
+        return "NCB_ProblemAccount_Import";
+    }
 
-        public string CategoryInfo { get; set; }
-
-        public string CustomerClassInfo { get; set; }
-
-        public int ErrCode { get; set; }
-
-        public string ErrMsg { get; set; }
-
-        public override string GetSettingKey() => "NCB_ProblemAccount_Import";
-
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

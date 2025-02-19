@@ -1,15 +1,14 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Models.OIC
+﻿namespace Fanex.NCB.AutoJobs.Core.Models.OIC;
+
+using System;
+
+public class LicenseeProduct
 {
-    using System;
+    public int LicenseeId { get; set; }
 
-    public class LicenseeProduct
-    {
-        public int LicenseeId { get; set; }
+    public int ProductId { get; set; }
 
-        public int ProductId { get; set; }
+    public DateTime? LaunchDate { get; set; }
 
-        public DateTime? LaunchDate { get; set; }
-
-        public DateTime? TerminationDate { get; set; }
-    }
+    public DateTime? TerminationDate { get; set; }
 }

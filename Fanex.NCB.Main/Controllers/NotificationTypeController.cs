@@ -1,13 +1,13 @@
 namespace Fanex.NCB.SkypeBot.Controllers
 {
     using System.Threading.Tasks;
-    using Fanex.NAP.Client.Configuration;
-    using Fanex.NAP.Client.Helpers.Web;
+    using NAP.Client.Configuration;
+    using NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.Models.NotificationType;
-    using Fanex.NCB.NAPResolver.Attributes;
-    using Fanex.NCB.Services.Interfaces;
+    using Core.Constants;
+    using Models.NotificationType;
+    using NAPResolver.Attributes;
+    using Services.Interfaces;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
     using static Fanex.NAP.Core.Business.Constant;
@@ -38,7 +38,9 @@ namespace Fanex.NCB.SkypeBot.Controllers
         [NapChatBotAuth(FunctionKey = FunctionKey.NotificationType, Policy = Policy.Read)]
         public async Task<IActionResult> Index()
         {
-            var permission = await userService.GetPermissionAsync(napSession.UserId, napSettings.SiteId, FunctionKey.NotificationType);
+            var permission =
+                await userService.GetPermissionAsync(napSession.UserId, napSettings.SiteId,
+                    FunctionKey.NotificationType);
             var isHost = permission >= (int)Policy.Host;
             return View("~/Views/SkypeBot/NotificationType/Index.cshtml", isHost);
         }
@@ -88,7 +90,10 @@ namespace Fanex.NCB.SkypeBot.Controllers
             var getNotification = await settingService.GetSystemAsync();
             var getChatGroupTypes = await settingService.GetChatGroupTypeAsync();
 
-            return Json(new { recipientTypes = getRecipent, notificationSystems = getNotification, chatGroupTypes = getChatGroupTypes });
+            return Json(new
+            {
+                recipientTypes = getRecipent, notificationSystems = getNotification, chatGroupTypes = getChatGroupTypes
+            });
         }
     }
 }

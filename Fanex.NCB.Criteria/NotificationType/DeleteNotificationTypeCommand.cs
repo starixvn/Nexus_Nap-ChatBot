@@ -1,15 +1,20 @@
-﻿namespace Fanex.NCB.Criteria.NotificationType
+﻿namespace Fanex.NCB.Criteria.NotificationType;
+
+using Fanex.NCB.Shared.Models;
+
+public class DeleteNotificationTypeCommand : BaseCommand
 {
-    using Fanex.NCB.Shared.Models;
+    public int NotificationTypeId { get; set; }
 
-    public class DeleteNotificationTypeCommand : BaseCommand
+    public int UserId { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int NotificationTypeId { get; set; }
+        return "NCB_NotificationType_Del";
+    }
 
-        public int UserId { get; set; }
-
-        public override string GetSettingKey() => "NCB_NotificationType_Del";
-
-        public override bool IsValid() => NotificationTypeId > 0;
+    public override bool IsValid()
+    {
+        return NotificationTypeId > 0;
     }
 }

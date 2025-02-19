@@ -1,42 +1,43 @@
-﻿namespace Fanex.NCB.NAPResolver.Attributes
+﻿namespace Fanex.NCB.NAPResolver.Attributes;
+
+using System;
+using NAP.Client;
+using NAP.Client.Helpers.Web;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
+public class NapChatBotSuperAuthAttribute : AuthorizeAttribute, IAuthorizationFilter
 {
-    using System;
-    using Fanex.NAP.Client;
-    using Fanex.NAP.Client.Helpers.Web;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Filters;
+    private readonly INapSession napSession;
 
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
-    public class NapChatBotSuperAuthAttribute : AuthorizeAttribute, IAuthorizationFilter
+    public NapChatBotSuperAuthAttribute() : this(null)
     {
-        private readonly INapSession napSession;
+    }
 
-        public NapChatBotSuperAuthAttribute() : this(null)
+    internal NapChatBotSuperAuthAttribute(INapSession napSession)
+    {
+        this.napSession = napSession ?? NapClientManager.NapSession;
+    }
+
+    public void OnAuthorization(AuthorizationFilterContext context)
+    {
+        if (context?.HttpContext == null)
         {
+            RequestHelper.CloseConnection(context);
+            return;
         }
 
-        internal NapChatBotSuperAuthAttribute(INapSession napSession)
+        if (napSession == null || napSession.UserId <= 0 || string.IsNullOrEmpty(napSession.UserName))
         {
-            this.napSession = napSession ?? NapClientManager.NapSession;
-        }
+            RequestHelper.CloseConnection(context);
 
-        public void OnAuthorization(AuthorizationFilterContext context)
-        {
-            if (context?.HttpContext == null)
-            {
-                RequestHelper.CloseConnection(context);
-                return;
-            }
+            var path = context.HttpContext.Request.Path.HasValue
+                ? context.HttpContext.Request.Path.Value
+                : string.Empty;
 
-            if (napSession == null || napSession.UserId <= 0 || string.IsNullOrEmpty(napSession.UserName))
-            {
-                RequestHelper.CloseConnection(context);
-
-                var path = context.HttpContext.Request.Path.HasValue ? context.HttpContext.Request.Path.Value : string.Empty;
-
-                context.Result = new RedirectResult("~/Auth/Index?returnURL=" + path);
-            }
+            context.Result = new RedirectResult("~/Auth/Index?returnURL=" + path);
         }
     }
 }

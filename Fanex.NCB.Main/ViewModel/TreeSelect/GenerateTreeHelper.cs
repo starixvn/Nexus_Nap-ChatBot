@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Main.ViewModel.TreeSelect
 {
-    using Fanex.NCB.Models.Common;
+    using Models.Common;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -18,7 +18,8 @@
                     RealValue = x.RecipientId
                 }).ToList();
 
-                children.AddRange(list.Where(x => x.LicenseeTypeId.HasValue).GroupBy(x => new { x.LicenseeTypeId, x.LicenseeTypeName },
+                children.AddRange(list.Where(x => x.LicenseeTypeId.HasValue).GroupBy(
+                    x => new { x.LicenseeTypeId, x.LicenseeTypeName },
                     x => x,
                     (licensee, recipients) =>
                     {

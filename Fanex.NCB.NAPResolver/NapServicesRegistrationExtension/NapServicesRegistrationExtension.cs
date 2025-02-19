@@ -1,39 +1,38 @@
-﻿namespace Fanex.NCB.NAPResolver
+﻿namespace Fanex.NCB.NAPResolver;
+
+using System;
+using NAP.Client.AspNetCore.Configuration;
+using NAP.Client.AspNetCore.Session;
+using NAP.Client.Configuration;
+using NAP.Client.Helpers.Web;
+using NAP.Client.Services;
+using LocalServices;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+public static class NapServicesRegistrationExtension
 {
-    using System;
-    using Fanex.NAP.Client.AspNetCore.Configuration;
-    using Fanex.NAP.Client.AspNetCore.Session;
-    using Fanex.NAP.Client.Configuration;
-    using Fanex.NAP.Client.Helpers.Web;
-    using Fanex.NAP.Client.Services;
-    using Fanex.NCB.NAPResolver.LocalServices;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
+    public static NapResolverType NAPResolverType { get; internal set; }
 
-    public static class NapServicesRegistrationExtension
+    public static void AddNapServices(this IServiceCollection services, IConfiguration configuration)
     {
-        public static NapResolverType NAPResolverType { get; internal set; }
+        services.AddSingleton<INapSettings>(new NapSettings(configuration));
+        services.AddSingleton<INapSession, NapSession>();
 
-        public static void AddNapServices(this IServiceCollection services, IConfiguration configuration)
+        NAPResolverType = Enum.Parse<NapResolverType>(configuration["NapOption:NAPResolverType"]);
+        if (NAPResolverType == NapResolverType.Remote)
         {
-            services.AddSingleton<INapSettings>(new NapSettings(configuration));
-            services.AddSingleton<INapSession, NapSession>();
-
-            NAPResolverType = Enum.Parse<NapResolverType>(configuration["NapOption:NAPResolverType"]);
-            if (NAPResolverType == NapResolverType.Remote)
-            {
-                services.AddSingleton<IGroupService, GroupService>();
-                services.AddSingleton<IUserService, UserService>();
-                services.AddSingleton<ISecurityService, SecurityService>();
-                services.AddSingleton<ISiteService, SiteService>();
-            }
-            else
-            {
-                services.AddScoped<IGroupService, LocalGroupService>();
-                services.AddScoped<IUserService, LocalUserService>();
-                services.AddScoped<ISecurityService, LocalSecurityService>();
-                services.AddScoped<ISiteService, LocalSiteService>();
-            }
+            services.AddSingleton<IGroupService, GroupService>();
+            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<ISecurityService, SecurityService>();
+            services.AddSingleton<ISiteService, SiteService>();
+        }
+        else
+        {
+            services.AddScoped<IGroupService, LocalGroupService>();
+            services.AddScoped<IUserService, LocalUserService>();
+            services.AddScoped<ISecurityService, LocalSecurityService>();
+            services.AddScoped<ISiteService, LocalSiteService>();
         }
     }
 }

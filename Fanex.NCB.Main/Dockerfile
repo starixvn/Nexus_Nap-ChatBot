@@ -33,7 +33,7 @@ WORKDIR "/src/Fanex.NCB.Main"
 
 RUN dotnet publish -r linux-x64 --self-contained false -o /app
 
-FROM hub.nexdev.net/base/dotnet/core/aspnet:6.0-alpine AS base
+FROM hub.nexdev.net/base/dotnet/core/aspnet:6.0-alpine-25h1 AS base
 
 WORKDIR /app
 

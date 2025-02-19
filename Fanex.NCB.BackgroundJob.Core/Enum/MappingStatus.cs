@@ -1,16 +1,12 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Enum
+﻿namespace Fanex.NCB.AutoJobs.Core.Enum;
+
+using System.ComponentModel;
+
+public enum MappingStatus
 {
-    using System.ComponentModel;
+    [Description("Bot Removed")] BotRemoved = 0,
 
-    public enum MappingStatus
-    {
-        [Description("Bot Removed")]
-        BotRemoved = 0,
+    [Description("Not Mapped")] NotMapped = 1,
 
-        [Description("Not Mapped")]
-        NotMapped = 1,
-
-        [Description("Mapped")]
-        Mapped = 2
-    }
+    [Description("Mapped")] Mapped = 2
 }

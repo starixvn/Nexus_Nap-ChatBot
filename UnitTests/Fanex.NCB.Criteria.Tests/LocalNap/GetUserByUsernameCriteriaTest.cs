@@ -6,38 +6,37 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace Fanex.NCB.Criteria.Tests.LocalNap
+namespace Fanex.NCB.Criteria.Tests.LocalNap;
+
+public class GetUserByUsernameCriteriaTest
 {
-    public class GetUserByUsernameCriteriaTest
+    [Fact]
+    public void GetUserByUsernameCriteria_GetSettingKey_ReturnCorrectSettingKey()
     {
-        [Fact]
-        public void GetUserByUsernameCriteria_GetSettingKey_ReturnCorrectSettingKey()
-        {
-            // Arrange
-            var command = new GetUserByUsernameCriteria();
+        // Arrange
+        var command = new GetUserByUsernameCriteria();
 
-            // Act
-            var result = command.GetSettingKey();
+        // Act
+        var result = command.GetSettingKey();
 
-            // Assert
-            result.Should().Be("NAP_User_GetByUsername");
-        }
+        // Assert
+        result.Should().Be("NAP_User_GetByUsername");
+    }
 
-        [Theory]
-        [InlineData("", false)]
-        [InlineData("1", true)]
-        public void GetUserByUsernameCriteria_IsValid_CheckCorrectly(string userName, bool expectedResult)
-        {
-            // Arrange
-            var fixture = new Fixture();
-            var criteria = fixture.Create<GetUserByUsernameCriteria>();
-            criteria.Username = userName;
+    [Theory]
+    [InlineData("", false)]
+    [InlineData("1", true)]
+    public void GetUserByUsernameCriteria_IsValid_CheckCorrectly(string userName, bool expectedResult)
+    {
+        // Arrange
+        var fixture = new Fixture();
+        var criteria = fixture.Create<GetUserByUsernameCriteria>();
+        criteria.Username = userName;
 
-            // Act
-            var result = criteria.IsValid();
+        // Act
+        var result = criteria.IsValid();
 
-            // Assert
-            result.Should().Be(expectedResult);
-        }
+        // Assert
+        result.Should().Be(expectedResult);
     }
 }

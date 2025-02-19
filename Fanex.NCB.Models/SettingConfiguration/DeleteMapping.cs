@@ -1,13 +1,12 @@
-﻿namespace Fanex.NCB.Models.SettingConfiguration
+﻿namespace Fanex.NCB.Models.SettingConfiguration;
+
+public class DeleteMapping
 {
-    public class DeleteMapping
-    {
-        public int TemlateId { get; set; }
+    public int TemlateId { get; set; }
 
-        public int MsgContentsType { get; set; }
+    public int MsgContentsType { get; set; }
 
-        public int JobId { get; set; }
+    public int JobId { get; set; }
 
-        public int ModifiedBy { get; set; }
-    }
+    public int ModifiedBy { get; set; }
 }

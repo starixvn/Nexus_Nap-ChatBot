@@ -1,8 +1,7 @@
-﻿namespace Fanex.NCB.Models.Common
+﻿namespace Fanex.NCB.Models.Common;
+
+public class Product
 {
-    public class Product
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
+    public int Id { get; set; }
+    public string Name { get; set; }
 }

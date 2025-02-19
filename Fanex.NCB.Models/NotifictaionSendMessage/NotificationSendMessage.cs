@@ -1,16 +1,16 @@
-﻿namespace Fanex.NCB.Models.NotifictaionSendMessage
-{
+﻿namespace Fanex.NCB.Models.NotifictaionSendMessage;
+
     using System.Collections.Generic;
     using System.Linq;
 
-    public class NotificationSendMessage
-    {
-        public int NotificationId { get; set; }
-        public string Title { get; set; }
-        public string Content { get; set; }
-        public byte ChannelId { get; set; }
-        public string ChannelName { get; set; }
-        public string SiteNameGroup { get; set; }
+public class NotificationSendMessage
+{
+    public int NotificationId { get; set; }
+    public string Title { get; set; }
+    public string Content { get; set; }
+    public byte ChannelId { get; set; }
+    public string ChannelName { get; set; }
+    public string SiteNameGroup { get; set; }
         public string FileName { get; set; }
 
         public List<string> Attachments => GetAttachmentFromFileName();
@@ -23,5 +23,4 @@
             }
             return new List<string>();
         }
-    }
 }

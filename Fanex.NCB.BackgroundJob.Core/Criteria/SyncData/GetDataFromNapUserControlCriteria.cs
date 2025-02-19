@@ -1,15 +1,20 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SyncData
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.SyncData;
+
+using Fanex.Data.Repository;
+
+public class GetDataFromNapUserControlCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public int SiteId { get; set; }
 
-    public class GetDataFromNapUserControlCriteria : CriteriaBase
+    public int? UserId { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int SiteId { get; set; }
+        return "NAP_ChatBot_GetDataBySiteId";
+    }
 
-        public int? UserId { get; set; }
-
-        public override string GetSettingKey() => "NAP_ChatBot_GetDataBySiteId";
-
-        public override bool IsValid() => SiteId > 0;
+    public override bool IsValid()
+    {
+        return SiteId > 0;
     }
 }

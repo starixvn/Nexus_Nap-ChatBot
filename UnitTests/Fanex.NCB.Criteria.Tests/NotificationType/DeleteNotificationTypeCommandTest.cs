@@ -5,36 +5,35 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace Fanex.NCB.Criteria.Tests.NotificationType
+namespace Fanex.NCB.Criteria.Tests.NotificationType;
+
+public class DeleteNotificationTypeCommandTest
 {
-    public class DeleteNotificationTypeCommandTest
+    [Fact]
+    public void DeleteNotificationTypeCommand_GetSettingKey_ReturnCorrectSettingKey()
     {
-        [Fact]
-        public void DeleteNotificationTypeCommand_GetSettingKey_ReturnCorrectSettingKey()
-        {
-            // Arrange
-            var command = new DeleteNotificationTypeCommand();
+        // Arrange
+        var command = new DeleteNotificationTypeCommand();
 
-            // Act
-            var result = command.GetSettingKey();
+        // Act
+        var result = command.GetSettingKey();
 
-            // Assert
-            result.Should().Be("NCB_NotificationType_Del");
-        }
+        // Assert
+        result.Should().Be("NCB_NotificationType_Del");
+    }
 
-        [Theory]
-        [InlineData(0, false)]
-        [InlineData(1, true)]
-        public void DeleteNotificationTypeCommand_IsValid_CheckCorrectly(int notificationTypeId, bool expectedResult)
-        {
-            // Arrange
-            var command = new DeleteNotificationTypeCommand { NotificationTypeId = notificationTypeId };
+    [Theory]
+    [InlineData(0, false)]
+    [InlineData(1, true)]
+    public void DeleteNotificationTypeCommand_IsValid_CheckCorrectly(int notificationTypeId, bool expectedResult)
+    {
+        // Arrange
+        var command = new DeleteNotificationTypeCommand { NotificationTypeId = notificationTypeId };
 
-            // Act
-            var result = command.IsValid();
+        // Act
+        var result = command.IsValid();
 
-            // Assert
-            result.Should().Be(expectedResult);
-        }
+        // Assert
+        result.Should().Be(expectedResult);
     }
 }

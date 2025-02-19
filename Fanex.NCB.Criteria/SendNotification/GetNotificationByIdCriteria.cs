@@ -1,17 +1,22 @@
-﻿namespace Fanex.NCB.Criteria.SendNotification
+﻿namespace Fanex.NCB.Criteria.SendNotification;
+
+using Data.Repository;
+
+public class GetNotificationByIdCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public int NotificationId { get; set; }
 
-    public class GetNotificationByIdCriteria : CriteriaBase
+    public int ErrCode { get; set; }
+
+    public string ErrMsg { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int NotificationId { get; set; }
+        return "NCB_SendNotification_GetImmedNotifUpdStatus";
+    }
 
-        public int ErrCode { get; set; }
-
-        public string ErrMsg { get; set; }
-
-        public override string GetSettingKey() => "NCB_SendNotification_GetImmedNotifUpdStatus";
-
-        public override bool IsValid() => NotificationId > 0;
+    public override bool IsValid()
+    {
+        return NotificationId > 0;
     }
 }

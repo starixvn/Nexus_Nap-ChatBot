@@ -1,95 +1,89 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Helpers
+﻿namespace Fanex.NCB.AutoJobs.Core.Helpers;
+
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+[ExcludeFromCodeCoverage(Justification = "Helpers")]
+public static class TelegramFormatExtensions
 {
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using System.Text.RegularExpressions;
+    private const string BoldRegex = "\\<b>$2</b>";
 
-    [ExcludeFromCodeCoverage(Justification = "Helpers")]
-    public static class TelegramFormatExtensions
+    public static string ToMarkdownV2(this string text)
     {
-        private const string BoldRegex = "\\<b>$2</b>";
+        if (string.IsNullOrWhiteSpace(text)) return text;
 
-        public static string ToMarkdownV2(this string text)
+        // convert skype format to telegram format
+        text = Regex.Replace(text, "(\\*\\*\\*)(.+?)(\\*\\*\\*)", "<b><i>$2</i></b>"); // bold & italic
+
+        text = Regex.Replace(text, @"(\\\*\\\*)(.+?)(\\\*\\\*)", BoldRegex); // bold
+        text = Regex.Replace(text, @"(\\\*\\\*)(.+?)(\\\*\*)", BoldRegex);
+        text = Regex.Replace(text, @"(\\\*\\\*)(.+?[^\\])(\*\*)", BoldRegex);
+        text = Regex.Replace(text, @"(\\\*\*)(.+?)(\\\*\*)", BoldRegex);
+        text = Regex.Replace(text, @"(\\\*\*)(.+?[^\\])(\*\*)", BoldRegex);
+        text = Regex.Replace(text, @"(\*\*)(.+?[^\\])(\*\*)", "<b>$2</b>");
+
+        text = Regex.Replace(text, @"(\\\*)(.+?)(\\\*)", "\\*$2\\*"); // italic
+        text = Regex.Replace(text, @"(\\\*)(.+?[^\\])(\*)", "\\*$2\\*");
+        text = Regex.Replace(text, @"(\*)(.+?[^\\])(\*)", "<i>$2</i>");
+
+        text = Regex.Replace(text, @"(\\~\\~)(.+?)(\\~~)", "~\\~$2~\\~"); // strikethrough
+        text = Regex.Replace(text, @"(\\~\\~)(.+?[^\\])(~~)", "\\~\\~$2\\~\\~");
+        text = Regex.Replace(text, @"(\\~~)(.+?)(\\~~)", "~\\~$2~\\~");
+        text = Regex.Replace(text, @"(\\~~)(.+?[^\\])(~~)", "~\\~$2\\~\\~");
+        text = Regex.Replace(text, @"(~~)(.+?[^\\])(~~)", "<s>$2</s>");
+
+        // escape
+        text = EscapeSpecialSyntax(text);
+
+        // revert
+        text = Regex.Replace(text, @"(\\<b>)(.+?)(</b>)", "\\*\\*$2\\*\\*");
+        text = Regex.Replace(text, @"(\\<i>)(.+?)(</i>)", "\\*$2\\*");
+        text = Regex.Replace(text, "(<b>)(.+?)(</b>)", "*$2*");
+        text = Regex.Replace(text, "(<i>)(.+?)(</i>)", "_$2_");
+        text = Regex.Replace(text, "(<s>)(.+?)(</s>)", "~$2~");
+
+        // escape
+        text = Regex.Replace(text, @"(.*?)(>|[\\][>])", "$1\\>");
+
+        return text;
+    }
+
+    private static string EscapeExceptHyperlink(string text, string pattern, string replacement)
+    {
+        var regex = new Regex(@"\[\S+]\(https?://\S+\)");
+        var hyperlinks = regex.Matches(text).Cast<Match>().ToList();
+        return Regex.Replace(text, pattern, delegate(Match match)
         {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return text;
-            }
+            return hyperlinks.Exists(x => x.Index <= match.Index && match.Index <= x.Index + x.Length - 1)
+                ? match.Value
+                : replacement;
+        });
+    }
 
-            // convert skype format to telegram format
-            text = Regex.Replace(text, "(\\*\\*\\*)(.+?)(\\*\\*\\*)", "<b><i>$2</i></b>"); // bold & italic
+    public static string EscapeSpecialSyntax(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return string.Empty;
 
-            text = Regex.Replace(text, @"(\\\*\\\*)(.+?)(\\\*\\\*)", BoldRegex); // bold
-            text = Regex.Replace(text, @"(\\\*\\\*)(.+?)(\\\*\*)", BoldRegex);
-            text = Regex.Replace(text, @"(\\\*\\\*)(.+?[^\\])(\*\*)", BoldRegex);
-            text = Regex.Replace(text, @"(\\\*\*)(.+?)(\\\*\*)", BoldRegex);
-            text = Regex.Replace(text, @"(\\\*\*)(.+?[^\\])(\*\*)", BoldRegex);
-            text = Regex.Replace(text, @"(\*\*)(.+?[^\\])(\*\*)", "<b>$2</b>");
+        text = EscapeExceptHyperlink(text, @"\[|\\\[", "\\[");
+        text = EscapeExceptHyperlink(text, @"]|\\\]", "\\]");
+        text = EscapeExceptHyperlink(text, @"\(|\\\(", "\\(");
+        text = EscapeExceptHyperlink(text, @"\)|\\\)", "\\)");
 
-            text = Regex.Replace(text, @"(\\\*)(.+?)(\\\*)", "\\*$2\\*"); // italic
-            text = Regex.Replace(text, @"(\\\*)(.+?[^\\])(\*)", "\\*$2\\*");
-            text = Regex.Replace(text, @"(\*)(.+?[^\\])(\*)", "<i>$2</i>");
+        text = Regex.Replace(text, @"_|\\_", "\\_");
+        text = Regex.Replace(text, @"\*|\\\*", "\\*");
+        text = Regex.Replace(text, @"~|\\~", "\\~");
+        text = Regex.Replace(text, @"`|\\`", "\\`");
+        text = Regex.Replace(text, @"#|\\#", "\\#");
+        text = Regex.Replace(text, @"\+|\\\+", "\\+");
+        text = Regex.Replace(text, @"-|\\\-", "\\-");
+        text = Regex.Replace(text, @"=|\\=", "\\=");
+        text = Regex.Replace(text, @"\||\\\|", "\\|");
+        text = Regex.Replace(text, @"\{|\\\{", "\\{");
+        text = Regex.Replace(text, @"}|\\}", "\\}");
+        text = Regex.Replace(text, @"\.|\\\.", "\\.");
+        text = Regex.Replace(text, @"!|\\!", "\\!");
 
-            text = Regex.Replace(text, @"(\\~\\~)(.+?)(\\~~)", "~\\~$2~\\~"); // strikethrough
-            text = Regex.Replace(text, @"(\\~\\~)(.+?[^\\])(~~)", "\\~\\~$2\\~\\~");
-            text = Regex.Replace(text, @"(\\~~)(.+?)(\\~~)", "~\\~$2~\\~");
-            text = Regex.Replace(text, @"(\\~~)(.+?[^\\])(~~)", "~\\~$2\\~\\~");
-            text = Regex.Replace(text, @"(~~)(.+?[^\\])(~~)", "<s>$2</s>");
-
-            // escape
-            text = EscapeSpecialSyntax(text);
-
-            // revert
-            text = Regex.Replace(text, @"(\\<b>)(.+?)(</b>)", "\\*\\*$2\\*\\*");
-            text = Regex.Replace(text, @"(\\<i>)(.+?)(</i>)", "\\*$2\\*");
-            text = Regex.Replace(text, "(<b>)(.+?)(</b>)", "*$2*");
-            text = Regex.Replace(text, "(<i>)(.+?)(</i>)", "_$2_");
-            text = Regex.Replace(text, "(<s>)(.+?)(</s>)", "~$2~");
-
-            // escape
-            text = Regex.Replace(text, @"(.*?)(>|[\\][>])", "$1\\>");
-
-            return text;
-        }
-
-        private static string EscapeExceptHyperlink(string text, string pattern, string replacement)
-        {
-            var regex = new Regex(@"\[\S+]\(https?://\S+\)");
-            var hyperlinks = regex.Matches(text).Cast<Match>().ToList();
-            return Regex.Replace(text, pattern, delegate (Match match)
-            {
-                return hyperlinks.Exists(x => x.Index <= match.Index && match.Index <= (x.Index + x.Length - 1))
-                    ? match.Value : replacement;
-            });
-        }
-
-        public static string EscapeSpecialSyntax(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return string.Empty;
-            }
-
-            text = EscapeExceptHyperlink(text, @"\[|\\\[", "\\[");
-            text = EscapeExceptHyperlink(text, @"]|\\\]", "\\]");
-            text = EscapeExceptHyperlink(text, @"\(|\\\(", "\\(");
-            text = EscapeExceptHyperlink(text, @"\)|\\\)", "\\)");
-
-            text = Regex.Replace(text, @"_|\\_", "\\_");
-            text = Regex.Replace(text, @"\*|\\\*", "\\*");
-            text = Regex.Replace(text, @"~|\\~", "\\~");
-            text = Regex.Replace(text, @"`|\\`", "\\`");
-            text = Regex.Replace(text, @"#|\\#", "\\#");
-            text = Regex.Replace(text, @"\+|\\\+", "\\+");
-            text = Regex.Replace(text, @"-|\\\-", "\\-");
-            text = Regex.Replace(text, @"=|\\=", "\\=");
-            text = Regex.Replace(text, @"\||\\\|", "\\|");
-            text = Regex.Replace(text, @"\{|\\\{", "\\{");
-            text = Regex.Replace(text, @"}|\\}", "\\}");
-            text = Regex.Replace(text, @"\.|\\\.", "\\.");
-            text = Regex.Replace(text, @"!|\\!", "\\!");
-
-            return text;
-        }
+        return text;
     }
 }

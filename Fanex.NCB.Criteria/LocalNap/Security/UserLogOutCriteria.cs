@@ -1,14 +1,19 @@
-﻿namespace Fanex.NCB.Criteria.LocalNap.Security
+﻿namespace Fanex.NCB.Criteria.LocalNap.Security;
+
+using Data.Repository;
+
+public class UserLogOutCriteria : CriteriaBase
+
 {
-    using Fanex.Data.Repository;
+    public int OnUserId { get; set; }
 
-    public class UserLogOutCriteria : CriteriaBase
-
+    public override string GetSettingKey()
     {
-        public int OnUserId { get; set; }
+        return "NAP_User_Logout";
+    }
 
-        public override string GetSettingKey() => "NAP_User_Logout";
-
-        public override bool IsValid() => OnUserId > 0;
+    public override bool IsValid()
+    {
+        return OnUserId > 0;
     }
 }

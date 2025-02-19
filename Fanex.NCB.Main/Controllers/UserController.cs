@@ -3,13 +3,13 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.NAP.Client.Configuration;
-    using Fanex.NAP.Client.Helpers.Web;
+    using NAP.Client.Configuration;
+    using NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Models;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Core.Enum;
+    using Core.Enum;
     using Fanex.NCB.Core.Models;
-    using Fanex.NCB.NAPResolver.Attributes;
+    using NAPResolver.Attributes;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
@@ -58,28 +58,18 @@
             }
             else
             {
-                if (!napSettings.EnableReCheckIn && !EnableCheckPermissionChanged)
-                {
-                    return RecheckInStatus.Success;
-                }
+                if (!napSettings.EnableReCheckIn && !EnableCheckPermissionChanged) return RecheckInStatus.Success;
 
                 var status = await securityService.ReCheckInAsync(napSession.OnUserId, napSettings.SiteId);
                 var reCheckInStatus = (RecheckInStatus)status;
 
                 if (!napSettings.EnableReCheckIn && reCheckInStatus == RecheckInStatus.KickOut)
-                {
                     return RecheckInStatus.Success;
-                }
 
                 if (!EnableCheckPermissionChanged && reCheckInStatus == RecheckInStatus.KickOutPermission)
-                {
                     return RecheckInStatus.Success;
-                }
 
-                if (!await siteService.IsActivatedAsync(napSettings.SiteId))
-                {
-                    return RecheckInStatus.InvalidSite;
-                }
+                if (!await siteService.IsActivatedAsync(napSettings.SiteId)) return RecheckInStatus.InvalidSite;
 
                 return reCheckInStatus;
             }

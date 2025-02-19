@@ -1,17 +1,14 @@
-﻿namespace Fanex.NCB.Models.ResetLastMessageId
+﻿namespace Fanex.NCB.Models.ResetLastMessageId;
+
+using System.Xml.Serialization;
+
+[XmlType("r")]
+public class MessageRequestId
 {
-    using System.Xml.Serialization;
+    [XmlAttribute("VoidingHistoryCollectionId")]
+    public int VoidingHistoryCollectionId { get; set; }
 
-    [XmlType("r")]
-    public class MessageRequestId
-    {
-        [XmlAttribute("VoidingHistoryCollectionId")]
-        public int VoidingHistoryCollectionId { get; set; }
+    [XmlAttribute("MessageId")] public int MessageId { get; set; }
 
-        [XmlAttribute("MessageId")]
-        public int MessageId { get; set; }
-
-        [XmlAttribute("RequestId")]
-        public int RequestId { get; set; }
-    }
+    [XmlAttribute("RequestId")] public int RequestId { get; set; }
 }

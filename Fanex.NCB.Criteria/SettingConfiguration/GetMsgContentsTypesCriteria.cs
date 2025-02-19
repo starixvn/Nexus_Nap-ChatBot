@@ -1,11 +1,16 @@
-﻿namespace Fanex.NCB.Criteria.SettingConfiguration
+﻿namespace Fanex.NCB.Criteria.SettingConfiguration;
+
+using Data.Repository;
+
+public class GetMsgContentsTypesCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
-
-    public class GetMsgContentsTypesCriteria : CriteriaBase
+    public override string GetSettingKey()
     {
-        public override string GetSettingKey() => "NCB_SettingConfiguration_MsgContentsTypeList_Sel";
+        return "NCB_SettingConfiguration_MsgContentsTypeList_Sel";
+    }
 
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }

@@ -1,22 +1,22 @@
 ﻿@{
-    ViewData["Title"] = "500 - Internal Server Error";
+	ViewData["Title"] = "500 - Internal Server Error";
 }
 <div id="error-content"></div>
 
 @section Styles {
-        <environment include="Development">
-            <link rel="stylesheet" href="~/dev/pages/error/internalerror.chunk.css" asp-append-version="true" />
-        </environment>
-        <environment exclude="Development">
-            <link rel="stylesheet" href="~/pro/pages/error/internalerror.chunk.css" asp-append-version="true" />
-        </environment>
+	<environment include="Development">
+		<link rel="stylesheet" href="~/dev/pages/error/internalerror.chunk.css" asp-append-version="true"/>
+	</environment>
+	<environment exclude="Development">
+		<link rel="stylesheet" href="~/pro/pages/error/internalerror.chunk.css" asp-append-version="true"/>
+	</environment>
 }
 
 @section Scripts {
-        <environment include="Development">
-            <script src="~/dev/pages/error/internalerror.chunk.js" asp-append-version="true"></script>
-        </environment>
-        <environment exclude="Development">
-            <script src="~/pro/pages/error/internalerror.chunk.js" asp-append-version="true"></script>
-        </environment>
+	<environment include="Development">
+		<script src="~/dev/pages/error/internalerror.chunk.js" asp-append-version="true"></script>
+	</environment>
+	<environment exclude="Development">
+		<script src="~/pro/pages/error/internalerror.chunk.js" asp-append-version="true"></script>
+	</environment>
 }

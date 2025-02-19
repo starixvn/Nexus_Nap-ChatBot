@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NCB.Main.Controllers
 {
-    using Fanex.NCB.NAPResolver.Attributes;
+    using NAPResolver.Attributes;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
 

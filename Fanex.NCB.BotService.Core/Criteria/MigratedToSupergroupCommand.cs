@@ -1,18 +1,23 @@
-﻿namespace Fanex.NCB.BotService.Core.Criteria
+﻿namespace Fanex.NCB.BotService.Core.Criteria;
+
+using Fanex.NCB.Shared.Models;
+
+public class MigratedToSupergroupCommand : BaseCommand
 {
-    using Fanex.NCB.Shared.Models;
+    public string FromConversationId { get; set; }
 
-    public class MigratedToSupergroupCommand : BaseCommand
+    public string ToConversationId { get; set; }
+
+    public string UpdatedBy { get; set; }
+
+    public override string GetSettingKey()
     {
-        public string FromConversationId { get; set; }
+        return "NCB_Conversation_MigratedToSupergroup";
+    }
 
-        public string ToConversationId { get; set; }
-
-        public string UpdatedBy { get; set; }
-
-        public override string GetSettingKey() => "NCB_Conversation_MigratedToSupergroup";
-
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(FromConversationId)
-            && !string.IsNullOrWhiteSpace(ToConversationId);
+    public override bool IsValid()
+    {
+        return !string.IsNullOrWhiteSpace(FromConversationId)
+               && !string.IsNullOrWhiteSpace(ToConversationId);
     }
 }

@@ -81,7 +81,10 @@
                     var url = napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url;
                     var urlContent = Url.Content($"~{(!string.IsNullOrEmpty(url) ? url : "/Error/UnauthorizedUser")}");
 
-                    return Redirect(!string.IsNullOrWhiteSpace(userLogin.ReturnUrl) && Url.IsLocalUrl(userLogin.ReturnUrl) ? $"~{userLogin.ReturnUrl}" : urlContent);
+                    return Redirect(
+                        !string.IsNullOrWhiteSpace(userLogin.ReturnUrl) && Url.IsLocalUrl(userLogin.ReturnUrl)
+                            ? $"~{userLogin.ReturnUrl}"
+                            : urlContent);
                 }
             }
             else
@@ -125,9 +128,13 @@
                         await DoCheckIn(user, newOnUserId);
 
                         var url = napSession.MenuItemList.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Url))?.Url;
-                        var urlContent = Url.Content($"~{(!string.IsNullOrEmpty(url) ? url : "/Error/UnauthorizedUser")}");
+                        var urlContent =
+                            Url.Content($"~{(!string.IsNullOrEmpty(url) ? url : "/Error/UnauthorizedUser")}");
 
-                        return Redirect(!string.IsNullOrWhiteSpace(ssoLogin.RedirectUrl) && Url.IsLocalUrl(ssoLogin.RedirectUrl) ? ssoLogin.RedirectUrl : urlContent);
+                        return Redirect(
+                            !string.IsNullOrWhiteSpace(ssoLogin.RedirectUrl) && Url.IsLocalUrl(ssoLogin.RedirectUrl)
+                            ? ssoLogin.RedirectUrl
+                            : urlContent);
                     }
                 }
             }
@@ -163,10 +170,10 @@
                 .OrderBy(x => x.DisplayOrder).ToList();
 
             var claims = new List<Claim>
-                        {
-                            new Claim(ClaimTypes.Name, user.Username),
-                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-                        };
+            {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+            };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
@@ -228,7 +235,8 @@
 
         private async Task<bool> IsExistNapSite(User user)
         {
-            return (await userService.GetSiteLevelAsync(user.Id, napSettings.Environment)).Any(s => s.Site.Id == napSettings.SiteId && s.IsActive);
+            return (await userService.GetSiteLevelAsync(user.Id, napSettings.Environment)).Any(s =>
+                s.Site.Id == napSettings.SiteId && s.IsActive);
         }
 
         private async Task<bool> IsExistNapGroup(User user)
@@ -251,7 +259,8 @@
             var cfsDescryptTime = CryptographyExtend.DecryptPassword(time.Replace(" ", "+"));
             var serverTime = await securityService.GetTimeAsync();
             var serverDateTime = NapServicesRegistrationExtension.NAPResolverType == NapResolverType.Local
-                ? DateTime.Parse(serverTime, new CultureInfo("en-US")).AddHours(DiffTimeZoneBetweenNAPServerAndChatBotServer)
+                ? DateTime.Parse(serverTime, new CultureInfo("en-US"))
+                    .AddHours(DiffTimeZoneBetweenNAPServerAndChatBotServer)
                 : DateTime.Parse(serverTime, new CultureInfo("en-US"));
             var expiration = serverDateTime - DateTime.Parse(cfsDescryptTime, new CultureInfo("en-US"));
 

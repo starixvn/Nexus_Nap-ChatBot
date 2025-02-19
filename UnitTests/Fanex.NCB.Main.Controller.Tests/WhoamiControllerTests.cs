@@ -1,34 +1,33 @@
-﻿namespace Fanex.NCB.Main.Controllers.Tests
+﻿namespace Fanex.NCB.Main.Controllers.Tests;
+
+using System.Net;
+using AutoFixture;
+using Shared;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Xunit;
+
+public class WhoamiControllerTests
 {
-    using System.Net;
-    using AutoFixture;
-    using Fanex.NCB.Shared;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Xunit;
-
-    public class WhoamiControllerTests
+    [Fact]
+    public void Index_WhenCalled_ReturnExpectedContent()
     {
-        [Fact]
-        public void Index_WhenCalled_ReturnExpectedContent()
+        var fixture = new Fixture();
+        var controller = new WhoamiController();
+
+        controller.ControllerContext = new ControllerContext
         {
-            var fixture = new Fixture();
-            var controller = new WhoamiController();
+            HttpContext = new DefaultHttpContext()
+        };
+        controller.ControllerContext.HttpContext.Connection.LocalIpAddress = new IPAddress(fixture.Create<long>());
+        controller.ControllerContext.HttpContext.Connection.RemoteIpAddress = new IPAddress(fixture.Create<long>());
+        controller.ControllerContext.HttpContext.Request.Scheme = fixture.Create<string>();
+        controller.ControllerContext.HttpContext.Request.Path = $"/{fixture.Create<string>()}";
+        controller.ControllerContext.HttpContext.Request.Headers["device-id"] = "20317";
 
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext()
-            };
-            controller.ControllerContext.HttpContext.Connection.LocalIpAddress = new IPAddress(fixture.Create<long>());
-            controller.ControllerContext.HttpContext.Connection.RemoteIpAddress = new IPAddress(fixture.Create<long>());
-            controller.ControllerContext.HttpContext.Request.Scheme = fixture.Create<string>();
-            controller.ControllerContext.HttpContext.Request.Path = $"/{fixture.Create<string>()}";
-            controller.ControllerContext.HttpContext.Request.Headers["device-id"] = "20317";
-
-            var expected = WhoamiHelper.GetContent(controller.ControllerContext.HttpContext);
-            var actual = controller.Whoami();
-            var viewResult = Assert.IsType<ContentResult>(actual);
-            Assert.Equal(expected, viewResult.Content);
-        }
+        var expected = WhoamiHelper.GetContent(controller.ControllerContext.HttpContext);
+        var actual = controller.Whoami();
+        var viewResult = Assert.IsType<ContentResult>(actual);
+        Assert.Equal(expected, viewResult.Content);
     }
 }

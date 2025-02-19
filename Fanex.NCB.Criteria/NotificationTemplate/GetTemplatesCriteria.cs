@@ -1,19 +1,23 @@
-﻿namespace Fanex.NCB.Criteria.NotificationTemplate
+﻿namespace Fanex.NCB.Criteria.NotificationTemplate;
+
+using Data;
+using Data.Repository;
+
+public class GetTemplatesCriteria : CriteriaBase
 {
-    using Fanex.Data;
-    using Fanex.Data.Repository;
+    [SpParam(AllowNull = true)] public int? NotificationTypeId { get; set; }
 
-    public class GetTemplatesCriteria : CriteriaBase
+    public int PageIndex { get; set; }
+
+    public int PageSize { get; set; }
+
+    public override string GetSettingKey()
     {
-        [SpParam(AllowNull = true)]
-        public int? NotificationTypeId { get; set; }
+        return "NCB_NotificationTemplateList_Sel";
+    }
 
-        public int PageIndex { get; set; }
-
-        public int PageSize { get; set; }
-
-        public override string GetSettingKey() => "NCB_NotificationTemplateList_Sel";
-
-        public override bool IsValid() => PageIndex > 0 && PageSize > 0;
+    public override bool IsValid()
+    {
+        return PageIndex > 0 && PageSize > 0;
     }
 }

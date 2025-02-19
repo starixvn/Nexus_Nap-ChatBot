@@ -2,13 +2,13 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.NAP.Client.Configuration;
-    using Fanex.NAP.Client.Helpers.Web;
+    using NAP.Client.Configuration;
+    using NAP.Client.Helpers.Web;
     using Fanex.NAP.Client.Services;
-    using Fanex.NCB.Core.Constants;
-    using Fanex.NCB.Models.ResetLastMessageId;
-    using Fanex.NCB.NAPResolver.Attributes;
-    using Fanex.NCB.Services.Interfaces;
+    using Core.Constants;
+    using Models.ResetLastMessageId;
+    using NAPResolver.Attributes;
+    using Services.Interfaces;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
     using static Fanex.NAP.Core.Business.Constant;
@@ -38,7 +38,8 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Read)]
         public IActionResult Index()
         {
-            ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId, napSettings.SiteId, FunctionKey.ResetLastMessageId, Policy.Host);
+            ViewBag.HaveHostPermission = userService.IsHavingPermission(napSession.UserId, napSettings.SiteId,
+                FunctionKey.ResetLastMessageId, Policy.Host);
 
             return View("~/Views/SkypeBot/ResetLastMessageId/Index.cshtml");
         }
@@ -47,9 +48,12 @@
         [NapChatBotAuth(FunctionKey = FunctionKey.ResetLastMessageId, Policy = Policy.Read)]
         public async Task<IActionResult> GetCurrentPreviousMaxMessage()
         {
-            var (currentMaxMessageInfos, messageTypeInfos) = await resetLastMessageIdService.GetCurrentPreviousMaxMessageAsync();
-            var (abnormalBetsMissingMsg, messageIds) = await resetLastMessageIdService.GetAbnormalBetsMissingMessageAsync();
-            var missingMsgInfo = await resetLastMessageIdService.GetMissingMessageInfoAsync(currentMaxMessageInfos, messageTypeInfos, abnormalBetsMissingMsg, messageIds);
+            var (currentMaxMessageInfos, messageTypeInfos) =
+                await resetLastMessageIdService.GetCurrentPreviousMaxMessageAsync();
+            var (abnormalBetsMissingMsg, messageIds) =
+                await resetLastMessageIdService.GetAbnormalBetsMissingMessageAsync();
+            var missingMsgInfo = await resetLastMessageIdService.GetMissingMessageInfoAsync(currentMaxMessageInfos,
+                messageTypeInfos, abnormalBetsMissingMsg, messageIds);
 
             return Json(new
             {

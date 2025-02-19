@@ -1,17 +1,21 @@
-﻿namespace Fanex.NCB.Criteria.SyncData
+﻿namespace Fanex.NCB.Criteria.SyncData;
+
+using Data;
+using Data.Repository;
+
+public class GetDataFromNapUserControlCriteria : CriteriaBase
 {
-    using Fanex.Data;
-    using Fanex.Data.Repository;
+    public int SiteId { get; set; }
 
-    public class GetDataFromNapUserControlCriteria : CriteriaBase
+    [SpParam(AllowNull = true)] public int? UserId { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int SiteId { get; set; }
+        return "NAP_ChatBot_GetDataBySiteId";
+    }
 
-        [SpParam(AllowNull = true)]
-        public int? UserId { get; set; }
-
-        public override string GetSettingKey() => "NAP_ChatBot_GetDataBySiteId";
-
-        public override bool IsValid() => SiteId > 0;
+    public override bool IsValid()
+    {
+        return SiteId > 0;
     }
 }

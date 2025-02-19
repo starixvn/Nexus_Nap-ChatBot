@@ -1,17 +1,22 @@
-﻿namespace Fanex.NCB.Criteria.SettingConfiguration
+﻿namespace Fanex.NCB.Criteria.SettingConfiguration;
+
+using Fanex.NCB.Shared.Models;
+
+public class UpdateSettingTypeCommand : BaseCommand
 {
-    using Fanex.NCB.Shared.Models;
+    public int Type { get; set; }
 
-    public class UpdateSettingTypeCommand : BaseCommand
+    public string Name { get; set; }
+
+    public int ModifiedBy { get; set; }
+
+    public override string GetSettingKey()
     {
-        public int Type { get; set; }
+        return "NCB_SettingConfiguration_SettingType_Upd";
+    }
 
-        public string Name { get; set; }
-
-        public int ModifiedBy { get; set; }
-
-        public override string GetSettingKey() => "NCB_SettingConfiguration_SettingType_Upd";
-
-        public override bool IsValid() => ModifiedBy > 0 && !string.IsNullOrWhiteSpace(Name);
+    public override bool IsValid()
+    {
+        return ModifiedBy > 0 && !string.IsNullOrWhiteSpace(Name);
     }
 }

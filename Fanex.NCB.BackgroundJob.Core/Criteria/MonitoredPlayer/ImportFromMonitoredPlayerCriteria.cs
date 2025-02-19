@@ -1,23 +1,28 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.MonitoredPlayer
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.MonitoredPlayer;
+
+using Fanex.Data.Repository;
+
+public class ImportFromMonitoredPlayerCriteria : CriteriaBase
 {
-    using Fanex.Data.Repository;
+    public string Message { get; set; }
 
-    public class ImportFromMonitoredPlayerCriteria : CriteriaBase
+    public string ServerName { get; set; }
+
+    public string LastDataRow { get; set; }
+
+    public int PLastLogId { get; set; }
+
+    public int ErrCode { get; set; }
+
+    public string ErrMsg { get; set; }
+
+    public override string GetSettingKey()
     {
-        public string Message { get; set; }
+        return "NCB_MonitoredPlayer_Import";
+    }
 
-        public string ServerName { get; set; }
-
-        public string LastDataRow { get; set; }
-
-        public int PLastLogId { get; set; }
-
-        public int ErrCode { get; set; }
-
-        public string ErrMsg { get; set; }
-
-        public override string GetSettingKey() => "NCB_MonitoredPlayer_Import";
-
-        public override bool IsValid() => true;
+    public override bool IsValid()
+    {
+        return true;
     }
 }
