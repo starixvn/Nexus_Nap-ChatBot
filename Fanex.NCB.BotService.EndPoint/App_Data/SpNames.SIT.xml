@@ -5,7 +5,7 @@
 		<Setting Key="NCB_Conversation_AddBotToGroup" SpName="NCB_Conversation_AddBotToGroup" DbName="DBCB.ChatBot.ncb_bot" Plain="0" />
 		<Setting Key="NCB_Conversation_RemoveBotOutGroup" SpName="NCB_Conversation_RemoveBotOutGroup" DbName="DBCB.ChatBot.ncb_bot" Plain="0"></Setting>
 		<Setting Key="NCB_Conversation_UpdateGroupTopic" SpName="NCB_Conversation_UpdateGroupTopic" DbName="DBCB.ChatBot.ncb_bot" Plain="0"></Setting>
-		<Setting Key="NCB_Conversation_AddMessageLog" SpName="NCB_Conversation_AddMessageLog" DbName="DBCB.ChatBot.ncb_bot" Plain="0"></Setting>
+		<Setting Key="NCB_Conversation_AddMessageLog" SpName="NCB_Conversation_AddMessageLog_xpre" DbName="DBCB.ChatBot.ncb_bot" Plain="0"></Setting>
 		<Setting Key="NCB_Conversation_MigratedToSupergroup" SpName="NCB_Conversation_MigratedToSupergroup" DbName="DBCB.ChatBot.ncb_bot" Plain="0" />
 	</Function>
 </Functions>
