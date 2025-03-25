@@ -15,6 +15,7 @@ using Microsoft.Extensions.Options;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Xunit;
+using Microsoft.Extensions.Logging;
 
 public class SyncDataServiceTests
 {
@@ -49,7 +50,7 @@ public class SyncDataServiceTests
         await service.SyncNapDataForSSOLogin(1);
 
         //Assert
-        await logger.Received().ErrorAsync(Arg.Any<string>());
+        logger.Received().LogError(Arg.Any<string>());
     }
 
     #region Helper
@@ -81,8 +82,10 @@ public class SyncDataServiceTests
         appSettings.Value.Returns(fixture.Create<AppSettings>());
         syncDataRepository = Substitute.For<ISyncDataRepository>();
         baseService = Substitute.For<IBaseService>();
+        var logFactory = Substitute.For<ILoggerFactory>();
         logger = Substitute.For<ILogger>();
-        return new SyncDataService(appSettings, syncDataRepository, baseService, logger);
+        logFactory.CreateLogger<SyncDataService>().Returns(logger);
+        return new SyncDataService(appSettings, syncDataRepository, baseService, logFactory);
     }
 
     #endregion Helper

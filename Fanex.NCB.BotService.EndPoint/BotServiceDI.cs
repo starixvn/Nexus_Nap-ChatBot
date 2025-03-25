@@ -25,13 +25,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Security;
-    using System.Security.Authentication;
+using Fanex.NCB.BotService.EndPoint.Constants;
 
 public static class BotServiceDI
 {
@@ -49,41 +43,47 @@ public static class BotServiceDI
             services.AddSingleton<ICommonLogService, CommonLogService>();
 
         services.AddSingleton<IConversationService, ConversationService>();
-        services.AddSingleton<ISkypeBotService, SkypeBotService>();
         services.AddSingleton<IMessageLogService, MessageLogService>();
         services.AddSingleton<IRedisCacheExtendService, RedisCacheExtendService>();
         services.AddSingleton<ICacheService, CacheService>();
-        services.AddSingleton<ICredentialProvider, MultiCredentialProvider>();
-        services.AddSingleton<IBot, LicBot>();
-        services.AddSingleton<Logging.ILogger, Logging.Logger>();
-        var botConfig = GetBotConfig(environment, appSettings, logger);
-        services.AddSingleton(botConfig);
         services.AddSingleton(appSettings);
 
         RegisterCheckDuplicateMessageLogSettings(services, configuration);
         RegisterRedisConnection(services, configuration);
-        var botFrameworkHttpAdapter = GetBotFrameworkHttpAdapter(botConfig, configuration);
-        services.AddSingleton(botFrameworkHttpAdapter);
 
-        services.AddBot<LicBot>(options =>
+        services.AddBotFrameworkServices(configuration, environment, appSettings);
+        services.AddSingleton<IBotFrameworkService, BotFrameworkService>();
+
+        RegisterTelegramBots(services, configuration);
+        services.AddScoped<ITelegramBotService, TelegramBotService>();
+    }
+
+    private static void AddBotFrameworkServices(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment, AppSettings appSettings)
+    {
+        var botConfig = GetBotConfig(environment, appSettings);
+        services.AddSingleton<ICredentialProvider, MultiCredentialProvider>();
+        services.AddKeyedTransient<IBot, LicBot>(ServiceName.SkypeBot);
+        services.AddKeyedTransient<IBot, TeamsBot>(ServiceName.TeamsBot);
+
+        services.AddBotFrameworkAdapterIntegration(options =>
         {
             options.CredentialProvider = new MultiCredentialProvider(botConfig);
             options.HttpClient = GetDefaultHttpClient(configuration);
             options.OnTurnError = (turnContext, exception) => { throw exception; };
         });
 
-        RegisterTelegramBots(services, configuration);
-        services.AddScoped<ITelegramBotService, TelegramBotService>();
+        var botFrameworkHttpAdapter = GetBotFrameworkHttpAdapter(botConfig, configuration);
+        services.AddSingleton(botFrameworkHttpAdapter);
     }
 
     [Obsolete]
     private static IBotFrameworkHttpAdapter GetBotFrameworkHttpAdapter(BotConfiguration botConfig,
-        IConfiguration configuration)
+    IConfiguration configuration)
     {
         var credentialProvider = new MultiCredentialProvider(botConfig);
         var httpClient = GetDefaultHttpClient(configuration);
-        IBotFrameworkHttpAdapter botFrameworkHttpAdapter =
-            new BotFrameworkHttpAdapter(credentialProvider, null, httpClient, null);
+        var botFrameworkHttpAdapter =
+            new BotFrameworkHttpAdapter(credentialProvider, null, httpClient: httpClient, null);
 
         return botFrameworkHttpAdapter;
     }
@@ -124,8 +124,7 @@ public static class BotServiceDI
     }
 
     [Obsolete]
-    private static BotConfiguration GetBotConfig(IWebHostEnvironment environment, AppSettings appSettings,
-        ILogger logger)
+    private static BotConfiguration GetBotConfig(IWebHostEnvironment environment, AppSettings appSettings)
     {
         BotConfiguration botConfig = null;
         try
@@ -215,7 +214,10 @@ public static class BotServiceDI
     {
         var p1 = text.IndexOf(start) + start.Length;
         var p2 = text.IndexOf(end, p1);
-        if (p2 == -1 || end == string.Empty) return text.Substring(p1);
+        if (p2 == -1 || end == string.Empty)
+        {
+            return text.Substring(p1);
+        }
         return text.Substring(p1, p2 - p1);
     }
 }

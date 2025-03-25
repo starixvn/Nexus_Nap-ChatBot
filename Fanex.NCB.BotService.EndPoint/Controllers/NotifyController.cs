@@ -3,7 +3,6 @@
     using Core;
     using Core.Criteria;
     using Core.Enum;
-    using Core.Services;
     using Core.Services.Interfaces;
     using Logging.Extensions;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -25,14 +24,14 @@
         private readonly IConversationService conversationService;
         private readonly IMessageLogService messageLogService;
         private readonly ICommonLogService commonLogService;
-        private readonly ISkypeBotService skypeBotService;
+        private readonly IBotFrameworkService skypeBotService;
 
         public NotifyController(
             IOptions<AppSettings> appSettings,
             ICommonLogService commonLogService,
             IMessageLogService messageLogService,
             IConversationService conversationService,
-            ISkypeBotService skypeBotService)
+            IBotFrameworkService skypeBotService)
         {
             this.appSettings = appSettings.Value;
             this.commonLogService = commonLogService;

@@ -11,7 +11,6 @@ using Xunit;
 public class LogServiceExtendTests
 {
     private readonly IFixture fixture = new Fixture();
-    private Logging.ILogger logger;
     private ILogger<LogServiceExtend> filelogger;
 
     #region WriteExceptionSentryErrorAsync
@@ -31,7 +30,7 @@ public class LogServiceExtendTests
         await service.WriteExceptionSentryErrorAsync(exception);
 
         // Assert
-        await logger.Received().ErrorAsync(logMessage);
+        filelogger.Received().LogError(logMessage);
     }
 
     [Fact]
@@ -40,7 +39,6 @@ public class LogServiceExtendTests
         // Arrage
         var exception = fixture.Create<Exception>();
         var service = GetService();
-        logger.When(x => x.ErrorAsync(Arg.Any<string>())).Do(x => throw exception);
 
         // Act
         await service.WriteExceptionSentryErrorAsync(exception);
@@ -62,7 +60,7 @@ public class LogServiceExtendTests
         await service.WriteMessageSentryErrorAsync(message);
 
         // Assert
-        await logger.Received().ErrorAsync(message);
+        filelogger.Received().LogError(message);
     }
 
     [Fact]
@@ -111,9 +109,8 @@ public class LogServiceExtendTests
 
     public LogServiceExtend GetService()
     {
-        logger = Substitute.For<Logging.ILogger>();
         filelogger = Substitute.For<ILogger<LogServiceExtend>>();
-        return new LogServiceExtend(logger, filelogger);
+        return new LogServiceExtend(filelogger);
     }
 
     #endregion Helpers

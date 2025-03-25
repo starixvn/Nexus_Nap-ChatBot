@@ -1,12 +1,13 @@
-﻿namespace Fanex.NCB.BotService.Core;
-
-public class SendIndirectMessageSettings
+﻿namespace Fanex.NCB.BotService.Core
 {
-    public bool IsOnlySendIndirect { get; set; }
-    public bool IsEnabled { get; set; }
-    public string AppCredentialId { get; set; }
-    public string AppCredentialPassword { get; set; }
-    public string AuthenticateUrl { get; set; }
-    public string TelegramUrl { get; set; }
-    public string SkypeUrl { get; set; }
+    public class SendIndirectMessageSettings
+    {
+        public bool IsOnlySendIndirect { get; set; }
+        public bool IsEnabled { get; set; }
+        public string AppCredentialId { get; set; }
+        public string AppCredentialPassword { get; set; }
+        public string AuthenticateUrl { get; set; }
+        public string TelegramUrl { get; set; }
+        public string SkypeUrl { get; set; }
+    }
 }

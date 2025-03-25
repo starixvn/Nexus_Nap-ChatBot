@@ -116,7 +116,8 @@ public class CommonService : ICommonService
             {
                 await Task.WhenAll(
                     SendMessageByChannelAsync((byte)ConversationChannel.Skype, notificationMessages),
-                    SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notificationMessages)
+                    SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notificationMessages),
+                    SendMessageByChannelAsync((byte)ConversationChannel.Teams, notificationMessages)
                 );
 
                 var notificationIds = string.Join(",", notificationMessages.Select(item => item.NotificationId));

@@ -30,13 +30,7 @@ public static class Program
     public static IWebHostBuilder CreateWebHostBuilder(string[] args)
     {
         return WebHost.CreateDefaultBuilder(args)
-            .UseUrls($"http://*:5000")
             .UseStartup<Startup>()
-            .ConfigureLogging(logging =>
-            {
-                logging.ClearProviders();
-                logging.SetMinimumLevel(LogLevel.Trace);
-            })
-            .UseNLog();
+            .UseSentry();
     }
 }

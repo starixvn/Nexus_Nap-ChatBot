@@ -8,8 +8,6 @@ namespace Fanex.NCB.Main
     using Fanex.NCB.Main.AppConfig;
     using Hubs;
     using Logging;
-    using Logging.Extensions;
-    using Logging.Extensions.AspNetCore;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.DataProtection;
@@ -21,7 +19,6 @@ namespace Fanex.NCB.Main
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Options;
     using NAP.Client;
     using NAP.Client.Configuration;
     using NAP.Client.Helpers.Web;
@@ -62,13 +59,10 @@ namespace Fanex.NCB.Main
                 {
                     new SentryLogging(new SentryEngineOptions
                     {
-                        Dsn = new Dsn(Configuration.GetSection("SentryEngineOptions:Dsn").Value),
-                        FrontEndDsn = new Dsn(Configuration.GetSection("SentryEngineOptions:FrontEndDsn").Value)
+                        Dsn = new Dsn(Configuration.GetSection("Sentry:Dsn").Value),
+                        FrontEndDsn = new Dsn(Configuration.GetSection("Sentry:FrontEndDsn").Value)
                     })
                 });
-
-            ExceptionHandler
-                .UseConfig(new LoggingConfiguration());
 
             services.AddSingleton(Configuration);
             services.RegisterConfigs(Configuration);

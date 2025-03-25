@@ -8,5 +8,5 @@ public class NotificationSendMessage
     public byte ChannelId { get; set; }
     public string ChannelName { get; set; }
     public string SiteNameGroup { get; set; }
-        public string FileName { get; set; }
+    public string FileName { get; set; }
 }

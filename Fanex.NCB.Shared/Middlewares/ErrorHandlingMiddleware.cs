@@ -2,16 +2,16 @@
 
 using System;
 using System.Threading.Tasks;
-using Logging;
-using Fanex.Logging.Extensions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Fanex.NCB.Shared.Helpers;
 
 public class ErrorHandlingMiddleware
 {
     private readonly RequestDelegate next;
     private readonly ILogger logger;
 
-    public ErrorHandlingMiddleware(RequestDelegate next, ILogger logger)
+    public ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger)
     {
         this.next = next;
         this.logger = logger;
@@ -29,18 +29,19 @@ public class ErrorHandlingMiddleware
         }
     }
 
-    private async Task HandleException(HttpContext context, Exception exception)
+    private Task HandleException(HttpContext context, Exception exception)
     {
-        var logMessage = new LogMessage(exception.Message)
-            .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
-            .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
-            .ToString();
-        await logger.ErrorAsync(logMessage);
+        var logMessage = LogMessageHelper.GenerateErrorMessage(context, exception);
+        logger.LogError(logMessage.ToString());
 
         var method = context.Request.Method.ToLowerInvariant();
         var requestedWith = context.Request.Headers["X-Requested-With"];
 
         if ((method == "post" || method == "put" || method == "delete") && requestedWith == "XMLHttpRequest")
+        {
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        }
+
+        return Task.CompletedTask;
     }
 }

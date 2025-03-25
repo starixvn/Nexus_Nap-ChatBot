@@ -2,17 +2,17 @@
 
 using System;
 using System.Threading.Tasks;
-using Logging;
 using Fanex.NCB.Shared.Middlewares;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Xunit;
+using Microsoft.Extensions.Logging;
 
 public class ErrorHandlingMiddlewareTests
 {
     private RequestDelegate next;
-    private ILogger logger;
+    private ILogger<ErrorHandlingMiddleware> logger;
 
     [Fact]
     public async Task WhenMiddleware_NotThrowException()
@@ -23,7 +23,7 @@ public class ErrorHandlingMiddlewareTests
         await middleware.InvokeAsync(httpContext);
 
         await next.Received().Invoke(Arg.Any<HttpContext>());
-        logger.DidNotReceive().Error(Arg.Any<string>());
+        logger.DidNotReceive().LogError(Arg.Any<string>());
     }
 
     [Fact]
@@ -35,7 +35,7 @@ public class ErrorHandlingMiddlewareTests
         //Actual
         await middleware.InvokeAsync(httpContext);
 
-        await logger.Received().ErrorAsync(Arg.Any<string>());
+        logger.Received().LogError(Arg.Any<string>());
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public class ErrorHandlingMiddlewareTests
     private ErrorHandlingMiddleware SetupMiddleware()
     {
         next = Substitute.For<RequestDelegate>();
-        logger = Substitute.For<ILogger>();
+        logger = Substitute.For<ILogger<ErrorHandlingMiddleware>>();
         return new ErrorHandlingMiddleware(next, logger);
     }
 }

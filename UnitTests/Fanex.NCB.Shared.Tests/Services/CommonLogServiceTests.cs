@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.Shared.Tests.Services
 {
-    using Fanex.Logging;
     using Fanex.NCB.Shared.Services;
+    using Microsoft.Extensions.Logging;
     using NSubstitute;
     using System;
     using System.Threading.Tasks;
@@ -23,7 +23,7 @@
             await service.SentryErrorAsync("message", exception);
 
             // Assert
-            await logger.Received().ErrorAsync(Arg.Is<string>(x => x.Equals("message")), exception);
+            logger.Received().LogError(exception, Arg.Is<string>(x => x.Equals("message")));
         }
 
         [Fact]
@@ -37,7 +37,7 @@
             service.SentryError("message", exception);
 
             // Assert
-            logger.Received().Error(Arg.Is<string>(x => x.Equals("message")), exception);
+            logger.Received().LogError(exception, Arg.Is<string>(x => x.Equals("message")));
         }
 
         [Fact]
@@ -51,7 +51,7 @@
             await service.SentryInfoAsync(errMsg);
 
             // Assert
-            await logger.Received().InfoAsync(Arg.Is<string>(x => x.Equals(errMsg)));
+            logger.Received().LogInformation(Arg.Is<string>(x => x.Equals(errMsg)));
         }
 
         [Fact]
@@ -86,9 +86,12 @@
 
         private CommonLogService GetService()
         {
+
+            var loggerFactory = Substitute.For<ILoggerFactory>();
             logger = Substitute.For<ILogger>();
+            loggerFactory.CreateLogger<CommonLogService>().Returns(logger);
             nlog = Substitute.For<NLog.Logger>();
-            return new CommonLogService(logger);
+            return new CommonLogService(loggerFactory);
         }
     }
 }

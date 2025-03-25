@@ -1,64 +1,72 @@
 ﻿{
   "name": "Fanex.NCB.BotService",
   "description": "",
-    "services": [
-        {
-            "type": "endpoint",
-            "name": "SABASports",
-            "endpoint": "https://licbotwebhook.starixplay.com/api/messages",
-            "appId": "e63aedd7-660c-46ca-8637-1df5fb133f96",
-            "appPassword": "Lrb@U45PXP4F=3t:kAyjLdoBNqnlCQr-",
-            "id": "1"
-        },
-        {
-            "type": "endpoint",
-            "name": "SABA",
-            "endpoint": "https://licbotwebhook.starixplay.com/api/messages",
-            "appId": "6de2b90e-03b5-4bf7-9268-6cec3ed6f87b",
-            "appPassword": ":DQdaPNlj2n1]dx[R4YkTjsNq?cYDd3Z",
-            "id": "2"
-        },
-        {
-            "type": "endpoint",
-            "name": "沙巴体育公告 / Saba Sports Announcement",
-            "endpoint": "https://licbotwebhook.starixplay.com/api/messages",
-            "appId": "3eb816dc-4b12-4614-a539-3a789b37a456",
-            "appPassword": "6c06ENM.MaWI.AwG3Bk3PRwji0nS.-nKS4",
-            "id": "3"
-        },
-        {
-            "type": "endpoint",
-            "name": "licbot",
-            "endpoint": "https://licbotwebhook.starixplay.com/api/messages",
-            "appId": "40bccb6f-d5e6-4b02-9915-060ebb959fe4",
-            "appPassword": "WHE7Q~JcTS5jhXheUR6~i9aIrbc96Kiv_D5kD",
-            "id": "4"
-        },
-        {
-            "type": "endpoint",
-            "name": "SABASports_UAT",
-            "endpoint": "https://uatlicbotendpoint.starixplay.com/api/messages",
-            "appId": "1fa1a23c-a202-46e0-b168-57b7537b9456",
-            "appPassword": "7SoTkwGtspX2WNcW5.Cb1bqCnD*/aOb@",
-            "id": "5"
-        },
-        {
-            "type": "endpoint",
-            "name": "SABA_UAT",
-            "endpoint": "https://uatlicbotendpoint.starixplay.com/api/messages",
-            "appId": "efd1cd73-a9a2-4c54-818c-1fa2ef6b8c78",
-            "appPassword": "?8Ti3CSQ1BSi4XwJNNWHAmI+gLmdcM?[",
-            "id": "6"
-        },
-        {
-            "type": "endpoint",
-            "name": "沙巴体育公告 / Saba Sports Announcement_UAT",
-            "endpoint": "https://uatlicbotendpoint.starixplay.com/api/messages",
-            "appId": "023ce7c5-1ef3-4653-ae7a-1ce4114ef4bb",
-            "appPassword": "Gu99TpHWo~c_07Eh74Z~aCWh8S~tyx.Rs~",
-            "id": "7"
-        }
-    ],
+  "services": [
+    {
+      "type": "endpoint",
+      "name": "SABASports",
+      "endpoint": "https://licbotwebhook.starixplay.com/api/messages",
+      "appId": "e63aedd7-660c-46ca-8637-1df5fb133f96",
+      "appPassword": "Lrb@U45PXP4F=3t:kAyjLdoBNqnlCQr-",
+      "id": "1"
+    },
+    {
+      "type": "endpoint",
+      "name": "SABA",
+      "endpoint": "https://licbotwebhook.starixplay.com/api/messages",
+      "appId": "6de2b90e-03b5-4bf7-9268-6cec3ed6f87b",
+      "appPassword": ":DQdaPNlj2n1]dx[R4YkTjsNq?cYDd3Z",
+      "id": "2"
+    },
+    {
+      "type": "endpoint",
+      "name": "沙巴体育公告 / Saba Sports Announcement",
+      "endpoint": "https://licbotwebhook.starixplay.com/api/messages",
+      "appId": "3eb816dc-4b12-4614-a539-3a789b37a456",
+      "appPassword": "6c06ENM.MaWI.AwG3Bk3PRwji0nS.-nKS4",
+      "id": "3"
+    },
+    {
+      "type": "endpoint",
+      "name": "licbot",
+      "endpoint": "https://licbotwebhook.starixplay.com/api/messages",
+      "appId": "40bccb6f-d5e6-4b02-9915-060ebb959fe4",
+      "appPassword": "WHE7Q~JcTS5jhXheUR6~i9aIrbc96Kiv_D5kD",
+      "id": "4"
+    },
+    {
+      "type": "endpoint",
+      "name": "SABASports_UAT",
+      "endpoint": "https://uatlicbotendpoint.starixplay.com/api/messages",
+      "appId": "1fa1a23c-a202-46e0-b168-57b7537b9456",
+      "appPassword": "7SoTkwGtspX2WNcW5.Cb1bqCnD*/aOb@",
+      "id": "5"
+    },
+    {
+      "type": "endpoint",
+      "name": "SABA_UAT",
+      "endpoint": "https://uatlicbotendpoint.starixplay.com/api/messages",
+      "appId": "efd1cd73-a9a2-4c54-818c-1fa2ef6b8c78",
+      "appPassword": "?8Ti3CSQ1BSi4XwJNNWHAmI+gLmdcM?[",
+      "id": "6"
+    },
+    {
+      "type": "endpoint",
+      "name": "沙巴体育公告 / Saba Sports Announcement_UAT",
+      "endpoint": "https://uatlicbotendpoint.starixplay.com/api/messages",
+      "appId": "023ce7c5-1ef3-4653-ae7a-1ce4114ef4bb",
+      "appPassword": "Gu99TpHWo~c_07Eh74Z~aCWh8S~tyx.Rs~",
+      "id": "7"
+    },
+    {
+      "type": "endpoint",
+      "name": "NexcelTeamBotSteveTest",
+      "endpoint": "https://licbot.nexdev.net/api/teams/messages",
+      "appId": "99593479-2756-47dd-b916-f7bb6fdf1499",
+      "appPassword": "WMi8Q~VAFSeig..ASM3kpuskQk6PYTdbEsOXYcyB",
+      "id": "8"
+    }
+  ],
   "padlock": "",
   "version": "2.0"
 }

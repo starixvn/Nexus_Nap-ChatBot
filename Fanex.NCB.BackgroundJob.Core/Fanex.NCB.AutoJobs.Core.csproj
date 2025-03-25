@@ -9,7 +9,6 @@
     <PackageReference Include="Fanex.Caching" Version="2.2.8" />
     <PackageReference Include="Fanex.Data.Repository" Version="4.3.2" />
     <PackageReference Include="Fanex.Data.SqlServer" Version="4.3.2" />
-    <PackageReference Include="Fanex.Logging" Version="2.0.2" />
     <PackageReference Include="Fanex.Logging.Extensions" Version="1.1.0" />
     <PackageReference Include="Fanex.RemotingRef" Version="1.5.4" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.0" />

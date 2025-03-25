@@ -95,7 +95,8 @@ public class SiteMessageService : ISiteMessageService
 
                 await Task.WhenAll(
                     commonService.SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications),
-                    commonService.SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications)
+                    commonService.SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications),
+                    commonService.SendMessageByChannelAsync((byte)ConversationChannel.Teams, notifications)
                 );
 
                 var notificationIds = string.Join(",", notifications.Select(item => item.NotificationId));

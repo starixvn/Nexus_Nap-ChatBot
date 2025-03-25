@@ -73,7 +73,7 @@ public class SkypeBotServiceTests
         Assert.Equal(FakeConversationInfo.NotificationId, actual.NotificationId);
     }
 
-    private SkypeBotService GetService(bool isUserProxy, bool isEnableSendIndirect)
+    private BotFrameworkService GetService(bool isUserProxy, bool isEnableSendIndirect)
     {
         httpClientFactory = Substitute.For<IHttpClientFactory>();
 
@@ -96,6 +96,6 @@ public class SkypeBotServiceTests
         adapter = Substitute.For<IAdapterIntegration>();
         botConfig = Substitute.For<BotConfiguration>();
         botConfig.Services = new List<ConnectedService> { new EndpointService { Name = FakeConversationInfo.BotName } };
-        return new SkypeBotService(httpClientFactory, sendIndirectMessageSettings, proxySettings, commonLogService, adapter, botConfig);
+        return new BotFrameworkService(httpClientFactory, sendIndirectMessageSettings, proxySettings, commonLogService, adapter, botConfig);
     }
 }

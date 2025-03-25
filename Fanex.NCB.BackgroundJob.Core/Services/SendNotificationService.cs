@@ -137,7 +137,8 @@ public class SendNotificationService : ISendNotificationService
     {
         await Task.WhenAll(
             SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications, recipients),
-            SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications, recipients)
+            SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications, recipients),
+            SendMessageByChannelAsync((byte)ConversationChannel.Teams, notifications, recipients)
         );
     }
 

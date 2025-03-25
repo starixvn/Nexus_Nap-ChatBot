@@ -3,5 +3,6 @@
 public enum ConversationChannel
 {
     Skype = 1,
-    Telegram
+    Telegram,
+    Teams
 }

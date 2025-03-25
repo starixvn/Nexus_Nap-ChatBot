@@ -13,6 +13,7 @@ using Newtonsoft.Json;
     using System;
     using System.Globalization;
     using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 public class SyncDataService : ISyncDataService
 {
@@ -25,12 +26,12 @@ public class SyncDataService : ISyncDataService
     public SyncDataService(IOptions<AppSettings> appSettings,
         ISyncDataRepository syncDataRepository,
         IBaseService baseService,
-        ILogger logger)
+        ILoggerFactory loggerFactory)
     {
         this.appSettings = appSettings;
         this.syncDataRepository = syncDataRepository;
         this.baseService = baseService;
-        this.logger = logger;
+        this.logger = loggerFactory.CreateLogger<SyncDataService>();
     }
 
     public async Task SyncNapDataForSSOLogin(int userId)
@@ -49,7 +50,7 @@ public class SyncDataService : ISyncDataService
                 string.Empty,
                 exception.TargetSite,
                 exception.StackTrace);
-            await logger.ErrorAsync(errMsg);
+            logger.LogError(errMsg);
         }
     }
 
