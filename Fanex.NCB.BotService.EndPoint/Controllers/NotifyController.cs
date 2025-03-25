@@ -118,27 +118,19 @@
             commonLogService.LogFileMessage(logMessage.ToString());
 
             var result = new SendMessageResult();
-            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
+            try
+            {
+                await skypeBotService.SendMessageAsync(conversationInfo);
+            }
+            catch (Exception exception)
             {
                 result.ErrorCode = 1;
-                result.ErrorMessage = Resources.Resources.DisableChannelErrorMessage;
-            }
-            else
-            {
-                try
-                {
-                    await skypeBotService.SendMessageAsync(conversationInfo);
-                }
-                catch (Exception exception)
-                {
-                    result.ErrorCode = 1;
-                    result.ErrorMessage = exception.Message;
+                result.ErrorMessage = exception.Message;
 
-                    logMessage = new LogMessage(exception.Message)
-                        .AddSection("Params", param)
-                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
-                    commonLogService.LogFileMessage(logMessage.ToString());
-                }
+                logMessage = new LogMessage(exception.Message)
+                    .AddSection("Params", param)
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
+                commonLogService.LogFileMessage(logMessage.ToString());
             }
 
             return Ok(result);

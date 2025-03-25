@@ -64,6 +64,7 @@ public static class BotServiceDI
         services.AddSingleton<ICredentialProvider, MultiCredentialProvider>();
         services.AddKeyedTransient<IBot, LicBot>(ServiceName.SkypeBot);
         services.AddKeyedTransient<IBot, TeamsBot>(ServiceName.TeamsBot);
+        services.AddSingleton(botConfig);
 
         services.AddBotFrameworkAdapterIntegration(options =>
         {

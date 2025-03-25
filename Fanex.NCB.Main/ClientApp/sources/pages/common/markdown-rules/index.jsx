@@ -31,7 +31,7 @@ export default class MarkdownRules extends Component {
                         Ex:
                         <ul>
                             <li>\*\*Text\*\* treat as **Text**</li>
-                            <li>&lt;\!Good Day!\&gt; treat as &lt;!Good Day!&gt; </li>
+                            <li>\&lt;!Good Day!\&gt; treat as &lt;!Good Day!&gt; </li>
                         </ul>
                     </p>
                 </ModalBody>
