@@ -58,7 +58,8 @@ export const noErrorNotification = 'No error notification';
 
 export const Channels = {
     Skype: 1,
-    Telegram: 2
+    Telegram: 2,
+    Teams: 3
 };
 
 export const internalCSDJobId = 2;
