@@ -32,10 +32,24 @@ namespace Fanex.NCB.BotService.Core.Helpers
             return newContent;
         }
 
+        public static string AddExcapeCharacterToBlockQuoteMarkdown(this string content)
+        {
+            var newContent = content;
+            var blockQuoteRegex = new Regex(@"(^\s*|\n\s*)>");
+            var matches = blockQuoteRegex.Matches(content);
+            foreach (Match match in matches)
+            {
+                var newValue = match.Value.Replace(">", "\\>");
+                newContent = blockQuoteRegex.Replace(newContent, newValue, 1);
+            }
+            return newContent;
+        }
+
         public static string FixTeamsTextFormat(this string content)
             => content.RemoveOrderListMardownFormat()
-                .Replace("\n ", "\n&nbsp;")
                 .FixTeamsStrikeThrough()
+                .AddExcapeCharacterToBlockQuoteMarkdown()
+                .Replace("\n ", "\n&nbsp;")
                 .Replace("\r\n", "\n").Replace("\n", "\n\n")
                 .Replace("\n\n\n\n", "\n\n&nbsp;\n\n");
     }
