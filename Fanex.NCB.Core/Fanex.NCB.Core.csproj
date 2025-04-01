@@ -8,12 +8,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Fanex.Caching.Redis.AspNetCore" Version="2.2.2.1" />
-        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.7" />
+        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.36" />
         <PackageReference Include="SonarAnalyzer.CSharp" Version="7.14.0.8411">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
+        <PackageReference Include="StackExchange.Redis" Version="2.2.88" />
     </ItemGroup>
 </Project>

@@ -7,7 +7,7 @@
     <AdditionalFiles Include="..\.sonarlint\napchatbot\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Fanex.Caching.Redis.AspNetCore" Version="2.2.2.1" />
+    <PackageReference Include="Fanex.Caching" Version="2.2.8" />
     <PackageReference Include="Fanex.Logging" Version="2.0.2" />
     <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.0" />
