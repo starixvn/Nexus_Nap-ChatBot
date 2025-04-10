@@ -31,22 +31,19 @@
         private readonly INapSession napSession;
         private readonly INapSettings napSettings;
         private readonly ISecurityService securityService;
-        private readonly ISyncDataService syncDataService;
 
         public AuthController(
             IUserService userService,
             IGroupService groupService,
             ISecurityService securityService,
             INapSession napSession,
-            INapSettings napSettings,
-            ISyncDataService syncDataService)
+            INapSettings napSettings)
         {
             this.userService = userService;
             this.groupService = groupService;
             this.securityService = securityService;
             this.napSession = napSession;
             this.napSettings = napSettings;
-            this.syncDataService = syncDataService;
         }
 
         public IActionResult Index(string returnUrl, bool invalidLogin)

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
 using Fanex.Data.Repository;
-using Logging;
 using Criteria.SyncData;
 using Models.Configurations;
 using Models.NapUserControl;
@@ -66,7 +65,7 @@ public class SyncDataServiceTests
         await service.SyncNapDataForSSOLogin(1);
 
         //Assert
-        logger.Received().LogError(Arg.Any<string>());
+        logger.Received().LogError(Arg.Any<Exception>(), Arg.Any<string>());
     }
 
     [Fact]
