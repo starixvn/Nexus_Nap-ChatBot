@@ -3,13 +3,11 @@
     using Caching.Redis;
     using Core;
     using Data;
-    using Logging.Extensions;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.HttpOverrides;
-    using Microsoft.Bot.Builder.Integration.AspNet.Core;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -106,7 +104,6 @@
             app.UseStaticFiles();
             app.UseAuthorization();
             app.UseAuthentication();
-            app.UseBotFramework();
 
             app.UseEndpoints(endpoints =>
             {
