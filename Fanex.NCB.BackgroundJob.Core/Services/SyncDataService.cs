@@ -3,7 +3,6 @@
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
-using Logging;
 using Criteria.SyncData;
 using Models.Configurations;
 using Fanex.NCB.AutoJobs.Core.Models.Core;
@@ -13,6 +12,7 @@ using Repository;
 using Interfaces;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 public class SyncDataService : ISyncDataService
 {
@@ -25,7 +25,7 @@ public class SyncDataService : ISyncDataService
     public SyncDataService(IOptions<AppSettings> appSettings,
         ISyncDataRepository syncDataRepository,
         IBaseService baseService,
-        ILogger logger)
+        ILogger<SyncDataService> logger)
     {
         this.appSettings = appSettings;
         this.syncDataRepository = syncDataRepository;
@@ -55,7 +55,7 @@ public class SyncDataService : ISyncDataService
                 string.Empty,
                 exception.TargetSite,
                 exception.StackTrace);
-            await logger.ErrorAsync(errMsg);
+            logger.LogError(exception, errMsg);
         }
     }
 

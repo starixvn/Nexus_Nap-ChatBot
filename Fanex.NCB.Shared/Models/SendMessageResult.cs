@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.Shared.Models;
 
 using System;
-    using System.Collections.Generic;
+using System.Collections.Generic;
 
 public class SendMessageResult
 {
@@ -11,6 +11,6 @@ public class SendMessageResult
     public int ErrorCode { get; set; }
     public string ErrorMessage { get; set; }
     public bool IsIgnoreRetry { get; set; }
-        public string FailedImages => FailedAttachments.Count > 0 ? string.Join(",", FailedAttachments) : string.Empty;
-        public List<string> FailedAttachments { get; set; } = new List<string>();
+    public string FailedImages => FailedAttachments.Count > 0 ? string.Join(",", FailedAttachments) : string.Empty;
+    public List<string> FailedAttachments { get; set; } = new List<string>();
 }

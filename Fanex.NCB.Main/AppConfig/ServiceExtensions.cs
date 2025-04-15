@@ -28,7 +28,6 @@
             services.AddScoped<ICommonService, CommonService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<ISendNotificationService, SendNotificationService>();
-            services.AddScoped<ISyncDataService, SyncDataService>();
             services.AddScoped<INotificationTemplaceService, NotificationTemplaceService>();
             services.AddScoped<IViewLogService, ViewLogService>();
             services.AddScoped<ISettingConfigurationService, SettingConfigurationService>();

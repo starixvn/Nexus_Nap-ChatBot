@@ -3,7 +3,6 @@
     using Core;
     using Core.Criteria;
     using Core.Enum;
-    using Core.Services;
     using Core.Services.Interfaces;
     using Logging.Extensions;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -25,14 +24,14 @@
         private readonly IConversationService conversationService;
         private readonly IMessageLogService messageLogService;
         private readonly ICommonLogService commonLogService;
-        private readonly ISkypeBotService skypeBotService;
+        private readonly IBotFrameworkService skypeBotService;
 
         public NotifyController(
             IOptions<AppSettings> appSettings,
             ICommonLogService commonLogService,
             IMessageLogService messageLogService,
             IConversationService conversationService,
-            ISkypeBotService skypeBotService)
+            IBotFrameworkService skypeBotService)
         {
             this.appSettings = appSettings.Value;
             this.commonLogService = commonLogService;
@@ -119,27 +118,19 @@
             commonLogService.LogFileMessage(logMessage.ToString());
 
             var result = new SendMessageResult();
-            if (!appSettings.EnableChannels.Any(x => x == (byte)ConversationChannel.Skype))
+            try
+            {
+                await skypeBotService.SendMessageAsync(conversationInfo);
+            }
+            catch (Exception exception)
             {
                 result.ErrorCode = 1;
-                result.ErrorMessage = Resources.Resources.DisableChannelErrorMessage;
-            }
-            else
-            {
-                try
-                {
-                    await skypeBotService.SendMessageAsync(conversationInfo);
-                }
-                catch (Exception exception)
-                {
-                    result.ErrorCode = 1;
-                    result.ErrorMessage = exception.Message;
+                result.ErrorMessage = exception.Message;
 
-                    logMessage = new LogMessage(exception.Message)
-                        .AddSection("Params", param)
-                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
-                    commonLogService.LogFileMessage(logMessage.ToString());
-                }
+                logMessage = new LogMessage(exception.Message)
+                    .AddSection("Params", param)
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception));
+                commonLogService.LogFileMessage(logMessage.ToString());
             }
 
             return Ok(result);

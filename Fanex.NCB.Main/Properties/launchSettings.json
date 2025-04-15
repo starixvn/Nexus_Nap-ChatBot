@@ -21,7 +21,7 @@
       "nativeDebugging": false
     },
     "Fanex.NCB.Main": {
-      "commandName": "Executable",
+      "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

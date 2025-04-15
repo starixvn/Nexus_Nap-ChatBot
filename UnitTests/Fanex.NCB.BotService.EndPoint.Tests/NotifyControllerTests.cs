@@ -20,7 +20,7 @@ public class NotifyControllerTests
     private IMessageLogService messageLogService;
     private IConversationService conversationService;
     private ICommonLogService commonLogService;
-    private ISkypeBotService skypeBotService;
+    private IBotFrameworkService skypeBotService;
 
     [Fact]
     public async Task Test_WhenCalled_ReturnAsExpectedResult()
@@ -189,7 +189,7 @@ public class NotifyControllerTests
         commonLogService = Substitute.For<ICommonLogService>();
         messageLogService = Substitute.For<IMessageLogService>();
         conversationService = Substitute.For<IConversationService>();
-        skypeBotService = Substitute.For<ISkypeBotService>();
+        skypeBotService = Substitute.For<IBotFrameworkService>();
         return new NotifyController(appSettingOptions, commonLogService, messageLogService, conversationService, skypeBotService);
     }
 }

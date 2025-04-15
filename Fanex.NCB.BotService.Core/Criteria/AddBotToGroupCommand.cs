@@ -7,11 +7,13 @@ public class AddBotToGroupCommand : BaseCommand
 {
     public string BotConversationId { get; set; }
 
-    [SpParam(AllowNull = true)] public string BotName { get; set; }
+    [SpParam(AllowNull = true)]
+    public string BotName { get; set; }
 
     public string ConversationId { get; set; }
 
-    [SpParam(AllowNull = true)] public string GroupName { get; set; } = string.Empty;
+    [SpParam(AllowNull = true)] 
+    public string GroupName { get; set; } = string.Empty;
 
     public byte ChannelId { get; set; }
 

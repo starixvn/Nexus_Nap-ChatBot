@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NCB.Shared.Services
 {
     using Fanex.NCB.Shared.Services.Interfaces;
+    using Microsoft.Extensions.Logging;
     using NLog;
     using NLog.Web;
     using System;
@@ -8,12 +9,12 @@
 
     public class CommonLogService : ICommonLogService
     {
-        private readonly Logging.ILogger logger;
-        private readonly Logger nlog = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+        private readonly Microsoft.Extensions.Logging.ILogger logger;
+        private readonly NLog.Logger nlog = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
-        public CommonLogService(Logging.ILogger logger)
+        public CommonLogService(ILoggerFactory loggerFactory)
         {
-            this.logger = logger;
+            logger = loggerFactory.CreateLogger<CommonLogService>();
         }
 
         public void LogFileError(Exception exception)
@@ -28,17 +29,19 @@
 
         public void SentryError(string errMsg, Exception exception = null)
         {
-            logger.Error(errMsg, exception);
+            logger.LogError(exception, errMsg);
         }
 
-        public async Task SentryErrorAsync(string errMsg, Exception exception = null)
+        public Task SentryErrorAsync(string errMsg, Exception exception = null)
         {
-            await logger.ErrorAsync(errMsg, exception);
+            logger.LogError(exception, errMsg);
+            return Task.CompletedTask;
         }
 
-        public async Task SentryInfoAsync(string info)
+        public Task SentryInfoAsync(string info)
         {
-            await logger.InfoAsync(info);
+            logger.LogInformation(info);
+            return Task.CompletedTask;
         }
     }
 }

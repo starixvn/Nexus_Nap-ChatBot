@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
 using Fanex.Data.Repository;
-using Logging;
 using Criteria.SyncData;
 using Models.Configurations;
 using Models.NapUserControl;
@@ -17,13 +16,14 @@ using Microsoft.Extensions.Options;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Xunit;
+using Microsoft.Extensions.Logging;
 
 public class SyncDataServiceTests
 {
     private IOptionsSnapshot<AppSettings> appSettings;
     private ISyncDataRepository syncDataRepository;
     private IBaseService baseService;
-    private ILogger logger;
+    private ILogger<SyncDataService> logger;
 
     [Fact]
     public async Task NapUserControlSyncDataAsync_WhenCalled_ExecuteExpectedMethod()
@@ -65,7 +65,7 @@ public class SyncDataServiceTests
         await service.SyncNapDataForSSOLogin(1);
 
         //Assert
-        await logger.Received().ErrorAsync(Arg.Any<string>());
+        logger.Received().LogError(Arg.Any<Exception>(), Arg.Any<string>());
     }
 
     [Fact]
@@ -124,7 +124,7 @@ public class SyncDataServiceTests
         appSettings.Value.Returns(fixture.Create<AppSettings>());
         syncDataRepository = Substitute.For<ISyncDataRepository>();
         baseService = Substitute.For<IBaseService>();
-        logger = Substitute.For<ILogger>();
+        logger = Substitute.For<ILogger<SyncDataService>>();
         return new SyncDataService(appSettings, syncDataRepository, baseService, logger);
     }
 

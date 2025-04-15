@@ -27,7 +27,6 @@ public class AuthControllerTests
     private INapSession napSession;
     private INapSettings napSettings;
     private ISecurityService securityService;
-    private ISyncDataService syncDataService;
 
     [Fact]
     public void Index_WhenCalled_ReturnView()
@@ -324,10 +323,9 @@ public class AuthControllerTests
         groupService = Substitute.For<IGroupService>();
         napSettings = Substitute.For<INapSettings>();
         securityService = Substitute.For<ISecurityService>();
-        syncDataService = Substitute.For<ISyncDataService>();
         napSession = Substitute.For<INapSession>();
 
-        return new AuthController(userService, groupService, securityService, napSession, napSettings, syncDataService);
+        return new AuthController(userService, groupService, securityService, napSession, napSettings);
     }
 
     #endregion helper

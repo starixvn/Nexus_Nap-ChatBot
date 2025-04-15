@@ -1,26 +1,29 @@
-﻿namespace Fanex.NCB.BotService.EndPoint.Controllers;
-
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Fanex.NCB.BotService.EndPoint.Constants;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Microsoft.Extensions.DependencyInjection;
 
-[Route("api/messages")]
-[ApiController]
-public class BotController : ControllerBase
+namespace Fanex.NCB.BotService.EndPoint.Controllers
 {
-    private readonly IBotFrameworkHttpAdapter adapter;
-    private readonly IBot bot;
-
-    public BotController(IBotFrameworkHttpAdapter adapter, IBot bot)
+    [Route("api/messages")]
+    [ApiController]
+    public class BotController : ControllerBase
     {
-        this.adapter = adapter;
-        this.bot = bot;
-    }
+        private readonly IBotFrameworkHttpAdapter adapter;
+        private readonly IBot bot;
 
-    [HttpPost]
-    public async Task PostAsync()
-    {
-        await adapter.ProcessAsync(Request, Response, bot);
+        public BotController(IBotFrameworkHttpAdapter adapter, [FromKeyedServices(ServiceName.SkypeBot)] IBot bot)
+        {
+            this.adapter = adapter;
+            this.bot = bot;
+        }
+
+        [HttpPost]
+        public async Task PostAsync()
+        {
+            await adapter.ProcessAsync(Request, Response, bot);
+        }
     }
 }

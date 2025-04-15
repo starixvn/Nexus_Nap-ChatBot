@@ -60,7 +60,7 @@ export class AppContainer extends React.Component {
             platformOptions: [],
             integrationMethodOptions: [],
             initValue: {
-                channelIds: `${Channels.Skype},${Channels.Telegram}`,
+                channelIds: `${Channels.Skype},${Channels.Telegram},${Channels.Teams}`,
                 channelName: '',
                 notificationTypeId: '',
                 templateId: '',

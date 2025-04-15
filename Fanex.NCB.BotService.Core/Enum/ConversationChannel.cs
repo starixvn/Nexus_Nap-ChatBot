@@ -1,7 +1,9 @@
-﻿namespace Fanex.NCB.BotService.Core.Enum;
-
-public enum ConversationChannel
+﻿namespace Fanex.NCB.BotService.Core.Enum
 {
-    Skype = 1,
-    Telegram
+    public enum ConversationChannel
+    {
+        Skype = 1,
+        Telegram,
+        Teams = 3
+    }
 }
