@@ -1,19 +1,20 @@
-﻿namespace Fanex.NCB.BotService.EndPoint;
-
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-
-public static class Program
+﻿namespace Fanex.NCB.BotService.EndPoint
 {
-    public static void Main(string[] args)
-    {
-        CreateWebHostBuilder(args).Build().Run();
-    }
+    using Microsoft.AspNetCore;
+    using Microsoft.AspNetCore.Hosting;
 
-    public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+    public static class Program
     {
-        return WebHost.CreateDefaultBuilder(args)
-            .UseStartup<Startup>()
-            .UseSentry();
+        public static void Main(string[] args)
+        {
+            CreateWebHostBuilder(args).Build().Run();
+        }
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            return WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>()
+                .UseSentry();
+        }
     }
 }

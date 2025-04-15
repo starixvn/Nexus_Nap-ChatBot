@@ -98,6 +98,7 @@
 
                 _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
                 _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
+
                 await SendTextMessageAsync(botId, chatId, conversationInfo.Message.ToMarkdownV2());
             }
             catch (Exception exception)
@@ -123,6 +124,22 @@
 
 #pragma warning restore S2259
 
+        public async Task<Message> SendImageAsync(long botId, long chatId, string urlImage)
+        {
+            TelegramBotConfigurations bot = botConfigurations.FirstOrDefault(x => x.BotId == botId);
+
+            if (bot is { BotClient: { } })
+            {
+                var photo = new Telegram.Bot.Types.InputFiles.InputOnlineFile(urlImage);
+                Message message = await bot.BotClient.SendPhotoAsync(
+                    chatId: chatId,
+                    photo: photo);
+                return message;
+            }
+
+            throw new ArgumentNullException($"{botId} does not existed on config file");
+        }
+
         public async Task<SendMessageResult> ResendImageOnlyAsync(ConversationInfo conversationInfo)
         {
             var sendResult = new SendMessageResult
@@ -130,6 +147,7 @@
                 NotificationId = conversationInfo.NotificationId,
                 ConversationId = conversationInfo.ConversationId
             };
+
             _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
             _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
 
@@ -155,7 +173,11 @@
             var sendResult = await SendTextMessageAsync(conversationInfo);
             await AddMessageLogToDatabaseAsync(conversationInfo, sendResult);
             if (sendResult is not { ErrorCode: 0 } ||
-                conversationInfo.Attachments == null || conversationInfo.Attachments.Count <= 0) return sendResult;
+                conversationInfo.Attachments == null || conversationInfo.Attachments.Count <= 0)
+            {
+                return sendResult;
+            }
+
             _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
             _ = long.TryParse(conversationInfo.ConversationId, out var chatId);
 
@@ -231,22 +253,6 @@
                 sendMessageResult.ErrorMessage = ex.Message;
                 sendMessageResult.FailedAttachments.Add(urlImage);
             }
-        }
-
-        public async Task<Message> SendImageAsync(long botId, long chatId, string urlImage)
-        {
-            TelegramBotConfigurations bot = botConfigurations.FirstOrDefault(x => x.BotId == botId);
-
-            if (bot is { BotClient: { } })
-            {
-                var photo = new Telegram.Bot.Types.InputFiles.InputOnlineFile(urlImage);
-                Message message = await bot.BotClient.SendPhotoAsync(
-                    chatId: chatId,
-                    photo: photo);
-                return message;
-            }
-
-            throw new ArgumentNullException($"{botId} does not existed on config file");
         }
 
         protected internal virtual async Task<SendMessageResult> SendIndirectTextMessageAsync(ConversationInfo conversationInfo)
