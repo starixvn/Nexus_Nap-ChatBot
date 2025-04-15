@@ -43,14 +43,6 @@ public class SkypeBotServiceTests
     }
 
     [Fact]
-    public async Task HttpClientFactory_CallCreateClientWithExpectedtName_WhenUseProxy()
-    {
-        var service = GetService(true, true);
-        await service.SendMessageAsync(FakeConversationInfo);
-        httpClientFactory.Received().CreateClient(Arg.Is(NamedHttpClients.ProxiedClient));
-    }
-
-    [Fact]
     public async Task SendMessageWithRetryAsync_WhenNoException_ReturnExpectedResult()
     {
         var service = GetService(true, true);

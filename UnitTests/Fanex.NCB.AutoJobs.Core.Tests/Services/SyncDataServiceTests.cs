@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Xunit;
+using Microsoft.Extensions.Logging.Testing;
 using Microsoft.Extensions.Logging;
 
 public class SyncDataServiceTests
@@ -23,7 +24,7 @@ public class SyncDataServiceTests
     private IOptionsSnapshot<AppSettings> appSettings;
     private ISyncDataRepository syncDataRepository;
     private IBaseService baseService;
-    private ILogger<SyncDataService> logger;
+    private FakeLogger<SyncDataService> logger;
 
     [Fact]
     public async Task NapUserControlSyncDataAsync_WhenCalled_ExecuteExpectedMethod()
@@ -65,7 +66,9 @@ public class SyncDataServiceTests
         await service.SyncNapDataForSSOLogin(1);
 
         //Assert
-        logger.Received().LogError(Arg.Any<Exception>(), Arg.Any<string>());
+        Assert.NotNull(logger.LatestRecord);
+        Assert.Equal(LogLevel.Error, logger.LatestRecord.Level);
+        Assert.NotEmpty(logger.LatestRecord.Message);
     }
 
     [Fact]
@@ -124,7 +127,7 @@ public class SyncDataServiceTests
         appSettings.Value.Returns(fixture.Create<AppSettings>());
         syncDataRepository = Substitute.For<ISyncDataRepository>();
         baseService = Substitute.For<IBaseService>();
-        logger = Substitute.For<ILogger<SyncDataService>>();
+        logger = new FakeLogger<SyncDataService>();
         return new SyncDataService(appSettings, syncDataRepository, baseService, logger);
     }
 

@@ -8,34 +8,41 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Xunit;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Testing;
 
 public class ErrorHandlingMiddlewareTests
 {
     private RequestDelegate next;
-    private ILogger<ErrorHandlingMiddleware> logger;
+    private FakeLogger<ErrorHandlingMiddleware> logger;
 
     [Fact]
     public async Task WhenMiddleware_NotThrowException()
     {
+        //Arrange
         var middleware = SetupMiddleware();
         var httpContext = Substitute.For<HttpContext>();
-        //Actual
+
+        //Action
         await middleware.InvokeAsync(httpContext);
 
+        //Assert
         await next.Received().Invoke(Arg.Any<HttpContext>());
-        logger.DidNotReceive().LogError(Arg.Any<string>());
+        Assert.Equal(0, logger.Collector.Count);
     }
 
     [Fact]
     public async Task WhenMiddleware_WhenThrowException_AndRedirect()
     {
+        //Arrange
         var middleware = SetupMiddleware();
         var httpContext = Substitute.For<HttpContext>();
         next(Arg.Any<HttpContext>()).Throws(new Exception());
-        //Actual
+
+        //Act
         await middleware.InvokeAsync(httpContext);
 
-        logger.Received().LogError(Arg.Any<string>());
+        //Assert
+        Assert.True(logger.Collector.Count > 0);
     }
 
     [Fact]
@@ -55,7 +62,7 @@ public class ErrorHandlingMiddlewareTests
     private ErrorHandlingMiddleware SetupMiddleware()
     {
         next = Substitute.For<RequestDelegate>();
-        logger = Substitute.For<ILogger<ErrorHandlingMiddleware>>();
+        logger = new FakeLogger<ErrorHandlingMiddleware>();
         return new ErrorHandlingMiddleware(next, logger);
     }
 }

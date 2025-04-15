@@ -2,6 +2,7 @@
 {
     using Fanex.NCB.Shared.Services;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Logging.Testing;
     using NSubstitute;
     using System;
     using System.Threading.Tasks;
@@ -9,7 +10,7 @@
 
     public class CommonLogServiceTests
     {
-        private ILogger logger;
+        private FakeLogger<CommonLogService> logger;
         private NLog.Logger nlog;
 
         [Fact]
@@ -23,7 +24,9 @@
             await service.SentryErrorAsync("message", exception);
 
             // Assert
-            logger.Received().LogError(exception, Arg.Is<string>(x => x.Equals("message")));
+            Assert.Equal("message", logger.LatestRecord.Message);
+            Assert.Equal(exception, logger.LatestRecord.Exception);
+            Assert.Equal(LogLevel.Error, logger.LatestRecord.Level);
         }
 
         [Fact]
@@ -37,7 +40,9 @@
             service.SentryError("message", exception);
 
             // Assert
-            logger.Received().LogError(exception, Arg.Is<string>(x => x.Equals("message")));
+            Assert.Equal("message", logger.LatestRecord.Message);
+            Assert.Equal(exception, logger.LatestRecord.Exception);
+            Assert.Equal(LogLevel.Error, logger.LatestRecord.Level);
         }
 
         [Fact]
@@ -51,7 +56,8 @@
             await service.SentryInfoAsync(errMsg);
 
             // Assert
-            logger.Received().LogInformation(Arg.Is<string>(x => x.Equals(errMsg)));
+            Assert.Equal(errMsg, logger.LatestRecord.Message);
+            Assert.Equal(LogLevel.Information, logger.LatestRecord.Level);
         }
 
         [Fact]
@@ -88,7 +94,7 @@
         {
 
             var loggerFactory = Substitute.For<ILoggerFactory>();
-            logger = Substitute.For<ILogger>();
+            logger = new FakeLogger<CommonLogService>();
             loggerFactory.CreateLogger<CommonLogService>().Returns(logger);
             nlog = Substitute.For<NLog.Logger>();
             return new CommonLogService(loggerFactory);
