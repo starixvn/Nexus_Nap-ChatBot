@@ -22,9 +22,11 @@ public class CreateMissingMessageCommand : BaseCommand
             var xml = new StringBuilder();
             xml.Append("<root>");
             foreach (var message in Messages)
+            {
                 xml.AppendFormat("<r JobIdentify='{0}' MessageId='{1}'/>",
                     message.JobIdentify,
                     message.MessageId);
+            }
             xml.Append("</root>");
             return xml.ToString();
         }

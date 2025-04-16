@@ -91,9 +91,11 @@ public class SiteDbService : ISiteDbService
                 IEnumerable<DuplicatedTicketInfo>>>>();
 
         foreach (var siteDb in siteDbList)
+        {
             tasks.Add(
                 GetTicketUsernameInfoFromSiteDbAsync(abnormalBetsInfo, abnormalAccounts, dupTickets, siteDb)
             );
+        }
 
         var results = (await Task.WhenAll(tasks)).ToList();
 

@@ -1,18 +1,22 @@
-﻿namespace Fanex.NCB.BotService.Core;
-
-public static class BotHelper
+﻿namespace Fanex.NCB.BotService.Core
 {
-    public static string GetMessageInGroupByChannel(string sourceMessage, string botName)
+    public static class BotHelper
     {
-        var returnMessage = sourceMessage;
-
-        if (sourceMessage.StartsWith("@" + botName) || sourceMessage.StartsWith(botName))
+        public static string GetMessageInGroupByChannel(string sourceMessage, string botName)
         {
-            var indexOfCommand = sourceMessage.IndexOf(' ');
+            var returnMessage = sourceMessage;
 
-            if (indexOfCommand > 0) returnMessage = sourceMessage.Remove(0, indexOfCommand).Trim();
+            if (sourceMessage.StartsWith("@" + botName) || sourceMessage.StartsWith(botName))
+            {
+                var indexOfCommand = sourceMessage.IndexOf(' ');
+
+                if (indexOfCommand > 0)
+                {
+                    returnMessage = sourceMessage.Remove(0, indexOfCommand).Trim();
+                }
+            }
+
+            return returnMessage;
         }
-
-        return returnMessage;
     }
 }

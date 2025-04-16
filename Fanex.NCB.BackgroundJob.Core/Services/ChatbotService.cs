@@ -76,10 +76,11 @@
 
         private static string RemoveUnsupportedTags(string content)
         {
+            var regexTimeOut = TimeSpan.FromSeconds(100); // Added timeout
             string[] allowedTagsHtml = { "b", "strong", "i", "em", "ins", "u", "s", "strike", "del", "a", "tg-emoji", "code", "pre", "br" };
-            var regex = new Regex(@"(<br />|<hr />)");
+            var regex = new Regex(@"(<br />|<hr />)", RegexOptions.None, regexTimeOut); // Added timeout
             var replaceNewLine = regex.Replace(content, string.Empty);
-            string messageContentReplace = Regex.Replace(replaceNewLine, "<(?!/?(" + string.Join("|", allowedTagsHtml) + ")(>|\\s.*?>)).*?>", "");
+            string messageContentReplace = Regex.Replace(replaceNewLine, "<(?!/?(" + string.Join("|", allowedTagsHtml) + ")(>|\\s.*?>)).*?>", "", RegexOptions.None, regexTimeOut); // Added timeout
             return messageContentReplace;
         }
 

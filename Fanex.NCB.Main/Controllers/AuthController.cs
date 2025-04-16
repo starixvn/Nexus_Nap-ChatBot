@@ -8,7 +8,6 @@
     using Fanex.NCB.Core.Extensions;
     using Fanex.NCB.Models.Auth;
     using Fanex.NCB.NAPResolver;
-    using Fanex.NCB.Services.Interfaces;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;

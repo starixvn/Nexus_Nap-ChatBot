@@ -94,8 +94,12 @@ public class NapChatBotAuthAttribute : Attribute, IAsyncAuthorizationFilter
     private static IUserService GetUserService()
     {
         if (NapServicesRegistrationExtension.NAPResolverType == NapResolverType.Remote)
+        {
             return new UserService();
+        }
         else
+        {
             return new LocalUserService();
+        }
     }
 }

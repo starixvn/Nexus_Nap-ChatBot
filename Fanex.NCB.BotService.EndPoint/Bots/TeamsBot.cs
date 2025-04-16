@@ -11,6 +11,7 @@ using Fanex.NCB.BotService.Core.Services.Interfaces;
 using System;
 using Fanex.NCB.BotService.Core;
 using System.Web;
+using System.Globalization;
 
 namespace Fanex.NCB.BotService.EndPoint.Bots
 {
@@ -69,7 +70,7 @@ namespace Fanex.NCB.BotService.EndPoint.Bots
             if (activity.MentionsRecipient())
             {
                 activity.RemoveRecipientMention();
-                var text = activity.Text.Trim().ToLower();
+                var text = activity.Text.Trim().ToLower(CultureInfo.InvariantCulture);
                 var responseActivity = GetResponseActivity(text, turnContext);
                 await turnContext.SendActivityAsync(responseActivity, cancellationToken);
             }

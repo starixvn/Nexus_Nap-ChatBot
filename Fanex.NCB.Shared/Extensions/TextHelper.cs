@@ -1,31 +1,31 @@
-﻿namespace Fanex.NCB.Shared.Extensions;
-
-using System;
+﻿namespace Fanex.NCB.Shared.Extensions
+{
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
+    using System.Net;
+    using System.Text.RegularExpressions;
 
     [ExcludeFromCodeCoverage(Justification = "Helpers")]
-public static class TextHelper
-{
-    public static string HtmlToPlainText(string html)
+    public static class TextHelper
     {
-        const string tagWhiteSpace = @"(>|$)(\W|\n|\r)+<";
-        const string stripFormatting = @"<[^>]*(>|$)";
-        const string lineBreak = @"<(br|BR)\s{0,1}\/{0,1}>";
-        var lineBreakRegex = new Regex(lineBreak, RegexOptions.Multiline);
-        var stripFormattingRegex = new Regex(stripFormatting, RegexOptions.Multiline);
-        var tagWhiteSpaceRegex = new Regex(tagWhiteSpace, RegexOptions.Multiline);
+        public static string HtmlToPlainText(string html)
+        {
+            const string tagWhiteSpace = @"(>|$)(\W|\n|\r)+<";
+            const string stripFormatting = @"<[^>]*(>|$)";
+            const string lineBreak = @"<(br|BR)\s{0,1}\/{0,1}>";
+            var lineBreakRegex = new Regex(lineBreak, RegexOptions.Multiline, TimeSpan.FromSeconds(100));
+            var stripFormattingRegex = new Regex(stripFormatting, RegexOptions.Multiline, TimeSpan.FromSeconds(100));
+            var tagWhiteSpaceRegex = new Regex(tagWhiteSpace, RegexOptions.Multiline, TimeSpan.FromSeconds(100));
 
-        var text = html;
-        text = WebUtility.HtmlDecode(text);
-        text = tagWhiteSpaceRegex.Replace(text, "><");
-        text = lineBreakRegex.Replace(text, Environment.NewLine);
-        text = stripFormattingRegex.Replace(text, string.Empty);
+            var text = html;
+            text = WebUtility.HtmlDecode(text);
+            text = tagWhiteSpaceRegex.Replace(text, "><");
+            text = lineBreakRegex.Replace(text, Environment.NewLine);
+            text = stripFormattingRegex.Replace(text, string.Empty);
 
-        return text;
+            return text;
         }
 
         public static List<string> SplitStringToList(string text)
@@ -35,5 +35,6 @@ public static class TextHelper
                 return new List<string>();
             }
             return text.Split(",").ToList();
+        }
     }
 }

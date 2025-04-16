@@ -44,7 +44,10 @@
         public async Task<IActionResult> Get(int id)
         {
             var notification = await notificationService.GetEditNotificationInfoAsync(id);
-            if (notification != null) return Json(notification);
+            if (notification != null)
+            {
+                return Json(notification);
+            }
 
             return NotFound();
         }
@@ -96,7 +99,10 @@
                     result.Message = ex.Message;
                 }
 
-                if (result.IsSuccessful) PushSignalRUpdateNotificationStatus(data.NotificationId);
+                if (result.IsSuccessful)
+                {
+                    PushSignalRUpdateNotificationStatus(data.NotificationId);
+                }
             }
 
             return Json(result);

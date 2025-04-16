@@ -27,7 +27,16 @@ RUN dotnet nuget add source https://nuget.nexdev.net/api/v2
 
 RUN dotnet restore -v n -r linux-x64 "Fanex.NCB.Main/Fanex.NCB.Main.csproj"
 
-COPY . .
+COPY [".sonarlint/", ".sonarlint/"]
+COPY ["Fanex.NCB.Resources/", "Fanex.NCB.Resources/"]
+COPY ["Fanex.NCB.Models/", "Fanex.NCB.Models/"]
+COPY ["Fanex.NCB.Repository/", "Fanex.NCB.Repository/"]
+COPY ["Fanex.NCB.Services/", "Fanex.NCB.Services/"]
+COPY ["Fanex.NCB.Shared/", "Fanex.NCB.Shared/"]
+COPY ["Fanex.NCB.Criteria/", "Fanex.NCB.Criteria/"]
+COPY ["Fanex.NCB.Core/", "Fanex.NCB.Core/"]
+COPY ["Fanex.NCB.NAPResolver/", "Fanex.NCB.NAPResolver/"]
+COPY ["Fanex.NCB.Main/", "Fanex.NCB.Main/"]
 
 WORKDIR "/src/Fanex.NCB.Main"
 
@@ -38,6 +47,13 @@ FROM hub.nexdev.net/base/dotnet/core/aspnet:6.0-alpine-25h1 AS base
 ENV DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE=false
 ENV ASPNETCORE_URLS=http://+:5000
 EXPOSE 5000
+
+# Dont run as root
+RUN adduser --disabled-password \
+  --home /app \
+  --gecos '' dotnetuser && chown -R dotnetuser /app && chown -R dotnetuser /tmp
+USER dotnetuser
+#
 
 WORKDIR /app
 

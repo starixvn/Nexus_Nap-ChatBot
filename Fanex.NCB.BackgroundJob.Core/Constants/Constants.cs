@@ -11,4 +11,6 @@ public static class Constants
 
     public const string ServiceName_ResultAmendmentInternalCSD = "Result Amendment - Internal CSD";
     public const string ServiceName_ResultAmendmentLicensee = "Result Amendment - Licensee";
+
+    public static readonly TimeSpan RegexTimeOut = TimeSpan.FromSeconds(100);
 }

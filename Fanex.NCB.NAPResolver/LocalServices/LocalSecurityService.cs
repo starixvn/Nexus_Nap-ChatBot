@@ -1,206 +1,226 @@
-﻿namespace Fanex.NCB.NAPResolver.LocalServices;
-
-using System;
-using System.Globalization;
-using System.Threading.Tasks;
-using Fanex.NAP.Client.Models.ParameterObject;
-using Fanex.NAP.Client.Models.ValueObject;
-using NAP.Client.Services;
-using Core.Enum;
-using Criteria.LocalNap.Security;
-using Criteria.LocalNap.Site;
-using Shared.Services.Interfaces;
-
-public class LocalSecurityService : ISecurityService
+﻿namespace Fanex.NCB.NAPResolver.LocalServices
 {
-    private readonly IBaseService baseService;
 
-    public LocalSecurityService(IBaseService baseService)
-    {
-        this.baseService = baseService;
-    }
+    using System;
+    using System.Globalization;
+    using System.Threading.Tasks;
+    using Fanex.NAP.Client.Models.ParameterObject;
+    using Fanex.NAP.Client.Models.ValueObject;
+    using NAP.Client.Services;
+    using Core.Enum;
+    using Criteria.LocalNap.Security;
+    using Criteria.LocalNap.Site;
+    using Shared.Services.Interfaces;
 
-    public string GetTime()
+    public class LocalSecurityService : ISecurityService
     {
-        throw new NotImplementedException();
-    }
+        private readonly IBaseService baseService;
 
-    public async Task<string> GetTimeAsync()
-    {
-        var criteria = new UserSsoGetTimeUserCriteria
+        public LocalSecurityService(IBaseService baseService)
         {
-            Time = DateTimeOffset.Now.DateTime
-        };
+            this.baseService = baseService;
+        }
 
-        await baseService.GetDataAsync<int>(criteria);
-        return criteria.Time.ToString(CultureInfo.InvariantCulture);
-    }
-
-    public int Login(LoginParameter parameter)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<int> LoginAsync(LoginParameter parameter)
-    {
-        var onUserId = await UserCheckIn(parameter);
-        if (onUserId > 0) _ = LogUserLoginAsync(parameter);
-
-        return onUserId;
-    }
-
-    private async Task LogUserLoginAsync(LoginParameter parameter)
-    {
-        var logCriteria = new LogUserLoginCriteria
+        public string GetTime()
         {
-            UserId = parameter.UserId,
-            SiteId = parameter.SiteId,
-            LogDate = parameter.LoginDate,
-            DomainName = parameter.Domain,
-            BrowserName = parameter.BrowserName,
-            Platform = parameter.Platform,
-            IP = parameter.Ip,
-            CountryCode = parameter.CountryCode
-        };
-        await baseService.GetDataAsync<int>(logCriteria);
-    }
+            throw new NotImplementedException();
+        }
 
-    private async Task<int> UserCheckIn(LoginParameter parameter)
-    {
-        var criteria = new UserCheckInCriteria
+        public async Task<string> GetTimeAsync()
         {
-            UserId = parameter.UserId,
-            SiteId = parameter.SiteId,
-            NetSessionId = parameter.NetSessionId,
-            Ip = parameter.Ip,
-            LoginDate = parameter.LoginDate
-        };
+            var criteria = new UserSsoGetTimeUserCriteria
+            {
+                Time = DateTimeOffset.Now.DateTime
+            };
 
-        await baseService.GetDataAsync<int>(criteria);
+            await baseService.GetDataAsync<int>(criteria);
+            return criteria.Time.ToString(CultureInfo.InvariantCulture);
+        }
 
-        return criteria.OnUserId;
-    }
-
-    public void Logout(int onlineUserId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task LogoutAsync(int onlineUserId)
-    {
-        var criteria = new UserLogOutCriteria
+        public int Login(LoginParameter parameter)
         {
-            OnUserId = onlineUserId
-        };
+            throw new NotImplementedException();
+        }
 
-        await baseService.GetDataAsync<int>(criteria);
-    }
-
-    public int ReCheckIn(int onlineUserId, int siteId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<int> ReCheckInAsync(int onlineUserId, int siteId)
-    {
-        var isActivate = await IsActivatedAsync(siteId);
-
-        if (!isActivate) return (int)RecheckInStatus.KickOut;
-
-        var criteria = new UserReCheckInUserCriteria
+        public async Task<int> LoginAsync(LoginParameter parameter)
         {
-            OnUserId = onlineUserId,
-            IsKickedOut = false
-        };
+            var onUserId = await UserCheckIn(parameter);
+            if (onUserId > 0)
+            {
+                _ = LogUserLoginAsync(parameter);
+            }
 
-        await baseService.GetDataAsync<int>(criteria);
+            return onUserId;
+        }
 
-        if (criteria.IsPermissionChanged) return (int)RecheckInStatus.KickOutPermission;
-
-        if (criteria.IsKickedOut) return (int)RecheckInStatus.KickOut;
-
-        return (int)RecheckInStatus.Success;
-    }
-
-    public int SSOLogin(SSOLoginParameter parameter)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<int> SSOLoginAsync(SSOLoginParameter parameter)
-    {
-        var onUserId = await SSOCheckIn(parameter);
-        if (onUserId > 0) await LogSSOLoginAsync(parameter);
-
-        return onUserId;
-    }
-
-    private async Task<int> SSOCheckIn(SSOLoginParameter parameter)
-    {
-        var criteria = new UserSsoCheckInUserCriteria
+        private async Task LogUserLoginAsync(LoginParameter parameter)
         {
-            UserId = parameter.UserId,
-            SiteId = parameter.SiteId,
-            CheckOnUserId = parameter.CheckOnUserId,
-            IP = parameter.IP,
-            BrowserName = parameter.BrowserName,
-            NetSessionId = parameter.NetSessionId,
-            Platform = parameter.Platform,
-            LoginDate = parameter.LoginDate
-        };
-        await baseService.GetDataAsync<int>(criteria);
-        return criteria.OnUserId;
-    }
+            var logCriteria = new LogUserLoginCriteria
+            {
+                UserId = parameter.UserId,
+                SiteId = parameter.SiteId,
+                LogDate = parameter.LoginDate,
+                DomainName = parameter.Domain,
+                BrowserName = parameter.BrowserName,
+                Platform = parameter.Platform,
+                IP = parameter.Ip,
+                CountryCode = parameter.CountryCode
+            };
+            await baseService.GetDataAsync<int>(logCriteria);
+        }
 
-    private async Task LogSSOLoginAsync(SSOLoginParameter parameter)
-    {
-        var logCriteria = new LogUserLoginCriteria
+        private async Task<int> UserCheckIn(LoginParameter parameter)
         {
-            UserId = parameter.UserId,
-            SiteId = parameter.SiteId,
-            LogDate = parameter.LoginDate,
-            DomainName = parameter.Domain,
-            BrowserName = parameter.BrowserName,
-            Platform = parameter.Platform,
-            IP = parameter.IP,
-            CountryCode = parameter.CountryCode
-        };
+            var criteria = new UserCheckInCriteria
+            {
+                UserId = parameter.UserId,
+                SiteId = parameter.SiteId,
+                NetSessionId = parameter.NetSessionId,
+                Ip = parameter.Ip,
+                LoginDate = parameter.LoginDate
+            };
 
-        await baseService.GetDataAsync<int>(logCriteria);
-    }
+            await baseService.GetDataAsync<int>(criteria);
 
-    public bool UpdatePassword(int siteId, int userId, string password)
-    {
-        throw new NotImplementedException();
-    }
+            return criteria.OnUserId;
+        }
 
-    public Task<bool> UpdatePasswordAsync(int siteId, int userId, string password)
-    {
-        throw new NotImplementedException();
-    }
-
-    private async Task<bool> IsActivatedAsync(int siteId)
-    {
-        var criteria = new GetByIdSiteCriteria
+        public void Logout(int onlineUserId)
         {
-            SiteId = siteId
-        };
+            throw new NotImplementedException();
+        }
 
-        var isActive = false;
-        var site = await baseService.GetDataEntityAsync<SiteUrl>(criteria);
+        public async Task LogoutAsync(int onlineUserId)
+        {
+            var criteria = new UserLogOutCriteria
+            {
+                OnUserId = onlineUserId
+            };
 
-        if (site != null) isActive = site.IsActive;
+            await baseService.GetDataAsync<int>(criteria);
+        }
 
-        return isActive;
-    }
+        public int ReCheckIn(int onlineUserId, int siteId)
+        {
+            throw new NotImplementedException();
+        }
 
-    public bool UpdateProfile(int siteId, UpdateUserInfoParameter parameter)
-    {
-        throw new NotImplementedException();
-    }
+        public async Task<int> ReCheckInAsync(int onlineUserId, int siteId)
+        {
+            var isActivate = await IsActivatedAsync(siteId);
 
-    public Task<bool> UpdateProfileAsync(int siteId, UpdateUserInfoParameter parameter)
-    {
-        throw new NotImplementedException();
+            if (!isActivate)
+            {
+                return (int)RecheckInStatus.KickOut;
+            }
+
+            var criteria = new UserReCheckInUserCriteria
+            {
+                OnUserId = onlineUserId,
+                IsKickedOut = false
+            };
+
+            await baseService.GetDataAsync<int>(criteria);
+
+            if (criteria.IsPermissionChanged)
+            {
+                return (int)RecheckInStatus.KickOutPermission;
+            }
+
+            if (criteria.IsKickedOut)
+            {
+                return (int)RecheckInStatus.KickOut;
+            }
+
+            return (int)RecheckInStatus.Success;
+        }
+
+        public int SSOLogin(SSOLoginParameter parameter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<int> SSOLoginAsync(SSOLoginParameter parameter)
+        {
+            var onUserId = await SSOCheckIn(parameter);
+            if (onUserId > 0)
+            {
+                await LogSSOLoginAsync(parameter);
+            }
+
+            return onUserId;
+        }
+
+        private async Task<int> SSOCheckIn(SSOLoginParameter parameter)
+        {
+            var criteria = new UserSsoCheckInUserCriteria
+            {
+                UserId = parameter.UserId,
+                SiteId = parameter.SiteId,
+                CheckOnUserId = parameter.CheckOnUserId,
+                IP = parameter.IP,
+                BrowserName = parameter.BrowserName,
+                NetSessionId = parameter.NetSessionId,
+                Platform = parameter.Platform,
+                LoginDate = parameter.LoginDate
+            };
+            await baseService.GetDataAsync<int>(criteria);
+            return criteria.OnUserId;
+        }
+
+        private async Task LogSSOLoginAsync(SSOLoginParameter parameter)
+        {
+            var logCriteria = new LogUserLoginCriteria
+            {
+                UserId = parameter.UserId,
+                SiteId = parameter.SiteId,
+                LogDate = parameter.LoginDate,
+                DomainName = parameter.Domain,
+                BrowserName = parameter.BrowserName,
+                Platform = parameter.Platform,
+                IP = parameter.IP,
+                CountryCode = parameter.CountryCode
+            };
+
+            await baseService.GetDataAsync<int>(logCriteria);
+        }
+
+        public bool UpdatePassword(int siteId, int userId, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdatePasswordAsync(int siteId, int userId, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task<bool> IsActivatedAsync(int siteId)
+        {
+            var criteria = new GetByIdSiteCriteria
+            {
+                SiteId = siteId
+            };
+
+            var isActive = false;
+            var site = await baseService.GetDataEntityAsync<SiteUrl>(criteria);
+
+            if (site != null)
+            {
+                isActive = site.IsActive;
+            }
+
+            return isActive;
+        }
+
+        public bool UpdateProfile(int siteId, UpdateUserInfoParameter parameter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateProfileAsync(int siteId, UpdateUserInfoParameter parameter)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

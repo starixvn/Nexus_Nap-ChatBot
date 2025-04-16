@@ -77,7 +77,9 @@ namespace Fanex.NCB.SkypeBot.Controllers
                 });
 
                 if (result.IsSuccessful && !string.IsNullOrWhiteSpace(notificationIds))
+                {
                     PushSignalRNewNotification(notificationIds);
+                }
             }
 
             return Json(result);

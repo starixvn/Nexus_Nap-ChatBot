@@ -36,7 +36,10 @@ public class PushSignalRService : IPushSignalRService
         await ReInitConnect();
         await hubConnection.InvokeAsync(signalRSettings.UpdateErrorNotification).ContinueWith(task =>
         {
-            if (task.IsFaulted) logger.WriteExceptionSentryErrorAsync(task.Exception);
+            if (task.IsFaulted)
+            {
+                logger.WriteExceptionSentryErrorAsync(task.Exception);
+            }
         });
     }
 
@@ -46,7 +49,10 @@ public class PushSignalRService : IPushSignalRService
 
         await hubConnection.InvokeAsync(signalRSettings.UpdateNewNotification, notificationIds).ContinueWith(task =>
         {
-            if (task.IsFaulted) logger.WriteExceptionSentryErrorAsync(task.Exception);
+            if (task.IsFaulted)
+            {
+                logger.WriteExceptionSentryErrorAsync(task.Exception);
+            }
         });
     }
 
@@ -56,12 +62,18 @@ public class PushSignalRService : IPushSignalRService
 
         await hubConnection.InvokeAsync(signalRSettings.UpdateNotificationStatus, notificationIds).ContinueWith(task =>
         {
-            if (task.IsFaulted) logger.WriteExceptionSentryErrorAsync(task.Exception);
+            if (task.IsFaulted)
+            {
+                logger.WriteExceptionSentryErrorAsync(task.Exception);
+            }
         });
     }
 
     private async Task ReInitConnect()
     {
-        if (hubConnection.State == HubConnectionState.Disconnected) await hubConnection.StartAsync();
+        if (hubConnection.State == HubConnectionState.Disconnected)
+        {
+            await hubConnection.StartAsync();
+        }
     }
 }

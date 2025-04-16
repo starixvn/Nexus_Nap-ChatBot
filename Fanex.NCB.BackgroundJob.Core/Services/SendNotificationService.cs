@@ -104,7 +104,10 @@ public class SendNotificationService : ISendNotificationService
             Resources.MessageIsTooLong,
             Resources.GroupChatDeleted
         };
-        if (errorMsgs.Contains(errMsg)) return errMsg;
+        if (errorMsgs.Contains(errMsg))
+        {
+            return errMsg;
+        }
 
         return recipientStatus == RecipientStatuses.BotServiceError
             ? $"[Internal Error] {errMsg}"
@@ -118,7 +121,9 @@ public class SendNotificationService : ISendNotificationService
         var notifications =
             await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria);
         if (!string.IsNullOrWhiteSpace(criteria.UpdatedNotificationIds))
+        {
             PushSignalUpdateNotiStatus(criteria.UpdatedNotificationIds);
+        }
 
         return notifications;
     }
@@ -168,9 +173,13 @@ public class SendNotificationService : ISendNotificationService
             if (response.IsSuccessStatusCode && response.StatusCode.Equals(HttpStatusCode.OK))
             {
                 if (response.NotificationMessageResult.Any())
+                {
                     await UpdateStatusAfterSendNotificationAsync(originRecipients, response.NotificationMessageResult);
+                }
                 else
+                {
                     await UpdateFailedStatusForBatchAsync(recipients, originRecipients, "Bot Service Error");
+                }
             }
             else
             {
@@ -263,7 +272,9 @@ public class SendNotificationService : ISendNotificationService
         var itemEachBatch = appSettings.ItemEachBatchSendNotification;
         var totalBatch = (int)Math.Ceiling((double)recipients.Count() / itemEachBatch);
         for (var i = 0; i < totalBatch; i++)
+        {
             batchRecipients.Add(recipients.Skip(i * itemEachBatch).Take(itemEachBatch).ToList());
+        }
 
         foreach (var batch in batchRecipients)
         {
@@ -279,6 +290,7 @@ public class SendNotificationService : ISendNotificationService
                 }));
 
             foreach (var item in newBatches)
+            {
                 item.Recipients = new List<ConversationInfo>(batch.Where(r => r.NotificationId == item.NotificationId)
                     .Select(r => new ConversationInfo
                     {
@@ -286,9 +298,10 @@ public class SendNotificationService : ISendNotificationService
                         ServiceUrl = r.ServiceUrl,
                         ChannelId = r.ChannelName,
                         ConversationId = r.ChatGroupConversationId,
-                            BotName = r.BotName,
-                            FailedImages = TextHelper.SplitStringToList(r.FailedImages)
+                        BotName = r.BotName,
+                        FailedImages = TextHelper.SplitStringToList(r.FailedImages)
                     }).CustomeDistinctBy(r => r.ConversationId));
+            }
 
             batches.Add((newBatches, batch));
         }
@@ -305,12 +318,17 @@ public class SendNotificationService : ISendNotificationService
             var lastBatchRecipients = batches.LastOrDefault().Item1.LastOrDefault()?.Recipients;
 
             if (lastBatchRecipients is not null)
+            {
                 lastBatchRecipients = channelId == (byte)ConversationChannel.Telegram
                     ? AddMonitorRecipientForTelegram(lastBatchRecipients)
                     : AddMonitorRecipient(lastBatchRecipients);
+            }
 
             var lastItem = batches.LastOrDefault().Item1.LastOrDefault();
-            if (lastItem is not null) lastItem.Recipients = lastBatchRecipients;
+            if (lastItem is not null)
+            {
+                lastItem.Recipients = lastBatchRecipients;
+            }
         }
     }
 
@@ -363,9 +381,14 @@ public class SendNotificationService : ISendNotificationService
             await baseService.ExecuteNonQueryAsync(command);
 
             if (!string.IsNullOrWhiteSpace(command.UpdatedNotificationIds))
+            {
                 PushSignalUpdateNotiStatus(command.UpdatedNotificationIds);
+            }
 
-            if (command.IsHaveErrNotification) PushSignalNewErrNotification();
+            if (command.IsHaveErrNotification)
+            {
+                PushSignalNewErrNotification();
+            }
         }
     }
 

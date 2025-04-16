@@ -1,383 +1,413 @@
-﻿namespace Fanex.NCB.Services;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Core.Enum;
-using Core.Extensions;
-using Fanex.NCB.Core.Models;
-using Criteria.SendNotification;
-using Models.NotifictaionSendMessage;
-using Interfaces;
-    using Fanex.NCB.Shared.Extensions;
-using Fanex.NCB.Shared.Models;
-using Fanex.NCB.Shared.Services.Interfaces;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-
-public class SendNotificationService : ISendNotificationService
+﻿namespace Fanex.NCB.Services
 {
-    private readonly IChatbotService chatbotService;
-    private readonly IBaseService baseService;
-    private readonly IPushSignalRService pushSignalService;
-    private readonly AppSettings appSettings;
-    private readonly MonitorChatbot monitorChatBot;
-    private readonly ILogService logService;
-    private readonly MonitorTelegramBot monitorTelegramBot;
 
-    public SendNotificationService(
-        IChatbotService chatbotService,
-        IBaseService baseService,
-        IPushSignalRService pushSignalService,
-        ILogService logService,
-        IOptionsSnapshot<AppSettings> appSettingOptions,
-        IOptionsSnapshot<MonitorChatbot> monitorChatBotOptions,
-        IOptionsSnapshot<MonitorTelegramBot> monitorTelegramBotOptions)
-    {
-        this.chatbotService = chatbotService;
-        this.baseService = baseService;
-        this.pushSignalService = pushSignalService;
-        this.logService = logService;
-        appSettings = appSettingOptions.Value;
-        monitorChatBot = monitorChatBotOptions.Value;
-        monitorTelegramBot = monitorTelegramBotOptions.Value;
-    }
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Threading.Tasks;
+    using Core.Enum;
+    using Core.Extensions;
+    using Fanex.NCB.Core.Models;
+    using Criteria.SendNotification;
+    using Models.NotifictaionSendMessage;
+    using Interfaces;
+    using Fanex.NCB.Shared.Extensions;
+    using Fanex.NCB.Shared.Models;
+    using Fanex.NCB.Shared.Services.Interfaces;
+    using Microsoft.Extensions.Options;
+    using Newtonsoft.Json;
 
-    public async Task ScanAndSendNotificationAsync()
+    public class SendNotificationService : ISendNotificationService
     {
-        var (notifications, recipients) = await GetNotificationPlannedToSendAsync();
-        if (notifications.Any())
+        private readonly IChatbotService chatbotService;
+        private readonly IBaseService baseService;
+        private readonly IPushSignalRService pushSignalService;
+        private readonly AppSettings appSettings;
+        private readonly MonitorChatbot monitorChatBot;
+        private readonly ILogService logService;
+        private readonly MonitorTelegramBot monitorTelegramBot;
+
+        public SendNotificationService(
+            IChatbotService chatbotService,
+            IBaseService baseService,
+            IPushSignalRService pushSignalService,
+            ILogService logService,
+            IOptionsSnapshot<AppSettings> appSettingOptions,
+            IOptionsSnapshot<MonitorChatbot> monitorChatBotOptions,
+            IOptionsSnapshot<MonitorTelegramBot> monitorTelegramBotOptions)
         {
-            await UpdateFailedRecipientStatusAsync(recipients
-                .Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)).ToList());
+            this.chatbotService = chatbotService;
+            this.baseService = baseService;
+            this.pushSignalService = pushSignalService;
+            this.logService = logService;
+            appSettings = appSettingOptions.Value;
+            monitorChatBot = monitorChatBotOptions.Value;
+            monitorTelegramBot = monitorTelegramBotOptions.Value;
+        }
+
+        public async Task ScanAndSendNotificationAsync()
+        {
+            var (notifications, recipients) = await GetNotificationPlannedToSendAsync();
+            if (notifications.Any())
+            {
+                await UpdateFailedRecipientStatusAsync(recipients
+                    .Where(r => !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)).ToList());
+                var readyToSendRecipients =
+                    recipients.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)).ToList();
+
+                await SendNotificationToRecipients(notifications, readyToSendRecipients);
+            }
+        }
+
+        public async Task SendNotificationImmediatelyAsync(int notifiactionId)
+        {
+            var criteria = new GetNotificationByIdCriteria
+            {
+                NotificationId = notifiactionId
+            };
+            var (notifications, recipients) =
+                await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria);
+
+            await UpdateFailedRecipientStatusAsync(recipients.Where(r =>
+                !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)
+                && !r.RecipientStatus.Equals(RecipientStatuses.BotServiceError)).ToList());
+
             var readyToSendRecipients =
                 recipients.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)).ToList();
-
             await SendNotificationToRecipients(notifications, readyToSendRecipients);
         }
-    }
 
-    public async Task SendNotificationImmediatelyAsync(int notifiactionId)
-    {
-        var criteria = new GetNotificationByIdCriteria
+        protected internal virtual async Task UpdateFailedRecipientStatusAsync(
+            IEnumerable<NotificationRecipient> recipients, bool isRetry = false)
         {
-            NotificationId = notifiactionId
-        };
-        var (notifications, recipients) =
-            await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria);
-
-        await UpdateFailedRecipientStatusAsync(recipients.Where(r =>
-            !r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)
-            && !r.RecipientStatus.Equals(RecipientStatuses.BotServiceError)).ToList());
-
-        var readyToSendRecipients =
-            recipients.Where(r => r.RecipientStatus.Equals(RecipientStatuses.ReadyToSend)).ToList();
-        await SendNotificationToRecipients(notifications, readyToSendRecipients);
-    }
-
-    protected internal virtual async Task UpdateFailedRecipientStatusAsync(
-        IEnumerable<NotificationRecipient> recipients, bool isRetry = false)
-    {
-        if (recipients.Any())
-        {
-            var updateNoti = recipients.Select(r => new UpdateNotificationModel
+            if (recipients.Any())
             {
-                NotificationID = r.NotificationId,
-                RecipientID = r.RecipientId,
-                SentTime = DateTimeExtension.ConvertToDateTimeString(DateTimeOffset.UtcNow.DateTime),
-                ConversationGroupID = r.ChatGroupId,
-                ConversationBotID = r.BotId,
-                Retry = isRetry,
-                IsSuccess = false,
+                var updateNoti = recipients.Select(r => new UpdateNotificationModel
+                {
+                    NotificationID = r.NotificationId,
+                    RecipientID = r.RecipientId,
+                    SentTime = DateTimeExtension.ConvertToDateTimeString(DateTimeOffset.UtcNow.DateTime),
+                    ConversationGroupID = r.ChatGroupId,
+                    ConversationBotID = r.BotId,
+                    Retry = isRetry,
+                    IsSuccess = false,
                     ErrMsg = GenerateErrorMessage(r.RecipientStatus, r.ErrorMessage),
                     FailedImages = r.FailedImages != null && r.FailedImages.Any() ? string.Join(",", r.FailedImages) : string.Empty
-            });
+                });
 
-            await UpdateSentNotificationStatusAsync(updateNoti);
-        }
-    }
-
-    private static string GenerateErrorMessage(RecipientStatuses recipientStatus, string errMsg)
-    {
-        var errorMsgs = new[]
-        {
-            Resources.Resources.DisableChannelErrorMessage,
-            Resources.Resources.DuplicatedErrorMessage,
-            Resources.Resources.MessageIsTooLong,
-            Resources.Resources.GroupChatDeleted
-        };
-        if (errorMsgs.Contains(errMsg)) return errMsg;
-
-        return recipientStatus == RecipientStatuses.BotServiceError
-            ? $"[Internal Error] {errMsg}"
-            : EnumHelper.GetDescription(recipientStatus);
-    }
-
-    protected internal virtual async Task<(IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>)>
-        GetNotificationPlannedToSendAsync()
-    {
-        var criteria = new GetNotificationsToSendCriteria();
-        var notifications =
-            await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria);
-        if (!string.IsNullOrWhiteSpace(criteria.UpdatedNotificationIds))
-            PushSignalUpdateNotiStatus(criteria.UpdatedNotificationIds);
-
-        return notifications;
-    }
-
-    private static IEnumerable<NotificationRecipient> GetDistinctChatGroupConversationId(
-        IEnumerable<NotificationRecipient> recipients)
-    {
-        var cloneRecipients = new List<NotificationRecipient>(recipients);
-        return cloneRecipients.GroupBy(g => new { g.NotificationId, g.ChatGroupConversationId })
-            .Select(group => group.FirstOrDefault()).OrderBy(r => r.NotificationId).ToList();
-    }
-
-    protected internal virtual async Task SendNotificationToRecipients(
-        IEnumerable<NotificationSendMessage> notifications,
-        IEnumerable<NotificationRecipient> recipients)
-    {
-        await Task.WhenAll(
-            SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications, recipients),
-            SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications, recipients),
-            SendMessageByChannelAsync((byte)ConversationChannel.Teams, notifications, recipients)
-        );
-    }
-
-    private async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationSendMessage> notifications,
-        IEnumerable<NotificationRecipient> recipients)
-    {
-        var filterNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
-        var filterRecipients = recipients.Where(x =>
-            x.ChannelId == channelId && filterNotifications.Exists(y => y.NotificationId == x.NotificationId)).ToList();
-        var distinctRecipients = GetDistinctChatGroupConversationId(filterRecipients);
-
-        var batches = DivideNotificationBatch(channelId, filterNotifications, distinctRecipients);
-        foreach (var batch in batches) await SendMultiMessageAsync(channelId, batch.Item1, batch.Item2, recipients);
-    }
-
-    protected internal virtual async Task SendMultiMessageAsync(
-        byte channelId,
-        IEnumerable<NotificationMessage> messages,
-        IEnumerable<NotificationRecipient> recipients,
-        IEnumerable<NotificationRecipient> originRecipients)
-    {
-        try
-        {
-            var response = await chatbotService.SendMultiMessageAsync(channelId, messages);
-            if (response.IsSuccessStatusCode && response.StatusCode.Equals(HttpStatusCode.OK))
-            {
-                if (response.NotificationMessageResult.Any())
-                    await UpdateStatusAfterSendNotificationAsync(originRecipients, response.NotificationMessageResult);
-                else
-                    await UpdateFailedStatusForBatchAsync(recipients, originRecipients, "Bot Service Error");
-            }
-            else
-            {
-                await UpdateFailedStatusForBatchAsync(recipients, originRecipients,
-                    $"Status Code: {response.StatusCode}");
-                await logService.WriteMessageSentryErrorAsync(
-                    $"Send Message fail - Status Code: {response.StatusCode}");
-            }
-        }
-        catch (Exception exception)
-        {
-            await UpdateFailedStatusForBatchAsync(recipients, originRecipients, exception.Message);
-            await logService.WriteExceptionSentryErrorAsync(exception);
-        }
-    }
-
-    protected internal virtual async Task UpdateFailedStatusForBatchAsync(
-        IEnumerable<NotificationRecipient> recipients,
-        IEnumerable<NotificationRecipient> originRecipients,
-        string errorMessage)
-    {
-        var updateNotiModels = new List<UpdateNotificationModel>();
-        foreach (var recipient in originRecipients)
-        {
-            var results = recipients.Where(r => r.NotificationId == recipient.NotificationId
-                                                && r.ChatGroupConversationId == recipient.ChatGroupConversationId);
-
-            foreach (var result in results)
-            {
-                var model = new UpdateNotificationModel
-                {
-                    NotificationID = recipient.NotificationId,
-                    RecipientID = recipient.RecipientId,
-                    SentTime = DateTimeExtension.ConvertToDateTimeString(DateTimeOffset.UtcNow.DateTime),
-                    ConversationGroupID = recipient.ChatGroupId,
-                    ConversationBotID = recipient.BotId,
-                    Retry = true,
-                    IsSuccess = false,
-                        ErrMsg = GenerateErrorMessage(RecipientStatuses.BotServiceError, errorMessage),
-                        FailedImages = string.Empty
-                };
-                updateNotiModels.Add(model);
+                await UpdateSentNotificationStatusAsync(updateNoti);
             }
         }
 
-        await UpdateSentNotificationStatusAsync(updateNotiModels);
-    }
-
-    protected internal virtual async Task UpdateStatusAfterSendNotificationAsync(
-        IEnumerable<NotificationRecipient> recipients,
-        IEnumerable<SendMessageResult> responseMessages)
-    {
-        var updateNotiModels = new List<UpdateNotificationModel>();
-        foreach (var recipient in recipients)
+        private static string GenerateErrorMessage(RecipientStatuses recipientStatus, string errMsg)
         {
-            var results = responseMessages.Where(r => r.NotificationId == recipient.NotificationId
-                                                      && r.ConversationId == recipient.ChatGroupConversationId);
-
-            foreach (var result in results)
+            var errorMsgs = new[]
             {
-                var model = new UpdateNotificationModel
-                {
-                    NotificationID = recipient.NotificationId,
-                    RecipientID = recipient.RecipientId,
-                    SentTime = DateTimeExtension.ConvertToDateTimeString(result.SentTime),
-                    ConversationGroupID = recipient.ChatGroupId,
-                    ConversationBotID = recipient.BotId,
-                    Retry = result.ErrorCode != 0 && !result.IsIgnoreRetry,
-                    IsSuccess = result.ErrorCode == 0,
-                        FailedImages = result.FailedImages,
-                    ErrMsg = result.ErrorCode == 0
-                        ? string.Empty
-                        : GenerateErrorMessage(RecipientStatuses.BotServiceError, result.ErrorMessage)
-                };
-                updateNotiModels.Add(model);
+                Resources.Resources.DisableChannelErrorMessage,
+                Resources.Resources.DuplicatedErrorMessage,
+                Resources.Resources.MessageIsTooLong,
+                Resources.Resources.GroupChatDeleted
+            };
+            if (errorMsgs.Contains(errMsg))
+            {
+                return errMsg;
             }
+
+            return recipientStatus == RecipientStatuses.BotServiceError
+                ? $"[Internal Error] {errMsg}"
+                : EnumHelper.GetDescription(recipientStatus);
         }
 
-        await UpdateSentNotificationStatusAsync(updateNotiModels);
-    }
+        protected internal virtual async Task<(IEnumerable<NotificationSendMessage>, IEnumerable<NotificationRecipient>)>
+            GetNotificationPlannedToSendAsync()
+        {
+            var criteria = new GetNotificationsToSendCriteria();
+            var notifications =
+                await baseService.FetchMultipleAsync<NotificationSendMessage, NotificationRecipient>(criteria);
+            if (!string.IsNullOrWhiteSpace(criteria.UpdatedNotificationIds))
+            {
+                PushSignalUpdateNotiStatus(criteria.UpdatedNotificationIds);
+            }
 
-    protected internal virtual IEnumerable<(List<NotificationMessage>, List<NotificationRecipient>)>
-        DivideNotificationBatch(
-            byte channelId,
+            return notifications;
+        }
+
+        private static IEnumerable<NotificationRecipient> GetDistinctChatGroupConversationId(
+            IEnumerable<NotificationRecipient> recipients)
+        {
+            var cloneRecipients = new List<NotificationRecipient>(recipients);
+            return cloneRecipients.GroupBy(g => new { g.NotificationId, g.ChatGroupConversationId })
+                .Select(group => group.FirstOrDefault())
+                .OrderBy(r => r.NotificationId)
+                .ToList();
+        }
+
+        protected internal virtual async Task SendNotificationToRecipients(
             IEnumerable<NotificationSendMessage> notifications,
             IEnumerable<NotificationRecipient> recipients)
-    {
-        var batches = new List<(List<NotificationMessage>, List<NotificationRecipient>)>();
-        var batchRecipients = new List<List<NotificationRecipient>>();
-        var itemEachBatch = appSettings.ItemEachBatchSendNotification;
-        var totalBatch = (int)Math.Ceiling((double)recipients.Count() / itemEachBatch);
-        for (var i = 0; i < totalBatch; i++)
-            batchRecipients.Add(recipients.Skip(i * itemEachBatch).Take(itemEachBatch).ToList());
-
-        foreach (var batch in batchRecipients)
         {
-            var listNotificationIds = batch.Select(p => p.NotificationId).Distinct();
-            var newBatches = new List<NotificationMessage>(notifications
-                .Where(noti => listNotificationIds.Any(l => l == noti.NotificationId))
-                .Select(n => new NotificationMessage
-                {
-                    NotificationId = n.NotificationId,
-                    ChannelId = n.ChannelId,
-                                    Message = n.Content,
-                                    Attachments = n.Attachments
-                }));
+            await Task.WhenAll(
+                SendMessageByChannelAsync((byte)ConversationChannel.Skype, notifications, recipients),
+                SendMessageByChannelAsync((byte)ConversationChannel.Telegram, notifications, recipients),
+                SendMessageByChannelAsync((byte)ConversationChannel.Teams, notifications, recipients)
+            );
+        }
 
-            foreach (var item in newBatches)
-                item.Recipients = new List<ConversationInfo>(batch.Where(r => r.NotificationId == item.NotificationId)
-                    .Select(r => new ConversationInfo
+        private async Task SendMessageByChannelAsync(byte channelId, IEnumerable<NotificationSendMessage> notifications,
+            IEnumerable<NotificationRecipient> recipients)
+        {
+            var filterNotifications = notifications.Where(x => x.ChannelId == channelId).ToList();
+            var filterRecipients = recipients.Where(x =>
+                x.ChannelId == channelId && filterNotifications.Exists(y => y.NotificationId == x.NotificationId)).ToList();
+            var distinctRecipients = GetDistinctChatGroupConversationId(filterRecipients);
+
+            var batches = DivideNotificationBatch(channelId, filterNotifications, distinctRecipients);
+            foreach (var batch in batches)
+            {
+                await SendMultiMessageAsync(channelId, batch.Item1, batch.Item2, recipients);
+            }
+        }
+
+        protected internal virtual async Task SendMultiMessageAsync(
+            byte channelId,
+            IEnumerable<NotificationMessage> messages,
+            IEnumerable<NotificationRecipient> recipients,
+            IEnumerable<NotificationRecipient> originRecipients)
+        {
+            try
+            {
+                var response = await chatbotService.SendMultiMessageAsync(channelId, messages);
+                if (response.IsSuccessStatusCode && response.StatusCode.Equals(HttpStatusCode.OK))
+                {
+                    if (response.NotificationMessageResult.Any())
                     {
-                        BotConversationId = r.BotConversationId,
-                        ServiceUrl = r.ServiceUrl,
-                        ChannelId = r.ChannelName,
-                        ConversationId = r.ChatGroupConversationId,
+                        await UpdateStatusAfterSendNotificationAsync(originRecipients, response.NotificationMessageResult);
+                    }
+                    else
+                    {
+                        await UpdateFailedStatusForBatchAsync(recipients, originRecipients, "Bot Service Error");
+                    }
+                }
+                else
+                {
+                    await UpdateFailedStatusForBatchAsync(recipients, originRecipients,
+                        $"Status Code: {response.StatusCode}");
+                    await logService.WriteMessageSentryErrorAsync(
+                        $"Send Message fail - Status Code: {response.StatusCode}");
+                }
+            }
+            catch (Exception exception)
+            {
+                await UpdateFailedStatusForBatchAsync(recipients, originRecipients, exception.Message);
+                await logService.WriteExceptionSentryErrorAsync(exception);
+            }
+        }
+
+        protected internal virtual async Task UpdateFailedStatusForBatchAsync(
+            IEnumerable<NotificationRecipient> recipients,
+            IEnumerable<NotificationRecipient> originRecipients,
+            string errorMessage)
+        {
+            var updateNotiModels = new List<UpdateNotificationModel>();
+            foreach (var recipient in originRecipients)
+            {
+                var results = recipients.Where(r => r.NotificationId == recipient.NotificationId
+                                                    && r.ChatGroupConversationId == recipient.ChatGroupConversationId);
+
+                foreach (var result in results)
+                {
+                    var model = new UpdateNotificationModel
+                    {
+                        NotificationID = recipient.NotificationId,
+                        RecipientID = recipient.RecipientId,
+                        SentTime = DateTimeExtension.ConvertToDateTimeString(DateTimeOffset.UtcNow.DateTime),
+                        ConversationGroupID = recipient.ChatGroupId,
+                        ConversationBotID = recipient.BotId,
+                        Retry = true,
+                        IsSuccess = false,
+                        ErrMsg = GenerateErrorMessage(RecipientStatuses.BotServiceError, errorMessage),
+                        FailedImages = string.Empty
+                    };
+                    updateNotiModels.Add(model);
+                }
+            }
+
+            await UpdateSentNotificationStatusAsync(updateNotiModels);
+        }
+
+        protected internal virtual async Task UpdateStatusAfterSendNotificationAsync(
+            IEnumerable<NotificationRecipient> recipients,
+            IEnumerable<SendMessageResult> responseMessages)
+        {
+            var updateNotiModels = new List<UpdateNotificationModel>();
+            foreach (var recipient in recipients)
+            {
+                var results = responseMessages.Where(r => r.NotificationId == recipient.NotificationId
+                                                          && r.ConversationId == recipient.ChatGroupConversationId);
+
+                foreach (var result in results)
+                {
+                    var model = new UpdateNotificationModel
+                    {
+                        NotificationID = recipient.NotificationId,
+                        RecipientID = recipient.RecipientId,
+                        SentTime = DateTimeExtension.ConvertToDateTimeString(result.SentTime),
+                        ConversationGroupID = recipient.ChatGroupId,
+                        ConversationBotID = recipient.BotId,
+                        Retry = result.ErrorCode != 0 && !result.IsIgnoreRetry,
+                        IsSuccess = result.ErrorCode == 0,
+                        FailedImages = result.FailedImages,
+                        ErrMsg = result.ErrorCode == 0
+                            ? string.Empty
+                            : GenerateErrorMessage(RecipientStatuses.BotServiceError, result.ErrorMessage)
+                    };
+                    updateNotiModels.Add(model);
+                }
+            }
+
+            await UpdateSentNotificationStatusAsync(updateNotiModels);
+        }
+
+        protected internal virtual IEnumerable<(List<NotificationMessage>, List<NotificationRecipient>)>
+            DivideNotificationBatch(
+                byte channelId,
+                IEnumerable<NotificationSendMessage> notifications,
+                IEnumerable<NotificationRecipient> recipients)
+        {
+            var batches = new List<(List<NotificationMessage>, List<NotificationRecipient>)>();
+            var batchRecipients = new List<List<NotificationRecipient>>();
+            var itemEachBatch = appSettings.ItemEachBatchSendNotification;
+            var totalBatch = (int)Math.Ceiling((double)recipients.Count() / itemEachBatch);
+            for (var i = 0; i < totalBatch; i++)
+            {
+                batchRecipients.Add(recipients.Skip(i * itemEachBatch).Take(itemEachBatch).ToList());
+            }
+
+            foreach (var batch in batchRecipients)
+            {
+                var listNotificationIds = batch.Select(p => p.NotificationId).Distinct();
+                var newBatches = new List<NotificationMessage>(notifications
+                    .Where(noti => listNotificationIds.Any(l => l == noti.NotificationId))
+                    .Select(n => new NotificationMessage
+                    {
+                        NotificationId = n.NotificationId,
+                        ChannelId = n.ChannelId,
+                        Message = n.Content,
+                        Attachments = n.Attachments
+                    }));
+
+                foreach (var item in newBatches)
+                {
+                    item.Recipients = new List<ConversationInfo>(batch.Where(r => r.NotificationId == item.NotificationId)
+                        .Select(r => new ConversationInfo
+                        {
+                            BotConversationId = r.BotConversationId,
+                            ServiceUrl = r.ServiceUrl,
+                            ChannelId = r.ChannelName,
+                            ConversationId = r.ChatGroupConversationId,
                             BotName = r.BotName,
                             FailedImages = TextHelper.SplitStringToList(r.FailedImages)
-                    }).CustomeDistinctBy(r => r.ConversationId));
+                        }).CustomeDistinctBy(r => r.ConversationId));
+                }
 
-            batches.Add((newBatches, batch));
+                batches.Add((newBatches, batch));
+            }
+
+            AddMonitoring(batches, channelId);
+
+            return batches;
         }
 
-        AddMonitoring(batches, channelId);
-
-        return batches;
-    }
-
-    private void AddMonitoring(List<(List<NotificationMessage>, List<NotificationRecipient>)> batches, byte channelId)
-    {
-        if (batches.Any() && batches.LastOrDefault().Item1.Any())
+        private void AddMonitoring(List<(List<NotificationMessage>, List<NotificationRecipient>)> batches, byte channelId)
         {
-            var lastBatchRecipients = batches.LastOrDefault().Item1.LastOrDefault()?.Recipients;
-
-            if (lastBatchRecipients is not null)
-                lastBatchRecipients = channelId == (byte)ConversationChannel.Telegram
-                    ? AddMonitorRecipientForTelegram(lastBatchRecipients)
-                    : AddMonitorRecipient(lastBatchRecipients);
-
-            var lastItem = batches.LastOrDefault().Item1.LastOrDefault();
-            if (lastItem is not null) lastItem.Recipients = lastBatchRecipients;
-        }
-    }
-
-    protected internal virtual IEnumerable<ConversationInfo> AddMonitorRecipient(
-        IEnumerable<ConversationInfo> conversations)
-    {
-        if (monitorChatBot.IsMonitoring)
-        {
-            var conversation = new ConversationInfo
+            if (batches.Any() && batches.LastOrDefault().Item1.Any())
             {
-                ConversationId = monitorChatBot.ConversationId,
-                ChannelId = monitorChatBot.ChannelId,
-                ServiceUrl = monitorChatBot.ServiceUrl,
-                BotConversationId = monitorChatBot.BotConversationId,
-                BotName = monitorChatBot.BotName
-            };
+                var lastBatchRecipients = batches.LastOrDefault().Item1.LastOrDefault()?.Recipients;
 
-            conversations = conversations.Append(conversation);
+                if (lastBatchRecipients is not null)
+                {
+                    lastBatchRecipients = channelId == (byte)ConversationChannel.Telegram
+                        ? AddMonitorRecipientForTelegram(lastBatchRecipients)
+                        : AddMonitorRecipient(lastBatchRecipients);
+                }
+
+                var lastItem = batches.LastOrDefault().Item1.LastOrDefault();
+                if (lastItem is not null)
+                {
+                    lastItem.Recipients = lastBatchRecipients;
+                }
+            }
         }
 
-        return conversations;
-    }
-
-    protected internal virtual IEnumerable<ConversationInfo> AddMonitorRecipientForTelegram(
-        IEnumerable<ConversationInfo> conversations)
-    {
-        if (monitorTelegramBot.IsMonitoring)
+        protected internal virtual IEnumerable<ConversationInfo> AddMonitorRecipient(
+            IEnumerable<ConversationInfo> conversations)
         {
-            var conversation = new ConversationInfo
+            if (monitorChatBot.IsMonitoring)
             {
-                ConversationId = monitorTelegramBot.ChatId.ToString(),
-                BotConversationId = monitorTelegramBot.BotId.ToString()
-            };
+                var conversation = new ConversationInfo
+                {
+                    ConversationId = monitorChatBot.ConversationId,
+                    ChannelId = monitorChatBot.ChannelId,
+                    ServiceUrl = monitorChatBot.ServiceUrl,
+                    BotConversationId = monitorChatBot.BotConversationId,
+                    BotName = monitorChatBot.BotName
+                };
 
-            conversations = conversations.Append(conversation);
+                conversations = conversations.Append(conversation);
+            }
+
+            return conversations;
         }
 
-        return conversations;
-    }
-
-    protected internal virtual async Task UpdateSentNotificationStatusAsync(
-        IEnumerable<UpdateNotificationModel> messages)
-    {
-        if (messages.Any())
+        protected internal virtual IEnumerable<ConversationInfo> AddMonitorRecipientForTelegram(
+            IEnumerable<ConversationInfo> conversations)
         {
-            var command = new UpdateRecipientSendNotifiactionStatusCommand
+            if (monitorTelegramBot.IsMonitoring)
             {
-                SentStatus = JsonConvert.SerializeObject(messages)
-            };
-            await baseService.ExecuteNonQueryAsync(command);
+                var conversation = new ConversationInfo
+                {
+                    ConversationId = monitorTelegramBot.ChatId.ToString(),
+                    BotConversationId = monitorTelegramBot.BotId.ToString()
+                };
 
-            if (!string.IsNullOrWhiteSpace(command.UpdatedNotificationIds))
-                PushSignalUpdateNotiStatus(command.UpdatedNotificationIds);
+                conversations = conversations.Append(conversation);
+            }
 
-            if (command.IsHaveErrNotification) PushSignalNewErrNotification();
+            return conversations;
         }
-    }
 
-    private void PushSignalUpdateNotiStatus(string notificationIds)
-    {
-        Task.Run(() => pushSignalService.PushNotificationUpdateStatus(notificationIds));
-    }
+        protected internal virtual async Task UpdateSentNotificationStatusAsync(
+            IEnumerable<UpdateNotificationModel> messages)
+        {
+            if (messages.Any())
+            {
+                var command = new UpdateRecipientSendNotifiactionStatusCommand
+                {
+                    SentStatus = JsonConvert.SerializeObject(messages)
+                };
+                await baseService.ExecuteNonQueryAsync(command);
 
-    private void PushSignalNewErrNotification()
-    {
-        Task.Run(() => pushSignalService.PushErrorNotification());
+                if (!string.IsNullOrWhiteSpace(command.UpdatedNotificationIds))
+                {
+                    PushSignalUpdateNotiStatus(command.UpdatedNotificationIds);
+                }
+
+                if (command.IsHaveErrNotification)
+                {
+                    PushSignalNewErrNotification();
+                }
+            }
+        }
+
+        private void PushSignalUpdateNotiStatus(string notificationIds)
+        {
+            Task.Run(() => pushSignalService.PushNotificationUpdateStatus(notificationIds));
+        }
+
+        private void PushSignalNewErrNotification()
+        {
+            Task.Run(() => pushSignalService.PushErrorNotification());
+        }
     }
 }

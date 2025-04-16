@@ -8,14 +8,16 @@ using System.Text.RegularExpressions;
 [ExcludeFromCodeCoverage(Justification = "Helpers")]
 public static class TextHelper
 {
+    private static readonly TimeSpan RegexTimeOut = TimeSpan.FromSeconds(100);
+
     public static string HtmlToPlainText(string html)
     {
         const string tagWhiteSpace = @"(>|$)(\W|\n|\r)+<";
         const string stripFormatting = @"<[^>]*(>|$)";
         const string lineBreak = @"<(br|BR)\s{0,1}\/{0,1}>";
-        var lineBreakRegex = new Regex(lineBreak, RegexOptions.Multiline);
-        var stripFormattingRegex = new Regex(stripFormatting, RegexOptions.Multiline);
-        var tagWhiteSpaceRegex = new Regex(tagWhiteSpace, RegexOptions.Multiline);
+        var lineBreakRegex = new Regex(lineBreak, RegexOptions.Multiline, RegexTimeOut);
+        var stripFormattingRegex = new Regex(stripFormatting, RegexOptions.Multiline, RegexTimeOut);
+        var tagWhiteSpaceRegex = new Regex(tagWhiteSpace, RegexOptions.Multiline, RegexTimeOut);
 
         var text = html;
         text = WebUtility.HtmlDecode(text);

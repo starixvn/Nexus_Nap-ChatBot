@@ -21,7 +21,10 @@ RUN dotnet nuget add source https://nuget.nexdev.net/api/v2
 
 RUN dotnet restore -v n -r linux-x64 "Fanex.NCB.AutoJobs/Fanex.NCB.AutoJobs.csproj"
 
-COPY . .
+COPY [".sonarlint/", ".sonarlint/"]
+COPY ["Fanex.NCB.Resources/", "Fanex.NCB.Resources/"]
+COPY ["Fanex.NCB.BackgroundJob.Core/", "Fanex.NCB.BackgroundJob.Core/"]
+COPY ["Fanex.NCB.AutoJobs/", "Fanex.NCB.AutoJobs/"]
 
 WORKDIR "/src/Fanex.NCB.AutoJobs"
 
@@ -32,6 +35,13 @@ FROM hub.nexdev.net/base/dotnet/core/aspnet:6.0-alpine-25h1 AS base
 ENV DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE=false
 ENV ASPNETCORE_URLS=http://+:5000
 EXPOSE 5000
+
+# Dont run as root
+RUN adduser --disabled-password \
+  --home /app \
+  --gecos '' dotnetuser && chown -R dotnetuser /app && chown -R dotnetuser /tmp
+USER dotnetuser
+#
 
 WORKDIR /app
 

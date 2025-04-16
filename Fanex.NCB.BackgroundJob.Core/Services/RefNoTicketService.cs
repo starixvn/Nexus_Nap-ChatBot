@@ -66,7 +66,10 @@ public class RefNoTicketService : IRefNoTicketService
     public async Task<(long, string)> GetTransInfoAsync(long refno)
     {
         var tickInfo = await GetTicketByRefNoAsync(refno);
-        if (tickInfo is null) return (refno, string.Empty);
+        if (tickInfo is null)
+        {
+            return (refno, string.Empty);
+        }
         var content = GenerateTransInfoContent(tickInfo);
         return (refno, content);
     }

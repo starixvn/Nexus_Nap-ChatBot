@@ -13,6 +13,7 @@
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
+    using System.Diagnostics.CodeAnalysis;
 
     [NapChatBotSuperAuth(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class UserController : Controller
@@ -38,6 +39,7 @@
         }
 
         [HttpPost]
+        [SuppressMessage("Security", "S4502:Disabling CSRF protections is security-sensitive", Justification = "CSRF protection is intentionally disabled for this endpoint.")]
         [IgnoreAntiforgeryToken]
         public async Task<ActionResult> CheckUserOnlineStatus()
         {
@@ -58,18 +60,28 @@
             }
             else
             {
-                if (!napSettings.EnableReCheckIn && !EnableCheckPermissionChanged) return RecheckInStatus.Success;
+                if (!napSettings.EnableReCheckIn && !EnableCheckPermissionChanged)
+                {
+                    return RecheckInStatus.Success;
+                }
 
                 var status = await securityService.ReCheckInAsync(napSession.OnUserId, napSettings.SiteId);
                 var reCheckInStatus = (RecheckInStatus)status;
 
                 if (!napSettings.EnableReCheckIn && reCheckInStatus == RecheckInStatus.KickOut)
+                {
                     return RecheckInStatus.Success;
+                }
 
                 if (!EnableCheckPermissionChanged && reCheckInStatus == RecheckInStatus.KickOutPermission)
+                {
                     return RecheckInStatus.Success;
+                }
 
-                if (!await siteService.IsActivatedAsync(napSettings.SiteId)) return RecheckInStatus.InvalidSite;
+                if (!await siteService.IsActivatedAsync(napSettings.SiteId))
+                {
+                    return RecheckInStatus.InvalidSite;
+                }
 
                 return reCheckInStatus;
             }

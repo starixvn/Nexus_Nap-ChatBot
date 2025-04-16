@@ -22,7 +22,11 @@ RUN dotnet nuget add source https://nuget.nexdev.net/api/v2
 
 RUN dotnet restore -v n -r linux-x64 "Fanex.NCB.BotService.EndPoint/Fanex.NCB.BotService.EndPoint.csproj"
 
-COPY . .
+COPY [".sonarlint/", ".sonarlint/"]
+COPY ["Fanex.NCB.Resources/", "Fanex.NCB.Resources/"]
+COPY ["Fanex.NCB.Shared/", "Fanex.NCB.Shared/"]
+COPY ["Fanex.NCB.BotService.Core/", "Fanex.NCB.BotService.Core/"]
+COPY ["Fanex.NCB.BotService.EndPoint/", "Fanex.NCB.BotService.EndPoint/"]
 
 WORKDIR "/src/Fanex.NCB.BotService.EndPoint"
 
@@ -33,6 +37,13 @@ FROM hub.nexdev.net/base/dotnet/core/aspnet:6.0-alpine-25h1 AS base
 ENV DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE=false
 ENV ASPNETCORE_URLS=http://+:5000
 EXPOSE 5000
+
+# Dont run as root
+RUN adduser --disabled-password \
+  --home /app \
+  --gecos '' dotnetuser && chown -R dotnetuser /app && chown -R dotnetuser /tmp
+USER dotnetuser
+#
 
 WORKDIR /app
 
