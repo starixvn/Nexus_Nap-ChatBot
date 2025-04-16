@@ -19,14 +19,12 @@ public class LicBotTests
     private readonly IConversationService conversationService;
     private readonly ITurnContext<IConversationUpdateActivity> turnContextConversation;
     private readonly ITurnContext<IMessageActivity> turnContextMessage;
-    private readonly ITurnContext turnContext;
 
     public LicBotTests()
     {
         conversationService = Substitute.For<IConversationService>();
         turnContextConversation = Substitute.For<ITurnContext<IConversationUpdateActivity>>();
         turnContextMessage = Substitute.For<ITurnContext<IMessageActivity>>();
-        turnContext = Substitute.For<ITurnContext>();
     }
 
     [Fact]
