@@ -6,5 +6,5 @@ public class CheckDuplicatedMessageLogSetting
 
     public int TimeSpanInMinutes { get; set; }
 
-    public string[] ExceptionConversatiionIDs { get; set; }
+    public string[] ExceptionConversatiionIDs { get; set; } = new string[]{};
 }

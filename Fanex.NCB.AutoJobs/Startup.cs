@@ -143,21 +143,21 @@ namespace Fanex.NCB.AutoJobs
 
         private static void AddWorker(IServiceCollection services)
         {
-            //services.AddHostedService<ScanAndSendNotificationWorker>();
-            //services.AddHostedService<SyncDataFromNapUserControlWorker>();
-            //services.AddHostedService<SyncDataFromOICWorker>();
-            //services.AddHostedService<PullVoidingMessageLicenseeWorker>();
-            //services.AddHostedService<PullVoidingMessageInternalDepartmentWorker>();
-            //services.AddHostedService<PullMessageFromSiteMessage>();
-            //services.AddHostedService<MonitorChatbotWorker>();
-            //services.AddHostedService<MonitorTelegramBotWorker>();
-            //services.AddHostedService<DeleteOldConversationMessageLogWorker>();
-            //services.AddHostedService<SendMessageProblemAccountWorker>();
-            //services.AddHostedService<SendMessageMonitoredPlayerWorker>();
-            //services.AddHostedService<SettlementInternalCSDWorker>();
-            //services.AddHostedService<SettlementLicenseeWorker>();
-            //services.AddHostedService<ResultAmendmentInternalCSDWorkder>();
-            //services.AddHostedService<ResultAmendmentLicenseeWorkder>();
+            services.AddHostedService<ScanAndSendNotificationWorker>();
+            services.AddHostedService<SyncDataFromNapUserControlWorker>();
+            services.AddHostedService<SyncDataFromOICWorker>();
+            services.AddHostedService<PullVoidingMessageLicenseeWorker>();
+            services.AddHostedService<PullVoidingMessageInternalDepartmentWorker>();
+            services.AddHostedService<PullMessageFromSiteMessage>();
+            services.AddHostedService<MonitorChatbotWorker>();
+            services.AddHostedService<MonitorTelegramBotWorker>();
+            services.AddHostedService<DeleteOldConversationMessageLogWorker>();
+            services.AddHostedService<SendMessageProblemAccountWorker>();
+            services.AddHostedService<SendMessageMonitoredPlayerWorker>();
+            services.AddHostedService<SettlementInternalCSDWorker>();
+            services.AddHostedService<SettlementLicenseeWorker>();
+            services.AddHostedService<ResultAmendmentInternalCSDWorkder>();
+            services.AddHostedService<ResultAmendmentLicenseeWorkder>();
             services.AddHostedService<MonitorMatchWorker>();
         }
     }
