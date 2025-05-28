@@ -59,4 +59,8 @@
     <Setting Key="NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel" SpName="NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel" DbName="DBCRM.MessageNotification.wsv_nap" Plain="0" />
     <Setting Key="NCB_ResultAmendment_InternalCSD_Import" SpName="NCB_ResultAmendment_InternalCSD_Import" DbName="DBCB.ChatBot.ncb_admin" Plain="0" />
   </Function>
+	<Function Name="Monitor Match">
+		<Setting Key="NAP_Chatbot_MatchMonitoring_Sel" SpName="NAP_Chatbot_MatchMonitoring_Sel" DbName="DBLIC.bodb_LicenseeReport.wsv_nap" Plain="0" />
+		<Setting Key="NCB_MatchMonitoring_Import" SpName="NCB_MatchMonitoring_Import" DbName="DBCB.ChatBot.ncb_admin" Plain="0" />
+	</Function>
 </Functions>
