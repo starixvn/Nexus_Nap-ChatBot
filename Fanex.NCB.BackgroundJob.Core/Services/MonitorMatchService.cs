@@ -40,8 +40,6 @@ public class MonitorMatchService : IMonitorMatchService
         }
         else
         {
-            await logService.WriteMessageSentryErrorAsync($"Match Monitoring service setting is {JsonConvert.SerializeObject(systemSetting)}.");
-
             var (messages, output) = await GetMonitorMatchMessages(systemSetting);
             if (messages.Any())
             {
