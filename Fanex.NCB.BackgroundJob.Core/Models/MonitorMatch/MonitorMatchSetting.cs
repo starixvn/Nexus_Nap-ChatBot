@@ -1,6 +1,6 @@
-﻿using Fanex.NCB.AutoJobs.Core.Models.Common;
+﻿namespace Fanex.NCB.AutoJobs.Core.Models.MonitorMatch;
 
-namespace Fanex.NCB.AutoJobs.Core.Models.MonitorMatch;
+using Fanex.NCB.AutoJobs.Core.Models.Common;
 
 public class MonitorMatchSetting : ServiceSetting
 {

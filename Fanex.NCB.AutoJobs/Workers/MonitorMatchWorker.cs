@@ -22,7 +22,6 @@ public class MonitorMatchWorker : BaseWorker
         IMonitorMatchService monitorMatchService
         ) : base(maintenanceService, logService)
     {
-
         JobSetting = JobHelper.GetJobConfig(jobSettings.Value, JobConstants.MonitorMatch);
         this.monitorMatchService = monitorMatchService;
     }

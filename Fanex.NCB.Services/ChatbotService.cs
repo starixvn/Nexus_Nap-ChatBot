@@ -24,7 +24,6 @@ public class ChatbotService : IChatbotService
     private readonly MonitorChatbot monitorChatbot;
     private readonly NotifyChatGroupOption notifyChatGroupOptions;
     private readonly MonitorTelegramBot monitorTelegramBot;
-    private readonly ILogService logService;
 
     public ChatbotService(
         IHttpClientFactory httpClientFactory,
@@ -32,8 +31,7 @@ public class ChatbotService : IChatbotService
         IOptions<BotSettings> botSettings,
         IOptions<MonitorChatbot> monitorChatbot,
         IOptions<NotifyChatGroupOption> notifyChatGroupOptions,
-        IOptions<MonitorTelegramBot> monitorTelegramBot,
-        ILogService logService)
+        IOptions<MonitorTelegramBot> monitorTelegramBot)
     {
         this.httpClientFactory = httpClientFactory;
         this.appSettings = appSettings.Value;
@@ -41,7 +39,6 @@ public class ChatbotService : IChatbotService
         this.monitorChatbot = monitorChatbot.Value;
         this.notifyChatGroupOptions = notifyChatGroupOptions.Value;
         this.monitorTelegramBot = monitorTelegramBot.Value; 
-        this.logService = logService;
     }
 
     public async Task<NotificationMessageResponse> SendMultiMessageAsync(byte channelId,
@@ -189,8 +186,6 @@ public class ChatbotService : IChatbotService
             { "password", botSettings.AppCredentialPassword }
         };
 
-        await this.logService.WriteMessageSentryErrorAsync($"BotSettings is {JsonConvert.SerializeObject(botSettings, Formatting.Indented)}");
-        await this.logService.WriteMessageSentryErrorAsync($"Requesting token from {url} with credentials: {botSettings.AppCredentialId}");
         var httpClient = httpClientFactory.CreateClient();
         using var authDataContent = new FormUrlEncodedContent(authData);
         using var response = await httpClient.PostAsync(url, authDataContent);
