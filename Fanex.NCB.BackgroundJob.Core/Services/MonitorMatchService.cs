@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NCB.AutoJobs.Core.Services;
 
 using Fanex.NCB.AutoJobs.Core.Criteria.Common;
-using Fanex.NCB.AutoJobs.Core.Criteria.MonitoredPlayer;
+using Fanex.NCB.AutoJobs.Core.Criteria.MonitorMatch;
 using Fanex.NCB.AutoJobs.Core.Models.Common;
 using Fanex.NCB.AutoJobs.Core.Models.Core;
 using Fanex.NCB.AutoJobs.Core.Models.MonitorMatch;

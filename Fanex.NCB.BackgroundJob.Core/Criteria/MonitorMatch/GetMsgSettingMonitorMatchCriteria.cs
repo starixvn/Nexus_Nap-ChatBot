@@ -1,4 +1,4 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.MonitoredPlayer;
+﻿namespace Fanex.NCB.AutoJobs.Core.Criteria.MonitorMatch;
 
 using Fanex.Data.Repository;
 
