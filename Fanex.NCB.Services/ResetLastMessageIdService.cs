@@ -65,11 +65,13 @@ public class ResetLastMessageIdService : IResetLastMessageIdService
             DepCustSAsJson = await commonService.GetJsonDataFromDbACCAsync("Dep_CustSuper"),
             Messages = msgList.Where(m =>
                     m.JobIdentify != (int)JobIdentity.ProblemPlayer &&
-                    m.JobIdentify != (int)JobIdentity.MonitoredPlayer)
+                    m.JobIdentify != (int)JobIdentity.MonitoredPlayer &&
+                    m.JobIdentify != (int)JobIdentity.MonitorMatch)
                 .ToList(),
             MsgContentTypes = contentTypeList.Where(m =>
                     m.JobIdentify != (int)JobIdentity.ProblemPlayer &&
-                    m.JobIdentify != (int)JobIdentity.MonitoredPlayer)
+                    m.JobIdentify != (int)JobIdentity.MonitoredPlayer &&
+                    m.JobIdentify != (int)JobIdentity.MonitorMatch)
                 .ToList(),
             Requests = abnormalMissingMsgList.ToList(),
             MessageIds = messageIds.ToList()
@@ -88,6 +90,12 @@ public class ResetLastMessageIdService : IResetLastMessageIdService
             ?? throw new ArgumentNullException(JsonConvert.SerializeObject(msgList));
         var monitoredMissingInfo = await GetMissingMonitoredPlayerAsync(monitoredPlayerFromLogId);
         missingInfo = missingInfo.Concat(monitoredMissingInfo);
+
+        var matchMonitoring =
+            msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.MonitorMatch)?.ReferenceValue
+            ?? throw new ArgumentNullException(JsonConvert.SerializeObject(msgList));
+        var matchMonirotingMissingInfo = await GetMissingMonitoringMatchAsync(matchMonitoring);
+        missingInfo = missingInfo.Concat(matchMonirotingMissingInfo);
 
         var messageMissingInfo = await GetMissingMessageNotificationAsync(msgList, missingInfo);
 
@@ -164,6 +172,18 @@ public class ResetLastMessageIdService : IResetLastMessageIdService
         var result = await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
 
         foreach (var item in result) item.JobIdentify = (int)JobIdentity.MonitoredPlayer;
+        return result;
+    }
+
+    private async Task<IEnumerable<MissingMesssageInfo>> GetMissingMonitoringMatchAsync(string fromLogId)
+    {
+        var criteria = new GetMissingMonitoringMatchCriteria
+        {
+            FromLogId = fromLogId
+        };
+        var result = await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
+
+        foreach (var item in result) item.JobIdentify = (int)JobIdentity.MonitorMatch;
         return result;
     }
 
