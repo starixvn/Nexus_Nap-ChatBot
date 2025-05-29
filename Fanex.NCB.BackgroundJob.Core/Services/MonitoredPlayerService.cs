@@ -77,7 +77,7 @@ public class MonitoredPlayerService : IMonitoredPlayerService
         int pLastLogId
     )
     {
-        var criteria = new ImportMsgFromMonitorMatchCriteria
+        var criteria = new ImportFromMonitoredPlayerCriteria
         {
             Message = JsonConvert.SerializeObject(messages),
             ServerName = serverName,
