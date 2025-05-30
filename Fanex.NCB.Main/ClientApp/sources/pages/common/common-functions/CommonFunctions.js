@@ -106,6 +106,8 @@ export default class CommonFunctions {
                 return jobInfo.lastMsgTargetId;
             case 9:
                 return dateFormat(jobInfo.lastModifiedTime, DateTimeFormatV3);
+            case 10:
+                return jobInfo.lastLogId;
             default:
                 return;
         }
@@ -125,6 +127,8 @@ export default class CommonFunctions {
             case 7:
             case 8:
                 return 'lastMsgTargetId';
+            case 10:
+                return 'lastLogId';
             default:
                 return;
         }
