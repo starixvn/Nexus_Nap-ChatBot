@@ -14,7 +14,6 @@ const resetLastMessageIdSlice = createSlice({
             { id: 7, name: 'Settlement - Licensee', checked: true, newMaxMessageId: 0, settingName: 'LastMsgTargetId' },
             { id: 8, name: 'Result Amendment - Licensee', checked: true, newMaxMessageId: 0, settingName: 'LastMsgTargetId' },
             { id: 9, name: 'Result Amendment - Internal CSD', checked: true, newMaxMessageId: 0, notificationId: 0, settingName: 'LastModifiedTime' },
-            { id: 9, name: 'List Notifications Of Notification Center', checked: true, newMaxMessageId: 0, notificationId: 0, settingName: 'ListNotificationsOfNotificationCenter' },
             { id: 10, name: 'Match Monitoring', checked: true, newMaxMessageId: 0, notificationId: 0, settingName: 'LastLogId' },
         ],
         currentMessages: null,

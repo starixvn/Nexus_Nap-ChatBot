@@ -32,8 +32,14 @@ public class ResetLastMessageIdService : IResetLastMessageIdService
     public async Task<(IEnumerable<CurrentMaxMessageInfo>, IEnumerable<MessageTypeInfo>)>
         GetCurrentPreviousMaxMessageAsync()
     {
+        const int ListNotificationOfNotificationCenterIndex = 10;
         var criteria = new GetCurrentPreviousMaxMessageCriteria();
-        return await baseService.FetchMultipleAsync<CurrentMaxMessageInfo, MessageTypeInfo>(criteria);
+        var (currentMaxMessageInfos, messageTypeInfos) = await baseService.FetchMultipleAsync<CurrentMaxMessageInfo, MessageTypeInfo>(criteria);
+
+        return (currentMaxMessageInfos
+                .Select((value, index) => new { value, index })
+                .Where(x => x.index != ListNotificationOfNotificationCenterIndex)
+                .Select(x => x.value), messageTypeInfos);
     }
 
     public async Task<(IEnumerable<MessageRequestId>, IEnumerable<int>)> GetAbnormalBetsMissingMessageAsync()
