@@ -183,7 +183,10 @@ public class ResetLastMessageIdService : IResetLastMessageIdService
         };
         var result = await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
 
-        foreach (var item in result) item.JobIdentify = (int)JobIdentity.MonitorMatch;
+        foreach (var item in result)
+        {
+            item.JobIdentify = (int)JobIdentity.MonitorMatch;
+        }
         return result;
     }
 
