@@ -14,21 +14,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Fanex.NCB.BotService.Core.Models;
 
 public class UpdateController : Controller
 {
-        private readonly ICommonLogService logger;
+    private readonly ICommonLogService logger;
     private readonly ITelegramBotService botService;
     private readonly IConversationService conversationService;
+    private readonly IEnumerable<string> botUserNames;
 
     public UpdateController(
-            ICommonLogService logger,
+        ICommonLogService logger,
         ITelegramBotService botService,
-        IConversationService conversationService)
+        IConversationService conversationService,
+        IEnumerable<TelegramBotConfigurations> botConfigurations)
     {
         this.logger = logger;
         this.botService = botService;
         this.conversationService = conversationService;
+        this.botUserNames = botConfigurations.Select(bot => bot.UserName);
     }
 
 #pragma warning disable S1541 // Methods and properties should not be too complex
@@ -69,8 +73,11 @@ public class UpdateController : Controller
                 break;
 
             case MessageType.ChatMembersAdded:
-                var bots = message.NewChatMembers.Where(x => x.IsBot).ToArray();
-                for (var i = 0; i < bots.Length; i++) await AddBotToGroupAsync(message, bots[i]);
+                var bots = message.NewChatMembers.Where(x => x.IsBot && botUserNames.Contains(x.Username)).ToArray();
+                for (var i = 0; i < bots.Length; i++)
+                {
+                    await AddBotToGroupAsync(message, bots[i]);
+                }
                 break;
 
             case MessageType.ChatMemberLeft:
