@@ -29,4 +29,6 @@ public class MonitorMatchInfo
     public string LicenseeName { get; set; }
 
     public short IsTest { get; set; }
+
+    public string SettingInfo { get; set; }
 }
