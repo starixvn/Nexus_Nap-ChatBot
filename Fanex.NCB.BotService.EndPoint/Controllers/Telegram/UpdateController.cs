@@ -5,7 +5,7 @@ using Core.Enum;
 using Core.Services;
 using Core.Services.Interfaces;
 using Shared.Models;
-    using Fanex.NCB.Shared.Services.Interfaces;
+using Fanex.NCB.Shared.Services.Interfaces;
 using global::Telegram.Bot.Types;
 using global::Telegram.Bot.Types.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Fanex.NCB.BotService.Core.Models;
+using Newtonsoft.Json;
 
 public class UpdateController : Controller
 {
@@ -41,6 +42,8 @@ public class UpdateController : Controller
     [Route("api/telegram/webhook/{botId:long}/update")]
     public async Task<IActionResult> Post(long botId, [FromBody] Update update)
     {
+        logger.SentryInfoAsync($"Received update for bot {botId}: {JsonConvert.SerializeObject(update)}");
+        logger.SentryErrorAsync($"Received update for bot {botId}: {JsonConvert.SerializeObject(update)}");
         if (update == null || update.Type != UpdateType.Message) return Ok();
 
         var bot = await botService.GetBotInfoAsync(botId);
@@ -53,11 +56,15 @@ public class UpdateController : Controller
         var message = update.Message;
         await HandleBotEvents(bot, message);
 
-        return Ok();
+        return Ok($"Telegram Bot {botId} is added successfully.");
     }
 
     private async Task HandleBotEvents(User bot, Message message)
     {
+        await logger.SentryErrorAsync($"botUserNames: {string.Join(", ", botUserNames)}");
+        await logger.SentryErrorAsync($"Bot: {JsonConvert.SerializeObject(bot)}");
+        await logger.SentryErrorAsync($"Message: {JsonConvert.SerializeObject(message)}");
+
         switch (message.Type)
         {
             case MessageType.Text:
