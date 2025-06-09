@@ -28,12 +28,12 @@ public class UpdateController : Controller
         ICommonLogService logger,
         ITelegramBotService botService,
         IConversationService conversationService,
-        IEnumerable<TelegramBotConfigurations> botConfigurations)
+        List<TelegramBotConfigurations> botConfigurations)
     {
         this.logger = logger;
         this.botService = botService;
         this.conversationService = conversationService;
-        this.botUserNames = botConfigurations.Select(bot => bot.UserName);
+        this.botUserNames = botConfigurations.Select(bot => bot.Username);
     }
 
 #pragma warning disable S1541 // Methods and properties should not be too complex
@@ -42,9 +42,10 @@ public class UpdateController : Controller
     [Route("api/telegram/webhook/{botId:long}/update")]
     public async Task<IActionResult> Post(long botId, [FromBody] Update update)
     {
-        logger.SentryInfoAsync($"Received update for bot {botId}: {JsonConvert.SerializeObject(update)}");
-        logger.SentryErrorAsync($"Received update for bot {botId}: {JsonConvert.SerializeObject(update)}");
-        if (update == null || update.Type != UpdateType.Message) return Ok();
+        if (update == null || update.Type != UpdateType.Message)
+        {
+            return Ok();
+        }
 
         var bot = await botService.GetBotInfoAsync(botId);
         if (bot == null)
@@ -61,10 +62,6 @@ public class UpdateController : Controller
 
     private async Task HandleBotEvents(User bot, Message message)
     {
-        await logger.SentryErrorAsync($"botUserNames: {string.Join(", ", botUserNames)}");
-        await logger.SentryErrorAsync($"Bot: {JsonConvert.SerializeObject(bot)}");
-        await logger.SentryErrorAsync($"Message: {JsonConvert.SerializeObject(message)}");
-
         switch (message.Type)
         {
             case MessageType.Text:
