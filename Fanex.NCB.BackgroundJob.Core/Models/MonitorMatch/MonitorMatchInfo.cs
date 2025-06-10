@@ -1,4 +1,19 @@
-﻿namespace Fanex.NCB.AutoJobs.Core.Models.MonitorMatch;
+﻿using Newtonsoft.Json;
+
+namespace Fanex.NCB.AutoJobs.Core.Models.MonitorMatch;
+
+public class SettingInfo
+{
+    public string SettingName { get; set; }
+
+    public decimal AmountThreshold { get; set; }
+
+    public string BaseCurrency { get; set; }
+
+    public int ConditionType { get; set; }
+
+    public decimal RatioThreshold { get; set; }
+}
 
 public class MonitorMatchInfo
 {
@@ -30,5 +45,15 @@ public class MonitorMatchInfo
 
     public short IsTest { get; set; }
 
+    [JsonIgnore]
     public string SettingInfo { get; set; }
+
+    [JsonProperty("SettingInfo")]
+    public List<SettingInfo> SettingInfoLst
+    {
+        get
+        {
+            return string.IsNullOrEmpty(SettingInfo) ? new List<SettingInfo>() : JsonConvert.DeserializeObject<List<SettingInfo>>(SettingInfo);
+        }
+    }
 }
