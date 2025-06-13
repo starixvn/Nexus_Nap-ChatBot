@@ -1,0 +1,64 @@
+﻿{
+  "name": "Fanex.NCB.BotService",
+  "description": "",
+  "services": [
+    {
+      "type": "endpoint",
+      "name": "SABASports_UAT",
+      "endpoint": "https://licbotwebhook-klp.starixplay.com/api/messages",
+      "appId": "1fa1a23c-a202-46e0-b168-57b7537b9456",
+      "appPassword": "7SoTkwGtspX2WNcW5.Cb1bqCnD*/aOb@",
+      "id": "1"
+    },
+    {
+      "type": "endpoint",
+      "name": "SABA_UAT",
+      "endpoint": "https://licbotwebhook-klp.starixplay.com/api/messages",
+      "appId": "efd1cd73-a9a2-4c54-818c-1fa2ef6b8c78",
+      "appPassword": "?8Ti3CSQ1BSi4XwJNNWHAmI+gLmdcM?[",
+      "id": "2"
+    },
+    {
+      "type": "endpoint",
+      "name": "沙巴体育公告 / Saba Sports Announcement_UAT",
+      "endpoint": "https://licbotwebhook-klp.starixplay.com/api/messages",
+      "appId": "023ce7c5-1ef3-4653-ae7a-1ce4114ef4bb",
+      "appPassword": "Gu99TpHWo~c_07Eh74Z~aCWh8S~tyx.Rs~",
+      "id": "3"
+    },
+    {
+      "type": "endpoint",
+      "name": "UAT-LicChatBot",
+      "endpoint": "https://licbotwebhook-klp.starixplay.com/api/teams/messages",
+      "appId": "8e446025-3f7e-4a61-8195-609b747d8be1",
+      "appPassword": "3jr8Q~ymfoRAaPZX5mynY6lPM2HZIumM0XB3IcCM",
+      "id": "4"
+    },
+    {
+      "type": "endpoint",
+      "name": "Licensee ChatBot - Team - UAT - Internal",
+      "endpoint": "https://licbotwebhook-klp.starixplay.com/api/teams/messages",
+      "appId": "ab34b394-348d-4fd2-a927-4a61087bbe7e",
+      "appPassword": "O1C8Q~mJ9To85FSuSXTjmhC4JbyIVyHZW-6aedva",
+      "id": "5"
+    },
+    {
+      "type": "endpoint",
+      "name": "公告 / Announcement Notification",
+      "endpoint": "https://licbotwebhook-klp.starixplay.com/api/teams/messages",
+      "appId": "cba2ae52-9c5d-4ae6-a4fc-fe7cdd6fd88a",
+      "appPassword": "c4b8Q~Z9rFWkYRw4kk-LvrxIR36NXI0mW2lNBcef",
+      "id": "6"
+    },
+    {
+      "type": "endpoint",
+      "name": "NCB_Team_KLPROD_Internal",
+      "endpoint": "https://licbotwebhook-klp.starixplay.com/api/teams/messages",
+      "appId": "3f01203a-7d99-4a7a-ac9c-3d922793a8b3",
+      "appPassword": "yyE8Q~ya2TGlGtJpd6a3G7vM9acQXDY1T3yZebpr",
+      "id": "7"
+    }
+  ],
+  "padlock": "",
+  "version": "2.0"
+}
