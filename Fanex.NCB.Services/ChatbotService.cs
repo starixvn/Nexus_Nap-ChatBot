@@ -38,7 +38,7 @@ public class ChatbotService : IChatbotService
         this.botSettings = botSettings.Value;
         this.monitorChatbot = monitorChatbot.Value;
         this.notifyChatGroupOptions = notifyChatGroupOptions.Value;
-        this.monitorTelegramBot = monitorTelegramBot.Value;
+        this.monitorTelegramBot = monitorTelegramBot.Value; 
     }
 
     public async Task<NotificationMessageResponse> SendMultiMessageAsync(byte channelId,

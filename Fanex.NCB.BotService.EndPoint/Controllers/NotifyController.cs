@@ -49,6 +49,15 @@
             return Ok("ok");
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("api/test-sentry-1")]
+        public async Task<ObjectResult> Test1()
+        {
+            await WriteLogAsync(new Exception("Test1 sentry"));
+            return Ok("ok Test1");
+        }
+
         [HttpPost]
         [Route("api/notify")]
         public async Task<ObjectResult> Send([FromBody] ConversationInfo conversationInfo)

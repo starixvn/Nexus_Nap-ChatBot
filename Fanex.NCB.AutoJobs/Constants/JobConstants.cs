@@ -31,4 +31,6 @@ public static class JobConstants
     public const string ResultAmendmentInternalCSD = "ResultAmendmentInternalCSD";
 
     public const string ResultAmendmentILicensee = "ResultAmendmentLicensee";
+
+    public const string MonitorMatch = "MonitorMatch";
 }

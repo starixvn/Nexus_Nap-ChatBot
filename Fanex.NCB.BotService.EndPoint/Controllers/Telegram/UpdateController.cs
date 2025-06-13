@@ -5,7 +5,7 @@ using Core.Enum;
 using Core.Services;
 using Core.Services.Interfaces;
 using Shared.Models;
-    using Fanex.NCB.Shared.Services.Interfaces;
+using Fanex.NCB.Shared.Services.Interfaces;
 using global::Telegram.Bot.Types;
 using global::Telegram.Bot.Types.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -14,21 +14,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Fanex.NCB.BotService.Core.Models;
+using Newtonsoft.Json;
 
 public class UpdateController : Controller
 {
-        private readonly ICommonLogService logger;
+    private readonly ICommonLogService logger;
     private readonly ITelegramBotService botService;
     private readonly IConversationService conversationService;
+    private readonly IEnumerable<string> botUserNames;
 
     public UpdateController(
-            ICommonLogService logger,
+        ICommonLogService logger,
         ITelegramBotService botService,
-        IConversationService conversationService)
+        IConversationService conversationService,
+        List<TelegramBotConfigurations> botConfigurations)
     {
         this.logger = logger;
         this.botService = botService;
         this.conversationService = conversationService;
+        this.botUserNames = botConfigurations.Select(bot => bot.Username);
     }
 
 #pragma warning disable S1541 // Methods and properties should not be too complex
@@ -37,7 +42,10 @@ public class UpdateController : Controller
     [Route("api/telegram/webhook/{botId:long}/update")]
     public async Task<IActionResult> Post(long botId, [FromBody] Update update)
     {
-        if (update == null || update.Type != UpdateType.Message) return Ok();
+        if (update == null || update.Type != UpdateType.Message)
+        {
+            return Ok();
+        }
 
         var bot = await botService.GetBotInfoAsync(botId);
         if (bot == null)
@@ -49,7 +57,7 @@ public class UpdateController : Controller
         var message = update.Message;
         await HandleBotEvents(bot, message);
 
-        return Ok();
+        return Ok($"Telegram Bot {botId} is added successfully.");
     }
 
     private async Task HandleBotEvents(User bot, Message message)
@@ -69,8 +77,11 @@ public class UpdateController : Controller
                 break;
 
             case MessageType.ChatMembersAdded:
-                var bots = message.NewChatMembers.Where(x => x.IsBot).ToArray();
-                for (var i = 0; i < bots.Length; i++) await AddBotToGroupAsync(message, bots[i]);
+                var bots = message.NewChatMembers.Where(x => x.IsBot && botUserNames.Contains(x.Username)).ToArray();
+                for (var i = 0; i < bots.Length; i++)
+                {
+                    await AddBotToGroupAsync(message, bots[i]);
+                }
                 break;
 
             case MessageType.ChatMemberLeft:

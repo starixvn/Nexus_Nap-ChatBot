@@ -32,6 +32,10 @@ export class DataGrid extends Component {
         await this.props.getCurrentPreviousMaxMessage();
 
         const { currentMessages, selected } = this.props;
+        if (!currentMessages || !currentMessages.data) {
+            return
+        }
+
         const checked = [];
 
         const newMaxMessageIds = selected.map((item, index) => {
@@ -274,7 +278,7 @@ export class DataGrid extends Component {
     render() {
         const { currentMessages, haveHostPermission } = this.props;
         const { isSubmitting, isShowConfirmPopup, editResult } = this.state;
-        if (currentMessages === null)
+        if (!currentMessages || !currentMessages.data)
             return null;
 
         return (

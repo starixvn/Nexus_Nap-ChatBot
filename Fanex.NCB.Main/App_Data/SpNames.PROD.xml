@@ -186,5 +186,10 @@
 		<Setting Key="NAP_Chatbot_MissingNotification_Sel" SpName="NAP_Chatbot_MissingNotification_Sel" DbName="DBCRM.MessageNotification.wsv_nap" Plain="0">
 			<Mapping DataField="Content_en" ObjectProperty="Content" />
 		</Setting>
+		<Setting Key="NAP_Chatbot_MissingMatchMonitoring_Sel" SpName="NAP_Chatbot_MissingMatchMonitoring_Sel" DbName="DBLIC.bodb_LicenseeReport.wsv_nap" Plain="0">
+			<Mapping DataField="Content_en" ObjectProperty="Content" />
+			<Mapping DataField="LogId" ObjectProperty="MessageId" />
+			<Mapping DataField="LogDate" ObjectProperty="PostTime" />
+		</Setting>
 	</Function>
 </Functions>

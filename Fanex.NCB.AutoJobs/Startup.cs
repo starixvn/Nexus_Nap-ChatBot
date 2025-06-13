@@ -138,6 +138,7 @@ namespace Fanex.NCB.AutoJobs
             services.AddSingleton<ICacheService, CacheService>();
             services.AddSingleton<ISettlementInternalLicenseeService, SettlementInternalLicenseeService>();
             services.AddSingleton<IResultAmendmentService, ResultAmendmentService>();
+            services.AddSingleton<IMonitorMatchService, MonitorMatchService>();
         }
 
         private static void AddWorker(IServiceCollection services)
@@ -157,6 +158,7 @@ namespace Fanex.NCB.AutoJobs
             services.AddHostedService<SettlementLicenseeWorker>();
             services.AddHostedService<ResultAmendmentInternalCSDWorkder>();
             services.AddHostedService<ResultAmendmentLicenseeWorkder>();
+            services.AddHostedService<MonitorMatchWorker>();
         }
     }
 }

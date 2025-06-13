@@ -10,5 +10,6 @@ public enum JobIdentity
     SettlementInternalCSD,
     SettlementLicensee,
     ResultAmendmentLicensee,
-    ResultAmendmentInternalCSD
+    ResultAmendmentInternalCSD,
+    MonitorMatch
 }
