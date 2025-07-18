@@ -1,0 +1,48 @@
+﻿{
+  "name": "Fanex.NCB.BotService",
+  "description": "",
+  "services": [
+    {
+      "type": "endpoint",
+      "name": "公告 / Service Notifications",
+      "endpoint": "https://licbotwebhook.starixplay.com/api/messages",
+      "appId": "e63aedd7-660c-46ca-8637-1df5fb133f96",
+      "appPassword": "Lrb@U45PXP4F=3t:kAyjLdoBNqnlCQr-",
+      "id": "1"
+    },
+    {
+      "type": "endpoint",
+      "name": "Internal Notifications",
+      "endpoint": "https://licbotwebhook.starixplay.com/api/messages",
+      "appId": "6de2b90e-03b5-4bf7-9268-6cec3ed6f87b",
+      "appPassword": ":DQdaPNlj2n1]dx[R4YkTjsNq?cYDd3Z",
+      "id": "2"
+    },
+    {
+      "type": "endpoint",
+      "name": "公告 / Technical Notifications",
+      "endpoint": "https://licbotwebhook.starixplay.com/api/messages",
+      "appId": "3eb816dc-4b12-4614-a539-3a789b37a456",
+      "appPassword": "6c06ENM.MaWI.AwG3Bk3PRwji0nS.-nKS4",
+      "id": "3"
+    },
+    {
+      "type": "endpoint",
+      "name": "licbot",
+      "endpoint": "https://licbotwebhook.starixplay.com/api/messages",
+      "appId": "40bccb6f-d5e6-4b02-9915-060ebb959fe4",
+      "appPassword": "WHE7Q~JcTS5jhXheUR6~i9aIrbc96Kiv_D5kD",
+      "id": "4"
+    },
+    {
+      "type": "endpoint",
+      "name": "公告 / Announcement Notification",
+      "endpoint": "https://licbotwebhook.starixplay.com/api/teams/messages",
+      "appId": "56b06824-6e9b-4e9b-b7ff-d1a15068cfc3",
+      "appPassword": "yqU8Q~xtPY33A9KAljGonazkXUfI1ZZtuXcLpaYo",
+      "id": "5"
+    }
+  ],
+  "padlock": "",
+  "version": "2.0"
+}

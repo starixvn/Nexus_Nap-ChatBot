@@ -69,6 +69,9 @@
         <None Update="BotFileConfigs\botConfig.PROD.bot">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="BotFileConfigs\botConfig.KLPROD.bot">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="BotFileConfigs\botConfig.Development.bot">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
