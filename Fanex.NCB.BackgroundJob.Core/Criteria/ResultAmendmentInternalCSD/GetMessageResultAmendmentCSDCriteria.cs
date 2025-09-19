@@ -9,6 +9,8 @@ public class GetMessageResultAmendmentCsdCriteria : CriteriaBase
 
     public DateTime? NewLastModifiedTime { get; set; }
 
+    public string Environment { get; set; } = "UAT";
+
     public override string GetSettingKey()
     {
         return "NAP_Chatbot_ResultAmendment_InternalCSD_MessageSel";
