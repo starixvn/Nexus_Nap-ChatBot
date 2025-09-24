@@ -30,7 +30,7 @@ public static class MessageSplittingHelper
     public static List<string> SplitMessageAtSentenceBoundaries(string message, int maxLength)
     {
         var result = new List<string>();
-        var sentenceDelimiters = new[] { '.', '!', '?', '\n', '\r' };
+        var sentenceDelimiters = new[] { '.', '!', '?', '\n', '\r', '。', '！', '？' };
 
         var sentences = SplitBySentenceDelimiters(message, sentenceDelimiters);
         var currentMessage = "";
@@ -57,7 +57,7 @@ public static class MessageSplittingHelper
     public static List<string> SplitAtPunctuationBoundaries(string text, int maxLength)
     {
         var result = new List<string>();
-        var punctuationDelimiters = new[] { ';', ':', ',' };
+        var punctuationDelimiters = new[] { ';', ':', ',', '；', '：', '，' };
 
         var segments = SplitBySentenceDelimiters(text, punctuationDelimiters);
         var currentMessage = "";

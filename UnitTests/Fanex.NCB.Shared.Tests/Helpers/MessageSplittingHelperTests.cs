@@ -644,6 +644,155 @@ namespace Fanex.NCB.Shared.Tests.Helpers
 
         #endregion
 
+        #region Multilingual and Unicode Support Tests
+
+        [Fact]
+        public void MultiLanguage_ChineseText_ShouldHandleCorrectly()
+        {
+            // Arrange - Your actual Chinese text example
+            var message = "Resettlement\" on the left panel for the checking of matches' affected list. >> 请知悉，目前所有\"重新结算\"事项之受影响客户名单将不以邮件方式提供。贵司可透过后台系统登录并点击 \"通知\" - \"重新结算\" 查询赛事受影响客户名单。";
+            var maxLength = 100; // Force splitting to test Unicode handling
+
+            // Act
+            var result = MessageSplittingHelper.SplitMessageAtWordBoundaries(message, maxLength);
+
+            // Assert
+            Assert.NotEmpty(result);
+            AssertAllPartsWithinLimit(result, maxLength);
+            AssertContentPreserved(message, result);
+
+            // Verify Chinese characters are preserved
+            var allContent = string.Join("", result);
+            Assert.Contains("请知悉", allContent);
+            Assert.Contains("重新结算", allContent);
+            Assert.Contains("客户名单", allContent);
+            Assert.Contains("通知", allContent);
+        }
+
+        [Fact]
+        public void MultiLanguage_ChinesePunctuation_ShouldRecognizeDelimiters()
+        {
+            // Arrange - Chinese text with Chinese punctuation
+            var message = "第一句话。第二句话！第三句话？还有更多内容；包括一些项目：项目一，项目二，项目三。";
+            var maxLength = 30; // Force splitting
+
+            // Act
+            var result = MessageSplittingHelper.SplitMessageAtWordBoundaries(message, maxLength);
+
+            // Assert
+            Assert.True(result.Count >= 2, "Should split Chinese text at punctuation boundaries");
+            AssertAllPartsWithinLimit(result, maxLength);
+            AssertContentPreserved(message, result);
+
+            // Verify Chinese punctuation is recognized (。！？；：，)
+            var hasProperSplits = result.Any(part => part.Contains("第一句话。") ||
+                                                   part.Contains("第二句话！") ||
+                                                   part.Contains("第三句话？"));
+            Assert.True(hasProperSplits, "Should split at Chinese punctuation marks");
+        }
+
+
+
+        [Fact]
+        public void ChinesePunctuation_SentenceDelimiters_ShouldSplitCorrectly()
+        {
+            // Arrange - Test English and Chinese sentence punctuation
+            var text = "English. 中文。Another! 另一个！Question? 问题？";
+
+            // Act - Test sentence splitting using the main method
+            var result = MessageSplittingHelper.SplitMessageAtWordBoundaries(text, 25);
+
+            // Assert
+            Assert.True(result.Count >= 4, $"Should split into multiple parts, got {result.Count}");
+            AssertAllPartsWithinLimit(result, 25);
+            AssertContentPreserved(text, result);
+
+            // Verify that both English and Chinese sentence delimiters work
+            var allContent = string.Join("", result);
+            Assert.Contains("English.", allContent);
+            Assert.Contains("中文。", allContent);
+            Assert.Contains("Another!", allContent);
+            Assert.Contains("另一个！", allContent);
+            Assert.Contains("Question?", allContent);
+            Assert.Contains("问题？", allContent);
+        }
+
+        [Fact]
+        public void ChinesePunctuation_ListDelimiters_ShouldSplitCorrectly()
+        {
+            // Arrange - Test English and Chinese punctuation delimiters
+            var text = "Items: one, two; 项目：一，二；";
+
+            // Act - Test punctuation splitting using the main method
+            var result = MessageSplittingHelper.SplitMessageAtWordBoundaries(text, 15);
+
+            // Assert
+            Assert.True(result.Count >= 4, "Should split at punctuation marks");
+            AssertAllPartsWithinLimit(result, 15);
+            AssertContentPreserved(text, result);
+
+            // Verify both English and Chinese punctuation delimiters work
+            var allContent = string.Join("", result);
+            Assert.Contains("Items:", allContent);
+            Assert.Contains("one,", allContent);
+            Assert.Contains("two;", allContent);
+            Assert.Contains("项目：", allContent);
+            Assert.Contains("一，", allContent);
+            Assert.Contains("二；", allContent);
+        }
+
+        [Fact]
+        public void EnglishAndChinese_MixedLanguages_ShouldHandleCorrectly()
+        {
+            // Arrange - Mixed English and Chinese
+            var message = "Hello world! 你好世界！This is English. 这是中文。More text: 更多文字，包括标点符号。";
+            var maxLength = 40; // Force splitting
+
+            // Act
+            var result = MessageSplittingHelper.SplitMessageAtWordBoundaries(message, maxLength);
+
+            // Assert
+            Assert.NotEmpty(result);
+            AssertAllPartsWithinLimit(result, maxLength);
+            AssertContentPreserved(message, result);
+
+            // Verify both English and Chinese are preserved
+            var allContent = string.Join("", result);
+            Assert.Contains("Hello world", allContent);
+            Assert.Contains("你好世界", allContent);
+            Assert.Contains("This is English", allContent);
+            Assert.Contains("这是中文", allContent);
+        }
+
+        [Fact]
+        public void EnglishAndChinese_WithEmojis_ShouldHandleCorrectly()
+        {
+            // Arrange - English and Chinese text with emojis
+            var message = "Alert! 🚨 Status: 状态正常 ✅ Server: 服务器运行中 🖥️ Users: 用户在线 👥 Time: 时间 ⏰";
+            var maxLength = 35; // Force splitting
+
+            // Act
+            var result = MessageSplittingHelper.SplitMessageAtWordBoundaries(message, maxLength);
+
+            // Assert
+            Assert.NotEmpty(result);
+            AssertAllPartsWithinLimit(result, maxLength);
+            AssertContentPreserved(message, result);
+
+            // Verify emojis and both languages are preserved
+            var allContent = string.Join("", result);
+            Assert.Contains("🚨", allContent);
+            Assert.Contains("✅", allContent);
+            Assert.Contains("🖥️", allContent);
+            Assert.Contains("👥", allContent);
+            Assert.Contains("⏰", allContent);
+            Assert.Contains("状态正常", allContent);
+            Assert.Contains("服务器运行中", allContent);
+        }
+
+
+        #endregion
+
         #region Comprehensive Integration Tests
 
         [Theory]
