@@ -20,6 +20,7 @@
     using Telegram.Bot;
     using Telegram.Bot.Types;
     using Telegram.Bot.Types.Enums;
+    using Fanex.NCB.Shared.Helpers;
 
     public class TelegramBotService : ITelegramBotService
     {
@@ -98,7 +99,14 @@
 
                 _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
                 _ = long.TryParse(conversationInfo.ConversationId, out long chatId);
-                await SendTextMessageAsync(botId, chatId, conversationInfo.Message.ToMarkdownV2());
+
+                var formattedMessage = conversationInfo.Message.ToMarkdownV2();
+                var messageParts = MessageSplittingHelper.SplitMessageAtWordBoundaries(formattedMessage, 4096);
+
+                foreach (var messagePart in messageParts)
+                {
+                    await SendTextMessageAsync(botId, chatId, messagePart);
+                }
             }
             catch (Exception exception)
             {
@@ -155,7 +163,11 @@
             var sendResult = await SendTextMessageAsync(conversationInfo);
             await AddMessageLogToDatabaseAsync(conversationInfo, sendResult);
             if (sendResult is not { ErrorCode: 0 } ||
-                conversationInfo.Attachments == null || conversationInfo.Attachments.Count <= 0) return sendResult;
+                conversationInfo.Attachments == null || conversationInfo.Attachments.Count <= 0)
+            {
+                return sendResult;
+            }
+
             _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
             _ = long.TryParse(conversationInfo.ConversationId, out var chatId);
 
@@ -253,13 +265,35 @@
         {
             try
             {
-                var token = await GetTokenAsync();
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
-                var url = new Uri($"{sendIndirectMessageSettings.TelegramUrl}");
-                HttpResponseMessage response = await httpClient.PostAsJsonAsync(url, conversationInfo);
-                response.EnsureSuccessStatusCode();
-                var responseData = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<SendMessageResult>(responseData);
+                var messageParts = MessageSplittingHelper.SplitMessageAtWordBoundaries(conversationInfo.Message, 4096);
+
+                SendMessageResult result = null;
+
+                foreach (var messagePart in messageParts)
+                {
+                    var modifiedConversationInfo = new ConversationInfo
+                    {
+                        BotConversationId = conversationInfo.BotConversationId,
+                        ConversationId = conversationInfo.ConversationId,
+                        NotificationId = conversationInfo.NotificationId,
+                        Message = messagePart,
+                        Attachments = conversationInfo.Attachments,
+                        FailedImages = conversationInfo.FailedImages
+                    };
+
+                    var token = await GetTokenAsync();
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+                    var url = new Uri($"{sendIndirectMessageSettings.TelegramUrl}");
+                    HttpResponseMessage response = await httpClient.PostAsJsonAsync(url, modifiedConversationInfo);
+                    response.EnsureSuccessStatusCode();
+                    var responseData = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<SendMessageResult>(responseData);
+
+                    if (result.ErrorCode != 0)
+                    {
+                        break;
+                    }
+                }
 
                 result.ConversationId = conversationInfo.ConversationId;
                 result.NotificationId = conversationInfo.NotificationId;
