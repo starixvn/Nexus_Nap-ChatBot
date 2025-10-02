@@ -1,27 +1,27 @@
 ﻿@using Newtonsoft.Json
 
 @{
-	ViewData["Title"] = "Login";
-	Layout = null;
-	var invalidLogin = ViewBag.invalidLogin;
+    ViewData["Title"] = "Login";
+    Layout = null;
+    var invalidLogin = ViewBag.invalidLogin;
 }
 
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>@ViewData["Title"] - @Fanex.NCB.Resources.Resources.ChatBotForLicensee</title>
-	<base href="~/"/>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - @Fanex.NCB.Resources.Resources.ChatBotForLicensee</title>
+    <base href="~/"/>
 
-	<environment include="Development">
-		<link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
-		<link rel="stylesheet" href="~/dev/pages/login/login.chunk.css" asp-append-version="true"/>
-	</environment>
-	<environment exclude="Development">
-		<link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
-		<link rel="stylesheet" href="~/pro/pages/login/login.chunk.css" asp-append-version="true"/>
-	</environment>
+    <environment include="Development">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
+        <link rel="stylesheet" href="~/dev/pages/login/login.chunk.css" asp-append-version="true"/>
+    </environment>
+    <environment exclude="Development">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
+        <link rel="stylesheet" href="~/pro/pages/login/login.chunk.css" asp-append-version="true"/>
+    </environment>
 </head>
 <body>
 <div id="login"></div>
@@ -36,12 +36,12 @@
 <partial name="_CookieConsentPartial"/>
 
 <environment include="Development">
-	<script src="~/dev/common/reactvendor.chunk.js" asp-append-version="true"></script>
-	<script src="~/dev/pages/login/login.chunk.js" asp-append-version="true"></script>
+    <script src="~/dev/common/reactvendor.chunk.js" asp-append-version="true"></script>
+    <script src="~/dev/pages/login/login.chunk.js" asp-append-version="true"></script>
 </environment>
 <environment exclude="Development">
-	<script src="~/pro/common/reactvendor.chunk.js" asp-append-version="true"></script>
-	<script src="~/pro/pages/login/login.chunk.js" asp-append-version="true"></script>
+    <script src="~/pro/common/reactvendor.chunk.js" asp-append-version="true"></script>
+    <script src="~/pro/pages/login/login.chunk.js" asp-append-version="true"></script>
 </environment>
 </body>
 </html>

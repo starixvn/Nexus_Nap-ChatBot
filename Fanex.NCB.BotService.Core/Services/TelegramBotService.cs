@@ -155,7 +155,10 @@
             var sendResult = await SendTextMessageAsync(conversationInfo);
             await AddMessageLogToDatabaseAsync(conversationInfo, sendResult);
             if (sendResult is not { ErrorCode: 0 } ||
-                conversationInfo.Attachments == null || conversationInfo.Attachments.Count <= 0) return sendResult;
+                conversationInfo.Attachments == null || conversationInfo.Attachments.Count <= 0)
+            {
+                return sendResult;
+            }
             _ = long.TryParse(conversationInfo.BotConversationId, out long botId);
             _ = long.TryParse(conversationInfo.ConversationId, out var chatId);
 

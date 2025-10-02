@@ -44,7 +44,10 @@ public class LocalSecurityService : ISecurityService
     public async Task<int> LoginAsync(LoginParameter parameter)
     {
         var onUserId = await UserCheckIn(parameter);
-        if (onUserId > 0) _ = LogUserLoginAsync(parameter);
+        if (onUserId > 0)
+        {
+            _ = LogUserLoginAsync(parameter);
+        }
 
         return onUserId;
     }
@@ -105,7 +108,10 @@ public class LocalSecurityService : ISecurityService
     {
         var isActivate = await IsActivatedAsync(siteId);
 
-        if (!isActivate) return (int)RecheckInStatus.KickOut;
+        if (!isActivate)
+        {
+            return (int)RecheckInStatus.KickOut;
+        }
 
         var criteria = new UserReCheckInUserCriteria
         {
@@ -115,9 +121,15 @@ public class LocalSecurityService : ISecurityService
 
         await baseService.GetDataAsync<int>(criteria);
 
-        if (criteria.IsPermissionChanged) return (int)RecheckInStatus.KickOutPermission;
+        if (criteria.IsPermissionChanged)
+        {
+            return (int)RecheckInStatus.KickOutPermission;
+        }
 
-        if (criteria.IsKickedOut) return (int)RecheckInStatus.KickOut;
+        if (criteria.IsKickedOut)
+        {
+            return (int)RecheckInStatus.KickOut;
+        }
 
         return (int)RecheckInStatus.Success;
     }
@@ -130,7 +142,10 @@ public class LocalSecurityService : ISecurityService
     public async Task<int> SSOLoginAsync(SSOLoginParameter parameter)
     {
         var onUserId = await SSOCheckIn(parameter);
-        if (onUserId > 0) await LogSSOLoginAsync(parameter);
+        if (onUserId > 0)
+        {
+            await LogSSOLoginAsync(parameter);
+        }
 
         return onUserId;
     }
@@ -189,7 +204,10 @@ public class LocalSecurityService : ISecurityService
         var isActive = false;
         var site = await baseService.GetDataEntityAsync<SiteUrl>(criteria);
 
-        if (site != null) isActive = site.IsActive;
+        if (site != null)
+        {
+            isActive = site.IsActive;
+        }
 
         return isActive;
     }

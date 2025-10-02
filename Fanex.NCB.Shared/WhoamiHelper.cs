@@ -19,8 +19,10 @@ public static class WhoamiHelper
                        + $"Request Headers:{Environment.NewLine}");
 
         foreach (var header in context.Request.Headers)
+        {
             content.Append($"- {header.Key}: " +
                            $"{header.Value}{Environment.NewLine}");
+        }
 
         return content.ToString();
     }

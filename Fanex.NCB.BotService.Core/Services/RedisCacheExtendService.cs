@@ -56,7 +56,10 @@ public class RedisCacheExtendService : IRedisCacheExtendService
         foreach (var key in keyList)
         {
             var value = cacheService.Get<T>(key);
-            if (!Equals(value, default(T))) values.Add(value);
+            if (!Equals(value, default(T)))
+            {
+                values.Add(value);
+            }
         }
 
         return values;

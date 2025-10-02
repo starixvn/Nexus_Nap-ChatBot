@@ -29,7 +29,9 @@ public class ViewLogService : IViewLogService
                 PageSize = pageSize
             });
         foreach (var systemMessage in systemMessages)
+        {
             systemMessage.CreatedDate = systemMessage.CreatedDate.ConvertFromUTC();
+        }
 
         return (totalItems.FirstOrDefault(), systemMessages);
     }
@@ -44,7 +46,10 @@ public class ViewLogService : IViewLogService
                 PageIndex = pageIndex,
                 PageSize = pageSize
             });
-        foreach (var recipient in recipients) recipient.SentTime = recipient.SentTime.ConvertFromUTC();
+        foreach (var recipient in recipients)
+        {
+            recipient.SentTime = recipient.SentTime.ConvertFromUTC();
+        }
 
         return (totalItems.FirstOrDefault(), recipients);
     }
@@ -64,7 +69,9 @@ public class ViewLogService : IViewLogService
                 }
             );
         foreach (var conversationMessage in conversationMessages)
+        {
             conversationMessage.SentTime = conversationMessage.SentTime.ConvertFromUTC();
+        }
 
         return (totalItems.FirstOrDefault(), conversationMessages, mapRecipient);
     }

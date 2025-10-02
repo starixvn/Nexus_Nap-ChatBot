@@ -38,16 +38,22 @@ public class ChatbotService : IChatbotService
         this.botSettings = botSettings.Value;
         this.monitorChatbot = monitorChatbot.Value;
         this.notifyChatGroupOptions = notifyChatGroupOptions.Value;
-        this.monitorTelegramBot = monitorTelegramBot.Value; 
+        this.monitorTelegramBot = monitorTelegramBot.Value;
     }
 
     public async Task<NotificationMessageResponse> SendMultiMessageAsync(byte channelId,
         IEnumerable<NotificationMessage> messages)
     {
         var messageResponse = new NotificationMessageResponse();
-        if (messages == null || !messages.Any()) return messageResponse;
+        if (messages == null || !messages.Any())
+        {
+            return messageResponse;
+        }
 
-        foreach (var message in messages) message.Message = RemoveUnsupportedTags(message.Message);
+        foreach (var message in messages)
+        {
+            message.Message = RemoveUnsupportedTags(message.Message);
+        }
 
         var apiConfigs = botSettings.ApiConfigs.FirstOrDefault(x => x.ChannelId == channelId);
         var token = await GetTokenAsync();
@@ -137,6 +143,7 @@ public class ChatbotService : IChatbotService
     {
         var messages = new List<NotificationMessage>();
         if (notifications != null && notifications.Any())
+        {
             foreach (var noti in notifications)
             {
                 var notification = new NotificationMessage
@@ -159,6 +166,7 @@ public class ChatbotService : IChatbotService
                 };
                 messages.Add(notification);
             }
+        }
 
         return messages;
     }

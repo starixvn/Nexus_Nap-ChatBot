@@ -51,7 +51,10 @@ public class ResetLastMessageIdService : IResetLastMessageIdService
     public async Task<IEnumerable<MissingMesssageInfo>> GetMissingMessageDataAsync(
         IEnumerable<MissingMesssageInfo> missingMesssages)
     {
-        foreach (var item in missingMesssages) item.Content_en = item.Content;
+        foreach (var item in missingMesssages)
+        {
+            item.Content_en = item.Content;
+        }
         var criteria = new GetMissingMessageDataCriteria
         {
             MessageList = XmlHelper<MissingMesssageInfo>.Serialize(missingMesssages.ToList())
@@ -130,7 +133,9 @@ public class ResetLastMessageIdService : IResetLastMessageIdService
         var maxRefenceId = missingInfo.Max(x => GetIdByJobIdentify(jobIdentify, x, settingName));
 
         if ((JobIdentity)jobIdentify == JobIdentity.ResultAmendmentInternalCSD && maxRefenceId is DateTime dateTime)
+        {
             return dateTime.ToString("MM/dd/yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture);
+        }
 
         return maxRefenceId.ToString();
     }
@@ -165,7 +170,10 @@ public class ResetLastMessageIdService : IResetLastMessageIdService
         };
         var result = await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
 
-        foreach (var item in result) item.JobIdentify = (int)JobIdentity.ProblemPlayer;
+        foreach (var item in result)
+        {
+            item.JobIdentify = (int)JobIdentity.ProblemPlayer;
+        }
         return result;
     }
 
@@ -177,7 +185,10 @@ public class ResetLastMessageIdService : IResetLastMessageIdService
         };
         var result = await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
 
-        foreach (var item in result) item.JobIdentify = (int)JobIdentity.MonitoredPlayer;
+        foreach (var item in result)
+        {
+            item.JobIdentify = (int)JobIdentity.MonitoredPlayer;
+        }
         return result;
     }
 
@@ -199,7 +210,10 @@ public class ResetLastMessageIdService : IResetLastMessageIdService
     private async Task<IEnumerable<MissingMesssageInfo>> GetMissingMessageNotificationAsync(
         IEnumerable<CurrentMaxMessageInfo> msgList, IEnumerable<MissingMesssageInfo> missingMesssages)
     {
-        foreach (var item in missingMesssages) item.Content_en = item.Content;
+        foreach (var item in missingMesssages)
+        {
+            item.Content_en = item.Content;
+        }
         var criteria = new GetMissingMessageNotificationCriteria
         {
             Setting = XmlHelper<CurrentMaxMessageInfo>.Serialize(msgList.ToList()),

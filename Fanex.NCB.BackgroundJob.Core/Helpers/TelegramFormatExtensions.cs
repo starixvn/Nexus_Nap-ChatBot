@@ -11,7 +11,10 @@ public static class TelegramFormatExtensions
 
     public static string ToMarkdownV2(this string text)
     {
-        if (string.IsNullOrWhiteSpace(text)) return text;
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return text;
+        }
 
         // convert skype format to telegram format
         text = Regex.Replace(text, "(\\*\\*\\*)(.+?)(\\*\\*\\*)", "<b><i>$2</i></b>"); // bold & italic
@@ -63,7 +66,10 @@ public static class TelegramFormatExtensions
 
     public static string EscapeSpecialSyntax(string text)
     {
-        if (string.IsNullOrWhiteSpace(text)) return string.Empty;
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return string.Empty;
+        }
 
         text = EscapeExceptHyperlink(text, @"\[|\\\[", "\\[");
         text = EscapeExceptHyperlink(text, @"]|\\\]", "\\]");

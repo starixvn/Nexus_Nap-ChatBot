@@ -115,8 +115,10 @@ public class SettingConfigurationService : ISettingConfigurationService
         var result = await baseService.FetchMultipleAsync<Mapping, MappingRecipients>(criteria);
         var mappings = result.Item1;
         foreach (var mapping in mappings)
+        {
             mapping.RecipientTypeNames = result.Item2
                 .FirstOrDefault(mr => mr.NotificationTypeId == mapping.NotificationTypeID)?.RecipientTypeNames;
+        }
 
         return (criteria.Total, mappings);
     }
@@ -125,13 +127,17 @@ public class SettingConfigurationService : ISettingConfigurationService
     {
         var jobInfo = new List<UpdateJobSettingInfo>();
         foreach (var property in model.GetType().GetProperties())
+        {
             if (property.Name != Constants.JobIdentify)
+            {
                 jobInfo.Add(new UpdateJobSettingInfo
                 {
                     JobIdentify = model.JobIdentify,
                     SettingName = property.Name,
                     SettingValue = property.GetValue(model).ToString()
                 });
+            }
+        }
 
         var command = new UpdateJobInfoCommand
         {
@@ -161,7 +167,10 @@ public class SettingConfigurationService : ISettingConfigurationService
         if (result.Item1 != null)
         {
             data = result.Item1.FirstOrDefault();
-            if (data is not null) data.Templates = result.Item2;
+            if (data is not null)
+            {
+                data.Templates = result.Item2;
+            }
         }
 
         return data;

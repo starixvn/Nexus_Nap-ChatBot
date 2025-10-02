@@ -20,14 +20,20 @@ public class BaseService : IBaseService
 
     public async Task<IEnumerable<T>> GetDataAsync<T>(ICriteria criteria, string serverIp = "")
     {
-        if (criteria != null && criteria.IsValid()) return await dynamicRepository.FetchAsync<T>(criteria, serverIp);
+        if (criteria != null && criteria.IsValid())
+        {
+            return await dynamicRepository.FetchAsync<T>(criteria, serverIp);
+        }
 
         return new List<T>();
     }
 
     public async Task<T> GetDataEntityAsync<T>(ICriteria criteria, string serverIp = "")
     {
-        if (criteria != null && criteria.IsValid()) return await dynamicRepository.GetAsync<T>(criteria, serverIp);
+        if (criteria != null && criteria.IsValid())
+        {
+            return await dynamicRepository.GetAsync<T>(criteria, serverIp);
+        }
 
         return default;
     }
@@ -36,7 +42,9 @@ public class BaseService : IBaseService
         string serverIp = "")
     {
         if (criteria != null && criteria.IsValid())
+        {
             return await dynamicRepository.FetchMultipleAsync<T1, T2>(criteria, serverIp);
+        }
         return new ValueTuple<IEnumerable<T1>, IEnumerable<T2>>(new List<T1>(), new List<T2>());
     }
 
@@ -44,7 +52,9 @@ public class BaseService : IBaseService
         ICriteria criteria, string serverIp = "")
     {
         if (criteria != null && criteria.IsValid())
+        {
             return await dynamicRepository.FetchMultipleAsync<T1, T2, T3>(criteria, serverIp);
+        }
 
         return new ValueTuple<IEnumerable<T1>, IEnumerable<T2>, IEnumerable<T3>>(new List<T1>(), new List<T2>(),
             new List<T3>());
@@ -54,7 +64,9 @@ public class BaseService : IBaseService
         FetchMultipleAsync<T1, T2, T3, T4>(ICriteria criteria, string serverIp = "")
     {
         if (criteria != null && criteria.IsValid())
+        {
             return await dynamicRepository.FetchMultipleAsync<T1, T2, T3, T4>(criteria, serverIp);
+        }
 
         return new ValueTuple<IEnumerable<T1>, IEnumerable<T2>, IEnumerable<T3>, IEnumerable<T4>>(new List<T1>(),
             new List<T2>(), new List<T3>(), new List<T4>());
@@ -64,7 +76,9 @@ public class BaseService : IBaseService
         FetchMultipleAsync<T1, T2, T3, T4, T5>(ICriteria criteria, string serverIp = "")
     {
         if (criteria != null && criteria.IsValid())
+        {
             return await dynamicRepository.FetchMultipleAsync<T1, T2, T3, T4, T5>(criteria, serverIp);
+        }
 
         return new ValueTuple<IEnumerable<T1>, IEnumerable<T2>, IEnumerable<T3>, IEnumerable<T4>, IEnumerable<T5>>(
             new List<T1>(), new List<T2>(), new List<T3>(), new List<T4>(), new List<T5>());
@@ -75,7 +89,9 @@ public class BaseService : IBaseService
         FetchMultipleAsync<T1, T2, T3, T4, T5, T6>(ICriteria criteria, string serverIp = "")
     {
         if (criteria != null && criteria.IsValid())
+        {
             return await dynamicRepository.FetchMultipleAsync<T1, T2, T3, T4, T5, T6>(criteria, serverIp);
+        }
 
         return new ValueTuple<IEnumerable<T1>, IEnumerable<T2>, IEnumerable<T3>, IEnumerable<T4>, IEnumerable<T5>,
             IEnumerable<T6>>(
@@ -102,7 +118,10 @@ public class BaseService : IBaseService
 
     public T GetDataEntity<T>(ICriteria criteria, string serverIp = "")
     {
-        if (criteria != null && criteria.IsValid()) return dynamicRepository.Get<T>(criteria, serverIp);
+        if (criteria != null && criteria.IsValid())
+        {
+            return dynamicRepository.Get<T>(criteria, serverIp);
+        }
 
         return default;
     }

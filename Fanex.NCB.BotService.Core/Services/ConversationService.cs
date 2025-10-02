@@ -50,6 +50,7 @@ public class ConversationService : IConversationService
     {
         var conversations = new List<ConversationInfo>();
         foreach (var notification in notifications)
+        {
             conversations.AddRange(notification.Recipients.Select(r =>
                 new ConversationInfo
                 {
@@ -63,6 +64,7 @@ public class ConversationService : IConversationService
                     Attachments = notification.Attachments,
                     FailedImages = r.FailedImages
                 }));
+        }
 
         var distinctContents = DistinctConversationIdAndContent(conversations);
 
@@ -70,8 +72,10 @@ public class ConversationService : IConversationService
         var notificationResult = DistinctNotification(notifications);
 
         foreach (var notification in notifications)
+        {
             notification.Recipients = distinctConversations.Where(conversation =>
                 conversation.NotificationId == notification.NotificationId);
+        }
 
         return notificationResult.ToList();
     }
@@ -92,7 +96,10 @@ public class ConversationService : IConversationService
         {
             if (results.Exists(r =>
                     r.Message == conversation.Message && r.ConversationId == conversation.ConversationId &&
-                    IsNotExceptionGroup(r.ConversationId))) conversation.IsDuplicated = true;
+                    IsNotExceptionGroup(r.ConversationId)))
+            {
+                conversation.IsDuplicated = true;
+            }
             results.Add(conversation);
         }
 

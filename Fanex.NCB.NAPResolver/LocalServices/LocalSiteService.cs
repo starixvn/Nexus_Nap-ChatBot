@@ -52,7 +52,10 @@ public class LocalSiteService : ISiteService
         var isActive = false;
         var site = await baseService.GetDataEntityAsync<SiteUrl>(criteria);
 
-        if (site != null) isActive = site.IsActive;
+        if (site != null)
+        {
+            isActive = site.IsActive;
+        }
 
         return isActive;
     }

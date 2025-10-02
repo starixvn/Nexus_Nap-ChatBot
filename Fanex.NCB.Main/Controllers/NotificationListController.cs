@@ -145,7 +145,10 @@ namespace Fanex.NCB.SkypeBot.Controllers
         public async Task<IActionResult> Cancel(int notificationId)
         {
             var result = await notificationService.CancelAsync(notificationId, napSession.UserId);
-            if (result.IsSuccessful) PushSignalRUpdateNotificationStatus(notificationId.ToString());
+            if (result.IsSuccessful)
+            {
+                PushSignalRUpdateNotificationStatus(notificationId.ToString());
+            }
 
             return Json(result);
         }

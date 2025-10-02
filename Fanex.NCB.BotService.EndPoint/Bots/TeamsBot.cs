@@ -3,6 +3,7 @@ using Microsoft.Bot.Builder.Teams;
 using Microsoft.Bot.Schema.Teams;
 using Microsoft.Bot.Schema;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Threading;
 using Fanex.NCB.BotService.Core.Criteria;
@@ -69,7 +70,7 @@ namespace Fanex.NCB.BotService.EndPoint.Bots
             if (activity.MentionsRecipient())
             {
                 activity.RemoveRecipientMention();
-                var text = activity.Text.Trim().ToLower();
+                var text = activity.Text.Trim().ToLower(CultureInfo.InvariantCulture);
                 var responseActivity = GetResponseActivity(text, turnContext);
                 await turnContext.SendActivityAsync(responseActivity, cancellationToken);
             }

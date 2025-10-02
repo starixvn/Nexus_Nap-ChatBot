@@ -4,7 +4,7 @@ using Fanex.NCB.AutoJobs.Core.Models.Common;
 
 public class MonitorMatchSetting : ServiceSetting
 {
-    public int LastLogId { get; set; } = 0;
+    public int LastLogId { get; set; }
 
     public string? LastDataRow { get; set;}
 

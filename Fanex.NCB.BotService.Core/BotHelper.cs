@@ -10,7 +10,10 @@ public static class BotHelper
         {
             var indexOfCommand = sourceMessage.IndexOf(' ');
 
-            if (indexOfCommand > 0) returnMessage = sourceMessage.Remove(0, indexOfCommand).Trim();
+            if (indexOfCommand > 0)
+            {
+                returnMessage = sourceMessage.Remove(0, indexOfCommand).Trim();
+            }
         }
 
         return returnMessage;

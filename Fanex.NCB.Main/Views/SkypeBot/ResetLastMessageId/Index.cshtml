@@ -1,5 +1,5 @@
 ﻿@{
-	ViewData["Title"] = "Reset Last Id";
+    ViewData["Title"] = "Reset Last Id";
 }
 
 <input class="d-none" type="checkbox" checked="@((bool)ViewBag.HaveHostPermission)" id="have-host-permission"/>
@@ -9,19 +9,19 @@
 <div id="root"></div>
 
 @section Styles {
-	<environment include="Development">
-		<link rel="stylesheet" href="~/dev/pages/resetlastmessageid/resetlastmessageid.chunk.css" asp-append-version="true"/>
-	</environment>
-	<environment exclude="Development">
-		<link rel="stylesheet" href="~/pro/pages/resetlastmessageid/resetlastmessageid.chunk.css" asp-append-version="true"/>
-	</environment>
+    <environment include="Development">
+        <link rel="stylesheet" href="~/dev/pages/resetlastmessageid/resetlastmessageid.chunk.css" asp-append-version="true"/>
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/pro/pages/resetlastmessageid/resetlastmessageid.chunk.css" asp-append-version="true"/>
+    </environment>
 }
 
 @section Scripts {
-	<environment include="Development">
-		<script src="~/dev/pages/resetlastmessageid/resetlastmessageid.chunk.js" asp-append-version="true"></script>
-	</environment>
-	<environment exclude="Development">
-		<script src="~/pro/pages/resetlastmessageid/resetlastmessageid.chunk.js" asp-append-version="true"></script>
-	</environment>
+    <environment include="Development">
+        <script src="~/dev/pages/resetlastmessageid/resetlastmessageid.chunk.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/pro/pages/resetlastmessageid/resetlastmessageid.chunk.js" asp-append-version="true"></script>
+    </environment>
 }

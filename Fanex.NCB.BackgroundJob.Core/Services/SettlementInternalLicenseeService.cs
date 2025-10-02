@@ -66,7 +66,9 @@ public class SettlementInternalLicenseeService : ISettlementInternalLicenseeServ
     private static void FormatTelegram(IEnumerable<MessageSettlementHeader> messageHeaders)
     {
         foreach (var item in messageHeaders)
+        {
             item.SportNameEN = TelegramFormatExtensions.EscapeSpecialSyntax(item.SportNameEN);
+        }
     }
 
     protected internal virtual async Task<(IEnumerable<MessageSettlementHeader>, IEnumerable<MessageTarget>)>

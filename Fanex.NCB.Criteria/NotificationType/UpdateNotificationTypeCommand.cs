@@ -23,7 +23,10 @@ public class UpdateNotificationTypeCommand : BaseCommand
 
     public override bool IsValid()
     {
-        if (NotificationTypeId <= 0) return false;
+        if (NotificationTypeId <= 0)
+        {
+            return false;
+        }
 
         return SystemId > 0 &&
                !string.IsNullOrWhiteSpace(NotificationTypeName) &&

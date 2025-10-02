@@ -44,7 +44,10 @@ public class TelegramBotController : Controller
     {
         try
         {
-            foreach (var bot in botConfigurations) await telegramBotService.GetBotInfoAsync(bot.BotId);
+            foreach (var bot in botConfigurations)
+            {
+                await telegramBotService.GetBotInfoAsync(bot.BotId);
+            }
         }
         catch (Exception ex)
         {

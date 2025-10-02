@@ -23,8 +23,10 @@ public class WhoamiController : Controller
                        + $"Request Headers:{Environment.NewLine}");
 
         foreach (var header in context.Request.Headers)
+        {
             content.Append($"- {header.Key}: " +
                            $"{header.Value}{Environment.NewLine}");
+        }
 
         return Content(content.ToString());
     }

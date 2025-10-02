@@ -51,8 +51,12 @@ public class NotificationService : INotificationService
         {
             var notifications = JsonConvert.DeserializeObject<List<NotificationMessage>>(command.NotificationIDLst);
             foreach (var notification in notifications)
+            {
                 if (model.SendImmediately)
+                {
                     BackgroundJobAfterCreateNotification(notification.NotificationId);
+                }
+            }
 
             notificationIds = string.Join(",", notifications.Select(x => x.NotificationId).ToArray());
         }
@@ -93,7 +97,9 @@ public class NotificationService : INotificationService
         });
 
         foreach (var notification in result.Item2)
+        {
             notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();
+        }
 
         return (result.Item1.FirstOrDefault(), result.Item2);
     }
@@ -197,7 +203,9 @@ public class NotificationService : INotificationService
 
         var result = await baseService.ExecuteNonQueryAsync(command);
         if (result.IsSuccessful && model.SendImmediately)
+        {
             BackgroundJobAfterCreateNotification(command.InNotificationId);
+        }
 
         return result;
     }
@@ -274,7 +282,9 @@ public class NotificationService : INotificationService
         };
         var notifications = await baseService.GetDataAsync<Notification>(criteria);
         foreach (var notification in notifications)
+        {
             notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();
+        }
 
         return notifications;
     }
@@ -284,7 +294,9 @@ public class NotificationService : INotificationService
         var criteria = new GetAllErrNotificationsCriteria();
         var notifications = await baseService.GetDataAsync<NotificationPaging>(criteria);
         foreach (var notification in notifications)
+        {
             notification.ConfigSendTime = notification.ConfigSendTime.ConvertFromUTC();
+        }
 
         return notifications;
     }

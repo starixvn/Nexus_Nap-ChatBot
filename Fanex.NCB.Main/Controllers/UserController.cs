@@ -56,23 +56,31 @@
             {
                 return RecheckInStatus.KickOut;
             }
-            else
+
+            if (!napSettings.EnableReCheckIn && !EnableCheckPermissionChanged)
             {
-                if (!napSettings.EnableReCheckIn && !EnableCheckPermissionChanged) return RecheckInStatus.Success;
-
-                var status = await securityService.ReCheckInAsync(napSession.OnUserId, napSettings.SiteId);
-                var reCheckInStatus = (RecheckInStatus)status;
-
-                if (!napSettings.EnableReCheckIn && reCheckInStatus == RecheckInStatus.KickOut)
-                    return RecheckInStatus.Success;
-
-                if (!EnableCheckPermissionChanged && reCheckInStatus == RecheckInStatus.KickOutPermission)
-                    return RecheckInStatus.Success;
-
-                if (!await siteService.IsActivatedAsync(napSettings.SiteId)) return RecheckInStatus.InvalidSite;
-
-                return reCheckInStatus;
+                return RecheckInStatus.Success;
             }
+
+            var status = await securityService.ReCheckInAsync(napSession.OnUserId, napSettings.SiteId);
+            var reCheckInStatus = (RecheckInStatus)status;
+
+            if (!napSettings.EnableReCheckIn && reCheckInStatus == RecheckInStatus.KickOut)
+            {
+                return RecheckInStatus.Success;
+            }
+
+            if (!EnableCheckPermissionChanged && reCheckInStatus == RecheckInStatus.KickOutPermission)
+            {
+                return RecheckInStatus.Success;
+            }
+
+            if (!await siteService.IsActivatedAsync(napSettings.SiteId))
+            {
+                return RecheckInStatus.InvalidSite;
+            }
+
+            return reCheckInStatus;
         }
 
         [HttpGet]

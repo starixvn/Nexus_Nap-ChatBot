@@ -60,7 +60,9 @@ public class SpecialDeleteService : ISpecialDeleteService
                 var (command, notifications) = await ImportMessageToChatbotDBAsync(issueTypes, messageDetails);
 
                 if (command.IsSuccessful && notifications.Any())
+                {
                     await UpdateMessageHistoryVoidingForLicenseeAsync(details);
+                }
 
                 await commonService.OnAfterImportDataAsync(command, notifications);
             }
@@ -202,7 +204,10 @@ public class SpecialDeleteService : ISpecialDeleteService
             await GetAbnormalMessageDetail(messageIdLst, setting.BatchSize, setting.LastMsgTargetId);
         var (historyDetail, msg, abnormalAccountInfos, dupTicketDetails) =
             await GetVoidingHistoryInternalCSDInfoAsync(messageInfo, messageDetail);
-        if (dupTicketDetails.Any()) await GetTransInfoAsync(dupTicketDetails);
+        if (dupTicketDetails.Any())
+        {
+            await GetTransInfoAsync(dupTicketDetails);
+        }
         FormatTelegramData(historyDetail);
         await ImportAbnormalBetNotificationToChatbotDBAsync(historyDetail, msg, dupTicketDetails, abnormalAccountInfos,
             maxMsgTargetId);
@@ -213,13 +218,18 @@ public class SpecialDeleteService : ISpecialDeleteService
         var distinctVoidedTransIds = dupTicketDetails.Select(i => i.VoidedTransId).Distinct();
         var tasks = new List<Task<(long, string)>>();
         foreach (var transid in distinctVoidedTransIds)
+        {
             tasks.Add(Task.Run(() => refNoTicketService.GetTransInfoAsync(transid)));
+        }
 
         var results = await Task.WhenAll(tasks);
         foreach (var (tranid, transinfo) in results)
         {
             var tickets = dupTicketDetails.Where(x => x.VoidedTransId == tranid);
-            foreach (var item in tickets) item.TransInfo = transinfo;
+            foreach (var item in tickets)
+            {
+                item.TransInfo = transinfo;
+            }
         }
     }
 
