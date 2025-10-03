@@ -88,21 +88,15 @@ public class ResetLastMessageIdService : IResetLastMessageIdService
         var missingMsg = await baseService.GetDataAsync<MissingMesssageInfo>(criteria);
         var missingInfo = await GetMissingMessageDataAsync(missingMsg);
 
-        var problemAccountFromLogId =
-            msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.ProblemPlayer)?.ReferenceValue
-            ?? throw new ArgumentNullException(JsonConvert.SerializeObject(msgList));
+        var problemAccountFromLogId = GetIdentifyFromLogId(msgList, JobIdentity.ProblemPlayer);
         var problemMissingInfo = await GetMissingProblemAccountAsync(problemAccountFromLogId);
         missingInfo = missingInfo.Concat(problemMissingInfo);
 
-        var monitoredPlayerFromLogId =
-            msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.MonitoredPlayer)?.ReferenceValue
-            ?? throw new ArgumentNullException(JsonConvert.SerializeObject(msgList));
+        var monitoredPlayerFromLogId = GetIdentifyFromLogId(msgList, JobIdentity.MonitoredPlayer);
         var monitoredMissingInfo = await GetMissingMonitoredPlayerAsync(monitoredPlayerFromLogId);
         missingInfo = missingInfo.Concat(monitoredMissingInfo);
 
-        var matchMonitoring =
-            msgList.FirstOrDefault(m => m.JobIdentify == (int)JobIdentity.MonitorMatch)?.ReferenceValue
-            ?? throw new ArgumentNullException(JsonConvert.SerializeObject(msgList));
+        var matchMonitoring = GetIdentifyFromLogId(msgList, JobIdentity.MonitorMatch);
         var matchMonirotingMissingInfo = await GetMissingMonitoringMatchAsync(matchMonitoring);
         missingInfo = missingInfo.Concat(matchMonirotingMissingInfo);
 
@@ -112,6 +106,10 @@ public class ResetLastMessageIdService : IResetLastMessageIdService
 
         return messageMissingInfo;
     }
+
+    private static string GetIdentifyFromLogId(IEnumerable<CurrentMaxMessageInfo> msgList, JobIdentity jobIdentity)
+         => msgList.FirstOrDefault(m => m.JobIdentify == (int)jobIdentity)?.ReferenceValue
+            ?? throw new ArgumentNullException(JsonConvert.SerializeObject(msgList));
 
     private static void CalculateMaxReferrenceId(IEnumerable<CurrentMaxMessageInfo> msgList,
         IEnumerable<MissingMesssageInfo> missingInfo)
@@ -141,25 +139,32 @@ public class ResetLastMessageIdService : IResetLastMessageIdService
     }
 
 #pragma warning disable S1172 // Unused method parameters should be removed
+
     private static object GetIdByJobIdentify(int jobIdentify, MissingMesssageInfo item, string settingName)
     {
         switch ((JobIdentity)jobIdentify)
         {
             case JobIdentity.InternalCSD when settingName == "LastMsgTargetId":
                 return item.MsgTargetId;
+
             case JobIdentity.InternalCSD:
                 return item.VoidingHistoryCollectionId;
+
             case JobIdentity.SettlementInternalCSD:
             case JobIdentity.SettlementLicensee:
                 return item.MsgTargetId;
+
             case JobIdentity.ResultAmendmentLicensee:
                 return item.MsgTargetId;
+
             case JobIdentity.ResultAmendmentInternalCSD when settingName == "LastModifiedTime":
                 return item.PostTime;
+
             default:
                 return item.MessageId;
         }
     }
+
 #pragma warning restore S1172 // Unused method parameters should be removed
 
     private async Task<IEnumerable<MissingMesssageInfo>> GetMissingProblemAccountAsync(string fromLogId)
