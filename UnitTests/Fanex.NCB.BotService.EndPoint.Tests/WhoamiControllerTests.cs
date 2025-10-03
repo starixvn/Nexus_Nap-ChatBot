@@ -2,8 +2,8 @@
 
 using System.Net;
 using AutoFixture;
-using Controllers;
-using Shared;
+using Fanex.NCB.BotService.EndPoint.Controllers;
+using Fanex.NCB.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;

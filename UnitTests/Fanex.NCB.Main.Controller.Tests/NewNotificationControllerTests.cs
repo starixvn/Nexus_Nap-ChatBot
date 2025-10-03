@@ -175,6 +175,222 @@ public class NewNotificationControllerTests
         Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(obj));
     }
 
+    [Fact]
+    public async Task Create_WithSuccessfulResultAndNotificationIds_PushesSignalRNotification()
+    {
+        // Arrange
+        var controller = GetController();
+        napSession.UserId = fixture.Create<int>();
+
+        var viewModel = new CreateNewNotificationViewModel
+        {
+            ChannelIds = "1,2",
+            NotificationTypeId = 1,
+            ProductId = 1,
+            RecipientIds = "1,2",
+            Title = "title",
+            Content = "**content**",
+            SendDate = DateTime.Now,
+            SendImmediately = true,
+            Platforms = "1,2"
+        };
+
+        var notificationIds = "1,2,3";
+        notificationService.CreateAsync(Arg.Any<CreateNotification>())
+            .Returns((new CommandResult { Code = 0 }, notificationIds));
+
+        // Act
+        var result = await controller.Create(viewModel);
+
+        // Assert
+        var json = Assert.IsType<JsonResult>(result);
+        var commandResult = Assert.IsType<CommandResult>(json.Value);
+        Assert.True(commandResult.IsSuccessful);
+
+        // Verify that SignalR notification is pushed (this is tested indirectly through the method call)
+        // The actual SignalR push happens in a separate thread via Task.Run
+    }
+
+    [Fact]
+    public async Task Create_WithSuccessfulResultButEmptyNotificationIds_DoesNotPushSignalRNotification()
+    {
+        // Arrange
+        var controller = GetController();
+        napSession.UserId = fixture.Create<int>();
+
+        var viewModel = new CreateNewNotificationViewModel
+        {
+            ChannelIds = "1,2",
+            NotificationTypeId = 1,
+            ProductId = 1,
+            RecipientIds = "1,2",
+            Title = "title",
+            Content = "**content**",
+            SendDate = DateTime.Now,
+            SendImmediately = true,
+            Platforms = "1,2"
+        };
+
+        notificationService.CreateAsync(Arg.Any<CreateNotification>())
+            .Returns((new CommandResult { Code = 0 }, string.Empty));
+
+        // Act
+        var result = await controller.Create(viewModel);
+
+        // Assert
+        var json = Assert.IsType<JsonResult>(result);
+        var commandResult = Assert.IsType<CommandResult>(json.Value);
+        Assert.True(commandResult.IsSuccessful);
+    }
+
+    [Fact]
+    public async Task Create_WithSuccessfulResultButWhitespaceNotificationIds_DoesNotPushSignalRNotification()
+    {
+        // Arrange
+        var controller = GetController();
+        napSession.UserId = fixture.Create<int>();
+
+        var viewModel = new CreateNewNotificationViewModel
+        {
+            ChannelIds = "1,2",
+            NotificationTypeId = 1,
+            ProductId = 1,
+            RecipientIds = "1,2",
+            Title = "title",
+            Content = "**content**",
+            SendDate = DateTime.Now,
+            SendImmediately = true,
+            Platforms = "1,2"
+        };
+
+        notificationService.CreateAsync(Arg.Any<CreateNotification>())
+            .Returns((new CommandResult { Code = 0 }, "   "));
+
+        // Act
+        var result = await controller.Create(viewModel);
+
+        // Assert
+        var json = Assert.IsType<JsonResult>(result);
+        var commandResult = Assert.IsType<CommandResult>(json.Value);
+        Assert.True(commandResult.IsSuccessful);
+    }
+
+    [Fact]
+    public async Task Create_WithNullPlatforms_SetsEmptyString()
+    {
+        // Arrange
+        var controller = GetController();
+        napSession.UserId = fixture.Create<int>();
+
+        var viewModel = new CreateNewNotificationViewModel
+        {
+            ChannelIds = "1,2",
+            NotificationTypeId = 1,
+            ProductId = 1,
+            RecipientIds = "1,2",
+            Title = "title",
+            Content = "**content**",
+            SendDate = DateTime.Now,
+            SendImmediately = true,
+            Platforms = null
+        };
+
+        CreateNotification capturedModel = null;
+        notificationService.CreateAsync(Arg.Do<CreateNotification>(x => capturedModel = x))
+            .Returns((new CommandResult { Code = 0 }, string.Empty));
+
+        // Act
+        var result = await controller.Create(viewModel);
+
+        // Assert
+        Assert.Equal(string.Empty, capturedModel.Platforms);
+    }
+
+    [Fact]
+    public async Task Create_WithNullIntegrationMethodIds_SetsEmptyString()
+    {
+        // Arrange
+        var controller = GetController();
+        napSession.UserId = fixture.Create<int>();
+
+        var viewModel = new CreateNewNotificationViewModel
+        {
+            ChannelIds = "1,2",
+            NotificationTypeId = 1,
+            ProductId = 1,
+            RecipientIds = "1,2",
+            Title = "title",
+            Content = "**content**",
+            SendDate = DateTime.Now,
+            SendImmediately = true,
+            IntegrationMethodIds = null
+        };
+
+        CreateNotification capturedModel = null;
+        notificationService.CreateAsync(Arg.Do<CreateNotification>(x => capturedModel = x))
+            .Returns((new CommandResult { Code = 0 }, string.Empty));
+
+        // Act
+        var result = await controller.Create(viewModel);
+
+        // Assert
+        Assert.Equal(string.Empty, capturedModel.IntegrationMethodIds);
+    }
+
+    [Fact]
+    public async Task Create_WithNullFileName_SetsNull()
+    {
+        // Arrange
+        var controller = GetController();
+        napSession.UserId = fixture.Create<int>();
+
+        var viewModel = new CreateNewNotificationViewModel
+        {
+            ChannelIds = "1,2",
+            NotificationTypeId = 1,
+            ProductId = 1,
+            RecipientIds = "1,2",
+            Title = "title",
+            Content = "**content**",
+            SendDate = DateTime.Now,
+            SendImmediately = true,
+            FileName = null
+        };
+
+        CreateNotification capturedModel = null;
+        notificationService.CreateAsync(Arg.Do<CreateNotification>(x => capturedModel = x))
+            .Returns((new CommandResult { Code = 0 }, string.Empty));
+
+        // Act
+        var result = await controller.Create(viewModel);
+
+        // Assert
+        Assert.Null(capturedModel.FileName);
+    }
+
+    [Fact]
+    public async Task GetRecipients_WithNullPlatforms_SetsEmptyString()
+    {
+        // Arrange
+        var controller = GetController();
+        var notificationTypeId = fixture.Create<int>();
+        var recipientIds = fixture.Create<string>();
+        var channelIds = fixture.Create<string>();
+        var productId = fixture.Create<int?>();
+        string platforms = null;
+
+        var allRecipients = fixture.Create<(IEnumerable<Recipient>, IEnumerable<uint>)>();
+        notificationService.GetRecipientsAsync(notificationTypeId, string.Empty, recipientIds, productId, null, channelIds)
+            .Returns(allRecipients);
+
+        // Act
+        var result = await controller.GetRecipients(notificationTypeId, platforms, recipientIds, productId, null, channelIds);
+
+        // Assert
+        var jsonResult = Assert.IsType<JsonResult>(result);
+        await notificationService.Received(1).GetRecipientsAsync(notificationTypeId, string.Empty, recipientIds, productId, null, channelIds);
+    }
+
     private NewNotificationController GetController()
     {
         notificationService = Substitute.For<INotificationService>();

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using NSubstitute;
 using Xunit;
+using FluentAssertions;
 
 public class ResetLastMessageIdTests
 {
@@ -38,7 +39,8 @@ public class ResetLastMessageIdTests
         var actual = await service.GetCurrentPreviousMaxMessageAsync();
 
         //Assert
-        Assert.Equal(tuple, actual);
+        actual.Item1.Should().BeEquivalentTo(tuple.Item1);
+        actual.Item2.Should().BeEquivalentTo(tuple.Item2);
     }
 
     [Fact]
@@ -106,10 +108,11 @@ public class ResetLastMessageIdTests
 
         var msgList = new List<CurrentMaxMessageInfo>
         {
-            new() { JobIdentify = 1, ReferenceValue = "1", SettingName = "1" },
-            new() { JobIdentify = 2, ReferenceValue = "1000", SettingName = "2" },
-            new() { JobIdentify = 4, ReferenceValue = "1000", SettingName = "4" },
-            new() { JobIdentify = 5, ReferenceValue = "1000", SettingName = "5" }
+            new() { JobIdentify = 1, ReferenceValue = "1", SettingName = "1", MaxReferenceId = "300" },
+            new() { JobIdentify = 2, ReferenceValue = "1000", SettingName = "2", MaxReferenceId = "2000" },
+            new() { JobIdentify = 4, ReferenceValue = "1000", SettingName = "4", MaxReferenceId = "1000" },
+            new() { JobIdentify = 5, ReferenceValue = "1000", SettingName = "5", MaxReferenceId = "1000" },
+            new() { JobIdentify = 10, ReferenceValue = "1000", SettingName = "10", MaxReferenceId = "1000" }
         };
 
         var expected = new List<MissingMesssageInfo>

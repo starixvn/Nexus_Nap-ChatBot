@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.Criteria;
 using Core.Services.Interfaces;
-using Bots;
+using Fanex.NCB.BotService.EndPoint.Bots;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using NSubstitute;

@@ -199,6 +199,60 @@ public class LocalSecurityServiceTests
         Assert.Equal(expectedOnUserId, onUserId);
     }
 
+    [Fact]
+    public void Constructor_WithValidBaseService_CreatesInstance()
+    {
+        // Arrange
+        var mockBaseService = Substitute.For<IBaseService>();
+
+        // Act
+        var service = new LocalSecurityService(mockBaseService);
+
+        // Assert
+        Assert.NotNull(service);
+    }
+
+    [Fact]
+    public void GetTime_ThrowsNotImplementedException()
+    {
+        // Arrange
+        var service = GetService();
+
+        // Act & Assert
+        Assert.Throws<System.NotImplementedException>(() => service.GetTime());
+    }
+
+    [Fact]
+    public void Login_ThrowsNotImplementedException()
+    {
+        // Arrange
+        var service = GetService();
+        var parameter = fixture.Create<LoginParameter>();
+
+        // Act & Assert
+        Assert.Throws<System.NotImplementedException>(() => service.Login(parameter));
+    }
+
+    [Fact]
+    public async Task GetTimeAsync_SetsCorrectTimeFormat()
+    {
+        // Arrange
+        var service = GetService();
+        var criteria = new UserSsoGetTimeUserCriteria();
+
+        baseService.GetDataAsync<int>(Arg.Do<UserSsoGetTimeUserCriteria>(x => criteria = x))
+            .Returns(new List<int> { 1 });
+
+        // Act
+        var time = await service.GetTimeAsync();
+
+        // Assert
+        Assert.NotNull(time);
+        Assert.NotEmpty(time);
+        // Verify the time format matches the expected culture invariant format
+        Assert.True(System.DateTime.TryParse(time, CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out _));
+    }
+
     #region Helpers
 
     private LocalSecurityService GetService()

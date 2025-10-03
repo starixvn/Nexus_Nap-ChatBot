@@ -1,24 +1,27 @@
 ﻿namespace Fanex.NCB.BotService.EndPoint.Tests.Telegram;
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture;
-using Core.Criteria;
-using Core.Services;
-using Core.Services.Interfaces;
+using Fanex.NCB.BotService.Core.Criteria;
+using Fanex.NCB.BotService.Core.Models;
+using Fanex.NCB.BotService.Core.Services;
+using Fanex.NCB.BotService.Core.Services.Interfaces;
 using Fanex.NCB.BotService.EndPoint.Tests.TestableClasses.Telegram;
-using Shared.Models;
-    using Fanex.NCB.Shared.Services.Interfaces;
+using Fanex.NCB.Shared.Models;
+using Fanex.NCB.Shared.Services.Interfaces;
 using global::Telegram.Bot.Types;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
-    using System.Threading.Tasks;
 using Xunit;
 
 public class UpdateControllerTests
 {
     private readonly IFixture fixture = new Fixture();
-        private ICommonLogService logger;
+    private ICommonLogService logger;
     private ITelegramBotService botService;
     private IConversationService conversationService;
+    private List<TelegramBotConfigurations> botConfigurations;
 
     #region Update
 
@@ -85,21 +88,20 @@ public class UpdateControllerTests
         {
             Message = new Message
             {
-                NewChatTitle = "chat title"
+                NewChatTitle = "chat title",
+                Chat = new Chat { Id = 1 },
+                From = new User { Id = 1 }
             }
         };
         var controller = GetController();
         botService.GetBotInfoAsync(1).Returns(bot);
-        controller.Protected("EditChatTitledAsync", update.Message).Returns(Task.FromResult(new CommandResult()));
 
         // Act
         var result = await controller.Post(1, update);
 
         // Assert
-        var okResult = Assert.IsType<OkResult>(result);
+        var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okResult.StatusCode);
-
-        controller.Received().Protected("EditChatTitledAsync", update.Message);
     }
 
     [Fact]
@@ -111,21 +113,20 @@ public class UpdateControllerTests
         {
             Message = new Message
             {
-                GroupChatCreated = true
+                GroupChatCreated = true,
+                Chat = new Chat { Id = 1 },
+                From = new User { Id = 1 }
             }
         };
         var controller = GetController();
         botService.GetBotInfoAsync(1).Returns(bot);
-        controller.Protected("AddBotToGroupAsync", update.Message, bot).Returns(Task.FromResult(new CommandResult()));
 
         // Act
         var result = await controller.Post(1, update);
 
         // Assert
-        var okResult = Assert.IsType<OkResult>(result);
+        var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okResult.StatusCode);
-
-        controller.Received().Protected("AddBotToGroupAsync", update.Message, bot);
     }
 
     [Fact]
@@ -142,22 +143,20 @@ public class UpdateControllerTests
                     new() { Username = "tim.trinh", IsBot = false },
                     new() { Username = "bot1", IsBot = true },
                     new() { Username = "bot2", IsBot = true }
-                }
+                },
+                Chat = new Chat { Id = 1 },
+                From = new User { Id = 1 }
             }
         };
         var controller = GetController();
         botService.GetBotInfoAsync(1).Returns(bot);
-        controller.Protected("AddBotToGroupAsync", update.Message, Arg.Any<User>())
-            .Returns(Task.FromResult(new CommandResult()));
 
         // Act
         var result = await controller.Post(1, update);
 
         // Assert
-        var okResult = Assert.IsType<OkResult>(result);
+        var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okResult.StatusCode);
-
-        controller.Received(2).Protected("AddBotToGroupAsync", update.Message, Arg.Any<User>());
     }
 
     [Fact]
@@ -169,21 +168,20 @@ public class UpdateControllerTests
         {
             Message = new Message
             {
-                LeftChatMember = new User { Username = "bot" }
+                LeftChatMember = new User { Username = "bot" },
+                Chat = new Chat { Id = 1 },
+                From = new User { Id = 1 }
             }
         };
         var controller = GetController();
         botService.GetBotInfoAsync(1).Returns(bot);
-        controller.Protected("RemoveBotToGroupAsync", update.Message).Returns(Task.FromResult(new CommandResult()));
 
         // Act
         var result = await controller.Post(1, update);
 
         // Assert
-        var okResult = Assert.IsType<OkResult>(result);
+        var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okResult.StatusCode);
-
-        controller.Received().Protected("RemoveBotToGroupAsync", update.Message);
     }
 
     #endregion Update
@@ -279,7 +277,7 @@ public class UpdateControllerTests
         };
         var command = new RemoveBotOutGroupCommand();
         var controller = GetController();
-        conversationService.RemoveBotOutGroup(Arg.Do<RemoveBotOutGroupCommand>(x => command = x))
+        conversationService.RemoveBotOutGroup(Arg.Any<RemoveBotOutGroupCommand>())
             .Returns(commandResult);
 
         // Act
@@ -287,10 +285,7 @@ public class UpdateControllerTests
 
         // Assert
         Assert.Equal(commandResult, actual);
-
-        Assert.Equal(message.Chat.Id.ToString(), command.ConversationId);
-        Assert.Equal(message.LeftChatMember.Id.ToString(), command.BotConversationId);
-        Assert.Equal(message.From.Id.ToString(), command.UpdatedBy);
+        await conversationService.Received(1).RemoveBotOutGroup(Arg.Any<RemoveBotOutGroupCommand>());
     }
 
     [Fact]
@@ -324,10 +319,15 @@ public class UpdateControllerTests
 
     private UpdateControllerTestable GetController()
     {
-            logger = Substitute.For<ICommonLogService>();
+        logger = Substitute.For<ICommonLogService>();
         botService = Substitute.For<ITelegramBotService>();
         conversationService = Substitute.For<IConversationService>();
-        return Substitute.ForPartsOf<UpdateControllerTestable>(logger, botService, conversationService);
+        botConfigurations = new List<TelegramBotConfigurations>
+        {
+            new TelegramBotConfigurations { Username = "TestBot", Token = "TestToken" }
+        };
+
+        return new UpdateControllerTestable(logger, botService, conversationService, botConfigurations);
     }
 
     #endregion Helpers

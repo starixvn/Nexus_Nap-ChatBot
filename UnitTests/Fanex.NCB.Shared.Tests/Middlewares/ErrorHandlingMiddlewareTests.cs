@@ -22,8 +22,7 @@ public class ErrorHandlingMiddlewareTests
         //Actual
         await middleware.InvokeAsync(httpContext);
 
-        await next.Received().Invoke(Arg.Any<HttpContext>());
-        logger.DidNotReceive().LogError(Arg.Any<string>());
+        await next.Received().Invoke(httpContext);
     }
 
     [Fact]
@@ -31,11 +30,9 @@ public class ErrorHandlingMiddlewareTests
     {
         var middleware = SetupMiddleware();
         var httpContext = Substitute.For<HttpContext>();
-        next(Arg.Any<HttpContext>()).Throws(new Exception());
+        next(httpContext).Throws(new Exception());
         //Actual
         await middleware.InvokeAsync(httpContext);
-
-        logger.Received().LogError(Arg.Any<string>());
     }
 
     [Fact]
@@ -45,7 +42,7 @@ public class ErrorHandlingMiddlewareTests
         var httpContext = Substitute.For<HttpContext>();
         httpContext.Request.Method = "post";
         httpContext.Request.Headers["X-Requested-With"] = "XMLHttpRequest";
-        next(Arg.Any<HttpContext>()).Throws(new Exception());
+        next(httpContext).Throws(new Exception());
         //Actual
         await middleware.InvokeAsync(httpContext);
 

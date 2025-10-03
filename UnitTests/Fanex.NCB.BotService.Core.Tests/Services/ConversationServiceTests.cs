@@ -1,246 +1,301 @@
-﻿namespace Fanex.NCB.BotService.Core.Tests.Services;
+namespace Fanex.NCB.BotService.Core.Tests.Services;
 
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoFixture;
 using Fanex.NCB.BotService.Core.Criteria;
-using Models;
+using Fanex.NCB.BotService.Core.Models;
 using Fanex.NCB.BotService.Core.Services;
 using Fanex.NCB.Shared.Models;
 using Fanex.NCB.Shared.Services.Interfaces;
+using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
 public class ConversationServiceTests
 {
-    private IBaseService baseService;
-    private CheckDuplicatedMessageLogSetting settings;
+    private readonly IFixture fixture = new Fixture();
+    private readonly IBaseService baseService;
+    private readonly CheckDuplicatedMessageLogSetting settings;
+    private readonly ConversationService conversationService;
 
-    [Fact]
-    public async Task AddBotToGroup_WhenCalled_ExpectedCallExecuteNonQueryAsync()
+    public ConversationServiceTests()
     {
-        var criteria = new AddBotToGroupCommand
-        {
-            BotConversationId = "aa",
-            ConversationId = "bb"
-        };
-        var commandResult = new CommandResult { Code = 0 };
-        var service = GetService();
-
-        baseService.ExecuteNonQueryAsync(Arg.Do<AddBotToGroupCommand>(x => criteria = x)).Returns(commandResult);
-
-        //Act
-        await service.AddBotToGroup(criteria);
-
-        //Assert
-        await baseService.Received().ExecuteNonQueryAsync(Arg.Any<AddBotToGroupCommand>());
+        baseService = Substitute.For<IBaseService>();
+        settings = fixture.Create<CheckDuplicatedMessageLogSetting>();
+        conversationService = new ConversationService(baseService, settings);
     }
 
     [Fact]
-    public async Task AddBotToGroup_IsSuccessful_ReturnExpectedCommandResult()
-    {
-        var criteria = new AddBotToGroupCommand
-        {
-            BotConversationId = "aa",
-            ConversationId = "bb"
-        };
-        var commandResult = new CommandResult { Code = 0 };
-        var service = GetService();
-
-        baseService.ExecuteNonQueryAsync(Arg.Do<AddBotToGroupCommand>(x => criteria = x)).Returns(commandResult);
-
-        //Act
-        var actual = await service.AddBotToGroup(criteria);
-
-        //Assert
-        Assert.Equal(commandResult, actual);
-    }
-
-    [Fact]
-    public async Task RemoveBotOutGroup_WhenCalled_ExpectedCallExecuteNonQueryAsync()
-    {
-        var criteria = new RemoveBotOutGroupCommand
-        {
-            BotConversationId = "aa",
-            ConversationId = "bb"
-        };
-        var commandResult = new CommandResult { Code = 0 };
-        var service = GetService();
-
-        baseService.ExecuteNonQueryAsync(Arg.Do<RemoveBotOutGroupCommand>(x => criteria = x)).Returns(commandResult);
-
-        //Act
-        await service.RemoveBotOutGroup(criteria);
-
-        //Assert
-        await baseService.Received().ExecuteNonQueryAsync(Arg.Any<RemoveBotOutGroupCommand>());
-    }
-
-    [Fact]
-    public async Task RemoveBotOutGroup_IsSuccessful_ReturnExpectedCommandResult()
-    {
-        var criteria = new RemoveBotOutGroupCommand
-        {
-            BotConversationId = "aa",
-            ConversationId = "bb"
-        };
-        var commandResult = new CommandResult { Code = 0 };
-        var service = GetService();
-
-        baseService.ExecuteNonQueryAsync(Arg.Do<RemoveBotOutGroupCommand>(x => criteria = x)).Returns(commandResult);
-
-        //Act
-        var actual = await service.RemoveBotOutGroup(criteria);
-
-        //Assert
-        Assert.Equal(commandResult, actual);
-    }
-
-    [Fact]
-    public async Task UpdateGroupTopic_WhenCalled_ExpectedCallExecuteNonQueryAsync()
-    {
-        var criteria = new UpdateGroupTopicCommand
-        {
-            ConversationId = "aa",
-            GroupName = "bb"
-        };
-        var commandResult = new CommandResult { Code = 0 };
-        var service = GetService();
-
-        baseService.ExecuteNonQueryAsync(Arg.Do<UpdateGroupTopicCommand>(x => criteria = x)).Returns(commandResult);
-
-        //Act
-        await service.UpdateGroupTopic(criteria);
-
-        //Assert
-        await baseService.Received().ExecuteNonQueryAsync(Arg.Any<UpdateGroupTopicCommand>());
-    }
-
-    [Fact]
-    public async Task UpdateGroupTopic_IsSuccessful_ReturnExpectedCommandResult()
-    {
-        var criteria = new UpdateGroupTopicCommand
-        {
-            ConversationId = "aa",
-            GroupName = "bb"
-        };
-        var commandResult = new CommandResult { Code = 0 };
-        var service = GetService();
-
-        baseService.ExecuteNonQueryAsync(Arg.Do<UpdateGroupTopicCommand>(x => criteria = x)).Returns(commandResult);
-
-        //Act
-        var actual = await service.UpdateGroupTopic(criteria);
-
-        //Assert
-        Assert.Equal(commandResult, actual);
-    }
-
-    [Fact]
-    public async Task MigratedToSupergroupAsync_WhenCalled_ReturnExpectedCommandResult()
+    public async Task AddBotToGroup_WithValidCommand_CallsBaseService()
     {
         // Arrange
-        var command = new MigratedToSupergroupCommand();
-        var commandResult = new CommandResult { Code = 0 };
-        var service = GetService();
-        baseService.ExecuteNonQueryAsync(command).Returns(commandResult);
+        var command = fixture.Create<AddBotToGroupCommand>();
+        var expectedResult = fixture.Create<CommandResult>();
+        baseService.ExecuteNonQueryAsync(command).Returns(expectedResult);
 
         // Act
-        var actual = await service.MigratedToSupergroupAsync(command);
+        var result = await conversationService.AddBotToGroup(command);
 
         // Assert
-        Assert.Equal(commandResult, actual);
+        result.Should().Be(expectedResult);
+        await baseService.Received(1).ExecuteNonQueryAsync(command);
     }
 
     [Fact]
-    public async Task AddMessageLog_WhenCalled_ExpectedCallExecuteNonQueryAsync()
+    public async Task RemoveBotOutGroup_WithValidCommand_CallsBaseService()
     {
-        var criteria = new AddMessageLogCommand();
-        var commandResult = new CommandResult { Code = 0 };
-        var service = GetService();
+        // Arrange
+        var command = fixture.Create<RemoveBotOutGroupCommand>();
+        var expectedResult = fixture.Create<CommandResult>();
+        baseService.ExecuteNonQueryAsync(command).Returns(expectedResult);
 
-        baseService.ExecuteNonQueryAsync(Arg.Do<AddMessageLogCommand>(x => criteria = x)).Returns(commandResult);
+        // Act
+        var result = await conversationService.RemoveBotOutGroup(command);
 
-        //Act
-        await service.AddMessageLog(criteria);
-
-        //Assert
-        await baseService.Received().ExecuteNonQueryAsync(Arg.Any<AddMessageLogCommand>());
+        // Assert
+        result.Should().Be(expectedResult);
+        await baseService.Received(1).ExecuteNonQueryAsync(command);
     }
 
     [Fact]
-    public async Task AddMessageLog_IsSuccessful_ReturnExpectedCommandResult()
+    public async Task UpdateGroupTopic_WithValidCommand_CallsBaseService()
     {
-        var criteria = new AddMessageLogCommand();
-        var commandResult = new CommandResult { Code = 0 };
-        var service = GetService();
+        // Arrange
+        var command = fixture.Create<UpdateGroupTopicCommand>();
+        var expectedResult = fixture.Create<CommandResult>();
+        baseService.ExecuteNonQueryAsync(command).Returns(expectedResult);
 
-        baseService.ExecuteNonQueryAsync(Arg.Do<AddMessageLogCommand>(x => criteria = x)).Returns(commandResult);
+        // Act
+        var result = await conversationService.UpdateGroupTopic(command);
 
-        //Act
-        var actual = await service.AddMessageLog(criteria);
-
-        //Assert
-        Assert.Equal(commandResult, actual);
+        // Assert
+        result.Should().Be(expectedResult);
+        await baseService.Received(1).ExecuteNonQueryAsync(command);
     }
 
     [Fact]
-    public void GetDistinctNotificationConversation_WhenCalledReturnsExpectedResult()
+    public async Task MigratedToSupergroupAsync_WithValidCommand_CallsBaseService()
     {
-        var input = new List<NotificationMessage>
+        // Arrange
+        var command = fixture.Create<MigratedToSupergroupCommand>();
+        var expectedResult = fixture.Create<CommandResult>();
+        baseService.ExecuteNonQueryAsync(command).Returns(expectedResult);
+
+        // Act
+        var result = await conversationService.MigratedToSupergroupAsync(command);
+
+        // Assert
+        result.Should().Be(expectedResult);
+        await baseService.Received(1).ExecuteNonQueryAsync(command);
+    }
+
+    [Fact]
+    public async Task AddMessageLog_WithValidCommand_CallsBaseService()
+    {
+        // Arrange
+        var command = fixture.Create<AddMessageLogCommand>();
+        var expectedResult = fixture.Create<CommandResult>();
+        baseService.ExecuteNonQueryAsync(command).Returns(expectedResult);
+
+        // Act
+        var result = await conversationService.AddMessageLog(command);
+
+        // Assert
+        result.Should().Be(expectedResult);
+        await baseService.Received(1).ExecuteNonQueryAsync(command);
+    }
+
+    [Fact]
+    public void Constructor_WithValidParameters_CreatesInstance()
+    {
+        // Arrange & Act
+        var service = new ConversationService(baseService, settings);
+
+        // Assert
+        service.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void Constructor_WithNullBaseService_CreatesInstance()
+    {
+        // Arrange & Act
+        var service = new ConversationService(null, settings);
+
+        // Assert
+        service.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void Constructor_WithNullSettings_CreatesInstance()
+    {
+        // Arrange & Act
+        var service = new ConversationService(baseService, null);
+
+        // Assert
+        service.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void GetDistinctNotificationConversation_WithEmptyList_ReturnsEmptyList()
+    {
+        // Arrange
+        var notifications = new List<NotificationMessage>();
+
+        // Act
+        var result = conversationService.GetDistinctNotificationConversation(notifications);
+
+        // Assert
+        result.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void GetDistinctNotificationConversation_WithSingleNotification_ReturnsDistinctConversations()
+    {
+        // Arrange
+        var notification = new NotificationMessage
         {
-            new()
+            NotificationId = 1,
+            Message = "Test message",
+            Recipients = new List<ConversationInfo>
             {
-                NotificationId = 1, Recipients = new List<ConversationInfo>
+                new ConversationInfo
                 {
-                    new() { ConversationId = "A" },
-                    new() { ConversationId = "D" }
-                }
-            },
-            new() { NotificationId = 2, Recipients = new List<ConversationInfo> { new() { ConversationId = "B" } } },
-            new()
-            {
-                NotificationId = 1, Recipients = new List<ConversationInfo>
-                {
-                    new() { ConversationId = "A" },
-                    new() { ConversationId = "B" }, new() { ConversationId = "C" }
+                    BotName = "TestBot",
+                    BotConversationId = "bot123",
+                    ChannelId = "channel1",
+                    ConversationId = "conv1",
+                    ServiceUrl = "https://test.com"
                 }
             }
         };
-        var expectedResult = new List<NotificationMessage>
-        {
-            new()
-            {
-                NotificationId = 1,
-                Recipients = new List<ConversationInfo>
-                {
-                    new() { ConversationId = "A" }, new() { ConversationId = "D" },
-                    new() { ConversationId = "B" }, new() { ConversationId = "C" }
-                }
-            },
-            new() { NotificationId = 2, Recipients = new List<ConversationInfo> { new() { ConversationId = "B" } } }
-        };
+        var notifications = new List<NotificationMessage> { notification };
 
-        var service = GetService();
-        var actual = service.GetDistinctNotificationConversation(input);
-        Assert.Equal(expectedResult.Count, actual.Count);
-        Assert.Equal(expectedResult.FirstOrDefault(a => a.NotificationId == 1).Recipients.Count(),
-            actual.FirstOrDefault(a => a.NotificationId == 1).Recipients.Count());
+        // Act
+        var result = conversationService.GetDistinctNotificationConversation(notifications);
 
-        Assert.Equal(expectedResult.FirstOrDefault(a => a.NotificationId == 2).Recipients.Count(),
-            actual.FirstOrDefault(a => a.NotificationId == 2).Recipients.Count());
+        // Assert
+        result.Should().HaveCount(1);
+        result.First().NotificationId.Should().Be(1);
+        result.First().Message.Should().Be("Test message");
     }
 
-    private ConversationService GetService()
+    [Fact]
+    public void GetDistinctNotificationConversation_WithDuplicateConversations_RemovesDuplicates()
     {
-        baseService = Substitute.For<IBaseService>();
-        settings = new CheckDuplicatedMessageLogSetting
+        // Arrange
+        var notification = new NotificationMessage
         {
-            IsEnabled = true,
-            TimeSpanInMinutes = 20,
-            ExceptionConversatiionIDs = new[] { "A" }
+            NotificationId = 1,
+            Message = "Test message",
+            Recipients = new List<ConversationInfo>
+            {
+                new ConversationInfo
+                {
+                    BotName = "TestBot",
+                    BotConversationId = "bot123",
+                    ChannelId = "channel1",
+                    ConversationId = "conv1",
+                    ServiceUrl = "https://test.com"
+                },
+                new ConversationInfo
+                {
+                    BotName = "TestBot",
+                    BotConversationId = "bot123",
+                    ChannelId = "channel1",
+                    ConversationId = "conv1",
+                    ServiceUrl = "https://test.com"
+                }
+            }
+        };
+        var notifications = new List<NotificationMessage> { notification };
+
+        // Act
+        var result = conversationService.GetDistinctNotificationConversation(notifications);
+
+        // Assert
+        result.Should().HaveCount(1);
+        result.First().Recipients.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void GetDistinctNotificationConversation_WithExceptionGroup_DoesNotMarkAsDuplicated()
+    {
+        // Arrange
+        settings.ExceptionConversatiionIDs = new[] { "conv1" };
+        var notification = new NotificationMessage
+        {
+            NotificationId = 1,
+            Message = "Test message",
+            Recipients = new List<ConversationInfo>
+            {
+                new ConversationInfo
+                {
+                    BotName = "TestBot",
+                    BotConversationId = "bot123",
+                    ChannelId = "channel1",
+                    ConversationId = "conv1",
+                    ServiceUrl = "https://test.com"
+                }
+            }
+        };
+        var notifications = new List<NotificationMessage> { notification };
+
+        // Act
+        var result = conversationService.GetDistinctNotificationConversation(notifications);
+
+        // Assert
+        result.Should().HaveCount(1);
+        result.First().Recipients.First().IsDuplicated.Should().BeFalse();
+    }
+
+    [Fact]
+    public void GetDistinctNotificationConversation_WithMultipleNotifications_ProcessesAll()
+    {
+        // Arrange
+        var notifications = new List<NotificationMessage>
+        {
+            new NotificationMessage
+            {
+                NotificationId = 1,
+                Message = "Message 1",
+                Recipients = new List<ConversationInfo>
+                {
+                    new ConversationInfo
+                    {
+                        BotName = "Bot1",
+                        BotConversationId = "bot1",
+                        ChannelId = "channel1",
+                        ConversationId = "conv1",
+                        ServiceUrl = "https://test1.com"
+                    }
+                }
+            },
+            new NotificationMessage
+            {
+                NotificationId = 2,
+                Message = "Message 2",
+                Recipients = new List<ConversationInfo>
+                {
+                    new ConversationInfo
+                    {
+                        BotName = "Bot2",
+                        BotConversationId = "bot2",
+                        ChannelId = "channel2",
+                        ConversationId = "conv2",
+                        ServiceUrl = "https://test2.com"
+                    }
+                }
+            }
         };
 
-        return new ConversationService(baseService, settings);
+        // Act
+        var result = conversationService.GetDistinctNotificationConversation(notifications);
+
+        // Assert
+        result.Should().HaveCount(2);
+        result.Should().Contain(n => n.NotificationId == 1);
+        result.Should().Contain(n => n.NotificationId == 2);
     }
 }

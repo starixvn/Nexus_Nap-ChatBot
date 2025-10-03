@@ -45,6 +45,72 @@ public class LocalGroupServiceTests
         Assert.Equal(expectedGroup.IsActive, result.IsActive);
     }
 
+    [Fact]
+    public async Task GetAsync_WithNullGroup_ReturnNull()
+    {
+        var service = GetService();
+        var groupId = 999;
+
+        baseService.GetDataEntityAsync<FlatGroup>(Arg.Any<GetGroupByIdCriteria>()).Returns((FlatGroup)null);
+
+        var result = await service.GetAsync(groupId);
+
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task GetAsync_WithValidGroupId_SetsCriteriaCorrectly()
+    {
+        var service = GetService();
+        var groupId = 123;
+        var expectedGroup = new FlatGroup
+        {
+            GroupId = (short)groupId,
+            GroupName = "Test Group",
+            IsActive = true,
+            Description = "Test Description",
+            CreatedDate = DateTime.UtcNow,
+            CreatorId = 1,
+            CreatorUsername = "Creator",
+            ModifierId = 1,
+            ModifierUsername = "Modifier"
+        };
+
+        var capturedCriteria = new GetGroupByIdCriteria();
+        baseService.GetDataEntityAsync<FlatGroup>(Arg.Do<GetGroupByIdCriteria>(x => capturedCriteria = x))
+                   .Returns(expectedGroup);
+
+        var result = await service.GetAsync(groupId);
+
+        Assert.Equal(groupId, capturedCriteria.GroupId);
+        Assert.NotNull(result);
+        Assert.Equal(expectedGroup.GroupId, result.Id);
+    }
+
+    [Fact]
+    public void Constructor_WithValidBaseService_CreatesInstance()
+    {
+        // Arrange
+        var mockBaseService = Substitute.For<IBaseService>();
+
+        // Act
+        var service = new LocalGroupService(mockBaseService);
+
+        // Assert
+        Assert.NotNull(service);
+    }
+
+    [Fact]
+    public void Get_ThrowsNotImplementedException()
+    {
+        // Arrange
+        var service = GetService();
+        var groupId = 1;
+
+        // Act & Assert
+        Assert.Throws<NotImplementedException>(() => service.Get(groupId));
+    }
+
     #region Helpers
 
     private LocalGroupService GetService()

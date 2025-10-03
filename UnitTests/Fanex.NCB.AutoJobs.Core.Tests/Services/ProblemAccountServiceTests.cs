@@ -10,6 +10,7 @@ using Models.NotifictaionSendMessage;
 using Models.ProblemAccounts;
 using Fanex.NCB.AutoJobs.Core.Services;
 using Fanex.NCB.AutoJobs.Core.Services.Interfaces;
+using Fanex.NCB.AutoJobs.Core.Constants;
 using Newtonsoft.Json;
 using NSubstitute;
 using Xunit;

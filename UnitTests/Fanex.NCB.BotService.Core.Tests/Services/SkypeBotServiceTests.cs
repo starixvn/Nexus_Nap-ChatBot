@@ -91,7 +91,7 @@ public class SkypeBotServiceTests
                 SkypeUrl = "skype.com"
             });
 
-        proxySettings.Value.Returns(new ProxySettings());
+        proxySettings.Value.Returns(new ProxySettings { IsUseProxy = isUserProxy, TimeOut = 30 });
         commonLogService = Substitute.For<ICommonLogService>();
         adapter = Substitute.For<IAdapterIntegration>();
         botConfig = Substitute.For<BotConfiguration>();

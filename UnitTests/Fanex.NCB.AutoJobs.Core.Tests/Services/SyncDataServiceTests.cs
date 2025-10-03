@@ -65,7 +65,7 @@ public class SyncDataServiceTests
         await service.SyncNapDataForSSOLogin(1);
 
         //Assert
-        logger.Received().LogError(Arg.Any<Exception>(), Arg.Any<string>());
+        logger.ReceivedWithAnyArgs(1).LogError(default(Exception), default(string));
     }
 
     [Fact]

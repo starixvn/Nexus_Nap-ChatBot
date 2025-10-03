@@ -23,7 +23,7 @@
             await service.SentryErrorAsync("message", exception);
 
             // Assert
-            logger.Received().LogError(exception, Arg.Is<string>(x => x.Equals("message")));
+            logger.Received().LogError(exception, "message");
         }
 
         [Fact]
@@ -37,7 +37,7 @@
             service.SentryError("message", exception);
 
             // Assert
-            logger.Received().LogError(exception, Arg.Is<string>(x => x.Equals("message")));
+            logger.Received().LogError(exception, "message");
         }
 
         [Fact]
@@ -51,7 +51,7 @@
             await service.SentryInfoAsync(errMsg);
 
             // Assert
-            logger.Received().LogInformation(Arg.Is<string>(x => x.Equals(errMsg)));
+            logger.Received().LogInformation(errMsg);
         }
 
         [Fact]
